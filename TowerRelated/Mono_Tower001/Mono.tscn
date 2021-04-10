@@ -1,0 +1,82 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://TowerRelated/Mono_Tower001/Mono.gd" type="Script" id=1]
+[ext_resource path="res://TowerRelated/Mono_Tower001/Mono_Base.png" type="Texture" id=2]
+[ext_resource path="res://TowerRelated/Mono_Tower001/Mono_Barrel.png" type="Texture" id=3]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": false,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 24.3195, 24.1791 )
+
+[sub_resource type="GDScript" id=4]
+script/source = "extends CollisionShape2D
+
+
+# Declare member variables here. Examples:
+# var a = 2
+# var b = \"text\"
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta):
+#	pass
+"
+
+[sub_resource type="CircleShape2D" id=5]
+
+[node name="Mono" type="Area2D"]
+scale = Vector2( 0.5, 0.5 )
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="TowerBase" type="Node2D" parent="."]
+
+[node name="BaseSprites" type="AnimatedSprite" parent="TowerBase"]
+frames = SubResource( 1 )
+
+[node name="TowerBarrel" type="Node2D" parent="."]
+rotation = -1.5708
+
+[node name="BarrelSprites" type="AnimatedSprite" parent="TowerBarrel"]
+position = Vector2( 9, 2 )
+frames = SubResource( 2 )
+
+[node name="CollisionShape" type="CollisionShape2D" parent="."]
+shape = SubResource( 3 )
+script = SubResource( 4 )
+
+[node name="Range" type="Area2D" parent="."]
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+collision_layer = 2
+collision_mask = 96
+
+[node name="RangeShape" type="CollisionShape2D" parent="Range"]
+shape = SubResource( 5 )
+[connection signal="input_event" from="." to="." method="_on_Mono_input_event"]
+[connection signal="area_shape_entered" from="Range" to="." method="_on_Range_area_shape_entered"]
+[connection signal="area_shape_exited" from="Range" to="." method="_on_Range_area_shape_exited"]

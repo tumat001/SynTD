@@ -1,0 +1,6 @@
+enum {
+	MAX,
+	BASE,
+	CURRENT,
+	MISSING
+}
