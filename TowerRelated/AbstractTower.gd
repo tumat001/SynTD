@@ -44,9 +44,8 @@ func _ready():
 	current_targeting_option = Targeting.FIRST
 	last_used_targeting_option = Targeting.FIRST
 
-func _update_detection_range():
-	pass
-
+func _post_inherit_ready():
+	_update_detection_range()
 
 func get_all_on_hit_damages():
 	var on_hit_damages = {}
@@ -277,11 +276,27 @@ func _decrement_time_of_modifiers(delta):
 	
 	bucket.clear()
 
-func _attack_at_position(position_arg):
-	_rotate_barrel_to(position_arg)
-
 func _rotate_barrel_to(position_arg):
-	pass
+	var angle = _get_angle(position_arg.x, position_arg.y)
+	
+	$TowerBarrel.rotation_degrees = angle
+
+func _attack_at_position(pos):
+	_rotate_barrel_to(pos)
+
+func _update_detection_range():
+	var final_range = calculate_final_range_radius()
+	
+	$Range/RangeShape.shape.set_deferred("radius", final_range)
+
+
+func _on_Range_area_shape_entered(area_id, area, area_shape, self_shape):
+	_on_enemy_enter_range(area.get_parent())
+
+
+func _on_Range_area_shape_exited(area_id, area, area_shape, self_shape):
+	if area != null:
+		_on_enemy_leave_range(area.get_parent())
 
 func _get_angle(xPos, yPos):
 	var dx = xPos - position.x

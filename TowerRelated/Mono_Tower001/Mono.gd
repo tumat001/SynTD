@@ -23,12 +23,7 @@ func _ready():
 	$TowerBase.z_index = 0
 	$TowerBarrel.z_index = 2
 	
-	_update_detection_range()
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+	_post_inherit_ready()
 
 func _attack_at_position(position_arg):
 	var angle = ._get_angle(position_arg.x, position_arg.y)
@@ -48,28 +43,9 @@ func _attack_at_position(position_arg):
 	
 	._attack_at_position(position_arg)
 
-func _rotate_barrel_to(position_arg):
-	var angle = ._get_angle(position_arg.x, position_arg.y)
-	
-	$TowerBarrel.rotation_degrees = angle
-
-func _update_detection_range():
-	var final_range = calculate_final_range_radius()
-	
-	$Range/RangeShape.shape.set_deferred("radius", final_range)
-	._update_detection_range()
-
-
-func _on_Range_area_shape_entered(area_id, area, area_shape, self_shape):
-	_on_enemy_enter_range(area.get_parent())
-
-
-func _on_Range_area_shape_exited(area_id, area, area_shape, self_shape):
-	if area != null:
-		_on_enemy_leave_range(area.get_parent())
-
-
 func _on_Mono_input_event(viewport, event, shape_idx):
 	if  event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
 		pass
 		#TODO Continue with drawing of tower range
+		#when thing is clicked
+

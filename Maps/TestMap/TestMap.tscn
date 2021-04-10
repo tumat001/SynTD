@@ -10,12 +10,6 @@ _data = {
 
 [node name="TestMap" type="Node2D"]
 
-[node name="Mono" parent="." instance=ExtResource( 1 )]
-position = Vector2( 350.744, 202.536 )
-
-[node name="Mono2" parent="." instance=ExtResource( 1 )]
-position = Vector2( 203.125, 224.506 )
-
 [node name="EnemyPath01" type="Path2D" parent="."]
 curve = SubResource( 1 )
 
@@ -25,3 +19,9 @@ position = Vector2( -31.2998, 187.411 )
 [node name="Camera" type="Camera2D" parent="."]
 anchor_mode = 0
 current = true
+
+[node name="Mono" parent="." instance=ExtResource( 1 )]
+position = Vector2( 383.252, 202.232 )
+
+[node name="Mono2" parent="." instance=ExtResource( 1 )]
+position = Vector2( 233.345, 240.416 )

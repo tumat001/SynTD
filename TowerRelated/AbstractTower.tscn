@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TowerRelated/AbstractTower.gd" type="Script" id=1]
+
+[node name="AbstractTower" type="Area2D"]
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="TowerBase" type="Node2D" parent="."]
+
+[node name="BaseSprites" type="AnimatedSprite" parent="TowerBase"]
+
+[node name="TowerBarrel" type="Node2D" parent="."]
+
+[node name="BarrelSprites" type="AnimatedSprite" parent="TowerBarrel"]
+
+[node name="CollisionShape" type="CollisionShape2D" parent="."]
+
+[node name="Range" type="Area2D" parent="."]
+gravity_vec = Vector2( 0, 0 )
+gravity = 0.0
+collision_layer = 2
+collision_mask = 96
+
+[node name="RangeShape" type="CollisionShape2D" parent="Range"]
+[connection signal="input_event" from="." to="." method="_on_Mono_input_event"]
+[connection signal="area_shape_entered" from="Range" to="." method="_on_Range_area_shape_entered"]
+[connection signal="area_shape_exited" from="Range" to="." method="_on_Range_area_shape_exited"]
