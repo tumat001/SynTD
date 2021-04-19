@@ -14,3 +14,4 @@ func _ready():
 func _on_CollisionArea_body_entered(body):
 	if body is GenericBullet:
 		hit_by_bullet(body)
+

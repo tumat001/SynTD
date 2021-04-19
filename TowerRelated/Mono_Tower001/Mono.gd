@@ -5,6 +5,7 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
+const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -19,6 +20,7 @@ func _ready():
 	base_proj_time = 0.27
 	base_on_hit_damage_internal_name = "mono_base_damage"
 	#Names do NOT have to be the same
+	
 	
 	$TowerBase.z_index = 0
 	$TowerBarrel.z_index = 2
@@ -42,10 +44,4 @@ func _attack_at_position(position_arg):
 	add_child(new_bullet)
 	
 	._attack_at_position(position_arg)
-
-func _on_Mono_input_event(viewport, event, shape_idx):
-	if  event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
-		pass
-		#TODO Continue with drawing of tower range
-		#when thing is clicked
 

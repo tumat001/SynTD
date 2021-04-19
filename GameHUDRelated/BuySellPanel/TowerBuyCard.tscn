@@ -1,0 +1,169 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://GameHUDRelated/BuySellPanel/TowerBuyCard.gd" type="Script" id=1]
+[ext_resource path="res://GameHUDRelated/BuySellPanel/BuyAndInfoTowerBackground.png" type="Texture" id=2]
+[ext_resource path="res://GameHUDRelated/BuySellPanel/CombineInfoSymbol.png" type="Texture" id=3]
+[ext_resource path="res://GameHUDRelated/BuySellPanel/GraySymbol.png" type="Texture" id=4]
+[ext_resource path="res://GameHUDRelated/BuySellPanel/EnergyUseInfoSymbol.png" type="Texture" id=5]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+size = 13
+font_data = ExtResource( 6 )
+
+[node name="BuyCardContainer" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BuyCard" type="TextureButton" parent="."]
+margin_right = 130.0
+margin_bottom = 80.0
+texture_normal = ExtResource( 2 )
+
+[node name="Upper" type="HBoxContainer" parent="BuyCard"]
+margin_left = 6.0
+margin_top = 5.0
+margin_right = 124.0
+margin_bottom = 61.0
+custom_constants/separation = 24
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TowerAttrContainer" type="VBoxContainer" parent="BuyCard/Upper"]
+margin_right = 42.0
+margin_bottom = 56.0
+custom_constants/separation = 0
+
+[node name="IngredientInfo" type="MarginContainer" parent="BuyCard/Upper/TowerAttrContainer"]
+margin_right = 42.0
+margin_bottom = 14.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BuyCard/Upper/TowerAttrContainer/IngredientInfo"]
+margin_right = 42.0
+margin_bottom = 14.0
+
+[node name="IngredientIcon" type="TextureRect" parent="BuyCard/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer"]
+margin_right = 10.0
+margin_bottom = 14.0
+texture = ExtResource( 3 )
+
+[node name="IngredientLabel" type="Label" parent="BuyCard/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer"]
+margin_left = 14.0
+margin_right = 42.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 1 )
+text = "Temp"
+
+[node name="EnergyInfo" type="MarginContainer" parent="BuyCard/Upper/TowerAttrContainer"]
+margin_top = 14.0
+margin_right = 42.0
+margin_bottom = 28.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BuyCard/Upper/TowerAttrContainer/EnergyInfo"]
+margin_right = 42.0
+margin_bottom = 14.0
+
+[node name="EnergyIcon" type="TextureRect" parent="BuyCard/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer"]
+margin_right = 10.0
+margin_bottom = 14.0
+texture = ExtResource( 5 )
+
+[node name="EnergyLabel" type="Label" parent="BuyCard/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer"]
+margin_left = 14.0
+margin_right = 42.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 1 )
+text = "Temp"
+
+[node name="ColorInfo1" type="MarginContainer" parent="BuyCard/Upper/TowerAttrContainer"]
+margin_top = 28.0
+margin_right = 42.0
+margin_bottom = 42.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BuyCard/Upper/TowerAttrContainer/ColorInfo1"]
+margin_right = 42.0
+margin_bottom = 14.0
+
+[node name="Color01Icon" type="TextureRect" parent="BuyCard/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer"]
+margin_right = 10.0
+margin_bottom = 14.0
+texture = ExtResource( 4 )
+
+[node name="Color01Label" type="Label" parent="BuyCard/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer"]
+margin_left = 14.0
+margin_right = 42.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 1 )
+text = "Temp"
+
+[node name="ColorInfo2" type="MarginContainer" parent="BuyCard/Upper/TowerAttrContainer"]
+margin_top = 42.0
+margin_right = 42.0
+margin_bottom = 56.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BuyCard/Upper/TowerAttrContainer/ColorInfo2"]
+margin_right = 42.0
+margin_bottom = 14.0
+
+[node name="Color02Icon" type="TextureRect" parent="BuyCard/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer"]
+margin_right = 10.0
+margin_bottom = 14.0
+texture = ExtResource( 4 )
+
+[node name="Color02Label" type="Label" parent="BuyCard/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer"]
+margin_left = 14.0
+margin_right = 42.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 1 )
+text = "Temp"
+
+[node name="TowerImage" type="TextureRect" parent="BuyCard/Upper"]
+margin_left = 66.0
+margin_right = 66.0
+margin_bottom = 56.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch_mode = 6
+
+[node name="Lower" type="HBoxContainer" parent="BuyCard"]
+margin_left = 4.0
+margin_top = 65.0
+margin_right = 127.0
+margin_bottom = 79.0
+custom_constants/separation = 32
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TowerNameLabel" type="Label" parent="BuyCard/Lower"]
+margin_right = 63.0
+margin_bottom = 14.0
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+text = "Name Temp"
+
+[node name="TowerCostLabel" type="Label" parent="BuyCard/Lower"]
+margin_left = 95.0
+margin_right = 123.0
+margin_bottom = 14.0
+grow_horizontal = 0
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+text = "Cost"

@@ -2,6 +2,7 @@ extends Area2D
 
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
+const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 
 var collision_shape
 
@@ -36,7 +37,13 @@ var current_targeting_option : int
 var last_used_targeting_option : int
 var all_targeting_options = {}
 
+var current_power_level_used : int
+
 var enemies_in_range : Array = []
+
+var displaying_range : bool = false
+
+var ingredients_fused : Dictionary = {}
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -288,6 +295,7 @@ func _update_detection_range():
 	var final_range = calculate_final_range_radius()
 	
 	$Range/RangeShape.shape.set_deferred("radius", final_range)
+	update()
 
 
 func _on_Range_area_shape_entered(area_id, area, area_shape, self_shape):
@@ -326,3 +334,16 @@ func _get_current_target_position():
 	var target : AbstractEnemy = Targeting.enemy_to_target(enemies_in_range, current_targeting_option)
 	
 	return Vector2(target.position.x, target.position.y)
+
+func _on_Mono_input_event(_viewport, event, _shape_idx):
+	if  event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
+		displaying_range = !displaying_range
+		update()
+
+func _draw():
+	var final_range = calculate_final_range_radius()
+	var color : Color = Color.gray
+	color.a = 0.1
+	
+	if displaying_range:
+		draw_circle(Vector2(0, 0), final_range, color)

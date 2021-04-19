@@ -59,6 +59,15 @@ func set_bullet_type(type):
 		set_collision_mask_bit(5, true)
 		set_collision_mask_bit(6, true)
 
+
+func decrease_pierce(amount):
+	pierce -= amount
+	if pierce <= 0:
+		_trigger_on_death_events()
+
+func _trigger_on_death_events():
+	inactivate()
+
 func inactivate():
 	set_bullet_type("bullet_inactive")
 	direction_as_relative_location = Vector2(0, 0)
@@ -70,9 +79,3 @@ func inactivate():
 
 func true_destroy():
 	queue_free()
-
-
-func decrease_pierce(amount):
-	pierce -= amount
-	if pierce <= 0:
-		inactivate()

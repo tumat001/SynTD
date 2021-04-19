@@ -1,8 +1,7 @@
 
 enum {
 	PHYSICAL,
-	ICE,
-	FIRE,
-	PURE
+	ELEMENTAL,
+	PURE,
 	}
 

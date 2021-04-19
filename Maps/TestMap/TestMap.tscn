@@ -24,4 +24,4 @@ current = true
 position = Vector2( 383.252, 202.232 )
 
 [node name="Mono2" parent="." instance=ExtResource( 1 )]
-position = Vector2( 233.345, 240.416 )
+position = Vector2( 647.71, 178.191 )

@@ -2,6 +2,7 @@ extends Node2D
 
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
+const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 
 # This spawner is responsible for spawning enemies
 # at a spawn point, and making them follow a path.
@@ -37,6 +38,7 @@ func _ready():
 		spawn_details["01"] = SpawnDetails.new(path["01"], spawn_point["01"])
 		
 		spawn_enemy()
+
 
 func spawn_enemy():
 	var enemy = EnemyConstants.test_enemy_scene.instance()
