@@ -27,15 +27,15 @@ config/icon="res://icon.png"
 [autoload]
 
 BulletMetadata="*res://TowerRelated/BulletMetadata.gd"
-DamageType="*res://GameInfoRelated/DamageType.gd"
-Modifier="*res://GameInfoRelated/Modifier.gd"
-FlatModifier="*res://GameInfoRelated/FlatModifier.gd"
-PercentModifier="*res://GameInfoRelated/PercentModifier.gd"
-OnHitDamage="*res://GameInfoRelated/OnHitDamage.gd"
-EffectType="*res://GameInfoRelated/EffectType.gd"
-OnHitEffect="*res://GameInfoRelated/OnHitEffect.gd"
-PercentType="*res://GameInfoRelated/PercentType.gd"
-EnemyConstants="*res://EnemyRelated/EnemyConstants.gd"
+DamageType="res://GameInfoRelated/DamageType.gd"
+Modifier="res://GameInfoRelated/Modifier.gd"
+FlatModifier="res://GameInfoRelated/FlatModifier.gd"
+PercentModifier="res://GameInfoRelated/PercentModifier.gd"
+OnHitDamage="res://GameInfoRelated/OnHitDamage.gd"
+EffectType="res://GameInfoRelated/EffectType.gd"
+OnHitEffect="res://GameInfoRelated/OnHitEffect.gd"
+PercentType="res://GameInfoRelated/PercentType.gd"
+EnemyConstants="res://EnemyRelated/EnemyConstants.gd"
 
 [debug]
 

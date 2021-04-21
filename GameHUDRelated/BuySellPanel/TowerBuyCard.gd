@@ -2,18 +2,19 @@ extends MarginContainer
 
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
+const Towers = preload("res://GameInfoRelated/Towers.gd")
 
 var tower_information : TowerTypeInformation
+var disabled : bool = false
 
-func _init(arg_tower_information : TowerTypeInformation):
-	tower_information = arg_tower_information
+signal tower_bought(tower_id)
 
 func _ready():
 	update_display()
 
 func update_display():
 	$BuyCard/Lower/TowerNameLabel.text = tower_information.tower_name
-	$BuyCard/Lower/TowerCostLabel.text = tower_information.tower_cost
+	$BuyCard/Lower/TowerCostLabel.text = str(tower_information.tower_cost)
 	
 	#Color related
 	var color01
@@ -61,3 +62,12 @@ func update_display():
 
 func create_energy_display(energy_array : Array) -> String:
 	return PoolStringArray(energy_array).join(" / ")
+
+
+func _on_BuyCard_pressed():
+	if !disabled :
+		disabled = true
+		emit_signal("tower_bought", tower_information.tower_id)
+		
+		queue_free()
+	

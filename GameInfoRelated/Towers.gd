@@ -9,7 +9,7 @@ static func get_tower_info(tower : int) -> TowerTypeInformation :
 	var info
 	
 	if tower == MONO:
-		info = TowerTypeInformation.new("Mono")
+		info = TowerTypeInformation.new("Mono", MONO)
 		info.tower_cost = 1
 		info.colors.append(TowerColors.GRAY)
 	

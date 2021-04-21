@@ -235,11 +235,7 @@ func _process_flat_damage(damage_as_modifier : FlatModifier, damage_type : int):
 
 func _process_direct_damage_and_type(damage : float, damage_type : int):
 	var final_damage = damage
-	if damage_type == DamageType.FIRE:
-		final_damage *= _calculate_multiplier_from_total_toughness()
-		final_damage *= _calculate_multiplier_from_total_resistance()
-		
-	elif damage_type == DamageType.ICE:
+	if damage_type == DamageType.ELEMENTAL:
 		final_damage *= _calculate_multiplier_from_total_toughness()
 		final_damage *= _calculate_multiplier_from_total_resistance()
 		

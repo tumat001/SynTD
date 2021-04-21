@@ -336,7 +336,7 @@ func _get_current_target_position():
 	return Vector2(target.position.x, target.position.y)
 
 func _on_Mono_input_event(_viewport, event, _shape_idx):
-	if  event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
+	if  event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_RIGHT:
 		displaying_range = !displaying_range
 		update()
 
