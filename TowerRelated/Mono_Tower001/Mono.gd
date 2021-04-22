@@ -6,16 +6,19 @@ const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
+const Towers = preload("res://GameInfoRelated/Towers.gd")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	var info : TowerTypeInformation = Towers.get_tower_info(Towers.MONO)
+	
 	var modifier : FlatModifier = FlatModifier.new("mono_base_damage")
 	modifier.flat_modifier = 3
 
 	base_on_hit_damage = OnHitDamage.new("mono_base_damage", modifier, DamageType.PHYSICAL)
-	base_attack_speed = 0.75
-	base_range_radius = 200
-	base_pierce = 1
+	base_attack_speed = info.base_attk_speed
+	base_range_radius = info.base_range
+	base_pierce = info.base_pierce
 	base_proj_speed = 600
 	base_proj_time = 0.27
 	base_on_hit_damage_internal_name = "mono_base_damage"

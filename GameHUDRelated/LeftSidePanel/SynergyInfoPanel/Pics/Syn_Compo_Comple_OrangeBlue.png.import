@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/LeftSideBackground.png-18c35f0c29ef1d6b264d16a5404fa473.stex"
+path="res://.import/Syn_Compo_Comple_OrangeBlue.png-d60450b39b1f7f00239b09a69a3ced13.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/RoundAndHealthPanel/LeftSideBackground.png"
-dest_files=[ "res://.import/LeftSideBackground.png-18c35f0c29ef1d6b264d16a5404fa473.stex" ]
+source_file="res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Comple_OrangeBlue.png"
+dest_files=[ "res://.import/Syn_Compo_Comple_OrangeBlue.png-d60450b39b1f7f00239b09a69a3ced13.stex" ]
 
 [params]
 
