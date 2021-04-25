@@ -15,7 +15,7 @@ var number_of_towers_in_tier : Array = []
 # IMPORTANT: Highest to Lowest
 var tier_pic_per_tier : Array = []
 var synergy_name : String
-var synergy_description : String
+var synergy_descriptions : Array = []
 var synergy_picture
 
 func _init(arg_synergy_name : String,
@@ -23,14 +23,14 @@ func _init(arg_synergy_name : String,
 		arg_number_of_towers_in_tier : Array,
 		arg_tier_pic_per_tier : Array,
 		arg_synergy_picture,
-		arg_synergy_description : String):
+		arg_synergy_descriptions : Array):
 	
 	colors_required = arg_colors_required
 	number_of_towers_in_tier = arg_number_of_towers_in_tier
 	synergy_name = arg_synergy_name
 	synergy_picture = arg_synergy_picture
 	tier_pic_per_tier = arg_tier_pic_per_tier
-	synergy_description = arg_synergy_description
+	synergy_descriptions = arg_synergy_descriptions
 
 # A quick eliminator of non-candidates
 func quick_incomplete_check_if_requirements_met(colors_active : Array) -> bool:

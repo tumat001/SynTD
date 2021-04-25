@@ -20,6 +20,8 @@ func update_display():
 		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/SynTier.texture = result.tier_pic
 		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/Marginer/SynTierLabel.text = _convert_number_to_roman_numeral(result.synergy_tier)
 		
+		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/TooltipBody.descriptions = synergy.synergy_descriptions
+		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/TooltipBody.update_display()
 
 
 func _get_number_of_towers_per_color_text() -> String:

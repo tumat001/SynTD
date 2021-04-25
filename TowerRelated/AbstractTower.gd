@@ -6,8 +6,11 @@ const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation
 
 var collision_shape
 
-var base_on_hit_damage
+var base_on_hit_damage : float
 var base_on_hit_damage_internal_name
+var flat_base_damage_modifiers = {}
+var percent_base_damage_modifiers = {}
+
 var extra_on_hit_damages = {}
 
 var extra_on_hit_effects = {}
@@ -63,6 +66,17 @@ func get_all_on_hit_damages():
 	return on_hit_damages
 
 #Calculation of attributes
+func calculate_final_base_damage():
+	#All percent modifiers here are to BASE damage only
+	var final_base_damage = base_on_hit_damage
+	for modifier in percent_base_damage_modifiers.values():
+		final_base_damage += modifier.get_modification_to_value(base_on_hit_damage)
+	
+	for flat in flat_base_damage_modifiers.values():
+		final_base_damage += flat.get_modification_to_value(base_on_hit_damage)
+	
+	return final_base_damage
+
 func calculate_final_attack_speed():
 	#All percent modifiers here are to BASE attk speed only
 	var final_attack_speed = base_attack_speed

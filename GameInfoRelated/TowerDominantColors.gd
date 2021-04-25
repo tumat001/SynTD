@@ -22,41 +22,41 @@ var synergies : Dictionary = {
 	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [6, 4, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
-	"RED description"),
+	["RED description"]),
 	
 	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [12, 9, 6, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
-	"ORANGE description"),
+	["ORANGE description"]),
 	
 	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
-	"YELLOW description"),
+	["YELLOW description"]),
 	
 	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [3],
 	[tier_bronze_pic],
 	syn_dom_green,
-	"GREEN description"),
+	["GREEN description"]),
 	
 	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [9, 7, 5, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
-	"BLUE description"),
+	["BLUE description"]),
 	
 	"Violet" : ColorSynergy.new("Violet", [TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_violet,
-	"VIOLET description"),
+	["VIOLET description"]),
 	
 	"White" : ColorSynergy.new("White", [TowerColors.WHITE], [1],
 	[tier_dia_pic],
 	syn_dom_white,
-	"WHITE description"),
+	["WHITE description"]),
 	
 	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [1],
 	[tier_dia_pic],
 	syn_dom_black,
-	"BLACK description")
+	["BLACK description"])
 }
 
