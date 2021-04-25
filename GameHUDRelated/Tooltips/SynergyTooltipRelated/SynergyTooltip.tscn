@@ -1,6 +1,5 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://GameHUDRelated/Tooltips/BaseTooltip.tscn" type="PackedScene" id=1]
 [ext_resource path="res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltip.gd" type="Script" id=2]
 [ext_resource path="res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltipPic_top.png" type="Texture" id=3]
 [ext_resource path="res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltipPic_background.png" type="Texture" id=4]
@@ -26,30 +25,45 @@ font_data = ExtResource( 8 )
 size = 8
 font_data = ExtResource( 7 )
 
-[node name="SynergyTooltip" instance=ExtResource( 1 )]
+[node name="SynergyTooltip" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="VBoxContainer" parent="." index="0"]
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 187.0
 margin_bottom = 107.0
+mouse_filter = 2
+custom_constants/separation = 0
+alignment = 1
 
-[node name="TooltipTopSprite" parent="VBoxContainer" index="0"]
+[node name="TooltipTopSprite" type="TextureRect" parent="VBoxContainer"]
 margin_right = 187.0
 margin_bottom = 9.0
+mouse_filter = 2
 texture = ExtResource( 3 )
 
-[node name="MainContentContainer" parent="VBoxContainer" index="1"]
+[node name="MainContentContainer" type="MarginContainer" parent="VBoxContainer"]
 margin_left = 6.0
 margin_top = 9.0
 margin_right = 181.0
 margin_bottom = 98.0
+mouse_filter = 2
+size_flags_horizontal = 4
+size_flags_vertical = 3
 
-[node name="TooltipBodySprite" parent="VBoxContainer/MainContentContainer" index="0"]
+[node name="TooltipBodySprite" type="TextureRect" parent="VBoxContainer/MainContentContainer"]
 margin_right = 175.0
 margin_bottom = 89.0
+mouse_filter = 2
 texture = ExtResource( 4 )
+stretch_mode = 1
 
-[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer" index="1"]
+[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer"]
 margin_right = 175.0
 margin_bottom = 89.0
 size_flags_vertical = 7
@@ -58,7 +72,7 @@ custom_constants/margin_top = 3
 custom_constants/margin_left = 3
 custom_constants/margin_bottom = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer" index="0"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer"]
 margin_left = 3.0
 margin_top = 3.0
 margin_right = 172.0
@@ -66,17 +80,17 @@ margin_bottom = 86.0
 mouse_filter = 2
 custom_constants/separation = 3
 
-[node name="SynNameIconNumberContainer" type="HBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer" index="0"]
+[node name="SynNameIconNumberContainer" type="HBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer"]
 margin_right = 169.0
 margin_bottom = 14.0
 custom_constants/separation = 3
 
-[node name="SynIcon" type="TextureRect" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer" index="0"]
+[node name="SynIcon" type="TextureRect" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer"]
 margin_right = 14.0
 margin_bottom = 14.0
 texture = ExtResource( 6 )
 
-[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer" index="1"]
+[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer"]
 margin_left = 17.0
 margin_right = 169.0
 margin_bottom = 14.0
@@ -85,7 +99,7 @@ custom_constants/margin_right = 2
 custom_constants/margin_top = 1
 custom_constants/margin_bottom = -1
 
-[node name="SynName" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer" index="0"]
+[node name="SynName" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer"]
 margin_top = 3.0
 margin_right = 150.0
 margin_bottom = 12.0
@@ -94,7 +108,7 @@ custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Sample"
 valign = 1
 
-[node name="NumOfTowers" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer" index="1"]
+[node name="NumOfTowers" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer"]
 margin_left = 143.0
 margin_top = 1.0
 margin_right = 150.0
@@ -106,26 +120,26 @@ custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "N"
 
-[node name="SynTierAndProg" type="HBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer" index="1"]
+[node name="SynTierAndProg" type="HBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer"]
 margin_top = 17.0
 margin_right = 169.0
 margin_bottom = 31.0
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg" index="0"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg"]
 margin_right = 14.0
 margin_bottom = 14.0
 
-[node name="SynTier" type="TextureRect" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer" index="0"]
+[node name="SynTier" type="TextureRect" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer"]
 margin_right = 14.0
 margin_bottom = 14.0
 texture = ExtResource( 6 )
 
-[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer" index="1"]
+[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer"]
 margin_right = 14.0
 margin_bottom = 14.0
 custom_constants/margin_top = 1
 
-[node name="SynTierLabel" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/Marginer" index="0"]
+[node name="SynTierLabel" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/Marginer"]
 margin_top = 3.0
 margin_right = 14.0
 margin_bottom = 11.0
@@ -134,14 +148,14 @@ custom_colors/font_color = Color( 0, 0, 0, 1 )
 align = 1
 valign = 1
 
-[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg" index="1"]
+[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg"]
 margin_left = 18.0
 margin_right = 42.0
 margin_bottom = 14.0
 custom_constants/margin_top = 1
 custom_constants/margin_bottom = -1
 
-[node name="SynTowersInTier" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/Marginer" index="0"]
+[node name="SynTowersInTier" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/Marginer"]
 margin_top = 3.0
 margin_right = 24.0
 margin_bottom = 12.0
@@ -149,19 +163,21 @@ custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "x >> y"
 
-[node name="DescContainer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer" index="2"]
+[node name="DescContainer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer"]
 margin_top = 34.0
 margin_right = 169.0
 margin_bottom = 37.0
 custom_constants/margin_top = 3
 
-[node name="TooltipBody" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer" index="0" instance=ExtResource( 9 )]
+[node name="TooltipBody" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer" instance=ExtResource( 9 )]
 margin_top = 3.0
 margin_right = 169.0
 margin_bottom = 3.0
+size_flags_vertical = 1
 
-[node name="TooltipBottomSprite" parent="VBoxContainer" index="2"]
+[node name="TooltipBottomSprite" type="TextureRect" parent="VBoxContainer"]
 margin_top = 98.0
 margin_right = 187.0
 margin_bottom = 107.0
+mouse_filter = 2
 texture = ExtResource( 5 )
