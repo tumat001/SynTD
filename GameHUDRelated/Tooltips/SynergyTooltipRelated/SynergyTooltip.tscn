@@ -1,0 +1,167 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://GameHUDRelated/Tooltips/BaseTooltip.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltip.gd" type="Script" id=2]
+[ext_resource path="res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltipPic_top.png" type="Texture" id=3]
+[ext_resource path="res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltipPic_background.png" type="Texture" id=4]
+[ext_resource path="res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltipPic_bottom.png" type="Texture" id=5]
+[ext_resource path="res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_None.png" type="Texture" id=6]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=7]
+[ext_resource path="res://Fonts/trajanpro/trajanpro-regular.ttf" type="DynamicFontData" id=8]
+[ext_resource path="res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipBody.tscn" type="PackedScene" id=9]
+
+[sub_resource type="DynamicFont" id=1]
+size = 8
+font_data = ExtResource( 7 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 12
+font_data = ExtResource( 7 )
+
+[sub_resource type="DynamicFont" id=4]
+size = 8
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 8
+font_data = ExtResource( 7 )
+
+[node name="SynergyTooltip" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="VBoxContainer" parent="." index="0"]
+margin_right = 187.0
+margin_bottom = 107.0
+
+[node name="TooltipTopSprite" parent="VBoxContainer" index="0"]
+margin_right = 187.0
+margin_bottom = 9.0
+texture = ExtResource( 3 )
+
+[node name="MainContentContainer" parent="VBoxContainer" index="1"]
+margin_left = 6.0
+margin_top = 9.0
+margin_right = 181.0
+margin_bottom = 98.0
+
+[node name="TooltipBodySprite" parent="VBoxContainer/MainContentContainer" index="0"]
+margin_right = 175.0
+margin_bottom = 89.0
+texture = ExtResource( 4 )
+
+[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer" index="1"]
+margin_right = 175.0
+margin_bottom = 89.0
+size_flags_vertical = 7
+custom_constants/margin_right = 3
+custom_constants/margin_top = 3
+custom_constants/margin_left = 3
+custom_constants/margin_bottom = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer" index="0"]
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 172.0
+margin_bottom = 86.0
+mouse_filter = 2
+custom_constants/separation = 3
+
+[node name="SynNameIconNumberContainer" type="HBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer" index="0"]
+margin_right = 169.0
+margin_bottom = 14.0
+custom_constants/separation = 3
+
+[node name="SynIcon" type="TextureRect" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer" index="0"]
+margin_right = 14.0
+margin_bottom = 14.0
+texture = ExtResource( 6 )
+
+[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer" index="1"]
+margin_left = 17.0
+margin_right = 169.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+custom_constants/margin_right = 2
+custom_constants/margin_top = 1
+custom_constants/margin_bottom = -1
+
+[node name="SynName" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer" index="0"]
+margin_top = 3.0
+margin_right = 150.0
+margin_bottom = 12.0
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "Sample"
+valign = 1
+
+[node name="NumOfTowers" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer" index="1"]
+margin_left = 143.0
+margin_top = 1.0
+margin_right = 150.0
+margin_bottom = 15.0
+grow_horizontal = 0
+size_flags_horizontal = 10
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 2 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "N"
+
+[node name="SynTierAndProg" type="HBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer" index="1"]
+margin_top = 17.0
+margin_right = 169.0
+margin_bottom = 31.0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg" index="0"]
+margin_right = 14.0
+margin_bottom = 14.0
+
+[node name="SynTier" type="TextureRect" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer" index="0"]
+margin_right = 14.0
+margin_bottom = 14.0
+texture = ExtResource( 6 )
+
+[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer" index="1"]
+margin_right = 14.0
+margin_bottom = 14.0
+custom_constants/margin_top = 1
+
+[node name="SynTierLabel" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/Marginer" index="0"]
+margin_top = 3.0
+margin_right = 14.0
+margin_bottom = 11.0
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+align = 1
+valign = 1
+
+[node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg" index="1"]
+margin_left = 18.0
+margin_right = 42.0
+margin_bottom = 14.0
+custom_constants/margin_top = 1
+custom_constants/margin_bottom = -1
+
+[node name="SynTowersInTier" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/Marginer" index="0"]
+margin_top = 3.0
+margin_right = 24.0
+margin_bottom = 12.0
+custom_fonts/font = SubResource( 5 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "x >> y"
+
+[node name="DescContainer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer" index="2"]
+margin_top = 34.0
+margin_right = 169.0
+margin_bottom = 37.0
+custom_constants/margin_top = 3
+
+[node name="TooltipBody" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer" index="0" instance=ExtResource( 9 )]
+margin_top = 3.0
+margin_right = 169.0
+margin_bottom = 3.0
+
+[node name="TooltipBottomSprite" parent="VBoxContainer" index="2"]
+margin_top = 98.0
+margin_right = 187.0
+margin_bottom = 107.0
+texture = ExtResource( 5 )

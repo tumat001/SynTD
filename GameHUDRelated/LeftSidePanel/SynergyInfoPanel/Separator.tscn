@@ -1,0 +1,37 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Separator.gd" type="Script" id=2]
+[ext_resource path="res://GameHUDRelated/LeftSidePanel/Separator.png" type="Texture" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 8
+font_data = ExtResource( 1 )
+
+[node name="Separator" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 88.0
+margin_bottom = 40.0
+custom_constants/separation = 0
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+margin_top = 11.0
+margin_right = 88.0
+margin_bottom = 20.0
+texture = ExtResource( 3 )
+stretch_mode = 5
+
+[node name="SeparatorLabel" type="Label" parent="VBoxContainer"]
+margin_top = 20.0
+margin_right = 88.0
+margin_bottom = 29.0
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )

@@ -2,33 +2,27 @@ extends MarginContainer
 
 const ColorSynergy = preload("res://GameInfoRelated/ColorSynergy.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
+const ColorSynergyCheckResults = preload("res://GameInfoRelated/ColorSynergyCheckResults.gd")
+const SynergyTooltipScene = preload("res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltip.tscn")
+const SynergyTooltip = preload("res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltip.gd")
 
-var synergy : ColorSynergy
-var result : ColorSynergy.CheckResults
+var result : ColorSynergyCheckResults
+var current_tooltip : SynergyTooltip
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	# TODO REMOVE THIS EVENTUALLY
-	synergy = ColorSynergy.new("RedGreen", [TowerColors.RED, TowerColors.GREEN], [6, 4, 2], 
-			[ColorSynergy.tier_gold_pic, ColorSynergy.tier_silver_pic, ColorSynergy.tier_bronze_pic], ColorSynergy.syn_compo_comple_redgreen)
-	
-	var colors_active = [TowerColors.RED, TowerColors.RED, 
-			TowerColors.RED, TowerColors.GREEN, TowerColors.GREEN, TowerColors.BLUE, TowerColors.GREEN,
-			TowerColors.GREEN]
-	result = synergy.check_if_color_requirements_met(colors_active)
-	
 	update_display()
 
 func update_display():
 	$HBoxContainer/TierIconPanel/TierIcon.texture = result.tier_pic
 	$HBoxContainer/TierIconPanel/SpecialMarginer/TierNumberLabel.text = _convert_number_to_roman_numeral(result.synergy_tier)
-	$HBoxContainer/SynergyIconPanel/SynergyIcon.texture = synergy.synergy_picture
+	$HBoxContainer/SynergyIconPanel/SynergyIcon.texture = result.synergy.synergy_picture
 	$HBoxContainer/SynergyInfoLabelPanel/SynergyInfoLabel.text = _generate_synergy_info_to_display()
 
 func _convert_number_to_roman_numeral(number : int) -> String:
-	var return_val : String = "nan"
+	var return_val : String = ""
 	if number == 0:
-		return_val = "0"
+		return_val = ""
 	elif number == 1:
 		return_val = "I"
 	elif number == 2:
@@ -45,16 +39,42 @@ func _convert_number_to_roman_numeral(number : int) -> String:
 	return return_val
 
 func _generate_synergy_info_to_display() -> String:
-	var synergy_name = synergy.synergy_name
-	var colors_required : Array = synergy.colors_required
+	var synergy : ColorSynergy = result.synergy
 	
-	var numbers_per_color_string : String = _arrange_numbers_by_colors_required(colors_required, result)
-	return numbers_per_color_string + " - " + synergy_name
+	return _get_needed_towers_per_tier_text(synergy)
 
-func _arrange_numbers_by_colors_required(colors_required : Array, result : ColorSynergy.CheckResults) -> String:
-	var num_bucket : Array = []
+func _get_needed_towers_per_tier_text(synergy : ColorSynergy) -> String:
+	var num_of_towers_in_tier : Array = synergy.number_of_towers_in_tier.duplicate()
+	num_of_towers_in_tier.append(0)
 	
-	for color_req in colors_required:
-		num_bucket.append(result.count_per_color[0][result.count_per_color[1].find(color_req)])
+	var nums_to_remove : Array = []
+	for num in num_of_towers_in_tier:
+		if result.towers_in_tier > num:
+			nums_to_remove.append(num)
+	for num in nums_to_remove:
+		num_of_towers_in_tier.erase(num)
 	
-	return PoolStringArray(num_bucket).join("/")
+	num_of_towers_in_tier.sort()
+	num_of_towers_in_tier.resize(2)
+	
+	var text_attachment = " >> "
+	if num_of_towers_in_tier[1] == null:
+		num_of_towers_in_tier[1] = "MAX"
+		text_attachment = " = "
+	
+	var num_of_towers_per_tier_text : String = PoolStringArray(num_of_towers_in_tier).join(text_attachment)
+	var display_text =  synergy.synergy_name + "\n- " + num_of_towers_per_tier_text
+	return display_text
+
+
+func _on_SingleSynergyDisplayer_mouse_entered():
+	var tooltip = SynergyTooltipScene.instance()
+	current_tooltip = tooltip
+	current_tooltip.result = result
+	
+	get_tree().get_root().add_child(current_tooltip)
+
+
+func _on_SingleSynergyDisplayer_mouse_exited():
+	if current_tooltip != null:
+		current_tooltip.queue_free()

@@ -1,4 +1,6 @@
 
+const Modifier = preload("res://GameInfoRelated/Modifier.gd")
+
 var damage_as_modifier : Modifier
 var damage_type : int
 var internal_name : String
