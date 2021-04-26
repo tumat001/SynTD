@@ -1,0 +1,14 @@
+extends "res://GameElementsRelated/AreaTowerPlacablesRelated/BaseAreaTowerPlacable.gd"
+
+const glowing = preload("res://GameElementsRelated/TowerInventoryRelated/TowerInventoryTile_Glowing.png")
+const normal = preload("res://GameElementsRelated/TowerInventoryRelated/TowerInventoryTile.png")
+
+func _ready():
+	pass # Replace with function body.
+
+func set_area_texture_to_glow():
+	$AreaSprite.texture = glowing
+
+func set_area_texture_to_not_glow():
+	$AreaSprite.texture = normal
+

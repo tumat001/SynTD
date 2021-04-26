@@ -22,13 +22,14 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 23.875, 24.1835 )
+extents = Vector2( 24.2929, 24.0589 )
 
 [sub_resource type="CircleShape2D" id=4]
 
 [node name="Mono" instance=ExtResource( 1 )]
 scale = Vector2( 0.5, 0.5 )
 script = ExtResource( 4 )
+tower_highlight_sprite = null
 
 [node name="BaseSprites" parent="TowerBase" index="0"]
 frames = SubResource( 1 )

@@ -3,9 +3,12 @@ extends MarginContainer
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const Towers = preload("res://GameInfoRelated/Towers.gd")
+const TowerTooltip = preload("res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltip.gd")
+const TowerTooltipScene = preload("res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltip.tscn")
 
 var tower_information : TowerTypeInformation
 var disabled : bool = false
+var current_tooltip : TowerTooltip
 
 signal tower_bought(tower_id)
 
@@ -64,10 +67,39 @@ func create_energy_display(energy_array : Array) -> String:
 	return PoolStringArray(energy_array).join(" / ")
 
 
+func _on_BuyCard_gui_input(event):
+	if event is InputEventMouseButton and event.pressed:
+		match event.button_index:
+			BUTTON_LEFT:
+				 _on_BuyCard_pressed()
+			BUTTON_RIGHT:
+				if current_tooltip == null:
+					_free_old_and_create_tooltip_for_tower()
+				else:
+					current_tooltip.queue_free()
+
 func _on_BuyCard_pressed():
 	if !disabled :
 		disabled = true
-		emit_signal("tower_bought", tower_information.tower_id)
+		emit_signal("tower_bought", tower_information.tower_type_id)
+		
+		if current_tooltip != null:
+			current_tooltip.queue_free()
 		
 		queue_free()
 	
+
+func _free_old_and_create_tooltip_for_tower():
+	if current_tooltip != null:
+		current_tooltip.queue_free()
+	
+	if !disabled:
+		current_tooltip = TowerTooltipScene.instance()
+		current_tooltip.tower_info = tower_information
+		
+		get_tree().get_root().add_child(current_tooltip)
+
+func _on_BuyCard_mouse_exited():
+	if current_tooltip != null:
+		current_tooltip.queue_free()
+

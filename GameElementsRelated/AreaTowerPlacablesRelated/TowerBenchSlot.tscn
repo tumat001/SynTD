@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://GameElementsRelated/AreaTowerPlacablesRelated/BaseAreaTowerPlacable.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameElementsRelated/TowerInventoryRelated/TowerInventoryTile.png" type="Texture" id=2]
+[ext_resource path="res://GameElementsRelated/AreaTowerPlacablesRelated/TowerBenchSlot.gd" type="Script" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 30, 30 )
+
+[node name="TowerBenchSlot" instance=ExtResource( 1 )]
+script = ExtResource( 3 )
+
+[node name="AreaShape" parent="." index="1"]
+shape = SubResource( 1 )
+
+[node name="AreaSprite" parent="." index="2"]
+texture = ExtResource( 2 )

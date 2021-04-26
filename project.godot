@@ -29,6 +29,7 @@ config/icon="res://icon.png"
 BulletMetadata="*res://TowerRelated/BulletMetadata.gd"
 TowerDominantColors="*res://GameInfoRelated/TowerDominantColors.gd"
 TowerCompositionColors="*res://GameInfoRelated/TowerCompositionColors.gd"
+Modifier="*res://GameInfoRelated/Modifier.gd"
 
 [debug]
 
@@ -58,6 +59,7 @@ singletons=[ "res://git_api.gdnlib" ]
 2d_physics/layer_8="EnemyBullets"
 2d_physics/layer_9="EnemyAuraToAllies"
 2d_physics/layer_10="EnemyAuraToTowers"
+2d_physics/layer_16="TowerPlacables"
 
 [rendering]
 

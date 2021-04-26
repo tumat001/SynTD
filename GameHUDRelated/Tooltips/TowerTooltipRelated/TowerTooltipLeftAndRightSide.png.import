@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/TowerInventoryTile.png-a9db80b8ec0ebfecfdcf0418187d0a16.stex"
+path="res://.import/TowerTooltipLeftAndRightSide.png-480e1194393639297fc58cfd3ab341bd.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/TowerInventoryPanel/TowerInventoryTile.png"
-dest_files=[ "res://.import/TowerInventoryTile.png-a9db80b8ec0ebfecfdcf0418187d0a16.stex" ]
+source_file="res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltipLeftAndRightSide.png"
+dest_files=[ "res://.import/TowerTooltipLeftAndRightSide.png-480e1194393639297fc58cfd3ab341bd.stex" ]
 
 [params]
 

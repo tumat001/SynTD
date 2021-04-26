@@ -10,9 +10,10 @@ var current_child
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	roll_buy_card(Towers.get_tower_info(Towers.MONO))
+	pass
 
-func roll_buy_card(tower_info : TowerTypeInformation):
+func roll_buy_card_to_tower_id(tower_id : int):
+	var tower_info = Towers.get_tower_info(tower_id)
 	if current_child != null:
 		current_child.queue_free()
 	

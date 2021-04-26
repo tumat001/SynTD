@@ -25,3 +25,17 @@ func get_modification_to_value(value):
 			modification = flat_maximum
 	
 	return modification
+
+func get_description() -> Array:
+	var descriptions : Array = []
+	
+	descriptions[0] = str(percent_amount) + "% " + PercentType.get_description_of(percent_based_on)
+	var description02 : String = ""
+	if !ignore_flat_limits:
+		if flat_minimum != 0:
+			description02 += "from " + str(flat_minimum) + " "
+		
+		description02 += "up to " + str(flat_maximum)
+		descriptions[1] = description02
+	
+	return descriptions

@@ -8,3 +8,6 @@ func _init(arg_internal_name : String).(arg_internal_name):
 
 func get_modification_to_value(value):
 	return flat_modifier
+
+func get_description():
+	return str(flat_modifier)

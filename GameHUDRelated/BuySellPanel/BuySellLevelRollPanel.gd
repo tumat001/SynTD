@@ -1,7 +1,5 @@
 extends MarginContainer
 
-const Towers = preload("res://GameInfoRelated/Towers.gd")
-
 signal level_up
 signal level_down
 signal reroll
@@ -16,13 +14,12 @@ func _on_RerollButton_pressed():
 	emit_signal("reroll")
 
 # Assuming that the array received is 5 in length
-func update_display_new_rolled_towers(towers_to_roll_to : Array):
-	$HBoxContainer/BuySlotContainer/BuySlot01.roll_buy_card(towers_to_roll_to[0])
-	$HBoxContainer/BuySlotContainer/BuySlot02.roll_buy_card(towers_to_roll_to[1])
-	$HBoxContainer/BuySlotContainer/BuySlot03.roll_buy_card(towers_to_roll_to[2])
-	$HBoxContainer/BuySlotContainer/BuySlot04.roll_buy_card(towers_to_roll_to[3])
-	$HBoxContainer/BuySlotContainer/BuySlot05.roll_buy_card(towers_to_roll_to[4])
-	
+func update_new_rolled_towers(tower_ids_to_roll_to : Array):
+	$HBoxContainer/BuySlotContainer/BuySlot01.roll_buy_card_to_tower_id(tower_ids_to_roll_to[0])
+	$HBoxContainer/BuySlotContainer/BuySlot02.roll_buy_card_to_tower_id(tower_ids_to_roll_to[1])
+	$HBoxContainer/BuySlotContainer/BuySlot03.roll_buy_card_to_tower_id(tower_ids_to_roll_to[2])
+	$HBoxContainer/BuySlotContainer/BuySlot04.roll_buy_card_to_tower_id(tower_ids_to_roll_to[3])
+	$HBoxContainer/BuySlotContainer/BuySlot05.roll_buy_card_to_tower_id(tower_ids_to_roll_to[4])
 
 func update_level_up_cost(new_cost : int):
 	$HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer2/LevelUpCostLabel.text = str(new_cost)

@@ -7,13 +7,13 @@ var on_hit_effects = {}
 var pierce
 var direction_as_relative_location
 var speed
-var lifetime
+var life_distance
 
-var current_lifetime
+var current_life_distance
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	current_lifetime = lifetime
+	current_life_distance = life_distance
 
 func _enter_tree():
 	#current_lifetime = lifetime
@@ -21,11 +21,11 @@ func _enter_tree():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if !current_lifetime == null:
-		current_lifetime -= delta
-		
-		if current_lifetime <= 0:
+	if !current_life_distance == null:
+		current_life_distance -= delta * speed
+		if current_life_distance <= 0:
 			inactivate()
+
 
 func _physics_process(delta):
 	if !(bullet_type == "bullet_inactive" or direction_as_relative_location == null):

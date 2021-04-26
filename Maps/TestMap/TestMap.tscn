@@ -1,6 +1,5 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://TowerRelated/Mono_Tower001/Mono.tscn" type="PackedScene" id=1]
 [ext_resource path="res://MiscRelated/EnemySpawner.tscn" type="PackedScene" id=2]
 
 [sub_resource type="Curve2D" id=1]
@@ -19,9 +18,3 @@ position = Vector2( -31.2998, 187.411 )
 [node name="Camera" type="Camera2D" parent="."]
 anchor_mode = 0
 current = true
-
-[node name="Mono" parent="." instance=ExtResource( 1 )]
-position = Vector2( 383.252, 202.232 )
-
-[node name="Mono2" parent="." instance=ExtResource( 1 )]
-position = Vector2( 647.71, 178.191 )

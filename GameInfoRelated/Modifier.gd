@@ -1,3 +1,4 @@
+extends Node
 
 var internal_name : String
 var time_in_seconds : float
@@ -10,3 +11,6 @@ func _init(arg_internal_name : String):
 	internal_name = arg_internal_name
 	time_in_seconds = 5
 	is_timebound = false
+
+func get_description():
+	pass

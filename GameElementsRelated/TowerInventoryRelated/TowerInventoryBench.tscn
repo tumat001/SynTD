@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://GameElementsRelated/AreaTowerPlacablesRelated/TowerBenchSlot.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameElementsRelated/TowerInventoryRelated/TowerInventoryBackground.png" type="Texture" id=2]
+[ext_resource path="res://GameElementsRelated/TowerInventoryRelated/TowerInventoryBench.gd" type="Script" id=3]
+
+[node name="TowerInventoryBench" type="Node2D"]
+position = Vector2( 530.192, 400.025 )
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Background" type="Sprite" parent="."]
+texture = ExtResource( 2 )
+
+[node name="BenchSlot01" parent="." instance=ExtResource( 1 )]
+position = Vector2( -270, 0 )
+
+[node name="BenchSlot02" parent="." instance=ExtResource( 1 )]
+position = Vector2( -210, 0 )
+
+[node name="BenchSlot03" parent="." instance=ExtResource( 1 )]
+position = Vector2( -150, 0 )
+
+[node name="BenchSlot04" parent="." instance=ExtResource( 1 )]
+position = Vector2( -90, 0 )
+
+[node name="BenchSlot05" parent="." instance=ExtResource( 1 )]
+position = Vector2( -30, 0 )
+
+[node name="BenchSlot06" parent="." instance=ExtResource( 1 )]
+position = Vector2( 30, 0 )
+
+[node name="BenchSlot07" parent="." instance=ExtResource( 1 )]
+position = Vector2( 90, 0 )
+
+[node name="BenchSlot08" parent="." instance=ExtResource( 1 )]
+position = Vector2( 150, 0 )
+
+[node name="BenchSlot09" parent="." instance=ExtResource( 1 )]
+position = Vector2( 210, 0 )
+
+[node name="BenchSlot10" parent="." instance=ExtResource( 1 )]
+position = Vector2( 270, 0 )
+[connection signal="area_entered" from="BenchSlot01" to="BenchSlot01" method="_on_BaseAreaTowerPlacable_area_entered"]
+[connection signal="area_entered" from="BenchSlot02" to="BenchSlot02" method="_on_BaseAreaTowerPlacable_area_entered"]
+[connection signal="area_entered" from="BenchSlot03" to="BenchSlot03" method="_on_BaseAreaTowerPlacable_area_entered"]
+[connection signal="area_entered" from="BenchSlot04" to="BenchSlot04" method="_on_BaseAreaTowerPlacable_area_entered"]
+[connection signal="area_entered" from="BenchSlot05" to="BenchSlot05" method="_on_BaseAreaTowerPlacable_area_entered"]
+[connection signal="area_entered" from="BenchSlot06" to="BenchSlot06" method="_on_BaseAreaTowerPlacable_area_entered"]
+[connection signal="area_entered" from="BenchSlot07" to="BenchSlot07" method="_on_BaseAreaTowerPlacable_area_entered"]
+[connection signal="area_entered" from="BenchSlot08" to="BenchSlot08" method="_on_BaseAreaTowerPlacable_area_entered"]
+[connection signal="area_entered" from="BenchSlot09" to="BenchSlot09" method="_on_BaseAreaTowerPlacable_area_entered"]
+[connection signal="area_entered" from="BenchSlot10" to="BenchSlot10" method="_on_BaseAreaTowerPlacable_area_entered"]

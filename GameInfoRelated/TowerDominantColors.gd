@@ -42,12 +42,7 @@ var synergies : Dictionary = {
 	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [9, 7, 5, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
-	["BLUE description",
-	"Lorem Ipsum once again to ruin you",
-	"Hiya Heyo hiwmda",
-	"Mwdadadw",
-	"Mwadawadada"
-	]),
+	["BLUE description"]),
 	
 	"Violet" : ColorSynergy.new("Violet", [TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
