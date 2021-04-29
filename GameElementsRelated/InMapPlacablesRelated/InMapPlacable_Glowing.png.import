@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Mono_Base.png-4dbb08baf840e4da7b14f697e03bdd8b.stex"
+path="res://.import/InMapPlacable_Glowing.png-6f50890914de5726c5d186c56778f831.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TowerRelated/Mono_Tower001/Mono_Base.png"
-dest_files=[ "res://.import/Mono_Base.png-4dbb08baf840e4da7b14f697e03bdd8b.stex" ]
+source_file="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Glowing.png"
+dest_files=[ "res://.import/InMapPlacable_Glowing.png-6f50890914de5726c5d186c56778f831.stex" ]
 
 [params]
 

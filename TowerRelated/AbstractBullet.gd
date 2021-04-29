@@ -24,11 +24,11 @@ func _process(delta):
 	if !current_life_distance == null:
 		current_life_distance -= delta * speed
 		if current_life_distance <= 0:
-			inactivate()
+			trigger_on_death_events()
 
 
 func _physics_process(delta):
-	if !(bullet_type == "bullet_inactive" or direction_as_relative_location == null):
+	if direction_as_relative_location != null:
 			var vector_mov = direction_as_relative_location
 			vector_mov.x *= delta
 			vector_mov.y *= delta
@@ -37,39 +37,17 @@ func _physics_process(delta):
 			vector_mov.y *= speed
 			move_and_collide(vector_mov)
 
-func set_bullet_type(type):
-	bullet_type = type
-	$BulletSprite.frames = SpriteFrames.new()
-	
-	if type == "bullet_inactive":
-		$CollisionShape2D.set_deferred("disabled", true)
-		set_collision_layer_bit(2, false)
-		set_collision_mask_bit(5, false)
-		set_collision_mask_bit(6, false)
-	elif type == "bullet_mono":
-		#$BulletSprite.frames.add_animation("default")
-		$BulletSprite.frames.add_frame("default", BulletMetadata.mono_bullet_default_sprite)
-		$CollisionShape2D.set_deferred("disabled", false)
-		$BulletSprite.animation = "default"
-		
-		var circleCollision = CircleShape2D.new()
-		circleCollision.radius = 5
-		$CollisionShape2D.set_deferred("shape", circleCollision)
-		set_collision_layer_bit(2, true)
-		set_collision_mask_bit(5, true)
-		set_collision_mask_bit(6, true)
-
 
 func decrease_pierce(amount):
 	pierce -= amount
 	if pierce <= 0:
-		_trigger_on_death_events()
+		trigger_on_death_events()
 
-func _trigger_on_death_events():
-	inactivate()
 
-func inactivate():
-	set_bullet_type("bullet_inactive")
+func trigger_on_death_events():
+	_inactivate()
+
+func _inactivate():
 	direction_as_relative_location = Vector2(0, 0)
 	speed = 0
 	# TODO Make it go back to queue space

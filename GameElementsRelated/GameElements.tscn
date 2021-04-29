@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://GameHUDRelated/BottomPanelBackground.png" type="Texture" id=1]
 [ext_resource path="res://GameHUDRelated/GoldPanel/GoldIndicatorBackground.png" type="Texture" id=2]
@@ -8,6 +8,10 @@
 [ext_resource path="res://GameHUDRelated/ColorWheelPanel/Whole_ColorWheel_CenterPlain.png" type="Texture" id=6]
 [ext_resource path="res://GameElementsRelated/TowerInventoryRelated/TowerInventoryBench.tscn" type="PackedScene" id=7]
 [ext_resource path="res://GameElementsRelated/TowerManager.gd" type="Script" id=8]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesManager.gd" type="Script" id=9]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.tscn" type="PackedScene" id=10]
+[ext_resource path="res://GameHUDRelated/LeftSidePanel/LeftPanel.tscn" type="PackedScene" id=11]
+[ext_resource path="res://GameElementsRelated/SynergyManager.gd" type="Script" id=12]
 
 [sub_resource type="DynamicFont" id=1]
 size = 10
@@ -19,6 +23,29 @@ font_data = ExtResource( 3 )
 
 [node name="GameElements" type="Node"]
 script = ExtResource( 5 )
+
+[node name="TowerInventoryBench" parent="." instance=ExtResource( 7 )]
+position = Vector2( 475, 410 )
+
+[node name="TowerManager" type="Node" parent="."]
+script = ExtResource( 8 )
+
+[node name="MapManager" type="Node" parent="."]
+
+[node name="InMapPlacablesManager" type="Node" parent="MapManager"]
+script = ExtResource( 9 )
+
+[node name="InMapAreaPlacable" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 439.712, 251.984 )
+
+[node name="InMapAreaPlacable2" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 171.349, 278.443 )
+
+[node name="InMapAreaPlacable3" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 670.278, 234.345 )
+
+[node name="SynergyManager" type="Node" parent="."]
+script = ExtResource( 12 )
 
 [node name="BottomPanel" type="MarginContainer" parent="."]
 anchor_top = 1.0
@@ -120,20 +147,16 @@ texture = ExtResource( 6 )
 
 [node name="BuySellLevelRollPanel" parent="BottomPanel/VBoxContainer/HBoxContainer" instance=ExtResource( 4 )]
 margin_left = 110.0
-margin_right = 882.0
+margin_right = 861.0
 margin_bottom = 80.0
 
 [node name="EnergyMeterTemp" type="MarginContainer" parent="BottomPanel/VBoxContainer/HBoxContainer"]
-margin_left = 902.0
-margin_right = 902.0
+margin_left = 881.0
+margin_right = 881.0
 margin_bottom = 80.0
 mouse_filter = 2
 
-[node name="TowerInventoryBench" parent="." instance=ExtResource( 7 )]
-position = Vector2( 475, 410 )
-
-[node name="TowerManager" type="Node" parent="."]
-script = ExtResource( 8 )
+[node name="LeftsidePanel" parent="." instance=ExtResource( 11 )]
 [connection signal="level_down" from="BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_down"]
 [connection signal="level_up" from="BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_up"]
 [connection signal="reroll" from="BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_reroll"]

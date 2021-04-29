@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://GameElementsRelated/AreaTowerPlacablesRelated/BaseAreaTowerPlacable.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Normal.png" type="Texture" id=2]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.gd" type="Script" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 17.8592, 11.4623 )
+
+[node name="InMapAreaPlacable" instance=ExtResource( 1 )]
+script = ExtResource( 3 )
+
+[node name="AreaShape" parent="." index="1"]
+shape = SubResource( 1 )
+
+[node name="AreaSprite" parent="." index="2"]
+texture = ExtResource( 2 )

@@ -6,13 +6,15 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 const TowerManager = preload("res://GameElementsRelated/TowerManager.gd")
 
-const MONO_SCENE = preload("res://TowerRelated/Mono_Tower001/Mono.tscn")
+const MONO_SCENE = preload("res://TowerRelated/Color_Gray/Mono/Mono.tscn")
 
 var tower_manager : TowerManager
 var all_bench_slots : Array
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	z_index = ZIndexStore.TOWER_BENCH
+	
 	all_bench_slots = [
 		$BenchSlot01,
 		$BenchSlot02,

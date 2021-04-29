@@ -1,0 +1,9 @@
+extends Node
+
+enum {
+	TOWER_BENCH = -100,
+	TOWER_PLACABLES = -98,
+	
+	TOWERS = -90,
+	TOWERS_BEING_DRAGGED = -89,
+}

@@ -3,6 +3,7 @@
 [ext_resource path="res://GameElementsRelated/AreaTowerPlacablesRelated/BaseAreaTowerPlacable.gd" type="Script" id=1]
 
 [node name="BaseAreaTowerPlacable" type="Area2D"]
+input_pickable = false
 collision_layer = 32768
 collision_mask = 0
 script = ExtResource( 1 )

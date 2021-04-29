@@ -9,19 +9,19 @@
 [ext_resource path="res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltipBottomSide.png" type="Texture" id=7]
 [ext_resource path="res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltipEnder.png" type="Texture" id=8]
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="DynamicFont" id=1]
 size = 12
 font_data = ExtResource( 3 )
 
-[sub_resource type="DynamicFont" id=4]
-size = 9
-font_data = ExtResource( 3 )
-
-[sub_resource type="DynamicFont" id=5]
-size = 9
-font_data = ExtResource( 3 )
-
 [sub_resource type="DynamicFont" id=2]
+size = 9
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 9
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=4]
 size = 8
 font_data = ExtResource( 3 )
 
@@ -70,25 +70,31 @@ mouse_filter = 2
 [node name="TowerName" type="Label" parent="RowsMainContainer/HeaderContainer/Marginer/HeaderColumns"]
 margin_bottom = 17.0
 size_flags_vertical = 1
-custom_fonts/font = SubResource( 3 )
+custom_fonts/font = SubResource( 1 )
 valign = 1
 
 [node name="Marginer" type="MarginContainer" parent="RowsMainContainer/HeaderContainer/Marginer/HeaderColumns"]
-margin_left = 196.0
+margin_left = 192.0
 margin_right = 196.0
 margin_bottom = 17.0
 mouse_filter = 2
 size_flags_horizontal = 10
 custom_constants/margin_bottom = 3
 
-[node name="TowerColor01" type="TextureRect" parent="RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer"]
+margin_right = 4.0
+margin_bottom = 14.0
+
+[node name="TowerColor02" type="TextureRect" parent="RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer/HBoxContainer"]
 margin_top = 7.0
 margin_bottom = 7.0
 mouse_filter = 2
 size_flags_vertical = 6
 
-[node name="TowerColor02" type="TextureRect" parent="RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer"]
+[node name="TowerColor01" type="TextureRect" parent="RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer/HBoxContainer"]
+margin_left = 4.0
 margin_top = 7.0
+margin_right = 4.0
 margin_bottom = 7.0
 mouse_filter = 2
 size_flags_vertical = 6
@@ -134,7 +140,7 @@ custom_constants/separation = 3
 [node name="CmbInfoIndicator" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow"]
 margin_right = 97.0
 margin_bottom = 10.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Ingredient Info:"
 
@@ -149,7 +155,7 @@ custom_constants/margin_bottom = 5
 margin_top = 21.0
 margin_right = 97.0
 margin_bottom = 31.0
-custom_fonts/font = SubResource( 5 )
+custom_fonts/font = SubResource( 3 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "Energy Info:"
 
@@ -186,7 +192,7 @@ mouse_filter = 2
 margin_right = 93.0
 margin_bottom = 9.0
 size_flags_horizontal = 3
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "base damage:"
 valign = 1
@@ -196,7 +202,7 @@ margin_left = 97.0
 margin_right = 97.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 valign = 1
 
@@ -210,7 +216,7 @@ mouse_filter = 2
 margin_right = 93.0
 margin_bottom = 9.0
 size_flags_horizontal = 3
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "damage type:"
 valign = 1
@@ -220,7 +226,7 @@ margin_left = 97.0
 margin_right = 97.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 valign = 1
 
@@ -234,7 +240,7 @@ mouse_filter = 2
 margin_right = 93.0
 margin_bottom = 9.0
 size_flags_horizontal = 3
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "attack speed:"
 valign = 1
@@ -244,7 +250,7 @@ margin_left = 97.0
 margin_right = 97.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 valign = 1
 
@@ -258,7 +264,7 @@ mouse_filter = 2
 margin_right = 93.0
 margin_bottom = 9.0
 size_flags_horizontal = 3
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "range:"
 valign = 1
@@ -268,7 +274,7 @@ margin_left = 97.0
 margin_right = 97.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 4 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 valign = 1
 

@@ -1,6 +1,7 @@
 var tower_name : String
 var tower_type_id : int
 var tower_cost : int
+var tower_tier : int
 var energy_consumption_levels : Array = []
 var energy_consumption_level_buffs : Array = []
 var colors : Array = []

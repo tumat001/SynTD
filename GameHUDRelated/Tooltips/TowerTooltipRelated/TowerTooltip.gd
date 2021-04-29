@@ -18,9 +18,9 @@ func update_display():
 		
 		var tower_colors : Array = tower_info.colors
 		if tower_colors.size() >= 1:
-			$RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer/TowerColor01.texture = TowerColors.get_color_symbol_on_card(tower_colors[0])
+			$RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer/HBoxContainer/TowerColor01.texture = TowerColors.get_color_symbol_on_card(tower_colors[0])
 		if tower_colors.size() >= 2:
-			$RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer/TowerColor02.texture = TowerColors.get_color_symbol_on_card(tower_colors[1])
+			$RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer/HBoxContainer/TowerColor02.texture = TowerColors.get_color_symbol_on_card(tower_colors[1])
 		
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/BaseDamagePanel/BaseDamageLabel.text = str(tower_info.base_damage)
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/DamageTypePanel/DamageTypeLabel.text = DamageType.get_name_of_damage_type(tower_info.base_damage_type)

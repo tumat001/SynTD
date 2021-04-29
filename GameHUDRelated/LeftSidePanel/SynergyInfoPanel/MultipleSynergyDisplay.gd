@@ -21,4 +21,5 @@ func update_display():
 
 func _kill_all_previous_displayers():
 	for displayer in single_synergy_displayers:
-		displayer.queue_free()
+		if displayer != null:
+			displayer.queue_free()

@@ -12,3 +12,6 @@ func set_area_texture_to_glow():
 func set_area_texture_to_not_glow():
 	$AreaSprite.texture = normal
 
+
+func get_placable_type_name() -> String:
+	return "TowerBenchSlot"

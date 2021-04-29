@@ -4,7 +4,8 @@ var tower_occupying
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	z_as_relative = false
+	z_index = ZIndexStore.TOWER_PLACABLES
 
 func get_tower_center_position() -> Vector2:
 	return $TowerCenterLocation.global_position
@@ -17,3 +18,6 @@ func set_area_texture_to_glow():
 
 func set_area_texture_to_not_glow():
 	pass
+
+func get_area_shape():
+	return $AreaShape.shape

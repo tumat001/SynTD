@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Green/BerryBush/BerryBush.gd" type="Script" id=2]
+[ext_resource path="res://TowerRelated/Color_Green/BerryBush/BerryBush_Omni.png" type="Texture" id=3]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "Omni",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 10.592, 12.0654 )
+
+[sub_resource type="CircleShape2D" id=3]
+radius = 0.01
+
+[node name="AbstractTower" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="BaseSprites" parent="TowerBase" index="0"]
+frames = SubResource( 1 )
+animation = "Omni"
+
+[node name="CollisionShape" parent="." index="1"]
+shape = SubResource( 2 )
+
+[node name="RangeShape" parent="Range" index="0"]
+shape = SubResource( 3 )

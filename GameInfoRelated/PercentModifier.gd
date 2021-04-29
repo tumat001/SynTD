@@ -39,3 +39,14 @@ func get_description() -> Array:
 		descriptions[1] = description02
 	
 	return descriptions
+
+
+func get_copy_scaled_by(scale_factor : float) -> Modifier:
+	var copy = get_script().new(internal_name)
+	copy.percent_amount = percent_amount * scale_factor
+	copy.flat_minimum = flat_minimum * scale_factor
+	copy.flat_maximum = flat_maximum * scale_factor
+	copy.ignore_flat_limits = ignore_flat_limits
+	copy.percent_based_on = percent_based_on
+	
+	return copy

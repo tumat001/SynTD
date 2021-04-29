@@ -5,7 +5,7 @@
 [ext_resource path="res://GameElementsRelated/AreaTowerPlacablesRelated/TowerBenchSlot.gd" type="Script" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 30, 30 )
+extents = Vector2( 29, 29 )
 
 [node name="TowerBenchSlot" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
