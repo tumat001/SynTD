@@ -5,6 +5,7 @@ const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const Modifier = preload("res://GameInfoRelated/Modifier.gd")
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
+const RangeModule = preload("res://TowerRelated/RangeModule.gd")
 
 enum Time_Metadata {
 	TIME_AS_SECONDS,
@@ -20,32 +21,33 @@ var current_time_metadata = Time_Metadata.TIME_AS_SECONDS
 var original_time_metadata = Time_Metadata.TIME_AS_SECONDS
 var is_main_attack : bool = false
 
-var base_attack_speed : float
-var base_attack_wind_up : float
-var flat_attack_speed_modifiers = {}
-var percent_attack_speed_modifiers = {}
+var benefits_from_bonus_attack_speed : bool = true
+var benefits_from_bonus_on_hit_damage : bool = true
+var benefits_from_bonus_base_damage : bool = true
 
-var has_burst : bool
+
+var base_attack_speed : float = 1
+var base_attack_wind_up : float = 0
+var flat_attack_speed_modifiers : Dictionary = {} 
+var percent_attack_speed_modifiers : Dictionary = {}
+
+var has_burst : bool = false
 var burst_amount : int
-var between_burst_delay : float
+var between_burst_delay : float = 1
 
-var on_hit_damage_scale : float
+var on_hit_damage_scale : float = 1
 
 var base_damage : float
 var base_damage_type : int
-var flat_base_damage_modifiers = {}
-var percent_base_damage_modifiers = {}
+var flat_base_damage_modifiers : Dictionary = {}
+var percent_base_damage_modifiers : Dictionary = {}
 var base_on_hit_damage_internal_name
 var extra_on_hit_damages : Dictionary
 
-var on_hit_effect_scale : float
+var on_hit_effect_scale : float = 1
 var on_hit_effects : Dictionary
 
-var base_range_radius : float
-var flat_range_modifiers = {}
-var percent_range_modifiers = {}
-
-var displaying_range : bool = false
+var range_module : RangeModule
 
 # internal stuffs
 var _current_attack_wait : float
@@ -56,18 +58,12 @@ var _current_burst_count : int
 var _current_burst_delay : float
 var _is_bursting : bool
 
-var enemies_in_range : Array = []
-
-var current_targeting_option : int
-var last_used_targeting_option : int
-var all_targeting_options = {}
 
 # MISC
 
 func _ready():
-	all_targeting_options["First"] = Targeting.FIRST
-	current_targeting_option = Targeting.FIRST
-	last_used_targeting_option = Targeting.FIRST
+	if range_module != null:
+		add_child(range_module)
 
 
 # Time passed
@@ -133,89 +129,6 @@ func decrease_time_of_timebounded(delta):
 	
 	bucket.clear()
 	
-	#For percent range mods
-	for key in percent_range_modifiers.keys():
-		if percent_range_modifiers[key].is_timebound:
-			percent_range_modifiers[key].time_in_seconds -= delta
-			var time_left = percent_range_modifiers[key].time_in_seconds
-			if time_left <= 0:
-				bucket.append(key)
-	
-	for key_to_delete in bucket:
-		percent_range_modifiers.erase(key_to_delete)
-	
-	if bucket.size() > 0:
-		_update_range()
-	
-	bucket.clear()
-	
-	#For flat range mods
-	for key in flat_range_modifiers.keys():
-		if flat_range_modifiers[key].is_timebound:
-			flat_range_modifiers[key].time_in_seconds -= delta
-			var time_left = flat_range_modifiers[key].time_in_seconds
-			if time_left <= 0:
-				bucket.append(key)
-	
-	for key_to_delete in bucket:
-		flat_range_modifiers.erase(key_to_delete)
-	
-	if bucket.size() > 0:
-		_update_range()
-	
-	bucket.clear()
-
-
-# Range Related
-
-func _toggle_show_range():
-	displaying_range = !displaying_range
-	update() #calls _draw()
-
-func _draw():
-	var final_range = calculate_final_range_radius()
-	var color : Color = Color.gray
-	color.a = 0.1
-	
-	if displaying_range:
-		draw_circle(Vector2(0, 0), final_range, color)
-
-
-func _update_range():
-	var final_range = calculate_final_range_radius()
-	
-	$Range/RangeShape.shape.set_deferred("radius", final_range)
-	update()
-
-
-func _on_Range_area_shape_entered(area_id, area, area_shape, self_shape):
-	_on_enemy_enter_range(area.get_parent())
-
-func _on_Range_area_shape_exited(area_id, area, area_shape, self_shape):
-	if area != null:
-		_on_enemy_leave_range(area.get_parent())
-
-#Enemy Detection Related
-func _on_enemy_enter_range(enemy : AbstractEnemy):
-	enemies_in_range.append(enemy)
-
-func _on_enemy_leave_range(enemy : AbstractEnemy):
-	enemies_in_range.erase(enemy)
-
-func _is_an_enemy_in_range():
-	var to_remove = []
-	for target in enemies_in_range:
-		if target == null:
-			to_remove.append(target)
-	
-	for removal in to_remove:
-		enemies_in_range.erase(removal)
-	
-	return enemies_in_range.size() > 0
-
-func _get_current_target() -> AbstractEnemy:
-	return Targeting.enemy_to_target(enemies_in_range, current_targeting_option)
-
 
 # Calculating final values
 
@@ -255,39 +168,49 @@ func calculate_final_in_between_burst() -> float:
 	
 	return final_burst_pause
 
-func calculate_final_range_radius() -> float:
-	#All percent modifiers here are to BASE range only
-	var final_range = base_range_radius
-	for modifier in percent_range_modifiers.values():
-		final_range += modifier.get_modification_to_value(base_range_radius)
-	
-	for flat in flat_range_modifiers.values():
-		final_range += flat.get_modification_to_value(base_range_radius)
-	
-	return final_range
-	
 
 # Attack related
 
 
 func is_ready_to_attack() -> bool:
-	return ((_current_attack_wait <= 0 and !_is_bursting) 
-	or (_current_burst_delay <= 0 and _is_bursting)
-	or (_current_wind_up_wait <= 0 and !_is_bursting))
+	if !_is_attacking:
+		return _current_attack_wait <= 0
+	else:
+		if _is_bursting:
+			return _current_burst_delay <= 0
+		else:
+			return _current_wind_up_wait <= 0
 
 
 func attempt_find_then_attack_enemy() -> bool:
+	if range_module == null:
+		return false
+	
 	var target : AbstractEnemy
-	if _is_an_enemy_in_range():
-		target = _get_current_target()
+	if range_module.is_an_enemy_in_range():
+		target = range_module.get_target()
 	
-	if target != null:
-		return on_command_attack_enemy(target)
+	return on_command_attack_enemy(target)
+
+
+func attempt_find_then_attack_enemies(num : int) -> bool:
+	if range_module == null:
+		return false
 	
-	return false
+	if num == 1:
+		return attempt_find_then_attack_enemy()
+	
+	var targets : Array
+	if range_module.is_an_enemy_in_range():
+		targets = range_module.get_targets(num)
+	
+	return on_command_attack_enemies(targets)
 
 
 func on_command_attack_enemy(enemy : AbstractEnemy) -> bool:
+	if enemy == null:
+		return false
+	
 	if !_is_attacking:
 		if calculate_final_attack_wind_up() == 0:
 			_attack_enemy(enemy)
@@ -338,6 +261,7 @@ func on_command_attack_at_position(pos : Vector2):
 		if !has_burst:
 			_attack_at_position(pos)
 			_current_attack_wait = calculate_final_attack_speed()
+			_is_attacking = false
 			_finished_attacking()
 		else:
 			if _current_burst_count < burst_amount - 1:
@@ -352,18 +276,95 @@ func on_command_attack_at_position(pos : Vector2):
 				_finished_attacking()
 
 
+func on_command_attack_enemies(enemies : Array) -> bool:
+	if enemies.size() == 0:
+		return false
+	
+	if !_is_attacking:
+		if calculate_final_attack_wind_up() == 0:
+			_attack_enemies(enemies)
+			_current_attack_wait = calculate_final_attack_speed()
+			_finished_attacking()
+			return true
+		else:
+			_current_wind_up_wait = calculate_final_attack_wind_up()
+			_is_attacking = true
+			_during_attack()
+			return false
+		
+	else:
+		if !has_burst:
+			_attack_enemies(enemies)
+			_current_attack_wait = calculate_final_attack_speed()
+			_is_attacking = false
+			_finished_attacking()
+			return true
+		else:
+			if _current_burst_count < burst_amount - 1:
+				_attack_enemies(enemies)
+				_current_burst_delay = calculate_final_attack_wind_up()
+				_is_bursting = true
+				_during_attack()
+				return true
+			else:
+				_attack_enemies(enemies)
+				_current_attack_wait = calculate_final_attack_speed()
+				_is_bursting = false
+				_is_attacking = false
+				_finished_attacking()
+				return true
+
+
+func on_command_attack_at_positions(positions : Array):
+	if !_is_attacking:
+		if calculate_final_attack_wind_up() == 0:
+			_attack_at_positions(positions)
+			_current_attack_wait = calculate_final_attack_speed()
+			_finished_attacking()
+		else:
+			_current_wind_up_wait = calculate_final_attack_wind_up()
+			_is_attacking = true
+			_during_attack()
+		
+	else:
+		if !has_burst:
+			_attack_at_positions(positions)
+			_current_attack_wait = calculate_final_attack_speed()
+			_is_attacking = false
+			_finished_attacking()
+		else:
+			if _current_burst_count < burst_amount - 1:
+				_attack_at_positions(positions)
+				_current_burst_delay = calculate_final_in_between_burst()
+				_is_bursting = true
+				_during_attack()
+			else:
+				_attack_at_positions(positions)
+				_current_attack_wait = calculate_final_attack_speed()
+				_is_bursting = false
+				_finished_attacking()
+
+
 func _attack_enemy(enemy : AbstractEnemy):
+	pass
+
+func _attack_enemies(enemies : Array):
 	pass
 
 func _attack_at_position(pos : Vector2):
 	pass
 
+func _attack_at_positions(positions : Array):
+	pass
+
 
 func _during_attack():
-	current_time_metadata = Time_Metadata.TIME_AS_SECONDS
+	if original_time_metadata == Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
+		current_time_metadata = Time_Metadata.TIME_AS_SECONDS
 
 func _finished_attacking():
 	current_time_metadata = original_time_metadata
+
 
 # On Hit Damages
 

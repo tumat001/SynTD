@@ -1,43 +1,42 @@
 extends "res://TowerRelated/AbstractTower.gd"
 
-const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const Towers = preload("res://GameInfoRelated/Towers.gd")
+
+const BulletAttackModule = preload("res://TowerRelated/BulletAttackModule.gd")
+const BulletAttackModule_Scene = preload("res://TowerRelated/BulletAttackModule.tscn")
+const RangeModule_Scene = preload("res://TowerRelated/RangeModule.tscn")
+const BaseBullet_Scene = preload("res://TowerRelated/BaseBullet.tscn")
+
+const MonoBullet_pic = preload("res://TowerRelated/Color_Gray/Mono/Mono_Bullet.png")
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.MONO)
 	
-	tower_id = Towers.MONO
-	base_damage = info.base_damage
-	base_damage_type = info.base_damage_type
-	base_attack_speed = info.base_attk_speed
-	base_range_radius = info.base_range
-	base_pierce = info.base_pierce
-	base_proj_speed = 600
-	base_on_hit_damage_internal_name = "mono_base_damage"
-	
-	$TowerBase.z_index = 1
-	
+	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
 	
+	range_module = RangeModule_Scene.instance()
+	range_module.base_range_radius = info.base_range
+	range_module.set_range_shape(CircleShape2D.new())
+	
+	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
+	attack_module.base_damage = info.base_damage
+	attack_module.base_damage_type = info.base_damage_type
+	attack_module.base_attack_speed = info.base_attk_speed
+	attack_module.base_attack_wind_up = 0
+	attack_module.base_on_hit_damage_internal_name = "mono_base_damage"
+	attack_module.is_main_attack = true
+	attack_module.base_pierce = info.base_pierce
+	attack_module.base_proj_speed = 600
+	attack_module.projectile_life_distance = info.base_range
+	attack_module.module_name = "Main"
+	
+	attack_module.bullet_scene = BaseBullet_Scene
+	attack_module.set_texture_as_sprite_frame(MonoBullet_pic)
+	
+	attack_modules_and_target_num[attack_module] = 1
+	
+	
 	_post_inherit_ready()
-
-#LEGACY. REMOVE/REPLACE THIS SOON
-func _attack_at_position(position_arg):
-	var angle = ._get_angle(position_arg.x, position_arg.y)
-
-	#Instance a bullet for now, but soon, pull from pool instead
-	var new_bullet = BulletMetadata.generic_bullet_scene.instance()
-
-	new_bullet.set_bullet_type("bullet_mono")
-	new_bullet.on_hit_damages = get_all_on_hit_damages()
-	new_bullet.pierce = calculate_final_pierce()
-	new_bullet.direction_as_relative_location = Vector2(position_arg.x - position.x, position_arg.y - position.y).normalized()
-	new_bullet.speed = calculate_final_proj_speed()
-	new_bullet.life_distance = calculate_final_life_distance()
-	new_bullet.current_life_distance = new_bullet.life_distance
-	new_bullet.z_index = $TowerBase.z_index - 1
-	add_child(new_bullet)
-
-	._attack_at_position(position_arg)
 

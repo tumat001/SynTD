@@ -1,19 +1,23 @@
 extends "res://TowerRelated/AbstractAttackModule.gd"
 
-const AbstractBullet = preload("res://TowerRelated/AbstractBullet.gd")
+const BaseBullet = preload("res://TowerRelated/BaseBullet.gd")
 
 
 var bullet_scene
+var bullet_sprite_frames : SpriteFrames
 
-var base_pierce : float
+var benefits_from_bonus_pierce : bool = true
+var benefits_from_bonus_proj_speed : bool = true
+
+var base_pierce : float = 1
 var flat_pierce_modifiers = {}
 var percent_pierce_modifiers = {}
 
-var base_proj_speed : float
+var base_proj_speed : float = 500
 var flat_proj_speed_modifiers = {}
 var percent_proj_speed_modifiers = {}
 
-var projectile_life_distance : float
+var projectile_life_distance : float = 100
 
 func time_passed(delta):
 	.time_passed(delta)
@@ -102,23 +106,61 @@ func calculate_final_proj_speed():
 	
 	return final_proj_speed
 
-func calculate_final_life_distance():
-	return .calculate_final_range_radius()
 
 # On Attack Related
 
 
 func _attack_enemy(enemy : AbstractEnemy):
-	_attack_at_position(_get_angle(enemy.position.x, enemy.position.y))
+	if enemy != null:
+		_attack_at_position(enemy.position)
 
-func _get_angle(xPos, yPos):
-	var dx = xPos - position.x
-	var dy = yPos - position.y
+
+func _attack_at_position(arg_pos : Vector2):
+	var bullet : BaseBullet = bullet_scene.instance()
 	
-	return rad2deg(atan2(dy, dx))
+	bullet.set_sprite_frames(bullet_sprite_frames)
+	
+	bullet.on_hit_damages = _get_all_scaled_on_hit_damages()
+	bullet.on_hit_effects = _get_all_scaled_on_hit_effects()
+	bullet.pierce = calculate_final_pierce()
+	bullet.direction_as_relative_location = Vector2(arg_pos.x - global_position.x, arg_pos.y - global_position.y).normalized()
+	bullet.speed = calculate_final_proj_speed()
+	bullet.life_distance = projectile_life_distance
+	bullet.current_life_distance = bullet.life_distance
+	
+	bullet.position.x = global_position.x
+	bullet.position.y = global_position.y
+	get_tree().get_root().add_child(bullet)
+	
 
-func _attack_at_position(pos : Vector2):
-	var bullet = bullet_scene.instance()
-	#TODO SET STUFFS HERE
+
+#func _get_angle(xPos, yPos):
+#	var dx = xPos - position.x
+#	var dy = yPos - position.y
+#
+#	return rad2deg(atan2(dy, dx))
 
 
+func _attack_enemies(enemies : Array):
+	var poses : Array = []
+	
+	for enemy in enemies:
+		if enemy != null:
+			poses.append(enemy.position)
+	
+	_attack_at_positions(poses)
+
+func _attack_at_positions(arg_poses : Array):
+	
+	for pos in arg_poses:
+		_attack_at_position(pos)
+
+#
+
+func set_texture_as_sprite_frame(texture : Texture, anim_name : String = "default"):
+	var sprite_frames = SpriteFrames.new()
+	
+	sprite_frames.add_animation(anim_name)
+	sprite_frames.add_frame(anim_name, texture)
+	
+	bullet_sprite_frames = sprite_frames

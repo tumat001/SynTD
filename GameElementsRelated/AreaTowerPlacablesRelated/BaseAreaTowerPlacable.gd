@@ -20,4 +20,8 @@ func set_area_texture_to_not_glow():
 	pass
 
 func get_area_shape():
-	return $AreaShape.shape
+	var new_rect = RectangleShape2D.new() 
+	new_rect.extents.x = $AreaShape.shape.extents.x
+	new_rect.extents.y = $AreaShape.shape.extents.y
+	
+	return new_rect

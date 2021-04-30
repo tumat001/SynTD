@@ -35,3 +35,30 @@ static func _find_last_enemy(enemies : Array):
 			last_enemy = enemy
 	
 	return last_enemy
+
+
+static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int):
+	var enemies = arg_enemies.duplicate()
+	
+	if targeting == FIRST:
+		enemies.sort_custom(CustomSorter, "sort_enemies_by_first")
+	elif targeting == LAST:
+		enemies.sort_custom(CustomSorter, "sort_enemies_by_last")
+	
+	enemies.resize(num_of_enemies)
+	
+	return enemies
+
+
+class CustomSorter:
+	
+	static func sort_enemies_by_first(a, b):
+		if a.distance_to_exit > b.distance_to_exit:
+			return true
+		return false
+	
+	static func sort_enemies_by_last(a, b):
+		if a.distance_to_exit < b.distance_to_exit:
+			return true
+		return false
+	

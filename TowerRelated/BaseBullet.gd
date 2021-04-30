@@ -29,13 +29,13 @@ func _process(delta):
 
 func _physics_process(delta):
 	if direction_as_relative_location != null:
-			var vector_mov = direction_as_relative_location
-			vector_mov.x *= delta
-			vector_mov.y *= delta
-			
-			vector_mov.x *= speed
-			vector_mov.y *= speed
-			move_and_collide(vector_mov)
+		var vector_mov = direction_as_relative_location
+		vector_mov.x *= delta
+		vector_mov.y *= delta
+		
+		vector_mov.x *= speed
+		vector_mov.y *= speed
+		move_and_collide(vector_mov)
 
 
 func decrease_pierce(amount):
@@ -57,3 +57,12 @@ func _inactivate():
 
 func true_destroy():
 	queue_free()
+
+
+#
+
+func get_sprite_frames():
+	return $BulletSprite.frames
+
+func set_sprite_frames(sprite_frames : SpriteFrames):
+	$BulletSprite.frames = sprite_frames

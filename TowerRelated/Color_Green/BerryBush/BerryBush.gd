@@ -7,17 +7,7 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.BERRY_BUSH)
 	
-	tower_id = Towers.BERRY_BUSH
-	base_damage = info.base_damage
-	base_damage_type = info.base_damage_type
-	base_attack_speed = info.base_attk_speed
-	base_range_radius = info.base_range
-	base_pierce = info.base_pierce
-	base_proj_speed = 600
-	base_on_hit_damage_internal_name = "berrybush_base_damage"
-	
-	$TowerBase.z_index = 1
-	
+	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
 	
 	_post_inherit_ready()

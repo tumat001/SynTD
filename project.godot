@@ -26,7 +26,6 @@ config/icon="res://icon.png"
 
 [autoload]
 
-BulletMetadata="*res://TowerRelated/BulletMetadata.gd"
 TowerDominantColors="*res://GameInfoRelated/TowerDominantColors.gd"
 TowerCompositionColors="*res://GameInfoRelated/TowerCompositionColors.gd"
 Modifier="*res://GameInfoRelated/Modifier.gd"

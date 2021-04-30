@@ -7,7 +7,7 @@ const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const OnHitEffect = preload("res://GameInfoRelated/OnHitEffect.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const EffectType = preload("res://GameInfoRelated/EffectType.gd")
-const GenericBullet = preload("res://TowerRelated/GenericBullet.gd")
+const BaseBullet = preload("res://TowerRelated/BaseBullet.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
 var base_health : float
@@ -199,7 +199,7 @@ func calculate_final_movement_speed() -> float:
 #Process damages
 # hit by bullet functions here. Processes
 # on hit damages and effects.
-func hit_by_bullet(generic_bullet : GenericBullet):
+func hit_by_bullet(generic_bullet : BaseBullet):
 	generic_bullet.decrease_pierce(pierce_consumed_per_hit)
 	_process_on_hit_damages(generic_bullet.on_hit_damages.duplicate(true))
 	_process_on_hit_effects(generic_bullet.on_hit_effects.duplicate(true))

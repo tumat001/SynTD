@@ -1,16 +1,16 @@
 extends Area2D
 
-const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
+const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 const BaseAreaTowerPlacable = preload("res://GameElementsRelated/AreaTowerPlacablesRelated/BaseAreaTowerPlacable.gd")
 const TowerBenchSlot = preload("res://GameElementsRelated/AreaTowerPlacablesRelated/TowerBenchSlot.gd")
 const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.gd")
 const AbstractAttackModule = preload("res://TowerRelated/AbstractAttackModule.gd")
-
+const RangeModule = preload("res://TowerRelated/RangeModule.gd")
 
 signal tower_being_dragged
 signal tower_dropped_from_dragged
@@ -33,35 +33,62 @@ var is_being_dragged : bool = false
 #####
 
 var collision_shape
-var disabled_from_attacking : bool = false
 
 var current_power_level_used : int
 
 var ingredients_absorbed : Dictionary = {}
 
-var attack_modules : Array = []
+var attack_modules_and_target_num : Dictionary = {}
+var range_module : RangeModule
+
+var disabled_from_attacking : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_end_drag()
 
 func _post_inherit_ready():
-	for attack_module in attack_modules:
-		attack_module._update_range()
+	if range_module != null:
+		range_module.update_range()
+	
+	for attack_module in attack_modules_and_target_num.keys():
+		if attack_module.range_module != null:
+			attack_module.range_module.update_range()
+	
+	# Add things as children
+	_add_all_as_children()
+
+func _add_all_as_children():
+	if range_module != null:
+		add_child(range_module)
+	
+	for attack_module in attack_modules_and_target_num.keys():
+		add_child(attack_module)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	
-	for attack_module in attack_modules:
-		if attack_module.current_time_metadata == AbstractAttackModule.Time_Metadata.TIME_AS_SECONDS:
-			attack_module.time_passed(delta)
-		
-		if attack_module.is_ready_to_attack():
-			var success = attack_module.attempt_find_then_attack_enemy()
-			if attack_module.is_main_attack and success:
-				_on_main_attack_success()
-		
+	if !disabled_from_attacking:
+		for attack_module in attack_modules_and_target_num.keys():
+			if attack_module.current_time_metadata == AbstractAttackModule.Time_Metadata.TIME_AS_SECONDS:
+				attack_module.time_passed(delta)
+			
+			if attack_module.is_ready_to_attack():
+				
+				var success : bool = false
+				# If tower itself does not have a range_module
+				if range_module == null:
+					success = attack_module.attempt_find_then_attack_enemies(attack_modules_and_target_num[attack_module])
+					if attack_module.is_main_attack and success:
+						_on_main_attack_success()
+				else:
+					var targets = range_module.get_targets(attack_modules_and_target_num[attack_module])
+					
+					success = attack_module.on_command_attack_enemies(targets)
+					if attack_module.is_main_attack and success:
+						_on_main_attack_success()
+	
 	
 	#Drag related
 	if is_being_dragged:
@@ -71,14 +98,95 @@ func _process(delta):
 
 
 func _on_main_attack_success():
-	for am in attack_modules:
+	for am in attack_modules_and_target_num.keys():
 		if am.current_time_metadata == AbstractAttackModule.Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
 			am.time_passed(1)
 			
 			if am.is_ready_to_attack():
-				am.attempt_find_then_attack_enemy()
+				am.attempt_find_then_attack_enemies(attack_modules_and_target_num[am])
 
 
+# Recieving buffs/debuff related
+
+func add_attack_speed_modifier(modifier : Modifier):
+	for module in attack_modules_and_target_num.keys():
+		
+		if module.benefits_from_bonus_attack_speed:
+			if modifier is PercentModifier:
+				module.percent_attack_speed_modifiers[modifier.internal_name] = modifier
+			elif modifier is FlatModifier:
+				module.flat_attack_speed_modifiers[modifier.internal_name] = modifier
+
+func remove_attack_speed_modifier(modifier_name : String):
+	for module in attack_modules_and_target_num.keys():
+		
+		if module.benefits_from_bonus_attack_speed:
+			module.percent_attack_speed_modifiers.erase(modifier_name)
+			module.flat_attack_speed_modifiers.erase(modifier_name)
+
+
+func add_base_damage_modifier(modifier : Modifier):
+	for module in attack_modules_and_target_num.keys():
+		
+		if module.benefits_from_bonus_base_damage:
+			if modifier is PercentModifier:
+				module.percent_base_damage_modifiers[modifier.internal_name] = modifier
+			elif modifier is FlatModifier:
+				module.flat_base_damage_modifiers[modifier.internal_name] = modifier
+
+func remove_base_damage_modifier(modifier_name : String):
+	for module in attack_modules_and_target_num.keys():
+		
+		if module.benefits_from_bonus_damage:
+			module.percent_base_damage_modifiers.erase(modifier_name)
+			module.flat_base_damage_modifiers.erase(modifier_name)
+
+
+func add_extra_on_hit_damage(on_hit_damage : OnHitDamage):
+	for module in attack_modules_and_target_num.keys():
+		var modifier = on_hit_damage.damage_as_modifier
+		
+		if module.benefits_from_bonus_on_hit_damage:
+			module.extra_on_hit_damages[on_hit_damage.internal_name] = on_hit_damage
+
+func remove_extra_on_hit_damage(on_hit_damage_name : String):
+	for module in attack_modules_and_target_num.keys():
+		
+		if module.benefits_from_bonus_on_hit_damage:
+			module.extra_on_hit_damages.erase(on_hit_damage_name)
+
+
+func add_base_range_modifier(modifier : Modifier):
+	if range_module != null:
+		if range_module.range_module.benefits_from_bonus_range:
+				if modifier is FlatModifier:
+					range_module.range_module.flat_range_modifiers[modifier.internal_name] = modifier
+				elif modifier is PercentModifier:
+					range_module.range_module.percent_range_modifiers[modifier.internal_name] = modifier
+	
+	
+	for module in attack_modules_and_target_num.keys():
+		
+		if module.range_module != null:
+			if module.range_module.benefits_from_bonus_range:
+				if modifier is FlatModifier:
+					module.range_module.flat_range_modifiers[modifier.internal_name] = modifier
+				elif modifier is PercentModifier:
+					module.range_module.percent_range_modifiers[modifier.internal_name] = modifier
+
+func remove_base_range_modifier(modifier_name : String):
+	if range_module != null:
+		if range_module.benefits_from_bonus_range:
+			range_module.range_module.flat_range_modifiers.erase(modifier_name)
+			range_module.range_module.percent_range_modifiers.erase(modifier_name)
+	
+	
+	for module in attack_modules_and_target_num.keys():
+		
+		if module.range_module != null:
+			if module.range_module.benefits_from_bonus_range:
+					module.range_module.flat_range_modifiers.erase(modifier_name)
+					module.range_module.percent_range_modifiers.erase(modifier_name)
 
 # Inputs related
 
@@ -97,8 +205,13 @@ func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 # Show Ranges of modules and Tower Info
 
 func _toggle_module_ranges():
-	for module in attack_modules:
-		module._toggle_show_range()
+	if range_module != null:
+		range_module.toggle_show_range()
+	
+	for attack_module in attack_modules_and_target_num.keys():
+		if attack_module.range_module != null:
+			attack_module.range_module.toggle_show_range()
+	
 
 func _show_tower_info():
 	emit_signal("tower_show_info")
@@ -141,7 +254,7 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 	if new_area_placable != null:
 		current_placable = new_area_placable
 		current_placable.tower_occupying = self
-		$ClickableArea/ClickableShape.shape.extents = current_placable.get_area_shape().extents
+		$ClickableArea/ClickableShape.shape = current_placable.get_area_shape()
 	
 	$PlacableDetector/DetectorShape.set_deferred("disabled", true)
 	$PlacableDetector.monitoring = false
