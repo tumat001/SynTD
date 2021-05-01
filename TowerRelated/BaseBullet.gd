@@ -43,7 +43,6 @@ func decrease_pierce(amount):
 	if pierce <= 0:
 		trigger_on_death_events()
 
-
 func trigger_on_death_events():
 	_inactivate()
 
@@ -66,3 +65,6 @@ func get_sprite_frames():
 
 func set_sprite_frames(sprite_frames : SpriteFrames):
 	$BulletSprite.frames = sprite_frames
+
+func set_shape(shape : Shape2D):
+	$CollisionShape2D.shape = shape

@@ -32,7 +32,6 @@ func insert_tower(tower_id : int):
 	var bench_slot = _find_empty_slot()
 	
 	if bench_slot != null:
-		var center_pos : Vector2 = bench_slot.get_tower_center_position()
 		var tower_as_instance : AbstractTower = Towers.get_tower_scene(tower_id).instance()
 		
 		# TODO Make this a child of something else that

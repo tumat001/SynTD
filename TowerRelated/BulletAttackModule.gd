@@ -5,6 +5,7 @@ const BaseBullet = preload("res://TowerRelated/BaseBullet.gd")
 
 var bullet_scene
 var bullet_sprite_frames : SpriteFrames
+var bullet_shape : Shape2D
 
 var benefits_from_bonus_pierce : bool = true
 var benefits_from_bonus_proj_speed : bool = true
@@ -119,6 +120,7 @@ func _attack_at_position(arg_pos : Vector2):
 	var bullet : BaseBullet = bullet_scene.instance()
 	
 	bullet.set_sprite_frames(bullet_sprite_frames)
+	bullet.set_shape(bullet_shape)
 	
 	bullet.on_hit_damages = _get_all_scaled_on_hit_damages()
 	bullet.on_hit_effects = _get_all_scaled_on_hit_effects()
@@ -155,12 +157,13 @@ func _attack_at_positions(arg_poses : Array):
 	for pos in arg_poses:
 		_attack_at_position(pos)
 
-#
+# Bullet Set properties related
 
 func set_texture_as_sprite_frame(texture : Texture, anim_name : String = "default"):
 	var sprite_frames = SpriteFrames.new()
 	
-	sprite_frames.add_animation(anim_name)
+	if !sprite_frames.has_animation(anim_name):
+		sprite_frames.add_animation(anim_name)
 	sprite_frames.add_frame(anim_name, texture)
 	
 	bullet_sprite_frames = sprite_frames

@@ -37,10 +37,10 @@ script = ExtResource( 8 )
 script = ExtResource( 9 )
 
 [node name="InMapAreaPlacable" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 439.712, 251.984 )
+position = Vector2( 608.081, 304.74 )
 
 [node name="InMapAreaPlacable2" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 171.349, 278.443 )
+position = Vector2( 503.598, 227.932 )
 
 [node name="InMapAreaPlacable3" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
 position = Vector2( 670.278, 234.345 )
@@ -55,6 +55,7 @@ anchor_bottom = 1.0
 margin_top = -100.0
 mouse_filter = 2
 __meta__ = {
+"_edit_lock_": true,
 "_edit_use_anchors_": false
 }
 
@@ -160,7 +161,7 @@ mouse_filter = 2
 [node name="LeftsidePanel" parent="." instance=ExtResource( 11 )]
 
 [node name="TestEnemy" parent="." instance=ExtResource( 13 )]
-position = Vector2( 592, 241 )
+position = Vector2( 591.429, 225.049 )
 [connection signal="level_down" from="BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_down"]
 [connection signal="level_up" from="BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_up"]
 [connection signal="reroll" from="BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_reroll"]

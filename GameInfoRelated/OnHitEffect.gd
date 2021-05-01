@@ -15,3 +15,8 @@ func _init(arg_internal_name : String, effect_strength_modifier : Modifier,
 	effect_type = arg_effect_type
 	duration_in_seconds = 5
 	is_timebound = true
+
+func duplicate():
+	var clone = get_script().new(internal_name, effect_strength_modifier, effect_type)
+	clone.duration_in_seconds = duration_in_seconds
+	clone.is_timebound = is_timebound

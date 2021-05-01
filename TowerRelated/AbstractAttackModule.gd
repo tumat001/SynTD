@@ -144,7 +144,10 @@ func calculate_final_attack_speed() -> float:
 	for flat in flat_attack_speed_modifiers.values():
 		final_attack_speed += flat.get_modification_to_value(base_attack_speed)
 	
-	return final_attack_speed
+	if final_attack_speed != 0:
+		return 1 / final_attack_speed
+	else:
+		return 0.0
 
 func calculate_final_attack_wind_up() -> float:
 	#All percent modifiers here are to BASE attk wind up only
@@ -155,7 +158,10 @@ func calculate_final_attack_wind_up() -> float:
 	for flat in flat_attack_speed_modifiers.values():
 		final_attack_wind_up += flat.get_modification_to_value(base_attack_wind_up)
 	
-	return final_attack_wind_up
+	if final_attack_wind_up != 0:
+		return 1 / final_attack_wind_up
+	else:
+		return 0.0
 
 func calculate_final_in_between_burst() -> float:
 	#All percent modifiers here are to BASE in between burst only
@@ -166,7 +172,10 @@ func calculate_final_in_between_burst() -> float:
 	for flat in flat_attack_speed_modifiers.values():
 		final_burst_pause += flat.get_modification_to_value(between_burst_delay)
 	
-	return final_burst_pause
+	if final_burst_pause != 0:
+		return 1 / final_burst_pause
+	else:
+		return 0.0
 
 
 # Attack related
@@ -387,14 +396,20 @@ func _get_base_damage_as_on_hit_damage() -> OnHitDamage:
 
 
 func _get_all_scaled_on_hit_damages() -> Dictionary:
+	
 	var scaled_on_hit_damages = {}
 	
 	# BASE ON HIT
-	scaled_on_hit_damages[base_on_hit_damage_internal_name] = _get_base_damage_as_on_hit_damage().damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+	var base_duplicate = _get_base_damage_as_on_hit_damage().duplicate()
+	base_duplicate.damage_as_modifier = base_duplicate.damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+	scaled_on_hit_damages[base_on_hit_damage_internal_name] = base_duplicate
 	
 	# EXTRA ON HITS
 	for extra_on_hit_key in extra_on_hit_damages.keys():
-		scaled_on_hit_damages[extra_on_hit_key] = extra_on_hit_damages[extra_on_hit_key].damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+		var duplicate = extra_on_hit_key.duplicate()
+		duplicate.damage_as_modifier = extra_on_hit_damages[extra_on_hit_key].damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+		
+		scaled_on_hit_damages[extra_on_hit_key] = duplicate
 	
 	return scaled_on_hit_damages
 
@@ -404,7 +419,10 @@ func _get_all_scaled_on_hit_effects() -> Dictionary:
 	var scaled_on_hit_effects = {}
 	
 	for on_hit_effect_key in on_hit_effects.keys():
-		scaled_on_hit_effects[on_hit_effect_key] = on_hit_effects[on_hit_effect_key].effect_strength_modifier.get_copy_scaled_by(on_hit_effect_scale)
+		var duplicate = on_hit_effect_key.duplicate()
+		duplicate.effect_strength_modifier = on_hit_effects[on_hit_effect_key].effect_strength_modifier.get_copy_scaled_by(on_hit_effect_scale)
+		
+		scaled_on_hit_effects[on_hit_effect_key] = duplicate
 	
 	return scaled_on_hit_effects
 

@@ -34,6 +34,10 @@ func _ready():
 	attack_module.projectile_life_distance = info.base_range
 	attack_module.module_name = "Main"
 	
+	var bullet_shape = CircleShape2D.new()
+	bullet_shape.radius = 3
+	
+	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene
 	attack_module.set_texture_as_sprite_frame(SimpleObeliskBullet_pic)
 	
