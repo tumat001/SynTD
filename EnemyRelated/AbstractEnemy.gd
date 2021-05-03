@@ -7,8 +7,12 @@ const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const OnHitEffect = preload("res://GameInfoRelated/OnHitEffect.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const EffectType = preload("res://GameInfoRelated/EffectType.gd")
-const BaseBullet = preload("res://TowerRelated/BaseBullet.gd")
+const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
+const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
+
+signal on_death
+signal on_hit
 
 var base_health : float
 var _flat_base_health_modifiers = {}
@@ -89,7 +93,11 @@ func _set_current_health_to(health_amount):
 func _take_unmitigated_damage(damage_amount):
 	current_health -= damage_amount
 	if current_health <= 0:
-		queue_free()
+		_destroy_self()
+
+func _destroy_self():
+	emit_signal("on_death")
+	queue_free()
 
 func add_flat_base_health_modifier_with_heal(modifier_name : String, 
 		modifier : FlatModifier):
@@ -201,8 +209,13 @@ func calculate_final_movement_speed() -> float:
 # on hit damages and effects.
 func hit_by_bullet(generic_bullet : BaseBullet):
 	generic_bullet.decrease_pierce(pierce_consumed_per_hit)
-	_process_on_hit_damages(generic_bullet.on_hit_damages.duplicate(true))
-	_process_on_hit_effects(generic_bullet.on_hit_effects.duplicate(true))
+	hit_by_damage_instance(generic_bullet.damage_instance)
+
+func hit_by_damage_instance(damage_instance : DamageInstance):
+	emit_signal("on_hit")
+	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true))
+	_process_on_hit_effects(damage_instance.on_hit_effects.duplicate(true))
+
 
 func _process_on_hit_damages(on_hit_damages : Dictionary):
 	for on_hit_key in on_hit_damages.keys():

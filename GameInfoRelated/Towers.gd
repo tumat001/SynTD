@@ -4,6 +4,7 @@ const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 #GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
+const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omni.png")
 
 #BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -17,6 +18,7 @@ const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObeli
 enum {
 	#GRAY
 	MONO,
+	SIMPLEX,
 	
 	#BLUE
 	SPRINKLER,
@@ -97,6 +99,22 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Fires arcane bolts at enemies that explode before fizzling out"
 		]
+	elif tower_id == SIMPLEX:
+		info = TowerTypeInformation.new("Simplex", SIMPLEX)
+		info.tower_cost = 1
+		info.colors.append(TowerColors.GRAY)
+		info.tower_tier = 1
+		info.tower_image_in_buy_card = simplex_image
+		
+		info.base_damage = 0.25
+		info.base_attk_speed = 8
+		info.base_pierce = 0
+		info.base_range = 110
+		info.base_damage_type = DamageType.PURE
+		
+		info.tower_descriptions = [
+			"Directs a constant gray energy beam at a single target"
+		]
 	
 	return info
 
@@ -109,4 +127,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/BerryBush/BerryBush.tscn")
 	elif tower_id == SIMPLE_OBELISK:
 		return load("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk.tscn")
+	elif tower_id == SIMPLEX:
+		return load("res://TowerRelated/Color_Gray/Simplex/Simplex.tscn")
 

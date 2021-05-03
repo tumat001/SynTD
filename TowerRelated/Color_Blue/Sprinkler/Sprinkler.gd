@@ -2,10 +2,10 @@ extends "res://TowerRelated/AbstractTower.gd"
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
-const BulletAttackModule = preload("res://TowerRelated/BulletAttackModule.gd")
-const BulletAttackModule_Scene = preload("res://TowerRelated/BulletAttackModule.tscn")
-const RangeModule_Scene = preload("res://TowerRelated/RangeModule.tscn")
-const BaseBullet_Scene = preload("res://TowerRelated/BaseBullet.tscn")
+const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
+const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
+const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
+const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
 
 #TODO CHANGE PIC EVENTUALLY
 const SprinklerBullet_pic = preload("res://TowerRelated/Color_Gray/Mono/Mono_Bullet.png")

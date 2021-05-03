@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://TowerRelated/BaseBullet.gd" type="Script" id=1]
+[ext_resource path="res://TowerRelated/DamageAndSpawnables/BaseBullet.gd" type="Script" id=1]
 
 [node name="BaseBullet" type="KinematicBody2D"]
 input_pickable = true

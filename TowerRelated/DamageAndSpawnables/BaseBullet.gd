@@ -1,9 +1,8 @@
 extends KinematicBody2D
 
-var bullet_type
+const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
-var on_hit_damages = {}
-var on_hit_effects = {}
+var damage_instance : DamageInstance
 var pierce
 var direction_as_relative_location
 var speed
@@ -47,8 +46,9 @@ func trigger_on_death_events():
 	_inactivate()
 
 func _inactivate():
-	direction_as_relative_location = Vector2(0, 0)
-	speed = 0
+	visible = false
+	collision_mask = 0
+	collision_layer = 0
 	# TODO Make it go back to queue space
 	true_destroy()
 	# TODO remove true_destroy() once pooling is completed

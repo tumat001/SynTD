@@ -9,8 +9,8 @@ const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 const BaseAreaTowerPlacable = preload("res://GameElementsRelated/AreaTowerPlacablesRelated/BaseAreaTowerPlacable.gd")
 const TowerBenchSlot = preload("res://GameElementsRelated/AreaTowerPlacablesRelated/TowerBenchSlot.gd")
 const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.gd")
-const AbstractAttackModule = preload("res://TowerRelated/AbstractAttackModule.gd")
-const RangeModule = preload("res://TowerRelated/RangeModule.gd")
+const AbstractAttackModule = preload("res://TowerRelated/Modules/AbstractAttackModule.gd")
+const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
 
 signal tower_being_dragged
 signal tower_dropped_from_dragged
@@ -85,9 +85,10 @@ func _process(delta):
 				else:
 					var targets = range_module.get_targets(attack_modules_and_target_num[attack_module])
 					
-					success = attack_module.on_command_attack_enemies(targets)
-					if attack_module.is_main_attack and success:
-						_on_main_attack_success()
+					if targets.size() > 0:
+						success = attack_module.on_command_attack_enemies(targets)
+						if attack_module.is_main_attack and success:
+							_on_main_attack_success()
 	
 	
 	#Drag related
@@ -217,6 +218,17 @@ func _show_tower_info():
 	emit_signal("tower_show_info")
 
 
+# Disable Modules for whatever reason
+
+func _disable_modules():
+	for module in attack_modules_and_target_num.keys():
+		module.disable_module()
+
+func _enable_modules():
+	for module in attack_modules_and_target_num.keys():
+		module.enable_module()
+
+
 # Drag and Drop things related
 
 func _start_drag():
@@ -224,6 +236,7 @@ func _start_drag():
 	$PlacableDetector.monitoring = true
 	is_being_dragged = true
 	disabled_from_attacking = true
+	_disable_modules()
 	z_index = ZIndexStore.TOWERS_BEING_DRAGGED
 	
 	emit_signal("tower_being_dragged")
@@ -267,9 +280,11 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 		
 		if current_placable is TowerBenchSlot:
 			disabled_from_attacking = true
+			_disable_modules()
 			is_contributing_to_synergy = false
 		elif current_placable is InMapAreaPlacable:
 			disabled_from_attacking = false
+			_enable_modules()
 			is_contributing_to_synergy = true
 	
 	# Update Synergy

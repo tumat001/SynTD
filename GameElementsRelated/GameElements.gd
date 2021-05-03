@@ -37,7 +37,7 @@ func _on_BuySellLevelRollPanel_reroll():
 	$BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel.update_new_rolled_towers([
 		Towers.SPRINKLER,
 		Towers.MONO,
-		Towers.MONO,
+		Towers.SIMPLEX,
 		Towers.SIMPLE_OBELISK,
 		Towers.BERRY_BUSH
 	])

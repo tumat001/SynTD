@@ -5,7 +5,7 @@ const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const Modifier = preload("res://GameInfoRelated/Modifier.gd")
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
-const RangeModule = preload("res://TowerRelated/RangeModule.gd")
+const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
 
 enum Time_Metadata {
 	TIME_AS_SECONDS,
@@ -33,9 +33,10 @@ var percent_attack_speed_modifiers : Dictionary = {}
 
 var has_burst : bool = false
 var burst_amount : int
-var between_burst_delay : float = 1
+var burst_attack_speed : float = 1
 
 var on_hit_damage_scale : float = 1
+var base_on_hit_affected_by_scale : bool = false
 
 var base_damage : float
 var base_damage_type : int
@@ -58,6 +59,7 @@ var _current_burst_count : int
 var _current_burst_delay : float
 var _is_bursting : bool
 
+var _disabled : bool = false
 
 # MISC
 
@@ -69,12 +71,14 @@ func _ready():
 # Time passed
 
 func time_passed(delta):
-	_current_attack_wait -= delta
-	_current_wind_up_wait -= delta
-	if _is_bursting:
-		_current_burst_delay -= delta
 	
-	decrease_time_of_timebounded(delta)
+	if !_disabled:
+		_current_attack_wait -= delta
+		_current_wind_up_wait -= delta
+		if _is_bursting:
+			_current_burst_delay -= delta
+		
+		decrease_time_of_timebounded(delta)
 
 
 func decrease_time_of_timebounded(delta):
@@ -153,24 +157,25 @@ func calculate_final_attack_wind_up() -> float:
 	#All percent modifiers here are to BASE attk wind up only
 	var final_attack_wind_up = base_attack_wind_up
 	for modifier in percent_attack_speed_modifiers.values():
-		final_attack_wind_up += modifier.get_modification_to_value(base_attack_wind_up)
+		final_attack_wind_up -= modifier.get_modification_to_value(base_attack_wind_up)
 	
 	for flat in flat_attack_speed_modifiers.values():
-		final_attack_wind_up += flat.get_modification_to_value(base_attack_wind_up)
+		final_attack_wind_up -= flat.get_modification_to_value(base_attack_wind_up)
 	
-	if final_attack_wind_up != 0:
-		return 1 / final_attack_wind_up
-	else:
-		return 0.0
+	
+	if final_attack_wind_up < 0:
+		final_attack_wind_up = 0
+	
+	return final_attack_wind_up
 
-func calculate_final_in_between_burst() -> float:
+func calculate_final_burst_attack_speed() -> float:
 	#All percent modifiers here are to BASE in between burst only
-	var final_burst_pause = between_burst_delay
+	var final_burst_pause = burst_attack_speed
 	for modifier in percent_attack_speed_modifiers.values():
-		final_burst_pause += modifier.get_modification_to_value(between_burst_delay)
+		final_burst_pause += modifier.get_modification_to_value(burst_attack_speed)
 	
 	for flat in flat_attack_speed_modifiers.values():
-		final_burst_pause += flat.get_modification_to_value(between_burst_delay)
+		final_burst_pause += flat.get_modification_to_value(burst_attack_speed)
 	
 	if final_burst_pause != 0:
 		return 1 / final_burst_pause
@@ -223,12 +228,21 @@ func on_command_attack_enemy(enemy : AbstractEnemy) -> bool:
 	if !_is_attacking:
 		if calculate_final_attack_wind_up() == 0:
 			_attack_enemy(enemy)
-			_current_attack_wait = calculate_final_attack_speed()
-			_finished_attacking()
+			
+			if has_burst:
+				_is_attacking = true
+				_current_burst_count += 1
+				_current_burst_delay = calculate_final_burst_attack_speed()
+				_is_bursting = true
+			else:
+				_current_attack_wait = calculate_final_attack_speed()
+				_finished_attacking()
+			
 			return true
 		else:
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
+			_during_windup(enemy)
 			_during_attack()
 			return false
 		
@@ -242,8 +256,9 @@ func on_command_attack_enemy(enemy : AbstractEnemy) -> bool:
 		else:
 			if _current_burst_count < burst_amount - 1:
 				_attack_enemy(enemy)
-				_current_burst_delay = calculate_final_attack_wind_up()
+				_current_burst_delay = calculate_final_burst_attack_speed()
 				_is_bursting = true
+				_current_burst_count += 1
 				_during_attack()
 				return true
 			else:
@@ -251,6 +266,7 @@ func on_command_attack_enemy(enemy : AbstractEnemy) -> bool:
 				_current_attack_wait = calculate_final_attack_speed()
 				_is_bursting = false
 				_is_attacking = false
+				_current_burst_count = 0
 				_finished_attacking()
 				return true
 
@@ -259,11 +275,21 @@ func on_command_attack_at_position(pos : Vector2):
 	if !_is_attacking:
 		if calculate_final_attack_wind_up() == 0:
 			_attack_at_position(pos)
-			_current_attack_wait = calculate_final_attack_speed()
-			_finished_attacking()
+			
+			if has_burst:
+				_is_attacking = true
+				_current_burst_count += 1
+				_current_burst_delay = calculate_final_burst_attack_speed()
+				_is_bursting = true
+			else:
+				_current_attack_wait = calculate_final_attack_speed()
+				_finished_attacking()
+			
+			return true
 		else:
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
+			_during_windup(null)
 			_during_attack()
 		
 	else:
@@ -275,13 +301,16 @@ func on_command_attack_at_position(pos : Vector2):
 		else:
 			if _current_burst_count < burst_amount - 1:
 				_attack_at_position(pos)
-				_current_burst_delay = calculate_final_in_between_burst()
+				_current_burst_delay = calculate_final_burst_attack_speed()
 				_is_bursting = true
+				_current_burst_count += 1
 				_during_attack()
 			else:
 				_attack_at_position(pos)
 				_current_attack_wait = calculate_final_attack_speed()
 				_is_bursting = false
+				_is_attacking = false
+				_current_burst_count = 0
 				_finished_attacking()
 
 
@@ -292,12 +321,21 @@ func on_command_attack_enemies(enemies : Array) -> bool:
 	if !_is_attacking:
 		if calculate_final_attack_wind_up() == 0:
 			_attack_enemies(enemies)
-			_current_attack_wait = calculate_final_attack_speed()
-			_finished_attacking()
+			
+			if has_burst:
+				_is_attacking = true
+				_current_burst_count += 1
+				_current_burst_delay = calculate_final_burst_attack_speed()
+				_is_bursting = true
+			else:
+				_current_attack_wait = calculate_final_attack_speed()
+				_finished_attacking()
+			
 			return true
 		else:
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
+			_during_windup_multiple(enemies)
 			_during_attack()
 			return false
 		
@@ -311,8 +349,9 @@ func on_command_attack_enemies(enemies : Array) -> bool:
 		else:
 			if _current_burst_count < burst_amount - 1:
 				_attack_enemies(enemies)
-				_current_burst_delay = calculate_final_attack_wind_up()
+				_current_burst_delay = calculate_final_burst_attack_speed()
 				_is_bursting = true
+				_current_burst_count += 1
 				_during_attack()
 				return true
 			else:
@@ -320,6 +359,7 @@ func on_command_attack_enemies(enemies : Array) -> bool:
 				_current_attack_wait = calculate_final_attack_speed()
 				_is_bursting = false
 				_is_attacking = false
+				_current_burst_count = 0
 				_finished_attacking()
 				return true
 
@@ -328,11 +368,21 @@ func on_command_attack_at_positions(positions : Array):
 	if !_is_attacking:
 		if calculate_final_attack_wind_up() == 0:
 			_attack_at_positions(positions)
-			_current_attack_wait = calculate_final_attack_speed()
-			_finished_attacking()
+			
+			if has_burst:
+				_is_attacking = true
+				_current_burst_count += 1
+				_current_burst_delay = calculate_final_burst_attack_speed()
+				_is_bursting = true
+			else:
+				_current_attack_wait = calculate_final_attack_speed()
+				_finished_attacking()
+			
+			return true
 		else:
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
+			_during_windup_multiple()
 			_during_attack()
 		
 	else:
@@ -344,28 +394,37 @@ func on_command_attack_at_positions(positions : Array):
 		else:
 			if _current_burst_count < burst_amount - 1:
 				_attack_at_positions(positions)
-				_current_burst_delay = calculate_final_in_between_burst()
+				_current_burst_delay = calculate_final_burst_attack_speed()
 				_is_bursting = true
+				_current_burst_count += 1
 				_during_attack()
 			else:
 				_attack_at_positions(positions)
 				_current_attack_wait = calculate_final_attack_speed()
 				_is_bursting = false
+				_is_attacking = false
+				_current_burst_count = 0
 				_finished_attacking()
 
 
-func _attack_enemy(enemy : AbstractEnemy):
+func _attack_enemy(_enemy : AbstractEnemy):
 	pass
 
-func _attack_enemies(enemies : Array):
+func _attack_enemies(_enemies : Array):
 	pass
 
-func _attack_at_position(pos : Vector2):
+func _attack_at_position(_pos : Vector2):
 	pass
 
-func _attack_at_positions(positions : Array):
+func _attack_at_positions(_positions : Array):
 	pass
 
+
+func _during_windup(enemy : AbstractEnemy = null):
+	pass
+
+func _during_windup_multiple(enemies : Array = []):
+	pass
 
 func _during_attack():
 	if original_time_metadata == Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
@@ -373,6 +432,14 @@ func _during_attack():
 
 func _finished_attacking():
 	current_time_metadata = original_time_metadata
+
+# Disabling and Enabling
+
+func disable_module():
+	_disabled = true
+
+func enable_module():
+	_disabled = false
 
 
 # On Hit Damages
@@ -400,14 +467,21 @@ func _get_all_scaled_on_hit_damages() -> Dictionary:
 	var scaled_on_hit_damages = {}
 	
 	# BASE ON HIT
-	var base_duplicate = _get_base_damage_as_on_hit_damage().duplicate()
-	base_duplicate.damage_as_modifier = base_duplicate.damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+	var base_duplicate = _get_base_damage_as_on_hit_damage()
+	
+	if on_hit_damage_scale != 1 and base_on_hit_affected_by_scale:
+		base_duplicate = base_duplicate.duplicate()
+		base_duplicate.damage_as_modifier = base_duplicate.damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+	
 	scaled_on_hit_damages[base_on_hit_damage_internal_name] = base_duplicate
 	
 	# EXTRA ON HITS
 	for extra_on_hit_key in extra_on_hit_damages.keys():
-		var duplicate = extra_on_hit_key.duplicate()
-		duplicate.damage_as_modifier = extra_on_hit_damages[extra_on_hit_key].damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+		var duplicate = extra_on_hit_key
+		
+		if on_hit_damage_scale != 1:
+			duplicate = duplicate.duplicate()
+			duplicate.damage_as_modifier = extra_on_hit_damages[extra_on_hit_key].damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
 		
 		scaled_on_hit_damages[extra_on_hit_key] = duplicate
 	
@@ -419,8 +493,11 @@ func _get_all_scaled_on_hit_effects() -> Dictionary:
 	var scaled_on_hit_effects = {}
 	
 	for on_hit_effect_key in on_hit_effects.keys():
-		var duplicate = on_hit_effect_key.duplicate()
-		duplicate.effect_strength_modifier = on_hit_effects[on_hit_effect_key].effect_strength_modifier.get_copy_scaled_by(on_hit_effect_scale)
+		var duplicate = on_hit_effect_key
+		
+		if on_hit_effect_scale != 1:
+			duplicate.duplicate()
+			duplicate.effect_strength_modifier = on_hit_effects[on_hit_effect_key].effect_strength_modifier.get_copy_scaled_by(on_hit_effect_scale)
 		
 		scaled_on_hit_effects[on_hit_effect_key] = duplicate
 	

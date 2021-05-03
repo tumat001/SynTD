@@ -1,7 +1,7 @@
-extends "res://TowerRelated/AbstractAttackModule.gd"
+extends "res://TowerRelated/Modules/AbstractAttackModule.gd"
 
-const BaseBullet = preload("res://TowerRelated/BaseBullet.gd")
-
+const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
+const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
 var bullet_scene
 var bullet_sprite_frames : SpriteFrames
@@ -122,8 +122,11 @@ func _attack_at_position(arg_pos : Vector2):
 	bullet.set_sprite_frames(bullet_sprite_frames)
 	bullet.set_shape(bullet_shape)
 	
-	bullet.on_hit_damages = _get_all_scaled_on_hit_damages()
-	bullet.on_hit_effects = _get_all_scaled_on_hit_effects()
+	var damage_instance : DamageInstance = DamageInstance.new()
+	damage_instance.on_hit_damages = _get_all_scaled_on_hit_damages()
+	damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
+	
+	bullet.damage_instance = damage_instance
 	bullet.pierce = calculate_final_pierce()
 	bullet.direction_as_relative_location = Vector2(arg_pos.x - global_position.x, arg_pos.y - global_position.y).normalized()
 	bullet.speed = calculate_final_proj_speed()
@@ -134,13 +137,6 @@ func _attack_at_position(arg_pos : Vector2):
 	bullet.position.y = global_position.y
 	get_tree().get_root().add_child(bullet)
 	
-
-
-#func _get_angle(xPos, yPos):
-#	var dx = xPos - position.x
-#	var dy = yPos - position.y
-#
-#	return rad2deg(atan2(dy, dx))
 
 
 func _attack_enemies(enemies : Array):

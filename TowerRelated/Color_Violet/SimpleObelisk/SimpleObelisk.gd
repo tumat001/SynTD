@@ -2,14 +2,13 @@ extends "res://TowerRelated/AbstractTower.gd"
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
-const BulletAttackModule = preload("res://TowerRelated/BulletAttackModule.gd")
-const BulletAttackModule_Scene = preload("res://TowerRelated/BulletAttackModule.tscn")
-const RangeModule_Scene = preload("res://TowerRelated/RangeModule.tscn")
-const BaseBullet_Scene = preload("res://TowerRelated/BaseBullet.tscn")
+const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
+const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
+const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
+const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
 
 # TODO REPLACE THIS SOON
 const SimpleObeliskBullet_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Ana_BlueVioletGreen.png")
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -33,6 +32,7 @@ func _ready():
 	attack_module.base_proj_speed = 600
 	attack_module.projectile_life_distance = info.base_range
 	attack_module.module_name = "Main"
+	attack_module.position.y -= 30
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 3
@@ -42,6 +42,5 @@ func _ready():
 	attack_module.set_texture_as_sprite_frame(SimpleObeliskBullet_pic)
 	
 	attack_modules_and_target_num[attack_module] = 1
-	
 	
 	_post_inherit_ready()
