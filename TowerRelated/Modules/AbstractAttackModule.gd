@@ -7,6 +7,7 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
 
+
 enum Time_Metadata {
 	TIME_AS_SECONDS,
 	TIME_AS_NUM_OF_ATTACKS
@@ -49,6 +50,7 @@ var on_hit_effect_scale : float = 1
 var on_hit_effects : Dictionary
 
 var range_module : RangeModule
+var modifications : Array
 
 # internal stuffs
 var _current_attack_wait : float
@@ -420,6 +422,7 @@ func _attack_at_positions(_positions : Array):
 	pass
 
 
+
 func _during_windup(enemy : AbstractEnemy = null):
 	pass
 
@@ -458,7 +461,10 @@ func calculate_final_base_damage():
 func _get_base_damage_as_on_hit_damage() -> OnHitDamage:
 	var modifier : FlatModifier = FlatModifier.new(base_on_hit_damage_internal_name)
 	modifier.flat_modifier = calculate_final_base_damage()
-
+	
+	if on_hit_damage_scale != 1 and base_on_hit_affected_by_scale:
+		modifier = modifier.get_copy_scaled_by(on_hit_damage_scale)
+	
 	return OnHitDamage.new(base_on_hit_damage_internal_name, modifier, base_damage_type)
 
 
@@ -467,13 +473,7 @@ func _get_all_scaled_on_hit_damages() -> Dictionary:
 	var scaled_on_hit_damages = {}
 	
 	# BASE ON HIT
-	var base_duplicate = _get_base_damage_as_on_hit_damage()
-	
-	if on_hit_damage_scale != 1 and base_on_hit_affected_by_scale:
-		base_duplicate = base_duplicate.duplicate()
-		base_duplicate.damage_as_modifier = base_duplicate.damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
-	
-	scaled_on_hit_damages[base_on_hit_damage_internal_name] = base_duplicate
+	scaled_on_hit_damages[base_on_hit_damage_internal_name] = _get_base_damage_as_on_hit_damage()
 	
 	# EXTRA ON HITS
 	for extra_on_hit_key in extra_on_hit_damages.keys():

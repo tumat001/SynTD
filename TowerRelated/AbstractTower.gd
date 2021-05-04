@@ -266,9 +266,9 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 	# The "new" one
 	if new_area_placable != null:
 		current_placable = new_area_placable
-		current_placable.tower_occupying = self
 		$ClickableArea/ClickableShape.shape = current_placable.get_area_shape()
 	
+	current_placable.tower_occupying = self
 	$PlacableDetector/DetectorShape.set_deferred("disabled", true)
 	$PlacableDetector.monitoring = false
 	is_being_dragged = false

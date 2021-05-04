@@ -161,13 +161,13 @@ mouse_filter = 2
 [node name="LeftsidePanel" parent="." instance=ExtResource( 11 )]
 
 [node name="TestEnemy" parent="." instance=ExtResource( 13 )]
-position = Vector2( 406.955, 273.403 )
+position = Vector2( 592.361, 255.392 )
 
 [node name="TestEnemy2" parent="." instance=ExtResource( 13 )]
-position = Vector2( 525.387, 294.821 )
+position = Vector2( 563.528, 285.286 )
 
 [node name="TestEnemy3" parent="." instance=ExtResource( 13 )]
-position = Vector2( 572.004, 268.363 )
+position = Vector2( 560.35, 254.59 )
 
 [node name="TestEnemy4" parent="." instance=ExtResource( 13 )]
 position = Vector2( 439.712, 210.407 )

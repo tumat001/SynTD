@@ -113,7 +113,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PURE
 		
 		info.tower_descriptions = [
-			"Directs a constant gray energy beam at a single target"
+			"Directs a constant pure energy beam at a single target",
+			"\"First Iteration\""
 		]
 	
 	return info

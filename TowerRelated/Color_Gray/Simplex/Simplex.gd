@@ -35,7 +35,7 @@ func _ready():
 	attack_module.base_attack_wind_up = 0
 	attack_module.is_main_attack = true
 	attack_module.module_name = "Main"
-	attack_module.position.y -= 17
+	attack_module.position.y -= 18
 	attack_module.base_on_hit_damage_internal_name = "name"
 	attack_module.on_hit_damage_scale = 1.0 / 8.0
 	attack_module.base_on_hit_affected_by_scale = false

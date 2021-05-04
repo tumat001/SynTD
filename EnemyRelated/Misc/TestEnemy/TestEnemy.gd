@@ -15,3 +15,5 @@ func _on_CollisionArea_body_entered(body):
 	if body is BaseBullet:
 		hit_by_bullet(body)
 
+func get_enemy_parent():
+	return self

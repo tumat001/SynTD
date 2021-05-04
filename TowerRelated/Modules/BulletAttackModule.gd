@@ -3,7 +3,7 @@ extends "res://TowerRelated/Modules/AbstractAttackModule.gd"
 const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
-var bullet_scene
+var bullet_scene : PackedScene
 var bullet_sprite_frames : SpriteFrames
 var bullet_shape : Shape2D
 
@@ -135,8 +135,14 @@ func _attack_at_position(arg_pos : Vector2):
 	
 	bullet.position.x = global_position.x
 	bullet.position.y = global_position.y
+	
+	_finalize_bullet(bullet)
 	get_tree().get_root().add_child(bullet)
 	
+
+func _finalize_bullet(bullet : BaseBullet):
+	for mod in modifications:
+		mod._modify_attack(bullet)
 
 
 func _attack_enemies(enemies : Array):

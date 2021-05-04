@@ -1,0 +1,6 @@
+enum {
+	
+	CIRCLE,
+	RECTANGLE,
+	
+}

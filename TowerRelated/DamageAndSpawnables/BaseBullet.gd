@@ -2,6 +2,7 @@ extends KinematicBody2D
 
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
+
 var damage_instance : DamageInstance
 var pierce
 var direction_as_relative_location
@@ -9,6 +10,8 @@ var speed
 var life_distance
 
 var current_life_distance
+
+var modifications : Array
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -44,14 +47,20 @@ func decrease_pierce(amount):
 
 func trigger_on_death_events():
 	_inactivate()
+	
+	if modifications != null:
+		for modification in modifications:
+			if modification.trigger_on_death:
+				modification._finalize_bullet(self)
+	
+	
+	true_destroy()
+
 
 func _inactivate():
 	visible = false
 	collision_mask = 0
 	collision_layer = 0
-	# TODO Make it go back to queue space
-	true_destroy()
-	# TODO remove true_destroy() once pooling is completed
 
 
 func true_destroy():

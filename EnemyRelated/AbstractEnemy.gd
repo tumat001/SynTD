@@ -205,7 +205,7 @@ func calculate_final_movement_speed() -> float:
 	
 
 #Process damages
-# hit by bullet functions here. Processes
+# hit by things functions here. Processes
 # on hit damages and effects.
 func hit_by_bullet(generic_bullet : BaseBullet):
 	generic_bullet.decrease_pierce(pierce_consumed_per_hit)
