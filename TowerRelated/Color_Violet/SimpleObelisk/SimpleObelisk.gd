@@ -11,6 +11,7 @@ const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBul
 const SpawnAOEModuleModification = preload("res://TowerRelated/Modification/ModuleModification/SpawnAOEModuleModification.gd")
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
+const SpawnAOETemplate = preload("res://TowerRelated/Templates/SpawnAOETemplate.gd")
 
 # TODO REPLACE THIS SOON
 const SimpleObeliskBullet_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Bullet.png")
@@ -59,27 +60,7 @@ func _ready():
 	# AOE
 	
 	var spawn_aoe_mod : SpawnAOEModuleModification = SpawnAOEModuleModification.new()
-	spawn_aoe_mod.aoe_scene = BaseAOE_Scene
-	spawn_aoe_mod.aoe_base_damage = 30
-	spawn_aoe_mod.aoe_base_damage_type = DamageType.ELEMENTAL
-	spawn_aoe_mod.aoe_on_hit_damage_scale = 0.5
-	spawn_aoe_mod.aoe_duration = 0.5
-	spawn_aoe_mod.aoe_base_on_hit_damage_internal_name = "simple_obelisk_explosion_base_damage"
-	
-	var sprite_frames = SpriteFrames.new()
-	#sprite_frames.add_frame("default", Explosion01_pic)
-	#sprite_frames.add_frame("default", Explosion02_pic)
-	sprite_frames.add_frame("default", Explosion03_pic)
-	sprite_frames.add_frame("default", Explosion04_pic)
-	sprite_frames.add_frame("default", Explosion05_pic)
-	sprite_frames.add_frame("default", Explosion06_pic)
-	sprite_frames.add_frame("default", Explosion07_pic)
-	sprite_frames.add_frame("default", Explosion08_pic)
-	
-	
-	spawn_aoe_mod.aoe_sprite_frames = sprite_frames
-	spawn_aoe_mod.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
-	spawn_aoe_mod.tree = get_tree()
+	spawn_aoe_mod.template = _generate_template()
 	
 	#
 	
@@ -87,3 +68,36 @@ func _ready():
 	attack_modules_and_target_num[attack_module] = 1
 	
 	_post_inherit_ready()
+
+
+func _generate_template():
+	var template : SpawnAOETemplate = SpawnAOETemplate.new()
+	
+	template.aoe_scene = BaseAOE_Scene
+	
+	template.aoe_damage_repeat_count = 1
+	template.aoe_duration = 0.5
+	template.aoe_pierce = -1
+	
+	template.aoe_base_damage = 3
+	template.aoe_base_damage_type = DamageType.ELEMENTAL
+	template.aoe_base_on_hit_damage_internal_name = "simple_obelisk_explosion_base_damage"
+	
+	template.aoe_on_hit_damage_scale = 0.5
+	template.aoe_base_on_hit_affected_by_scale = false
+	
+	template.aoe_sprite_frames_play_only_once = true
+	template.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
+	template.tree = get_tree()
+	
+	var sprite_frames = SpriteFrames.new()
+	sprite_frames.add_frame("default", Explosion03_pic)
+	sprite_frames.add_frame("default", Explosion04_pic)
+	sprite_frames.add_frame("default", Explosion05_pic)
+	sprite_frames.add_frame("default", Explosion06_pic)
+	sprite_frames.add_frame("default", Explosion07_pic)
+	sprite_frames.add_frame("default", Explosion08_pic)
+	
+	template.aoe_sprite_frames = sprite_frames
+	
+	return template

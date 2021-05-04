@@ -9,16 +9,12 @@ func _attack_enemy(enemy : AbstractEnemy):
 		damage_instance.on_hit_damages = _get_all_scaled_on_hit_damages()
 		damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
 		
-		modify_attack(enemy)
+		_modify_attack(enemy)
 		enemy.hit_by_damage_instance(damage_instance)
 
 func _attack_enemies(enemies : Array):
 	for enemy in enemies:
 		_attack_enemy(enemy)
-
-func modify_attack(to_modify):
-	for mod in modifications:
-		mod._modify_attack(to_modify)
 
 
 # Not applicable for here

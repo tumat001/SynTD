@@ -106,8 +106,9 @@ func _set_default_circle_shape():
 		
 		$Shape.shape = coll_shape
 
-func _get_first_anim_size():
+func _get_first_anim_size() -> Vector2:
 	return $AnimatedSprite.frames.get_frame($AnimatedSprite.animation, $AnimatedSprite.frame).get_size()
+
 
 func _set_default_rectangle_shape():
 	if $AnimatedSprite.frames != null:

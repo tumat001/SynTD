@@ -25,7 +25,7 @@ var is_main_attack : bool = false
 var benefits_from_bonus_attack_speed : bool = true
 var benefits_from_bonus_on_hit_damage : bool = true
 var benefits_from_bonus_base_damage : bool = true
-
+var benefits_from_bonus_on_hit_effect : bool = true
 
 var base_attack_speed : float = 1
 var base_attack_wind_up : float = 0
@@ -144,11 +144,13 @@ func calculate_final_attack_speed() -> float:
 	
 	#All percent modifiers here are to BASE attk speed only
 	var final_attack_speed = base_attack_speed
-	for modifier in percent_attack_speed_modifiers.values():
-		final_attack_speed += modifier.get_modification_to_value(base_attack_speed)
 	
-	for flat in flat_attack_speed_modifiers.values():
-		final_attack_speed += flat.get_modification_to_value(base_attack_speed)
+	if benefits_from_bonus_attack_speed:
+		for modifier in percent_attack_speed_modifiers.values():
+			final_attack_speed += modifier.get_modification_to_value(base_attack_speed)
+		
+		for flat in flat_attack_speed_modifiers.values():
+			final_attack_speed += flat.get_modification_to_value(base_attack_speed)
 	
 	if final_attack_speed != 0:
 		return 1 / final_attack_speed
@@ -158,11 +160,13 @@ func calculate_final_attack_speed() -> float:
 func calculate_final_attack_wind_up() -> float:
 	#All percent modifiers here are to BASE attk wind up only
 	var final_attack_wind_up = base_attack_wind_up
-	for modifier in percent_attack_speed_modifiers.values():
-		final_attack_wind_up -= modifier.get_modification_to_value(base_attack_wind_up)
 	
-	for flat in flat_attack_speed_modifiers.values():
-		final_attack_wind_up -= flat.get_modification_to_value(base_attack_wind_up)
+	if benefits_from_bonus_attack_speed:
+		for modifier in percent_attack_speed_modifiers.values():
+			final_attack_wind_up -= modifier.get_modification_to_value(base_attack_wind_up)
+		
+		for flat in flat_attack_speed_modifiers.values():
+			final_attack_wind_up -= flat.get_modification_to_value(base_attack_wind_up)
 	
 	
 	if final_attack_wind_up < 0:
@@ -173,11 +177,13 @@ func calculate_final_attack_wind_up() -> float:
 func calculate_final_burst_attack_speed() -> float:
 	#All percent modifiers here are to BASE in between burst only
 	var final_burst_pause = burst_attack_speed
-	for modifier in percent_attack_speed_modifiers.values():
-		final_burst_pause += modifier.get_modification_to_value(burst_attack_speed)
 	
-	for flat in flat_attack_speed_modifiers.values():
-		final_burst_pause += flat.get_modification_to_value(burst_attack_speed)
+	if benefits_from_bonus_attack_speed:
+		for modifier in percent_attack_speed_modifiers.values():
+			final_burst_pause += modifier.get_modification_to_value(burst_attack_speed)
+		
+		for flat in flat_attack_speed_modifiers.values():
+			final_burst_pause += flat.get_modification_to_value(burst_attack_speed)
 	
 	if final_burst_pause != 0:
 		return 1 / final_burst_pause
@@ -421,6 +427,9 @@ func _attack_at_position(_pos : Vector2):
 func _attack_at_positions(_positions : Array):
 	pass
 
+func _modify_attack(to_modify):
+	for mod in modifications:
+		mod._modify_attack(to_modify)
 
 
 func _during_windup(enemy : AbstractEnemy = null):
@@ -450,11 +459,13 @@ func enable_module():
 func calculate_final_base_damage():
 	#All percent modifiers here are to BASE damage only
 	var final_base_damage = base_damage
-	for modifier in percent_base_damage_modifiers.values():
-		final_base_damage += modifier.get_modification_to_value(base_damage)
 	
-	for flat in flat_base_damage_modifiers.values():
-		final_base_damage += flat.get_modification_to_value(base_damage)
+	if benefits_from_bonus_base_damage:
+		for modifier in percent_base_damage_modifiers.values():
+			final_base_damage += modifier.get_modification_to_value(base_damage)
+		
+		for flat in flat_base_damage_modifiers.values():
+			final_base_damage += flat.get_modification_to_value(base_damage)
 	
 	return final_base_damage
 
@@ -469,21 +480,24 @@ func _get_base_damage_as_on_hit_damage() -> OnHitDamage:
 
 
 func _get_all_scaled_on_hit_damages() -> Dictionary:
+	if !benefits_from_bonus_on_hit_effect:
+		return {}
 	
 	var scaled_on_hit_damages = {}
 	
 	# BASE ON HIT
 	scaled_on_hit_damages[base_on_hit_damage_internal_name] = _get_base_damage_as_on_hit_damage()
 	
-	# EXTRA ON HITS
-	for extra_on_hit_key in extra_on_hit_damages.keys():
-		var duplicate = extra_on_hit_key
-		
-		if on_hit_damage_scale != 1:
-			duplicate = duplicate.duplicate()
-			duplicate.damage_as_modifier = extra_on_hit_damages[extra_on_hit_key].damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
-		
-		scaled_on_hit_damages[extra_on_hit_key] = duplicate
+	if benefits_from_bonus_on_hit_damage:
+		# EXTRA ON HITS
+		for extra_on_hit_key in extra_on_hit_damages.keys():
+			var duplicate = extra_on_hit_key
+			
+			if on_hit_damage_scale != 1:
+				duplicate = duplicate.duplicate()
+				duplicate.damage_as_modifier = extra_on_hit_damages[extra_on_hit_key].damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+			
+			scaled_on_hit_damages[extra_on_hit_key] = duplicate
 	
 	return scaled_on_hit_damages
 

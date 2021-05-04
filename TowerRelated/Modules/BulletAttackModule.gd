@@ -88,22 +88,26 @@ func decrease_time_of_timebounds(delta):
 func calculate_final_pierce():
 	#All percent modifiers here are to BASE pierce only
 	var final_pierce = base_pierce
-	for modifier in percent_pierce_modifiers.values():
-		final_pierce += modifier.get_modification_to_value(base_pierce)
 	
-	for flat in flat_pierce_modifiers.values():
-		final_pierce += flat.get_modification_to_value(base_pierce)
+	if benefits_from_bonus_pierce:
+		for modifier in percent_pierce_modifiers.values():
+			final_pierce += modifier.get_modification_to_value(base_pierce)
+		
+		for flat in flat_pierce_modifiers.values():
+			final_pierce += flat.get_modification_to_value(base_pierce)
 	
 	return final_pierce
 
 func calculate_final_proj_speed():
 	#All percent modifiers here are to BASE proj speed only
 	var final_proj_speed = base_proj_speed
-	for modifier in percent_proj_speed_modifiers.values():
-		final_proj_speed += modifier.get_modification_to_value(base_proj_speed)
 	
-	for flat in flat_proj_speed_modifiers.values():
-		final_proj_speed += flat.get_modification_to_value(base_proj_speed)
+	if benefits_from_bonus_proj_speed:
+		for modifier in percent_proj_speed_modifiers.values():
+			final_proj_speed += modifier.get_modification_to_value(base_proj_speed)
+		
+		for flat in flat_proj_speed_modifiers.values():
+			final_proj_speed += flat.get_modification_to_value(base_proj_speed)
 	
 	return final_proj_speed
 
@@ -136,13 +140,9 @@ func _attack_at_position(arg_pos : Vector2):
 	bullet.position.x = global_position.x
 	bullet.position.y = global_position.y
 	
-	_finalize_bullet(bullet)
+	_modify_attack(bullet)
 	get_tree().get_root().add_child(bullet)
 	
-
-func _finalize_bullet(bullet : BaseBullet):
-	for mod in modifications:
-		mod._modify_attack(bullet)
 
 
 func _attack_enemies(enemies : Array):
