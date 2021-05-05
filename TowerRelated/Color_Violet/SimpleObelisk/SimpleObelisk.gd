@@ -16,8 +16,6 @@ const SpawnAOETemplate = preload("res://TowerRelated/Templates/SpawnAOETemplate.
 # TODO REPLACE THIS SOON
 const SimpleObeliskBullet_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Bullet.png")
 
-const Explosion01_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_ProjExplosion_01.png")
-const Explosion02_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_ProjExplosion_02.png")
 const Explosion03_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_ProjExplosion_03.png")
 const Explosion04_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_ProjExplosion_04.png")
 const Explosion05_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_ProjExplosion_05.png")

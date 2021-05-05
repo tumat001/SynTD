@@ -2,31 +2,42 @@ const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
-#GRAY
+# GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
 const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omni.png")
 
-#BLUE
-const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
 
-#GREEN
+# YELLOW
+const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
+
+# GREEN
 const berrybush_image = preload("res://TowerRelated/Color_Green/BerryBush/BerryBush_Omni.png")
 
-#VIOLET
+# BLUE
+const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
+
+# VIOLET
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
 
 enum {
-	#GRAY
+	# GRAY
 	MONO,
 	SIMPLEX,
 	
-	#BLUE
-	SPRINKLER,
+	# RED
 	
-	#GREEN
+	# ORANGE
+	
+	# YELLOW
+	RAILGUN,
+	
+	# GREEN
 	BERRY_BUSH,
 	
-	#VIOLET
+	# BLUE
+	SPRINKLER,
+	
+	# VIOLET
 	SIMPLE_OBELISK
 }
 
@@ -116,6 +127,22 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Directs a constant pure energy beam at a single target",
 			"\"First Iteration\""
 		]
+	elif tower_id == RAILGUN:
+		info = TowerTypeInformation.new("Railgun", RAILGUN)
+		info.tower_cost = 3
+		info.colors.append(TowerColors.YELLOW)
+		info.tower_tier = 3
+		info.tower_image_in_buy_card = railgun_image
+		
+		info.base_damage = 7
+		info.base_attk_speed = 0.25
+		info.base_pierce = 4
+		info.base_range = 100
+		info.base_damage_type = DamageType.PHYSICAL
+		
+		info.tower_descriptions = [
+			"Shoots a dart like projectile that pierces through 4 enemies"
+		]
 	
 	return info
 
@@ -130,4 +157,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk.tscn")
 	elif tower_id == SIMPLEX:
 		return load("res://TowerRelated/Color_Gray/Simplex/Simplex.tscn")
-
+	elif tower_id == RAILGUN:
+		return load("res://TowerRelated/Color_Yellow/Railgun/Railgun.tscn")

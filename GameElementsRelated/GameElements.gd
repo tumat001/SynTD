@@ -35,7 +35,7 @@ func _on_BuySellLevelRollPanel_level_up():
 func _on_BuySellLevelRollPanel_reroll():
 	# TODO REPLACE THIS SOON
 	$BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel.update_new_rolled_towers([
-		Towers.SPRINKLER,
+		Towers.RAILGUN,
 		Towers.MONO,
 		Towers.SIMPLEX,
 		Towers.SIMPLE_OBELISK,

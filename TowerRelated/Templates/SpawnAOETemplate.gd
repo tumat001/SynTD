@@ -36,10 +36,16 @@ var aoe_texture : Texture
 var aoe_sprite_frames : SpriteFrames
 var aoe_sprite_frames_play_only_once : bool = true
 var aoe_default_coll_shape : int
+var aoe_shift_x : bool = false
+var aoe_scale_x : float = 1
+var aoe_scale_y : float = 1
+
 #
 
 var spawn_aoe_at_death : bool = true
 var tree
+
+var aoe_rotation_deg : float = 0
 
 
 func _spawn_aoe(global_pos : Vector2):
@@ -60,6 +66,10 @@ func _spawn_aoe(global_pos : Vector2):
 	aoe_instance.damage_instance = damage_instance
 	
 	aoe_instance.global_position = global_pos
+	aoe_instance.rotation_degrees = aoe_rotation_deg
+	aoe_instance.shift_x = aoe_shift_x
+	aoe_instance.scale.x = aoe_scale_x
+	aoe_instance.scale.y = aoe_scale_y
 	
 	tree.get_root().add_child(aoe_instance)
 

@@ -136,13 +136,20 @@ func _attack_at_position(arg_pos : Vector2):
 	bullet.speed = calculate_final_proj_speed()
 	bullet.life_distance = projectile_life_distance
 	bullet.current_life_distance = bullet.life_distance
+	bullet.rotation_degrees = _get_angle(arg_pos)
 	
 	bullet.position.x = global_position.x
 	bullet.position.y = global_position.y
 	
 	_modify_attack(bullet)
 	get_tree().get_root().add_child(bullet)
+
+
+func _get_angle(destination_pos : Vector2):
+	var dx = destination_pos.x - global_position.x
+	var dy = destination_pos.y - global_position.y
 	
+	return rad2deg(atan2(dy, dx))
 
 
 func _attack_enemies(enemies : Array):

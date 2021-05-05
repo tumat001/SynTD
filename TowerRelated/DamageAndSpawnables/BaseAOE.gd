@@ -15,6 +15,7 @@ var aoe_sprite_frames : SpriteFrames
 var sprite_frames_play_only_once : bool = true
 
 var aoe_default_coll_shape : int = BaseAOEDefaultShapes.CIRCLE
+var shift_x : bool = false
 
 # internal stuffs
 
@@ -46,6 +47,7 @@ func _on_BaseAOE_area_shape_exited(area_id, area, area_shape, self_shape):
 func _ready():
 	_delay_in_between_repeats = _calculate_delay_in_between_repeats()
 	_current_delay = 0.05
+
 	if aoe_texture != null:
 		_set_texture_as_sprite()
 	elif aoe_sprite_frames != null:
@@ -56,6 +58,9 @@ func _ready():
 			_set_default_circle_shape()
 		elif aoe_default_coll_shape == BaseAOEDefaultShapes.RECTANGLE:
 			_set_default_rectangle_shape()
+	
+	if shift_x:
+		position.x += _get_first_anim_size().x
 
 func _process(delta):
 	if _current_duration < duration:
