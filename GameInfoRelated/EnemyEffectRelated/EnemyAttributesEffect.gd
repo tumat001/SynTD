@@ -33,8 +33,8 @@ var attribute_as_modifier : Modifier
 
 func _init(arg_attribute_type : int,
 		arg_attribute_as_modifier : Modifier,
-		arg_effect_source_name : String).(EffectType.ATTRIBUTES,
-		arg_effect_source_name):
+		arg_effect_uuid : int).(EffectType.ATTRIBUTES,
+		arg_effect_uuid):
 	
 	attribute_type = arg_attribute_type
 	attribute_as_modifier = arg_attribute_as_modifier

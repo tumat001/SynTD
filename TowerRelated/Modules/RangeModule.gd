@@ -6,8 +6,8 @@ const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 var benefits_from_bonus_range : bool = true
 
 var base_range_radius : float
-var flat_range_modifiers : Dictionary = {}
-var percent_range_modifiers : Dictionary = {}
+var flat_range_effects : Dictionary = {}
+var percent_range_effects : Dictionary = {}
 
 var displaying_range : bool = false
 
@@ -31,15 +31,15 @@ func decrease_time_of_timebounded(delta):
 	var bucket = []
 	
 	#For percent range mods
-	for key in percent_range_modifiers.keys():
-		if percent_range_modifiers[key].is_timebound:
-			percent_range_modifiers[key].time_in_seconds -= delta
-			var time_left = percent_range_modifiers[key].time_in_seconds
+	for effect_uuid in percent_range_effects.keys():
+		if percent_range_effects[effect_uuid].is_timebound:
+			percent_range_effects[effect_uuid].time_in_seconds -= delta
+			var time_left = percent_range_effects[effect_uuid].time_in_seconds
 			if time_left <= 0:
-				bucket.append(key)
+				bucket.append(effect_uuid)
 	
 	for key_to_delete in bucket:
-		percent_range_modifiers.erase(key_to_delete)
+		percent_range_effects.erase(key_to_delete)
 	
 	if bucket.size() > 0:
 		update_range()
@@ -47,15 +47,15 @@ func decrease_time_of_timebounded(delta):
 	bucket.clear()
 	
 	#For flat range mods
-	for key in flat_range_modifiers.keys():
-		if flat_range_modifiers[key].is_timebound:
-			flat_range_modifiers[key].time_in_seconds -= delta
-			var time_left = flat_range_modifiers[key].time_in_seconds
+	for effect_uuid in flat_range_effects.keys():
+		if flat_range_effects[effect_uuid].is_timebound:
+			flat_range_effects[effect_uuid].time_in_seconds -= delta
+			var time_left = flat_range_effects[effect_uuid].time_in_seconds
 			if time_left <= 0:
-				bucket.append(key)
+				bucket.append(effect_uuid)
 	
 	for key_to_delete in bucket:
-		flat_range_modifiers.erase(key_to_delete)
+		flat_range_effects.erase(key_to_delete)
 	
 	if bucket.size() > 0:
 		update_range()
@@ -122,11 +122,11 @@ func is_an_enemy_in_range():
 func calculate_final_range_radius() -> float:
 	#All percent modifiers here are to BASE range only
 	var final_range = base_range_radius
-	for modifier in percent_range_modifiers.values():
-		final_range += modifier.get_modification_to_value(base_range_radius)
+	for effect in percent_range_effects.values():
+		final_range += effect.attribute_as_modifiers.get_modification_to_value(base_range_radius)
 	
-	for flat in flat_range_modifiers.values():
-		final_range += flat.get_modification_to_value(base_range_radius)
+	for effect in flat_range_effects.values():
+		final_range += effect.attribute_as_modifiers.get_modification_to_value(base_range_radius)
 	
 	return final_range
 

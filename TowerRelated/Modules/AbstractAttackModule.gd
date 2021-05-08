@@ -29,8 +29,9 @@ var benefits_from_bonus_on_hit_effect : bool = true
 
 var base_attack_speed : float = 1
 var base_attack_wind_up : float = 0
-var flat_attack_speed_modifiers : Dictionary = {} 
-var percent_attack_speed_modifiers : Dictionary = {}
+# map of uuid (internal name) to effect
+var flat_attack_speed_effects : Dictionary = {} 
+var percent_attack_speed_effects : Dictionary = {}
 
 var has_burst : bool = false
 var burst_amount : int
@@ -41,10 +42,11 @@ var base_on_hit_affected_by_scale : bool = false
 
 var base_damage : float
 var base_damage_type : int
-var flat_base_damage_modifiers : Dictionary = {}
-var percent_base_damage_modifiers : Dictionary = {}
-var base_on_hit_damage_internal_name
-var extra_on_hit_damages : Dictionary
+# map of uuid (internal name) to effect
+var flat_base_damage_effects : Dictionary = {}
+var percent_base_damage_effects : Dictionary = {}
+var base_on_hit_damage_internal_name : String
+var on_hit_damage_adder_effects : Dictionary
 
 var on_hit_effect_scale : float = 1
 var on_hit_effects : Dictionary
@@ -96,15 +98,15 @@ func decrease_time_of_timebounded(delta):
 	var bucket = []
 	
 	# Extra On Hit damages
-	for key in extra_on_hit_damages.keys():
-		if extra_on_hit_damages[key].is_timebound:
-			extra_on_hit_damages[key].time_in_seconds -= delta
-			var time_left = extra_on_hit_damages[key].time_in_seconds
+	for key in on_hit_damage_adder_effects.keys():
+		if on_hit_damage_adder_effects[key].is_timebound:
+			on_hit_damage_adder_effects[key].time_in_seconds -= delta
+			var time_left = on_hit_damage_adder_effects[key].time_in_seconds
 			if time_left <= 0:
 				bucket.append(key)
 				
 	for key_to_delete in bucket:
-		extra_on_hit_damages.erase(key_to_delete)
+		on_hit_damage_adder_effects.erase(key_to_delete)
 	bucket.clear()
 	
 	# On Hit effects
@@ -115,32 +117,32 @@ func decrease_time_of_timebounded(delta):
 			if time_left <= 0:
 				bucket.append(key)
 	for key_to_delete in bucket:
-		extra_on_hit_damages.erase(key_to_delete)
+		on_hit_effects.erase(key_to_delete)
 	bucket.clear()
 	
 	#For percent attk speed mods
-	for key in percent_attack_speed_modifiers.keys():
-		if percent_attack_speed_modifiers[key].is_timebound:
-			percent_attack_speed_modifiers[key].time_in_seconds -= delta
-			var time_left = percent_attack_speed_modifiers[key].time_in_seconds
+	for key in percent_attack_speed_effects.keys():
+		if percent_attack_speed_effects[key].is_timebound:
+			percent_attack_speed_effects[key].time_in_seconds -= delta
+			var time_left = percent_attack_speed_effects[key].time_in_seconds
 			if time_left <= 0:
 				bucket.append(key)
 	
 	for key_to_delete in bucket:
-		percent_attack_speed_modifiers.erase(key_to_delete)
+		percent_attack_speed_effects.erase(key_to_delete)
 	
 	bucket.clear()
 	
 	#For flat attk speed mods
-	for key in flat_attack_speed_modifiers.keys():
-		if flat_attack_speed_modifiers[key].is_timebound:
-			flat_attack_speed_modifiers[key].time_in_seconds -= delta
-			var time_left = flat_attack_speed_modifiers[key].time_in_seconds
+	for key in flat_attack_speed_effects.keys():
+		if flat_attack_speed_effects[key].is_timebound:
+			flat_attack_speed_effects[key].time_in_seconds -= delta
+			var time_left = flat_attack_speed_effects[key].time_in_seconds
 			if time_left <= 0:
 				bucket.append(key)
 	
 	for key_to_delete in bucket:
-		flat_attack_speed_modifiers.erase(key_to_delete)
+		flat_attack_speed_effects.erase(key_to_delete)
 	
 	bucket.clear()
 	
@@ -155,11 +157,11 @@ func calculate_final_attack_speed() -> float:
 	var final_attack_speed = base_attack_speed
 	
 	if benefits_from_bonus_attack_speed:
-		for modifier in percent_attack_speed_modifiers.values():
-			final_attack_speed += modifier.get_modification_to_value(base_attack_speed)
+		for effect in percent_attack_speed_effects.values():
+			final_attack_speed += effect.attribute_as_modifier.get_modification_to_value(base_attack_speed)
 		
-		for flat in flat_attack_speed_modifiers.values():
-			final_attack_speed += flat.get_modification_to_value(base_attack_speed)
+		for effect in flat_attack_speed_effects.values():
+			final_attack_speed += effect.attribute_as_modifier.get_modification_to_value(base_attack_speed)
 	
 	if final_attack_speed != 0:
 		return 1 / final_attack_speed
@@ -171,11 +173,11 @@ func calculate_final_attack_wind_up() -> float:
 	var final_attack_wind_up = base_attack_wind_up
 	
 	if benefits_from_bonus_attack_speed:
-		for modifier in percent_attack_speed_modifiers.values():
-			final_attack_wind_up -= modifier.get_modification_to_value(base_attack_wind_up)
+		for effect in percent_attack_speed_effects.values():
+			final_attack_wind_up -= effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
 		
-		for flat in flat_attack_speed_modifiers.values():
-			final_attack_wind_up -= flat.get_modification_to_value(base_attack_wind_up)
+		for effect in flat_attack_speed_effects.values():
+			final_attack_wind_up -= effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
 	
 	
 	if final_attack_wind_up < 0:
@@ -188,11 +190,11 @@ func calculate_final_burst_attack_speed() -> float:
 	var final_burst_pause = burst_attack_speed
 	
 	if benefits_from_bonus_attack_speed:
-		for modifier in percent_attack_speed_modifiers.values():
-			final_burst_pause += modifier.get_modification_to_value(burst_attack_speed)
+		for effect in percent_attack_speed_effects.values():
+			final_burst_pause += effect.attribute_as_modifier.get_modification_to_value(burst_attack_speed)
 		
-		for flat in flat_attack_speed_modifiers.values():
-			final_burst_pause += flat.get_modification_to_value(burst_attack_speed)
+		for effect in flat_attack_speed_effects.values():
+			final_burst_pause += effect.attribute_as_modifier.get_modification_to_value(burst_attack_speed)
 	
 	if final_burst_pause != 0:
 		return 1 / final_burst_pause
@@ -470,11 +472,11 @@ func calculate_final_base_damage():
 	var final_base_damage = base_damage
 	
 	if benefits_from_bonus_base_damage:
-		for modifier in percent_base_damage_modifiers.values():
-			final_base_damage += modifier.get_modification_to_value(base_damage)
+		for effect in percent_base_damage_effects.values():
+			final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
 		
-		for flat in flat_base_damage_modifiers.values():
-			final_base_damage += flat.get_modification_to_value(base_damage)
+		for effect in flat_base_damage_effects.values():
+			final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
 	
 	return final_base_damage
 
@@ -487,6 +489,23 @@ func _get_base_damage_as_on_hit_damage() -> OnHitDamage:
 	
 	return OnHitDamage.new(base_on_hit_damage_internal_name, modifier, base_damage_type)
 
+func _get_scaled_extra_on_hit_damages() -> Dictionary:
+	var scaled_on_hit_damages = {}
+	
+	if benefits_from_bonus_on_hit_damage:
+		# EXTRA ON HITS
+		for extra_on_hit_key_as_effect in on_hit_damage_adder_effects.keys():
+			var extra_on_hit = on_hit_damage_adder_effects[extra_on_hit_key_as_effect].on_hit_damage
+			var duplicate = extra_on_hit
+			
+			if on_hit_damage_scale != 1:
+				duplicate = duplicate.duplicate()
+				duplicate.damage_as_modifier = extra_on_hit.damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+			
+			scaled_on_hit_damages[extra_on_hit_key_as_effect] = duplicate
+	
+	return scaled_on_hit_damages
+
 
 func _get_all_scaled_on_hit_damages() -> Dictionary:
 	if !benefits_from_bonus_on_hit_effect:
@@ -497,16 +516,9 @@ func _get_all_scaled_on_hit_damages() -> Dictionary:
 	# BASE ON HIT
 	scaled_on_hit_damages[base_on_hit_damage_internal_name] = _get_base_damage_as_on_hit_damage()
 	
-	if benefits_from_bonus_on_hit_damage:
-		# EXTRA ON HITS
-		for extra_on_hit_key in extra_on_hit_damages.keys():
-			var duplicate = extra_on_hit_key
-			
-			if on_hit_damage_scale != 1:
-				duplicate = duplicate.duplicate()
-				duplicate.damage_as_modifier = extra_on_hit_damages[extra_on_hit_key].damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
-			
-			scaled_on_hit_damages[extra_on_hit_key] = duplicate
+	var extras = _get_scaled_extra_on_hit_damages()
+	for extra_on_hit_uuid in extras.keys():
+		scaled_on_hit_damages[extra_on_hit_uuid] = extras[extra_on_hit_uuid]
 	
 	return scaled_on_hit_damages
 

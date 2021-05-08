@@ -4,7 +4,6 @@ const Modifier = preload("res://GameInfoRelated/Modifier.gd")
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
-const OnHitEffect = preload("res://GameInfoRelated/OnHitEffect.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const EnemyBaseEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd")
 const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
@@ -22,7 +21,7 @@ var _flat_base_health_modifiers = {}
 var _percent_base_health_modifiers = {}
 var current_health : float = 1
 
-var active_on_hit_effects = {}
+var active_effects = {}
 
 var pierce_consumed_per_hit : float = 1
 
@@ -130,8 +129,8 @@ func _take_unmitigated_damage(damage_amount):
 func _destroy_self():
 	emit_signal("on_death")
 	
-	$CollisionArea.monitorable = false
-	$CollisionArea.monitoring = false
+	$CollisionArea.set_deferred("monitorable", false)
+	$CollisionArea.set_deferred("monitoring", false)
 	queue_free()
 
 func add_flat_base_health_modifier_with_heal(modifier_name : String, 
@@ -249,7 +248,7 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 func hit_by_damage_instance(damage_instance : DamageInstance):
 	emit_signal("on_hit")
 	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true))
-	_process_on_hit_effects(damage_instance.on_hit_effects.duplicate(true))
+	_process_effects(damage_instance.on_hit_effects.duplicate(true))
 
 
 func _process_on_hit_damages(on_hit_damages : Dictionary):
@@ -314,7 +313,7 @@ func _calculate_multiplier_from_total_resistance():
 	return (100 - calculate_final_resistance()) / 100
 
 #Process effects
-func _process_on_hit_effects(on_hit_effects):
+func _process_effects(effects):
 	#TODO do this afterwards
 	pass
 

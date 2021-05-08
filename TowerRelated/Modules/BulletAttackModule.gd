@@ -11,12 +11,12 @@ var benefits_from_bonus_pierce : bool = true
 var benefits_from_bonus_proj_speed : bool = true
 
 var base_pierce : float = 1
-var flat_pierce_modifiers = {}
-var percent_pierce_modifiers = {}
+var flat_pierce_effects = {}
+var percent_pierce_effects = {}
 
 var base_proj_speed : float = 500
-var flat_proj_speed_modifiers = {}
-var percent_proj_speed_modifiers = {}
+var flat_proj_speed_effects = {}
+var percent_proj_speed_effects = {}
 
 var projectile_life_distance : float = 100
 
@@ -29,56 +29,56 @@ func decrease_time_of_timebounds(delta):
 	
 	var bucket = []
 	
-	#For percent pierce mods
-	for key in percent_pierce_modifiers.keys():
-		if percent_pierce_modifiers[key].is_timebound:
-			percent_pierce_modifiers[key].time_in_seconds -= delta
-			var time_left = percent_pierce_modifiers[key].time_in_seconds
+	#For percent pierce eff
+	for effect_uuid in percent_pierce_effects.keys():
+		if percent_pierce_effects[effect_uuid].is_timebound:
+			percent_pierce_effects[effect_uuid].time_in_seconds -= delta
+			var time_left = percent_pierce_effects[effect_uuid].time_in_seconds
 			if time_left <= 0:
-				bucket.append(key)
+				bucket.append(effect_uuid)
 	
 	for key_to_delete in bucket:
-		percent_pierce_modifiers.erase(key_to_delete)
+		percent_pierce_effects.erase(key_to_delete)
 	
 	bucket.clear()
 	
-	#For flat pierce mods
-	for key in flat_pierce_modifiers.keys():
-		if flat_pierce_modifiers[key].is_timebound:
-			flat_pierce_modifiers[key].time_in_seconds -= delta
-			var time_left = flat_pierce_modifiers[key].time_in_seconds
+	#For flat pierce eff
+	for effect_uuid in flat_pierce_effects.keys():
+		if flat_pierce_effects[effect_uuid].is_timebound:
+			flat_pierce_effects[effect_uuid].time_in_seconds -= delta
+			var time_left = flat_pierce_effects[effect_uuid].time_in_seconds
 			if time_left <= 0:
-				bucket.append(key)
+				bucket.append(effect_uuid)
 	
 	for key_to_delete in bucket:
-		flat_pierce_modifiers.erase(key_to_delete)
+		flat_pierce_effects.erase(key_to_delete)
 	
 	bucket.clear()
 	
 	
-	#For percent proj speed mods
-	for key in percent_proj_speed_modifiers.keys():
-		if percent_proj_speed_modifiers[key].is_timebound:
-			percent_proj_speed_modifiers[key].time_in_seconds -= delta
-			var time_left = percent_proj_speed_modifiers[key].time_in_seconds
+	#For percent proj speed eff
+	for effect_uuid in percent_proj_speed_effects.keys():
+		if percent_proj_speed_effects[effect_uuid].is_timebound:
+			percent_proj_speed_effects[effect_uuid].time_in_seconds -= delta
+			var time_left = percent_proj_speed_effects[effect_uuid].time_in_seconds
 			if time_left <= 0:
-				bucket.append(key)
+				bucket.append(effect_uuid)
 	
 	for key_to_delete in bucket:
-		percent_proj_speed_modifiers.erase(key_to_delete)
+		percent_proj_speed_effects.erase(key_to_delete)
 	
 	bucket.clear()
 	
-	#For flat proj speed mods
-	for key in flat_proj_speed_modifiers.keys():
-		if flat_proj_speed_modifiers[key].is_timebound:
-			flat_proj_speed_modifiers[key].time_in_seconds -= delta
-			var time_left = flat_proj_speed_modifiers[key].time_in_seconds
+	#For flat proj speed eff
+	for effect_uuid in flat_proj_speed_effects.keys():
+		if flat_proj_speed_effects[effect_uuid].is_timebound:
+			flat_proj_speed_effects[effect_uuid].time_in_seconds -= delta
+			var time_left = flat_proj_speed_effects[effect_uuid].time_in_seconds
 			if time_left <= 0:
-				bucket.append(key)
+				bucket.append(effect_uuid)
 	
 	for key_to_delete in bucket:
-		flat_proj_speed_modifiers.erase(key_to_delete)
+		flat_proj_speed_effects.erase(key_to_delete)
 	
 	bucket.clear()
 
@@ -90,11 +90,11 @@ func calculate_final_pierce():
 	var final_pierce = base_pierce
 	
 	if benefits_from_bonus_pierce:
-		for modifier in percent_pierce_modifiers.values():
-			final_pierce += modifier.get_modification_to_value(base_pierce)
+		for effect in percent_pierce_effects.values():
+			final_pierce += effect.attribute_as_modifier.get_modification_to_value(base_pierce)
 		
-		for flat in flat_pierce_modifiers.values():
-			final_pierce += flat.get_modification_to_value(base_pierce)
+		for effect in flat_pierce_effects.values():
+			final_pierce += effect.attribute_as_modifier.get_modification_to_value(base_pierce)
 	
 	return final_pierce
 
@@ -103,11 +103,11 @@ func calculate_final_proj_speed():
 	var final_proj_speed = base_proj_speed
 	
 	if benefits_from_bonus_proj_speed:
-		for modifier in percent_proj_speed_modifiers.values():
-			final_proj_speed += modifier.get_modification_to_value(base_proj_speed)
+		for effect in percent_proj_speed_effects.values():
+			final_proj_speed += effect.attribute_as_modifier.get_modification_to_value(base_proj_speed)
 		
-		for flat in flat_proj_speed_modifiers.values():
-			final_proj_speed += flat.get_modification_to_value(base_proj_speed)
+		for effect in flat_proj_speed_effects.values():
+			final_proj_speed += effect.attribute_as_modifier.get_modification_to_value(base_proj_speed)
 	
 	return final_proj_speed
 

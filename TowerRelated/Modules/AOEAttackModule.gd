@@ -19,9 +19,13 @@ func _set_template(template : SpawnAOETemplate):
 	template.aoe_on_hit_effect_scale = on_hit_effect_scale
 	template.aoe_base_on_hit_affected_by_scale = base_on_hit_affected_by_scale
 	
-	template.aoe_extra_on_hit_damages = extra_on_hit_damages
-	template.aoe_flat_base_damage_modifiers = flat_base_damage_modifiers
-	template.aoe_percent_base_damage_modifiers = percent_base_damage_modifiers
+	template.aoe_extra_on_hit_damages = _get_scaled_extra_on_hit_damages()
+	
+	for effect_uuid in flat_base_damage_effects.keys():
+		template.aoe_flat_base_damage_modifiers[str(effect_uuid)] = flat_base_damage_effects[effect_uuid]
+	
+	for effect_uuid in percent_base_damage_effects.keys():
+		template.aoe_percent_base_damage_modifiers[str(effect_uuid)] = percent_base_damage_effects[effect_uuid]
 	
 	template.benefits_from_bonus_base_damage = benefits_from_bonus_base_damage
 	template.benefits_from_bonus_on_hit_damage = benefits_from_bonus_on_hit_damage

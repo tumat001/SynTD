@@ -10,6 +10,9 @@ const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBul
 const MonoBullet_pic = preload("res://TowerRelated/Color_Gray/Mono/Mono_Bullet.png")
 
 
+# TEMP
+const PercentType = preload("res://GameInfoRelated/PercentType.gd")
+
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.MONO)
 	
@@ -44,3 +47,15 @@ func _ready():
 	
 	_post_inherit_ready()
 
+
+## How to add: on hit damager adder effect
+#func _post_inherit_ready():
+#	._post_inherit_ready()
+#	
+#	var extra_on_hit_modifier : PercentModifier = PercentModifier.new("1")
+#	extra_on_hit_modifier.percent_amount = 50
+#	extra_on_hit_modifier.percent_based_on = PercentType.MISSING
+#	var extra_on_hit : OnHitDamage = OnHitDamage.new("1", extra_on_hit_modifier, DamageType.PHYSICAL)
+#	var on_hit_damage_adder_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(extra_on_hit, 1)
+#	
+#	add_tower_effect(on_hit_damage_adder_effect)

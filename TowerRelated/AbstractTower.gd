@@ -12,6 +12,10 @@ const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelat
 const AbstractAttackModule = preload("res://TowerRelated/Modules/AbstractAttackModule.gd")
 const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
 
+const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerBaseEffect.gd")
+const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerAttributesEffect.gd")
+const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitDamageAdderEffect.gd")
+
 signal tower_being_dragged
 signal tower_dropped_from_dragged
 signal tower_show_info
@@ -110,85 +114,95 @@ func _on_main_attack_success():
 
 # Recieving buffs/debuff related
 
-func add_attack_speed_modifier(modifier : Modifier):
+func add_tower_effect(tower_base_effect : TowerBaseEffect):
+	if tower_base_effect is TowerAttributesEffect:
+		if tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ATTACK_SPEED or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_ATTACK_SPEED:
+			_add_attack_speed_effect(tower_base_effect)
+		if tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_DAMAGE_BONUS:
+			_add_base_damage_effect(tower_base_effect)
+		if tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
+			_add_base_range_effect(tower_base_effect)
+		
+		
+	elif tower_base_effect is TowerOnHitDamageAdderEffect:
+		_add_on_hit_damager_adder_effect(tower_base_effect)
+
+
+func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect):
 	for module in attack_modules_and_target_num.keys():
 		
 		if module.benefits_from_bonus_attack_speed:
-			if modifier is PercentModifier:
-				module.percent_attack_speed_modifiers[modifier.internal_name] = modifier
-			elif modifier is FlatModifier:
-				module.flat_attack_speed_modifiers[modifier.internal_name] = modifier
+			if tower_attr_effect.attribute_type == TowerAttributesEffect.PERCENT_ATTACK_SPEED:
+				module.percent_attack_speed_effects[tower_attr_effect.effect_uuid] = tower_attr_effect
+			elif tower_attr_effect.attribute_type == TowerAttributesEffect.FLAT_ATTACK_SPEED:
+				module.flat_attack_speed_effects[tower_attr_effect.effect_uuid] = tower_attr_effect
 
-func remove_attack_speed_modifier(modifier_name : String):
+func _remove_attack_speed_effect(attr_effect_uuid : int):
 	for module in attack_modules_and_target_num.keys():
 		
 		if module.benefits_from_bonus_attack_speed:
-			module.percent_attack_speed_modifiers.erase(modifier_name)
-			module.flat_attack_speed_modifiers.erase(modifier_name)
+			module.percent_attack_speed_modifiers.erase(attr_effect_uuid)
+			module.flat_attack_speed_modifiers.erase(attr_effect_uuid)
 
 
-func add_base_damage_modifier(modifier : Modifier):
+func _add_base_damage_effect(attr_effect : TowerAttributesEffect):
 	for module in attack_modules_and_target_num.keys():
 		
 		if module.benefits_from_bonus_base_damage:
-			if modifier is PercentModifier:
-				module.percent_base_damage_modifiers[modifier.internal_name] = modifier
-			elif modifier is FlatModifier:
-				module.flat_base_damage_modifiers[modifier.internal_name] = modifier
+			if attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_DAMAGE_BONUS:
+				module.percent_base_damage_modifiers[attr_effect.effect_uuid] = attr_effect
+			elif attr_effect.attribute_type == TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS:
+				module.flat_base_damage_modifiers[attr_effect.effect_uuid] = attr_effect
 
-func remove_base_damage_modifier(modifier_name : String):
+func _remove_base_damage_effect(attr_effect_uuid : int):
 	for module in attack_modules_and_target_num.keys():
 		
 		if module.benefits_from_bonus_damage:
-			module.percent_base_damage_modifiers.erase(modifier_name)
-			module.flat_base_damage_modifiers.erase(modifier_name)
+			module.percent_base_damage_modifiers.erase(attr_effect_uuid)
+			module.flat_base_damage_modifiers.erase(attr_effect_uuid)
 
 
-func add_extra_on_hit_damage(on_hit_damage : OnHitDamage):
+func _add_on_hit_damager_adder_effect(on_hit_adder : TowerOnHitDamageAdderEffect):
 	for module in attack_modules_and_target_num.keys():
-		var modifier = on_hit_damage.damage_as_modifier
-		
 		if module.benefits_from_bonus_on_hit_damage:
-			module.extra_on_hit_damages[on_hit_damage.internal_name] = on_hit_damage
+			module.on_hit_damage_adder_effects[on_hit_adder.effect_uuid] = on_hit_adder
 
-func remove_extra_on_hit_damage(on_hit_damage_name : String):
+func _remove_extra_on_hit_damage(on_hit_adder_uuid : int):
 	for module in attack_modules_and_target_num.keys():
 		
 		if module.benefits_from_bonus_on_hit_damage:
-			module.extra_on_hit_damages.erase(on_hit_damage_name)
+			module.on_hit_damage_adder_effects.erase(on_hit_adder_uuid)
 
 
-func add_base_range_modifier(modifier : Modifier):
+func _add_base_range_effect(attr_effect : TowerAttributesEffect):
 	if range_module != null:
 		if range_module.range_module.benefits_from_bonus_range:
-				if modifier is FlatModifier:
-					range_module.range_module.flat_range_modifiers[modifier.internal_name] = modifier
-				elif modifier is PercentModifier:
-					range_module.range_module.percent_range_modifiers[modifier.internal_name] = modifier
+				if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
+					range_module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
+				elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
+					range_module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
 	
 	
 	for module in attack_modules_and_target_num.keys():
-		
-		if module.range_module != null:
+		if module.range_module != null and module.use_self_range_module:
 			if module.range_module.benefits_from_bonus_range:
-				if modifier is FlatModifier:
-					module.range_module.flat_range_modifiers[modifier.internal_name] = modifier
-				elif modifier is PercentModifier:
-					module.range_module.percent_range_modifiers[modifier.internal_name] = modifier
+				if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
+					module.range_module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
+				elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
+					module.range_module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
 
-func remove_base_range_modifier(modifier_name : String):
+func _remove_base_range_effect(attr_effect_uuid : int):
 	if range_module != null:
 		if range_module.benefits_from_bonus_range:
-			range_module.range_module.flat_range_modifiers.erase(modifier_name)
-			range_module.range_module.percent_range_modifiers.erase(modifier_name)
-	
+			range_module.range_module.flat_range_effects.erase(attr_effect_uuid)
+			range_module.range_module.percent_range_effects.erase(attr_effect_uuid)
 	
 	for module in attack_modules_and_target_num.keys():
-		
-		if module.range_module != null:
+		if module.range_module != null and module.use_self_range_module:
 			if module.range_module.benefits_from_bonus_range:
-					module.range_module.flat_range_modifiers.erase(modifier_name)
-					module.range_module.percent_range_modifiers.erase(modifier_name)
+				module.range_module.range_module.flat_range_effects.erase(attr_effect_uuid)
+				module.range_module.range_module.percent_range_effects.erase(attr_effect_uuid)
+
 
 # Inputs related
 

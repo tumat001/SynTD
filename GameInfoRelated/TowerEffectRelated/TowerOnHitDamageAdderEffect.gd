@@ -10,17 +10,18 @@ const img_on_hit_elemental = preload("res://GameHUDRelated/RightSidePanel/TowerI
 const img_on_hit_pure = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_OnHitPure.png")
 
 
-var damage_type : int
 var on_hit_damage : OnHitDamage
 
 func _init(arg_on_hit_damage : OnHitDamage, 
-		arg_effect_source_name : String).(EffectType.ON_HIT_DAMAGE,
-		arg_effect_source_name):
+		arg_effect_uuid : int).(EffectType.ON_HIT_DAMAGE,
+		arg_effect_uuid):
 	
 	on_hit_damage = arg_on_hit_damage
-	damage_type = on_hit_damage.damage_type
 	description = _get_description()
 	effect_icon = _get_icon()
+	
+	on_hit_damage.internal_name = str(arg_effect_uuid)
+	on_hit_damage.damage_as_modifier.internal_name = str(arg_effect_uuid)
 
 # Descriptions related
 
@@ -28,7 +29,7 @@ func _get_description() -> String:
 	if description != null:
 		return description
 	
-	var type_name = DamageType.get_name_of_damage_type(damage_type)
+	var type_name = DamageType.get_name_of_damage_type(on_hit_damage.damage_type)
 	
 	var modifier = on_hit_damage.damage_as_modifier
 	var modifier_desc = modifier.get_description()
@@ -50,11 +51,11 @@ func _get_description() -> String:
 # Icon Related
 
 func _get_icon() -> Texture:
-	if damage_type == DamageType.PHYSICAL:
+	if on_hit_damage.damage_type == DamageType.PHYSICAL:
 		return img_on_hit_physical
-	elif damage_type == DamageType.ELEMENTAL:
+	elif on_hit_damage.damage_type == DamageType.ELEMENTAL:
 		return img_on_hit_elemental
-	elif damage_type == DamageType.PURE:
+	elif on_hit_damage.damage_type == DamageType.PURE:
 		return img_on_hit_pure
 	
 	return null

@@ -11,22 +11,18 @@ const img_pure_bleed = preload("res://GameHUDRelated/RightSidePanel/TowerInforma
 
 
 var damage_type : int
-var on_hit_damage : OnHitDamage
+var on_hit_damage : OnHitDamage # Damage per tick
 
-var number_of_ticks : int
 var delay_per_tick : float
 
-
 func _init(arg_on_hit_damage : OnHitDamage,
-		effect_source : String,
-		arg_num_of_ticks : int, 
+		arg_effect_uuid : int,
 		arg_delay_per_tick : float).(EffectType.DAMAGE_OVER_TIME,
-		effect_source):
+		arg_effect_uuid):
 	
 	on_hit_damage = arg_on_hit_damage
 	damage_type = on_hit_damage.damage_type
 	
-	number_of_ticks = arg_num_of_ticks
 	delay_per_tick = arg_delay_per_tick
 	
 	description = _get_description()
@@ -42,24 +38,39 @@ func _get_description() -> String:
 	var type_name = DamageType.get_name_of_damage_type(damage_type)
 	
 	var modifier = on_hit_damage.damage_as_modifier
-	var modifier_desc = modifier.get_description_scaled(number_of_ticks)
+	var modifier_desc = modifier.get_description_scaled(time_in_seconds / delay_per_tick)
 	
 	if modifier is FlatModifier:
-		return (modifier_desc + " " + type_name + " damage over " + _get_total_duration() + " seconds")
+		if time_in_seconds != 0 and is_timebound:
+			return (modifier_desc + " " + type_name + " damage over " + _get_total_duration() + " seconds")
+		else:
+			return (modifier.flat_modifier + " " + type_name + " damage per " + delay_per_tick + " seconds")
 	elif modifier is PercentModifier:
-		var first_part : String = modifier_desc[0]
-		var second_part : String = modifier_desc[1]
-		
-		var part1 = (first_part + " enemy health as " + type_name + " damage")
-		if second_part != null:
-			part1 += " " + second_part
-		
-		part1 += " over" + _get_total_duration() + " seconds"
+		if time_in_seconds != 0 and is_timebound:
+			var first_part : String = modifier_desc[0]
+			var second_part : String = modifier_desc[1]
+			
+			var part1 = (first_part + " enemy health as " + type_name + " damage")
+			if second_part != null:
+				part1 += " " + second_part
+			
+			part1 += " over" + _get_total_duration() + " seconds"
+		else:
+			var desc = modifier.get_description()
+			
+			var first_part : String = desc[0]
+			var second_part : String = desc[1]
+			
+			var part1 = (first_part + " enemy health as " + type_name + " damage per " + delay_per_tick)
+			if second_part != null:
+				part1 = " " + second_part
+			
+			return part1
 	
 	return ""
 
 func _get_total_duration() -> String:
-	return str(number_of_ticks * delay_per_tick)
+	return str(time_in_seconds)
 
 
 # ICON RELATED
