@@ -5,7 +5,7 @@ const SpawnAOETemplate = preload("res://TowerRelated/Templates/SpawnAOETemplate.
 enum SpawnLocation {
 	CENTERED_TO_MODULE,
 	CENTERED_TO_ENEMY,
-	IN_FRONT_OF_TOWER,
+	IN_FRONT_OF_TOWER, # NOT TESTED YET
 }
 
 var spawn_location : int = SpawnLocation.IN_FRONT_OF_TOWER

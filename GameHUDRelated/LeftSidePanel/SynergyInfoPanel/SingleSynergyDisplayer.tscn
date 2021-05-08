@@ -5,7 +5,7 @@
 [ext_resource path="res://Fonts/trajanpro/trajanpro-regular.ttf" type="DynamicFontData" id=3]
 [ext_resource path="res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SingleSynergyDisplayer.gd" type="Script" id=4]
 
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="DynamicFont" id=1]
 size = 8
 font_data = ExtResource( 3 )
 
@@ -51,7 +51,7 @@ custom_constants/margin_top = 1
 margin_top = 3.0
 margin_right = 14.0
 margin_bottom = 11.0
-custom_fonts/font = SubResource( 4 )
+custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "IV"
 align = 1

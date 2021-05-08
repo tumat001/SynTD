@@ -49,7 +49,9 @@ var extra_on_hit_damages : Dictionary
 var on_hit_effect_scale : float = 1
 var on_hit_effects : Dictionary
 
-var range_module : RangeModule
+var range_module : RangeModule setget _set_range_module
+var use_self_range_module : bool = false
+
 var modifications : Array
 
 # internal stuffs
@@ -66,9 +68,16 @@ var _disabled : bool = false
 # MISC
 
 func _ready():
-	if range_module != null:
-		add_child(range_module)
+	pass
 
+func _set_range_module(new_module):
+	if range_module != null:
+		remove_child(range_module)
+	
+	if new_module != null:
+		add_child(new_module)
+	
+	range_module = new_module
 
 # Time passed
 
@@ -205,7 +214,7 @@ func is_ready_to_attack() -> bool:
 
 
 func attempt_find_then_attack_enemy() -> bool:
-	if range_module == null:
+	if range_module == null or !use_self_range_module:
 		return false
 	
 	var target : AbstractEnemy
@@ -216,7 +225,7 @@ func attempt_find_then_attack_enemy() -> bool:
 
 
 func attempt_find_then_attack_enemies(num : int) -> bool:
-	if range_module == null:
+	if range_module == null or !use_self_range_module:
 		return false
 	
 	if num == 1:

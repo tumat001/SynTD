@@ -15,19 +15,34 @@ var beam_sprite_frames : SpriteFrames
 
 var show_beam_at_windup : bool = false
 
+# internals
+
+var _should_update_beams : bool = true
+var _terminate_update_on_next : bool = false
 
 func _process(delta):
 	update_beams_state()
 
 func update_beams_state():
-	for beam in beam_to_enemy_map:
-		if beam.visible:
-			var enemy = beam_to_enemy_map[beam]
-			
-			if enemy == null:
-				beam.visible = false
-			else:
-				beam.update_destination_position(enemy.global_position)
+	if _should_update_beams:
+		for beam in beam_to_enemy_map:
+			if beam.visible:
+				var enemy = beam_to_enemy_map[beam]
+				
+				if enemy == null or !range_module.enemies_in_range.has(enemy):
+					beam.visible = false
+				else:
+					beam.update_destination_position(enemy.global_position)
+		
+		if _terminate_update_on_next:
+			_should_update_beams = false
+	
+	if range_module.enemies_in_range.size() == 0:
+		_terminate_update_on_next = true
+	else:
+		_should_update_beams = true
+		_terminate_update_on_next = false
+
 
 # Showing beam at windup or not
 

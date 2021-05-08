@@ -1,5 +1,5 @@
 
-const EffectType = preload("res://GameInfoRelated/EffectType.gd")
+const EnemyBaseEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd")
 const Modifier = preload("res://GameInfoRelated/Modifier.gd")
 
 var effect_type : int

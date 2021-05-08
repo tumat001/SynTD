@@ -1,0 +1,40 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/SingleIngredientPanel.gd" type="Script" id=1]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_BaseDamageIncrease.png" type="Texture" id=2]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 8
+font_data = ExtResource( 3 )
+
+[node name="SingleIngredientPanel" type="MarginContainer"]
+margin_right = 63.0
+margin_bottom = 14.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 63.0
+margin_bottom = 14.0
+
+[node name="IngredientIcon" type="TextureRect" parent="HBoxContainer"]
+margin_right = 14.0
+margin_bottom = 14.0
+texture = ExtResource( 2 )
+
+[node name="Marginer" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 18.0
+margin_right = 62.0
+margin_bottom = 14.0
+custom_constants/margin_top = 1
+
+[node name="IngredientLabel" type="Label" parent="HBoxContainer/Marginer"]
+margin_top = 3.0
+margin_right = 44.0
+margin_bottom = 12.0
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "PlaceHolder"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://GameHUDRelated/BottomPanelBackground.png" type="Texture" id=1]
 [ext_resource path="res://GameHUDRelated/GoldPanel/GoldIndicatorBackground.png" type="Texture" id=2]
@@ -21,6 +21,11 @@ font_data = ExtResource( 3 )
 [sub_resource type="DynamicFont" id=2]
 size = 13
 font_data = ExtResource( 3 )
+
+[sub_resource type="Curve2D" id=3]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 414.002, 159.797, 0, 0, 0, 0, 592, 160, 0, 0, 0, 0, 592, 272, 0, 0, 0, 0, 430.82, 292.659, 0, 0, 0, 0, 414.002, 159.797 )
+}
 
 [node name="GameElements" type="Node"]
 script = ExtResource( 5 )
@@ -160,17 +165,32 @@ mouse_filter = 2
 
 [node name="LeftsidePanel" parent="." instance=ExtResource( 11 )]
 
-[node name="TestEnemy" parent="." instance=ExtResource( 13 )]
-position = Vector2( 592.361, 255.392 )
+[node name="Path2D" type="Path2D" parent="."]
+curve = SubResource( 3 )
 
-[node name="TestEnemy2" parent="." instance=ExtResource( 13 )]
-position = Vector2( 563.528, 285.286 )
+[node name="TestEnemy" parent="Path2D" instance=ExtResource( 13 )]
+position = Vector2( 454.004, 159.843 )
+scale = Vector2( 0.5, 0.5 )
+offset = 40.0
+loop = true
 
-[node name="TestEnemy3" parent="." instance=ExtResource( 13 )]
-position = Vector2( 560.35, 254.59 )
+[node name="TestEnemy2" parent="Path2D" instance=ExtResource( 13 )]
+position = Vector2( 473.954, 159.865 )
+scale = Vector2( 0.5, 0.5 )
+offset = 60.0
+loop = true
 
-[node name="TestEnemy4" parent="." instance=ExtResource( 13 )]
-position = Vector2( 439.712, 210.407 )
+[node name="TestEnemy3" parent="Path2D" instance=ExtResource( 13 )]
+position = Vector2( 573.961, 159.979 )
+scale = Vector2( 0.5, 0.5 )
+offset = 160.0
+loop = true
+
+[node name="TestEnemy4" parent="Path2D" instance=ExtResource( 13 )]
+position = Vector2( 548.764, 277.542 )
+scale = Vector2( 0.5, 0.5 )
+offset = 330.0
+loop = true
 [connection signal="level_down" from="BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_down"]
 [connection signal="level_up" from="BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_up"]
 [connection signal="reroll" from="BottomPanel/VBoxContainer/HBoxContainer/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_reroll"]

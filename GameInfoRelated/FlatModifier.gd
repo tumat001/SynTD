@@ -12,6 +12,9 @@ func get_modification_to_value(value):
 func get_description():
 	return str(flat_modifier)
 
+func get_description_scaled(scale : float):
+	return str(flat_modifier * scale)
+
 
 func get_copy_scaled_by(scale_factor : float) -> Modifier:
 	var copy = get_script().new(internal_name)

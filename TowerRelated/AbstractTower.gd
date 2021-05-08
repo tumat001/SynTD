@@ -64,6 +64,7 @@ func _add_all_as_children():
 	
 	for attack_module in attack_modules_and_target_num.keys():
 		add_child(attack_module)
+		attack_module.range_module = range_module
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -210,7 +211,7 @@ func _toggle_module_ranges():
 		range_module.toggle_show_range()
 	
 	for attack_module in attack_modules_and_target_num.keys():
-		if attack_module.range_module != null:
+		if attack_module.range_module != null and attack_module.use_self_range_module:
 			attack_module.range_module.toggle_show_range()
 	
 

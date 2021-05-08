@@ -1,6 +1,5 @@
 extends "res://GameHUDRelated/Tooltips/BaseTooltip.gd"
 
-const TowerBuffs = preload("res://GameInfoRelated/TowerBuffs.gd")
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
@@ -32,7 +31,7 @@ func update_display():
 			$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions = ["(Cannot be used as an ingredient."]
 		else:
 			for ing_buff in tower_info.ingredient_buffs:
-				$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.append(ing_buff.get_description())
+				$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.append(ing_buff.description)
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.update_display()
 		
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.descriptions.clear()

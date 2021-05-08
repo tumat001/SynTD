@@ -6,36 +6,39 @@ const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const OnHitEffect = preload("res://GameInfoRelated/OnHitEffect.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
-const EffectType = preload("res://GameInfoRelated/EffectType.gd")
+const EnemyBaseEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd")
 const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
 signal on_death
 signal on_hit
+signal on_current_health_changed(current_health)
+signal on_max_health_changed(max_health)
 
-var base_health : float
+
+var base_health : float = 1
 var _flat_base_health_modifiers = {}
 var _percent_base_health_modifiers = {}
-var current_health : float
+var current_health : float = 1
 
 var active_on_hit_effects = {}
 
-var pierce_consumed_per_hit : float
+var pierce_consumed_per_hit : float = 1
 
-var base_armor : float
+var base_armor : float = 0
 var flat_armor_modifiers = {}
 var percent_armor_modifiers = {}
 
-var base_toughness : float
+var base_toughness : float = 0
 var flat_toughness_modifiers = {}
 var percent_toughness_modifiers = {}
 
-var base_resistance : float
+var base_resistance : float = 0
 var flat_resistance_modifiers = {}
 var percent_resistance_modifiers = {}
 
-var base_player_damage : float
+var base_player_damage : float = 1
 var flat_player_damage_modifiers = {}
 var percent_player_damage_modifiers = {}
 
@@ -45,18 +48,39 @@ var percent_movement_speed_modifiers = {}
 
 var distance_to_exit : float
 
+#internals
+
+var _self_size : Vector2
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	_self_size = _get_current_anim_size()
+	
+	$Healthbar.position.y -= round((_self_size.y / 2) + 15)
+	$Healthbar.position.x -= round($Healthbar.get_size().x / 2)
+	
+	connect("on_current_health_changed", $Healthbar, "_on_current_health_changed")
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _post_ready():
+	$Healthbar.base_health = base_health
+	$Healthbar.redraw_chunks()
+
+
+func _get_current_anim_size() -> Vector2:
+	return $AnimatedSprite.frames.get_frame($AnimatedSprite.animation, $AnimatedSprite.frame).get_size()
+
+
 #func _process(delta):
 #	pass
+
 
 func _physics_process(delta):
 	var distance_traveled = delta * calculate_final_movement_speed()
 	offset += distance_traveled
 	distance_to_exit -= distance_traveled
+	
+
+
 
 # Health related functions. Different from the norm
 # because percentages must be preserved when removing
@@ -80,12 +104,18 @@ func heal_without_overhealing(heal_amount):
 		current_health = max_health
 	else:
 		current_health += heal_amount
+	
+	emit_signal("on_current_health_changed", current_health)
 
 func heal_with_overhealing(heal_amount):
 	current_health += heal_amount
+	
+	emit_signal("on_current_health_changed", current_health)
 
 func _set_current_health_to(health_amount):
 	current_health = health_amount
+	
+	emit_signal("on_current_health_changed", current_health)
 
 # The only function that should handle taking
 # damage and health deduction. Also where
@@ -94,9 +124,14 @@ func _take_unmitigated_damage(damage_amount):
 	current_health -= damage_amount
 	if current_health <= 0:
 		_destroy_self()
+	else:
+		emit_signal("on_current_health_changed", current_health)
 
 func _destroy_self():
 	emit_signal("on_death")
+	
+	$CollisionArea.monitorable = false
+	$CollisionArea.monitoring = false
 	queue_free()
 
 func add_flat_base_health_modifier_with_heal(modifier_name : String, 
@@ -282,3 +317,13 @@ func _calculate_multiplier_from_total_resistance():
 func _process_on_hit_effects(on_hit_effects):
 	#TODO do this afterwards
 	pass
+
+
+# Coll
+
+func _on_CollisionArea_body_entered(body):
+	if body is BaseBullet:
+		hit_by_bullet(body)
+
+func get_enemy_parent():
+	return self
