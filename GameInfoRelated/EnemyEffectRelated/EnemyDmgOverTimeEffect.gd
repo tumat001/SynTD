@@ -32,7 +32,7 @@ func _init(arg_on_hit_damage : OnHitDamage,
 # Description related
 
 func _get_description() -> String:
-	if description != null:
+	if description != null and description != "":
 		return description
 	
 	var type_name = DamageType.get_name_of_damage_type(damage_type)

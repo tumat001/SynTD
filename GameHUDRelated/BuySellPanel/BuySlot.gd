@@ -3,6 +3,7 @@ extends MarginContainer
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 const TowerBuyCardScene = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCard.tscn")
 const Towers = preload("res://GameInfoRelated/Towers.gd")
+const TowerBuyCard = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCard.gd")
 
 signal tower_bought(tower_id)
 
@@ -26,3 +27,7 @@ func roll_buy_card_to_tower_id(tower_id : int):
 
 func _on_tower_bought(tower_id : int):
 	emit_signal("tower_bought", tower_id)
+
+func kill_tooltip_of_tower_card():
+	if current_child is TowerBuyCard:
+		current_child.kill_current_tooltip()

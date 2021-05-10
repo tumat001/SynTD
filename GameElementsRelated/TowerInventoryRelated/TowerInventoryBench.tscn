@@ -43,13 +43,3 @@ position = Vector2( 210, 0 )
 
 [node name="BenchSlot10" parent="." instance=ExtResource( 1 )]
 position = Vector2( 270, 0 )
-[connection signal="area_entered" from="BenchSlot01" to="BenchSlot01" method="_on_BaseAreaTowerPlacable_area_entered"]
-[connection signal="area_entered" from="BenchSlot02" to="BenchSlot02" method="_on_BaseAreaTowerPlacable_area_entered"]
-[connection signal="area_entered" from="BenchSlot03" to="BenchSlot03" method="_on_BaseAreaTowerPlacable_area_entered"]
-[connection signal="area_entered" from="BenchSlot04" to="BenchSlot04" method="_on_BaseAreaTowerPlacable_area_entered"]
-[connection signal="area_entered" from="BenchSlot05" to="BenchSlot05" method="_on_BaseAreaTowerPlacable_area_entered"]
-[connection signal="area_entered" from="BenchSlot06" to="BenchSlot06" method="_on_BaseAreaTowerPlacable_area_entered"]
-[connection signal="area_entered" from="BenchSlot07" to="BenchSlot07" method="_on_BaseAreaTowerPlacable_area_entered"]
-[connection signal="area_entered" from="BenchSlot08" to="BenchSlot08" method="_on_BaseAreaTowerPlacable_area_entered"]
-[connection signal="area_entered" from="BenchSlot09" to="BenchSlot09" method="_on_BaseAreaTowerPlacable_area_entered"]
-[connection signal="area_entered" from="BenchSlot10" to="BenchSlot10" method="_on_BaseAreaTowerPlacable_area_entered"]

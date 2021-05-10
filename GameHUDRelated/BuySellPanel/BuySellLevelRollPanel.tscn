@@ -33,14 +33,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TextureRect" type="TextureRect" parent="."]
-margin_right = 772.0
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 751.0
 margin_bottom = 80.0
 mouse_filter = 2
 texture = ExtResource( 1 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-margin_right = 772.0
+margin_right = 751.0
 margin_bottom = 80.0
 mouse_filter = 2
 custom_constants/separation = 0
@@ -207,33 +207,33 @@ text = "0"
 
 [node name="BuySlotContainer" type="HBoxContainer" parent="HBoxContainer"]
 margin_left = 122.0
-margin_right = 772.0
+margin_right = 642.0
 margin_bottom = 80.0
 mouse_filter = 2
 custom_constants/separation = 0
 
 [node name="BuySlot01" parent="HBoxContainer/BuySlotContainer" instance=ExtResource( 6 )]
-margin_right = 130.0
+margin_right = 104.0
 margin_bottom = 80.0
 
 [node name="BuySlot02" parent="HBoxContainer/BuySlotContainer" instance=ExtResource( 6 )]
-margin_left = 130.0
-margin_right = 260.0
+margin_left = 104.0
+margin_right = 208.0
 margin_bottom = 80.0
 
 [node name="BuySlot03" parent="HBoxContainer/BuySlotContainer" instance=ExtResource( 6 )]
-margin_left = 260.0
-margin_right = 390.0
+margin_left = 208.0
+margin_right = 312.0
 margin_bottom = 80.0
 
 [node name="BuySlot04" parent="HBoxContainer/BuySlotContainer" instance=ExtResource( 6 )]
-margin_left = 390.0
-margin_right = 520.0
+margin_left = 312.0
+margin_right = 416.0
 margin_bottom = 80.0
 
 [node name="BuySlot05" parent="HBoxContainer/BuySlotContainer" instance=ExtResource( 6 )]
-margin_left = 520.0
-margin_right = 650.0
+margin_left = 416.0
+margin_right = 520.0
 margin_bottom = 80.0
 [connection signal="pressed" from="HBoxContainer/LevelRerollContainer/RerollPanel/RerollButton" to="." method="_on_RerollButton_pressed"]
 [connection signal="pressed" from="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelDownPanel/LevelDownButton" to="." method="_on_LevelDownButton_pressed"]

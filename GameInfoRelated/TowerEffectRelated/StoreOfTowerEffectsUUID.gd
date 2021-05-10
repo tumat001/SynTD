@@ -1,4 +1,16 @@
 
 enum {
+	# TOWERS
+	# RED (100)
 	
+	# ORANGE (200)
+	
+	# YELLOW (300)
+	
+	# GREEN (400)
+	
+	# BLUE (500)
+	ING_SPRINKLER_ATK_SPEED = 500
+	
+	# VIOLET (600)
 }

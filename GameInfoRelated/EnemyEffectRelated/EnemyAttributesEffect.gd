@@ -42,7 +42,7 @@ func _init(arg_attribute_type : int,
 # Description Related
 
 func _get_description() -> String:
-	if description != null:
+	if description != null and description != "":
 		return description
 	
 	if attribute_type == FLAT_MOV_SPEED:

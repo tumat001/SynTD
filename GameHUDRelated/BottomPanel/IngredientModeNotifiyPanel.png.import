@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Ing_StatusInflict.png-b2bd3a386e9305462e1bd991aca43cc4.stex"
+path="res://.import/IngredientModeNotifiyPanel.png-affc8e8c1bf14c892ac711455aac4965.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_StatusInflict.png"
-dest_files=[ "res://.import/Ing_StatusInflict.png-b2bd3a386e9305462e1bd991aca43cc4.stex" ]
+source_file="res://GameHUDRelated/BottomPanel/IngredientModeNotifiyPanel.png"
+dest_files=[ "res://.import/IngredientModeNotifiyPanel.png-affc8e8c1bf14c892ac711455aac4965.stex" ]
 
 [params]
 

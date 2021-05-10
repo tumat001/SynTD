@@ -2,7 +2,6 @@ extends "res://TowerRelated/AbstractTower.gd"
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
-const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
@@ -17,6 +16,8 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_colors = info.colors
+	ingredient_of_self = info.ingredient_effect
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -45,4 +46,5 @@ func _ready():
 	
 	
 	_post_inherit_ready()
+
 

@@ -1,3 +1,5 @@
+const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
+
 var tower_name : String
 var tower_type_id : int
 var tower_cost : int
@@ -5,8 +7,8 @@ var tower_tier : int
 var energy_consumption_levels : Array = []
 var energy_consumption_level_buffs : Array = []
 var colors : Array = []
-var ingredient_buffs : Array = []
-var ingredient_buff_description : String = ""
+var ingredient_effect : IngredientEffect
+var ingredient_effect_simple_description : String = ""
 var tower_image_in_buy_card
 var tower_descriptions : Array = []
 

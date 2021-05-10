@@ -5,7 +5,7 @@ enum EffectType {
 	DAMAGE_OVER_TIME,
 	HEAL_OVER_TIME,
 	STACK_EFFECT,
-	OTHER_EFFECTS,
+	MISC,
 }
 
 var effect_uuid : int

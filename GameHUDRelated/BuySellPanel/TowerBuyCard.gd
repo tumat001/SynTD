@@ -39,29 +39,29 @@ func update_display():
 		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Color01Icon.texture = TowerColors.get_color_symbol_on_card(color01)
 		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Marginer/Color01Label.text = TowerColors.get_color_name_on_card(color01)
 	else:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Color01Icon.visible = false
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Marginer/Color01Label.visible = false
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Color01Icon.self_modulate.a = 0
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Marginer/Color01Label.self_modulate.a = 0
 	
 	if color02 != null:
 		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Color02Icon.texture = TowerColors.get_color_symbol_on_card(color02)
 		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Marginer/Color02Label.text = TowerColors.get_color_name_on_card(color02)
 	else:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Color02Icon.visible = false
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Marginer/Color02Label.visible = false
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Color02Icon.self_modulate.a = 0
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Marginer/Color02Label.self_modulate.a = 0
 	
 	# Energy Related
 	if tower_information.energy_consumption_levels.size() > 0:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer/EnergyLabel.text = create_energy_display(tower_information.energy_consumption_levels)
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer/Marginer/EnergyLabel.text = create_energy_display(tower_information.energy_consumption_levels)
 	else:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer/EnergyLabel.visible = false
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer/EnergyIcon.visible = false
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer/Marginer/EnergyLabel.self_modulate.a = 0
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer/EnergyIcon.self_modulate.a = 0
 	
 	# Ingredient Related
-	if tower_information.ingredient_buffs.size() > 0:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/IngredientLabel.text = tower_information.ingredient_buff_description
+	if tower_information.ingredient_effect != null:
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/Marginer/IngredientLabel.text = tower_information.ingredient_effect_simple_description
 	else:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/IngredientIcon.visible = false
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/IngredientLabel.visible = false
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/IngredientIcon.self_modulate.a = 0
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/Marginer/IngredientLabel.self_modulate.a = 0
 	
 	# TowerImageRelated
 	if tower_information.tower_image_in_buy_card != null:
@@ -121,6 +121,9 @@ func _free_old_and_create_tooltip_for_tower():
 		get_tree().get_root().add_child(current_tooltip)
 
 func _on_BuyCard_mouse_exited():
+	kill_current_tooltip()
+
+func kill_current_tooltip():
 	if current_tooltip != null:
 		current_tooltip.queue_free()
 

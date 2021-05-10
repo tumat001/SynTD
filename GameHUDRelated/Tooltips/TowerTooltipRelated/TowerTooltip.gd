@@ -27,11 +27,10 @@ func update_display():
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/RangePanel/RangeLabel.text = str(tower_info.base_range)
 		
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.clear()
-		if tower_info.ingredient_buffs.size() == 0:
+		if tower_info.ingredient_effect == null:
 			$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions = ["(Cannot be used as an ingredient."]
 		else:
-			for ing_buff in tower_info.ingredient_buffs:
-				$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.append(ing_buff.description)
+			$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.append(tower_info.ingredient_effect.description)
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.update_display()
 		
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.descriptions.clear()

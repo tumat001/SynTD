@@ -42,3 +42,13 @@ func _on_tower_bought(tower_id):
 	emit_signal("tower_bought", tower_id)
 
 
+#
+
+func kill_all_tooltips_of_buycards():
+	$HBoxContainer/BuySlotContainer/BuySlot01.kill_tooltip_of_tower_card()
+	$HBoxContainer/BuySlotContainer/BuySlot02.kill_tooltip_of_tower_card()
+	$HBoxContainer/BuySlotContainer/BuySlot03.kill_tooltip_of_tower_card()
+	$HBoxContainer/BuySlotContainer/BuySlot04.kill_tooltip_of_tower_card()
+	$HBoxContainer/BuySlotContainer/BuySlot05.kill_tooltip_of_tower_card()
+
+

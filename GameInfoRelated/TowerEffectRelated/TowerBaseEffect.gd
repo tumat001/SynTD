@@ -17,8 +17,12 @@ var effect_icon : Texture
 var is_timebound : bool
 var time_in_seconds : float
 
+# NOT USED FOR NOW
 var is_countbound : bool
 var count : int
+
+var is_ingredient_effect : bool
+
 
 func _init(arg_effect_type : int,
 		arg_effect_uuid : int):

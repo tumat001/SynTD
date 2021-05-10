@@ -91,9 +91,13 @@ func calculate_final_pierce():
 	
 	if benefits_from_bonus_pierce:
 		for effect in percent_pierce_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_pierce += effect.attribute_as_modifier.get_modification_to_value(base_pierce)
 		
 		for effect in flat_pierce_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_pierce += effect.attribute_as_modifier.get_modification_to_value(base_pierce)
 	
 	return final_pierce
@@ -104,9 +108,13 @@ func calculate_final_proj_speed():
 	
 	if benefits_from_bonus_proj_speed:
 		for effect in percent_proj_speed_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_proj_speed += effect.attribute_as_modifier.get_modification_to_value(base_proj_speed)
 		
 		for effect in flat_proj_speed_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_proj_speed += effect.attribute_as_modifier.get_modification_to_value(base_proj_speed)
 	
 	return final_proj_speed

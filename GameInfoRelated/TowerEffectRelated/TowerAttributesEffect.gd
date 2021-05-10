@@ -43,29 +43,29 @@ func _init(arg_attribute_type : int, arg_modifier : Modifier,
 # Description Related
 
 func _get_description() -> String:
-	if description != null:
+	if description != null and description != "":
 		return description
 	
 	if attribute_type == FLAT_BASE_DAMAGE_BONUS:
 		return _generate_flat_description("base dmg")
 	elif attribute_type == PERCENT_BASE_DAMAGE_BONUS:
-		return _generate_percent_description("of base dmg")
+		return _generate_percent_description("dmg")
 	elif attribute_type == FLAT_ATTACK_SPEED:
 		return _generate_flat_description("bonus attk speed")
 	elif attribute_type == PERCENT_BASE_ATTACK_SPEED:
-		return _generate_percent_description("of base attk speed")
+		return _generate_percent_description("attk speed")
 	elif attribute_type == FLAT_PIERCE:
 		return _generate_flat_description("bonus pierce")
 	elif attribute_type == PERCENT_BASE_PIERCE:
-		return _generate_percent_description("of base pierce")
+		return _generate_percent_description("pierce")
 	elif attribute_type == FLAT_RANGE:
 		return _generate_flat_description("bonus range")
 	elif attribute_type == PERCENT_BASE_RANGE:
-		return _generate_percent_description("of base range")
+		return _generate_percent_description("range")
 	elif attribute_type == FLAT_PROJ_SPEED:
 		return _generate_flat_description("bonus proj speed")
 	elif attribute_type == PERCENT_BASE_PROJ_SPEED:
-		return _generate_flat_description("of bonus proj speed")
+		return _generate_percent_description("proj speed")
 	
 	return "Err"
 

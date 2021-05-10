@@ -1,6 +1,13 @@
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
+const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
+const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
+const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
+const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerAttributesEffect.gd")
+const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerBaseEffect.gd")
+const StoreOfTowerEffectsUUID = preload("res://GameInfoRelated/TowerEffectRelated/StoreOfTowerEffectsUUID.gd")
+const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
 # GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
@@ -77,6 +84,19 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Sprinkles water droplets to enemies"
 		]
+		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new("sp")
+		attk_speed_attr_mod.percent_amount = 12.5
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_SPRINKLER_ATK_SPEED)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		ing_effect.compatible_colors = [TowerColors.BLUE, TowerColors.GREEN, TowerColors.VIOLET]
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk speed"
+		
 	elif tower_id == BERRY_BUSH:
 		info = TowerTypeInformation.new("Berry Bush", BERRY_BUSH)
 		info.tower_cost = 2

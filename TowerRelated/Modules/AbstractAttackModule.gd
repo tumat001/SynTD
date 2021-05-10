@@ -27,6 +27,8 @@ var benefits_from_bonus_on_hit_damage : bool = true
 var benefits_from_bonus_base_damage : bool = true
 var benefits_from_bonus_on_hit_effect : bool = true
 
+var benefits_from_ingredient_effect : bool = true
+
 var base_attack_speed : float = 1
 var base_attack_wind_up : float = 0
 # map of uuid (internal name) to effect
@@ -76,7 +78,7 @@ func _set_range_module(new_module):
 	if range_module != null:
 		remove_child(range_module)
 	
-	if new_module != null:
+	if new_module != null and use_self_range_module:
 		add_child(new_module)
 	
 	range_module = new_module
@@ -158,9 +160,13 @@ func calculate_final_attack_speed() -> float:
 	
 	if benefits_from_bonus_attack_speed:
 		for effect in percent_attack_speed_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_attack_speed += effect.attribute_as_modifier.get_modification_to_value(base_attack_speed)
 		
 		for effect in flat_attack_speed_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_attack_speed += effect.attribute_as_modifier.get_modification_to_value(base_attack_speed)
 	
 	if final_attack_speed != 0:
@@ -174,9 +180,13 @@ func calculate_final_attack_wind_up() -> float:
 	
 	if benefits_from_bonus_attack_speed:
 		for effect in percent_attack_speed_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_attack_wind_up -= effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
 		
 		for effect in flat_attack_speed_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_attack_wind_up -= effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
 	
 	
@@ -191,9 +201,13 @@ func calculate_final_burst_attack_speed() -> float:
 	
 	if benefits_from_bonus_attack_speed:
 		for effect in percent_attack_speed_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_burst_pause += effect.attribute_as_modifier.get_modification_to_value(burst_attack_speed)
 		
 		for effect in flat_attack_speed_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_burst_pause += effect.attribute_as_modifier.get_modification_to_value(burst_attack_speed)
 	
 	if final_burst_pause != 0:
@@ -473,9 +487,13 @@ func calculate_final_base_damage():
 	
 	if benefits_from_bonus_base_damage:
 		for effect in percent_base_damage_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
 		
 		for effect in flat_base_damage_effects.values():
+			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
 			final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
 	
 	return final_base_damage
@@ -495,6 +513,9 @@ func _get_scaled_extra_on_hit_damages() -> Dictionary:
 	if benefits_from_bonus_on_hit_damage:
 		# EXTRA ON HITS
 		for extra_on_hit_key_as_effect in on_hit_damage_adder_effects.keys():
+			if on_hit_damage_adder_effects[extra_on_hit_key_as_effect].is_ingredient_effect and !benefits_from_ingredient_effect:
+				continue
+			
 			var extra_on_hit = on_hit_damage_adder_effects[extra_on_hit_key_as_effect].on_hit_damage
 			var duplicate = extra_on_hit
 			

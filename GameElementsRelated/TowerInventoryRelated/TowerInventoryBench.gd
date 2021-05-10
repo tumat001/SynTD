@@ -25,7 +25,7 @@ func _ready():
 		$BenchSlot07,
 		$BenchSlot08,
 		$BenchSlot09,
-		$BenchSlot10
+		$BenchSlot10,
 	]
 
 func insert_tower(tower_id : int):
@@ -34,8 +34,6 @@ func insert_tower(tower_id : int):
 	if bench_slot != null:
 		var tower_as_instance : AbstractTower = Towers.get_tower_scene(tower_id).instance()
 		
-		# TODO Make this a child of something else that
-		# will keep track of the colors and towers
 		tower_as_instance.hovering_over_placable = bench_slot
 		tower_manager.add_tower(tower_as_instance)
 

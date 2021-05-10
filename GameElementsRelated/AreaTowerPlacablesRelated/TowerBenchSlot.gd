@@ -15,3 +15,4 @@ func set_area_texture_to_not_glow():
 
 func get_placable_type_name() -> String:
 	return "TowerBenchSlot"
+
