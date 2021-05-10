@@ -7,12 +7,13 @@ const SynergyManager = preload("res://GameElementsRelated/SynergyManager.gd")
 const InnerBottomPanel = preload("res://GameElementsRelated/InnerBottomPanel.gd")
 const RightSidePanel = preload("res://GameHUDRelated/RightSidePanel/RightSidePanel.gd")
 
-
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var in_map_placables_manager : InMapPlacablesManager
 var synergy_manager : SynergyManager
 var inner_bottom_panel : InnerBottomPanel
 var right_side_panel : RightSidePanel
+var tower_inventory_bench
+var tower_manager
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,12 +23,14 @@ func _ready():
 	synergy_manager.left_panel = $LeftsidePanel
 	inner_bottom_panel = $BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel
 	right_side_panel = $RightSidePanel
+	tower_inventory_bench = $TowerInventoryBench
+	tower_manager = $TowerManager
 	
-	$TowerInventoryBench.tower_manager = $TowerManager
-	$TowerManager.game_elements = self
-	$TowerManager.in_map_placables_manager = in_map_placables_manager
+	tower_inventory_bench.tower_manager = tower_manager
+	tower_manager.game_elements = self
+	tower_manager.in_map_placables_manager = in_map_placables_manager
 	
-	$TowerManager.tower_inventory_bench = $TowerInventoryBench
+	tower_manager.tower_inventory_bench = tower_inventory_bench
 
 
 # From bottom panel
@@ -51,5 +54,5 @@ func _on_BuySellLevelRollPanel_reroll():
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
-	if !$TowerInventoryBench.is_bench_full():
-		$TowerInventoryBench.insert_tower(tower_id)
+	if !tower_inventory_bench.is_bench_full():
+		tower_inventory_bench.insert_tower(tower_id)

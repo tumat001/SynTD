@@ -317,7 +317,9 @@ func show_acceptability_with_ingredient(ingredient_effect : IngredientEffect, to
 func hide_acceptability_with_ingredient():
 	$IngredientDeclinePic.visible = false
 
+
 # Inputs related
+
 
 func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:
@@ -329,6 +331,7 @@ func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 			if is_being_dragged:
 				_end_drag()
 		
+
 
 
 # Show Ranges of modules and Tower Info

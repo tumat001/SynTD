@@ -35,9 +35,7 @@ func _set_ingredient_of_single_panels():
 		
 		if i < ingredient_effect_limit:
 			var panel : SingleIngredientPanel = single_ingredient_panels[i]
-			var gray = panel.self_modulate.gray()
-			panel.modulate = Color(gray, gray, gray, 1)
-			panel.modulate.a = 0.5
+			panel.modulate = Color(0.4, 0.4, 0.4, 1)
 			
 		else:
 			var panel : SingleIngredientPanel = single_ingredient_panels[i]

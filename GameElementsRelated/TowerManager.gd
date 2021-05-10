@@ -38,6 +38,7 @@ func _unhandled_input(event):
 		if game_elements.right_side_panel.panel_showing == game_elements.right_side_panel.Panels.TOWER_INFO:
 			if event.pressed and (event.button_index == BUTTON_RIGHT or event.button_index == BUTTON_LEFT):
 				_show_round_panel()
+		
 
 
 # Adding tower as child of this to monitor it

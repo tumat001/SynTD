@@ -41,11 +41,11 @@ _data = {
 [node name="GameElements" type="Node"]
 script = ExtResource( 5 )
 
-[node name="TowerInventoryBench" parent="." instance=ExtResource( 7 )]
-position = Vector2( 475, 410 )
-
 [node name="TowerManager" type="Node" parent="."]
 script = ExtResource( 8 )
+
+[node name="TowerInventoryBench" parent="." instance=ExtResource( 7 )]
+position = Vector2( 475, 410 )
 
 [node name="MapManager" type="Node" parent="."]
 
@@ -218,14 +218,14 @@ margin_right = 881.0
 margin_bottom = 80.0
 mouse_filter = 2
 
-[node name="LeftsidePanel" parent="." instance=ExtResource( 11 )]
-
 [node name="RightSidePanel" parent="." instance=ExtResource( 16 )]
 anchor_left = 1.0
 anchor_right = 1.0
 margin_left = -120.0
 margin_right = 0.0
 margin_bottom = 440.0
+
+[node name="LeftsidePanel" parent="." instance=ExtResource( 11 )]
 
 [node name="Path2D" type="Path2D" parent="."]
 curve = SubResource( 5 )
