@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltip.gd" type="Script" id=1]
 [ext_resource path="res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltipHeader.png" type="Texture" id=2]
@@ -8,6 +8,11 @@
 [ext_resource path="res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltipMidSeparator.png" type="Texture" id=6]
 [ext_resource path="res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltipBottomSide.png" type="Texture" id=7]
 [ext_resource path="res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltipEnder.png" type="Texture" id=8]
+[ext_resource path="res://GameInfoRelated/TowerStatsIcons/StatIcon_BaseAtkSpeed.png" type="Texture" id=9]
+[ext_resource path="res://GameInfoRelated/TowerStatsIcons/StatIcon_BaseRange.png" type="Texture" id=10]
+[ext_resource path="res://GameInfoRelated/TowerStatsIcons/StatIcon_BaseDamageType.png" type="Texture" id=11]
+[ext_resource path="res://GameInfoRelated/TowerStatsIcons/StatIcon_BaseDamage.png" type="Texture" id=12]
+[ext_resource path="res://GameInfoRelated/TowerStatsIcons/StatIcon_OnHitMultiplier.png" type="Texture" id=13]
 
 [sub_resource type="DynamicFont" id=1]
 size = 12
@@ -29,6 +34,7 @@ font_data = ExtResource( 3 )
 margin_right = 40.0
 margin_bottom = 40.0
 mouse_filter = 2
+size_flags_vertical = 10
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -36,8 +42,9 @@ __meta__ = {
 
 [node name="RowsMainContainer" type="VBoxContainer" parent="."]
 margin_right = 210.0
-margin_bottom = 111.0
+margin_bottom = 124.0
 mouse_filter = 2
+size_flags_vertical = 10
 custom_constants/separation = 0
 
 [node name="HeaderContainer" type="MarginContainer" parent="RowsMainContainer"]
@@ -102,26 +109,26 @@ size_flags_vertical = 6
 [node name="StatsContainer" type="MarginContainer" parent="RowsMainContainer"]
 margin_top = 20.0
 margin_right = 210.0
-margin_bottom = 76.0
+margin_bottom = 89.0
 mouse_filter = 2
-size_flags_vertical = 7
+size_flags_vertical = 10
 
 [node name="TextureRect" type="TextureRect" parent="RowsMainContainer/StatsContainer"]
 margin_right = 210.0
-margin_bottom = 56.0
+margin_bottom = 69.0
 mouse_filter = 2
 texture = ExtResource( 4 )
 stretch_mode = 2
 
 [node name="StatsAndInfoDivider" type="HBoxContainer" parent="RowsMainContainer/StatsContainer"]
 margin_right = 210.0
-margin_bottom = 56.0
+margin_bottom = 69.0
 mouse_filter = 2
 custom_constants/separation = 0
 
 [node name="CombineAndPowerInfoPanel" type="MarginContainer" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider"]
-margin_right = 105.0
-margin_bottom = 56.0
+margin_right = 138.0
+margin_bottom = 69.0
 mouse_filter = 2
 size_flags_horizontal = 3
 custom_constants/margin_right = 3
@@ -132,13 +139,13 @@ custom_constants/margin_bottom = 3
 [node name="InfoRow" type="VBoxContainer" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel"]
 margin_left = 5.0
 margin_top = 5.0
-margin_right = 102.0
-margin_bottom = 53.0
+margin_right = 135.0
+margin_bottom = 66.0
 mouse_filter = 2
 custom_constants/separation = 3
 
 [node name="CmbInfoIndicator" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow"]
-margin_right = 97.0
+margin_right = 130.0
 margin_bottom = 10.0
 custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
@@ -146,14 +153,14 @@ text = "Ingredient Info:"
 
 [node name="CmbInfoBody" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow" instance=ExtResource( 5 )]
 margin_top = 13.0
-margin_right = 97.0
+margin_right = 130.0
 margin_bottom = 18.0
 custom_constants/margin_left = 5
 custom_constants/margin_bottom = 5
 
 [node name="EnergyInfoIndicator" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow"]
 margin_top = 21.0
-margin_right = 97.0
+margin_right = 130.0
 margin_bottom = 31.0
 custom_fonts/font = SubResource( 3 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
@@ -161,16 +168,17 @@ text = "Energy Info:"
 
 [node name="EnergyInfoBody" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow" instance=ExtResource( 5 )]
 margin_top = 34.0
-margin_right = 97.0
+margin_right = 130.0
 margin_bottom = 34.0
 custom_constants/margin_left = 5
 
 [node name="TowerStatsPanel" type="MarginContainer" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider"]
-margin_left = 105.0
+margin_left = 138.0
 margin_right = 210.0
-margin_bottom = 56.0
+margin_bottom = 69.0
 mouse_filter = 2
 size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.52
 custom_constants/margin_right = 5
 custom_constants/margin_top = 5
 custom_constants/margin_left = 3
@@ -179,27 +187,25 @@ custom_constants/margin_bottom = 3
 [node name="StatsRow" type="VBoxContainer" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel"]
 margin_left = 3.0
 margin_top = 5.0
-margin_right = 100.0
-margin_bottom = 53.0
+margin_right = 67.0
+margin_bottom = 66.0
 mouse_filter = 2
 
 [node name="BaseDamagePanel" type="HBoxContainer" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow"]
-margin_right = 97.0
+margin_right = 64.0
 margin_bottom = 9.0
 mouse_filter = 2
 
-[node name="LabelInfo" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/BaseDamagePanel"]
-margin_right = 93.0
+[node name="LabelInfo" type="TextureRect" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/BaseDamagePanel"]
+margin_right = 60.0
 margin_bottom = 9.0
+mouse_filter = 2
 size_flags_horizontal = 3
-custom_fonts/font = SubResource( 4 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "base damage:"
-valign = 1
+texture = ExtResource( 12 )
 
 [node name="BaseDamageLabel" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/BaseDamagePanel"]
-margin_left = 97.0
-margin_right = 97.0
+margin_left = 64.0
+margin_right = 64.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
 custom_fonts/font = SubResource( 4 )
@@ -208,22 +214,20 @@ valign = 1
 
 [node name="DamageTypePanel" type="HBoxContainer" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow"]
 margin_top = 13.0
-margin_right = 97.0
+margin_right = 64.0
 margin_bottom = 22.0
 mouse_filter = 2
 
-[node name="LabelInfo" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/DamageTypePanel"]
-margin_right = 93.0
+[node name="LabelInfo" type="TextureRect" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/DamageTypePanel"]
+margin_right = 60.0
 margin_bottom = 9.0
+mouse_filter = 2
 size_flags_horizontal = 3
-custom_fonts/font = SubResource( 4 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "damage type:"
-valign = 1
+texture = ExtResource( 11 )
 
 [node name="DamageTypeLabel" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/DamageTypePanel"]
-margin_left = 97.0
-margin_right = 97.0
+margin_left = 64.0
+margin_right = 64.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
 custom_fonts/font = SubResource( 4 )
@@ -232,22 +236,20 @@ valign = 1
 
 [node name="AttkSpeedPanel" type="HBoxContainer" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow"]
 margin_top = 26.0
-margin_right = 97.0
+margin_right = 64.0
 margin_bottom = 35.0
 mouse_filter = 2
 
-[node name="LabelInfo" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/AttkSpeedPanel"]
-margin_right = 93.0
+[node name="LabelInfo" type="TextureRect" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/AttkSpeedPanel"]
+margin_right = 60.0
 margin_bottom = 9.0
+mouse_filter = 2
 size_flags_horizontal = 3
-custom_fonts/font = SubResource( 4 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "attack speed:"
-valign = 1
+texture = ExtResource( 9 )
 
 [node name="AttkSpeedLabel" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/AttkSpeedPanel"]
-margin_left = 97.0
-margin_right = 97.0
+margin_left = 64.0
+margin_right = 64.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
 custom_fonts/font = SubResource( 4 )
@@ -256,22 +258,42 @@ valign = 1
 
 [node name="RangePanel" type="HBoxContainer" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow"]
 margin_top = 39.0
-margin_right = 97.0
+margin_right = 64.0
 margin_bottom = 48.0
 mouse_filter = 2
 
-[node name="LabelInfo" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/RangePanel"]
-margin_right = 93.0
+[node name="LabelInfo" type="TextureRect" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/RangePanel"]
+margin_right = 60.0
 margin_bottom = 9.0
+mouse_filter = 2
 size_flags_horizontal = 3
-custom_fonts/font = SubResource( 4 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "range:"
-valign = 1
+texture = ExtResource( 10 )
 
 [node name="RangeLabel" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/RangePanel"]
-margin_left = 97.0
-margin_right = 97.0
+margin_left = 64.0
+margin_right = 64.0
+margin_bottom = 9.0
+size_flags_horizontal = 9
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+valign = 1
+
+[node name="OnHitMultiplierPanel" type="HBoxContainer" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow"]
+margin_top = 52.0
+margin_right = 64.0
+margin_bottom = 61.0
+mouse_filter = 2
+
+[node name="LabelInfo" type="TextureRect" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/OnHitMultiplierPanel"]
+margin_right = 60.0
+margin_bottom = 9.0
+mouse_filter = 2
+size_flags_horizontal = 3
+texture = ExtResource( 13 )
+
+[node name="OnHitMultiplierLabel" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/OnHitMultiplierPanel"]
+margin_left = 64.0
+margin_right = 64.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
 custom_fonts/font = SubResource( 4 )
@@ -279,18 +301,18 @@ custom_colors/font_color = Color( 0, 0, 0, 1 )
 valign = 1
 
 [node name="MidSeparator" type="TextureRect" parent="RowsMainContainer"]
-margin_top = 76.0
+margin_top = 89.0
 margin_right = 210.0
-margin_bottom = 78.0
+margin_bottom = 91.0
 mouse_filter = 2
 texture = ExtResource( 6 )
 
 [node name="DescriptionContainer" type="MarginContainer" parent="RowsMainContainer"]
-margin_top = 78.0
+margin_top = 91.0
 margin_right = 210.0
-margin_bottom = 108.0
+margin_bottom = 121.0
 mouse_filter = 2
-size_flags_vertical = 7
+size_flags_vertical = 10
 
 [node name="TextureRect" type="TextureRect" parent="RowsMainContainer/DescriptionContainer"]
 margin_right = 210.0
@@ -315,8 +337,8 @@ margin_right = 205.0
 margin_bottom = 27.0
 
 [node name="EndBorder" type="TextureRect" parent="RowsMainContainer"]
-margin_top = 108.0
+margin_top = 121.0
 margin_right = 210.0
-margin_bottom = 111.0
+margin_bottom = 124.0
 mouse_filter = 2
 texture = ExtResource( 8 )

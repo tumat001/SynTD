@@ -30,6 +30,12 @@ signal tower_toggle_show_info
 signal tower_in_queue_free
 signal update_active_synergy
 
+signal final_base_damage_changed
+signal final_attack_speed_changed
+signal final_range_changed
+signal ingredients_absorbed_changed
+signal tower_colors_changed
+
 
 export var tower_highlight_sprite : Resource
 
@@ -53,6 +59,7 @@ var collision_shape
 var current_power_level_used : int
 
 var attack_modules_and_target_num : Dictionary = {}
+var main_attack_module : AbstractAttackModule
 var range_module : RangeModule
 
 var disabled_from_attacking : bool = false
@@ -65,8 +72,7 @@ var ingredient_of_self : IngredientEffect
 
 # Color related
 
-# TODO Non functional for now.. Update soon
-var tower_colors : Array = []
+var _tower_colors : Array = []
 
 
 # Initialization
@@ -89,10 +95,33 @@ func _post_inherit_ready():
 func _add_all_as_children():
 	if range_module != null:
 		add_child(range_module)
+		range_module.connect("final_range_changed", self, "_emit_final_range_changed")
+		
 	
 	for attack_module in attack_modules_and_target_num.keys():
 		add_child(attack_module)
 		attack_module.range_module = range_module
+		
+		if main_attack_module == null and attack_module.module_name == "Main":
+			main_attack_module = attack_module
+			main_attack_module.connect("final_attack_speed_changed", self, "_emit_final_attack_speed_changed")
+			main_attack_module.connect("final_base_damage_changed", self, "_emit_final_base_damage_changed")
+
+
+func _emit_final_range_changed():
+	range_module.calculate_final_range_radius()
+	call_deferred("emit_signal", "final_range_changed")
+
+func _emit_final_base_damage_changed():
+	main_attack_module.calculate_final_base_damage()
+	call_deferred("emit_signal", "final_base_damage_changed")
+
+func _emit_final_attack_speed_changed():
+	main_attack_module.calculate_final_attack_speed()
+	call_deferred("emit_signal", "final_attack_speed_changed")
+
+func _emit_ingredients_absorbed_changed():
+	call_deferred("emit_signal", "ingredients_absorbed_changed")
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -180,6 +209,9 @@ func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect):
 				module.percent_attack_speed_effects[tower_attr_effect.effect_uuid] = tower_attr_effect
 			elif tower_attr_effect.attribute_type == TowerAttributesEffect.FLAT_ATTACK_SPEED:
 				module.flat_attack_speed_effects[tower_attr_effect.effect_uuid] = tower_attr_effect
+		
+		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
+			_emit_final_attack_speed_changed()
 
 func _remove_attack_speed_effect(attr_effect_uuid : int):
 	for module in attack_modules_and_target_num.keys():
@@ -187,6 +219,9 @@ func _remove_attack_speed_effect(attr_effect_uuid : int):
 		if module.benefits_from_bonus_attack_speed:
 			module.percent_attack_speed_modifiers.erase(attr_effect_uuid)
 			module.flat_attack_speed_modifiers.erase(attr_effect_uuid)
+		
+		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
+			_emit_final_attack_speed_changed()
 
 
 func _add_base_damage_effect(attr_effect : TowerAttributesEffect):
@@ -197,6 +232,9 @@ func _add_base_damage_effect(attr_effect : TowerAttributesEffect):
 				module.percent_base_damage_effects[attr_effect.effect_uuid] = attr_effect
 			elif attr_effect.attribute_type == TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS:
 				module.flat_base_damage_effects[attr_effect.effect_uuid] = attr_effect
+		
+		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
+			_emit_final_base_damage_changed()
 
 func _remove_base_damage_effect(attr_effect_uuid : int):
 	for module in attack_modules_and_target_num.keys():
@@ -204,6 +242,9 @@ func _remove_base_damage_effect(attr_effect_uuid : int):
 		if module.benefits_from_bonus_damage:
 			module.percent_base_damage_effects.erase(attr_effect_uuid)
 			module.flat_base_damage_effects.erase(attr_effect_uuid)
+		
+		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
+			_emit_final_base_damage_changed()
 
 
 func _add_on_hit_damage_adder_effect(on_hit_adder : TowerOnHitDamageAdderEffect):
@@ -225,6 +266,8 @@ func _add_range_effect(attr_effect : TowerAttributesEffect):
 					range_module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
 				elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
 					range_module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
+				
+				_emit_final_range_changed()
 	
 	
 	for module in attack_modules_and_target_num.keys():
@@ -240,6 +283,8 @@ func _remove_range_effect(attr_effect_uuid : int):
 		if range_module.benefits_from_bonus_range:
 			range_module.range_module.flat_range_effects.erase(attr_effect_uuid)
 			range_module.range_module.percent_range_effects.erase(attr_effect_uuid)
+			
+			_emit_final_range_changed()
 	
 	for module in attack_modules_and_target_num.keys():
 		if module.range_module != null and module.use_self_range_module:
@@ -286,11 +331,14 @@ func absorb_ingredient(ingredient_effect : IngredientEffect):
 	if ingredient_effect != null:
 		ingredients_absorbed[ingredient_effect.tower_id] = ingredient_effect
 		add_tower_effect(ingredient_effect.tower_base_effect)
-
+		
+		_emit_ingredients_absorbed_changed()
+	
 func clear_ingredients():
 	for ingredient_effect in ingredients_absorbed:
 		remove_tower_effect(ingredient_effect.tower_base_effect)
 	
+	_emit_ingredients_absorbed_changed()
 	ingredients_absorbed.clear()
 
 
@@ -303,7 +351,7 @@ func _can_accept_ingredient(ingredient_effect : IngredientEffect) -> bool:
 			return false
 		
 		for color in ingredient_effect.compatible_colors:
-			if tower_colors.has(color):
+			if _tower_colors.has(color):
 				return true
 	
 	return false
@@ -316,6 +364,21 @@ func show_acceptability_with_ingredient(ingredient_effect : IngredientEffect, to
 
 func hide_acceptability_with_ingredient():
 	$IngredientDeclinePic.visible = false
+
+
+# Tower Colors Related
+
+func add_color_to_tower(color : int):
+	if !_tower_colors.has(color):
+		_tower_colors.append(color)
+		call_deferred("emit_signal", "update_active_synergy")
+		call_deferred("emit_signal", "tower_colors_changed")
+
+func remove_color_from_tower(color : int):
+	if _tower_colors.has(color):
+		_tower_colors.erase(color)
+		call_deferred("emit_signal", "update_active_synergy")
+		call_deferred("emit_signal", "tower_colors_changed")
 
 
 # Inputs related
@@ -465,5 +528,7 @@ func _give_self_ingredient_buff_to(absorber):
 # Tracking of towers related
 func queue_free():
 	is_contributing_to_synergy = false
-	emit_signal("tower_in_queue_free")
+	current_placable.tower_occupying = null
+	
+	emit_signal("tower_in_queue_free") # synergy updated from tower manager
 	.queue_free()

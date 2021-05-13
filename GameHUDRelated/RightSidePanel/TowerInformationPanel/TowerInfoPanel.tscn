@@ -1,8 +1,15 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerInformationBackground.png" type="Texture" id=1]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/ActiveIngredientsPanel/ActiveIngredientsPanel.tscn" type="PackedScene" id=2]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerInfoPanel.gd" type="Script" id=3]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerNameAndPicPanel/TowerNameAndPicPanel.tscn" type="PackedScene" id=4]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TargetingPanel/TargetingPanel.tscn" type="PackedScene" id=5]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/DescriptionPanel/DescriptionPanel.tscn" type="PackedScene" id=6]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/PanelSeparator.png" type="Texture" id=7]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/IngredientEffectOfSelfPanel/IngredientOfSelfPanel.tscn" type="PackedScene" id=8]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerStatsPanel/TowerStatsPanel.tscn" type="PackedScene" id=9]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerColorsPanel/TowerColorsPanel.tscn" type="PackedScene" id=10]
 
 [node name="TowerInfoPanel" type="MarginContainer"]
 margin_right = 40.0
@@ -23,9 +30,64 @@ texture = ExtResource( 1 )
 margin_right = 120.0
 margin_bottom = 440.0
 mouse_filter = 2
+custom_constants/separation = 0
+
+[node name="TowerNameAndPicPanel" parent="VBoxContainer" instance=ExtResource( 4 )]
+margin_right = 120.0
+margin_bottom = 92.0
+custom_constants/margin_top = 10
+
+[node name="TargetingPanel" parent="VBoxContainer" instance=ExtResource( 5 )]
+margin_left = 1.0
+margin_top = 92.0
+margin_right = 119.0
+margin_bottom = 116.0
+size_flags_horizontal = 6
+
+[node name="DescriptionPanel" parent="VBoxContainer" instance=ExtResource( 6 )]
+margin_top = 116.0
+margin_right = 120.0
+margin_bottom = 175.0
+custom_constants/margin_top = 8
+
+[node name="IngredientOfSelfPanel" parent="VBoxContainer" instance=ExtResource( 8 )]
+margin_top = 175.0
+margin_right = 120.0
+margin_bottom = 221.0
+custom_constants/margin_top = 8
+
+[node name="Separator" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 221.0
+margin_right = 120.0
+margin_bottom = 234.0
+custom_constants/margin_top = 8
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/Separator"]
+margin_left = 3.0
+margin_top = 8.0
+margin_right = 117.0
+margin_bottom = 13.0
+size_flags_horizontal = 6
+texture = ExtResource( 7 )
+
+[node name="TowerColorsPanel" parent="VBoxContainer" instance=ExtResource( 10 )]
+margin_top = 234.0
+margin_right = 120.0
+margin_bottom = 273.0
+custom_constants/margin_top = 8
+
+[node name="TowerStatsPanel" parent="VBoxContainer" instance=ExtResource( 9 )]
+margin_top = 273.0
+margin_right = 120.0
+margin_bottom = 329.0
+custom_constants/margin_top = 8
 
 [node name="ActiveIngredientsPanel" parent="VBoxContainer" instance=ExtResource( 2 )]
 margin_left = 10.0
+margin_top = 329.0
 margin_right = 110.0
-margin_bottom = 38.0
+margin_bottom = 440.0
 size_flags_horizontal = 4
+size_flags_vertical = 3
+custom_constants/margin_top = 10
+custom_constants/margin_bottom = 8

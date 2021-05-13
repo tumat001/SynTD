@@ -16,7 +16,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
-	tower_colors = info.colors
+	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	
 	range_module = RangeModule_Scene.instance()
@@ -34,6 +34,7 @@ func _ready():
 	attack_module.base_proj_speed = 400
 	attack_module.projectile_life_distance = info.base_range
 	attack_module.module_name = "Main"
+	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 3

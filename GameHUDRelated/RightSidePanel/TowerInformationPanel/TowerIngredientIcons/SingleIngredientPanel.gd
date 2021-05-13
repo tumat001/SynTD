@@ -6,6 +6,7 @@ const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerB
 
 var ingredient_effect : IngredientEffect
 
+
 func _ready():
 	update_display()
 

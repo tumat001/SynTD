@@ -26,6 +26,11 @@ func _ready():
 	tower_inventory_bench = $TowerInventoryBench
 	tower_manager = $TowerManager
 	
+	tower_manager.right_side_panel = right_side_panel
+	tower_manager.tower_stats_panel = right_side_panel.tower_info_panel.tower_stats_panel
+	tower_manager.active_ing_panel = right_side_panel.tower_info_panel.active_ing_panel
+	tower_manager.tower_colors_panel = right_side_panel.tower_info_panel.tower_colors_panel
+	
 	tower_inventory_bench.tower_manager = tower_manager
 	tower_manager.game_elements = self
 	tower_manager.in_map_placables_manager = in_map_placables_manager

@@ -14,8 +14,8 @@ var active_synergies_res : Array
 var left_panel : LeftPanel
 
 func update_synergies(towers : Array):
-	var distinct_tower_infos : Array = _get_list_of_distinct_tower_infos(towers)
-	var active_colors : Array = _convert_tower_info_to_colors(distinct_tower_infos)
+	var distinct_towers : Array = _get_list_of_distinct_towers(towers)
+	var active_colors : Array = _convert_towers_to_colors(distinct_towers)
 	
 	var results_of_dom : Array = ColorSynergyChecker.get_all_results(TowerDominantColors.synergies.values(),
 	active_colors)
@@ -60,21 +60,21 @@ func update_synergies(towers : Array):
 	_update_synergy_displayer()
 
 
-func _get_list_of_distinct_tower_infos(towers: Array) -> Array:
-	var info_bucket : Array = []
+func _get_list_of_distinct_towers(towers: Array) -> Array:
+	var tower_bucket : Array = []
 	var id_bucket : Array = []
 	for tower in towers:
 		var id = tower.tower_id
 		if !id_bucket.has(id):
 			id_bucket.append(id)
-			info_bucket.append(Towers.get_tower_info(id))
+			tower_bucket.append(tower)
 	
-	return info_bucket
+	return tower_bucket
 
-func _convert_tower_info_to_colors(tower_infos: Array) -> Array:
+func _convert_towers_to_colors(towers: Array) -> Array:
 	var all_colors : Array = []
-	for tower_info in tower_infos:
-		for color in tower_info.colors:
+	for tower in towers:
+		for color in tower._tower_colors:
 			all_colors.append(color)
 	
 	return all_colors

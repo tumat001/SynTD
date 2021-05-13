@@ -41,11 +41,11 @@ _data = {
 [node name="GameElements" type="Node"]
 script = ExtResource( 5 )
 
-[node name="TowerManager" type="Node" parent="."]
-script = ExtResource( 8 )
-
 [node name="TowerInventoryBench" parent="." instance=ExtResource( 7 )]
 position = Vector2( 475, 410 )
+
+[node name="TowerManager" type="Node" parent="."]
+script = ExtResource( 8 )
 
 [node name="MapManager" type="Node" parent="."]
 

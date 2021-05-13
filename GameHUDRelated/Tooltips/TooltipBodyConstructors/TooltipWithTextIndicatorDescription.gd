@@ -2,6 +2,7 @@ extends MarginContainer
 
 var description : String
 var indicator : String
+var color : Color = Color(0, 0, 0, 1)
 
 func _init(arg_indicator : String = "", arg_description : String = ""):
 	description = arg_description

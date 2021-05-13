@@ -63,6 +63,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 1
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
 			"Fires metal bullets at opponents",
@@ -80,6 +81,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 1
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
 			"Sprinkles water droplets to enemies"
@@ -90,7 +92,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		attk_speed_attr_mod.percent_amount = 12.5
 		attk_speed_attr_mod.percent_based_on = PercentType.BASE
 		
-		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_SPRINKLER_ATK_SPEED)
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_SPRINKLER)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
 		ing_effect.compatible_colors = [TowerColors.BLUE, TowerColors.GREEN, TowerColors.VIOLET]
 		
@@ -109,10 +111,26 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 0
 		info.base_range = 0
 		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
 			"Does not attack, but instead gives gold at the end of the round"
 		]
+		
+		
+		# Ingredient related
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new("sp")
+		base_dmg_attr_mod.flat_modifier = 0.75
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_BERRY_BUSH)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		ing_effect.compatible_colors = [TowerColors.BLUE, TowerColors.GREEN, TowerColors.YELLOW]
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ base dmg"
+		
+		
+		
 	elif tower_id == SIMPLE_OBELISK:
 		info = TowerTypeInformation.new("Simple Obelisk", SIMPLE_OBELISK)
 		info.tower_cost = 3
@@ -126,9 +144,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 1
 		info.base_range = 170
 		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Fires arcane bolts at enemies that explode before fizzling out"
+			"Fires arcane bolts at enemies that explode before fizzling out, dealing half of this tower's total damage"
 		]
 	elif tower_id == SIMPLEX:
 		info = TowerTypeInformation.new("Simplex", SIMPLEX)
@@ -142,6 +161,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 0
 		info.base_range = 110
 		info.base_damage_type = DamageType.PURE
+		info.on_hit_multiplier = 1.0 / 8.0
 		
 		info.tower_descriptions = [
 			"Directs a constant pure energy beam at a single target",
@@ -159,6 +179,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 4
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
 			"Shoots a dart like projectile that pierces through 4 enemies"

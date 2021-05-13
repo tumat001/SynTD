@@ -22,13 +22,16 @@ const Explosion06_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/S
 const Explosion07_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_ProjExplosion_07.png")
 const Explosion08_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_ProjExplosion_08.png")
 
+
+var template : SpawnAOETemplate
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.SIMPLE_OBELISK)
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
-	tower_colors = info.colors
+	_tower_colors = info.colors
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -46,6 +49,7 @@ func _ready():
 	attack_module.projectile_life_distance = info.base_range
 	attack_module.module_name = "Main"
 	attack_module.position.y -= 30
+	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 3
@@ -69,7 +73,7 @@ func _ready():
 
 
 func _generate_template():
-	var template : SpawnAOETemplate = SpawnAOETemplate.new()
+	template = SpawnAOETemplate.new()
 	
 	template.aoe_scene = BaseAOE_Scene
 	
@@ -99,3 +103,11 @@ func _generate_template():
 	template.aoe_sprite_frames = sprite_frames
 	
 	return template
+
+
+# Update damage of template based on this tower's base dmg
+func _emit_final_base_damage_changed():
+	._emit_final_base_damage_changed()
+	
+	template.aoe_base_damage = main_attack_module.last_calculated_final_damage / 2
+

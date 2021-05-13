@@ -13,6 +13,9 @@ enum Time_Metadata {
 	TIME_AS_NUM_OF_ATTACKS
 }
 
+signal final_attack_speed_changed
+signal final_base_damage_changed
+
 
 var module_name : String
 # These are used to help differentiate attacks
@@ -69,10 +72,16 @@ var _is_bursting : bool
 
 var _disabled : bool = false
 
+# last calculated vars
+
+var last_calculated_final_damage : float
+var last_calculated_final_attk_speed : float
+
 # MISC
 
 func _ready():
-	pass
+	last_calculated_final_attk_speed = base_attack_speed
+	last_calculated_final_damage = base_damage
 
 func _set_range_module(new_module):
 	if range_module != null:
@@ -122,6 +131,9 @@ func decrease_time_of_timebounded(delta):
 		on_hit_effects.erase(key_to_delete)
 	bucket.clear()
 	
+	
+	#For attack speed
+	var attack_speed_changed : bool = false
 	#For percent attk speed mods
 	for key in percent_attack_speed_effects.keys():
 		if percent_attack_speed_effects[key].is_timebound:
@@ -129,6 +141,7 @@ func decrease_time_of_timebounded(delta):
 			var time_left = percent_attack_speed_effects[key].time_in_seconds
 			if time_left <= 0:
 				bucket.append(key)
+				attack_speed_changed = true
 	
 	for key_to_delete in bucket:
 		percent_attack_speed_effects.erase(key_to_delete)
@@ -142,15 +155,54 @@ func decrease_time_of_timebounded(delta):
 			var time_left = flat_attack_speed_effects[key].time_in_seconds
 			if time_left <= 0:
 				bucket.append(key)
+				attack_speed_changed = true
 	
 	for key_to_delete in bucket:
 		flat_attack_speed_effects.erase(key_to_delete)
 	
 	bucket.clear()
 	
-
+	if attack_speed_changed:
+		call_deferred("emit_signal", "final_attack_speed_changed")
+	
+	
+	#For base damage
+	var base_damage_changed : bool = false
+	#For percent attk speed mods
+	for key in percent_base_damage_effects.keys():
+		if percent_base_damage_effects[key].is_timebound:
+			percent_base_damage_effects[key].time_in_seconds -= delta
+			var time_left = percent_base_damage_effects[key].time_in_seconds
+			if time_left <= 0:
+				bucket.append(key)
+				base_damage_changed = true
+	
+	for key_to_delete in bucket:
+		percent_base_damage_effects.erase(key_to_delete)
+	
+	bucket.clear()
+	
+	#For flat attk speed mods
+	for key in flat_base_damage_effects.keys():
+		if flat_base_damage_effects[key].is_timebound:
+			flat_base_damage_effects[key].time_in_seconds -= delta
+			var time_left = flat_base_damage_effects[key].time_in_seconds
+			if time_left <= 0:
+				bucket.append(key)
+				base_damage_changed = true
+	
+	for key_to_delete in bucket:
+		flat_base_damage_effects.erase(key_to_delete)
+	
+	bucket.clear()
+	
+	if base_damage_changed:
+		call_deferred("emit_signal", "final_base_damage_changed")
+	
 # Calculating final values
 
+
+# More like attack speed wait
 func calculate_final_attack_speed() -> float:
 	if original_time_metadata == Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
 		return base_attack_speed
@@ -170,8 +222,10 @@ func calculate_final_attack_speed() -> float:
 			final_attack_speed += effect.attribute_as_modifier.get_modification_to_value(base_attack_speed)
 	
 	if final_attack_speed != 0:
-		return 1 / final_attack_speed
+		last_calculated_final_attk_speed = final_attack_speed
+		return 1 / last_calculated_final_attk_speed
 	else:
+		last_calculated_final_attk_speed = 0.0
 		return 0.0
 
 func calculate_final_attack_wind_up() -> float:
@@ -496,6 +550,7 @@ func calculate_final_base_damage():
 				continue
 			final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
 	
+	last_calculated_final_damage = final_base_damage
 	return final_base_damage
 
 func _get_base_damage_as_on_hit_damage() -> OnHitDamage:

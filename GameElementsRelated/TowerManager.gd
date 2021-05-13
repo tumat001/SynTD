@@ -3,6 +3,11 @@ extends Node
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 const GameElements = preload("res://GameElementsRelated/GameElements.gd")
 const InMapPlacablesManager = preload("res://GameElementsRelated/InMapPlacablesManager.gd")
+const RightSidePanel = preload("res://GameHUDRelated/RightSidePanel/RightSidePanel.gd")
+const TowerStatsPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerStatsPanel/TowerStatsPanel.gd")
+const ActiveIngredientsPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/ActiveIngredientsPanel/ActiveIngredientsPanel.gd")
+const TowerColorsPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerColorsPanel/TowerColorsPanel.gd")
+
 
 signal ingredient_mode_turned_into(on_or_off)
 signal show_ingredient_acceptability(ingredient_effect, tower_selected)
@@ -15,12 +20,16 @@ var in_map_placables_manager : InMapPlacablesManager
 var is_in_ingredient_mode : bool = false
 var tower_being_dragged : AbstractTower
 
+var tower_being_shown_in_info : AbstractTower
 
+var right_side_panel : RightSidePanel
+var tower_stats_panel : TowerStatsPanel
+var active_ing_panel : ActiveIngredientsPanel
+var tower_colors_panel : TowerColorsPanel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
-	
+	pass
 
 # Generic things that can branch out to other resp.
 
@@ -108,9 +117,7 @@ func _get_all_synegy_contributing_towers() -> Array:
 # Tower info show related
 
 func _tower_toggle_show_info(tower : AbstractTower):
-	var right_side_p = game_elements.right_side_panel
-	
-	if right_side_p.panel_showing != right_side_p.Panels.TOWER_INFO:
+	if right_side_panel.panel_showing != right_side_panel.Panels.TOWER_INFO:
 		_show_tower_info_panel(tower)
 	else:
 		_show_round_panel()
@@ -118,11 +125,39 @@ func _tower_toggle_show_info(tower : AbstractTower):
 
 
 func _show_tower_info_panel(tower : AbstractTower):
-	var right_side_p = game_elements.right_side_panel
-	right_side_p.show_tower_info_panel(tower)
+	right_side_panel.show_tower_info_panel(tower)
+	
+	tower_being_shown_in_info = tower
+	tower.connect("final_range_changed", self, "_update_final_range_in_info")
+	tower.connect("final_attack_speed_changed", self, "_update_final_attack_speed_in_info")
+	tower.connect("final_base_damage_changed", self, "_update_final_base_damage_in_info")
+	tower.connect("ingredients_absorbed_changed", self, "_update_ingredients_absorbed_in_info")
+	tower.connect("tower_colors_changed", self, "_update_tower_colors_in_info")
+
+
+func _update_final_range_in_info():
+	tower_stats_panel.update_final_range()
+
+func _update_final_attack_speed_in_info():
+	tower_stats_panel.update_final_attack_speed()
+
+func _update_final_base_damage_in_info():
+	tower_stats_panel.update_final_base_damage()
+
+func _update_ingredients_absorbed_in_info():
+	active_ing_panel.update_display()
+
+func _update_tower_colors_in_info():
+	tower_colors_panel.update_display()
 
 
 func _show_round_panel():
-	var right_side_p = game_elements.right_side_panel
-	right_side_p.show_round_panel()
-
+	right_side_panel.show_round_panel()
+	
+	tower_being_shown_in_info.disconnect("final_range_changed", self, "_update_final_range_in_info")
+	tower_being_shown_in_info.disconnect("final_attack_speed_changed", self, "_update_final_attack_speed_in_info")
+	tower_being_shown_in_info.disconnect("final_base_damage_changed", self, "_update_final_base_damage_in_info")
+	tower_being_shown_in_info.disconnect("ingredients_absorbed_changed", self, "_update_ingredients_absorbed_in_info")
+	tower_being_shown_in_info.disconnect("tower_colors_changed", self, "_update_tower_colors_in_info")
+	
+	tower_being_shown_in_info = null

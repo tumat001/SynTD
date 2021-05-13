@@ -53,12 +53,22 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 class CustomSorter:
 	
 	static func sort_enemies_by_first(a, b):
-		if a.distance_to_exit > b.distance_to_exit:
-			return true
-		return false
-	
-	static func sort_enemies_by_last(a, b):
 		if a.distance_to_exit < b.distance_to_exit:
 			return true
 		return false
 	
+	static func sort_enemies_by_last(a, b):
+		if a.distance_to_exit > b.distance_to_exit:
+			return true
+		return false
+	
+
+#
+
+static func get_name_as_string(targeting : int) -> String:
+	if targeting == FIRST:
+		return "First"
+	elif targeting == LAST:
+		return "Last"
+	
+	return "Err Unnamed"

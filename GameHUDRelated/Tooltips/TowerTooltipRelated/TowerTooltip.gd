@@ -5,6 +5,9 @@ const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
+const TooltipWithImageIndicatorDescription = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithImageIndicatorDescription.gd")
+const TooltipWithImageIndicatorDescription_Scene = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithImageIndicatorDescription.tscn")
+
 var tower_info : TowerTypeInformation
 
 # Called when the node enters the scene tree for the first time.
@@ -26,12 +29,7 @@ func update_display():
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/AttkSpeedPanel/AttkSpeedLabel.text = str(tower_info.base_attk_speed)
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/RangePanel/RangeLabel.text = str(tower_info.base_range)
 		
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.clear()
-		if tower_info.ingredient_effect == null:
-			$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions = ["(Cannot be used as an ingredient."]
-		else:
-			$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.append(tower_info.ingredient_effect.description)
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.update_display()
+		_update_ingredients()
 		
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.descriptions.clear()
 		if tower_info.energy_consumption_levels.size() == 0:
@@ -48,3 +46,22 @@ func update_display():
 		for desc in tower_info.tower_descriptions:
 			$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.descriptions.append(desc)
 		$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.update_display()
+		
+		_update_on_hit_multiplier()
+
+func _update_ingredients():
+	
+	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.clear()
+	if tower_info.ingredient_effect == null:
+		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions = ["(Cannot be used as an ingredient."]
+	else:
+		var desc = TooltipWithImageIndicatorDescription_Scene.instance()
+		desc.description = tower_info.ingredient_effect.description
+		desc.img_indicator = tower_info.ingredient_effect.tower_base_effect.effect_icon
+		
+		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.append(desc)
+	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.update_display()
+	
+
+func _update_on_hit_multiplier():
+	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/OnHitMultiplierPanel/OnHitMultiplierLabel.text = "x" + str(tower_info.on_hit_multiplier)

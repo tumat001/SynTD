@@ -31,11 +31,10 @@ margin_bottom = 12.0
 mouse_filter = 2
 
 [node name="HeaderMarginer" type="MarginContainer" parent="VBoxContainer/HeaderWholeMarginer"]
-margin_left = 21.0
-margin_right = 79.0
+margin_right = 58.0
 margin_bottom = 12.0
 mouse_filter = 2
-size_flags_horizontal = 6
+size_flags_horizontal = 2
 
 [node name="Background" type="TextureRect" parent="VBoxContainer/HeaderWholeMarginer/HeaderMarginer"]
 margin_right = 58.0
@@ -58,20 +57,20 @@ text = "Active Ing:"
 align = 1
 
 [node name="TowerCountMarginer" type="MarginContainer" parent="VBoxContainer/HeaderWholeMarginer"]
-margin_left = 86.0
+margin_left = 76.0
 margin_right = 100.0
 margin_bottom = 12.0
 mouse_filter = 2
 size_flags_horizontal = 10
 
 [node name="Background" type="TextureRect" parent="VBoxContainer/HeaderWholeMarginer/TowerCountMarginer"]
-margin_right = 14.0
+margin_right = 24.0
 margin_bottom = 12.0
 mouse_filter = 2
 texture = ExtResource( 2 )
 
 [node name="Marginer" type="MarginContainer" parent="VBoxContainer/HeaderWholeMarginer/TowerCountMarginer"]
-margin_right = 14.0
+margin_right = 24.0
 margin_bottom = 12.0
 mouse_filter = 2
 custom_constants/margin_right = 1
@@ -81,11 +80,11 @@ custom_constants/margin_left = 1
 [node name="CountLabel" type="Label" parent="VBoxContainer/HeaderWholeMarginer/TowerCountMarginer/Marginer"]
 margin_left = 1.0
 margin_top = 2.0
-margin_right = 13.0
+margin_right = 23.0
 margin_bottom = 11.0
 custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
-text = "12"
+text = "12/12"
 align = 1
 
 [node name="MultiIngredientPanel" parent="VBoxContainer" instance=ExtResource( 4 )]

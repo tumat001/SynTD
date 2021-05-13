@@ -1,6 +1,7 @@
 extends MarginContainer
 
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
+const TowerInfoPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerInfoPanel.gd")
 
 enum Panels {
 	ROUND,
@@ -10,13 +11,16 @@ enum Panels {
 var panel_showing : int
 var current_tower_showing : AbstractTower
 
+onready var tower_info_panel : TowerInfoPanel = $TowerInfoPanel
+
+
 
 func _ready():
 	show_round_panel()
 
 
 func show_round_panel():
-	$TowerInfoPanel.visible = false
+	tower_info_panel.visible = false
 	
 	panel_showing = Panels.ROUND
 	
@@ -27,9 +31,9 @@ func show_round_panel():
 	
 
 func show_tower_info_panel(tower : AbstractTower = null):
-	$TowerInfoPanel.visible = true
-	$TowerInfoPanel.tower = tower
-	$TowerInfoPanel.update_display()
+	tower_info_panel.visible = true
+	tower_info_panel.tower = tower
+	tower_info_panel.update_display()
 	current_tower_showing = tower
 	if !tower.is_showing_ranges:
 		tower.toggle_module_ranges()

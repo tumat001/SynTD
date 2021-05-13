@@ -3,6 +3,9 @@ extends Area2D
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 
+
+signal final_range_changed
+
 var benefits_from_bonus_range : bool = true
 
 var base_range_radius : float
@@ -12,16 +15,51 @@ var percent_range_effects : Dictionary = {}
 var displaying_range : bool = false
 
 var enemies_in_range : Array = []
+var _current_enemies : Array = []
 
-var current_targeting_option : int
-var last_used_targeting_option : int
-var all_targeting_options = {}
+var _current_targeting_option_index : int
+var _last_used_targeting_option_index : int
+var all_targeting_options : Array
+
+# last calc stuffs
+
+var last_calculated_final_range : float
+
 
 func _ready():
-	all_targeting_options["First"] = Targeting.FIRST
-	current_targeting_option = Targeting.FIRST
-	last_used_targeting_option = Targeting.FIRST
+	all_targeting_options = [Targeting.FIRST, Targeting.LAST]
+	_current_targeting_option_index = 0
+	_last_used_targeting_option_index = 0
 
+
+func targeting_cycle_left():
+	var to_be : int = _current_targeting_option_index - 1
+	if to_be < 0:
+		to_be = all_targeting_options.size() - 1
+	
+	_last_used_targeting_option_index = _current_targeting_option_index
+	_current_targeting_option_index = to_be
+
+func targeting_cycle_right():
+	var to_be : int = _current_targeting_option_index + 1
+	if to_be >= all_targeting_options.size():
+		to_be = 0
+	
+	_last_used_targeting_option_index = _current_targeting_option_index
+	_current_targeting_option_index = to_be
+
+func add_targeting(targeting : int):
+	all_targeting_options.append(targeting)
+
+func set_targeting(targeting : int):
+	var index_of_targeting = all_targeting_options.find(targeting)
+	
+	if index_of_targeting != -1:
+		_last_used_targeting_option_index = _current_targeting_option_index
+		_current_targeting_option_index = index_of_targeting
+
+
+# Timebounds
 
 func time_passed(delta):
 	decrease_time_of_timebounded(delta)
@@ -30,37 +68,41 @@ func time_passed(delta):
 func decrease_time_of_timebounded(delta):
 	var bucket = []
 	
-	#For percent range mods
+	# For Range
+	var final_range_changed : bool = false
+	# For percent range mods
 	for effect_uuid in percent_range_effects.keys():
 		if percent_range_effects[effect_uuid].is_timebound:
 			percent_range_effects[effect_uuid].time_in_seconds -= delta
 			var time_left = percent_range_effects[effect_uuid].time_in_seconds
 			if time_left <= 0:
 				bucket.append(effect_uuid)
+				final_range_changed = true
 	
 	for key_to_delete in bucket:
 		percent_range_effects.erase(key_to_delete)
-	
-	if bucket.size() > 0:
-		update_range()
+
 	
 	bucket.clear()
 	
-	#For flat range mods
+	# For flat range mods
 	for effect_uuid in flat_range_effects.keys():
 		if flat_range_effects[effect_uuid].is_timebound:
 			flat_range_effects[effect_uuid].time_in_seconds -= delta
 			var time_left = flat_range_effects[effect_uuid].time_in_seconds
 			if time_left <= 0:
 				bucket.append(effect_uuid)
+				final_range_changed = true
 	
 	for key_to_delete in bucket:
 		flat_range_effects.erase(key_to_delete)
 	
-	if bucket.size() > 0:
-		update_range()
 	
 	bucket.clear()
+	
+	if final_range_changed:
+		update_range()
+		call_deferred("emit_signal", "final_range_changed")
 
 
 # Range Related
@@ -89,6 +131,8 @@ func update_range():
 	update()
 
 
+#Enemy Detection Related
+
 func _on_Range_area_shape_entered(area_id, area, area_shape, self_shape):
 	if area != null:
 		if area.get_parent() is AbstractEnemy:
@@ -99,12 +143,13 @@ func _on_Range_area_shape_exited(area_id, area, area_shape, self_shape):
 		if area.get_parent() is AbstractEnemy:
 			_on_enemy_leave_range(area.get_parent())
 
-#Enemy Detection Related
+
 func _on_enemy_enter_range(enemy : AbstractEnemy):
 	enemies_in_range.append(enemy)
 
 func _on_enemy_leave_range(enemy : AbstractEnemy):
 	enemies_in_range.erase(enemy)
+	_current_enemies.erase(enemy)
 
 
 func is_an_enemy_in_range():
@@ -119,6 +164,8 @@ func is_an_enemy_in_range():
 	return enemies_in_range.size() > 0
 
 
+# Calculations
+
 func calculate_final_range_radius() -> float:
 	#All percent modifiers here are to BASE range only
 	var final_range = base_range_radius
@@ -128,12 +175,23 @@ func calculate_final_range_radius() -> float:
 	for effect in flat_range_effects.values():
 		final_range += effect.attribute_as_modifiers.get_modification_to_value(base_range_radius)
 	
+	last_calculated_final_range = final_range
 	return final_range
 
 
+# Uses
+
+func get_current_targeting_option() -> int:
+	if all_targeting_options.size() > 0:
+		return all_targeting_options[_current_targeting_option_index]
+	else:
+		return -1
+
 func get_target() -> AbstractEnemy:
-	return Targeting.enemy_to_target(enemies_in_range, current_targeting_option)
+	_current_enemies.clear()
+	_current_enemies[0] = Targeting.enemy_to_target(enemies_in_range, get_current_targeting_option())
+	return _current_enemies[0]
 
 func get_targets(num : int) -> Array:
-	return Targeting.enemies_to_target(enemies_in_range, current_targeting_option, num)
-
+	_current_enemies = Targeting.enemies_to_target(enemies_in_range, get_current_targeting_option(), num)
+	return _current_enemies

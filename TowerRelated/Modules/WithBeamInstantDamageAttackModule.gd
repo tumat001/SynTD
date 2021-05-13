@@ -29,7 +29,7 @@ func update_beams_state():
 			if beam.visible:
 				var enemy = beam_to_enemy_map[beam]
 				
-				if enemy == null or !range_module.enemies_in_range.has(enemy):
+				if enemy == null or !range_module._current_enemies.has(enemy):
 					beam.visible = false
 				else:
 					beam.update_destination_position(enemy.global_position)
@@ -80,8 +80,9 @@ func enable_module():
 
 func _connect_beam_to_enemy(enemy : AbstractEnemy):
 	if !beam_is_timebound:
-		for l_enemy in beam_to_enemy_map.values():
-			if l_enemy == enemy:
+		for l_enemy_key in beam_to_enemy_map.keys():
+			if beam_to_enemy_map[l_enemy_key] == enemy:
+				l_enemy_key.visible = true  # the beam
 				return
 	
 	var beam = _get_available_beam_instance()

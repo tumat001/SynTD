@@ -8,6 +8,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
-	tower_colors = info.colors
+	_tower_colors = info.colors
+	ingredient_of_self = info.ingredient_effect
 	
 	_post_inherit_ready()
