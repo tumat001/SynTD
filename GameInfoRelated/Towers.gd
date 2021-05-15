@@ -149,6 +149,20 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Fires arcane bolts at enemies that explode before fizzling out, dealing half of this tower's total damage"
 		]
+		
+		# Ingredient related
+		var range_attr_mod : PercentModifier = PercentModifier.new("sp")
+		range_attr_mod.percent_amount = 50
+		range_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_SIMPLE_OBELISK)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		ing_effect.compatible_colors = [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE]
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ range"
+		
+		
 	elif tower_id == SIMPLEX:
 		info = TowerTypeInformation.new("Simplex", SIMPLEX)
 		info.tower_cost = 1

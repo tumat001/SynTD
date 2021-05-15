@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://GameHUDRelated/BuySellPanel/SellPanel.gd" type="Script" id=2]
+[ext_resource path="res://GameHUDRelated/BuySellPanel/BuySellBackground.png" type="Texture" id=3]
+
+[sub_resource type="DynamicFont" id=4]
+size = 12
+font_data = ExtResource( 1 )
+
+[node name="SellPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SellPanelBackground" type="TextureRect" parent="."]
+margin_right = 751.0
+margin_bottom = 80.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+
+[node name="SellLabel" type="Label" parent="."]
+margin_left = 347.0
+margin_top = 33.0
+margin_right = 403.0
+margin_bottom = 46.0
+size_flags_horizontal = 6
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+text = "Sell (x)"
+[connection signal="mouse_entered" from="." to="." method="_on_SellPanel_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_SellPanel_mouse_exited"]

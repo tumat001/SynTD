@@ -17,7 +17,10 @@ var tower_information : TowerTypeInformation
 var disabled : bool = false
 var current_tooltip : TowerTooltip
 
-signal tower_bought(tower_id)
+var current_gold : int
+
+
+signal tower_bought(tower_type_id, tower_cost)
 
 func _ready():
 	update_display()
@@ -83,6 +86,10 @@ func update_display():
 		$MarginContainer/VBoxContainer/TierCrownPanel/TierCrown.texture = tier05_crown
 	elif tower_information.tower_tier == 6:
 		$MarginContainer/VBoxContainer/TierCrownPanel/TierCrown.texture = tier06_crown
+	
+	# Gold related
+	_update_display_based_on_gold(current_gold)
+
 
 func create_energy_display(energy_array : Array) -> String:
 	return PoolStringArray(energy_array).join(" / ")
@@ -100,9 +107,9 @@ func _on_BuyCard_gui_input(event):
 					current_tooltip.queue_free()
 
 func _on_BuyCard_pressed():
-	if !disabled :
+	if !disabled and _can_afford():
 		disabled = true
-		emit_signal("tower_bought", tower_information.tower_type_id)
+		emit_signal("tower_bought", tower_information)
 		
 		if current_tooltip != null:
 			current_tooltip.queue_free()
@@ -127,3 +134,16 @@ func kill_current_tooltip():
 	if current_tooltip != null:
 		current_tooltip.queue_free()
 
+
+# Gold related
+
+func _update_display_based_on_gold(arg_current_gold):
+	current_gold = arg_current_gold
+	
+	if _can_afford():
+		modulate = Color(1, 1, 1, 1)
+	else:
+		modulate = Color(0.3, 0.3, 0.3, 1)
+
+func _can_afford() -> bool:
+	return current_gold >= tower_information.tower_cost

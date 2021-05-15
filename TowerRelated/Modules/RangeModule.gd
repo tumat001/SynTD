@@ -170,10 +170,10 @@ func calculate_final_range_radius() -> float:
 	#All percent modifiers here are to BASE range only
 	var final_range = base_range_radius
 	for effect in percent_range_effects.values():
-		final_range += effect.attribute_as_modifiers.get_modification_to_value(base_range_radius)
+		final_range += effect.attribute_as_modifier.get_modification_to_value(base_range_radius)
 	
 	for effect in flat_range_effects.values():
-		final_range += effect.attribute_as_modifiers.get_modification_to_value(base_range_radius)
+		final_range += effect.attribute_as_modifier.get_modification_to_value(base_range_radius)
 	
 	last_calculated_final_range = final_range
 	return final_range

@@ -39,6 +39,8 @@ custom_constants/margin_bottom = 2
 [node name="ButtonLeft" type="TextureButton" parent="HBoxContainer/ButtonLeftMarginer"]
 margin_right = 11.0
 margin_bottom = 13.0
+focus_mode = 0
+enabled_focus_mode = 0
 texture_normal = ExtResource( 3 )
 
 [node name="TargetPanelMarginer" type="MarginContainer" parent="HBoxContainer"]
@@ -85,6 +87,8 @@ custom_constants/margin_bottom = 2
 [node name="ButtonRight" type="TextureButton" parent="HBoxContainer/ButtonRightMarginer"]
 margin_right = 11.0
 margin_bottom = 13.0
+focus_mode = 0
+enabled_focus_mode = 0
 texture_normal = SubResource( 2 )
 [connection signal="pressed" from="HBoxContainer/ButtonLeftMarginer/ButtonLeft" to="." method="_on_ButtonLeft_pressed"]
 [connection signal="pressed" from="HBoxContainer/ButtonRightMarginer/ButtonRight" to="." method="_on_ButtonRight_pressed"]

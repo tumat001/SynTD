@@ -18,6 +18,21 @@ const green_symbol = preload("res://GameHUDRelated/BuySellPanel/GreenSymbol.png"
 const blue_symbol = preload("res://GameHUDRelated/BuySellPanel/BlueSymbol.png")
 const violet_symbol = preload("res://GameHUDRelated/BuySellPanel/VioletSymbol.png")
 
+static func get_all_colors() -> Array:
+	var bucket : Array = [
+		GRAY,
+		WHITE,
+		BLACK,
+		RED,
+		ORANGE,
+		YELLOW,
+		GREEN,
+		BLUE,
+		VIOLET,
+	]
+	
+	return bucket
+
 static func get_color_symbol_on_card(tower_color : int):
 	if tower_color == GRAY:
 		return gray_symbol

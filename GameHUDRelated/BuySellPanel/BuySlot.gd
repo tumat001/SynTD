@@ -25,8 +25,8 @@ func roll_buy_card_to_tower_id(tower_id : int):
 	current_child = buy_card_scene
 	current_child.connect("tower_bought", self, "_on_tower_bought")
 
-func _on_tower_bought(tower_id : int):
-	emit_signal("tower_bought", tower_id)
+func _on_tower_bought(tower_type_info : TowerTypeInformation):
+	emit_signal("tower_bought", tower_type_info)
 
 func kill_tooltip_of_tower_card():
 	if current_child is TowerBuyCard:

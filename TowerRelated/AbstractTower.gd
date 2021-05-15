@@ -29,11 +29,16 @@ signal tower_dropped_from_dragged(tower_self)
 signal tower_toggle_show_info
 signal tower_in_queue_free
 signal update_active_synergy
+signal tower_being_sold(sellback_gold)
+
+signal tower_not_in_active_map
+signal tower_active_in_map
 
 signal final_base_damage_changed
 signal final_attack_speed_changed
 signal final_range_changed
 signal ingredients_absorbed_changed
+signal ingredients_limit_changed
 signal tower_colors_changed
 
 
@@ -67,12 +72,21 @@ var disabled_from_attacking : bool = false
 # Ingredient related
 
 var ingredients_absorbed : Dictionary = {} # Map of tower_id (ingredient source) to ingredient_effect
-var ingredient_active_limit : int = 2
+var ingredient_active_limit : int = 2 setget set_active_ingredient_limit
 var ingredient_of_self : IngredientEffect
 
 # Color related
 
 var _tower_colors : Array = []
+
+# Gold related
+
+var _base_gold_cost : int
+var _ingredients_base_gold_costs : Array = []
+
+# Round related
+
+var is_round_started : bool = false
 
 
 # Initialization
@@ -217,8 +231,8 @@ func _remove_attack_speed_effect(attr_effect_uuid : int):
 	for module in attack_modules_and_target_num.keys():
 		
 		if module.benefits_from_bonus_attack_speed:
-			module.percent_attack_speed_modifiers.erase(attr_effect_uuid)
-			module.flat_attack_speed_modifiers.erase(attr_effect_uuid)
+			module.percent_attack_speed_effects.erase(attr_effect_uuid)
+			module.flat_attack_speed_effects.erase(attr_effect_uuid)
 		
 		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
 			_emit_final_attack_speed_changed()
@@ -239,7 +253,7 @@ func _add_base_damage_effect(attr_effect : TowerAttributesEffect):
 func _remove_base_damage_effect(attr_effect_uuid : int):
 	for module in attack_modules_and_target_num.keys():
 		
-		if module.benefits_from_bonus_damage:
+		if module.benefits_from_bonus_base_damage:
 			module.percent_base_damage_effects.erase(attr_effect_uuid)
 			module.flat_base_damage_effects.erase(attr_effect_uuid)
 		
@@ -261,13 +275,17 @@ func _remove_on_hit_damage_adder_effect(on_hit_adder_uuid : int):
 
 func _add_range_effect(attr_effect : TowerAttributesEffect):
 	if range_module != null:
-		if range_module.range_module.benefits_from_bonus_range:
-				if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
-					range_module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
-				elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
-					range_module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
-				
-				_emit_final_range_changed()
+		if range_module.benefits_from_bonus_range:
+			if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
+				range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
+			elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
+				range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
+			
+			_emit_final_range_changed()
+			
+			range_module.update_range()
+			if main_attack_module is BulletAttackModule:
+				main_attack_module.projectile_life_distance = range_module.last_calculated_final_range
 	
 	
 	for module in attack_modules_and_target_num.keys():
@@ -277,20 +295,35 @@ func _add_range_effect(attr_effect : TowerAttributesEffect):
 					module.range_module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
 				elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
 					module.range_module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
+			
+			module.range_module.update_range()
+			if module is BulletAttackModule:
+				module.projectile_life_distance = module.range_module.last_calculated_final_range
+
 
 func _remove_range_effect(attr_effect_uuid : int):
 	if range_module != null:
 		if range_module.benefits_from_bonus_range:
-			range_module.range_module.flat_range_effects.erase(attr_effect_uuid)
-			range_module.range_module.percent_range_effects.erase(attr_effect_uuid)
+			range_module.flat_range_effects.erase(attr_effect_uuid)
+			range_module.percent_range_effects.erase(attr_effect_uuid)
 			
+			
+			if main_attack_module is BulletAttackModule:
+				main_attack_module.projectile_life_distance = range_module.last_calculated_final_range
 			_emit_final_range_changed()
+			range_module.update_range()
+	
 	
 	for module in attack_modules_and_target_num.keys():
 		if module.range_module != null and module.use_self_range_module:
 			if module.range_module.benefits_from_bonus_range:
 				module.range_module.range_module.flat_range_effects.erase(attr_effect_uuid)
 				module.range_module.range_module.percent_range_effects.erase(attr_effect_uuid)
+			
+			module.range_module.update_range()
+			if module is BulletAttackModule:
+				module.projectile_life_distance = module.range_module.last_calculated_final_range
+
 
 func _add_pierce_effect(attr_effect : TowerAttributesEffect):
 	for module in attack_modules_and_target_num.keys():
@@ -327,19 +360,21 @@ func _remove_proj_speed_effect(attr_effect_uuid : int):
 
 # Ingredient Related
 
-func absorb_ingredient(ingredient_effect : IngredientEffect):
+func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_base_cost : int):
 	if ingredient_effect != null:
 		ingredients_absorbed[ingredient_effect.tower_id] = ingredient_effect
 		add_tower_effect(ingredient_effect.tower_base_effect)
 		
+		_ingredients_base_gold_costs.append(ingredient_gold_base_cost)
 		_emit_ingredients_absorbed_changed()
-	
+
 func clear_ingredients():
 	for ingredient_effect in ingredients_absorbed:
 		remove_tower_effect(ingredient_effect.tower_base_effect)
 	
 	_emit_ingredients_absorbed_changed()
 	ingredients_absorbed.clear()
+	_ingredients_base_gold_costs.clear()
 
 
 func _can_accept_ingredient(ingredient_effect : IngredientEffect) -> bool:
@@ -366,6 +401,28 @@ func hide_acceptability_with_ingredient():
 	$IngredientDeclinePic.visible = false
 
 
+func set_active_ingredient_limit(new_limit : int):
+	if ingredient_active_limit != new_limit:
+		if ingredient_active_limit > new_limit:
+			
+			var ing_effects = ingredients_absorbed.values()
+			for i in range(new_limit, ingredients_absorbed.size()):
+				remove_tower_effect(ing_effects[i].tower_base_effect)
+			
+			
+		elif ingredient_active_limit < new_limit:
+			
+			var ing_effects = ingredients_absorbed.values()
+			for i in range(ingredient_active_limit, new_limit):
+				if ing_effects.size() > i:
+					add_tower_effect(ing_effects[i].tower_base_effect)
+				else:
+					break
+		
+		
+		ingredient_active_limit = new_limit
+		emit_signal("ingredients_limit_changed")
+
 # Tower Colors Related
 
 func add_color_to_tower(color : int):
@@ -389,7 +446,8 @@ func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 		if event.pressed and event.button_index == BUTTON_RIGHT:
 			_toggle_show_tower_info()
 		elif event.pressed and event.button_index == BUTTON_LEFT:
-			_start_drag()
+			if !(is_round_started and current_placable is InMapAreaPlacable):
+				_start_drag()
 		elif !event.pressed and event.button_index == BUTTON_LEFT:
 			if is_being_dragged:
 				_end_drag()
@@ -458,7 +516,10 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 	
 	if new_area_placable != null and new_area_placable.tower_occupying != null:
 		if !is_in_ingredient_mode:
-			new_area_placable.tower_occupying.transfer_to_placable(current_placable, true)
+			if !(is_round_started and new_area_placable is InMapAreaPlacable):
+				new_area_placable.tower_occupying.transfer_to_placable(current_placable, true)
+			else:
+				new_area_placable = null # return tower to original location
 		else:
 			var target_tower = new_area_placable.tower_occupying
 			
@@ -466,7 +527,7 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 				_give_self_ingredient_buff_to(target_tower)
 				return
 			else:
-				new_area_placable.tower_occupying.transfer_to_placable(current_placable, true)
+				new_area_placable = null # return tower to original location
 	
 	# The "new" one
 	if new_area_placable != null:
@@ -487,10 +548,14 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 			disabled_from_attacking = true
 			_disable_modules()
 			is_contributing_to_synergy = false
+			
+			emit_signal("tower_not_in_active_map")
 		elif current_placable is InMapAreaPlacable:
 			disabled_from_attacking = false
 			_enable_modules()
 			is_contributing_to_synergy = true
+			
+			emit_signal("tower_active_in_map")
 	
 	# Update Synergy
 	if should_update_active_synergy:
@@ -510,6 +575,7 @@ func _on_PlacableDetector_area_exited(area):
 		if hovering_over_placable == area:
 			hovering_over_placable = null
 
+
 # Ingredient drag and drop related
 
 func _set_is_in_ingredient_mode(mode : bool):
@@ -519,10 +585,27 @@ func _set_is_in_ingredient_mode(mode : bool):
 		$IngredientDeclinePic.visible = false
 
 func _give_self_ingredient_buff_to(absorber):
-	absorber.absorb_ingredient(ingredient_of_self)
+	absorber.absorb_ingredient(ingredient_of_self, _calculate_sellback_value())
 	queue_free()
 
 
+# Gold Sellback related
+
+func sell_tower():
+	call_deferred("emit_signal", "tower_being_sold", _calculate_sellback_value())
+	queue_free()
+
+
+func _calculate_sellback_value() -> int:
+	var sellback = _base_gold_cost
+	
+	for cost in _ingredients_base_gold_costs:
+		if cost > 1:
+			cost -= 1
+		
+		sellback += cost
+	
+	return sellback
 
 
 # Tracking of towers related

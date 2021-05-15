@@ -18,13 +18,13 @@ func _ready():
 
 func update_display():
 	
+	update_limit_count_label_only()
+	
 	var ing_effects : Array = []
-	var count_display : String = ""
 	var ing_limit : int = 2
 	
 	if tower != null:
 		ing_effects = tower.ingredients_absorbed.values()
-		count_display = str(tower.ingredients_absorbed.size()) + "/" + str(tower.ingredient_active_limit)
 		ing_limit = tower.ingredient_active_limit
 		
 		if tower.ingredients_absorbed.size() > ing_limit:
@@ -36,6 +36,15 @@ func update_display():
 	
 	multi_ingredient_panel.ingredient_effect_limit = ing_limit
 	multi_ingredient_panel.ingredient_effects = ing_effects
-	count_label.text = count_display
 	
 	multi_ingredient_panel.update_display()
+	
+
+
+func update_limit_count_label_only():
+	var count_display : String = ""
+	
+	if tower != null:
+		count_display = str(tower.ingredients_absorbed.size()) + "/" + str(tower.ingredient_active_limit)
+	
+	count_label.text = count_display

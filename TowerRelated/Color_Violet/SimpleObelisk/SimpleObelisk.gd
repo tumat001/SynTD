@@ -32,6 +32,8 @@ func _ready():
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
 	_tower_colors = info.colors
+	_base_gold_cost = info.tower_cost
+	ingredient_of_self = info.ingredient_effect
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range

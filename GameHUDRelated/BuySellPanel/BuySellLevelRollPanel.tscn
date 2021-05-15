@@ -51,69 +51,74 @@ margin_bottom = 80.0
 mouse_filter = 2
 custom_constants/separation = 0
 
-[node name="RerollPanel" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/LevelRerollContainer"]
 margin_right = 122.0
 margin_bottom = 40.0
 mouse_filter = 2
+custom_constants/separation = 0
 
-[node name="RerollButton" type="TextureButton" parent="HBoxContainer/LevelRerollContainer/RerollPanel"]
-margin_right = 122.0
-margin_bottom = 40.0
-texture_normal = ExtResource( 2 )
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/LevelRerollContainer/RerollPanel"]
-margin_right = 122.0
+[node name="LevelUpPanel" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/HBoxContainer"]
+margin_right = 61.0
 margin_bottom = 40.0
 mouse_filter = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer"]
-margin_right = 46.0
+[node name="LevelUpButton" type="TextureButton" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel"]
+margin_right = 61.0
+margin_bottom = 40.0
+focus_mode = 0
+enabled_focus_mode = 0
+texture_normal = ExtResource( 3 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel"]
+margin_right = 61.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer"]
+margin_right = 35.0
+margin_bottom = 40.0
+mouse_filter = 2
+custom_constants/margin_left = 5
+
+[node name="LevelUpLabel" type="Label" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer"]
+margin_left = 5.0
+margin_top = 7.0
+margin_right = 35.0
+margin_bottom = 32.0
+size_flags_horizontal = 4
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+text = "Level
+Up"
+
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer"]
+margin_left = 39.0
+margin_right = 56.0
 margin_bottom = 40.0
 mouse_filter = 2
 custom_constants/margin_left = 10
 
-[node name="RerollLabel" type="Label" parent="HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer/MarginContainer"]
+[node name="LevelUpCostLabel" type="Label" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer2"]
 margin_left = 10.0
-margin_top = 14.0
-margin_right = 46.0
-margin_bottom = 25.0
-size_flags_horizontal = 4
-custom_fonts/font = SubResource( 1 )
-custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
-text = "Reroll"
-
-[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer"]
-margin_left = 50.0
-margin_right = 97.0
-margin_bottom = 40.0
-mouse_filter = 2
-custom_constants/margin_left = 40
-
-[node name="RerollCostLabel" type="Label" parent="HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer/MarginContainer2"]
-margin_left = 40.0
 margin_top = 13.0
-margin_right = 47.0
+margin_right = 17.0
 margin_bottom = 27.0
 grow_horizontal = 0
 custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 text = "0"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/LevelRerollContainer"]
-margin_top = 40.0
-margin_right = 122.0
-margin_bottom = 80.0
-mouse_filter = 2
-custom_constants/separation = 0
-
 [node name="LevelDownPanel" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/HBoxContainer"]
-margin_right = 61.0
+margin_left = 61.0
+margin_right = 122.0
 margin_bottom = 40.0
 mouse_filter = 2
 
 [node name="LevelDownButton" type="TextureButton" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelDownPanel"]
 margin_right = 61.0
 margin_bottom = 40.0
+focus_mode = 0
+enabled_focus_mode = 0
 texture_normal = ExtResource( 4 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelDownPanel"]
@@ -156,49 +161,51 @@ custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 text = "0"
 
-[node name="LevelUpPanel" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/HBoxContainer"]
-margin_left = 61.0
+[node name="RerollPanel" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer"]
+margin_top = 40.0
+margin_right = 122.0
+margin_bottom = 80.0
+mouse_filter = 2
+
+[node name="RerollButton" type="TextureButton" parent="HBoxContainer/LevelRerollContainer/RerollPanel"]
+margin_right = 122.0
+margin_bottom = 40.0
+focus_mode = 0
+enabled_focus_mode = 0
+texture_normal = ExtResource( 2 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/LevelRerollContainer/RerollPanel"]
 margin_right = 122.0
 margin_bottom = 40.0
 mouse_filter = 2
 
-[node name="LevelUpButton" type="TextureButton" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel"]
-margin_right = 61.0
-margin_bottom = 40.0
-texture_normal = ExtResource( 3 )
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel"]
-margin_right = 61.0
-margin_bottom = 40.0
-
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer"]
-margin_right = 35.0
-margin_bottom = 40.0
-mouse_filter = 2
-custom_constants/margin_left = 5
-
-[node name="LevelUpLabel" type="Label" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer"]
-margin_left = 5.0
-margin_top = 7.0
-margin_right = 35.0
-margin_bottom = 32.0
-size_flags_horizontal = 4
-custom_fonts/font = SubResource( 4 )
-custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
-text = "Level
-Up"
-
-[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer"]
-margin_left = 39.0
-margin_right = 56.0
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer"]
+margin_right = 46.0
 margin_bottom = 40.0
 mouse_filter = 2
 custom_constants/margin_left = 10
 
-[node name="LevelUpCostLabel" type="Label" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer2"]
+[node name="RerollLabel" type="Label" parent="HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer/MarginContainer"]
 margin_left = 10.0
+margin_top = 14.0
+margin_right = 46.0
+margin_bottom = 25.0
+size_flags_horizontal = 4
+custom_fonts/font = SubResource( 4 )
+custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+text = "Reroll"
+
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer"]
+margin_left = 50.0
+margin_right = 97.0
+margin_bottom = 40.0
+mouse_filter = 2
+custom_constants/margin_left = 40
+
+[node name="RerollCostLabel" type="Label" parent="HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer/MarginContainer2"]
+margin_left = 40.0
 margin_top = 13.0
-margin_right = 17.0
+margin_right = 47.0
 margin_bottom = 27.0
 grow_horizontal = 0
 custom_fonts/font = SubResource( 2 )
@@ -235,9 +242,9 @@ margin_bottom = 80.0
 margin_left = 416.0
 margin_right = 520.0
 margin_bottom = 80.0
-[connection signal="pressed" from="HBoxContainer/LevelRerollContainer/RerollPanel/RerollButton" to="." method="_on_RerollButton_pressed"]
-[connection signal="pressed" from="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelDownPanel/LevelDownButton" to="." method="_on_LevelDownButton_pressed"]
 [connection signal="pressed" from="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/LevelUpButton" to="." method="_on_LevelUpButton_pressed"]
+[connection signal="pressed" from="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelDownPanel/LevelDownButton" to="." method="_on_LevelDownButton_pressed"]
+[connection signal="pressed" from="HBoxContainer/LevelRerollContainer/RerollPanel/RerollButton" to="." method="_on_RerollButton_pressed"]
 [connection signal="tower_bought" from="HBoxContainer/BuySlotContainer/BuySlot01" to="." method="_on_tower_bought"]
 [connection signal="tower_bought" from="HBoxContainer/BuySlotContainer/BuySlot02" to="." method="_on_tower_bought"]
 [connection signal="tower_bought" from="HBoxContainer/BuySlotContainer/BuySlot03" to="." method="_on_tower_bought"]
