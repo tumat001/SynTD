@@ -1,5 +1,7 @@
 extends MarginContainer
 
+const RoundInfoPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel.gd")
+
 
 signal round_start_pressed
 signal round_fast_forward_pressed
@@ -10,27 +12,23 @@ const pic_round_start_button = preload("res://GameHUDRelated/RightSidePanel/Roun
 const pic_round_fast_forward_button = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundFastForwardButton.png")
 
 onready var round_status_button : TextureButton = $VBoxContainer/MarginContainer/RoundStatusButton
+onready var round_info_panel : RoundInfoPanel = $VBoxContainer/RoundInfoPanel
 
 var round_started : bool
 var round_fast_forwarded : bool
 
 
-# TODO:
-# For now, the round ended is triggered by this panel,
-# which should be removed in the end.. The round ended
-# signal/trigger should come from the enemymanager
-signal round_ended_pressed
 
 func _update_round_started():
 	emit_signal("round_start_pressed")
 	round_status_button.texture_normal = pic_round_fast_forward_button
 	round_started = true
 
-# TODO TEMPORARY
+
 func _update_round_ended():
-	emit_signal("round_ended_pressed")
 	round_status_button.texture_normal = pic_round_start_button
 	round_started = false
+
 
 func _update_fast_forwarded():
 	pass
@@ -47,6 +45,3 @@ func _on_RoundStatusButton_pressed():
 			pass
 		else:
 			pass
-		
-		# TODO TEMPORARY
-		_update_round_ended()

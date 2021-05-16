@@ -209,12 +209,12 @@ func _show_round_panel():
 
 # Round related
 
-func _round_started():
+func _round_started(_stageround):
 	for tower in get_all_towers():
 		tower.is_round_started = true
 
 
-func _round_ended():
+func _round_ended(_stageround):
 	for tower in get_all_towers():
 		tower.is_round_started = false
 

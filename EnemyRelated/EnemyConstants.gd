@@ -1,5 +1,6 @@
 
-const EnemyDetails = preload("res://EnemyRelated/EnemyDetails.gd")
+const EnemyTypeInformation = preload("res://EnemyRelated/EnemyTypeInformation.gd")
+
 
 enum EnemyFactions {
 	MISC,
@@ -12,11 +13,21 @@ enum EnemyFactions {
 
 enum Enemies {
 	#MISC
-	TEST_ENEMY
+	TEST_ENEMY,
 }
 
-const test_enemy_scene = preload("res://EnemyRelated/Misc/TestEnemy/TestEnemy.tscn")
+static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
+	var info : EnemyTypeInformation
+	
+	if enemy_id == Enemies.TEST_ENEMY:
+		info = EnemyTypeInformation.new(Enemies.TEST_ENEMY, EnemyFactions.MISC)
+		
+	
+	return info
 
-var EnemyDetailsMap : Dictionary = {
-	Enemies.TEST_ENEMY : EnemyDetails.new(10, 10, EnemyFactions.MISC)
-}
+
+static func get_enemy_scene(enemy_id : int):
+	if enemy_id == Enemies.TEST_ENEMY:
+		return load("res://EnemyRelated/Misc/TestEnemy/TestEnemy.tscn")
+
+

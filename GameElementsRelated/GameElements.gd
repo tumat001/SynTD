@@ -9,6 +9,10 @@ const RightSidePanel = preload("res://GameHUDRelated/RightSidePanel/RightSidePan
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const TowerManager = preload("res://GameElementsRelated/TowerManager.gd")
 const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
+const HealthManager = preload("res://GameElementsRelated/HealthManager.gd")
+const RoundStatusPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundStatusPanel.gd")
+const RoundInfoPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel.gd")
+const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var in_map_placables_manager : InMapPlacablesManager
@@ -19,6 +23,11 @@ var tower_inventory_bench
 var tower_manager : TowerManager
 var gold_manager : GoldManager
 var stage_round_manager : StageRoundManager
+var health_manager : HealthManager
+var enemy_manager : EnemyManager
+
+var round_status_panel : RoundStatusPanel
+var round_info_panel : RoundInfoPanel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -32,6 +41,11 @@ func _ready():
 	tower_manager = $TowerManager
 	gold_manager = $GoldManager
 	stage_round_manager = $StageRoundManager
+	health_manager = $HealthManager
+	enemy_manager = $EnemyManager
+	
+	round_status_panel = right_side_panel.round_status_panel
+	round_info_panel = round_status_panel.round_info_panel
 	
 	panel_buy_sell_level_roll.gold_manager = gold_manager
 	
@@ -59,11 +73,27 @@ func _ready():
 	# stage round manager related
 	
 	stage_round_manager.round_status_panel = right_side_panel.round_status_panel
+	
 	stage_round_manager.connect("round_started", tower_manager, "_round_started")
 	stage_round_manager.connect("round_ended", tower_manager, "_round_ended")
+	stage_round_manager.connect("round_ended", round_info_panel, "set_stageround")
+	stage_round_manager.connect("end_of_round_gold_earned", gold_manager, "increase_gold_by")
+	stage_round_manager.enemy_manager = enemy_manager
 	
-	#REMOVE AFTER
-	gold_manager.increase_gold_by(10, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	# health manager
+	
+	health_manager.round_info_panel = round_info_panel
+	
+	# Enemy manager
+	
+	enemy_manager.set_spawn_paths([$EnemyPath])
+	enemy_manager.connect("no_enemies_left", round_status_panel, "_update_round_ended")
+	enemy_manager.health_manager = health_manager
+	
+	#GAME START
+	stage_round_manager.set_game_mode_to_normal()
+	stage_round_manager.end_round()
+	health_manager.set_health(150)
 
 # From bottom panel
 func _on_BuySellLevelRollPanel_level_down():

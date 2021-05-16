@@ -7,6 +7,11 @@
 animations = [ {
 "frames": [  ],
 "loop": true,
+"name": "walk_E",
+"speed": 5.0
+}, {
+"frames": [  ],
+"loop": true,
 "name": "walk_N",
 "speed": 5.0
 }, {
@@ -18,11 +23,6 @@ animations = [ {
 "frames": [  ],
 "loop": true,
 "name": "walk_S",
-"speed": 5.0
-}, {
-"frames": [  ],
-"loop": true,
-"name": "walk_E",
 "speed": 5.0
 } ]
 

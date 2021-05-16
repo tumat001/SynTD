@@ -1,6 +1,8 @@
 extends Node
 
 enum {
+	ENEMIES = -110
+	
 	TOWER_BENCH = -100,
 	TOWER_PLACABLES = -98,
 	

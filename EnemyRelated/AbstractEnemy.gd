@@ -12,6 +12,7 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 
 signal on_death
 signal on_hit
+signal reached_end_of_path
 signal on_current_health_changed(current_health)
 signal on_max_health_changed(max_health)
 
@@ -78,6 +79,8 @@ func _physics_process(delta):
 	offset += distance_traveled
 	distance_to_exit -= distance_traveled
 	
+	if unit_offset == 1:
+		call_deferred("emit_signal", "reached_end_of_path")
 
 
 
@@ -127,11 +130,16 @@ func _take_unmitigated_damage(damage_amount):
 		emit_signal("on_current_health_changed", current_health)
 
 func _destroy_self():
-	emit_signal("on_death")
-	
 	$CollisionArea.set_deferred("monitorable", false)
 	$CollisionArea.set_deferred("monitoring", false)
 	queue_free()
+
+
+func queue_free():
+	emit_signal("on_death")
+	
+	.queue_free()
+
 
 func add_flat_base_health_modifier_with_heal(modifier_name : String, 
 		modifier : FlatModifier):
