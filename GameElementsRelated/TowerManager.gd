@@ -62,6 +62,8 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("tower_in_queue_free", self, "_tower_in_queue_free", [tower_instance])
 	tower_instance.connect("update_active_synergy", self, "_update_active_synergy")
 	tower_instance.connect("tower_being_sold", self, "_tower_sold")
+	tower_instance.connect("tower_give_gold", self, "_tower_generate_gold")
+	
 	
 	tower_instance.connect("tower_colors_changed", self, " _register_tower_to_color_grouping_tags", [tower_instance])
 	tower_instance.connect("tower_active_in_map", self, "_register_tower_to_color_grouping_tags", [tower_instance])
@@ -154,6 +156,9 @@ func _get_all_synegy_contributing_towers() -> Array:
 
 func _tower_sold(sellback_gold : int):
 	gold_manager.increase_gold_by(sellback_gold, GoldManager.IncreaseGoldSource.TOWER_SELLBACK)
+
+func _tower_generate_gold(gold : int, source_type : int):
+	gold_manager.increase_gold_by(gold, source_type)
 
 
 # Tower info show related

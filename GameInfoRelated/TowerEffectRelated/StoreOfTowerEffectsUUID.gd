@@ -15,4 +15,5 @@ enum {
 	
 	# VIOLET (600)
 	ING_SIMPLE_OBELISK = 600
+	ING_RE = 601
 }

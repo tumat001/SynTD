@@ -8,7 +8,7 @@ const WithBeamInstantDamageAttackModule = preload("res://TowerRelated/Modules/Wi
 const WithBeamInstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.tscn")
 const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
 
-# TODO REPLACE THIS SOON
+
 #const SimpleObeliskBullet_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Ana_BlueVioletGreen.png")
 const SimplexBeam01_pic = preload("res://TowerRelated/Color_Gray/Simplex/SimplexBeam_01.png")
 const SimplexBeam02_pic = preload("res://TowerRelated/Color_Gray/Simplex/SimplexBeam_02.png")

@@ -7,6 +7,7 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
 
+const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 
 enum Time_Metadata {
 	TIME_AS_SECONDS,
@@ -15,7 +16,9 @@ enum Time_Metadata {
 
 signal final_attack_speed_changed
 signal final_base_damage_changed
-
+signal in_attack_windup(windup_time, enemies_or_poses)
+signal in_attack(attack_speed_delay, enemies_or_poses)
+signal in_attack_end()
 
 var module_name : String
 # These are used to help differentiate attacks
@@ -61,6 +64,11 @@ var use_self_range_module : bool = false
 
 var modifications : Array
 
+# Attack sprites
+
+var attack_sprite_scene
+var attack_sprite_follow_enemy : bool
+
 # internal stuffs
 var _current_attack_wait : float
 var _current_wind_up_wait : float
@@ -77,7 +85,21 @@ var _disabled : bool = false
 var last_calculated_final_damage : float
 var last_calculated_final_attk_speed : float
 
+var _last_calculated_attack_wind_up : float
+var _last_calculated_burst_pause : float
+var _last_calculated_attack_speed_as_delay : float
+
 # MISC
+
+func reset_attack_timers():
+	_is_bursting = false
+	_current_burst_count = 0
+	_current_burst_delay = 0
+	
+	_current_attack_wait = 0
+	_current_wind_up_wait = false
+	_is_attacking = false
+
 
 func _ready():
 	last_calculated_final_attk_speed = base_attack_speed
@@ -98,11 +120,15 @@ func time_passed(delta):
 	
 	if !_disabled:
 		_current_attack_wait -= delta
-		_current_wind_up_wait -= delta
+		
+		if range_module.enemies_in_range.size() != 0:
+			_current_wind_up_wait -= delta
+		
 		if _is_bursting:
 			_current_burst_delay -= delta
 		
 		decrease_time_of_timebounded(delta)
+	
 
 
 func decrease_time_of_timebounded(delta):
@@ -202,7 +228,7 @@ func decrease_time_of_timebounded(delta):
 # Calculating final values
 
 
-# More like attack speed wait
+# Calculates attack speed, and returns attack delay
 func calculate_final_attack_speed() -> float:
 	if original_time_metadata == Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
 		return base_attack_speed
@@ -223,7 +249,8 @@ func calculate_final_attack_speed() -> float:
 	
 	if final_attack_speed != 0:
 		last_calculated_final_attk_speed = final_attack_speed
-		return 1 / last_calculated_final_attk_speed
+		_last_calculated_attack_speed_as_delay = (1 / last_calculated_final_attk_speed) - (_last_calculated_attack_wind_up + (burst_amount * _last_calculated_burst_pause))
+		return _last_calculated_attack_speed_as_delay
 	else:
 		last_calculated_final_attk_speed = 0.0
 		return 0.0
@@ -236,18 +263,20 @@ func calculate_final_attack_wind_up() -> float:
 		for effect in percent_attack_speed_effects.values():
 			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
 				continue
-			final_attack_wind_up -= effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
+			final_attack_wind_up += effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
 		
 		for effect in flat_attack_speed_effects.values():
 			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
 				continue
-			final_attack_wind_up -= effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
+			final_attack_wind_up += effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
 	
 	
-	if final_attack_wind_up < 0:
-		final_attack_wind_up = 0
-	
-	return final_attack_wind_up
+	if final_attack_wind_up != 0:
+		_last_calculated_attack_wind_up = 1 / final_attack_wind_up
+		return _last_calculated_attack_wind_up
+	else:
+		_last_calculated_attack_wind_up = 0.0
+		return 0.0
 
 func calculate_final_burst_attack_speed() -> float:
 	#All percent modifiers here are to BASE in between burst only
@@ -265,9 +294,11 @@ func calculate_final_burst_attack_speed() -> float:
 			final_burst_pause += effect.attribute_as_modifier.get_modification_to_value(burst_attack_speed)
 	
 	if final_burst_pause != 0:
-		return 1 / final_burst_pause
+		_last_calculated_burst_pause = 1 / final_burst_pause
+		return _last_calculated_burst_pause
 	else:
-		return 0.0
+		_last_calculated_burst_pause = 0.0
+		return _last_calculated_burst_pause
 
 
 # Attack related
@@ -283,23 +314,23 @@ func is_ready_to_attack() -> bool:
 			return _current_wind_up_wait <= 0
 
 
-func attempt_find_then_attack_enemy() -> bool:
-	if range_module == null or !use_self_range_module:
-		return false
-	
-	var target : AbstractEnemy
-	if range_module.is_an_enemy_in_range():
-		target = range_module.get_target()
-	
-	return on_command_attack_enemy(target)
+#func attempt_find_then_attack_enemy() -> bool:
+#	if range_module == null or !use_self_range_module:
+#		return false
+#
+#	var target : AbstractEnemy
+#	if range_module.is_an_enemy_in_range():
+#		target = range_module.get_target()
+#
+#	return on_command_attack_enemy(target)
 
 
 func attempt_find_then_attack_enemies(num : int) -> bool:
 	if range_module == null or !use_self_range_module:
 		return false
 	
-	if num == 1:
-		return attempt_find_then_attack_enemy()
+#	if num == 1:
+#		return attempt_find_then_attack_enemy()
 	
 	var targets : Array
 	if range_module.is_an_enemy_in_range():
@@ -308,97 +339,97 @@ func attempt_find_then_attack_enemies(num : int) -> bool:
 	return on_command_attack_enemies(targets)
 
 
-func on_command_attack_enemy(enemy : AbstractEnemy) -> bool:
-	if enemy == null:
-		return false
-	
-	if !_is_attacking:
-		if calculate_final_attack_wind_up() == 0:
-			_attack_enemy(enemy)
-			
-			if has_burst:
-				_is_attacking = true
-				_current_burst_count += 1
-				_current_burst_delay = calculate_final_burst_attack_speed()
-				_is_bursting = true
-			else:
-				_current_attack_wait = calculate_final_attack_speed()
-				_finished_attacking()
-			
-			return true
-		else:
-			_current_wind_up_wait = calculate_final_attack_wind_up()
-			_is_attacking = true
-			_during_windup(enemy)
-			_during_attack()
-			return false
-		
-	else:
-		if !has_burst:
-			_attack_enemy(enemy)
-			_current_attack_wait = calculate_final_attack_speed()
-			_is_attacking = false
-			_finished_attacking()
-			return true
-		else:
-			if _current_burst_count < burst_amount - 1:
-				_attack_enemy(enemy)
-				_current_burst_delay = calculate_final_burst_attack_speed()
-				_is_bursting = true
-				_current_burst_count += 1
-				_during_attack()
-				return true
-			else:
-				_attack_enemy(enemy)
-				_current_attack_wait = calculate_final_attack_speed()
-				_is_bursting = false
-				_is_attacking = false
-				_current_burst_count = 0
-				_finished_attacking()
-				return true
-
-
-func on_command_attack_at_position(pos : Vector2):
-	if !_is_attacking:
-		if calculate_final_attack_wind_up() == 0:
-			_attack_at_position(pos)
-			
-			if has_burst:
-				_is_attacking = true
-				_current_burst_count += 1
-				_current_burst_delay = calculate_final_burst_attack_speed()
-				_is_bursting = true
-			else:
-				_current_attack_wait = calculate_final_attack_speed()
-				_finished_attacking()
-			
-			return true
-		else:
-			_current_wind_up_wait = calculate_final_attack_wind_up()
-			_is_attacking = true
-			_during_windup(null)
-			_during_attack()
-		
-	else:
-		if !has_burst:
-			_attack_at_position(pos)
-			_current_attack_wait = calculate_final_attack_speed()
-			_is_attacking = false
-			_finished_attacking()
-		else:
-			if _current_burst_count < burst_amount - 1:
-				_attack_at_position(pos)
-				_current_burst_delay = calculate_final_burst_attack_speed()
-				_is_bursting = true
-				_current_burst_count += 1
-				_during_attack()
-			else:
-				_attack_at_position(pos)
-				_current_attack_wait = calculate_final_attack_speed()
-				_is_bursting = false
-				_is_attacking = false
-				_current_burst_count = 0
-				_finished_attacking()
+#func on_command_attack_enemy(enemy : AbstractEnemy) -> bool:
+#	if enemy == null:
+#		return false
+#
+#	if !_is_attacking:
+#		if calculate_final_attack_wind_up() == 0:
+#			_attack_enemy(enemy)
+#
+#			if has_burst:
+#				_is_attacking = true
+#				_current_burst_count += 1
+#				_current_burst_delay = calculate_final_burst_attack_speed()
+#				_is_bursting = true
+#			else:
+#				_current_attack_wait = calculate_final_attack_speed()
+#				_finished_attacking()
+#
+#			return true
+#		else:
+#			_current_wind_up_wait = calculate_final_attack_wind_up()
+#			_is_attacking = true
+#			_during_windup(enemy)
+#			_during_attack()
+#			return false
+#
+#	else:
+#		if !has_burst:
+#			_attack_enemy(enemy)
+#			_current_attack_wait = calculate_final_attack_speed()
+#			_is_attacking = false
+#			_finished_attacking()
+#			return true
+#		else:
+#			if _current_burst_count < burst_amount - 1:
+#				_attack_enemy(enemy)
+#				_current_burst_delay = calculate_final_burst_attack_speed()
+#				_is_bursting = true
+#				_current_burst_count += 1
+#				_during_attack()
+#				return true
+#			else:
+#				_attack_enemy(enemy)
+#				_current_attack_wait = calculate_final_attack_speed()
+#				_is_bursting = false
+#				_is_attacking = false
+#				_current_burst_count = 0
+#				_finished_attacking()
+#				return true
+#
+#
+#func on_command_attack_at_position(pos : Vector2):
+#	if !_is_attacking:
+#		if calculate_final_attack_wind_up() == 0:
+#			_attack_at_position(pos)
+#
+#			if has_burst:
+#				_is_attacking = true
+#				_current_burst_count += 1
+#				_current_burst_delay = calculate_final_burst_attack_speed()
+#				_is_bursting = true
+#			else:
+#				_current_attack_wait = calculate_final_attack_speed()
+#				_finished_attacking()
+#
+#			return true
+#		else:
+#			_current_wind_up_wait = calculate_final_attack_wind_up()
+#			_is_attacking = true
+#			_during_windup(null)
+#			_during_attack()
+#
+#	else:
+#		if !has_burst:
+#			_attack_at_position(pos)
+#			_current_attack_wait = calculate_final_attack_speed()
+#			_is_attacking = false
+#			_finished_attacking()
+#		else:
+#			if _current_burst_count < burst_amount - 1:
+#				_attack_at_position(pos)
+#				_current_burst_delay = calculate_final_burst_attack_speed()
+#				_is_bursting = true
+#				_current_burst_count += 1
+#				_during_attack()
+#			else:
+#				_attack_at_position(pos)
+#				_current_attack_wait = calculate_final_attack_speed()
+#				_is_bursting = false
+#				_is_attacking = false
+#				_current_burst_count = 0
+#				_finished_attacking()
 
 
 func on_command_attack_enemies(enemies : Array) -> bool:
@@ -469,7 +500,7 @@ func on_command_attack_at_positions(positions : Array):
 		else:
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
-			_during_windup_multiple()
+			_during_windup_multiple(positions)
 			_during_attack()
 		
 	else:
@@ -494,28 +525,42 @@ func on_command_attack_at_positions(positions : Array):
 				_finished_attacking()
 
 
-func _attack_enemy(_enemy : AbstractEnemy):
-	pass
+#func _attack_enemy(enemy : AbstractEnemy):
+#	pass
 
-func _attack_enemies(_enemies : Array):
-	pass
+func _attack_enemies(enemies : Array):
+	emit_signal("in_attack", _last_calculated_attack_speed_as_delay, enemies)
+	
+	for enemy in enemies:
+		
+		if attack_sprite_scene != null:
+			var attack_sprite = attack_sprite_scene.instance()
+			if attack_sprite_follow_enemy:
+				enemy.add_child(attack_sprite)
+			else:
+				attack_sprite.position = enemy.position
+				get_tree().get_root().add_child(attack_sprite)
 
-func _attack_at_position(_pos : Vector2):
-	pass
 
-func _attack_at_positions(_positions : Array):
-	pass
+#func _attack_at_position(_pos : Vector2):
+#	pass
+
+
+func _attack_at_positions(positions : Array):
+	emit_signal("in_attack", _last_calculated_attack_speed_as_delay, positions)
+
 
 func _modify_attack(to_modify):
 	for mod in modifications:
 		mod._modify_attack(to_modify)
 
 
-func _during_windup(enemy : AbstractEnemy = null):
-	pass
+#func _during_windup(enemy_or_pos):
+#	emit_signal("in_attack_windup", _last_calculated_attack_wind_up, enemy_or_pos)
 
-func _during_windup_multiple(enemies : Array = []):
-	pass
+func _during_windup_multiple(enemies_or_poses : Array = []):
+	emit_signal("in_attack_windup", _last_calculated_attack_wind_up, enemies_or_poses)
+
 
 func _during_attack():
 	if original_time_metadata == Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
@@ -523,6 +568,8 @@ func _during_attack():
 
 func _finished_attacking():
 	current_time_metadata = original_time_metadata
+	
+	emit_signal("in_attack_end")
 
 # Disabling and Enabling
 

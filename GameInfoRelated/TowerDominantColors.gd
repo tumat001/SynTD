@@ -45,7 +45,7 @@ var synergies : Dictionary = {
 	["BLUE description"]),
 	
 	"Violet" : ColorSynergy.new("Violet", [TowerColors.VIOLET], [5, 4, 3, 2],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	[tier_silver_pic, tier_bronze_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	["VIOLET description"]),
 	

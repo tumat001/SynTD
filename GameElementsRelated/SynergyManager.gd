@@ -56,7 +56,6 @@ func update_synergies(towers : Array):
 	non_active_dominant_synergies_res = results_of_dom
 	non_active_group_synergies_res = results_of_compo
 	
-	# UPDATE OTHER COMPONENTS HERE
 	_update_synergy_displayer()
 
 

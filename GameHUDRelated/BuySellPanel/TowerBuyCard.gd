@@ -68,10 +68,10 @@ func update_display():
 	
 	# TowerImageRelated
 	if tower_information.tower_image_in_buy_card != null:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerImage.texture = tower_information.tower_image_in_buy_card
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerImage.visible = true
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/Marginer/TowerImage.texture = tower_information.tower_image_in_buy_card
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/Marginer/TowerImage.visible = true
 	else:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerImage.visible = false
+		$MarginContainer/VBoxContainer/MarginerUpper/Upper/Marginer/TowerImage.visible = false
 	
 	# Tier Crown Related
 	if tower_information.tower_tier == 1:

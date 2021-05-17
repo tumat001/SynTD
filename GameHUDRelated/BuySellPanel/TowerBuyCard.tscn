@@ -231,10 +231,21 @@ custom_fonts/font = SubResource( 1 )
 text = "Temp"
 valign = 1
 
-[node name="TowerImage" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginerUpper/Upper"]
-margin_left = 94.0
-margin_top = 23.0
+[node name="Marginer" type="MarginContainer" parent="MarginContainer/VBoxContainer/MarginerUpper/Upper"]
+margin_left = 32.0
 margin_right = 94.0
+margin_bottom = 47.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 2
+size_flags_horizontal = 11
+size_flags_vertical = 5
+custom_constants/margin_left = 5
+
+[node name="TowerImage" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginerUpper/Upper/Marginer"]
+margin_left = 62.0
+margin_top = 23.0
+margin_right = 62.0
 margin_bottom = 23.0
 grow_horizontal = 0
 grow_vertical = 2

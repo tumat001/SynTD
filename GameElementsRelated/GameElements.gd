@@ -93,6 +93,7 @@ func _ready():
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round()
+	gold_manager.increase_gold_by(10, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.set_health(150)
 
 # From bottom panel
@@ -112,11 +113,11 @@ func _on_BuySellLevelRollPanel_level_up():
 func _on_BuySellLevelRollPanel_reroll():
 	# TODO REPLACE THIS SOON
 	$BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel.update_new_rolled_towers([
-		Towers.RAILGUN,
+		Towers.RE,
 		Towers.SPRINKLER,
 		Towers.SIMPLEX,
 		Towers.SIMPLE_OBELISK,
-		Towers.BERRY_BUSH
+		Towers.RAILGUN,
 	])
 
 

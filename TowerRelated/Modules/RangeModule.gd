@@ -5,6 +5,9 @@ const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 
 
 signal final_range_changed
+signal enemy_entered_range(enemy)
+signal enemy_left_range(enemy)
+signal current_enemy_left_range(enemy)
 
 var benefits_from_bonus_range : bool = true
 
@@ -146,9 +149,14 @@ func _on_Range_area_shape_exited(area_id, area, area_shape, self_shape):
 
 func _on_enemy_enter_range(enemy : AbstractEnemy):
 	enemies_in_range.append(enemy)
+	emit_signal("enemy_entered_range", enemy)
 
 func _on_enemy_leave_range(enemy : AbstractEnemy):
 	enemies_in_range.erase(enemy)
+	emit_signal("enemy_left_range", enemy)
+	
+	if _current_enemies.has(enemy):
+		emit_signal("current_enemy_left_range", enemy)
 	_current_enemies.erase(enemy)
 
 
@@ -194,4 +202,7 @@ func get_target() -> AbstractEnemy:
 
 func get_targets(num : int) -> Array:
 	_current_enemies = Targeting.enemies_to_target(enemies_in_range, get_current_targeting_option(), num)
+	while _current_enemies.has(null):
+		_current_enemies.erase(null)
+	
 	return _current_enemies

@@ -13,6 +13,8 @@ func _attack_enemy(enemy : AbstractEnemy):
 		enemy.hit_by_damage_instance(damage_instance)
 
 func _attack_enemies(enemies : Array):
+	._attack_enemies(enemies)
+	
 	for enemy in enemies:
 		_attack_enemy(enemy)
 

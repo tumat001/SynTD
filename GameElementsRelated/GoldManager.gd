@@ -5,6 +5,8 @@ enum IncreaseGoldSource {
 	END_OF_ROUND,
 	ENEMY_KILLED, #By effects/ingredient effects
 	TOWER_SELLBACK,
+	TOWER_EFFECT_RESET,
+	TOWER_GOLD_INCOME,
 	
 }
 

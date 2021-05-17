@@ -8,6 +8,7 @@ const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/
 const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerBaseEffect.gd")
 const StoreOfTowerEffectsUUID = preload("res://GameInfoRelated/TowerEffectRelated/StoreOfTowerEffectsUUID.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
+const TowerResetTeffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
 
 # GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
@@ -25,6 +26,7 @@ const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkl
 
 # VIOLET
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
+const re_image = preload("res://TowerRelated/Color_Violet/Re/Re_Omni.png")
 
 enum {
 	# GRAY
@@ -45,7 +47,8 @@ enum {
 	SPRINKLER,
 	
 	# VIOLET
-	SIMPLE_OBELISK
+	SIMPLE_OBELISK,
+	RE,
 }
 
 static func get_tower_info(tower_id : int) -> TowerTypeInformation :
@@ -198,6 +201,30 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Shoots a dart like projectile that pierces through 4 enemies"
 		]
+		
+	elif tower_id == RE:
+		info = TowerTypeInformation.new("Re", RE)
+		info.tower_cost = 4
+		info.colors.append(TowerColors.VIOLET)
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = re_image
+		
+		info.base_damage = 1.5
+		info.base_attk_speed = 0.5
+		info.base_pierce = 0
+		info.base_range = 115
+		info.base_damage_type = DamageType.PURE
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Cleanses enemies from all buffs and debuffs per hit",
+			"Attacks in bursts of 3"
+		]
+		
+		var tower_effect = TowerResetTeffects.new(StoreOfTowerEffectsUUID.ING_RE)
+		var ing_effect = IngredientEffect.new(tower_id, tower_effect)
+		ing_effect.compatible_colors = [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE]
+		info.ingredient_effect = ing_effect
 	
 	return info
 
@@ -214,3 +241,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Gray/Simplex/Simplex.tscn")
 	elif tower_id == RAILGUN:
 		return load("res://TowerRelated/Color_Yellow/Railgun/Railgun.tscn")
+	elif tower_id == RE:
+		return load("res://TowerRelated/Color_Violet/Re/Re.tscn")
