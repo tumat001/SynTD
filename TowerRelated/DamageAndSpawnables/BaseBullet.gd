@@ -17,9 +17,7 @@ var modifications : Array
 func _ready():
 	current_life_distance = life_distance
 
-func _enter_tree():
-	#current_lifetime = lifetime
-	pass
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

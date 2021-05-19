@@ -4,6 +4,8 @@ const TowerBuyCard = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCard.gd"
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 
+const Towers = preload("res://GameInfoRelated/Towers.gd")
+
 signal level_up
 signal level_down
 signal reroll

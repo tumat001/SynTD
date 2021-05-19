@@ -1,4 +1,3 @@
-extends Node
 
 const StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/StageRound.gd")
 

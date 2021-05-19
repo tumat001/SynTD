@@ -57,6 +57,7 @@ var base_on_hit_damage_internal_name : String
 var on_hit_damage_adder_effects : Dictionary
 
 var on_hit_effect_scale : float = 1
+# uuid to effect map
 var on_hit_effects : Dictionary
 
 var range_module : RangeModule setget _set_range_module
@@ -645,19 +646,16 @@ func _get_all_scaled_on_hit_damages() -> Dictionary:
 	
 	return scaled_on_hit_damages
 
-# On Hit Effects
+
+# On Hit Effects / EnemyBaseEffect
 
 func _get_all_scaled_on_hit_effects() -> Dictionary:
 	var scaled_on_hit_effects = {}
 	
-	for on_hit_effect_key in on_hit_effects.keys():
-		var duplicate = on_hit_effect_key
+	for on_hit_effect_id in on_hit_effects.keys():
+		var effect = on_hit_effects[on_hit_effect_id].enemy_base_effect._get_copy_scaled_by(on_hit_effect_scale)
 		
-		if on_hit_effect_scale != 1:
-			duplicate.duplicate()
-			duplicate.effect_strength_modifier = on_hit_effects[on_hit_effect_key].effect_strength_modifier.get_copy_scaled_by(on_hit_effect_scale)
-		
-		scaled_on_hit_effects[on_hit_effect_key] = duplicate
+		scaled_on_hit_effects[effect.effect_uuid] = effect
 	
 	return scaled_on_hit_effects
 

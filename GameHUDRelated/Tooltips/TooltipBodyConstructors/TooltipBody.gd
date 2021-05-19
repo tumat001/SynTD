@@ -8,7 +8,6 @@ const TooltipWithImageIndicatorDescription = preload("res://GameHUDRelated/Toolt
 const TooltipWithImageIndicatorDescriptionScene = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithImageIndicatorDescription.tscn")
 
 var descriptions : Array = []
-var children : Array = []
 
 var specific_font_colors : Array = []
 var default_font_color : Color
@@ -26,15 +25,18 @@ func update_display():
 		if desc is String:
 			desc_instance = TooltipPlainTextDescriptionScene.instance()
 			desc_instance.description = desc
-		elif desc is TooltipPlainTextDescription:
-			desc_instance = TooltipPlainTextDescriptionScene.instance()
-		elif desc is TooltipWithTextIndicatorDescription:
-			desc_instance = TooltipWithTextIndicatorDescriptionScene.instance()
-		elif desc is TooltipWithImageIndicatorDescription:
-			desc_instance = TooltipWithImageIndicatorDescriptionScene.instance()
-		
-		if !(desc is String):
-			desc_instance.get_info_from_self_class(desc)
+#		elif desc is TooltipPlainTextDescription:
+#			desc_instance = TooltipPlainTextDescriptionScene.instance()
+#		elif desc is TooltipWithTextIndicatorDescription:
+#			desc_instance = TooltipWithTextIndicatorDescriptionScene.instance()
+#		elif desc is TooltipWithImageIndicatorDescription:
+#			desc_instance = TooltipWithImageIndicatorDescriptionScene.instance()
+#
+#		if !(desc is String):
+#			desc_instance.get_info_from_self_class(desc)
+#
+		else:
+			desc_instance = desc
 		
 		
 		if specific_font_colors.size() > index:
@@ -46,17 +48,22 @@ func update_display():
 			desc_instance.color = default_font_color
 		
 		
-		children.append(desc_instance)
-		
 		$RowContainer.add_child(desc_instance)
 		index += 1
 	
 
 func _kill_all_desc():
-	for ch in children:
+	for ch in $RowContainer.get_children():
 		ch.queue_free()
-	
-	children.clear()
 
-func queue_free():
-	_kill_all_desc()
+
+
+func _queue_free():
+	clear_descriptions_in_array()
+	
+	.queue_free()
+
+func clear_descriptions_in_array():
+	for desc in descriptions:
+		if !desc is String:
+			desc.queue_free()

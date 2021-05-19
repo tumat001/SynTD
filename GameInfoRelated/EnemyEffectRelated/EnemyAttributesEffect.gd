@@ -111,3 +111,10 @@ func _get_icon() -> Texture:
 		return img_dec_resistance
 	
 	return null
+
+func _get_copy_scaled_by(scale : float):
+	var modifier = attribute_as_modifier.get_copy_scaled_by(scale)
+	
+	var copy = get_script().new(attribute_type, attribute_as_modifier, effect_uuid)
+	return copy
+	

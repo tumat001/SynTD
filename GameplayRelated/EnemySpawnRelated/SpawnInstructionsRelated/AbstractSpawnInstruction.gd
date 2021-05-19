@@ -1,5 +1,3 @@
-extends Node
-
 
 var local_timepos : float
 

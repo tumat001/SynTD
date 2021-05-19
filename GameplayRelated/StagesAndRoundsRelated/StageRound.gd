@@ -1,4 +1,3 @@
-extends Node
 
 var stage_num : int
 var round_num : int

@@ -30,9 +30,12 @@ TowerDominantColors="*res://GameInfoRelated/TowerDominantColors.gd"
 TowerCompositionColors="*res://GameInfoRelated/TowerCompositionColors.gd"
 Modifier="*res://GameInfoRelated/Modifier.gd"
 ZIndexStore="*res://GameInfoRelated/ZIndexStore.gd"
+StoreOfEnemyEffectsUUID="*res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd"
+StoreOfTowerEffectsUUID="*res://GameInfoRelated/TowerEffectRelated/StoreOfTowerEffectsUUID.gd"
 
 [debug]
 
+settings/stdout/verbose_stdout=true
 shapes/collision/shape_color=Color( 0, 0.6, 0.701961, 0.501961 )
 
 [display]

@@ -107,6 +107,8 @@ func _on_BuySellLevelRollPanel_level_down():
 func _on_BuySellLevelRollPanel_level_up():
 	#for tower in tower_manager.get_all_towers():
 	#	tower.set_active_ingredient_limit(tower.ingredient_active_limit + 2)
+	
+	
 	pass
 
 
@@ -115,10 +117,11 @@ func _on_BuySellLevelRollPanel_reroll():
 	$BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel.update_new_rolled_towers([
 		Towers.RE,
 		Towers.SPRINKLER,
-		Towers.SIMPLEX,
+		Towers.TESLA,
 		Towers.SIMPLE_OBELISK,
 		Towers.RAILGUN,
 	])
+
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):

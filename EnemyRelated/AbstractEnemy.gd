@@ -10,6 +10,9 @@ const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
+const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
+const EnemyClearAllEffects = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyClearAllEffects.gd")
+
 signal on_death
 signal on_hit
 signal reached_end_of_path
@@ -27,30 +30,37 @@ var active_effects = {}
 var pierce_consumed_per_hit : float = 1
 
 var base_armor : float = 0
-var flat_armor_modifiers = {}
-var percent_armor_modifiers = {}
+var flat_armor_id_effect_map = {}
+var percent_armor_id_effect_map = {}
+var _last_calculated_final_armor : float
 
 var base_toughness : float = 0
-var flat_toughness_modifiers = {}
-var percent_toughness_modifiers = {}
+var flat_toughness_id_effect_map = {}
+var percent_toughness_id_effect_map = {}
+var _last_calculated_final_toughness : float
 
 var base_resistance : float = 0
-var flat_resistance_modifiers = {}
-var percent_resistance_modifiers = {}
+var flat_resistance_id_effect_map = {}
+var percent_resistance_id_effect_map = {}
+var _last_calculated_final_resistance : float
 
 var base_player_damage : float = 1
-var flat_player_damage_modifiers = {}
-var percent_player_damage_modifiers = {}
+var flat_player_damage_id_effect_map = {}
+var percent_player_damage_id_effect_map = {}
 
 var base_movement_speed : float
-var flat_movement_speed_modifiers = {}
-var percent_movement_speed_modifiers = {}
+var flat_movement_speed_id_effect_map = {}
+var percent_movement_speed_id_effect_map = {}
+var _last_calculated_final_movement_speed
 
 var distance_to_exit : float
 
 #internals
 
 var _self_size : Vector2
+
+var _stun_id_effects_map : Dictionary = {}
+var _is_stunned : bool
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -60,6 +70,12 @@ func _ready():
 	$Healthbar.position.x -= round($Healthbar.get_size().x / 2)
 	
 	connect("on_current_health_changed", $Healthbar, "_on_current_health_changed")
+	
+	calculate_final_armor()
+	calculate_final_toughness()
+	calculate_final_resistance()
+	calculate_final_movement_speed()
+	
 
 func _post_ready():
 	$Healthbar.base_health = base_health
@@ -70,14 +86,15 @@ func _get_current_anim_size() -> Vector2:
 	return $AnimatedSprite.frames.get_frame($AnimatedSprite.animation, $AnimatedSprite.frame).get_size()
 
 
-#func _process(delta):
-#	pass
+func _process(delta):
+	_decrease_time_of_timebounds(delta)
 
 
 func _physics_process(delta):
-	var distance_traveled = delta * calculate_final_movement_speed()
-	offset += distance_traveled
-	distance_to_exit -= distance_traveled
+	if !_is_stunned:
+		var distance_traveled = delta * _last_calculated_final_movement_speed
+		offset += distance_traveled
+		distance_to_exit -= distance_traveled
 	
 	if unit_offset == 1:
 		call_deferred("emit_signal", "reached_end_of_path")
@@ -189,62 +206,117 @@ class PercentPreserver:
 		var reduced = max_arg * (1 - (percent_remove / 100))
 		return reduced * initial_ratio
 
-#Other calculation of final stuffs
+
+# Calculation of attributes
+
 func calculate_final_armor() -> float:
 	#All percent modifiers here are to BASE armor only
 	var final_armor = base_armor
-	for modifier in percent_armor_modifiers.values():
-		final_armor += modifier.get_modification_to_value(base_armor)
+	for effect in percent_armor_id_effect_map.values():
+		final_armor += effect.attribute_as_modifier.get_modification_to_value(base_armor)
 	
-	for flat in flat_armor_modifiers.values():
-		final_armor += flat.get_modification_to_value(base_armor)
+	for effect in flat_armor_id_effect_map.values():
+		final_armor += effect.attribute_as_modifier.get_modification_to_value(base_armor)
 	
+	_last_calculated_final_armor = final_armor
 	return final_armor
 
 func calculate_final_toughness() -> float:
 	#All percent modifiers here are to BASE toughness only
 	var final_toughness = base_toughness
-	for modifier in percent_toughness_modifiers.values():
-		final_toughness += modifier.get_modification_to_value(base_toughness)
+	for effect in percent_toughness_id_effect_map.values():
+		final_toughness += effect.attribute_as_modifier.get_modification_to_value(base_toughness)
 	
-	for flat in flat_toughness_modifiers.values():
-		final_toughness += flat.get_modification_to_value(base_toughness)
+	for effect in flat_toughness_id_effect_map.values():
+		final_toughness += effect.attribute_as_modifier.get_modification_to_value(base_toughness)
 	
+	_last_calculated_final_toughness = final_toughness
 	return final_toughness
 
 func calculate_final_resistance() -> float:
 	#All percent modifiers here are to BASE resistance only
 	var final_resistance = base_resistance
-	for modifier in percent_resistance_modifiers.values():
-		final_resistance += modifier.get_modification_to_value(base_resistance)
+	for effect in percent_resistance_id_effect_map.values():
+		final_resistance += effect.attribute_as_modifier.get_modification_to_value(base_resistance)
 	
-	for flat in flat_resistance_modifiers.values():
-		final_resistance += flat.get_modification_to_value(base_resistance)
+	for effect in flat_resistance_id_effect_map.values():
+		final_resistance += effect.attribute_as_modifier.get_modification_to_value(base_resistance)
 	
+	_last_calculated_final_resistance = final_resistance
 	return final_resistance
 
 func calculate_final_player_damage() -> float:
 	#All percent modifiers here are to BASE player damage only
 	var final_player_damage = base_player_damage
-	for modifier in percent_player_damage_modifiers.values():
-		final_player_damage += modifier.get_modification_to_value(base_player_damage)
+	for effect in percent_player_damage_id_effect_map.values():
+		final_player_damage += effect.attribute_as_modifier.get_modification_to_value(base_player_damage)
 	
-	for flat in flat_player_damage_modifiers.values():
-		final_player_damage += flat.get_modification_to_value(base_player_damage)
+	for effect in flat_player_damage_id_effect_map.values():
+		final_player_damage += effect.attribute_as_modifier.get_modification_to_value(base_player_damage)
 	
 	return final_player_damage
 
 func calculate_final_movement_speed() -> float:
 	#All percent modifiers here are to BASE mvnt speed only
-	var final_movement_speed = base_movement_speed
-	for modifier in percent_movement_speed_modifiers.values():
-		final_movement_speed += modifier.get_modification_to_value(base_movement_speed)
+	var highest_slow : float
+	var excess_slow : float
+	var highest_speed : float
+	var excess_speed : float
 	
-	for flat in flat_movement_speed_modifiers.values():
-		final_movement_speed += flat.get_modification_to_value(base_movement_speed)
+	for effect in percent_movement_speed_id_effect_map.values():
+		var speed_change = effect.attribute_as_modifier.get_modification_to_value(base_movement_speed)
+		if speed_change > 0:
+			if highest_speed < speed_change:
+				excess_speed += highest_speed
+				highest_speed = speed_change
+			else:
+				excess_speed += speed_change
+			
+		elif speed_change < 0:
+			if highest_slow < speed_change:
+				excess_slow += highest_slow
+				highest_slow = speed_change
+			else:
+				excess_slow += speed_change
 	
+	for effect in flat_movement_speed_id_effect_map.values():
+		var speed_change = effect.attribute_as_modifier.get_modification_to_value(base_movement_speed)
+		if speed_change > 0:
+			if highest_speed < speed_change:
+				excess_speed += highest_speed
+				highest_speed = speed_change
+			else:
+				excess_speed += speed_change
+			
+		elif speed_change < 0:
+			if highest_slow < speed_change:
+				excess_slow += highest_slow
+				highest_slow = speed_change
+			else:
+				excess_slow += speed_change
+	
+	var final_change = highest_speed - highest_slow
+	if final_change > 0:
+		final_change -= excess_slow
+		
+		if final_change < 0:
+			final_change = 0
+		
+		
+	elif final_change < 0:
+		final_change += excess_speed
+		
+		if final_change > 0:
+			final_change = 0
+		
+	
+	var final_movement_speed = base_movement_speed + final_change
+	if final_change < 0 and final_movement_speed < 1:
+		final_movement_speed = 1
+	
+	_last_calculated_final_movement_speed = final_movement_speed
 	return final_movement_speed
-	
+
 
 #Process damages
 # hit by things functions here. Processes
@@ -320,10 +392,41 @@ func _calculate_multiplier_from_total_toughness():
 func _calculate_multiplier_from_total_resistance():
 	return (100 - calculate_final_resistance()) / 100
 
-#Process effects
-func _process_effects(effects):
-	#TODO do this afterwards
-	pass
+
+# Process effects related
+
+func _process_effects(effects : Dictionary):
+	
+	for effect in effects.values():
+		_add_effect(effect)
+
+func _add_effect(base_effect : EnemyBaseEffect):
+	
+	if base_effect is EnemyStunEffect:
+		_stun_id_effects_map[base_effect.effect_uuid] = base_effect
+		
+		
+	elif base_effect is EnemyClearAllEffects:
+		_stun_id_effects_map.clear()
+
+# Timebounded related
+
+func _decrease_time_of_timebounds(delta):
+	
+	# Stun related
+	for stun_id in _stun_id_effects_map.keys():
+		var stun_effect = _stun_id_effects_map[stun_id]
+		
+		if stun_effect.is_timebound:
+			stun_effect.time_in_seconds -= delta
+			
+			if stun_effect.time_in_seconds <= 0:
+				_stun_id_effects_map.erase(stun_id)
+	
+	_is_stunned = _stun_id_effects_map.size() != 0
+
+
+
 
 
 # Coll

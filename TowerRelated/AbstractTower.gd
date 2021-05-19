@@ -16,6 +16,7 @@ const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerB
 const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerAttributesEffect.gd")
 const TowerResetEffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
 const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitDamageAdderEffect.gd")
+const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
 
@@ -207,8 +208,13 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect):
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_add_on_hit_damage_adder_effect(tower_base_effect)
+		
+	elif tower_base_effect is TowerOnHitEffectAdderEffect:
+		_add_on_hit_effect_adder_effect(tower_base_effect)
+		
 	elif tower_base_effect is TowerResetEffects:
 		_clear_ingredients_by_effect_reset()
+		
 
 func remove_tower_effect(tower_base_effect : TowerBaseEffect):
 	if tower_base_effect is TowerAttributesEffect:
@@ -225,6 +231,9 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect):
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_remove_on_hit_damage_adder_effect(tower_base_effect.effect_uuid)
+		
+	elif tower_base_effect is TowerOnHitEffectAdderEffect:
+		_remove_on_hit_effect_adder_effect(tower_base_effect.effect_uuid)
 
 
 func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect):
@@ -371,6 +380,19 @@ func _remove_proj_speed_effect(attr_effect_uuid : int):
 		if module is BulletAttackModule and module.benefits_from_bonus_pierce:
 			module.percent_proj_speed_effects.erase(attr_effect_uuid)
 			module.flat_proj_speed_effects.erase(attr_effect_uuid)
+
+func _add_on_hit_effect_adder_effect(effect_adder : TowerOnHitEffectAdderEffect):
+	for module in attack_modules_and_target_num.keys():
+		if module.benefits_from_bonus_on_hit_effect:
+			module.on_hit_effects[effect_adder.effect_uuid] = effect_adder
+
+func _remove_on_hit_effect_adder_effect(effect_adder_uuid : int):
+	for module in attack_modules_and_target_num.keys():
+		
+		if module.benefits_from_bonus_on_hit_effect:
+			module.on_hit_effects.erase(effect_adder_uuid)
+
+
 
 # Ingredient Related
 

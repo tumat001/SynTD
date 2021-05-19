@@ -1,4 +1,3 @@
-extends Node
 
 var internal_name : String
 

@@ -5,6 +5,8 @@ enum EffectType {
 	DAMAGE_OVER_TIME,
 	HEAL_OVER_TIME,
 	STACK_EFFECT,
+	STUN,
+	CLEAR_ALL_EFFECTS,
 	MISC,
 }
 
@@ -22,3 +24,6 @@ func _init(arg_effect_type : int,
 	effect_type = arg_effect_type
 	effect_uuid = arg_effect_uuid
 
+
+func _get_copy_scaled_by(scale : float):
+	pass

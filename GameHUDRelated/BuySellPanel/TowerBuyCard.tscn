@@ -240,7 +240,6 @@ grow_vertical = 2
 mouse_filter = 2
 size_flags_horizontal = 11
 size_flags_vertical = 5
-custom_constants/margin_left = 5
 
 [node name="TowerImage" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginerUpper/Upper/Marginer"]
 margin_left = 62.0

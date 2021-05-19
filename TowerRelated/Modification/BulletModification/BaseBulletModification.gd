@@ -1,4 +1,3 @@
-extends Node
 
 var trigger_on_death : bool
 

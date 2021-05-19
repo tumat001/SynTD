@@ -1,7 +1,7 @@
 extends "res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd"
 
 const BaseStack = preload("res://GameInfoRelated/BaseStack.gd")
-const img_effect = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_StatusInflict.png")
+const img_effect = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_GenericStatusInflict.png")
 
 var base_stack : BaseStack
 var num_of_stacks_per_apply : int
@@ -18,3 +18,9 @@ func _init(arg_base_stack : BaseStack,
 	duration_refresh_per_apply = arg_duration_refresh_per_apply
 	effect_icon = img_effect
 
+
+func _get_copy_scaled_by(scale : float):
+	var scaled_stacks = int(round(num_of_stacks_per_apply * scale))
+	
+	var copy = get_script().new(base_stack, scaled_stacks, effect_uuid, duration_refresh_per_apply)
+	return copy

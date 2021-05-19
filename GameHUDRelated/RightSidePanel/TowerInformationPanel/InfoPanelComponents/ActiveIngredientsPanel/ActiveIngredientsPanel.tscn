@@ -91,3 +91,4 @@ align = 1
 margin_top = 12.0
 margin_right = 100.0
 margin_bottom = 38.0
+custom_constants/margin_top = 0

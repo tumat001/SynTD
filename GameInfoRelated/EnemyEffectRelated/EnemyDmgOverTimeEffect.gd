@@ -82,3 +82,13 @@ func _get_icon():
 		return img_elemental_bleed
 	elif damage_type == DamageType.PURE:
 		return img_pure_bleed
+
+# copy
+
+func _get_copy_scaled_by(scale : float):
+	var scaled_on_hit = on_hit_damage.duplicate()
+	scaled_on_hit.damage_as_modifier.get_copy_scaled_by(scale)
+	
+	var copy = get_script().new(scaled_on_hit, effect_uuid, delay_per_tick)
+	return copy
+	

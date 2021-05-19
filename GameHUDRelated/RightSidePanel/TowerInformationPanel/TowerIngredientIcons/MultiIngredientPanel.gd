@@ -78,4 +78,5 @@ func queue_free():
 	for panel in _single_ingredient_panels:
 		panel.queue_free()
 	
+	
 	.queue_free()

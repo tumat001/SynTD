@@ -31,7 +31,7 @@ func update_display():
 		
 		_update_ingredients()
 		
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.descriptions.clear()
+		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.clear_descriptions_in_array()
 		if tower_info.energy_consumption_levels.size() == 0:
 			$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.descriptions = ["(Cannot use energy)"]
 		else:
@@ -42,7 +42,7 @@ func update_display():
 					$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.descriptions = ["No effect"]
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.update_display()
 		
-		$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.descriptions.clear()
+		$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.clear_descriptions_in_array()
 		for desc in tower_info.tower_descriptions:
 			$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.descriptions.append(desc)
 		$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.update_display()
@@ -51,7 +51,7 @@ func update_display():
 
 func _update_ingredients():
 	
-	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.clear()
+	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.clear_descriptions_in_array()
 	if tower_info.ingredient_effect == null:
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions = ["(Cannot be used as an ingredient."]
 	else:

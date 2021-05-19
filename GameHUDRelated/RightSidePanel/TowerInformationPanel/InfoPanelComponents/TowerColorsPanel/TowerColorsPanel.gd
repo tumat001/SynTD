@@ -10,7 +10,8 @@ onready var count_label = $VBoxContainer/MarginContainer/CountPanel/Marginer/Cou
 
 func update_display():
 	for child in single_color_panel_vbox.get_children():
-		single_color_panel_vbox.remove_child(child)
+		#single_color_panel_vbox.remove_child(child)
+		child.queue_free()
 	
 	for color in tower._tower_colors:
 		var color_panel = SingleColorPanel_Scene.instance()

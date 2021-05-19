@@ -10,6 +10,10 @@ const StoreOfTowerEffectsUUID = preload("res://GameInfoRelated/TowerEffectRelate
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const TowerResetTeffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
 
+const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
+const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
+const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
+
 # GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
 const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omni.png")
@@ -27,6 +31,7 @@ const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkl
 # VIOLET
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
 const re_image = preload("res://TowerRelated/Color_Violet/Re/Re_Omni.png")
+const telsa_image = preload("res://TowerRelated/Color_Violet/Tesla/Tesla.png")
 
 enum {
 	# GRAY
@@ -49,6 +54,7 @@ enum {
 	# VIOLET
 	SIMPLE_OBELISK,
 	RE,
+	TESLA,
 }
 
 static func get_tower_info(tower_id : int) -> TowerTypeInformation :
@@ -69,7 +75,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Fires metal bullets at opponents",
+			"Fires metal bullets at opponents.",
 			"\"First Iteration\""
 		]
 	elif tower_id == SPRINKLER:
@@ -181,7 +187,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1.0 / 8.0
 		
 		info.tower_descriptions = [
-			"Directs a constant pure energy beam at a single target",
+			"Directs a constant pure energy beam at a single target.",
 			"\"First Iteration\""
 		]
 	elif tower_id == RAILGUN:
@@ -217,7 +223,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Cleanses enemies from all buffs and debuffs per hit",
+			"Cleanses enemies from all buffs and debuffs per hit.",
 			"Attacks in bursts of 3"
 		]
 		
@@ -225,6 +231,35 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ing_effect = IngredientEffect.new(tower_id, tower_effect)
 		ing_effect.compatible_colors = [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE]
 		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "clear"
+		
+		
+	elif tower_id == TESLA:
+		info = TowerTypeInformation.new("Tesla", TESLA)
+		info.tower_cost = 6
+		info.colors.append(TowerColors.VIOLET)
+		info.colors.append(TowerColors.YELLOW)
+		info.tower_tier = 6
+		info.tower_image_in_buy_card = telsa_image
+		
+		info.base_damage = 3.5
+		info.base_attk_speed = 1.5
+		info.base_pierce = 0
+		info.base_range = 115
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Shocks and stuns enemies for 0.3 with the power of electricity"
+		]
+		
+		var enemy_effect : EnemyStunEffect = EnemyStunEffect.new(0.3, StoreOfEnemyEffectsUUID.ING_TESLA)
+		var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.ING_TESLA)
+		var ing_effect : IngredientEffect = IngredientEffect.new(TESLA, tower_effect)
+		ing_effect.compatible_colors = [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE, TowerColors.YELLOW, TowerColors.ORANGE, TowerColors.GREEN]
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "stun on hit"
 	
 	return info
 
@@ -243,3 +278,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Yellow/Railgun/Railgun.tscn")
 	elif tower_id == RE:
 		return load("res://TowerRelated/Color_Violet/Re/Re.tscn")
+	elif tower_id == TESLA:
+		return load("res://TowerRelated/Color_Violet/Tesla/Tesla.tscn")

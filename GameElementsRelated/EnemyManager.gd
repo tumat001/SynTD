@@ -116,7 +116,7 @@ func _interpreter_done_spawning():
 	
 	_check_if_no_enemies_left()
 
-func _on_enemy_death():
+func _on_enemy_death(enemy : AbstractEnemy):
 	if _is_interpreter_done_spawning:
 		_check_if_no_enemies_left()
 

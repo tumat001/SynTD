@@ -17,6 +17,8 @@ const ReHitParticle_Scene = preload("res://TowerRelated/Color_Violet/Re/ReHitPar
 var lock_on_sprites_to_enemy : Dictionary = {}
 var rotational_speed : int
 
+const EnemyClearAllEffects = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyClearAllEffects.gd")
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -58,11 +60,23 @@ func _ready():
 	_post_inherit_ready()
 
 
+func _post_inherit_ready():
+	._post_inherit_ready()
+	
+	var enemy_effect : EnemyClearAllEffects = EnemyClearAllEffects.new(StoreOfEnemyEffectsUUID.RE_CLEAR_EFFECT)
+	var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.RE_CLEAR_EFFECTS)
+	
+	add_tower_effect(tower_effect)
+
+
+
+# Lock on related
+
 func _construct_attack_sprite_on_attack():
 	return ReHitParticle_Scene.instance()
 
 
-func _show_attack_sprite_on_attack(attk_speed_delay, enemies : Array):
+func _show_attack_sprite_on_attack(_attk_speed_delay, enemies : Array):
 	for enemy in enemies:
 		if enemy != null:
 			enemy.add_child(_construct_attack_sprite_on_attack())
@@ -78,7 +92,7 @@ func _process(delta):
 		
 		for sprite in lock_on_sprites_to_enemy.keys():
 			if sprite != null:
-				sprite.scale *= 1.005
+				sprite.scale *= 1.007
 				sprite.rotation_degrees += rotational_speed
 	else:
 		rotational_speed = 0
