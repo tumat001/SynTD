@@ -1,4 +1,3 @@
-extends Node
 
 const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")

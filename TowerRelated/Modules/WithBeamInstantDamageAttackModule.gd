@@ -98,6 +98,7 @@ func _get_available_beam_instance() -> BeamAesthetic:
 	for beam in beam_to_enemy_map.keys():
 		if !beam.visible:
 			return beam
+			
 	
 	available_beam_instance = beam_scene.instance()
 	available_beam_instance.time_visible = beam_time_visible

@@ -18,7 +18,16 @@ var base_proj_speed : float = 500
 var flat_proj_speed_effects = {}
 var percent_proj_speed_effects = {}
 
-var projectile_life_distance : float = 100
+var projectile_life_distance : float = 100 setget _set_life_distance
+const _life_distance_bonus : float = 50.0
+
+# setgets
+
+func _set_life_distance(life_distance : float):
+	projectile_life_distance = life_distance + _life_distance_bonus
+
+
+# Time related
 
 func time_passed(delta):
 	.time_passed(delta)
@@ -145,6 +154,8 @@ func _attack_at_position(arg_pos : Vector2):
 	bullet.life_distance = projectile_life_distance
 	bullet.current_life_distance = bullet.life_distance
 	bullet.rotation_degrees = _get_angle(arg_pos)
+	
+	bullet.attack_module_source = self
 	
 	bullet.position.x = global_position.x
 	bullet.position.y = global_position.y

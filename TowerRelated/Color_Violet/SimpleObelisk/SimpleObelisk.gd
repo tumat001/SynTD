@@ -49,7 +49,7 @@ func _ready():
 	attack_module.base_pierce = info.base_pierce
 	attack_module.base_proj_speed = 250
 	attack_module.projectile_life_distance = info.base_range
-	attack_module.module_name = "Main"
+	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.position.y -= 30
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
@@ -112,4 +112,5 @@ func _emit_final_base_damage_changed():
 	._emit_final_base_damage_changed()
 	
 	template.aoe_base_damage = main_attack_module.last_calculated_final_damage / 2
+
 

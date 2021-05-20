@@ -40,7 +40,7 @@ func _ready():
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 1
 	attack_module.is_main_attack = true
-	attack_module.module_name = "Main"
+	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.position.y -= 18
 	attack_module.base_on_hit_damage_internal_name = "name"
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
@@ -70,7 +70,7 @@ func _post_inherit_ready():
 
 
 
-# Lock on related
+# Attack sprite related
 
 func _construct_attack_sprite_on_attack():
 	return ReHitParticle_Scene.instance()
@@ -81,7 +81,7 @@ func _show_attack_sprite_on_attack(_attk_speed_delay, enemies : Array):
 		if enemy != null:
 			enemy.add_child(_construct_attack_sprite_on_attack())
 
-
+# Lock on related
 
 func _process(delta):
 	

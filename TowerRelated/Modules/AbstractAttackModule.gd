@@ -20,7 +20,12 @@ signal in_attack_windup(windup_time, enemies_or_poses)
 signal in_attack(attack_speed_delay, enemies_or_poses)
 signal in_attack_end()
 
-var module_name : String
+signal on_round_end()
+
+signal on_post_mitigation_damage_dealt(damage, damage_type, killed, enemy, module)
+signal on_enemy_hit(enemy, module)
+
+var module_id : int
 # These are used to help differentiate attacks
 # that happer per second(s) and attacks
 # per 5th attack (of "main attack")
@@ -105,6 +110,7 @@ func reset_attack_timers():
 func _ready():
 	last_calculated_final_attk_speed = base_attack_speed
 	last_calculated_final_damage = base_damage
+	
 
 func _set_range_module(new_module):
 	if range_module != null:
@@ -327,7 +333,7 @@ func is_ready_to_attack() -> bool:
 
 
 func attempt_find_then_attack_enemies(num : int) -> bool:
-	if range_module == null or !use_self_range_module:
+	if range_module == null:
 		return false
 	
 #	if num == 1:
@@ -632,8 +638,6 @@ func _get_scaled_extra_on_hit_damages() -> Dictionary:
 
 
 func _get_all_scaled_on_hit_damages() -> Dictionary:
-	if !benefits_from_bonus_on_hit_effect:
-		return {}
 	
 	var scaled_on_hit_damages = {}
 	
@@ -650,6 +654,9 @@ func _get_all_scaled_on_hit_damages() -> Dictionary:
 # On Hit Effects / EnemyBaseEffect
 
 func _get_all_scaled_on_hit_effects() -> Dictionary:
+	if !benefits_from_bonus_on_hit_effect:
+		return {}
+	
 	var scaled_on_hit_effects = {}
 	
 	for on_hit_effect_id in on_hit_effects.keys():
@@ -659,3 +666,17 @@ func _get_all_scaled_on_hit_effects() -> Dictionary:
 	
 	return scaled_on_hit_effects
 
+# On round end
+
+func on_round_end():
+	call_deferred("emit_signal", "on_round_end")
+	reset_attack_timers()
+
+
+# Damage report related
+
+func on_post_mitigation_damage_dealt(damage : float, damage_type : int, killed_enemy : bool, enemy):
+	emit_signal("on_post_mitigation_damage_dealt", damage, damage_type, killed_enemy, enemy, self)
+
+func on_enemy_hit(enemy):
+	emit_signal("on_enemy_hit", enemy, self)

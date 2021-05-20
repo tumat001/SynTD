@@ -4,7 +4,6 @@ const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerB
 
 var tower_base_effect : TowerBaseEffect
 var tower_id : int
-var compatible_colors : Array = []
 var description : String
 
 func _init(arg_tower_id : int,

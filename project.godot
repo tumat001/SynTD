@@ -28,10 +28,11 @@ config/icon="res://icon.png"
 
 TowerDominantColors="*res://GameInfoRelated/TowerDominantColors.gd"
 TowerCompositionColors="*res://GameInfoRelated/TowerCompositionColors.gd"
-Modifier="*res://GameInfoRelated/Modifier.gd"
 ZIndexStore="*res://GameInfoRelated/ZIndexStore.gd"
 StoreOfEnemyEffectsUUID="*res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd"
 StoreOfTowerEffectsUUID="*res://GameInfoRelated/TowerEffectRelated/StoreOfTowerEffectsUUID.gd"
+StoreOfAttackModuleID="*res://TowerRelated/Modules/StoreOfAttackModuleID.gd"
+StoreOfRNG="*res://GameInfoRelated/StoreOfRNG.gd"
 
 [debug]
 

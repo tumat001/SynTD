@@ -2,6 +2,7 @@ extends KinematicBody2D
 
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
+var attack_module_source
 
 var damage_instance : DamageInstance
 var pierce

@@ -10,7 +10,7 @@ func add_child(node : Node, legible_unique_name : bool = false):
 	.add_child(node, legible_unique_name)
 	
 	if node is AbstractEnemy:
-		node.connect("on_death", self, "_emit_enemy_on_death", [node])
+		node.connect("on_death_by_any_cause", self, "_emit_enemy_on_death", [node])
 		node.connect("reached_end_of_path", self, "_emit_enemy_reached_end", [node])
 
 

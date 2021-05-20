@@ -6,6 +6,7 @@ enum EffectType {
 	ON_HIT_DAMAGE,
 	ON_HIT_EFFECT,
 	MODULES,
+	CHAOS_TAKEOVER,
 	RESET,
 	
 }

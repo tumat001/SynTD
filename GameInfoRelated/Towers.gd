@@ -10,6 +10,8 @@ const StoreOfTowerEffectsUUID = preload("res://GameInfoRelated/TowerEffectRelate
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const TowerResetTeffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
 
+const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
+
 const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
@@ -32,29 +34,31 @@ const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkl
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
 const re_image = preload("res://TowerRelated/Color_Violet/Re/Re_Omni.png")
 const telsa_image = preload("res://TowerRelated/Color_Violet/Tesla/Tesla.png")
+const chaos_image = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_01.png")
 
 enum {
-	# GRAY
-	MONO,
-	SIMPLEX,
+	# GRAY (100)
+	MONO = 100,
+	SIMPLEX = 101,
 	
-	# RED
+	# RED (200)
 	
-	# ORANGE
+	# ORANGE (300)
 	
-	# YELLOW
-	RAILGUN,
+	# YELLOW (400)
+	RAILGUN = 400,
 	
-	# GREEN
-	BERRY_BUSH,
+	# GREEN (500)
+	BERRY_BUSH = 500,
 	
-	# BLUE
-	SPRINKLER,
+	# BLUE (600)
+	SPRINKLER = 600,
 	
-	# VIOLET
-	SIMPLE_OBELISK,
-	RE,
-	TESLA,
+	# VIOLET (700)
+	SIMPLE_OBELISK = 700,
+	RE = 701,
+	TESLA = 702,
+	CHAOS = 703,
 }
 
 static func get_tower_info(tower_id : int) -> TowerTypeInformation :
@@ -103,7 +107,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_SPRINKLER)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
-		ing_effect.compatible_colors = [TowerColors.BLUE, TowerColors.GREEN, TowerColors.VIOLET]
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ attk speed"
@@ -133,7 +136,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_BERRY_BUSH)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
-		ing_effect.compatible_colors = [TowerColors.BLUE, TowerColors.GREEN, TowerColors.YELLOW]
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ base dmg"
@@ -166,7 +168,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_SIMPLE_OBELISK)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
-		ing_effect.compatible_colors = [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE]
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ range"
@@ -229,7 +230,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var tower_effect = TowerResetTeffects.new(StoreOfTowerEffectsUUID.ING_RE)
 		var ing_effect = IngredientEffect.new(tower_id, tower_effect)
-		ing_effect.compatible_colors = [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE]
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "clear"
 		
@@ -245,7 +245,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 3.5
 		info.base_attk_speed = 1.5
 		info.base_pierce = 0
-		info.base_range = 115
+		info.base_range = 145
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -256,10 +256,38 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var enemy_effect : EnemyStunEffect = EnemyStunEffect.new(0.3, StoreOfEnemyEffectsUUID.ING_TESLA)
 		var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.ING_TESLA)
 		var ing_effect : IngredientEffect = IngredientEffect.new(TESLA, tower_effect)
-		ing_effect.compatible_colors = [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE, TowerColors.YELLOW, TowerColors.ORANGE, TowerColors.GREEN]
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "stun on hit"
+		
+		
+	elif tower_id == CHAOS:
+		info = TowerTypeInformation.new("Chaos", CHAOS)
+		info.tower_cost = 5
+		info.colors.append(TowerColors.VIOLET)
+		info.tower_tier = 5
+		info.tower_image_in_buy_card = chaos_image
+		
+		info.base_damage = 1.5
+		info.base_attk_speed = 1.5
+		info.base_pierce = 1
+		info.base_range = 135
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Has many attacks. Shoots orbs, diamonds, and bolts. Stats shown are for the orbs.",
+			"Only the orbs are affected by targeting options.",
+			"Only the diamonds apply on hit damage and effects.",
+			"Only the bolts benefit from base damage and attack speed buffs.",
+			"Upon dealing enough damage with the orbs, diamonds and bolts, Chaos erupts a dark sword to stab the orb's target."
+		]
+		
+		var tower_base_effect : TowerChaosTakeoverEffect = TowerChaosTakeoverEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(CHAOS, tower_base_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "takeover"
 	
 	return info
 
@@ -280,3 +308,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Re/Re.tscn")
 	elif tower_id == TESLA:
 		return load("res://TowerRelated/Color_Violet/Tesla/Tesla.tscn")
+	elif tower_id == CHAOS:
+		return load("res://TowerRelated/Color_Violet/Chaos/Chaos.tscn")
+	
+	

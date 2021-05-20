@@ -26,9 +26,9 @@ enum {
 }
 
 var attribute_type : int
-var attribute_as_modifier : Modifier
+var attribute_as_modifier
 
-func _init(arg_attribute_type : int, arg_modifier : Modifier,
+func _init(arg_attribute_type : int, arg_modifier,
 		arg_effect_uuid : int).(EffectType.ATTRIBUTES,
 		arg_effect_uuid):
 	

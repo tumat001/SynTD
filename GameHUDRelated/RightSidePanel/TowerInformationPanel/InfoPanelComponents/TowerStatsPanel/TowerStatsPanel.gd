@@ -30,7 +30,7 @@ const button_active_pic = preload("res://GameHUDRelated/RightSidePanel/TowerInfo
 const button_inactive_pic = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerStatsPanel/Stats_ButtonInactivated.png")
 
 func update_display():
-	if tower == null:
+	if tower == null or tower.main_attack_module == null:
 		base_damage_label.text = ""
 		attack_speed_label.text = ""
 		range_label.text = ""
@@ -52,11 +52,11 @@ func _update_base_stat_display():
 	base_stat_button.texture_normal = button_active_pic
 	total_stat_button.texture_normal = button_inactive_pic
 	
-	base_damage_label.text = str(Towers.get_tower_info(tower.tower_id).base_damage)
-	attack_speed_label.text = str(Towers.get_tower_info(tower.tower_id).base_attk_speed)
-	range_label.text = str(Towers.get_tower_info(tower.tower_id).base_range)
-	on_hit_multiplier_label.text = "x" + str(Towers.get_tower_info(tower.tower_id).on_hit_multiplier)
-	damage_type_label.text = DamageType.get_name_of_damage_type(Towers.get_tower_info(tower.tower_id).base_damage_type)
+	base_damage_label.text = str(tower.main_attack_module.base_damage)
+	attack_speed_label.text = str(tower.main_attack_module.base_attack_speed)
+	range_label.text = str(tower.main_attack_module.range_module.base_range_radius)
+	on_hit_multiplier_label.text = "x" + str(tower.main_attack_module.on_hit_damage_scale)
+	damage_type_label.text = DamageType.get_name_of_damage_type(tower.main_attack_module.base_damage_type)
 	
 	base_damage_label.set("custom_colors/font_color", color_equal_stat)
 	attack_speed_label.set("custom_colors/font_color", color_equal_stat)
@@ -79,15 +79,15 @@ func _update_final_stat_display():
 	update_final_range()
 	
 	# On Hit mul
-	on_hit_multiplier_label.text = "x" + str(Towers.get_tower_info(tower.tower_id).on_hit_multiplier)
+	on_hit_multiplier_label.text = "x" + str(tower.main_attack_module.on_hit_damage_scale)
 	
 	# Dmg Type
-	damage_type_label.text = DamageType.get_name_of_damage_type(Towers.get_tower_info(tower.tower_id).base_damage_type)
+	damage_type_label.text = DamageType.get_name_of_damage_type(tower.main_attack_module.base_damage_type)
 	
 
 
 func update_final_base_damage():
-	var base_damage = Towers.get_tower_info(tower.tower_id).base_damage
+	var base_damage = tower.main_attack_module.base_damage
 	var final_base_damage = base_damage
 	
 	if tower.main_attack_module != null:
@@ -98,7 +98,7 @@ func update_final_base_damage():
 
 
 func update_final_attack_speed():
-	var attk_speed = Towers.get_tower_info(tower.tower_id).base_attk_speed
+	var attk_speed = tower.main_attack_module.base_attack_speed
 	var final_attk_speed = attk_speed
 	
 	if tower.main_attack_module != null:
@@ -109,7 +109,7 @@ func update_final_attack_speed():
 
 
 func update_final_range():
-	var base_range = Towers.get_tower_info(tower.tower_id).base_range
+	var base_range = tower.main_attack_module.range_module.base_range_radius
 	var final_range = base_range
 	
 	if tower.range_module != null:

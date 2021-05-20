@@ -17,6 +17,8 @@ const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/
 const TowerResetEffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
 const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitDamageAdderEffect.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
+const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
+
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
 
@@ -43,7 +45,6 @@ signal final_range_changed
 signal ingredients_absorbed_changed
 signal ingredients_limit_changed
 signal tower_colors_changed
-
 
 export var tower_highlight_sprite : Resource
 
@@ -77,6 +78,7 @@ var disabled_from_attacking : bool = false
 var ingredients_absorbed : Dictionary = {} # Map of tower_id (ingredient source) to ingredient_effect
 var ingredient_active_limit : int = 2 setget set_active_ingredient_limit
 var ingredient_of_self : IngredientEffect
+var ingredient_compatible_colors : Array = []
 
 # Color related
 
@@ -99,30 +101,33 @@ func _ready():
 	_end_drag()
 
 func _post_inherit_ready():
-	if range_module != null:
-		range_module.update_range()
+	_update_ingredient_compatible_colors()
 	
-	for attack_module in attack_modules_and_target_num.keys():
-		if attack_module.range_module != null:
-			attack_module.range_module.update_range()
 	
-	# Add things as children
-	_add_all_as_children()
+	_add_all_modules_as_children()
 
-func _add_all_as_children():
+func _add_all_modules_as_children():
 	if range_module != null:
 		add_child(range_module)
+		range_module.update_range() 
 		range_module.connect("final_range_changed", self, "_emit_final_range_changed")
 		
 	
 	for attack_module in attack_modules_and_target_num.keys():
 		add_child(attack_module)
-		attack_module.range_module = range_module
 		
-		if main_attack_module == null and attack_module.module_name == "Main":
+		if attack_module.range_module == null:
+			attack_module.range_module = range_module
+		else:
+			attack_module.range_module.update_range()
+		
+		if main_attack_module == null and attack_module.module_id == StoreOfAttackModuleID.MAIN:
 			main_attack_module = attack_module
 			main_attack_module.connect("final_attack_speed_changed", self, "_emit_final_attack_speed_changed")
 			main_attack_module.connect("final_base_damage_changed", self, "_emit_final_base_damage_changed")
+			
+			if range_module == null and main_attack_module.range_module != null:
+				range_module = main_attack_module.range_module
 
 
 func _emit_final_range_changed():
@@ -152,8 +157,8 @@ func _process(delta):
 			if attack_module.is_ready_to_attack():
 				
 				var success : bool = false
-				# If tower itself does not have a range_module
-				if range_module == null:
+				# If module itself does has a range_module
+				if attack_module.range_module != null:
 					success = attack_module.attempt_find_then_attack_enemies(attack_modules_and_target_num[attack_module])
 					if attack_module.is_main_attack and success:
 						_on_main_attack_success()
@@ -187,8 +192,18 @@ func _set_round_started(arg_is_round_started : bool):
 	is_round_started = arg_is_round_started
 	
 	if !is_round_started: # Round ended
-		for module in attack_modules_and_target_num.keys():
-			module.reset_attack_timers()
+		_on_round_end()
+	else:
+		_on_round_start()
+
+
+func _on_round_end():
+	for module in attack_modules_and_target_num.keys():
+		module.on_round_end()
+	
+
+func _on_round_start():
+	pass
 
 
 # Recieving buffs/debuff related
@@ -212,6 +227,9 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect):
 	elif tower_base_effect is TowerOnHitEffectAdderEffect:
 		_add_on_hit_effect_adder_effect(tower_base_effect)
 		
+	elif tower_base_effect is TowerChaosTakeoverEffect:
+		_add_chaos_takeover_effect(tower_base_effect)
+		
 	elif tower_base_effect is TowerResetEffects:
 		_clear_ingredients_by_effect_reset()
 		
@@ -234,7 +252,9 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect):
 		
 	elif tower_base_effect is TowerOnHitEffectAdderEffect:
 		_remove_on_hit_effect_adder_effect(tower_base_effect.effect_uuid)
-
+		
+	elif tower_base_effect is TowerChaosTakeoverEffect:
+		_remove_chaos_takeover_effect(tower_base_effect)
 
 func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect):
 	for module in attack_modules_and_target_num.keys():
@@ -313,9 +333,9 @@ func _add_range_effect(attr_effect : TowerAttributesEffect):
 		if module.range_module != null and module.use_self_range_module:
 			if module.range_module.benefits_from_bonus_range:
 				if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
-					module.range_module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
+					module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
 				elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
-					module.range_module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
+					module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
 			
 			module.range_module.update_range()
 			if module is BulletAttackModule:
@@ -340,8 +360,8 @@ func _remove_range_effect(attr_effect_uuid : int):
 	for module in attack_modules_and_target_num.keys():
 		if module.range_module != null and module.use_self_range_module:
 			if module.range_module.benefits_from_bonus_range:
-				module.range_module.range_module.flat_range_effects.erase(attr_effect_uuid)
-				module.range_module.range_module.percent_range_effects.erase(attr_effect_uuid)
+				module.range_module.flat_range_effects.erase(attr_effect_uuid)
+				module.range_module.percent_range_effects.erase(attr_effect_uuid)
 			
 			module.range_module.update_range()
 			if module is BulletAttackModule:
@@ -393,6 +413,12 @@ func _remove_on_hit_effect_adder_effect(effect_adder_uuid : int):
 			module.on_hit_effects.erase(effect_adder_uuid)
 
 
+func _add_chaos_takeover_effect(takeover_effect : TowerChaosTakeoverEffect):
+	takeover_effect.takeover(self)
+
+func _remove_chaos_takeover_effect(takeover_effect : TowerChaosTakeoverEffect):
+	takeover_effect.untakeover(self)
+
 
 # Ingredient Related
 
@@ -421,7 +447,7 @@ func _clear_ingredients_by_effect_reset():
 	emit_signal("tower_give_gold", _calculate_sellback_of_ingredients(), GoldManager.IncreaseGoldSource.TOWER_EFFECT_RESET)
 
 
-func _can_accept_ingredient(ingredient_effect : IngredientEffect) -> bool:
+func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
 	if ingredients_absorbed.size() >= ingredient_active_limit and !ingredient_effect.tower_base_effect is TowerResetEffects:
 		return false
 	
@@ -429,7 +455,7 @@ func _can_accept_ingredient(ingredient_effect : IngredientEffect) -> bool:
 		if ingredients_absorbed.has(ingredient_effect.tower_id):
 			return false
 		
-		for color in ingredient_effect.compatible_colors:
+		for color in tower_selected.ingredient_compatible_colors:
 			if _tower_colors.has(color):
 				return true
 	
@@ -437,7 +463,7 @@ func _can_accept_ingredient(ingredient_effect : IngredientEffect) -> bool:
 
 func show_acceptability_with_ingredient(ingredient_effect : IngredientEffect, tower_selected):
 	if tower_selected != self:
-		var can_accept = _can_accept_ingredient(ingredient_effect)
+		var can_accept = _can_accept_ingredient(ingredient_effect, tower_selected)
 		
 		$IngredientDeclinePic.visible = !can_accept
 
@@ -467,6 +493,42 @@ func set_active_ingredient_limit(new_limit : int):
 		ingredient_active_limit = new_limit
 		emit_signal("ingredients_limit_changed")
 
+
+func _update_ingredient_compatible_colors():
+	ingredient_compatible_colors.clear()
+	
+	for color in _tower_colors:
+		if color == TowerColors.RED:
+			ingredient_compatible_colors.append(TowerColors.RED)
+			ingredient_compatible_colors.append(TowerColors.ORANGE)
+			ingredient_compatible_colors.append(TowerColors.VIOLET)
+			
+		elif color == TowerColors.ORANGE:
+			ingredient_compatible_colors.append(TowerColors.ORANGE)
+			ingredient_compatible_colors.append(TowerColors.RED)
+			ingredient_compatible_colors.append(TowerColors.YELLOW)
+			
+		elif color == TowerColors.YELLOW:
+			ingredient_compatible_colors.append(TowerColors.YELLOW)
+			ingredient_compatible_colors.append(TowerColors.ORANGE)
+			ingredient_compatible_colors.append(TowerColors.GREEN)
+			
+		elif color == TowerColors.GREEN:
+			ingredient_compatible_colors.append(TowerColors.GREEN)
+			ingredient_compatible_colors.append(TowerColors.BLUE)
+			ingredient_compatible_colors.append(TowerColors.YELLOW)
+			
+		elif color == TowerColors.BLUE:
+			ingredient_compatible_colors.append(TowerColors.BLUE)
+			ingredient_compatible_colors.append(TowerColors.GREEN)
+			ingredient_compatible_colors.append(TowerColors.VIOLET)
+			
+		elif color == TowerColors.VIOLET:
+			ingredient_compatible_colors.append(TowerColors.VIOLET)
+			ingredient_compatible_colors.append(TowerColors.RED)
+			ingredient_compatible_colors.append(TowerColors.BLUE)
+
+
 # Tower Colors Related
 
 func add_color_to_tower(color : int):
@@ -474,12 +536,14 @@ func add_color_to_tower(color : int):
 		_tower_colors.append(color)
 		call_deferred("emit_signal", "update_active_synergy")
 		call_deferred("emit_signal", "tower_colors_changed")
+		_update_ingredient_compatible_colors()
 
 func remove_color_from_tower(color : int):
 	if _tower_colors.has(color):
 		_tower_colors.erase(color)
 		call_deferred("emit_signal", "update_active_synergy")
 		call_deferred("emit_signal", "tower_colors_changed")
+		_update_ingredient_compatible_colors()
 
 
 # Inputs related
@@ -506,7 +570,7 @@ func toggle_module_ranges():
 		range_module.toggle_show_range()
 	
 	for attack_module in attack_modules_and_target_num.keys():
-		if attack_module.range_module != null and attack_module.use_self_range_module:
+		if attack_module.range_module != null and attack_module.use_self_range_module and attack_module.range_module.can_display_range:
 			attack_module.range_module.toggle_show_range()
 	
 	is_showing_ranges = !is_showing_ranges
@@ -567,7 +631,7 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 		else:
 			var target_tower = new_area_placable.tower_occupying
 			
-			if target_tower._can_accept_ingredient(ingredient_of_self):
+			if target_tower._can_accept_ingredient(ingredient_of_self, self):
 				_give_self_ingredient_buff_to(target_tower)
 				return
 			else:

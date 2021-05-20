@@ -16,13 +16,14 @@ var flat_range_effects : Dictionary = {}
 var percent_range_effects : Dictionary = {}
 
 var displaying_range : bool = false
+var can_display_range : bool = true
 
 var enemies_in_range : Array = []
 var _current_enemies : Array = []
 
 var _current_targeting_option_index : int
 var _last_used_targeting_option_index : int
-var all_targeting_options : Array
+var all_targeting_options : Array = []
 
 # last calc stuffs
 
@@ -30,7 +31,10 @@ var last_calculated_final_range : float
 
 
 func _ready():
-	all_targeting_options = [Targeting.FIRST, Targeting.LAST]
+	
+	if all_targeting_options == null or all_targeting_options.size() == 0:
+		all_targeting_options = [Targeting.FIRST, Targeting.LAST]
+	
 	_current_targeting_option_index = 0
 	_last_used_targeting_option_index = 0
 
@@ -84,7 +88,6 @@ func decrease_time_of_timebounded(delta):
 	
 	for key_to_delete in bucket:
 		percent_range_effects.erase(key_to_delete)
-
 	
 	bucket.clear()
 	
@@ -120,11 +123,11 @@ func toggle_show_range():
 func _draw():
 	
 	if displaying_range:
-		
-		var final_range = calculate_final_range_radius()
-		var color : Color = Color.gray
-		color.a = 0.1
-		draw_circle(Vector2(0, 0), final_range, color)
+		if can_display_range:
+			var final_range = calculate_final_range_radius()
+			var color : Color = Color.gray
+			color.a = 0.1
+			draw_circle(Vector2(0, 0), final_range, color)
 
 
 func update_range():

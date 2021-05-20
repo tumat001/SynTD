@@ -15,4 +15,4 @@ __meta__ = {
 margin_right = 40.0
 margin_bottom = 40.0
 mouse_filter = 2
-custom_constants/separation = 3
+custom_constants/separation = 5

@@ -10,6 +10,9 @@ func _attack_enemy(enemy : AbstractEnemy):
 		damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
 		
 		_modify_attack(enemy)
+		enemy.connect("on_hit", self, "on_enemy_hit", [], CONNECT_ONESHOT)
+		enemy.connect("on_post_mitigated_damage_taken", self, "on_post_mitigation_damage_dealt", [], CONNECT_ONESHOT)
+		
 		enemy.hit_by_damage_instance(damage_instance)
 
 func _attack_enemies(enemies : Array):
@@ -26,6 +29,7 @@ func _attack_at_position(pos : Vector2):
 # Not applicable for here
 func _attack_at_positions(positions : Array):
 	print("Trying to deal damage to position...")
+
 
 # Disabling and Enabling
 

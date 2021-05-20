@@ -1,4 +1,3 @@
-extends Node
 
 const BaseAOE = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.gd")
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")

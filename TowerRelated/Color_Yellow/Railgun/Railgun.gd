@@ -31,7 +31,7 @@ func _ready():
 	attack_module.base_pierce = info.base_pierce
 	attack_module.base_proj_speed = 600
 	attack_module.projectile_life_distance = info.base_range * 2
-	attack_module.module_name = "Main"
+	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	var bullet_shape = RectangleShape2D.new()

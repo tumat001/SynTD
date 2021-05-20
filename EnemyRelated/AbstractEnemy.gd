@@ -13,8 +13,10 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 const EnemyClearAllEffects = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyClearAllEffects.gd")
 
-signal on_death
-signal on_hit
+signal on_death_by_any_cause
+signal on_hit(me)
+signal on_post_mitigated_damage_taken(damage, damage_type, me)
+
 signal reached_end_of_path
 signal on_current_health_changed(current_health)
 signal on_max_health_changed(max_health)
@@ -139,11 +141,16 @@ func _set_current_health_to(health_amount):
 # The only function that should handle taking
 # damage and health deduction. Also where
 # death is handled
-func _take_unmitigated_damage(damage_amount):
+func _take_unmitigated_damage(damage_amount : float, damage_type : int):
 	current_health -= damage_amount
 	if current_health <= 0:
+		var effective_damage = damage_amount + current_health
+		call_deferred("emit_signal", "on_post_mitigated_damage_taken", effective_damage, damage_type, true, self)
+		
 		_destroy_self()
 	else:
+		call_deferred("emit_signal", "on_post_mitigated_damage_taken", damage_amount, damage_type, false, self)
+		
 		emit_signal("on_current_health_changed", current_health)
 
 func _destroy_self():
@@ -153,7 +160,7 @@ func _destroy_self():
 
 
 func queue_free():
-	emit_signal("on_death")
+	emit_signal("on_death_by_any_cause")
 	
 	.queue_free()
 
@@ -323,10 +330,13 @@ func calculate_final_movement_speed() -> float:
 # on hit damages and effects.
 func hit_by_bullet(generic_bullet : BaseBullet):
 	generic_bullet.decrease_pierce(pierce_consumed_per_hit)
+	connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
+	connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [], CONNECT_ONESHOT)
+	
 	hit_by_damage_instance(generic_bullet.damage_instance)
 
 func hit_by_damage_instance(damage_instance : DamageInstance):
-	emit_signal("on_hit")
+	call_deferred("emit_signal", "on_hit", self)
 	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true))
 	_process_effects(damage_instance.on_hit_effects.duplicate(true))
 
@@ -372,8 +382,8 @@ func _process_direct_damage_and_type(damage : float, damage_type : int):
 		
 	elif damage_type == DamageType.PURE:
 		final_damage *= 1
-
-	_take_unmitigated_damage(final_damage)
+	
+	_take_unmitigated_damage(final_damage, damage_type)
 
 func _calculate_multiplier_from_total_armor() -> float:
 	var total_armor = calculate_final_armor()

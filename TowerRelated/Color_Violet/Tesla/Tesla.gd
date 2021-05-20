@@ -37,8 +37,8 @@ func _ready():
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 0
 	attack_module.is_main_attack = true
-	attack_module.module_name = "Main"
-	attack_module.position.y -= 29
+	attack_module.module_id = StoreOfAttackModuleID.MAIN
+	attack_module.position.y -= 30
 	attack_module.base_on_hit_damage_internal_name = "tesla"
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.base_on_hit_affected_by_scale = false
