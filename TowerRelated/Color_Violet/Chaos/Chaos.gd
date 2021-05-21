@@ -63,7 +63,7 @@ func _ready():
 	orb_attack_module.position.y -= 22
 	orb_attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	orb_attack_module.benefits_from_bonus_attack_speed = false
-	orb_attack_module.benefits_from_bonus_base_damage = false
+	orb_attack_module.benefits_from_bonus_base_damage = true
 	orb_attack_module.benefits_from_bonus_on_hit_damage = false
 	orb_attack_module.benefits_from_bonus_on_hit_effect = false
 	
@@ -100,8 +100,9 @@ func _ready():
 	diamond_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	diamond_attack_module.position.y -= 22
 	diamond_attack_module.on_hit_damage_scale = 1
+	diamond_attack_module.on_hit_effect_scale = 2
 	diamond_attack_module.benefits_from_bonus_attack_speed = false
-	diamond_attack_module.benefits_from_bonus_base_damage = false
+	diamond_attack_module.benefits_from_bonus_base_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_effect = true
 	
@@ -129,7 +130,7 @@ func _ready():
 	bolt_range_module.can_display_range = false
 	
 	var bolt_attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
-	bolt_attack_module.base_damage = 2
+	bolt_attack_module.base_damage = 1
 	bolt_attack_module.base_damage_type = DamageType.ELEMENTAL
 	bolt_attack_module.base_attack_speed = 1.3
 	bolt_attack_module.base_attack_wind_up = 0
@@ -137,8 +138,7 @@ func _ready():
 	bolt_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	bolt_attack_module.position.y -= 22
 	bolt_attack_module.base_on_hit_damage_internal_name = "chaos_bolt"
-	bolt_attack_module.on_hit_damage_scale = 1
-	bolt_attack_module.base_on_hit_affected_by_scale = false
+	bolt_attack_module.base_damage_scale = 1.5
 	bolt_attack_module.benefits_from_bonus_attack_speed = true
 	bolt_attack_module.benefits_from_bonus_base_damage = true
 	bolt_attack_module.benefits_from_bonus_on_hit_damage = false
@@ -168,7 +168,7 @@ func _ready():
 	# Sword related
 	
 	sword_attack_module = InstantDamageAttackModule_Scene.instance()
-	sword_attack_module.base_damage = 30
+	sword_attack_module.base_damage = 9
 	sword_attack_module.base_damage_type = DamageType.PHYSICAL
 	sword_attack_module.base_attack_speed = 0
 	sword_attack_module.base_attack_wind_up = 0
@@ -176,15 +176,17 @@ func _ready():
 	sword_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	sword_attack_module.base_on_hit_damage_internal_name = "chaos_sword"
 	sword_attack_module.on_hit_damage_scale = 1
-	sword_attack_module.base_on_hit_affected_by_scale = false
 	sword_attack_module.range_module = range_module
+	sword_attack_module.base_damage_scale = 5
 	sword_attack_module.benefits_from_bonus_attack_speed = false
-	sword_attack_module.benefits_from_bonus_base_damage = false
+	sword_attack_module.benefits_from_bonus_base_damage = true
 	sword_attack_module.benefits_from_bonus_on_hit_damage = false
 	sword_attack_module.benefits_from_bonus_on_hit_effect = false
 	
 	sword_attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack")
-	add_child(sword_attack_module)
+	
+	attack_modules_and_target_num[sword_attack_module] = 1
+	sword_attack_module.can_be_commanded_by_tower = false
 	
 	_post_inherit_ready()
 
@@ -197,7 +199,7 @@ func _on_round_end():
 	damage_accumulated = 0
 
 
-func _add_damage_accumulated(damage : float, damage_type : int, killed_enemy : bool, enemy, module):
+func _add_damage_accumulated(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int, module):
 	damage_accumulated += damage
 	_check_damage_accumulated()
 

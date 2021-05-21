@@ -5,6 +5,7 @@ extends "res://EnemyRelated/AbstractEnemy.gd"
 func _ready():
 	_post_ready()
 
+
 func _init():
 	base_health = 54
 	current_health = 54

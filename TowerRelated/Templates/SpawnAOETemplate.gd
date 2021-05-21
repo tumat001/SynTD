@@ -39,6 +39,9 @@ var aoe_shift_x : bool = false
 var aoe_scale_x : float = 1
 var aoe_scale_y : float = 1
 
+var attack_module_source
+var damage_register_id : int
+
 #
 
 var spawn_aoe_at_death : bool = true
@@ -70,7 +73,11 @@ func _spawn_aoe(global_pos : Vector2):
 	aoe_instance.scale.x = aoe_scale_x
 	aoe_instance.scale.y = aoe_scale_y
 	
-	tree.get_root().add_child(aoe_instance)
+	aoe_instance.attack_module_source = attack_module_source
+	aoe_instance.damage_register_id = damage_register_id
+	
+	#tree.get_root().add_child(aoe_instance)
+	tree.get_root().call_deferred("add_child", aoe_instance)
 
 
 #

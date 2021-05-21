@@ -9,7 +9,7 @@ enum {
 
 static func get_description_of(type : int) -> String:
 	if type == MAX:
-		return "max"
+		return "total"
 	elif type == BASE:
 		return "base"
 	elif type == CURRENT:

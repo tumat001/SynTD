@@ -11,6 +11,8 @@ enum SpawnLocation {
 var spawn_location : int = SpawnLocation.IN_FRONT_OF_TOWER
 var aoe_template : SpawnAOETemplate setget _set_template
 
+var damage_register_id : int
+
 func _set_template(template : SpawnAOETemplate):
 	template.aoe_base_damage = base_damage
 	template.aoe_base_damage_type = base_damage_type

@@ -41,7 +41,6 @@ func _ready():
 	attack_module.position.y -= 30
 	attack_module.base_on_hit_damage_internal_name = "tesla"
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
-	attack_module.base_on_hit_affected_by_scale = false
 	
 	attack_module.attack_sprite_scene = Tesla_Hit_Particle
 	attack_module.attack_sprite_follow_enemy = true

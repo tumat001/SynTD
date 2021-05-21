@@ -51,7 +51,7 @@ const CHAOS_TOWER_ID = 703
 
 
 func _init().(EffectType.CHAOS_TAKEOVER, StoreOfTowerEffectsUUID.ING_CHAOS):
-	description = "Takeover: Chaos replaces the tower's attacks, stats, range, and targeting. Chaos benefits from buffs of the tower. The tower's self ingredient is replaced by this"
+	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting. CHAOS benefits from buffs of the tower. The tower's self ingredient is replaced by this"
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Chaos.png")
 
 
@@ -79,7 +79,7 @@ func _construct_modules():
 	orb_attack_module.position.y -= 22
 	orb_attack_module.on_hit_damage_scale = 0
 	orb_attack_module.benefits_from_bonus_attack_speed = false
-	orb_attack_module.benefits_from_bonus_base_damage = false
+	orb_attack_module.benefits_from_bonus_base_damage = true
 	orb_attack_module.benefits_from_bonus_on_hit_damage = false
 	orb_attack_module.benefits_from_bonus_on_hit_effect = false
 	
@@ -117,8 +117,9 @@ func _construct_modules():
 	diamond_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	diamond_attack_module.position.y -= 22
 	diamond_attack_module.on_hit_damage_scale = 1
+	diamond_attack_module.on_hit_effect_scale = 2
 	diamond_attack_module.benefits_from_bonus_attack_speed = false
-	diamond_attack_module.benefits_from_bonus_base_damage = false
+	diamond_attack_module.benefits_from_bonus_base_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_effect = true
 	
@@ -146,7 +147,7 @@ func _construct_modules():
 	bolt_range_module.can_display_range = false
 	
 	var bolt_attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
-	bolt_attack_module.base_damage = 2
+	bolt_attack_module.base_damage = 1
 	bolt_attack_module.base_damage_type = DamageType.ELEMENTAL
 	bolt_attack_module.base_attack_speed = 1.3
 	bolt_attack_module.base_attack_wind_up = 0
@@ -154,8 +155,7 @@ func _construct_modules():
 	bolt_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	bolt_attack_module.position.y -= 22
 	bolt_attack_module.base_on_hit_damage_internal_name = "chaos_bolt"
-	bolt_attack_module.on_hit_damage_scale = 1
-	bolt_attack_module.base_on_hit_affected_by_scale = false
+	bolt_attack_module.base_damage_scale = 1.5
 	bolt_attack_module.benefits_from_bonus_attack_speed = true
 	bolt_attack_module.benefits_from_bonus_base_damage = true
 	bolt_attack_module.benefits_from_bonus_on_hit_damage = false
@@ -185,7 +185,7 @@ func _construct_modules():
 	# Sword related
 	
 	sword_attack_module = InstantDamageAttackModule_Scene.instance()
-	sword_attack_module.base_damage = 30
+	sword_attack_module.base_damage = 9
 	sword_attack_module.base_damage_type = DamageType.PHYSICAL
 	sword_attack_module.base_attack_speed = 0
 	sword_attack_module.base_attack_wind_up = 0
@@ -193,15 +193,17 @@ func _construct_modules():
 	sword_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	sword_attack_module.base_on_hit_damage_internal_name = "chaos_sword"
 	sword_attack_module.on_hit_damage_scale = 1
-	sword_attack_module.base_on_hit_affected_by_scale = false
 	sword_attack_module.range_module = orb_range_module
+	sword_attack_module.base_damage_scale = 5
 	sword_attack_module.benefits_from_bonus_attack_speed = false
-	sword_attack_module.benefits_from_bonus_base_damage = false
+	sword_attack_module.benefits_from_bonus_base_damage = true
 	sword_attack_module.benefits_from_bonus_on_hit_damage = false
 	sword_attack_module.benefits_from_bonus_on_hit_effect = false
 	
 	sword_attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack")
-
+	
+	chaos_attack_modules_targets_num_map[sword_attack_module] = 1
+	sword_attack_module.can_be_commanded_by_tower = false
 
 
 # Takeover related
@@ -224,7 +226,6 @@ func takeover(tower):
 	var ing_effect = load("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd").new(CHAOS_TOWER_ID, tower_base_effect)
 	tower.ingredient_of_self = ing_effect
 	
-	tower.add_child(sword_attack_module)
 	tower.add_child(_construct_chaos_shadow())
 	
 	for module in tower.attack_modules_and_target_num:
@@ -258,7 +259,6 @@ func untakeover(tower):
 	tower.range_module = replaced_range_module
 	tower.main_attack_module = replaced_main_attack_module
 	
-	tower.remove_child(sword_attack_module)
 	sword_attack_module.queue_free()
 	
 	tower.ingredient_of_self = replaced_self_ingredient
@@ -282,7 +282,7 @@ func _on_round_end():
 	damage_accumulated = 0
 
 
-func _add_damage_accumulated(damage : float, damage_type : int, killed_enemy : bool, enemy, module):
+func _add_damage_accumulated(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int, module):
 	damage_accumulated += damage
 	_check_damage_accumulated()
 

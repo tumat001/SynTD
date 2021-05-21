@@ -25,6 +25,10 @@ func get_instructions_for_stageround(uuid : String):
 func _get_instructions_for_0_1():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.TEST_ENEMY),
 	]
 
 func _get_instructions_for_0_2():
@@ -36,6 +40,8 @@ func _get_instructions_for_0_2():
 func _get_instructions_for_0_3():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.TEST_ENEMY),
 	]
 
 func _get_instructions_for_0_4():

@@ -10,6 +10,7 @@ const StoreOfTowerEffectsUUID = preload("res://GameInfoRelated/TowerEffectRelate
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const TowerResetTeffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
 
+const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
 
 const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
@@ -35,6 +36,7 @@ const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObeli
 const re_image = preload("res://TowerRelated/Color_Violet/Re/Re_Omni.png")
 const telsa_image = preload("res://TowerRelated/Color_Violet/Tesla/Tesla.png")
 const chaos_image = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_01.png")
+const ping_image = preload("res://TowerRelated/Color_Violet/Ping/PingWholeBody.png")
 
 enum {
 	# GRAY (100)
@@ -59,6 +61,7 @@ enum {
 	RE = 701,
 	TESLA = 702,
 	CHAOS = 703,
+	PING = 704,
 }
 
 static func get_tower_info(tower_id : int) -> TowerTypeInformation :
@@ -216,7 +219,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 4
 		info.tower_image_in_buy_card = re_image
 		
-		info.base_damage = 1.5
+		info.base_damage = 3
 		info.base_attk_speed = 0.5
 		info.base_pierce = 0
 		info.base_range = 115
@@ -262,7 +265,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 	elif tower_id == CHAOS:
-		info = TowerTypeInformation.new("Chaos", CHAOS)
+		info = TowerTypeInformation.new("CHAOS", CHAOS)
 		info.tower_cost = 5
 		info.colors.append(TowerColors.VIOLET)
 		info.tower_tier = 5
@@ -276,11 +279,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
-			"Has many attacks. Shoots orbs, diamonds, and bolts. Stats shown are for the orbs.",
+			"Has many attacks. Shoots orbs, diamonds, bolts, and swords. Stats shown are for the orbs.",
 			"Only the orbs are affected by targeting options.",
-			"Only the diamonds apply on hit damage and effects.",
-			"Only the bolts benefit from base damage and attack speed buffs.",
-			"Upon dealing enough damage with the orbs, diamonds and bolts, Chaos erupts a dark sword to stab the orb's target."
+			"Only the diamonds apply on hit damage and effects. On hit effects are 200% effective.",
+			"Only the bolts benefit from attack speed buffs.",
+			"All are affected by range and base damage buffs. Bolts deal 150% of their total base damage.",
+			"Upon dealing enough damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 500% of its total base damage."
 		]
 		
 		var tower_base_effect : TowerChaosTakeoverEffect = TowerChaosTakeoverEffect.new()
@@ -288,6 +292,37 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "takeover"
+		
+		
+	elif tower_id == PING:
+		info = TowerTypeInformation.new("Ping", PING)
+		info.tower_cost = 4
+		info.colors.append(TowerColors.VIOLET)
+		info.colors.append(TowerColors.BLUE)
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = ping_image
+		
+		info.base_damage = 1
+		info.base_attk_speed = 0.30
+		info.base_pierce = 1
+		info.base_range = 155
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Stats shown are for the arrow.",
+			"Shoots an arrow that releases a ring. Enemies inside the ring are marked by Ping.",
+			"After a brief delay, Ping shoots up to 4 marked enemies. If only 1 enemy is marked, the shot gains +6 base damage and on hit damages become 150% effective.",
+			"If Ping kills at least one enemy with its shot, Ping shoots the next arrow immediately.",
+			"Shots deal 7 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
+		]
+		
+		var tower_base_effect : PingletAdderEffect = PingletAdderEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(PING, tower_base_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "pinglet"
+		
 	
 	return info
 
@@ -310,5 +345,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Tesla/Tesla.tscn")
 	elif tower_id == CHAOS:
 		return load("res://TowerRelated/Color_Violet/Chaos/Chaos.tscn")
+	elif tower_id == PING:
+		return load("res://TowerRelated/Color_Violet/Ping/Ping.tscn")
 	
 	

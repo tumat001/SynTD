@@ -2,6 +2,7 @@ extends "res://TowerRelated/Modules/AbstractAttackModule.gd"
 
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
+var damage_register_id : int
 
 func _attack_enemy(enemy : AbstractEnemy):
 	if enemy != null:
@@ -10,8 +11,8 @@ func _attack_enemy(enemy : AbstractEnemy):
 		damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
 		
 		_modify_attack(enemy)
-		enemy.connect("on_hit", self, "on_enemy_hit", [], CONNECT_ONESHOT)
-		enemy.connect("on_post_mitigated_damage_taken", self, "on_post_mitigation_damage_dealt", [], CONNECT_ONESHOT)
+		enemy.connect("on_hit", self, "on_enemy_hit", [damage_register_id], CONNECT_ONESHOT)
+		enemy.connect("on_post_mitigated_damage_taken", self, "on_post_mitigation_damage_dealt", [damage_register_id], CONNECT_ONESHOT)
 		
 		enemy.hit_by_damage_instance(damage_instance)
 

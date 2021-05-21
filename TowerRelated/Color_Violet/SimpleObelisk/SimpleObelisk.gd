@@ -2,7 +2,6 @@ extends "res://TowerRelated/AbstractTower.gd"
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
-# TODO REPLACE WITH AOE Thingy SOON
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
@@ -12,7 +11,6 @@ const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.ts
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
 const SpawnAOETemplate = preload("res://TowerRelated/Templates/SpawnAOETemplate.gd")
 
-# TODO REPLACE THIS SOON
 const SimpleObeliskBullet_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Bullet.png")
 
 const Explosion03_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_ProjExplosion_03.png")

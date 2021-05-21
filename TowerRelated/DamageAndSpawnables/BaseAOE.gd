@@ -5,6 +5,7 @@ const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
 
 var damage_instance : DamageInstance
+var damage_register_id : int
 
 var damage_repeat_count : int = 1
 var duration : float
@@ -17,6 +18,8 @@ var sprite_frames_play_only_once : bool = true
 var aoe_default_coll_shape : int = BaseAOEDefaultShapes.CIRCLE
 var shift_x : bool = false
 
+var attack_module_source
+
 # internal stuffs
 
 var _delay_in_between_repeats : float
@@ -25,6 +28,8 @@ var _current_damage_repeat_count : int = 0
 var _current_delay : float = 0
 var _enemies_inside : Array = []
 var _pierce_available : int
+
+onready var anim_sprite : AnimatedSprite = $AnimatedSprite
 
 #
 
@@ -47,11 +52,12 @@ func _on_BaseAOE_area_shape_exited(area_id, area, area_shape, self_shape):
 func _ready():
 	_delay_in_between_repeats = _calculate_delay_in_between_repeats()
 	_current_delay = 0.05
-
-	if aoe_texture != null:
-		_set_texture_as_sprite()
-	elif aoe_sprite_frames != null:
-		_set_sprite_frames()
+	
+	if !_animated_sprite_has_animation():
+		if aoe_texture != null:
+			_set_texture_as_sprite()
+		elif aoe_sprite_frames != null:
+			_set_sprite_frames()
 	
 	if $Shape.shape == null:
 		if aoe_default_coll_shape == BaseAOEDefaultShapes.CIRCLE:
@@ -87,24 +93,29 @@ func _set_texture_as_sprite():
 	var sprite_frames : SpriteFrames = SpriteFrames.new()
 	sprite_frames.add_frame("default", aoe_texture)
 	
-	$AnimatedSprite.frames = sprite_frames
+	anim_sprite.frames = sprite_frames
 
 func _set_sprite_frames():
-	$AnimatedSprite.frames = aoe_sprite_frames
-	$AnimatedSprite.playing = true
+	anim_sprite.frames = aoe_sprite_frames
+	anim_sprite.playing = true
 	
 	if sprite_frames_play_only_once:
-		$AnimatedSprite.frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(aoe_sprite_frames.get_frame_count("default")))
+		anim_sprite.frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(aoe_sprite_frames.get_frame_count("default")))
 		aoe_sprite_frames.set_animation_loop("default", false)
+
+func _animated_sprite_has_animation() -> bool:
+	return anim_sprite.frames != null
+
 
 func _calculate_fps_of_sprite_frames(frame_count : int) -> int:
 	return int(ceil(frame_count / duration))
 
 
+
 # Shape Related
 
 func _set_default_circle_shape():
-	if $AnimatedSprite.frames != null:
+	if anim_sprite.frames != null:
 		var size_of_sprite = _get_first_anim_size()
 		var coll_shape = CircleShape2D.new()
 		coll_shape.radius = size_of_sprite.x / 2.0
@@ -112,11 +123,11 @@ func _set_default_circle_shape():
 		$Shape.shape = coll_shape
 
 func _get_first_anim_size() -> Vector2:
-	return $AnimatedSprite.frames.get_frame($AnimatedSprite.animation, $AnimatedSprite.frame).get_size()
+	return anim_sprite.frames.get_frame(anim_sprite.animation, anim_sprite.frame).get_size()
 
 
 func _set_default_rectangle_shape():
-	if $AnimatedSprite.frames != null:
+	if anim_sprite.frames != null:
 		var size_of_sprite = _get_first_anim_size()
 		var coll_shape = RectangleShape2D.new()
 		coll_shape.extents.x = size_of_sprite.x
@@ -140,7 +151,7 @@ func _damage_enemy(enemy : AbstractEnemy):
 	
 	if successful:
 		if enemy != null:
-			enemy.hit_by_damage_instance(damage_instance)
+			enemy.hit_by_aoe(self)
 			_pierce_available -= 1
 	
 	return successful

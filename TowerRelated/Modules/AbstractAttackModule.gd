@@ -6,6 +6,7 @@ const Modifier = preload("res://GameInfoRelated/Modifier.gd")
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
+const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 
@@ -22,8 +23,8 @@ signal in_attack_end()
 
 signal on_round_end()
 
-signal on_post_mitigation_damage_dealt(damage, damage_type, killed, enemy, module)
-signal on_enemy_hit(enemy, module)
+signal on_post_mitigation_damage_dealt(damage, damage_type, killed, enemy, damage_register_id, module)
+signal on_enemy_hit(enemy, damage_register_id, module)
 
 var module_id : int
 # These are used to help differentiate attacks
@@ -32,6 +33,8 @@ var module_id : int
 var current_time_metadata = Time_Metadata.TIME_AS_SECONDS
 var original_time_metadata = Time_Metadata.TIME_AS_SECONDS
 var is_main_attack : bool = false
+
+var can_be_commanded_by_tower : bool = true
 
 var benefits_from_bonus_attack_speed : bool = true
 var benefits_from_bonus_on_hit_damage : bool = true
@@ -51,15 +54,16 @@ var burst_amount : int
 var burst_attack_speed : float = 1
 
 var on_hit_damage_scale : float = 1
-var base_on_hit_affected_by_scale : bool = false
 
 var base_damage : float
+var base_damage_scale : float = 1.0  # Scales final damage calculated 
 var base_damage_type : int
 # map of uuid (internal name) to effect
 var flat_base_damage_effects : Dictionary = {}
 var percent_base_damage_effects : Dictionary = {}
 var base_on_hit_damage_internal_name : String
 var on_hit_damage_adder_effects : Dictionary
+
 
 var on_hit_effect_scale : float = 1
 # uuid to effect map
@@ -94,6 +98,7 @@ var last_calculated_final_attk_speed : float
 var _last_calculated_attack_wind_up : float
 var _last_calculated_burst_pause : float
 var _last_calculated_attack_speed_as_delay : float
+
 
 # MISC
 
@@ -240,19 +245,31 @@ func calculate_final_attack_speed() -> float:
 	if original_time_metadata == Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
 		return base_attack_speed
 	
-	#All percent modifiers here are to BASE attk speed only
 	var final_attack_speed = base_attack_speed
 	
 	if benefits_from_bonus_attack_speed:
+		var totals_bucket : Array = []
+		
 		for effect in percent_attack_speed_effects.values():
 			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
 				continue
-			final_attack_speed += effect.attribute_as_modifier.get_modification_to_value(base_attack_speed)
+			
+			if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
+				final_attack_speed += effect.attribute_as_modifier.get_modification_to_value(base_attack_speed)
+			else:
+				totals_bucket.append(effect)
 		
 		for effect in flat_attack_speed_effects.values():
 			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
 				continue
 			final_attack_speed += effect.attribute_as_modifier.get_modification_to_value(base_attack_speed)
+		
+		var final_base_attk_speed = final_attack_speed
+		for effect in totals_bucket:
+			final_base_attk_speed += effect.attribute_as_modifier.get_modification_to_value(final_attack_speed)
+		
+		final_attack_speed = final_base_attk_speed
+	
 	
 	if final_attack_speed != 0:
 		last_calculated_final_attk_speed = final_attack_speed
@@ -267,16 +284,27 @@ func calculate_final_attack_wind_up() -> float:
 	var final_attack_wind_up = base_attack_wind_up
 	
 	if benefits_from_bonus_attack_speed:
+		var totals_bucket : Array = []
+		
 		for effect in percent_attack_speed_effects.values():
 			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
 				continue
-			final_attack_wind_up += effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
+			
+			if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
+				final_attack_wind_up += effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
+			else:
+				totals_bucket.append(effect)
 		
 		for effect in flat_attack_speed_effects.values():
 			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
 				continue
 			final_attack_wind_up += effect.attribute_as_modifier.get_modification_to_value(base_attack_wind_up)
-	
+		
+		var final_base_attk_wind_up = final_attack_wind_up
+		for effect in totals_bucket:
+			final_base_attk_wind_up += effect.attribute_as_modifier.get_modification_to_value(final_attack_wind_up)
+		
+		final_attack_wind_up = final_base_attk_wind_up
 	
 	if final_attack_wind_up != 0:
 		_last_calculated_attack_wind_up = 1 / final_attack_wind_up
@@ -290,15 +318,29 @@ func calculate_final_burst_attack_speed() -> float:
 	var final_burst_pause = burst_attack_speed
 	
 	if benefits_from_bonus_attack_speed:
+		var totals_bucket : Array = []
+		
 		for effect in percent_attack_speed_effects.values():
 			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
 				continue
-			final_burst_pause += effect.attribute_as_modifier.get_modification_to_value(burst_attack_speed)
+			
+			if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
+				final_burst_pause += effect.attribute_as_modifier.get_modification_to_value(burst_attack_speed)
+			else:
+				totals_bucket.append(effect)
 		
 		for effect in flat_attack_speed_effects.values():
 			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
 				continue
 			final_burst_pause += effect.attribute_as_modifier.get_modification_to_value(burst_attack_speed)
+		
+		
+		var final_base_attk_burst_speed = final_burst_pause
+		for effect in totals_bucket:
+			final_base_attk_burst_speed += effect.attribute_as_modifier.get_modification_to_value(final_burst_pause)
+		
+		final_burst_pause = final_base_attk_burst_speed
+		
 	
 	if final_burst_pause != 0:
 		_last_calculated_burst_pause = 1 / final_burst_pause
@@ -594,15 +636,26 @@ func calculate_final_base_damage():
 	var final_base_damage = base_damage
 	
 	if benefits_from_bonus_base_damage:
+		var totals_bucket : Array = []
+		
 		for effect in percent_base_damage_effects.values():
 			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
 				continue
-			final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
+			
+			if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
+				final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
+			else:
+				totals_bucket.append(effect)
 		
 		for effect in flat_base_damage_effects.values():
 			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
 				continue
 			final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
+		
+		var final_base_base_damage = final_base_damage
+		for effect in totals_bucket:
+			final_base_base_damage += effect.attribute_as_modifier.get_modification_to_value(final_base_damage)
+		final_base_damage = final_base_base_damage
 	
 	last_calculated_final_damage = final_base_damage
 	return final_base_damage
@@ -611,8 +664,8 @@ func _get_base_damage_as_on_hit_damage() -> OnHitDamage:
 	var modifier : FlatModifier = FlatModifier.new(base_on_hit_damage_internal_name)
 	modifier.flat_modifier = calculate_final_base_damage()
 	
-	if on_hit_damage_scale != 1 and base_on_hit_affected_by_scale:
-		modifier = modifier.get_copy_scaled_by(on_hit_damage_scale)
+	if base_damage_scale != 1:
+		modifier = modifier.get_copy_scaled_by(base_damage_scale)
 	
 	return OnHitDamage.new(base_on_hit_damage_internal_name, modifier, base_damage_type)
 
@@ -675,8 +728,8 @@ func on_round_end():
 
 # Damage report related
 
-func on_post_mitigation_damage_dealt(damage : float, damage_type : int, killed_enemy : bool, enemy):
-	emit_signal("on_post_mitigation_damage_dealt", damage, damage_type, killed_enemy, enemy, self)
+func on_post_mitigation_damage_dealt(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int):
+	emit_signal("on_post_mitigation_damage_dealt", damage, damage_type, killed_enemy, enemy, damage_register_id, self)
 
-func on_enemy_hit(enemy):
-	emit_signal("on_enemy_hit", enemy, self)
+func on_enemy_hit(enemy, damage_register_id):
+	emit_signal("on_enemy_hit", enemy, damage_register_id, self)

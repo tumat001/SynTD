@@ -59,6 +59,8 @@ func update_synergies(towers : Array):
 	_update_synergy_displayer()
 
 
+# Synergy Calculation
+
 func _get_list_of_distinct_towers(towers: Array) -> Array:
 	var tower_bucket : Array = []
 	var id_bucket : Array = []
@@ -78,8 +80,17 @@ func _convert_towers_to_colors(towers: Array) -> Array:
 	
 	return all_colors
 
+
+# Update displayer
+
 func _update_synergy_displayer():
 	left_panel.active_synergies_res = active_synergies_res
 	left_panel.non_active_composite_synergies_res = non_active_group_synergies_res
 	left_panel.non_active_dominant_synergies_res = non_active_dominant_synergies_res
 	left_panel.update_synergy_displayers()
+
+
+# Synergy application
+
+
+

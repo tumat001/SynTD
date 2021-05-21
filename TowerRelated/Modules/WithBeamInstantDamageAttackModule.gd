@@ -14,6 +14,7 @@ var beam_texture : Texture
 var beam_sprite_frames : SpriteFrames
 
 var show_beam_at_windup : bool = false
+var show_beam_regardless_of_state : bool = false
 
 # internals
 
@@ -29,11 +30,14 @@ func update_beams_state():
 			if beam.visible:
 				var enemy = beam_to_enemy_map[beam]
 				
-				if enemy == null or !range_module._current_enemies.has(enemy):
+				if !show_beam_regardless_of_state and (enemy == null or !range_module._current_enemies.has(enemy)):
 					beam.visible = false
 				else:
-					beam.update_destination_position(enemy.global_position)
-		
+					if enemy != null:
+						beam.update_destination_position(enemy.global_position)
+					else:
+						beam.visible = false
+					
 		if _terminate_update_on_next:
 			_should_update_beams = false
 	
@@ -62,6 +66,7 @@ func _attack_enemy(enemy : AbstractEnemy):
 	if enemy != null and !show_beam_at_windup:
 		_connect_beam_to_enemy(enemy)
 
+
 # Disabling and Enabling
 
 func disable_module():
@@ -86,6 +91,7 @@ func _connect_beam_to_enemy(enemy : AbstractEnemy):
 				return
 	
 	var beam = _get_available_beam_instance()
+	beam.frame = 0
 	beam.visible = true
 	beam.update_destination_position(enemy.position)
 	beam_to_enemy_map[beam] = enemy

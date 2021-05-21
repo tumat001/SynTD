@@ -21,6 +21,10 @@ var percent_proj_speed_effects = {}
 var projectile_life_distance : float = 100 setget _set_life_distance
 const _life_distance_bonus : float = 50.0
 
+# signal related
+
+var damage_register_id : int 
+
 # setgets
 
 func _set_life_distance(life_distance : float):
@@ -156,6 +160,7 @@ func _attack_at_position(arg_pos : Vector2):
 	bullet.rotation_degrees = _get_angle(arg_pos)
 	
 	bullet.attack_module_source = self
+	bullet.damage_register_id = damage_register_id
 	
 	bullet.position.x = global_position.x
 	bullet.position.y = global_position.y

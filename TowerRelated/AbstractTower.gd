@@ -18,6 +18,7 @@ const TowerResetEffects = preload("res://GameInfoRelated/TowerEffectRelated/Towe
 const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitDamageAdderEffect.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
+const BaseTowerAttackModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/BaseTowerAttackModuleAdderEffect.gd")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
@@ -108,13 +109,16 @@ func _post_inherit_ready():
 
 func _add_all_modules_as_children():
 	if range_module != null:
-		add_child(range_module)
+		if range_module.get_parent() == null:
+			add_child(range_module)
+		
 		range_module.update_range() 
 		range_module.connect("final_range_changed", self, "_emit_final_range_changed")
 		
 	
 	for attack_module in attack_modules_and_target_num.keys():
-		add_child(attack_module)
+		if attack_module.get_parent() == null:
+			add_child(attack_module)
 		
 		if attack_module.range_module == null:
 			attack_module.range_module = range_module
@@ -146,6 +150,7 @@ func _emit_ingredients_absorbed_changed():
 	call_deferred("emit_signal", "ingredients_absorbed_changed")
 
 
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	
@@ -154,7 +159,7 @@ func _process(delta):
 			if attack_module.current_time_metadata == AbstractAttackModule.Time_Metadata.TIME_AS_SECONDS:
 				attack_module.time_passed(delta)
 			
-			if attack_module.is_ready_to_attack():
+			if attack_module.can_be_commanded_by_tower and attack_module.is_ready_to_attack():
 				
 				var success : bool = false
 				# If module itself does has a range_module
@@ -230,6 +235,9 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect):
 	elif tower_base_effect is TowerChaosTakeoverEffect:
 		_add_chaos_takeover_effect(tower_base_effect)
 		
+	elif tower_base_effect is BaseTowerAttackModuleAdderEffect:
+		_add_attack_module_from_effect(tower_base_effect)
+		
 	elif tower_base_effect is TowerResetEffects:
 		_clear_ingredients_by_effect_reset()
 		
@@ -252,6 +260,9 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect):
 		
 	elif tower_base_effect is TowerOnHitEffectAdderEffect:
 		_remove_on_hit_effect_adder_effect(tower_base_effect.effect_uuid)
+		
+	elif tower_base_effect is BaseTowerAttackModuleAdderEffect:
+		_remove_attack_module_from_effect(tower_base_effect)
 		
 	elif tower_base_effect is TowerChaosTakeoverEffect:
 		_remove_chaos_takeover_effect(tower_base_effect)
@@ -418,6 +429,14 @@ func _add_chaos_takeover_effect(takeover_effect : TowerChaosTakeoverEffect):
 
 func _remove_chaos_takeover_effect(takeover_effect : TowerChaosTakeoverEffect):
 	takeover_effect.untakeover(self)
+
+
+func _add_attack_module_from_effect(module_effect : BaseTowerAttackModuleAdderEffect):
+	module_effect._make_modifications_to_tower(self)
+
+func _remove_attack_module_from_effect(module_effect : BaseTowerAttackModuleAdderEffect):
+	module_effect._undo_modifications_to_tower(self)
+
 
 
 # Ingredient Related
