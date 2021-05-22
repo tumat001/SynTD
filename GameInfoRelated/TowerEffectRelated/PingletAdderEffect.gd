@@ -86,10 +86,13 @@ func _construct_pinglet():
 func _make_modifications_to_tower(tower):
 	_construct_pinglet()
 	
-	tower.attack_modules_and_target_num[shot_attack_module] = 1
-	tower._add_all_modules_as_children()
+	tower.add_attack_module(shot_attack_module, 1)
+#	tower.attack_modules_and_target_num[shot_attack_module] = 1
+#	tower._add_all_modules_as_children()
 
 
 func _undo_modifications_to_tower(tower):
-	tower.attack_modules_and_target_num.erase(shot_attack_module)
+	tower.remove_attack_module(shot_attack_module)
 	shot_attack_module.queue_free()
+#	tower.attack_modules_and_target_num.erase(shot_attack_module)
+#	shot_attack_module.queue_free()

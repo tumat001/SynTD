@@ -66,6 +66,7 @@ func _ready():
 	orb_attack_module.benefits_from_bonus_base_damage = true
 	orb_attack_module.benefits_from_bonus_on_hit_damage = false
 	orb_attack_module.benefits_from_bonus_on_hit_effect = false
+	orb_attack_module.benefits_from_bonus_pierce = false
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 5

@@ -418,12 +418,13 @@ func _process_effects(effects : Dictionary):
 		_add_effect(effect)
 
 func _add_effect(base_effect : EnemyBaseEffect):
+	var to_use_effect = base_effect._get_copy_scaled_by(1)
 	
-	if base_effect is EnemyStunEffect:
-		_stun_id_effects_map[base_effect.effect_uuid] = base_effect
+	if to_use_effect is EnemyStunEffect:
+		_stun_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
 		
 		
-	elif base_effect is EnemyClearAllEffects:
+	elif to_use_effect is EnemyClearAllEffects:
 		_stun_id_effects_map.clear()
 
 # Timebounded related

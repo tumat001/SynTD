@@ -8,7 +8,6 @@ const ActiveIngredientsPanel = preload("res://GameHUDRelated/RightSidePanel/Towe
 const TowerColorsPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerColorsPanel/TowerColorsPanel.gd")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const InnerBottomPanel = preload("res://GameElementsRelated/InnerBottomPanel.gd")
-const SynergyManager = preload("res://GameElementsRelated/SynergyManager.gd")
 const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
 
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
@@ -17,6 +16,8 @@ signal ingredient_mode_turned_into(on_or_off)
 signal show_ingredient_acceptability(ingredient_effect, tower_selected)
 signal hide_ingredient_acceptability
 
+signal tower_to_benefit_from_synergy_buff(tower)
+signal tower_to_remove_from_synergy_buff(tower)
 
 var tower_inventory_bench
 var in_map_placables_manager : InMapPlacablesManager
@@ -32,7 +33,7 @@ var tower_stats_panel : TowerStatsPanel
 var active_ing_panel : ActiveIngredientsPanel
 var tower_colors_panel : TowerColorsPanel
 var inner_bottom_panel : InnerBottomPanel
-var synergy_manager : SynergyManager
+var synergy_manager
 var stage_round_manager : StageRoundManager
 
 
@@ -42,7 +43,7 @@ const TOWER_GROUP_ID : String = "Towers"
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	for color in TowerColors.get_all_colors():
-		_color_groups.append(TowerColors.get_color_name_on_card(color))
+		_color_groups.append(str(color))
 
 # Generic things that can branch out to other resp.
 
@@ -51,6 +52,15 @@ func _tower_in_queue_free(tower):
 	
 	if tower == tower_being_shown_in_info:
 		_show_round_panel()
+
+
+func _tower_active_in_map(tower):
+	_register_tower_to_color_grouping_tags(tower)
+	emit_signal("tower_to_benefit_from_synergy_buff", tower)
+
+func _tower_inactivated_from_map(tower):
+	_remove_tower_from_color_grouping_tags(tower)
+	emit_signal("tower_to_remove_from_synergy_buff", tower)
 
 
 # Adding tower as child of this to monitor it
@@ -64,10 +74,9 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("tower_being_sold", self, "_tower_sold")
 	tower_instance.connect("tower_give_gold", self, "_tower_generate_gold")
 	
-	
 	tower_instance.connect("tower_colors_changed", self, " _register_tower_to_color_grouping_tags", [tower_instance])
-	tower_instance.connect("tower_active_in_map", self, "_register_tower_to_color_grouping_tags", [tower_instance])
-	tower_instance.connect("tower_not_in_active_map", self, "_remove_tower_from_color_grouping_tags", [tower_instance])
+	tower_instance.connect("tower_active_in_map", self, "_tower_active_in_map", [tower_instance])
+	tower_instance.connect("tower_not_in_active_map", self, "_tower_inactivated_from_map", [tower_instance])
 	
 	connect("ingredient_mode_turned_into", tower_instance, "_set_is_in_ingredient_mode")
 	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient")
@@ -75,6 +84,9 @@ func add_tower(tower_instance : AbstractTower):
 	
 	_register_tower_to_color_grouping_tags(tower_instance)
 	tower_instance.add_to_group(TOWER_GROUP_ID)
+	
+	# TODO TEMPORARY
+	tower_instance.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.LEVEL, 2)
 
 
 # Color and grouping related
@@ -118,6 +130,7 @@ func _tower_dropped_from_dragged(tower_released : AbstractTower):
 	
 	if is_in_ingredient_mode:
 		emit_signal("hide_ingredient_acceptability")
+	
 
 # Ingredient drag related
 
@@ -192,7 +205,7 @@ func _update_final_attack_speed_in_info():
 func _update_final_base_damage_in_info():
 	tower_stats_panel.update_final_base_damage()
 
-func _update_ingredients_absorbed_in_info():
+func _update_ingredients_absorbed_in_info(_new_limit):
 	active_ing_panel.update_display()
 
 func _update_tower_colors_in_info():

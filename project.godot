@@ -33,6 +33,7 @@ StoreOfEnemyEffectsUUID="*res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyE
 StoreOfTowerEffectsUUID="*res://GameInfoRelated/TowerEffectRelated/StoreOfTowerEffectsUUID.gd"
 StoreOfAttackModuleID="*res://TowerRelated/Modules/StoreOfAttackModuleID.gd"
 StoreOfRNG="*res://GameInfoRelated/StoreOfRNG.gd"
+StoreOfIngredientLimitModifierID="*res://GameInfoRelated/TowerIngredientRelated/StoreOfIngredientLimitModifierID.gd"
 
 [debug]
 

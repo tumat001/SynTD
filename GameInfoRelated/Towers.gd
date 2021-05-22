@@ -253,7 +253,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Shocks and stuns enemies for 0.3 with the power of electricity"
+			"Shocks and stuns its target for 0.3 seconds with the power of electricity"
 		]
 		
 		var enemy_effect : EnemyStunEffect = EnemyStunEffect.new(0.3, StoreOfEnemyEffectsUUID.ING_TESLA)
@@ -281,9 +281,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Has many attacks. Shoots orbs, diamonds, bolts, and swords. Stats shown are for the orbs.",
 			"Only the orbs are affected by targeting options.",
-			"Only the diamonds apply on hit damage and effects. On hit effects are 200% effective.",
+			"Only the diamonds benefit from pierce buffs and apply on hit damage and effects. On hit effects are 200% effective.",
 			"Only the bolts benefit from attack speed buffs.",
-			"All are affected by range and base damage buffs. Bolts deal 150% of their total base damage.",
+			"All are affected by range and base damage buffs. Bolts deal 150% of its total base damage.",
 			"Upon dealing enough damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 500% of its total base damage."
 		]
 		

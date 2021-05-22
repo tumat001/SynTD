@@ -15,8 +15,6 @@ enum Time_Metadata {
 	TIME_AS_NUM_OF_ATTACKS
 }
 
-signal final_attack_speed_changed
-signal final_base_damage_changed
 signal in_attack_windup(windup_time, enemies_or_poses)
 signal in_attack(attack_speed_delay, enemies_or_poses)
 signal in_attack_end()
@@ -139,104 +137,104 @@ func time_passed(delta):
 		if _is_bursting:
 			_current_burst_delay -= delta
 		
-		decrease_time_of_timebounded(delta)
-	
+#		decrease_time_of_timebounded(delta)
 
 
-func decrease_time_of_timebounded(delta):
-	var bucket = []
-	
-	# Extra On Hit damages
-	for key in on_hit_damage_adder_effects.keys():
-		if on_hit_damage_adder_effects[key].is_timebound:
-			on_hit_damage_adder_effects[key].time_in_seconds -= delta
-			var time_left = on_hit_damage_adder_effects[key].time_in_seconds
-			if time_left <= 0:
-				bucket.append(key)
-				
-	for key_to_delete in bucket:
-		on_hit_damage_adder_effects.erase(key_to_delete)
-	bucket.clear()
-	
-	# On Hit effects
-	for key in on_hit_effects.keys():
-		if on_hit_effects[key].is_timebound:
-			on_hit_effects[key].time_in_seconds -= delta
-			var time_left = on_hit_effects[key].time_in_seconds
-			if time_left <= 0:
-				bucket.append(key)
-	for key_to_delete in bucket:
-		on_hit_effects.erase(key_to_delete)
-	bucket.clear()
-	
-	
-	#For attack speed
-	var attack_speed_changed : bool = false
-	#For percent attk speed mods
-	for key in percent_attack_speed_effects.keys():
-		if percent_attack_speed_effects[key].is_timebound:
-			percent_attack_speed_effects[key].time_in_seconds -= delta
-			var time_left = percent_attack_speed_effects[key].time_in_seconds
-			if time_left <= 0:
-				bucket.append(key)
-				attack_speed_changed = true
-	
-	for key_to_delete in bucket:
-		percent_attack_speed_effects.erase(key_to_delete)
-	
-	bucket.clear()
-	
-	#For flat attk speed mods
-	for key in flat_attack_speed_effects.keys():
-		if flat_attack_speed_effects[key].is_timebound:
-			flat_attack_speed_effects[key].time_in_seconds -= delta
-			var time_left = flat_attack_speed_effects[key].time_in_seconds
-			if time_left <= 0:
-				bucket.append(key)
-				attack_speed_changed = true
-	
-	for key_to_delete in bucket:
-		flat_attack_speed_effects.erase(key_to_delete)
-	
-	bucket.clear()
-	
-	if attack_speed_changed:
-		call_deferred("emit_signal", "final_attack_speed_changed")
-	
-	
-	#For base damage
-	var base_damage_changed : bool = false
-	#For percent attk speed mods
-	for key in percent_base_damage_effects.keys():
-		if percent_base_damage_effects[key].is_timebound:
-			percent_base_damage_effects[key].time_in_seconds -= delta
-			var time_left = percent_base_damage_effects[key].time_in_seconds
-			if time_left <= 0:
-				bucket.append(key)
-				base_damage_changed = true
-	
-	for key_to_delete in bucket:
-		percent_base_damage_effects.erase(key_to_delete)
-	
-	bucket.clear()
-	
-	#For flat attk speed mods
-	for key in flat_base_damage_effects.keys():
-		if flat_base_damage_effects[key].is_timebound:
-			flat_base_damage_effects[key].time_in_seconds -= delta
-			var time_left = flat_base_damage_effects[key].time_in_seconds
-			if time_left <= 0:
-				bucket.append(key)
-				base_damage_changed = true
-	
-	for key_to_delete in bucket:
-		flat_base_damage_effects.erase(key_to_delete)
-	
-	bucket.clear()
-	
-	if base_damage_changed:
-		call_deferred("emit_signal", "final_base_damage_changed")
-	
+#
+#func decrease_time_of_timebounded(delta):
+#	var bucket = []
+#
+#	# Extra On Hit damages
+#	for key in on_hit_damage_adder_effects.keys():
+#		if on_hit_damage_adder_effects[key].is_timebound:
+#			on_hit_damage_adder_effects[key].time_in_seconds -= delta
+#			var time_left = on_hit_damage_adder_effects[key].time_in_seconds
+#			if time_left <= 0:
+#				bucket.append(key)
+#
+#	for key_to_delete in bucket:
+#		on_hit_damage_adder_effects.erase(key_to_delete)
+#	bucket.clear()
+#
+#	# On Hit effects
+#	for key in on_hit_effects.keys():
+#		if on_hit_effects[key].is_timebound:
+#			on_hit_effects[key].time_in_seconds -= delta
+#			var time_left = on_hit_effects[key].time_in_seconds
+#			if time_left <= 0:
+#				bucket.append(key)
+#	for key_to_delete in bucket:
+#		on_hit_effects.erase(key_to_delete)
+#	bucket.clear()
+#
+#
+#	#For attack speed
+#	var attack_speed_changed : bool = false
+#	#For percent attk speed mods
+#	for key in percent_attack_speed_effects.keys():
+#		if percent_attack_speed_effects[key].is_timebound:
+#			percent_attack_speed_effects[key].time_in_seconds -= delta
+#			var time_left = percent_attack_speed_effects[key].time_in_seconds
+#			if time_left <= 0:
+#				bucket.append(key)
+#				attack_speed_changed = true
+#
+#	for key_to_delete in bucket:
+#		percent_attack_speed_effects.erase(key_to_delete)
+#
+#	bucket.clear()
+#
+#	#For flat attk speed mods
+#	for key in flat_attack_speed_effects.keys():
+#		if flat_attack_speed_effects[key].is_timebound:
+#			flat_attack_speed_effects[key].time_in_seconds -= delta
+#			var time_left = flat_attack_speed_effects[key].time_in_seconds
+#			if time_left <= 0:
+#				bucket.append(key)
+#				attack_speed_changed = true
+#
+#	for key_to_delete in bucket:
+#		flat_attack_speed_effects.erase(key_to_delete)
+#
+#	bucket.clear()
+#
+#	if attack_speed_changed:
+#		call_deferred("emit_signal", "final_attack_speed_changed")
+#
+#
+#	#For base damage
+#	var base_damage_changed : bool = false
+#	#For percent attk speed mods
+#	for key in percent_base_damage_effects.keys():
+#		if percent_base_damage_effects[key].is_timebound:
+#			percent_base_damage_effects[key].time_in_seconds -= delta
+#			var time_left = percent_base_damage_effects[key].time_in_seconds
+#			if time_left <= 0:
+#				bucket.append(key)
+#				base_damage_changed = true
+#
+#	for key_to_delete in bucket:
+#		percent_base_damage_effects.erase(key_to_delete)
+#
+#	bucket.clear()
+#
+#	#For flat attk speed mods
+#	for key in flat_base_damage_effects.keys():
+#		if flat_base_damage_effects[key].is_timebound:
+#			flat_base_damage_effects[key].time_in_seconds -= delta
+#			var time_left = flat_base_damage_effects[key].time_in_seconds
+#			if time_left <= 0:
+#				bucket.append(key)
+#				base_damage_changed = true
+#
+#	for key_to_delete in bucket:
+#		flat_base_damage_effects.erase(key_to_delete)
+#
+#	bucket.clear()
+#
+#	if base_damage_changed:
+#		call_deferred("emit_signal", "final_base_damage_changed")
+#
 # Calculating final values
 
 

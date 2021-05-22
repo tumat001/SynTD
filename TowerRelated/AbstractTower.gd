@@ -44,7 +44,7 @@ signal final_base_damage_changed
 signal final_attack_speed_changed
 signal final_range_changed
 signal ingredients_absorbed_changed
-signal ingredients_limit_changed
+signal ingredients_limit_changed(new_limit)
 signal tower_colors_changed
 
 export var tower_highlight_sprite : Resource
@@ -74,12 +74,19 @@ var range_module : RangeModule
 
 var disabled_from_attacking : bool = false
 
+# Tower buffs related
+
+var _all_uuid_tower_buffs_map : Dictionary = {}
+
+
 # Ingredient related
 
 var ingredients_absorbed : Dictionary = {} # Map of tower_id (ingredient source) to ingredient_effect
-var ingredient_active_limit : int = 2 setget set_active_ingredient_limit
 var ingredient_of_self : IngredientEffect
 var ingredient_compatible_colors : Array = []
+
+var _ingredient_id_limit_modifier_map : Dictionary
+var last_calculated_ingredient_limit : int
 
 # Color related
 
@@ -104,34 +111,11 @@ func _ready():
 func _post_inherit_ready():
 	_update_ingredient_compatible_colors()
 	
-	
 	_add_all_modules_as_children()
 
 func _add_all_modules_as_children():
-	if range_module != null:
-		if range_module.get_parent() == null:
-			add_child(range_module)
-		
-		range_module.update_range() 
-		range_module.connect("final_range_changed", self, "_emit_final_range_changed")
-		
-	
 	for attack_module in attack_modules_and_target_num.keys():
-		if attack_module.get_parent() == null:
-			add_child(attack_module)
-		
-		if attack_module.range_module == null:
-			attack_module.range_module = range_module
-		else:
-			attack_module.range_module.update_range()
-		
-		if main_attack_module == null and attack_module.module_id == StoreOfAttackModuleID.MAIN:
-			main_attack_module = attack_module
-			main_attack_module.connect("final_attack_speed_changed", self, "_emit_final_attack_speed_changed")
-			main_attack_module.connect("final_base_damage_changed", self, "_emit_final_base_damage_changed")
-			
-			if range_module == null and main_attack_module.range_module != null:
-				range_module = main_attack_module.range_module
+		add_attack_module(attack_module, attack_modules_and_target_num[attack_module])
 
 
 func _emit_final_range_changed():
@@ -149,6 +133,47 @@ func _emit_final_attack_speed_changed():
 func _emit_ingredients_absorbed_changed():
 	call_deferred("emit_signal", "ingredients_absorbed_changed")
 
+
+# Adding Attack modules related
+
+func add_attack_module(attack_module : AbstractAttackModule, num_of_targets : int, benefit_from_existing_tower_buffs : bool = true):
+	if attack_module.get_parent() == null:
+		add_child(attack_module)
+	
+	if attack_module.range_module == null:
+		attack_module.range_module = range_module
+	
+	attack_module.range_module.update_range()
+	
+	if main_attack_module == null and attack_module.module_id == StoreOfAttackModuleID.MAIN:
+		main_attack_module = attack_module
+		#main_attack_module.connect("final_attack_speed_changed", self, "_emit_final_attack_speed_changed")
+		#main_attack_module.connect("final_base_damage_changed", self, "_emit_final_base_damage_changed")
+		
+		if range_module == null and main_attack_module.range_module != null:
+			range_module = main_attack_module.range_module
+		
+		if range_module != null:
+			if range_module.get_parent() == null:
+				add_child(range_module)
+			
+			range_module.update_range() 
+			range_module.connect("final_range_changed", self, "_emit_final_range_changed")
+		
+	
+	if benefit_from_existing_tower_buffs:
+		for tower_effect in _all_uuid_tower_buffs_map.values():
+			add_tower_effect(tower_effect, [attack_module], false)
+	
+	
+	attack_modules_and_target_num[attack_module] = num_of_targets
+
+
+func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
+	for tower_effect in _all_uuid_tower_buffs_map.values():
+		remove_tower_effect(tower_effect, [attack_module_to_remove], false)
+	
+	attack_modules_and_target_num.erase(attack_module_to_remove)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -181,6 +206,10 @@ func _process(delta):
 		var mouse_pos = get_global_mouse_position()
 		position.x = mouse_pos.x
 		position.y = mouse_pos.y
+	
+	# timebounded
+	
+	_decrease_time_of_timebounded(delta)
 
 
 func _on_main_attack_success():
@@ -190,6 +219,7 @@ func _on_main_attack_success():
 			
 			if am.is_ready_to_attack():
 				am.attempt_find_then_attack_enemies(attack_modules_and_target_num[am])
+
 
 # Round start/end
 
@@ -210,65 +240,77 @@ func _on_round_end():
 func _on_round_start():
 	pass
 
-
 # Recieving buffs/debuff related
 
-func add_tower_effect(tower_base_effect : TowerBaseEffect):
+func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), include_non_module_effects : bool = true):
+	if include_non_module_effects:
+		_all_uuid_tower_buffs_map[tower_base_effect.effect_uuid] = tower_base_effect
+	
 	if tower_base_effect is TowerAttributesEffect:
 		if tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ATTACK_SPEED or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED:
-			_add_attack_speed_effect(tower_base_effect)
+			_add_attack_speed_effect(tower_base_effect, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_DAMAGE_BONUS:
-			_add_base_damage_effect(tower_base_effect)
+			_add_base_damage_effect(tower_base_effect, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
-			_add_range_effect(tower_base_effect)
+			_add_range_effect(tower_base_effect, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_PIERCE or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_PIERCE:
-			_add_pierce_effect(tower_base_effect)
+			_add_pierce_effect(tower_base_effect, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_PROJ_SPEED or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_PROJ_SPEED:
-			_add_proj_speed_effect(tower_base_effect)
+			_add_proj_speed_effect(tower_base_effect, target_modules)
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
-		_add_on_hit_damage_adder_effect(tower_base_effect)
+		_add_on_hit_damage_adder_effect(tower_base_effect, target_modules)
 		
 	elif tower_base_effect is TowerOnHitEffectAdderEffect:
-		_add_on_hit_effect_adder_effect(tower_base_effect)
+		_add_on_hit_effect_adder_effect(tower_base_effect, target_modules)
 		
 	elif tower_base_effect is TowerChaosTakeoverEffect:
-		_add_chaos_takeover_effect(tower_base_effect)
+		if include_non_module_effects:
+			_add_chaos_takeover_effect(tower_base_effect)
 		
 	elif tower_base_effect is BaseTowerAttackModuleAdderEffect:
-		_add_attack_module_from_effect(tower_base_effect)
+		if include_non_module_effects:
+			_add_attack_module_from_effect(tower_base_effect)
 		
 	elif tower_base_effect is TowerResetEffects:
-		_clear_ingredients_by_effect_reset()
+		if include_non_module_effects:
+			_clear_ingredients_by_effect_reset()
 		
 
-func remove_tower_effect(tower_base_effect : TowerBaseEffect):
+func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), include_non_module_effects : bool = true):
+	if include_non_module_effects:
+		_all_uuid_tower_buffs_map.erase(tower_base_effect.effect_uuid)
+	
+	
 	if tower_base_effect is TowerAttributesEffect:
 		if tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ATTACK_SPEED or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED:
-			_remove_attack_speed_effect(tower_base_effect.effect_uuid)
+			_remove_attack_speed_effect(tower_base_effect.effect_uuid, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_DAMAGE_BONUS:
-			_remove_base_damage_effect(tower_base_effect.effect_uuid)
+			_remove_base_damage_effect(tower_base_effect.effect_uuid, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
-			_remove_range_effect(tower_base_effect.effect_uuid)
+			_remove_range_effect(tower_base_effect.effect_uuid, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_PIERCE or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_PIERCE:
-			_remove_pierce_effect(tower_base_effect.effect_uuid)
+			_remove_pierce_effect(tower_base_effect.effect_uuid, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_PROJ_SPEED or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_PROJ_SPEED:
-			_remove_proj_speed_effect(tower_base_effect.effect_uuid)
+			_remove_proj_speed_effect(tower_base_effect.effect_uuid, target_modules)
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
-		_remove_on_hit_damage_adder_effect(tower_base_effect.effect_uuid)
+		_remove_on_hit_damage_adder_effect(tower_base_effect.effect_uuid, target_modules)
 		
 	elif tower_base_effect is TowerOnHitEffectAdderEffect:
-		_remove_on_hit_effect_adder_effect(tower_base_effect.effect_uuid)
+		_remove_on_hit_effect_adder_effect(tower_base_effect.effect_uuid, target_modules)
 		
 	elif tower_base_effect is BaseTowerAttackModuleAdderEffect:
-		_remove_attack_module_from_effect(tower_base_effect)
+		if include_non_module_effects:
+			_remove_attack_module_from_effect(tower_base_effect)
 		
 	elif tower_base_effect is TowerChaosTakeoverEffect:
-		_remove_chaos_takeover_effect(tower_base_effect)
+		if include_non_module_effects:
+			_remove_chaos_takeover_effect(tower_base_effect)
 
-func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect):
-	for module in attack_modules_and_target_num.keys():
+
+func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect, target_modules : Array):
+	for module in target_modules:
 		
 		if module.benefits_from_bonus_attack_speed:
 			if tower_attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED:
@@ -279,8 +321,8 @@ func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect):
 		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
 			_emit_final_attack_speed_changed()
 
-func _remove_attack_speed_effect(attr_effect_uuid : int):
-	for module in attack_modules_and_target_num.keys():
+func _remove_attack_speed_effect(attr_effect_uuid : int, target_modules : Array):
+	for module in target_modules:
 		
 		if module.benefits_from_bonus_attack_speed:
 			module.percent_attack_speed_effects.erase(attr_effect_uuid)
@@ -290,8 +332,8 @@ func _remove_attack_speed_effect(attr_effect_uuid : int):
 			_emit_final_attack_speed_changed()
 
 
-func _add_base_damage_effect(attr_effect : TowerAttributesEffect):
-	for module in attack_modules_and_target_num.keys():
+func _add_base_damage_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
+	for module in target_modules:
 		
 		if module.benefits_from_bonus_base_damage:
 			if attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_DAMAGE_BONUS:
@@ -302,8 +344,8 @@ func _add_base_damage_effect(attr_effect : TowerAttributesEffect):
 		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
 			_emit_final_base_damage_changed()
 
-func _remove_base_damage_effect(attr_effect_uuid : int):
-	for module in attack_modules_and_target_num.keys():
+func _remove_base_damage_effect(attr_effect_uuid : int, target_modules : Array):
+	for module in target_modules:
 		
 		if module.benefits_from_bonus_base_damage:
 			module.percent_base_damage_effects.erase(attr_effect_uuid)
@@ -313,19 +355,19 @@ func _remove_base_damage_effect(attr_effect_uuid : int):
 			_emit_final_base_damage_changed()
 
 
-func _add_on_hit_damage_adder_effect(on_hit_adder : TowerOnHitDamageAdderEffect):
-	for module in attack_modules_and_target_num.keys():
+func _add_on_hit_damage_adder_effect(on_hit_adder : TowerOnHitDamageAdderEffect, target_modules : Array):
+	for module in target_modules:
 		if module.benefits_from_bonus_on_hit_damage:
 			module.on_hit_damage_adder_effects[on_hit_adder.effect_uuid] = on_hit_adder
 
-func _remove_on_hit_damage_adder_effect(on_hit_adder_uuid : int):
-	for module in attack_modules_and_target_num.keys():
+func _remove_on_hit_damage_adder_effect(on_hit_adder_uuid : int, target_modules : Array):
+	for module in target_modules:
 		
 		if module.benefits_from_bonus_on_hit_damage:
 			module.on_hit_damage_adder_effects.erase(on_hit_adder_uuid)
 
 
-func _add_range_effect(attr_effect : TowerAttributesEffect):
+func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
 	if range_module != null:
 		if range_module.benefits_from_bonus_range:
 			if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
@@ -333,15 +375,15 @@ func _add_range_effect(attr_effect : TowerAttributesEffect):
 			elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
 				range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
 			
+			range_module.update_range()
 			_emit_final_range_changed()
 			
-			range_module.update_range()
 			if main_attack_module is BulletAttackModule:
 				main_attack_module.projectile_life_distance = range_module.last_calculated_final_range
 	
 	
-	for module in attack_modules_and_target_num.keys():
-		if module.range_module != null and module.use_self_range_module:
+	for module in target_modules:
+		if module.range_module != null:
 			if module.range_module.benefits_from_bonus_range:
 				if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
 					module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
@@ -353,34 +395,33 @@ func _add_range_effect(attr_effect : TowerAttributesEffect):
 				module.projectile_life_distance = module.range_module.last_calculated_final_range
 
 
-func _remove_range_effect(attr_effect_uuid : int):
+func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
 	if range_module != null:
 		if range_module.benefits_from_bonus_range:
 			
 			range_module.flat_range_effects.erase(attr_effect_uuid)
 			range_module.percent_range_effects.erase(attr_effect_uuid)
 			
-			
 			if main_attack_module is BulletAttackModule:
 				main_attack_module.projectile_life_distance = range_module.last_calculated_final_range
 			
-			_emit_final_range_changed()
 			range_module.update_range()
+			_emit_final_range_changed()
 	
 	
-	for module in attack_modules_and_target_num.keys():
-		if module.range_module != null and module.use_self_range_module:
+	for module in target_modules:
+		if module.range_module != null:
 			if module.range_module.benefits_from_bonus_range:
 				module.range_module.flat_range_effects.erase(attr_effect_uuid)
 				module.range_module.percent_range_effects.erase(attr_effect_uuid)
-			
-			module.range_module.update_range()
-			if module is BulletAttackModule:
-				module.projectile_life_distance = module.range_module.last_calculated_final_range
+				
+				module.range_module.update_range()
+				if module is BulletAttackModule:
+					module.projectile_life_distance = module.range_module.last_calculated_final_range
 
 
-func _add_pierce_effect(attr_effect : TowerAttributesEffect):
-	for module in attack_modules_and_target_num.keys():
+func _add_pierce_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
+	for module in target_modules:
 		
 		if module is BulletAttackModule and module.benefits_from_bonus_pierce:
 			if attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_PIERCE:
@@ -388,16 +429,16 @@ func _add_pierce_effect(attr_effect : TowerAttributesEffect):
 			elif attr_effect.attribute_type == TowerAttributesEffect.FLAT_PIERCE:
 				module.flat_pierce_effects[attr_effect.effect_uuid] = attr_effect
 
-func _remove_pierce_effect(attr_effect_uuid : int):
-	for module in attack_modules_and_target_num.keys():
+func _remove_pierce_effect(attr_effect_uuid : int, target_modules : Array):
+	for module in target_modules:
 		
 		if module is BulletAttackModule and module.benefits_from_bonus_pierce:
 			module.percent_pierce_effects.erase(attr_effect_uuid)
 			module.flat_pierce_effects.erase(attr_effect_uuid)
 
 
-func _add_proj_speed_effect(attr_effect : TowerAttributesEffect):
-	for module in attack_modules_and_target_num.keys():
+func _add_proj_speed_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
+	for module in target_modules:
 		
 		if module is BulletAttackModule and module.benefits_from_bonus_proj_speed:
 			if attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_PROJ_SPEED:
@@ -405,20 +446,20 @@ func _add_proj_speed_effect(attr_effect : TowerAttributesEffect):
 			elif attr_effect.attribute_type == TowerAttributesEffect.FLAT_PROJ_SPEED:
 				module.flat_proj_speed_effects[attr_effect.effect_uuid] = attr_effect
 
-func _remove_proj_speed_effect(attr_effect_uuid : int):
-	for module in attack_modules_and_target_num.keys():
+func _remove_proj_speed_effect(attr_effect_uuid : int, target_modules : Array):
+	for module in target_modules:
 		
 		if module is BulletAttackModule and module.benefits_from_bonus_pierce:
 			module.percent_proj_speed_effects.erase(attr_effect_uuid)
 			module.flat_proj_speed_effects.erase(attr_effect_uuid)
 
-func _add_on_hit_effect_adder_effect(effect_adder : TowerOnHitEffectAdderEffect):
-	for module in attack_modules_and_target_num.keys():
+func _add_on_hit_effect_adder_effect(effect_adder : TowerOnHitEffectAdderEffect, target_modules : Array):
+	for module in target_modules:
 		if module.benefits_from_bonus_on_hit_effect:
 			module.on_hit_effects[effect_adder.effect_uuid] = effect_adder
 
-func _remove_on_hit_effect_adder_effect(effect_adder_uuid : int):
-	for module in attack_modules_and_target_num.keys():
+func _remove_on_hit_effect_adder_effect(effect_adder_uuid : int, target_modules : Array):
+	for module in target_modules:
 		
 		if module.benefits_from_bonus_on_hit_effect:
 			module.on_hit_effects.erase(effect_adder_uuid)
@@ -437,6 +478,19 @@ func _add_attack_module_from_effect(module_effect : BaseTowerAttackModuleAdderEf
 func _remove_attack_module_from_effect(module_effect : BaseTowerAttackModuleAdderEffect):
 	module_effect._undo_modifications_to_tower(self)
 
+
+# Decreasing timebounds related
+
+func _decrease_time_of_timebounded(delta):
+	for effect_uuid in _all_uuid_tower_buffs_map.keys():
+		var effect : TowerBaseEffect = _all_uuid_tower_buffs_map[effect_uuid]
+		
+		if effect.is_timebound:
+			effect.time_in_seconds -= delta
+			
+			if effect.time_in_seconds <= 0:
+				_all_uuid_tower_buffs_map.erase(effect_uuid)
+				remove_tower_effect(effect)
 
 
 # Ingredient Related
@@ -459,7 +513,7 @@ func clear_ingredients():
 
 
 func _clear_ingredients_by_effect_reset():
-	for ingredient_tower_id in ingredients_absorbed:
+	for ingredient_tower_id in ingredients_absorbed.keys():
 		remove_tower_effect(ingredients_absorbed[ingredient_tower_id].tower_base_effect)
 	
 	ingredients_absorbed.clear()
@@ -467,7 +521,7 @@ func _clear_ingredients_by_effect_reset():
 
 
 func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
-	if ingredients_absorbed.size() >= ingredient_active_limit and !ingredient_effect.tower_base_effect is TowerResetEffects:
+	if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.tower_base_effect is TowerResetEffects:
 		return false
 	
 	if ingredient_effect != null:
@@ -490,27 +544,47 @@ func hide_acceptability_with_ingredient():
 	$IngredientDeclinePic.visible = false
 
 
-func set_active_ingredient_limit(new_limit : int):
-	if ingredient_active_limit != new_limit:
-		if ingredient_active_limit > new_limit:
+# Ingredient limit related
+
+func set_ingredient_limit_modifier(modifier_id : int, limit_modifier : int):
+	_ingredient_id_limit_modifier_map[modifier_id] = limit_modifier
+	_set_active_ingredient_limit(_calculate_final_ingredient_limit())
+
+func remove_ingredient_limit_modifier(modifier_id : int, limit_modifier : int):
+	_ingredient_id_limit_modifier_map.erase(modifier_id)
+	_set_active_ingredient_limit(_calculate_final_ingredient_limit())
+
+
+func _calculate_final_ingredient_limit() -> int:
+	var final_limit : int = 0
+	
+	for limit_modifier in _ingredient_id_limit_modifier_map.values():
+		final_limit += limit_modifier
+	
+	return final_limit
+
+
+func _set_active_ingredient_limit(new_limit : int):
+	
+	if last_calculated_ingredient_limit != new_limit:
+		if last_calculated_ingredient_limit > new_limit:
 			
 			var ing_effects = ingredients_absorbed.values()
 			for i in range(new_limit, ingredients_absorbed.size()):
 				remove_tower_effect(ing_effects[i].tower_base_effect)
 			
 			
-		elif ingredient_active_limit < new_limit:
+		elif last_calculated_ingredient_limit < new_limit:
 			
 			var ing_effects = ingredients_absorbed.values()
-			for i in range(ingredient_active_limit, new_limit):
+			for i in range(last_calculated_ingredient_limit, new_limit):
 				if ing_effects.size() > i:
 					add_tower_effect(ing_effects[i].tower_base_effect)
 				else:
 					break
 		
-		
-		ingredient_active_limit = new_limit
-		emit_signal("ingredients_limit_changed")
+		last_calculated_ingredient_limit = new_limit
+		emit_signal("ingredients_limit_changed", new_limit)
 
 
 func _update_ingredient_compatible_colors():
@@ -566,7 +640,6 @@ func remove_color_from_tower(color : int):
 
 
 # Inputs related
-
 
 func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 	if event is InputEventMouseButton:

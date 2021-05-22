@@ -37,63 +37,63 @@ func time_passed(delta):
 	.time_passed(delta)
 	
 
-func decrease_time_of_timebounds(delta):
-	.decrease_time_of_timebounded(delta)
-	
-	var bucket = []
-	
-	#For percent pierce eff
-	for effect_uuid in percent_pierce_effects.keys():
-		if percent_pierce_effects[effect_uuid].is_timebound:
-			percent_pierce_effects[effect_uuid].time_in_seconds -= delta
-			var time_left = percent_pierce_effects[effect_uuid].time_in_seconds
-			if time_left <= 0:
-				bucket.append(effect_uuid)
-	
-	for key_to_delete in bucket:
-		percent_pierce_effects.erase(key_to_delete)
-	
-	bucket.clear()
-	
-	#For flat pierce eff
-	for effect_uuid in flat_pierce_effects.keys():
-		if flat_pierce_effects[effect_uuid].is_timebound:
-			flat_pierce_effects[effect_uuid].time_in_seconds -= delta
-			var time_left = flat_pierce_effects[effect_uuid].time_in_seconds
-			if time_left <= 0:
-				bucket.append(effect_uuid)
-	
-	for key_to_delete in bucket:
-		flat_pierce_effects.erase(key_to_delete)
-	
-	bucket.clear()
-	
-	
-	#For percent proj speed eff
-	for effect_uuid in percent_proj_speed_effects.keys():
-		if percent_proj_speed_effects[effect_uuid].is_timebound:
-			percent_proj_speed_effects[effect_uuid].time_in_seconds -= delta
-			var time_left = percent_proj_speed_effects[effect_uuid].time_in_seconds
-			if time_left <= 0:
-				bucket.append(effect_uuid)
-	
-	for key_to_delete in bucket:
-		percent_proj_speed_effects.erase(key_to_delete)
-	
-	bucket.clear()
-	
-	#For flat proj speed eff
-	for effect_uuid in flat_proj_speed_effects.keys():
-		if flat_proj_speed_effects[effect_uuid].is_timebound:
-			flat_proj_speed_effects[effect_uuid].time_in_seconds -= delta
-			var time_left = flat_proj_speed_effects[effect_uuid].time_in_seconds
-			if time_left <= 0:
-				bucket.append(effect_uuid)
-	
-	for key_to_delete in bucket:
-		flat_proj_speed_effects.erase(key_to_delete)
-	
-	bucket.clear()
+#func decrease_time_of_timebounds(delta):
+#	.decrease_time_of_timebounded(delta)
+#
+#	var bucket = []
+#
+#	#For percent pierce eff
+#	for effect_uuid in percent_pierce_effects.keys():
+#		if percent_pierce_effects[effect_uuid].is_timebound:
+#			percent_pierce_effects[effect_uuid].time_in_seconds -= delta
+#			var time_left = percent_pierce_effects[effect_uuid].time_in_seconds
+#			if time_left <= 0:
+#				bucket.append(effect_uuid)
+#
+#	for key_to_delete in bucket:
+#		percent_pierce_effects.erase(key_to_delete)
+#
+#	bucket.clear()
+#
+#	#For flat pierce eff
+#	for effect_uuid in flat_pierce_effects.keys():
+#		if flat_pierce_effects[effect_uuid].is_timebound:
+#			flat_pierce_effects[effect_uuid].time_in_seconds -= delta
+#			var time_left = flat_pierce_effects[effect_uuid].time_in_seconds
+#			if time_left <= 0:
+#				bucket.append(effect_uuid)
+#
+#	for key_to_delete in bucket:
+#		flat_pierce_effects.erase(key_to_delete)
+#
+#	bucket.clear()
+#
+#
+#	#For percent proj speed eff
+#	for effect_uuid in percent_proj_speed_effects.keys():
+#		if percent_proj_speed_effects[effect_uuid].is_timebound:
+#			percent_proj_speed_effects[effect_uuid].time_in_seconds -= delta
+#			var time_left = percent_proj_speed_effects[effect_uuid].time_in_seconds
+#			if time_left <= 0:
+#				bucket.append(effect_uuid)
+#
+#	for key_to_delete in bucket:
+#		percent_proj_speed_effects.erase(key_to_delete)
+#
+#	bucket.clear()
+#
+#	#For flat proj speed eff
+#	for effect_uuid in flat_proj_speed_effects.keys():
+#		if flat_proj_speed_effects[effect_uuid].is_timebound:
+#			flat_proj_speed_effects[effect_uuid].time_in_seconds -= delta
+#			var time_left = flat_proj_speed_effects[effect_uuid].time_in_seconds
+#			if time_left <= 0:
+#				bucket.append(effect_uuid)
+#
+#	for key_to_delete in bucket:
+#		flat_proj_speed_effects.erase(key_to_delete)
+#
+#	bucket.clear()
 
 
 # Calculations of final values

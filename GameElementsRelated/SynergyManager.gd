@@ -6,12 +6,18 @@ const ColorSynergy = preload("res://GameInfoRelated/ColorSynergy.gd")
 const ColorSynergyChecker = preload("res://GameInfoRelated/ColorSynergyChecker.gd")
 const ColorSynergyResults = preload("res://GameInfoRelated/ColorSynergyCheckResults.gd")
 const LeftPanel = preload("res://GameHUDRelated/LeftSidePanel/LeftPanel.gd")
+const TowerManager = preload("res://GameElementsRelated/TowerManager.gd")
 
 var non_active_group_synergies_res : Array
 var non_active_dominant_synergies_res : Array
 var active_synergies_res : Array
 
 var left_panel : LeftPanel
+var tower_manager : TowerManager setget _set_tower_manager
+
+func _set_tower_manager(tower_manager):
+	pass
+
 
 func update_synergies(towers : Array):
 	var distinct_towers : Array = _get_list_of_distinct_towers(towers)
@@ -57,7 +63,7 @@ func update_synergies(towers : Array):
 	non_active_group_synergies_res = results_of_compo
 	
 	_update_synergy_displayer()
-
+	
 
 # Synergy Calculation
 
@@ -91,6 +97,7 @@ func _update_synergy_displayer():
 
 
 # Synergy application
+
 
 
 

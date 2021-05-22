@@ -1,13 +1,13 @@
 enum {
-	GRAY,
-	WHITE,
-	BLACK,
-	RED,
-	ORANGE,
-	YELLOW,
-	GREEN,
-	BLUE,
-	VIOLET,
+	GRAY = 0,
+	WHITE = 1,
+	BLACK = 2,
+	RED = 3,
+	ORANGE = 4,
+	YELLOW = 5,
+	GREEN = 6,
+	BLUE = 7,
+	VIOLET = 8,
 }
 
 const gray_symbol = preload("res://GameHUDRelated/BuySellPanel/GraySymbol.png")

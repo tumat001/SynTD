@@ -63,7 +63,6 @@ func _construct_modules():
 	orb_range_module.all_targeting_options = [Targeting.RANDOM, Targeting.FIRST, Targeting.LAST]
 	orb_range_module.set_range_shape(CircleShape2D.new())
 	
-	
 	# Orb related
 	var orb_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	orb_attack_module.base_damage = 1.5
@@ -82,6 +81,7 @@ func _construct_modules():
 	orb_attack_module.benefits_from_bonus_base_damage = true
 	orb_attack_module.benefits_from_bonus_on_hit_damage = false
 	orb_attack_module.benefits_from_bonus_on_hit_effect = false
+	orb_attack_module.benefits_from_bonus_pierce = false
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 5
@@ -92,6 +92,8 @@ func _construct_modules():
 	
 	orb_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
 	orb_attack_module.connect("on_round_end", self, "_on_round_end")
+	
+	orb_attack_module.range_module = orb_range_module
 	
 	chaos_attack_modules_targets_num_map[orb_attack_module] = 1
 	
@@ -231,12 +233,11 @@ func takeover(tower):
 	for module in tower.attack_modules_and_target_num:
 		if module.module_id == StoreOfAttackModuleID.MAIN or module.module_id == StoreOfAttackModuleID.PART_OF_SELF:
 			replaced_attack_modules_targets_num_map[module] = tower.attack_modules_and_target_num[module]
-			tower.attack_modules_and_target_num.erase(module)
+			tower.remove_attack_module(module)
 	
 	for module in chaos_attack_modules_targets_num_map:
-		tower.attack_modules_and_target_num[module] = chaos_attack_modules_targets_num_map[module]
-	
-	tower._add_all_modules_as_children()
+		tower.add_attack_module(module, chaos_attack_modules_targets_num_map[module])
+
 
 
 func _construct_chaos_shadow():
@@ -259,20 +260,22 @@ func untakeover(tower):
 	tower.range_module = replaced_range_module
 	tower.main_attack_module = replaced_main_attack_module
 	
-	sword_attack_module.queue_free()
+	#sword_attack_module.queue_free()
 	
 	tower.ingredient_of_self = replaced_self_ingredient
 	tower.remove_child(chaos_shadow_anim_sprite)
 	chaos_shadow_anim_sprite.queue_free()
 	
 	for module in chaos_attack_modules_targets_num_map:
-		tower.attack_modules_and_target_num.erase(module)
+		tower.remove_attack_module(module)
 		module.queue_free()
 	
 	for module in replaced_attack_modules_targets_num_map:
-		tower.attack_modules_and_target_num[module] = replaced_attack_modules_targets_num_map[module]
+		
+		# THE LAST PARAM (FALSE) IS ONLY BECAUSE THE ONLY WAY
+		# TO REMOVE CHAOS IS TO USE RE (which clears everything)
+		tower.add_attack_module(module, replaced_attack_modules_targets_num_map[module], false)
 	
-	tower._add_all_modules_as_children()
 
 
 

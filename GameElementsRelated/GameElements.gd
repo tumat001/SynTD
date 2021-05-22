@@ -65,6 +65,11 @@ func _ready():
 	tower_manager.inner_bottom_panel = inner_bottom_panel
 	tower_manager.synergy_manager = synergy_manager
 	
+	# syn manager
+	
+	synergy_manager.tower_manager = tower_manager
+	
+	
 	# gold manager
 	
 	gold_manager.gold_amount_label = $BottomPanel/VBoxContainer/GoldPanel/MarginContainer3/MarginContainer2/GoldAmountLabel
@@ -93,8 +98,10 @@ func _ready():
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round()
-	gold_manager.increase_gold_by(10, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.set_health(150)
+	
+	
 
 # From bottom panel
 func _on_BuySellLevelRollPanel_level_down():
@@ -115,8 +122,8 @@ func _on_BuySellLevelRollPanel_level_up():
 func _on_BuySellLevelRollPanel_reroll():
 	# TODO REPLACE THIS SOON
 	$BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel.update_new_rolled_towers([
+		Towers.SIMPLE_OBELISK,
 		Towers.RE,
-		Towers.TESLA,
 		Towers.PING,
 		Towers.SPRINKLER,
 		Towers.CHAOS,
