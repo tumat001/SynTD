@@ -28,3 +28,11 @@ func _init(arg_passed : bool, arg_towers_in_tier : int,
 		raw_total += count
 	#raw_total = (towers_in_tier * arg_num_of_colors) + total_exceed
 
+
+func functionally_equal_to(other_res) -> bool:
+	if other_res is get_script():
+		
+		return other_res.synergy_tier == synergy_tier and other_res.synergy == synergy
+		
+	else:
+		return false

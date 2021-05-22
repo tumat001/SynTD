@@ -17,6 +17,7 @@ const syn_dom_violet = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPa
 const syn_dom_white = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_White.png")
 const syn_dom_black = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Black.png")
 
+const DomSyn_Violet = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Violet.gd")
 
 var synergies : Dictionary = {
 	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [6, 4, 2],
@@ -47,7 +48,8 @@ var synergies : Dictionary = {
 	"Violet" : ColorSynergy.new("Violet", [TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_silver_pic, tier_bronze_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
-	["VIOLET description"]),
+	["VIOLET description"],
+	DomSyn_Violet.new()),
 	
 	"White" : ColorSynergy.new("White", [TowerColors.WHITE], [1],
 	[tier_dia_pic],

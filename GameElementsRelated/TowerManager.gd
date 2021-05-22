@@ -48,16 +48,22 @@ func _ready():
 # Generic things that can branch out to other resp.
 
 func _tower_in_queue_free(tower):
+	for color in _color_groups:
+		if tower.is_in_group(color):
+			tower.remove_from_group(color)
+	
 	_update_active_synergy()
 	
 	if tower == tower_being_shown_in_info:
 		_show_round_panel()
 
 
+# Called after potentially updating synergy
 func _tower_active_in_map(tower):
 	_register_tower_to_color_grouping_tags(tower)
 	emit_signal("tower_to_benefit_from_synergy_buff", tower)
 
+# Called after potentially updating synergy
 func _tower_inactivated_from_map(tower):
 	_remove_tower_from_color_grouping_tags(tower)
 	emit_signal("tower_to_remove_from_synergy_buff", tower)
@@ -82,7 +88,6 @@ func add_tower(tower_instance : AbstractTower):
 	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient")
 	connect("hide_ingredient_acceptability", tower_instance, "hide_acceptability_with_ingredient")
 	
-	_register_tower_to_color_grouping_tags(tower_instance)
 	tower_instance.add_to_group(TOWER_GROUP_ID)
 	
 	# TODO TEMPORARY
@@ -92,12 +97,11 @@ func add_tower(tower_instance : AbstractTower):
 # Color and grouping related
 
 func _register_tower_to_color_grouping_tags(tower : AbstractTower, force : bool = false):
-	
 	if tower.is_contributing_to_synergy or force:
 		_remove_tower_from_color_grouping_tags(tower)
 		
 		for color in tower._tower_colors:
-			tower.add_to_group(TowerColors.get_color_name_on_card(color))
+			tower.add_to_group(str(color))
 
 
 func _remove_tower_from_color_grouping_tags(tower : AbstractTower):
@@ -181,7 +185,6 @@ func _tower_toggle_show_info(tower : AbstractTower):
 		_show_tower_info_panel(tower)
 	else:
 		_show_round_panel()
-	
 
 
 func _show_tower_info_panel(tower : AbstractTower):
@@ -247,11 +250,21 @@ func get_all_towers() -> Array:
 	return bucket
 
 
-func get_all_towers_with_color(color : int) -> Array:
-	return get_all_towers_with_color_name(TowerColors.get_color_name_on_card(color))
+func get_all_active_towers() -> Array:
+	var bucket : Array = []
+	
+	for color in _color_groups:
+		for tower in get_all_active_towers_with_color_name(color):
+			if !bucket.has(tower):
+				bucket.append(tower)
+	
+	return bucket
+
+func get_all_active_towers_with_color(color : int) -> Array:
+	return get_all_active_towers_with_color_name(TowerColors.get_color_name_on_card(color))
 
 
-func get_all_towers_with_color_name(color_name : String) -> Array:
+func get_all_active_towers_with_color_name(color_name : String) -> Array:
 	var bucket : Array = []
 	for child in get_children():
 		if child.is_in_group(color_name):

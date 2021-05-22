@@ -7,17 +7,25 @@ const ColorSynergyChecker = preload("res://GameInfoRelated/ColorSynergyChecker.g
 const ColorSynergyResults = preload("res://GameInfoRelated/ColorSynergyCheckResults.gd")
 const LeftPanel = preload("res://GameHUDRelated/LeftSidePanel/LeftPanel.gd")
 const TowerManager = preload("res://GameElementsRelated/TowerManager.gd")
+const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
+
+const AbstractTowerModifyingSynergyEffect = preload("res://GameInfoRelated/ColorSynergyRelated/AbstractTowerModifyingSynergyEffect.gd")
 
 var non_active_group_synergies_res : Array
 var non_active_dominant_synergies_res : Array
 var active_synergies_res : Array
 
+var previous_active_synergies_res : Array
+
 var left_panel : LeftPanel
 var tower_manager : TowerManager setget _set_tower_manager
 
-func _set_tower_manager(tower_manager):
-	pass
 
+func _set_tower_manager(arg_tower_manager):
+	arg_tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_make_tower_benefit_from_active_synergies")
+	arg_tower_manager.connect("tower_to_remove_from_synergy_buff", self, "_undo_tower_benefit_from_active_synergies")
+	
+	tower_manager = arg_tower_manager
 
 func update_synergies(towers : Array):
 	var distinct_towers : Array = _get_list_of_distinct_towers(towers)
@@ -58,12 +66,17 @@ func update_synergies(towers : Array):
 		syn_res_to_activate.append(res)
 		results_of_compo.erase(res)
 	
+	# Assign-ments
+	
+	previous_active_synergies_res = active_synergies_res
+	
 	active_synergies_res = syn_res_to_activate
 	non_active_dominant_synergies_res = results_of_dom
 	non_active_group_synergies_res = results_of_compo
 	
 	_update_synergy_displayer()
 	
+	_apply_active_synergies_and_remove_old(previous_active_synergies_res)
 
 # Synergy Calculation
 
@@ -98,6 +111,79 @@ func _update_synergy_displayer():
 
 # Synergy application
 
+func _apply_active_synergies_and_remove_old(previous_synergies_res : Array):
+	var old_synergies_to_remove : Array = previous_synergies_res
+	var new_synergies_to_apply : Array = []
+	
+	for active_syn_res in active_synergies_res:
+		var has_functional_equivalent : bool = false
+		var functionally_equal_syn_res : ColorSynergyResults
+		var has_same_synergy_but_different_tier : bool = false
+		var same_synergy_res_different_tier : ColorSynergyResults = null
+		
+		for previous_syn_res in previous_synergies_res:
+			if !has_functional_equivalent:
+				has_functional_equivalent = active_syn_res.functionally_equal_to(previous_syn_res)
+				functionally_equal_syn_res = previous_syn_res
+			
+			if !has_same_synergy_but_different_tier:
+				has_same_synergy_but_different_tier = (active_syn_res.synergy.synergy_effect == previous_syn_res.synergy.synergy_effect) and (active_syn_res.synergy_tier != previous_syn_res.synergy_tier) 
+				if has_same_synergy_but_different_tier:
+					same_synergy_res_different_tier = active_syn_res
+		
+		if !has_functional_equivalent:
+			new_synergies_to_apply.append(active_syn_res)
+		else:
+			old_synergies_to_remove.erase(functionally_equal_syn_res)
+		
+		#if has_same_synergy_but_different_tier:
+		#	old_synergies_to_remove.append(same_synergy_res_different_tier)
+	
+	
+	
+	var all_towers = tower_manager.get_all_active_towers()
+	
+	if old_synergies_to_remove.size() != 0:
+		_remove_synergies_from_towers(old_synergies_to_remove, all_towers)
+	
+	if new_synergies_to_apply.size() != 0:
+		_add_synergies_to_towers(new_synergies_to_apply, all_towers)
+	
 
+func _remove_synergies_from_towers(synergies_to_remove : Array, towers : Array):
+	for tower in towers:
+		for syn_res in synergies_to_remove:
+			var synergy_effect = syn_res.synergy.synergy_effect
+			
+			if synergy_effect is AbstractTowerModifyingSynergyEffect:
+				synergy_effect._remove_syn_from_tower(tower)
+
+func _add_synergies_to_towers(synergies_to_add : Array, towers : Array):
+	for tower in towers:
+		for syn_res in synergies_to_add:
+			var synergy_effect = syn_res.synergy.synergy_effect
+			
+			if synergy_effect is AbstractTowerModifyingSynergyEffect:
+				synergy_effect._apply_syn_to_tower(tower, syn_res.synergy_tier)
+
+
+
+func _make_tower_benefit_from_active_synergies(tower : AbstractTower):
+	for syn_res in active_synergies_res:
+		var synergy_effect = syn_res.synergy.synergy_effect
+		
+		if synergy_effect is AbstractTowerModifyingSynergyEffect:
+			synergy_effect._apply_syn_to_tower(tower, syn_res.synergy_tier)
+
+
+func _undo_tower_benefit_from_active_synergies(tower : AbstractTower):
+	
+	# Previous is used here since updating of active
+	# syn res is done first before calling this method/signal
+	for syn_res in active_synergies_res: #previous_active_synergies_res:
+		var synergy_effect = syn_res.synergy.synergy_effect
+		
+		if synergy_effect is AbstractTowerModifyingSynergyEffect:
+			synergy_effect._remove_syn_from_tower(tower)
 
 

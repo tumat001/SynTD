@@ -56,12 +56,17 @@ func _init().(EffectType.CHAOS_TAKEOVER, StoreOfTowerEffectsUUID.ING_CHAOS):
 
 
 func _construct_modules():
+	for module in chaos_attack_modules_targets_num_map.keys():
+		if module != null:
+			module.queue_free()
+	chaos_attack_modules_targets_num_map.clear()
 	
 	# Orb's range module
 	var orb_range_module = RangeModule_Scene.instance()
 	orb_range_module.base_range_radius = 135
 	orb_range_module.all_targeting_options = [Targeting.RANDOM, Targeting.FIRST, Targeting.LAST]
 	orb_range_module.set_range_shape(CircleShape2D.new())
+	orb_range_module.position.y += 22
 	
 	# Orb related
 	var orb_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
@@ -238,8 +243,6 @@ func takeover(tower):
 	for module in chaos_attack_modules_targets_num_map:
 		tower.add_attack_module(module, chaos_attack_modules_targets_num_map[module])
 
-
-
 func _construct_chaos_shadow():
 	chaos_shadow_anim_sprite = AnimatedSprite.new()
 	chaos_shadow_anim_sprite.frames = SpriteFrames.new()
@@ -264,11 +267,14 @@ func untakeover(tower):
 	
 	tower.ingredient_of_self = replaced_self_ingredient
 	tower.remove_child(chaos_shadow_anim_sprite)
-	chaos_shadow_anim_sprite.queue_free()
+	
+	if chaos_shadow_anim_sprite != null:
+		chaos_shadow_anim_sprite.queue_free()
 	
 	for module in chaos_attack_modules_targets_num_map:
-		tower.remove_attack_module(module)
-		module.queue_free()
+		if module != null:
+			tower.remove_attack_module(module)
+			module.queue_free()
 	
 	for module in replaced_attack_modules_targets_num_map:
 		

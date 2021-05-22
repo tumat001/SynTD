@@ -279,7 +279,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
-			"Has many attacks. Shoots orbs, diamonds, bolts, and swords. Stats shown are for the orbs.",
+			"Has many attacks. Shoots orbs, diamonds, and bolts. Stats shown are for the orbs.",
 			"Only the orbs are affected by targeting options.",
 			"Only the diamonds benefit from pierce buffs and apply on hit damage and effects. On hit effects are 200% effective.",
 			"Only the bolts benefit from attack speed buffs.",
@@ -311,9 +311,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Stats shown are for the arrow.",
-			"Shoots an arrow that releases a ring. Enemies inside the ring are marked by Ping.",
-			"After a brief delay, Ping shoots up to 4 marked enemies. If only 1 enemy is marked, the shot gains +6 base damage and on hit damages become 150% effective.",
-			"If Ping kills at least one enemy with its shot, Ping shoots the next arrow immediately.",
+			"Shoots an arrow that releases a ring. The ring marks up to 4 enemies.",
+			"After a brief delay, Ping shoots all marked enemies. If only 1 enemy is marked, the shot gains +6 base damage and on hit damages become 150% effective.",
+			"If Ping kills at least one enemy with its shot, Ping can shoot the next arrow immediately.",
 			"Shots deal 7 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
 		]
 		

@@ -4,8 +4,7 @@ const ColorSynergyCheckResults = preload("res://GameInfoRelated/ColorSynergyChec
 
 const tier_none_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_None.png")
 
-# Order does not matter here, but make it similar
-# to order in the synergy name
+# Make order similar to order in the synergy name
 var colors_required : Array = []
 # Number of towers required per tier of synergy.
 # Ex: 9, 6, 3 -> 9 oranges, 6 oranges, 3 oranges
@@ -18,12 +17,15 @@ var synergy_name : String
 var synergy_descriptions : Array = []
 var synergy_picture
 
+var synergy_effect
+
 func _init(arg_synergy_name : String,
 		arg_colors_required : Array,
 		arg_number_of_towers_in_tier : Array,
 		arg_tier_pic_per_tier : Array,
 		arg_synergy_picture,
-		arg_synergy_descriptions : Array):
+		arg_synergy_descriptions : Array,
+		arg_synergy_effect = null):
 	
 	colors_required = arg_colors_required
 	number_of_towers_in_tier = arg_number_of_towers_in_tier
@@ -31,6 +33,7 @@ func _init(arg_synergy_name : String,
 	synergy_picture = arg_synergy_picture
 	tier_pic_per_tier = arg_tier_pic_per_tier
 	synergy_descriptions = arg_synergy_descriptions
+	synergy_effect = arg_synergy_effect
 
 # A quick eliminator of non-candidates
 func quick_incomplete_check_if_requirements_met(colors_active : Array) -> bool:

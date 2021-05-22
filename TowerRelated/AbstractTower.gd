@@ -111,6 +111,15 @@ func _ready():
 func _post_inherit_ready():
 	_update_ingredient_compatible_colors()
 	
+	
+	if range_module != null:
+		if range_module.get_parent() == null:
+			add_child(range_module)
+		
+		range_module.update_range() 
+		range_module.connect("final_range_changed", self, "_emit_final_range_changed")
+	
+	
 	_add_all_modules_as_children()
 
 func _add_all_modules_as_children():
@@ -181,6 +190,9 @@ func _process(delta):
 	
 	if !disabled_from_attacking:
 		for attack_module in attack_modules_and_target_num.keys():
+			if attack_module == null:
+				continue
+			
 			if attack_module.current_time_metadata == AbstractAttackModule.Time_Metadata.TIME_AS_SECONDS:
 				attack_module.time_passed(delta)
 			
@@ -243,7 +255,7 @@ func _on_round_start():
 # Recieving buffs/debuff related
 
 func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), include_non_module_effects : bool = true):
-	if include_non_module_effects:
+	if include_non_module_effects and target_modules == attack_modules_and_target_num.keys():
 		_all_uuid_tower_buffs_map[tower_base_effect.effect_uuid] = tower_base_effect
 	
 	if tower_base_effect is TowerAttributesEffect:
@@ -278,7 +290,7 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		
 
 func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), include_non_module_effects : bool = true):
-	if include_non_module_effects:
+	if include_non_module_effects and target_modules == attack_modules_and_target_num.keys():
 		_all_uuid_tower_buffs_map.erase(tower_base_effect.effect_uuid)
 	
 	
@@ -749,17 +761,23 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 			_disable_modules()
 			is_contributing_to_synergy = false
 			
+			# Update Synergy
+			if should_update_active_synergy:
+				emit_signal("update_active_synergy")
+			
 			emit_signal("tower_not_in_active_map")
 		elif current_placable is InMapAreaPlacable:
 			disabled_from_attacking = false
 			_enable_modules()
 			is_contributing_to_synergy = true
 			
+			# Update Synergy
+			if should_update_active_synergy:
+				emit_signal("update_active_synergy")
+			
 			emit_signal("tower_active_in_map")
 	
-	# Update Synergy
-	if should_update_active_synergy:
-		emit_signal("update_active_synergy")
+	
 
 
 func _on_PlacableDetector_area_entered(area):

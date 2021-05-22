@@ -119,7 +119,7 @@ func _set_range_module(new_module):
 	if range_module != null:
 		remove_child(range_module)
 	
-	if new_module != null and use_self_range_module:
+	if new_module != null and new_module.get_parent() == null:
 		add_child(new_module)
 	
 	range_module = new_module
@@ -731,3 +731,4 @@ func on_post_mitigation_damage_dealt(damage : float, damage_type : int, killed_e
 
 func on_enemy_hit(enemy, damage_register_id):
 	emit_signal("on_enemy_hit", enemy, damage_register_id, self)
+

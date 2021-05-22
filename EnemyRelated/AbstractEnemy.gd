@@ -330,14 +330,16 @@ func calculate_final_movement_speed() -> float:
 # on hit damages and effects.
 func hit_by_bullet(generic_bullet : BaseBullet):
 	generic_bullet.decrease_pierce(pierce_consumed_per_hit)
-	connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
-	connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
+	if generic_bullet.attack_module_source != null:
+		connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
+		connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
 	
 	hit_by_damage_instance(generic_bullet.damage_instance)
 
 func hit_by_aoe(base_aoe):
-	connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [base_aoe.damage_register_id], CONNECT_ONESHOT)
-	connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
+	if base_aoe.attack_module_source != null:
+		connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [base_aoe.damage_register_id], CONNECT_ONESHOT)
+		connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
 	
 	hit_by_damage_instance(base_aoe.damage_instance)
 

@@ -36,6 +36,7 @@ func _construct_pinglet():
 	shot_range_module.base_range_radius = 90
 	shot_range_module.set_range_shape(CircleShape2D.new())
 	shot_range_module.can_display_range = true
+	shot_range_module.benefits_from_bonus_range = false
 	
 	shot_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
 	shot_attack_module.base_damage = 6
@@ -85,14 +86,11 @@ func _construct_pinglet():
 
 func _make_modifications_to_tower(tower):
 	_construct_pinglet()
-	
 	tower.add_attack_module(shot_attack_module, 1)
-#	tower.attack_modules_and_target_num[shot_attack_module] = 1
-#	tower._add_all_modules_as_children()
 
 
 func _undo_modifications_to_tower(tower):
-	tower.remove_attack_module(shot_attack_module)
-	shot_attack_module.queue_free()
-#	tower.attack_modules_and_target_num.erase(shot_attack_module)
-#	shot_attack_module.queue_free()
+	if shot_attack_module != null:
+		tower.remove_attack_module(shot_attack_module)
+		shot_attack_module.queue_free()
+
