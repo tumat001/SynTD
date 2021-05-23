@@ -5,12 +5,15 @@ const TooltipBody = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructo
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 
+# In extra info
+
 var tower : AbstractTower
 
-onready var tooltip_body = $VBoxContainer/BodyMarginer/Marginer/ScrollContainer/TooltipBody
+onready var tooltip_body : TooltipBody = $VBoxContainer/BodyMarginer/TooltipBody
 
 func _ready():
 	tooltip_body.default_font_color = Color(1, 1, 1, 1)
+
 
 func update_display():
 	
@@ -20,3 +23,4 @@ func update_display():
 		tooltip_body.descriptions = [""]
 	
 	tooltip_body.update_display()
+	

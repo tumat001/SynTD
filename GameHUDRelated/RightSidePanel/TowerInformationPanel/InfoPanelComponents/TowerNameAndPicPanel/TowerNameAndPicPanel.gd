@@ -4,6 +4,9 @@ const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 
+signal show_extra_tower_info
+
+
 var tower : AbstractTower
 
 onready var name_label : Label = $VBoxContainer/NameMarginer/Marginer/Name
@@ -18,3 +21,7 @@ func update_display():
 		name_label.text = ""
 		tower_pic.texture = null
 
+
+
+func _on_TextureButton_pressed():
+	emit_signal("show_extra_tower_info")

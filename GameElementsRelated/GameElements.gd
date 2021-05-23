@@ -55,7 +55,7 @@ func _ready():
 	tower_manager.tower_stats_panel = right_side_panel.tower_info_panel.tower_stats_panel
 	tower_manager.active_ing_panel = right_side_panel.tower_info_panel.active_ing_panel
 	tower_manager.tower_colors_panel = right_side_panel.tower_info_panel.tower_colors_panel
-	tower_manager.gold_manager = $GoldManager
+	tower_manager.gold_manager = gold_manager
 	tower_manager.stage_round_manager = stage_round_manager
 	
 	tower_inventory_bench.tower_manager = tower_manager
@@ -124,11 +124,10 @@ func _on_BuySellLevelRollPanel_reroll():
 	$BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel.update_new_rolled_towers([
 		Towers.SIMPLE_OBELISK,
 		Towers.RE,
-		Towers.PING,
-		Towers.SPRINKLER,
+		Towers.COIN,
+		Towers.TESLA,
 		Towers.CHAOS,
 	])
-
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -147,7 +146,7 @@ func _unhandled_key_input(event):
 		tower_manager._toggle_ingredient_combine_mode()
 	elif !event.echo and event.scancode == KEY_SPACE and event.pressed:
 		right_side_panel.round_status_panel._on_RoundStatusButton_pressed()
-	
+
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
@@ -155,4 +154,4 @@ func _unhandled_input(event):
 			if right_side_panel.panel_showing == right_side_panel.Panels.TOWER_INFO:
 				tower_manager._show_round_panel()
 			
-		
+

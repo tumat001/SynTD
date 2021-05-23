@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerNameAndPicPanel/TowerName_Background.png" type="Texture" id=2]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerNameAndPicPanel/TowerNameAndPicPanel.gd" type="Script" id=3]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerNameAndPicPanel/TowerPic_Background.png" type="Texture" id=4]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/ExtraInfoPanelComponents/ExtraInfoButton.png" type="Texture" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 10
@@ -87,3 +88,19 @@ grow_vertical = 2
 mouse_filter = 2
 size_flags_horizontal = 6
 size_flags_vertical = 6
+
+[node name="TowerExtraInfoButton" type="MarginContainer" parent="VBoxContainer/PicMarginer"]
+margin_left = 92.0
+margin_right = 106.0
+margin_bottom = 14.0
+mouse_filter = 2
+size_flags_horizontal = 8
+size_flags_vertical = 2
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/PicMarginer/TowerExtraInfoButton"]
+margin_right = 14.0
+margin_bottom = 14.0
+focus_mode = 0
+enabled_focus_mode = 0
+texture_normal = ExtResource( 5 )
+[connection signal="pressed" from="VBoxContainer/PicMarginer/TowerExtraInfoButton/TextureButton" to="." method="_on_TextureButton_pressed"]

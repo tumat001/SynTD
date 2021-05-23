@@ -19,6 +19,7 @@ const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRe
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
 const BaseTowerAttackModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/BaseTowerAttackModuleAdderEffect.gd")
+const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerFullSellbackEffect.gd")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
@@ -96,6 +97,7 @@ var _tower_colors : Array = []
 
 var _base_gold_cost : int
 var _ingredients_base_gold_costs : Array = []
+var _is_full_sellback : bool = false
 
 # Round related
 
@@ -284,9 +286,16 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		if include_non_module_effects:
 			_add_attack_module_from_effect(tower_base_effect)
 		
+	elif tower_base_effect is TowerFullSellbackEffect:
+		if include_non_module_effects:
+			_set_full_sellback(true)
+		
 	elif tower_base_effect is TowerResetEffects:
 		if include_non_module_effects:
 			_clear_ingredients_by_effect_reset()
+			
+			if main_attack_module != null:
+				main_attack_module.reset_attack_timers()
 		
 
 func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), include_non_module_effects : bool = true):
@@ -319,7 +328,11 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 	elif tower_base_effect is TowerChaosTakeoverEffect:
 		if include_non_module_effects:
 			_remove_chaos_takeover_effect(tower_base_effect)
-
+		
+	elif tower_base_effect is TowerFullSellbackEffect:
+		if include_non_module_effects:
+			_set_full_sellback(true)
+		
 
 func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect, target_modules : Array):
 	for module in target_modules:
@@ -491,6 +504,10 @@ func _remove_attack_module_from_effect(module_effect : BaseTowerAttackModuleAdde
 	module_effect._undo_modifications_to_tower(self)
 
 
+func _set_full_sellback(full_sellback : bool):
+	_is_full_sellback = full_sellback
+
+
 # Decreasing timebounds related
 
 func _decrease_time_of_timebounded(delta):
@@ -510,9 +527,9 @@ func _decrease_time_of_timebounded(delta):
 func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_base_cost : int):
 	if ingredient_effect != null:
 		ingredients_absorbed[ingredient_effect.tower_id] = ingredient_effect
+		_ingredients_base_gold_costs.append(ingredient_gold_base_cost)
 		add_tower_effect(ingredient_effect.tower_base_effect)
 		
-		_ingredients_base_gold_costs.append(ingredient_gold_base_cost)
 		_emit_ingredients_absorbed_changed()
 
 func clear_ingredients():
@@ -530,7 +547,7 @@ func _clear_ingredients_by_effect_reset():
 	
 	ingredients_absorbed.clear()
 	emit_signal("tower_give_gold", _calculate_sellback_of_ingredients(), GoldManager.IncreaseGoldSource.TOWER_EFFECT_RESET)
-
+	_ingredients_base_gold_costs.clear()
 
 func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
 	if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.tower_base_effect is TowerResetEffects:
@@ -825,7 +842,7 @@ func _calculate_sellback_of_ingredients() -> int:
 	var sellback = 0
 	
 	for cost in _ingredients_base_gold_costs:
-		if cost > 1:
+		if cost > 1 and !_is_full_sellback:
 			cost -= 1
 		
 		sellback += cost

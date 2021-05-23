@@ -135,10 +135,6 @@ func _apply_active_synergies_and_remove_old(previous_synergies_res : Array):
 			new_synergies_to_apply.append(active_syn_res)
 		else:
 			old_synergies_to_remove.erase(functionally_equal_syn_res)
-		
-		#if has_same_synergy_but_different_tier:
-		#	old_synergies_to_remove.append(same_synergy_res_different_tier)
-	
 	
 	
 	var all_towers = tower_manager.get_all_active_towers()

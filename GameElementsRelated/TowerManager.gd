@@ -40,6 +40,8 @@ var stage_round_manager : StageRoundManager
 var _color_groups : Array
 const TOWER_GROUP_ID : String = "Towers"
 
+var _is_round_on_going : bool
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	for color in TowerColors.get_all_colors():
@@ -89,6 +91,8 @@ func add_tower(tower_instance : AbstractTower):
 	connect("hide_ingredient_acceptability", tower_instance, "hide_acceptability_with_ingredient")
 	
 	tower_instance.add_to_group(TOWER_GROUP_ID)
+	
+	tower_instance._set_round_started(_is_round_on_going)
 	
 	# TODO TEMPORARY
 	tower_instance.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.LEVEL, 2)
@@ -233,11 +237,15 @@ func _show_round_panel():
 func _round_started(_stageround):
 	for tower in get_all_towers():
 		tower.is_round_started = true
+	
+	_is_round_on_going = true
 
 
 func _round_ended(_stageround):
 	for tower in get_all_towers():
 		tower.is_round_started = false
+	
+	_is_round_on_going = false
 
 
 # Towers in map related

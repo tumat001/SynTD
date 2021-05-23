@@ -8,6 +8,7 @@ enum EffectType {
 	MODULE_ADDER,
 	CHAOS_TAKEOVER,
 	RESET,
+	FULL_SELLBACK,
 	
 }
 

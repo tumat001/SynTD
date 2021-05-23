@@ -60,6 +60,12 @@ script = ExtResource( 9 )
 [node name="InMapAreaPlacable" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
 position = Vector2( 608.081, 304.74 )
 
+[node name="InMapAreaPlacable4" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 408.294, 241.712 )
+
+[node name="InMapAreaPlacable5" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 377.375, 330.903 )
+
 [node name="InMapAreaPlacable2" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
 position = Vector2( 503.598, 227.932 )
 

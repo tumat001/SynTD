@@ -8,7 +8,8 @@ const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/
 const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerBaseEffect.gd")
 const StoreOfTowerEffectsUUID = preload("res://GameInfoRelated/TowerEffectRelated/StoreOfTowerEffectsUUID.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
-const TowerResetTeffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
+const TowerResetEffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
+const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerFullSellbackEffect.gd")
 
 const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
@@ -37,6 +38,7 @@ const re_image = preload("res://TowerRelated/Color_Violet/Re/Re_Omni.png")
 const telsa_image = preload("res://TowerRelated/Color_Violet/Tesla/Tesla.png")
 const chaos_image = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_01.png")
 const ping_image = preload("res://TowerRelated/Color_Violet/Ping/PingWholeBody.png")
+const coin_image = preload("res://TowerRelated/Color_Yellow/Coin/Coin_E.png")
 
 enum {
 	# GRAY (100)
@@ -49,6 +51,7 @@ enum {
 	
 	# YELLOW (400)
 	RAILGUN = 400,
+	COIN = 401,
 	
 	# GREEN (500)
 	BERRY_BUSH = 500,
@@ -161,7 +164,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Fires arcane bolts at enemies that explode before fizzling out, dealing half of this tower's total damage"
+			"Fires arcane bolts at enemies that explode before fizzling out. The explosion deals half of this tower's total base damage"
 		]
 		
 		# Ingredient related
@@ -231,7 +234,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Attacks in bursts of 3"
 		]
 		
-		var tower_effect = TowerResetTeffects.new(StoreOfTowerEffectsUUID.ING_RE)
+		var tower_effect = TowerResetEffects.new(StoreOfTowerEffectsUUID.ING_RE)
 		var ing_effect = IngredientEffect.new(tower_id, tower_effect)
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "clear"
@@ -253,7 +256,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Shocks and stuns its target for 0.3 seconds with the power of electricity"
+			"Shocks and stuns its target for 0.3 seconds on hit with the power of electricity"
 		]
 		
 		var enemy_effect : EnemyStunEffect = EnemyStunEffect.new(0.3, StoreOfEnemyEffectsUUID.ING_TESLA)
@@ -313,7 +316,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Stats shown are for the arrow.",
 			"Shoots an arrow that releases a ring. The ring marks up to 4 enemies.",
 			"After a brief delay, Ping shoots all marked enemies. If only 1 enemy is marked, the shot gains +6 base damage and on hit damages become 150% effective.",
-			"If Ping kills at least one enemy with its shot, Ping can shoot the next arrow immediately.",
+			"If Ping kills at least one enemy with its shots, Ping can shoot the next arrow immediately.",
 			"Shots deal 7 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
 		]
 		
@@ -322,6 +325,35 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "pinglet"
+		
+		
+	elif tower_id == COIN:
+		info = TowerTypeInformation.new("Coin", COIN)
+		info.tower_cost = 1
+		info.colors.append(TowerColors.YELLOW)
+		info.colors.append(TowerColors.GRAY)
+		info.tower_tier = 1
+		info.tower_image_in_buy_card = coin_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.80
+		info.base_pierce = 2
+		info.base_range = 100
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Shoots coins at enemies. Coins can hit up to 2 enemies.",
+			"When the coin hits an enemy, it turns to its left.",
+			"When a coin kills 2 enemies, it grants 1 gold to the player.",
+			"The tower has a 1/50 chance of shooting a gold coin, and when it does, the tower grants 1 gold to the player.",
+		]
+		
+		var tower_base_effect : TowerFullSellbackEffect = TowerFullSellbackEffect.new(COIN)
+		var ing_effect : IngredientEffect = IngredientEffect.new(COIN, tower_base_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "sellback"
 		
 	
 	return info
@@ -347,5 +379,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Chaos/Chaos.tscn")
 	elif tower_id == PING:
 		return load("res://TowerRelated/Color_Violet/Ping/Ping.tscn")
-	
+	elif tower_id == COIN:
+		return load("res://TowerRelated/Color_Yellow/Coin/Coin.tscn")
 	

@@ -6,7 +6,7 @@ const MultiIngredientPanel = preload("res://GameHUDRelated/RightSidePanel/TowerI
 
 var tower : AbstractTower
 
-onready var ingredient_self_panel : MultiIngredientPanel = $VBoxContainer/MultiIngredientPanel
+onready var ingredient_self_panel : MultiIngredientPanel = $VBoxContainer/BodyMargin/MultiIngredientPanel
 
 
 func update_display():

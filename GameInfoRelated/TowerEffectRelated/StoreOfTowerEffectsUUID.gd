@@ -7,6 +7,7 @@ enum {
 	# ORANGE (200)
 	
 	# YELLOW (300)
+	ING_COIN = 300
 	
 	# GREEN (400)
 	ING_BERRY_BUSH = 400

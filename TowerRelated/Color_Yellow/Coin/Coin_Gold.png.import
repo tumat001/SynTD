@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Description_HeaderBackground.png-c733e0eaff2816dbb223eed4ac730ffa.stex"
+path="res://.import/Coin_Gold.png-00d65df2ac7b99cdc3a8709b1c722053.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/DescriptionPanel/Description_HeaderBackground.png"
-dest_files=[ "res://.import/Description_HeaderBackground.png-c733e0eaff2816dbb223eed4ac730ffa.stex" ]
+source_file="res://TowerRelated/Color_Yellow/Coin/Coin_Gold.png"
+dest_files=[ "res://.import/Coin_Gold.png-00d65df2ac7b99cdc3a8709b1c722053.stex" ]
 
 [params]
 

@@ -7,7 +7,7 @@ var damage_register_id : int
 
 var damage_instance : DamageInstance
 var pierce
-var direction_as_relative_location
+var direction_as_relative_location : Vector2
 var speed
 var life_distance
 
@@ -52,7 +52,6 @@ func trigger_on_death_events():
 		for modification in modifications:
 			if modification.trigger_on_death:
 				modification._finalize_bullet(self)
-	
 	
 	true_destroy()
 

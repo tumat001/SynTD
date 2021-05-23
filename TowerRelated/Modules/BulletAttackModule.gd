@@ -144,8 +144,10 @@ func _attack_enemy(enemy : AbstractEnemy):
 func _attack_at_position(arg_pos : Vector2):
 	var bullet : BaseBullet = bullet_scene.instance()
 	
-	bullet.set_sprite_frames(bullet_sprite_frames)
-	bullet.set_shape(bullet_shape)
+	if bullet_sprite_frames != null:
+		bullet.set_sprite_frames(bullet_sprite_frames)
+	if bullet_shape != null:
+		bullet.set_shape(bullet_shape)
 	
 	var damage_instance : DamageInstance = DamageInstance.new()
 	damage_instance.on_hit_damages = _get_all_scaled_on_hit_damages()
