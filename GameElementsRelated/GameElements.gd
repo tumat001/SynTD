@@ -124,7 +124,7 @@ func _on_BuySellLevelRollPanel_reroll():
 	$BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel.update_new_rolled_towers([
 		Towers.SIMPLE_OBELISK,
 		Towers.RE,
-		Towers.COIN,
+		Towers.BEACON_DISH,
 		Towers.TESLA,
 		Towers.CHAOS,
 	])

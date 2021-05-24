@@ -51,7 +51,7 @@ const CHAOS_TOWER_ID = 703
 
 
 func _init().(EffectType.CHAOS_TAKEOVER, StoreOfTowerEffectsUUID.ING_CHAOS):
-	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting. CHAOS benefits from buffs of the tower. The tower's self ingredient is replaced by this"
+	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting. CHAOS benefits from buffs of the tower. The tower's self ingredient is replaced by this."
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Chaos.png")
 
 

@@ -250,6 +250,7 @@ func _on_round_end():
 	for module in attack_modules_and_target_num.keys():
 		module.on_round_end()
 	
+	_remove_all_timebound_effects()
 
 func _on_round_start():
 	pass
@@ -418,6 +419,9 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 			module.range_module.update_range()
 			if module is BulletAttackModule:
 				module.projectile_life_distance = module.range_module.last_calculated_final_range
+			
+			if module == main_attack_module:
+				_emit_final_range_changed()
 
 
 func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
@@ -520,6 +524,16 @@ func _decrease_time_of_timebounded(delta):
 			if effect.time_in_seconds <= 0:
 				_all_uuid_tower_buffs_map.erase(effect_uuid)
 				remove_tower_effect(effect)
+
+
+func _remove_all_timebound_effects():
+	for effect_uuid in _all_uuid_tower_buffs_map.keys():
+		var effect : TowerBaseEffect = _all_uuid_tower_buffs_map[effect_uuid]
+		
+		if effect.is_timebound:
+			_all_uuid_tower_buffs_map.erase(effect_uuid)
+			remove_tower_effect(effect)
+
 
 
 # Ingredient Related
@@ -848,6 +862,13 @@ func _calculate_sellback_of_ingredients() -> int:
 		sellback += cost
 	
 	return sellback
+
+
+# Modulate related
+
+func set_tower_sprite_modulate(color : Color):
+	$TowerBase.modulate = color
+
 
 
 # Tracking of towers related

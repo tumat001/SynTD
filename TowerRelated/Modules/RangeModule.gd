@@ -66,51 +66,6 @@ func set_targeting(targeting : int):
 		_current_targeting_option_index = index_of_targeting
 
 
-# Timebounds
-#
-#func time_passed(delta):
-#	decrease_time_of_timebounded(delta)
-#
-#
-#func decrease_time_of_timebounded(delta):
-#	var bucket = []
-#
-#	# For Range
-#	var final_range_changed : bool = false
-#	# For percent range mods
-#	for effect_uuid in percent_range_effects.keys():
-#		if percent_range_effects[effect_uuid].is_timebound:
-#			percent_range_effects[effect_uuid].time_in_seconds -= delta
-#			var time_left = percent_range_effects[effect_uuid].time_in_seconds
-#			if time_left <= 0:
-#				bucket.append(effect_uuid)
-#				final_range_changed = true
-#
-#	for key_to_delete in bucket:
-#		percent_range_effects.erase(key_to_delete)
-#
-#	bucket.clear()
-#
-#	# For flat range mods
-#	for effect_uuid in flat_range_effects.keys():
-#		if flat_range_effects[effect_uuid].is_timebound:
-#			flat_range_effects[effect_uuid].time_in_seconds -= delta
-#			var time_left = flat_range_effects[effect_uuid].time_in_seconds
-#			if time_left <= 0:
-#				bucket.append(effect_uuid)
-#				final_range_changed = true
-#
-#	for key_to_delete in bucket:
-#		flat_range_effects.erase(key_to_delete)
-#
-#
-#	bucket.clear()
-#
-#	if final_range_changed:
-#		update_range()
-#		call_deferred("emit_signal", "final_range_changed")
-
-
 # Range Related
 
 func set_range_shape(shape : CircleShape2D):

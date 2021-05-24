@@ -39,6 +39,7 @@ const telsa_image = preload("res://TowerRelated/Color_Violet/Tesla/Tesla.png")
 const chaos_image = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_01.png")
 const ping_image = preload("res://TowerRelated/Color_Violet/Ping/PingWholeBody.png")
 const coin_image = preload("res://TowerRelated/Color_Yellow/Coin/Coin_E.png")
+const beacon_dish_image = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish_Omni.png")
 
 enum {
 	# GRAY (100)
@@ -52,6 +53,7 @@ enum {
 	# YELLOW (400)
 	RAILGUN = 400,
 	COIN = 401,
+	BEACON_DISH = 402,
 	
 	# GREEN (500)
 	BERRY_BUSH = 500,
@@ -331,12 +333,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info = TowerTypeInformation.new("Coin", COIN)
 		info.tower_cost = 1
 		info.colors.append(TowerColors.YELLOW)
-		info.colors.append(TowerColors.GRAY)
 		info.tower_tier = 1
 		info.tower_image_in_buy_card = coin_image
 		
-		info.base_damage = 2
-		info.base_attk_speed = 0.80
+		info.base_damage = 1.5
+		info.base_attk_speed = 0.60
 		info.base_pierce = 2
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
@@ -354,6 +355,41 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "sellback"
+		
+		
+	elif tower_id == BEACON_DISH:
+		info = TowerTypeInformation.new("Beacon-Dish", BEACON_DISH)
+		info.tower_cost = 3
+		info.colors.append(TowerColors.GRAY)
+		info.colors.append(TowerColors.YELLOW)
+		info.tower_tier = 3
+		info.tower_image_in_buy_card = beacon_dish_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.15
+		info.base_pierce = 0
+		info.base_range = 150
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Does not attack, but instead gives buffs to towers in range every 5 seconds for 7 seconds.",
+			"Grants 50% of its total base damage as an elemental on hit damage buff.",
+			"Grants 100% x 100 of its total attack speed as percent attack speed.",
+			"Grants 10% of its total range as bonus range.",
+			"Note: Does not grant these buffs to another Beacon-Dish. Also overrides any existing Beacon-Dish buffs a tower may have.",
+			"",
+			"\"Is it a beacon, or a dish?\""
+		]
+		
+		var range_attr_mod : FlatModifier = FlatModifier.new("beacon_range")
+		range_attr_mod.flat_modifier = 30
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_BEACON_DISH)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ range"
 		
 	
 	return info
@@ -381,4 +417,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Ping/Ping.tscn")
 	elif tower_id == COIN:
 		return load("res://TowerRelated/Color_Yellow/Coin/Coin.tscn")
-	
+	elif tower_id == BEACON_DISH:
+		return load("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish.tscn")

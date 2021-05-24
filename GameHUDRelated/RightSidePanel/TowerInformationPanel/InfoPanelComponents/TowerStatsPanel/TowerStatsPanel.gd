@@ -87,37 +87,40 @@ func _update_final_stat_display():
 
 
 func update_final_base_damage():
-	var base_damage = tower.main_attack_module.base_damage
-	var final_base_damage = base_damage
-	
-	if tower.main_attack_module != null:
-		final_base_damage = tower.main_attack_module.last_calculated_final_damage
-	
-	base_damage_label.text = str(final_base_damage)
-	base_damage_label.set("custom_colors/font_color", _get_color_for_stat(base_damage, final_base_damage))
+	if showing_stat == Stat.FINAL:
+		var base_damage = tower.main_attack_module.base_damage
+		var final_base_damage = base_damage
+		
+		if tower.main_attack_module != null:
+			final_base_damage = tower.main_attack_module.last_calculated_final_damage
+		
+		base_damage_label.text = str(final_base_damage)
+		base_damage_label.set("custom_colors/font_color", _get_color_for_stat(base_damage, final_base_damage))
 
 
 func update_final_attack_speed():
-	var attk_speed = tower.main_attack_module.base_attack_speed
-	var final_attk_speed = attk_speed
-	
-	if tower.main_attack_module != null:
-		final_attk_speed = tower.main_attack_module.last_calculated_final_attk_speed
-	
-	attack_speed_label.text = str(final_attk_speed)
-	attack_speed_label.set("custom_colors/font_color", _get_color_for_stat(attk_speed, final_attk_speed))
+	if showing_stat == Stat.FINAL:
+		var attk_speed = tower.main_attack_module.base_attack_speed
+		var final_attk_speed = attk_speed
+		
+		if tower.main_attack_module != null:
+			final_attk_speed = tower.main_attack_module.last_calculated_final_attk_speed
+		
+		attack_speed_label.text = str(final_attk_speed)
+		attack_speed_label.set("custom_colors/font_color", _get_color_for_stat(attk_speed, final_attk_speed))
 
 
 func update_final_range():
-	var base_range = tower.main_attack_module.range_module.base_range_radius
-	var final_range = base_range
-	
-	if tower.range_module != null:
-		final_range = tower.range_module.last_calculated_final_range
-	
-	range_label.text = str(final_range)
-	range_label.set("custom_colors/font_color", _get_color_for_stat(base_range, final_range))
-	
+	if showing_stat == Stat.FINAL:
+		var base_range = tower.main_attack_module.range_module.base_range_radius
+		var final_range = base_range
+		
+		if tower.range_module != null:
+			final_range = tower.range_module.last_calculated_final_range
+		
+		range_label.text = str(final_range)
+		range_label.set("custom_colors/font_color", _get_color_for_stat(base_range, final_range))
+
 
 
 func _get_color_for_stat(base : float, total : float) -> Color:

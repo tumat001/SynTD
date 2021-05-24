@@ -34,3 +34,5 @@ func _init(arg_effect_type : int,
 	effect_uuid = arg_effect_uuid
 
 
+func _shallow_duplicate():
+	pass

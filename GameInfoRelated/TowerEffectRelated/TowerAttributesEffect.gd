@@ -110,3 +110,17 @@ func _get_icon() -> Texture:
 	
 	
 	return null
+
+
+# duplicate
+
+func _shallow_duplicate():
+	var copy = get_script().new(attribute_type, attribute_as_modifier, effect_uuid)
+	copy.is_timebound = is_timebound
+	copy.time_in_seconds = time_in_seconds
+	copy.is_ingredient_effect = is_ingredient_effect
+	
+	copy.is_countbound = is_countbound
+	copy.count = count
+	
+	return copy

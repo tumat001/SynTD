@@ -278,6 +278,9 @@ func calculate_final_attack_speed() -> float:
 		return 0.0
 
 func calculate_final_attack_wind_up() -> float:
+	if base_attack_wind_up == 0:
+		return 0.0
+	
 	#All percent modifiers here are to BASE attk wind up only
 	var final_attack_wind_up = base_attack_wind_up
 	
@@ -312,6 +315,9 @@ func calculate_final_attack_wind_up() -> float:
 		return 0.0
 
 func calculate_final_burst_attack_speed() -> float:
+	if burst_attack_speed == 0:
+		return 0.0
+	
 	#All percent modifiers here are to BASE in between burst only
 	var final_burst_pause = burst_attack_speed
 	
