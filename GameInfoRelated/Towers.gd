@@ -40,6 +40,7 @@ const chaos_image = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_01.png"
 const ping_image = preload("res://TowerRelated/Color_Violet/Ping/PingWholeBody.png")
 const coin_image = preload("res://TowerRelated/Color_Yellow/Coin/Coin_E.png")
 const beacon_dish_image = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish_Omni.png")
+const mini_tesla_image = preload("res://TowerRelated/Color_Yellow/MiniTesla/MiniTesla_Omni.png")
 
 enum {
 	# GRAY (100)
@@ -54,6 +55,7 @@ enum {
 	RAILGUN = 400,
 	COIN = 401,
 	BEACON_DISH = 402,
+	MINI_TESLA = 403,
 	
 	# GREEN (500)
 	BERRY_BUSH = 500,
@@ -134,7 +136,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
-			"Does not attack, but instead gives gold at the end of the round"
+			"Does not attack, but instead gives 1 gold at the end of the round"
 		]
 		
 		
@@ -346,7 +348,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Shoots coins at enemies. Coins can hit up to 2 enemies.",
 			"When the coin hits an enemy, it turns to its left.",
-			"When a coin kills 2 enemies, it grants 1 gold to the player.",
+			"When a coin kills 2 enemies, it grants 1 gold to the player. This effect can be triggered by a coin any amount of times.",
 			"The tower has a 1/50 chance of shooting a gold coin, and when it does, the tower grants 1 gold to the player.",
 		]
 		
@@ -391,6 +393,28 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ range"
 		
+		
+	elif tower_id == MINI_TESLA:
+		info = TowerTypeInformation.new("Mini Tesla", MINI_TESLA)
+		info.tower_cost = 1
+		info.colors.append(TowerColors.GRAY)
+		info.colors.append(TowerColors.YELLOW)
+		info.tower_tier = 1
+		info.tower_image_in_buy_card = mini_tesla_image
+		
+		info.base_damage = 1.25
+		info.base_attk_speed = 0.8
+		info.base_pierce = 0
+		info.base_range = 110
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Mini Tesla applies a stack of \"static\" on enemies hit for 3 seconds, with this duration refreshing per hit.",
+			"When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 2 seconds."
+		]
+		
+		
 	
 	return info
 
@@ -419,3 +443,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Yellow/Coin/Coin.tscn")
 	elif tower_id == BEACON_DISH:
 		return load("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish.tscn")
+	elif tower_id == MINI_TESLA:
+		return load("res://TowerRelated/Color_Yellow/MiniTesla/MiniTesla.tscn")

@@ -9,6 +9,7 @@ enum {
 	ING_TESLA = -602
 	TESLA_STUN = -603
 	
-	
+	MINI_TESLA_STACK = -604
+	MINI_TESLA_STUN = -605
 	
 }

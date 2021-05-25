@@ -49,6 +49,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.clear_all_targeting()
 	
 	var attack_module = InstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage

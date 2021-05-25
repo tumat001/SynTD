@@ -30,8 +30,7 @@ var all_targeting_options : Array = []
 var last_calculated_final_range : float
 
 
-func _ready():
-	
+func _init():
 	if all_targeting_options == null or all_targeting_options.size() == 0:
 		all_targeting_options = [Targeting.FIRST, Targeting.LAST]
 	
@@ -55,6 +54,7 @@ func targeting_cycle_right():
 	_last_used_targeting_option_index = _current_targeting_option_index
 	_current_targeting_option_index = to_be
 
+
 func add_targeting(targeting : int):
 	all_targeting_options.append(targeting)
 
@@ -65,6 +65,8 @@ func set_targeting(targeting : int):
 		_last_used_targeting_option_index = _current_targeting_option_index
 		_current_targeting_option_index = index_of_targeting
 
+func clear_all_targeting():
+	all_targeting_options.clear()
 
 # Range Related
 

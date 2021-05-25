@@ -174,7 +174,7 @@ func add_attack_module(attack_module : AbstractAttackModule, num_of_targets : in
 	
 	if benefit_from_existing_tower_buffs:
 		for tower_effect in _all_uuid_tower_buffs_map.values():
-			add_tower_effect(tower_effect, [attack_module], false)
+			add_tower_effect(tower_effect, [attack_module], false, false)
 	
 	
 	attack_modules_and_target_num[attack_module] = num_of_targets
@@ -182,7 +182,7 @@ func add_attack_module(attack_module : AbstractAttackModule, num_of_targets : in
 
 func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 	for tower_effect in _all_uuid_tower_buffs_map.values():
-		remove_tower_effect(tower_effect, [attack_module_to_remove], false)
+		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
 	
 	attack_modules_and_target_num.erase(attack_module_to_remove)
 
@@ -257,8 +257,8 @@ func _on_round_start():
 
 # Recieving buffs/debuff related
 
-func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), include_non_module_effects : bool = true):
-	if include_non_module_effects and target_modules == attack_modules_and_target_num.keys():
+func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), register_to_buff_map : bool = true, include_non_module_effects : bool = true):
+	if include_non_module_effects and register_to_buff_map:
 		_all_uuid_tower_buffs_map[tower_base_effect.effect_uuid] = tower_base_effect
 	
 	if tower_base_effect is TowerAttributesEffect:
@@ -299,8 +299,8 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 				main_attack_module.reset_attack_timers()
 		
 
-func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), include_non_module_effects : bool = true):
-	if include_non_module_effects and target_modules == attack_modules_and_target_num.keys():
+func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), erase_from_buff_map : bool = true, include_non_module_effects : bool = true):
+	if include_non_module_effects and erase_from_buff_map:
 		_all_uuid_tower_buffs_map.erase(tower_base_effect.effect_uuid)
 	
 	

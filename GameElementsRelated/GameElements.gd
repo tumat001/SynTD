@@ -122,9 +122,9 @@ func _on_BuySellLevelRollPanel_level_up():
 func _on_BuySellLevelRollPanel_reroll():
 	# TODO REPLACE THIS SOON
 	$BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel.update_new_rolled_towers([
-		Towers.SIMPLE_OBELISK,
-		Towers.RE,
 		Towers.BEACON_DISH,
+		Towers.RE,
+		Towers.MINI_TESLA,
 		Towers.TESLA,
 		Towers.CHAOS,
 	])
@@ -153,5 +153,4 @@ func _unhandled_input(event):
 		if event.pressed and (event.button_index == BUTTON_RIGHT or event.button_index == BUTTON_LEFT):
 			if right_side_panel.panel_showing == right_side_panel.Panels.TOWER_INFO:
 				tower_manager._show_round_panel()
-			
 

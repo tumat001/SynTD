@@ -12,6 +12,7 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 const EnemyClearAllEffects = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyClearAllEffects.gd")
+const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 
 signal on_death_by_any_cause
 signal on_hit(me)
@@ -57,10 +58,15 @@ var _last_calculated_final_movement_speed
 
 var distance_to_exit : float
 
+
 #internals
 
 var _self_size : Vector2
 
+
+# Effects map
+
+var _stack_id_effects_map : Dictionary = {}
 var _stun_id_effects_map : Dictionary = {}
 var _is_stunned : bool
 
@@ -428,6 +434,36 @@ func _add_effect(base_effect : EnemyBaseEffect):
 		
 	elif to_use_effect is EnemyClearAllEffects:
 		_stun_id_effects_map.clear()
+		_stack_id_effects_map.clear()
+		
+		
+	elif to_use_effect is EnemyStackEffect:
+		
+		if !_stack_id_effects_map.has(to_use_effect.effect_uuid):
+			_stack_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
+			_stack_id_effects_map[to_use_effect.effect_uuid]._current_stack += to_use_effect.num_of_stacks_per_apply
+		else:
+			var stored_effect = _stack_id_effects_map[to_use_effect.effect_uuid]
+			
+			stored_effect._current_stack += to_use_effect.num_of_stacks_per_apply
+			if stored_effect._current_stack >= stored_effect.stack_cap:
+				if stored_effect.consume_all_stacks_on_cap:
+					_remove_effect(stored_effect)
+				else:
+					stored_effect._current_stack -= stored_effect.stack_cap
+				
+				_add_effect(stored_effect.base_effect)
+			else:
+				if stored_effect.duration_refresh_per_apply:
+					stored_effect.time_in_seconds = to_use_effect.time_in_seconds
+
+
+func _remove_effect(base_effect : EnemyBaseEffect):
+	if base_effect is EnemyStunEffect:
+		_stun_id_effects_map.erase(base_effect.effect_uuid)
+		
+	elif base_effect is EnemyStackEffect:
+		_stack_id_effects_map.erase(base_effect.effect_uuid)
 
 # Timebounded related
 
@@ -441,9 +477,21 @@ func _decrease_time_of_timebounds(delta):
 			stun_effect.time_in_seconds -= delta
 			
 			if stun_effect.time_in_seconds <= 0:
-				_stun_id_effects_map.erase(stun_id)
+				_remove_effect(stun_effect)
 	
 	_is_stunned = _stun_id_effects_map.size() != 0
+	
+	
+	# Stack related
+	
+	for stack_id in _stack_id_effects_map.keys():
+		var stack_effect = _stack_id_effects_map[stack_id]
+		
+		if stack_effect.is_timebound:
+			stack_effect.time_in_seconds -= delta
+			
+			if stack_effect.time_in_seconds <= 0:
+				_remove_effect(stack_effect)
 
 
 
