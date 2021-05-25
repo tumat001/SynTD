@@ -106,6 +106,7 @@ func _ready():
 	diamond_attack_module.benefits_from_bonus_base_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_effect = true
+	diamond_attack_module.benefits_from_bonus_pierce = true
 	
 	diamond_attack_module.use_self_range_module = true
 	diamond_attack_module.range_module = dia_range_module
@@ -144,6 +145,7 @@ func _ready():
 	bolt_attack_module.benefits_from_bonus_base_damage = true
 	bolt_attack_module.benefits_from_bonus_on_hit_damage = false
 	bolt_attack_module.benefits_from_bonus_on_hit_effect = false
+	
 	
 	bolt_attack_module.use_self_range_module = true
 	bolt_attack_module.range_module = bolt_range_module
@@ -220,6 +222,6 @@ func _show_attack_sprite_on_attack(_attk_speed_delay, enemies : Array):
 	for enemy in enemies:
 		if enemy != null:
 			var sword = _construct_attack_sprite_on_attack()
-			sword.global_position = enemies[0].global_position
+			sword.global_position = enemy.global_position
 			get_tree().get_root().add_child(sword)
 			sword.playing = true

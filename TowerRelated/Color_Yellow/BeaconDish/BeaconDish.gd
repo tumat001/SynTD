@@ -153,7 +153,7 @@ func _update_elemental_on_hit_effect():
 
 func _update_flat_attk_speed_effect():
 	if main_attack_module != null:
-		attack_speed_modifier.percent_amount = main_attack_module.last_calculated_final_attk_speed * 100
+		attack_speed_modifier.percent_amount = main_attack_module.last_calculated_final_attk_speed * 50
 		attack_speed_effect.attribute_as_modifier = attack_speed_modifier.get_copy_scaled_by(1)
 
 func _update_flat_range_effect():

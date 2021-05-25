@@ -17,6 +17,7 @@ const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelat
 const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
+const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 
 # GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
@@ -25,6 +26,11 @@ const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omn
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
+const coin_image = preload("res://TowerRelated/Color_Yellow/Coin/Coin_E.png")
+const beacon_dish_image = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish_Omni.png")
+const mini_tesla_image = preload("res://TowerRelated/Color_Yellow/MiniTesla/MiniTesla_Omni.png")
+const charge_image = preload("res://TowerRelated/Color_Yellow/Charge/Charge_E.png")
+
 
 # GREEN
 const berrybush_image = preload("res://TowerRelated/Color_Green/BerryBush/BerryBush_Omni.png")
@@ -38,9 +44,6 @@ const re_image = preload("res://TowerRelated/Color_Violet/Re/Re_Omni.png")
 const telsa_image = preload("res://TowerRelated/Color_Violet/Tesla/Tesla.png")
 const chaos_image = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_01.png")
 const ping_image = preload("res://TowerRelated/Color_Violet/Ping/PingWholeBody.png")
-const coin_image = preload("res://TowerRelated/Color_Yellow/Coin/Coin_E.png")
-const beacon_dish_image = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish_Omni.png")
-const mini_tesla_image = preload("res://TowerRelated/Color_Yellow/MiniTesla/MiniTesla_Omni.png")
 
 enum {
 	# GRAY (100)
@@ -56,6 +59,7 @@ enum {
 	COIN = 401,
 	BEACON_DISH = 402,
 	MINI_TESLA = 403,
+	CHARGE = 404,
 	
 	# GREEN (500)
 	BERRY_BUSH = 500,
@@ -203,12 +207,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 	elif tower_id == RAILGUN:
 		info = TowerTypeInformation.new("Railgun", RAILGUN)
-		info.tower_cost = 3
+		info.tower_cost = 2
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_tier = 3
+		info.tower_tier = 2
 		info.tower_image_in_buy_card = railgun_image
 		
-		info.base_damage = 7
+		info.base_damage = 6
 		info.base_attk_speed = 0.25
 		info.base_pierce = 4
 		info.base_range = 100
@@ -319,7 +323,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Stats shown are for the arrow.",
 			"Shoots an arrow that releases a ring. The ring marks up to 4 enemies.",
-			"After a brief delay, Ping shoots all marked enemies. If only 1 enemy is marked, the shot gains +6 base damage and on hit damages become 150% effective.",
+			"After a brief delay, Ping shoots up to 4 marked enemies. If only 1 enemy is marked, the shot gains +6 base damage and on hit damages become 150% effective.",
 			"If Ping kills at least one enemy with its shots, Ping can shoot the next arrow immediately.",
 			"Shots deal 7 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
 		]
@@ -368,7 +372,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = beacon_dish_image
 		
 		info.base_damage = 2
-		info.base_attk_speed = 0.15
+		info.base_attk_speed = 0.3
 		info.base_pierce = 0
 		info.base_range = 150
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -377,7 +381,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Does not attack, but instead gives buffs to towers in range every 5 seconds for 7 seconds.",
 			"Grants 50% of its total base damage as an elemental on hit damage buff.",
-			"Grants 100% x 100 of its total attack speed as percent attack speed.",
+			"Grants 50% x 100 of its total attack speed as percent attack speed.",
 			"Grants 10% of its total range as bonus range.",
 			"Note: Does not grant these buffs to another Beacon-Dish. Also overrides any existing Beacon-Dish buffs a tower may have.",
 			"",
@@ -414,6 +418,43 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 2 seconds."
 		]
 		
+		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(1.5, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
+		var enemy_effect : EnemyStackEffect = EnemyStackEffect.new(enemy_final_effect, 1, 5, StoreOfEnemyEffectsUUID.ING_MINI_TESLA_STACK)
+		enemy_effect.is_timebound = true
+		enemy_effect.time_in_seconds = 3
+		
+		var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.ING_MINI_TESLA)
+		tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 1.5 seconds"
+		tower_effect.effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Static.png")
+		
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "static"
+		
+		
+	elif tower_id == CHARGE:
+		info = TowerTypeInformation.new("Charge", CHARGE)
+		info.tower_cost = 2
+		info.colors.append(TowerColors.YELLOW)
+		info.colors.append(TowerColors.RED)
+		info.tower_tier = 2
+		info.tower_image_in_buy_card = charge_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.65
+		info.base_pierce = 1
+		info.base_range = 90
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"When idle, Charge accumulates energy. Charge's energy is set to 50% when the round starts.",
+			"Upon attacking, Charge expends all energy to deal bonus physical on hit damage.",
+			"Increasing this tower's total attack speed compared to its base attack speed increases the rate of energy accumulation.",
+			"Max physical on hit damage: 16"
+		]
+		
 		
 	
 	return info
@@ -445,3 +486,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish.tscn")
 	elif tower_id == MINI_TESLA:
 		return load("res://TowerRelated/Color_Yellow/MiniTesla/MiniTesla.tscn")
+	elif tower_id == CHARGE:
+		return load("res://TowerRelated/Color_Yellow/Charge/Charge.tscn")

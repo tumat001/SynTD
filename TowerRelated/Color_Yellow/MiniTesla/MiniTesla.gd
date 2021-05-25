@@ -71,4 +71,4 @@ func _post_inherit_ready():
 	
 	var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.MINI_TESLA_STACKING_STUN)
 	
-	add_tower_effect(tower_effect, [attack_module], false)
+	add_tower_effect(tower_effect, [attack_module])

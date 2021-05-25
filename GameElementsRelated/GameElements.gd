@@ -122,11 +122,11 @@ func _on_BuySellLevelRollPanel_level_up():
 func _on_BuySellLevelRollPanel_reroll():
 	# TODO REPLACE THIS SOON
 	$BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel.update_new_rolled_towers([
-		Towers.BEACON_DISH,
 		Towers.RE,
-		Towers.MINI_TESLA,
-		Towers.TESLA,
 		Towers.CHAOS,
+		Towers.MINI_TESLA,
+		Towers.BEACON_DISH,
+		Towers.TESLA,
 	])
 
 

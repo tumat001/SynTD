@@ -41,6 +41,9 @@ signal tower_give_gold(gold, gold_source_as_int)
 signal tower_not_in_active_map
 signal tower_active_in_map
 
+signal attack_module_added(attack_module)
+signal attack_module_removed(attack_module)
+
 signal final_base_damage_changed
 signal final_attack_speed_changed
 signal final_range_changed
@@ -178,14 +181,14 @@ func add_attack_module(attack_module : AbstractAttackModule, num_of_targets : in
 	
 	
 	attack_modules_and_target_num[attack_module] = num_of_targets
-
+	emit_signal("attack_module_added", attack_module)
 
 func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 	for tower_effect in _all_uuid_tower_buffs_map.values():
 		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
 	
 	attack_modules_and_target_num.erase(attack_module_to_remove)
-
+	emit_signal("attack_module_removed", attack_module_to_remove)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
