@@ -18,6 +18,8 @@ const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelate
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
+const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitDamageAdderEffect.gd")
+const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 
 # GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
@@ -30,7 +32,7 @@ const coin_image = preload("res://TowerRelated/Color_Yellow/Coin/Coin_E.png")
 const beacon_dish_image = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish_Omni.png")
 const mini_tesla_image = preload("res://TowerRelated/Color_Yellow/MiniTesla/MiniTesla_Omni.png")
 const charge_image = preload("res://TowerRelated/Color_Yellow/Charge/Charge_E.png")
-
+const magnetizer_image = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Barrel_E.png")
 
 # GREEN
 const berrybush_image = preload("res://TowerRelated/Color_Green/BerryBush/BerryBush_Omni.png")
@@ -60,6 +62,7 @@ enum {
 	BEACON_DISH = 402,
 	MINI_TESLA = 403,
 	CHARGE = 404,
+	MAGNETIZER = 405,
 	
 	# GREEN (500)
 	BERRY_BUSH = 500,
@@ -435,10 +438,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == CHARGE:
 		info = TowerTypeInformation.new("Charge", CHARGE)
-		info.tower_cost = 2
+		info.tower_cost = 3
 		info.colors.append(TowerColors.YELLOW)
 		info.colors.append(TowerColors.RED)
-		info.tower_tier = 2
+		info.tower_tier = 3
 		info.tower_image_in_buy_card = charge_image
 		
 		info.base_damage = 2
@@ -450,10 +453,46 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"When idle, Charge accumulates energy. Charge's energy is set to 50% when the round starts.",
-			"Upon attacking, Charge expends all energy to deal bonus physical on hit damage.",
-			"Increasing this tower's total attack speed compared to its base attack speed increases the rate of energy accumulation.",
-			"Max physical on hit damage: 16"
+			"Upon attacking, Charge expends all energy to deal scaling bonus physical on hit damage based on expended energy.",
+			"Max physical on hit damage: 16",
+			"",
+			"Increasing this tower's total attack speed compared to its base attack speed increases the rate of energy accumulation."
 		]
+		
+		var attr_mod : FlatModifier = FlatModifier.new("ing_charge_on_hit_as_modifier")
+		attr_mod.flat_modifier = 1.5
+		var on_hit : OnHitDamage = OnHitDamage.new("ing_charge_on_hit", attr_mod, DamageType.PHYSICAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_CHARGE)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
+		
+		
+	elif tower_id == MAGNETIZER:
+		info = TowerTypeInformation.new("Magnetizer", MAGNETIZER)
+		info.tower_cost = 4
+		info.colors.append(TowerColors.YELLOW)
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = charge_image
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0.48
+		info.base_pierce = 1
+		info.base_range = 155
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Stats shown are for the magnets.",
+			"When shooting, Magnetizer alternates between blue magnet and red magnet. Magnetizer cycles to the next targeting option after shooting a magnet.",
+			"Magnets stick to the first enemy they hit. When the enemy they are stuck to dies, they drop on the ground.",
+			"When there is at least one blue and one red magnet that has hit an enemy, Magnetizer uses Magnetize.",
+			"",
+			"Magnetize: Calls upon all non traveling magnets to form a beam between their opposite types. This beam benefits from base damage buffs. On hit effects and on hit damages are 67% effective."
+		]
+		
 		
 		
 	

@@ -1,72 +1,98 @@
 extends "res://TowerRelated/Modules/AbstractAttackModule.gd"
 
-const SpawnAOETemplate = preload("res://TowerRelated/Templates/SpawnAOETemplate.gd")
+const BaseAOE = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.gd")
+const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
 enum SpawnLocation {
 	CENTERED_TO_MODULE,
 	CENTERED_TO_ENEMY,
-	IN_FRONT_OF_TOWER, # NOT TESTED YET
+	STRETCH_AS_BEAM,
 }
 
-var spawn_location : int = SpawnLocation.IN_FRONT_OF_TOWER
-var aoe_template : SpawnAOETemplate setget _set_template
+signal before_aoe_is_added_as_child(aoe)
 
-var damage_register_id : int
 
-func _set_template(template : SpawnAOETemplate):
-	template.aoe_base_damage = base_damage
-	template.aoe_base_damage_type = base_damage_type
-	template.aoe_base_on_hit_damage_internal_name = base_on_hit_damage_internal_name
-	template.aoe_on_hit_damage_scale = on_hit_damage_scale
-	template.aoe_on_hit_effect_scale = on_hit_effect_scale
-	template.aoe_base_on_hit_affected_by_scale = base_on_hit_affected_by_scale
+var spawn_location : int = SpawnLocation.CENTERED_TO_ENEMY
+
+var base_aoe_scene : PackedScene
+
+var damage_repeat_count : int = 1
+var duration : float
+var initial_delay : float = 0.05
+var is_decrease_duration : bool = true
+var pierce : int = -1  # no limit
+
+var aoe_texture : Texture
+var aoe_sprite_frames : SpriteFrames
+var sprite_frames_only_play_once : bool
+
+var shift_x : bool = false
+
+func construct_aoe() -> BaseAOE:
+	var base_aoe : BaseAOE = base_aoe_scene.instance()
 	
-	template.aoe_extra_on_hit_damages = _get_scaled_extra_on_hit_damages()
+	base_aoe.damage_register_id = damage_register_id
 	
-	for effect_uuid in flat_base_damage_effects.keys():
-		template.aoe_flat_base_damage_modifiers[str(effect_uuid)] = flat_base_damage_effects[effect_uuid]
+	var damage_instance : DamageInstance = DamageInstance.new()
+	damage_instance.on_hit_damages = _get_all_scaled_on_hit_damages()
+	damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
+	base_aoe.damage_instance = damage_instance
 	
-	for effect_uuid in percent_base_damage_effects.keys():
-		template.aoe_percent_base_damage_modifiers[str(effect_uuid)] = percent_base_damage_effects[effect_uuid]
+	base_aoe.damage_repeat_count = damage_repeat_count
+	base_aoe.duration = duration
+	base_aoe.decrease_duration = is_decrease_duration
+	base_aoe.pierce = pierce
+	base_aoe.initial_delay = initial_delay
 	
-	template.benefits_from_bonus_base_damage = benefits_from_bonus_base_damage
-	template.benefits_from_bonus_on_hit_damage = benefits_from_bonus_on_hit_damage
-	template.benefits_from_bonus_on_hit_effect = benefits_from_bonus_on_hit_effect
+	base_aoe.global_position = global_position
 	
-	if spawn_location == SpawnLocation.IN_FRONT_OF_TOWER:
-		template.aoe_shift_x = true
+	if !base_aoe._animated_sprite_has_animation():
+		if aoe_sprite_frames != null:
+			base_aoe.aoe_sprite_frames = aoe_sprite_frames
+		elif aoe_texture != null:
+			base_aoe.aoe_texture = aoe_texture
 	
-	aoe_template = template
+	base_aoe.sprite_frames_play_only_once = sprite_frames_only_play_once
+	base_aoe.shift_x = shift_x
+	
+	return base_aoe
 
 
 # Attack related
 
-func _attack_enemy(_enemy : AbstractEnemy):
-	_attack_at_position(_enemy.position)
-
-func _attack_enemies(_enemies : Array):
-	for enemy in _enemies:
+func _attack_enemies(enemies : Array):
+	._attack_enemies(enemies)
+	
+	for enemy in enemies:
 		_attack_enemy(enemy)
 
-func _attack_at_positions(_positions : Array):
-	for pos in _positions:
+func _attack_enemy(enemy : AbstractEnemy):
+	_attack_at_position(enemy.position)
+
+
+
+func _attack_at_positions(positions : Array):
+	._attack_at_positions(positions)
+	
+	for pos in positions:
 		_attack_at_position(pos)
 
-func _attack_at_position(_pos : Vector2):
-	_modify_attack(_pos)
+func _attack_at_position(pos : Vector2):
+	var created_aoe = construct_aoe()
 	
-	aoe_template._spawn_aoe(_calculate_center_pos_of_aoe(_pos))
-	pass
+	created_aoe.global_position = _get_center_pos_for_aoe(global_position, pos)
+	
+	._modify_attack(created_aoe)
+	emit_signal("before_aoe_is_added_as_child", created_aoe)
+	
+	get_tree().get_root().add_child(created_aoe)
 
 
-func _calculate_center_pos_of_aoe(enemy_pos : Vector2) -> Vector2:
+func _get_center_pos_for_aoe(original_pos : Vector2, enemy_pos : Vector2) -> Vector2:
 	if spawn_location == SpawnLocation.CENTERED_TO_ENEMY:
 		return enemy_pos
 	elif spawn_location == SpawnLocation.CENTERED_TO_MODULE:
-		return global_position
-	elif spawn_location == SpawnLocation.IN_FRONT_OF_TOWER:
-		return global_position
-	
+		return original_pos
 	
 	return Vector2(0, 0)
 

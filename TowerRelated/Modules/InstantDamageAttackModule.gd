@@ -2,8 +2,6 @@ extends "res://TowerRelated/Modules/AbstractAttackModule.gd"
 
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
-var damage_register_id : int
-
 func _attack_enemy(enemy : AbstractEnemy):
 	if enemy != null:
 		var damage_instance : DamageInstance = DamageInstance.new()

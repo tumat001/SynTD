@@ -60,7 +60,7 @@ func _ready():
 	range_module.set_range_shape(CircleShape2D.new())
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	attack_module.base_damage = 0 #info.base_damage
+	attack_module.base_damage = info.base_damage
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 0
@@ -77,7 +77,6 @@ func _ready():
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene
-	attack_module.set_texture_as_sprite_frame(ChargeBullet_Level1)
 	
 	attack_modules_and_target_num[attack_module] = 1
 	
@@ -167,7 +166,7 @@ func _calculate_recharge_per_sec():
 	_last_calculated_recharge_rate = base_energy_recharge_per_sec * (main_attack_module.last_calculated_final_attk_speed / main_attack_module.base_attack_speed)
 
 func _calculate_level_of_charge() -> int: # from 1 - 4
-	return int(ceil(((_current_energy) / max_energy) * 3)) + 1
+	return int(ceil(((_current_energy * 3) / max_energy))) + 1
 
 func _get_bullet_sprite_to_use(level_of_charge) -> Texture:
 	if level_of_charge == 1:

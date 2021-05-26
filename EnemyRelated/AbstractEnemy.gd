@@ -335,6 +335,7 @@ func calculate_final_movement_speed() -> float:
 # hit by things functions here. Processes
 # on hit damages and effects.
 func hit_by_bullet(generic_bullet : BaseBullet):
+	generic_bullet.hit_by_enemy(self)
 	generic_bullet.decrease_pierce(pierce_consumed_per_hit)
 	if generic_bullet.attack_module_source != null:
 		connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [generic_bullet.damage_register_id], CONNECT_ONESHOT)

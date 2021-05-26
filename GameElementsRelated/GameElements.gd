@@ -125,7 +125,7 @@ func _on_BuySellLevelRollPanel_reroll():
 		Towers.RE,
 		Towers.CHAOS,
 		Towers.MINI_TESLA,
-		Towers.BEACON_DISH,
+		Towers.SIMPLE_OBELISK,
 		Towers.TESLA,
 	])
 

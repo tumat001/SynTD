@@ -62,6 +62,8 @@ var percent_base_damage_effects : Dictionary = {}
 var base_on_hit_damage_internal_name : String
 var on_hit_damage_adder_effects : Dictionary
 
+var damage_register_id : int
+
 
 var on_hit_effect_scale : float = 1
 # uuid to effect map
@@ -585,7 +587,6 @@ func _attack_enemies(enemies : Array):
 	emit_signal("in_attack", _last_calculated_attack_speed_as_delay, enemies)
 	
 	for enemy in enemies:
-		
 		if attack_sprite_scene != null:
 			var attack_sprite = attack_sprite_scene.instance()
 			if attack_sprite_follow_enemy:

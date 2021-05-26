@@ -40,7 +40,6 @@ func _ready():
 	attack_module.position.y -= 18
 	attack_module.base_on_hit_damage_internal_name = "name"
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
-	attack_module.base_on_hit_affected_by_scale = false
 	
 	
 	var beam_sprite_frame : SpriteFrames = SpriteFrames.new()

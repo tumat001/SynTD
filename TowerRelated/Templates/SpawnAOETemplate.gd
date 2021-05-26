@@ -1,4 +1,6 @@
 
+# LEGACY.. ONLY USED BY SIMPLE OBELISK..
+
 const BaseAOE = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.gd")
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
@@ -19,8 +21,8 @@ var aoe_extra_on_hit_damages : Dictionary
 var aoe_on_hit_effects : Dictionary
 
 var aoe_on_hit_damage_scale : float = 1
-var aoe_base_on_hit_affected_by_scale : bool = false
 var aoe_on_hit_effect_scale : float = 1
+var aoe_base_damage_scale : float = 1
 
 var benefits_from_bonus_on_hit_damage : bool = true
 var benefits_from_bonus_base_damage : bool = true
@@ -51,6 +53,14 @@ var aoe_rotation_deg : float = 0
 
 
 func _spawn_aoe(global_pos : Vector2):
+	var aoe_instance = _construct_aoe()
+	aoe_instance.global_position = global_pos
+	
+	#tree.get_root().add_child(aoe_instance)
+	tree.get_root().call_deferred("add_child", aoe_instance)
+
+
+func _construct_aoe() -> BaseAOE:
 	var aoe_instance : BaseAOE = aoe_scene.instance()
 	
 	aoe_instance.damage_repeat_count = aoe_damage_repeat_count
@@ -67,7 +77,6 @@ func _spawn_aoe(global_pos : Vector2):
 	damage_instance.on_hit_effects = _get_all_scaled_aoe_on_hit_effects()
 	aoe_instance.damage_instance = damage_instance
 	
-	aoe_instance.global_position = global_pos
 	aoe_instance.rotation_degrees = aoe_rotation_deg
 	aoe_instance.shift_x = aoe_shift_x
 	aoe_instance.scale.x = aoe_scale_x
@@ -76,9 +85,7 @@ func _spawn_aoe(global_pos : Vector2):
 	aoe_instance.attack_module_source = attack_module_source
 	aoe_instance.damage_register_id = damage_register_id
 	
-	#tree.get_root().add_child(aoe_instance)
-	tree.get_root().call_deferred("add_child", aoe_instance)
-
+	return aoe_instance
 
 #
 
@@ -86,7 +93,7 @@ func _get_base_damage_of_aoe_as_on_hit_damage() -> OnHitDamage:
 	var modifier : FlatModifier = FlatModifier.new(aoe_base_on_hit_damage_internal_name)
 	modifier.flat_modifier = calculate_final_base_damage()
 	
-	if aoe_on_hit_damage_scale != 1 and aoe_base_on_hit_affected_by_scale:
+	if aoe_base_damage_scale != 1:
 		modifier = modifier.get_copy_scaled_by(aoe_on_hit_damage_scale)
 	
 	return OnHitDamage.new(aoe_base_on_hit_damage_internal_name, modifier, aoe_base_damage_type)
@@ -101,6 +108,8 @@ func calculate_final_base_damage():
 		
 		for flat in aoe_flat_base_damage_modifiers.values():
 			final_base_damage += flat.get_modification_to_value(aoe_base_damage)
+	
+	
 	
 	return final_base_damage
 

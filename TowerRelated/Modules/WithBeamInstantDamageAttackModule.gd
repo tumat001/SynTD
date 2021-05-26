@@ -112,8 +112,7 @@ func _get_available_beam_instance() -> BeamAesthetic:
 	if beam_texture != null:
 		available_beam_instance.set_texture_as_default_anim(beam_texture)
 	elif beam_sprite_frames != null:
-		available_beam_instance.frames = beam_sprite_frames
-		available_beam_instance.playing = true
+		available_beam_instance.set_sprite_frames(beam_sprite_frames)
 	
 	add_child(available_beam_instance)
 	

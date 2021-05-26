@@ -24,9 +24,6 @@ var percent_proj_speed_effects = {}
 var projectile_life_distance : float = 100 setget _set_life_distance
 const _life_distance_bonus : float = 50.0
 
-# signal related
-
-var damage_register_id : int 
 
 # setgets
 
@@ -145,6 +142,13 @@ func _attack_enemy(enemy : AbstractEnemy):
 
 
 func _attack_at_position(arg_pos : Vector2):
+	var bullet = construct_bullet(arg_pos)
+	
+	emit_signal("before_bullet_is_shot", bullet)
+	get_tree().get_root().add_child(bullet)
+
+
+func construct_bullet(arg_pos : Vector2) -> BaseBullet:
 	var bullet : BaseBullet = bullet_scene.instance()
 	
 	if bullet_sprite_frames != null:
@@ -171,9 +175,8 @@ func _attack_at_position(arg_pos : Vector2):
 	bullet.position.y = global_position.y
 	
 	_modify_attack(bullet)
-	emit_signal("before_bullet_is_shot", bullet)
-	get_tree().get_root().add_child(bullet)
-
+	
+	return bullet
 
 func _get_angle(destination_pos : Vector2):
 	var dx = destination_pos.x - global_position.x

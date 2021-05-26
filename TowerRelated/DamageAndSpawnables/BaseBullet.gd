@@ -10,23 +10,24 @@ var pierce
 var direction_as_relative_location : Vector2
 var speed
 var life_distance
+var decrease_life_distance : bool = true
 
 var current_life_distance
 
 var modifications : Array
 
-# Called when the node enters the scene tree for the first time.
+
+
 func _ready():
 	current_life_distance = life_distance
 
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if !current_life_distance == null:
+	if decrease_life_distance:
 		current_life_distance -= delta * speed
-		if current_life_distance <= 0:
-			trigger_on_death_events()
+	
+	if current_life_distance <= 0:
+		trigger_on_death_events()
 
 
 func _physics_process(delta):
@@ -39,6 +40,9 @@ func _physics_process(delta):
 		vector_mov.y *= speed
 		move_and_collide(vector_mov)
 
+
+func hit_by_enemy(enemy):
+	pass
 
 func decrease_pierce(amount):
 	pierce -= amount
