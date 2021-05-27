@@ -9,6 +9,7 @@ const TowerColorsPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInfor
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const InnerBottomPanel = preload("res://GameElementsRelated/InnerBottomPanel.gd")
 const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
+const TargetingPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TargetingPanel/TargetingPanel.gd")
 
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 
@@ -33,6 +34,8 @@ var tower_stats_panel : TowerStatsPanel
 var active_ing_panel : ActiveIngredientsPanel
 var tower_colors_panel : TowerColorsPanel
 var inner_bottom_panel : InnerBottomPanel
+var targeting_panel : TargetingPanel
+
 var synergy_manager
 var stage_round_manager : StageRoundManager
 
@@ -201,7 +204,7 @@ func _show_tower_info_panel(tower : AbstractTower):
 	tower.connect("ingredients_absorbed_changed", self, "_update_ingredients_absorbed_in_info")
 	tower.connect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
 	tower.connect("tower_colors_changed", self, "_update_tower_colors_in_info")
-	
+	tower.connect("targeting_changed", self, "_update_targeting")
 
 func _update_final_range_in_info():
 	tower_stats_panel.update_final_range()
@@ -218,6 +221,9 @@ func _update_ingredients_absorbed_in_info(_new_limit):
 func _update_tower_colors_in_info():
 	tower_colors_panel.update_display()
 
+func _update_targeting():
+	targeting_panel.update_display()
+
 
 func _show_round_panel():
 	right_side_panel.show_round_panel()
@@ -229,6 +235,7 @@ func _show_round_panel():
 		tower_being_shown_in_info.disconnect("ingredients_absorbed_changed", self, "_update_ingredients_absorbed_in_info")
 		tower_being_shown_in_info.disconnect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
 		tower_being_shown_in_info.disconnect("tower_colors_changed", self, "_update_tower_colors_in_info")
+		tower_being_shown_in_info.disconnect("targeting_changed", self, "_update_targeting")
 		
 		tower_being_shown_in_info = null
 

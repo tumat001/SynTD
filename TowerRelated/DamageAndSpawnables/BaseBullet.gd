@@ -2,6 +2,9 @@ extends KinematicBody2D
 
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
+signal hit_an_enemy(me)
+signal on_zero_pierce(me)
+
 var attack_module_source
 var damage_register_id : int
 
@@ -15,7 +18,6 @@ var decrease_life_distance : bool = true
 var current_life_distance
 
 var modifications : Array
-
 
 
 func _ready():
@@ -47,6 +49,7 @@ func hit_by_enemy(enemy):
 func decrease_pierce(amount):
 	pierce -= amount
 	if pierce <= 0:
+		emit_signal("on_zero_pierce", self)
 		trigger_on_death_events()
 
 func trigger_on_death_events():

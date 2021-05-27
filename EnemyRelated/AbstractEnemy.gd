@@ -18,7 +18,7 @@ signal on_death_by_any_cause
 signal on_hit(me)
 signal on_post_mitigated_damage_taken(damage, damage_type, me)
 
-signal reached_end_of_path
+signal reached_end_of_path(me)
 signal on_current_health_changed(current_health)
 signal on_max_health_changed(max_health)
 
@@ -105,7 +105,7 @@ func _physics_process(delta):
 		distance_to_exit -= distance_traveled
 	
 	if unit_offset == 1:
-		call_deferred("emit_signal", "reached_end_of_path")
+		call_deferred("emit_signal", "reached_end_of_path", self)
 
 
 
@@ -431,7 +431,6 @@ func _add_effect(base_effect : EnemyBaseEffect):
 	
 	if to_use_effect is EnemyStunEffect:
 		_stun_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
-		
 		
 	elif to_use_effect is EnemyClearAllEffects:
 		_stun_id_effects_map.clear()

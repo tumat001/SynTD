@@ -180,7 +180,6 @@ func _generate_template():
 	
 	template.aoe_on_hit_damage_scale = 0
 	template.aoe_on_hit_effect_scale = 0
-	template.aoe_base_on_hit_affected_by_scale = false
 	
 	template.aoe_sprite_frames_play_only_once = true
 	#template.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
@@ -190,7 +189,6 @@ func _generate_template():
 	
 	template.attack_module_source = arrow_attack_module
 	template.damage_register_id = Ping_seek_register_id
-
 	
 	return template
 

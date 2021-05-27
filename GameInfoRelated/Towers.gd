@@ -32,7 +32,7 @@ const coin_image = preload("res://TowerRelated/Color_Yellow/Coin/Coin_E.png")
 const beacon_dish_image = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish_Omni.png")
 const mini_tesla_image = preload("res://TowerRelated/Color_Yellow/MiniTesla/MiniTesla_Omni.png")
 const charge_image = preload("res://TowerRelated/Color_Yellow/Charge/Charge_E.png")
-const magnetizer_image = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Barrel_E.png")
+const magnetizer_image = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_WholeBody.png")
 
 # GREEN
 const berrybush_image = preload("res://TowerRelated/Color_Green/BerryBush/BerryBush_Omni.png")
@@ -475,13 +475,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = 4
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_tier = 4
-		info.tower_image_in_buy_card = charge_image
+		info.tower_image_in_buy_card = magnetizer_image
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0.48
 		info.base_pierce = 1
 		info.base_range = 155
-		info.base_damage_type = DamageType.ELEMENTAL
+		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
@@ -490,9 +490,20 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Magnets stick to the first enemy they hit. When the enemy they are stuck to dies, they drop on the ground.",
 			"When there is at least one blue and one red magnet that has hit an enemy, Magnetizer uses Magnetize.",
 			"",
-			"Magnetize: Calls upon all non traveling magnets to form a beam between their opposite types. This beam benefits from base damage buffs. On hit effects and on hit damages are 67% effective."
+			"Magnetize: Calls upon all of this tower's non traveling magnets to form a beam between their opposite types.",
+			"The beam has 7 base damage and deals elemental damage. The beam benefits from base damage buffs. On hit effects and on hit damages are 67% effective."
 		]
 		
+		
+		var expl_attr_mod : PercentModifier = PercentModifier.new("magnetizer_bonus_expl_range")
+		expl_attr_mod.percent_amount = 40
+		expl_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE, expl_attr_mod, StoreOfTowerEffectsUUID.ING_MAGNETIZER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ expl size"
 		
 		
 	
@@ -527,3 +538,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Yellow/MiniTesla/MiniTesla.tscn")
 	elif tower_id == CHARGE:
 		return load("res://TowerRelated/Color_Yellow/Charge/Charge.tscn")
+	elif tower_id == MAGNETIZER:
+		return load("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer.tscn")

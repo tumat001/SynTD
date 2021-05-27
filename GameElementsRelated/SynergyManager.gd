@@ -127,7 +127,7 @@ func _apply_active_synergies_and_remove_old(previous_synergies_res : Array):
 				functionally_equal_syn_res = previous_syn_res
 			
 			if !has_same_synergy_but_different_tier:
-				has_same_synergy_but_different_tier = (active_syn_res.synergy.synergy_effect == previous_syn_res.synergy.synergy_effect) and (active_syn_res.synergy_tier != previous_syn_res.synergy_tier) 
+				has_same_synergy_but_different_tier = (active_syn_res.synergy.synergy_effects == previous_syn_res.synergy.synergy_effects) and (active_syn_res.synergy_tier != previous_syn_res.synergy_tier) 
 				if has_same_synergy_but_different_tier:
 					same_synergy_res_different_tier = active_syn_res
 		
@@ -140,46 +140,38 @@ func _apply_active_synergies_and_remove_old(previous_synergies_res : Array):
 	var all_towers = tower_manager.get_all_active_towers()
 	
 	if old_synergies_to_remove.size() != 0:
-		_remove_synergies_from_towers(old_synergies_to_remove, all_towers)
+		for tower in all_towers:
+			_remove_tower_from_synergies(tower, old_synergies_to_remove)
 	
 	if new_synergies_to_apply.size() != 0:
-		_add_synergies_to_towers(new_synergies_to_apply, all_towers)
-	
+		for tower in all_towers:
+			_make_tower_benefit_from_synergies(tower, new_synergies_to_apply)
 
-func _remove_synergies_from_towers(synergies_to_remove : Array, towers : Array):
-	for tower in towers:
-		for syn_res in synergies_to_remove:
-			var synergy_effect = syn_res.synergy.synergy_effect
-			
-			if synergy_effect is AbstractTowerModifyingSynergyEffect:
-				synergy_effect._remove_syn_from_tower(tower)
 
-func _add_synergies_to_towers(synergies_to_add : Array, towers : Array):
-	for tower in towers:
-		for syn_res in synergies_to_add:
-			var synergy_effect = syn_res.synergy.synergy_effect
-			
+
+func _make_tower_benefit_from_synergies(tower : AbstractTower, synergies_reses : Array):
+	for syn_res in synergies_reses:
+		var synergy_effects = syn_res.synergy.synergy_effects
+		
+		for synergy_effect in synergy_effects:
 			if synergy_effect is AbstractTowerModifyingSynergyEffect:
 				synergy_effect._apply_syn_to_tower(tower, syn_res.synergy_tier)
 
 
+func _remove_tower_from_synergies(tower : AbstractTower, synergies_reses : Array):
+	for syn_res in synergies_reses:
+		var synergy_effects = syn_res.synergy.synergy_effects
+		
+		for synergy_effect in synergy_effects:
+			if synergy_effect is AbstractTowerModifyingSynergyEffect:
+				synergy_effect._remove_syn_from_tower(tower)
+
+
+# From signals
 
 func _make_tower_benefit_from_active_synergies(tower : AbstractTower):
-	for syn_res in active_synergies_res:
-		var synergy_effect = syn_res.synergy.synergy_effect
-		
-		if synergy_effect is AbstractTowerModifyingSynergyEffect:
-			synergy_effect._apply_syn_to_tower(tower, syn_res.synergy_tier)
-
+	_make_tower_benefit_from_synergies(tower, active_synergies_res)
 
 func _undo_tower_benefit_from_active_synergies(tower : AbstractTower):
-	
-	# Previous is used here since updating of active
-	# syn res is done first before calling this method/signal
-	for syn_res in active_synergies_res: #previous_active_synergies_res:
-		var synergy_effect = syn_res.synergy.synergy_effect
-		
-		if synergy_effect is AbstractTowerModifyingSynergyEffect:
-			synergy_effect._remove_syn_from_tower(tower)
-
+	_remove_tower_from_synergies(tower, active_synergies_res)
 

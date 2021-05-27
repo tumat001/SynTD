@@ -22,6 +22,9 @@ signal stage_round_changed(stage_num, round_num)
 signal round_started()
 signal round_ended()
 
+signal life_lost_from_enemy_first_time_in_round(enemy)
+signal life_lost_from_enemy(enemy)
+
 signal end_of_round_gold_earned(gold)
 
 
@@ -35,6 +38,10 @@ var round_started : bool
 var round_fast_forwarded : bool
 
 var enemy_manager : EnemyManager setget _set_enemy_manager
+
+# 
+
+var _lost_life_in_round : bool 
 
 
 func set_game_mode_to_normal():
@@ -57,6 +64,7 @@ func _set_enemy_manager(manager : EnemyManager):
 	enemy_manager = manager
 	
 	enemy_manager.connect("no_enemies_left", self, "end_round")
+	enemy_manager.connect("enemy_escaped", self, "_life_lost_from_enemy")
 
 
 # Round start related
@@ -72,7 +80,7 @@ func start_round():
 
 
 func _before_round_start():
-	pass
+	_lost_life_in_round = false
 
 func _at_round_start():
 	pass
@@ -108,3 +116,14 @@ func _at_round_end():
 
 func _after_round_end():
 	enemy_manager.end_run()
+
+
+# If lives lost
+
+func _life_lost_from_enemy(enemy):
+	emit_signal("life_lost_from_enemy", enemy)
+	
+	if !_lost_life_in_round:
+		emit_signal("life_lost_from_enemy_first_time_in_round", enemy)
+	
+	_lost_life_in_round = true

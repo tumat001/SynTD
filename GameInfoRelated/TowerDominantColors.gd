@@ -49,7 +49,7 @@ var synergies : Dictionary = {
 	[tier_silver_pic, tier_bronze_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	["VIOLET description"],
-	DomSyn_Violet.new()),
+	[DomSyn_Violet.new()]),
 	
 	"White" : ColorSynergy.new("White", [TowerColors.WHITE], [1],
 	[tier_dia_pic],

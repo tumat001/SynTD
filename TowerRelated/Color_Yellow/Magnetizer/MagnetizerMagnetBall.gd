@@ -8,9 +8,7 @@ enum {
 	RED, # NORTH btw
 }
 
-signal hit_an_enemy(me)
-
-var previous_enemy_pos : Vector2
+var offset_from_enemy : Vector2
 var enemy_stuck_to
 var eligible_for_beam_formation : bool = false
 
@@ -20,7 +18,7 @@ var type : int
 onready var bullet_sprite = $BulletSprite
 
 var beam_formation_triggered : bool = false
-var lifetime_after_beam_formation : float = 0.5
+var lifetime_after_beam_formation : float
 var _current_lifetime_after : float = 0
 
 func _ready():
@@ -42,11 +40,17 @@ func _set_sprite_frames_to_use():
 func hit_by_enemy(enemy):
 	
 	if !eligible_for_beam_formation:
+		offset_from_enemy = global_position - enemy.global_position
+		
 		enemy_stuck_to = enemy
 		eligible_for_beam_formation = true
 		decrease_life_distance = false
+		current_life_distance = 500
 		direction_as_relative_location = Vector2(0, 0)
 		speed = 0
+		
+		collision_layer = 0
+		collision_mask = 0
 		
 		call_deferred("emit_signal", "hit_an_enemy", self)
 
@@ -57,14 +61,10 @@ func decrease_pierce(amount):
 
 func _process(delta):
 	if enemy_stuck_to != null:
-		if previous_enemy_pos != null:
-			var curr_enemy_pos = enemy_stuck_to.global_position
-			var shift_pos : Vector2 = curr_enemy_pos - previous_enemy_pos
-			
-			position += shift_pos
-			
 		
-		previous_enemy_pos = enemy_stuck_to.global_position
+		var curr_enemy_pos = enemy_stuck_to.global_position
+		
+		global_position = curr_enemy_pos + offset_from_enemy
 	
 	
 	if beam_formation_triggered:

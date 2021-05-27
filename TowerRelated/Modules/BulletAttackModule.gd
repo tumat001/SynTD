@@ -16,13 +16,27 @@ var benefits_from_bonus_proj_speed : bool = true
 var base_pierce : float = 1
 var flat_pierce_effects = {}
 var percent_pierce_effects = {}
+var last_calculated_final_pierce : float
 
 var base_proj_speed : float = 500
 var flat_proj_speed_effects = {}
 var percent_proj_speed_effects = {}
+var last_calculated_final_proj_speed : float
 
 var projectile_life_distance : float = 100 setget _set_life_distance
 const _life_distance_bonus : float = 50.0
+
+#
+
+const bullet_group_tag : String = "BulletGroupTag"
+
+
+# Init
+
+
+func _ready():
+	calculate_final_pierce()
+	calculate_final_proj_speed()
 
 
 # setgets
@@ -113,7 +127,9 @@ func calculate_final_pierce():
 				continue
 			final_pierce += effect.attribute_as_modifier.get_modification_to_value(base_pierce)
 	
+	last_calculated_final_pierce = final_pierce
 	return final_pierce
+
 
 func calculate_final_proj_speed():
 	#All percent modifiers here are to BASE proj speed only
@@ -130,6 +146,7 @@ func calculate_final_proj_speed():
 				continue
 			final_proj_speed += effect.attribute_as_modifier.get_modification_to_value(base_proj_speed)
 	
+	last_calculated_final_proj_speed = final_proj_speed
 	return final_proj_speed
 
 
@@ -148,7 +165,7 @@ func _attack_at_position(arg_pos : Vector2):
 	get_tree().get_root().add_child(bullet)
 
 
-func construct_bullet(arg_pos : Vector2) -> BaseBullet:
+func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	var bullet : BaseBullet = bullet_scene.instance()
 	
 	if bullet_sprite_frames != null:
@@ -161,18 +178,20 @@ func construct_bullet(arg_pos : Vector2) -> BaseBullet:
 	damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
 	
 	bullet.damage_instance = damage_instance
-	bullet.pierce = calculate_final_pierce()
-	bullet.direction_as_relative_location = Vector2(arg_pos.x - global_position.x, arg_pos.y - global_position.y).normalized()
-	bullet.speed = calculate_final_proj_speed()
+	bullet.pierce = last_calculated_final_pierce
+	bullet.direction_as_relative_location = Vector2(arg_enemy_pos.x - global_position.x, arg_enemy_pos.y - global_position.y).normalized()
+	bullet.speed = last_calculated_final_proj_speed
 	bullet.life_distance = projectile_life_distance
 	bullet.current_life_distance = bullet.life_distance
-	bullet.rotation_degrees = _get_angle(arg_pos)
+	bullet.rotation_degrees = _get_angle(arg_enemy_pos)
 	
 	bullet.attack_module_source = self
 	bullet.damage_register_id = damage_register_id
 	
 	bullet.position.x = global_position.x
 	bullet.position.y = global_position.y
+	
+	bullet.add_to_group(bullet_group_tag)
 	
 	_modify_attack(bullet)
 	
@@ -211,3 +230,21 @@ func set_texture_as_sprite_frame(texture : Texture, anim_name : String = "defaul
 	sprite_frames.add_frame(anim_name, texture)
 	
 	bullet_sprite_frames = sprite_frames
+
+
+#
+
+func on_round_end():
+	.on_round_end()
+	
+	kill_all_created_bullets()
+
+func kill_all_created_bullets():
+	for bullet in get_tree().get_nodes_in_group(bullet_group_tag):
+		if bullet != null:
+			bullet.queue_free()
+
+func queue_free():
+	kill_all_created_bullets()
+	
+	.queue_free()

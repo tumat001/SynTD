@@ -6,10 +6,12 @@ const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttac
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
 
-const SpawnAOEModuleModification = preload("res://TowerRelated/Modification/ModuleModification/SpawnAOEModuleModification.gd")
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
-const SpawnAOETemplate = preload("res://TowerRelated/Templates/SpawnAOETemplate.gd")
+const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
+
+const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
+
 
 const SimpleObeliskBullet_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Bullet.png")
 
@@ -21,9 +23,9 @@ const Explosion07_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/S
 const Explosion08_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_ProjExplosion_08.png")
 
 
-var template : SpawnAOETemplate
+var aoe_attack_module : AOEAttackModule
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.SIMPLE_OBELISK)
 	
@@ -59,38 +61,29 @@ func _ready():
 	attack_module.bullet_scene = BaseBullet_Scene
 	attack_module.set_texture_as_sprite_frame(SimpleObeliskBullet_pic)
 	
+	attack_module.connect("before_bullet_is_shot", self, "_modify_obelisk_bullet")
+	
+	attack_modules_and_target_num[attack_module] = 1
 	
 	# AOE
 	
-	var spawn_aoe_mod : SpawnAOEModuleModification = SpawnAOEModuleModification.new()
-	spawn_aoe_mod.template = _generate_template()
+	aoe_attack_module = AOEAttackModule_Scene.instance()
+	aoe_attack_module.base_damage = info.base_damage
+	aoe_attack_module.base_damage_type = DamageType.ELEMENTAL
+	aoe_attack_module.base_attack_speed = 0
+	aoe_attack_module.base_attack_wind_up = 0
+	aoe_attack_module.base_on_hit_damage_internal_name = "simple_obelisk_explosion_damage"
+	aoe_attack_module.is_main_attack = false
+	aoe_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	
-	#
+	aoe_attack_module.benefits_from_bonus_explosion_scale = true
+	aoe_attack_module.benefits_from_bonus_base_damage = true
+	aoe_attack_module.benefits_from_bonus_attack_speed = false
+	aoe_attack_module.benefits_from_bonus_on_hit_damage = false
+	aoe_attack_module.benefits_from_bonus_on_hit_effect = false
 	
-	attack_module.modifications = [spawn_aoe_mod]
-	attack_modules_and_target_num[attack_module] = 1
+	aoe_attack_module.base_damage_scale = 0.5
 	
-	_post_inherit_ready()
-
-
-func _generate_template():
-	template = SpawnAOETemplate.new()
-	
-	template.aoe_scene = BaseAOE_Scene
-	
-	template.aoe_damage_repeat_count = 1
-	template.aoe_duration = 0.5
-	template.aoe_pierce = -1
-	
-	template.aoe_base_damage = 3
-	template.aoe_base_damage_type = DamageType.ELEMENTAL
-	template.aoe_base_on_hit_damage_internal_name = "simple_obelisk_explosion_base_damage"
-	
-	template.aoe_on_hit_damage_scale = 0.5
-	
-	template.aoe_sprite_frames_play_only_once = true
-	template.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
-	template.tree = get_tree()
 	
 	var sprite_frames = SpriteFrames.new()
 	sprite_frames.add_frame("default", Explosion03_pic)
@@ -100,15 +93,31 @@ func _generate_template():
 	sprite_frames.add_frame("default", Explosion07_pic)
 	sprite_frames.add_frame("default", Explosion08_pic)
 	
-	template.aoe_sprite_frames = sprite_frames
+	aoe_attack_module.aoe_sprite_frames = sprite_frames
+	aoe_attack_module.sprite_frames_only_play_once = true
+	aoe_attack_module.pierce = -1
+	aoe_attack_module.duration = 0.5
+	aoe_attack_module.damage_repeat_count = 1
 	
-	return template
-
-
-# Update damage of template based on this tower's base dmg
-func _emit_final_base_damage_changed():
-	._emit_final_base_damage_changed()
+	aoe_attack_module.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
+	aoe_attack_module.base_aoe_scene = BaseAOE_Scene
+	aoe_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ORIGIN
 	
-	template.aoe_base_damage = main_attack_module.last_calculated_final_damage / 2
+	aoe_attack_module.can_be_commanded_by_tower = false
+	
+	attack_modules_and_target_num[aoe_attack_module] = 1
+	
+	#
+	
+	_post_inherit_ready()
 
 
+func _modify_obelisk_bullet(bullet : BaseBullet):
+	bullet.connect("on_zero_pierce", self, "_summon_explosion")
+
+
+func _summon_explosion(bullet : BaseBullet):
+	var pos = bullet.global_position
+	
+	var aoe = aoe_attack_module.construct_aoe(pos, pos)
+	get_tree().get_root().add_child(aoe)

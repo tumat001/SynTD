@@ -5,13 +5,38 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
+const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
+
+
+const BaseAOE = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.gd")
+const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 
 const MagnetizerMagnetBall_Scene = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerMagnetBall.tscn")
 const MagnetizerMagnetBall = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerMagnetBall.gd")
 
+const MagnetizerBeam_Pic01 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_00.png")
+const MagnetizerBeam_Pic02 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_01.png")
+const MagnetizerBeam_Pic03 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_02.png")
+const MagnetizerBeam_Pic04 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_03.png")
+const MagnetizerBeam_Pic05 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_04.png")
+const MagnetizerBeam_Pic06 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_05.png")
+const MagnetizerBeam_Pic07 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_06.png")
+const MagnetizerBeam_Pic08 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_07.png")
+const MagnetizerBeam_Pic09 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_08.png")
+const MagnetizerBeam_Pic10 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_09.png")
+
+
+const BasePic_Blue = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Blue.png")
+const BasePic_Red = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Red.png")
+
+var magnet_attack_module : AbstractAttackModule
+var beam_attack_module : AOEAttackModule
 
 var activated_blue_magnets : Array = []
 var activated_red_magnets : Array = []
+
+var next_magnet_type : int = MagnetizerMagnetBall.BLUE
+onready var tower_base_sprite : Sprite = $TowerBase/TowerBaseSprite
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -23,39 +48,103 @@ func _ready():
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
 	
+	
+	# Magnet related
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
 	
-	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	attack_module.base_damage = info.base_damage
-	attack_module.base_damage_type = info.base_damage_type
-	attack_module.base_attack_speed = info.base_attk_speed
-	attack_module.base_attack_wind_up = 0
-	attack_module.base_on_hit_damage_internal_name = "sprinkler_base_damage"
-	attack_module.is_main_attack = true
-	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 400
-	attack_module.projectile_life_distance = info.base_range
-	attack_module.module_id = StoreOfAttackModuleID.MAIN
-	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	magnet_attack_module = BulletAttackModule_Scene.instance()
+	magnet_attack_module.base_damage = info.base_damage
+	magnet_attack_module.base_damage_type = info.base_damage_type
+	magnet_attack_module.base_attack_speed = info.base_attk_speed
+	magnet_attack_module.base_attack_wind_up = 0
+	magnet_attack_module.base_on_hit_damage_internal_name = "magnetizer_magnet_base_damage"
+	magnet_attack_module.is_main_attack = true
+	magnet_attack_module.base_pierce = info.base_pierce
+	magnet_attack_module.base_proj_speed = 350
+	magnet_attack_module.projectile_life_distance = info.base_range
+	magnet_attack_module.module_id = StoreOfAttackModuleID.MAIN
+	magnet_attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	
+	magnet_attack_module.benefits_from_bonus_on_hit_damage = false
 	
 	var bullet_shape = CircleShape2D.new()
-	bullet_shape.radius = 5
+	bullet_shape.radius = 7
 	
-	attack_module.bullet_shape = bullet_shape
-	attack_module.bullet_scene = MagnetizerMagnetBall_Scene
+	magnet_attack_module.bullet_shape = bullet_shape
+	magnet_attack_module.bullet_scene = MagnetizerMagnetBall_Scene
 	
-	attack_module.connect("before_bullet_is_shot", self, "_modify_magnet")
+	magnet_attack_module.connect("before_bullet_is_shot", self, "_modify_magnet")
 	
-	attack_modules_and_target_num[attack_module] = 1
+	attack_modules_and_target_num[magnet_attack_module] = 1
+	
+	
+	# Stretched AOE 
+	
+	beam_attack_module = AOEAttackModule_Scene.instance()
+	beam_attack_module.base_damage = 7
+	beam_attack_module.base_damage_type = DamageType.ELEMENTAL
+	beam_attack_module.base_attack_speed = 0
+	beam_attack_module.base_attack_wind_up = 0
+	beam_attack_module.base_on_hit_damage_internal_name = "magnetizer_beam_base_damage"
+	beam_attack_module.is_main_attack = false
+	beam_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	beam_attack_module.pierce = -1
+	
+	beam_attack_module.benefits_from_bonus_attack_speed = false
+	beam_attack_module.on_hit_damage_scale = 0.67
+	beam_attack_module.on_hit_effect_scale = 0.67
+	
+	var sprite_frames : SpriteFrames = SpriteFrames.new()
+	sprite_frames.add_frame("default", MagnetizerBeam_Pic01)
+	sprite_frames.add_frame("default", MagnetizerBeam_Pic02)
+	sprite_frames.add_frame("default", MagnetizerBeam_Pic03)
+	sprite_frames.add_frame("default", MagnetizerBeam_Pic04)
+	sprite_frames.add_frame("default", MagnetizerBeam_Pic05)
+	sprite_frames.add_frame("default", MagnetizerBeam_Pic06)
+	sprite_frames.add_frame("default", MagnetizerBeam_Pic07)
+	sprite_frames.add_frame("default", MagnetizerBeam_Pic08)
+	sprite_frames.add_frame("default", MagnetizerBeam_Pic09)
+	sprite_frames.add_frame("default", MagnetizerBeam_Pic10)
+	
+	
+	beam_attack_module.base_aoe_scene = BaseAOE_Scene
+	beam_attack_module.aoe_sprite_frames = sprite_frames
+	beam_attack_module.sprite_frames_only_play_once = true
+	beam_attack_module.duration = 0.15
+	beam_attack_module.initial_delay = 0.10
+	beam_attack_module.is_decrease_duration = true
+	
+	beam_attack_module.aoe_default_coll_shape = BaseAOE.BaseAOEDefaultShapes.RECTANGLE
+	beam_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.STRECHED_AS_BEAM
+	
+	beam_attack_module.can_be_commanded_by_tower = false
+	
+	attack_modules_and_target_num[beam_attack_module] = 1
 	
 	_post_inherit_ready()
 
 
+# Magnet related
+
 func _modify_magnet(magnet : MagnetizerMagnetBall):
 	magnet.connect("hit_an_enemy", self, "_magnet_hit_an_enemy")
+	
+	magnet.type = next_magnet_type
+	magnet.lifetime_after_beam_formation = 0.15
+	magnet.rotation_degrees = 0
+	_cycle_magnet_type()
+	
+	magnet_attack_module.range_module.targeting_cycle_right()
 
+
+func _cycle_magnet_type():
+	if next_magnet_type == MagnetizerMagnetBall.BLUE:
+		set_next_magnet_type_and_update_others(MagnetizerMagnetBall.RED)
+	else:
+		set_next_magnet_type_and_update_others(MagnetizerMagnetBall.BLUE)
 
 func _magnet_hit_an_enemy(magnet : MagnetizerMagnetBall):
 	if magnet.type == MagnetizerMagnetBall.RED:
@@ -66,7 +155,50 @@ func _magnet_hit_an_enemy(magnet : MagnetizerMagnetBall):
 	_attempt_form_beam()
 
 
+# Round related
+
+func _on_round_start():
+	._on_round_start()
+	
+	set_next_magnet_type_and_update_others(MagnetizerMagnetBall.BLUE)
+
+func set_next_magnet_type_and_update_others(type : int):
+	next_magnet_type = type
+	
+	if next_magnet_type == MagnetizerMagnetBall.BLUE:
+		tower_base_sprite.texture = BasePic_Red
+	else:
+		tower_base_sprite.texture = BasePic_Blue
+
+func _on_round_end():
+	._on_round_end()
+	
+	for blue in activated_blue_magnets:
+		blue.queue_free()
+	activated_blue_magnets.clear()
+	
+	for red in activated_red_magnets:
+		red.queue_free()
+	activated_red_magnets.clear()
+
 # Activation of Magnetize related
 
 func _attempt_form_beam():
-	pass
+	if _can_form_beam():
+		for blue_magnet in activated_blue_magnets:
+			for red_magnet in activated_red_magnets:
+				_form_beam_between_points(blue_magnet.global_position, red_magnet.global_position)
+				
+				red_magnet.used_in_beam_formation()
+				activated_red_magnets.erase(red_magnet)
+			
+			blue_magnet.used_in_beam_formation()
+			activated_blue_magnets.erase(blue_magnet)
+
+func _can_form_beam() -> bool:
+	return activated_blue_magnets.size() >= 1 and activated_red_magnets.size() >= 1
+
+func _form_beam_between_points(origin_pos : Vector2, destination_pos : Vector2):
+	var aoe = beam_attack_module.construct_aoe(origin_pos, destination_pos)
+	get_tree().get_root().add_child(aoe)
+

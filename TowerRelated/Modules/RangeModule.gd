@@ -9,6 +9,8 @@ signal enemy_entered_range(enemy)
 signal enemy_left_range(enemy)
 signal current_enemy_left_range(enemy)
 
+signal targeting_changed
+
 var benefits_from_bonus_range : bool = true
 
 var base_range_radius : float
@@ -45,6 +47,7 @@ func targeting_cycle_left():
 	
 	_last_used_targeting_option_index = _current_targeting_option_index
 	_current_targeting_option_index = to_be
+	call_deferred("emit_signal", "targeting_changed")
 
 func targeting_cycle_right():
 	var to_be : int = _current_targeting_option_index + 1
@@ -53,6 +56,7 @@ func targeting_cycle_right():
 	
 	_last_used_targeting_option_index = _current_targeting_option_index
 	_current_targeting_option_index = to_be
+	call_deferred("emit_signal", "targeting_changed")
 
 
 func add_targeting(targeting : int):
@@ -64,6 +68,7 @@ func set_targeting(targeting : int):
 	if index_of_targeting != -1:
 		_last_used_targeting_option_index = _current_targeting_option_index
 		_current_targeting_option_index = index_of_targeting
+		call_deferred("emit_signal", "targeting_changed")
 
 func clear_all_targeting():
 	all_targeting_options.clear()

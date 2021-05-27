@@ -11,7 +11,7 @@ const ENEMY_GROUP_TAG : String = "Enemies"
 
 signal no_enemies_left
 signal enemy_spawned(enemy)
-
+signal enemy_escaped(enemy)
 
 var health_manager : HealthManager
 
@@ -91,12 +91,15 @@ func _spawn_enemy(enemy_id):
 	enemy_instance.base_player_damage *= enemy_damage_multiplier
 	enemy_instance.z_index = ZIndexStore.ENEMIES
 	
+	
 	# Enemy add to group
 	enemy_instance.add_to_group(ENEMY_GROUP_TAG)
 	
 	# Path related
 	var path = _pick_path_and_switch_index_to_next()
 	path.add_child(enemy_instance)
+	
+	call_deferred("emit_signal", "enemy_spawned", self)
 
 
 func _pick_path_and_switch_index_to_next() -> EnemyPath:
@@ -137,4 +140,5 @@ func _enemy_reached_end(enemy : AbstractEnemy):
 	
 	health_manager.decrease_health_by(total_damage, HealthManager.DecreaseHealthSource.ENEMY)
 	
+	emit_signal("enemy_escaped", self)
 	enemy.queue_free()

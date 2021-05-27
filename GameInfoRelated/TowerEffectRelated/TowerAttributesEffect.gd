@@ -5,6 +5,7 @@ const atk_speed_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformat
 const range_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_RangeIncrease.png")
 const pierce_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Pierce.png")
 const proj_speed_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_ProjSpeed.png")
+const explosion_size_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_ExplosionSizeIncrease.png")
 
 enum {
 	FLAT_BASE_DAMAGE_BONUS,
@@ -21,6 +22,9 @@ enum {
 	
 	FLAT_PROJ_SPEED,
 	PERCENT_BASE_PROJ_SPEED,
+	
+	FLAT_EXPLOSION_SCALE,
+	PERCENT_BASE_EXPLOSION_SCALE, # Includes aoe beam width
 	
 	# PUT OTHER CUSTOM THINGS HERE
 }
@@ -66,6 +70,10 @@ func _get_description() -> String:
 		return _generate_flat_description("bonus proj speed")
 	elif attribute_type == PERCENT_BASE_PROJ_SPEED:
 		return _generate_percent_description("proj speed")
+	elif attribute_type == FLAT_EXPLOSION_SCALE:
+		return _generate_flat_description("bonus explosion size")
+	elif attribute_type == PERCENT_BASE_EXPLOSION_SCALE:
+		return _generate_percent_description("explosion size")
 	
 	return "Err"
 
@@ -107,6 +115,10 @@ func _get_icon() -> Texture:
 		return proj_speed_inc
 	elif attribute_type == PERCENT_BASE_PROJ_SPEED:
 		return proj_speed_inc
+	elif attribute_type == FLAT_EXPLOSION_SCALE:
+		return explosion_size_inc
+	elif attribute_type == PERCENT_BASE_EXPLOSION_SCALE:
+		return explosion_size_inc
 	
 	
 	return null

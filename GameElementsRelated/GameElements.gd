@@ -19,6 +19,7 @@ var in_map_placables_manager : InMapPlacablesManager
 var synergy_manager : SynergyManager
 var inner_bottom_panel : InnerBottomPanel
 var right_side_panel : RightSidePanel
+var targeting_panel
 var tower_inventory_bench
 var tower_manager : TowerManager
 var gold_manager : GoldManager
@@ -44,6 +45,8 @@ func _ready():
 	health_manager = $HealthManager
 	enemy_manager = $EnemyManager
 	
+	targeting_panel = right_side_panel.tower_info_panel.targeting_panel
+	
 	round_status_panel = right_side_panel.round_status_panel
 	round_info_panel = round_status_panel.round_info_panel
 	
@@ -55,6 +58,8 @@ func _ready():
 	tower_manager.tower_stats_panel = right_side_panel.tower_info_panel.tower_stats_panel
 	tower_manager.active_ing_panel = right_side_panel.tower_info_panel.active_ing_panel
 	tower_manager.tower_colors_panel = right_side_panel.tower_info_panel.tower_colors_panel
+	tower_manager.targeting_panel = targeting_panel
+	
 	tower_manager.gold_manager = gold_manager
 	tower_manager.stage_round_manager = stage_round_manager
 	
@@ -124,8 +129,8 @@ func _on_BuySellLevelRollPanel_reroll():
 	$BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel.update_new_rolled_towers([
 		Towers.RE,
 		Towers.CHAOS,
-		Towers.MINI_TESLA,
-		Towers.SIMPLE_OBELISK,
+		Towers.MAGNETIZER,
+		Towers.CHARGE,
 		Towers.TESLA,
 	])
 

@@ -23,6 +23,7 @@ const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelate
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
+const AOEAttackModule = preload("res://TowerRelated/Modules/AOEAttackModule.gd")
 
 const StoreOfTowerEffectsUUID = preload("res://GameInfoRelated/TowerEffectRelated/StoreOfTowerEffectsUUID.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
@@ -50,6 +51,7 @@ signal final_range_changed
 signal ingredients_absorbed_changed
 signal ingredients_limit_changed(new_limit)
 signal tower_colors_changed
+signal targeting_changed
 
 export var tower_highlight_sprite : Resource
 
@@ -122,8 +124,6 @@ func _post_inherit_ready():
 			add_child(range_module)
 		
 		range_module.update_range() 
-		range_module.connect("final_range_changed", self, "_emit_final_range_changed")
-	
 	
 	_add_all_modules_as_children()
 
@@ -133,20 +133,22 @@ func _add_all_modules_as_children():
 
 
 func _emit_final_range_changed():
-	range_module.calculate_final_range_radius()
+	#range_module.calculate_final_range_radius()
 	call_deferred("emit_signal", "final_range_changed")
 
 func _emit_final_base_damage_changed():
-	main_attack_module.calculate_final_base_damage()
+	#main_attack_module.calculate_final_base_damage()
 	call_deferred("emit_signal", "final_base_damage_changed")
 
 func _emit_final_attack_speed_changed():
-	main_attack_module.calculate_final_attack_speed()
+	#main_attack_module.calculate_final_attack_speed()
 	call_deferred("emit_signal", "final_attack_speed_changed")
 
 func _emit_ingredients_absorbed_changed():
 	call_deferred("emit_signal", "ingredients_absorbed_changed")
 
+func _emit_targeting_changed():
+	call_deferred("emit_signal", "targeting_changed")
 
 # Adding Attack modules related
 
@@ -173,7 +175,7 @@ func add_attack_module(attack_module : AbstractAttackModule, num_of_targets : in
 			
 			range_module.update_range() 
 			range_module.connect("final_range_changed", self, "_emit_final_range_changed")
-		
+			range_module.connect("targeting_changed", self, "_emit_targeting_changed")
 	
 	if benefit_from_existing_tower_buffs:
 		for tower_effect in _all_uuid_tower_buffs_map.values():
@@ -183,9 +185,15 @@ func add_attack_module(attack_module : AbstractAttackModule, num_of_targets : in
 	attack_modules_and_target_num[attack_module] = num_of_targets
 	emit_signal("attack_module_added", attack_module)
 
+
 func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 	for tower_effect in _all_uuid_tower_buffs_map.values():
 		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
+	
+	if attack_module_to_remove.range_module == range_module:
+		range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
+		range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
+	
 	
 	attack_modules_and_target_num.erase(attack_module_to_remove)
 	emit_signal("attack_module_removed", attack_module_to_remove)
@@ -275,6 +283,8 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 			_add_pierce_effect(tower_base_effect, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_PROJ_SPEED or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_PROJ_SPEED:
 			_add_proj_speed_effect(tower_base_effect, target_modules)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_EXPLOSION_SCALE or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE:
+			_add_explosion_scale_effect(tower_base_effect, target_modules)
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_add_on_hit_damage_adder_effect(tower_base_effect, target_modules)
@@ -318,6 +328,8 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 			_remove_pierce_effect(tower_base_effect.effect_uuid, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_PROJ_SPEED or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_PROJ_SPEED:
 			_remove_proj_speed_effect(tower_base_effect.effect_uuid, target_modules)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_EXPLOSION_SCALE or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE:
+			_remove_explosion_scale_effect(tower_base_effect.effect_uuid, target_modules)
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_remove_on_hit_damage_adder_effect(tower_base_effect.effect_uuid, target_modules)
@@ -346,9 +358,11 @@ func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect, target_
 				module.percent_attack_speed_effects[tower_attr_effect.effect_uuid] = tower_attr_effect
 			elif tower_attr_effect.attribute_type == TowerAttributesEffect.FLAT_ATTACK_SPEED:
 				module.flat_attack_speed_effects[tower_attr_effect.effect_uuid] = tower_attr_effect
-		
-		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
-			_emit_final_attack_speed_changed()
+			
+			module.calculate_all_speed_related_attributes()
+			
+			if module == main_attack_module:
+				_emit_final_attack_speed_changed()
 
 func _remove_attack_speed_effect(attr_effect_uuid : int, target_modules : Array):
 	for module in target_modules:
@@ -356,9 +370,10 @@ func _remove_attack_speed_effect(attr_effect_uuid : int, target_modules : Array)
 		if module.benefits_from_bonus_attack_speed:
 			module.percent_attack_speed_effects.erase(attr_effect_uuid)
 			module.flat_attack_speed_effects.erase(attr_effect_uuid)
-		
-		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
-			_emit_final_attack_speed_changed()
+			module.calculate_all_speed_related_attributes()
+			
+			if module == main_attack_module:
+				_emit_final_attack_speed_changed()
 
 
 func _add_base_damage_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
@@ -369,9 +384,11 @@ func _add_base_damage_effect(attr_effect : TowerAttributesEffect, target_modules
 				module.percent_base_damage_effects[attr_effect.effect_uuid] = attr_effect
 			elif attr_effect.attribute_type == TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS:
 				module.flat_base_damage_effects[attr_effect.effect_uuid] = attr_effect
-		
-		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
-			_emit_final_base_damage_changed()
+			
+			module.calculate_final_base_damage()
+			
+			if module == main_attack_module:
+				_emit_final_base_damage_changed()
 
 func _remove_base_damage_effect(attr_effect_uuid : int, target_modules : Array):
 	for module in target_modules:
@@ -379,9 +396,11 @@ func _remove_base_damage_effect(attr_effect_uuid : int, target_modules : Array):
 		if module.benefits_from_bonus_base_damage:
 			module.percent_base_damage_effects.erase(attr_effect_uuid)
 			module.flat_base_damage_effects.erase(attr_effect_uuid)
-		
-		if module == main_attack_module and module.benefits_from_bonus_attack_speed:
-			_emit_final_base_damage_changed()
+			
+			module.calculate_final_base_damage()
+			
+			if module == main_attack_module:
+				_emit_final_base_damage_changed()
 
 
 func _add_on_hit_damage_adder_effect(on_hit_adder : TowerOnHitDamageAdderEffect, target_modules : Array):
@@ -460,6 +479,9 @@ func _add_pierce_effect(attr_effect : TowerAttributesEffect, target_modules : Ar
 				module.percent_pierce_effects[attr_effect.effect_uuid] = attr_effect
 			elif attr_effect.attribute_type == TowerAttributesEffect.FLAT_PIERCE:
 				module.flat_pierce_effects[attr_effect.effect_uuid] = attr_effect
+			
+			module.calculate_final_pierce()
+
 
 func _remove_pierce_effect(attr_effect_uuid : int, target_modules : Array):
 	for module in target_modules:
@@ -467,6 +489,7 @@ func _remove_pierce_effect(attr_effect_uuid : int, target_modules : Array):
 		if module is BulletAttackModule and module.benefits_from_bonus_pierce:
 			module.percent_pierce_effects.erase(attr_effect_uuid)
 			module.flat_pierce_effects.erase(attr_effect_uuid)
+			module.calculate_final_pierce()
 
 
 func _add_proj_speed_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
@@ -477,13 +500,42 @@ func _add_proj_speed_effect(attr_effect : TowerAttributesEffect, target_modules 
 				module.percent_proj_speed_effects[attr_effect.effect_uuid] = attr_effect
 			elif attr_effect.attribute_type == TowerAttributesEffect.FLAT_PROJ_SPEED:
 				module.flat_proj_speed_effects[attr_effect.effect_uuid] = attr_effect
+			
+			module.calculate_final_proj_speed()
+
 
 func _remove_proj_speed_effect(attr_effect_uuid : int, target_modules : Array):
 	for module in target_modules:
 		
-		if module is BulletAttackModule and module.benefits_from_bonus_pierce:
+		if module is BulletAttackModule and module.benefits_from_bonus_proj_speed:
 			module.percent_proj_speed_effects.erase(attr_effect_uuid)
 			module.flat_proj_speed_effects.erase(attr_effect_uuid)
+			
+			module.calculate_final_proj_speed()
+
+
+func _add_explosion_scale_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
+	for module in target_modules:
+		
+		if module is AOEAttackModule and module.benefits_from_bonus_explosion_scale:
+			if attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE:
+				module.percent_explosion_scale_effects[attr_effect.effect_uuid] = attr_effect
+			elif attr_effect.attribute_type == TowerAttributesEffect.FLAT_EXPLOSION_SCALE:
+				module.flat_explosion_scale_effects[attr_effect.effect_uuid] = attr_effect
+			
+			module.calculate_final_explosion_scale()
+
+
+func _remove_explosion_scale_effect(attr_effect_uuid : int, target_modules : Array):
+	for module in target_modules:
+		
+		if module is AOEAttackModule and module.benefits_from_bonus_explosion_scale:
+			module.percent_explosion_scale_effects.erase(attr_effect_uuid)
+			module.flat_explosion_scale_effects.erase(attr_effect_uuid)
+			
+			module.calculate_final_explosion_scale()
+
+
 
 func _add_on_hit_effect_adder_effect(effect_adder : TowerOnHitEffectAdderEffect, target_modules : Array):
 	for module in target_modules:

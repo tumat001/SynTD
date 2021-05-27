@@ -113,8 +113,8 @@ func reset_attack_timers():
 
 
 func _ready():
-	last_calculated_final_attk_speed = base_attack_speed
-	last_calculated_final_damage = base_damage
+	calculate_all_speed_related_attributes()
+	calculate_final_base_damage()
 	
 
 func _set_range_module(new_module):
@@ -241,6 +241,12 @@ func time_passed(delta):
 
 
 # Calculates attack speed, and returns attack delay
+func calculate_all_speed_related_attributes():
+	calculate_final_attack_speed()
+	calculate_final_attack_wind_up()
+	calculate_final_burst_attack_speed()
+
+
 func calculate_final_attack_speed() -> float:
 	if original_time_metadata == Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
 		return base_attack_speed
@@ -637,7 +643,6 @@ func enable_module():
 # On Hit Damages
 
 func calculate_final_base_damage():
-	#All percent modifiers here are to BASE damage only
 	var final_base_damage = base_damage
 	
 	if benefits_from_bonus_base_damage:
