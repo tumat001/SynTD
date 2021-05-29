@@ -20,21 +20,28 @@ const ChargeBar_3 = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Ba
 const ChargeBar_4 = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Bar04.png")
 const ChargeBar_5 = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Bar05.png")
 const ChargeBar_6 = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Bar06.png")
+const ChargeBar_6_Special = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Bar06_WithEnergy.png")
 
 const proj_speed_level_1 : float = 300.0
 const proj_speed_level_2 : float = 400.0
 const proj_speed_level_3 : float = 500.0
 const proj_speed_level_4 : float = 650.0
 
+const original_max_on_hit_damage : float = 16.0
+const original_max_energy : float = 100.0
+const original_base_energy_recharge_per_sec : float = 20.0
 
-var max_on_hit_damage : float = 16.0
-var max_energy : float = 100.0
-var base_energy_recharge_per_sec : float = 8.0
-var _last_calculated_recharge_rate : float = 8.0
+
+var max_on_hit_damage : float = original_max_on_hit_damage
+var max_energy : float = original_max_energy
+var base_energy_recharge_per_sec : float = original_base_energy_recharge_per_sec
+var _last_calculated_recharge_rate : float = 20.0
 
 var _current_energy : float = 0.0
-var _current_energy_recharge_per_sec : float = 8
+var _current_energy_recharge_per_sec : float = 20.0
 var _current_cooldown_before_recharge : float = 0
+
+var _current_chargebar_06 : Texture = ChargeBar_6
 
 
 var bonus_on_hit_damage : OnHitDamage
@@ -128,7 +135,7 @@ func _process(delta):
 				
 				
 				if _current_energy >= max_energy:
-					charge_bar_sprite.texture = ChargeBar_6
+					charge_bar_sprite.texture = _current_chargebar_06
 				elif _current_energy > max_energy * 5 / 6:
 					charge_bar_sprite.texture = ChargeBar_5
 				elif _current_energy > max_energy * 4 / 6:
@@ -204,10 +211,43 @@ func _modify_bullet_before_shooting(bullet : BaseBullet):
 		s_frames.add_frame("default", _get_bullet_sprite_to_use(level_of_charge))
 		bullet.set_sprite_frames(s_frames)
 	
-	if bullet.speed == -20: # it was set to 20 (look at up)
+	if bullet.speed == -20: # it was set to -20 (look at up)
 		bullet.speed = _get_proj_speed_to_use(level_of_charge)
 	
 	_update_on_hit_damage_to_use()
 	bullet.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.CHARGE_BONUS_ON_HIT] = bonus_on_hit_damage
 	
 	_current_energy = 0
+
+
+# Module related
+
+func set_energy_module(module):
+	.set_energy_module(module)
+	
+	if module != null:
+		module.module_effect_descriptions = [
+			"Max on hit damage increased to 56. Recharges a little bit faster."
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	max_on_hit_damage = 56.0
+	base_energy_recharge_per_sec = 30.0
+	_current_chargebar_06 = ChargeBar_6_Special
+	
+	if charge_bar_sprite != null:
+		charge_bar_sprite.texture = _current_chargebar_06
+	
+	_calculate_recharge_per_sec()
+
+
+func _module_turned_off():
+	max_on_hit_damage = original_max_on_hit_damage
+	base_energy_recharge_per_sec = original_base_energy_recharge_per_sec
+	_current_chargebar_06 = ChargeBar_6
+	
+	if charge_bar_sprite != null:
+		charge_bar_sprite.texture = _current_chargebar_06
+	
+	_calculate_recharge_per_sec()

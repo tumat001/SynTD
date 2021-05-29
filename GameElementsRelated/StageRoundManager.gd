@@ -19,8 +19,8 @@ enum Mode {
 
 
 signal stage_round_changed(stage_num, round_num)
-signal round_started()
-signal round_ended()
+signal round_started(current_stageround)
+signal round_ended(current_stageround)
 
 signal life_lost_from_enemy_first_time_in_round(enemy)
 signal life_lost_from_enemy(enemy)
@@ -110,6 +110,7 @@ func _before_round_end():
 	current_stageround = stagerounds.stage_rounds[current_stageround_index]
 	
 	call_deferred("emit_signal", "end_of_round_gold_earned", current_stageround.end_of_round_gold, GoldManager.IncreaseGoldSource.END_OF_ROUND)
+
 
 func _at_round_end():
 	pass

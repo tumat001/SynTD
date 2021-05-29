@@ -1,0 +1,102 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModule_Header.png" type="Texture" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModule_Background.png" type="Texture" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModuleButton_InfoButton.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModuleButton_On.png" type="Texture" id=5]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModulePanel.gd" type="Script" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+size = 8
+font_data = ExtResource( 1 )
+
+[node name="EnergyModulePanel" type="MarginContainer"]
+margin_right = 85.0
+margin_bottom = 53.0
+mouse_filter = 2
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 85.0
+margin_bottom = 53.0
+mouse_filter = 2
+size_flags_horizontal = 6
+custom_constants/separation = 0
+
+[node name="HeaderMarginer" type="MarginContainer" parent="VBoxContainer"]
+margin_left = 12.0
+margin_right = 72.0
+margin_bottom = 13.0
+mouse_filter = 2
+size_flags_horizontal = 6
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HeaderMarginer"]
+margin_right = 60.0
+margin_bottom = 13.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HeaderMarginer"]
+margin_right = 60.0
+margin_bottom = 13.0
+mouse_filter = 2
+custom_constants/margin_top = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HeaderMarginer/MarginContainer"]
+margin_top = 3.0
+margin_right = 60.0
+margin_bottom = 12.0
+custom_fonts/font = SubResource( 1 )
+text = "E-Module"
+align = 1
+
+[node name="BodyMarginer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 13.0
+margin_right = 85.0
+margin_bottom = 53.0
+mouse_filter = 2
+size_flags_horizontal = 6
+
+[node name="BodyBackground" type="TextureRect" parent="VBoxContainer/BodyMarginer"]
+margin_right = 85.0
+margin_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+
+[node name="EnergyModuleButton" type="TextureButton" parent="VBoxContainer/BodyMarginer"]
+margin_left = 28.0
+margin_top = 6.0
+margin_right = 56.0
+margin_bottom = 33.0
+focus_mode = 0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+enabled_focus_mode = 0
+texture_normal = ExtResource( 5 )
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/BodyMarginer"]
+margin_left = 68.0
+margin_right = 85.0
+margin_bottom = 17.0
+mouse_filter = 2
+size_flags_horizontal = 10
+size_flags_vertical = 2
+custom_constants/margin_right = 3
+custom_constants/margin_top = 3
+
+[node name="EffectDescriptionButton" type="TextureButton" parent="VBoxContainer/BodyMarginer/MarginContainer"]
+margin_top = 3.0
+margin_right = 14.0
+margin_bottom = 17.0
+focus_mode = 0
+size_flags_horizontal = 10
+size_flags_vertical = 2
+enabled_focus_mode = 0
+texture_normal = ExtResource( 4 )
+[connection signal="pressed" from="VBoxContainer/BodyMarginer/EnergyModuleButton" to="." method="_on_EnergyModuleButton_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/BodyMarginer/MarginContainer/EffectDescriptionButton" to="." method="_on_EffectDescriptionButton_mouse_entered"]
+[connection signal="mouse_exited" from="VBoxContainer/BodyMarginer/MarginContainer/EffectDescriptionButton" to="." method="_on_EffectDescriptionButton_mouse_exited"]

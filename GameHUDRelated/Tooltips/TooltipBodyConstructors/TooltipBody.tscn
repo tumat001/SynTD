@@ -4,7 +4,6 @@
 
 [node name="TooltipBody" type="MarginContainer"]
 margin_right = 40.0
-margin_bottom = 40.0
 mouse_filter = 2
 script = ExtResource( 1 )
 __meta__ = {
@@ -13,6 +12,6 @@ __meta__ = {
 
 [node name="RowContainer" type="VBoxContainer" parent="."]
 margin_right = 40.0
-margin_bottom = 40.0
 mouse_filter = 2
+size_flags_vertical = 2
 custom_constants/separation = 5

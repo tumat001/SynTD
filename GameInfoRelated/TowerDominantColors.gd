@@ -18,6 +18,9 @@ const syn_dom_white = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPan
 const syn_dom_black = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Black.png")
 
 const DomSyn_Violet = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Violet.gd")
+const DomSyn_Yellow_GoldIncome = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_GoldIncome.gd")
+const DomSyn_Yellow_EnergyBattery = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_EnergyBattery.gd")
+
 
 var synergies : Dictionary = {
 	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [6, 4, 2],
@@ -30,10 +33,11 @@ var synergies : Dictionary = {
 	syn_dom_orange,
 	["ORANGE description"]),
 	
-	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [9, 6, 3],
+	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [8, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
-	["YELLOW description"]),
+	["YELLOW description"],
+	[DomSyn_Yellow_GoldIncome.new(), DomSyn_Yellow_EnergyBattery.new()]),
 	
 	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [3],
 	[tier_bronze_pic],
@@ -62,3 +66,5 @@ var synergies : Dictionary = {
 	["BLACK description"])
 }
 
+func _init():
+	pass

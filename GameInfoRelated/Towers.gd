@@ -215,7 +215,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 2
 		info.tower_image_in_buy_card = railgun_image
 		
-		info.base_damage = 6
+		info.base_damage = 7
 		info.base_attk_speed = 0.25
 		info.base_pierce = 4
 		info.base_range = 100
@@ -444,7 +444,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 3
 		info.tower_image_in_buy_card = charge_image
 		
-		info.base_damage = 2
+		info.base_damage = 3
 		info.base_attk_speed = 0.65
 		info.base_pierce = 1
 		info.base_range = 90

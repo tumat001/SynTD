@@ -31,6 +31,7 @@ const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const ingredient_decline_pic = preload("res://GameHUDRelated/BottomPanel/IngredientMode_CannotCombine.png")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 
+
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self)
 signal tower_toggle_show_info
@@ -52,6 +53,9 @@ signal ingredients_absorbed_changed
 signal ingredients_limit_changed(new_limit)
 signal tower_colors_changed
 signal targeting_changed
+
+signal energy_module_attached
+signal energy_module_detached
 
 export var tower_highlight_sprite : Resource
 
@@ -107,6 +111,12 @@ var _is_full_sellback : bool = false
 # Round related
 
 var is_round_started : bool = false setget _set_round_started
+
+
+# YELLOW SYN
+
+var energy_module  setget set_energy_module
+
 
 
 # Initialization
@@ -927,9 +937,39 @@ func set_tower_sprite_modulate(color : Color):
 
 
 # Tracking of towers related
+
+func is_current_placable_in_map() -> bool:
+	return current_placable is InMapAreaPlacable
+
 func queue_free():
 	is_contributing_to_synergy = false
 	current_placable.tower_occupying = null
 	
-	emit_signal("tower_in_queue_free") # synergy updated from tower manager
+	emit_signal("tower_in_queue_free", self) # synergy updated from tower manager
 	.queue_free()
+
+
+# energy module related
+
+func set_energy_module(module):
+	if energy_module != null:
+		energy_module.tower_connected_to = null
+		energy_module.module_effect_descriptions = []
+		
+		call_deferred("emit_signal", "energy_module_detached")
+		energy_module.disconnect("module_turned_on", self, "_module_turned_on")
+		energy_module.disconnect("module_turned_off", self, "_module_turned_off")
+	
+	if module != null:
+		energy_module = module
+		energy_module.tower_connected_to = self
+		call_deferred("emit_signal", "energy_module_attached")
+		energy_module.connect("module_turned_on", self, "_module_turned_on")
+		energy_module.connect("module_turned_off", self, "_module_turned_off")
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	pass
+
+func _module_turned_off():
+	pass

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/TowerPowerOn.png-717de5488091c8b8a210352f31725616.stex"
+path="res://.import/EffectDescription_Body.png-3d8a0c6c56001acb91c7f6339dab644d.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerPowerOn.png"
-dest_files=[ "res://.import/TowerPowerOn.png-717de5488091c8b8a210352f31725616.stex" ]
+source_file="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EffectDescription_Body.png"
+dest_files=[ "res://.import/EffectDescription_Body.png-3d8a0c6c56001acb91c7f6339dab644d.stex" ]
 
 [params]
 

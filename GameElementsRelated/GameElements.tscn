@@ -104,31 +104,57 @@ margin_bottom = 100.0
 mouse_filter = 2
 texture = ExtResource( 1 )
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BottomPanel"]
+[node name="HBoxContainer" type="MarginContainer" parent="BottomPanel"]
 margin_right = 960.0
 margin_bottom = 100.0
+
+[node name="ColorWheelPanel" type="MarginContainer" parent="BottomPanel/HBoxContainer"]
+margin_top = 10.0
+margin_right = 90.0
+margin_bottom = 90.0
 mouse_filter = 2
+size_flags_horizontal = 2
+size_flags_vertical = 6
+custom_constants/margin_left = 10
+
+[node name="ColorWheelSprite" type="TextureButton" parent="BottomPanel/HBoxContainer/ColorWheelPanel"]
+margin_left = 10.0
+margin_right = 90.0
+margin_bottom = 80.0
+focus_mode = 0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+action_mode = 0
+enabled_focus_mode = 0
+texture_normal = ExtResource( 6 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BottomPanel/HBoxContainer"]
+margin_left = 104.0
+margin_right = 855.0
+margin_bottom = 100.0
+mouse_filter = 2
+size_flags_horizontal = 6
 custom_constants/separation = 0
 
-[node name="GoldPanel" type="MarginContainer" parent="BottomPanel/VBoxContainer"]
-margin_left = 450.0
-margin_right = 509.0
+[node name="GoldPanel" type="MarginContainer" parent="BottomPanel/HBoxContainer/VBoxContainer"]
+margin_left = 346.0
+margin_right = 405.0
 margin_bottom = 19.0
 mouse_filter = 2
 size_flags_horizontal = 4
 
-[node name="GoldBackground" type="TextureRect" parent="BottomPanel/VBoxContainer/GoldPanel"]
+[node name="GoldBackground" type="TextureRect" parent="BottomPanel/HBoxContainer/VBoxContainer/GoldPanel"]
 margin_right = 59.0
 margin_bottom = 19.0
 mouse_filter = 2
 texture = ExtResource( 2 )
 
-[node name="MarginContainer3" type="MarginContainer" parent="BottomPanel/VBoxContainer/GoldPanel"]
+[node name="MarginContainer3" type="MarginContainer" parent="BottomPanel/HBoxContainer/VBoxContainer/GoldPanel"]
 margin_right = 59.0
 margin_bottom = 19.0
 custom_constants/margin_right = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="BottomPanel/VBoxContainer/GoldPanel/MarginContainer3"]
+[node name="MarginContainer" type="MarginContainer" parent="BottomPanel/HBoxContainer/VBoxContainer/GoldPanel/MarginContainer3"]
 margin_right = 29.0
 margin_bottom = 19.0
 mouse_filter = 2
@@ -136,7 +162,7 @@ size_flags_horizontal = 2
 custom_constants/margin_top = 2
 custom_constants/margin_left = 5
 
-[node name="GoldTextLabel" type="Label" parent="BottomPanel/VBoxContainer/GoldPanel/MarginContainer3/MarginContainer"]
+[node name="GoldTextLabel" type="Label" parent="BottomPanel/HBoxContainer/VBoxContainer/GoldPanel/MarginContainer3/MarginContainer"]
 margin_left = 5.0
 margin_top = 2.0
 margin_right = 29.0
@@ -148,7 +174,7 @@ custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 text = "Gold"
 valign = 1
 
-[node name="MarginContainer2" type="MarginContainer" parent="BottomPanel/VBoxContainer/GoldPanel/MarginContainer3"]
+[node name="MarginContainer2" type="MarginContainer" parent="BottomPanel/HBoxContainer/VBoxContainer/GoldPanel/MarginContainer3"]
 margin_left = 30.0
 margin_right = 57.0
 margin_bottom = 19.0
@@ -158,7 +184,7 @@ custom_constants/margin_right = 2
 custom_constants/margin_top = 1
 custom_constants/margin_left = 18
 
-[node name="GoldAmountLabel" type="Label" parent="BottomPanel/VBoxContainer/GoldPanel/MarginContainer3/MarginContainer2"]
+[node name="GoldAmountLabel" type="Label" parent="BottomPanel/HBoxContainer/VBoxContainer/GoldPanel/MarginContainer3/MarginContainer2"]
 margin_left = 18.0
 margin_top = 1.0
 margin_right = 25.0
@@ -170,73 +196,57 @@ custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 text = "0"
 valign = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="BottomPanel/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="BottomPanel/HBoxContainer/VBoxContainer"]
 margin_top = 19.0
-margin_right = 960.0
+margin_right = 751.0
 margin_bottom = 100.0
 mouse_filter = 2
 custom_constants/separation = 20
 
-[node name="ColorWheelPanel" type="MarginContainer" parent="BottomPanel/VBoxContainer/HBoxContainer"]
-margin_right = 90.0
-margin_bottom = 81.0
-mouse_filter = 2
-custom_constants/margin_left = 10
-
-[node name="ColorWheelSprite" type="TextureButton" parent="BottomPanel/VBoxContainer/HBoxContainer/ColorWheelPanel"]
-margin_left = 10.0
-margin_right = 90.0
-margin_bottom = 81.0
-focus_mode = 0
-action_mode = 0
-enabled_focus_mode = 0
-texture_normal = ExtResource( 6 )
-
-[node name="InnerBottomPanel" type="MarginContainer" parent="BottomPanel/VBoxContainer/HBoxContainer"]
-margin_left = 110.0
-margin_right = 861.0
+[node name="InnerBottomPanel" type="MarginContainer" parent="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 751.0
 margin_bottom = 81.0
 mouse_filter = 2
 custom_constants/margin_top = 1
 script = ExtResource( 15 )
 
-[node name="BuySellLevelRollPanel" parent="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel" instance=ExtResource( 4 )]
+[node name="BuySellLevelRollPanel" parent="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel" instance=ExtResource( 4 )]
 margin_top = 1.0
 margin_right = 751.0
 margin_bottom = 81.0
 mouse_filter = 0
 
-[node name="SellPanel" parent="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel" instance=ExtResource( 17 )]
+[node name="SellPanel" parent="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel" instance=ExtResource( 17 )]
 margin_top = 1.0
 margin_right = 751.0
 margin_bottom = 81.0
 
-[node name="IngredientModeNotification" type="MarginContainer" parent="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel"]
+[node name="IngredientModeNotification" type="MarginContainer" parent="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel"]
 margin_top = 1.0
 margin_right = 751.0
 margin_bottom = 81.0
 
-[node name="Background" type="TextureRect" parent="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification"]
+[node name="Background" type="TextureRect" parent="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification"]
 margin_right = 751.0
 margin_bottom = 80.0
 mouse_filter = 2
 texture = ExtResource( 14 )
 
-[node name="Marginer" type="MarginContainer" parent="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification"]
+[node name="Marginer" type="MarginContainer" parent="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification"]
 margin_right = 751.0
 margin_bottom = 80.0
 mouse_filter = 2
 custom_constants/margin_top = 15
 custom_constants/margin_bottom = 15
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification/Marginer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification/Marginer"]
 margin_top = 15.0
 margin_right = 751.0
 margin_bottom = 65.0
 mouse_filter = 2
 custom_constants/separation = 10
 
-[node name="IngredientModeTitle" type="Label" parent="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification/Marginer/VBoxContainer"]
+[node name="IngredientModeTitle" type="Label" parent="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification/Marginer/VBoxContainer"]
 margin_right = 751.0
 margin_bottom = 25.0
 custom_fonts/font = SubResource( 3 )
@@ -244,7 +254,7 @@ custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 text = "Combine Ingredients Mode"
 align = 1
 
-[node name="Label2" type="Label" parent="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification/Marginer/VBoxContainer"]
+[node name="Label2" type="Label" parent="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification/Marginer/VBoxContainer"]
 margin_top = 35.0
 margin_right = 751.0
 margin_bottom = 48.0
@@ -253,11 +263,17 @@ custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 text = "Drag towers to receipient to buff the receiving tower"
 align = 1
 
-[node name="EnergyMeterTemp" type="MarginContainer" parent="BottomPanel/VBoxContainer/HBoxContainer"]
-margin_left = 881.0
-margin_right = 881.0
-margin_bottom = 81.0
+[node name="ExtraSidePanel" type="MarginContainer" parent="BottomPanel/HBoxContainer"]
+margin_left = 940.0
+margin_top = 50.0
+margin_right = 960.0
+margin_bottom = 50.0
+grow_horizontal = 0
+grow_vertical = 2
 mouse_filter = 2
+size_flags_horizontal = 10
+size_flags_vertical = 6
+custom_constants/margin_right = 20
 
 [node name="RightSidePanel" parent="." instance=ExtResource( 16 )]
 anchor_left = 1.0
@@ -271,8 +287,8 @@ mouse_filter = 0
 
 [node name="EnemyPath" parent="." instance=ExtResource( 13 )]
 curve = SubResource( 5 )
-[connection signal="pressed" from="BottomPanel/VBoxContainer/HBoxContainer/ColorWheelPanel/ColorWheelSprite" to="." method="_on_ColorWheelSprite_pressed"]
-[connection signal="level_down" from="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_down"]
-[connection signal="level_up" from="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_up"]
-[connection signal="reroll" from="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_reroll"]
-[connection signal="tower_bought" from="BottomPanel/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_tower_bought"]
+[connection signal="pressed" from="BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelSprite" to="." method="_on_ColorWheelSprite_pressed"]
+[connection signal="level_down" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_down"]
+[connection signal="level_up" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_up"]
+[connection signal="reroll" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_reroll"]
+[connection signal="tower_bought" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_tower_bought"]

@@ -1,0 +1,75 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://MiscRelated/ControlProgressBarRelated/ControlProgressBar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/BatteryEnergyPanel/Battery_InfoHeader.png" type="Texture" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/BatteryEnergyPanel/BatteryFilledForeground.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/BatteryEnergyPanel/BatteryBackground.png" type="Texture" id=5]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/BatteryEnergyPanel/EnergyModule_ChunkSeparator.png" type="Texture" id=6]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/BatteryEnergyPanel/EnergyBatteryPanel.gd" type="Script" id=7]
+
+[sub_resource type="DynamicFont" id=1]
+size = 10
+font_data = ExtResource( 1 )
+
+[node name="BatteryEnergyPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+custom_constants/separation = 0
+
+[node name="HeaderMarginer" type="MarginContainer" parent="VBoxContainer"]
+margin_left = 3.0
+margin_right = 36.0
+margin_bottom = 14.0
+mouse_filter = 2
+size_flags_horizontal = 6
+
+[node name="HeaderBackground" type="TextureRect" parent="VBoxContainer/HeaderMarginer"]
+margin_right = 33.0
+margin_bottom = 14.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HeaderMarginer"]
+margin_left = 7.0
+margin_right = 25.0
+margin_bottom = 14.0
+mouse_filter = 2
+size_flags_horizontal = 6
+custom_constants/margin_top = 2
+
+[node name="EnergyDisplayLabel" type="Label" parent="VBoxContainer/HeaderMarginer/MarginContainer"]
+margin_top = 2.0
+margin_right = 18.0
+margin_bottom = 13.0
+custom_fonts/font = SubResource( 1 )
+text = "1/1"
+
+[node name="BodyMarginer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 14.0
+margin_right = 40.0
+margin_bottom = 14.0
+mouse_filter = 2
+
+[node name="EnergyDisplayBar" parent="VBoxContainer/BodyMarginer" instance=ExtResource( 2 )]
+margin_right = 40.0
+margin_bottom = 0.0
+value_per_chunk = 1.0
+display_chunks = true
+chunk_separator_pic = ExtResource( 6 )
+bar_background_pic = ExtResource( 5 )
+fill_foreground_pic = ExtResource( 4 )
+fill_foreground_margin_top = 1.0
+fill_foreground_margin_left = 1.0
+max_value = 3
+current_value = 2

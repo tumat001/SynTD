@@ -7,7 +7,7 @@
 animations = [ {
 "frames": [  ],
 "loop": true,
-"name": "walk_E",
+"name": "walk_W",
 "speed": 5.0
 }, {
 "frames": [  ],
@@ -17,12 +17,12 @@ animations = [ {
 }, {
 "frames": [  ],
 "loop": true,
-"name": "walk_W",
+"name": "walk_S",
 "speed": 5.0
 }, {
 "frames": [  ],
 "loop": true,
-"name": "walk_S",
+"name": "walk_E",
 "speed": 5.0
 } ]
 
@@ -30,6 +30,10 @@ animations = [ {
 rotate = false
 loop = false
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true,
+"_edit_lock_": true
+}
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 1 )

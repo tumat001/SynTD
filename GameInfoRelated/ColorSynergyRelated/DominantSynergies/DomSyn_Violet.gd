@@ -1,7 +1,5 @@
 extends "res://GameInfoRelated/ColorSynergyRelated/AbstractTowerModifyingSynergyEffect.gd"
 
-const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
-
 const tier_4_tower_ing_limit : int = 25
 const tier_3_tower_ing_limit : int = 11
 const tier_2_tower_ing_limit : int = 8
@@ -23,5 +21,5 @@ func _apply_syn_to_tower(tower : AbstractTower, tier : int):
 			
 
 
-func _remove_syn_from_tower(tower : AbstractTower):
+func _remove_syn_from_tower(tower : AbstractTower, tier : int):
 	tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.VIOLET_SYNERGY, 0)

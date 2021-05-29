@@ -27,6 +27,17 @@ var elemental_on_hit : OnHitDamage
 var attack_speed_modifier : PercentModifier
 var range_modifier : FlatModifier
 
+
+# ratios
+
+const original_ratio_elemental_on_hit : float = 0.5
+const original_ratio_attack_speed : float = 50.0
+const original_ratio_range : float = 0.1
+
+var ratio_elemental_on_hit : float = original_ratio_elemental_on_hit
+var ratio_attack_speed : float = original_ratio_attack_speed
+var ratio_range : float = original_ratio_range
+
 # INI related
 
 func _ready():
@@ -148,19 +159,19 @@ func _process(delta):
 
 func _update_elemental_on_hit_effect():
 	if main_attack_module != null:
-		elemental_on_hit.damage_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage / 2
+		elemental_on_hit.damage_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * ratio_elemental_on_hit
 		elemental_on_hit_effect.on_hit_damage = elemental_on_hit.duplicate()
 
 func _update_flat_attk_speed_effect():
 	if main_attack_module != null:
-		attack_speed_modifier.percent_amount = main_attack_module.last_calculated_final_attk_speed * 50
+		attack_speed_modifier.percent_amount = main_attack_module.last_calculated_final_attk_speed * ratio_attack_speed
 		attack_speed_effect.attribute_as_modifier = attack_speed_modifier.get_copy_scaled_by(1)
 
 func _update_flat_range_effect():
 	if main_attack_module != null:
 		main_attack_module.range_module.calculate_final_range_radius()
 		
-		range_modifier.flat_modifier = main_attack_module.range_module.last_calculated_final_range / 10
+		range_modifier.flat_modifier = main_attack_module.range_module.last_calculated_final_range * ratio_range
 		range_effect.attribute_as_modifier = range_modifier.get_copy_scaled_by(1)
 
 
@@ -175,3 +186,22 @@ func _show_signal_particle():
 	var particle = BeaconDishSignalParticle.instance()
 	particle.position.y -= 14
 	add_child(particle)
+
+
+# energy module related
+
+
+func set_energy_module(module):
+	.set_energy_module(module)
+	
+	if module != null:
+		module.module_effect_descriptions = [
+			""
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	pass
+
+func _module_turned_off():
+	pass

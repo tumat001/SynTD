@@ -1,0 +1,44 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MiscRelated/ControlProgressBarRelated/ControlProgressBar.gd" type="Script" id=1]
+
+[node name="ControlProgressBar" type="MarginContainer"]
+margin_right = 54.0
+margin_bottom = 9.0
+mouse_filter = 2
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BarBackgroundPanel" type="MarginContainer" parent="."]
+margin_right = 54.0
+margin_bottom = 9.0
+mouse_filter = 2
+
+[node name="BarBackground" type="TextureRect" parent="BarBackgroundPanel"]
+margin_right = 54.0
+margin_bottom = 9.0
+mouse_filter = 2
+
+[node name="BarFillForeground" type="MarginContainer" parent="."]
+margin_right = 54.0
+margin_bottom = 9.0
+mouse_filter = 2
+custom_constants/margin_right = 0
+custom_constants/margin_top = 0
+custom_constants/margin_left = 0
+custom_constants/margin_bottom = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FillForeground" type="TextureRect" parent="BarFillForeground"]
+margin_right = 54.0
+margin_bottom = 9.0
+mouse_filter = 2
+
+[node name="Chunks" type="Control" parent="BarFillForeground"]
+margin_right = 54.0
+margin_bottom = 9.0
+mouse_filter = 2

@@ -3,7 +3,8 @@ extends MarginContainer
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 const ExtraInfoPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/ExtraInfoPanelComponents/ExtraInfoPanel.gd")
 const ExtraInfoPanel_Scene = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/ExtraInfoPanelComponents/ExtraInfoPanel.tscn")
-
+const EnergyModulePanel = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModulePanel.gd")
+const EnergyModulePanel_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModulePanel.tscn")
 
 var tower : AbstractTower
 
@@ -14,11 +15,14 @@ onready var targeting_panel = $VBoxContainer/TargetingPanel
 onready var tower_colors_panel = $VBoxContainer/TowerColorsPanel
 onready var tower_stats_panel = $VBoxContainer/TowerStatsPanel
 
+onready var bottom_extra_slot = $VBoxContainer/BottomExtraSlot
+
 var extra_info_panel : ExtraInfoPanel
+var energy_module_panel : EnergyModulePanel
 
 
 func _ready():
-	pass
+	bottom_extra_slot.visible = false
 
 func update_display():
 	
@@ -41,6 +45,11 @@ func update_display():
 	# Active Ingredients display related
 	active_ing_panel.tower = tower
 	active_ing_panel.update_display()
+	
+	
+	# Energy Module (In Bottom Extra Slot)
+	update_display_of_energy_module()
+	
 
 
 # Visibility
@@ -79,3 +88,31 @@ func _destroy_extra_info_panel():
 	if extra_info_panel != null:
 		extra_info_panel.queue_free()
 		extra_info_panel = null
+
+
+# energy module panel related
+
+func update_display_of_energy_module():
+	if tower.energy_module != null:
+		if energy_module_panel == null:
+			energy_module_panel = EnergyModulePanel_Scene.instance()
+			bottom_extra_slot.add_child(energy_module_panel)
+		
+		energy_module_panel.energy_module = tower.energy_module
+		energy_module_panel.visible = true
+		energy_module_panel.update_display()
+		bottom_extra_slot.update_visibility_based_on_children()
+		
+	else:
+		if energy_module_panel != null:
+			energy_module_panel.visible = false
+			bottom_extra_slot.update_visibility_based_on_children()
+
+
+# queue free
+
+func queue_free():
+	if energy_module_panel != null:
+		energy_module_panel.queue_free()
+	
+	.queue_free()

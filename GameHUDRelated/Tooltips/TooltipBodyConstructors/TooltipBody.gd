@@ -10,7 +10,7 @@ const TooltipWithImageIndicatorDescriptionScene = preload("res://GameHUDRelated/
 var descriptions : Array = []
 
 var specific_font_colors : Array = []
-var default_font_color : Color
+export(Color) var default_font_color : Color
 
 func _ready():
 	update_display()
@@ -55,6 +55,7 @@ func update_display():
 func _kill_all_desc():
 	for ch in $RowContainer.get_children():
 		ch.queue_free()
+
 
 
 

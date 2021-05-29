@@ -10,6 +10,7 @@ const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const InnerBottomPanel = preload("res://GameElementsRelated/InnerBottomPanel.gd")
 const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
 const TargetingPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TargetingPanel/TargetingPanel.gd")
+const TowerInfoPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerInfoPanel.gd")
 
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 
@@ -35,6 +36,7 @@ var active_ing_panel : ActiveIngredientsPanel
 var tower_colors_panel : TowerColorsPanel
 var inner_bottom_panel : InnerBottomPanel
 var targeting_panel : TargetingPanel
+var tower_info_panel : TowerInfoPanel
 
 var synergy_manager
 var stage_round_manager : StageRoundManager
@@ -80,7 +82,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("tower_being_dragged", self, "_tower_being_dragged")
 	tower_instance.connect("tower_dropped_from_dragged", self, "_tower_dropped_from_dragged")
 	tower_instance.connect("tower_toggle_show_info", self, "_tower_toggle_show_info")
-	tower_instance.connect("tower_in_queue_free", self, "_tower_in_queue_free", [tower_instance])
+	tower_instance.connect("tower_in_queue_free", self, "_tower_in_queue_free")
 	tower_instance.connect("update_active_synergy", self, "_update_active_synergy")
 	tower_instance.connect("tower_being_sold", self, "_tower_sold")
 	tower_instance.connect("tower_give_gold", self, "_tower_generate_gold")
@@ -205,6 +207,8 @@ func _show_tower_info_panel(tower : AbstractTower):
 	tower.connect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
 	tower.connect("tower_colors_changed", self, "_update_tower_colors_in_info")
 	tower.connect("targeting_changed", self, "_update_targeting")
+	tower.connect("energy_module_attached", self, "_update_energy_module_display")
+	tower.connect("energy_module_detached", self ,"_update_energy_module_display")
 
 func _update_final_range_in_info():
 	tower_stats_panel.update_final_range()
@@ -224,6 +228,9 @@ func _update_tower_colors_in_info():
 func _update_targeting():
 	targeting_panel.update_display()
 
+func _update_energy_module_display():
+	tower_info_panel.update_display_of_energy_module()
+
 
 func _show_round_panel():
 	right_side_panel.show_round_panel()
@@ -236,6 +243,8 @@ func _show_round_panel():
 		tower_being_shown_in_info.disconnect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
 		tower_being_shown_in_info.disconnect("tower_colors_changed", self, "_update_tower_colors_in_info")
 		tower_being_shown_in_info.disconnect("targeting_changed", self, "_update_targeting")
+		tower_being_shown_in_info.disconnect("energy_module_attached", self, "_update_energy_module_display")
+		tower_being_shown_in_info.disconnect("energy_module_detached", self ,"_update_energy_module_display")
 		
 		tower_being_shown_in_info = null
 
@@ -246,6 +255,9 @@ func _round_started(_stageround):
 		tower.is_round_started = true
 	
 	_is_round_on_going = true
+	
+	if tower_being_dragged != null and tower_being_dragged.is_current_placable_in_map():
+		tower_being_dragged._end_drag()
 
 
 func _round_ended(_stageround):

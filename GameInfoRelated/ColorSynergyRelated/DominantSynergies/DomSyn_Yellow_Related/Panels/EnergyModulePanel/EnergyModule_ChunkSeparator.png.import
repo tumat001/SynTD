@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/TowerPowerOff.png-aff403e5a3db02a15d0ff54dadd4568a.stex"
+path="res://.import/EnergyModule_ChunkSeparator.png-cdf15899f276aeb589725844d7b338b1.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerPowerOff.png"
-dest_files=[ "res://.import/TowerPowerOff.png-aff403e5a3db02a15d0ff54dadd4568a.stex" ]
+source_file="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModule_ChunkSeparator.png"
+dest_files=[ "res://.import/EnergyModule_ChunkSeparator.png-cdf15899f276aeb589725844d7b338b1.stex" ]
 
 [params]
 
