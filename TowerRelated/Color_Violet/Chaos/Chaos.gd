@@ -46,7 +46,7 @@ func _ready():
 	range_module.base_range_radius = info.base_range
 	range_module.all_targeting_options = [Targeting.RANDOM, Targeting.FIRST, Targeting.LAST]
 	range_module.set_range_shape(CircleShape2D.new())
-	
+	range_module.position.y += 22
 	
 	# Orb related
 	var orb_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
@@ -58,7 +58,7 @@ func _ready():
 	orb_attack_module.is_main_attack = true
 	orb_attack_module.base_pierce = info.base_pierce
 	orb_attack_module.base_proj_speed = 550
-	orb_attack_module.projectile_life_distance = info.base_range
+	orb_attack_module.base_proj_life_distance = info.base_range
 	orb_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	orb_attack_module.position.y -= 22
 	orb_attack_module.on_hit_damage_scale = info.on_hit_multiplier
@@ -77,7 +77,7 @@ func _ready():
 	
 	orb_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
 	
-	attack_modules_and_target_num[orb_attack_module] = 1
+	add_attack_module(orb_attack_module)
 	
 	
 	# Diamond related
@@ -97,7 +97,7 @@ func _ready():
 	diamond_attack_module.is_main_attack = false
 	diamond_attack_module.base_pierce = 3
 	diamond_attack_module.base_proj_speed = 400
-	diamond_attack_module.projectile_life_distance = info.base_range
+	diamond_attack_module.base_proj_life_distance = info.base_range
 	diamond_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	diamond_attack_module.position.y -= 22
 	diamond_attack_module.on_hit_damage_scale = 1
@@ -120,7 +120,7 @@ func _ready():
 	
 	diamond_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
 	
-	attack_modules_and_target_num[diamond_attack_module] = 1
+	add_attack_module(diamond_attack_module)
 	
 	
 	# Bolt related
@@ -165,7 +165,7 @@ func _ready():
 	
 	bolt_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
 	
-	attack_modules_and_target_num[bolt_attack_module] = 1
+	add_attack_module(bolt_attack_module)
 	
 	
 	# Sword related
@@ -188,7 +188,7 @@ func _ready():
 	
 	sword_attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack")
 	
-	attack_modules_and_target_num[sword_attack_module] = 1
+	add_attack_module(sword_attack_module)
 	sword_attack_module.can_be_commanded_by_tower = false
 	
 	_post_inherit_ready()
@@ -222,6 +222,6 @@ func _show_attack_sprite_on_attack(_attk_speed_delay, enemies : Array):
 	for enemy in enemies:
 		if enemy != null:
 			var sword = _construct_attack_sprite_on_attack()
-			sword.global_position = enemy.global_position
+			sword.global_position = enemies[0].global_position
 			get_tree().get_root().add_child(sword)
 			sword.playing = true

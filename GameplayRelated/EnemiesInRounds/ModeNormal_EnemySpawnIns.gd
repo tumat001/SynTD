@@ -25,15 +25,19 @@ func get_instructions_for_stageround(uuid : String):
 func _get_instructions_for_0_1():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.TEST_ENEMY),
-		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.TEST_ENEMY),
-		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.TEST_ENEMY),
-		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.TEST_ENEMY),
-		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.TEST_ENEMY),
 	]
 
 func _get_instructions_for_0_2():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(9, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(7.5, EnemyConstants.Enemies.TEST_ENEMY),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.TEST_ENEMY),
 	]
 
@@ -42,16 +46,41 @@ func _get_instructions_for_0_3():
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.TEST_ENEMY),
 		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.TEST_ENEMY),
 		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(9, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(7.5, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.TEST_ENEMY),
 	]
 
 func _get_instructions_for_0_4():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(9, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(7.5, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.TEST_ENEMY),
 	]
 
 func _get_instructions_for_0_5():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(9, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(7.5, EnemyConstants.Enemies.TEST_ENEMY),
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.TEST_ENEMY),
 	]
 
 func _get_instructions_for_1_1():

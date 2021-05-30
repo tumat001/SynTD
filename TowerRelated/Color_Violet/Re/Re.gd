@@ -33,6 +33,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += 18
 	
 	var attack_module : InstantDamageAttackModule = InstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -54,7 +55,7 @@ func _ready():
 	attack_module.connect("in_attack_end", self, "_kill_and_reset_lock_ons")
 	attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack")
 	
-	attack_modules_and_target_num[attack_module] = 1
+	add_attack_module(attack_module)
 	
 	_post_inherit_ready()
 

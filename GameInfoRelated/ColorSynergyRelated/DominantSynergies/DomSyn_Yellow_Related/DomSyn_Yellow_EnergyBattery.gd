@@ -22,7 +22,6 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	
 	if (tier == 1 or tier == 2) and energy_battery == null:
 		energy_battery = EnergyBattery.new(game_elements.stage_round_manager)
-		game_elements.stage_round_manager.connect("round_started", self, "_first_time_activation", [], CONNECT_ONESHOT)
 	
 	if tier == 1:
 		energy_battery.recharge_rate_per_round = tier_1_recharge_rate
@@ -34,6 +33,9 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		_inactivate_self()
 	
 	if tier == 1 or tier == 2:
+		if !game_elements.stage_round_manager.is_connected("round_started", self, "_first_time_activation"):
+			game_elements.stage_round_manager.connect("round_started", self, "_first_time_activation", [], CONNECT_ONESHOT)
+		
 		if !game_elements.stage_round_manager.is_connected("round_started", self, "_round_started"):
 			game_elements.stage_round_manager.connect("round_started", self, "_round_started")
 		
@@ -80,7 +82,6 @@ func _first_time_activation(curr_stageround):
 	if _is_first_time_activated:
 		energy_battery.current_energy_amount += 1
 		_is_first_time_activated = false
-		
 
 
 #

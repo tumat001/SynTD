@@ -10,12 +10,14 @@ const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic
 
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 
-
 const Tesla_Bolt_01 = preload("res://TowerRelated/Color_Violet/Tesla/Tesla_Bolt_01.png")
 const Tesla_Bolt_02 = preload("res://TowerRelated/Color_Violet/Tesla/Tesla_Bolt_02.png")
 const Tesla_Bolt_03 = preload("res://TowerRelated/Color_Violet/Tesla/Tesla_Bolt_03.png")
 
 const Tesla_Hit_Particle = preload("res://TowerRelated/Color_Violet/Tesla/TeslaHitParticle.tscn")
+
+
+var tesla_main_attack_module : AbstractAttackModule
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -30,6 +32,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += 30
 	
 	var attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -57,7 +60,9 @@ func _ready():
 	attack_module.beam_is_timebound = true
 	attack_module.beam_time_visible = 0.2
 	
-	attack_modules_and_target_num[attack_module] = 1
+	add_attack_module(attack_module)
+	
+	tesla_main_attack_module = attack_module
 	
 	_post_inherit_ready()
 
@@ -69,3 +74,44 @@ func _post_inherit_ready():
 	var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.TESLA_STUN)
 	
 	add_tower_effect(tower_effect)
+
+
+# module related
+
+func set_energy_module(module):
+	.set_energy_module(module)
+	
+	if module != null:
+		module.module_effect_descriptions = [
+			"Tesla's main attack now attacks up to 3 enemies."
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	main_attack_module.number_of_unique_targets = 3
+	
+	if !is_connected("attack_module_added", self, "_attack_module_attached"):
+		connect("attack_module_added", self, "_attack_module_attached")
+		connect("attack_module_removed", self, "_attack_module_detached")
+
+
+func _module_turned_off():
+	main_attack_module.number_of_unique_targets = 1
+	
+	if is_connected("attack_module_added", self, "_attack_module_attached"):
+		disconnect("attack_module_added", self, "_attack_module_attached")
+		disconnect("attack_module_removed", self, "_attack_module_detached")
+
+
+
+func _attack_module_detached(attack_module : AbstractAttackModule):
+	if energy_module != null:
+		if attack_module == tesla_main_attack_module:
+			tesla_main_attack_module.number_of_unique_targets = 1
+
+func _attack_module_attached(attack_module : AbstractAttackModule):
+	if attack_module == main_attack_module:
+		if energy_module != null and energy_module.is_turned_on:
+			main_attack_module.number_of_unique_targets = 3
+		else:
+			main_attack_module.number_of_unique_targets = 1

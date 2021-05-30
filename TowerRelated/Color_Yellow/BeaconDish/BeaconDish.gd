@@ -74,7 +74,7 @@ func _ready():
 	
 	attack_module.can_be_commanded_by_tower = false
 	
-	attack_modules_and_target_num[attack_module] = 1
+	add_attack_module(attack_module)
 	
 	connect("final_range_changed", self, "_final_range_changed")
 	
@@ -196,12 +196,20 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			""
+			"The ratio this tower's total stats compared to its given bonuses is increased.",
+			"125% of its total base damage as a buff (from 50%).",
+			"100% of its total attack speed as a buff (from 50%)",
+			"20% of its total range as a buff. (from 10%)"
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	pass
+	ratio_elemental_on_hit = 1.25
+	ratio_attack_speed = 1.00
+	ratio_range = 0.2
+
 
 func _module_turned_off():
-	pass
+	ratio_elemental_on_hit = original_ratio_elemental_on_hit
+	ratio_attack_speed = original_ratio_attack_speed
+	ratio_range = original_ratio_range

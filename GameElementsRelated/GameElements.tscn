@@ -58,19 +58,22 @@ script = ExtResource( 8 )
 script = ExtResource( 9 )
 
 [node name="InMapAreaPlacable" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 608.081, 304.74 )
+position = Vector2( 295.299, 287.571 )
 
 [node name="InMapAreaPlacable4" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 408.294, 241.712 )
+position = Vector2( 644.18, 274.922 )
 
 [node name="InMapAreaPlacable5" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 377.375, 330.903 )
+position = Vector2( 654.247, 225.742 )
 
 [node name="InMapAreaPlacable2" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 503.598, 227.932 )
+position = Vector2( 606.78, 152.401 )
 
 [node name="InMapAreaPlacable3" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 463.803, 326.269 )
+position = Vector2( 416.897, 316.078 )
+
+[node name="InMapAreaPlacable6" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 656.442, 185.516 )
 
 [node name="SynergyManager" type="Node" parent="."]
 script = ExtResource( 12 )

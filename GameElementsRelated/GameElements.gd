@@ -127,15 +127,27 @@ func _on_BuySellLevelRollPanel_level_up():
 	pass
 
 
+var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	# TODO REPLACE THIS SOON
-	panel_buy_sell_level_roll.update_new_rolled_towers([
-		Towers.MINI_TESLA,
-		Towers.COIN,
-		Towers.MAGNETIZER,
-		Towers.CHARGE,
-		Towers.TESLA,
-	])
+	if !even:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.RAILGUN,
+			Towers.BEACON_DISH,
+			Towers.MAGNETIZER,
+			Towers.COIN,
+			Towers.CHARGE,
+		])
+	else:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.CHAOS,
+			Towers.RE,
+			Towers.SPRINKLER,
+			Towers.PING,
+			Towers.TESLA,
+		])
+	
+	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):

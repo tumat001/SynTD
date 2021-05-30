@@ -226,6 +226,17 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Shoots a dart like projectile that pierces through 4 enemies"
 		]
 		
+		# Ingredient related
+		var base_pierce_attr_mod : FlatModifier = FlatModifier.new("railgun")
+		base_pierce_attr_mod.flat_modifier = 1
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_PIERCE , base_pierce_attr_mod, StoreOfTowerEffectsUUID.ING_RAILGUN)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ pierce"
+		
+		
 	elif tower_id == RE:
 		info = TowerTypeInformation.new("Re", RE)
 		info.tower_cost = 4
@@ -294,7 +305,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Has many attacks. Shoots orbs, diamonds, and bolts. Stats shown are for the orbs.",
-			"Only the orbs are affected by targeting options.",
+			"Only the orbs are affected by targeting options. The orbs are considered to be CHAOS's main attack.",
 			"Only the diamonds benefit from pierce buffs and apply on hit damage and effects. On hit effects are 200% effective.",
 			"Only the bolts benefit from attack speed buffs.",
 			"All are affected by range and base damage buffs. Bolts deal 150% of its total base damage.",
@@ -327,7 +338,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Stats shown are for the arrow.",
 			"Shoots an arrow that releases a ring. The ring marks up to 4 enemies.",
 			"After a brief delay, Ping shoots up to 4 marked enemies. If only 1 enemy is marked, the shot gains +6 base damage and on hit damages become 150% effective.",
-			"If Ping kills at least one enemy with its shots, Ping can shoot the next arrow immediately.",
+			"Ping can shoot the next shot immediately when it kills at least one enemy with its shot.",
 			"Shots deal 7 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
 		]
 		
@@ -384,7 +395,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Does not attack, but instead gives buffs to towers in range every 5 seconds for 7 seconds.",
 			"Grants 50% of its total base damage as an elemental on hit damage buff.",
-			"Grants 50% x 100 of its total attack speed as percent attack speed.",
+			"Grants 50% x 100 of its total attack speed as percent attack speed (of receiving tower).",
 			"Grants 10% of its total range as bonus range.",
 			"Note: Does not grant these buffs to another Beacon-Dish. Also overrides any existing Beacon-Dish buffs a tower may have.",
 			"",
@@ -453,14 +464,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"When idle, Charge accumulates energy. Charge's energy is set to 50% when the round starts.",
-			"Upon attacking, Charge expends all energy to deal scaling bonus physical on hit damage based on expended energy.",
+			"Upon attacking, Charge expends all energy to deal bonus physical on hit damage based on expended energy.",
 			"Max physical on hit damage: 16",
 			"",
 			"Increasing this tower's total attack speed compared to its base attack speed increases the rate of energy accumulation."
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new("ing_charge_on_hit_as_modifier")
-		attr_mod.flat_modifier = 1.5
+		attr_mod.flat_modifier = 2
 		var on_hit : OnHitDamage = OnHitDamage.new("ing_charge_on_hit", attr_mod, DamageType.PHYSICAL)
 		
 		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_CHARGE)

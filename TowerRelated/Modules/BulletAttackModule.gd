@@ -23,8 +23,15 @@ var flat_proj_speed_effects = {}
 var percent_proj_speed_effects = {}
 var last_calculated_final_proj_speed : float
 
-var projectile_life_distance : float = 100 setget _set_life_distance
+var base_proj_life_distance : float setget _set_life_distance
+var base_proj_life_distance_scale : float = 1.0 setget _set_life_distance_scale
 const _life_distance_bonus : float = 50.0
+var last_calculated_final_proj_life_distance : float
+
+var base_proj_inaccuracy : float = 0
+var flat_proj_inaccuracy_effects = {}
+var percent_proj_inaccuracy_effects = {}
+var last_calculated_final_proj_inaccuracy : float
 
 #
 
@@ -37,13 +44,22 @@ const bullet_group_tag : String = "BulletGroupTag"
 func _ready():
 	calculate_final_pierce()
 	calculate_final_proj_speed()
+	calculate_final_proj_life_distance()
+	calculate_final_proj_inaccuracy()
 
 
 # setgets
 
-func _set_life_distance(life_distance : float):
-	projectile_life_distance = life_distance + _life_distance_bonus
+func _set_life_distance_scale(scale : float):
+	base_proj_life_distance_scale = scale
+	calculate_final_proj_life_distance()
 
+func _set_life_distance(life_distance : float):
+	base_proj_life_distance = life_distance
+	calculate_final_proj_life_distance()
+
+func calculate_final_proj_life_distance():
+	last_calculated_final_proj_life_distance = (base_proj_life_distance * base_proj_life_distance_scale) + _life_distance_bonus
 
 # Time related
 
@@ -150,6 +166,20 @@ func calculate_final_proj_speed():
 	return final_proj_speed
 
 
+func calculate_final_proj_inaccuracy():
+	#All percent modifiers here are to BASE proj speed only
+	var final_proj_inaccuracy = base_proj_inaccuracy
+	
+	for effect in percent_proj_inaccuracy_effects.values():
+		final_proj_inaccuracy += effect.attribute_as_modifier.get_modification_to_value(base_proj_inaccuracy)
+	
+	for effect in flat_proj_inaccuracy_effects.values():
+		final_proj_inaccuracy += effect.attribute_as_modifier.get_modification_to_value(base_proj_inaccuracy)
+		
+	last_calculated_final_proj_inaccuracy = final_proj_inaccuracy
+	return final_proj_inaccuracy
+
+
 # On Attack Related
 
 
@@ -179,9 +209,19 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	
 	bullet.damage_instance = damage_instance
 	bullet.pierce = last_calculated_final_pierce
-	bullet.direction_as_relative_location = Vector2(arg_enemy_pos.x - global_position.x, arg_enemy_pos.y - global_position.y).normalized()
+	
+	var dir : Vector2 = Vector2(arg_enemy_pos.x - global_position.x, arg_enemy_pos.y - global_position.y)
+	var rand_x = 0
+	var rand_y = 0
+	if last_calculated_final_proj_inaccuracy != 0:
+		var rand_gen = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.INACCURACY)
+		rand_x = rand_gen.randf_range(-last_calculated_final_proj_inaccuracy, last_calculated_final_proj_inaccuracy)
+		rand_y = rand_gen.randf_range(-last_calculated_final_proj_inaccuracy, last_calculated_final_proj_inaccuracy)
+	dir += Vector2(rand_x, rand_y)
+	
+	bullet.direction_as_relative_location = dir.normalized()
 	bullet.speed = last_calculated_final_proj_speed
-	bullet.life_distance = projectile_life_distance
+	bullet.life_distance = last_calculated_final_proj_life_distance
 	bullet.current_life_distance = bullet.life_distance
 	bullet.rotation_degrees = _get_angle(arg_enemy_pos)
 	

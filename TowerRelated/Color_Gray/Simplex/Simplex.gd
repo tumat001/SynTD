@@ -55,6 +55,6 @@ func _ready():
 	attack_module.beam_scene = BeamAesthetic_Scene
 	attack_module.beam_sprite_frames = beam_sprite_frame
 	
-	attack_modules_and_target_num[attack_module] = 1
+	add_attack_module(attack_module)
 	
 	_post_inherit_ready()

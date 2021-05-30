@@ -31,6 +31,7 @@ var module_id : int
 var current_time_metadata = Time_Metadata.TIME_AS_SECONDS
 var original_time_metadata = Time_Metadata.TIME_AS_SECONDS
 var is_main_attack : bool = false
+var number_of_unique_targets : int = 1
 
 var can_be_commanded_by_tower : bool = true
 
@@ -119,7 +120,8 @@ func _ready():
 
 func _set_range_module(new_module):
 	if range_module != null:
-		remove_child(range_module)
+		if get_children().has(range_module):
+			remove_child(range_module)
 	
 	if new_module != null and new_module.get_parent() == null:
 		add_child(new_module)
@@ -386,7 +388,7 @@ func is_ready_to_attack() -> bool:
 #	return on_command_attack_enemy(target)
 
 
-func attempt_find_then_attack_enemies(num : int) -> bool:
+func attempt_find_then_attack_enemies(num : int = number_of_unique_targets) -> bool:
 	if range_module == null:
 		return false
 	

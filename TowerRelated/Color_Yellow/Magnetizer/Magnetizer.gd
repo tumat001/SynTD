@@ -29,7 +29,7 @@ const MagnetizerBeam_Pic10 = preload("res://TowerRelated/Color_Yellow/Magnetizer
 const BasePic_Blue = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Blue.png")
 const BasePic_Red = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Red.png")
 
-var magnet_attack_module : AbstractAttackModule
+var magnet_attack_module : BulletAttackModule
 var beam_attack_module : AOEAttackModule
 
 var activated_blue_magnets : Array = []
@@ -64,7 +64,7 @@ func _ready():
 	magnet_attack_module.is_main_attack = true
 	magnet_attack_module.base_pierce = info.base_pierce
 	magnet_attack_module.base_proj_speed = 350
-	magnet_attack_module.projectile_life_distance = info.base_range
+	magnet_attack_module.base_proj_life_distance = info.base_range
 	magnet_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	magnet_attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
@@ -78,7 +78,7 @@ func _ready():
 	
 	magnet_attack_module.connect("before_bullet_is_shot", self, "_modify_magnet")
 	
-	attack_modules_and_target_num[magnet_attack_module] = 1
+	add_attack_module(magnet_attack_module)
 	
 	
 	# Stretched AOE 
@@ -122,7 +122,7 @@ func _ready():
 	
 	beam_attack_module.can_be_commanded_by_tower = false
 	
-	attack_modules_and_target_num[beam_attack_module] = 1
+	add_attack_module(beam_attack_module)
 	
 	_post_inherit_ready()
 
@@ -186,14 +186,19 @@ func _on_round_end():
 func _attempt_form_beam():
 	if _can_form_beam():
 		for blue_magnet in activated_blue_magnets:
-			for red_magnet in activated_red_magnets:
-				_form_beam_between_points(blue_magnet.global_position, red_magnet.global_position)
+			if blue_magnet != null:
+				for red_magnet in activated_red_magnets:
+					if red_magnet != null:
+						_form_beam_between_points(blue_magnet.global_position, red_magnet.global_position)
+						red_magnet.used_in_beam_formation()
+					
+					#activated_red_magnets.erase(red_magnet)
 				
-				red_magnet.used_in_beam_formation()
-				activated_red_magnets.erase(red_magnet)
-			
-			blue_magnet.used_in_beam_formation()
-			activated_blue_magnets.erase(blue_magnet)
+				blue_magnet.used_in_beam_formation()
+			#activated_blue_magnets.erase(blue_magnet)
+		
+		activated_blue_magnets.clear()
+		activated_red_magnets.clear()
 
 func _can_form_beam() -> bool:
 	return activated_blue_magnets.size() >= 1 and activated_red_magnets.size() >= 1
@@ -202,3 +207,44 @@ func _form_beam_between_points(origin_pos : Vector2, destination_pos : Vector2):
 	var aoe = beam_attack_module.construct_aoe(origin_pos, destination_pos)
 	get_tree().get_root().add_child(aoe)
 
+
+# energy module rel
+
+
+func set_energy_module(module):
+	.set_energy_module(module)
+	
+	if module != null:
+		module.module_effect_descriptions = [
+			"Enemies killed by Magnetize (the beam) will drop a blue magnet at their location."
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	if !beam_attack_module.is_connected("on_post_mitigation_damage_dealt", self, "_check_enemy_killed"):
+		beam_attack_module.connect("on_post_mitigation_damage_dealt", self, "_check_enemy_killed")
+
+func _module_turned_off():
+	if beam_attack_module.is_connected("on_post_mitigation_damage_dealt", self, "_check_enemy_killed"):
+		beam_attack_module.disconnect("on_post_mitigation_damage_dealt", self, "_check_enemy_killed")
+
+
+func _check_enemy_killed(damage, damage_type, killed, enemy, damage_register_id, module):
+	if module == beam_attack_module and killed:
+		_enemy_killed(enemy)
+
+
+func _enemy_killed(enemy):
+	var pos = enemy.global_position
+	
+	var magnet = magnet_attack_module.construct_bullet(pos)
+	magnet.connect("hit_an_enemy", self, "_magnet_hit_an_enemy")
+	
+	magnet.speed = 0
+	magnet.type = MagnetizerMagnetBall.BLUE
+	magnet.lifetime_after_beam_formation = 0.15
+	magnet.rotation_degrees = 0
+	magnet.global_position = pos
+	
+	get_tree().get_root().add_child(magnet)
+	magnet.hit_by_enemy(enemy)

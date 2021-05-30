@@ -8,17 +8,12 @@ var energy_module : EnergyModule
 onready var tooltip_body : TooltipBody = $VBoxContainer/BodyMarginer/TooltipBody
 onready var vbox : VBoxContainer = $VBoxContainer
 
-#TODO TEST ONLY
-func _ready():
-	update_display()
-
-#
 
 func update_display():
 	if energy_module != null:
 		_update_tooltip_body(energy_module.module_effect_descriptions)
 	else:
-		_update_tooltip_body(["hello test me pls.. Hahahahahahahahhahahahahahahhaa dwda"])
+		_update_tooltip_body([])
 	
 	call_deferred("shrink")
 

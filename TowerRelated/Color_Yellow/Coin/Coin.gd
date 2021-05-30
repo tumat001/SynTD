@@ -6,9 +6,17 @@ const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const CoinAttackModule = preload("res://TowerRelated/Color_Yellow/Coin/CoinAttackModule.gd")
 const CoinAttackModule_Scene = preload("res://TowerRelated/Color_Yellow/Coin/CoinAttackModule.tscn")
 
+
+const original_ratio_bronze_coin : int = 27
+const original_ratio_silver_coin : int = 22
+const original_ratio_gold_coin : int = 1
+
+var coin_attack_module : CoinAttackModule
+var info : TowerTypeInformation
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var info : TowerTypeInformation = Towers.get_tower_info(Towers.COIN)
+	info = Towers.get_tower_info(Towers.COIN)
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
@@ -29,19 +37,53 @@ func _ready():
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
 	attack_module.base_proj_speed = 300
-	attack_module.projectile_life_distance = info.base_range
+	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
-	attack_modules_and_target_num[attack_module] = 1
+	coin_attack_module = attack_module
+	
+	add_attack_module(attack_module)
 	
 	attack_module.connect("generated_gold", self, "_gold_generated")
-	attack_module.ratio_bronze_coin = 27
-	attack_module.ratio_silver_coin = 22
-	attack_module.ratio_gold_coin = 1
+	attack_module.ratio_bronze_coin = original_ratio_bronze_coin
+	attack_module.ratio_silver_coin = original_ratio_silver_coin
+	attack_module.ratio_gold_coin = original_ratio_gold_coin
 	
 	_post_inherit_ready()
 
 
 func _gold_generated(amount):
 	call_deferred("emit_signal", "tower_give_gold", amount, GoldManager.IncreaseGoldSource.TOWER_GOLD_INCOME)
+
+
+# energy module
+
+func set_energy_module(module):
+	.set_energy_module(module)
+	
+	if module != null:
+		module.module_effect_descriptions = [
+			"Coin's base pierce is increased to 777. Coin's base damage is also increased to 4.",
+			"The chance of shooting a gold coin is increased to 1/10."
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	coin_attack_module.base_pierce = 777
+	coin_attack_module.ratio_bronze_coin = 5
+	coin_attack_module.ratio_silver_coin = 4
+	coin_attack_module.ratio_gold_coin = 1
+	coin_attack_module.base_damage = 4
+	
+	coin_attack_module.calculate_final_pierce()
+
+
+func _module_turned_off():
+	coin_attack_module.base_pierce = info.base_pierce
+	coin_attack_module.ratio_bronze_coin = original_ratio_bronze_coin
+	coin_attack_module.ratio_silver_coin = original_ratio_silver_coin
+	coin_attack_module.ratio_gold_coin = original_ratio_gold_coin
+	coin_attack_module.base_damage = info.base_damage
+	
+	coin_attack_module.calculate_final_pierce()

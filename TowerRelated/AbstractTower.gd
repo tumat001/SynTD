@@ -78,7 +78,8 @@ var collision_shape
 
 var current_power_level_used : int
 
-var attack_modules_and_target_num : Dictionary = {}
+
+var all_attack_modules : Array = []
 var main_attack_module : AbstractAttackModule
 var range_module : RangeModule
 
@@ -128,30 +129,21 @@ func _ready():
 func _post_inherit_ready():
 	_update_ingredient_compatible_colors()
 	
-	
 	if range_module != null:
 		if range_module.get_parent() == null:
 			add_child(range_module)
 		
 		range_module.update_range() 
-	
-	_add_all_modules_as_children()
 
-func _add_all_modules_as_children():
-	for attack_module in attack_modules_and_target_num.keys():
-		add_attack_module(attack_module, attack_modules_and_target_num[attack_module])
 
 
 func _emit_final_range_changed():
-	#range_module.calculate_final_range_radius()
 	call_deferred("emit_signal", "final_range_changed")
 
 func _emit_final_base_damage_changed():
-	#main_attack_module.calculate_final_base_damage()
 	call_deferred("emit_signal", "final_base_damage_changed")
 
 func _emit_final_attack_speed_changed():
-	#main_attack_module.calculate_final_attack_speed()
 	call_deferred("emit_signal", "final_attack_speed_changed")
 
 func _emit_ingredients_absorbed_changed():
@@ -162,7 +154,7 @@ func _emit_targeting_changed():
 
 # Adding Attack modules related
 
-func add_attack_module(attack_module : AbstractAttackModule, num_of_targets : int, benefit_from_existing_tower_buffs : bool = true):
+func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existing_tower_buffs : bool = true):
 	if attack_module.get_parent() == null:
 		add_child(attack_module)
 	
@@ -191,8 +183,7 @@ func add_attack_module(attack_module : AbstractAttackModule, num_of_targets : in
 		for tower_effect in _all_uuid_tower_buffs_map.values():
 			add_tower_effect(tower_effect, [attack_module], false, false)
 	
-	
-	attack_modules_and_target_num[attack_module] = num_of_targets
+	all_attack_modules.append(attack_module)
 	emit_signal("attack_module_added", attack_module)
 
 
@@ -204,15 +195,14 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
 		range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
 	
-	
-	attack_modules_and_target_num.erase(attack_module_to_remove)
+	all_attack_modules.erase(attack_module_to_remove)
 	emit_signal("attack_module_removed", attack_module_to_remove)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	
 	if !disabled_from_attacking:
-		for attack_module in attack_modules_and_target_num.keys():
+		for attack_module in all_attack_modules:
 			if attack_module == null:
 				continue
 			
@@ -224,11 +214,11 @@ func _process(delta):
 				var success : bool = false
 				# If module itself does has a range_module
 				if attack_module.range_module != null:
-					success = attack_module.attempt_find_then_attack_enemies(attack_modules_and_target_num[attack_module])
+					success = attack_module.attempt_find_then_attack_enemies()
 					if attack_module.is_main_attack and success:
 						_on_main_attack_success()
 				else:
-					var targets = range_module.get_targets(attack_modules_and_target_num[attack_module])
+					var targets = range_module.get_targets(attack_module.number_of_unique_targets)
 					
 					if targets.size() > 0:
 						success = attack_module.on_command_attack_enemies(targets)
@@ -248,12 +238,12 @@ func _process(delta):
 
 
 func _on_main_attack_success():
-	for am in attack_modules_and_target_num.keys():
+	for am in all_attack_modules:
 		if am.current_time_metadata == AbstractAttackModule.Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
 			am.time_passed(1)
 			
 			if am.is_ready_to_attack():
-				am.attempt_find_then_attack_enemies(attack_modules_and_target_num[am])
+				am.attempt_find_then_attack_enemies(am.number_of_unique_targets)
 
 
 # Round start/end
@@ -268,7 +258,7 @@ func _set_round_started(arg_is_round_started : bool):
 
 
 func _on_round_end():
-	for module in attack_modules_and_target_num.keys():
+	for module in all_attack_modules:
 		module.on_round_end()
 	
 	_remove_all_timebound_effects()
@@ -278,7 +268,7 @@ func _on_round_start():
 
 # Recieving buffs/debuff related
 
-func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), register_to_buff_map : bool = true, include_non_module_effects : bool = true):
+func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, register_to_buff_map : bool = true, include_non_module_effects : bool = true):
 	if include_non_module_effects and register_to_buff_map:
 		_all_uuid_tower_buffs_map[tower_base_effect.effect_uuid] = tower_base_effect
 	
@@ -322,7 +312,7 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 				main_attack_module.reset_attack_timers()
 		
 
-func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = attack_modules_and_target_num.keys(), erase_from_buff_map : bool = true, include_non_module_effects : bool = true):
+func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, erase_from_buff_map : bool = true, include_non_module_effects : bool = true):
 	if include_non_module_effects and erase_from_buff_map:
 		_all_uuid_tower_buffs_map.erase(tower_base_effect.effect_uuid)
 	
@@ -437,7 +427,7 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 			_emit_final_range_changed()
 			
 			if main_attack_module is BulletAttackModule:
-				main_attack_module.projectile_life_distance = range_module.last_calculated_final_range
+				main_attack_module.base_proj_life_distance = range_module.last_calculated_final_range
 	
 	
 	for module in target_modules:
@@ -450,7 +440,7 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 			
 			module.range_module.update_range()
 			if module is BulletAttackModule:
-				module.projectile_life_distance = module.range_module.last_calculated_final_range
+				module.base_proj_life_distance = module.range_module.last_calculated_final_range
 			
 			if module == main_attack_module:
 				_emit_final_range_changed()
@@ -464,7 +454,7 @@ func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
 			range_module.percent_range_effects.erase(attr_effect_uuid)
 			
 			if main_attack_module is BulletAttackModule:
-				main_attack_module.projectile_life_distance = range_module.last_calculated_final_range
+				main_attack_module.base_proj_life_distance = range_module.last_calculated_final_range
 			
 			range_module.update_range()
 			_emit_final_range_changed()
@@ -478,7 +468,7 @@ func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
 				
 				module.range_module.update_range()
 				if module is BulletAttackModule:
-					module.projectile_life_distance = module.range_module.last_calculated_final_range
+					module.base_proj_life_distance = module.range_module.last_calculated_final_range
 
 
 func _add_pierce_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
@@ -576,6 +566,18 @@ func _remove_attack_module_from_effect(module_effect : BaseTowerAttackModuleAdde
 func _set_full_sellback(full_sellback : bool):
 	_is_full_sellback = full_sellback
 
+
+# has tower effects
+
+func has_tower_effect_uuid_in_buff_map(effect_uuid) -> bool:
+	return _all_uuid_tower_buffs_map.has(effect_uuid)
+
+func has_tower_effect_type_in_buff_map(tower_effect : TowerBaseEffect):
+	for effect in _all_uuid_tower_buffs_map:
+		if tower_effect.get_script() == effect.get_script():
+			return true
+	
+	return false
 
 # Decreasing timebounds related
 
@@ -769,7 +771,7 @@ func toggle_module_ranges():
 	if range_module != null:
 		range_module.toggle_show_range()
 	
-	for attack_module in attack_modules_and_target_num.keys():
+	for attack_module in all_attack_modules:
 		if attack_module.range_module != null and attack_module.use_self_range_module and attack_module.range_module.can_display_range:
 			attack_module.range_module.toggle_show_range()
 	
@@ -783,11 +785,11 @@ func _toggle_show_tower_info():
 # Disable Modules for whatever reason
 
 func _disable_modules():
-	for module in attack_modules_and_target_num.keys():
+	for module in all_attack_modules:
 		module.disable_module()
 
 func _enable_modules():
-	for module in attack_modules_and_target_num.keys():
+	for module in all_attack_modules:
 		module.enable_module()
 
 

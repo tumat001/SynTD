@@ -71,11 +71,11 @@ func _ready():
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 0
-	attack_module.base_on_hit_damage_internal_name = "sprinkler_base_damage"
+	attack_module.base_on_hit_damage_internal_name = "charge_base_damage"
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
 	attack_module.base_proj_speed = -20
-	attack_module.projectile_life_distance = info.base_range
+	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
@@ -85,12 +85,12 @@ func _ready():
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene
 	
-	attack_modules_and_target_num[attack_module] = 1
-	
 	connect("attack_module_removed", self, "_on_attack_module_removed_from_charge")
 	connect("attack_module_added", self, "_on_attack_module_added_from_charge")
 	
 	connect("final_attack_speed_changed", self, "_calculate_recharge_per_sec")
+	
+	add_attack_module(attack_module)
 	
 	_post_inherit_ready()
 
@@ -218,6 +218,7 @@ func _modify_bullet_before_shooting(bullet : BaseBullet):
 	bullet.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.CHARGE_BONUS_ON_HIT] = bonus_on_hit_damage
 	
 	_current_energy = 0
+	
 
 
 # Module related

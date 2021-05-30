@@ -33,9 +33,10 @@ func _ready():
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
 	attack_module.base_proj_speed = 400
-	attack_module.projectile_life_distance = info.base_range
+	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	attack_module.base_proj_inaccuracy = 20
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 3
@@ -44,8 +45,7 @@ func _ready():
 	attack_module.bullet_scene = BaseBullet_Scene
 	attack_module.set_texture_as_sprite_frame(SprinklerBullet_pic)
 	
-	attack_modules_and_target_num[attack_module] = 1
-	
+	add_attack_module(attack_module)
 	
 	_post_inherit_ready()
 

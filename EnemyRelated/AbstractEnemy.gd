@@ -156,11 +156,13 @@ func _take_unmitigated_damage(damage_amount : float, damage_type : int):
 	current_health -= damage_amount
 	if current_health <= 0:
 		var effective_damage = damage_amount + current_health
-		call_deferred("emit_signal", "on_post_mitigated_damage_taken", effective_damage, damage_type, true, self)
+		#call_deferred("emit_signal", "on_post_mitigated_damage_taken", effective_damage, damage_type, true, self)
+		emit_signal("on_post_mitigated_damage_taken", effective_damage, damage_type, true, self)
 		
 		_destroy_self()
 	else:
-		call_deferred("emit_signal", "on_post_mitigated_damage_taken", damage_amount, damage_type, false, self)
+		#call_deferred("emit_signal", "on_post_mitigated_damage_taken", damage_amount, damage_type, false, self)
+		emit_signal("on_post_mitigated_damage_taken", damage_amount, damage_type, false, self)
 		
 		emit_signal("on_current_health_changed", current_health)
 
@@ -357,7 +359,9 @@ func hit_by_aoe(base_aoe):
 
 
 func hit_by_damage_instance(damage_instance : DamageInstance):
-	call_deferred("emit_signal", "on_hit", self)
+	#call_deferred("emit_signal", "on_hit", self)
+	emit_signal("on_hit", self)
+	
 	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true))
 	_process_effects(damage_instance.on_hit_effects.duplicate(true))
 

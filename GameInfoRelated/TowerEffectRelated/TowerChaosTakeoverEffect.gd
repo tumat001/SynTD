@@ -31,8 +31,8 @@ const ChaosBase04_pic = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_04.
 const ChaosBase05_pic = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_05.png")
 
 
-var chaos_attack_modules_targets_num_map : Dictionary = {}
-var replaced_attack_modules_targets_num_map : Dictionary
+var chaos_attack_modules : Array = []
+var replaced_attack_modules : Array
 var replaced_range_module
 var replaced_main_attack_module
 
@@ -56,10 +56,10 @@ func _init().(EffectType.CHAOS_TAKEOVER, StoreOfTowerEffectsUUID.ING_CHAOS):
 
 
 func _construct_modules():
-	for module in chaos_attack_modules_targets_num_map.keys():
+	for module in chaos_attack_modules:
 		if module != null:
 			module.queue_free()
-	chaos_attack_modules_targets_num_map.clear()
+	chaos_attack_modules.clear()
 	
 	# Orb's range module
 	var orb_range_module = RangeModule_Scene.instance()
@@ -78,7 +78,7 @@ func _construct_modules():
 	orb_attack_module.is_main_attack = true
 	orb_attack_module.base_pierce = 1
 	orb_attack_module.base_proj_speed = 550
-	orb_attack_module.projectile_life_distance = 135
+	orb_attack_module.base_proj_life_distance = 135
 	orb_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	orb_attack_module.position.y -= 22
 	orb_attack_module.on_hit_damage_scale = 0
@@ -100,7 +100,7 @@ func _construct_modules():
 	
 	orb_attack_module.range_module = orb_range_module
 	
-	chaos_attack_modules_targets_num_map[orb_attack_module] = 1
+	chaos_attack_modules.append(orb_attack_module)
 	
 	
 	# Diamond related
@@ -120,7 +120,7 @@ func _construct_modules():
 	diamond_attack_module.is_main_attack = false
 	diamond_attack_module.base_pierce = 3
 	diamond_attack_module.base_proj_speed = 400
-	diamond_attack_module.projectile_life_distance = 135
+	diamond_attack_module.base_proj_life_distance = 135
 	diamond_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	diamond_attack_module.position.y -= 22
 	diamond_attack_module.on_hit_damage_scale = 1
@@ -143,7 +143,7 @@ func _construct_modules():
 	
 	diamond_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
 	
-	chaos_attack_modules_targets_num_map[diamond_attack_module] = 1
+	chaos_attack_modules.append(diamond_attack_module)
 	
 	
 	# Bolt related
@@ -187,7 +187,7 @@ func _construct_modules():
 	
 	bolt_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
 	
-	chaos_attack_modules_targets_num_map[bolt_attack_module] = 1
+	chaos_attack_modules.append(bolt_attack_module)
 	
 	
 	# Sword related
@@ -210,7 +210,7 @@ func _construct_modules():
 	
 	sword_attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack")
 	
-	chaos_attack_modules_targets_num_map[sword_attack_module] = 1
+	chaos_attack_modules.append(sword_attack_module)
 	sword_attack_module.can_be_commanded_by_tower = false
 
 
@@ -236,13 +236,13 @@ func takeover(tower):
 	
 	tower.add_child(_construct_chaos_shadow())
 	
-	for module in tower.attack_modules_and_target_num:
+	for module in tower.all_attack_modules:
 		if module.module_id == StoreOfAttackModuleID.MAIN or module.module_id == StoreOfAttackModuleID.PART_OF_SELF:
-			replaced_attack_modules_targets_num_map[module] = tower.attack_modules_and_target_num[module]
+			replaced_attack_modules.append(module)
 			tower.remove_attack_module(module)
 	
-	for module in chaos_attack_modules_targets_num_map:
-		tower.add_attack_module(module, chaos_attack_modules_targets_num_map[module])
+	for module in chaos_attack_modules:
+		tower.add_attack_module(module)
 
 func _construct_chaos_shadow():
 	chaos_shadow_anim_sprite = AnimatedSprite.new()
@@ -272,16 +272,16 @@ func untakeover(tower):
 	if chaos_shadow_anim_sprite != null:
 		chaos_shadow_anim_sprite.queue_free()
 	
-	for module in chaos_attack_modules_targets_num_map:
+	for module in chaos_attack_modules:
 		if module != null:
 			tower.remove_attack_module(module)
 			module.queue_free()
 	
-	for module in replaced_attack_modules_targets_num_map:
+	for module in replaced_attack_modules:
 		
 		# THE LAST PARAM (FALSE) IS ONLY BECAUSE THE ONLY WAY
 		# TO REMOVE CHAOS IS TO USE RE (which clears everything)
-		tower.add_attack_module(module, replaced_attack_modules_targets_num_map[module], false)
+		tower.add_attack_module(module, false)
 	
 
 
@@ -313,7 +313,7 @@ func _show_attack_sprite_on_attack(_attk_speed_delay, enemies : Array):
 	for enemy in enemies:
 		if enemy != null:
 			var sword = _construct_attack_sprite_on_attack()
-			sword.global_position = enemy.global_position
+			sword.global_position = enemies[0].global_position
 			sword.playing = true
 			
 			tower_taken_over.get_tree().get_root().add_child(sword)

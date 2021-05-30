@@ -79,6 +79,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += 16
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -89,7 +90,7 @@ func _ready():
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
 	attack_module.base_proj_speed = 167
-	attack_module.projectile_life_distance = info.base_range
+	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.position.y -= 16
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
@@ -112,7 +113,7 @@ func _ready():
 	#
 	
 	attack_module.modifications = [spawn_aoe_mod]
-	attack_modules_and_target_num[attack_module] = 1
+	add_attack_module(attack_module)
 	
 	
 	# Shot maker module
@@ -160,7 +161,7 @@ func _ready():
 	shot_attack_module.range_module = shot_range_module
 	
 	shot_attack_module.can_be_commanded_by_tower = false
-	attack_modules_and_target_num[shot_attack_module] = 1
+	add_attack_module(shot_attack_module)
 	
 	_post_inherit_ready()
 
