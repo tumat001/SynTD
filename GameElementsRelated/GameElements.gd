@@ -142,7 +142,7 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.RE,
-			Towers.SPRINKLER,
+			Towers.SIMPLE_OBELISK,
 			Towers.MINI_TESLA,
 			Towers.TESLA,
 		])

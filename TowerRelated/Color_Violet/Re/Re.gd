@@ -178,7 +178,8 @@ func set_energy_module(module):
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	re_range_module.add_targeting(Targeting.RANDOM)
+	if !re_range_module.all_targeting_options.has(Targeting.RANDOM):
+		re_range_module.add_targeting_option(Targeting.RANDOM)
 	
 	for module in all_attack_modules:
 		if !module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
@@ -190,11 +191,13 @@ func _module_turned_on(_first_time_per_round : bool):
 
 
 func _module_turned_off():
-	re_range_module.remove_targeting(Targeting.RANDOM)
+	if re_range_module.all_targeting_options.has(Targeting.RANDOM):
+		re_range_module.remove_targeting_option(Targeting.RANDOM)
 	
 	for module in all_attack_modules:
 		if module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
 			module.disconnect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure")
+			print("uwu")
 	
 	if is_connected("attack_module_added", self, "_attack_module_attached"):
 		disconnect("attack_module_added", self, "_attack_module_attached")

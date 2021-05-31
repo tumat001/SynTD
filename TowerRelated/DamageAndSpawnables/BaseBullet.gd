@@ -2,7 +2,7 @@ extends KinematicBody2D
 
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
-signal hit_an_enemy(me)
+signal hit_an_enemy(me, enemy)
 signal on_zero_pierce(me)
 
 var attack_module_source
@@ -44,7 +44,7 @@ func _physics_process(delta):
 
 
 func hit_by_enemy(enemy):
-	pass
+	emit_signal("hit_an_enemy", self, enemy)
 
 func decrease_pierce(amount):
 	pierce -= amount

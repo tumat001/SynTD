@@ -61,6 +61,22 @@ func _set_life_distance(life_distance : float):
 func calculate_final_proj_life_distance():
 	last_calculated_final_proj_life_distance = (base_proj_life_distance * base_proj_life_distance_scale) + _life_distance_bonus
 
+
+func _set_range_module(new_module):
+	if range_module != null:
+		if range_module.is_connected("final_range_updated", self, "_range_of_range_module_changed"):
+			range_module.disconnect("final_range_updated", self, "_range_of_range_module_changed")
+	
+	._set_range_module(new_module)
+	
+	if range_module != null:
+		if !range_module.is_connected("final_range_updated", self, "_range_of_range_module_changed"):
+			range_module.connect("final_range_updated", self, "_range_of_range_module_changed")
+
+func _range_of_range_module_changed():
+	_set_life_distance(range_module.last_calculated_final_range)
+
+
 # Time related
 
 func time_passed(delta):

@@ -273,7 +273,7 @@ func _shoot_marked_enemies():
 
 func _check_if_shot_killed_enemy(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int, module):
 	if damage_register_id == Ping_shot_register_id and killed_enemy == true:
-		arrow_attack_module.reset_attack_timers()
+		call_deferred(arrow_attack_module.reset_attack_timers())
 
 
 # energy module related
@@ -292,7 +292,9 @@ func set_energy_module(module):
 func _module_turned_on(_first_time_per_round : bool):
 	empowered_num_of_targets_limit = 2
 	current_mark_count_limit = 6
+	template.aoe_pierce = current_mark_count_limit
 
 func _module_turned_off():
 	empowered_num_of_targets_limit = original_empowered_num_of_targets_limit
 	current_mark_count_limit = original_mark_count_limit
+	template.aoe_pierce = current_mark_count_limit

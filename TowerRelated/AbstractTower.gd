@@ -415,8 +415,8 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 			_emit_final_range_changed()
 			
 			if main_attack_module is BulletAttackModule:
-				main_attack_module.base_proj_life_distance = range_module.last_calculated_final_range
-	
+				#main_attack_module.base_proj_life_distance = range_module.last_calculated_final_range
+				pass
 	
 	for module in target_modules:
 		if module.range_module != null:
@@ -428,7 +428,8 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 			
 			module.range_module.update_range()
 			if module is BulletAttackModule:
-				module.base_proj_life_distance = module.range_module.last_calculated_final_range
+				#module.base_proj_life_distance = module.range_module.last_calculated_final_range
+				pass
 			
 			if module == main_attack_module:
 				_emit_final_range_changed()
@@ -442,7 +443,8 @@ func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
 			range_module.percent_range_effects.erase(attr_effect_uuid)
 			
 			if main_attack_module is BulletAttackModule:
-				main_attack_module.base_proj_life_distance = range_module.last_calculated_final_range
+				#main_attack_module.base_proj_life_distance = range_module.last_calculated_final_range
+				pass
 			
 			range_module.update_range()
 			_emit_final_range_changed()
@@ -456,7 +458,8 @@ func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
 				
 				module.range_module.update_range()
 				if module is BulletAttackModule:
-					module.base_proj_life_distance = module.range_module.last_calculated_final_range
+					#module.base_proj_life_distance = module.range_module.last_calculated_final_range
+					pass
 
 
 func _add_pierce_effect(attr_effect : TowerAttributesEffect, target_modules : Array):

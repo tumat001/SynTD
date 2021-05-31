@@ -674,9 +674,8 @@ func _get_scaled_extra_on_hit_damages() -> Dictionary:
 			var extra_on_hit = on_hit_damage_adder_effects[extra_on_hit_key_as_effect].on_hit_damage
 			var duplicate = extra_on_hit
 			
-			if on_hit_damage_scale != 1:
-				duplicate = duplicate.duplicate()
-				duplicate.damage_as_modifier = extra_on_hit.damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+			duplicate = duplicate.duplicate()
+			duplicate.damage_as_modifier = extra_on_hit.damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
 			
 			scaled_on_hit_damages[extra_on_hit_key_as_effect] = duplicate
 	

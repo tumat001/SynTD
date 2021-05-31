@@ -130,8 +130,11 @@ func _modify_obelisk_bullet(bullet : BaseBullet):
 	if !explode_per_hit:
 		bullet.connect("on_zero_pierce", self, "_summon_explosion")
 	else:
-		bullet.connect("hit_an_enemy", self, "_summon_explosion")
+		bullet.connect("hit_an_enemy", self, "_summon_explosion_per_hit")
 
+
+func _summon_explosion_per_hit(bullet : BaseBullet, enemy):
+	_summon_explosion(bullet)
 
 func _summon_explosion(bullet : BaseBullet):
 	var pos = bullet.global_position
@@ -154,18 +157,19 @@ func set_energy_module(module):
 func _module_turned_on(_first_time_per_round : bool):
 	explode_per_hit = true
 	
-	range_module.base_range_radius = original_base_range + 125
-	range_module.update_range()
+	obelisk_range_module.base_range_radius = original_base_range + 125
+	obelisk_range_module.update_range()
 	
 	obelisk_attack_module.base_pierce = original_base_pierce + 1
 	obelisk_attack_module.calculate_final_pierce()
-
+	
 
 func _module_turned_off():
 	explode_per_hit = false
 	
-	range_module.base_range_radius = original_base_range
-	range_module.update_range()
+	obelisk_range_module.base_range_radius = original_base_range
+	obelisk_range_module.update_range()
 	
 	obelisk_attack_module.base_pierce = original_base_pierce
 	obelisk_attack_module.calculate_final_pierce()
+	

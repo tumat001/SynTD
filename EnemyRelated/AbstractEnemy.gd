@@ -406,7 +406,8 @@ func _process_direct_damage_and_type(damage : float, damage_type : int):
 		final_damage *= _calculate_multiplier_from_total_resistance()
 		
 	elif damage_type == DamageType.PURE:
-		final_damage *= 1
+		pass
+		#final_damage *= 1
 	
 	_take_unmitigated_damage(final_damage, damage_type)
 
