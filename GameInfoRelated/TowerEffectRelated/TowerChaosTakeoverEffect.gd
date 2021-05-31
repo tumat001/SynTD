@@ -294,7 +294,7 @@ func _on_round_end():
 
 func _add_damage_accumulated(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int, module):
 	damage_accumulated += damage
-	_check_damage_accumulated()
+	call_deferred("_check_damage_accumulated")
 
 func _check_damage_accumulated():
 	if damage_accumulated >= damage_accumulated_trigger:
@@ -317,3 +317,4 @@ func _show_attack_sprite_on_attack(_attk_speed_delay, enemies : Array):
 			sword.playing = true
 			
 			tower_taken_over.get_tree().get_root().add_child(sword)
+			break

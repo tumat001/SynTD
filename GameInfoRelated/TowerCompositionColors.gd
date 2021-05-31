@@ -26,8 +26,19 @@ const syn_compo_tria_OGV = preload("res://GameHUDRelated/LeftSidePanel/SynergyIn
 const syn_compo_special_RGB = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Special_RedGreenBlue.png")
 const syn_compo_special_ROYGBV = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Special_ROYGBV.png")
 
+# syns
 
-var synergies : Dictionary = {
+const CompleSyn_YelVio_EnergyModule = preload("res://GameInfoRelated/ColorSynergyRelated/CompleSynergies/CompleSyn_YelVio/CompleSyn_YelVio_EnergyModule.gd")
+const CompleSyn_YelVio_YellowIng = preload("res://GameInfoRelated/ColorSynergyRelated/CompleSynergies/CompleSyn_YelVio/CompleSyn_YelVio_YellowIng.gd")
+
+
+var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
+
+
+func _init():
+	inst_complesyn_yelvio_energymodule = CompleSyn_YelVio_EnergyModule.new(TowerDominantColors.inst_domsyn_yellow_energybattery)
+	
+	synergies = {
 	# Comple
 	"RedGreen" : ColorSynergy.new("RedGreen", [TowerColors.RED, TowerColors.GREEN], [9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
@@ -37,7 +48,8 @@ var synergies : Dictionary = {
 	"YellowViolet" : ColorSynergy.new("YellowViolet", [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_compo_comple_yellowviolet,
-	["YellowViolet description"]),
+	["YellowViolet description"],
+	[inst_complesyn_yelvio_energymodule, CompleSyn_YelVio_YellowIng.new()]),
 	
 	"OrangeBlue" : ColorSynergy.new("OrangeBlue", [TowerColors.ORANGE, TowerColors.BLUE], [9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
@@ -101,3 +113,5 @@ var synergies : Dictionary = {
 	syn_compo_special_ROYGBV,
 	["ROYGBV description"]),
 }
+
+var synergies : Dictionary

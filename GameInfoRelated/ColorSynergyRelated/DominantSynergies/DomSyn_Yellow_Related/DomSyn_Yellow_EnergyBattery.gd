@@ -15,7 +15,10 @@ const tier_2_recharge_rate : int = 1
 const tier_1_recharge_rate : int = 2
 
 const tier_2_max_capacity = 2
-const tier_1_max_capacity = 3
+const tier_1_max_capacity = 5
+
+var eligible_colors : Array = [TowerColors.YELLOW]
+
 
 func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	game_elements = arg_game_elements
@@ -24,11 +27,13 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		energy_battery = EnergyBattery.new(game_elements.stage_round_manager)
 	
 	if tier == 1:
-		energy_battery.recharge_rate_per_round = tier_1_recharge_rate
+		energy_battery.recharge_rate_per_round_from_main = tier_1_recharge_rate
 		energy_battery.max_energy_capacity = tier_1_max_capacity
 	elif tier == 2:
-		energy_battery.recharge_rate_per_round = tier_2_recharge_rate
-		energy_battery.max_energy_capacity = tier_2_max_capacity
+		energy_battery.recharge_rate_per_round_from_main = tier_2_recharge_rate
+		
+		if energy_battery.max_energy_capacity < tier_2_max_capacity:
+			energy_battery.max_energy_capacity = tier_2_max_capacity
 	else:
 		_inactivate_self()
 	
@@ -39,8 +44,8 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		if !game_elements.stage_round_manager.is_connected("round_started", self, "_round_started"):
 			game_elements.stage_round_manager.connect("round_started", self, "_round_started")
 		
-		if !game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_attempt_give_energy_module_to_yellow_tower"):
-			game_elements.tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_attempt_give_energy_module_to_yellow_tower")
+		if !game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_attempt_give_energy_module_to_eligible_tower"):
+			game_elements.tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_attempt_give_energy_module_to_eligible_tower")
 		
 		
 		if energy_battery_panel == null:
@@ -52,7 +57,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		
 		
 		if game_elements.stage_round_manager.round_started:
-			_attempt_give_all_yellow_towers_energy_module()
+			_attempt_give_all_eligible_towers_energy_module()
 			_first_time_activation("")
 
 
@@ -63,15 +68,14 @@ func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int
 
 func _inactivate_self():
 	if energy_battery != null:
-		energy_battery.recharge_rate_per_round = 0
-		energy_battery.max_energy_capacity = tier_2_max_capacity
+		energy_battery.recharge_rate_per_round_from_main = 0
 	
 	if game_elements != null:
 		if game_elements.stage_round_manager.is_connected("round_started", self, "_round_started"):
 			game_elements.stage_round_manager.disconnect("round_started", self, "_round_started")
 		
-		if game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_attempt_give_energy_module_to_tower"):
-			game_elements.tower_manager.disconnect("tower_to_benefit_from_synergy_buff", self, "_attempt_give_energy_module_to_tower")
+		if game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_attempt_give_energy_module_to_eligible_tower"):
+			game_elements.tower_manager.disconnect("tower_to_benefit_from_synergy_buff", self, "_attempt_give_energy_module_to_eligible_tower")
 		
 		if game_elements.stage_round_manager.is_connected("round_started", self, "_first_time_activation"):
 			game_elements.stage_round_manager.disconnect("round_started", self, "_first_time_activation")
@@ -88,16 +92,18 @@ func _first_time_activation(curr_stageround):
 
 
 func _round_started(curr_stageround):
-	_attempt_give_all_yellow_towers_energy_module()
+	_attempt_give_all_eligible_towers_energy_module()
 
 
-func _attempt_give_all_yellow_towers_energy_module():
+func _attempt_give_all_eligible_towers_energy_module():
 	for tower in game_elements.tower_manager.get_all_active_towers():
-		_attempt_give_energy_module_to_yellow_tower(tower)
+		_attempt_give_energy_module_to_eligible_tower(tower)
 
 
-func _attempt_give_energy_module_to_yellow_tower(tower : AbstractTower):
+func _attempt_give_energy_module_to_eligible_tower(tower : AbstractTower):
 	if game_elements.stage_round_manager.round_started:
-		if tower._tower_colors.has(TowerColors.YELLOW) and tower.energy_module == null:
-			tower.energy_module = energy_battery.create_connected_energy_module()
-
+		if tower.energy_module == null:
+			for color in eligible_colors:
+				if tower._tower_colors.has(color):
+					tower.energy_module = energy_battery.create_connected_energy_module()
+					break

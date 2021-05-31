@@ -143,7 +143,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.SPRINKLER,
-			Towers.PING,
+			Towers.MINI_TESLA,
 			Towers.TESLA,
 		])
 	

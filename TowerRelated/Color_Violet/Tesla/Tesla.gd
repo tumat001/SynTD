@@ -76,7 +76,7 @@ func _post_inherit_ready():
 	add_tower_effect(tower_effect)
 
 
-# module related
+# energy module related
 
 func set_energy_module(module):
 	.set_energy_module(module)

@@ -25,6 +25,12 @@ const Explosion08_pic = preload("res://TowerRelated/Color_Violet/SimpleObelisk/S
 
 var aoe_attack_module : AOEAttackModule
 
+var explode_per_hit : bool = false
+var original_base_range : float
+var original_base_pierce : int
+
+var obelisk_range_module : RangeModule
+var obelisk_attack_module : BulletAttackModule
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.SIMPLE_OBELISK)
@@ -35,10 +41,15 @@ func _ready():
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
 	
+	original_base_range = info.base_range
+	original_base_pierce = info.base_pierce
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
 	range_module.position.y += 30
+	
+	obelisk_range_module = range_module
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -63,6 +74,8 @@ func _ready():
 	attack_module.set_texture_as_sprite_frame(SimpleObeliskBullet_pic)
 	
 	attack_module.connect("before_bullet_is_shot", self, "_modify_obelisk_bullet")
+	
+	obelisk_attack_module = attack_module
 	
 	add_attack_module(attack_module)
 	
@@ -114,7 +127,10 @@ func _ready():
 
 
 func _modify_obelisk_bullet(bullet : BaseBullet):
-	bullet.connect("on_zero_pierce", self, "_summon_explosion")
+	if !explode_per_hit:
+		bullet.connect("on_zero_pierce", self, "_summon_explosion")
+	else:
+		bullet.connect("hit_an_enemy", self, "_summon_explosion")
 
 
 func _summon_explosion(bullet : BaseBullet):
@@ -122,3 +138,34 @@ func _summon_explosion(bullet : BaseBullet):
 	
 	var aoe = aoe_attack_module.construct_aoe(pos, pos)
 	get_tree().get_root().add_child(aoe)
+
+
+# energy module related
+
+func set_energy_module(module):
+	.set_energy_module(module)
+	
+	if module != null:
+		module.module_effect_descriptions = [
+			"Arcane bolts explode per enemy hit. This tower's base range and base pierce is also increased."
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	explode_per_hit = true
+	
+	range_module.base_range_radius = original_base_range + 125
+	range_module.update_range()
+	
+	obelisk_attack_module.base_pierce = original_base_pierce + 1
+	obelisk_attack_module.calculate_final_pierce()
+
+
+func _module_turned_off():
+	explode_per_hit = false
+	
+	range_module.base_range_radius = original_base_range
+	range_module.update_range()
+	
+	obelisk_attack_module.base_pierce = original_base_pierce
+	obelisk_attack_module.calculate_final_pierce()

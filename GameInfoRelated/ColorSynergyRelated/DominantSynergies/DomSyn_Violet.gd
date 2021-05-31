@@ -1,7 +1,7 @@
 extends "res://GameInfoRelated/ColorSynergyRelated/AbstractTowerModifyingSynergyEffect.gd"
 
-const tier_4_tower_ing_limit : int = 25
-const tier_3_tower_ing_limit : int = 11
+const tier_4_tower_ing_limit : int = 40
+const tier_3_tower_ing_limit : int = 12
 const tier_2_tower_ing_limit : int = 8
 const tier_1_tower_ing_limit : int = 9
 

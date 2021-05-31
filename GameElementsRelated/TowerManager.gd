@@ -207,6 +207,7 @@ func _show_tower_info_panel(tower : AbstractTower):
 	tower.connect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
 	tower.connect("tower_colors_changed", self, "_update_tower_colors_in_info")
 	tower.connect("targeting_changed", self, "_update_targeting")
+	tower.connect("targeting_options_modified", self, "_update_targeting")
 	tower.connect("energy_module_attached", self, "_update_energy_module_display")
 	tower.connect("energy_module_detached", self ,"_update_energy_module_display")
 
@@ -243,6 +244,7 @@ func _show_round_panel():
 		tower_being_shown_in_info.disconnect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
 		tower_being_shown_in_info.disconnect("tower_colors_changed", self, "_update_tower_colors_in_info")
 		tower_being_shown_in_info.disconnect("targeting_changed", self, "_update_targeting")
+		tower_being_shown_in_info.disconnect("targeting_options_modified", self, "_update_targeting")
 		tower_being_shown_in_info.disconnect("energy_module_attached", self, "_update_energy_module_display")
 		tower_being_shown_in_info.disconnect("energy_module_detached", self ,"_update_energy_module_display")
 		

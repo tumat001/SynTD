@@ -14,11 +14,18 @@ const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite
 const AttackSprtie_Scene = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn")
 const ReHitParticle_Scene = preload("res://TowerRelated/Color_Violet/Re/ReHitParticle.tscn")
 
+const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
+
 var lock_on_sprites_to_enemy : Dictionary = {}
 var rotational_speed : int
 
 const EnemyClearAllEffects = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyClearAllEffects.gd")
 
+var re_attack_module : InstantDamageAttackModule
+var re_range_module : RangeModule
+var original_damage_type : int
+
+var old_attack_module_damage_type : int
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -34,6 +41,8 @@ func _ready():
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
 	range_module.position.y += 18
+	
+	re_range_module = range_module
 	
 	var attack_module : InstantDamageAttackModule = InstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -56,6 +65,9 @@ func _ready():
 	attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack")
 	
 	add_attack_module(attack_module)
+	
+	original_damage_type = info.base_damage_type
+	re_attack_module = attack_module
 	
 	_post_inherit_ready()
 
@@ -151,3 +163,62 @@ func _queue_free():
 	lock_on_sprites_to_enemy.clear()
 	
 	._queue_free()
+
+
+# energy module related
+
+func set_energy_module(module):
+	.set_energy_module(module)
+	
+	if module != null:
+		module.module_effect_descriptions = [
+			"Re now has the option to target enemies at random.",
+			"All of Re's outgoing damage is converted to Pure damage."
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	re_range_module.add_targeting(Targeting.RANDOM)
+	
+	for module in all_attack_modules:
+		if !module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
+			module.connect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure")
+	
+	if !is_connected("attack_module_added", self, "_attack_module_attached"):
+		connect("attack_module_added", self, "_attack_module_attached")
+		connect("attack_module_removed", self, "_attack_module_detached")
+
+
+func _module_turned_off():
+	re_range_module.remove_targeting(Targeting.RANDOM)
+	
+	for module in all_attack_modules:
+		if module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
+			module.disconnect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure")
+	
+	if is_connected("attack_module_added", self, "_attack_module_attached"):
+		disconnect("attack_module_added", self, "_attack_module_attached")
+		disconnect("attack_module_removed", self, "_attack_module_detached")
+
+
+
+func _attack_module_detached(attack_module : AbstractAttackModule):
+	if energy_module != null:
+		if attack_module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
+			attack_module.disconnect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure")
+	
+
+
+func _attack_module_attached(attack_module : AbstractAttackModule):
+	if attack_module == main_attack_module:
+		if energy_module != null and energy_module.is_turned_on:
+			if !attack_module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
+				attack_module.connect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure")
+			
+		else:
+			pass
+
+
+func _convert_all_damage_type_to_pure(damage_instance : DamageInstance, module):
+	for on_hit_dmg in damage_instance.on_hit_damages.values():
+		on_hit_dmg.damage_type = DamageType.PURE

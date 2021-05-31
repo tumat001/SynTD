@@ -53,6 +53,7 @@ signal ingredients_absorbed_changed
 signal ingredients_limit_changed(new_limit)
 signal tower_colors_changed
 signal targeting_changed
+signal targeting_options_modified
 
 signal energy_module_attached
 signal energy_module_detached
@@ -77,7 +78,6 @@ var is_showing_ranges : bool
 var collision_shape
 
 var current_power_level_used : int
-
 
 var all_attack_modules : Array = []
 var main_attack_module : AbstractAttackModule
@@ -152,6 +152,9 @@ func _emit_ingredients_absorbed_changed():
 func _emit_targeting_changed():
 	call_deferred("emit_signal", "targeting_changed")
 
+func _emit_targeting_options_modified():
+	call_deferred("emit_signal", "targeting_options_modified")
+
 # Adding Attack modules related
 
 func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existing_tower_buffs : bool = true):
@@ -178,6 +181,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			range_module.update_range() 
 			range_module.connect("final_range_changed", self, "_emit_final_range_changed")
 			range_module.connect("targeting_changed", self, "_emit_targeting_changed")
+			range_module.connect("targeting_options_modified", self, "_emit_targeting_options_modified")
 	
 	if benefit_from_existing_tower_buffs:
 		for tower_effect in _all_uuid_tower_buffs_map.values():
@@ -194,36 +198,29 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 	if attack_module_to_remove.range_module == range_module:
 		range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
 		range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
+		range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
 	
 	all_attack_modules.erase(attack_module_to_remove)
 	emit_signal("attack_module_removed", attack_module_to_remove)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	
 	if !disabled_from_attacking:
 		for attack_module in all_attack_modules:
 			if attack_module == null:
 				continue
 			
-			if attack_module.current_time_metadata == AbstractAttackModule.Time_Metadata.TIME_AS_SECONDS:
-				attack_module.time_passed(delta)
+			attack_module.time_passed(delta)
 			
 			if attack_module.can_be_commanded_by_tower and attack_module.is_ready_to_attack():
-				
-				var success : bool = false
 				# If module itself does has a range_module
 				if attack_module.range_module != null:
-					success = attack_module.attempt_find_then_attack_enemies()
-					if attack_module.is_main_attack and success:
-						_on_main_attack_success()
+					attack_module.attempt_find_then_attack_enemies()
 				else:
 					var targets = range_module.get_targets(attack_module.number_of_unique_targets)
 					
 					if targets.size() > 0:
-						success = attack_module.on_command_attack_enemies(targets)
-						if attack_module.is_main_attack and success:
-							_on_main_attack_success()
+						attack_module.on_command_attack_enemies(targets)
 	
 	
 	#Drag related
@@ -235,15 +232,6 @@ func _process(delta):
 	# timebounded
 	
 	_decrease_time_of_timebounded(delta)
-
-
-func _on_main_attack_success():
-	for am in all_attack_modules:
-		if am.current_time_metadata == AbstractAttackModule.Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
-			am.time_passed(1)
-			
-			if am.is_ready_to_attack():
-				am.attempt_find_then_attack_enemies(am.number_of_unique_targets)
 
 
 # Round start/end
@@ -347,7 +335,7 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 		
 	elif tower_base_effect is TowerFullSellbackEffect:
 		if include_non_module_effects:
-			_set_full_sellback(true)
+			_set_full_sellback(false)
 		
 
 func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect, target_modules : Array):

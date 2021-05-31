@@ -10,10 +10,6 @@ const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 
-enum Time_Metadata {
-	TIME_AS_SECONDS,
-	TIME_AS_NUM_OF_ATTACKS
-}
 
 signal in_attack_windup(windup_time, enemies_or_poses)
 signal in_attack(attack_speed_delay, enemies_or_poses)
@@ -24,12 +20,10 @@ signal on_round_end()
 signal on_post_mitigation_damage_dealt(damage, damage_type, killed, enemy, damage_register_id, module)
 signal on_enemy_hit(enemy, damage_register_id, module)
 
+signal on_damage_instance_constructed(damage_instance, module)
+
+
 var module_id : int
-# These are used to help differentiate attacks
-# that happer per second(s) and attacks
-# per 5th attack (of "main attack")
-var current_time_metadata = Time_Metadata.TIME_AS_SECONDS
-var original_time_metadata = Time_Metadata.TIME_AS_SECONDS
 var is_main_attack : bool = false
 var number_of_unique_targets : int = 1
 
@@ -250,9 +244,6 @@ func calculate_all_speed_related_attributes():
 
 
 func calculate_final_attack_speed() -> float:
-	if original_time_metadata == Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
-		return base_attack_speed
-	
 	var final_attack_speed = base_attack_speed
 	
 	if benefits_from_bonus_attack_speed:
@@ -517,7 +508,6 @@ func on_command_attack_enemies(enemies : Array) -> bool:
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
 			_during_windup_multiple(enemies)
-			_during_attack()
 			return false
 		
 	else:
@@ -533,7 +523,6 @@ func on_command_attack_enemies(enemies : Array) -> bool:
 				_current_burst_delay = calculate_final_burst_attack_speed()
 				_is_bursting = true
 				_current_burst_count += 1
-				_during_attack()
 				return true
 			else:
 				_attack_enemies(enemies)
@@ -564,7 +553,6 @@ func on_command_attack_at_positions(positions : Array):
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
 			_during_windup_multiple(positions)
-			_during_attack()
 		
 	else:
 		if !has_burst:
@@ -578,7 +566,6 @@ func on_command_attack_at_positions(positions : Array):
 				_current_burst_delay = calculate_final_burst_attack_speed()
 				_is_bursting = true
 				_current_burst_count += 1
-				_during_attack()
 			else:
 				_attack_at_positions(positions)
 				_current_attack_wait = calculate_final_attack_speed()
@@ -624,13 +611,7 @@ func _during_windup_multiple(enemies_or_poses : Array = []):
 	emit_signal("in_attack_windup", _last_calculated_attack_wind_up, enemies_or_poses)
 
 
-func _during_attack():
-	if original_time_metadata == Time_Metadata.TIME_AS_NUM_OF_ATTACKS:
-		current_time_metadata = Time_Metadata.TIME_AS_SECONDS
-
 func _finished_attacking():
-	current_time_metadata = original_time_metadata
-	
 	emit_signal("in_attack_end")
 
 # Disabling and Enabling

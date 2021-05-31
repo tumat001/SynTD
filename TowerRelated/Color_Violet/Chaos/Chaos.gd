@@ -26,7 +26,9 @@ const ChaosBolt03_pic = preload("res://TowerRelated/Color_Violet/Chaos/ChaosBolt
 const ChaosSword = preload("res://TowerRelated/Color_Violet/Chaos/ChaosSwordParticle.tscn")
 
 
-const damage_accumulated_trigger : float = 75.0
+const original_damage_accumulated_trigger : float = 75.0
+var damage_accumulated_trigger : float = original_damage_accumulated_trigger
+
 var damage_accumulated : float = 0
 var sword_attack_module : InstantDamageAttackModule
 
@@ -204,7 +206,7 @@ func _on_round_end():
 
 func _add_damage_accumulated(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int, module):
 	damage_accumulated += damage
-	_check_damage_accumulated()
+	call_deferred("_check_damage_accumulated")
 
 func _check_damage_accumulated():
 	if damage_accumulated >= damage_accumulated_trigger:
@@ -225,3 +227,23 @@ func _show_attack_sprite_on_attack(_attk_speed_delay, enemies : Array):
 			sword.global_position = enemies[0].global_position
 			get_tree().get_root().add_child(sword)
 			sword.playing = true
+			break
+
+
+# energy module related
+
+
+func set_energy_module(module):
+	.set_energy_module(module)
+	
+	if module != null:
+		module.module_effect_descriptions = [
+			"Total damage dealt accumulation threshold for summoning dark sword is halved."
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	damage_accumulated_trigger = original_damage_accumulated_trigger / 2
+
+func _module_turned_off():
+	damage_accumulated_trigger = original_damage_accumulated_trigger

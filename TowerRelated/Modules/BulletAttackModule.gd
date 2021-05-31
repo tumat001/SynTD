@@ -206,8 +206,9 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	var damage_instance : DamageInstance = DamageInstance.new()
 	damage_instance.on_hit_damages = _get_all_scaled_on_hit_damages()
 	damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
-	
+	emit_signal("on_damage_instance_constructed", damage_instance, self)
 	bullet.damage_instance = damage_instance
+	
 	bullet.pierce = last_calculated_final_pierce
 	
 	var dir : Vector2 = Vector2(arg_enemy_pos.x - global_position.x, arg_enemy_pos.y - global_position.y)

@@ -35,7 +35,7 @@ func _get_description() -> String:
 	var modifier_desc = modifier.get_description()
 	
 	if modifier is FlatModifier:
-		return ("+ " + modifier_desc + " " + type_name + " on hit damage")
+		return ("+" + modifier_desc + " " + type_name + " on hit damage")
 	elif modifier is PercentModifier:
 		var first_part : String = modifier_desc[0]
 		var second_part : String = modifier_desc[1]

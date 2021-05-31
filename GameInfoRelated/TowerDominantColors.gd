@@ -21,8 +21,13 @@ const DomSyn_Violet = preload("res://GameInfoRelated/ColorSynergyRelated/Dominan
 const DomSyn_Yellow_GoldIncome = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_GoldIncome.gd")
 const DomSyn_Yellow_EnergyBattery = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_EnergyBattery.gd")
 
+var inst_domsyn_yellow_energybattery : DomSyn_Yellow_EnergyBattery
 
-var synergies : Dictionary = {
+
+func _init():
+	inst_domsyn_yellow_energybattery = DomSyn_Yellow_EnergyBattery.new()
+	
+	synergies = {
 	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [6, 4, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
@@ -33,11 +38,11 @@ var synergies : Dictionary = {
 	syn_dom_orange,
 	["ORANGE description"]),
 	
-	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [8, 5, 3],
+	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [7, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	["YELLOW description"],
-	[DomSyn_Yellow_GoldIncome.new(), DomSyn_Yellow_EnergyBattery.new()]),
+	[DomSyn_Yellow_GoldIncome.new(), inst_domsyn_yellow_energybattery]),
 	
 	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [3],
 	[tier_bronze_pic],
@@ -66,5 +71,4 @@ var synergies : Dictionary = {
 	["BLACK description"])
 }
 
-func _init():
-	pass
+var synergies : Dictionary

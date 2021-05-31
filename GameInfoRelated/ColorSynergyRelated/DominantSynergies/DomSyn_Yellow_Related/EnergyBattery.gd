@@ -9,7 +9,9 @@ signal energy_overflow
 
 var max_energy_capacity : int setget _set_max_energy_capacity
 var current_energy_amount : int  setget _set_current_energy
-var recharge_rate_per_round : int
+
+var recharge_rate_per_round_from_main : int
+var recharge_rate_per_round_from_comple : int
 
 var _connected_energy_modules : Array = []
 var _energy_modules_taken_energy_this_round : Array = []
@@ -88,7 +90,7 @@ func calculate_total_energy_consumption_from_active_modules():
 	return total
 
 func recharge_battery():
-	_set_current_energy(current_energy_amount + recharge_rate_per_round)
+	_set_current_energy(current_energy_amount + recharge_rate_per_round_from_main + recharge_rate_per_round_from_comple)
 
 # Round related
 

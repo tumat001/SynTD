@@ -7,6 +7,7 @@ func _attack_enemy(enemy : AbstractEnemy):
 		var damage_instance : DamageInstance = DamageInstance.new()
 		damage_instance.on_hit_damages = _get_all_scaled_on_hit_damages()
 		damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
+		emit_signal("on_damage_instance_constructed", damage_instance, self)
 		
 		_modify_attack(enemy)
 		enemy.connect("on_hit", self, "on_enemy_hit", [damage_register_id], CONNECT_ONESHOT)

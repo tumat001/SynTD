@@ -53,7 +53,8 @@ onready var ping_eye_sprite = $TowerBase/PingEye
 
 var _enemies_marked : Array = []
 var _markers : Array = []
-const mark_count_limit : int = 4
+const original_mark_count_limit : int = 4
+var current_mark_count_limit : int = original_mark_count_limit
 
 var _started_timer : bool = false
 var _current_time : float = 0
@@ -65,6 +66,9 @@ const empowered_base_damage : float = 13.0
 const normal_base_damage : float = 7.0
 const empowered_on_hit_damage_scale : float = 1.5
 const normal_on_hit_damage_scale : float = 1.0
+
+const original_empowered_num_of_targets_limit : int = 1
+var empowered_num_of_targets_limit : int = original_empowered_num_of_targets_limit
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -173,7 +177,7 @@ func _generate_template():
 	
 	template.aoe_damage_repeat_count = 1
 	template.aoe_duration = 0.3
-	template.aoe_pierce = 4
+	template.aoe_pierce = current_mark_count_limit
 	
 	template.aoe_base_damage = 0
 	template.aoe_base_damage_type = DamageType.PURE
@@ -197,16 +201,17 @@ func _generate_template():
 # Mark related
 
 func _enemy_hit(enemy, damage_register_id : int, module):
-	if damage_register_id == Ping_seek_register_id and _enemies_marked.size() < mark_count_limit:
+	if damage_register_id == Ping_seek_register_id and _enemies_marked.size() < current_mark_count_limit:
 		_enemies_marked.append(enemy)
 		enemy.add_child(_construct_mark_sprite())
 		
 		_started_timer = true
 		
-		if _enemies_marked.size() == 1:
-			ping_eye_sprite.texture = PingEye_awakeRed_pic
-		elif _enemies_marked.size() > 1:
+		if _enemies_marked.size() > empowered_num_of_targets_limit:
 			ping_eye_sprite.texture = PingEye_awake_pic
+		elif _enemies_marked.size() <= empowered_num_of_targets_limit and !_enemies_marked.size() < 0:
+			ping_eye_sprite.texture = PingEye_awakeRed_pic
+		
 
 
 func _construct_mark_sprite():
@@ -247,7 +252,8 @@ func _shoot_marked_enemies():
 	_current_time = 0
 	_started_timer = false
 	
-	if _enemies_marked.size() == 1:
+	var empowered : bool = _enemies_marked.size() <= empowered_num_of_targets_limit
+	if empowered:
 		shot_attack_module.on_hit_damage_scale = empowered_on_hit_damage_scale
 		shot_attack_module.base_damage = empowered_base_damage
 	
@@ -257,7 +263,7 @@ func _shoot_marked_enemies():
 			mark.call_deferred("queue_free")
 	_markers.clear()
 	
-	if _enemies_marked.size() == 1:
+	if empowered:
 		shot_attack_module.on_hit_damage_scale = normal_on_hit_damage_scale
 		shot_attack_module.base_damage = normal_base_damage
 	
@@ -268,3 +274,25 @@ func _shoot_marked_enemies():
 func _check_if_shot_killed_enemy(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int, module):
 	if damage_register_id == Ping_shot_register_id and killed_enemy == true:
 		arrow_attack_module.reset_attack_timers()
+
+
+# energy module related
+
+
+func set_energy_module(module):
+	.set_energy_module(module)
+	
+	if module != null:
+		module.module_effect_descriptions = [
+			"Ping can mark up to 6 enemies per shot.",
+			"Ping can empower its shots when marking up to 2 enemies."
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	empowered_num_of_targets_limit = 2
+	current_mark_count_limit = 6
+
+func _module_turned_off():
+	empowered_num_of_targets_limit = original_empowered_num_of_targets_limit
+	current_mark_count_limit = original_mark_count_limit

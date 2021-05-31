@@ -337,7 +337,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Stats shown are for the arrow.",
 			"Shoots an arrow that releases a ring. The ring marks up to 4 enemies.",
-			"After a brief delay, Ping shoots up to 4 marked enemies. If only 1 enemy is marked, the shot gains +6 base damage and on hit damages become 150% effective.",
+			"After a brief delay, Ping shoots up to 4 marked enemies. If only 1 enemy is marked, the shot is empowered, gaining +6 base damage and on hit damages become 150% effective.",
 			"Ping can shoot the next shot immediately when it kills at least one enemy with its shot.",
 			"Shots deal 7 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
 		]

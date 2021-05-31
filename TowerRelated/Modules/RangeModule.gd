@@ -10,6 +10,7 @@ signal enemy_left_range(enemy)
 signal current_enemy_left_range(enemy)
 
 signal targeting_changed
+signal targeting_options_modified
 
 var benefits_from_bonus_range : bool = true
 
@@ -59,10 +60,27 @@ func targeting_cycle_right():
 	call_deferred("emit_signal", "targeting_changed")
 
 
-func add_targeting(targeting : int):
+func add_targeting_option(targeting : int):
 	all_targeting_options.append(targeting)
+	call_deferred("emit_signal", "targeting_options_modified")
 
-func set_targeting(targeting : int):
+func remove_targeting_option(targeting : int):
+	if all_targeting_options[_current_targeting_option_index] == targeting:
+		targeting_cycle_right()
+	_last_used_targeting_option_index = 0
+	
+	all_targeting_options.erase(targeting)
+	call_deferred("emit_signal", "targeting_options_modified")
+
+func clear_all_targeting():
+	_current_targeting_option_index = 0
+	_last_used_targeting_option_index = 0
+	
+	all_targeting_options.clear()
+	call_deferred("emit_signal", "targeting_options_modified")
+
+
+func set_current_targeting(targeting : int):
 	var index_of_targeting = all_targeting_options.find(targeting)
 	
 	if index_of_targeting != -1:
@@ -70,8 +88,6 @@ func set_targeting(targeting : int):
 		_current_targeting_option_index = index_of_targeting
 		call_deferred("emit_signal", "targeting_changed")
 
-func clear_all_targeting():
-	all_targeting_options.clear()
 
 # Range Related
 

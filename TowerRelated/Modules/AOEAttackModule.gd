@@ -58,6 +58,7 @@ func construct_aoe(arg_origin_pos : Vector2, arg_enemy_pos : Vector2) -> BaseAOE
 	var damage_instance : DamageInstance = DamageInstance.new()
 	damage_instance.on_hit_damages = _get_all_scaled_on_hit_damages()
 	damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
+	emit_signal("on_damage_instance_constructed", damage_instance, self)
 	base_aoe.damage_instance = damage_instance
 	
 	base_aoe.damage_repeat_count = damage_repeat_count
