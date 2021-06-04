@@ -17,7 +17,7 @@ const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated
 
 signal on_death_by_any_cause
 signal on_hit(me)
-signal on_post_mitigated_damage_taken(damage, damage_type, me)
+signal on_post_mitigated_damage_taken(damage, damage_type, is_lethal, me, damage_reg_id)
 signal before_damage_instance_is_processed(damage_instance, me)
 
 signal reached_end_of_path(me)

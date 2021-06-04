@@ -27,6 +27,8 @@ var elemental_on_hit : OnHitDamage
 var attack_speed_modifier : PercentModifier
 var range_modifier : FlatModifier
 
+var bd_attack_module : AbstractAttackModule
+
 
 # ratios
 
@@ -73,6 +75,8 @@ func _ready():
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	attack_module.can_be_commanded_by_tower = false
+	
+	bd_attack_module = attack_module
 	
 	add_attack_module(attack_module)
 	
@@ -123,7 +127,6 @@ func _final_range_changed():
 func toggle_module_ranges():
 	.toggle_module_ranges()
 	
-	
 	if is_showing_ranges:
 		if current_placable is InMapAreaPlacable:
 			_on_tower_show_range()
@@ -155,6 +158,8 @@ func _process(delta):
 				
 				_give_buffs_to_active_towers_in_range()
 				_show_signal_particle()
+				
+				_decrease_count_of_countbounded(bd_attack_module)
 
 
 func _update_elemental_on_hit_effect():

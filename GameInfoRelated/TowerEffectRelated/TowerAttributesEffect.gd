@@ -138,4 +138,6 @@ func _shallow_duplicate():
 	copy.count = count
 	copy.count_reduced_by_main_attack_only = count_reduced_by_main_attack_only
 	
+	copy.force_apply = force_apply
+	
 	return copy

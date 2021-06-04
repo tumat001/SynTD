@@ -96,6 +96,7 @@ func _construct_lava_jet_module():
 	
 	var beam_on_hit_dmg : OnHitDamage = OnHitDamage.new("lavajet_beam_ing", percent_mod, DamageType.ELEMENTAL)
 	var effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(beam_on_hit_dmg, StoreOfTowerEffectsUUID.ING_LAVA_JET)
+	effect.force_apply = true
 	
 	beam_attack_module.on_hit_damage_adder_effects[effect.effect_uuid] = effect
 

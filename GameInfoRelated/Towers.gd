@@ -33,6 +33,7 @@ const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omn
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
 const lava_jet_image = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_E.png")
+const campfire_image = preload("res://TowerRelated/Color_Orange/Campfire/Campfire_Wholebody.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -66,7 +67,7 @@ enum {
 	# ORANGE (300)
 	EMBER = 300,
 	LAVA_JET = 301,
-	
+	CAMPFIRE = 302,
 	
 	# YELLOW (400)
 	RAILGUN = 400,
@@ -398,7 +399,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 3
 		info.tower_image_in_buy_card = beacon_dish_image
 		
-		info.base_damage = 2
+		info.base_damage = 1.5
 		info.base_attk_speed = 0.3
 		info.base_pierce = 0
 		info.base_range = 150
@@ -608,8 +609,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 4
 		info.tower_image_in_buy_card = lava_jet_image
 		
-		info.base_damage = 2.5
-		info.base_attk_speed = 0.95
+		info.base_damage = 2
+		info.base_attk_speed = 0.92
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
@@ -624,6 +625,39 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "lava jet"
+		
+		
+	elif tower_id == CAMPFIRE:
+		info = TowerTypeInformation.new("Campfire", tower_id)
+		info.tower_cost = 3
+		info.colors.append(TowerColors.ORANGE)
+		info.colors.append(TowerColors.RED)
+		info.tower_tier = 3
+		info.tower_image_in_buy_card = campfire_image
+		
+		info.base_damage = 5
+		info.base_attk_speed = 1
+		info.base_pierce = 0
+		info.base_range = 135
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Campfire gains Rage equivalent to the damage taken by enemies within its range.",
+			"When enough Rage is built up, Campfire consumes all Rage to give bonus physical on hit damage to the next benefiting attack of all towers in range.",
+			"The bonus on hit damage is equal to Campfire's total base damage.",
+			"The rage threshold to trigger the buff inversely scales with Campfire's total attack speed.",
+		]
+		
+		# Ingredient related
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new("cpfire_ing_bs_dmg")
+		base_dmg_attr_mod.flat_modifier = 1.25
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_CAMPFIRE)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ base dmg"
 		
 	
 	return info
@@ -665,3 +699,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/Ember/Ember.tscn")
 	elif tower_id == LAVA_JET:
 		return load("res://TowerRelated/Color_Orange/LavaJet/LavaJet.tscn")
+	elif tower_id == CAMPFIRE:
+		return load("res://TowerRelated/Color_Orange/Campfire/Campfire.tscn")

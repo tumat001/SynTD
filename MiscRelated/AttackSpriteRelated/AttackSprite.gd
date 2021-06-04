@@ -1,9 +1,9 @@
 extends AnimatedSprite
 
 
-var has_lifetime : bool = true
-var lifetime : float
-var frames_based_on_lifetime : bool
+export(bool) var has_lifetime : bool = true
+export(float) var lifetime : float
+export(bool) var frames_based_on_lifetime : bool
 
 
 func _ready():

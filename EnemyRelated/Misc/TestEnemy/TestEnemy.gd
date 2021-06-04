@@ -7,8 +7,8 @@ func _ready():
 
 
 func _init():
-	base_health = 54
-	current_health = 54
+	base_health = 100
+	current_health = 100
 	pierce_consumed_per_hit = 1
 	base_movement_speed = 22
 	

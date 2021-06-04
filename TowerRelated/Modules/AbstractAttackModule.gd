@@ -24,6 +24,7 @@ signal on_damage_instance_constructed(damage_instance, module)
 
 
 var module_id : int
+# OBSELETE
 var is_main_attack : bool = false
 var number_of_unique_targets : int = 1
 
@@ -63,6 +64,9 @@ var damage_register_id : int
 var on_hit_effect_scale : float = 1
 # uuid to effect map
 var on_hit_effects : Dictionary
+
+# Managed by abstracttower completely
+var _all_countbound_effects : Dictionary = {}
 
 var range_module : RangeModule setget _set_range_module
 var use_self_range_module : bool = false
@@ -717,6 +721,8 @@ func _get_all_scaled_on_hit_effects() -> Dictionary:
 
 func on_round_end():
 	call_deferred("emit_signal", "on_round_end")
+	
+	_all_countbound_effects.clear()
 	reset_attack_timers()
 
 
@@ -727,4 +733,5 @@ func on_post_mitigation_damage_dealt(damage : float, damage_type : int, killed_e
 
 func on_enemy_hit(enemy, damage_register_id):
 	emit_signal("on_enemy_hit", enemy, damage_register_id, self)
+
 

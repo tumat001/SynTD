@@ -124,8 +124,9 @@ func _ready():
 	
 	var beam_on_hit_dmg : OnHitDamage = OnHitDamage.new("lavajet_beam", percent_mod, DamageType.ELEMENTAL)
 	var effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(beam_on_hit_dmg, StoreOfTowerEffectsUUID.LAVA_JET_BEAM)
+	effect.force_apply = true
 	
-	_add_on_hit_damage_adder_effect(effect, [beam_attack_module], true)
+	_add_on_hit_damage_adder_effect(effect, [beam_attack_module])
 	
 	_post_inherit_ready()
 

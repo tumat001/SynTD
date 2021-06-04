@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/ExpandingAttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Orange/Campfire/Campfire_Ring.png" type="Texture" id=2]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": false,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="CampfireTriggerParticle" instance=ExtResource( 1 )]
+scale = Vector2( 1, 0.5 )
+frames = SubResource( 1 )
+lifetime = 0.3
+scale_trigger_lifetime_threshold = 0.3
+scale_of_scale = 1.05
