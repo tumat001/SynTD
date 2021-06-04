@@ -11,8 +11,9 @@ const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const TowerResetEffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
 const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerFullSellbackEffect.gd")
 
-const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/PingletAdderEffect.gd")
+const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
+const LavaJetModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/LavaJetModuleAdderEffect.gd")
 
 const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
@@ -20,11 +21,18 @@ const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRe
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitDamageAdderEffect.gd")
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
+const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
+const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
 
 # GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
 const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omni.png")
 
+# RED
+
+# ORANGE
+const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
+const lava_jet_image = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_E.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -33,6 +41,7 @@ const beacon_dish_image = preload("res://TowerRelated/Color_Yellow/BeaconDish/Be
 const mini_tesla_image = preload("res://TowerRelated/Color_Yellow/MiniTesla/MiniTesla_Omni.png")
 const charge_image = preload("res://TowerRelated/Color_Yellow/Charge/Charge_E.png")
 const magnetizer_image = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_WholeBody.png")
+const sunflower_image = preload("res://TowerRelated/Color_Yellow/Sunflower/Sunflower_Idle.png")
 
 # GREEN
 const berrybush_image = preload("res://TowerRelated/Color_Green/BerryBush/BerryBush_Omni.png")
@@ -55,6 +64,9 @@ enum {
 	# RED (200)
 	
 	# ORANGE (300)
+	EMBER = 300,
+	LAVA_JET = 301,
+	
 	
 	# YELLOW (400)
 	RAILGUN = 400,
@@ -63,6 +75,7 @@ enum {
 	MINI_TESLA = 403,
 	CHARGE = 404,
 	MAGNETIZER = 405,
+	SUNFLOWER = 406,
 	
 	# GREEN (500)
 	BERRY_BUSH = 500,
@@ -517,6 +530,101 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "+ expl size"
 		
 		
+	elif tower_id == SUNFLOWER:
+		info = TowerTypeInformation.new("Sunflower", tower_id)
+		info.tower_cost = 4
+		info.colors.append(TowerColors.GREEN)
+		info.colors.append(TowerColors.YELLOW)
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = sunflower_image
+		
+		info.base_damage = 1
+		info.base_attk_speed = 0.4
+		info.base_pierce = 1
+		info.base_range = 115
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 0.75
+		
+		info.tower_descriptions = [
+			"Sprays lots of seeds at enemies. Attacks in bursts of 9.",
+			"",
+			"\"Half plant half machine\""
+		]
+		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new("sf")
+		attk_speed_attr_mod.percent_amount = 25
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_SUNFLOWER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk speed"
+		
+		
+	elif tower_id == EMBER:
+		info = TowerTypeInformation.new("Ember", tower_id)
+		info.tower_cost = 1
+		info.colors.append(TowerColors.ORANGE)
+		info.tower_tier = 1
+		info.tower_image_in_buy_card = ember_image
+		
+		info.base_damage = 0.5
+		info.base_attk_speed = 0.65
+		info.base_pierce = 1
+		info.base_range = 95
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Heats up its shots, causing them to burn enemies hit.",
+			"Burns enemies for 0.75 elemental damage per second for 5 seconds."
+		]
+		
+		# Ingredient related TODO REPLACE THIS
+		var burn_dmg : FlatModifier = FlatModifier.new("ember_burn_dmg")
+		burn_dmg.flat_modifier = 0.75
+		
+		var burn_on_hit : OnHitDamage = OnHitDamage.new("ember_burn_on_hit_dmg", burn_dmg, DamageType.ELEMENTAL)
+		var burn_dmg_instance = DamageInstance.new()
+		burn_dmg_instance.on_hit_damages[burn_on_hit.internal_name] = burn_on_hit
+		
+		var burn_effect = EnemyDmgOverTimeEffect.new(burn_dmg_instance, StoreOfEnemyEffectsUUID.ING_EMBER_BURN, 1)
+		burn_effect.is_timebound = true
+		burn_effect.time_in_seconds = 5
+		
+		var tower_effect = TowerOnHitEffectAdderEffect.new(burn_effect, StoreOfTowerEffectsUUID.ING_EMBER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
+			
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "burn"
+		
+		
+	elif tower_id == LAVA_JET:
+		info = TowerTypeInformation.new("Lava Jet", tower_id)
+		info.tower_cost = 4
+		info.colors.append(TowerColors.ORANGE)
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = lava_jet_image
+		
+		info.base_damage = 2.5
+		info.base_attk_speed = 0.95
+		info.base_pierce = 1
+		info.base_range = 125
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"On its 5th attack, Lava Jet releases a beam of lava that deals 50% of the enemy's max health as elemental damage, up to a limit."
+		]
+		
+		var tower_effect = LavaJetModuleAdderEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "lava jet"
+		
 	
 	return info
 
@@ -551,3 +659,9 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Yellow/Charge/Charge.tscn")
 	elif tower_id == MAGNETIZER:
 		return load("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer.tscn")
+	elif tower_id == SUNFLOWER:
+		return load("res://TowerRelated/Color_Yellow/Sunflower/Sunflower.tscn")
+	elif tower_id == EMBER:
+		return load("res://TowerRelated/Color_Orange/Ember/Ember.tscn")
+	elif tower_id == LAVA_JET:
+		return load("res://TowerRelated/Color_Orange/LavaJet/LavaJet.tscn")

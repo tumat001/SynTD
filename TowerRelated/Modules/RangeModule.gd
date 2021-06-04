@@ -4,7 +4,7 @@ const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 
 
-signal final_range_updated
+signal final_range_changed
 signal enemy_entered_range(enemy)
 signal enemy_left_range(enemy)
 signal current_enemy_left_range(enemy)
@@ -110,7 +110,7 @@ func _draw():
 
 func update_range():
 	var final_range = calculate_final_range_radius()
-	call_deferred("emit_signal", "final_range_updated")
+	call_deferred("emit_signal", "final_range_changed")
 	
 	$RangeShape.shape.set_deferred("radius", final_range)
 	update()

@@ -579,7 +579,8 @@ func on_command_attack_at_positions(positions : Array):
 #	pass
 
 func _attack_enemies(enemies : Array):
-	emit_signal("in_attack", _last_calculated_attack_speed_as_delay, enemies)
+	if !_is_bursting:
+		emit_signal("in_attack", _last_calculated_attack_speed_as_delay, enemies)
 	
 	for enemy in enemies:
 		if attack_sprite_scene != null:
@@ -596,7 +597,8 @@ func _attack_enemies(enemies : Array):
 
 
 func _attack_at_positions(positions : Array):
-	emit_signal("in_attack", _last_calculated_attack_speed_as_delay, positions)
+	if !_is_bursting:
+		emit_signal("in_attack", _last_calculated_attack_speed_as_delay, positions)
 
 
 func _modify_attack(to_modify):
@@ -665,19 +667,19 @@ func _get_base_damage_as_on_hit_damage() -> OnHitDamage:
 func _get_scaled_extra_on_hit_damages() -> Dictionary:
 	var scaled_on_hit_damages = {}
 	
-	if benefits_from_bonus_on_hit_damage:
-		# EXTRA ON HITS
-		for extra_on_hit_key_as_effect in on_hit_damage_adder_effects.keys():
-			if on_hit_damage_adder_effects[extra_on_hit_key_as_effect].is_ingredient_effect and !benefits_from_ingredient_effect:
-				continue
-			
-			var extra_on_hit = on_hit_damage_adder_effects[extra_on_hit_key_as_effect].on_hit_damage
-			var duplicate = extra_on_hit
-			
-			duplicate = duplicate.duplicate()
-			duplicate.damage_as_modifier = extra_on_hit.damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
-			
-			scaled_on_hit_damages[extra_on_hit_key_as_effect] = duplicate
+	#if benefits_from_bonus_on_hit_damage:
+	# EXTRA ON HITS
+	for extra_on_hit_key_as_effect in on_hit_damage_adder_effects.keys():
+		if on_hit_damage_adder_effects[extra_on_hit_key_as_effect].is_ingredient_effect and !benefits_from_ingredient_effect:
+			continue
+		
+		var extra_on_hit = on_hit_damage_adder_effects[extra_on_hit_key_as_effect].on_hit_damage
+		var duplicate = extra_on_hit
+		
+		duplicate = duplicate.duplicate()
+		duplicate.damage_as_modifier = extra_on_hit.damage_as_modifier.get_copy_scaled_by(on_hit_damage_scale)
+		
+		scaled_on_hit_damages[extra_on_hit_key_as_effect] = duplicate
 	
 	return scaled_on_hit_damages
 

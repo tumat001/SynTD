@@ -55,12 +55,28 @@ signal tower_colors_changed
 signal targeting_changed
 signal targeting_options_modified
 
+signal on_main_attack_finished(module)
+signal on_main_attack(attk_speed_delay, enemies, module)
+signal on_any_attack_finished(module)
+signal on_any_attack(attk_speed_delay, enemies, module)
+
 signal energy_module_attached
 signal energy_module_detached
+
+signal on_round_end
+signal on_round_start
+
 
 export var tower_highlight_sprite : Resource
 
 var tower_id : int
+
+
+enum DisabledFromAttackingSource {
+	
+	HEAT_MODULE = 1,
+	
+}
 
 ###
 
@@ -84,6 +100,8 @@ var main_attack_module : AbstractAttackModule
 var range_module : RangeModule
 
 var disabled_from_attacking : bool = false
+var _other_disabled_from_attacking_clauses : Dictionary = {}
+var last_calculated_disabled_from_attacking : bool
 
 # Tower buffs related
 
@@ -114,13 +132,16 @@ var _is_full_sellback : bool = false
 var is_round_started : bool = false setget _set_round_started
 
 
-# YELLOW SYN
+# SYN RELATED ---------------------------- #
+# Yellow
+var energy_module setget set_energy_module
 
-var energy_module  setget set_energy_module
+# Orange
+var heat_module setget set_heat_module
 
 
 
-# Initialization
+# Initialization -------------------------- #
 
 func _ready():
 	$IngredientDeclinePic.visible = false
@@ -158,6 +179,11 @@ func _emit_targeting_options_modified():
 # Adding Attack modules related
 
 func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existing_tower_buffs : bool = true):
+	if !attack_module.is_connected("in_attack_end", self, "_emit_on_any_attack_finished"):
+		attack_module.connect("in_attack_end", self, "_emit_on_any_attack_finished", [attack_module])
+		attack_module.connect("in_attack", self, "_emit_on_any_attack", [attack_module])
+	
+	
 	if attack_module.get_parent() == null:
 		add_child(attack_module)
 	
@@ -168,8 +194,10 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 	
 	if main_attack_module == null and attack_module.module_id == StoreOfAttackModuleID.MAIN:
 		main_attack_module = attack_module
-		#main_attack_module.connect("final_attack_speed_changed", self, "_emit_final_attack_speed_changed")
-		#main_attack_module.connect("final_base_damage_changed", self, "_emit_final_base_damage_changed")
+		
+		if !main_attack_module.is_connected("in_attack_end", self, "_emit_on_main_attack_finished"):
+			main_attack_module.connect("in_attack_end", self, "_emit_on_main_attack_finished", [main_attack_module])
+			main_attack_module.connect("in_attack", self, "_emit_on_main_attack", [main_attack_module])
 		
 		if range_module == null and main_attack_module.range_module != null:
 			range_module = main_attack_module.range_module
@@ -192,6 +220,15 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 
 
 func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
+	if attack_module_to_remove.is_connected("in_attack_end", self, "_emit_on_any_attack_finished"):
+		attack_module_to_remove.disconnect("in_attack_end", self, "_emit_on_any_attack_finished")
+		attack_module_to_remove.disconnect("in_attack", self, "_emit_on_any_attack")
+	
+	if attack_module_to_remove.is_connected("in_attack_end", self, "_emit_on_main_attack_finished"):
+		attack_module_to_remove.disconnect("in_attack_end", self, "_emit_on_main_attack_finished")
+		attack_module_to_remove.disconnect("in_attack", self, "_emit_on_main_attack")
+	
+	
 	for tower_effect in _all_uuid_tower_buffs_map.values():
 		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
 	
@@ -203,9 +240,25 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 	all_attack_modules.erase(attack_module_to_remove)
 	emit_signal("attack_module_removed", attack_module_to_remove)
 
+
+# Module signals related
+
+func _emit_on_any_attack_finished(module):
+	call_deferred("emit_signal", "on_any_attack_finished", module)
+
+func _emit_on_any_attack(attack_delay, enemies_or_poses, module):
+	emit_signal("on_any_attack", attack_delay, enemies_or_poses, module)
+
+func _emit_on_main_attack_finished(module):
+	call_deferred("emit_signal", "on_main_attack_finished", module)
+
+func _emit_on_main_attack(attack_delay, enemies_or_poses, module):
+	emit_signal("on_main_attack", attack_delay, enemies_or_poses, module)
+
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if !disabled_from_attacking:
+	if !disabled_from_attacking and !last_calculated_disabled_from_attacking:
 		for attack_module in all_attack_modules:
 			if attack_module == null:
 				continue
@@ -250,9 +303,12 @@ func _on_round_end():
 		module.on_round_end()
 	
 	_remove_all_timebound_effects()
+	emit_signal("on_round_end")
+
 
 func _on_round_start():
-	pass
+	emit_signal("on_round_start")
+
 
 # Recieving buffs/debuff related
 
@@ -391,10 +447,11 @@ func _remove_base_damage_effect(attr_effect_uuid : int, target_modules : Array):
 				_emit_final_base_damage_changed()
 
 
-func _add_on_hit_damage_adder_effect(on_hit_adder : TowerOnHitDamageAdderEffect, target_modules : Array):
+func _add_on_hit_damage_adder_effect(on_hit_adder : TowerOnHitDamageAdderEffect, target_modules : Array, forced : bool = false): # forced currently used by lava jet
 	for module in target_modules:
-		if module.benefits_from_bonus_on_hit_damage:
+		if module.benefits_from_bonus_on_hit_damage or forced:
 			module.on_hit_damage_adder_effects[on_hit_adder.effect_uuid] = on_hit_adder
+
 
 func _remove_on_hit_damage_adder_effect(on_hit_adder_uuid : int, target_modules : Array):
 	for module in target_modules:
@@ -527,7 +584,6 @@ func _remove_explosion_scale_effect(attr_effect_uuid : int, target_modules : Arr
 			module.calculate_final_explosion_scale()
 
 
-
 func _add_on_hit_effect_adder_effect(effect_adder : TowerOnHitEffectAdderEffect, target_modules : Array):
 	for module in target_modules:
 		if module.benefits_from_bonus_on_hit_effect:
@@ -570,6 +626,7 @@ func has_tower_effect_type_in_buff_map(tower_effect : TowerBaseEffect):
 	
 	return false
 
+
 # Decreasing timebounds related
 
 func _decrease_time_of_timebounded(delta):
@@ -591,6 +648,11 @@ func _remove_all_timebound_effects():
 		if effect.is_timebound:
 			_all_uuid_tower_buffs_map.erase(effect_uuid)
 			remove_tower_effect(effect)
+
+
+# Decreasing count of countbounded
+
+# TODO
 
 
 
@@ -928,6 +990,25 @@ func set_tower_sprite_modulate(color : Color):
 	$TowerBase.modulate = color
 
 
+# Disabled from attacking clauses
+
+func set_disabled_from_attacking_clause(id : int, clause : bool):
+	_other_disabled_from_attacking_clauses[id] = clause
+	_update_last_calculated_disabled_from_attacking()
+
+func erase_disabled_from_attacking_clause(id : int):
+	_other_disabled_from_attacking_clauses.erase(id)
+	_update_last_calculated_disabled_from_attacking()
+
+
+func _update_last_calculated_disabled_from_attacking():
+	for clause in _other_disabled_from_attacking_clauses.values():
+		if clause:
+			last_calculated_disabled_from_attacking = true
+			return
+	
+	last_calculated_disabled_from_attacking = false
+
 
 # Tracking of towers related
 
@@ -941,8 +1022,8 @@ func queue_free():
 	emit_signal("tower_in_queue_free", self) # synergy updated from tower manager
 	.queue_free()
 
-
-# energy module related
+# SYNERGIES RELATED ---------------------
+# YELLOW - energy module related
 
 func set_energy_module(module):
 	if energy_module != null:
@@ -965,4 +1046,10 @@ func _module_turned_on(_first_time_per_round : bool):
 	pass
 
 func _module_turned_off():
+	pass
+
+
+# ORANGE - heat module
+
+func set_heat_module(heat_module):
 	pass

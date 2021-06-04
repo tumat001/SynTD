@@ -3,13 +3,15 @@ extends MarginContainer
 const EnergyModule = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/EnergyModule.gd")
 const EnergyEffectDescriptionTooltip = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyEffectDescriptionTooltip.gd")
 const EnergyEffectDescriptionTooltip_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyEffectDescriptionTooltip.tscn")
-
+const AboutEnergyModuleTooltip_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/AboutEnergyModuleTooltip/AboutEnergyModuleTooltip.tscn")
 
 const module_candidate_on_pic = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModuleButton_On.png")
 const module_candidate_off_pic = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModuleButton_Off.png")
 
 var _desc_tooltip : EnergyEffectDescriptionTooltip
 var energy_module : EnergyModule setget _set_energy_module
+
+var _about_tooltip
 
 onready var module_button : TextureButton = $VBoxContainer/BodyMarginer/EnergyModuleButton
 
@@ -34,8 +36,8 @@ func update_display():
 		else:
 			module_button.texture_normal = module_candidate_off_pic
 
-# Module button related
 
+# Module button related
 
 func _on_EnergyModuleButton_pressed():
 	if energy_module.is_turned_on:
@@ -50,8 +52,8 @@ func _module_successfully_turned_on(first_time_per_round : bool):
 func _module_successfully_turned_off():
 	module_button.texture_normal = module_candidate_off_pic
 
-# Description related
 
+# Effect Desc related
 
 func _on_EffectDescriptionButton_mouse_entered():
 	if _desc_tooltip == null:
@@ -69,10 +71,31 @@ func _on_EffectDescriptionButton_mouse_exited():
 		_desc_tooltip.queue_free()
 
 
+# Module Description related
+
+
+func _on_ModuleDescription_pressed():
+	if _about_tooltip == null:
+		_about_tooltip = AboutEnergyModuleTooltip_Scene.instance()
+		get_tree().get_root().add_child(_about_tooltip)
+		
+	else:
+		_about_tooltip.queue_free()
+
+
+func _on_ModuleDescription_mouse_exited():
+	if _about_tooltip != null:
+		_about_tooltip.queue_free()
+
+
 # freeing
 
 func queue_free():
 	if _desc_tooltip != null:
 		_desc_tooltip.queue_free()
 	
+	if _about_tooltip != null:
+		_about_tooltip.queue_free()
+	
 	.queue_free()
+

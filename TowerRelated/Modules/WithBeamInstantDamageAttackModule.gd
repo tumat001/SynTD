@@ -22,7 +22,8 @@ var _should_update_beams : bool = true
 var _terminate_update_on_next : bool = false
 
 func _process(delta):
-	update_beams_state()
+	if !beam_is_timebound:
+		update_beams_state()
 
 func update_beams_state():
 	if _should_update_beams:

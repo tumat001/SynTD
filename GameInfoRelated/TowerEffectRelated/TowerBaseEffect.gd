@@ -23,6 +23,7 @@ var time_in_seconds : float
 # NOT USED FOR NOW
 var is_countbound : bool
 var count : int
+var count_reduced_by_main_attack_only : bool
 
 var is_ingredient_effect : bool
 

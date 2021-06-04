@@ -86,7 +86,7 @@ func _construct_pinglet():
 
 func _make_modifications_to_tower(tower):
 	_construct_pinglet()
-	tower.add_attack_module(shot_attack_module, 1)
+	tower.add_attack_module(shot_attack_module)
 
 
 func _undo_modifications_to_tower(tower):

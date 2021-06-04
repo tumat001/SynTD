@@ -1,5 +1,7 @@
 extends "res://GameInfoRelated/TowerEffectRelated/TowerBaseEffect.gd"
 
+const Modifier = preload("res://GameInfoRelated/Modifier.gd")
+
 const base_damage_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_BaseDamageIncrease.png")
 const atk_speed_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_AtkSpeedIncrease.png")
 const range_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_RangeIncrease.png")
@@ -30,7 +32,7 @@ enum {
 }
 
 var attribute_type : int
-var attribute_as_modifier
+var attribute_as_modifier : Modifier
 
 func _init(arg_attribute_type : int, arg_modifier,
 		arg_effect_uuid : int).(EffectType.ATTRIBUTES,
@@ -134,5 +136,6 @@ func _shallow_duplicate():
 	
 	copy.is_countbound = is_countbound
 	copy.count = count
+	copy.count_reduced_by_main_attack_only = count_reduced_by_main_attack_only
 	
 	return copy

@@ -13,10 +13,12 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 const EnemyClearAllEffects = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyClearAllEffects.gd")
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
+const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
 
 signal on_death_by_any_cause
 signal on_hit(me)
 signal on_post_mitigated_damage_taken(damage, damage_type, me)
+signal before_damage_instance_is_processed(damage_instance, me)
 
 signal reached_end_of_path(me)
 signal on_current_health_changed(current_health)
@@ -28,6 +30,7 @@ var base_health : float = 1
 var _flat_base_health_effect_map = {}
 var _percent_base_health_effect_map = {}
 var current_health : float = 1
+var _last_calculated_max_health : float
 
 var active_effects = {}
 
@@ -74,6 +77,8 @@ var _self_size : Vector2
 var _stack_id_effects_map : Dictionary = {}
 var _stun_id_effects_map : Dictionary = {}
 var _is_stunned : bool
+var _dmg_over_time_id_effects_map : Dictionary = {}
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -88,7 +93,7 @@ func _ready():
 	calculate_final_toughness()
 	calculate_final_resistance()
 	calculate_final_movement_speed()
-	
+	calculate_max_health()
 
 func _post_ready():
 	healthbar.max_value = base_health
@@ -127,6 +132,7 @@ func calculate_max_health() -> float:
 	for flat in _flat_base_health_effect_map.values():
 		max_health += flat.get_modification_to_value(max_health)
 	
+	_last_calculated_max_health = max_health
 	return max_health
 
 func heal_without_overhealing(heal_amount):
@@ -349,6 +355,8 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 		connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
 	
 	hit_by_damage_instance(generic_bullet.damage_instance)
+	generic_bullet.reduce_damage_by_beyond_first_multiplier()
+
 
 func hit_by_aoe(base_aoe):
 	if base_aoe.attack_module_source != null:
@@ -358,10 +366,12 @@ func hit_by_aoe(base_aoe):
 	hit_by_damage_instance(base_aoe.damage_instance)
 
 
-func hit_by_damage_instance(damage_instance : DamageInstance):
+func hit_by_damage_instance(damage_instance : DamageInstance, emit_on_hit_signal : bool = true):
 	#call_deferred("emit_signal", "on_hit", self)
-	emit_signal("on_hit", self)
+	if emit_on_hit_signal:
+		emit_signal("on_hit", self)
 	
+	emit_signal("before_damage_instance_is_processed", damage_instance, self)
 	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true))
 	_process_effects(damage_instance.on_hit_effects.duplicate(true))
 
@@ -374,18 +384,19 @@ func _process_on_hit_damages(on_hit_damages : Dictionary):
 		elif on_hit_damage.damage_as_modifier is PercentModifier:
 			_process_percent_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type)
 
+
 func _process_percent_damage(damage_as_modifier: PercentModifier, damage_type : int):
 	var percent_type = damage_as_modifier.percent_based_on
 	var damage_as_flat : float
 	
 	if percent_type == PercentType.MAX:
-		damage_as_flat = damage_as_modifier.get_modification_to_value(calculate_max_health())
+		damage_as_flat = damage_as_modifier.get_modification_to_value(_last_calculated_max_health)
 	elif percent_type == PercentType.BASE:
 		damage_as_flat = damage_as_modifier.get_modification_to_value(base_health)
 	elif percent_type == PercentType.CURRENT:
 		damage_as_flat = damage_as_modifier.get_modification_to_value(current_health)
 	elif percent_type == PercentType.MISSING:
-		var missing_health = calculate_max_health() - current_health
+		var missing_health = _last_calculated_max_health - current_health
 		if missing_health < 0:
 			missing_health = 0
 		damage_as_flat = damage_as_modifier.get_modification_to_value(missing_health)
@@ -445,7 +456,7 @@ func _add_effect(base_effect : EnemyBaseEffect):
 	elif to_use_effect is EnemyClearAllEffects:
 		_stun_id_effects_map.clear()
 		_stack_id_effects_map.clear()
-		
+		_dmg_over_time_id_effects_map.clear()
 		
 	elif to_use_effect is EnemyStackEffect:
 		
@@ -466,6 +477,9 @@ func _add_effect(base_effect : EnemyBaseEffect):
 			else:
 				if stored_effect.duration_refresh_per_apply:
 					stored_effect.time_in_seconds = to_use_effect.time_in_seconds
+		
+	elif to_use_effect is EnemyDmgOverTimeEffect:
+		_dmg_over_time_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
 
 
 func _remove_effect(base_effect : EnemyBaseEffect):
@@ -474,6 +488,10 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		
 	elif base_effect is EnemyStackEffect:
 		_stack_id_effects_map.erase(base_effect.effect_uuid)
+		
+	elif base_effect is EnemyDmgOverTimeEffect:
+		_dmg_over_time_id_effects_map.erase(base_effect.effect_uuid)
+
 
 # Timebounded related
 
@@ -493,7 +511,6 @@ func _decrease_time_of_timebounds(delta):
 	
 	
 	# Stack related
-	
 	for stack_id in _stack_id_effects_map.keys():
 		var stack_effect = _stack_id_effects_map[stack_id]
 		
@@ -502,7 +519,26 @@ func _decrease_time_of_timebounds(delta):
 			
 			if stack_effect.time_in_seconds <= 0:
 				_remove_effect(stack_effect)
-
+	
+	
+	# Dmg over time related
+	for dmg_time_id in _dmg_over_time_id_effects_map.keys():
+		var dmg_time_effect = _dmg_over_time_id_effects_map[dmg_time_id]
+		
+		dmg_time_effect._curr_delay_per_tick -= delta
+		if dmg_time_effect._curr_delay_per_tick <= 0:
+			# does not cause self to emit "on hit" signal
+			hit_by_damage_instance(dmg_time_effect.damage_instance, false)
+			dmg_time_effect._curr_delay_per_tick += dmg_time_effect.delay_per_tick
+		
+		
+		if dmg_time_effect.is_timebound:
+			dmg_time_effect.time_in_seconds -= delta
+			
+			if dmg_time_effect.time_in_seconds <= 0:
+				_remove_effect(dmg_time_effect)
+	
+	
 
 
 

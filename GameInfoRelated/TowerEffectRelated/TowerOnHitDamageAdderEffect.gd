@@ -69,5 +69,6 @@ func _shallow_duplicate():
 	
 	copy.is_countbound = is_countbound
 	copy.count = count
+	copy.count_reduced_by_main_attack_only = count_reduced_by_main_attack_only
 	
 	return copy

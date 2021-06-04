@@ -9,9 +9,9 @@ const tier_gold_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPan
 const tier_dia_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Diamond.png")
 const tier_prestigeW_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Prestige_White.png")
 
-const syn_compo_comple_redgreen = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Comple_RedGreen.png")
-const syn_compo_comple_yellowviolet = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Comple_YellowViolet.png")
-const syn_compo_comple_orangeblue = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Comple_OrangeBlue.png")
+const syn_compo_compli_redgreen = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Comple_RedGreen.png")
+const syn_compo_compli_yellowviolet = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Comple_YellowViolet.png")
+const syn_compo_compli_orangeblue = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Comple_OrangeBlue.png")
 
 const syn_compo_ana_redOV = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Ana_RedOrangeViolet.png")
 const syn_compo_ana_orangeYR = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Compo_Ana_OrangeYellowRed.png")
@@ -28,8 +28,8 @@ const syn_compo_special_ROYGBV = preload("res://GameHUDRelated/LeftSidePanel/Syn
 
 # syns
 
-const CompleSyn_YelVio_EnergyModule = preload("res://GameInfoRelated/ColorSynergyRelated/CompleSynergies/CompleSyn_YelVio/CompleSyn_YelVio_EnergyModule.gd")
-const CompleSyn_YelVio_YellowIng = preload("res://GameInfoRelated/ColorSynergyRelated/CompleSynergies/CompleSyn_YelVio/CompleSyn_YelVio_YellowIng.gd")
+const CompleSyn_YelVio_EnergyModule = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio/CompliSyn_YelVio_EnergyModule.gd")
+const CompleSyn_YelVio_YellowIng = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio/CompliSyn_YelVio_YellowIng.gd")
 
 
 var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
@@ -42,18 +42,18 @@ func _init():
 	# Comple
 	"RedGreen" : ColorSynergy.new("RedGreen", [TowerColors.RED, TowerColors.GREEN], [9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
-	syn_compo_comple_redgreen,
+	syn_compo_compli_redgreen,
 	["RedGreen description"]),
 	
 	"YellowViolet" : ColorSynergy.new("YellowViolet", [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
-	syn_compo_comple_yellowviolet,
+	syn_compo_compli_yellowviolet,
 	["YellowViolet description"],
 	[inst_complesyn_yelvio_energymodule, CompleSyn_YelVio_YellowIng.new()]),
 	
 	"OrangeBlue" : ColorSynergy.new("OrangeBlue", [TowerColors.ORANGE, TowerColors.BLUE], [9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_comple_orangeblue,
+	syn_compo_compli_orangeblue,
 	["OrangeBlue description"]),
 	
 	

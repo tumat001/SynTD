@@ -11,3 +11,17 @@ func _init(arg_enemy_base_effect : EnemyBaseEffect,
 	enemy_base_effect = arg_enemy_base_effect
 	effect_icon = enemy_base_effect.effect_icon
 	description = enemy_base_effect.description
+
+
+func _shallow_copy():
+	var copy = get_script().new(enemy_base_effect, effect_uuid)
+	
+	copy.is_timebound = is_timebound
+	copy.time_in_seconds = time_in_seconds
+	copy.is_ingredient_effect = is_ingredient_effect
+	
+	copy.is_countbound = is_countbound
+	copy.count = count
+	copy.count_reduced_by_main_attack_only = count_reduced_by_main_attack_only
+	
+	return copy

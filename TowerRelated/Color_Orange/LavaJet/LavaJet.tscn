@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Orange/LavaJet/LavaJet_E.png" type="Texture" id=2]
+[ext_resource path="res://TowerRelated/Color_Orange/LavaJet/LavaJet.gd" type="Script" id=3]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": false,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 12.3409, 11.8441 )
+
+[node name="LavaJet" instance=ExtResource( 1 )]
+script = ExtResource( 3 )
+
+[node name="TowerBase" parent="." index="0"]
+position = Vector2( 0, -8 )
+
+[node name="BaseSprites" parent="TowerBase" index="0"]
+frames = SubResource( 1 )
+
+[node name="CollisionShape" parent="." index="1"]
+position = Vector2( 0, -3 )
+shape = SubResource( 2 )

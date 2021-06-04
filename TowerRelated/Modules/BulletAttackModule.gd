@@ -64,14 +64,14 @@ func calculate_final_proj_life_distance():
 
 func _set_range_module(new_module):
 	if range_module != null:
-		if range_module.is_connected("final_range_updated", self, "_range_of_range_module_changed"):
-			range_module.disconnect("final_range_updated", self, "_range_of_range_module_changed")
+		if range_module.is_connected("final_range_changed", self, "_range_of_range_module_changed"):
+			range_module.disconnect("final_range_changed", self, "_range_of_range_module_changed")
 	
 	._set_range_module(new_module)
 	
 	if range_module != null:
-		if !range_module.is_connected("final_range_updated", self, "_range_of_range_module_changed"):
-			range_module.connect("final_range_updated", self, "_range_of_range_module_changed")
+		if !range_module.is_connected("final_range_changed", self, "_range_of_range_module_changed"):
+			range_module.connect("final_range_changed", self, "_range_of_range_module_changed")
 
 func _range_of_range_module_changed():
 	_set_life_distance(range_module.last_calculated_final_range)
@@ -264,15 +264,12 @@ func _get_angle(destination_pos : Vector2):
 func _attack_enemies(enemies : Array):
 	._attack_enemies(enemies)
 	
-	var poses : Array = []
-	
 	for enemy in enemies:
 		if enemy != null:
-			poses.append(enemy.position)
-	
-	_attack_at_positions(poses)
+			_attack_at_position(enemy.position)
 
 func _attack_at_positions(arg_poses : Array):
+	._attack_at_positions(arg_poses)
 	
 	for pos in arg_poses:
 		_attack_at_position(pos)

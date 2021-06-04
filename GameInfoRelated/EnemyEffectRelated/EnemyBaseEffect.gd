@@ -12,7 +12,7 @@ enum EffectType {
 
 var effect_uuid : int
 var effect_type : int
-var description : String
+var description : String setget ,_get_overriden_description
 var effect_icon : Texture
 
 var is_timebound : bool
@@ -27,3 +27,7 @@ func _init(arg_effect_type : int,
 
 func _get_copy_scaled_by(scale : float):
 	pass
+
+
+func _get_overriden_description() -> String:
+	return description

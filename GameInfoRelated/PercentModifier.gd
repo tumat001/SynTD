@@ -11,7 +11,7 @@ var percent_based_on
 func _init(arg_internal_name : String).(arg_internal_name):
 	internal_name = arg_internal_name
 	percent_amount = 100
-	flat_maximum = 10000
+	flat_maximum = 0
 	flat_minimum = 0
 	ignore_flat_limits = true
 	percent_based_on = PercentType.MAX

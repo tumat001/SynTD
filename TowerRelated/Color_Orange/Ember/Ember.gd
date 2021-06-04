@@ -1,0 +1,81 @@
+extends "res://TowerRelated/AbstractTower.gd"
+
+
+const Towers = preload("res://GameInfoRelated/Towers.gd")
+
+const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
+const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
+const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
+
+const EmberProj_01 = preload("res://TowerRelated/Color_Orange/Ember/EmberProj/EmberProj_01.png")
+const EmberProj_02 = preload("res://TowerRelated/Color_Orange/Ember/EmberProj/EmberProj_02.png")
+const EmberProj_03 = preload("res://TowerRelated/Color_Orange/Ember/EmberProj/EmberProj_03.png")
+const EmberProj_04 = preload("res://TowerRelated/Color_Orange/Ember/EmberProj/EmberProj_04.png")
+const EmberProj_05 = preload("res://TowerRelated/Color_Orange/Ember/EmberProj/EmberProj_05.png")
+
+const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
+const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	var info : TowerTypeInformation = Towers.get_tower_info(Towers.EMBER)
+	
+	tower_id = info.tower_type_id
+	tower_highlight_sprite = info.tower_image_in_buy_card
+	_tower_colors = info.colors
+	ingredient_of_self = info.ingredient_effect
+	_base_gold_cost = info.tower_cost
+	
+	range_module = RangeModule_Scene.instance()
+	range_module.base_range_radius = info.base_range
+	range_module.set_range_shape(CircleShape2D.new())
+	
+	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
+	attack_module.base_damage = info.base_damage
+	attack_module.base_damage_type = info.base_damage_type
+	attack_module.base_attack_speed = info.base_attk_speed
+	attack_module.base_attack_wind_up = 0
+	attack_module.base_on_hit_damage_internal_name = "ember_base_damage"
+	attack_module.is_main_attack = true
+	attack_module.base_pierce = info.base_pierce
+	attack_module.base_proj_speed = 200
+	attack_module.base_proj_life_distance = info.base_range
+	attack_module.module_id = StoreOfAttackModuleID.MAIN
+	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	
+	var bullet_shape = CircleShape2D.new()
+	bullet_shape.radius = 3
+	
+	attack_module.bullet_shape = bullet_shape
+	attack_module.bullet_scene = BaseBullet_Scene
+	
+	var sp = SpriteFrames.new()
+	sp.add_frame("default", EmberProj_01)
+	sp.add_frame("default", EmberProj_02)
+	sp.add_frame("default", EmberProj_03)
+	sp.add_frame("default", EmberProj_04)
+	sp.add_frame("default", EmberProj_05)
+	attack_module.bullet_sprite_frames = sp
+	
+	add_attack_module(attack_module)
+	
+	_post_inherit_ready()
+
+
+func _post_inherit_ready():
+	._post_inherit_ready()
+	
+	var burn_dmg : FlatModifier = FlatModifier.new("ember_burn_dmg")
+	burn_dmg.flat_modifier = 0.75
+	
+	var burn_on_hit : OnHitDamage = OnHitDamage.new("ember_burn_on_hit_dmg", burn_dmg, DamageType.ELEMENTAL)
+	var burn_dmg_instance = DamageInstance.new()
+	burn_dmg_instance.on_hit_damages[burn_on_hit.internal_name] = burn_on_hit
+	
+	var burn_effect = EnemyDmgOverTimeEffect.new(burn_dmg_instance, StoreOfEnemyEffectsUUID.EMBER_BURN, 1)
+	burn_effect.is_timebound = true
+	burn_effect.time_in_seconds = 5
+	
+	var tower_effect = TowerOnHitEffectAdderEffect.new(burn_effect, StoreOfTowerEffectsUUID.EMBER_BURN)
+	
+	add_tower_effect(tower_effect)

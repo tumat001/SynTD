@@ -5,13 +5,18 @@ const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerB
 
 
 var ingredient_effect : IngredientEffect
-
+var tower_base_effect : TowerBaseEffect
 
 func _ready():
 	update_display()
 
 func update_display():
-	var tower_base_effect = ingredient_effect.tower_base_effect
-	
-	$HBoxContainer/IngredientIcon.texture = tower_base_effect.effect_icon
-	$HBoxContainer/Marginer/IngredientLabel.text = tower_base_effect.description
+	if ingredient_effect != null:
+		_update_panel(ingredient_effect.tower_base_effect)
+		
+	elif tower_base_effect != null:
+		_update_panel(tower_base_effect)
+
+func _update_panel(arg_tower_base_effect):
+	$HBoxContainer/IngredientIcon.texture = arg_tower_base_effect.effect_icon
+	$HBoxContainer/Marginer/IngredientLabel.text = arg_tower_base_effect.description

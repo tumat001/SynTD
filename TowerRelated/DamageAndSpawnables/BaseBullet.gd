@@ -19,6 +19,9 @@ var current_life_distance
 
 var modifications : Array
 
+var _first_hit : bool = true
+var beyond_first_hit_multiplier : float = 0.5
+
 
 func _ready():
 	current_life_distance = life_distance
@@ -52,6 +55,14 @@ func decrease_pierce(amount):
 		emit_signal("on_zero_pierce", self)
 		trigger_on_death_events()
 
+func reduce_damage_by_beyond_first_multiplier():
+	if _first_hit:
+		_first_hit = false
+		for dmg_id in damage_instance.on_hit_damages.keys():
+			damage_instance.on_hit_damages[dmg_id].damage_as_modifier = damage_instance.on_hit_damages[dmg_id].damage_as_modifier.get_copy_scaled_by(beyond_first_hit_multiplier)
+
+
+
 func trigger_on_death_events():
 	_inactivate()
 	
@@ -80,6 +91,13 @@ func get_sprite_frames():
 
 func set_sprite_frames(sprite_frames : SpriteFrames):
 	$BulletSprite.frames = sprite_frames
+
+func set_texture_as_sprite_frames(arg_texture : Texture):
+	var sp : SpriteFrames = SpriteFrames.new()
+	sp.add_frame("default", arg_texture)
+	
+	set_sprite_frames(sp)
+
 
 func set_shape(shape : Shape2D):
 	$CollisionShape2D.shape = shape
