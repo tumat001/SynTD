@@ -6,16 +6,17 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
+const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
+const BaseAOE = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.gd")
 
-const SpawnAOEModuleModification = preload("res://TowerRelated/Modification/ModuleModification/SpawnAOEModuleModification.gd")
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
-const SpawnAOETemplate = preload("res://TowerRelated/Templates/SpawnAOETemplate.gd")
 
 const WithBeamInstantDamageAttackModule = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.gd")
 const WithBeamInstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.tscn")
 const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
 
+const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
 
 const Ping_arrow_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Arrow.png")
 
@@ -42,7 +43,8 @@ const Ping_seek_register_id : int = 117
 const Ping_shot_register_id : int = 207
 
 var arrow_attack_module : AbstractAttackModule
-var template : SpawnAOETemplate
+#var template : SpawnAOETemplate
+var seek_attack_module : AOEAttackModule
 
 
 # Eye
@@ -106,18 +108,48 @@ func _ready():
 	attack_module.bullet_scene = BaseBullet_Scene
 	attack_module.set_texture_as_sprite_frame(Ping_arrow_pic)
 	
-	attack_module.connect("on_enemy_hit", self, "_enemy_hit")
-	
-	# AOE
-	
 	arrow_attack_module = attack_module
-	var spawn_aoe_mod : SpawnAOEModuleModification = SpawnAOEModuleModification.new()
-	spawn_aoe_mod.template = _generate_template()
 	
-	#
+	arrow_attack_module.connect("before_bullet_is_shot", self, "_before_arrow_is_shot")
 	
-	attack_module.modifications = [spawn_aoe_mod]
 	add_attack_module(attack_module)
+	
+#	# AOE
+#	var spawn_aoe_mod : SpawnAOEModuleModification = SpawnAOEModuleModification.new()
+#	spawn_aoe_mod.template = _generate_template()
+#
+#	attack_module.modifications = [spawn_aoe_mod]
+#
+	# AOE attack module
+	seek_attack_module = AOEAttackModule_Scene.instance()
+	seek_attack_module.base_damage = 0
+	seek_attack_module.base_damage_type = DamageType.PURE
+	seek_attack_module.base_attack_speed = 0
+	seek_attack_module.base_attack_wind_up = 0
+	seek_attack_module.base_on_hit_damage_internal_name = "ping_seek_base_damage"
+	seek_attack_module.is_main_attack = false
+	seek_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	
+	seek_attack_module.benefits_from_bonus_explosion_scale = true
+	seek_attack_module.benefits_from_bonus_base_damage = false
+	seek_attack_module.benefits_from_bonus_attack_speed = false
+	seek_attack_module.benefits_from_bonus_on_hit_damage = false
+	seek_attack_module.benefits_from_bonus_on_hit_effect = false
+	
+	seek_attack_module.pierce = current_mark_count_limit
+	seek_attack_module.damage_repeat_count = 1
+	seek_attack_module.damage_register_id = Ping_seek_register_id
+	seek_attack_module.duration = 0.3
+	seek_attack_module.aoe_texture = PingAreaPing_pic
+	
+	seek_attack_module.base_aoe_scene = PingMarker_Scene
+	seek_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
+	
+	seek_attack_module.can_be_commanded_by_tower = false
+	
+	seek_attack_module.connect("on_enemy_hit", self, "_enemy_seeked")
+	
+	add_attack_module(seek_attack_module)
 	
 	
 	# Shot maker module
@@ -170,37 +202,18 @@ func _ready():
 	_post_inherit_ready()
 
 
-func _generate_template():
-	template = SpawnAOETemplate.new()
-	
-	template.aoe_scene = PingMarker_Scene
-	
-	template.aoe_damage_repeat_count = 1
-	template.aoe_duration = 0.3
-	template.aoe_pierce = current_mark_count_limit
-	
-	template.aoe_base_damage = 0
-	template.aoe_base_damage_type = DamageType.PURE
-	template.aoe_base_on_hit_damage_internal_name = "ping_seek_ping"
-	
-	template.aoe_on_hit_damage_scale = 0
-	template.aoe_on_hit_effect_scale = 0
-	
-	template.aoe_sprite_frames_play_only_once = true
-	#template.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
-	template.tree = get_tree()
-	
-	#template.aoe_texture = PingAreaPing_pic
-	
-	template.attack_module_source = arrow_attack_module
-	template.damage_register_id = Ping_seek_register_id
-	
-	return template
-
-
 # Mark related
 
-func _enemy_hit(enemy, damage_register_id : int, module):
+func _before_arrow_is_shot(arrow : BaseBullet):
+	arrow.connect("hit_an_enemy", self, "_enemy_hit_by_arrow", [], CONNECT_ONESHOT)
+
+
+func _enemy_hit_by_arrow(arrow, enemy):
+	var aoe : BaseAOE = seek_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
+	get_tree().get_root().call_deferred("add_child", aoe)
+
+
+func _enemy_seeked(enemy, damage_register_id : int, module):
 	if damage_register_id == Ping_seek_register_id and _enemies_marked.size() < current_mark_count_limit:
 		_enemies_marked.append(enemy)
 		enemy.add_child(_construct_mark_sprite())
@@ -273,11 +286,11 @@ func _shoot_marked_enemies():
 
 func _check_if_shot_killed_enemy(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int, module):
 	if damage_register_id == Ping_shot_register_id and killed_enemy == true:
-		call_deferred(arrow_attack_module.reset_attack_timers())
+		#call_deferred(arrow_attack_module.reset_attack_timers())
+		arrow_attack_module.call_deferred("reset_attack_timers")
 
 
 # energy module related
-
 
 func set_energy_module(module):
 	.set_energy_module(module)
@@ -292,9 +305,9 @@ func set_energy_module(module):
 func _module_turned_on(_first_time_per_round : bool):
 	empowered_num_of_targets_limit = 2
 	current_mark_count_limit = 6
-	template.aoe_pierce = current_mark_count_limit
+	seek_attack_module.pierce = current_mark_count_limit
 
 func _module_turned_off():
 	empowered_num_of_targets_limit = original_empowered_num_of_targets_limit
 	current_mark_count_limit = original_mark_count_limit
-	template.aoe_pierce = current_mark_count_limit
+	seek_attack_module.pierce = current_mark_count_limit

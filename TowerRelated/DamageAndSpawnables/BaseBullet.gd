@@ -17,8 +17,6 @@ var decrease_life_distance : bool = true
 
 var current_life_distance
 
-var modifications : Array
-
 var _first_hit : bool = true
 var beyond_first_hit_multiplier : float = 0.5
 
@@ -75,11 +73,6 @@ func reduce_damage_by_beyond_first_multiplier():
 
 func trigger_on_death_events():
 	_inactivate()
-	
-	if modifications != null:
-		for modification in modifications:
-			if modification.trigger_on_death:
-				modification._finalize_bullet(self)
 	
 	true_destroy()
 
