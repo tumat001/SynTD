@@ -33,6 +33,10 @@ var flat_proj_inaccuracy_effects = {}
 var percent_proj_inaccuracy_effects = {}
 var last_calculated_final_proj_inaccuracy : float
 
+var absolute_z_index_of_bullet : int = ZIndexStore.PARTICLE_EFFECTS
+
+var bullet_rotation_per_second : float = 0
+
 #
 
 const bullet_group_tag : String = "BulletGroupTag"
@@ -227,6 +231,25 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	
 	bullet.pierce = last_calculated_final_pierce
 	
+	bullet.attack_module_source = self
+	bullet.damage_register_id = damage_register_id
+	
+	bullet.position.x = global_position.x
+	bullet.position.y = global_position.y
+	
+	_adjust_bullet_physics_settings(bullet, arg_enemy_pos)
+	
+	bullet.add_to_group(bullet_group_tag)
+	
+	bullet.z_as_relative = false
+	bullet.z_index = absolute_z_index_of_bullet
+	
+	_modify_attack(bullet)
+	
+	return bullet
+
+
+func _adjust_bullet_physics_settings(bullet : BaseBullet, arg_enemy_pos : Vector2):
 	var dir : Vector2 = Vector2(arg_enemy_pos.x - global_position.x, arg_enemy_pos.y - global_position.y)
 	var rand_x = 0
 	var rand_y = 0
@@ -242,17 +265,9 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	bullet.current_life_distance = bullet.life_distance
 	bullet.rotation_degrees = _get_angle(arg_enemy_pos)
 	
-	bullet.attack_module_source = self
-	bullet.damage_register_id = damage_register_id
-	
-	bullet.position.x = global_position.x
-	bullet.position.y = global_position.y
-	
-	bullet.add_to_group(bullet_group_tag)
-	
-	_modify_attack(bullet)
-	
-	return bullet
+	bullet.rotation_per_second = bullet_rotation_per_second
+
+
 
 func _get_angle(destination_pos : Vector2):
 	var dx = destination_pos.x - global_position.x

@@ -34,6 +34,7 @@ const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omn
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
 const lava_jet_image = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_E.png")
 const campfire_image = preload("res://TowerRelated/Color_Orange/Campfire/Campfire_Wholebody.png")
+const volcano_image = preload("res://TowerRelated/Color_Orange/Volcano/Volcano_Omni.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -68,6 +69,7 @@ enum {
 	EMBER = 300,
 	LAVA_JET = 301,
 	CAMPFIRE = 302,
+	VOLCANO = 303,
 	
 	# YELLOW (400)
 	RAILGUN = 400,
@@ -659,6 +661,38 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ base dmg"
 		
+		
+	elif tower_id == VOLCANO:
+		info = TowerTypeInformation.new("Volcano", tower_id)
+		info.tower_cost = 5
+		info.colors.append(TowerColors.ORANGE)
+		info.tower_tier = 5
+		info.tower_image_in_buy_card = volcano_image
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0.1
+		info.base_pierce = 0
+		info.base_range = 240
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Launches a molten boulder at the target's location.",
+			"The boulder explodes upon reaching the location, dealing 6 physical base damage. The explosion applies on hit effects, and applies on hit damages at 500% efficiency.",
+			"The explosion also leaves behind scorched earth that lasts for 6 seconds, with slows enemies and deals 0.75 elemental damage per 0.75 seconds while inside it. This does not apply on hit damages and effects.",
+			"Both the explosion and scorched earth benefit from base damage buffs."
+		]
+		
+		var expl_attr_mod : PercentModifier = PercentModifier.new("volcano_bonus_expl_range")
+		expl_attr_mod.percent_amount = 50
+		expl_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE, expl_attr_mod, StoreOfTowerEffectsUUID.ING_VOLCANO)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ expl size"
+		
 	
 	return info
 
@@ -701,3 +735,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/LavaJet/LavaJet.tscn")
 	elif tower_id == CAMPFIRE:
 		return load("res://TowerRelated/Color_Orange/Campfire/Campfire.tscn")
+	elif tower_id == VOLCANO:
+		return load("res://TowerRelated/Color_Orange/Volcano/Volcano.tscn")

@@ -135,7 +135,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.RAILGUN,
 			Towers.BEACON_DISH,
 			Towers.MAGNETIZER,
-			Towers.LAVA_JET,
+			Towers.VOLCANO,
 			Towers.CHARGE,
 		])
 	else:

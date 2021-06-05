@@ -14,6 +14,7 @@ const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyS
 const EnemyClearAllEffects = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyClearAllEffects.gd")
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
+const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 
 signal on_death_by_any_cause
 signal on_hit(me)
@@ -299,7 +300,7 @@ func calculate_final_movement_speed() -> float:
 				excess_speed += speed_change
 			
 		elif speed_change < 0:
-			if highest_slow < speed_change:
+			if highest_slow > speed_change:
 				excess_slow += highest_slow
 				highest_slow = speed_change
 			else:
@@ -315,13 +316,13 @@ func calculate_final_movement_speed() -> float:
 				excess_speed += speed_change
 			
 		elif speed_change < 0:
-			if highest_slow < speed_change:
+			if highest_slow > speed_change:
 				excess_slow += highest_slow
 				highest_slow = speed_change
 			else:
 				excess_slow += speed_change
 	
-	var final_change = highest_speed - highest_slow
+	var final_change = highest_speed + highest_slow
 	if final_change > 0:
 		final_change -= excess_slow
 		
@@ -480,6 +481,16 @@ func _add_effect(base_effect : EnemyBaseEffect):
 		
 	elif to_use_effect is EnemyDmgOverTimeEffect:
 		_dmg_over_time_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
+		
+		
+	elif to_use_effect is EnemyAttributesEffect:
+		if to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_MOV_SPEED:
+			flat_movement_speed_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_final_movement_speed()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED:
+			percent_movement_speed_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_final_movement_speed()
 
 
 func _remove_effect(base_effect : EnemyBaseEffect):
@@ -491,6 +502,16 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		
 	elif base_effect is EnemyDmgOverTimeEffect:
 		_dmg_over_time_id_effects_map.erase(base_effect.effect_uuid)
+		
+	elif base_effect is EnemyAttributesEffect:
+		if base_effect.attribute_type == EnemyAttributesEffect.FLAT_MOV_SPEED:
+			flat_movement_speed_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_final_movement_speed()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED:
+			percent_movement_speed_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_final_movement_speed()
+
 
 
 # Timebounded related
@@ -538,6 +559,26 @@ func _decrease_time_of_timebounds(delta):
 			if dmg_time_effect.time_in_seconds <= 0:
 				_remove_effect(dmg_time_effect)
 	
+	# Flat slow related
+	for slow_id in flat_movement_speed_id_effect_map.keys():
+		var slow_effect = flat_movement_speed_id_effect_map[slow_id]
+		
+		if slow_effect.is_timebound:
+			slow_effect.time_in_seconds -= delta
+			
+			if slow_effect.time_in_seconds <= 0:
+				_remove_effect(slow_effect)
+	
+	
+	# Percent slow related
+	for slow_id in percent_movement_speed_id_effect_map.keys():
+		var slow_effect = percent_movement_speed_id_effect_map[slow_id]
+		
+		if slow_effect.is_timebound:
+			slow_effect.time_in_seconds -= delta
+			
+			if slow_effect.time_in_seconds <= 0:
+				_remove_effect(slow_effect)
 	
 
 

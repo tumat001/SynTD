@@ -34,7 +34,7 @@ var _delay_in_between_repeats : float
 var _current_delay : float = 0.05
 var _current_duration : float
 var _current_damage_repeat_count : int = 0
-var _enemies_inside : Array = []
+var _enemies_inside_damage_cd_map : Dictionary = {}
 var _pierce_available : int
 
 onready var aoe_area : Area2D = $AOEArea
@@ -48,14 +48,14 @@ func _on_AOEArea_area_shape_entered(area_id, area, area_shape, self_shape):
 		var parent = area.get_parent()
 		
 		if parent is AbstractEnemy:
-			_enemies_inside.append(parent)
+			_enemies_inside_damage_cd_map[parent] = 0
 
 func _on_AOEArea_area_shape_exited(area_id, area, area_shape, self_shape):
 	if area != null:
 		var parent = area.get_parent()
 		
 		if parent is AbstractEnemy:
-			_enemies_inside.erase(parent)
+			_enemies_inside_damage_cd_map.erase(parent)
 
 #
 
@@ -93,7 +93,6 @@ func _process(delta):
 		
 		if _current_delay <= 0:
 			_pierce_available = pierce
-			_damage_enemies_inside()
 			_current_damage_repeat_count += 1
 			_current_delay = _delay_in_between_repeats
 		else:
@@ -101,6 +100,10 @@ func _process(delta):
 		
 	else:
 		queue_free()
+	
+	
+	if _enemies_inside_damage_cd_map.size() != 0:
+		_attempt_damage_enemies_inside(delta)
 
 
 # Expose methods
@@ -163,21 +166,24 @@ func _set_default_rectangle_shape():
 
 #
 
-func _damage_enemies_inside():
+func _attempt_damage_enemies_inside(delta):
 	if _current_damage_repeat_count < damage_repeat_count:
-		for enemy in _enemies_inside:
-			var suc = _damage_enemy(enemy)
-			if !suc:
-				break
-	
-	_enemies_inside.erase(null)
+		for enemy in _enemies_inside_damage_cd_map.keys():
+			if _enemies_inside_damage_cd_map[enemy] <= 0:
+				_attempt_damage_enemy(enemy)
+			else:
+				_enemies_inside_damage_cd_map[enemy] -= delta
+		
+		_enemies_inside_damage_cd_map.erase(null)
 
-func _damage_enemy(enemy : AbstractEnemy):
+
+func _attempt_damage_enemy(enemy : AbstractEnemy):
 	var successful = _pierce_available > 0 or pierce == -1
 	
 	if successful:
 		if enemy != null:
 			enemy.hit_by_aoe(self)
+			_enemies_inside_damage_cd_map[enemy] = _delay_in_between_repeats
 			_pierce_available -= 1
 	
 	return successful

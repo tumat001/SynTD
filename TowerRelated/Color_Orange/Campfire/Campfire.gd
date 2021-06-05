@@ -158,16 +158,19 @@ func _match_fire_size_to_base_dmg(total_base_dmg):
 func _final_base_damage_changed():
 	_match_fire_size_to_base_dmg(main_attack_module.last_calculated_final_damage)
 
+
 # range related
 
 func _enemy_entered_range(enemy, range_module):
-	if !enemy.is_connected("on_post_mitigated_damage_taken", self, "_enemy_damage_taken"):
-		enemy.connect("on_post_mitigated_damage_taken", self, "_enemy_damage_taken")
+	if is_current_placable_in_map():
+		if !enemy.is_connected("on_post_mitigated_damage_taken", self, "_enemy_damage_taken"):
+			enemy.connect("on_post_mitigated_damage_taken", self, "_enemy_damage_taken")
 
 
 func _enemy_exited_range(enemy, range_module):
-	if enemy.is_connected("on_post_mitigated_damage_taken", self, "_enemy_damage_taken"):
-		enemy.disconnect("on_post_mitigated_damage_taken", self, "_enemy_damage_taken")
+	if is_current_placable_in_map():
+		if enemy.is_connected("on_post_mitigated_damage_taken", self, "_enemy_damage_taken"):
+			enemy.disconnect("on_post_mitigated_damage_taken", self, "_enemy_damage_taken")
 
 
 

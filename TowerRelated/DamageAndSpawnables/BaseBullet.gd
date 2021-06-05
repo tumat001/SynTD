@@ -22,6 +22,8 @@ var modifications : Array
 var _first_hit : bool = true
 var beyond_first_hit_multiplier : float = 0.5
 
+var rotation_per_second : float = 0
+
 
 func _ready():
 	current_life_distance = life_distance
@@ -33,9 +35,16 @@ func _process(delta):
 	
 	if current_life_distance <= 0:
 		trigger_on_death_events()
+	
+	rotation_degrees += rotation_per_second * delta
 
+
+# Movement
 
 func _physics_process(delta):
+	_move(delta)
+
+func _move(delta):
 	if direction_as_relative_location != null:
 		var vector_mov = direction_as_relative_location
 		vector_mov.x *= delta
@@ -44,6 +53,7 @@ func _physics_process(delta):
 		vector_mov.x *= speed
 		vector_mov.y *= speed
 		move_and_collide(vector_mov)
+
 
 
 func hit_by_enemy(enemy):

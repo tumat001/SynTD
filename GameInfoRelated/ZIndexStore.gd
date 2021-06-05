@@ -1,6 +1,8 @@
 extends Node
 
 enum {
+	
+	PARTICLE_EFFECTS_BELOW_ENEMIES = -111
 	ENEMIES = -110
 	
 	TOWER_BENCH = -100,

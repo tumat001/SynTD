@@ -1,5 +1,7 @@
 extends "res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd"
 
+const Modifier = preload("res://GameInfoRelated/Modifier.gd")
+
 const img_dec_mov_speed = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_EnemyMovSpeedDec.png")
 const img_cripple = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_EnemyCripple.png")
 const img_dec_armor = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_EnemyArmorShred.png")
@@ -116,5 +118,8 @@ func _get_copy_scaled_by(scale : float):
 	var modifier = attribute_as_modifier.get_copy_scaled_by(scale)
 	
 	var copy = get_script().new(attribute_type, attribute_as_modifier, effect_uuid)
+	copy.is_timebound = is_timebound
+	copy.time_in_seconds = time_in_seconds
+	
 	return copy
 	

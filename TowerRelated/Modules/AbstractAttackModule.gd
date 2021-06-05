@@ -634,27 +634,27 @@ func enable_module():
 func calculate_final_base_damage():
 	var final_base_damage = base_damage
 	
-	if benefits_from_bonus_base_damage:
-		var totals_bucket : Array = []
+	#if benefits_from_bonus_base_damage:
+	var totals_bucket : Array = []
+	
+	for effect in percent_base_damage_effects.values():
+		if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+			continue
 		
-		for effect in percent_base_damage_effects.values():
-			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
-				continue
-			
-			if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
-				final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
-			else:
-				totals_bucket.append(effect)
-		
-		for effect in flat_base_damage_effects.values():
-			if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
-				continue
+		if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
 			final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
-		
-		var final_base_base_damage = final_base_damage
-		for effect in totals_bucket:
-			final_base_base_damage += effect.attribute_as_modifier.get_modification_to_value(final_base_damage)
-		final_base_damage = final_base_base_damage
+		else:
+			totals_bucket.append(effect)
+	
+	for effect in flat_base_damage_effects.values():
+		if effect.is_ingredient_effect and !benefits_from_ingredient_effect:
+			continue
+		final_base_damage += effect.attribute_as_modifier.get_modification_to_value(base_damage)
+	
+	var final_base_base_damage = final_base_damage
+	for effect in totals_bucket:
+		final_base_base_damage += effect.attribute_as_modifier.get_modification_to_value(final_base_damage)
+	final_base_damage = final_base_base_damage
 	
 	last_calculated_final_damage = final_base_damage
 	return final_base_damage
@@ -705,9 +705,6 @@ func _get_all_scaled_on_hit_damages() -> Dictionary:
 # On Hit Effects / EnemyBaseEffect
 
 func _get_all_scaled_on_hit_effects() -> Dictionary:
-	if !benefits_from_bonus_on_hit_effect:
-		return {}
-	
 	var scaled_on_hit_effects = {}
 	
 	for on_hit_effect_id in on_hit_effects.keys():

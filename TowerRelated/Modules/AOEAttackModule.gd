@@ -37,6 +37,8 @@ var sprite_frames_only_play_once : bool
 var aoe_default_coll_shape : int = BaseAOE.BaseAOEDefaultShapes.CIRCLE
 var shift_x : bool = false
 
+var absolute_z_index_of_aoe : int = ZIndexStore.PARTICLE_EFFECTS
+
 # constants
 
 const aoe_group_tag : String = "AOEGroupTag"
@@ -78,6 +80,9 @@ func construct_aoe(arg_origin_pos : Vector2, arg_enemy_pos : Vector2) -> BaseAOE
 	base_aoe.shift_x = shift_x
 	
 	base_aoe.add_to_group(aoe_group_tag)
+	
+	base_aoe.z_as_relative = false
+	base_aoe.z_index = absolute_z_index_of_aoe
 	
 	_modify_center_pos_and_sizeshape_of_aoe(arg_origin_pos, arg_enemy_pos, base_aoe)
 	
