@@ -31,7 +31,8 @@ func _allocate_single_ingredient_panels():
 		for i in difference:
 			var single_panel = SingleIngredientPanel_Scene.instance()
 			_single_ingredient_panels.append(single_panel)
-		
+			_single_ingredient_list.add_child(single_panel)
+
 
 func _set_ingredient_of_single_panels():
 	for i in ingredient_effects.size():
@@ -50,11 +51,13 @@ func _set_ingredient_of_single_panels():
 
 func _set_panels_to_be_children():
 	for child in _single_ingredient_list.get_children():
-		_single_ingredient_list.remove_child(child)
+		#_single_ingredient_list.remove_child(child)
+		child.visible = false
 	
 	for i in ingredient_effects.size():
 		if _single_ingredient_panels.size() > i:
-			_single_ingredient_list.add_child(_single_ingredient_panels[i])
+			#_single_ingredient_list.add_child(_single_ingredient_panels[i])
+			_single_ingredient_panels[i].visible = true
 		else:
 			break
 

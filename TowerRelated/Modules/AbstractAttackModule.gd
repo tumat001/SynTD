@@ -78,10 +78,18 @@ var modifications : Array
 var attack_sprite_scene
 var attack_sprite_follow_enemy : bool
 
+
+# Windup enemy targets
+
+var commit_to_targets_of_windup : bool = false
+var _targets_during_windup : Array = []
+var fill_empty_windup_target_slots : bool = true
+
 # internal stuffs
 var _current_attack_wait : float
 var _current_wind_up_wait : float
 var _is_attacking : bool
+var _is_in_windup : bool = false
 
 var _current_burst_count : int
 var _current_burst_delay : float
@@ -107,8 +115,9 @@ func reset_attack_timers():
 	_current_burst_delay = 0
 	
 	_current_attack_wait = 0
-	_current_wind_up_wait = false
+	_current_wind_up_wait = 0
 	_is_attacking = false
+	_is_in_windup = false
 
 
 func _ready():
@@ -128,12 +137,13 @@ func _set_range_module(new_module):
 
 # Time passed
 
+
 func time_passed(delta):
 	
 	if !_disabled:
 		_current_attack_wait -= delta
 		
-		if range_module.enemies_in_range.size() != 0:
+		if range_module.enemies_in_range.size() != 0 or (commit_to_targets_of_windup and _is_in_windup):#_targets_during_windup.size() > 0):
 			_current_wind_up_wait -= delta
 		
 		if _is_bursting:
@@ -387,14 +397,11 @@ func attempt_find_then_attack_enemies(num : int = number_of_unique_targets) -> b
 	if range_module == null:
 		return false
 	
-#	if num == 1:
-#		return attempt_find_then_attack_enemy()
-	
 	var targets : Array
 	if range_module.is_an_enemy_in_range():
 		targets = range_module.get_targets(num)
 	
-	return on_command_attack_enemies(targets)
+	return on_command_attack_enemies(targets, num)
 
 
 #func on_command_attack_enemy(enemy : AbstractEnemy) -> bool:
@@ -490,13 +497,35 @@ func attempt_find_then_attack_enemies(num : int = number_of_unique_targets) -> b
 #				_finished_attacking()
 
 
-func on_command_attack_enemies(enemies : Array) -> bool:
-	if enemies.size() == 0:
+func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = number_of_unique_targets) -> bool:
+	var enemies : Array
+	
+	if commit_to_targets_of_windup and _is_in_windup:
+		for target in _targets_during_windup:
+			if target == null or !is_instance_valid(target):
+				_targets_during_windup.erase(target)
+		
+		if fill_empty_windup_target_slots and _targets_during_windup.size() < num_of_targets:
+			var slots_to_fill = num_of_targets - _targets_during_windup.size()
+			
+			for i in range(0, slots_to_fill):
+				if arg_enemies.size() > i:
+					_targets_during_windup.append(arg_enemies[i])
+		
+		enemies = _targets_during_windup
+		
+	else:
+		enemies = arg_enemies
+	
+	if enemies.size() == 0 and !_is_attacking:
+#		if !fill_empty_windup_target_slots:
+#			_is_in_windup = false
+#
 		return false
 	
 	if !_is_attacking:
 		if calculate_final_attack_wind_up() == 0:
-			_attack_enemies(enemies)
+			_check_attack_enemies(enemies)
 			
 			if has_burst:
 				_is_attacking = true
@@ -505,31 +534,35 @@ func on_command_attack_enemies(enemies : Array) -> bool:
 				_is_bursting = true
 			else:
 				_current_attack_wait = calculate_final_attack_speed()
+				_is_attacking = false
+				_is_in_windup = false
 				_finished_attacking()
 			
 			return true
 		else:
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
+			_is_in_windup = true
 			_during_windup_multiple(enemies)
 			return false
 		
 	else:
 		if !has_burst:
-			_attack_enemies(enemies)
+			_check_attack_enemies(enemies)
 			_current_attack_wait = calculate_final_attack_speed()
 			_is_attacking = false
 			_finished_attacking()
 			return true
 		else:
 			if _current_burst_count < burst_amount - 1:
-				_attack_enemies(enemies)
+				_check_attack_enemies(enemies)
 				_current_burst_delay = calculate_final_burst_attack_speed()
 				_is_bursting = true
 				_current_burst_count += 1
 				return true
 			else:
-				_attack_enemies(enemies)
+				_check_attack_enemies(enemies)
+				_is_in_windup = false
 				_current_attack_wait = calculate_final_attack_speed()
 				_is_bursting = false
 				_is_attacking = false
@@ -550,13 +583,17 @@ func on_command_attack_at_positions(positions : Array):
 				_is_bursting = true
 			else:
 				_current_attack_wait = calculate_final_attack_speed()
+				_is_attacking = false
+				_is_in_windup = false
 				_finished_attacking()
 			
 			return true
 		else:
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
+			_is_in_windup = true
 			_during_windup_multiple(positions)
+			return false
 		
 	else:
 		if !has_burst:
@@ -576,15 +613,20 @@ func on_command_attack_at_positions(positions : Array):
 				_is_bursting = false
 				_is_attacking = false
 				_current_burst_count = 0
+				_is_in_windup = false
 				_finished_attacking()
 
 
 #func _attack_enemy(enemy : AbstractEnemy):
 #	pass
 
+func _check_attack_enemies(enemies : Array):
+	if enemies.size() != 0:
+		_attack_enemies(enemies)
+
 func _attack_enemies(enemies : Array):
-	if !_is_bursting:
-		emit_signal("in_attack", _last_calculated_attack_speed_as_delay, enemies)
+	#if !_is_bursting:
+	emit_signal("in_attack", _last_calculated_attack_speed_as_delay, enemies)
 	
 	for enemy in enemies:
 		if attack_sprite_scene != null:
@@ -599,10 +641,9 @@ func _attack_enemies(enemies : Array):
 #func _attack_at_position(_pos : Vector2):
 #	pass
 
-
 func _attack_at_positions(positions : Array):
-	if !_is_bursting:
-		emit_signal("in_attack", _last_calculated_attack_speed_as_delay, positions)
+	#if !_is_bursting:
+	emit_signal("in_attack", _last_calculated_attack_speed_as_delay, positions)
 
 
 func _modify_attack(to_modify):
@@ -614,11 +655,16 @@ func _modify_attack(to_modify):
 #	emit_signal("in_attack_windup", _last_calculated_attack_wind_up, enemy_or_pos)
 
 func _during_windup_multiple(enemies_or_poses : Array = []):
+	if commit_to_targets_of_windup:
+		for enemy in enemies_or_poses:
+			_targets_during_windup.append(enemy)
+	
 	emit_signal("in_attack_windup", _last_calculated_attack_wind_up, enemies_or_poses)
 
 
 func _finished_attacking():
 	emit_signal("in_attack_end")
+	_targets_during_windup.clear()
 
 # Disabling and Enabling
 

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/GameManagerTexture.png-de4479bd904467247ce1ee7e85967a9e.stex"
+path="res://.import/704_Explosion05.png-e27a70762330e53693e8f57fd2ff7314.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://MiscRelated/GameManagerTexture.png"
-dest_files=[ "res://.import/GameManagerTexture.png-de4479bd904467247ce1ee7e85967a9e.stex" ]
+source_file="res://TowerRelated/Color_Orange/704/704_Explosion/704_Explosion05.png"
+dest_files=[ "res://.import/704_Explosion05.png-e27a70762330e53693e8f57fd2ff7314.stex" ]
 
 [params]
 

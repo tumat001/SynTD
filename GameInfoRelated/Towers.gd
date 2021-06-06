@@ -35,6 +35,7 @@ const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
 const lava_jet_image = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_E.png")
 const campfire_image = preload("res://TowerRelated/Color_Orange/Campfire/Campfire_Wholebody.png")
 const volcano_image = preload("res://TowerRelated/Color_Orange/Volcano/Volcano_Omni.png")
+const _704_image = preload("res://TowerRelated/Color_Orange/704/704_WholeBody.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -70,6 +71,7 @@ enum {
 	LAVA_JET = 301,
 	CAMPFIRE = 302,
 	VOLCANO = 303,
+	_704 = 304,
 	
 	# YELLOW (400)
 	RAILGUN = 400,
@@ -693,6 +695,30 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ expl size"
 		
+		
+	elif tower_id == _704:
+		info = TowerTypeInformation.new("704", tower_id)
+		info.tower_cost = 4
+		info.colors.append(TowerColors.ORANGE)
+		info.colors.append(TowerColors.GRAY)
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = _704_image
+		
+		info.base_damage = 3
+		info.base_attk_speed = 0.8
+		info.base_pierce = 0
+		info.base_range = 140
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"704 possesses 3 emblems, and each can be upgraded to give a bonus effect to its main attack.",
+			"704's emblems can be upgraded with points. 704 starts with 4 points.",
+			"",
+			"\"704 is an open furnace with [redacted] origins.\""
+		]
+		
+		
 	
 	return info
 
@@ -737,3 +763,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/Campfire/Campfire.tscn")
 	elif tower_id == VOLCANO:
 		return load("res://TowerRelated/Color_Orange/Volcano/Volcano.tscn")
+	elif tower_id == _704:
+		return load("res://TowerRelated/Color_Orange/704/704.tscn")
+		
+		

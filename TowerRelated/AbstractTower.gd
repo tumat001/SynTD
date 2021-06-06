@@ -290,9 +290,7 @@ func _process(delta):
 					attack_module.attempt_find_then_attack_enemies()
 				else:
 					var targets = range_module.get_targets(attack_module.number_of_unique_targets)
-					
-					if targets.size() > 0:
-						attack_module.on_command_attack_enemies(targets)
+					attack_module.on_command_attack_enemies(targets)
 	
 	
 	#Drag related

@@ -1,5 +1,8 @@
 extends AnimatedSprite
 
+signal time_visible_is_over
+
+
 var time_visible : float
 var is_timebound : bool = false
 
@@ -13,6 +16,8 @@ func _process(delta):
 		if _current_time_visible >= time_visible:
 			visible = false
 			_current_time_visible = 0
+			
+			emit_signal("time_visible_is_over")
 			
 			if queue_free_if_time_over:
 				queue_free()

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/EnemySpawnerTexture.png-908d30321fa4145f7875a03d31343da9.stex"
+path="res://.import/704_ToughnessPierce.png-021b36b5723d8324ecb0b227ccf439ec.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://MiscRelated/EnemySpawnerTexture.png"
-dest_files=[ "res://.import/EnemySpawnerTexture.png-908d30321fa4145f7875a03d31343da9.stex" ]
+source_file="res://TowerRelated/Color_Orange/704/704_InfoPanel/704_ToughnessPierce.png"
+dest_files=[ "res://.import/704_ToughnessPierce.png-021b36b5723d8324ecb0b227ccf439ec.stex" ]
 
 [params]
 

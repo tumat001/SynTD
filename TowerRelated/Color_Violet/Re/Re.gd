@@ -55,6 +55,9 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_name = "name"
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
+	attack_module.commit_to_targets_of_windup = true
+	attack_module.fill_empty_windup_target_slots = true
+	
 	attack_module.burst_amount = 3
 	attack_module.burst_attack_speed = 5
 	attack_module.has_burst = true
