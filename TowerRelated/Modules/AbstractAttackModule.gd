@@ -551,6 +551,7 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 			_check_attack_enemies(enemies)
 			_current_attack_wait = calculate_final_attack_speed()
 			_is_attacking = false
+			_is_in_windup = false
 			_finished_attacking()
 			return true
 		else:

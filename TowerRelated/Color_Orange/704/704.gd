@@ -56,7 +56,7 @@ func _ready():
 	attack_module.base_damage = info.base_damage
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
-	attack_module.base_attack_wind_up = 1
+	attack_module.base_attack_wind_up = 4
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.position.y -= 3
@@ -68,7 +68,7 @@ func _ready():
 	
 	sky_attack_module = attack_module
 	
-	#attack_module.connect("in_attack_windup", self, "_on_704_attack_windup")
+	attack_module.connect("in_attack_windup", self, "_on_704_attack_windup")
 	
 	add_attack_module(attack_module)
 	
@@ -90,19 +90,30 @@ func _ready():
 
 func _on_704_attack_windup(windup_time : float, enemies : Array):
 	var available_beams = _get_available_beams()
-	while enemies.size() > available_beams.size():
-		_construct_sky_beam()
+	var enemies_count : float = enemies.size()
+	var beam_count : float = available_beams.size()
 	
-	for i in enemies.size():
-		var beam = available_beams[i]
-		sky_attack_beams_enemy_map[beam] = enemies[i]
-		
-		beam.connect("time_visible_is_over", self, "_beam_in_sky", [beam, windup_time], CONNECT_ONESHOT)
-		
-		beam.time_visible = windup_time / 2
-		beam.visible = true
-		beam.global_position = global_position
-		beam.update_destination_position(Vector2(global_position.x, global_position.y - 300))
+	if enemies_count > beam_count:
+		for i in range(0, enemies_count - beam_count):
+			_construct_sky_beam()
+	
+	if enemies_count > 0:
+		available_beams = _get_available_beams()
+		for i in enemies.size():
+			var beam = available_beams[i]
+			sky_attack_beams_enemy_map[beam] = enemies[i]
+			
+			beam.connect("time_visible_is_over", self, "_beam_in_sky", [beam, windup_time], CONNECT_ONESHOT)
+			
+			beam.frames.set_animation_speed("default", 8 / (windup_time / 2))
+			beam.frame = 0
+			beam.play("default", false)
+			
+			beam.time_visible = windup_time / 2
+			beam.visible = true
+			beam.global_position = global_position
+			beam.update_destination_position(Vector2(global_position.x, global_position.y - 100))
+
 
 func _beam_in_sky(beam : BeamAesthetic, windup_time : float):
 	var enemy = sky_attack_beams_enemy_map[beam]
@@ -110,9 +121,15 @@ func _beam_in_sky(beam : BeamAesthetic, windup_time : float):
 		var enemy_pos = enemy.global_position
 		
 		beam.time_visible = windup_time / 2
+		beam.frames.set_animation_speed("default", 8 / (windup_time / 2))
+		beam.frame = 8
+		beam.play("default", true)
+		
 		beam.visible = true
-		beam.global_position = Vector2(enemy_pos.x, enemy_pos.y - 300)
-		beam.update_destination_position(enemy_pos)
+		#beam.global_position = Vector2(enemy_pos.x, enemy_pos.y - 300)
+		#beam.update_destination_position(enemy_pos)
+		beam.global_position = enemy_pos
+		beam.update_destination_position(Vector2(enemy_pos.x, enemy_pos.y - 100))
 
 
 func _get_available_beams():
@@ -128,6 +145,10 @@ func _construct_sky_beam():
 	var beam : BeamAesthetic = BeamAesthetic_Scene.instance()
 	beam.is_timebound = true
 	beam.visible = false
+	
+	beam.set_sprite_frames(sky_attack_sprite_frames)
+	beam.frames.set_animation_loop("default", false)
+	
 	get_tree().get_root().add_child(beam)
 	
 	sky_attack_beams_enemy_map[beam] = null

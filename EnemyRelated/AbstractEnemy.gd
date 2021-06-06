@@ -593,8 +593,3 @@ func _on_CollisionArea_body_entered(body):
 func get_enemy_parent():
 	return self
 
-
-# TODO TEST ONLY
-
-func _on_CollisionArea_mouse_entered():
-	_destroy_self()

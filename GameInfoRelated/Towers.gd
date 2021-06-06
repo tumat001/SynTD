@@ -532,7 +532,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "+ expl size"
+		info.ingredient_effect_simple_description = "+ expl"
 		
 		
 	elif tower_id == SUNFLOWER:
@@ -693,7 +693,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "+ expl size"
+		info.ingredient_effect_simple_description = "+ expl"
 		
 		
 	elif tower_id == _704:
