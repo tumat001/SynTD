@@ -28,6 +28,12 @@ enum {
 	FLAT_EXPLOSION_SCALE,
 	PERCENT_BASE_EXPLOSION_SCALE, # Includes aoe beam width
 	
+	FLAT_ARMOR_PIERCE,
+	
+	FLAT_TOUGHNESS_PIERCE,
+	
+	FLAT_RESISTANCE_PIERCE,
+	
 	# PUT OTHER CUSTOM THINGS HERE
 }
 
@@ -139,5 +145,6 @@ func _shallow_duplicate():
 	copy.count_reduced_by_main_attack_only = count_reduced_by_main_attack_only
 	
 	copy.force_apply = force_apply
+	copy.should_respect_attack_module_scale = should_respect_attack_module_scale
 	
 	return copy

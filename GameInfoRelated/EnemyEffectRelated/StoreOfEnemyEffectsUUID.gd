@@ -19,5 +19,6 @@ enum {
 	ING_EMBER_BURN = -609
 	
 	VOLCANO_SLOW = -610
+	_704_FIRE_BURN = -611
 	
 }

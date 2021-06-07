@@ -12,6 +12,8 @@ var duration : float
 var decrease_duration : bool = true
 var pierce : int = -1
 
+var enemies_to_ignore : Array = []
+
 var aoe_texture : Texture
 var aoe_sprite_frames : SpriteFrames
 var sprite_frames_play_only_once : bool = true
@@ -49,7 +51,8 @@ func _on_AOEArea_area_shape_entered(area_id, area, area_shape, self_shape):
 		var parent = area.get_parent()
 		
 		if parent is AbstractEnemy:
-			_enemies_inside_damage_cd_map[parent] = 0
+			if !enemies_to_ignore.has(parent):
+				_enemies_inside_damage_cd_map[parent] = 0
 
 func _on_AOEArea_area_shape_exited(area_id, area, area_shape, self_shape):
 	if area != null:

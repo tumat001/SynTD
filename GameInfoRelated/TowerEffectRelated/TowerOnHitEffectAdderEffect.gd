@@ -25,5 +25,6 @@ func _shallow_copy():
 	copy.count_reduced_by_main_attack_only = count_reduced_by_main_attack_only
 	
 	copy.force_apply = force_apply
+	copy.should_respect_attack_module_scale = should_respect_attack_module_scale
 	
 	return copy

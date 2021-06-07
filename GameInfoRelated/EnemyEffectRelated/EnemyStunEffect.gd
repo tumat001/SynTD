@@ -17,3 +17,8 @@ func _get_copy_scaled_by(scale : float):
 	
 	var copy = get_script().new(scaled_stun, effect_uuid)
 	return copy
+
+
+func _reapply(copy):
+	if time_in_seconds < copy.time_in_seconds:
+		time_in_seconds = copy.time_in_seconds

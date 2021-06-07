@@ -108,3 +108,9 @@ func _get_copy_scaled_by(scale : float):
 	
 	return copy
 
+
+# reapplied
+
+func _reapply(copy):
+	time_in_seconds = copy.time_in_seconds
+	damage_instance = copy.damage_instance

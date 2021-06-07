@@ -346,6 +346,12 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 			_add_proj_speed_effect(tower_base_effect, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_EXPLOSION_SCALE or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE:
 			_add_explosion_scale_effect(tower_base_effect, target_modules)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ARMOR_PIERCE:
+			_add_armor_pierce_effect(tower_base_effect, target_modules)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_TOUGHNESS_PIERCE:
+			_add_toughness_pierce_effect(tower_base_effect, target_modules)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_RESISTANCE_PIERCE:
+			_add_resistance_pierce_effect(tower_base_effect, target_modules)
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_add_on_hit_damage_adder_effect(tower_base_effect, target_modules)
@@ -377,7 +383,6 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 	if include_non_module_effects and erase_from_buff_map:
 		_all_uuid_tower_buffs_map.erase(tower_base_effect.effect_uuid)
 	
-	
 	if tower_base_effect is TowerAttributesEffect:
 		if tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ATTACK_SPEED or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED:
 			_remove_attack_speed_effect(tower_base_effect.effect_uuid, target_modules)
@@ -391,6 +396,13 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 			_remove_proj_speed_effect(tower_base_effect.effect_uuid, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_EXPLOSION_SCALE or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE:
 			_remove_explosion_scale_effect(tower_base_effect.effect_uuid, target_modules)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ARMOR_PIERCE:
+			_remove_armor_pierce_effect(tower_base_effect.effect_uuid, target_modules)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_TOUGHNESS_PIERCE:
+			_remove_toughness_pierce_effect(tower_base_effect.effect_uuid, target_modules)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_RESISTANCE_PIERCE:
+			_remove_resistance_pierce_effect(tower_base_effect.effect_uuid, target_modules)
+		
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_remove_on_hit_damage_adder_effect(tower_base_effect.effect_uuid, target_modules)
@@ -667,6 +679,73 @@ func _remove_attack_module_from_effect(module_effect : BaseTowerAttackModuleAdde
 
 func _set_full_sellback(full_sellback : bool):
 	_is_full_sellback = full_sellback
+
+
+func _add_armor_pierce_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
+	for module in target_modules:
+		
+		if module.benefits_from_bonus_armor_pierce or attr_effect.force_apply:
+			if attr_effect.attribute_type == TowerAttributesEffect.FLAT_ARMOR_PIERCE:
+				module.flat_base_armor_pierce_effects[attr_effect.effect_uuid] = attr_effect
+			
+			module.calculate_final_armor_pierce()
+			
+			if attr_effect.is_countbound:
+				module._all_countbound_effects[attr_effect.effect_uuid] = attr_effect
+
+func _remove_armor_pierce_effect(attr_effect_uuid : int, target_modules : Array):
+	for module in target_modules:
+		module.flat_base_armor_pierce_effects.erase(attr_effect_uuid)
+		
+		module.calculate_final_armor_pierce()
+		
+		if module._all_countbound_effects.has(attr_effect_uuid):
+			module._all_countbound_effects.erase(attr_effect_uuid)
+
+
+func _add_toughness_pierce_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
+	for module in target_modules:
+		
+		if module.benefits_from_bonus_toughness_pierce or attr_effect.force_apply:
+			if attr_effect.attribute_type == TowerAttributesEffect.FLAT_TOUGHNESS_PIERCE:
+				module.flat_base_toughness_pierce_effects[attr_effect.effect_uuid] = attr_effect
+			
+			module.calculate_final_toughness_pierce()
+			
+			if attr_effect.is_countbound:
+				module._all_countbound_effects[attr_effect.effect_uuid] = attr_effect
+
+func _remove_toughness_pierce_effect(attr_effect_uuid : int, target_modules : Array):
+	for module in target_modules:
+		module.flat_base_toughness_pierce_effects.erase(attr_effect_uuid)
+		
+		module.calculate_final_tougness_pierce()
+		
+		if module._all_countbound_effects.has(attr_effect_uuid):
+			module._all_countbound_effects.erase(attr_effect_uuid)
+
+
+func _add_resistance_pierce_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
+	for module in target_modules:
+		
+		if module.benefits_from_bonus_resistance_pierce or attr_effect.force_apply:
+			if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RESISTANCE_PIERCE:
+				module.flat_base_resistance_pierce_effects[attr_effect.effect_uuid] = attr_effect
+			
+			module.calculate_final_resistance_pierce()
+			
+			if attr_effect.is_countbound:
+				module._all_countbound_effects[attr_effect.effect_uuid] = attr_effect
+
+func _remove_resistance_pierce_effect(attr_effect_uuid : int, target_modules : Array):
+	for module in target_modules:
+		module.flat_base_resistance_pierce_effects.erase(attr_effect_uuid)
+		
+		module.calculate_final_resistance_pierce()
+		
+		if module._all_countbound_effects.has(attr_effect_uuid):
+			module._all_countbound_effects.erase(attr_effect_uuid)
+
 
 
 # has tower effects

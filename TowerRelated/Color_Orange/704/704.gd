@@ -1,5 +1,10 @@
 extends "res://TowerRelated/AbstractTower.gd"
 
+signal available_points_changed
+signal fire_level_changed
+signal explosive_level_changed
+signal toughness_pierce_level_changed
+
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
@@ -9,6 +14,14 @@ const InstantDamageAttackModule = preload("res://TowerRelated/Modules/InstantDam
 const InstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/InstantDamageAttackModule.tscn")
 const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
 const BeamAesthetic = preload("res://MiscRelated/BeamRelated/BeamAesthetic.gd")
+
+const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
+const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
+const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
+const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
+const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
+
+const _704_EmblemBase = preload("res://TowerRelated/Color_Orange/704/704_EmblemBase.gd")
 
 const _704_Beam01 = preload("res://TowerRelated/Color_Orange/704/704_Beam/704_Beam01.png")
 const _704_Beam02 = preload("res://TowerRelated/Color_Orange/704/704_Beam/704_Beam02.png")
@@ -28,18 +41,28 @@ const _704_Explosion06 = preload("res://TowerRelated/Color_Orange/704/704_Explos
 const _704_Explosion07 = preload("res://TowerRelated/Color_Orange/704/704_Explosion/704_Explosion07.png")
 
 var available_points : int = 4
-var emblem_fire_points : int = 0
-var emblem_explosive_points : int = 0
-var emblem_toughness_pierce_points : int = 0
-
+var emblem_fire_points : int = 0 setget set_emblem_fire_level
+var emblem_explosive_points : int = 0 setget set_emblem_explosive_level
+var emblem_toughness_pierce_points : int = 0 setget set_emblem_toughness_pierce_level
 
 var sky_attack_module : InstantDamageAttackModule
 var sky_attack_sprite_frames : SpriteFrames
 var sky_attack_beams_enemy_map : Dictionary = {}
 
+var explosion_attack_module : AOEAttackModule
+
+var fire_burn_dmg_modifier : FlatModifier
+var fire_burn_dmg_instance : DamageInstance
+var fire_effect : TowerOnHitEffectAdderEffect
+
+onready var in_field_emblem_fire : _704_EmblemBase = $TowerBase/Emblem_Fire
+onready var in_field_emblem_explosive : _704_EmblemBase = $TowerBase/Emblem_Explosive
+onready var in_field_emblem_toughness_pierce : _704_EmblemBase = $TowerBase/Emblem_ToughnessPierce
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	_construct_burn_effect()
+	
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers._704)
 	
 	tower_id = info.tower_type_id
@@ -51,6 +74,8 @@ func _ready():
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
 	range_module.position.y += 3
+	
+	# sky attack
 	
 	var attack_module : InstantDamageAttackModule = InstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -72,8 +97,7 @@ func _ready():
 	
 	add_attack_module(attack_module)
 	
-	
-	# sprite frames
+	# sky attack sprite frames
 	
 	sky_attack_sprite_frames = SpriteFrames.new()
 	sky_attack_sprite_frames.add_frame("default", _704_Beam01)
@@ -85,8 +109,78 @@ func _ready():
 	sky_attack_sprite_frames.add_frame("default", _704_Beam07)
 	sky_attack_sprite_frames.add_frame("default", _704_Beam08)
 	
+	
+	# AOE module
+	
+	explosion_attack_module = AOEAttackModule_Scene.instance()
+	explosion_attack_module.base_damage = 1.5
+	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
+	explosion_attack_module.base_attack_speed = 0
+	explosion_attack_module.base_attack_wind_up = 0
+	explosion_attack_module.base_on_hit_damage_internal_name = "704_explosion_damage"
+	explosion_attack_module.is_main_attack = false
+	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	
+	explosion_attack_module.benefits_from_bonus_explosion_scale = true
+	explosion_attack_module.benefits_from_bonus_base_damage = true
+	explosion_attack_module.benefits_from_bonus_attack_speed = false
+	explosion_attack_module.benefits_from_bonus_on_hit_damage = true
+	explosion_attack_module.benefits_from_bonus_on_hit_effect = true
+	
+	explosion_attack_module.on_hit_damage_scale = 0.5
+	explosion_attack_module.on_hit_effect_scale = 0.5
+	
+	var aoe_sprite_frames = SpriteFrames.new()
+	aoe_sprite_frames.add_frame("default", _704_Explosion01)
+	aoe_sprite_frames.add_frame("default", _704_Explosion02)
+	aoe_sprite_frames.add_frame("default", _704_Explosion03)
+	aoe_sprite_frames.add_frame("default", _704_Explosion04)
+	aoe_sprite_frames.add_frame("default", _704_Explosion05)
+	aoe_sprite_frames.add_frame("default", _704_Explosion06)
+	aoe_sprite_frames.add_frame("default", _704_Explosion07)
+	
+	explosion_attack_module.aoe_sprite_frames = aoe_sprite_frames
+	explosion_attack_module.sprite_frames_only_play_once = true
+	explosion_attack_module.pierce = -1
+	explosion_attack_module.duration = 0.3
+	explosion_attack_module.damage_repeat_count = 1
+	
+	explosion_attack_module.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
+	explosion_attack_module.base_aoe_scene = BaseAOE_Scene
+	explosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
+	
+	explosion_attack_module.can_be_commanded_by_tower = false
+	
+	add_attack_module(explosion_attack_module)
+	
 	_post_inherit_ready()
 
+
+func _construct_burn_effect():
+	fire_burn_dmg_modifier = FlatModifier.new("704_burn_dmg")
+	fire_burn_dmg_modifier.flat_modifier = 0.5
+	
+	var burn_on_hit : OnHitDamage = OnHitDamage.new("704_burn_on_hit_dmg", fire_burn_dmg_modifier, DamageType.ELEMENTAL)
+	fire_burn_dmg_instance = DamageInstance.new()
+	fire_burn_dmg_instance.on_hit_damages[burn_on_hit.internal_name] = burn_on_hit
+	
+	var burn_effect = EnemyDmgOverTimeEffect.new(fire_burn_dmg_instance, StoreOfEnemyEffectsUUID._704_FIRE_BURN, 0.5)
+	burn_effect.is_timebound = true
+	burn_effect.time_in_seconds = 5
+	
+	fire_effect = TowerOnHitEffectAdderEffect.new(burn_effect, StoreOfTowerEffectsUUID._704_FIRE_BURN)
+	
+
+func _post_inherit_ready():
+	._post_inherit_ready()
+	
+	add_tower_effect(fire_effect)
+	
+	set_emblem_fire_level(1)
+	set_emblem_toughness_pierce_level(1)
+	set_emblem_explosive_level(2)
+
+# Attacks related
 
 func _on_704_attack_windup(windup_time : float, enemies : Array):
 	var available_beams = _get_available_beams()
@@ -101,9 +195,14 @@ func _on_704_attack_windup(windup_time : float, enemies : Array):
 		available_beams = _get_available_beams()
 		for i in enemies.size():
 			var beam = available_beams[i]
-			sky_attack_beams_enemy_map[beam] = enemies[i]
+			var enemy = enemies[i]
+			var enemy_pos = global_position
+			if enemy != null:
+				enemy_pos = enemy.global_position
+				
+			sky_attack_beams_enemy_map[beam] = enemy
 			
-			beam.connect("time_visible_is_over", self, "_beam_in_sky", [beam, windup_time], CONNECT_ONESHOT)
+			beam.connect("time_visible_is_over", self, "_beam_in_sky", [beam, windup_time, enemy, enemy_pos], CONNECT_ONESHOT)
 			
 			beam.frames.set_animation_speed("default", 8 / (windup_time / 2))
 			beam.frame = 0
@@ -115,21 +214,17 @@ func _on_704_attack_windup(windup_time : float, enemies : Array):
 			beam.update_destination_position(Vector2(global_position.x, global_position.y - 100))
 
 
-func _beam_in_sky(beam : BeamAesthetic, windup_time : float):
-	var enemy = sky_attack_beams_enemy_map[beam]
-	if enemy != null:
-		var enemy_pos = enemy.global_position
-		
-		beam.time_visible = windup_time / 2
-		beam.frames.set_animation_speed("default", 8 / (windup_time / 2))
-		beam.frame = 8
-		beam.play("default", true)
-		
-		beam.visible = true
-		#beam.global_position = Vector2(enemy_pos.x, enemy_pos.y - 300)
-		#beam.update_destination_position(enemy_pos)
-		beam.global_position = enemy_pos
-		beam.update_destination_position(Vector2(enemy_pos.x, enemy_pos.y - 100))
+func _beam_in_sky(beam : BeamAesthetic, windup_time : float, enemy, enemy_pos):
+	beam.time_visible = windup_time / 2
+	beam.frames.set_animation_speed("default", 8 / (windup_time / 2))
+	beam.frame = 8
+	beam.play("default", true)
+	
+	beam.connect("time_visible_is_over", self, "_downward_beam_expired", [enemy, enemy_pos, beam], CONNECT_ONESHOT)
+	beam.visible = true
+	beam.global_position = enemy_pos
+	beam.update_destination_position(Vector2(enemy_pos.x, enemy_pos.y - 100))
+	
 
 
 func _get_available_beams():
@@ -153,3 +248,138 @@ func _construct_sky_beam():
 	
 	sky_attack_beams_enemy_map[beam] = null
 
+
+# AOE Related
+
+func _downward_beam_expired(enemy, explosion_pos : Vector2, beam):
+	sky_attack_beams_enemy_map[beam] = null
+	
+	if emblem_explosive_points > 0:
+		var explosion = explosion_attack_module.construct_aoe(explosion_pos, explosion_pos)
+		if enemy != null:
+			explosion.enemies_to_ignore.append(enemy)
+		
+		get_tree().get_root().add_child(explosion)
+
+
+
+# EMBLEM RELATED ---------------------- #
+
+# Fire
+func can_give_points_to_fire() -> bool:
+	return emblem_fire_points < 4 and available_points > 0
+
+func set_emblem_fire_level(level : int):
+	emblem_fire_points = level
+	in_field_emblem_fire.set_level(level)
+	
+	var burn_per_tick : float = 0
+	if level == 0:
+		pass
+	elif level == 1:
+		burn_per_tick = 0.33
+	elif level == 2:
+		burn_per_tick = 0.66
+	elif level == 3:
+		burn_per_tick = 1
+	elif level == 4:
+		burn_per_tick = 1.5
+	
+	fire_burn_dmg_modifier.flat_modifier = burn_per_tick
+	emit_signal("fire_level_changed")
+
+# Explosion
+func can_give_points_to_explosive() -> bool:
+	return emblem_explosive_points < 4 and available_points > 0
+
+func set_emblem_explosive_level(level : int):
+	emblem_explosive_points = level
+	in_field_emblem_explosive.set_level(level)
+	
+	var exp_on_hit_damage_scale : float = 0
+	var exp_on_hit_effect_scale : float = 0
+	var exp_base_scale : float = 0
+	
+	if level == 0:
+		pass
+	elif level == 1:
+		exp_base_scale = 0.66
+	elif level == 2:
+		exp_on_hit_damage_scale = 0.33
+		exp_on_hit_effect_scale = 0.33
+		exp_base_scale = 0.66
+	elif level == 3:
+		exp_on_hit_damage_scale = 0.5
+		exp_on_hit_effect_scale = 0.5
+		exp_base_scale = 1
+	elif level == 4:
+		exp_on_hit_damage_scale = 1
+		exp_on_hit_effect_scale = 1
+		exp_base_scale = 1.25
+	
+	explosion_attack_module.on_hit_damage_scale = exp_on_hit_damage_scale
+	explosion_attack_module.on_hit_effect_scale = exp_on_hit_effect_scale
+	explosion_attack_module.base_explosion_scale = exp_base_scale
+	explosion_attack_module.calculate_final_explosion_scale()
+	emit_signal("explosive_level_changed")
+
+
+# Toughness pierce
+func can_give_points_to_toughness_pierce() -> bool:
+	return emblem_toughness_pierce_points < 4 and available_points > 0
+
+
+func set_emblem_toughness_pierce_level(level : int):
+	emblem_toughness_pierce_points = level
+	in_field_emblem_toughness_pierce.set_level(level)
+	
+	var toughness_pierce_bonus : float = 0
+	if level == 0:
+		pass
+	elif level == 1:
+		toughness_pierce_bonus = 2
+	elif level == 2:
+		toughness_pierce_bonus = 4
+	elif level == 3:
+		toughness_pierce_bonus = 6
+	elif level == 4:
+		toughness_pierce_bonus = 10
+	
+	sky_attack_module.base_toughness_pierce = toughness_pierce_bonus
+	sky_attack_module.calculate_final_toughness_pierce()
+	
+	if level == 4:
+		explosion_attack_module.base_toughness_pierce = toughness_pierce_bonus
+	else:
+		explosion_attack_module.base_toughness_pierce = 0
+	
+	explosion_attack_module.calculate_final_toughness_pierce()
+	
+	
+	if level >= 3:
+		fire_burn_dmg_instance.final_toughness_pierce = toughness_pierce_bonus
+	else:
+		fire_burn_dmg_instance.final_toughness_pierce = 0
+	
+	emit_signal("toughness_pierce_level_changed")
+
+
+# Emblem points allocation
+
+func _attempt_allocate_points_to_fire():
+	if can_give_points_to_fire():
+		available_points -= 1
+		emit_signal("available_points_changed")
+		set_emblem_fire_level(emblem_fire_points + 1)
+
+func _attempt_allocate_points_to_explosive():
+	if can_give_points_to_explosive():
+		available_points -= 1
+		emit_signal("available_points_changed")
+		set_emblem_explosive_level(emblem_explosive_points + 1)
+
+func _attempt_allocate_points_to_toughness_pierce():
+	if can_give_points_to_toughness_pierce():
+		available_points -= 1
+		emit_signal("available_points_changed")
+		set_emblem_toughness_pierce_level(emblem_toughness_pierce_points + 1)

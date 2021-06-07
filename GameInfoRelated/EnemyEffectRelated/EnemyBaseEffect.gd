@@ -31,3 +31,7 @@ func _get_copy_scaled_by(scale : float):
 
 func _get_overriden_description() -> String:
 	return description
+
+
+func _reapply(copy):
+	pass

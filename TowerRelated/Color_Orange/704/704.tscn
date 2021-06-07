@@ -28,7 +28,7 @@ frames = SubResource( 1 )
 [node name="Emblem_Fire" parent="TowerBase" index="1" instance=ExtResource( 4 )]
 position = Vector2( -10.5, 3 )
 
-[node name="Emblem_Explosion" parent="TowerBase" index="2" instance=ExtResource( 4 )]
+[node name="Emblem_Explosive" parent="TowerBase" index="2" instance=ExtResource( 4 )]
 position = Vector2( 0, 10 )
 
 [node name="Emblem_ToughnessPierce" parent="TowerBase" index="3" instance=ExtResource( 4 )]

@@ -272,6 +272,44 @@ func calculate_final_resistance() -> float:
 	_last_calculated_final_resistance = final_resistance
 	return final_resistance
 
+
+# damage multiplier
+
+func _calculate_multiplier_from_total_armor(armor_pierce : float, percent_self_armor_pierce : float) -> float:
+	var total_armor = _last_calculated_final_armor - (percent_self_armor_pierce * _last_calculated_final_armor / 100)
+	total_armor = total_armor - armor_pierce
+	if total_armor >= 0:
+		return 20 / (20 + total_armor)
+	else:
+		return 2 - (20 / (20 - total_armor))
+
+func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percent_self_toughness_pierce : float):
+	var total_toughness = _last_calculated_final_toughness - (percent_self_toughness_pierce * _last_calculated_final_toughness / 100)
+	total_toughness = total_toughness - toughness_pierce
+	if total_toughness >= 0:
+		return 20 / (20 + total_toughness)
+	else:
+		return 2 - (20 / (20 - total_toughness))
+
+func _calculate_multiplier_from_total_resistance(resistance_pierce : float, percent_self_resistance_pierce : float):
+	var total_resistance = _last_calculated_final_resistance - (percent_self_resistance_pierce * _last_calculated_final_resistance / 100)
+	total_resistance = total_resistance - resistance_pierce
+	
+	var multiplier = (100 - total_resistance) / 100
+	if multiplier < 0:
+		multiplier = 0
+	return multiplier
+
+func _subtract_but_result_above_negative(num : float, subtractor : float):
+	var value = num - subtractor
+	if value < 0:
+		value = 0
+	
+	return value
+
+
+# calc final values prt2
+
 func calculate_final_player_damage() -> float:
 	#All percent modifiers here are to BASE player damage only
 	var final_player_damage = base_player_damage
@@ -373,20 +411,20 @@ func hit_by_damage_instance(damage_instance : DamageInstance, emit_on_hit_signal
 		emit_signal("on_hit", self)
 	
 	emit_signal("before_damage_instance_is_processed", damage_instance, self)
-	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true))
+	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true), damage_instance)
 	_process_effects(damage_instance.on_hit_effects.duplicate(true))
 
 
-func _process_on_hit_damages(on_hit_damages : Dictionary):
+func _process_on_hit_damages(on_hit_damages : Dictionary, damage_instance):
 	for on_hit_key in on_hit_damages.keys():
 		var on_hit_damage : OnHitDamage = on_hit_damages[on_hit_key]
 		if on_hit_damage.damage_as_modifier is FlatModifier:
-			_process_flat_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type)
+			_process_flat_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type, damage_instance)
 		elif on_hit_damage.damage_as_modifier is PercentModifier:
-			_process_percent_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type)
+			_process_percent_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type, damage_instance)
 
 
-func _process_percent_damage(damage_as_modifier: PercentModifier, damage_type : int):
+func _process_percent_damage(damage_as_modifier: PercentModifier, damage_type : int, damage_instance):
 	var percent_type = damage_as_modifier.percent_based_on
 	var damage_as_flat : float
 	
@@ -402,43 +440,26 @@ func _process_percent_damage(damage_as_modifier: PercentModifier, damage_type : 
 			missing_health = 0
 		damage_as_flat = damage_as_modifier.get_modification_to_value(missing_health)
 	
-	_process_direct_damage_and_type(damage_as_flat, damage_type)
+	_process_direct_damage_and_type(damage_as_flat, damage_type, damage_instance)
 
-func _process_flat_damage(damage_as_modifier : FlatModifier, damage_type : int):
-	_process_direct_damage_and_type(damage_as_modifier.flat_modifier, damage_type)
+func _process_flat_damage(damage_as_modifier : FlatModifier, damage_type : int, damage_instance):
+	_process_direct_damage_and_type(damage_as_modifier.flat_modifier, damage_type, damage_instance)
 
-func _process_direct_damage_and_type(damage : float, damage_type : int):
+func _process_direct_damage_and_type(damage : float, damage_type : int, damage_instance : DamageInstance):
 	var final_damage = damage
 	if damage_type == DamageType.ELEMENTAL:
-		final_damage *= _calculate_multiplier_from_total_toughness()
-		final_damage *= _calculate_multiplier_from_total_resistance()
+		final_damage *= _calculate_multiplier_from_total_toughness(damage_instance.final_toughness_pierce, damage_instance.final_percent_enemy_toughness_pierce)
+		final_damage *= _calculate_multiplier_from_total_resistance(damage_instance.final_resistance_pierce, damage_instance.final_percent_enemy_resistance_pierce)
 		
 	elif damage_type == DamageType.PHYSICAL:
-		final_damage *= _calculate_multiplier_from_total_armor()
-		final_damage *= _calculate_multiplier_from_total_resistance()
+		final_damage *= _calculate_multiplier_from_total_armor(damage_instance.final_armor_pierce, damage_instance.final_percent_enemy_armor_pierce)
+		final_damage *= _calculate_multiplier_from_total_resistance(damage_instance.final_resistance_pierce, damage_instance.final_percent_enemy_resistance_pierce)
 		
 	elif damage_type == DamageType.PURE:
 		pass
 		#final_damage *= 1
 	
 	_take_unmitigated_damage(final_damage, damage_type)
-
-func _calculate_multiplier_from_total_armor() -> float:
-	var total_armor = calculate_final_armor()
-	if total_armor >= 0:
-		return 20 / (20 + total_armor)
-	else:
-		return 2 - (20 / (20 - total_armor))
-
-func _calculate_multiplier_from_total_toughness():
-	var total_toughness = calculate_final_toughness()
-	if total_toughness >= 0:
-		return 20 / (20 + total_toughness)
-	else:
-		return 2 - (20 / (20 - total_toughness))
-
-func _calculate_multiplier_from_total_resistance():
-	return (100 - calculate_final_resistance()) / 100
 
 
 # Process effects related
@@ -452,7 +473,10 @@ func _add_effect(base_effect : EnemyBaseEffect):
 	var to_use_effect = base_effect._get_copy_scaled_by(1)
 	
 	if to_use_effect is EnemyStunEffect:
-		_stun_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
+		if !_stun_id_effects_map.has(to_use_effect.effect_uuid):
+			_stun_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
+		else:
+			_stun_id_effects_map[to_use_effect.effect_uuid]._reapply(to_use_effect)
 		
 	elif to_use_effect is EnemyClearAllEffects:
 		_stun_id_effects_map.clear()
@@ -480,8 +504,10 @@ func _add_effect(base_effect : EnemyBaseEffect):
 					stored_effect.time_in_seconds = to_use_effect.time_in_seconds
 		
 	elif to_use_effect is EnemyDmgOverTimeEffect:
-		_dmg_over_time_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
-		
+		if !_dmg_over_time_id_effects_map.has(to_use_effect.effect_uuid):
+			_dmg_over_time_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
+		else:
+			_dmg_over_time_id_effects_map[to_use_effect.effect_uuid]._reapply(to_use_effect)
 		
 	elif to_use_effect is EnemyAttributesEffect:
 		if to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_MOV_SPEED:

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/704_ExplosionIcon.png-d0804ce0cc26dd04d6bf7d35637da01c.stex"
+path="res://.import/704_FireIcon.png-a1550a4a6ebb8207baeb8b1671b720f6.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TowerRelated/Color_Orange/704/704_InfoPanel/704_ExplosionIcon.png"
-dest_files=[ "res://.import/704_ExplosionIcon.png-d0804ce0cc26dd04d6bf7d35637da01c.stex" ]
+source_file="res://TowerRelated/Color_Orange/704/704_InfoPanel/704_EmblemButton/704_FireIcon.png"
+dest_files=[ "res://.import/704_FireIcon.png-a1550a4a6ebb8207baeb8b1671b720f6.stex" ]
 
 [params]
 

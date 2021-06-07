@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/704_ButtonFrame.png-55b78f437a449620c553349daa12b2c3.stex"
+path="res://.import/704_ButtonBackground_Lvl3.png-aafb1b25739fc6cbc939679bf355a271.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TowerRelated/Color_Orange/704/704_InfoPanel/704_ButtonFrame.png"
-dest_files=[ "res://.import/704_ButtonFrame.png-55b78f437a449620c553349daa12b2c3.stex" ]
+source_file="res://TowerRelated/Color_Orange/704/704_InfoPanel/704_EmblemButton/704_ButtonBackground_Lvl3.png"
+dest_files=[ "res://.import/704_ButtonBackground_Lvl3.png-aafb1b25739fc6cbc939679bf355a271.stex" ]
 
 [params]
 

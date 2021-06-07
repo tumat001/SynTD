@@ -1,7 +1,7 @@
 extends "res://TowerRelated/Modules/AbstractAttackModule.gd"
 
 const BaseAOE = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.gd")
-const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
+
 
 enum SpawnLocationAndChange {
 	NO_CHANGE,
@@ -57,9 +57,7 @@ func construct_aoe(arg_origin_pos : Vector2, arg_enemy_pos : Vector2) -> BaseAOE
 	base_aoe.damage_register_id = damage_register_id
 	base_aoe.attack_module_source = self
 	
-	var damage_instance : DamageInstance = DamageInstance.new()
-	damage_instance.on_hit_damages = _get_all_scaled_on_hit_damages()
-	damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
+	var damage_instance : DamageInstance = construct_damage_instance()
 	emit_signal("on_damage_instance_constructed", damage_instance, self)
 	base_aoe.damage_instance = damage_instance
 	

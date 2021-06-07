@@ -712,8 +712,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"704 possesses 3 emblems, and each can be upgraded to give a bonus effect to its main attack.",
-			"704's emblems can be upgraded with points. 704 starts with 4 points.",
+			"704 possesses 3 emblems, and each can be upgraded to give bonus effects.",
+			"704's emblems can be upgraded with points, and each can be upgraded up to 4 times. 704 starts with 4 points.",
 			"",
 			"\"704 is an open furnace with [redacted] origins.\""
 		]

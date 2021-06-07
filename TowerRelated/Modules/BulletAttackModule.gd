@@ -1,7 +1,7 @@
 extends "res://TowerRelated/Modules/AbstractAttackModule.gd"
 
 const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
-const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
+
 
 signal before_bullet_is_shot(bullet)
 
@@ -223,9 +223,7 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	if bullet_shape != null:
 		bullet.set_shape(bullet_shape)
 	
-	var damage_instance : DamageInstance = DamageInstance.new()
-	damage_instance.on_hit_damages = _get_all_scaled_on_hit_damages()
-	damage_instance.on_hit_effects = _get_all_scaled_on_hit_effects()
+	var damage_instance : DamageInstance = construct_damage_instance()
 	emit_signal("on_damage_instance_constructed", damage_instance, self)
 	bullet.damage_instance = damage_instance
 	
