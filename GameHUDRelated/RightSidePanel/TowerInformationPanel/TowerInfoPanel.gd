@@ -6,19 +6,25 @@ const ExtraInfoPanel_Scene = preload("res://GameHUDRelated/RightSidePanel/TowerI
 const EnergyModulePanel = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModulePanel.gd")
 const EnergyModulePanel_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModulePanel.tscn")
 
+const _704_InfoPanel = preload("res://TowerRelated/Color_Orange/704/704_InfoPanel/704_InfoPanel.gd")
+const _704_InfoPanel_Scene = preload("res://TowerRelated/Color_Orange/704/704_InfoPanel/704_InfoPanel.tscn")
+
 var tower : AbstractTower
 
 onready var active_ing_panel = $VBoxContainer/ActiveIngredientsPanel
 onready var tower_name_and_pic_panel = $VBoxContainer/TowerNameAndPicPanel
 onready var targeting_panel = $VBoxContainer/TargetingPanel
 
-onready var tower_colors_panel = $VBoxContainer/TowerColorsPanel
 onready var tower_stats_panel = $VBoxContainer/TowerStatsPanel
 
 onready var bottom_extra_slot = $VBoxContainer/BottomExtraSlot
+onready var tower_specific_slot = $VBoxContainer/TowerSpecificSlot
 
 var extra_info_panel : ExtraInfoPanel
+
 var energy_module_panel : EnergyModulePanel
+
+var _704_info_panel : _704_InfoPanel
 
 
 func _ready():
@@ -34,10 +40,6 @@ func update_display():
 	targeting_panel.tower = tower
 	targeting_panel.update_display()
 	
-	# Colors panel
-	tower_colors_panel.tower = tower
-	tower_colors_panel.update_display()
-	
 	# Stats panel
 	tower_stats_panel.tower = tower
 	tower_stats_panel.update_display()
@@ -50,6 +52,9 @@ func update_display():
 	# Energy Module (In Bottom Extra Slot)
 	update_display_of_energy_module()
 	
+	
+	# tower specific slot
+	_update_tower_specific_info_panel()
 
 
 # Visibility
@@ -62,7 +67,7 @@ func set_visible(value : bool):
 
 
 
-# Extra info panel related
+# Extra info panel related (description and self ingredient)
 
 func _on_TowerNameAndPicPanel_show_extra_tower_info():
 	if extra_info_panel == null:
@@ -90,7 +95,7 @@ func _destroy_extra_info_panel():
 		extra_info_panel = null
 
 
-# energy module panel related
+# ENERGY MODULE PANEL DISPLAY RELATED --------------
 
 func update_display_of_energy_module():
 	if tower.energy_module != null:
@@ -107,6 +112,27 @@ func update_display_of_energy_module():
 		if energy_module_panel != null:
 			energy_module_panel.visible = false
 			bottom_extra_slot.update_visibility_based_on_children()
+
+
+
+# TOWER SPECIFIC INFO PANEL -----------------
+
+func _update_tower_specific_info_panel():
+	if _704_InfoPanel.should_display_self_for(tower):
+		if _704_info_panel == null:
+			_704_info_panel = _704_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(_704_info_panel)
+		
+		_704_info_panel.visible = true
+		_704_info_panel.tower_704 = tower
+		_704_info_panel.update_display()
+		
+	else:
+		if _704_info_panel != null:
+			_704_info_panel.visible = false
+			_704_info_panel.tower_704 = null
+	
+	tower_specific_slot.update_visibility_based_on_children()
 
 
 # queue free

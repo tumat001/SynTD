@@ -22,6 +22,7 @@ var beyond_first_hit_multiplier : float = 0.5
 
 var rotation_per_second : float = 0
 
+var enemies_ignored : Array = []
 
 func _ready():
 	current_life_distance = life_distance
@@ -104,3 +105,5 @@ func set_texture_as_sprite_frames(arg_texture : Texture):
 
 func set_shape(shape : Shape2D):
 	$CollisionShape2D.shape = shape
+
+

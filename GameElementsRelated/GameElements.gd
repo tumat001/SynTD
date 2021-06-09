@@ -59,7 +59,6 @@ func _ready():
 	tower_manager.right_side_panel = right_side_panel
 	tower_manager.tower_stats_panel = right_side_panel.tower_info_panel.tower_stats_panel
 	tower_manager.active_ing_panel = right_side_panel.tower_info_panel.active_ing_panel
-	tower_manager.tower_colors_panel = right_side_panel.tower_info_panel.tower_colors_panel
 	tower_manager.targeting_panel = targeting_panel
 	
 	tower_manager.gold_manager = gold_manager
@@ -134,16 +133,16 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.RAILGUN,
 			Towers.BEACON_DISH,
-			Towers.MAGNETIZER,
-			Towers.LAVA_JET,
 			Towers.CHARGE,
+			Towers.FLAMEBURST,
+			Towers.SUNFLOWER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.VOLCANO,
-			Towers._704,
+			Towers.LAVA_JET,
 			Towers.TESLA,
 		])
 	

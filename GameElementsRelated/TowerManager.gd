@@ -33,7 +33,6 @@ var tower_being_shown_in_info : AbstractTower
 var right_side_panel : RightSidePanel
 var tower_stats_panel : TowerStatsPanel
 var active_ing_panel : ActiveIngredientsPanel
-var tower_colors_panel : TowerColorsPanel
 var inner_bottom_panel : InnerBottomPanel
 var targeting_panel : TargetingPanel
 var tower_info_panel : TowerInfoPanel
@@ -205,7 +204,6 @@ func _show_tower_info_panel(tower : AbstractTower):
 	tower.connect("final_base_damage_changed", self, "_update_final_base_damage_in_info")
 	tower.connect("ingredients_absorbed_changed", self, "_update_ingredients_absorbed_in_info")
 	tower.connect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
-	tower.connect("tower_colors_changed", self, "_update_tower_colors_in_info")
 	tower.connect("targeting_changed", self, "_update_targeting")
 	tower.connect("targeting_options_modified", self, "_update_targeting")
 	tower.connect("energy_module_attached", self, "_update_energy_module_display")
@@ -223,9 +221,6 @@ func _update_final_base_damage_in_info():
 func _update_ingredients_absorbed_in_info(_new_limit):
 	active_ing_panel.update_display()
 
-func _update_tower_colors_in_info():
-	tower_colors_panel.update_display()
-
 func _update_targeting():
 	targeting_panel.update_display()
 
@@ -242,7 +237,6 @@ func _show_round_panel():
 		tower_being_shown_in_info.disconnect("final_base_damage_changed", self, "_update_final_base_damage_in_info")
 		tower_being_shown_in_info.disconnect("ingredients_absorbed_changed", self, "_update_ingredients_absorbed_in_info")
 		tower_being_shown_in_info.disconnect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
-		tower_being_shown_in_info.disconnect("tower_colors_changed", self, "_update_tower_colors_in_info")
 		tower_being_shown_in_info.disconnect("targeting_changed", self, "_update_targeting")
 		tower_being_shown_in_info.disconnect("targeting_options_modified", self, "_update_targeting")
 		tower_being_shown_in_info.disconnect("energy_module_attached", self, "_update_energy_module_display")

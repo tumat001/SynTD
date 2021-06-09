@@ -20,6 +20,7 @@ const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRe
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
 const BaseTowerAttackModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/BaseTowerAttackModuleAdderEffect.gd")
 const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerFullSellbackEffect.gd")
+const _704EmblemPointsEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/704EmblemPointsEffect.gd")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
@@ -128,7 +129,7 @@ var _tower_colors : Array = []
 # Gold related
 
 var _base_gold_cost : int
-var _ingredients_base_gold_costs : Array = []
+var _ingredients_tower_id_base_gold_costs_map : Dictionary = {}
 var _is_full_sellback : bool = false
 
 # Round related
@@ -200,7 +201,8 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 	
 	attack_module.range_module.update_range()
 	
-	if main_attack_module == null and attack_module.module_id == StoreOfAttackModuleID.MAIN:
+	#if main_attack_module == null and attack_module.module_id == StoreOfAttackModuleID.MAIN:
+	if attack_module.module_id == StoreOfAttackModuleID.MAIN:
 		main_attack_module = attack_module
 		
 		if !main_attack_module.is_connected("in_attack_end", self, "_emit_on_main_attack_finished"):
@@ -237,16 +239,24 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		attack_module_to_remove.disconnect("in_attack_end", self, "_emit_on_main_attack_finished")
 		attack_module_to_remove.disconnect("in_attack", self, "_emit_on_main_attack")
 	
-	
 	for tower_effect in _all_uuid_tower_buffs_map.values():
 		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
 	
 	if attack_module_to_remove.range_module == range_module:
-		range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
-		range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
-		range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
+		if range_module.attack_modules_using_this.has(attack_module_to_remove) and range_module.attack_modules_using_this.size() == 1:
+			range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
+			range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
+			range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
+	
 	
 	all_attack_modules.erase(attack_module_to_remove)
+	
+	if main_attack_module == attack_module_to_remove:
+		for module in all_attack_modules:
+			if module.module_id == StoreOfAttackModuleID.MAIN:
+				main_attack_module = module
+				break
+	
 	emit_signal("attack_module_removed", attack_module_to_remove)
 
 
@@ -329,7 +339,7 @@ func _on_round_start():
 
 # Recieving buffs/debuff related
 
-func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, register_to_buff_map : bool = true, include_non_module_effects : bool = true):
+func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, register_to_buff_map : bool = true, include_non_module_effects : bool = true, ing_effect : IngredientEffect = null):
 	if include_non_module_effects and register_to_buff_map:
 		_all_uuid_tower_buffs_map[tower_base_effect.effect_uuid] = tower_base_effect
 	
@@ -370,6 +380,11 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 	elif tower_base_effect is TowerFullSellbackEffect:
 		if include_non_module_effects:
 			_set_full_sellback(true)
+		
+	elif tower_base_effect is _704EmblemPointsEffect:
+		if include_non_module_effects:
+			_special_case_effect_added(tower_base_effect)
+			remove_ingredient(ing_effect)
 		
 	elif tower_base_effect is TowerResetEffects:
 		if include_non_module_effects:
@@ -747,6 +762,11 @@ func _remove_resistance_pierce_effect(attr_effect_uuid : int, target_modules : A
 			module._all_countbound_effects.erase(attr_effect_uuid)
 
 
+# special case effects
+
+func _special_case_effect_added(effect : TowerBaseEffect):
+	pass
+
 
 # has tower effects
 
@@ -818,9 +838,18 @@ func _remove_all_timebound_and_countbound_effects():
 func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_base_cost : int):
 	if ingredient_effect != null:
 		ingredients_absorbed[ingredient_effect.tower_id] = ingredient_effect
-		_ingredients_base_gold_costs.append(ingredient_gold_base_cost)
-		add_tower_effect(ingredient_effect.tower_base_effect)
+		_ingredients_tower_id_base_gold_costs_map[ingredient_effect.tower_id] = ingredient_gold_base_cost
+		add_tower_effect(ingredient_effect.tower_base_effect, all_attack_modules, true, true, ingredient_effect)
 		
+		_emit_ingredients_absorbed_changed()
+
+
+func remove_ingredient(ingredient_effect : IngredientEffect):
+	if ingredient_effect != null:
+		remove_tower_effect(ingredients_absorbed[ingredient_effect.tower_id].tower_base_effect)
+		
+		_ingredients_tower_id_base_gold_costs_map.erase(ingredient_effect.tower_id)
+		ingredients_absorbed.clear()
 		_emit_ingredients_absorbed_changed()
 
 
@@ -828,9 +857,9 @@ func clear_ingredients():
 	for ingredient_tower_id in ingredients_absorbed:
 		remove_tower_effect(ingredients_absorbed[ingredient_tower_id].tower_base_effect)
 	
-	_emit_ingredients_absorbed_changed()
 	ingredients_absorbed.clear()
-	_ingredients_base_gold_costs.clear()
+	_emit_ingredients_absorbed_changed()
+	_ingredients_tower_id_base_gold_costs_map.clear()
 
 
 func _clear_ingredients_by_effect_reset():
@@ -839,12 +868,13 @@ func _clear_ingredients_by_effect_reset():
 	
 	ingredients_absorbed.clear()
 	emit_signal("tower_give_gold", _calculate_sellback_of_ingredients(), GoldManager.IncreaseGoldSource.TOWER_EFFECT_RESET)
-	_ingredients_base_gold_costs.clear()
+	_ingredients_tower_id_base_gold_costs_map.clear()
 
 
 func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
-	if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.tower_base_effect is TowerResetEffects:
-		return false
+	if ingredient_effect != null:
+		if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.tower_base_effect is TowerResetEffects:
+			return false
 	
 	if ingredient_effect != null:
 		if ingredients_absorbed.has(ingredient_effect.tower_id):
@@ -942,7 +972,9 @@ func _update_ingredient_compatible_colors():
 			ingredient_compatible_colors.append(TowerColors.VIOLET)
 			ingredient_compatible_colors.append(TowerColors.RED)
 			ingredient_compatible_colors.append(TowerColors.BLUE)
-
+			
+		elif color == TowerColors.GRAY:
+			ingredient_compatible_colors.append(TowerColors.GRAY)
 
 # Tower Colors Related
 
@@ -974,7 +1006,6 @@ func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 			if is_being_dragged:
 				_end_drag()
 		
-
 
 
 # Show Ranges of modules and Tower Info
@@ -1134,7 +1165,7 @@ func _calculate_sellback_value() -> int:
 func _calculate_sellback_of_ingredients() -> int:
 	var sellback = 0
 	
-	for cost in _ingredients_base_gold_costs:
+	for cost in _ingredients_tower_id_base_gold_costs_map.values():
 		if cost > 1 and !_is_full_sellback:
 			cost -= 1
 		

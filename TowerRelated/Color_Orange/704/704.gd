@@ -69,6 +69,7 @@ func _ready():
 	tower_highlight_sprite = info.tower_image_in_buy_card
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
+	ingredient_of_self = info.ingredient_effect
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -93,7 +94,7 @@ func _ready():
 	
 	sky_attack_module = attack_module
 	
-	attack_module.connect("in_attack_windup", self, "_on_704_attack_windup")
+	attack_module.connect("in_attack_windup", self, "_on_704_attack_windup", [], CONNECT_PERSIST)
 	
 	add_attack_module(attack_module)
 	
@@ -176,9 +177,9 @@ func _post_inherit_ready():
 	
 	add_tower_effect(fire_effect)
 	
-	set_emblem_fire_level(1)
-	set_emblem_toughness_pierce_level(1)
-	set_emblem_explosive_level(2)
+	set_emblem_fire_level(0)
+	set_emblem_toughness_pierce_level(0)
+	set_emblem_explosive_level(0)
 
 # Attacks related
 
@@ -366,20 +367,27 @@ func set_emblem_toughness_pierce_level(level : int):
 
 # Emblem points allocation
 
-func _attempt_allocate_points_to_fire():
+func attempt_allocate_points_to_fire():
 	if can_give_points_to_fire():
 		available_points -= 1
 		emit_signal("available_points_changed")
 		set_emblem_fire_level(emblem_fire_points + 1)
 
-func _attempt_allocate_points_to_explosive():
+func attempt_allocate_points_to_explosive():
 	if can_give_points_to_explosive():
 		available_points -= 1
 		emit_signal("available_points_changed")
 		set_emblem_explosive_level(emblem_explosive_points + 1)
 
-func _attempt_allocate_points_to_toughness_pierce():
+func attempt_allocate_points_to_toughness_pierce():
 	if can_give_points_to_toughness_pierce():
 		available_points -= 1
 		emit_signal("available_points_changed")
 		set_emblem_toughness_pierce_level(emblem_toughness_pierce_points + 1)
+
+
+# Ing
+
+func _special_case_effect_added(effect : TowerBaseEffect):
+	if effect is _704EmblemPointsEffect:
+		available_points += 4

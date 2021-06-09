@@ -16,6 +16,9 @@ func _ready():
 	update_display()
 
 func update_display():
+	rect_min_size.y = 0
+	rect_size.y = 0
+	
 	_kill_all_desc()
 	var index = 0
 	

@@ -12,6 +12,8 @@ const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic
 const InstantDamageAttackModule = preload("res://TowerRelated/Modules/InstantDamageAttackModule.gd")
 const InstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/InstantDamageAttackModule.tscn")
 
+const AbstractAttackModule = preload("res://TowerRelated/Modules/AbstractAttackModule.gd")
+
 const ChaosOrb_pic = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_Orb.png")
 const ChaosDiamond_pic = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_Diamond.png")
 
@@ -239,7 +241,8 @@ func takeover(tower):
 	for module in tower.all_attack_modules:
 		if module.module_id == StoreOfAttackModuleID.MAIN or module.module_id == StoreOfAttackModuleID.PART_OF_SELF:
 			replaced_attack_modules.append(module)
-			tower.remove_attack_module(module)
+			module.can_be_commanded_by_tower_other_clauses[AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER] = false
+			#tower.remove_attack_module(module)
 	
 	for module in chaos_attack_modules:
 		tower.add_attack_module(module)
@@ -279,9 +282,11 @@ func untakeover(tower):
 	
 	for module in replaced_attack_modules:
 		
+		module.can_be_commanded_by_tower_other_clauses.erase(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
+		
 		# THE LAST PARAM (FALSE) IS ONLY BECAUSE THE ONLY WAY
 		# TO REMOVE CHAOS IS TO USE RE (which clears everything)
-		tower.add_attack_module(module, false)
+		#tower.add_attack_module(module, false)
 	
 
 

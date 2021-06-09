@@ -10,10 +10,12 @@ const StoreOfTowerEffectsUUID = preload("res://GameInfoRelated/TowerEffectRelate
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const TowerResetEffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
 const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerFullSellbackEffect.gd")
+const _704_EmblemPointsEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/704EmblemPointsEffect.gd")
 
 const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
 const LavaJetModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/LavaJetModuleAdderEffect.gd")
+const FlameBurstModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/FlameBurstModuleAdderEffect.gd")
 
 const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
@@ -23,6 +25,7 @@ const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRe
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
+
 
 # GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
@@ -36,6 +39,7 @@ const lava_jet_image = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_
 const campfire_image = preload("res://TowerRelated/Color_Orange/Campfire/Campfire_Wholebody.png")
 const volcano_image = preload("res://TowerRelated/Color_Orange/Volcano/Volcano_Omni.png")
 const _704_image = preload("res://TowerRelated/Color_Orange/704/704_WholeBody.png")
+const flameburst_image = preload("res://TowerRelated/Color_Orange/FlameBurst/FlameBurst_E.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -72,6 +76,7 @@ enum {
 	CAMPFIRE = 302,
 	VOLCANO = 303,
 	_704 = 304,
+	FLAMEBURST = 305,
 	
 	# YELLOW (400)
 	RAILGUN = 400,
@@ -241,7 +246,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Shoots a dart like projectile that pierces through 4 enemies"
+			"Shoots a dart like projectile that pierces through 4 enemies."
 		]
 		
 		# Ingredient related
@@ -270,7 +275,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Cleanses enemies from all buffs and debuffs per hit.",
+			"Cleanses enemies from all buffs and debuffs on hit.",
 			"Attacks in bursts of 3"
 		]
 		
@@ -296,7 +301,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Shocks and stuns its target for 0.3 seconds on hit with the power of electricity"
+			"Shocks and stuns its target for 0.3 seconds on hit.",
+			"Simple, yet effective."
 		]
 		
 		var enemy_effect : EnemyStunEffect = EnemyStunEffect.new(0.3, StoreOfEnemyEffectsUUID.ING_TESLA)
@@ -681,7 +687,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Launches a molten boulder at the target's location.",
 			"The boulder explodes upon reaching the location, dealing 6 physical base damage. The explosion applies on hit effects, and applies on hit damages at 500% efficiency.",
-			"The explosion also leaves behind scorched earth that lasts for 6 seconds, with slows enemies and deals 0.75 elemental damage per 0.75 seconds while inside it. This does not apply on hit damages and effects.",
+			"The explosion also leaves behind scorched earth that lasts for 6 seconds, which slows enemies and deals 0.75 elemental damage per 0.75 seconds while inside it. This does not apply on hit damages and effects.",
 			"Both the explosion and scorched earth benefit from base damage buffs."
 		]
 		
@@ -718,6 +724,39 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"\"704 is an open furnace with [redacted] origins.\""
 		]
 		
+		var effect := _704_EmblemPointsEffect.new()
+		var ing_effect := IngredientEffect.new(tower_id, effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "points"
+		
+		
+		
+	elif tower_id == FLAMEBURST:
+		info = TowerTypeInformation.new("Flameburst", tower_id)
+		info.tower_cost = 3
+		info.colors.append(TowerColors.ORANGE)
+		info.tower_tier = 3
+		info.tower_image_in_buy_card = flameburst_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.8
+		info.base_pierce = 1
+		info.base_range = 115
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Flameburst's main attack causes enemies to spew out 6 flamelets around itself.",
+			"The flamelets deal 1 elemental damage. These benefit from base damage buffs and on hit damages at 50% efficiency. Does not apply on hit effects.",
+			"Any bonus range gained increases the range of the flamelets."
+		]
+		
+		var effect := FlameBurstModuleAdderEffect.new()
+		var ing_effect := IngredientEffect.new(tower_id, effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "flamelets"
 		
 	
 	return info
@@ -765,5 +804,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/Volcano/Volcano.tscn")
 	elif tower_id == _704:
 		return load("res://TowerRelated/Color_Orange/704/704.tscn")
+	elif tower_id == FLAMEBURST:
+		return load("res://TowerRelated/Color_Orange/FlameBurst/FlameBurst.tscn")
 		
 		

@@ -9,6 +9,7 @@ enum EffectType {
 	CHAOS_TAKEOVER,
 	RESET,
 	FULL_SELLBACK,
+	_704_EMBLEM_POINTS,
 	
 }
 

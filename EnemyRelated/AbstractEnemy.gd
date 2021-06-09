@@ -163,12 +163,10 @@ func _take_unmitigated_damage(damage_amount : float, damage_type : int):
 	current_health -= damage_amount
 	if current_health <= 0:
 		var effective_damage = damage_amount + current_health
-		#call_deferred("emit_signal", "on_post_mitigated_damage_taken", effective_damage, damage_type, true, self)
 		emit_signal("on_post_mitigated_damage_taken", effective_damage, damage_type, true, self)
 		
 		_destroy_self()
 	else:
-		#call_deferred("emit_signal", "on_post_mitigated_damage_taken", damage_amount, damage_type, false, self)
 		emit_signal("on_post_mitigated_damage_taken", damage_amount, damage_type, false, self)
 		
 		emit_signal("on_current_health_changed", current_health)
@@ -387,14 +385,15 @@ func calculate_final_movement_speed() -> float:
 # hit by things functions here. Processes
 # on hit damages and effects.
 func hit_by_bullet(generic_bullet : BaseBullet):
-	generic_bullet.hit_by_enemy(self)
-	generic_bullet.decrease_pierce(pierce_consumed_per_hit)
-	if generic_bullet.attack_module_source != null:
-		connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
-		connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
-	
-	hit_by_damage_instance(generic_bullet.damage_instance)
-	generic_bullet.reduce_damage_by_beyond_first_multiplier()
+	if !generic_bullet.enemies_ignored.has(self):
+		generic_bullet.hit_by_enemy(self)
+		generic_bullet.decrease_pierce(pierce_consumed_per_hit)
+		if generic_bullet.attack_module_source != null:
+			connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
+			connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
+		
+		hit_by_damage_instance(generic_bullet.damage_instance)
+		generic_bullet.reduce_damage_by_beyond_first_multiplier()
 
 
 func hit_by_aoe(base_aoe):

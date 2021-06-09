@@ -23,12 +23,17 @@ signal on_enemy_hit(enemy, damage_register_id, module)
 signal on_damage_instance_constructed(damage_instance, module)
 
 
+enum CanBeCommandedByTower_ClauseId {
+	CHAOS_TAKEOVER = 1
+}
+
 var module_id : int
 # OBSELETE
 var is_main_attack : bool = false
 var number_of_unique_targets : int = 1
 
-var can_be_commanded_by_tower : bool = true
+var can_be_commanded_by_tower : bool = true setget, _get_can_be_commanded_by_tower
+var can_be_commanded_by_tower_other_clauses : Dictionary = {}
 
 var benefits_from_bonus_attack_speed : bool = true
 var benefits_from_bonus_on_hit_damage : bool = true
@@ -133,6 +138,17 @@ var _last_calculated_attack_speed_as_delay : float
 
 # MISC
 
+func _get_can_be_commanded_by_tower() -> bool:
+	if can_be_commanded_by_tower == false:
+		return false
+	
+	for clause in can_be_commanded_by_tower_other_clauses.values():
+		if clause == false:
+			return false
+	
+	return true
+
+
 func reset_attack_timers():
 	_is_bursting = false
 	_current_burst_count = 0
@@ -156,9 +172,11 @@ func _set_range_module(new_module):
 	if range_module != null:
 		if get_children().has(range_module):
 			remove_child(range_module)
+		range_module.attack_modules_using_this.erase(self)
 	
 	if new_module != null and new_module.get_parent() == null:
 		add_child(new_module)
+		new_module.attack_modules_using_this.append(self)
 	
 	range_module = new_module
 

@@ -34,8 +34,7 @@ var _curr_num_of_attacks : int = 0
 
 func _init().(StoreOfTowerEffectsUUID.LAVA_JET_BEAM):
 	effect_icon = Ingredient_pic
-	description = "Shoots a lava beam at the current enemy every 5th main attack. The beam deals 40% of the enemy's max health damage as elemental damage, up to a limit."
-
+	description = "Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals 40% of the enemy's max health damage as elemental damage, up to a limit."
 
 
 func _make_modifications_to_tower(tower : AbstractTower):

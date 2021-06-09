@@ -33,6 +33,11 @@ var all_targeting_options : Array = []
 var last_calculated_final_range : float
 
 
+# tracker
+
+var attack_modules_using_this : Array = []
+
+
 func _init():
 	if all_targeting_options == null or all_targeting_options.size() == 0:
 		all_targeting_options = [Targeting.FIRST, Targeting.LAST]

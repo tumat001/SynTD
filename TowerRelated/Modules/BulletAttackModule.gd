@@ -266,7 +266,6 @@ func _adjust_bullet_physics_settings(bullet : BaseBullet, arg_enemy_pos : Vector
 	bullet.rotation_per_second = bullet_rotation_per_second
 
 
-
 func _get_angle(destination_pos : Vector2):
 	var dx = destination_pos.x - global_position.x
 	var dy = destination_pos.y - global_position.y
