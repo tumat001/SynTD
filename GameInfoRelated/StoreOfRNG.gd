@@ -4,6 +4,7 @@ extends Node
 var random_targeting_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var coin_type_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var inaccuracy_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var non_essential_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -14,6 +15,8 @@ enum RNGSource {
 	COIN, # Choosing of whether bronze, silver or gold coin
 	
 	INACCURACY,
+	
+	NON_ESSENTIAL,
 }
 
 
@@ -25,5 +28,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return coin_type_rng
 	elif rng_source == RNGSource.INACCURACY:
 		return inaccuracy_rng
+	elif rng_source == RNGSource.NON_ESSENTIAL:
+		return non_essential_rng
 	
 	return null

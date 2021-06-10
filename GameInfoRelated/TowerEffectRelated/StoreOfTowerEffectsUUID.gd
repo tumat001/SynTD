@@ -1,7 +1,10 @@
 extends Node
 
 enum {
-	# --TOWERS ING EFFECTS--
+	# MISC ------------------------
+	TOWER_MAIN_DAMAGE = -100
+	
+	# --TOWERS ING EFFECTS---------
 	# RED (100)
 	
 	# ORANGE (200)
@@ -11,6 +14,8 @@ enum {
 	ING_VOLCANO = 203
 	ING_704 = 204
 	ING_FLAMEBURST = 205
+	
+	ING_COAL_LAUNCHER = 207
 	
 	# YELLOW (300)
 	ING_COIN = 300
@@ -35,7 +40,7 @@ enum {
 	ING_PING = 604 # PINGLET
 	
 	
-	# --TOWER EFFECTS--
+	# --TOWER EFFECTS----------------------
 	
 	# RED (1100)
 	
@@ -45,6 +50,8 @@ enum {
 	CAMPFIRE_PHY_ON_HIT = 1202
 	VOLCANO_SLOW = 1203
 	_704_FIRE_BURN = 1204
+	ENTHALPHY_KILL_ELE_ON_HIT = 1205
+	ENTHALPHY_RANGE_ELE_ON_HIT = 1206
 	
 	# YELLOW (1300)
 	BEACON_ELE_ON_HIT = 1300

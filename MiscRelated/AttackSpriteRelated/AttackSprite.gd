@@ -12,6 +12,7 @@ func _ready():
 	
 	z_index = ZIndexStore.PARTICLE_EFFECTS
 	z_as_relative = false
+	
 
 func _calculate_fps_of_sprite_frames(frame_count : int) -> int:
 	return int(ceil(frame_count / lifetime))

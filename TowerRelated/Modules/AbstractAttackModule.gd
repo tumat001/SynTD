@@ -94,6 +94,7 @@ var modifications : Array
 # Attack sprites
 
 var attack_sprite_scene
+var attack_sprite_sprite_frames : SpriteFrames
 var attack_sprite_follow_enemy : bool
 
 
@@ -701,6 +702,9 @@ func _attack_enemies(enemies : Array):
 	for enemy in enemies:
 		if attack_sprite_scene != null:
 			var attack_sprite = attack_sprite_scene.instance()
+			if attack_sprite_sprite_frames != null:
+				attack_sprite.frames
+			
 			if attack_sprite_follow_enemy:
 				enemy.add_child(attack_sprite)
 			else:

@@ -22,6 +22,7 @@ func get_copy_scaled_by(scale : float):
 	for eff_key in on_hit_effects.keys():
 		copy.on_hit_effects[eff_key] = on_hit_effects[eff_key]._get_copy_scaled_by(scale)
 	
+	
 	copy.final_toughness_pierce = final_toughness_pierce
 	copy.final_percent_enemy_toughness_pierce = final_percent_enemy_toughness_pierce
 	

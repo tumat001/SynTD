@@ -1,0 +1,3 @@
+
+func _ready():
+	pass

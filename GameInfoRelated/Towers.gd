@@ -40,6 +40,9 @@ const campfire_image = preload("res://TowerRelated/Color_Orange/Campfire/Campfir
 const volcano_image = preload("res://TowerRelated/Color_Orange/Volcano/Volcano_Omni.png")
 const _704_image = preload("res://TowerRelated/Color_Orange/704/704_WholeBody.png")
 const flameburst_image = preload("res://TowerRelated/Color_Orange/FlameBurst/FlameBurst_E.png")
+const scatter_image = preload("res://TowerRelated/Color_Orange/Scatter/Scatter_E.png")
+const coal_launcher_image = preload("res://TowerRelated/Color_Orange/CoalLauncher/CoalLauncher_E.png")
+const enthalphy_image = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_WholeBody.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -77,6 +80,10 @@ enum {
 	VOLCANO = 303,
 	_704 = 304,
 	FLAMEBURST = 305,
+	SCATTER = 306,
+	COAL_LAUNCHER = 307,
+	ENTHALPHY = 308,
+	ENTROPY = 309,
 	
 	# YELLOW (400)
 	RAILGUN = 400,
@@ -111,7 +118,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 1
 		info.tower_image_in_buy_card = mono_image
 		
-		info.base_damage = 3
+		info.base_damage = 2.5
 		info.base_attk_speed = 0.75
 		info.base_pierce = 1
 		info.base_range = 100
@@ -129,7 +136,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 1
 		info.tower_image_in_buy_card = sprinkler_image
 		
-		info.base_damage = 1
+		info.base_damage = 0.8
 		info.base_attk_speed = 2.75
 		info.base_pierce = 1
 		info.base_range = 120
@@ -731,7 +738,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "points"
 		
 		
-		
 	elif tower_id == FLAMEBURST:
 		info = TowerTypeInformation.new("Flameburst", tower_id)
 		info.tower_cost = 3
@@ -739,8 +745,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 3
 		info.tower_image_in_buy_card = flameburst_image
 		
-		info.base_damage = 2
-		info.base_attk_speed = 0.8
+		info.base_damage = 3
+		info.base_attk_speed = 0.775
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -758,6 +764,77 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "flamelets"
 		
+		
+	elif tower_id == SCATTER:
+		info = TowerTypeInformation.new("Scatter", tower_id)
+		info.tower_cost = 2
+		info.colors.append(TowerColors.ORANGE)
+		info.tower_tier = 2
+		info.tower_image_in_buy_card = scatter_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.575
+		info.base_pierce = 1
+		info.base_range = 110
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 0.75
+		
+		info.tower_descriptions = [
+			"Shoots 3 heated iron fragments at enemies."
+		]
+		
+		
+	elif tower_id == COAL_LAUNCHER:
+		info = TowerTypeInformation.new("Coal Launcher", tower_id)
+		info.tower_cost = 1
+		info.colors.append(TowerColors.ORANGE)
+		info.colors.append(TowerColors.GRAY)
+		info.tower_tier = 1
+		info.tower_image_in_buy_card = coal_launcher_image
+		
+		info.base_damage = 3
+		info.base_attk_speed = 0.475
+		info.base_pierce = 1
+		info.base_range = 115
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Launches a piece of coal at enemies. The coal increases the duration of all burns the enemy is suffering from for 1.5 seconds."
+		]
+		
+		# Ingredient related
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new("coal_launcher")
+		base_dmg_attr_mod.flat_modifier = 0.75
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_COAL_LAUNCHER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ base dmg"
+		
+		
+	elif tower_id == ENTHALPHY:
+		info = TowerTypeInformation.new("Enthalphy", tower_id)
+		info.tower_cost = 2
+		info.colors.append(TowerColors.ORANGE)
+		info.tower_tier = 2
+		info.tower_image_in_buy_card = enthalphy_image
+		
+		info.base_damage = 1.25
+		info.base_attk_speed = 0.8
+		info.base_pierce = 0
+		info.base_range = 135
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			""
+		]
+		
+		
+		
+	
 	
 	return info
 
@@ -806,5 +883,11 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/704/704.tscn")
 	elif tower_id == FLAMEBURST:
 		return load("res://TowerRelated/Color_Orange/FlameBurst/FlameBurst.tscn")
-		
-		
+	elif tower_id == SCATTER:
+		return load("res://TowerRelated/Color_Orange/Scatter/Scatter.tscn")
+	elif tower_id == COAL_LAUNCHER:
+		return load("res://TowerRelated/Color_Orange/CoalLauncher/CoalLauncher.tscn")
+	elif tower_id == ENTHALPHY:
+		return load("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy.tscn")
+	
+

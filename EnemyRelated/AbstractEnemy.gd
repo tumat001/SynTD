@@ -156,6 +156,7 @@ func _set_current_health_to(health_amount):
 	
 	emit_signal("on_current_health_changed", current_health)
 
+
 # The only function that should handle taking
 # damage and health deduction. Also where
 # death is handled
@@ -170,6 +171,7 @@ func _take_unmitigated_damage(damage_amount : float, damage_type : int):
 		emit_signal("on_post_mitigated_damage_taken", damage_amount, damage_type, false, self)
 		
 		emit_signal("on_current_health_changed", current_health)
+
 
 func _destroy_self():
 	$CollisionArea.set_deferred("monitorable", false)

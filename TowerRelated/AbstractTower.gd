@@ -216,10 +216,11 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			if range_module.get_parent() == null:
 				add_child(range_module)
 			
-			range_module.update_range() 
+			#range_module.update_range() 
 			range_module.connect("final_range_changed", self, "_emit_final_range_changed")
 			range_module.connect("targeting_changed", self, "_emit_targeting_changed")
 			range_module.connect("targeting_options_modified", self, "_emit_targeting_options_modified")
+			range_module.update_range()
 	
 	if benefit_from_existing_tower_buffs:
 		for tower_effect in _all_uuid_tower_buffs_map.values():
