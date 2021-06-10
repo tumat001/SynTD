@@ -20,8 +20,8 @@ func _init(arg_on_hit_damage : OnHitDamage,
 	description = _get_description()
 	effect_icon = _get_icon()
 	
-	on_hit_damage.internal_name = str(arg_effect_uuid)
-	on_hit_damage.damage_as_modifier.internal_name = str(arg_effect_uuid)
+	on_hit_damage.internal_id = arg_effect_uuid
+	on_hit_damage.damage_as_modifier.internal_id = arg_effect_uuid
 
 # Descriptions related
 

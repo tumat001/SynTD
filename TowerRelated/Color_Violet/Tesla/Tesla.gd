@@ -42,7 +42,7 @@ func _ready():
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.position.y -= 30
-	attack_module.base_on_hit_damage_internal_name = "tesla"
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	attack_module.attack_sprite_scene = Tesla_Hit_Particle

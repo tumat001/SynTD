@@ -8,28 +8,20 @@ const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const InstantDamageAttackModule = preload("res://TowerRelated/Modules/InstantDamageAttackModule.gd")
 const InstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/InstantDamageAttackModule.tscn")
 
-const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
-const AttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn")
+const EnthalphyAttackSprite = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_AttkSprite/EnthalphyAttkSprite.tscn")
 
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
-
-const Enthalphy_HitParticle01 = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_AttkSprite/Enthalphy_AttkSprite01.png")
-const Enthalphy_HitParticle02 = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_AttkSprite/Enthalphy_AttkSprite02.png")
-const Enthalphy_HitParticle03 = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_AttkSprite/Enthalphy_AttkSprite03.png")
-const Enthalphy_HitParticle04 = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_AttkSprite/Enthalphy_AttkSprite04.png")
-const Enthalphy_HitParticle05 = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_AttkSprite/Enthalphy_AttkSprite05.png")
-const Enthalphy_HitParticle06 = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_AttkSprite/Enthalphy_AttkSprite06.png")
 
 var effect_kill_on_hit_dmg : TowerOnHitDamageAdderEffect
 var effect_range_based_on_hit_dmg : TowerOnHitDamageAdderEffect
 var range_based_modifier : FlatModifier
 
-const range_bonus_damage_ratio : float = 0.0125 # 40 range = 0.5
+const range_bonus_damage_ratio : float = 0.01875 # 40 range = 0.75
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var info : TowerTypeInformation = Towers.get_tower_info(Towers.RE)
+	var info : TowerTypeInformation = Towers.get_tower_info(Towers.ENTHALPHY)
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
@@ -45,25 +37,13 @@ func _ready():
 	attack_module.base_damage = info.base_damage
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
-	attack_module.base_attack_wind_up = 0.5
+	attack_module.base_attack_wind_up = 0
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
-	attack_module.base_on_hit_damage_internal_name = "enthalphy_base_damage"
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
-	attack_module.commit_to_targets_of_windup = true
-	attack_module.fill_empty_windup_target_slots = true
-	
-	var en_atk_sprite := SpriteFrames.new()
-	en_atk_sprite.add_frame("default", Enthalphy_HitParticle01)
-	en_atk_sprite.add_frame("default", Enthalphy_HitParticle02)
-	en_atk_sprite.add_frame("default", Enthalphy_HitParticle03)
-	en_atk_sprite.add_frame("default", Enthalphy_HitParticle04)
-	en_atk_sprite.add_frame("default", Enthalphy_HitParticle05)
-	en_atk_sprite.add_frame("default", Enthalphy_HitParticle06)
-	
-	attack_module.attack_sprite_scene = AttackSprite_Scene
-	attack_module.attack_sprite_sprite_frames = en_atk_sprite
+	attack_module.attack_sprite_scene = EnthalphyAttackSprite
 	
 	_construct_on_hit_damage()
 	
@@ -83,10 +63,10 @@ func _post_inherit_ready():
 
 func _construct_on_hit_damage():
 	# Kill
-	var modi : FlatModifier = FlatModifier.new("enthalphy_kill_bonus")
+	var modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ENTHALPHY_KILL_ELE_ON_HIT)
 	modi.flat_modifier = 1.25
 	
-	var on_hit_dmg : OnHitDamage = OnHitDamage.new("enthalphy_kill_bonus", modi, DamageType.ELEMENTAL)
+	var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ENTHALPHY_KILL_ELE_ON_HIT, modi, DamageType.ELEMENTAL)
 	
 	effect_kill_on_hit_dmg = TowerOnHitDamageAdderEffect.new(on_hit_dmg, StoreOfTowerEffectsUUID.ENTHALPHY_KILL_ELE_ON_HIT)
 	effect_kill_on_hit_dmg.is_countbound = true
@@ -94,10 +74,10 @@ func _construct_on_hit_damage():
 	
 	
 	# Range
-	range_based_modifier = FlatModifier.new("enthalphy_range_bonus")
+	range_based_modifier = FlatModifier.new(StoreOfTowerEffectsUUID.ENTHALPHY_RANGE_ELE_ON_HIT)
 	range_based_modifier.flat_modifier = 0
 	
-	var r_on_hit_dmg : OnHitDamage = OnHitDamage.new("enthalphy_range_bonus", range_based_modifier, DamageType.ELEMENTAL)
+	var r_on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ENTHALPHY_RANGE_ELE_ON_HIT, range_based_modifier, DamageType.ELEMENTAL)
 	
 	effect_range_based_on_hit_dmg = TowerOnHitDamageAdderEffect.new(r_on_hit_dmg, StoreOfTowerEffectsUUID.ENTHALPHY_RANGE_ELE_ON_HIT)
 
@@ -106,14 +86,14 @@ func _construct_on_hit_damage():
 
 func _on_main_range_changed():
 	var range_diff : float = main_attack_module.range_module.last_calculated_final_range - main_attack_module.range_module.base_range_radius
-	var bonus_dmg = range_diff / range_bonus_damage_ratio
+	var bonus_dmg = range_diff * range_bonus_damage_ratio
 	
 	range_based_modifier.flat_modifier = bonus_dmg
 
 
 # kill related
 
-func _check_if_enemy_hit_is_killed(damage, damage_type, killed, enemy, damage_register_id, module):
+func _check_if_enemy_hit_is_killed(damage_report, killed, enemy, damage_register_id, module):
 	if killed:
 		add_tower_effect(effect_kill_on_hit_dmg._shallow_duplicate())
 

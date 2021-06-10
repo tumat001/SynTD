@@ -44,7 +44,7 @@ func _generate_gold(amount : int):
 
 
 
-func on_post_mitigation_damage_dealt(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int):
+func on_post_mitigation_damage_dealt(damage_report, killed_enemy : bool, enemy, damage_register_id : int):
 	if killed_enemy:
 		if !_coin_id_time_left_map.has(damage_register_id):
 			_coin_id_time_left_map[damage_register_id] = 8 # Seconds before this gets deleted
@@ -52,5 +52,5 @@ func on_post_mitigation_damage_dealt(damage : float, damage_type : int, killed_e
 			_coin_id_time_left_map.erase(damage_register_id)
 			_generate_gold(kill_two_enemies_gold_amount)
 	
-	emit_signal("on_post_mitigation_damage_dealt", damage, damage_type, killed_enemy, enemy, damage_register_id, self)
+	emit_signal("on_post_mitigation_damage_dealt", damage_report, killed_enemy, enemy, damage_register_id, self)
 	

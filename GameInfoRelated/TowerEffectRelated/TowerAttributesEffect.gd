@@ -49,7 +49,7 @@ func _init(arg_attribute_type : int, arg_modifier,
 	description = _get_description()
 	effect_icon = _get_icon()
 	
-	attribute_as_modifier.internal_name = str(arg_effect_uuid)
+	attribute_as_modifier.internal_id = arg_effect_uuid
 
 
 # Description Related

@@ -36,7 +36,7 @@ func _ready():
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 0
-	attack_module.base_on_hit_damage_internal_name = "sprinkler_base_damage"
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
 	attack_module.base_proj_speed = 400

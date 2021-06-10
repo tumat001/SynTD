@@ -34,7 +34,7 @@ func _construct_burst_module():
 	burst_attack_module.base_damage_type = DamageType.ELEMENTAL
 	burst_attack_module.base_attack_speed = 0
 	burst_attack_module.base_attack_wind_up = 0
-	burst_attack_module.base_on_hit_damage_internal_name = "flameburst_mini_damage"
+	burst_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	burst_attack_module.is_main_attack = false
 	burst_attack_module.base_pierce = 1
 	burst_attack_module.base_proj_speed = 200

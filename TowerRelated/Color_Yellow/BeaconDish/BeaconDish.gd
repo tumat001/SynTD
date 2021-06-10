@@ -69,7 +69,7 @@ func _ready():
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 0
-	attack_module.base_on_hit_damage_internal_name = "beacon_base_damage"
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
@@ -89,13 +89,13 @@ func _ready():
 
 
 func _construct_on_hit_and_modifiers():
-	var elemental_on_hit_modifier = FlatModifier.new("beacon_on_hit_buff")
+	var elemental_on_hit_modifier = FlatModifier.new(StoreOfTowerEffectsUUID.BEACON_ELE_ON_HIT)
 	
-	elemental_on_hit = OnHitDamage.new("beacon_ele_on_hit_buff", elemental_on_hit_modifier, DamageType.ELEMENTAL)
-	attack_speed_modifier = PercentModifier.new("beacon_attk_speed_buff")
+	elemental_on_hit = OnHitDamage.new(StoreOfTowerEffectsUUID.BEACON_ELE_ON_HIT, elemental_on_hit_modifier, DamageType.ELEMENTAL)
+	attack_speed_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.BEACON_ATTK_SPEED)
 	attack_speed_modifier.percent_based_on = PercentType.BASE
 	
-	range_modifier = FlatModifier.new("beacon_range_buff")
+	range_modifier = FlatModifier.new(StoreOfTowerEffectsUUID.BEACON_RANGE)
 
 
 func _construct_effects():

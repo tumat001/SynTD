@@ -16,9 +16,12 @@ const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/Enemy
 const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 
+const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
+const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
+
 signal on_death_by_any_cause
 signal on_hit(me)
-signal on_post_mitigated_damage_taken(damage, damage_type, is_lethal, me, damage_reg_id)
+signal on_post_mitigated_damage_taken(damage_instance_report, is_lethal, me, damage_reg_id)
 signal before_damage_instance_is_processed(damage_instance, me)
 
 signal reached_end_of_path(me)
@@ -160,17 +163,39 @@ func _set_current_health_to(health_amount):
 # The only function that should handle taking
 # damage and health deduction. Also where
 # death is handled
-func _take_unmitigated_damage(damage_amount : float, damage_type : int):
-	current_health -= damage_amount
+func _take_unmitigated_damages(damages_and_types : Array):
+	
+	var damage_instance_report : DamageInstanceReport = DamageInstanceReport.new()
+	
+	for damage_and_type in damages_and_types: #on hit id in third index
+		var damage_amount = damage_and_type[0]
+		var on_hit_id = damage_and_type[2]
+		
+		var on_hit_report := OnHitDamageReport.new(damage_amount, damage_and_type[1], on_hit_id)
+		var effective_on_hit_report : OnHitDamageReport
+		
+		if current_health > 0:
+			effective_on_hit_report = on_hit_report
+			
+			current_health -= damage_amount
+			if current_health <= 0:
+				var effective_damage = damage_amount + current_health
+				effective_on_hit_report = effective_on_hit_report.duplicate()
+				effective_on_hit_report.damage = effective_damage
+		
+		damage_instance_report.all_post_mitigated_on_hit_damages[on_hit_id] = on_hit_report
+		if effective_on_hit_report != null:
+			damage_instance_report.all_effective_on_hit_damages[on_hit_id] = effective_on_hit_report
+	
+	
 	if current_health <= 0:
-		var effective_damage = damage_amount + current_health
-		emit_signal("on_post_mitigated_damage_taken", effective_damage, damage_type, true, self)
-		
+		emit_signal("on_post_mitigated_damage_taken", damage_instance_report, true, self)
 		_destroy_self()
-	else:
-		emit_signal("on_post_mitigated_damage_taken", damage_amount, damage_type, false, self)
 		
+	else:
+		emit_signal("on_post_mitigated_damage_taken", damage_instance_report, false, self)
 		emit_signal("on_current_health_changed", current_health)
+
 
 
 func _destroy_self():
@@ -185,6 +210,7 @@ func queue_free():
 	.queue_free()
 
 
+# OLD.. NEED TO REMAKE THIS SOON TO COMPLY WITH EFFECTS
 func add_flat_base_health_modifier_with_heal(modifier_name : String, 
 		modifier : FlatModifier):
 	
@@ -417,15 +443,19 @@ func hit_by_damage_instance(damage_instance : DamageInstance, emit_on_hit_signal
 
 
 func _process_on_hit_damages(on_hit_damages : Dictionary, damage_instance):
+	var damages : Array = []
+	
 	for on_hit_key in on_hit_damages.keys():
 		var on_hit_damage : OnHitDamage = on_hit_damages[on_hit_key]
+		
 		if on_hit_damage.damage_as_modifier is FlatModifier:
-			_process_flat_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type, damage_instance)
+			damages.append(_process_flat_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type, damage_instance, on_hit_damage.internal_id))
 		elif on_hit_damage.damage_as_modifier is PercentModifier:
-			_process_percent_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type, damage_instance)
+			damages.append(_process_percent_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type, damage_instance, on_hit_damage.internal_id))
+	
+	_take_unmitigated_damages(damages)
 
-
-func _process_percent_damage(damage_as_modifier: PercentModifier, damage_type : int, damage_instance):
+func _process_percent_damage(damage_as_modifier: PercentModifier, damage_type : int, damage_instance, on_hit_id) -> Array:
 	var percent_type = damage_as_modifier.percent_based_on
 	var damage_as_flat : float
 	
@@ -441,12 +471,12 @@ func _process_percent_damage(damage_as_modifier: PercentModifier, damage_type : 
 			missing_health = 0
 		damage_as_flat = damage_as_modifier.get_modification_to_value(missing_health)
 	
-	_process_direct_damage_and_type(damage_as_flat, damage_type, damage_instance)
+	return _process_direct_damage_and_type(damage_as_flat, damage_type, damage_instance, on_hit_id)
 
-func _process_flat_damage(damage_as_modifier : FlatModifier, damage_type : int, damage_instance):
-	_process_direct_damage_and_type(damage_as_modifier.flat_modifier, damage_type, damage_instance)
+func _process_flat_damage(damage_as_modifier : FlatModifier, damage_type : int, damage_instance, on_hit_id) -> Array:
+	return _process_direct_damage_and_type(damage_as_modifier.flat_modifier, damage_type, damage_instance, on_hit_id)
 
-func _process_direct_damage_and_type(damage : float, damage_type : int, damage_instance : DamageInstance):
+func _process_direct_damage_and_type(damage : float, damage_type : int, damage_instance : DamageInstance, on_hit_id) -> Array:
 	var final_damage = damage
 	if damage_type == DamageType.ELEMENTAL:
 		final_damage *= _calculate_multiplier_from_total_toughness(damage_instance.final_toughness_pierce, damage_instance.final_percent_enemy_toughness_pierce)
@@ -460,7 +490,8 @@ func _process_direct_damage_and_type(damage : float, damage_type : int, damage_i
 		pass
 		#final_damage *= 1
 	
-	_take_unmitigated_damage(final_damage, damage_type)
+	#_take_unmitigated_damage(final_damage, damage_type)
+	return [final_damage, damage_type, on_hit_id]
 
 
 # Process effects related

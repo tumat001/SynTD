@@ -46,7 +46,7 @@ func _ready():
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 0
-	attack_module.base_on_hit_damage_internal_name = "flameburst_damage"
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
 	attack_module.base_proj_speed = 375
@@ -83,7 +83,7 @@ func _ready():
 	burst_attack_module.base_damage_type = DamageType.ELEMENTAL
 	burst_attack_module.base_attack_speed = 0
 	burst_attack_module.base_attack_wind_up = 0
-	burst_attack_module.base_on_hit_damage_internal_name = "flameburst_mini_damage"
+	burst_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	burst_attack_module.is_main_attack = false
 	burst_attack_module.base_pierce = 1
 	burst_attack_module.base_proj_speed = 200

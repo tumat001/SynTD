@@ -8,8 +8,7 @@ var flat_maximum : float
 var ignore_flat_limits
 var percent_based_on
 
-func _init(arg_internal_name : String).(arg_internal_name):
-	internal_name = arg_internal_name
+func _init(arg_internal_id : int).(arg_internal_id):
 	percent_amount = 100
 	flat_maximum = 0
 	flat_minimum = 0
@@ -59,7 +58,7 @@ func get_description_scaled(scale : float) -> Array:
 
 
 func get_copy_scaled_by(scale_factor : float):
-	var copy = get_script().new(internal_name)
+	var copy = get_script().new(internal_id)
 	copy.percent_amount = percent_amount * scale_factor
 	copy.flat_minimum = flat_minimum * scale_factor
 	copy.flat_maximum = flat_maximum * scale_factor

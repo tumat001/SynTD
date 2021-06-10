@@ -54,7 +54,7 @@ func _construct_lava_jet_module():
 	beam_attack_module.is_main_attack = false
 	beam_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	beam_attack_module.position.y -= 0
-	beam_attack_module.base_on_hit_damage_internal_name = "lavajet_beam"
+	beam_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	beam_attack_module.on_hit_damage_scale = 1
 	
 	beam_attack_module.benefits_from_bonus_attack_speed = false
@@ -87,13 +87,13 @@ func _construct_lava_jet_module():
 	
 	lava_jet_beam_am = beam_attack_module
 	
-	var percent_mod : PercentModifier = PercentModifier.new("lavajet_beam_ing")
+	var percent_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_LAVA_JET)
 	percent_mod.percent_amount = 40
 	percent_mod.percent_based_on = PercentType.MAX
 	percent_mod.flat_maximum = 100 # Max damage on enemy with 250 max health
 	percent_mod.ignore_flat_limits = false
 	
-	var beam_on_hit_dmg : OnHitDamage = OnHitDamage.new("lavajet_beam_ing", percent_mod, DamageType.ELEMENTAL)
+	var beam_on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_LAVA_JET, percent_mod, DamageType.ELEMENTAL)
 	var effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(beam_on_hit_dmg, StoreOfTowerEffectsUUID.ING_LAVA_JET)
 	effect.force_apply = true
 	

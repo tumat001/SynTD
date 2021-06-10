@@ -17,7 +17,7 @@ signal in_attack_end()
 
 signal on_round_end()
 
-signal on_post_mitigation_damage_dealt(damage, damage_type, killed, enemy, damage_register_id, module)
+signal on_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module)
 signal on_enemy_hit(enemy, damage_register_id, module)
 
 signal on_damage_instance_constructed(damage_instance, module)
@@ -63,7 +63,7 @@ var base_damage_type : int
 # map of uuid (internal name) to effect
 var flat_base_damage_effects : Dictionary = {}
 var percent_base_damage_effects : Dictionary = {}
-var base_on_hit_damage_internal_name : String
+var base_on_hit_damage_internal_id : int
 var on_hit_damage_adder_effects : Dictionary
 
 
@@ -94,7 +94,6 @@ var modifications : Array
 # Attack sprites
 
 var attack_sprite_scene
-var attack_sprite_sprite_frames : SpriteFrames
 var attack_sprite_follow_enemy : bool
 
 
@@ -702,8 +701,6 @@ func _attack_enemies(enemies : Array):
 	for enemy in enemies:
 		if attack_sprite_scene != null:
 			var attack_sprite = attack_sprite_scene.instance()
-			if attack_sprite_sprite_frames != null:
-				attack_sprite.frames
 			
 			if attack_sprite_follow_enemy:
 				enemy.add_child(attack_sprite)
@@ -775,13 +772,13 @@ func calculate_final_base_damage():
 	return final_base_damage
 
 func _get_base_damage_as_on_hit_damage() -> OnHitDamage:
-	var modifier : FlatModifier = FlatModifier.new(base_on_hit_damage_internal_name)
+	var modifier : FlatModifier = FlatModifier.new(base_on_hit_damage_internal_id)
 	modifier.flat_modifier = calculate_final_base_damage()
 	
 	if base_damage_scale != 1:
 		modifier = modifier.get_copy_scaled_by(base_damage_scale)
 	
-	return OnHitDamage.new(base_on_hit_damage_internal_name, modifier, base_damage_type)
+	return OnHitDamage.new(base_on_hit_damage_internal_id, modifier, base_damage_type)
 
 func _get_scaled_extra_on_hit_damages() -> Dictionary:
 	var scaled_on_hit_damages = {}
@@ -806,7 +803,7 @@ func _get_all_scaled_on_hit_damages() -> Dictionary:
 	var scaled_on_hit_damages = {}
 	
 	# BASE ON HIT
-	scaled_on_hit_damages[base_on_hit_damage_internal_name] = _get_base_damage_as_on_hit_damage()
+	scaled_on_hit_damages[base_on_hit_damage_internal_id] = _get_base_damage_as_on_hit_damage()
 	
 	var extras = _get_scaled_extra_on_hit_damages()
 	for extra_on_hit_uuid in extras.keys():
@@ -860,8 +857,8 @@ func on_round_end():
 
 # Damage report related
 
-func on_post_mitigation_damage_dealt(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int):
-	emit_signal("on_post_mitigation_damage_dealt", damage, damage_type, killed_enemy, enemy, damage_register_id, self)
+func on_post_mitigation_damage_dealt(damage_instance_report, killed_enemy : bool, enemy, damage_register_id : int):
+	emit_signal("on_post_mitigation_damage_dealt", damage_instance_report, killed_enemy, enemy, damage_register_id, self)
 
 func on_enemy_hit(enemy, damage_register_id):
 	emit_signal("on_enemy_hit", enemy, damage_register_id, self)

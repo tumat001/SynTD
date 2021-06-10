@@ -47,7 +47,7 @@ func _construct_pinglet():
 	shot_attack_module.module_id = StoreOfTowerEffectsUUID.ING_PING
 	shot_attack_module.position.y -= 10
 	shot_attack_module.position.x += 20
-	shot_attack_module.base_on_hit_damage_internal_name = "pinglet_shot"
+	shot_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	shot_attack_module.on_hit_damage_scale = 1
 	
 	shot_attack_module.benefits_from_bonus_on_hit_effect = false

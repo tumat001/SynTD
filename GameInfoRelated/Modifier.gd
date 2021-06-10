@@ -1,11 +1,11 @@
 
-var internal_name : String
+var internal_id : int
 
 func get_modification_to_value(value):
 	pass
 
-func _init(arg_internal_name : String):
-	internal_name = arg_internal_name
+func _init(arg_internal_id : int):
+	internal_id = arg_internal_id
 
 func get_description():
 	pass

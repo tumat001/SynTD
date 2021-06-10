@@ -86,7 +86,7 @@ func _ready():
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.position.y -= 3
-	attack_module.base_on_hit_damage_internal_name = "704_base_damage"
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	attack_module.commit_to_targets_of_windup = true
@@ -118,7 +118,7 @@ func _ready():
 	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0
-	explosion_attack_module.base_on_hit_damage_internal_name = "704_explosion_damage"
+	explosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	explosion_attack_module.is_main_attack = false
 	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	
@@ -158,12 +158,12 @@ func _ready():
 
 
 func _construct_burn_effect():
-	fire_burn_dmg_modifier = FlatModifier.new("704_burn_dmg")
+	fire_burn_dmg_modifier = FlatModifier.new(StoreOfTowerEffectsUUID._704_FIRE_BURN)
 	fire_burn_dmg_modifier.flat_modifier = 0.5
 	
-	var burn_on_hit : OnHitDamage = OnHitDamage.new("704_burn_on_hit_dmg", fire_burn_dmg_modifier, DamageType.ELEMENTAL)
+	var burn_on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID._704_FIRE_BURN, fire_burn_dmg_modifier, DamageType.ELEMENTAL)
 	fire_burn_dmg_instance = DamageInstance.new()
-	fire_burn_dmg_instance.on_hit_damages[burn_on_hit.internal_name] = burn_on_hit
+	fire_burn_dmg_instance.on_hit_damages[burn_on_hit.internal_id] = burn_on_hit
 	
 	var burn_effect = EnemyDmgOverTimeEffect.new(fire_burn_dmg_instance, StoreOfEnemyEffectsUUID._704_FIRE_BURN, 0.5)
 	burn_effect.is_timebound = true

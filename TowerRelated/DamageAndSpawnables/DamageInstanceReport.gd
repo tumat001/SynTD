@@ -1,3 +1,0 @@
-
-func _ready():
-	pass

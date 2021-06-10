@@ -35,7 +35,7 @@ func _ready():
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 0
-	attack_module.base_on_hit_damage_internal_name = "ember_base_damage"
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
 	attack_module.base_proj_speed = 200
@@ -65,12 +65,12 @@ func _ready():
 func _post_inherit_ready():
 	._post_inherit_ready()
 	
-	var burn_dmg : FlatModifier = FlatModifier.new("ember_burn_dmg")
+	var burn_dmg : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.EMBER_BURN)
 	burn_dmg.flat_modifier = 0.75
 	
-	var burn_on_hit : OnHitDamage = OnHitDamage.new("ember_burn_on_hit_dmg", burn_dmg, DamageType.ELEMENTAL)
+	var burn_on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.EMBER_BURN, burn_dmg, DamageType.ELEMENTAL)
 	var burn_dmg_instance = DamageInstance.new()
-	burn_dmg_instance.on_hit_damages[burn_on_hit.internal_name] = burn_on_hit
+	burn_dmg_instance.on_hit_damages[burn_on_hit.internal_id] = burn_on_hit
 	
 	var burn_effect = EnemyDmgOverTimeEffect.new(burn_dmg_instance, StoreOfEnemyEffectsUUID.EMBER_BURN, 1)
 	burn_effect.is_timebound = true

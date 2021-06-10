@@ -60,7 +60,7 @@ func _ready():
 	magnet_attack_module.base_damage_type = info.base_damage_type
 	magnet_attack_module.base_attack_speed = info.base_attk_speed
 	magnet_attack_module.base_attack_wind_up = 0
-	magnet_attack_module.base_on_hit_damage_internal_name = "magnetizer_magnet_base_damage"
+	magnet_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	magnet_attack_module.is_main_attack = true
 	magnet_attack_module.base_pierce = info.base_pierce
 	magnet_attack_module.base_proj_speed = 350
@@ -88,7 +88,7 @@ func _ready():
 	beam_attack_module.base_damage_type = DamageType.ELEMENTAL
 	beam_attack_module.base_attack_speed = 0
 	beam_attack_module.base_attack_wind_up = 0
-	beam_attack_module.base_on_hit_damage_internal_name = "magnetizer_beam_base_damage"
+	beam_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	beam_attack_module.is_main_attack = false
 	beam_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	beam_attack_module.pierce = -1
@@ -229,7 +229,7 @@ func _module_turned_off():
 		beam_attack_module.disconnect("on_post_mitigation_damage_dealt", self, "_check_enemy_killed")
 
 
-func _check_enemy_killed(damage, damage_type, killed, enemy, damage_register_id, module):
+func _check_enemy_killed(damage_report, killed, enemy, damage_register_id, module):
 	if module == beam_attack_module and killed:
 		_enemy_killed(enemy)
 

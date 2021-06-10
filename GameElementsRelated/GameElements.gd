@@ -131,19 +131,19 @@ func _on_BuySellLevelRollPanel_reroll():
 	# TODO REPLACE THIS SOON
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.RAILGUN,
-			Towers.BEACON_DISH,
-			Towers.CHARGE,
-			Towers.FLAMEBURST,
-			Towers.VOLCANO,
+			Towers.PING,
+			Towers.SIMPLE_OBELISK,
+			Towers.COIN,
+			Towers._704,
+			Towers.SUNFLOWER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.ENTHALPHY,
-			Towers.EMBER,
-			Towers.TESLA,
+			Towers.BEACON_DISH,
+			Towers.MAGNETIZER,
 		])
 	
 	even = !even

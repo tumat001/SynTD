@@ -58,7 +58,7 @@ func _ready():
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 0
-	attack_module.base_on_hit_damage_internal_name = "beacon_base_damage"
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
@@ -84,9 +84,9 @@ func _ready():
 
 
 func _construct_on_hit_and_modifiers():
-	var physical_on_hit_modifier = FlatModifier.new("cf_phy_on_hit_buff")
+	var physical_on_hit_modifier = FlatModifier.new(StoreOfTowerEffectsUUID.CAMPFIRE_PHY_ON_HIT)
 	
-	physical_on_hit = OnHitDamage.new("cf_phy_on_hit_buff", physical_on_hit_modifier, DamageType.PHYSICAL)
+	physical_on_hit = OnHitDamage.new(StoreOfTowerEffectsUUID.CAMPFIRE_PHY_ON_HIT, physical_on_hit_modifier, DamageType.PHYSICAL)
 
 
 func _construct_effects():
@@ -98,8 +98,8 @@ func _construct_effects():
 
 # Giving effects and trigger
 
-func _enemy_damage_taken(damage, damage_type, is_lethal, enemy):
-	_current_rage += damage
+func _enemy_damage_taken(damage_report, is_lethal, enemy):
+	_current_rage += damage_report.get_total_effective_damage()
 	if _current_rage >= last_calculated_rage_threshold:
 		_update_physical_on_hit_effect()
 		_give_buffs_to_towers()

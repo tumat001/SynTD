@@ -148,7 +148,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		# Ingredient related
-		var attk_speed_attr_mod : PercentModifier = PercentModifier.new("sp")
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SPRINKLER)
 		attk_speed_attr_mod.percent_amount = 12.5
 		attk_speed_attr_mod.percent_based_on = PercentType.BASE
 		
@@ -178,7 +178,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		# Ingredient related
-		var base_dmg_attr_mod : FlatModifier = FlatModifier.new("sp")
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_BERRY_BUSH)
 		base_dmg_attr_mod.flat_modifier = 0.75
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_BERRY_BUSH)
@@ -186,7 +186,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ base dmg"
-		
 		
 		
 	elif tower_id == SIMPLE_OBELISK:
@@ -209,7 +208,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		# Ingredient related
-		var range_attr_mod : PercentModifier = PercentModifier.new("sp")
+		var range_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SIMPLE_OBELISK)
 		range_attr_mod.percent_amount = 50
 		range_attr_mod.percent_based_on = PercentType.BASE
 		
@@ -238,6 +237,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Directs a constant pure energy beam at a single target.",
 			"\"First Iteration\""
 		]
+		
+		
 	elif tower_id == RAILGUN:
 		info = TowerTypeInformation.new("Railgun", RAILGUN)
 		info.tower_cost = 2
@@ -257,7 +258,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		# Ingredient related
-		var base_pierce_attr_mod : FlatModifier = FlatModifier.new("railgun")
+		var base_pierce_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_RAILGUN)
 		base_pierce_attr_mod.flat_modifier = 1
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_PIERCE , base_pierce_attr_mod, StoreOfTowerEffectsUUID.ING_RAILGUN)
@@ -433,7 +434,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"\"Is it a beacon, or a dish?\""
 		]
 		
-		var range_attr_mod : FlatModifier = FlatModifier.new("beacon_range")
+		var range_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_BEACON_DISH)
 		range_attr_mod.flat_modifier = 30
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_BEACON_DISH)
@@ -501,9 +502,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Increasing this tower's total attack speed compared to its base attack speed increases the rate of energy accumulation."
 		]
 		
-		var attr_mod : FlatModifier = FlatModifier.new("ing_charge_on_hit_as_modifier")
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_CHARGE)
 		attr_mod.flat_modifier = 2
-		var on_hit : OnHitDamage = OnHitDamage.new("ing_charge_on_hit", attr_mod, DamageType.PHYSICAL)
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_CHARGE, attr_mod, DamageType.PHYSICAL)
 		
 		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_CHARGE)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -537,7 +538,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
-		var expl_attr_mod : PercentModifier = PercentModifier.new("magnetizer_bonus_expl_range")
+		var expl_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_MAGNETIZER)
 		expl_attr_mod.percent_amount = 40
 		expl_attr_mod.percent_based_on = PercentType.BASE
 		
@@ -570,7 +571,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		# Ingredient related
-		var attk_speed_attr_mod : PercentModifier = PercentModifier.new("sf")
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SUNFLOWER)
 		attk_speed_attr_mod.percent_amount = 25
 		attk_speed_attr_mod.percent_based_on = PercentType.BASE
 		
@@ -601,12 +602,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		# Ingredient related TODO REPLACE THIS
-		var burn_dmg : FlatModifier = FlatModifier.new("ember_burn_dmg")
+		var burn_dmg : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_EMBER)
 		burn_dmg.flat_modifier = 0.75
 		
-		var burn_on_hit : OnHitDamage = OnHitDamage.new("ember_burn_on_hit_dmg", burn_dmg, DamageType.ELEMENTAL)
+		var burn_on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_EMBER, burn_dmg, DamageType.ELEMENTAL)
 		var burn_dmg_instance = DamageInstance.new()
-		burn_dmg_instance.on_hit_damages[burn_on_hit.internal_name] = burn_on_hit
+		burn_dmg_instance.on_hit_damages[burn_on_hit.internal_id] = burn_on_hit
 		
 		var burn_effect = EnemyDmgOverTimeEffect.new(burn_dmg_instance, StoreOfEnemyEffectsUUID.ING_EMBER_BURN, 1)
 		burn_effect.is_timebound = true
@@ -614,7 +615,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var tower_effect = TowerOnHitEffectAdderEffect.new(burn_effect, StoreOfTowerEffectsUUID.ING_EMBER)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
-			
+		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "burn"
 		
@@ -667,7 +668,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		# Ingredient related
-		var base_dmg_attr_mod : FlatModifier = FlatModifier.new("cpfire_ing_bs_dmg")
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_CAMPFIRE)
 		base_dmg_attr_mod.flat_modifier = 1.25
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_CAMPFIRE)
@@ -698,7 +699,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Both the explosion and scorched earth benefit from base damage buffs."
 		]
 		
-		var expl_attr_mod : PercentModifier = PercentModifier.new("volcano_bonus_expl_range")
+		var expl_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_VOLCANO)
 		expl_attr_mod.percent_amount = 50
 		expl_attr_mod.percent_based_on = PercentType.BASE
 		
@@ -804,7 +805,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		# Ingredient related
-		var base_dmg_attr_mod : FlatModifier = FlatModifier.new("coal_launcher")
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_COAL_LAUNCHER)
 		base_dmg_attr_mod.flat_modifier = 0.75
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_COAL_LAUNCHER)
@@ -829,9 +830,21 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			""
+			"Enthalphy gains bonus elemental on hit damage based on the ratio of its total range to its base range. For every 40 bonus range, Enthalphy gains 0.75 damage.",
+			"Enthalphy also deals bonus 1.25 elemental on hit damage for its next two attacks after killing an enemy.",
+			"",
+			"\"H. 1) Increase reach of system. 2) Increase will of system.\""
 		]
 		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ENTHALPHY)
+		attr_mod.flat_modifier = 1.25
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_ENTHALPHY, attr_mod, DamageType.ELEMENTAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_ENTHALPHY)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
 		
 		
 	

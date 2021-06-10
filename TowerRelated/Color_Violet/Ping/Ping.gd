@@ -92,7 +92,7 @@ func _ready():
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 0
-	attack_module.base_on_hit_damage_internal_name = "ping_arrow"
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
 	attack_module.base_proj_speed = 167
@@ -126,7 +126,7 @@ func _ready():
 	seek_attack_module.base_damage_type = DamageType.PURE
 	seek_attack_module.base_attack_speed = 0
 	seek_attack_module.base_attack_wind_up = 0
-	seek_attack_module.base_on_hit_damage_internal_name = "ping_seek_base_damage"
+	seek_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	seek_attack_module.is_main_attack = false
 	seek_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	
@@ -167,7 +167,7 @@ func _ready():
 	shot_attack_module.is_main_attack = false
 	shot_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	shot_attack_module.position.y -= 30
-	shot_attack_module.base_on_hit_damage_internal_name = "ping_shot"
+	shot_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	shot_attack_module.on_hit_damage_scale = normal_on_hit_damage_scale
 	
 	
@@ -284,9 +284,8 @@ func _shoot_marked_enemies():
 	ping_eye_sprite.texture = PingEye_sleep_pic
 
 
-func _check_if_shot_killed_enemy(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int, module):
+func _check_if_shot_killed_enemy(damage_report, killed_enemy : bool, enemy, damage_register_id : int, module):
 	if damage_register_id == Ping_shot_register_id and killed_enemy == true:
-		#call_deferred(arrow_attack_module.reset_attack_timers())
 		arrow_attack_module.call_deferred("reset_attack_timers")
 
 

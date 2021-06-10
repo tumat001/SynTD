@@ -59,7 +59,7 @@ func _ready():
 	proj_attack_module.base_damage_type = info.base_damage_type
 	proj_attack_module.base_attack_speed = info.base_attk_speed
 	proj_attack_module.base_attack_wind_up = 1
-	proj_attack_module.base_on_hit_damage_internal_name = "volcano_base_damage"
+	proj_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	proj_attack_module.is_main_attack = true
 	proj_attack_module.base_pierce = info.base_pierce
 	proj_attack_module.base_proj_speed = 4 # 4 sec to reach the location
@@ -94,7 +94,7 @@ func _ready():
 	explosion_attack_module.base_damage_type = DamageType.PHYSICAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0
-	explosion_attack_module.base_on_hit_damage_internal_name = "volcano_explosion_damage"
+	explosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	explosion_attack_module.is_main_attack = false
 	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	
@@ -138,7 +138,7 @@ func _ready():
 	crater_attack_module.base_damage_type = DamageType.ELEMENTAL
 	crater_attack_module.base_attack_speed = 0
 	crater_attack_module.base_attack_wind_up = 0
-	crater_attack_module.base_on_hit_damage_internal_name = "volcano_explosion_damage"
+	crater_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	crater_attack_module.is_main_attack = false
 	crater_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	
@@ -173,7 +173,7 @@ func _ready():
 	
 	# add slow effect here
 	# also test if crater is dealing the right amount of damage
-	var slow_modifier : PercentModifier = PercentModifier.new("volcano_crater_slow")
+	var slow_modifier : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.VOLCANO_SLOW)
 	slow_modifier.percent_amount = -20
 	slow_modifier.percent_based_on = PercentType.MAX
 	

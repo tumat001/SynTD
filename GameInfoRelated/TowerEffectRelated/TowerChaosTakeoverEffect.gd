@@ -76,7 +76,7 @@ func _construct_modules():
 	orb_attack_module.base_damage_type = DamageType.PHYSICAL
 	orb_attack_module.base_attack_speed = 1.5
 	orb_attack_module.base_attack_wind_up = 0
-	orb_attack_module.base_on_hit_damage_internal_name = "chaos_orb_damage"
+	orb_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	orb_attack_module.is_main_attack = true
 	orb_attack_module.base_pierce = 1
 	orb_attack_module.base_proj_speed = 550
@@ -118,7 +118,7 @@ func _construct_modules():
 	diamond_attack_module.base_damage_type = DamageType.PHYSICAL
 	diamond_attack_module.base_attack_speed = 0.85
 	diamond_attack_module.base_attack_wind_up = 2
-	diamond_attack_module.base_on_hit_damage_internal_name = "chaos_dia_damage"
+	diamond_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	diamond_attack_module.is_main_attack = false
 	diamond_attack_module.base_pierce = 3
 	diamond_attack_module.base_proj_speed = 400
@@ -164,7 +164,7 @@ func _construct_modules():
 	bolt_attack_module.is_main_attack = false
 	bolt_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	bolt_attack_module.position.y -= 22
-	bolt_attack_module.base_on_hit_damage_internal_name = "chaos_bolt"
+	bolt_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	bolt_attack_module.base_damage_scale = 1.5
 	bolt_attack_module.benefits_from_bonus_attack_speed = true
 	bolt_attack_module.benefits_from_bonus_base_damage = true
@@ -201,7 +201,7 @@ func _construct_modules():
 	sword_attack_module.base_attack_wind_up = 0
 	sword_attack_module.is_main_attack = false
 	sword_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	sword_attack_module.base_on_hit_damage_internal_name = "chaos_sword"
+	sword_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	sword_attack_module.on_hit_damage_scale = 1
 	sword_attack_module.range_module = orb_range_module
 	sword_attack_module.base_damage_scale = 5
@@ -297,8 +297,8 @@ func _on_round_end():
 	damage_accumulated = 0
 
 
-func _add_damage_accumulated(damage : float, damage_type : int, killed_enemy : bool, enemy, damage_register_id : int, module):
-	damage_accumulated += damage
+func _add_damage_accumulated(damage_report, killed_enemy : bool, enemy, damage_register_id : int, module):
+	damage_accumulated += damage_report.get_total_effective_damage()
 	call_deferred("_check_damage_accumulated")
 
 func _check_damage_accumulated():
