@@ -775,7 +775,7 @@ func calculate_final_base_damage():
 
 func _get_base_damage_as_on_hit_damage() -> OnHitDamage:
 	var modifier : FlatModifier = FlatModifier.new(base_on_hit_damage_internal_id)
-	modifier.flat_modifier = calculate_final_base_damage()
+	modifier.flat_modifier = last_calculated_final_damage #calculate_final_base_damage()
 	
 	if base_damage_scale != 1:
 		modifier = modifier.get_copy_scaled_by(base_damage_scale)

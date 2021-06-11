@@ -82,9 +82,9 @@ func _ready():
 	# sky attack
 	
 	var attack_module : InstantDamageAttackModule = InstantDamageAttackModule_Scene.instance()
-	attack_module.base_damage = 0#info.base_damage
+	attack_module.base_damage = info.base_damage
 	attack_module.base_damage_type = info.base_damage_type
-	attack_module.base_attack_speed = 2 #info.base_attk_speed
+	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 4
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
@@ -399,11 +399,12 @@ func _special_case_tower_effect_added(effect : TowerBaseEffect):
 # Heat Module
 
 func set_heat_module(module : HeatModule):
+	module.heat_per_attack = 1
 	.set_heat_module(module)
 
 func _construct_heat_effect():
 	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_dmg_attr_mod.flat_modifier = 2
+	base_dmg_attr_mod.flat_modifier = 2.5
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
 

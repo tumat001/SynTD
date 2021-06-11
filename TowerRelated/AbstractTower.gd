@@ -1272,7 +1272,6 @@ func set_heat_module(arg_heat_module):
 func _construct_heat_effect():
 	pass
 
-
 func _emit_heat_module_should_change_visibility():
 	emit_signal("heat_module_should_be_displayed_changed")
 

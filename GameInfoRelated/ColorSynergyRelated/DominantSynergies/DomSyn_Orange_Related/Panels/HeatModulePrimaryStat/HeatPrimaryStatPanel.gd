@@ -14,6 +14,8 @@ var heat_module : HeatModule setget set_heat_module
 onready var effect_panel : SingleIngredientPanel = $VBoxContainer/MarginContainer2/ScrollContainer/EffectPanel
 onready var stat_display_label : Label = $VBoxContainer/MarginContainer/Marginer/StatDisplayLabel
 
+func _ready():
+	effect_panel.use_dynamic_description = true
 
 func set_heat_module(arg_heat_module):
 	if heat_module != null:

@@ -143,3 +143,25 @@ func _bullet_burst(enemy, damage_reg_id, module):
 		
 		get_tree().get_root().call_deferred("add_child", bullet)
 
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 1
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var base_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_attr_mod.flat_modifier = 50
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	for module in all_attack_modules:
+		if module.range_module != null and module.range_module.benefits_from_bonus_range:
+			module.range_module.update_range()
+	
+	emit_signal("final_range_changed")

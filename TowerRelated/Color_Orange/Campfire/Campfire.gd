@@ -13,6 +13,7 @@ const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
 const CampfireParticle_Scene = preload("res://TowerRelated/Color_Orange/Campfire/CampfireTriggerParticle.tscn")
 
+const HeatModule = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/HeatModule.gd")
 
 var tower_detecting_range_module : TowerDetectingRangeModule
 const base_rage_threshold : float = 50.0
@@ -99,11 +100,14 @@ func _construct_effects():
 # Giving effects and trigger
 
 func _enemy_damage_taken(damage_report, is_lethal, enemy):
-	_current_rage += damage_report.get_total_effective_damage()
+	_current_rage += damage_report.get_total_effective_damage_excluding([StoreOfTowerEffectsUUID.CAMPFIRE_PHY_ON_HIT])
+	
 	if _current_rage >= last_calculated_rage_threshold:
-		_update_physical_on_hit_effect()
-		_give_buffs_to_towers()
-		_construct_particle()
+		if heat_module == null or !heat_module.is_in_overheat_cooldown:
+			_update_physical_on_hit_effect()
+			_give_buffs_to_towers()
+			_construct_particle()
+		
 		_current_rage = 0
 
 
@@ -114,6 +118,7 @@ func _update_physical_on_hit_effect():
 
 
 func _give_buffs_to_towers():
+	_campfire_attack_equivalent()
 	for tower in tower_detecting_range_module.get_all_in_map_towers_in_range():
 		tower.add_tower_effect(physical_on_hit_effect._shallow_duplicate())
 
@@ -201,3 +206,33 @@ func _on_round_end():
 	._on_round_end()
 	
 	_current_rage = 0
+
+
+# Heat Module
+
+
+func set_heat_module(module : HeatModule):
+	module.heat_per_attack = 3
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_dmg_attr_mod.flat_modifier = 2
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	for module in all_attack_modules:
+		if module.benefits_from_bonus_base_damage:
+			module.calculate_final_base_damage()
+	
+	emit_signal("final_base_damage_changed")
+
+
+func _campfire_attack_equivalent():
+	if heat_module != null:
+		# The param is unused, so..
+		heat_module._on_tower_attack_finished("")

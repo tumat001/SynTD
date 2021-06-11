@@ -654,7 +654,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 3
 		info.tower_image_in_buy_card = campfire_image
 		
-		info.base_damage = 5
+		info.base_damage = 4
 		info.base_attk_speed = 1
 		info.base_pierce = 0
 		info.base_range = 135
@@ -664,8 +664,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Campfire gains Rage equivalent to the damage taken by enemies within its range.",
 			"When enough Rage is built up, Campfire consumes all Rage to give bonus physical on hit damage to the next benefiting attack of all towers in range.",
+			"Campfire does not gain Rage from the damage its buff has dealt.",
 			"The bonus on hit damage is equal to Campfire's total base damage.",
-			"The rage threshold to trigger the buff inversely scales with Campfire's total attack speed.",
+			"The rage threshold to trigger the buff inversely scales with Campfire's total attack speed. The base rage threshold is 50.",
 		]
 		
 		# Ingredient related
@@ -774,7 +775,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 2
 		info.tower_image_in_buy_card = scatter_image
 		
-		info.base_damage = 2
+		info.base_damage = 1.5
 		info.base_attk_speed = 0.575
 		info.base_pierce = 1
 		info.base_range = 110

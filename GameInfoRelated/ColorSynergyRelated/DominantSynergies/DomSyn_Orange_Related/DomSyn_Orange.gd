@@ -2,6 +2,9 @@ extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifying
 
 const HeatModule = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/HeatModule.gd")
 
+signal on_round_end()
+signal on_base_multiplier_changed(scale)
+
 
 const tier_1_heat_effect_scale : float = 3.4
 const tier_2_heat_effect_scale : float = 2.6
@@ -12,8 +15,6 @@ var current_heat_effect_scale : float
 var should_modules_show_in_info : bool = false
 
 var current_overheat_effects : Array = []
-
-var all_heat_modules : Array = []
 
 var game_elements : GameElements
 
@@ -68,8 +69,7 @@ func set_game_elements(arg_game_elements):
 
 
 func _on_round_ended(stageround):
-	for module in all_heat_modules:
-		module.on_round_end()
+	emit_signal("on_round_end")
 
 
 # Heat module related
@@ -80,13 +80,14 @@ func construct_heat_module() -> HeatModule:
 	heat_module.should_be_shown_in_info_panel = should_modules_show_in_info
 	heat_module.base_effect_multiplier = current_heat_effect_scale
 	
-	all_heat_modules.append(heat_module)
+	connect("on_round_end", heat_module, "on_round_end")
+	connect("on_base_multiplier_changed", heat_module, "set_base_effect_multiplier", [], CONNECT_PERSIST)
+	
 	return heat_module
 
 
 func _set_effect_multiplier_of_heat_modules(scale : float):
-	for module in all_heat_modules:
-		module.base_effect_multiplier = scale
+	emit_signal("on_base_multiplier_changed", scale)
 
 
 # Towers

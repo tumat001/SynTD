@@ -250,6 +250,7 @@ func _show_round_panel():
 		
 		tower_being_shown_in_info = null
 
+
 # Round related
 
 func _round_started(_stageround):

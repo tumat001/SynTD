@@ -52,7 +52,7 @@ func _init():
 
 
 # round related
-
+# Note: accessed by domsyn_orange thru signal
 func on_round_end():
 	_current_heat_gained_in_round = 0
 	is_max_heat_per_round_reached = false
@@ -131,7 +131,7 @@ func set_base_heat_effect(arg_heat_effect : TowerBaseEffect):
 		if tower != null:
 			_set_tower_current_heat_effect()
 
-
+# Note: accessed by domsyn_orange thru signal
 func set_base_effect_multiplier(scale : float):
 	base_effect_multiplier = scale
 	_calculate_final_effect_multiplier()

@@ -141,8 +141,8 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.SUNFLOWER,
 			Towers.MAGNETIZER,
-			Towers.BEACON_DISH,
-			Towers.COIN,
+			Towers.PING,
+			Towers.CAMPFIRE,
 			Towers.TESLA,
 		])
 	

@@ -13,6 +13,8 @@ const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const Coal_Proj01 = preload("res://TowerRelated/Color_Orange/CoalLauncher/Coal_Proj/Coal_Proj01.png")
 const Coal_Proj02 = preload("res://TowerRelated/Color_Orange/CoalLauncher/Coal_Proj/Coal_Proj02.png")
 
+const PercentType = preload("res://GameInfoRelated/PercentType.gd")
+
 var coal_attack_module : BulletAttackModule
 var burn_effect_ids_to_inc : Array = [
 	StoreOfEnemyEffectsUUID.ING_EMBER_BURN,
@@ -82,3 +84,26 @@ func _on_coal_hit_enemy(enemy : AbstractEnemy, damage_reg_id, module):
 		if burn_effect_ids_to_inc.has(eff_id):
 			enemy._dmg_over_time_id_effects_map[eff_id].time_in_seconds += 1.5
 
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 1
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var base_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_attr_mod.percent_amount = 30
+	base_attr_mod.percent_based_on = PercentType.BASE
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	for module in all_attack_modules:
+		if module.benefits_from_bonus_attack_speed:
+			module.calculate_all_speed_related_attributes()
+	
+	emit_signal("final_attack_speed_changed")
