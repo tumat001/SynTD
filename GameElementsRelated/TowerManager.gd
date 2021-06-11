@@ -51,6 +51,7 @@ func _ready():
 	for color in TowerColors.get_all_colors():
 		_color_groups.append(str(color))
 
+
 # Generic things that can branch out to other resp.
 
 func _tower_in_queue_free(tower):
@@ -208,6 +209,7 @@ func _show_tower_info_panel(tower : AbstractTower):
 	tower.connect("targeting_options_modified", self, "_update_targeting")
 	tower.connect("energy_module_attached", self, "_update_energy_module_display")
 	tower.connect("energy_module_detached", self ,"_update_energy_module_display")
+	tower.connect("heat_module_should_be_displayed_changed", self, "_update_heat_module_should_display_display")
 
 func _update_final_range_in_info():
 	tower_stats_panel.update_final_range()
@@ -227,6 +229,9 @@ func _update_targeting():
 func _update_energy_module_display():
 	tower_info_panel.update_display_of_energy_module()
 
+func _update_heat_module_should_display_display():
+	tower_info_panel.update_display_of_heat_module_panel()
+
 
 func _show_round_panel():
 	right_side_panel.show_round_panel()
@@ -241,6 +246,7 @@ func _show_round_panel():
 		tower_being_shown_in_info.disconnect("targeting_options_modified", self, "_update_targeting")
 		tower_being_shown_in_info.disconnect("energy_module_attached", self, "_update_energy_module_display")
 		tower_being_shown_in_info.disconnect("energy_module_detached", self ,"_update_energy_module_display")
+		tower_being_shown_in_info.disconnect("heat_module_should_be_displayed_changed", self, "_update_heat_module_should_display_display")
 		
 		tower_being_shown_in_info = null
 
@@ -277,20 +283,17 @@ func get_all_active_towers() -> Array:
 	var bucket : Array = []
 	
 	for color in _color_groups:
-		for tower in get_all_active_towers_with_color_name(color):
+		for tower in get_all_active_towers_with_color(color):
 			if !bucket.has(tower):
 				bucket.append(tower)
 	
 	return bucket
 
-func get_all_active_towers_with_color(color : int) -> Array:
-	return get_all_active_towers_with_color_name(TowerColors.get_color_name_on_card(color))
 
-
-func get_all_active_towers_with_color_name(color_name : String) -> Array:
+func get_all_active_towers_with_color(color : String) -> Array:
 	var bucket : Array = []
 	for child in get_children():
-		if child.is_in_group(color_name):
+		if child.is_in_group(color):
 			bucket.append(child)
 	
 	return bucket

@@ -23,6 +23,8 @@ const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated
 
 const _704_EmblemBase = preload("res://TowerRelated/Color_Orange/704/704_EmblemBase.gd")
 
+const HeatModule = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/HeatModule.gd")
+
 const _704_Beam01 = preload("res://TowerRelated/Color_Orange/704/704_Beam/704_Beam01.png")
 const _704_Beam02 = preload("res://TowerRelated/Color_Orange/704/704_Beam/704_Beam02.png")
 const _704_Beam03 = preload("res://TowerRelated/Color_Orange/704/704_Beam/704_Beam03.png")
@@ -59,6 +61,7 @@ onready var in_field_emblem_fire : _704_EmblemBase = $TowerBase/Emblem_Fire
 onready var in_field_emblem_explosive : _704_EmblemBase = $TowerBase/Emblem_Explosive
 onready var in_field_emblem_toughness_pierce : _704_EmblemBase = $TowerBase/Emblem_ToughnessPierce
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_construct_burn_effect()
@@ -79,9 +82,9 @@ func _ready():
 	# sky attack
 	
 	var attack_module : InstantDamageAttackModule = InstantDamageAttackModule_Scene.instance()
-	attack_module.base_damage = info.base_damage
+	attack_module.base_damage = 0#info.base_damage
 	attack_module.base_damage_type = info.base_damage_type
-	attack_module.base_attack_speed = info.base_attk_speed
+	attack_module.base_attack_speed = 2 #info.base_attk_speed
 	attack_module.base_attack_wind_up = 4
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
@@ -388,6 +391,28 @@ func attempt_allocate_points_to_toughness_pierce():
 
 # Ing
 
-func _special_case_effect_added(effect : TowerBaseEffect):
+func _special_case_tower_effect_added(effect : TowerBaseEffect):
 	if effect is _704EmblemPointsEffect:
 		available_points += 4
+
+
+# Heat Module
+
+func set_heat_module(module : HeatModule):
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_dmg_attr_mod.flat_modifier = 2
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	for module in all_attack_modules:
+		if module.benefits_from_bonus_base_damage:
+			module.calculate_final_base_damage()
+	
+	emit_signal("final_base_damage_changed")

@@ -6,8 +6,8 @@ export(bool) var display_chunks : bool = false
 var chunks : Array = []
 export(Texture) var chunk_separator_pic : Texture
 
-export(Texture) var bar_background_pic : Texture
-export(Texture) var fill_foreground_pic : Texture
+export(Texture) var bar_background_pic : Texture setget set_bar_background_pic
+export(Texture) var fill_foreground_pic : Texture setget set_fill_foreground_pic
 export(float) var fill_foreground_margin_top : float
 export(float) var fill_foreground_margin_left : float
 
@@ -21,6 +21,24 @@ onready var fill_foreground : TextureRect = $BarFillForeground/FillForeground
 onready var chunks_container : Control = $BarFillForeground/Chunks
 onready var bar_fill_foreground_marginer : MarginContainer = $BarFillForeground
 
+
+# setters
+
+func set_bar_background_pic(value : Texture):
+	bar_background_pic = value
+	
+	if bar_backround != null:
+		bar_backround.texture = value
+
+
+func set_fill_foreground_pic(value : Texture):
+	fill_foreground_pic = value
+	
+	if fill_foreground != null:
+		fill_foreground.texture = value
+
+
+#
 
 func _ready():
 	rect_scale *= scale_of_scale

@@ -8,6 +8,7 @@ const Bar_Below75 = preload("res://GameInfoRelated/ColorSynergyRelated/DominantS
 const Bar_Below100 = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/Panels/HeatModuleBar/HeatBar_FillForeground_Below100.png")
 const Bar_At100 = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/Panels/HeatModuleBar/HeatBar_FillForeground_At100.png")
 const Bar_MaxPerRoundReached = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/Panels/HeatModuleBar/HeatBar_FillForeground_MaxHeatPerRound.png")
+const Bar_OverheatCooldown = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/Panels/HeatModuleBar/HeatBar_FillForeground_CoolingDown.png")
 
 var heat_module : HeatModule setget set_heat_module
 
@@ -19,12 +20,16 @@ func set_heat_module(arg_heat_module : HeatModule):
 	if heat_module != null:
 		heat_module.disconnect("current_heat_changed", self, "_module_current_heat_changed")
 		heat_module.disconnect("heat_per_attack_changed", self, "_module_heat_per_attack_changed")
+		heat_module.disconnect("on_round_end", self, "_module_current_heat_changed")
+		heat_module.disconnect("max_heat_per_round_reached", self, "_module_current_heat_changed")
 	
 	heat_module = arg_heat_module
 	
 	if heat_module != null:
-		heat_module.connect("current_heat_changed", self, "_module_current_heat_changed")
-		heat_module.connect("heat_per_attack_changed", self, "_module_heat_per_attack_changed")
+		heat_module.connect("current_heat_changed", self, "_module_current_heat_changed", [], CONNECT_PERSIST)
+		heat_module.connect("heat_per_attack_changed", self, "_module_heat_per_attack_changed", [], CONNECT_PERSIST)
+		heat_module.connect("on_round_end", self, "_module_current_heat_changed", [], CONNECT_PERSIST)
+		heat_module.connect("max_heat_per_round_reached", self, "_module_current_heat_changed", [], CONNECT_PERSIST)
 
 
 func _module_current_heat_changed():
@@ -33,21 +38,28 @@ func _module_current_heat_changed():
 	current_heat_label.text = str(curr_heat)
 	current_heat_bar.current_value = curr_heat
 	
-	if curr_heat > 25:
-		current_heat_bar.fill_foreground_pic = Bar_Below25
-	elif curr_heat > 50:
-		current_heat_bar.fill_foreground_pic = Bar_Below50
-	elif curr_heat > 75:
-		current_heat_bar.fill_foreground_pic = Bar_Below75
-	elif curr_heat > 100:
+	
+	if heat_module.is_in_overheat_cooldown:
+		current_heat_bar.fill_foreground_pic = Bar_OverheatCooldown
+		return
+	
+	
+	if curr_heat >= 75 and curr_heat != 100:
 		current_heat_bar.fill_foreground_pic = Bar_Below100
+	elif curr_heat >= 50:
+		current_heat_bar.fill_foreground_pic = Bar_Below75
+	elif curr_heat >= 25:
+		current_heat_bar.fill_foreground_pic = Bar_Below50
+	elif curr_heat >= 0:
+		current_heat_bar.fill_foreground_pic = Bar_Below25
 	
 	if heat_module.is_max_heat_per_round_reached and curr_heat != 100:
 		current_heat_bar.fill_foreground_pic = Bar_MaxPerRoundReached
 	
 	if curr_heat == 100:
 		current_heat_bar.fill_foreground_pic = Bar_At100
-
+	
+	
 
 func _module_heat_per_attack_changed():
 	heat_per_attack_label.text = str(heat_module.heat_per_attack)

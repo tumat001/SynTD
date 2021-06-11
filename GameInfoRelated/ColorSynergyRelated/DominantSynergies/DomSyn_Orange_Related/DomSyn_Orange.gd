@@ -17,6 +17,7 @@ var all_heat_modules : Array = []
 
 var game_elements : GameElements
 
+
 # Adding syn to game ele
 
 func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
@@ -40,20 +41,21 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		_set_effect_multiplier_of_heat_modules(tier_1_heat_effect_scale)
 		current_heat_effect_scale = tier_1_heat_effect_scale
 	
-	var all_orange_towers = game_elements.tower_manager.get_all_active_towers_with_color(TowerColors.ORANGE)
-	_towers_to_benefit_from_syn(all_orange_towers)
+	var all_towers = game_elements.tower_manager.get_all_active_towers()
+	_towers_to_benefit_from_syn(all_towers)
 
 # Removing syn
 
 func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int):
 	should_modules_show_in_info = false
+	current_heat_effect_scale = 0
 	
 	if game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy"):
 		game_elements.tower_manager.disconnect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy")
 		game_elements.tower_manager.disconnect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy")
 	
-	var all_orange_towers = game_elements.tower_manager.get_all_active_towers_with_color(TowerColors.ORANGE)
-	_towers_to_remove_from_syn(all_orange_towers)
+	var all_towers = game_elements.tower_manager.get_all_active_towers()
+	_towers_to_remove_from_syn(all_towers)
 
 
 # Game elements and round related
@@ -100,6 +102,7 @@ func _tower_to_benefit_from_synergy(tower : AbstractTower):
 			tower.heat_module.set_tower(tower)
 		else:
 			tower.heat_module.should_be_shown_in_info_panel = true
+			tower.heat_module.base_effect_multiplier = current_heat_effect_scale
 
 
 func _towers_to_remove_from_syn(towers : Array):
@@ -109,5 +112,7 @@ func _towers_to_remove_from_syn(towers : Array):
 func _tower_to_remove_from_synergy(tower : AbstractTower):
 	if tower._tower_colors.has(TowerColors.ORANGE):
 		if tower.heat_module != null:
+			tower.heat_module.base_effect_multiplier = 0
 			tower.heat_module.should_be_shown_in_info_panel = false
+			
 

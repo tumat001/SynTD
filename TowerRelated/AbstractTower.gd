@@ -65,11 +65,16 @@ signal on_damage_instance_constructed(damage_instance, module)
 signal on_range_module_enemy_entered(enemy, range_module)
 signal on_range_module_enemy_exited(enemy, range_module)
 
+signal on_round_end
+signal on_round_start
+
+
+# syn signals
+
 signal energy_module_attached
 signal energy_module_detached
 
-signal on_round_end
-signal on_round_start
+signal heat_module_should_be_displayed_changed
 
 
 export var tower_highlight_sprite : Resource
@@ -143,6 +148,7 @@ var energy_module setget set_energy_module
 
 # Orange
 var heat_module setget set_heat_module
+var base_heat_effect : TowerBaseEffect
 
 
 
@@ -384,7 +390,7 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		
 	elif tower_base_effect is _704EmblemPointsEffect:
 		if include_non_module_effects:
-			_special_case_effect_added(tower_base_effect)
+			_special_case_tower_effect_added(tower_base_effect)
 			remove_ingredient(ing_effect)
 		
 	elif tower_base_effect is TowerResetEffects:
@@ -765,7 +771,7 @@ func _remove_resistance_pierce_effect(attr_effect_uuid : int, target_modules : A
 
 # special case effects
 
-func _special_case_effect_added(effect : TowerBaseEffect):
+func _special_case_tower_effect_added(effect : TowerBaseEffect):
 	pass
 
 
@@ -1242,5 +1248,33 @@ func _module_turned_off():
 
 # ORANGE - heat module
 
-func set_heat_module(heat_module):
+func set_heat_module(arg_heat_module):
+	if base_heat_effect == null:
+		_construct_heat_effect()
+	
+	if heat_module != null:
+		heat_module.tower = null
+		
+		if heat_module.is_connected("should_be_shown_in_info_panel_changed", self, "_emit_heat_module_should_change_visibility"):
+			heat_module.disconnect("should_be_shown_in_info_panel_changed", self, "_emit_heat_module_should_change_visibility")
+			heat_module.disconnect("current_heat_effect_changed", self, "_heat_module_current_heat_effect_changed")
+	
+	heat_module = arg_heat_module
+	
+	if heat_module != null:
+		heat_module.base_heat_effect = base_heat_effect
+		heat_module.tower = self
+		
+		if !heat_module.is_connected("should_be_shown_in_info_panel_changed", self, "_emit_heat_module_should_change_visibility"):
+			heat_module.connect("should_be_shown_in_info_panel_changed", self, "_emit_heat_module_should_change_visibility", [], CONNECT_PERSIST)
+			heat_module.connect("current_heat_effect_changed", self, "_heat_module_current_heat_effect_changed", [], CONNECT_PERSIST)
+
+func _construct_heat_effect():
+	pass
+
+
+func _emit_heat_module_should_change_visibility():
+	emit_signal("heat_module_should_be_displayed_changed")
+
+func _heat_module_current_heat_effect_changed():
 	pass

@@ -18,8 +18,10 @@ signal on_round_end
 signal current_heat_effect_changed
 signal base_heat_effect_changed
 
+signal in_overheat_cooldown
 
-var base_effect_multiplier : float = 1
+
+var base_effect_multiplier : float = 1 setget set_base_effect_multiplier
 var base_heat_effect : TowerBaseEffect setget set_base_heat_effect
 var current_heat_effect : TowerBaseEffect
 
@@ -27,7 +29,7 @@ var tower : AbstractTower setget set_tower
 
 const max_heat : int = 100
 const heat_reduction_per_inactive_round : int = 50
-var heat_per_attack : int setget set_heat_per_attack
+var heat_per_attack : int = 1 setget set_heat_per_attack
 var current_heat : int setget set_current_heat
 var _current_heat_gained_in_round : int
 const max_heat_gain_per_round : int = 75
@@ -44,6 +46,7 @@ var has_attacked_in_round : bool
 var should_be_shown_in_info_panel : bool
 var overheat_effects : Array
 
+
 func _init():
 	pass
 
@@ -51,7 +54,6 @@ func _init():
 # round related
 
 func on_round_end():
-	has_attacked_in_round = false
 	_current_heat_gained_in_round = 0
 	is_max_heat_per_round_reached = false
 	
@@ -61,17 +63,22 @@ func on_round_end():
 			is_in_overheat_active = false
 			_tower_exited_overheat()
 			
+			call_deferred("in_overheat_cooldown")
 			tower.set_disabled_from_attacking_clause(tower.DisabledFromAttackingSource.HEAT_MODULE, true)
 			
 		else:
 			is_in_overheat_cooldown = false
 			
 			if tower._other_disabled_from_attacking_clauses.has(tower.DisabledFromAttackingSource.HEAT_MODULE):
+				# INTENTIONAL THAT THE SET METHOD IS NOT USED
+				current_heat = 0
 				tower.erase_disabled_from_attacking_clause(tower.DisabledFromAttackingSource.HEAT_MODULE)
 		
 		
 		if !has_attacked_in_round:
 			set_current_heat(current_heat - heat_reduction_per_inactive_round)
+	
+	has_attacked_in_round = false
 	
 	call_deferred("emit_signal", "on_round_end")
 
@@ -88,6 +95,7 @@ func increment_current_heat():
 		
 		if _current_heat_gained_in_round >= max_heat_gain_per_round:
 			is_max_heat_per_round_reached = true
+			_tower_reached_overheat()
 			call_deferred("emit_signal", "max_heat_per_round_reached")
 		
 		
@@ -103,23 +111,30 @@ func set_current_heat(arg_current_heat : int):
 	
 	if current_heat == 100:
 		is_in_overheat_active = true
-		call_deferred("_tower_reached_overheat")
+		_tower_reached_overheat()
 	
 	call_deferred("emit_signal", "current_heat_changed")
+	_calculate_final_effect_multiplier()
 	update_current_heat_effect()
+
 
 func set_base_heat_effect(arg_heat_effect : TowerBaseEffect):
 	base_heat_effect = arg_heat_effect
-	base_heat_effect.effect_uuid = StoreOfTowerEffectsUUID.HEAT_MODULE_EFFECT
-	call_deferred("emit_signal", "base_heat_effect_changed")
-	update_current_heat_effect()
 	
-	if tower != null:
-		_set_tower_current_heat_effect()
+	if arg_heat_effect != null:
+		base_heat_effect.effect_uuid = StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT
+		call_deferred("emit_signal", "base_heat_effect_changed")
+		
+		current_heat_effect = base_heat_effect._shallow_duplicate()
+		update_current_heat_effect()
+		
+		if tower != null:
+			_set_tower_current_heat_effect()
 
 
 func set_base_effect_multiplier(scale : float):
 	base_effect_multiplier = scale
+	_calculate_final_effect_multiplier()
 	update_current_heat_effect()
 
 
@@ -134,9 +149,10 @@ func set_tower(arg_tower : AbstractTower):
 	
 	if tower != null:
 		_set_tower_current_heat_effect()
+		_calculate_final_effect_multiplier()
 		
 		if !tower.is_connected("on_main_attack_finished", self, "_on_tower_attack_finished"):
-			tower.connect("on_main_attack_finished", self, "_on_tower_attack_finished")
+			tower.connect("on_main_attack_finished", self, "_on_tower_attack_finished", [], CONNECT_PERSIST)
 
 
 func set_should_be_shown_in_info_panel(value : bool):
@@ -152,11 +168,13 @@ func set_heat_per_attack(arg_heat_per_attack : int):
 # Tower related
 
 func _on_tower_attack_finished(_module):
-	has_attacked_in_round = true
-	increment_current_heat()
+	if base_effect_multiplier != 0: # if not disabled
+		has_attacked_in_round = true
+		increment_current_heat()
 
 
-# One time set.. Any modifications will be handled
+# One time set until removal.. 
+# Any modifications will be handled
 # due to how objects work (reference)
 func _set_tower_current_heat_effect():
 	if current_heat_effect != null and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT):
@@ -174,36 +192,30 @@ func _tower_reached_overheat():
 func _tower_exited_overheat():
 	pass
 
+
 # Current heat effect calcs/updates
 
 func update_current_heat_effect():
-	var scale = _calculate_final_effect_multiplier()
-	var s_copy
+	var scale = last_calculated_final_effect_multiplier
+	var s_copy = current_heat_effect
 	
 	if base_heat_effect is TowerAttributesEffect:
-		s_copy = base_heat_effect._shallow_duplicate()
-		var modifier_copy = s_copy.attribute_as_modifier.get_copy_scaled_by(scale)
+		var modifier_copy = base_heat_effect.attribute_as_modifier.get_copy_scaled_by(scale)
 		s_copy.attribute_as_modifier = modifier_copy
 		
-		current_heat_effect = s_copy
-		
 	elif base_heat_effect is TowerOnHitDamageAdderEffect:
-		s_copy = base_heat_effect._shallow_duplicate()
-		var on_hit_d_copy : OnHitDamage = s_copy.on_hit_damage.duplicate()
+		var on_hit_d_copy : OnHitDamage = base_heat_effect.on_hit_damage.duplicate()
 		on_hit_d_copy.damage_as_modifier = on_hit_d_copy.damage_as_modifier.get_copy_scaled_by(scale)
 		s_copy.on_hit_damage = on_hit_d_copy
-		
-		current_heat_effect = s_copy
-		
-	elif base_heat_effect is TowerOnHitEffectAdderEffect:
-		s_copy = base_heat_effect._shallow_duplicate()
-		var effect_copy = s_copy.enemy_base_effect._get_copy_scaled_by(scale)
-		s_copy.enemy_base_effect = effect_copy
-		
-		current_heat_effect = s_copy
 	
-	call_deferred("emit_signal", "current_heat_effect_changed")
-
+	elif base_heat_effect is TowerOnHitEffectAdderEffect:
+		var effect_copy = base_heat_effect.enemy_base_effect._get_copy_scaled_by(scale)
+		s_copy.enemy_base_effect = effect_copy
+	
+	
+	current_heat_effect = s_copy
+	
+	emit_signal("current_heat_effect_changed")
 
 # Stat calculation related
 
@@ -216,15 +228,15 @@ func _calculate_final_effect_multiplier():
 
 
 func _calculate_effect_step_and_remainder() -> Array:
-	var ratio = current_heat / max_heat
-	var n = (ratio / 100) * 4
+	var ratio = float(current_heat) / float(max_heat)
+	var n = ratio * 4
 	
-	var step : float = round(n)
-	var remainder : float = n -  step
+	var step : float = floor(n)
+	var remainder : float = (n - step) / 4
 	
 	step /= 4
 	
 	return [step, remainder]
 
 func _calculate_remainder_true_multiplier(remainder : float):
-	return remainder * remainder
+	return ((remainder * remainder) / (0.25 * 0.25)) / 4

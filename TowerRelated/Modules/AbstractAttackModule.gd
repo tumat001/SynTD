@@ -22,6 +22,7 @@ signal on_enemy_hit(enemy, damage_register_id, module)
 
 signal on_damage_instance_constructed(damage_instance, module)
 
+signal before_attack_sprite_is_shown(attack_sprite)
 
 enum CanBeCommandedByTower_ClauseId {
 	CHAOS_TAKEOVER = 1
@@ -701,6 +702,7 @@ func _attack_enemies(enemies : Array):
 	for enemy in enemies:
 		if attack_sprite_scene != null:
 			var attack_sprite = attack_sprite_scene.instance()
+			emit_signal("before_attack_sprite_is_shown", attack_sprite)
 			
 			if attack_sprite_follow_enemy:
 				enemy.add_child(attack_sprite)

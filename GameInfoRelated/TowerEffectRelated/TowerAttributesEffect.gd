@@ -55,9 +55,9 @@ func _init(arg_attribute_type : int, arg_modifier,
 # Description Related
 
 func _get_description() -> String:
-	if description != null and description != "":
-		return description
-	
+#	if description != null and description != "":
+#		return description
+#
 	if attribute_type == FLAT_BASE_DAMAGE_BONUS:
 		return _generate_flat_description("base dmg")
 	elif attribute_type == PERCENT_BASE_DAMAGE_BONUS:

@@ -9,8 +9,14 @@ onready var heat_bar_panel = $VBoxContainer/BodyPanel/VBoxContainer/HeatModuleBa
 
 
 func set_heat_module(arg_heat_module : HeatModule):
+	heat_module = arg_heat_module
+	
 	heat_primary_stat_panel.heat_module = heat_module
 	heat_bar_panel.heat_module = heat_module
+
+func update_display():
+	heat_bar_panel.update_display()
+	heat_primary_stat_panel.update_display()
 
 
 func _on_About_pressed():

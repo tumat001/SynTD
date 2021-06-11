@@ -31,7 +31,7 @@ texture = ExtResource( 4 )
 
 [node name="BaseSprites" parent="TowerBase" index="1"]
 frames = SubResource( 1 )
-frame = 2
+frame = 1
 playing = true
 offset = Vector2( 0, -1 )
 

@@ -19,4 +19,4 @@ func update_display():
 
 func _update_panel(arg_tower_base_effect):
 	$HBoxContainer/IngredientIcon.texture = arg_tower_base_effect.effect_icon
-	$HBoxContainer/Marginer/IngredientLabel.text = arg_tower_base_effect.description
+	$HBoxContainer/Marginer/IngredientLabel.text = arg_tower_base_effect._get_description()

@@ -43,6 +43,7 @@ const flameburst_image = preload("res://TowerRelated/Color_Orange/FlameBurst/Fla
 const scatter_image = preload("res://TowerRelated/Color_Orange/Scatter/Scatter_E.png")
 const coal_launcher_image = preload("res://TowerRelated/Color_Orange/CoalLauncher/CoalLauncher_E.png")
 const enthalphy_image = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_WholeBody.png")
+const entropy_image = preload("res://TowerRelated/Color_Orange/Entropy/Entropy_WholeBody.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -156,7 +157,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "+ attk speed"
+		info.ingredient_effect_simple_description = "+ attk spd"
 		
 	elif tower_id == BERRY_BUSH:
 		info = TowerTypeInformation.new("Berry Bush", BERRY_BUSH)
@@ -579,7 +580,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "+ attk speed"
+		info.ingredient_effect_simple_description = "+ attk spd"
 		
 		
 	elif tower_id == EMBER:
@@ -847,6 +848,38 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "+ on hit"
 		
 		
+	elif tower_id == ENTROPY:
+		info = TowerTypeInformation.new("Entropy", tower_id)
+		info.tower_cost = 2
+		info.colors.append(TowerColors.ORANGE)
+		info.tower_tier = 2
+		info.tower_image_in_buy_card = entropy_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.65
+		info.base_pierce = 0
+		info.base_range = 120
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Entropy gains 20% bonus attack speed for its first 130 attacks.",
+			"Entropy also gains 20% bonus attack speed for its first 230 attacks.",
+			"",
+			"\"S. The inevitable end of all systems.\""
+		]
+		
+		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_ENTROPY)
+		attk_speed_attr_mod.percent_amount = 15
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_ENTROPY)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
 	
 	
 	return info
@@ -902,5 +935,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/CoalLauncher/CoalLauncher.tscn")
 	elif tower_id == ENTHALPHY:
 		return load("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy.tscn")
-	
+	elif tower_id == ENTROPY:
+		return load("res://TowerRelated/Color_Orange/Entropy/Entropy.tscn")
 

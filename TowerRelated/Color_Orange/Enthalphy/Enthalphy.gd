@@ -47,8 +47,8 @@ func _ready():
 	
 	_construct_on_hit_damage()
 	
-	attack_module.connect("on_post_mitigation_damage_dealt", self, "_check_if_enemy_hit_is_killed")
-	connect("final_range_changed", self, "_on_main_range_changed")
+	attack_module.connect("on_post_mitigation_damage_dealt", self, "_check_if_enemy_hit_is_killed", [], CONNECT_PERSIST)
+	connect("final_range_changed", self, "_on_main_range_changed", [], CONNECT_PERSIST)
 	
 	add_attack_module(attack_module)
 	

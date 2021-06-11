@@ -20,6 +20,7 @@ const syn_dom_black = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPan
 const DomSyn_Violet = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Violet.gd")
 const DomSyn_Yellow_GoldIncome = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_GoldIncome.gd")
 const DomSyn_Yellow_EnergyBattery = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_EnergyBattery.gd")
+const DomSyn_Orange = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/DomSyn_Orange.gd")
 
 var inst_domsyn_yellow_energybattery : DomSyn_Yellow_EnergyBattery
 
@@ -36,7 +37,8 @@ func _init():
 	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [12, 9, 6, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
-	["ORANGE description"]),
+	["ORANGE description"],
+	[DomSyn_Orange.new()]),
 	
 	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [7, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
