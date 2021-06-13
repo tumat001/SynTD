@@ -8,5 +8,7 @@ func _apply_syn_to_tower(tower : AbstractTower, tier : int):
 		if tier <= 3:
 			tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.YELVIO_SYNERGY, tier_3_tower_ing_limit)
 
+
+
 func _remove_syn_from_tower(tower : AbstractTower, tier : int):
 	tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.YELVIO_SYNERGY, 0)

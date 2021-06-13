@@ -21,6 +21,7 @@ var burn_effect_ids_to_inc : Array = [
 	StoreOfEnemyEffectsUUID.EMBER_BURN,
 	
 	StoreOfEnemyEffectsUUID._704_FIRE_BURN,
+	StoreOfEnemyEffectsUUID.ROYAL_FLAME_BURN,
 ]
 
 # Called when the node enters the scene tree for the first time.

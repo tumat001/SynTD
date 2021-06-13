@@ -182,14 +182,17 @@ func get_current_targeting_option() -> int:
 	else:
 		return -1
 
-func get_target() -> AbstractEnemy:
+func get_target(targeting : int = get_current_targeting_option()) -> AbstractEnemy:
 	_current_enemies.clear()
-	_current_enemies[0] = Targeting.enemy_to_target(enemies_in_range, get_current_targeting_option())
+	_current_enemies[0] = Targeting.enemy_to_target(enemies_in_range, targeting)
 	return _current_enemies[0]
 
-func get_targets(num : int) -> Array:
-	_current_enemies = Targeting.enemies_to_target(enemies_in_range, get_current_targeting_option(), num)
+func get_targets(num : int, targeting : int = get_current_targeting_option()) -> Array:
+	_current_enemies = Targeting.enemies_to_target(enemies_in_range, targeting, num, global_position)
 	while _current_enemies.has(null):
 		_current_enemies.erase(null)
 	
 	return _current_enemies
+
+func get_all_targets(targeting : int = get_current_targeting_option()) -> Array:
+	return get_targets(_current_enemies.size(), targeting)

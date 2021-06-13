@@ -178,6 +178,7 @@ func _take_unmitigated_damages(damages_and_types : Array):
 			effective_on_hit_report = on_hit_report
 			
 			current_health -= damage_amount
+			
 			if current_health <= 0:
 				var effective_damage = damage_amount + current_health
 				effective_on_hit_report = effective_on_hit_report.duplicate()

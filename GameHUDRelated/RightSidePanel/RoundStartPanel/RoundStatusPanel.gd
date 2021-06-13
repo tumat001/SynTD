@@ -1,7 +1,7 @@
 extends MarginContainer
 
 const RoundInfoPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel.gd")
-
+const AbilityPanel = preload("res://GameHUDRelated/AbilityPanel/AbilityPanel.gd")
 
 signal round_start_pressed
 signal round_fast_forward_pressed
@@ -13,6 +13,7 @@ const pic_round_fast_forward_button = preload("res://GameHUDRelated/RightSidePan
 
 onready var round_status_button : TextureButton = $VBoxContainer/MarginContainer/RoundStatusButton
 onready var round_info_panel : RoundInfoPanel = $VBoxContainer/RoundInfoPanel
+onready var ability_panel : AbilityPanel = $VBoxContainer/AbilityPanel
 
 var round_started : bool
 var round_fast_forwarded : bool

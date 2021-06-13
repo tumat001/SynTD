@@ -44,6 +44,7 @@ const scatter_image = preload("res://TowerRelated/Color_Orange/Scatter/Scatter_E
 const coal_launcher_image = preload("res://TowerRelated/Color_Orange/CoalLauncher/CoalLauncher_E.png")
 const enthalphy_image = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_WholeBody.png")
 const entropy_image = preload("res://TowerRelated/Color_Orange/Entropy/Entropy_WholeBody.png")
+const royal_flame_image = preload("res://TowerRelated/Color_Orange/RoyalFlame/RoyalFlame_E.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -85,6 +86,7 @@ enum {
 	COAL_LAUNCHER = 307,
 	ENTHALPHY = 308,
 	ENTROPY = 309,
+	ROYAL_FLAME = 310,
 	
 	# YELLOW (400)
 	RAILGUN = 400,
@@ -870,7 +872,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"\"S. The inevitable end of all systems.\""
 		]
 		
-		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_ENTROPY)
 		attk_speed_attr_mod.percent_amount = 15
@@ -881,7 +882,40 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ attk spd"
-	
+		
+		
+	elif tower_id == ROYAL_FLAME:
+		info = TowerTypeInformation.new("Royal Flame", tower_id)
+		info.tower_cost = 6
+		info.colors.append(TowerColors.ORANGE)
+		info.colors.append(TowerColors.BLUE)
+		info.tower_tier = 6
+		info.tower_image_in_buy_card = royal_flame_image
+		
+		info.base_damage = 3
+		info.base_attk_speed = 1.05
+		info.base_pierce = 1
+		info.base_range = 140
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Royal Flame's attacks burn enemies for 22.5% of its base damage every 0.5 seconds for 8 seconds.",
+			"",
+			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 60% of the extinguished enemy's missing health as elemental damage, up to a limit.",
+			"The explosion does not affect the extinguished target. The explosion benefits only from explosion size buffs and damage mitigation pierce buffs."
+		]
+		
+		# Ingredient related
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ROYAL_FLAME)
+		base_dmg_attr_mod.flat_modifier = 4
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_ROYAL_FLAME)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ base dmg"
+		
 	
 	return info
 
@@ -938,4 +972,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy.tscn")
 	elif tower_id == ENTROPY:
 		return load("res://TowerRelated/Color_Orange/Entropy/Entropy.tscn")
-
+	elif tower_id == ROYAL_FLAME:
+		return load("res://TowerRelated/Color_Orange/RoyalFlame/RoyalFlame.tscn")

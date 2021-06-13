@@ -3,6 +3,9 @@ extends "res://TowerRelated/Modules/InstantDamageAttackModule.gd"
 const BeamAesthetic = preload("res://MiscRelated/BeamRelated/BeamAesthetic.gd")
 const BeamAestheric_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
 
+signal beam_connected_to_enemy(beam, enemy)
+
+
 # Used for allocation, as to avoid deleting
 # and creating many of them...
 var beam_to_enemy_map : Dictionary = {}
@@ -95,6 +98,7 @@ func _connect_beam_to_enemy(enemy : AbstractEnemy):
 	beam.frame = 0
 	beam.visible = true
 	beam.update_destination_position(enemy.position)
+	emit_signal("beam_connected_to_enemy", beam, enemy)
 	beam_to_enemy_map[beam] = enemy
 
 
@@ -105,7 +109,6 @@ func _get_available_beam_instance() -> BeamAesthetic:
 	for beam in beam_to_enemy_map.keys():
 		if !beam.visible:
 			return beam
-			
 	
 	available_beam_instance = beam_scene.instance()
 	available_beam_instance.time_visible = beam_time_visible

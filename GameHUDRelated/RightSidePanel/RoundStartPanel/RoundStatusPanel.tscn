@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundStartButton.png" type="Texture" id=1]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RightSideBackground.png" type="Texture" id=2]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundStatusPanel.gd" type="Script" id=3]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel.tscn" type="PackedScene" id=4]
+[ext_resource path="res://GameHUDRelated/AbilityPanel/AbilityPanel.tscn" type="PackedScene" id=5]
 
 [node name="RoundStatusPanel" type="MarginContainer"]
 margin_right = 40.0
@@ -31,6 +32,17 @@ margin_right = 117.0
 margin_bottom = 90.0
 size_flags_horizontal = 6
 custom_constants/margin_top = 8
+
+[node name="AbilityPanel" parent="VBoxContainer" instance=ExtResource( 5 )]
+margin_left = 20.0
+margin_top = 94.0
+margin_right = 100.0
+margin_bottom = 265.0
+rect_min_size = Vector2( 80, 0 )
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 margin_left = 37.0

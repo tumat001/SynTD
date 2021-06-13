@@ -44,6 +44,9 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	
 	var all_towers = game_elements.tower_manager.get_all_active_towers()
 	_towers_to_benefit_from_syn(all_towers)
+	
+	._apply_syn_to_game_elements(arg_game_elements, tier)
+
 
 # Removing syn
 
@@ -57,6 +60,8 @@ func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int
 	
 	var all_towers = game_elements.tower_manager.get_all_active_towers()
 	_towers_to_remove_from_syn(all_towers)
+	
+	._remove_syn_from_game_elements(arg_game_elements, tier)
 
 
 # Game elements and round related

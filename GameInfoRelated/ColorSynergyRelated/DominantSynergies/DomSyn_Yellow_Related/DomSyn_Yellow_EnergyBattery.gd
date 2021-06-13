@@ -59,11 +59,14 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		if game_elements.stage_round_manager.round_started:
 			_attempt_give_all_eligible_towers_energy_module()
 			_first_time_activation("")
-
+	
+	._apply_syn_to_game_elements(arg_game_elements, tier)
 
 
 func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int):
 	_inactivate_self()
+	
+	._remove_syn_from_game_elements(arg_game_elements, tier)
 
 
 func _inactivate_self():

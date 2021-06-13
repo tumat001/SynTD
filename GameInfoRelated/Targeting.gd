@@ -2,10 +2,11 @@
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 
 enum {
-	FIRST,
-	LAST,
+	FIRST = 0,
+	LAST = 1,
+	CLOSE = 2,
 	
-	RANDOM,
+	RANDOM = 10,
 }
 
 static func enemy_to_target(enemies : Array, targeting : int) -> AbstractEnemy:
@@ -69,34 +70,63 @@ static func _find_random_distinct_enemies(enemies : Array, count : int):
 	return bucket
 
 
-static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int):
+static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int, pos : Vector2):
 	var enemies = arg_enemies.duplicate(false)
 	
 	if targeting == FIRST:
 		enemies.sort_custom(CustomSorter, "sort_enemies_by_first")
 	elif targeting == LAST:
 		enemies.sort_custom(CustomSorter, "sort_enemies_by_last")
+	elif targeting == CLOSE:
+		var enemy_distance_pair = _convert_enemies_to_enemy_distance_pair(enemies, pos)
+		enemy_distance_pair.sort_custom(CustomSorter, "sort_enemies_by_close")
+		enemies = _convert_enemy_distance_pairs_to_enemies(enemy_distance_pair)
 	elif targeting == RANDOM:
 		enemies = _find_random_distinct_enemies(enemies, num_of_enemies)
 	
+	
 	enemies.resize(num_of_enemies)
+	while enemies.has(null):
+		enemies.erase(null)
 	
 	return enemies
+
 
 # Sorter
 
 class CustomSorter:
 	
 	static func sort_enemies_by_first(a, b):
-		if a.distance_to_exit < b.distance_to_exit:
-			return true
-		return false
+		return a.distance_to_exit < b.distance_to_exit
+		
 	
 	static func sort_enemies_by_last(a, b):
-		if a.distance_to_exit > b.distance_to_exit:
-			return true
-		return false
+		return a.distance_to_exit > b.distance_to_exit
+		
 	
+	static func sort_enemies_by_close(a_enemy_dist, b_enemy_dist):
+		return a_enemy_dist[1] < b_enemy_dist[1]
+		
+
+
+# Computing of other stuffs
+
+static func _convert_enemies_to_enemy_distance_pair(arg_enemies : Array, pos : Vector2) -> Array:
+	var enemy_distance_pair : Array = []
+	
+	for enemy in arg_enemies:
+		enemy_distance_pair.append([enemy, pos.distance_squared_to(enemy.global_position)])
+	
+	return enemy_distance_pair
+
+static func _convert_enemy_distance_pairs_to_enemies(enemy_dist_pairs : Array):
+	var enemy_bucket : Array = []
+	
+	for pair in enemy_dist_pairs:
+		enemy_bucket.append(pair[0])
+	
+	return enemy_bucket
+
 
 # prop finding
 
@@ -105,6 +135,8 @@ static func get_name_as_string(targeting : int) -> String:
 		return "First"
 	elif targeting == LAST:
 		return "Last"
+	elif targeting == CLOSE:
+		return "Close"
 	elif targeting == RANDOM:
 		return "Random"
 	

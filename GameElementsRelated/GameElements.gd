@@ -13,6 +13,7 @@ const HealthManager = preload("res://GameElementsRelated/HealthManager.gd")
 const RoundStatusPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundStatusPanel.gd")
 const RoundInfoPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel.gd")
 const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
+const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var in_map_placables_manager : InMapPlacablesManager
@@ -26,6 +27,7 @@ var gold_manager : GoldManager
 var stage_round_manager : StageRoundManager
 var health_manager : HealthManager
 var enemy_manager : EnemyManager
+var ability_manager : AbilityManager
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
@@ -46,6 +48,7 @@ func _ready():
 	stage_round_manager = $StageRoundManager
 	health_manager = $HealthManager
 	enemy_manager = $EnemyManager
+	ability_manager = $AbilityManager
 	
 	targeting_panel = right_side_panel.tower_info_panel.targeting_panel
 	
@@ -102,13 +105,19 @@ func _ready():
 	enemy_manager.connect("no_enemies_left", round_status_panel, "_update_round_ended")
 	enemy_manager.health_manager = health_manager
 	
+	# Ability manager
+	
+	ability_manager.stage_round_manager = stage_round_manager
+	ability_manager.ability_panel = round_status_panel.ability_panel
+	tower_manager.ability_manager = ability_manager
+	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round()
 	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.set_health(150)
-	
-	
+
+
 
 # From bottom panel
 func _on_BuySellLevelRollPanel_level_down():
@@ -122,7 +131,6 @@ func _on_BuySellLevelRollPanel_level_up():
 	#for tower in tower_manager.get_all_towers():
 	#	tower.set_active_ingredient_limit(tower.ingredient_active_limit + 2)
 	
-	
 	pass
 
 
@@ -133,8 +141,8 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.RE,
-			Towers.ENTHALPHY,
-			Towers._704,
+			Towers.ROYAL_FLAME,
+			Towers.BEACON_DISH,
 			Towers.ENTROPY,
 		])
 	else:

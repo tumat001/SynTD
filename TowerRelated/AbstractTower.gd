@@ -32,6 +32,7 @@ const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const ingredient_decline_pic = preload("res://GameHUDRelated/BottomPanel/IngredientMode_CannotCombine.png")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 
+const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
 
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self)
@@ -68,6 +69,7 @@ signal on_range_module_enemy_exited(enemy, range_module)
 signal on_round_end
 signal on_round_start
 
+signal register_ability(ability)
 
 # syn signals
 
@@ -998,6 +1000,13 @@ func remove_color_from_tower(color : int):
 		call_deferred("emit_signal", "update_active_synergy")
 		call_deferred("emit_signal", "tower_colors_changed")
 		_update_ingredient_compatible_colors()
+
+
+# Abiliy reg related
+
+func register_ability_to_manager(ability : BaseAbility):
+	emit_signal("register_ability", ability)
+
 
 
 # Inputs related

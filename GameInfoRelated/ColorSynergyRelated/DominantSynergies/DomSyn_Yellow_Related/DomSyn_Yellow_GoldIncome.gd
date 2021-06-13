@@ -20,6 +20,8 @@ func _apply_syn_to_game_elements(game_elements : GameElements, tier : int):
 		gold_income_per_round = tier_1_gold_income
 	elif tier == 3 or tier == 2:
 		gold_income_per_round = tier_3_gold_income
+	
+	._apply_syn_to_game_elements(game_elements, tier)
 
 
 func _remove_syn_from_game_elements(game_elements : GameElements, tier : int):
@@ -29,7 +31,8 @@ func _remove_syn_from_game_elements(game_elements : GameElements, tier : int):
 		game_elements.stage_round_manager.disconnect("round_ended", self, "_give_gold_income")
 	
 	gold_income_per_round = 0
-
+	
+	._remove_syn_from_game_elements(game_elements, tier)
 
 # gold income related
 

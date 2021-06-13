@@ -27,9 +27,11 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	if tier <= 4:
 		if !domsyn_yellow_energy.eligible_colors.has(TowerColors.VIOLET):
 			domsyn_yellow_energy.eligible_colors.append(TowerColors.VIOLET)
+	
+	._apply_syn_to_game_elements(arg_game_elements, tier)
 
 
-func _remove_syn_from_game_elements(game_elements : GameElements, tier : int):
+func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int):
 	if game_elements.stage_round_manager.is_connected("round_ended", self, "_on_round_over_tier_1"):
 		game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_over_tier_1")
 	
@@ -39,7 +41,7 @@ func _remove_syn_from_game_elements(game_elements : GameElements, tier : int):
 	if domsyn_yellow_energy.eligible_colors.has(TowerColors.VIOLET):
 		domsyn_yellow_energy.eligible_colors.erase(TowerColors.VIOLET)
 	
-	
+	._remove_syn_from_game_elements(arg_game_elements, tier)
 
 
 # Energy generation

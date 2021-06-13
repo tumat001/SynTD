@@ -11,6 +11,7 @@ const InnerBottomPanel = preload("res://GameElementsRelated/InnerBottomPanel.gd"
 const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
 const TargetingPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TargetingPanel/TargetingPanel.gd")
 const TowerInfoPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerInfoPanel.gd")
+const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
 
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 
@@ -39,6 +40,7 @@ var tower_info_panel : TowerInfoPanel
 
 var synergy_manager
 var stage_round_manager : StageRoundManager
+var ability_manager : AbilityManager
 
 
 var _color_groups : Array
@@ -78,22 +80,24 @@ func _tower_inactivated_from_map(tower):
 
 # Adding tower as child of this to monitor it
 func add_tower(tower_instance : AbstractTower):
+	tower_instance.connect("register_ability", self, "_register_ability_from_tower", [], CONNECT_PERSIST)
+	
 	add_child(tower_instance)
-	tower_instance.connect("tower_being_dragged", self, "_tower_being_dragged")
-	tower_instance.connect("tower_dropped_from_dragged", self, "_tower_dropped_from_dragged")
-	tower_instance.connect("tower_toggle_show_info", self, "_tower_toggle_show_info")
-	tower_instance.connect("tower_in_queue_free", self, "_tower_in_queue_free")
-	tower_instance.connect("update_active_synergy", self, "_update_active_synergy")
-	tower_instance.connect("tower_being_sold", self, "_tower_sold")
-	tower_instance.connect("tower_give_gold", self, "_tower_generate_gold")
+	tower_instance.connect("tower_being_dragged", self, "_tower_being_dragged", [], CONNECT_PERSIST)
+	tower_instance.connect("tower_dropped_from_dragged", self, "_tower_dropped_from_dragged", [], CONNECT_PERSIST)
+	tower_instance.connect("tower_toggle_show_info", self, "_tower_toggle_show_info", [], CONNECT_PERSIST)
+	tower_instance.connect("tower_in_queue_free", self, "_tower_in_queue_free", [], CONNECT_PERSIST)
+	tower_instance.connect("update_active_synergy", self, "_update_active_synergy", [], CONNECT_PERSIST)
+	tower_instance.connect("tower_being_sold", self, "_tower_sold", [], CONNECT_PERSIST)
+	tower_instance.connect("tower_give_gold", self, "_tower_generate_gold", [], CONNECT_PERSIST)
 	
-	tower_instance.connect("tower_colors_changed", self, " _register_tower_to_color_grouping_tags", [tower_instance])
-	tower_instance.connect("tower_active_in_map", self, "_tower_active_in_map", [tower_instance])
-	tower_instance.connect("tower_not_in_active_map", self, "_tower_inactivated_from_map", [tower_instance])
+	tower_instance.connect("tower_colors_changed", self, " _register_tower_to_color_grouping_tags", [tower_instance], CONNECT_PERSIST)
+	tower_instance.connect("tower_active_in_map", self, "_tower_active_in_map", [tower_instance], CONNECT_PERSIST)
+	tower_instance.connect("tower_not_in_active_map", self, "_tower_inactivated_from_map", [tower_instance], CONNECT_PERSIST)
 	
-	connect("ingredient_mode_turned_into", tower_instance, "_set_is_in_ingredient_mode")
-	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient")
-	connect("hide_ingredient_acceptability", tower_instance, "hide_acceptability_with_ingredient")
+	connect("ingredient_mode_turned_into", tower_instance, "_set_is_in_ingredient_mode", [], CONNECT_PERSIST)
+	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient", [], CONNECT_PERSIST)
+	connect("hide_ingredient_acceptability", tower_instance, "hide_acceptability_with_ingredient", [], CONNECT_PERSIST)
 	
 	tower_instance.add_to_group(TOWER_GROUP_ID)
 	
@@ -161,7 +165,12 @@ func _toggle_ingredient_combine_mode():
 	else:
 		emit_signal("hide_ingredient_acceptability")
 		inner_bottom_panel.show_only_buy_sell_panel()
-	
+
+
+# Ability related
+
+func _register_ability_from_tower(ability):
+	ability_manager.add_ability(ability)
 
 
 # Synergy Related

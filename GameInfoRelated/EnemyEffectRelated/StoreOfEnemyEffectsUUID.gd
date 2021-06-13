@@ -20,5 +20,6 @@ enum {
 	
 	VOLCANO_SLOW = -610
 	_704_FIRE_BURN = -611
+	ROYAL_FLAME_BURN = -612
 	
 }

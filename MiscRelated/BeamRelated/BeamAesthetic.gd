@@ -10,7 +10,6 @@ var _current_time_visible : float
 
 var queue_free_if_time_over : bool = false
 
-
 func _process(delta):
 	if visible and is_timebound:
 		if _current_time_visible >= time_visible:
