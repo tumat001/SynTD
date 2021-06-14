@@ -10,8 +10,6 @@ const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const TowerDetectingRangeModule_Scene = preload("res://TowerRelated/Modules/TowerInteractingModules/TowerDetectingRangeModule.tscn")
 const TowerDetectingRangeModule = preload("res://TowerRelated/Modules/TowerInteractingModules/TowerDetectingRangeModule.gd")
 
-const PercentType = preload("res://GameInfoRelated/PercentType.gd")
-
 const BeaconDishSignalParticle = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDishSignalParticle.tscn")
 
 var tower_detecting_range_module : TowerDetectingRangeModule
@@ -150,7 +148,7 @@ func _process(delta):
 		
 		if _current_refresh_cooldown <= 0:
 			if current_placable is InMapAreaPlacable:
-				_current_refresh_cooldown += refresh_cooldown
+				_current_refresh_cooldown += _get_cd_to_use(refresh_cooldown)
 				
 				_update_elemental_on_hit_effect()
 				_update_flat_attk_speed_effect()
@@ -164,19 +162,19 @@ func _process(delta):
 
 func _update_elemental_on_hit_effect():
 	if main_attack_module != null:
-		elemental_on_hit.damage_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * ratio_elemental_on_hit
+		elemental_on_hit.damage_as_modifier.flat_modifier = (main_attack_module.last_calculated_final_damage * ratio_elemental_on_hit) * last_calculated_final_ability_potency
 		elemental_on_hit_effect.on_hit_damage = elemental_on_hit.duplicate()
 
 func _update_flat_attk_speed_effect():
 	if main_attack_module != null:
-		attack_speed_modifier.percent_amount = main_attack_module.last_calculated_final_attk_speed * ratio_attack_speed
+		attack_speed_modifier.percent_amount = (main_attack_module.last_calculated_final_attk_speed * ratio_attack_speed) * last_calculated_final_ability_potency
 		attack_speed_effect.attribute_as_modifier = attack_speed_modifier.get_copy_scaled_by(1)
 
 func _update_flat_range_effect():
 	if main_attack_module != null:
 		main_attack_module.range_module.calculate_final_range_radius()
 		
-		range_modifier.flat_modifier = main_attack_module.range_module.last_calculated_final_range * ratio_range
+		range_modifier.flat_modifier = (main_attack_module.range_module.last_calculated_final_range * ratio_range) * last_calculated_final_ability_potency
 		range_effect.attribute_as_modifier = range_modifier.get_copy_scaled_by(1)
 
 

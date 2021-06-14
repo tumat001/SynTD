@@ -8,10 +8,6 @@ const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBul
 
 const MonoBullet_pic = preload("res://TowerRelated/Color_Gray/Mono/Mono_Bullet.png")
 
-
-# TEMP
-const PercentType = preload("res://GameInfoRelated/PercentType.gd")
-
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.MONO)
 	

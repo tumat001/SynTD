@@ -1,5 +1,7 @@
 
 const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
+const PercentType = preload("res://GameInfoRelated/PercentType.gd")
+const AbilityAttributesEffect = preload("res://GameInfoRelated/AbilityRelated/AbilityEffectRelated/AbilityAttributesEffect.gd")
 
 signal ability_activated()
 signal current_time_cd_changed(current_time_cd)
@@ -14,7 +16,6 @@ signal started_round_cooldown(max_round_cd, current_round_cd)
 signal destroying_self()
 
 signal should_be_displaying_changed(bool_value)
-
 
 enum ActivationClauses {
 	ROUND_INTERMISSION_STATE = 0,
@@ -59,6 +60,21 @@ var synergy : Node setget set_synergy
 
 var should_be_displaying : bool setget, _get_should_be_displaying
 
+# Ability Power related
+
+var base_ability_potency : float = 1
+var _flat_base_ability_potency_effects : Dictionary = {}
+var _percent_base_ability_potency_effects : Dictionary = {}
+var last_calculated_final_ability_potency : float
+
+var base_flat_ability_cdr : float = 0
+var _flat_base_ability_cdr_effects : Dictionary = {}
+var last_calculated_final_flat_ability_cdr : float
+
+var base_percent_ability_cdr : float = 0
+var _percent_base_ability_cdr_effects : Dictionary = {}
+var last_calculated_final_percent_ability_cdr : float
+
 
 func _init():
 	activation_conditional_clauses = ConditionalClauses.new()
@@ -76,7 +92,10 @@ func _init():
 	should_be_displaying_clauses = ConditionalClauses.new()
 	should_be_displaying_clauses.connect("clause_inserted", self, "emit_updated_should_be_displayed", [], CONNECT_PERSIST)
 	should_be_displaying_clauses.connect("clause_removed", self, "emit_updated_should_be_displayed", [], CONNECT_PERSIST)
-
+	
+	_calculate_final_ability_potency()
+	_calculate_final_flat_ability_cdr()
+	_calculate_final_percent_ability_cdr()
 
 # Activation related
 
@@ -97,14 +116,33 @@ func is_time_ready_or_round_ready() -> bool:
 
 # Setting of cooldown
 
-func start_time_cooldown(cooldown : float):
+func start_time_cooldown(arg_cooldown : float):
 	if is_timebound:
+		var cooldown = _get_cd_to_use(arg_cooldown)
+		if cooldown < 0.25:
+			cooldown = 0.25
+		
 		_time_max_cooldown = cooldown
 		_time_current_cooldown = cooldown
 		
 		emit_signal("started_time_cooldown", _time_max_cooldown, _time_current_cooldown)
 		emit_signal("current_time_cd_changed", _time_current_cooldown)
 		emit_updated_is_ready_for_activation(0)
+
+
+func _get_cd_to_use(cd_of_source : float) -> float:
+	var final_cd : float = cd_of_source
+	
+	final_cd *= (100 - last_calculated_final_percent_ability_cdr) / 100
+	final_cd -= last_calculated_final_flat_ability_cdr
+	
+	if final_cd < 0:
+		final_cd = 0
+	
+	return final_cd
+
+func _get_potency_to_use(potency_of_source : float) -> float:
+	return potency_of_source + last_calculated_final_ability_potency
 
 
 func start_round_cooldown(cooldown : int):
@@ -241,3 +279,89 @@ func set_properties_to_usual_tower_based():
 	should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 	activation_conditional_clauses.attempt_insert_clause(ActivationClauses.TOWER_IN_BENCH)
 	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.TOWER_IN_BENCH)
+
+
+# Ability adding removing stats related
+
+func add_ability_potency_effect(attr_effect : AbilityAttributesEffect):
+	if attr_effect.attribute_type == AbilityAttributesEffect.FLAT_ABILITY_POTENCY:
+		_flat_base_ability_potency_effects[attr_effect.effect_uuid] = attr_effect
+	elif attr_effect.attribute_type == AbilityAttributesEffect.PERCENT_ABILITY_POTENCY:
+		_percent_base_ability_potency_effects[attr_effect.effect_uuid] = attr_effect
+	
+	_calculate_final_ability_potency()
+
+
+func remove_ability_potency_effect(attr_effect_uuid : int):
+	_flat_base_ability_potency_effects.erase(attr_effect_uuid)
+	_percent_base_ability_potency_effects.erase(attr_effect_uuid)
+	
+	_calculate_final_ability_potency()
+
+
+func add_ability_cdr_effect(attr_effect : AbilityAttributesEffect):
+	if attr_effect.attribute_type == AbilityAttributesEffect.FLAT_ABILITY_CDR:
+		_flat_base_ability_cdr_effects[attr_effect.effect_uuid] = attr_effect
+		_calculate_final_flat_ability_cdr()
+	elif attr_effect.attribute_type == AbilityAttributesEffect.PERCENT_ABILITY_CDR:
+		_percent_base_ability_cdr_effects[attr_effect.effect_uuid] = attr_effect
+		_calculate_final_percent_ability_cdr()
+
+func remove_flat_ability_cdr_effect(attr_effect_uuid : int):
+	_flat_base_ability_cdr_effects.erase(attr_effect_uuid)
+	_calculate_final_flat_ability_cdr()
+
+func remove_percent_ability_cdr_effect(attr_effect_uuid : int):
+	_percent_base_ability_cdr_effects.erase(attr_effect_uuid)
+	_calculate_final_percent_ability_cdr()
+
+
+
+# Ability calculation related
+
+func _calculate_final_ability_potency():
+	var final_ap = base_ability_potency
+	
+	#if benefits_from_bonus_base_damage:
+	var totals_bucket : Array = []
+	
+	for effect in _percent_base_ability_potency_effects.values():
+		if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
+			final_ap += effect.attribute_as_modifier.get_modification_to_value(base_ability_potency)
+		else:
+			totals_bucket.append(effect)
+	
+	for effect in _flat_base_ability_potency_effects.values():
+		final_ap += effect.attribute_as_modifier.get_modification_to_value(base_ability_potency)
+	
+	var final_base_ap = final_ap
+	for effect in totals_bucket:
+		final_base_ap += effect.attribute_as_modifier.get_modification_to_value(final_base_ap)
+	final_ap = final_base_ap
+	
+	last_calculated_final_ability_potency = final_ap
+	return last_calculated_final_ability_potency
+
+
+func _calculate_final_flat_ability_cdr():
+	var final_cdr = base_flat_ability_cdr
+	
+	for effect in _flat_base_ability_potency_effects.values():
+		final_cdr += effect.attribute_as_modifier.get_modification_to_value(base_flat_ability_cdr)
+	
+	last_calculated_final_flat_ability_cdr = final_cdr
+	return last_calculated_final_flat_ability_cdr
+
+
+func _calculate_final_percent_ability_cdr():
+	var final_percent_cdr = base_percent_ability_cdr
+	
+	# everything is treated as BASE
+	for effect in _percent_base_ability_cdr_effects.values():
+		final_percent_cdr += effect.attribute_as.modifier.get_modification_to_value(base_percent_ability_cdr)
+	
+	if final_percent_cdr > 95:
+		final_percent_cdr = 95
+	
+	last_calculated_final_percent_ability_cdr = final_percent_cdr
+	return last_calculated_final_percent_ability_cdr

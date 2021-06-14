@@ -9,8 +9,6 @@ const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const TowerDetectingRangeModule_Scene = preload("res://TowerRelated/Modules/TowerInteractingModules/TowerDetectingRangeModule.tscn")
 const TowerDetectingRangeModule = preload("res://TowerRelated/Modules/TowerInteractingModules/TowerDetectingRangeModule.gd")
 
-const PercentType = preload("res://GameInfoRelated/PercentType.gd")
-
 const CampfireParticle_Scene = preload("res://TowerRelated/Color_Orange/Campfire/CampfireTriggerParticle.tscn")
 
 const HeatModule = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/HeatModule.gd")
@@ -113,7 +111,7 @@ func _enemy_damage_taken(damage_report, is_lethal, enemy):
 
 func _update_physical_on_hit_effect():
 	if main_attack_module != null:
-		physical_on_hit.damage_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage
+		physical_on_hit.damage_as_modifier.flat_modifier = (main_attack_module.last_calculated_final_damage) * last_calculated_final_ability_potency
 		physical_on_hit_effect.on_hit_damage = physical_on_hit.duplicate()
 
 
@@ -132,7 +130,8 @@ func _construct_particle():
 
 func _calculate_final_rage_threshold():
 	var total_atk_speed = main_attack_module.last_calculated_final_attk_speed
-	last_calculated_rage_threshold = base_rage_threshold / total_atk_speed
+	
+	last_calculated_rage_threshold = _get_cd_to_use(base_rage_threshold / total_atk_speed)
 	
 	_match_fire_fps_to_attack_speed(total_atk_speed)
 

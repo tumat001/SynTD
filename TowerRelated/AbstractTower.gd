@@ -34,6 +34,8 @@ const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 
 const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
 
+const PercentType = preload("res://GameInfoRelated/PercentType.gd")
+
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self)
 signal tower_toggle_show_info
@@ -144,6 +146,22 @@ var _is_full_sellback : bool = false
 var is_round_started : bool = false setget _set_round_started
 
 
+# Ability Power related
+
+var base_ability_potency : float = 1
+var _flat_base_ability_potency_effects : Dictionary = {}
+var _percent_base_ability_potency_effects : Dictionary = {}
+var last_calculated_final_ability_potency : float
+
+var base_flat_ability_cdr : float = 0
+var _flat_base_ability_cdr_effects : Dictionary = {}
+var last_calculated_final_flat_ability_cdr : float
+
+var base_percent_ability_cdr : float = 0
+var _percent_base_ability_cdr_effects : Dictionary = {}
+var last_calculated_final_percent_ability_cdr : float
+
+
 # SYN RELATED ---------------------------- #
 # Yellow
 var energy_module setget set_energy_module
@@ -168,7 +186,10 @@ func _post_inherit_ready():
 			add_child(range_module)
 		
 		range_module.update_range() 
-
+	
+	_calculate_final_ability_power()
+	_calculate_final_flat_ability_cdr()
+	_calculate_final_percent_ability_cdr()
 
 
 func _emit_final_range_changed():
@@ -371,6 +392,14 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 			_add_toughness_pierce_effect(tower_base_effect, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_RESISTANCE_PIERCE:
 			_add_resistance_pierce_effect(tower_base_effect, target_modules)
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ABILITY_POTENCY or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_ABILITY_POTENCY:
+			if include_non_module_effects:
+				_add_ability_potency_effect(tower_base_effect)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ABILITY_CDR or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_ABILITY_CDR:
+			if include_non_module_effects:
+				_add_ability_cdr_effect(tower_base_effect)
+		
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_add_on_hit_damage_adder_effect(tower_base_effect, target_modules)
@@ -426,7 +455,16 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 			_remove_toughness_pierce_effect(tower_base_effect.effect_uuid, target_modules)
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_RESISTANCE_PIERCE:
 			_remove_resistance_pierce_effect(tower_base_effect.effect_uuid, target_modules)
-		
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ABILITY_POTENCY or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_ABILITY_POTENCY:
+			if include_non_module_effects:
+				_remove_ability_potency_effect(tower_base_effect.effect_uuid)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ABILITY_CDR:
+			if include_non_module_effects:
+				_remove_flat_ability_cdr_effect(tower_base_effect.effect_uuid)
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_ABILITY_CDR:
+			if include_non_module_effects:
+				_remove_percent_ability_cdr_effect(tower_base_effect.effect_uuid)
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_remove_on_hit_damage_adder_effect(tower_base_effect.effect_uuid, target_modules)
@@ -771,6 +809,40 @@ func _remove_resistance_pierce_effect(attr_effect_uuid : int, target_modules : A
 			module._all_countbound_effects.erase(attr_effect_uuid)
 
 
+func _add_ability_potency_effect(attr_effect : TowerAttributesEffect):
+	if attr_effect.attribute_type == TowerAttributesEffect.FLAT_ABILITY_POTENCY:
+		_flat_base_ability_potency_effects[attr_effect.effect_uuid] = attr_effect
+	elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_ABILITY_POTENCY:
+		_percent_base_ability_potency_effects[attr_effect.effect_uuid] = attr_effect
+	
+	_calculate_final_ability_power()
+
+
+func _remove_ability_potency_effect(attr_effect_uuid : int):
+	_flat_base_ability_potency_effects.erase(attr_effect_uuid)
+	_percent_base_ability_potency_effects.erase(attr_effect_uuid)
+	
+	_calculate_final_ability_power()
+
+
+func _add_ability_cdr_effect(attr_effect : TowerAttributesEffect):
+	if attr_effect.attribute_type == TowerAttributesEffect.FLAT_ABILITY_CDR:
+		_flat_base_ability_cdr_effects[attr_effect.effect_uuid] = attr_effect
+		_calculate_final_flat_ability_cdr()
+	elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_ABILITY_CDR:
+		_percent_base_ability_cdr_effects[attr_effect.effect_uuid] = attr_effect
+		_calculate_final_percent_ability_cdr()
+
+func _remove_flat_ability_cdr_effect(attr_effect_uuid : int):
+	_flat_base_ability_cdr_effects.erase(attr_effect_uuid)
+	_calculate_final_flat_ability_cdr()
+
+func _remove_percent_ability_cdr_effect(attr_effect_uuid : int):
+	_percent_base_ability_cdr_effects.erase(attr_effect_uuid)
+	_calculate_final_percent_ability_cdr()
+
+
+
 # special case effects
 
 func _special_case_tower_effect_added(effect : TowerBaseEffect):
@@ -1002,11 +1074,72 @@ func remove_color_from_tower(color : int):
 		_update_ingredient_compatible_colors()
 
 
-# Abiliy reg related
+# Abiliy reg and cdr related
 
 func register_ability_to_manager(ability : BaseAbility):
 	emit_signal("register_ability", ability)
 
+
+func _get_cd_to_use(base_cd : float) -> float:
+	var final_cd : float = base_cd
+	
+	final_cd *= (100 - last_calculated_final_percent_ability_cdr) / 100
+	final_cd -= last_calculated_final_flat_ability_cdr
+	
+	if final_cd < 0:
+		final_cd = 0
+	
+	return final_cd
+
+
+# Ability calculation related
+
+func _calculate_final_ability_power():
+	var final_ap = base_ability_potency
+	
+	#if benefits_from_bonus_base_damage:
+	var totals_bucket : Array = []
+	
+	for effect in _percent_base_ability_potency_effects.values():
+		if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
+			final_ap += effect.attribute_as_modifier.get_modification_to_value(base_ability_potency)
+		else:
+			totals_bucket.append(effect)
+	
+	for effect in _flat_base_ability_potency_effects.values():
+		final_ap += effect.attribute_as_modifier.get_modification_to_value(base_ability_potency)
+	
+	var final_base_ap = final_ap
+	for effect in totals_bucket:
+		final_base_ap += effect.attribute_as_modifier.get_modification_to_value(final_base_ap)
+	final_ap = final_base_ap
+	
+	last_calculated_final_ability_potency = final_ap
+	return last_calculated_final_ability_potency
+
+
+func _calculate_final_flat_ability_cdr():
+	var final_cdr = base_flat_ability_cdr
+	
+	for effect in _flat_base_ability_potency_effects.values():
+		final_cdr += effect.attribute_as_modifier.get_modification_to_value(base_flat_ability_cdr)
+	
+	last_calculated_final_flat_ability_cdr = final_cdr
+	return last_calculated_final_flat_ability_cdr
+
+
+func _calculate_final_percent_ability_cdr():
+	var final_percent_cdr = base_percent_ability_cdr
+	
+	# everything is treated as BASE
+	for effect in _percent_base_ability_cdr_effects.values():
+		final_percent_cdr += effect.attribute_as.modifier.get_modification_to_value(base_percent_ability_cdr)
+	
+	if final_percent_cdr > 95:
+		final_percent_cdr = 95
+	
+	last_calculated_final_percent_ability_cdr = final_percent_cdr
+	return last_calculated_final_percent_ability_cdr
 
 
 # Inputs related

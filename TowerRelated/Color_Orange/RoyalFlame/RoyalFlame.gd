@@ -36,8 +36,6 @@ const RoyalFlame_AbilityIcon = preload("res://TowerRelated/Color_Orange/RoyalFla
 const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
-const PercentType = preload("res://GameInfoRelated/PercentType.gd")
-
 const WithBeamInstantDamageAttackModule = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.gd")
 const WithBeamInstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.tscn")
 const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
@@ -238,7 +236,7 @@ func _construct_and_connect_ability():
 	steam_burst_ability = BaseAbility.new()
 	
 	steam_burst_ability.is_timebound = true
-	steam_burst_ability.connect("ability_activated", self, "_ability_activated")
+	steam_burst_ability.connect("ability_activated", self, "_royal_flame_ability_activated")
 	steam_burst_ability.icon = RoyalFlame_AbilityIcon
 	
 	steam_burst_ability.set_properties_to_usual_tower_based()
@@ -265,8 +263,8 @@ func _final_damage_changed():
 
 # Ability activated related
 
-func _ability_activated():
-	steam_burst_ability.start_time_cooldown(base_ability_cooldown)
+func _royal_flame_ability_activated():
+	steam_burst_ability.start_time_cooldown(_get_cd_to_use(base_ability_cooldown))
 	
 	var bucket : Array = []
 	var targets_sorted_close : Array = Targeting.enemies_to_target(extinguish_range_module.enemies_in_range, Targeting.CLOSE, extinguish_range_module.enemies_in_range.size(), extinguish_range_module.global_position)
@@ -294,10 +292,14 @@ func _extinguish_on_enemy_beam_hit(enemy):
 		if damage > burst_missing_health_limit:
 			damage = burst_missing_health_limit
 		
+		damage *= steam_burst_ability._get_potency_to_use(last_calculated_final_ability_potency)
+		
+		
 		var dmg_as_modifier : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE)
 		dmg_as_modifier.flat_modifier = damage
 		
 		var dmg_as_on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE, dmg_as_modifier, DamageType.ELEMENTAL)
+		
 		
 		var steam_explosion = explosion_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
 		steam_explosion.damage_instance.on_hit_damages[dmg_as_on_hit.internal_id] = dmg_as_on_hit
@@ -305,7 +307,29 @@ func _extinguish_on_enemy_beam_hit(enemy):
 		
 		get_tree().get_root().add_child(steam_explosion)
 		
-		
 		# extinguish
 		
 		enemy._dmg_over_time_id_effects_map.erase(StoreOfEnemyEffectsUUID.ROYAL_FLAME_BURN)
+
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 1
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_dmg_attr_mod.flat_modifier = 2
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	for module in all_attack_modules:
+		if module.benefits_from_bonus_base_damage:
+			module.calculate_final_base_damage()
+	
+	emit_signal("final_base_damage_changed")

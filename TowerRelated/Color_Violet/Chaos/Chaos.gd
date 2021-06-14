@@ -26,7 +26,7 @@ const ChaosBolt03_pic = preload("res://TowerRelated/Color_Violet/Chaos/ChaosBolt
 const ChaosSword = preload("res://TowerRelated/Color_Violet/Chaos/ChaosSwordParticle.tscn")
 
 
-const original_damage_accumulated_trigger : float = 75.0
+const original_damage_accumulated_trigger : float = 125.0
 var damage_accumulated_trigger : float = original_damage_accumulated_trigger
 
 var damage_accumulated : float = 0
@@ -44,11 +44,11 @@ func _ready():
 	_base_gold_cost = info.tower_cost
 	
 	# Orb's range module
-	range_module = RangeModule_Scene.instance()
-	range_module.base_range_radius = info.base_range
-	range_module.all_targeting_options = [Targeting.RANDOM, Targeting.FIRST, Targeting.LAST]
-	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 22
+	var orb_range_module = RangeModule_Scene.instance()
+	orb_range_module.base_range_radius = info.base_range
+	orb_range_module.all_targeting_options = [Targeting.RANDOM, Targeting.FIRST, Targeting.LAST]
+	orb_range_module.set_range_shape(CircleShape2D.new())
+	orb_range_module.position.y += 22
 	
 	# Orb related
 	var orb_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
@@ -69,6 +69,7 @@ func _ready():
 	orb_attack_module.benefits_from_bonus_on_hit_damage = false
 	orb_attack_module.benefits_from_bonus_on_hit_effect = false
 	orb_attack_module.benefits_from_bonus_pierce = false
+	orb_attack_module.range_module = orb_range_module
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 5
@@ -91,7 +92,7 @@ func _ready():
 	dia_range_module.can_display_range = false
 	
 	var diamond_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	diamond_attack_module.base_damage = 4
+	diamond_attack_module.base_damage = 8
 	diamond_attack_module.base_damage_type = DamageType.PHYSICAL
 	diamond_attack_module.base_attack_speed = 0.85
 	diamond_attack_module.base_attack_wind_up = 2
@@ -104,11 +105,13 @@ func _ready():
 	diamond_attack_module.position.y -= 22
 	diamond_attack_module.on_hit_damage_scale = 1
 	diamond_attack_module.on_hit_effect_scale = 2
+	diamond_attack_module.base_damage_scale = 0.5
 	diamond_attack_module.benefits_from_bonus_attack_speed = false
 	diamond_attack_module.benefits_from_bonus_base_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_effect = true
 	diamond_attack_module.benefits_from_bonus_pierce = true
+	
 	
 	diamond_attack_module.use_self_range_module = true
 	diamond_attack_module.range_module = dia_range_module
@@ -134,7 +137,7 @@ func _ready():
 	bolt_range_module.can_display_range = false
 	
 	var bolt_attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
-	bolt_attack_module.base_damage = 1
+	bolt_attack_module.base_damage = 3
 	bolt_attack_module.base_damage_type = DamageType.ELEMENTAL
 	bolt_attack_module.base_attack_speed = 1.3
 	bolt_attack_module.base_attack_wind_up = 0
@@ -142,7 +145,7 @@ func _ready():
 	bolt_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	bolt_attack_module.position.y -= 22
 	bolt_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	bolt_attack_module.base_damage_scale = 1.5
+	bolt_attack_module.base_damage_scale = 0.5
 	bolt_attack_module.benefits_from_bonus_attack_speed = true
 	bolt_attack_module.benefits_from_bonus_base_damage = true
 	bolt_attack_module.benefits_from_bonus_on_hit_damage = false
@@ -173,7 +176,7 @@ func _ready():
 	# Sword related
 	
 	sword_attack_module = InstantDamageAttackModule_Scene.instance()
-	sword_attack_module.base_damage = 9
+	sword_attack_module.base_damage = 7
 	sword_attack_module.base_damage_type = DamageType.PHYSICAL
 	sword_attack_module.base_attack_speed = 0
 	sword_attack_module.base_attack_wind_up = 0
@@ -181,7 +184,7 @@ func _ready():
 	sword_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	sword_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	sword_attack_module.on_hit_damage_scale = 1
-	sword_attack_module.range_module = range_module
+	sword_attack_module.range_module = orb_range_module
 	sword_attack_module.base_damage_scale = 5
 	sword_attack_module.benefits_from_bonus_attack_speed = false
 	sword_attack_module.benefits_from_bonus_base_damage = true

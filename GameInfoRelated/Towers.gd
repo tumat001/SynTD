@@ -343,7 +343,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Only the orbs are affected by targeting options. The orbs are considered to be CHAOS's main attack.",
 			"Only the diamonds benefit from pierce buffs and apply on hit damage and effects. On hit effects are 200% effective.",
 			"Only the bolts benefit from attack speed buffs.",
-			"All are affected by range and base damage buffs. Bolts deal 150% of its total base damage.",
+			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 50% efficiency.",
 			"Upon dealing enough damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 500% of its total base damage."
 		]
 		
@@ -373,7 +373,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Stats shown are for the arrow.",
 			"Shoots an arrow that releases a ring. The ring marks up to 4 enemies.",
 			"After a brief delay, Ping shoots up to 4 marked enemies. If only 1 enemy is marked, the shot is empowered, gaining +6 base damage and on hit damages become 150% effective.",
-			"Ping can shoot the next shot immediately when it kills at least one enemy with its shot.",
+			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
 			"Shots deal 7 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
 		]
 		
@@ -428,7 +428,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
-			"Does not attack, but instead gives buffs to towers in range every 5 seconds for 7 seconds.",
+			"Does not attack, but instead casts an ability that gives buffs to towers in range every 5 seconds for 7 seconds.",
 			"Grants 50% of its total base damage as an elemental on hit damage buff.",
 			"Grants 50% x 100 of its total attack speed as percent attack speed (of receiving tower).",
 			"Grants 10% of its total range as bonus range.",
@@ -534,7 +534,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Stats shown are for the magnets.",
 			"When shooting, Magnetizer alternates between blue magnet and red magnet. Magnetizer cycles to the next targeting option after shooting a magnet.",
 			"Magnets stick to the first enemy they hit. When the enemy they are stuck to dies, they drop on the ground.",
-			"When there is at least one blue and one red magnet that has hit an enemy, Magnetizer uses Magnetize.",
+			"When there is at least one blue and one red magnet that has hit an enemy, Magnetizer casts Magnetize.",
 			"",
 			"Magnetize: Calls upon all of this tower's non traveling magnets to form a beam between their opposite types.",
 			"The beam has 7 base damage and deals elemental damage. The beam benefits from base damage buffs. On hit effects and on hit damages are 67% effective."
@@ -663,13 +663,23 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 0
 		
+#		info.tower_descriptions = [
+#			"Campfire gains Rage equivalent to the damage taken by enemies within its range.",
+#			"When enough Rage is built up, Campfire consumes all Rage to give bonus physical on hit damage to the next benefiting attack of all towers in range.",
+#			"Campfire does not gain Rage from the damage its buff has dealt.",
+#			"The bonus on hit damage is equal to Campfire's total base damage.",
+#			"The rage threshold to trigger the buff inversely scales with Campfire's total attack speed. The base rage threshold is 50.",
+#		]
 		info.tower_descriptions = [
 			"Campfire gains Rage equivalent to the damage taken by enemies within its range.",
-			"When enough Rage is built up, Campfire consumes all Rage to give bonus physical on hit damage to the next benefiting attack of all towers in range.",
+			"Upon reaching the Rage limit, Campfire consumes all Rage to cast Heat-Pact",
+			"",
+			"Heat Pact: The next (benefiting) shot of a tower deals bonus physical on hit damage equal to Campfire's total damage.",
+			"",
 			"Campfire does not gain Rage from the damage its buff has dealt.",
-			"The bonus on hit damage is equal to Campfire's total base damage.",
-			"The rage threshold to trigger the buff inversely scales with Campfire's total attack speed. The base rage threshold is 50.",
+			"The Rage threshold is decreased by increasing Campfire's total attack speed or increasing Campfire's ability cdr."
 		]
+		
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_CAMPFIRE)
@@ -903,7 +913,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Royal Flame's attacks burn enemies for 22.5% of its base damage every 0.5 seconds for 8 seconds.",
 			"",
 			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 60% of the extinguished enemy's missing health as elemental damage, up to a limit.",
-			"The explosion does not affect the extinguished target. The explosion benefits only from explosion size buffs and damage mitigation pierce buffs."
+			"The explosion does not affect the extinguished target. The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
+			"Cooldown: 10 s"
 		]
 		
 		# Ingredient related

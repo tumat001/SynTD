@@ -205,6 +205,9 @@ func _can_form_beam() -> bool:
 
 func _form_beam_between_points(origin_pos : Vector2, destination_pos : Vector2):
 	var aoe = beam_attack_module.construct_aoe(origin_pos, destination_pos)
+	
+	aoe.damage_instance = aoe.damage_instance.get_copy_scaled_by(last_calculated_final_ability_potency)
+	
 	get_tree().get_root().add_child(aoe)
 
 

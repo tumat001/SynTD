@@ -15,8 +15,6 @@ const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/Bas
 
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 
-const PercentType = preload("res://GameInfoRelated/PercentType.gd")
-
 const Volcano_Proj_Pic = preload("res://TowerRelated/Color_Orange/Volcano/Volcano_Proj.png")
 
 const Volcano_Crater_Pic01 = preload("res://TowerRelated/Color_Orange/Volcano/Volcano_Crater/Volcano_Crater01.png")

@@ -8,6 +8,8 @@ const range_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationP
 const pierce_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Pierce.png")
 const proj_speed_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_ProjSpeed.png")
 const explosion_size_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_ExplosionSizeIncrease.png")
+const ability_power_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_AbilityPower.png")
+const ability_cdr_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_AbilityCDR.png")
 
 enum {
 	FLAT_BASE_DAMAGE_BONUS,
@@ -33,6 +35,12 @@ enum {
 	FLAT_TOUGHNESS_PIERCE,
 	
 	FLAT_RESISTANCE_PIERCE,
+	
+	FLAT_ABILITY_POTENCY,
+	PERCENT_ABILITY_POTENCY,
+	
+	FLAT_ABILITY_CDR
+	PERCENT_ABILITY_CDR,
 	
 	# PUT OTHER CUSTOM THINGS HERE
 }
@@ -82,6 +90,14 @@ func _get_description() -> String:
 		return _generate_flat_description("bonus explosion size")
 	elif attribute_type == PERCENT_BASE_EXPLOSION_SCALE:
 		return _generate_percent_description("explosion size")
+	elif attribute_type == FLAT_ABILITY_POTENCY:
+		return _generate_flat_description("bonus ability potency")
+	elif attribute_type == PERCENT_ABILITY_POTENCY:
+		return _generate_percent_description("ability potency")
+	elif attribute_type == FLAT_ABILITY_CDR:
+		return _generate_flat_description("bonus ability cdr")
+	elif attribute_type == PERCENT_ABILITY_CDR:
+		return _generate_percent_description("ability cdr")
 	
 	return "Err"
 
@@ -127,7 +143,14 @@ func _get_icon() -> Texture:
 		return explosion_size_inc
 	elif attribute_type == PERCENT_BASE_EXPLOSION_SCALE:
 		return explosion_size_inc
-	
+	elif attribute_type == FLAT_ABILITY_POTENCY:
+		return ability_power_inc
+	elif attribute_type == PERCENT_ABILITY_POTENCY:
+		return ability_power_inc
+	elif attribute_type == FLAT_ABILITY_CDR:
+		return ability_cdr_inc
+	elif attribute_type == PERCENT_ABILITY_CDR:
+		return ability_cdr_inc
 	
 	return null
 
