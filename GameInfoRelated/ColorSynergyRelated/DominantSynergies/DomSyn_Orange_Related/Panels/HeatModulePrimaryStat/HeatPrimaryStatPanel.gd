@@ -5,7 +5,7 @@ const SingleIngredientPanel = preload("res://GameHUDRelated/RightSidePanel/Tower
 
 enum StatDisplay {
 	CURRENT,
-	BASE, # MAX
+	MAX,
 }
 
 var displaying_stat : int = StatDisplay.CURRENT
@@ -36,8 +36,8 @@ func update_display():
 # 
 
 func _on_module_base_effect_changed():
-	if displaying_stat == StatDisplay.BASE:
-		effect_panel.tower_base_effect = heat_module.base_heat_effect
+	if displaying_stat == StatDisplay.MAX:
+		effect_panel.tower_base_effect = heat_module.get_max_effect()
 		effect_panel.update_display()
 
 
@@ -51,12 +51,12 @@ func _on_module_current_effect_changed():
 func _on_ToggleStatButton_pressed():
 	if displaying_stat == StatDisplay.CURRENT:
 		# switch to base
-		displaying_stat = StatDisplay.BASE
+		displaying_stat = StatDisplay.MAX
 		stat_display_label.text = "Max"
 		
 		_on_module_base_effect_changed()
 		
-	elif displaying_stat == StatDisplay.BASE:
+	elif displaying_stat == StatDisplay.MAX:
 		# switch to current
 		displaying_stat = StatDisplay.CURRENT
 		stat_display_label.text = "Current"

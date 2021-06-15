@@ -21,6 +21,7 @@ const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelat
 const BaseTowerAttackModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/BaseTowerAttackModuleAdderEffect.gd")
 const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerFullSellbackEffect.gd")
 const _704EmblemPointsEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/704EmblemPointsEffect.gd")
+const BaseTowerModifyingEffect = preload("res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
@@ -64,6 +65,12 @@ signal on_main_attack(attk_speed_delay, enemies, module)
 signal on_any_attack_finished(module)
 signal on_any_attack(attk_speed_delay, enemies, module)
 signal on_damage_instance_constructed(damage_instance, module)
+
+
+signal on_main_attack_module_enemy_hit(enemy, damage_register_id, module)
+signal on_any_attack_module_enemy_hit(enemy, damage_register_id, module)
+signal on_main_attack_module_damage_instance_constructed(damage_instance, module)
+
 
 signal on_range_module_enemy_entered(enemy, range_module)
 signal on_range_module_enemy_exited(enemy, range_module)
@@ -161,6 +168,11 @@ var base_percent_ability_cdr : float = 0
 var _percent_base_ability_cdr_effects : Dictionary = {}
 var last_calculated_final_percent_ability_cdr : float
 
+# managers
+
+var tower_manager
+var tower_inventory_bench
+
 
 # SYN RELATED ---------------------------- #
 # Yellow
@@ -214,9 +226,10 @@ func _emit_targeting_options_modified():
 
 func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existing_tower_buffs : bool = true):
 	if !attack_module.is_connected("in_attack_end", self, "_emit_on_any_attack_finished"):
-		attack_module.connect("in_attack_end", self, "_emit_on_any_attack_finished", [attack_module])
-		attack_module.connect("in_attack", self, "_emit_on_any_attack", [attack_module])
-		attack_module.connect("on_damage_instance_constructed", self, "_emit_on_damage_instance_constructed")
+		attack_module.connect("in_attack_end", self, "_emit_on_any_attack_finished", [attack_module], CONNECT_PERSIST)
+		attack_module.connect("in_attack", self, "_emit_on_any_attack", [attack_module], CONNECT_PERSIST)
+		attack_module.connect("on_damage_instance_constructed", self, "_emit_on_damage_instance_constructed", [], CONNECT_PERSIST)
+		attack_module.connect("on_enemy_hit" , self, "_emit_on_any_attack_module_enemy_hit", [], CONNECT_PERSIST)
 	
 	if attack_module.get_parent() == null:
 		add_child(attack_module)
@@ -225,8 +238,8 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		attack_module.range_module = range_module
 	
 	if !attack_module.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
-		attack_module.range_module.connect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered", [attack_module.range_module])
-		attack_module.range_module.connect("enemy_left_range" , self, "_emit_on_range_module_enemy_exited", [attack_module.range_module])
+		attack_module.range_module.connect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered", [attack_module.range_module], CONNECT_PERSIST)
+		attack_module.range_module.connect("enemy_left_range" , self, "_emit_on_range_module_enemy_exited", [attack_module.range_module], CONNECT_PERSIST)
 	
 	attack_module.range_module.update_range()
 	
@@ -235,8 +248,10 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		main_attack_module = attack_module
 		
 		if !main_attack_module.is_connected("in_attack_end", self, "_emit_on_main_attack_finished"):
-			main_attack_module.connect("in_attack_end", self, "_emit_on_main_attack_finished", [main_attack_module])
-			main_attack_module.connect("in_attack", self, "_emit_on_main_attack", [main_attack_module])
+			main_attack_module.connect("in_attack_end", self, "_emit_on_main_attack_finished", [main_attack_module], CONNECT_PERSIST)
+			main_attack_module.connect("in_attack", self, "_emit_on_main_attack", [main_attack_module], CONNECT_PERSIST)
+			main_attack_module.connect("on_enemy_hit" , self, "_emit_on_main_attack_module_enemy_hit", [], CONNECT_PERSIST)
+			main_attack_module.connect("on_damage_instance_constructed", self, "_emit_on_main_attack_module_damage_instance_constructed", [], CONNECT_PERSIST)
 		
 		if range_module == null and main_attack_module.range_module != null:
 			range_module = main_attack_module.range_module
@@ -246,9 +261,9 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 				add_child(range_module)
 			
 			#range_module.update_range() 
-			range_module.connect("final_range_changed", self, "_emit_final_range_changed")
-			range_module.connect("targeting_changed", self, "_emit_targeting_changed")
-			range_module.connect("targeting_options_modified", self, "_emit_targeting_options_modified")
+			range_module.connect("final_range_changed", self, "_emit_final_range_changed", [], CONNECT_PERSIST)
+			range_module.connect("targeting_changed", self, "_emit_targeting_changed", [], CONNECT_PERSIST)
+			range_module.connect("targeting_options_modified", self, "_emit_targeting_options_modified", [], CONNECT_PERSIST)
 			range_module.update_range()
 	
 	if benefit_from_existing_tower_buffs:
@@ -264,10 +279,13 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		attack_module_to_remove.disconnect("in_attack_end", self, "_emit_on_any_attack_finished")
 		attack_module_to_remove.disconnect("in_attack", self, "_emit_on_any_attack")
 		attack_module_to_remove.disconnect("on_damage_instance_constructed", self, "_emit_on_damage_instance_constructed")
+		attack_module_to_remove.disconnect("on_any_attack_module_enemy_hit", self, "_emit_on_any_attack_module_enemy_hit")
 	
 	if attack_module_to_remove.is_connected("in_attack_end", self, "_emit_on_main_attack_finished"):
 		attack_module_to_remove.disconnect("in_attack_end", self, "_emit_on_main_attack_finished")
 		attack_module_to_remove.disconnect("in_attack", self, "_emit_on_main_attack")
+		attack_module_to_remove.disconnect("on_main_attack_module_enemy_hit", self, "_emit_on_main_attack_module_enemy_hit")
+		attack_module_to_remove.disconnect("on_damage_instance_constructed", self, "_emit_on_main_attack_module_damage_instance_constructed")
 	
 	for tower_effect in _all_uuid_tower_buffs_map.values():
 		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
@@ -307,6 +325,15 @@ func _emit_on_main_attack(attack_delay, enemies_or_poses, module):
 func _emit_on_damage_instance_constructed(damage_instance, module):
 	emit_signal("on_damage_instance_constructed", damage_instance, module)
 	_decrease_count_of_countbounded(module)
+
+func _emit_on_main_attack_module_damage_instance_constructed(damage_instance, module):
+	emit_signal("on_main_attack_module_damage_instance_constructed", damage_instance, module)
+
+func _emit_on_main_attack_module_enemy_hit(enemy, damage_register_id, module):
+	emit_signal("on_main_attack_module_enemy_hit", enemy, damage_register_id, module)
+
+func _emit_on_any_attack_module_enemy_hit(enemy, damage_register_id, module):
+	emit_signal("on_any_attack_module_enemy_hit", enemy, damage_register_id, module)
 
 
 func _emit_on_range_module_enemy_entered(enemy, module):
@@ -424,13 +451,21 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 			_special_case_tower_effect_added(tower_base_effect)
 			remove_ingredient(ing_effect)
 		
+	elif tower_base_effect is BaseTowerModifyingEffect:
+		if include_non_module_effects:
+			_add_tower_modifying_effect(tower_base_effect)
+		
 	elif tower_base_effect is TowerResetEffects:
 		if include_non_module_effects:
 			_clear_ingredients_by_effect_reset()
 			
 			if main_attack_module != null:
 				main_attack_module.reset_attack_timers()
-		
+	
+	
+	if ing_effect != null and ing_effect.discard_after_absorb:
+		remove_tower_effect(ing_effect.tower_base_effect)
+
 
 func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, erase_from_buff_map : bool = true, include_non_module_effects : bool = true):
 	if include_non_module_effects and erase_from_buff_map:
@@ -484,6 +519,10 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 		if include_non_module_effects:
 			_set_full_sellback(false)
 		
+	elif tower_base_effect is BaseTowerModifyingEffect:
+		if include_non_module_effects:
+			_remove_tower_modifying_effect(tower_base_effect)
+
 
 func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect, target_modules : Array):
 	for module in target_modules:
@@ -842,6 +881,13 @@ func _remove_percent_ability_cdr_effect(attr_effect_uuid : int):
 	_calculate_final_percent_ability_cdr()
 
 
+func _add_tower_modifying_effect(tower_mod : BaseTowerModifyingEffect):
+	tower_mod._make_modifications_to_tower(self)
+
+func _remove_tower_modifying_effect(tower_mod : BaseTowerModifyingEffect):
+	tower_mod._undo_modifications_to_tower(self)
+
+
 
 # special case effects
 
@@ -954,12 +1000,15 @@ func _clear_ingredients_by_effect_reset():
 
 func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
 	if ingredient_effect != null:
-		if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.tower_base_effect is TowerResetEffects:
+		if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.ignore_ingredient_limit:
 			return false
 	
 	if ingredient_effect != null:
 		if ingredients_absorbed.has(ingredient_effect.tower_id):
 			return false
+		
+		if tower_selected.tower_id == 2000:
+			return true
 		
 		for color in tower_selected.ingredient_compatible_colors:
 			if _tower_colors.has(color):
@@ -983,7 +1032,7 @@ func set_ingredient_limit_modifier(modifier_id : int, limit_modifier : int):
 	_ingredient_id_limit_modifier_map[modifier_id] = limit_modifier
 	_set_active_ingredient_limit(_calculate_final_ingredient_limit())
 
-func remove_ingredient_limit_modifier(modifier_id : int, limit_modifier : int):
+func remove_ingredient_limit_modifier(modifier_id : int):
 	_ingredient_id_limit_modifier_map.erase(modifier_id)
 	_set_active_ingredient_limit(_calculate_final_ingredient_limit())
 
@@ -1000,23 +1049,26 @@ func _calculate_final_ingredient_limit() -> int:
 func _set_active_ingredient_limit(new_limit : int):
 	
 	if last_calculated_ingredient_limit != new_limit:
-		if last_calculated_ingredient_limit > new_limit:
+		var old_ing_limit = last_calculated_ingredient_limit #
+		last_calculated_ingredient_limit = new_limit #
+		
+		if old_ing_limit > new_limit:
 			
 			var ing_effects = ingredients_absorbed.values()
 			for i in range(new_limit, ingredients_absorbed.size()):
 				remove_tower_effect(ing_effects[i].tower_base_effect)
 			
 			
-		elif last_calculated_ingredient_limit < new_limit:
+		elif old_ing_limit < new_limit:
 			
 			var ing_effects = ingredients_absorbed.values()
-			for i in range(last_calculated_ingredient_limit, new_limit):
+			for i in range(old_ing_limit, new_limit):
 				if ing_effects.size() > i:
 					add_tower_effect(ing_effects[i].tower_base_effect)
 				else:
 					break
 		
-		last_calculated_ingredient_limit = new_limit
+		#last_calculated_ingredient_limit = new_limit
 		emit_signal("ingredients_limit_changed", new_limit)
 
 
@@ -1060,18 +1112,18 @@ func _update_ingredient_compatible_colors():
 # Tower Colors Related
 
 func add_color_to_tower(color : int):
-	if !_tower_colors.has(color):
-		_tower_colors.append(color)
-		call_deferred("emit_signal", "update_active_synergy")
-		call_deferred("emit_signal", "tower_colors_changed")
-		_update_ingredient_compatible_colors()
+	#if !_tower_colors.has(color):
+	_tower_colors.append(color)
+	call_deferred("emit_signal", "update_active_synergy")
+	call_deferred("emit_signal", "tower_colors_changed")
+	_update_ingredient_compatible_colors()
 
 func remove_color_from_tower(color : int):
-	if _tower_colors.has(color):
-		_tower_colors.erase(color)
-		call_deferred("emit_signal", "update_active_synergy")
-		call_deferred("emit_signal", "tower_colors_changed")
-		_update_ingredient_compatible_colors()
+	#if _tower_colors.has(color):
+	_tower_colors.erase(color)
+	call_deferred("emit_signal", "update_active_synergy")
+	call_deferred("emit_signal", "tower_colors_changed")
+	_update_ingredient_compatible_colors()
 
 
 # Abiliy reg and cdr related

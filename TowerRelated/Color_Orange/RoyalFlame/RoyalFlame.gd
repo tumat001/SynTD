@@ -51,7 +51,7 @@ const burn_base_damage_ratio : float = 0.225
 var burn_enemy_effect : EnemyDmgOverTimeEffect
 
 var steam_burst_ability : BaseAbility
-const base_ability_cooldown : float = 10.0
+const base_ability_cooldown : float = 25.0
 
 var extinguish_range_module : RangeModule
 var extinguish_attack_module : WithBeamInstantDamageAttackModule
@@ -315,12 +315,12 @@ func _extinguish_on_enemy_beam_hit(enemy):
 # Heat Module
 
 func set_heat_module(module):
-	module.heat_per_attack = 1
+	module.heat_per_attack = 2
 	.set_heat_module(module)
 
 func _construct_heat_effect():
 	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_dmg_attr_mod.flat_modifier = 2
+	base_dmg_attr_mod.flat_modifier = 1.25
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
 

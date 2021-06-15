@@ -112,6 +112,7 @@ func _update_synergy_displayer():
 
 # Synergy application
 
+# actually removes old first then adds new
 func _apply_active_synergies_and_remove_old(previous_synergies_res : Array):
 	var old_synergies_to_remove : Array = previous_synergies_res
 	var new_synergies_to_apply : Array = []

@@ -63,7 +63,7 @@ func on_round_end():
 			is_in_overheat_active = false
 			_tower_exited_overheat()
 			
-			call_deferred("in_overheat_cooldown")
+			call_deferred("emit_signal", "in_overheat_cooldown")
 			tower.set_disabled_from_attacking_clause(tower.DisabledFromAttackingSource.HEAT_MODULE, true)
 			
 		else:
@@ -240,3 +240,25 @@ func _calculate_effect_step_and_remainder() -> Array:
 
 func _calculate_remainder_true_multiplier(remainder : float):
 	return ((remainder * remainder) / (0.25 * 0.25)) / 4
+
+
+# MAX
+
+func get_max_effect():
+	var scale = base_effect_multiplier
+	var s_copy = base_heat_effect._shallow_duplicate()
+	
+	if base_heat_effect is TowerAttributesEffect:
+		var modifier_copy = base_heat_effect.attribute_as_modifier.get_copy_scaled_by(scale)
+		s_copy.attribute_as_modifier = modifier_copy
+		
+	elif base_heat_effect is TowerOnHitDamageAdderEffect:
+		var on_hit_d_copy : OnHitDamage = base_heat_effect.on_hit_damage.duplicate()
+		on_hit_d_copy.damage_as_modifier = on_hit_d_copy.damage_as_modifier.get_copy_scaled_by(scale)
+		s_copy.on_hit_damage = on_hit_d_copy
+	
+	elif base_heat_effect is TowerOnHitEffectAdderEffect:
+		var effect_copy = base_heat_effect.enemy_base_effect._get_copy_scaled_by(scale)
+		s_copy.enemy_base_effect = effect_copy
+	
+	return s_copy

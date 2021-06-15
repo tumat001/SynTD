@@ -16,8 +16,6 @@ const EmberProj_05 = preload("res://TowerRelated/Color_Orange/Ember/EmberProj/Em
 const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
-const PercentType = preload("res://GameInfoRelated/PercentType.gd")
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

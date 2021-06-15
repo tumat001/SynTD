@@ -11,6 +11,8 @@ enum EffectType {
 	FULL_SELLBACK,
 	_704_EMBLEM_POINTS,
 	
+	TOWER_MODIFIER,
+	
 }
 
 var effect_uuid: int

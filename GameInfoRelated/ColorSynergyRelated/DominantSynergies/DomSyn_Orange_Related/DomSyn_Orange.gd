@@ -7,8 +7,8 @@ signal on_base_multiplier_changed(scale)
 
 
 const tier_1_heat_effect_scale : float = 3.4
-const tier_2_heat_effect_scale : float = 2.6
-const tier_3_heat_effect_scale : float = 1.8
+const tier_2_heat_effect_scale : float = 2.2
+const tier_3_heat_effect_scale : float = 1.5
 const tier_4_heat_effect_scale : float = 1.0
 var current_heat_effect_scale : float
 
@@ -26,21 +26,21 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	should_modules_show_in_info = true
 	
 	if !game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy"):
-		game_elements.tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy")
-		game_elements.tower_manager.connect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy")
+		game_elements.tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy", [], CONNECT_PERSIST)
+		game_elements.tower_manager.connect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy", [], CONNECT_PERSIST)
 	
 	if tier == 4:
-		_set_effect_multiplier_of_heat_modules(tier_4_heat_effect_scale)
 		current_heat_effect_scale = tier_4_heat_effect_scale
+		_set_effect_multiplier_of_heat_modules(tier_4_heat_effect_scale)
 	elif tier == 3:
-		_set_effect_multiplier_of_heat_modules(tier_3_heat_effect_scale)
 		current_heat_effect_scale = tier_3_heat_effect_scale
+		_set_effect_multiplier_of_heat_modules(tier_3_heat_effect_scale)
 	elif tier == 2:
-		_set_effect_multiplier_of_heat_modules(tier_2_heat_effect_scale)
 		current_heat_effect_scale = tier_2_heat_effect_scale
+		_set_effect_multiplier_of_heat_modules(tier_2_heat_effect_scale)
 	elif tier == 1:
-		_set_effect_multiplier_of_heat_modules(tier_1_heat_effect_scale)
 		current_heat_effect_scale = tier_1_heat_effect_scale
+		_set_effect_multiplier_of_heat_modules(tier_1_heat_effect_scale)
 	
 	var all_towers = game_elements.tower_manager.get_all_active_towers()
 	_towers_to_benefit_from_syn(all_towers)
@@ -85,15 +85,15 @@ func construct_heat_module() -> HeatModule:
 	heat_module.should_be_shown_in_info_panel = should_modules_show_in_info
 	heat_module.base_effect_multiplier = current_heat_effect_scale
 	
-	connect("on_round_end", heat_module, "on_round_end")
+	connect("on_round_end", heat_module, "on_round_end", [], CONNECT_PERSIST)
 	connect("on_base_multiplier_changed", heat_module, "set_base_effect_multiplier", [], CONNECT_PERSIST)
 	
 	return heat_module
 
 
 func _set_effect_multiplier_of_heat_modules(scale : float):
-	emit_signal("on_base_multiplier_changed", scale)
-
+	#emit_signal("on_base_multiplier_changed", scale)
+	call_deferred("emit_signal", "on_base_multiplier_changed", scale)
 
 # Towers
 

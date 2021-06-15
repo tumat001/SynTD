@@ -1,6 +1,5 @@
 extends "res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd"
 
-const img_effect = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_GenericStatusInflict.png")
 const EnemyBaseEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd")
 
 var base_effect : EnemyBaseEffect
@@ -24,7 +23,6 @@ func _init(arg_base_effect : EnemyBaseEffect,
 	num_of_stacks_per_apply = arg_num_of_stacks_per_apply
 	stack_cap = arg_stack_cap
 	duration_refresh_per_apply = arg_duration_refresh_per_apply
-	effect_icon = img_effect
 	
 
 func _get_copy_scaled_by(scale : float):

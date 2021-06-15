@@ -13,8 +13,6 @@ const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const Coal_Proj01 = preload("res://TowerRelated/Color_Orange/CoalLauncher/Coal_Proj/Coal_Proj01.png")
 const Coal_Proj02 = preload("res://TowerRelated/Color_Orange/CoalLauncher/Coal_Proj/Coal_Proj02.png")
 
-const PercentType = preload("res://GameInfoRelated/PercentType.gd")
-
 var coal_attack_module : BulletAttackModule
 var burn_effect_ids_to_inc : Array = [
 	StoreOfEnemyEffectsUUID.ING_EMBER_BURN,
@@ -22,6 +20,7 @@ var burn_effect_ids_to_inc : Array = [
 	
 	StoreOfEnemyEffectsUUID._704_FIRE_BURN,
 	StoreOfEnemyEffectsUUID.ROYAL_FLAME_BURN,
+	StoreOfEnemyEffectsUUID.ING_RED_FRUIT_BURN,
 ]
 
 # Called when the node enters the scene tree for the first time.
@@ -89,7 +88,7 @@ func _on_coal_hit_enemy(enemy : AbstractEnemy, damage_reg_id, module):
 # Heat Module
 
 func set_heat_module(module):
-	module.heat_per_attack = 1
+	module.heat_per_attack = 3
 	.set_heat_module(module)
 
 func _construct_heat_effect():

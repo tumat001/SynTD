@@ -11,7 +11,6 @@ const InstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/Inst
 const EntropyAttackSprite = preload("res://TowerRelated/Color_Orange/Entropy/EntropyAttkSprite/EntropyAttkSprite.tscn")
 
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
-const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
 var first_attack_speed_effect : TowerAttributesEffect
 var second_attack_speed_effect : TowerAttributesEffect
@@ -45,13 +44,17 @@ func _ready():
 	attack_module.base_damage = info.base_damage
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
-	attack_module.base_attack_wind_up = 0
+	attack_module.base_attack_wind_up = 6
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	attack_module.attack_sprite_scene = EntropyAttackSprite
+	attack_module.attack_sprite_match_lifetime_to_windup = true
+	attack_module.attack_sprite_show_in_windup = true
+	attack_module.attack_sprite_show_in_attack = false
+	
 	
 	_construct_effects()
 	
@@ -117,7 +120,7 @@ func _on_attack_sprite_constructed_e(attack_sprite):
 # Heat Module
 
 func set_heat_module(module):
-	module.heat_per_attack = 1
+	module.heat_per_attack = 2
 	.set_heat_module(module)
 
 func _construct_heat_effect():

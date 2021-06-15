@@ -6,7 +6,7 @@
 [ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModuleButton_InfoButton02.png" type="Texture" id=4]
 [ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModuleButton_On.png" type="Texture" id=5]
 [ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyModulePanel.gd" type="Script" id=6]
-[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_GenericStatusInflict.png" type="Texture" id=7]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/Panels/EnergyModulePanel/EnergyEffect_Icon.png" type="Texture" id=7]
 
 [sub_resource type="DynamicFont" id=1]
 size = 8

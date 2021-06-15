@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Ing_GenericStatusInflict.png-217f7c1b00cf2afcef318e64a419d687.stex"
+path="res://.import/FruitBlue_Explosion01.png-fd138f92817cb73074e223827a14c426.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_GenericStatusInflict.png"
-dest_files=[ "res://.import/Ing_GenericStatusInflict.png-217f7c1b00cf2afcef318e64a419d687.stex" ]
+source_file="res://TowerRelated/Color_Green/FruitTree/Fruits/Fruit_Blue_Assets/FruitBlue_Explosion01.png"
+dest_files=[ "res://.import/FruitBlue_Explosion01.png-fd138f92817cb73074e223827a14c426.stex" ]
 
 [params]
 

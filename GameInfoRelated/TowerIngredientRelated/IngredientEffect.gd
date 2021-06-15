@@ -5,6 +5,8 @@ const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerB
 var tower_base_effect : TowerBaseEffect
 var tower_id : int
 var description : String
+var ignore_ingredient_limit : bool = false
+var discard_after_absorb : bool = false
 
 func _init(arg_tower_id : int,
 		 arg_tower_base_effect : TowerBaseEffect):

@@ -45,6 +45,7 @@ const coal_launcher_image = preload("res://TowerRelated/Color_Orange/CoalLaunche
 const enthalphy_image = preload("res://TowerRelated/Color_Orange/Enthalphy/Enthalphy_WholeBody.png")
 const entropy_image = preload("res://TowerRelated/Color_Orange/Entropy/Entropy_WholeBody.png")
 const royal_flame_image = preload("res://TowerRelated/Color_Orange/RoyalFlame/RoyalFlame_E.png")
+const ieu_image = preload("res://TowerRelated/Color_Orange/IEU/IEU_Omni_01.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -57,6 +58,7 @@ const sunflower_image = preload("res://TowerRelated/Color_Yellow/Sunflower/Sunfl
 
 # GREEN
 const berrybush_image = preload("res://TowerRelated/Color_Green/BerryBush/BerryBush_Omni.png")
+const fruit_tree_image = preload("res://TowerRelated/Color_Green/FruitTree/FruitTree_Omni.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -87,6 +89,7 @@ enum {
 	ENTHALPHY = 308,
 	ENTROPY = 309,
 	ROYAL_FLAME = 310,
+	IEU = 311,
 	
 	# YELLOW (400)
 	RAILGUN = 400,
@@ -99,6 +102,7 @@ enum {
 	
 	# GREEN (500)
 	BERRY_BUSH = 500,
+	FRUIT_TREE = 501,
 	
 	# BLUE (600)
 	SPRINKLER = 600,
@@ -109,6 +113,11 @@ enum {
 	TESLA = 702,
 	CHAOS = 703,
 	PING = 704,
+	
+	
+	# MISC (2000)
+	
+	FRUIT_TREE_FRUIT = 2000, #THIS VALUE IS HARDCODED IN AbstractTower's can_accept_ingredient..
 }
 
 static func get_tower_info(tower_id : int) -> TowerTypeInformation :
@@ -292,6 +301,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var tower_effect = TowerResetEffects.new(StoreOfTowerEffectsUUID.ING_RE)
 		var ing_effect = IngredientEffect.new(tower_id, tower_effect)
+		ing_effect.ignore_ingredient_limit = true
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "clear"
 		
@@ -428,7 +438,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
-			"Does not attack, but instead casts an ability that gives buffs to towers in range every 5 seconds for 7 seconds.",
+			"Does not attack, but instead casts an aura that buffs towers in range every 5 seconds for 7 seconds.",
 			"Grants 50% of its total base damage as an elemental on hit damage buff.",
 			"Grants 50% x 100 of its total attack speed as percent attack speed (of receiving tower).",
 			"Grants 10% of its total range as bonus range.",
@@ -914,7 +924,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 60% of the extinguished enemy's missing health as elemental damage, up to a limit.",
 			"The explosion does not affect the extinguished target. The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
-			"Cooldown: 10 s"
+			"Cooldown: 25 s"
 		]
 		
 		# Ingredient related
@@ -927,6 +937,81 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ base dmg"
 		
+		
+	elif tower_id == IEU:
+		info = TowerTypeInformation.new("IE=U", tower_id)
+		info.tower_cost = 4
+		info.colors.append(TowerColors.ORANGE)
+		info.colors.append(TowerColors.YELLOW)
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = ieu_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 1
+		info.base_pierce = 0
+		info.base_range = 125
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1.25
+		
+		info.tower_descriptions = [
+			"IE=U discards the ingredient effect of Entropy and Enthalphy when they are absorbed. Instead, a temporary buff that lasts for 5 rounds is received.",
+			"Absorbing Entropy gives 60% bonus attack speed for the first, and 20% for the subsequent.",
+			"Absorbing Enthalphy gives 125 bonus range for the first, and 45 for the subsequent.",
+			"",
+			"\"Feed the system.\""
+		]
+		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_IEU)
+		attk_speed_attr_mod.percent_amount = 22.5
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_IEU)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
+		
+		
+	elif tower_id == FRUIT_TREE:
+		info = TowerTypeInformation.new("Fruit Tree", tower_id)
+		info.tower_cost = 5
+		info.colors.append(TowerColors.GREEN)
+		info.tower_tier = 5
+		info.tower_image_in_buy_card = fruit_tree_image
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0
+		info.base_pierce = 0
+		info.base_range = 0
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Does not attack, but instead gives a fruit every 4th round of being placed in the map.",
+			"Fruits appear in the tower bench, and will be converted into gold when no space is available.",
+			"Fruits do not attack, but have an ingredient effect. Fruits can be given to any tower that can accept ingredients.",
+			"",
+			"Fruit Tree cannot absorb fruits."
+		]
+		
+		
+	elif tower_id == FRUIT_TREE_FRUIT:
+		info = TowerTypeInformation.new("Fruit", tower_id)
+		info.tower_cost = 4
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = fruit_tree_image
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0
+		info.base_pierce = 0
+		info.base_range = 0
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			""
+		]
 	
 	return info
 
@@ -985,3 +1070,9 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/Entropy/Entropy.tscn")
 	elif tower_id == ROYAL_FLAME:
 		return load("res://TowerRelated/Color_Orange/RoyalFlame/RoyalFlame.tscn")
+	elif tower_id == IEU: #28th tower
+		return load("res://TowerRelated/Color_Orange/IEU/IEU.tscn")
+	elif tower_id == FRUIT_TREE:
+		return load("res://TowerRelated/Color_Green/FruitTree/FruitTree.tscn")
+	elif tower_id == FRUIT_TREE_FRUIT:
+		return load("res://TowerRelated/Color_Green/FruitTree/Fruits/FruitTree_Fruit.tscn")

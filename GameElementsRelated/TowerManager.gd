@@ -81,6 +81,8 @@ func _tower_inactivated_from_map(tower):
 # Adding tower as child of this to monitor it
 func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("register_ability", self, "_register_ability_from_tower", [], CONNECT_PERSIST)
+	tower_instance.tower_manager = self
+	tower_instance.tower_inventory_bench = tower_inventory_bench
 	
 	add_child(tower_instance)
 	tower_instance.connect("tower_being_dragged", self, "_tower_being_dragged", [], CONNECT_PERSIST)

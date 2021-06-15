@@ -76,25 +76,24 @@ custom_constants/margin_top = 8
 margin_left = 10.0
 margin_top = 193.0
 margin_right = 110.0
-margin_bottom = 416.0
+margin_bottom = 424.0
 size_flags_horizontal = 4
 size_flags_vertical = 3
 custom_constants/margin_top = 10
 custom_constants/margin_bottom = 8
 
-[node name="EnergyModuleExtraSlot" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 416.0
+[node name="HeatModuleExtraSlot" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 424.0
 margin_right = 120.0
 margin_bottom = 432.0
-mouse_filter = 2
-custom_constants/margin_top = 8
 custom_constants/margin_bottom = 8
 script = ExtResource( 6 )
 
-[node name="HeatModuleExtraSlot" type="MarginContainer" parent="VBoxContainer"]
+[node name="EnergyModuleExtraSlot" type="MarginContainer" parent="VBoxContainer"]
 margin_top = 432.0
 margin_right = 120.0
 margin_bottom = 440.0
+mouse_filter = 2
 custom_constants/margin_bottom = 8
 script = ExtResource( 6 )
 [connection signal="show_extra_tower_info" from="VBoxContainer/TowerNameAndPicPanel" to="." method="_on_TowerNameAndPicPanel_show_extra_tower_info"]

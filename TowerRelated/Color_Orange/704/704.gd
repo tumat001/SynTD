@@ -395,16 +395,22 @@ func _special_case_tower_effect_added(effect : TowerBaseEffect):
 	if effect is _704EmblemPointsEffect:
 		available_points += 4
 
+func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
+	if ingredient_effect != null and ingredient_effect.tower_id == Towers._704:
+		return true
+	
+	return ._can_accept_ingredient(ingredient_effect, tower_selected)
+
 
 # Heat Module
 
 func set_heat_module(module : HeatModule):
-	module.heat_per_attack = 1
+	module.heat_per_attack = 2
 	.set_heat_module(module)
 
 func _construct_heat_effect():
 	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_dmg_attr_mod.flat_modifier = 2.5
+	base_dmg_attr_mod.flat_modifier = 1.25
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
 

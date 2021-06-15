@@ -97,6 +97,10 @@ var modifications : Array
 var attack_sprite_scene
 var attack_sprite_follow_enemy : bool
 
+var attack_sprite_show_in_windup : bool
+var attack_sprite_match_lifetime_to_windup : bool = true
+var attack_sprite_show_in_attack : bool = true
+
 
 # Windup enemy targets
 
@@ -699,16 +703,17 @@ func _attack_enemies(enemies : Array):
 	#if !_is_bursting:
 	emit_signal("in_attack", _last_calculated_attack_speed_as_delay, enemies)
 	
-	for enemy in enemies:
-		if attack_sprite_scene != null:
-			var attack_sprite = attack_sprite_scene.instance()
-			emit_signal("before_attack_sprite_is_shown", attack_sprite)
-			
-			if attack_sprite_follow_enemy:
-				enemy.add_child(attack_sprite)
-			else:
-				attack_sprite.position = enemy.position
-				get_tree().get_root().add_child(attack_sprite)
+	if attack_sprite_show_in_attack:
+		for enemy in enemies:
+			if attack_sprite_scene != null:
+				var attack_sprite = attack_sprite_scene.instance()
+				emit_signal("before_attack_sprite_is_shown", attack_sprite)
+				
+				if attack_sprite_follow_enemy:
+					enemy.add_child(attack_sprite)
+				else:
+					attack_sprite.position = enemy.position
+					get_tree().get_root().add_child(attack_sprite)
 
 
 #func _attack_at_position(_pos : Vector2):
@@ -731,6 +736,25 @@ func _during_windup_multiple(enemies_or_poses : Array = []):
 	if commit_to_targets_of_windup:
 		for enemy in enemies_or_poses:
 			_targets_during_windup.append(enemy)
+	
+	if attack_sprite_show_in_windup:
+		for enemy in enemies_or_poses:
+			if attack_sprite_scene != null:
+				var attack_sprite = attack_sprite_scene.instance()
+				
+				if attack_sprite_match_lifetime_to_windup:
+					attack_sprite.lifetime = _last_calculated_attack_wind_up
+					attack_sprite.has_lifetime = true
+					attack_sprite.frames_based_on_lifetime = true
+				
+				emit_signal("before_attack_sprite_is_shown", attack_sprite)
+				
+				if attack_sprite_follow_enemy:
+					enemy.add_child(attack_sprite)
+				else:
+					attack_sprite.position = enemy.position
+					get_tree().get_root().add_child(attack_sprite)
+	
 	
 	emit_signal("in_attack_windup", _last_calculated_attack_wind_up, enemies_or_poses)
 
