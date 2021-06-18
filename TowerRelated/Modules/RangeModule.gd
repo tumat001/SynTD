@@ -23,10 +23,12 @@ var can_display_range : bool = true
 
 var enemies_in_range : Array = []
 var _current_enemies : Array = []
+var priority_enemies : Array = []
 
 var _current_targeting_option_index : int
 var _last_used_targeting_option_index : int
-var all_targeting_options : Array = []
+var all_distinct_targeting_options : Array = []
+var _all_targeting_options : Array = []
 
 # last calc stuffs
 
@@ -39,8 +41,8 @@ var attack_modules_using_this : Array = []
 
 
 func _init():
-	if all_targeting_options == null or all_targeting_options.size() == 0:
-		all_targeting_options = [Targeting.FIRST, Targeting.LAST]
+	_all_targeting_options = [Targeting.FIRST, Targeting.LAST]
+	all_distinct_targeting_options = [Targeting.FIRST, Targeting.LAST]
 	
 	_current_targeting_option_index = 0
 	_last_used_targeting_option_index = 0
@@ -49,7 +51,7 @@ func _init():
 func targeting_cycle_left():
 	var to_be : int = _current_targeting_option_index - 1
 	if to_be < 0:
-		to_be = all_targeting_options.size() - 1
+		to_be = all_distinct_targeting_options.size() - 1
 	
 	_last_used_targeting_option_index = _current_targeting_option_index
 	_current_targeting_option_index = to_be
@@ -57,7 +59,7 @@ func targeting_cycle_left():
 
 func targeting_cycle_right():
 	var to_be : int = _current_targeting_option_index + 1
-	if to_be >= all_targeting_options.size():
+	if to_be >= all_distinct_targeting_options.size():
 		to_be = 0
 	
 	_last_used_targeting_option_index = _current_targeting_option_index
@@ -66,27 +68,56 @@ func targeting_cycle_right():
 
 
 func add_targeting_option(targeting : int):
-	all_targeting_options.append(targeting)
+	_all_targeting_options.append(targeting)
+	_update_all_distinct_targeting_options()
+	
 	call_deferred("emit_signal", "targeting_options_modified")
 
+
+func add_targeting_options(targetings : Array):
+	for targ in targetings:
+		_all_targeting_options.append(targ)
+	
+	_update_all_distinct_targeting_options()
+	call_deferred("emit_signal", "targeting_options_modified")
+
+
+
+func _update_all_distinct_targeting_options():
+	all_distinct_targeting_options.clear()
+	
+	for targeting in _all_targeting_options:
+		if !all_distinct_targeting_options.has(targeting):
+			all_distinct_targeting_options.append(targeting)
+
+
 func remove_targeting_option(targeting : int):
-	if all_targeting_options[_current_targeting_option_index] == targeting:
-		targeting_cycle_right()
+	var switch : bool = false
+	
+	if all_distinct_targeting_options[_current_targeting_option_index] == targeting:
+		switch = true
+	
 	_last_used_targeting_option_index = 0
 	
-	all_targeting_options.erase(targeting)
+	_all_targeting_options.erase(targeting)
+	_update_all_distinct_targeting_options()
+	
+	if switch:
+		targeting_cycle_right()
+	
 	call_deferred("emit_signal", "targeting_options_modified")
 
 func clear_all_targeting():
 	_current_targeting_option_index = 0
 	_last_used_targeting_option_index = 0
 	
-	all_targeting_options.clear()
+	all_distinct_targeting_options.clear()
+	_all_targeting_options.clear()
 	call_deferred("emit_signal", "targeting_options_modified")
 
 
 func set_current_targeting(targeting : int):
-	var index_of_targeting = all_targeting_options.find(targeting)
+	var index_of_targeting = all_distinct_targeting_options.find(targeting)
 	
 	if index_of_targeting != -1:
 		_last_used_targeting_option_index = _current_targeting_option_index
@@ -177,20 +208,26 @@ func calculate_final_range_radius() -> float:
 # Uses
 
 func get_current_targeting_option() -> int:
-	if all_targeting_options.size() > 0:
-		return all_targeting_options[_current_targeting_option_index]
+	if all_distinct_targeting_options.size() > 0:
+		return all_distinct_targeting_options[_current_targeting_option_index]
 	else:
 		return -1
 
-func get_target(targeting : int = get_current_targeting_option()) -> AbstractEnemy:
-	_current_enemies.clear()
-	_current_enemies[0] = Targeting.enemy_to_target(enemies_in_range, targeting)
-	return _current_enemies[0]
+#func get_target(targeting : int = get_current_targeting_option()) -> AbstractEnemy:
+#	_current_enemies.clear()
+#	_current_enemies[0] = Targeting.enemy_to_target(enemies_in_range, targeting)
+#	return _current_enemies[0]
 
 func get_targets(num : int, targeting : int = get_current_targeting_option()) -> Array:
 	_current_enemies = Targeting.enemies_to_target(enemies_in_range, targeting, num, global_position)
 	while _current_enemies.has(null):
 		_current_enemies.erase(null)
+	
+	while priority_enemies.has(null):
+		priority_enemies.erase(null)
+	
+	for i in range(priority_enemies.size(), 0, -1):
+		_current_enemies.push_front(priority_enemies[i])
 	
 	return _current_enemies
 

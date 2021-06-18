@@ -79,7 +79,7 @@ func _modify_bullet(bullet : BaseBullet):
 		bullet.set_texture_as_sprite_frames(Coal_Proj02)
 
 
-func _on_coal_hit_enemy(enemy : AbstractEnemy, damage_reg_id, module):
+func _on_coal_hit_enemy(enemy : AbstractEnemy, damage_reg_id, damage_instance, module):
 	for eff_id in enemy._dmg_over_time_id_effects_map.keys():
 		if burn_effect_ids_to_inc.has(eff_id):
 			enemy._dmg_over_time_id_effects_map[eff_id].time_in_seconds += 1.5

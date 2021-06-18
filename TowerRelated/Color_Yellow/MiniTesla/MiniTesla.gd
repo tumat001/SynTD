@@ -126,6 +126,6 @@ func _attack_module_attached(attack_module : AbstractAttackModule):
 
 #
 
-func _attempt_restun(enemy : AbstractEnemy, damage_reg_id : int, module):
+func _attempt_restun(enemy : AbstractEnemy, damage_reg_id : int, damage_instance, module):
 	if enemy._stun_id_effects_map.has(StoreOfEnemyEffectsUUID.MINI_TESLA_STUN):
 		enemy._add_effect(mini_tesla_stun_effect._get_copy_scaled_by(main_attack_module.on_hit_effect_scale))

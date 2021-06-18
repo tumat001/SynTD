@@ -37,6 +37,7 @@ const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd
 
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
+
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self)
 signal tower_toggle_show_info
@@ -45,6 +46,9 @@ signal update_active_synergy
 signal tower_being_sold(sellback_gold)
 signal tower_give_gold(gold, gold_source_as_int)
 
+signal tower_selected_in_selection_mode(tower_self)
+
+# tower benched
 signal tower_not_in_active_map
 signal tower_active_in_map
 
@@ -64,13 +68,12 @@ signal on_main_attack_finished(module)
 signal on_main_attack(attk_speed_delay, enemies, module)
 signal on_any_attack_finished(module)
 signal on_any_attack(attk_speed_delay, enemies, module)
+# on any damage instance constructed
 signal on_damage_instance_constructed(damage_instance, module)
 
-
-signal on_main_attack_module_enemy_hit(enemy, damage_register_id, module)
-signal on_any_attack_module_enemy_hit(enemy, damage_register_id, module)
+signal on_main_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module)
+signal on_any_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module)
 signal on_main_attack_module_damage_instance_constructed(damage_instance, module)
-
 
 signal on_range_module_enemy_entered(enemy, range_module)
 signal on_range_module_enemy_exited(enemy, range_module)
@@ -78,7 +81,7 @@ signal on_range_module_enemy_exited(enemy, range_module)
 signal on_round_end
 signal on_round_start
 
-signal register_ability(ability)
+signal register_ability(ability, add_to_panel)
 
 # syn signals
 
@@ -107,6 +110,8 @@ var is_contributing_to_synergy : bool
 
 var is_being_dragged : bool = false
 var is_in_ingredient_mode : bool = false
+
+var is_in_select_tower_prompt : bool = false setget set_is_in_selection_mode
 
 var is_showing_ranges : bool
 
@@ -172,6 +177,7 @@ var last_calculated_final_percent_ability_cdr : float
 
 var tower_manager
 var tower_inventory_bench
+var input_prompt_manager
 
 
 # SYN RELATED ---------------------------- #
@@ -329,11 +335,11 @@ func _emit_on_damage_instance_constructed(damage_instance, module):
 func _emit_on_main_attack_module_damage_instance_constructed(damage_instance, module):
 	emit_signal("on_main_attack_module_damage_instance_constructed", damage_instance, module)
 
-func _emit_on_main_attack_module_enemy_hit(enemy, damage_register_id, module):
-	emit_signal("on_main_attack_module_enemy_hit", enemy, damage_register_id, module)
+func _emit_on_main_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module):
+	emit_signal("on_main_attack_module_enemy_hit", enemy, damage_register_id, damage_instance, module)
 
-func _emit_on_any_attack_module_enemy_hit(enemy, damage_register_id, module):
-	emit_signal("on_any_attack_module_enemy_hit", enemy, damage_register_id, module)
+func _emit_on_any_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module):
+	emit_signal("on_any_attack_module_enemy_hit", enemy, damage_register_id, damage_instance, module)
 
 
 func _emit_on_range_module_enemy_entered(enemy, module):
@@ -1128,8 +1134,8 @@ func remove_color_from_tower(color : int):
 
 # Abiliy reg and cdr related
 
-func register_ability_to_manager(ability : BaseAbility):
-	emit_signal("register_ability", ability)
+func register_ability_to_manager(ability : BaseAbility, add_to_panel : bool = true):
+	emit_signal("register_ability", ability, add_to_panel)
 
 
 func _get_cd_to_use(base_cd : float) -> float:
@@ -1201,12 +1207,23 @@ func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 		if event.pressed and event.button_index == BUTTON_RIGHT:
 			_toggle_show_tower_info()
 		elif event.pressed and event.button_index == BUTTON_LEFT:
-			if !(is_round_started and current_placable is InMapAreaPlacable):
+			if is_in_select_tower_prompt:
+				_self_is_selected_in_selection_mode()
+				
+			elif !(is_round_started and current_placable is InMapAreaPlacable):
 				_start_drag()
 		elif !event.pressed and event.button_index == BUTTON_LEFT:
 			if is_being_dragged:
 				_end_drag()
-		
+
+
+# Tower selection related
+
+func set_is_in_selection_mode(value : bool):
+	is_in_select_tower_prompt = value
+
+func _self_is_selected_in_selection_mode():
+	emit_signal("tower_selected_in_selection_mode", self)
 
 
 # Show Ranges of modules and Tower Info

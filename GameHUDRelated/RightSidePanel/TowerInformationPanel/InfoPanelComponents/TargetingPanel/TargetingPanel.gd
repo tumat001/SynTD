@@ -14,7 +14,7 @@ var _is_button_hiding : bool
 func update_display():
 	
 	if tower != null and tower.range_module != null:
-		var targetings = tower.range_module.all_targeting_options
+		var targetings = tower.range_module.all_distinct_targeting_options
 		var current_targeting = tower.range_module.get_current_targeting_option()
 		
 		if targetings.size() > 1:

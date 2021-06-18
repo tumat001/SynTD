@@ -20,13 +20,15 @@ const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/Report
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
 
 signal on_death_by_any_cause
-signal on_hit(me)
+signal on_hit(me, damage_reg_id, damage_instance)
 signal on_post_mitigated_damage_taken(damage_instance_report, is_lethal, me, damage_reg_id)
 signal before_damage_instance_is_processed(damage_instance, me)
 
 signal reached_end_of_path(me)
 signal on_current_health_changed(current_health)
 signal on_max_health_changed(max_health)
+
+signal effect_removed(effect, me)
 
 
 var base_health : float = 1
@@ -418,7 +420,7 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 		generic_bullet.hit_by_enemy(self)
 		generic_bullet.decrease_pierce(pierce_consumed_per_hit)
 		if generic_bullet.attack_module_source != null:
-			connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
+			connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [generic_bullet.damage_register_id, generic_bullet.damage_instance], CONNECT_ONESHOT)
 			connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
 		
 		hit_by_damage_instance(generic_bullet.damage_instance)
@@ -427,16 +429,15 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 
 func hit_by_aoe(base_aoe):
 	if base_aoe.attack_module_source != null:
-		connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [base_aoe.damage_register_id], CONNECT_ONESHOT)
+		connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [base_aoe.damage_register_id, base_aoe.damage_instance], CONNECT_ONESHOT)
 		connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
 	
 	hit_by_damage_instance(base_aoe.damage_instance)
 
 
 func hit_by_damage_instance(damage_instance : DamageInstance, emit_on_hit_signal : bool = true):
-	#call_deferred("emit_signal", "on_hit", self)
 	if emit_on_hit_signal:
-		emit_signal("on_hit", self)
+		emit_signal("on_hit", self) #no damage_instance arg here, since InstantDamageAttackModule takes care of it
 	
 	emit_signal("before_damage_instance_is_processed", damage_instance, self)
 	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true), damage_instance)
@@ -512,9 +513,8 @@ func _add_effect(base_effect : EnemyBaseEffect):
 			_stun_id_effects_map[to_use_effect.effect_uuid]._reapply(to_use_effect)
 		
 	elif to_use_effect is EnemyClearAllEffects:
-		_stun_id_effects_map.clear()
-		_stack_id_effects_map.clear()
-		_dmg_over_time_id_effects_map.clear()
+		# When adding effects, update this
+		_clear_effects()
 		
 	elif to_use_effect is EnemyStackEffect:
 		
@@ -570,7 +570,30 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED:
 			percent_movement_speed_id_effect_map.erase(base_effect.effect_uuid)
 			calculate_final_movement_speed()
+	
+	if base_effect != null:
+		emit_signal("effect_removed", base_effect, self)
 
+
+
+func _clear_effects():
+	for effect in _stun_id_effects_map.values():
+		_remove_effect(effect)
+	
+	for effect in _stack_id_effects_map.values():
+		_remove_effect(effect)
+	
+	for effect in _dmg_over_time_id_effects_map.values():
+		_remove_effect(effect)
+	
+	
+	# Attributes
+	for effect in flat_movement_speed_id_effect_map.values():
+		_remove_effect(effect)
+	
+	for effect in percent_movement_speed_id_effect_map.values():
+		_remove_effect(effect)
+	
 
 
 # Timebounded related

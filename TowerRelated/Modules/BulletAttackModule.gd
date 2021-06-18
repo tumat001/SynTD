@@ -242,8 +242,6 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	bullet.z_as_relative = false
 	bullet.z_index = absolute_z_index_of_bullet
 	
-	_modify_attack(bullet)
-	
 	return bullet
 
 

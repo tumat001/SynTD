@@ -14,7 +14,7 @@ var ability_panel : AbilityPanel setget set_ability_panel
 
 # adding removing connections
 
-func add_ability(ability : BaseAbility):
+func add_ability(ability : BaseAbility, add_ability_to_panel : bool = true):
 	if !is_connected("time_decreased", ability, "time_decreased"):
 		if stage_round_manager.round_started:
 			ability.round_started()
@@ -25,7 +25,7 @@ func add_ability(ability : BaseAbility):
 		connect("round_ended", ability, "round_ended", [], CONNECT_PERSIST)
 		connect("round_started", ability, "round_started", [], CONNECT_PERSIST)
 		
-		if ability_panel != null:
+		if ability_panel != null and add_ability_to_panel:
 			ability_panel.add_ability(ability)
 
 

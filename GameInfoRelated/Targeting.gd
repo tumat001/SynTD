@@ -1,53 +1,32 @@
+extends Node
 
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 
+
+# WHEN UPDATING THIS, UPDATE get_all_targeting()
 enum {
 	FIRST = 0,
 	LAST = 1,
 	CLOSE = 2,
-	
-	RANDOM = 10,
+	FAR = 3, #NOT MADE YET
+
+	EXECUTE = 10,
+
+	RANDOM = 20,
 }
 
-static func enemy_to_target(enemies : Array, targeting : int) -> AbstractEnemy:
-	if targeting == FIRST:
-		return _find_first_enemy(enemies)
-	elif targeting == LAST:
-		return _find_last_enemy(enemies)
-	elif targeting == RANDOM:
-		pass
+# UPDATE THIS WHEN CHANING THE ENUM
+static func get_all_targeting_options() -> Array:
+	var bucket : Array = []
 	
+	bucket.append(FIRST)
+	bucket.append(LAST)
+	bucket.append(CLOSE)
+	bucket.append(FAR)
+	bucket.append(EXECUTE)
+	bucket.append(RANDOM)
 	
-	return null
-
-static func _find_first_enemy(enemies : Array):
-	var first_enemy : AbstractEnemy
-	
-	for enemy in enemies:
-		if first_enemy == null:
-			first_enemy = enemy
-		elif first_enemy.distance_to_exit > enemy.distance_to_exit:
-			first_enemy = enemy
-	
-	return first_enemy
-
-static func _find_last_enemy(enemies : Array):
-	var last_enemy : AbstractEnemy
-	
-	for enemy in enemies:
-		if last_enemy == null:
-			last_enemy = enemy
-		elif last_enemy.distance_to_exit < enemy.distance_to_exit:
-			last_enemy = enemy
-	
-	return last_enemy
-
-static func _find_random_enemy(enemies : Array):
-	
-	var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TARGETING)
-	var random_index = rng.randi_range(0, enemies.size() - 1)
-	
-	return enemies[random_index]
+	return bucket
 
 
 static func _find_random_distinct_enemies(enemies : Array, count : int):
@@ -75,15 +54,26 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 	
 	if targeting == FIRST:
 		enemies.sort_custom(CustomSorter, "sort_enemies_by_first")
+		
 	elif targeting == LAST:
 		enemies.sort_custom(CustomSorter, "sort_enemies_by_last")
+		
 	elif targeting == CLOSE:
 		var enemy_distance_pair = _convert_enemies_to_enemy_distance_pair(enemies, pos)
 		enemy_distance_pair.sort_custom(CustomSorter, "sort_enemies_by_close")
 		enemies = _convert_enemy_distance_pairs_to_enemies(enemy_distance_pair)
+		
+	elif targeting == FAR:
+		var enemy_distance_pair = _convert_enemies_to_enemy_distance_pair(enemies, pos)
+		enemy_distance_pair.sort_custom(CustomSorter, "sort_enemies_by_far")
+		enemies = _convert_enemy_distance_pairs_to_enemies(enemy_distance_pair)
+		
+	elif targeting == EXECUTE:
+		enemies.sort_custom(CustomSorter, "sort_enemies_by_execute")
+		
 	elif targeting == RANDOM:
 		enemies = _find_random_distinct_enemies(enemies, num_of_enemies)
-	
+		
 	
 	enemies.resize(num_of_enemies)
 	while enemies.has(null):
@@ -107,6 +97,13 @@ class CustomSorter:
 	static func sort_enemies_by_close(a_enemy_dist, b_enemy_dist):
 		return a_enemy_dist[1] < b_enemy_dist[1]
 		
+	
+	static func sort_enemies_by_far(a_enemy_dist, b_enemy_dist):
+		return a_enemy_dist[1] > b_enemy_dist[1]
+		
+	
+	static func sort_enemies_by_execute(a, b):
+		return a.current_health < b.current_health
 
 
 # Computing of other stuffs
@@ -137,7 +134,56 @@ static func get_name_as_string(targeting : int) -> String:
 		return "Last"
 	elif targeting == CLOSE:
 		return "Close"
+	elif targeting == FAR:
+		return "Far"
+	elif targeting == EXECUTE:
+		return "Execute"
 	elif targeting == RANDOM:
 		return "Random"
 	
 	return "Err Unnamed"
+
+
+
+
+
+# OLD
+
+#static func enemy_to_target(enemies : Array, targeting : int) -> AbstractEnemy:
+#	if targeting == FIRST:
+#		return _find_first_enemy(enemies)
+#	elif targeting == LAST:
+#		return _find_last_enemy(enemies)
+#	elif targeting == RANDOM:
+#		pass
+#
+#	return null
+#
+#static func _find_first_enemy(enemies : Array):
+#	var first_enemy : AbstractEnemy
+#
+#	for enemy in enemies:
+#		if first_enemy == null:
+#			first_enemy = enemy
+#		elif first_enemy.distance_to_exit > enemy.distance_to_exit:
+#			first_enemy = enemy
+#
+#	return first_enemy
+#
+#static func _find_last_enemy(enemies : Array):
+#	var last_enemy : AbstractEnemy
+#
+#	for enemy in enemies:
+#		if last_enemy == null:
+#			last_enemy = enemy
+#		elif last_enemy.distance_to_exit < enemy.distance_to_exit:
+#			last_enemy = enemy
+#
+#	return last_enemy
+#
+#static func _find_random_enemy(enemies : Array):
+#
+#	var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TARGETING)
+#	var random_index = rng.randi_range(0, enemies.size() - 1)
+#
+#	return enemies[random_index]

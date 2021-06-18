@@ -140,7 +140,6 @@ func _attack_at_positions(positions : Array):
 
 
 func _attack_at_position(enemy_pos : Vector2):
-	
 	var created_aoe = construct_aoe(global_position, enemy_pos)
 	
 	._modify_attack(created_aoe)

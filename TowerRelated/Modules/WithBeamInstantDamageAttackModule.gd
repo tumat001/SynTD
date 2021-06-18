@@ -30,26 +30,33 @@ func _process(delta):
 
 func update_beams_state():
 	if _should_update_beams:
-		for beam in beam_to_enemy_map:
-			if beam.visible:
-				var enemy = beam_to_enemy_map[beam]
-				
-				if !show_beam_regardless_of_state and (enemy == null or !range_module._current_enemies.has(enemy)):
-					beam.visible = false
-				else:
-					if enemy != null:
-						beam.update_destination_position(enemy.global_position)
-					else:
-						beam.visible = false
-					
+		force_update_beam_state()
+		
 		if _terminate_update_on_next:
 			_should_update_beams = false
 	
-	if range_module.enemies_in_range.size() == 0:
+	#if range_module.enemies_in_range.size() == 0:
+	if range_module._current_enemies.size() == 0:
 		_terminate_update_on_next = true
+		
 	else:
 		_should_update_beams = true
 		_terminate_update_on_next = false
+
+
+func force_update_beam_state():
+	for beam in beam_to_enemy_map:
+		if beam.visible:
+			var enemy = beam_to_enemy_map[beam]
+			
+			if !show_beam_regardless_of_state and (enemy == null or !range_module._current_enemies.has(enemy)):
+				beam.visible = false
+			else:
+				if enemy != null:
+					beam.update_destination_position(enemy.global_position)
+				else:
+					beam.visible = false
+
 
 
 # Showing beam at windup or not
@@ -60,6 +67,8 @@ func _during_windup(enemy : AbstractEnemy = null):
 		_connect_beam_to_enemy(enemy)
 
 func _during_windup_multiple(enemies : Array = []):
+	._during_windup_multiple(enemies)
+	
 	for enemy in enemies:
 		if show_beam_at_windup and enemy != null:
 			_connect_beam_to_enemy(enemy)
@@ -69,7 +78,6 @@ func _attack_enemy(enemy : AbstractEnemy):
 	
 	if enemy != null and !show_beam_at_windup:
 		_connect_beam_to_enemy(enemy)
-
 
 # Disabling and Enabling
 
@@ -98,8 +106,8 @@ func _connect_beam_to_enemy(enemy : AbstractEnemy):
 	beam.frame = 0
 	beam.visible = true
 	beam.update_destination_position(enemy.position)
-	emit_signal("beam_connected_to_enemy", beam, enemy)
 	beam_to_enemy_map[beam] = enemy
+	emit_signal("beam_connected_to_enemy", beam, enemy)
 
 
 # Gets available beam from beams array

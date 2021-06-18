@@ -24,4 +24,6 @@ enum {
 	
 	ING_BLUE_FRUIT_SLOW = -613
 	ING_RED_FRUIT_BURN = -614
+	
+	IMPALE_STUN = -615
 }

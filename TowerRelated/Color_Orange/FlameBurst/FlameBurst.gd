@@ -129,7 +129,7 @@ func _attack_module_removed_from_self(module : AbstractAttackModule):
 
 
 
-func _bullet_burst(enemy, damage_reg_id, module):
+func _bullet_burst(enemy, damage_reg_id, damage_instance, module):
 	var spawn_pos : Vector2 = enemy.global_position
 	
 	for dir in directions:

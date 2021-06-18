@@ -213,7 +213,7 @@ func _enemy_hit_by_arrow(arrow, enemy):
 	get_tree().get_root().call_deferred("add_child", aoe)
 
 
-func _enemy_seeked(enemy, damage_register_id : int, module):
+func _enemy_seeked(enemy, damage_register_id : int, damage_instance, module):
 	if damage_register_id == Ping_seek_register_id and _enemies_marked.size() < current_mark_count_limit:
 		_enemies_marked.append(enemy)
 		enemy.add_child(_construct_mark_sprite())

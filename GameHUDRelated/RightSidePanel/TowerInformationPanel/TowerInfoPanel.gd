@@ -10,6 +10,8 @@ const HeatModulePanel_Scene = preload("res://GameInfoRelated/ColorSynergyRelated
 
 const _704_InfoPanel = preload("res://TowerRelated/Color_Orange/704/704_InfoPanel/704_InfoPanel.gd")
 const _704_InfoPanel_Scene = preload("res://TowerRelated/Color_Orange/704/704_InfoPanel/704_InfoPanel.tscn")
+const Leader_SelectionPanel = preload("res://TowerRelated/Color_Blue/Leader/Ability/TowerSelectionPanel/Leader_SelectionPanel.gd")
+const Leader_SelectionPanel_Scene = preload("res://TowerRelated/Color_Blue/Leader/Ability/TowerSelectionPanel/Leader_SelectionPanel.tscn")
 
 var tower : AbstractTower
 
@@ -29,6 +31,7 @@ var energy_module_panel : EnergyModulePanel
 var heat_module_panel : HeatModulePanel
 
 var _704_info_panel : _704_InfoPanel
+var leader_selection_panel : Leader_SelectionPanel
 
 
 func _ready():
@@ -145,6 +148,7 @@ func update_display_of_heat_module_panel():
 # TOWER SPECIFIC INFO PANEL -----------------
 
 func _update_tower_specific_info_panel():
+	# 704
 	if _704_InfoPanel.should_display_self_for(tower):
 		if _704_info_panel == null:
 			_704_info_panel = _704_InfoPanel_Scene.instance()
@@ -158,6 +162,21 @@ func _update_tower_specific_info_panel():
 		if _704_info_panel != null:
 			_704_info_panel.visible = false
 			_704_info_panel.tower_704 = null
+	
+	
+	# Leader
+	if Leader_SelectionPanel.should_display_self_for(tower):
+		if leader_selection_panel == null:
+			leader_selection_panel = Leader_SelectionPanel_Scene.instance()
+			tower_specific_slot.add_child(leader_selection_panel)
+		
+		leader_selection_panel.visible = true
+		leader_selection_panel.set_leader(tower)
+		
+	else:
+		if leader_selection_panel != null:
+			leader_selection_panel.visible = false
+			leader_selection_panel.set_leader(null)
 	
 	tower_specific_slot.update_visibility_based_on_children()
 

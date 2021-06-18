@@ -40,4 +40,6 @@ theme = SubResource( 6 )
 scroll_horizontal_enabled = false
 
 [node name="AbilityContainer" type="GridContainer" parent="ScrollContainer"]
+custom_constants/vseparation = 5
+custom_constants/hseparation = 5
 columns = 2

@@ -66,9 +66,11 @@ func _construct_modules():
 	# Orb's range module
 	var orb_range_module = RangeModule_Scene.instance()
 	orb_range_module.base_range_radius = 135
-	orb_range_module.all_targeting_options = [Targeting.RANDOM, Targeting.FIRST, Targeting.LAST]
+	#orb_range_module.all_targeting_options = [Targeting.RANDOM, Targeting.FIRST, Targeting.LAST]
 	orb_range_module.set_range_shape(CircleShape2D.new())
 	orb_range_module.position.y += 22
+	orb_range_module.add_targeting_option(Targeting.RANDOM)
+	orb_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	# Orb related
 	var orb_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
@@ -108,10 +110,12 @@ func _construct_modules():
 	# Diamond related
 	var dia_range_module = RangeModule_Scene.instance()
 	dia_range_module.base_range_radius = 135
-	dia_range_module.all_targeting_options = [Targeting.RANDOM]
 	dia_range_module.set_range_shape(CircleShape2D.new())
 	dia_range_module.position.y += 22
 	dia_range_module.can_display_range = false
+	dia_range_module.clear_all_targeting()
+	dia_range_module.add_targeting_option(Targeting.RANDOM)
+	dia_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	var diamond_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	diamond_attack_module.base_damage = 8
@@ -152,10 +156,12 @@ func _construct_modules():
 	# Bolt related
 	var bolt_range_module = RangeModule_Scene.instance()
 	bolt_range_module.base_range_radius = 135
-	bolt_range_module.all_targeting_options = [Targeting.RANDOM]
 	bolt_range_module.set_range_shape(CircleShape2D.new())
 	bolt_range_module.position.y += 22
 	bolt_range_module.can_display_range = false
+	bolt_range_module.clear_all_targeting()
+	bolt_range_module.add_targeting_option(Targeting.RANDOM)
+	bolt_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	var bolt_attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
 	bolt_attack_module.base_damage = 3

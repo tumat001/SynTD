@@ -54,6 +54,7 @@ var should_be_displaying_clauses : ConditionalClauses
 var icon : Texture setget set_icon
 
 var descriptions : Array = [] setget set_descriptions
+var display_name : String
 
 var tower : Node setget set_tower
 var synergy : Node setget set_synergy
@@ -119,8 +120,6 @@ func is_time_ready_or_round_ready() -> bool:
 func start_time_cooldown(arg_cooldown : float):
 	if is_timebound:
 		var cooldown = _get_cd_to_use(arg_cooldown)
-		if cooldown < 0.25:
-			cooldown = 0.25
 		
 		_time_max_cooldown = cooldown
 		_time_current_cooldown = cooldown
@@ -136,13 +135,13 @@ func _get_cd_to_use(cd_of_source : float) -> float:
 	final_cd *= (100 - last_calculated_final_percent_ability_cdr) / 100
 	final_cd -= last_calculated_final_flat_ability_cdr
 	
-	if final_cd < 0:
-		final_cd = 0
+	if final_cd < 0.25:
+		final_cd = 0.25
 	
 	return final_cd
 
 func _get_potency_to_use(potency_of_source : float) -> float:
-	return potency_of_source + last_calculated_final_ability_potency
+	return potency_of_source * last_calculated_final_ability_potency
 
 
 func start_round_cooldown(cooldown : int):

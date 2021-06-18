@@ -14,6 +14,8 @@ const RoundStatusPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStart
 const RoundInfoPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel.gd")
 const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
 const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
+const InputPromptManager = preload("res://GameElementsRelated/InputPromptManager.gd")
+const SelectionNotifPanel = preload("res://GameHUDRelated/NotificationPanel/SelectionNotifPanel/SelectionNotifPanel.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var in_map_placables_manager : InMapPlacablesManager
@@ -28,9 +30,11 @@ var stage_round_manager : StageRoundManager
 var health_manager : HealthManager
 var enemy_manager : EnemyManager
 var ability_manager : AbilityManager
+var input_prompt_manager : InputPromptManager
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
+var selection_notif_panel : SelectionNotifPanel
 
 onready var extra_side_panel : MarginContainer = $BottomPanel/HBoxContainer/ExtraSidePanel
 
@@ -49,11 +53,14 @@ func _ready():
 	health_manager = $HealthManager
 	enemy_manager = $EnemyManager
 	ability_manager = $AbilityManager
+	input_prompt_manager = $InputPromptManager
+	
 	
 	targeting_panel = right_side_panel.tower_info_panel.targeting_panel
 	
 	round_status_panel = right_side_panel.round_status_panel
 	round_info_panel = round_status_panel.round_info_panel
+	selection_notif_panel = $SelectionNotifPanel
 	
 	panel_buy_sell_level_roll.gold_manager = gold_manager
 	
@@ -74,6 +81,7 @@ func _ready():
 	tower_manager.inner_bottom_panel = inner_bottom_panel
 	tower_manager.synergy_manager = synergy_manager
 	tower_manager.tower_info_panel = right_side_panel.tower_info_panel
+	tower_manager.input_prompt_manager = input_prompt_manager
 	
 	# syn manager
 	
@@ -111,6 +119,16 @@ func _ready():
 	ability_manager.ability_panel = round_status_panel.ability_panel
 	tower_manager.ability_manager = ability_manager
 	
+	# Input Prompt manager
+	
+	input_prompt_manager.selection_notif_panel = selection_notif_panel
+	
+	
+	# Selection Notif panel
+	
+	selection_notif_panel.visible = false
+	
+	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round()
@@ -143,15 +161,15 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.RE,
 			Towers.TESLA,
 			Towers.ROYAL_FLAME,
-			Towers.FRUIT_TREE,
+			Towers._704,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.BERRY_BUSH,
-			Towers.ENTHALPHY,
-			Towers.COIN,
-			Towers.SUNFLOWER,
-			Towers.BEACON_DISH,
+			Towers.IEU,
+			Towers.VOLCANO,
+			Towers.IMPALE,
+			Towers.LEADER,
+			Towers.SIMPLEX,
 		])
 	
 	even = !even
@@ -173,6 +191,13 @@ func _unhandled_key_input(event):
 		tower_manager._toggle_ingredient_combine_mode()
 	elif !event.echo and event.scancode == KEY_SPACE and event.pressed:
 		right_side_panel.round_status_panel._on_RoundStatusButton_pressed()
+	elif !event.echo and event.scancode == KEY_ESCAPE and event.pressed:
+		_esc_pressed()
+	
+
+func _esc_pressed():
+	if input_prompt_manager.current_selection_mode != InputPromptManager.SelectionMode.NONE:
+		input_prompt_manager.cancel_selection()
 
 
 func _unhandled_input(event):

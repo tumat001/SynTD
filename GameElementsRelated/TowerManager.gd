@@ -12,12 +12,16 @@ const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.g
 const TargetingPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TargetingPanel/TargetingPanel.gd")
 const TowerInfoPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerInfoPanel.gd")
 const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
+const InputPromptManager = preload("res://GameElementsRelated/InputPromptManager.gd")
 
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 
 signal ingredient_mode_turned_into(on_or_off)
 signal show_ingredient_acceptability(ingredient_effect, tower_selected)
 signal hide_ingredient_acceptability
+
+signal in_tower_selection_mode()
+signal cancelled_tower_selection_mode()
 
 signal tower_to_benefit_from_synergy_buff(tower)
 signal tower_to_remove_from_synergy_buff(tower)
@@ -41,7 +45,7 @@ var tower_info_panel : TowerInfoPanel
 var synergy_manager
 var stage_round_manager : StageRoundManager
 var ability_manager : AbilityManager
-
+var input_prompt_manager : InputPromptManager setget set_input_prompt_manager
 
 var _color_groups : Array
 const TOWER_GROUP_ID : String = "Towers"
@@ -83,6 +87,10 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("register_ability", self, "_register_ability_from_tower", [], CONNECT_PERSIST)
 	tower_instance.tower_manager = self
 	tower_instance.tower_inventory_bench = tower_inventory_bench
+	tower_instance.input_prompt_manager = input_prompt_manager
+	
+	tower_instance.is_in_select_tower_prompt = input_prompt_manager.is_in_tower_selection_mode()
+	tower_instance.is_in_ingredient_mode = is_in_ingredient_mode
 	
 	add_child(tower_instance)
 	tower_instance.connect("tower_being_dragged", self, "_tower_being_dragged", [], CONNECT_PERSIST)
@@ -100,6 +108,11 @@ func add_tower(tower_instance : AbstractTower):
 	connect("ingredient_mode_turned_into", tower_instance, "_set_is_in_ingredient_mode", [], CONNECT_PERSIST)
 	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient", [], CONNECT_PERSIST)
 	connect("hide_ingredient_acceptability", tower_instance, "hide_acceptability_with_ingredient", [], CONNECT_PERSIST)
+	
+	connect("in_tower_selection_mode", tower_instance, "set_is_in_selection_mode", [true], CONNECT_PERSIST)
+	connect("cancelled_tower_selection_mode" , tower_instance, "set_is_in_selection_mode", [false], CONNECT_PERSIST)
+	
+	tower_instance.connect("tower_selected_in_selection_mode", self, "_tower_selected", [], CONNECT_PERSIST)
 	
 	tower_instance.add_to_group(TOWER_GROUP_ID)
 	
@@ -171,8 +184,8 @@ func _toggle_ingredient_combine_mode():
 
 # Ability related
 
-func _register_ability_from_tower(ability):
-	ability_manager.add_ability(ability)
+func _register_ability_from_tower(ability, add_to_panel : bool = true):
+	ability_manager.add_ability(ability, add_to_panel)
 
 
 # Synergy Related
@@ -309,3 +322,24 @@ func get_all_active_towers_with_color(color : String) -> Array:
 			bucket.append(child)
 	
 	return bucket
+
+
+# Input manager related
+
+func set_input_prompt_manager(arg_manager):
+	input_prompt_manager = arg_manager
+	
+	input_prompt_manager.connect("prompted_for_tower_selection", self, "_prompted_for_tower_selection", [], CONNECT_PERSIST)
+	input_prompt_manager.connect("cancelled_tower_selection", self, "_cancel_tower_selection", [], CONNECT_PERSIST)
+
+
+func _prompted_for_tower_selection():
+	emit_signal("in_tower_selection_mode")
+
+func _cancel_tower_selection():
+	emit_signal("cancelled_tower_selection_mode")
+
+
+func _tower_selected(tower):
+	input_prompt_manager.tower_selected_from_prompt(tower)
+

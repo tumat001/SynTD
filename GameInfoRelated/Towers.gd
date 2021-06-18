@@ -11,6 +11,8 @@ const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const TowerResetEffects = preload("res://GameInfoRelated/TowerEffectRelated/TowerResetEffects.gd")
 const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerFullSellbackEffect.gd")
 const _704_EmblemPointsEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/704EmblemPointsEffect.gd")
+const SpikeBonusDamageEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/SpikeBonusDamageEffect.gd")
+const ImpaleBonusDamageEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/ImpaleBonusDamage.gd")
 
 const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
@@ -59,9 +61,12 @@ const sunflower_image = preload("res://TowerRelated/Color_Yellow/Sunflower/Sunfl
 # GREEN
 const berrybush_image = preload("res://TowerRelated/Color_Green/BerryBush/BerryBush_Omni.png")
 const fruit_tree_image = preload("res://TowerRelated/Color_Green/FruitTree/FruitTree_Omni.png")
+const spike_image = preload("res://TowerRelated/Color_Green/Spike/Spike_Omni.png")
+const impale_image = preload("res://TowerRelated/Color_Green/Impale/Impale_Omni.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
+const leader_image = preload("res://TowerRelated/Color_Blue/Leader/Leader_Omni.png")
 
 # VIOLET
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
@@ -103,9 +108,12 @@ enum {
 	# GREEN (500)
 	BERRY_BUSH = 500,
 	FRUIT_TREE = 501,
+	SPIKE = 502,
+	IMPALE = 503,
 	
 	# BLUE (600)
 	SPRINKLER = 600,
+	LEADER = 601,
 	
 	# VIOLET (700)
 	SIMPLE_OBELISK = 700,
@@ -170,6 +178,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ attk spd"
 		
+		
 	elif tower_id == BERRY_BUSH:
 		info = TowerTypeInformation.new("Berry Bush", BERRY_BUSH)
 		info.tower_cost = 2
@@ -208,7 +217,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 3
 		info.tower_image_in_buy_card = simpleobelisk_image
 		
-		info.base_damage = 6
+		info.base_damage = 8
 		info.base_attk_speed = 0.5
 		info.base_pierce = 1
 		info.base_range = 170
@@ -925,6 +934,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 60% of the extinguished enemy's missing health as elemental damage, up to a limit.",
 			"The explosion does not affect the extinguished target. The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
 			"Cooldown: 25 s"
+			# THIS SAME PASSAGE is placed in royal flame's
+			# ability tooltip. If this is changed, then
+			# change the ability tooltip.
 		]
 		
 		# Ingredient related
@@ -990,9 +1002,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Does not attack, but instead gives a fruit every 4th round of being placed in the map.",
 			"Fruits appear in the tower bench, and will be converted into gold when no space is available.",
-			"Fruits do not attack, but have an ingredient effect. Fruits can be given to any tower that can accept ingredients.",
-			"",
-			"Fruit Tree cannot absorb fruits."
+			"Fruits do not attack, but have an ingredient effect. Fruits can be given to any tower disregarding tower color.",
 		]
 		
 		
@@ -1010,8 +1020,85 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
+			"Fruit from Fruit Tree."
+		]
+		
+		
+	elif tower_id == SPIKE:
+		info = TowerTypeInformation.new("Spike", tower_id)
+		info.tower_cost = 1
+		info.colors.append(TowerColors.GREEN)
+		info.tower_tier = 1
+		info.tower_image_in_buy_card = spike_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.6
+		info.base_pierce = 0
+		info.base_range = 115
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Spike's main attack deals 2 extra physical damage to enemies below 25% health."
+		]
+		
+		
+		var spike_dmg_effect = SpikeBonusDamageEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, spike_dmg_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "spike"
+		
+		
+	elif tower_id == IMPALE:
+		info = TowerTypeInformation.new("Impale", tower_id)
+		info.tower_cost = 5
+		info.colors.append(TowerColors.GREEN)
+		info.tower_tier = 5
+		info.tower_image_in_buy_card = impale_image
+		
+		info.base_damage = 10
+		info.base_attk_speed = 0.2
+		info.base_pierce = 0
+		info.base_range = 115
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Impale shoots up a spike that stabs an enemy, stunning them for 2.2 seconds.",
+			"When the stun expires, Impale retracts the spike, dealing damage again.",
+			"The retract damage becomes 180% effective when the enemy has less than 75% of their max health.",
+			#"The retract damage does not apply on hit effects."
+		]
+		
+		var imp_dmg_effect = ImpaleBonusDamageEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, imp_dmg_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "impale"
+		
+		
+		
+	elif tower_id == LEADER:
+		info = TowerTypeInformation.new("Leader", tower_id)
+		info.tower_cost = 5
+		info.colors.append(TowerColors.BLUE)
+		info.tower_tier = 5
+		info.tower_image_in_buy_card = leader_image
+		
+		info.base_damage = 0.5
+		info.base_attk_speed = 1
+		info.base_pierce = 0
+		info.base_range = 155
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0.5
+		
+		info.tower_descriptions = [
 			""
 		]
+		
+		
+	
 	
 	return info
 
@@ -1076,3 +1163,11 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/FruitTree/FruitTree.tscn")
 	elif tower_id == FRUIT_TREE_FRUIT:
 		return load("res://TowerRelated/Color_Green/FruitTree/Fruits/FruitTree_Fruit.tscn")
+	elif tower_id == SPIKE:
+		return load("res://TowerRelated/Color_Green/Spike/Spike.tscn")
+	elif tower_id == IMPALE:
+		return load("res://TowerRelated/Color_Green/Impale/Impale.tscn")
+	elif tower_id == LEADER:
+		return load("res://TowerRelated/Color_Blue/Leader/Leader.tscn")
+
+

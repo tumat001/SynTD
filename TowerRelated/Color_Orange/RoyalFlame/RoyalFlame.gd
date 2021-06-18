@@ -162,7 +162,6 @@ func _ready():
 	
 	extinguish_attack_module.can_be_commanded_by_tower = false
 	
-	#extinguish_attack_module.connect("on_enemy_hit", self, "_extinguish_on_enemy_hit", [], CONNECT_PERSIST)
 	extinguish_attack_module.connect("beam_connected_to_enemy", self, "_extinguish_beam_created", [], CONNECT_PERSIST)
 	
 	add_attack_module(extinguish_attack_module)
@@ -236,11 +235,18 @@ func _construct_and_connect_ability():
 	steam_burst_ability = BaseAbility.new()
 	
 	steam_burst_ability.is_timebound = true
-	steam_burst_ability.connect("ability_activated", self, "_royal_flame_ability_activated")
+	steam_burst_ability.connect("ability_activated", self, "_royal_flame_ability_activated", [], CONNECT_PERSIST)
 	steam_burst_ability.icon = RoyalFlame_AbilityIcon
 	
 	steam_burst_ability.set_properties_to_usual_tower_based()
 	steam_burst_ability.tower = self
+	
+	steam_burst_ability.descriptions = [
+		"Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 60% of the extinguished enemy's missing health as elemental damage, up to a limit.",
+		"The explosion does not affect the extinguished target. The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
+		"Cooldown: 25 s"
+	]
+	steam_burst_ability.display_name = "Steam Burst"
 	
 	register_ability_to_manager(steam_burst_ability)
 

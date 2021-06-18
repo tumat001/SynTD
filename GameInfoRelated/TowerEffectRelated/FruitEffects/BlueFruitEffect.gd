@@ -96,7 +96,7 @@ func _construct_attack_module():
 
 # signal
 
-func _on_tower_main_attack_module_enemy_hit(enemy, damage_register_id, module):
+func _on_tower_main_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module):
 	var explo_instance = explosion_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
 	
 	tree.get_root().add_child(explo_instance)

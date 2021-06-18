@@ -18,11 +18,14 @@ signal in_attack_end()
 signal on_round_end()
 
 signal on_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module)
-signal on_enemy_hit(enemy, damage_register_id, module)
+signal on_enemy_hit(enemy, damage_register_id, damage_instance, module)
 
 signal on_damage_instance_constructed(damage_instance, module)
 
 signal before_attack_sprite_is_shown(attack_sprite)
+
+signal ready_to_attack()
+
 
 enum CanBeCommandedByTower_ClauseId {
 	CHAOS_TAKEOVER = 1
@@ -90,7 +93,6 @@ var _all_countbound_effects : Dictionary = {}
 var range_module : RangeModule setget _set_range_module
 var use_self_range_module : bool = false
 
-var modifications : Array
 
 # Attack sprites
 
@@ -198,8 +200,10 @@ func time_passed(delta):
 		
 		if _is_bursting:
 			_current_burst_delay -= delta
-		
-#		decrease_time_of_timebounded(delta)
+	
+	
+	if is_ready_to_attack():
+		emit_signal("ready_to_attack")
 
 
 #
@@ -454,6 +458,7 @@ func is_ready_to_attack() -> bool:
 			return _current_burst_delay <= 0
 		else:
 			return _current_wind_up_wait <= 0
+	
 
 
 #func attempt_find_then_attack_enemy() -> bool:
@@ -570,6 +575,12 @@ func attempt_find_then_attack_enemies(num : int = number_of_unique_targets) -> b
 #				_current_burst_count = 0
 #				_finished_attacking()
 
+func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of_targets : int = number_of_unique_targets):
+	var success = on_command_attack_enemies(arg_enemies, num_of_targets)
+	
+	if !success:
+		connect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready", [arg_enemies, num_of_targets], CONNECT_ONESHOT)
+
 
 func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = number_of_unique_targets) -> bool:
 	var enemies : Array
@@ -587,7 +598,6 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 					_targets_during_windup.append(arg_enemies[i])
 		
 		enemies = _targets_during_windup
-		
 	else:
 		enemies = arg_enemies
 	
@@ -719,14 +729,15 @@ func _attack_enemies(enemies : Array):
 #func _attack_at_position(_pos : Vector2):
 #	pass
 
+# IMPLEMENT SOON IF NEEDED
+func _check_attack_positions(positions : Array):
+	if positions.size() != 0:
+		_attack_at_positions(positions)
+
 func _attack_at_positions(positions : Array):
 	#if !_is_bursting:
 	emit_signal("in_attack", _last_calculated_attack_speed_as_delay, positions)
 
-
-func _modify_attack(to_modify):
-	for mod in modifications:
-		mod._modify_attack(to_modify)
 
 
 #func _during_windup(enemy_or_pos):
@@ -886,7 +897,7 @@ func on_round_end():
 func on_post_mitigation_damage_dealt(damage_instance_report, killed_enemy : bool, enemy, damage_register_id : int):
 	emit_signal("on_post_mitigation_damage_dealt", damage_instance_report, killed_enemy, enemy, damage_register_id, self)
 
-func on_enemy_hit(enemy, damage_register_id):
-	emit_signal("on_enemy_hit", enemy, damage_register_id, self)
+func on_enemy_hit(enemy, damage_register_id, damage_instance):
+	emit_signal("on_enemy_hit", enemy, damage_register_id, damage_instance, self)
 
 

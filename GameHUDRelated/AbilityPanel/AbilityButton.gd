@@ -1,6 +1,8 @@
 extends MarginContainer
 
 const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
+const AbilityTooltip = preload("res://GameHUDRelated/AbilityPanel/AbilityTooltip/AbilityTooltip.gd")
+const AbilityTooltip_Scene = preload("res://GameHUDRelated/AbilityPanel/AbilityTooltip/AbilityTooltip.tscn")
 
 var ability : BaseAbility setget set_ability
 
@@ -10,6 +12,9 @@ const not_ready_modulate_color = Color(0.6, 0.6, 0.6, 1)
 onready var cooldown_bar : TextureProgress = $CooldownBar
 onready var ability_button : TextureButton = $AbilityButtonPressable
 
+var ability_tooltip : AbilityTooltip
+
+export var destroy_button_if_ability_lost : bool = true
 
 # setting and connections
 
@@ -34,15 +39,16 @@ func set_ability(arg_ability : BaseAbility):
 			ability_button.texture_normal = ability.icon
 			
 			if ability.is_timebound:
-				_started_cd(ability._time_max_cooldown, 0)
+				if ability._time_max_cooldown != 0:
+					_started_cd(ability._time_max_cooldown, 0)
 				_current_cd_changed(ability._time_current_cooldown)
 			elif ability.is_roundbound:
-				_started_cd(ability._round_max_cooldown, 0)
+				if ability._round_max_cooldown != 0:
+					_started_cd(ability._round_max_cooldown, 0)
 				_current_cd_changed(ability._round_current_cooldown)
 			
 			_updated_is_ready_for_activation(ability.is_ready_for_activation())
 			_should_be_displaying(ability.should_be_displaying)
-			
 
 
 func _disconnect_ability_signals():
@@ -99,16 +105,18 @@ func _ability_destroying_self():
 	if ability != null:
 		_disconnect_ability_signals()
 	
-	queue_free()
+	if destroy_button_if_ability_lost:
+		queue_free()
 
 
 func _should_be_displaying(value : bool):
 	visible = value
 
+
 # button pressed
 
 func _on_AbilityButton_pressed_mouse_event(event):
-	if ability != null and ability.is_ready_for_activation():
+	if ability != null:
 		if event is InputEventMouseButton and event.pressed:
 			if event.button_index == BUTTON_LEFT:
 				_ability_button_left_pressed()
@@ -117,11 +125,28 @@ func _on_AbilityButton_pressed_mouse_event(event):
 
 
 func _ability_button_left_pressed():
-	if ability != null:
+	if ability != null and ability.is_ready_for_activation():
 		ability.activate_ability()
 
 
 func _ability_button_right_pressed():
 	if ability != null:
-		#show tooltip descs
-		pass
+		if ability_tooltip != null:
+			ability_tooltip.queue_free()
+			ability_tooltip = null
+			
+		else:
+			_construct_tooltip()
+			ability_tooltip.descriptions = ability.descriptions
+			ability_tooltip.header_left_text = ability.display_name
+			ability_tooltip.update_display()
+			ability_tooltip.visible = true
+
+
+# Tooltip related
+
+func _construct_tooltip():
+	ability_tooltip = AbilityTooltip_Scene.instance()
+	ability_tooltip.tooltip_owner = ability_button
+	
+	get_tree().get_root().add_child(ability_tooltip)
