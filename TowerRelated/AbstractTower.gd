@@ -83,6 +83,8 @@ signal on_round_start
 
 signal register_ability(ability, add_to_panel)
 
+signal global_position_changed(old_pos, new_pos)
+
 # syn signals
 
 signal energy_module_attached
@@ -172,6 +174,11 @@ var last_calculated_final_flat_ability_cdr : float
 var base_percent_ability_cdr : float = 0
 var _percent_base_ability_cdr_effects : Dictionary = {}
 var last_calculated_final_percent_ability_cdr : float
+
+# tracker
+
+var old_global_position : Vector2
+
 
 # managers
 
@@ -285,12 +292,12 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		attack_module_to_remove.disconnect("in_attack_end", self, "_emit_on_any_attack_finished")
 		attack_module_to_remove.disconnect("in_attack", self, "_emit_on_any_attack")
 		attack_module_to_remove.disconnect("on_damage_instance_constructed", self, "_emit_on_damage_instance_constructed")
-		attack_module_to_remove.disconnect("on_any_attack_module_enemy_hit", self, "_emit_on_any_attack_module_enemy_hit")
+		attack_module_to_remove.disconnect("on_enemy_hit", self, "_emit_on_any_attack_module_enemy_hit")
 	
 	if attack_module_to_remove.is_connected("in_attack_end", self, "_emit_on_main_attack_finished"):
 		attack_module_to_remove.disconnect("in_attack_end", self, "_emit_on_main_attack_finished")
 		attack_module_to_remove.disconnect("in_attack", self, "_emit_on_main_attack")
-		attack_module_to_remove.disconnect("on_main_attack_module_enemy_hit", self, "_emit_on_main_attack_module_enemy_hit")
+		attack_module_to_remove.disconnect("on_enemy_hit", self, "_emit_on_main_attack_module_enemy_hit")
 		attack_module_to_remove.disconnect("on_damage_instance_constructed", self, "_emit_on_main_attack_module_damage_instance_constructed")
 	
 	for tower_effect in _all_uuid_tower_buffs_map.values():
@@ -1429,6 +1436,14 @@ func queue_free():
 	
 	emit_signal("tower_in_queue_free", self) # synergy updated from tower manager
 	.queue_free()
+
+
+func _physics_process(delta):
+	if global_position != old_global_position:
+		emit_signal("global_position_changed", old_global_position, global_position)
+	old_global_position = global_position
+
+
 
 # SYNERGIES RELATED ---------------------
 # YELLOW - energy module related

@@ -107,6 +107,26 @@ func remove_targeting_option(targeting : int):
 	
 	call_deferred("emit_signal", "targeting_options_modified")
 
+
+func remove_targeting_options(targetings : Array):
+	var switch : bool = false
+	
+	if targetings.has(all_distinct_targeting_options[_current_targeting_option_index]):
+		switch = true
+	
+	_last_used_targeting_option_index = 0
+	
+	for targ in targetings:
+		_all_targeting_options.erase(targ)
+	_update_all_distinct_targeting_options()
+	
+	if switch:
+		targeting_cycle_right()
+	
+	call_deferred("emit_signal", "targeting_options_modified")
+
+
+
 func clear_all_targeting():
 	_current_targeting_option_index = 0
 	_last_used_targeting_option_index = 0

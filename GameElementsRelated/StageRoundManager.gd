@@ -57,14 +57,14 @@ func set_game_mode(mode : int):
 func _set_round_status_panel(panel : RoundStatusPanel):
 	round_status_panel = panel
 	
-	round_status_panel.connect("round_start_pressed", self, "start_round")
+	round_status_panel.connect("round_start_pressed", self, "start_round", [], CONNECT_PERSIST)
 
 
 func _set_enemy_manager(manager : EnemyManager):
 	enemy_manager = manager
 	
-	enemy_manager.connect("no_enemies_left", self, "end_round")
-	enemy_manager.connect("enemy_escaped", self, "_life_lost_from_enemy")
+	enemy_manager.connect("no_enemies_left", self, "end_round", [], CONNECT_DEFERRED | CONNECT_PERSIST)
+	enemy_manager.connect("enemy_escaped", self, "_life_lost_from_enemy", [], CONNECT_PERSIST)
 
 
 # Round start related

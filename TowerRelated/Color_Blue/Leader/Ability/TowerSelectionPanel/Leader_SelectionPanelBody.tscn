@@ -41,7 +41,7 @@ size_flags_vertical = 6
 [node name="TowerAddButton" parent="InnerMarginer/HBoxContainer" instance=ExtResource( 1 )]
 destroy_button_if_ability_lost = false
 
-[node name="AdvancedButton" parent="InnerMarginer/HBoxContainer" instance=ExtResource( 4 )]
+[node name="MemberShowHideButton" parent="InnerMarginer/HBoxContainer" instance=ExtResource( 4 )]
 margin_left = 39.0
 margin_right = 59.0
 margin_bottom = 12.0
@@ -54,3 +54,4 @@ texture_normal = ExtResource( 5 )
 margin_left = 63.0
 margin_right = 98.0
 destroy_button_if_ability_lost = false
+[connection signal="pressed_mouse_event" from="InnerMarginer/HBoxContainer/MemberShowHideButton" to="." method="_on_MemberShowHideButton_pressed_mouse_event"]

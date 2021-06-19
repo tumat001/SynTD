@@ -579,7 +579,8 @@ func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of
 	var success = on_command_attack_enemies(arg_enemies, num_of_targets)
 	
 	if !success:
-		connect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready", [arg_enemies, num_of_targets], CONNECT_ONESHOT)
+		if !is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
+			connect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready", [arg_enemies, num_of_targets], CONNECT_ONESHOT)
 
 
 func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = number_of_unique_targets) -> bool:

@@ -1,5 +1,6 @@
 extends "res://TowerRelated/AbstractTower.gd"
 
+signal show_member_connection_mode_changed(is_showing)
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
@@ -30,21 +31,34 @@ const AddMember_Pic = preload("res://TowerRelated/Color_Blue/Leader/Ability/Towe
 const RemoveMember_Pic = preload("res://TowerRelated/Color_Blue/Leader/Ability/TowerSelectionPanel/TowerRemove_Icon.png")
 const CoordinatedAttack_Pic = preload("res://TowerRelated/Color_Blue/Leader/Ability/CoordinatedAttack_Icon.png")
 
+const LeaderMemberConnectionBeam_Pic = preload("res://TowerRelated/Color_Blue/Leader/Leader_MemberConnectionBeam.png")
+
+
 var marked_enemy
 var _atomic_marked_enemy
 var mark_indicator : AttackSprite
 
 var add_tower_as_member_ability : BaseAbility
+var add_tower_activation_conditional_clauses : ConditionalClauses
+const at_activation_clause_member_limit_reached : int = -10
+
 var remove_tower_as_member_ability : BaseAbility
+var remove_tower_activation_conditional_clauses : ConditionalClauses
+const rt_activation_clause_no_member : int = -10
+
 var coordinated_attack_ability : BaseAbility
 var coordinated_attack_activation_conditional_clauses : ConditionalClauses
-
 const ca_activation_clause_no_member : int = -10
 const ca_activation_clause_no_mark : int = -11
-const coordinated_attack_cooldown : float = 15.0
 
-var tower_members : Array = []
+const coordinated_attack_cooldown : float = 12.5
 
+const member_upper_limit : int = 5
+
+var tower_members_beam_map : Dictionary = {}
+
+
+var is_showing_member_connections : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -60,8 +74,6 @@ func _ready():
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
 	range_module.position.y += 23
-	#range_module.add_targeting_options(Targeting.get_all_targeting_options())
-	#range_module.set_current_targeting(Targeting.FIRST)
 	
 	var attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage_scale = 0.5
@@ -102,8 +114,10 @@ func _ready():
 	
 	connect("on_main_attack_module_enemy_hit", self, "_on_main_am_enemy_hit_l", [], CONNECT_PERSIST)
 	connect("tower_not_in_active_map", self, "_remove_all_tower_members", [], CONNECT_PERSIST)
+	connect("global_position_changed", self, "_self_global_pos_changed", [], CONNECT_PERSIST)
 	
 	_construct_abilities()
+	
 	_construct_mark_indicator()
 	_post_inherit_ready()
 
@@ -122,6 +136,8 @@ func _construct_abilities():
 	add_tower_as_member_ability.set_properties_to_usual_tower_based()
 	add_tower_as_member_ability.activation_conditional_clauses.blacklisted_clauses.append(BaseAbility.ActivationClauses.ROUND_INTERMISSION_STATE)
 	add_tower_as_member_ability.counter_decrease_clauses.blacklisted_clauses.append(BaseAbility.CounterDecreaseClauses.ROUND_INTERMISSION_STATE)
+	add_tower_as_member_ability.should_be_displaying_clauses.blacklisted_clauses.append(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
+	add_tower_as_member_ability.should_be_displaying_clauses.remove_clause(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 	
 	add_tower_as_member_ability.tower = self
 	
@@ -131,7 +147,7 @@ func _construct_abilities():
 	add_tower_as_member_ability.display_name = "Add Member"
 	
 	register_ability_to_manager(add_tower_as_member_ability, false)
-	
+	add_tower_activation_conditional_clauses = add_tower_as_member_ability.activation_conditional_clauses
 	
 	# REMOVE MEMBER
 	remove_tower_as_member_ability = BaseAbility.new()
@@ -143,6 +159,8 @@ func _construct_abilities():
 	remove_tower_as_member_ability.set_properties_to_usual_tower_based()
 	remove_tower_as_member_ability.activation_conditional_clauses.blacklisted_clauses.append(BaseAbility.ActivationClauses.ROUND_INTERMISSION_STATE)
 	remove_tower_as_member_ability.counter_decrease_clauses.blacklisted_clauses.append(BaseAbility.CounterDecreaseClauses.ROUND_INTERMISSION_STATE)
+	remove_tower_as_member_ability.should_be_displaying_clauses.blacklisted_clauses.append(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
+	remove_tower_as_member_ability.should_be_displaying_clauses.remove_clause(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 	
 	remove_tower_as_member_ability.tower = self
 	
@@ -153,10 +171,11 @@ func _construct_abilities():
 	remove_tower_as_member_ability.display_name = "Remove Member"
 	
 	register_ability_to_manager(remove_tower_as_member_ability, false)
+	remove_tower_activation_conditional_clauses = remove_tower_as_member_ability.activation_conditional_clauses
+	remove_tower_activation_conditional_clauses.attempt_insert_clause(rt_activation_clause_no_member)
 	
 	
 	# Coordinated Attack Ability
-	
 	coordinated_attack_ability = BaseAbility.new()
 	
 	coordinated_attack_ability.is_timebound = true
@@ -168,9 +187,10 @@ func _construct_abilities():
 	coordinated_attack_ability.tower = self
 	
 	coordinated_attack_ability.descriptions = [
-		"Orders all members to attack the marked enemy, regardless of range.",
+		"Orders all members to attack the marked enemy once, regardless of range.",
 		"Projectiles gain extra range to be able to reach the marked target.",
-		"Cooldown: 15 s"
+		"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
+		"Cooldown: 12.5 s"
 	]
 	coordinated_attack_ability.display_name = "Coordinated Attack"
 	
@@ -210,31 +230,86 @@ func _ability_prompt_cancelled():
 		input_prompt_manager.disconnect("tower_selected", self, "_ability_add_selected_member")
 
 
+# member adding/removing
+
 func _ability_add_selected_member(tower):
-	if !tower_members.has(tower) and tower.is_current_placable_in_map() and !tower is get_script():
-		tower_members.append(tower)
+	if !tower_members_beam_map.has(tower) and tower.is_current_placable_in_map() and !tower is get_script():
+		tower_members_beam_map[tower] = null
 		tower.connect("tower_not_in_active_map", self, "_ability_remove_selected_member", [tower], CONNECT_PERSIST)
 		tower.connect("tree_exiting", self, "_ability_remove_selected_member", [tower], CONNECT_PERSIST)
+		tower.connect("global_position_changed", self, "_member_global_pos_changed", [tower], CONNECT_PERSIST)
 		
 		coordinated_attack_activation_conditional_clauses.remove_clause(ca_activation_clause_no_member)
+		remove_tower_activation_conditional_clauses.remove_clause(rt_activation_clause_no_member)
+		
+		if tower_members_beam_map.size() >= member_upper_limit:
+			add_tower_activation_conditional_clauses.attempt_insert_clause(at_activation_clause_member_limit_reached)
+		
+		if is_showing_member_connections:
+			var beam = _construct_beam()
+			tower_members_beam_map[tower] = beam
+			beam.visible = true
+			beam.update_destination_position(tower.global_position)
 
 
 func _ability_remove_selected_member(tower):
-	if tower_members.has(tower):
-		tower_members.erase(tower)
+	if tower_members_beam_map.has(tower):
+		if tower_members_beam_map[tower] != null:
+			tower_members_beam_map[tower].queue_free()
+		
+		tower_members_beam_map.erase(tower)
 		tower.disconnect("tower_not_in_active_map", self, "_ability_remove_selected_member")
 		tower.disconnect("tree_exiting", self, "_ability_remove_selected_member")
+		tower.disconnect("global_position_changed", self, "_member_global_pos_changed")
 		
-		if tower_members.size() == 0:
+		if tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
+			tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+		
+		if tower.is_connected("on_main_attack", self, "_member_excecuted_main_attack"):
+			tower.disconnect("on_main_attack", self, "_member_excecuted_main_attack")
+		
+		if tower.is_connected("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed"):
+			tower.disconnect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed")
+		
+		if tower.main_attack_module is BulletAttackModule:
+			if tower.main_attack_module.is_connected("before_bullet_is_shot", self, "_member_bullet_is_shot"):
+				tower.main_attack_module.disconnect("before_bullet_is_shot", self, "_member_bullet_is_shot")
+	
+		
+		add_tower_activation_conditional_clauses.remove_clause(at_activation_clause_member_limit_reached)
+		if tower_members_beam_map.size() == 0:
 			coordinated_attack_activation_conditional_clauses.attempt_insert_clause(ca_activation_clause_no_member)
+			remove_tower_activation_conditional_clauses.attempt_insert_clause(rt_activation_clause_no_member)
 
 
 func _remove_all_tower_members():
-	for tower in tower_members:
+	for tower in tower_members_beam_map.keys():
 		tower.disconnect("tower_not_in_active_map", self, "_ability_remove_selected_member")
 		tower.disconnect("tree_exiting", self, "_ability_remove_selected_member")
+		tower.disconnect("global_position_changed", self, "_member_global_pos_changed")
+		
+		if tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
+			tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+		
+		if tower.is_connected("on_main_attack", self, "_member_excecuted_main_attack"):
+			tower.disconnect("on_main_attack", self, "_member_excecuted_main_attack")
+		
+		if tower.is_connected("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed"):
+			tower.disconnect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed")
+		
+		if tower.main_attack_module is BulletAttackModule:
+			if tower.main_attack_module.is_connected("before_bullet_is_shot", self, "_member_bullet_is_shot"):
+				tower.main_attack_module.disconnect("before_bullet_is_shot", self, "_member_bullet_is_shot")
+		
+		if tower_members_beam_map[tower] != null:
+			tower_members_beam_map[tower].queue_free()
 	
-	tower_members.clear()
+	tower_members_beam_map.clear()
+	
+	add_tower_activation_conditional_clauses.remove_clause(at_activation_clause_member_limit_reached)
+	if tower_members_beam_map.size() == 0:
+		coordinated_attack_activation_conditional_clauses.attempt_insert_clause(ca_activation_clause_no_member)
+		remove_tower_activation_conditional_clauses.attempt_insert_clause(rt_activation_clause_no_member)
 
 
 # Ability coordinated attack
@@ -242,18 +317,19 @@ func _remove_all_tower_members():
 func _cast_use_coordinated_attack():
 	_atomic_marked_enemy = marked_enemy
 	
-	for tower in tower_members:
+	for tower in tower_members_beam_map:
 		if tower.main_attack_module != null and tower.main_attack_module.range_module != null and tower.main_attack_module.can_be_commanded_by_tower:
-			
-			tower.main_attack_module.range_module.priority_enemies.append(_atomic_marked_enemy)
-			tower.main_attack_module.range_module.enemies_in_range.append(_atomic_marked_enemy)
-			tower.connect("on_main_attack", self, "_member_excecuted_main_attack", [tower])
-			
-			
-			if tower.main_attack_module is BulletAttackModule:
-				tower.main_attack_module.connect("before_bullet_is_shot", self, "_member_bullet_is_shot", [tower], CONNECT_ONESHOT)
-			
-			tower.main_attack_module.on_command_attack_enemies_and_attack_when_ready([_atomic_marked_enemy], 1)
+			#if !tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
+			if !tower.is_connected("on_main_attack", self, "_member_excecuted_main_attack"):
+				tower.main_attack_module.range_module.priority_enemies.append(_atomic_marked_enemy)
+				tower.main_attack_module.range_module.enemies_in_range.append(_atomic_marked_enemy)
+				tower.connect("on_main_attack", self, "_member_excecuted_main_attack", [tower])
+				tower.connect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed", [tower], CONNECT_ONESHOT)
+				
+				if tower.main_attack_module is BulletAttackModule:
+					tower.main_attack_module.connect("before_bullet_is_shot", self, "_member_bullet_is_shot", [tower], CONNECT_ONESHOT)
+				
+				tower.main_attack_module.on_command_attack_enemies_and_attack_when_ready([_atomic_marked_enemy], 1)
 
 
 func _member_bullet_is_shot(bullet : BaseBullet, tower):
@@ -266,17 +342,23 @@ func _member_bullet_is_shot(bullet : BaseBullet, tower):
 
 
 func _member_excecuted_main_attack(atk_spd_delay, enemies, module, tower):
-	if enemies.has(_atomic_marked_enemy):
-		if tower.main_attack_module != null and tower.main_attack_module.range_module != null:
-			tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
-			tower.main_attack_module.range_module._current_enemies.erase(_atomic_marked_enemy)
-			tower.main_attack_module.range_module.enemies_in_range.erase(_atomic_marked_enemy)
-			
-			if tower.main_attack_module is WithBeamInstantDamageAttackModule and !tower.main_attack_module.beam_is_timebound:
-				tower.main_attack_module.call_deferred("force_update_beam_state")
-			
-			tower.disconnect("on_main_attack", self, "_member_excecuted_main_attack")
+	#if enemies.has(_atomic_marked_enemy):
+	if tower.main_attack_module != null and tower.main_attack_module.range_module != null:
+		tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+		tower.main_attack_module.range_module._current_enemies.erase(_atomic_marked_enemy)
+		tower.main_attack_module.range_module.enemies_in_range.erase(_atomic_marked_enemy)
+		
+		if tower.main_attack_module is WithBeamInstantDamageAttackModule and !tower.main_attack_module.beam_is_timebound:
+			tower.main_attack_module.call_deferred("force_update_beam_state")
+		
+		tower.disconnect("on_main_attack", self, "_member_excecuted_main_attack")
+		
 
+
+func _member_mat_damage_instance_constructed(damage_instance, module, tower):
+	var final_potency = coordinated_attack_ability._get_potency_to_use(last_calculated_final_ability_potency)
+	if final_potency != 1:
+		damage_instance.on_hit_damages = damage_instance.get_copy_scaled_by(final_potency).on_hit_damages
 
 
 # Mark Indicator related
@@ -301,12 +383,22 @@ func _process(delta):
 func _marked_enemy_died():
 	mark_indicator.visible = false
 	
-	for member in tower_members:
+	for member in tower_members_beam_map.keys():
 		member.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+		if member.is_connected("on_main_attack", self, "_member_excecuted_main_attack"):
+			member.disconnect("on_main_attack", self, "_member_excecuted_main_attack")
+		
+		if member.is_connected("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed"):
+			member.disconnect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed")
+		
+		if member.main_attack_module is BulletAttackModule:
+			if member.main_attack_module.is_connected("before_bullet_is_shot", self, "_member_bullet_is_shot"):
+				member.main_attack_module.disconnect("before_bullet_is_shot", self, "_member_bullet_is_shot")
 	
 	marked_enemy = null
 	_atomic_marked_enemy = null
 	coordinated_attack_activation_conditional_clauses.attempt_insert_clause(ca_activation_clause_no_mark)
+	
 
 
 # Mark On hit 
@@ -323,6 +415,60 @@ func _on_main_am_enemy_hit_l(enemy, damage_register_id, damage_instance, module)
 		coordinated_attack_activation_conditional_clauses.remove_clause(ca_activation_clause_no_mark)
 
 
+# Show members related
+
+func show_member_connections():
+	is_showing_member_connections = true
+	emit_signal("show_member_connection_mode_changed", true)
+	
+	for tower in tower_members_beam_map.keys():
+		if tower_members_beam_map[tower] == null:
+			tower_members_beam_map[tower] = _construct_beam()
+		
+		var beam = tower_members_beam_map[tower]
+		beam.visible = true
+		beam.update_destination_position(tower.global_position)
+		beam.global_position = global_position
+	
+	_self_global_pos_changed(old_global_position, global_position)
+
+
+func _construct_beam():
+	var beam = BeamAesthetic_Scene.instance()
+	beam.time_visible = 0
+	beam.is_timebound = false
+	beam.set_texture_as_default_anim(LeaderMemberConnectionBeam_Pic)
+	beam.global_position = global_position
+	
+	get_tree().get_root().add_child(beam)
+	return beam
+
+
+func hide_member_connections():
+	is_showing_member_connections = false
+	emit_signal("show_member_connection_mode_changed", false)
+	
+	for tower in tower_members_beam_map.keys():
+		tower_members_beam_map[tower].visible = false
+
+
+func _member_global_pos_changed(old_position, new_position, tower):
+	if tower_members_beam_map.has(tower) and tower.is_current_placable_in_map():
+		var beam = tower_members_beam_map[tower]
+		
+		if beam != null and beam.visible:
+			beam.update_destination_position(tower.global_position)
+
+
+func _self_global_pos_changed(old_pos, new_pos):
+	for tower in tower_members_beam_map.keys():
+		if is_showing_member_connections:
+			var beam = tower_members_beam_map[tower]
+			beam.global_position = global_position
+			beam.update_destination_position(tower.global_position)
+
+
+
 # freeing
 
 func queue_free():
@@ -331,3 +477,4 @@ func queue_free():
 	_remove_all_tower_members()
 	
 	.queue_free()
+

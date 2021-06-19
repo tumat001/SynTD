@@ -13,6 +13,7 @@ const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelate
 const _704_EmblemPointsEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/704EmblemPointsEffect.gd")
 const SpikeBonusDamageEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/SpikeBonusDamageEffect.gd")
 const ImpaleBonusDamageEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/ImpaleBonusDamage.gd")
+const LeaderTargetingTowerEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/LeaderTargetingTowerEffect.gd")
 
 const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
@@ -1094,11 +1095,26 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0.5
 		
 		info.tower_descriptions = [
-			""
+			"Leader's main attack marks the target enemy. Only one enemy can be marked at a time.",
+			"Leader also manages members. Leader can have up to 5 members.",
+			"",
+			"Ability: Coordinated Attack. Orders all members to attack the marked enemy once, regardless of range.",
+			"Projectiles gain extra range to be able to reach the marked target.",
+			"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
+			"Cooldown: 12.5 s"
+			# THIS SAME PASSAGE is placed in leader's
+			# ability tooltip. If this is changed, then
+			# change the ability tooltip.
 		]
 		
+		var targ_effect = LeaderTargetingTowerEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, targ_effect)
 		
-	
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "targeting"
+		
+		
+		
 	
 	return info
 
