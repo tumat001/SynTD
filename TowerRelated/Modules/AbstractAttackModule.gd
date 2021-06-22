@@ -29,6 +29,8 @@ signal ready_to_attack()
 
 enum CanBeCommandedByTower_ClauseId {
 	CHAOS_TAKEOVER = 1
+	
+	SELF_DEFINED_CLAUSE_01 = 10
 }
 
 var module_id : int
@@ -580,7 +582,10 @@ func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of
 	
 	if !success:
 		if !is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
-			connect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready", [arg_enemies, num_of_targets], CONNECT_ONESHOT)
+			connect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready", [arg_enemies, num_of_targets])
+	else:
+		if is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
+			disconnect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready")
 
 
 func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = number_of_unique_targets) -> bool:
@@ -617,13 +622,15 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 				_current_burst_count += 1
 				_current_burst_delay = calculate_final_burst_attack_speed()
 				_is_bursting = true
+				return false #wdad
 			else:
 				_current_attack_wait = calculate_final_attack_speed()
 				_is_attacking = false
 				_is_in_windup = false
 				_finished_attacking()
+				return true #dwad
 			
-			return true
+			#return true
 		else:
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
@@ -645,7 +652,8 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 				_current_burst_delay = calculate_final_burst_attack_speed()
 				_is_bursting = true
 				_current_burst_count += 1
-				return true
+				#return true
+				return false #wdadwad
 			else:
 				_check_attack_enemies(enemies)
 				_is_in_windup = false

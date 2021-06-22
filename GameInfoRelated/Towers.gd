@@ -68,6 +68,9 @@ const impale_image = preload("res://TowerRelated/Color_Green/Impale/Impale_Omni.
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
 const leader_image = preload("res://TowerRelated/Color_Blue/Leader/Leader_Omni.png")
+const orb_image = preload("res://TowerRelated/Color_Blue/Orb/Orb_Omni.png")
+const grand_image = preload("res://TowerRelated/Color_Blue/Grand/Grand_Omni.png")
+const douser_image = preload("res://TowerRelated/Color_Blue/Douser/Douser_E.png")
 
 # VIOLET
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
@@ -115,6 +118,9 @@ enum {
 	# BLUE (600)
 	SPRINKLER = 600,
 	LEADER = 601,
+	ORB = 602,
+	GRAND = 603,
+	DOUSER = 604,
 	
 	# VIOLET (700)
 	SIMPLE_OBELISK = 700,
@@ -221,7 +227,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 8
 		info.base_attk_speed = 0.5
 		info.base_pierce = 1
-		info.base_range = 170
+		info.base_range = 180
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -1114,6 +1120,89 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "targeting"
 		
 		
+	elif tower_id == ORB:
+		info = TowerTypeInformation.new("Orb", tower_id)
+		info.tower_cost = 4
+		info.colors.append(TowerColors.BLUE)
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = orb_image
+		
+		info.base_damage = 1.75
+		info.base_attk_speed = 0.875
+		info.base_pierce = 1
+		info.base_range = 130
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Orb gains new attacks at 1.25, 1.50, and 2.00 total ability potency.",
+			"",
+			"\"Where does the power reside? The wizard, or the orb?\""
+		]
+		
+		
+		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ORB)
+		base_ap_attr_mod.flat_modifier = 0.25
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_ORB)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ ap"
+		
+		
+	elif tower_id == GRAND:
+		info = TowerTypeInformation.new("Grand", tower_id)
+		info.tower_cost = 3
+		info.colors.append(TowerColors.BLUE)
+		info.tower_tier = 3
+		info.tower_image_in_buy_card = grand_image
+		
+		info.base_damage = 4
+		info.base_attk_speed = 0.55
+		info.base_pierce = 1
+		info.base_range = 150
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Grand gains bonus pierce and projectile speed at 1.25, 1.50, and 2.00 total ability potency.",
+			"Grand's main attack damage also scales with its total ability potency.",
+			"",
+			"\"Where does the power reside? The (hand of a) wizard, or the orb?\""
+		]
+		
+		
+		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_GRAND)
+		base_ap_attr_mod.flat_modifier = 0.25
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_GRAND)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ ap"
+		
+		
+		
+	elif tower_id == DOUSER:
+		info = TowerTypeInformation.new("Douser", tower_id)
+		info.tower_cost = 3
+		info.colors.append(TowerColors.BLUE)
+		info.tower_tier = 3
+		info.tower_image_in_buy_card = douser_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.85
+		info.base_pierce = 0
+		info.base_range = 150
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			""
+		]
+		
+		
 		
 	
 	return info
@@ -1185,5 +1274,10 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/Impale/Impale.tscn")
 	elif tower_id == LEADER:
 		return load("res://TowerRelated/Color_Blue/Leader/Leader.tscn")
-
+	elif tower_id == ORB:
+		return load("res://TowerRelated/Color_Blue/Orb/Orb.tscn")
+	elif tower_id == GRAND:
+		return load("res://TowerRelated/Color_Blue/Grand/Grand.tscn")
+	elif tower_id == DOUSER:
+		return load("res://TowerRelated/Color_Blue/Douser/Douser.tscn")
 

@@ -265,8 +265,8 @@ func _ability_remove_selected_member(tower):
 		if tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
 			tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
 		
-		if tower.is_connected("on_main_attack", self, "_member_excecuted_main_attack"):
-			tower.disconnect("on_main_attack", self, "_member_excecuted_main_attack")
+		if tower.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
+			tower.disconnect("on_main_attack_finished", self, "_member_finished_with_main_attack")
 		
 		if tower.is_connected("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed"):
 			tower.disconnect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed")
@@ -291,8 +291,8 @@ func _remove_all_tower_members():
 		if tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
 			tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
 		
-		if tower.is_connected("on_main_attack", self, "_member_excecuted_main_attack"):
-			tower.disconnect("on_main_attack", self, "_member_excecuted_main_attack")
+		if tower.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
+			tower.disconnect("on_main_attack_finished", self, "_member_finished_with_main_attack")
 		
 		if tower.is_connected("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed"):
 			tower.disconnect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed")
@@ -320,16 +320,20 @@ func _cast_use_coordinated_attack():
 	for tower in tower_members_beam_map:
 		if tower.main_attack_module != null and tower.main_attack_module.range_module != null and tower.main_attack_module.can_be_commanded_by_tower:
 			#if !tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
-			if !tower.is_connected("on_main_attack", self, "_member_excecuted_main_attack"):
+			if !tower.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
 				tower.main_attack_module.range_module.priority_enemies.append(_atomic_marked_enemy)
 				tower.main_attack_module.range_module.enemies_in_range.append(_atomic_marked_enemy)
-				tower.connect("on_main_attack", self, "_member_excecuted_main_attack", [tower])
+				
 				tower.connect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed", [tower], CONNECT_ONESHOT)
+				tower.connect("on_main_attack_finished", self, "_member_finished_with_main_attack", [tower], CONNECT_ONESHOT)
 				
 				if tower.main_attack_module is BulletAttackModule:
-					tower.main_attack_module.connect("before_bullet_is_shot", self, "_member_bullet_is_shot", [tower], CONNECT_ONESHOT)
+					tower.main_attack_module.connect("before_bullet_is_shot", self, "_member_bullet_is_shot", [tower])
 				
 				tower.main_attack_module.on_command_attack_enemies_and_attack_when_ready([_atomic_marked_enemy], 1)
+	
+	var cd = _get_cd_to_use(coordinated_attack_cooldown)
+	coordinated_attack_ability.start_time_cooldown(cd)
 
 
 func _member_bullet_is_shot(bullet : BaseBullet, tower):
@@ -341,8 +345,8 @@ func _member_bullet_is_shot(bullet : BaseBullet, tower):
 				bullet.life_distance = distance + 50
 
 
-func _member_excecuted_main_attack(atk_spd_delay, enemies, module, tower):
-	#if enemies.has(_atomic_marked_enemy):
+
+func _member_finished_with_main_attack(module, tower):
 	if tower.main_attack_module != null and tower.main_attack_module.range_module != null:
 		tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
 		tower.main_attack_module.range_module._current_enemies.erase(_atomic_marked_enemy)
@@ -351,8 +355,9 @@ func _member_excecuted_main_attack(atk_spd_delay, enemies, module, tower):
 		if tower.main_attack_module is WithBeamInstantDamageAttackModule and !tower.main_attack_module.beam_is_timebound:
 			tower.main_attack_module.call_deferred("force_update_beam_state")
 		
-		tower.disconnect("on_main_attack", self, "_member_excecuted_main_attack")
-		
+		if tower.main_attack_module is BulletAttackModule:
+			if tower.main_attack_module.is_connected("before_bullet_is_shot", self, "_member_bullet_is_shot"):
+				tower.main_attack_module.disconnect("before_bullet_is_shot", self, "_member_bullet_is_shot")
 
 
 func _member_mat_damage_instance_constructed(damage_instance, module, tower):
@@ -385,8 +390,8 @@ func _marked_enemy_died():
 	
 	for member in tower_members_beam_map.keys():
 		member.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
-		if member.is_connected("on_main_attack", self, "_member_excecuted_main_attack"):
-			member.disconnect("on_main_attack", self, "_member_excecuted_main_attack")
+		if member.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
+			member.disconnect("on_main_attack_finished", self, "_member_finished_with_main_attack")
 		
 		if member.is_connected("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed"):
 			member.disconnect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed")

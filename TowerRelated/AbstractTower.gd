@@ -37,6 +37,8 @@ const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd
 
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
+const BaseTowerDetectingBullet = preload("res://EnemyRelated/TowerInteractingRelated/Spawnables/BaseTowerDetectingBullet.gd")
+
 
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self)
@@ -63,6 +65,8 @@ signal ingredients_limit_changed(new_limit)
 signal tower_colors_changed
 signal targeting_changed
 signal targeting_options_modified
+signal final_ability_potency_changed
+signal final_ability_cd_changed
 
 signal on_main_attack_finished(module)
 signal on_main_attack(attk_speed_delay, enemies, module)
@@ -212,7 +216,7 @@ func _post_inherit_ready():
 		
 		range_module.update_range() 
 	
-	_calculate_final_ability_power()
+	_calculate_final_ability_potency()
 	_calculate_final_flat_ability_cdr()
 	_calculate_final_percent_ability_cdr()
 
@@ -234,6 +238,12 @@ func _emit_targeting_changed():
 
 func _emit_targeting_options_modified():
 	call_deferred("emit_signal", "targeting_options_modified")
+
+func _emit_final_ability_potency_changed():
+	call_deferred("emit_signal", "final_ability_potency_changed")
+
+func _emit_final_ability_cd_changed():
+	call_deferred("emit_signal", "final_ability_cd_changed")
 
 # Adding Attack modules related
 
@@ -274,9 +284,10 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 				add_child(range_module)
 			
 			#range_module.update_range() 
-			range_module.connect("final_range_changed", self, "_emit_final_range_changed", [], CONNECT_PERSIST)
-			range_module.connect("targeting_changed", self, "_emit_targeting_changed", [], CONNECT_PERSIST)
-			range_module.connect("targeting_options_modified", self, "_emit_targeting_options_modified", [], CONNECT_PERSIST)
+			if !range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):
+				range_module.connect("final_range_changed", self, "_emit_final_range_changed", [], CONNECT_PERSIST)
+				range_module.connect("targeting_changed", self, "_emit_targeting_changed", [], CONNECT_PERSIST)
+				range_module.connect("targeting_options_modified", self, "_emit_targeting_options_modified", [], CONNECT_PERSIST)
 			range_module.update_range()
 	
 	if benefit_from_existing_tower_buffs:
@@ -867,14 +878,16 @@ func _add_ability_potency_effect(attr_effect : TowerAttributesEffect):
 	elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_ABILITY_POTENCY:
 		_percent_base_ability_potency_effects[attr_effect.effect_uuid] = attr_effect
 	
-	_calculate_final_ability_power()
+	_calculate_final_ability_potency()
+	_emit_final_ability_potency_changed()
 
 
 func _remove_ability_potency_effect(attr_effect_uuid : int):
 	_flat_base_ability_potency_effects.erase(attr_effect_uuid)
 	_percent_base_ability_potency_effects.erase(attr_effect_uuid)
 	
-	_calculate_final_ability_power()
+	_calculate_final_ability_potency()
+	_emit_final_ability_potency_changed()
 
 
 func _add_ability_cdr_effect(attr_effect : TowerAttributesEffect):
@@ -884,14 +897,18 @@ func _add_ability_cdr_effect(attr_effect : TowerAttributesEffect):
 	elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_ABILITY_CDR:
 		_percent_base_ability_cdr_effects[attr_effect.effect_uuid] = attr_effect
 		_calculate_final_percent_ability_cdr()
+	
+	_emit_final_ability_cd_changed()
 
 func _remove_flat_ability_cdr_effect(attr_effect_uuid : int):
 	_flat_base_ability_cdr_effects.erase(attr_effect_uuid)
 	_calculate_final_flat_ability_cdr()
+	_emit_final_ability_cd_changed()
 
 func _remove_percent_ability_cdr_effect(attr_effect_uuid : int):
 	_percent_base_ability_cdr_effects.erase(attr_effect_uuid)
 	_calculate_final_percent_ability_cdr()
+	_emit_final_ability_cd_changed()
 
 
 func _add_tower_modifying_effect(tower_mod : BaseTowerModifyingEffect):
@@ -1159,7 +1176,7 @@ func _get_cd_to_use(base_cd : float) -> float:
 
 # Ability calculation related
 
-func _calculate_final_ability_power():
+func _calculate_final_ability_potency():
 	var final_ap = base_ability_potency
 	
 	#if benefits_from_bonus_base_damage:
@@ -1442,6 +1459,14 @@ func _physics_process(delta):
 	if global_position != old_global_position:
 		emit_signal("global_position_changed", old_global_position, global_position)
 	old_global_position = global_position
+
+
+# Detecting tower interacting stuffs
+
+func _on_AbstractTower_body_entered(body):
+	if body is BaseTowerDetectingBullet:
+		body.hit_by_tower(self)
+		body.decrease_pierce(1)
 
 
 

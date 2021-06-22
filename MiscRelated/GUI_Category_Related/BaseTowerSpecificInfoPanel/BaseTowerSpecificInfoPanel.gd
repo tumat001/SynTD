@@ -12,7 +12,7 @@ func _on_AdvancedButton_pressed_mouse_event(event):
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == BUTTON_LEFT:
 			if about_tooltip == null:
-				about_tooltip = _construct_tooltip()
+				about_tooltip = _construct_about_tooltip()
 				about_tooltip.visible = true
 				about_tooltip.tooltip_owner = advanced_button
 				get_tree().get_root().add_child(about_tooltip)
@@ -23,5 +23,5 @@ func _on_AdvancedButton_pressed_mouse_event(event):
 				about_tooltip = null
 
 
-func _construct_tooltip():
+func _construct_about_tooltip():
 	pass

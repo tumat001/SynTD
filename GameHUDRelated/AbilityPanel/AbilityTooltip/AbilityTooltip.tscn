@@ -38,33 +38,33 @@ margin_right = 160.0
 margin_bottom = 14.0
 mouse_filter = 2
 custom_constants/margin_right = 3
-custom_constants/margin_top = 3
+custom_constants/margin_top = 2
 custom_constants/margin_left = 3
 custom_constants/margin_bottom = 0
 
 [node name="LeftLabel" type="Label" parent="VBoxContainer/HeaderMarginer/LabelMarginer" index="0"]
 margin_left = 3.0
-margin_top = 4.0
+margin_top = 3.0
 margin_right = 23.0
-margin_bottom = 13.0
+margin_bottom = 12.0
 size_flags_horizontal = 2
 custom_fonts/font = SubResource( 1 )
 text = "wdadw"
 
 [node name="MiddleLabel" type="Label" parent="VBoxContainer/HeaderMarginer/LabelMarginer" index="1"]
 margin_left = 68.0
-margin_top = 4.0
+margin_top = 3.0
 margin_right = 92.0
-margin_bottom = 13.0
+margin_bottom = 12.0
 size_flags_horizontal = 6
 custom_fonts/font = SubResource( 1 )
 text = "wdadwd"
 
 [node name="RightLabel" type="Label" parent="VBoxContainer/HeaderMarginer/LabelMarginer" index="2"]
 margin_left = 133.0
-margin_top = 4.0
+margin_top = 3.0
 margin_right = 157.0
-margin_bottom = 13.0
+margin_bottom = 12.0
 size_flags_horizontal = 10
 custom_fonts/font = SubResource( 1 )
 text = "wdadwd"

@@ -161,15 +161,15 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.RE,
 			Towers.TESLA,
 			Towers.ROYAL_FLAME,
-			Towers.RAILGUN,
+			Towers.GRAND,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.IEU,
-			Towers.VOLCANO,
+			Towers.ORB,
+			Towers.DOUSER,
 			Towers.IMPALE,
 			Towers.LEADER,
-			Towers.SIMPLEX,
+			Towers.VOLCANO,
 		])
 	
 	even = !even

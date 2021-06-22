@@ -7,7 +7,7 @@ const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_R
 onready var leader_selection_panel_body : Leader_SelectionPanelBody = $VBoxContainer/BodyMarginer/Leader_SelectionPanelBody
 
 
-func _construct_tooltip():
+func _construct_about_tooltip():
 	var a_tooltip = BaseTowerSpecificTooltip_Scene.instance()
 	a_tooltip.descriptions = [
 		"Leader shines best with its members. This panel contains actions to assign, remove and view its members."

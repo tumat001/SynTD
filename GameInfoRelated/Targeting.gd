@@ -49,6 +49,7 @@ static func _find_random_distinct_enemies(enemies : Array, count : int):
 	return bucket
 
 
+# Random, Close and Far will be shared for tower detection as well
 static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int, pos : Vector2):
 	var enemies = arg_enemies.duplicate(false)
 	

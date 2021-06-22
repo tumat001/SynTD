@@ -7,8 +7,8 @@ const InstantDamageAttackModule = preload("res://TowerRelated/Modules/InstantDam
 const InstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/InstantDamageAttackModule.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 
-const TowerDetectingRangeModule_Scene = preload("res://TowerRelated/Modules/TowerInteractingModules/TowerDetectingRangeModule.tscn")
-const TowerDetectingRangeModule = preload("res://TowerRelated/Modules/TowerInteractingModules/TowerDetectingRangeModule.gd")
+const TowerDetectingRangeModule_Scene = preload("res://EnemyRelated/TowerInteractingRelated/TowerInteractingModules/TowerDetectingRangeModule.tscn")
+const TowerDetectingRangeModule = preload("res://EnemyRelated/TowerInteractingRelated/TowerInteractingModules/TowerDetectingRangeModule.gd")
 
 const BeaconDishSignalParticle = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDishSignalParticle.tscn")
 

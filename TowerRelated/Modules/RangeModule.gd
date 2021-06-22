@@ -246,7 +246,7 @@ func get_targets(num : int, targeting : int = get_current_targeting_option()) ->
 	while priority_enemies.has(null):
 		priority_enemies.erase(null)
 	
-	for i in range(priority_enemies.size(), 0, -1):
+	for i in range(priority_enemies.size() - 1, 0, -1):
 		_current_enemies.push_front(priority_enemies[i])
 	
 	return _current_enemies

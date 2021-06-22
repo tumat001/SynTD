@@ -4,6 +4,8 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 
 signal hit_an_enemy(me, enemy)
 signal on_zero_pierce(me)
+signal on_current_life_distance_expire()
+
 
 var attack_module_source
 var damage_register_id : int
@@ -33,6 +35,7 @@ func _process(delta):
 		current_life_distance -= delta * speed
 	
 	if current_life_distance <= 0:
+		emit_signal("on_current_life_distance_expire")
 		trigger_on_death_events()
 	
 	rotation_degrees += rotation_per_second * delta
@@ -101,6 +104,9 @@ func set_texture_as_sprite_frames(arg_texture : Texture):
 	sp.add_frame("default", arg_texture)
 	
 	set_sprite_frames(sp)
+
+func set_current_frame(frame : int):
+	$BulletSprite.frame = frame
 
 
 func set_shape(shape : Shape2D):
