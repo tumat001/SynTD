@@ -79,8 +79,13 @@ signal on_main_attack_module_enemy_hit(enemy, damage_register_id, damage_instanc
 signal on_any_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module)
 signal on_main_attack_module_damage_instance_constructed(damage_instance, module)
 
-signal on_range_module_enemy_entered(enemy, range_module)
-signal on_range_module_enemy_exited(enemy, range_module)
+# on any range module
+signal on_range_module_enemy_entered(enemy, module, range_module)
+signal on_range_module_enemy_exited(enemy, module, range_module)
+
+signal on_any_range_module_current_enemy_exited(enemy, module, range_module)
+signal on_any_range_module_current_enemies_acquired(module, range_module)
+
 
 signal on_round_end
 signal on_round_start
@@ -261,8 +266,10 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		attack_module.range_module = range_module
 	
 	if !attack_module.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
-		attack_module.range_module.connect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered", [attack_module.range_module], CONNECT_PERSIST)
-		attack_module.range_module.connect("enemy_left_range" , self, "_emit_on_range_module_enemy_exited", [attack_module.range_module], CONNECT_PERSIST)
+		attack_module.range_module.connect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered", [attack_module, attack_module.range_module], CONNECT_PERSIST)
+		attack_module.range_module.connect("enemy_left_range" , self, "_emit_on_range_module_enemy_exited", [attack_module, attack_module.range_module], CONNECT_PERSIST)
+		attack_module.range_module.connect("current_enemy_left_range", self, "_emit_on_any_range_module_current_enemy_exited", [attack_module, attack_module.range_module], CONNECT_PERSIST)
+		attack_module.range_module.connect("current_enemies_acquired", self, "_emit_on_any_range_module_current_enemies_acquired", [attack_module, attack_module.range_module], CONNECT_PERSIST)
 	
 	attack_module.range_module.update_range()
 	
@@ -314,11 +321,19 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 	for tower_effect in _all_uuid_tower_buffs_map.values():
 		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
 	
-	if attack_module_to_remove.range_module == range_module:
-		if range_module.attack_modules_using_this.has(attack_module_to_remove) and range_module.attack_modules_using_this.size() == 1:
+	
+	if range_module.attack_modules_using_this.has(attack_module_to_remove) and range_module.attack_modules_using_this.size() == 1:
+		if attack_module_to_remove.range_module == range_module:
 			range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
 			range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
 			range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
+	
+	if attack_module_to_remove.range_module.attack_modules_using_this.has(attack_module_to_remove) and attack_module_to_remove.range_module.attack_modules_using_this.size() == 1:
+		if attack_module_to_remove.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
+			attack_module_to_remove.range_module.disconnect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered")
+			attack_module_to_remove.range_module.disconnect("enemy_left_range" , self, "_emit_on_range_module_enemy_exited")
+			attack_module_to_remove.range_module.disconnect("current_enemy_left_range", self, "_emit_on_any_range_module_current_enemy_exited")
+			attack_module_to_remove.range_module.disconnect("current_enemies_acquired", self, "_emit_on_any_range_module_current_enemies_acquired")
 	
 	
 	all_attack_modules.erase(attack_module_to_remove)
@@ -360,11 +375,18 @@ func _emit_on_any_attack_module_enemy_hit(enemy, damage_register_id, damage_inst
 	emit_signal("on_any_attack_module_enemy_hit", enemy, damage_register_id, damage_instance, module)
 
 
-func _emit_on_range_module_enemy_entered(enemy, module):
-	emit_signal("on_range_module_enemy_entered", enemy, module)
+func _emit_on_range_module_enemy_entered(enemy, module, range_module):
+	emit_signal("on_range_module_enemy_entered", enemy, module, range_module)
 
-func _emit_on_range_module_enemy_exited(enemy, module):
-	emit_signal("on_range_module_enemy_exited", enemy, module)
+func _emit_on_range_module_enemy_exited(enemy, module, range_module):
+	emit_signal("on_range_module_enemy_exited", enemy, module, range_module)
+
+func _emit_on_any_range_module_current_enemy_exited(enemy, module, range_module):
+	emit_signal("on_any_range_module_current_enemy_exited" , enemy, module, range_module)
+
+func _emit_on_any_range_module_current_enemies_acquired(module, range_module):
+	emit_signal("on_any_range_module_current_enemies_acquired" , module, range_module)
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -409,6 +431,9 @@ func _set_round_started(arg_is_round_started : bool):
 func _on_round_end():
 	for module in all_attack_modules:
 		module.on_round_end()
+		
+		if module.range_module != null:
+			module.range_module.clear_all_detected_enemies()
 	
 	_remove_all_timebound_and_countbound_effects()
 	emit_signal("on_round_end")

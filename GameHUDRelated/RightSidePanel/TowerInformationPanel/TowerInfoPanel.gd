@@ -14,6 +14,8 @@ const Leader_SelectionPanel = preload("res://TowerRelated/Color_Blue/Leader/Abil
 const Leader_SelectionPanel_Scene = preload("res://TowerRelated/Color_Blue/Leader/Ability/TowerSelectionPanel/Leader_SelectionPanel.tscn")
 const Orb_InfoPanel = preload("res://TowerRelated/Color_Blue/Orb/Orb_InfoPanel/Orb_InfoPanel.gd")
 const Orb_InfoPanel_Scene = preload("res://TowerRelated/Color_Blue/Orb/Orb_InfoPanel/Orb_InfoPanel.tscn")
+const Wave_InfoPanel = preload("res://TowerRelated/Color_Blue/Wave/Ability/WaveInfoPanel.gd")
+const Wave_InfoPanel_Scene = preload("res://TowerRelated/Color_Blue/Wave/Ability/WaveInfoPanel.tscn")
 
 var tower : AbstractTower
 
@@ -35,6 +37,7 @@ var heat_module_panel : HeatModulePanel
 var _704_info_panel : _704_InfoPanel
 var leader_selection_panel : Leader_SelectionPanel
 var orb_info_panel : Orb_InfoPanel
+var wave_info_panel : Wave_InfoPanel
 
 
 func _ready():
@@ -194,6 +197,21 @@ func _update_tower_specific_info_panel():
 		if orb_info_panel != null:
 			orb_info_panel.visible = false
 			orb_info_panel.set_orb_tower(null)
+	
+	
+	# Wave
+	if Wave_InfoPanel.should_display_self_for(tower):
+		if wave_info_panel == null:
+			wave_info_panel = Wave_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(wave_info_panel)
+		
+		wave_info_panel.visible = true
+		wave_info_panel.set_wave_tower(tower)
+	else:
+		if wave_info_panel != null:
+			wave_info_panel.visible = false
+			wave_info_panel.set_wave_tower(null)
+	
 	
 	
 	# KEEP THIS AT THE BOTTOM

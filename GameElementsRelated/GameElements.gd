@@ -161,13 +161,13 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.RE,
 			Towers.TESLA,
 			Towers.ROYAL_FLAME,
-			Towers.GRAND,
+			Towers.SIMPLE_OBELISK,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.ORB,
 			Towers.DOUSER,
-			Towers.IMPALE,
+			Towers.WAVE,
 			Towers.LEADER,
 			Towers.VOLCANO,
 		])

@@ -44,6 +44,8 @@ const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModul
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
 
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
+
 
 var burn_damage_modifier : FlatModifier
 const burn_base_damage_ratio : float = 0.225
@@ -57,9 +59,10 @@ var extinguish_range_module : RangeModule
 var extinguish_attack_module : WithBeamInstantDamageAttackModule
 
 var explosion_attack_module : AOEAttackModule
-var burst_missing_health_ratio : float = 0.6
+var burst_missing_health_ratio : float = 0.4
 var burst_missing_health_limit : float = 300
 
+var burning_enemies_group_id = "RoyalFlameBurnGroupId"
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -242,7 +245,7 @@ func _construct_and_connect_ability():
 	steam_burst_ability.tower = self
 	
 	steam_burst_ability.descriptions = [
-		"Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 60% of the extinguished enemy's missing health as elemental damage, up to a limit.",
+		"Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to a limit.",
 		"The explosion does not affect the extinguished target. The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
 		"Cooldown: 25 s"
 	]

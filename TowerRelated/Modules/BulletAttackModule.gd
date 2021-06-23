@@ -249,11 +249,19 @@ func _adjust_bullet_physics_settings(bullet : BaseBullet, arg_enemy_pos : Vector
 	var dir : Vector2 = Vector2(arg_enemy_pos.x - global_position.x, arg_enemy_pos.y - global_position.y)
 	var rand_x = 0
 	var rand_y = 0
+	var ratio = 1
+	
 	if last_calculated_final_proj_inaccuracy != 0:
 		var rand_gen = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.INACCURACY)
 		rand_x = rand_gen.randf_range(-last_calculated_final_proj_inaccuracy, last_calculated_final_proj_inaccuracy)
 		rand_y = rand_gen.randf_range(-last_calculated_final_proj_inaccuracy, last_calculated_final_proj_inaccuracy)
-	dir += Vector2(rand_x, rand_y)
+		
+		var self_enemy_distance = global_position.distance_to(arg_enemy_pos)
+		
+		if self_enemy_distance != 0:
+			ratio = range_module.base_range_radius / self_enemy_distance
+		
+	dir += Vector2(rand_x / ratio, rand_y / ratio)
 	
 	bullet.direction_as_relative_location = dir.normalized()
 	bullet.speed = last_calculated_final_proj_speed

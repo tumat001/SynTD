@@ -8,6 +8,7 @@ signal final_range_changed
 signal enemy_entered_range(enemy)
 signal enemy_left_range(enemy)
 signal current_enemy_left_range(enemy)
+signal current_enemies_acquired()
 
 signal targeting_changed
 signal targeting_options_modified
@@ -210,6 +211,12 @@ func is_an_enemy_in_range():
 	return enemies_in_range.size() > 0
 
 
+func clear_all_detected_enemies():
+	enemies_in_range.clear()
+	priority_enemies.clear()
+	_current_enemies.clear()
+
+
 # Calculations
 
 func calculate_final_range_radius() -> float:
@@ -249,6 +256,7 @@ func get_targets(num : int, targeting : int = get_current_targeting_option()) ->
 	for i in range(priority_enemies.size() - 1, 0, -1):
 		_current_enemies.push_front(priority_enemies[i])
 	
+	emit_signal("current_enemies_acquired")
 	return _current_enemies
 
 func get_all_targets(targeting : int = get_current_targeting_option()) -> Array:

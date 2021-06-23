@@ -1,0 +1,55 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseTowerSpecificInfoPanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/SingleIngredientPanel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseTowerSpecificInfoPanel_BodyBackground.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Blue/Wave/Ability/WaveInfoPanel.gd" type="Script" id=4]
+
+[node name="WaveInfoPanel" instance=ExtResource( 1 )]
+margin_bottom = 35.0
+size_flags_horizontal = 6
+script = ExtResource( 4 )
+
+[node name="VBoxContainer" parent="." index="0"]
+margin_bottom = 35.0
+size_flags_horizontal = 6
+
+[node name="MarginContainer" parent="VBoxContainer/HeaderMarginer/MarginContainer" index="1"]
+margin_left = 17.0
+margin_right = 33.0
+
+[node name="Label" parent="VBoxContainer/HeaderMarginer/MarginContainer/MarginContainer" index="0"]
+margin_right = 16.0
+text = "Wave"
+
+[node name="BodyMarginer" parent="VBoxContainer" index="2"]
+margin_bottom = 34.0
+size_flags_horizontal = 6
+
+[node name="BodyBackground" type="TextureRect" parent="VBoxContainer/BodyMarginer" index="0"]
+margin_right = 110.0
+margin_bottom = 20.0
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/BodyMarginer" index="1"]
+margin_right = 110.0
+margin_bottom = 20.0
+custom_constants/margin_right = 5
+custom_constants/margin_top = 3
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/BodyMarginer/MarginContainer" index="0"]
+margin_left = 5.0
+margin_top = 3.0
+margin_right = 105.0
+margin_bottom = 17.0
+
+[node name="WavePassiveEffectPanel" parent="VBoxContainer/BodyMarginer/MarginContainer/VBoxContainer" index="0" instance=ExtResource( 2 )]
+margin_right = 100.0
+use_dynamic_description = true
+
+[node name="BottomBorder" parent="VBoxContainer" index="3"]
+margin_top = 34.0
+margin_bottom = 35.0

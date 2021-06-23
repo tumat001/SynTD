@@ -27,32 +27,29 @@ var shot_attack_module : WithBeamInstantDamageAttackModule
 
 func _init().(StoreOfTowerEffectsUUID.ING_PING):
 	effect_icon = Ingredient_pic
-	description = "Pinglet: Summons a Pinglet beside your tower. Has 90 range, 3 base damage and 0.5 attack speed. Benefits from attack speed buffs. Benefits from on hit damages and base damage buffs at 50% efficiency."
+	description = "Pinglet: Summons a Pinglet beside your tower. Has 120 range, 4 physical base damage and 0.8 attack speed. Benefits from on hit damages and base damage buffs at 10% efficiency."
 
 
 func _construct_pinglet():
 	
 	var shot_range_module = RangeModule_Scene.instance()
-	shot_range_module.base_range_radius = 90
+	shot_range_module.base_range_radius = 120
 	shot_range_module.set_range_shape(CircleShape2D.new())
 	shot_range_module.can_display_range = true
 	shot_range_module.benefits_from_bonus_range = false
 	
 	shot_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	shot_attack_module.base_damage = 6
+	shot_attack_module.base_damage_scale = 0.1
+	shot_attack_module.base_damage = 4 / shot_attack_module.base_damage_scale
 	shot_attack_module.base_damage_type = DamageType.PHYSICAL
-	shot_attack_module.base_attack_speed = 0.5
-	shot_attack_module.base_attack_wind_up = 0
+	shot_attack_module.base_attack_speed = 0.8
+	shot_attack_module.base_attack_wind_up = 1.0 / 0.15
 	shot_attack_module.is_main_attack = false
-	shot_attack_module.module_id = StoreOfTowerEffectsUUID.ING_PING
+	shot_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	shot_attack_module.position.y -= 10
 	shot_attack_module.position.x += 20
 	shot_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	shot_attack_module.on_hit_damage_scale = 1
-	
-	shot_attack_module.benefits_from_bonus_on_hit_effect = false
-	shot_attack_module.base_damage_scale = 0.5
-	shot_attack_module.on_hit_damage_scale = 0.5
+	shot_attack_module.on_hit_damage_scale = 0.1
 	
 	
 	var beam_sprite_frame : SpriteFrames = SpriteFrames.new()
@@ -65,19 +62,22 @@ func _construct_pinglet():
 	beam_sprite_frame.add_frame("default", PingShot07_pic)
 	beam_sprite_frame.add_frame("default", PingShot08_pic)
 	beam_sprite_frame.set_animation_loop("default", false)
-	beam_sprite_frame.set_animation_speed("default", 60)
+	beam_sprite_frame.set_animation_speed("default", 8.0 / 0.15)
 	
 	shot_attack_module.beam_scene = BeamAesthetic_Scene
 	shot_attack_module.beam_sprite_frames = beam_sprite_frame
 	shot_attack_module.beam_is_timebound = true
 	shot_attack_module.beam_time_visible = 0.15
-	shot_attack_module.show_beam_at_windup = false
+	shot_attack_module.show_beam_at_windup = true
 	shot_attack_module.show_beam_regardless_of_state = true
 	
 	shot_attack_module.use_self_range_module = true
 	shot_attack_module.range_module = shot_range_module
 	
 	shot_attack_module.can_be_commanded_by_tower = true
+	
+	shot_attack_module.commit_to_targets_of_windup = true
+	shot_attack_module.fill_empty_windup_target_slots = false
 	
 	var pinglet_sprite : Sprite = Sprite.new()
 	pinglet_sprite.texture = Pinglet_pic

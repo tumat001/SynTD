@@ -116,7 +116,7 @@ func _on_RayIcon_pressed_mouse_event(event):
 		attack_tooltip.descriptions = [
 			"Orb channels a constant cosmic ray at its target.",
 			"",
-			"The ray damages its target 6 times per second. Benefits from base damage at 33% effectiveness. Does not benefit from on hit damages and effects."
+			"The ray damages its target 6 times per second, and has 1 base damage as elemental damage. Benefits from base damage at 33% effectiveness. Does not benefit from on hit damages and effects."
 		]
 		
 		get_tree().get_root().add_child(attack_tooltip)

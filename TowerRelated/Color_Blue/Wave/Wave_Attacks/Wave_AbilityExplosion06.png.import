@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/WaterJetMKI_E.png-003c70f83056d248d45d2653e2a709b9.stex"
+path="res://.import/Wave_AbilityExplosion06.png-57e0bb06e6869d8b329fa2905f16032a.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TowerRelated/Color_Blue/Water Jet MK I/WaterJetMKI_E.png"
-dest_files=[ "res://.import/WaterJetMKI_E.png-003c70f83056d248d45d2653e2a709b9.stex" ]
+source_file="res://TowerRelated/Color_Blue/Wave/Wave_Attacks/Wave_AbilityExplosion06.png"
+dest_files=[ "res://.import/Wave_AbilityExplosion06.png-57e0bb06e6869d8b329fa2905f16032a.stex" ]
 
 [params]
 

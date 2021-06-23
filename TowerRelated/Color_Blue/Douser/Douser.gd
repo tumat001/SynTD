@@ -24,9 +24,9 @@ const TowerDetectingRangeModule_Scene = preload("res://EnemyRelated/TowerInterac
 const BaseTowerDetectingBullet_Scene = preload("res://EnemyRelated/TowerInteractingRelated/Spawnables/BaseTowerDetectingBullet.tscn")
 
 
-const base_douser_base_damage_buff : float = 1.5
-const base_douser_base_time : float = 5.0
-const base_douser_base_count : int = 3
+const base_douser_base_damage_buff : float = 0.75
+const base_douser_base_time : float = 10.0
+const base_douser_base_count : int = 4
 
 const base_attack_count_for_buff : int = 4
 var current_attack_count_for_buff : int = base_attack_count_for_buff
@@ -157,7 +157,6 @@ func _on_round_end_d():
 func _on_main_attack_finished_d(module):
 	current_attack_count += 1
 	if current_attack_count >= current_attack_count_for_buff:
-		current_attack_count = 0
 		_attempt_shoot_buffing_bullet()
 
 
@@ -189,6 +188,8 @@ func _attempt_shoot_buffing_bullet():
 		
 		get_tree().get_root().add_child(bullet)
 		
+		current_attack_count = 0
+
 
 func _find_closest_unbuffed_tower() -> Node:
 	var active_towers_in_range = tower_detecting_range_module.get_all_in_map_towers_in_range()

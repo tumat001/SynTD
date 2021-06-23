@@ -7,7 +7,7 @@ const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerB
 var ingredient_effect : IngredientEffect
 var tower_base_effect : TowerBaseEffect
 
-var use_dynamic_description : bool = false
+export var use_dynamic_description : bool = false
 
 func _ready():
 	update_display()

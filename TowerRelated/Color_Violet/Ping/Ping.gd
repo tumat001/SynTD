@@ -269,6 +269,8 @@ func _shoot_marked_enemies():
 	if empowered:
 		shot_attack_module.on_hit_damage_scale = empowered_on_hit_damage_scale
 		shot_attack_module.base_damage = empowered_base_damage
+		
+		shot_attack_module.calculate_final_base_damage()
 	
 	shot_attack_module._attack_enemies(_enemies_marked)
 	for mark in _markers:
@@ -279,6 +281,8 @@ func _shoot_marked_enemies():
 	if empowered:
 		shot_attack_module.on_hit_damage_scale = normal_on_hit_damage_scale
 		shot_attack_module.base_damage = normal_base_damage
+		
+		shot_attack_module.calculate_final_base_damage()
 	
 	_enemies_marked.clear()
 	ping_eye_sprite.texture = PingEye_sleep_pic

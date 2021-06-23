@@ -71,6 +71,7 @@ const leader_image = preload("res://TowerRelated/Color_Blue/Leader/Leader_Omni.p
 const orb_image = preload("res://TowerRelated/Color_Blue/Orb/Orb_Omni.png")
 const grand_image = preload("res://TowerRelated/Color_Blue/Grand/Grand_Omni.png")
 const douser_image = preload("res://TowerRelated/Color_Blue/Douser/Douser_E.png")
+const wave_image = preload("res://TowerRelated/Color_Blue/Wave/Wave_E.png")
 
 # VIOLET
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
@@ -121,6 +122,7 @@ enum {
 	ORB = 602,
 	GRAND = 603,
 	DOUSER = 604,
+	WAVE = 605,
 	
 	# VIOLET (700)
 	SIMPLE_OBELISK = 700,
@@ -532,7 +534,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_CHARGE)
-		attr_mod.flat_modifier = 2
+		attr_mod.flat_modifier = 1.75
 		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_CHARGE, attr_mod, DamageType.PHYSICAL)
 		
 		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_CHARGE)
@@ -938,7 +940,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Royal Flame's attacks burn enemies for 22.5% of its base damage every 0.5 seconds for 8 seconds.",
 			"",
-			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 60% of the extinguished enemy's missing health as elemental damage, up to a limit.",
+			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to a limit.",
 			"The explosion does not affect the extinguished target. The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
 			"Cooldown: 25 s"
 			# THIS SAME PASSAGE is placed in royal flame's
@@ -1102,7 +1104,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Leader's main attack marks the target enemy. Only one enemy can be marked at a time.",
-			"Leader also manages members. Leader can have up to 5 members.",
+			"Leader also manages members. Leader can have up to 5 members. Leader cannot have itself or another Leader as its member.",
 			"",
 			"Ability: Coordinated Attack. Orders all members to attack the marked enemy once, regardless of range.",
 			"Projectiles gain extra range to be able to reach the marked target.",
@@ -1199,10 +1201,65 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			""
+			"Every after 4th main attack, Douser casts Buffing Waters.",
+			"",
+			"Buffing Waters: Douser shoots a water ball at the closest tower.",
+			"Towers hit by Buffing Waters gain 0.75 bonus base damage for the next 4 benefiting attacks within 10 seconds.",
+			"The casting Douser also benefits from its own Buffing Water's buff.",
+			"Douser does not target towers that currently have the buff. Douser also does not target other Dousers, but can affect them if hit.",
+			"",
+			"Buffing Waters benefits from bonus pierce. Ability cdr reduces the needed attacks to trigger this ability."
+		]
+		
+		# Ingredient related
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_DOUSER)
+		base_dmg_attr_mod.flat_modifier = 1.25
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_DOUSER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ base dmg"
+		
+		
+		
+	elif tower_id == WAVE:
+		info = TowerTypeInformation.new("Wave", tower_id)
+		info.tower_cost = 3
+		info.colors.append(TowerColors.BLUE)
+		info.tower_tier = 3
+		info.tower_image_in_buy_card = wave_image
+		
+		info.base_damage = 0.5
+		info.base_attk_speed = 0.4
+		info.base_pierce = 0
+		info.base_range = 150
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Wave attacks in bursts of 2.",
+			"Passive: Wave gains 2 elemental on hit damage.",
+			"",
+			"Ability: Tidal Wave. Wave sprays 8 columns of water in a cone facing its current target.",
+			"Each column deals twice of Wave's passive on hit damage to all enemies hit.",
+			"Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals 1.25 elemental damage to 2 enemies.",
+			"Activating Tidal Wave reduces the passive on hit damage by 0.5 for 30 seconds. This effect stacks, but does not refresh other stacks.",
+			"Cooldown : 6 s",
+			"",
+			"Additional info is present in ability's tooltip."
 		]
 		
 		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_WAVE)
+		attr_mod.flat_modifier = 1.75
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_WAVE, attr_mod, DamageType.ELEMENTAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_WAVE)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
 		
 	
 	return info
@@ -1280,4 +1337,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Blue/Grand/Grand.tscn")
 	elif tower_id == DOUSER:
 		return load("res://TowerRelated/Color_Blue/Douser/Douser.tscn")
+	elif tower_id == WAVE:
+		return load("res://TowerRelated/Color_Blue/Wave/Wave.tscn")
 

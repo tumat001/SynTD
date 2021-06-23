@@ -250,7 +250,8 @@ func _ability_add_selected_member(tower):
 			tower_members_beam_map[tower] = beam
 			beam.visible = true
 			beam.update_destination_position(tower.global_position)
-
+		
+		_toggle_show_tower_info()
 
 func _ability_remove_selected_member(tower):
 	if tower_members_beam_map.has(tower):
@@ -274,13 +275,14 @@ func _ability_remove_selected_member(tower):
 		if tower.main_attack_module is BulletAttackModule:
 			if tower.main_attack_module.is_connected("before_bullet_is_shot", self, "_member_bullet_is_shot"):
 				tower.main_attack_module.disconnect("before_bullet_is_shot", self, "_member_bullet_is_shot")
-	
+		
 		
 		add_tower_activation_conditional_clauses.remove_clause(at_activation_clause_member_limit_reached)
 		if tower_members_beam_map.size() == 0:
 			coordinated_attack_activation_conditional_clauses.attempt_insert_clause(ca_activation_clause_no_member)
 			remove_tower_activation_conditional_clauses.attempt_insert_clause(rt_activation_clause_no_member)
-
+		
+		_toggle_show_tower_info()
 
 func _remove_all_tower_members():
 	for tower in tower_members_beam_map.keys():

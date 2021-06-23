@@ -5,4 +5,4 @@ const reset_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformation
 
 func _init(arg_effect_uuid : int).(EffectType.RESET, arg_effect_uuid):
 	effect_icon = reset_icon
-	description = "Removes all ingredients from the tower including itself, then refunds some gold. Also resets the tower's attack timer."
+	description = "Removes all ingredients from the tower including itself, refunding gold in the process. Also resets the tower's attack timer."

@@ -26,6 +26,9 @@ var rotation_per_second : float = 0
 
 var enemies_ignored : Array = []
 
+var destroy_self_after_zero_pierce : bool = true
+
+
 func _ready():
 	current_life_distance = life_distance
 
@@ -65,7 +68,13 @@ func decrease_pierce(amount):
 	pierce -= amount
 	if pierce <= 0:
 		emit_signal("on_zero_pierce", self)
-		trigger_on_death_events()
+		
+		if destroy_self_after_zero_pierce:
+			trigger_on_death_events()
+		else:
+			collision_mask = 0
+			collision_layer = 0
+
 
 func reduce_damage_by_beyond_first_multiplier():
 	if _first_hit:

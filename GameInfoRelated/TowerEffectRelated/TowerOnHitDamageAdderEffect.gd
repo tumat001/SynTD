@@ -26,9 +26,6 @@ func _init(arg_on_hit_damage : OnHitDamage,
 # Descriptions related
 
 func _get_description() -> String:
-	if description != null and description != "":
-		return description
-	
 	var type_name = DamageType.get_name_of_damage_type(on_hit_damage.damage_type)
 	
 	var modifier = on_hit_damage.damage_as_modifier
