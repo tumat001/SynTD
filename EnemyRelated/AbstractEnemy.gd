@@ -33,8 +33,8 @@ signal effect_removed(effect, me)
 
 var base_health : float = 1
 # NOT YET UPDATED TO MAKE USE OF EFFECTS
-var _flat_base_health_effect_map = {}
-var _percent_base_health_effect_map = {}
+var _flat_base_health_effect_map : Dictionary = {}
+var _percent_base_health_effect_map : Dictionary = {}
 var current_health : float = 1
 var _last_calculated_max_health : float
 
@@ -43,27 +43,27 @@ var active_effects = {}
 var pierce_consumed_per_hit : float = 1
 
 var base_armor : float = 0
-var flat_armor_id_effect_map = {}
-var percent_armor_id_effect_map = {}
+var flat_armor_id_effect_map : Dictionary = {}
+var percent_armor_id_effect_map : Dictionary = {}
 var _last_calculated_final_armor : float
 
 var base_toughness : float = 0
-var flat_toughness_id_effect_map = {}
-var percent_toughness_id_effect_map = {}
+var flat_toughness_id_effect_map : Dictionary = {}
+var percent_toughness_id_effect_map : Dictionary = {}
 var _last_calculated_final_toughness : float
 
 var base_resistance : float = 0
-var flat_resistance_id_effect_map = {}
-var percent_resistance_id_effect_map = {}
+var flat_resistance_id_effect_map : Dictionary = {}
+var percent_resistance_id_effect_map : Dictionary= {}
 var _last_calculated_final_resistance : float
 
 var base_player_damage : float = 1
-var flat_player_damage_id_effect_map = {}
-var percent_player_damage_id_effect_map = {}
+var flat_player_damage_id_effect_map : Dictionary = {}
+var percent_player_damage_id_effect_map : Dictionary = {}
 
 var base_movement_speed : float
-var flat_movement_speed_id_effect_map = {}
-var percent_movement_speed_id_effect_map = {}
+var flat_movement_speed_id_effect_map : Dictionary = {}
+var percent_movement_speed_id_effect_map : Dictionary = {}
 var _last_calculated_final_movement_speed
 
 var distance_to_exit : float
@@ -274,6 +274,10 @@ func calculate_final_armor() -> float:
 	for effect in flat_armor_id_effect_map.values():
 		final_armor += effect.attribute_as_modifier.get_modification_to_value(base_armor)
 	
+	
+	if final_armor < 0:
+		final_armor = 0
+	
 	_last_calculated_final_armor = final_armor
 	return final_armor
 
@@ -286,6 +290,10 @@ func calculate_final_toughness() -> float:
 	for effect in flat_toughness_id_effect_map.values():
 		final_toughness += effect.attribute_as_modifier.get_modification_to_value(base_toughness)
 	
+	
+	if final_toughness < 0:
+		final_toughness = 0
+	
 	_last_calculated_final_toughness = final_toughness
 	return final_toughness
 
@@ -297,6 +305,12 @@ func calculate_final_resistance() -> float:
 	
 	for effect in flat_resistance_id_effect_map.values():
 		final_resistance += effect.attribute_as_modifier.get_modification_to_value(base_resistance)
+	
+	
+	if final_resistance < 0:
+		final_resistance = 0
+	elif final_resistance > 100:
+		final_resistance = 100
 	
 	_last_calculated_final_resistance = final_resistance
 	return final_resistance
@@ -499,9 +513,9 @@ func _process_direct_damage_and_type(damage : float, damage_type : int, damage_i
 # Process effects related
 
 func _process_effects(effects : Dictionary):
-	
 	for effect in effects.values():
 		_add_effect(effect)
+
 
 func _add_effect(base_effect : EnemyBaseEffect):
 	var to_use_effect = base_effect._get_copy_scaled_by(1)
@@ -550,6 +564,30 @@ func _add_effect(base_effect : EnemyBaseEffect):
 		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED:
 			percent_movement_speed_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
 			calculate_final_movement_speed()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_ARMOR:
+			flat_armor_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_final_armor()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_ARMOR:
+			percent_armor_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_final_armor()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_TOUGHNESS:
+			flat_toughness_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_final_toughness()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_TOUGHNESS:
+			percent_toughness_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_final_toughness()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_RESISTANCE:
+			flat_resistance_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_final_resistance()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_RESISTANCE:
+			percent_resistance_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_final_resistance()
 
 
 func _remove_effect(base_effect : EnemyBaseEffect):
@@ -570,6 +608,32 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED:
 			percent_movement_speed_id_effect_map.erase(base_effect.effect_uuid)
 			calculate_final_movement_speed()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_ARMOR:
+			flat_armor_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_final_armor()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_ARMOR:
+			percent_armor_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_final_armor()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_TOUGHNESS:
+			flat_toughness_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_final_toughness()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_TOUGHNESS:
+			percent_toughness_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_final_toughness()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_RESISTANCE:
+			flat_resistance_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_final_resistance()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_RESISTANCE:
+			percent_resistance_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_final_resistance()
+			
+		
 	
 	if base_effect != null:
 		emit_signal("effect_removed", base_effect, self)
@@ -594,6 +658,25 @@ func _clear_effects():
 	for effect in percent_movement_speed_id_effect_map.values():
 		_remove_effect(effect)
 	
+	for effect in flat_armor_id_effect_map.values():
+		_remove_effect(effect)
+	
+	for effect in percent_armor_id_effect_map.values():
+		_remove_effect(effect)
+	
+	for effect in flat_toughness_id_effect_map.values():
+		_remove_effect(effect)
+	
+	for effect in percent_toughness_id_effect_map.values():
+		_remove_effect(effect)
+	
+	for effect in flat_resistance_id_effect_map.values():
+		_remove_effect(effect)
+	
+	for effect in percent_resistance_id_effect_map.values():
+		_remove_effect(effect)
+	
+	
 
 
 # Timebounded related
@@ -601,69 +684,79 @@ func _clear_effects():
 func _decrease_time_of_timebounds(delta):
 	
 	# Stun related
-	for stun_id in _stun_id_effects_map.keys():
-		var stun_effect = _stun_id_effects_map[stun_id]
-		
-		if stun_effect.is_timebound:
-			stun_effect.time_in_seconds -= delta
-			
-			if stun_effect.time_in_seconds <= 0:
-				_remove_effect(stun_effect)
+	for stun_effect in _stun_id_effects_map.values():
+		_decrease_time_of_effect(stun_effect, delta)
 	
 	_is_stunned = _stun_id_effects_map.size() != 0
 	
 	
 	# Stack related
-	for stack_id in _stack_id_effects_map.keys():
-		var stack_effect = _stack_id_effects_map[stack_id]
-		
-		if stack_effect.is_timebound:
-			stack_effect.time_in_seconds -= delta
-			
-			if stack_effect.time_in_seconds <= 0:
-				_remove_effect(stack_effect)
+	for stack_effect in _stack_id_effects_map.values():
+		_decrease_time_of_effect(stack_effect, delta)
 	
 	
 	# Dmg over time related
-	for dmg_time_id in _dmg_over_time_id_effects_map.keys():
-		var dmg_time_effect = _dmg_over_time_id_effects_map[dmg_time_id]
-		
+	for dmg_time_effect in _dmg_over_time_id_effects_map.values():
 		dmg_time_effect._curr_delay_per_tick -= delta
 		if dmg_time_effect._curr_delay_per_tick <= 0:
 			# does not cause self to emit "on hit" signal
 			hit_by_damage_instance(dmg_time_effect.damage_instance, false)
 			dmg_time_effect._curr_delay_per_tick += dmg_time_effect.delay_per_tick
 		
-		
-		if dmg_time_effect.is_timebound:
-			dmg_time_effect.time_in_seconds -= delta
-			
-			if dmg_time_effect.time_in_seconds <= 0:
-				_remove_effect(dmg_time_effect)
+		_decrease_time_of_effect(dmg_time_effect, delta)
+	
 	
 	# Flat slow related
-	for slow_id in flat_movement_speed_id_effect_map.keys():
-		var slow_effect = flat_movement_speed_id_effect_map[slow_id]
-		
-		if slow_effect.is_timebound:
-			slow_effect.time_in_seconds -= delta
-			
-			if slow_effect.time_in_seconds <= 0:
-				_remove_effect(slow_effect)
-	
+	for slow_effect in flat_movement_speed_id_effect_map.values():
+		_decrease_time_of_effect(slow_effect, delta)
 	
 	# Percent slow related
-	for slow_id in percent_movement_speed_id_effect_map.keys():
-		var slow_effect = percent_movement_speed_id_effect_map[slow_id]
-		
-		if slow_effect.is_timebound:
-			slow_effect.time_in_seconds -= delta
-			
-			if slow_effect.time_in_seconds <= 0:
-				_remove_effect(slow_effect)
+	for slow_effect in percent_movement_speed_id_effect_map.values():
+		_decrease_time_of_effect(slow_effect, delta)
 	
+	
+	# Armor
+	for armor_eff in flat_armor_id_effect_map.values():
+		_decrease_time_of_effect(armor_eff, delta)
+	
+	for armor_eff in percent_armor_id_effect_map.values():
+		_decrease_time_of_effect(armor_eff, delta)
+	
+	
+	# Toughness
+	for tou_eff in flat_toughness_id_effect_map.values():
+		_decrease_time_of_effect(tou_eff, delta)
+	
+	for tou_eff in percent_toughness_id_effect_map.values():
+		_decrease_time_of_effect(tou_eff, delta)
+	
+	
+	# Resistance
+	for res_eff in flat_resistance_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in percent_resistance_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
 
 
+
+func _decrease_time_of_effect(effect, delta : float):
+	if effect.is_timebound:
+		effect.time_in_seconds -= delta
+		
+		if effect.time_in_seconds <= 0:
+			_remove_effect(effect)
+
+
+# Special effects
+
+func shift_position(shift : float):
+	var final_shift = shift
+	if offset + shift < 0:
+		final_shift = -offset
+	
+	offset += final_shift
+	distance_to_exit -= final_shift
 
 
 # Coll

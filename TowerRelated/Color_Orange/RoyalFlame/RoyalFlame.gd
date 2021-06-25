@@ -301,7 +301,7 @@ func _extinguish_on_enemy_beam_hit(enemy):
 		if damage > burst_missing_health_limit:
 			damage = burst_missing_health_limit
 		
-		damage *= steam_burst_ability._get_potency_to_use(last_calculated_final_ability_potency)
+		damage *= steam_burst_ability.get_potency_to_use(last_calculated_final_ability_potency)
 		
 		
 		var dmg_as_modifier : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE)

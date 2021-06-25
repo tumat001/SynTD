@@ -26,7 +26,11 @@ func _init(arg_base_effect : EnemyBaseEffect,
 	
 
 func _get_copy_scaled_by(scale : float):
-	var copy = get_script().new(base_effect._get_copy_scaled_by(scale), 
+	var effect
+	if base_effect != null:
+		effect = base_effect._get_copy_scaled_by(scale)
+	
+	var copy = get_script().new(effect, 
 			num_of_stacks_per_apply, stack_cap, 
 			effect_uuid, duration_refresh_per_apply, 
 			consume_all_stacks_on_cap)

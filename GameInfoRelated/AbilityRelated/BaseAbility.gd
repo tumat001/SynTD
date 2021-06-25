@@ -140,7 +140,7 @@ func _get_cd_to_use(cd_of_source : float) -> float:
 	
 	return final_cd
 
-func _get_potency_to_use(potency_of_source : float) -> float:
+func get_potency_to_use(potency_of_source : float) -> float:
 	return potency_of_source * last_calculated_final_ability_potency
 
 

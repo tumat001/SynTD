@@ -188,10 +188,12 @@ func _post_inherit_ready():
 	# force add
 	ability_attack_module.on_hit_damage_adder_effects[wave_dmg_effect.effect_uuid] = wave_dmg_effect
 	
-	_on_acd_changed_w()
-	_on_ap_changed_w()
 	
 	_construct_and_connect_ability()
+	
+	_on_acd_changed_w()
+	_on_ap_changed_w()
+
 
 
 func _construct_effects():
@@ -210,7 +212,7 @@ func _on_acd_changed_w():
 
 
 func _on_ap_changed_w():
-	current_column_count = int(ceil(float(base_column_count) * last_calculated_final_ability_potency))
+	current_column_count = int(ceil(float(base_column_count) * tidal_wave_ability.get_potency_to_use(last_calculated_final_ability_potency)))
 	
 	current_column_angles_of_fire.clear()
 	var twice_angle_of_fire = max_angle_of_fire * 2

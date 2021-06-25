@@ -79,6 +79,10 @@ signal on_main_attack_module_enemy_hit(enemy, damage_register_id, damage_instanc
 signal on_any_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module)
 signal on_main_attack_module_damage_instance_constructed(damage_instance, module)
 
+signal on_any_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module)
+signal on_main_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module)
+
+
 # on any range module
 signal on_range_module_enemy_entered(enemy, module, range_module)
 signal on_range_module_enemy_exited(enemy, module, range_module)
@@ -194,6 +198,7 @@ var old_global_position : Vector2
 var tower_manager
 var tower_inventory_bench
 var input_prompt_manager
+var ability_manager
 
 
 # SYN RELATED ---------------------------- #
@@ -258,6 +263,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		attack_module.connect("in_attack", self, "_emit_on_any_attack", [attack_module], CONNECT_PERSIST)
 		attack_module.connect("on_damage_instance_constructed", self, "_emit_on_damage_instance_constructed", [], CONNECT_PERSIST)
 		attack_module.connect("on_enemy_hit" , self, "_emit_on_any_attack_module_enemy_hit", [], CONNECT_PERSIST)
+		attack_module.connect("on_post_mitigation_damage_dealt", self, "_emit_on_any_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
 	
 	if attack_module.get_parent() == null:
 		add_child(attack_module)
@@ -282,6 +288,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			main_attack_module.connect("in_attack", self, "_emit_on_main_attack", [main_attack_module], CONNECT_PERSIST)
 			main_attack_module.connect("on_enemy_hit" , self, "_emit_on_main_attack_module_enemy_hit", [], CONNECT_PERSIST)
 			main_attack_module.connect("on_damage_instance_constructed", self, "_emit_on_main_attack_module_damage_instance_constructed", [], CONNECT_PERSIST)
+			main_attack_module.connect("on_post_mitigation_damage_dealt", self, "_emit_on_main_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
 		
 		if range_module == null and main_attack_module.range_module != null:
 			range_module = main_attack_module.range_module
@@ -311,12 +318,14 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		attack_module_to_remove.disconnect("in_attack", self, "_emit_on_any_attack")
 		attack_module_to_remove.disconnect("on_damage_instance_constructed", self, "_emit_on_damage_instance_constructed")
 		attack_module_to_remove.disconnect("on_enemy_hit", self, "_emit_on_any_attack_module_enemy_hit")
+		attack_module_to_remove.disconnect("on_post_mitigation_damage_dealt", self, "_emit_on_any_post_mitigation_damage_dealt")
 	
 	if attack_module_to_remove.is_connected("in_attack_end", self, "_emit_on_main_attack_finished"):
 		attack_module_to_remove.disconnect("in_attack_end", self, "_emit_on_main_attack_finished")
 		attack_module_to_remove.disconnect("in_attack", self, "_emit_on_main_attack")
 		attack_module_to_remove.disconnect("on_enemy_hit", self, "_emit_on_main_attack_module_enemy_hit")
 		attack_module_to_remove.disconnect("on_damage_instance_constructed", self, "_emit_on_main_attack_module_damage_instance_constructed")
+		attack_module_to_remove.disconnect("on_post_mitigation_damage_dealt", self, "_emit_on_main_post_mitigation_damage_dealt")
 	
 	for tower_effect in _all_uuid_tower_buffs_map.values():
 		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
@@ -373,6 +382,13 @@ func _emit_on_main_attack_module_enemy_hit(enemy, damage_register_id, damage_ins
 
 func _emit_on_any_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module):
 	emit_signal("on_any_attack_module_enemy_hit", enemy, damage_register_id, damage_instance, module)
+
+
+func _emit_on_any_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module):
+	emit_signal("on_any_post_mitigation_damage_dealt", damage_instance_report, killed, enemy, damage_register_id, module)
+
+func _emit_on_main_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module):
+	emit_signal("on_main_post_mitigation_damage_dealt", damage_instance_report, killed, enemy, damage_register_id, module)
 
 
 func _emit_on_range_module_enemy_entered(enemy, module, range_module):

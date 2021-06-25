@@ -59,5 +59,8 @@ func on_round_started(curr_staground):
 
 
 func _process(delta):
+	_decrease_time_cooldown_of_all_abilities(delta)
+
+func _decrease_time_cooldown_of_all_abilities(delta : float):
 	if stage_round_manager.round_started:
 		emit_signal("time_decreased", delta)

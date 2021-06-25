@@ -14,6 +14,7 @@ const _704_EmblemPointsEffect = preload("res://GameInfoRelated/TowerEffectRelate
 const SpikeBonusDamageEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/SpikeBonusDamageEffect.gd")
 const ImpaleBonusDamageEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/ImpaleBonusDamage.gd")
 const LeaderTargetingTowerEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/LeaderTargetingTowerEffect.gd")
+const BleachShredEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/BleachShredEffect.gd")
 
 const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
@@ -72,6 +73,8 @@ const orb_image = preload("res://TowerRelated/Color_Blue/Orb/Orb_Omni.png")
 const grand_image = preload("res://TowerRelated/Color_Blue/Grand/Grand_Omni.png")
 const douser_image = preload("res://TowerRelated/Color_Blue/Douser/Douser_E.png")
 const wave_image = preload("res://TowerRelated/Color_Blue/Wave/Wave_E.png")
+const bleach_image = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_E.png")
+const time_machine_image = preload("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine_Omni.png")
 
 # VIOLET
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
@@ -123,6 +126,8 @@ enum {
 	GRAND = 603,
 	DOUSER = 604,
 	WAVE = 605,
+	BLEACH = 606,
+	TIME_MACHINE = 607,
 	
 	# VIOLET (700)
 	SIMPLE_OBELISK = 700,
@@ -1222,7 +1227,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "+ base dmg"
 		
 		
-		
 	elif tower_id == WAVE:
 		info = TowerTypeInformation.new("Wave", tower_id)
 		info.tower_cost = 3
@@ -1247,7 +1251,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Activating Tidal Wave reduces the passive on hit damage by 0.5 for 30 seconds. This effect stacks, but does not refresh other stacks.",
 			"Cooldown : 6 s",
 			"",
-			"Additional info is present in ability's tooltip."
+			"Additional info is present in this ability's tooltip."
 		]
 		
 		
@@ -1260,6 +1264,64 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ on hit"
+		
+		
+	elif tower_id == BLEACH:
+		info = TowerTypeInformation.new("Bleach", tower_id)
+		info.tower_cost = 2
+		info.colors.append(TowerColors.BLUE)
+		info.tower_tier = 2
+		info.tower_image_in_buy_card = bleach_image
+		
+		info.base_damage = 2.0
+		info.base_attk_speed = 0.92
+		info.base_pierce = 1
+		info.base_range = 125
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Every 5th attack, Bleach's main attack removes 7.5 toughness from enemies hit for 5 seconds. Does not stack."
+		]
+		
+		
+		var shred_effect = BleachShredEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, shred_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "- toughness"
+		
+		
+	elif tower_id == TIME_MACHINE:
+		info = TowerTypeInformation.new("Time Machine", tower_id)
+		info.tower_cost = 2
+		info.colors.append(TowerColors.BLUE)
+		info.colors.append(TowerColors.YELLOW)
+		info.tower_tier = 2
+		info.tower_image_in_buy_card = time_machine_image
+		
+		info.base_damage = 2.5
+		info.base_attk_speed = 0.70
+		info.base_pierce = 1
+		info.base_range = 125
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Automatically casts Rewind after attacking an enemy.",
+			"Rewind: After a brief delay, Time machine teleports an enemy a few paces backwards.",
+			"Cooldown: 15 s",
+			"",
+			"Rewind also applies 3 stacks of Time Dust onto an enemy for 6 seconds. Time Machine’s main attacks onto an enemy consume a stack of Time Dust, reducing Rewind’s cooldown by 2 seconds."
+		]
+		
+		
+		var shred_effect = BleachShredEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, shred_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "- toughness"
+		
 		
 	
 	return info
@@ -1339,4 +1401,8 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Blue/Douser/Douser.tscn")
 	elif tower_id == WAVE:
 		return load("res://TowerRelated/Color_Blue/Wave/Wave.tscn")
+	elif tower_id == BLEACH:
+		return load("res://TowerRelated/Color_Blue/Bleach/Bleach.tscn")
+	elif tower_id == TIME_MACHINE:
+		return load("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine.tscn")
 

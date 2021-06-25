@@ -88,6 +88,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.tower_manager = self
 	tower_instance.tower_inventory_bench = tower_inventory_bench
 	tower_instance.input_prompt_manager = input_prompt_manager
+	tower_instance.ability_manager = ability_manager
 	
 	tower_instance.is_in_select_tower_prompt = input_prompt_manager.is_in_tower_selection_mode()
 	tower_instance.is_in_ingredient_mode = is_in_ingredient_mode
