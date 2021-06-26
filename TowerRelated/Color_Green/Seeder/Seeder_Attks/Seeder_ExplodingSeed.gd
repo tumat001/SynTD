@@ -14,7 +14,7 @@ var damage_reg_to_detect : int
 
 var enemy_stuck_to
 
-const max_lifetime_s = 5.0
+const max_lifetime_s = 6.0
 var current_lifetime_s = max_lifetime_s
 
 const bullet_attach_shift = Vector2(0, -10)

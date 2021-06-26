@@ -26,7 +26,7 @@ const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/Bas
 
 
 
-const base_implant_cooldown : float = 35.0
+const base_implant_cooldown : float = 25.0
 var implant_ability : BaseAbility
 var implant_ability_is_ready : bool = false
 
@@ -116,7 +116,7 @@ func _ready():
 	# Explosion
 	
 	explosion_attack_module = AOEAttackModule_Scene.instance()
-	explosion_attack_module.base_damage_scale = 3
+	explosion_attack_module.base_damage_scale = 4
 	explosion_attack_module.base_damage = 14 / explosion_attack_module.base_damage_scale
 	explosion_attack_module.base_damage_type = DamageType.PHYSICAL
 	explosion_attack_module.base_attack_speed = 0
@@ -126,7 +126,7 @@ func _ready():
 	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	
 	explosion_attack_module.on_hit_damage_scale = 2
-	explosion_attack_module.on_hit_effect_scale = 1.5
+	explosion_attack_module.on_hit_effect_scale = 2
 	explosion_attack_module.base_explosion_scale = 1.5
 	
 	explosion_attack_module.benefits_from_bonus_explosion_scale = true

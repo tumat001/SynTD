@@ -67,6 +67,7 @@ const fruit_tree_image = preload("res://TowerRelated/Color_Green/FruitTree/Fruit
 const spike_image = preload("res://TowerRelated/Color_Green/Spike/Spike_Omni.png")
 const impale_image = preload("res://TowerRelated/Color_Green/Impale/Impale_Omni.png")
 const seeder_image = preload("res://TowerRelated/Color_Green/Seeder/Seeder_E.png")
+const cannon_image = preload("res://TowerRelated/Color_Green/Cannon/Cannon_E.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -121,6 +122,7 @@ enum {
 	SPIKE = 502,
 	IMPALE = 503,
 	SEEDER = 504,
+	CANNON = 505,
 	
 	# BLUE (600)
 	SPRINKLER = 600,
@@ -166,6 +168,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Fires metal bullets at opponents.",
 			"\"First Iteration\""
 		]
+		
+		
 	elif tower_id == SPRINKLER:
 		info = TowerTypeInformation.new("Sprinkler", SPRINKLER)
 		info.tower_cost = 1
@@ -474,7 +478,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		var range_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_BEACON_DISH)
-		range_attr_mod.flat_modifier = 30
+		range_attr_mod.flat_modifier = 45
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_BEACON_DISH)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -578,7 +582,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var expl_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_MAGNETIZER)
-		expl_attr_mod.percent_amount = 40
+		expl_attr_mod.percent_amount = 80
 		expl_attr_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE, expl_attr_mod, StoreOfTowerEffectsUUID.ING_MAGNETIZER)
@@ -750,7 +754,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		var expl_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_VOLCANO)
-		expl_attr_mod.percent_amount = 50
+		expl_attr_mod.percent_amount = 100
 		expl_attr_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE, expl_attr_mod, StoreOfTowerEffectsUUID.ING_VOLCANO)
@@ -1311,7 +1315,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Automatically casts Rewind after attacking an enemy.",
+			"Automatically attempts to casts Rewind after attacking an enemy.",
 			"Rewind: After a brief delay, Time machine teleports an enemy a few paces backwards.",
 			"Cooldown: 15 s",
 			"",
@@ -1342,10 +1346,59 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			""
+			"Automatically attempts to casts Seed Bomb when hitting an enemy with its main attack.",
+			"Seed Bomb: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed to gain a stack of Fragile.",
+			"After 6 seconds or reaching 4 stacks of Fragile, the seed bomb explodes, hitting up to 5 enemies. The explosion's damage scales with its Fragile stacks.",
+			"Cooldown : 25 s",
+			"",
+			"Seed Bomb's explosion deals 14 physical damage. The explosion benefits from base damage buffs at 400% efficiency, and benefits from on hit damages and effects at 200% efficiency.",
+			"The explosion only deals 25% of its damage, but each Fragile stack allows the explosion to deal 25% more of its damage (totalling up to 125%).",
 		]
 		
 		
+		# Ingredient related
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SEEDER)
+		base_dmg_attr_mod.flat_modifier = 1.25
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_SEEDER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ base dmg"
+		
+		
+	elif tower_id == CANNON:
+		info = TowerTypeInformation.new("Cannon", tower_id)
+		info.tower_cost = 2
+		info.colors.append(TowerColors.GREEN)
+		info.tower_tier = 2
+		info.tower_image_in_buy_card = cannon_image
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0.525
+		info.base_pierce = 0
+		info.base_range = 125
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Shoots an exploding fruit.",
+			"The explosion deals 3 physical damage to 3 enemies. The explosion benefits from base damage buffs, on hit damages and effects."
+		]
+		
+		
+		var expl_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_CANNON)
+		expl_attr_mod.percent_amount = 60
+		expl_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE, expl_attr_mod, StoreOfTowerEffectsUUID.ING_CANNON)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ expl"
+		
+		
+	
 	
 	return info
 
@@ -1430,3 +1483,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine.tscn")
 	elif tower_id == SEEDER:
 		return load("res://TowerRelated/Color_Green/Seeder/Seeder.tscn")
+	elif tower_id == CANNON:
+		return load("res://TowerRelated/Color_Green/Cannon/Cannon.tscn")
