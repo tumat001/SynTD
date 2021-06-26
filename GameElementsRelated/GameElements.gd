@@ -65,7 +65,6 @@ func _ready():
 	panel_buy_sell_level_roll.gold_manager = gold_manager
 	
 	# tower manager
-	
 	tower_manager.right_side_panel = right_side_panel
 	tower_manager.tower_stats_panel = right_side_panel.tower_info_panel.tower_stats_panel
 	tower_manager.active_ing_panel = right_side_panel.tower_info_panel.active_ing_panel
@@ -84,17 +83,14 @@ func _ready():
 	tower_manager.input_prompt_manager = input_prompt_manager
 	
 	# syn manager
-	
 	synergy_manager.tower_manager = tower_manager
 	synergy_manager.game_elements = self
 	
 	# gold manager
-	
 	gold_manager.gold_amount_label = $BottomPanel/HBoxContainer/VBoxContainer/GoldPanel/MarginContainer3/MarginContainer2/GoldAmountLabel
 	gold_manager.connect("current_gold_changed", panel_buy_sell_level_roll, "_update_tower_cards_buyability_based_on_gold")
 	
 	# stage round manager related
-	
 	stage_round_manager.round_status_panel = right_side_panel.round_status_panel
 	
 	stage_round_manager.connect("round_started", tower_manager, "_round_started")
@@ -104,28 +100,22 @@ func _ready():
 	stage_round_manager.enemy_manager = enemy_manager
 	
 	# health manager
-	
 	health_manager.round_info_panel = round_info_panel
 	
 	# Enemy manager
-	
 	enemy_manager.set_spawn_paths([$EnemyPath])
 	enemy_manager.connect("no_enemies_left", round_status_panel, "_update_round_ended")
 	enemy_manager.health_manager = health_manager
 	
 	# Ability manager
-	
 	ability_manager.stage_round_manager = stage_round_manager
 	ability_manager.ability_panel = round_status_panel.ability_panel
 	tower_manager.ability_manager = ability_manager
 	
 	# Input Prompt manager
-	
 	input_prompt_manager.selection_notif_panel = selection_notif_panel
 	
-	
 	# Selection Notif panel
-	
 	selection_notif_panel.visible = false
 	
 	
@@ -165,11 +155,11 @@ func _on_BuySellLevelRollPanel_reroll():
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.MAGNETIZER,
+			Towers.SEEDER,
 			Towers.TIME_MACHINE,
-			Towers.WAVE,
+			Towers._704,
 			Towers.LEADER,
-			Towers.COIN,
+			Towers.PING,
 		])
 	
 	even = !even

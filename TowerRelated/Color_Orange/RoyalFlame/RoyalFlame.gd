@@ -32,6 +32,7 @@ const RoyalFlame_SteamBurst06 = preload("res://TowerRelated/Color_Orange/RoyalFl
 const RoyalFlame_SteamBurst07 = preload("res://TowerRelated/Color_Orange/RoyalFlame/RoyalFlame_SteamBurst/RoyalFlame_SteamBurst07.png")
 
 const RoyalFlame_AbilityIcon = preload("res://TowerRelated/Color_Orange/RoyalFlame/Ability/RoyalFlame_AbilityIcon.png")
+const RoyalFlame_StatusIcon = preload("res://TowerRelated/Color_Orange/RoyalFlame/Ability/RoyalFlame_StatusIcon.png")
 
 const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
@@ -226,6 +227,7 @@ func _post_inherit_ready():
 	burn_enemy_effect = EnemyDmgOverTimeEffect.new(burn_dmg_instance, StoreOfEnemyEffectsUUID.ROYAL_FLAME_BURN, 0.5)
 	burn_enemy_effect.is_timebound = true
 	burn_enemy_effect.time_in_seconds = 8
+	burn_enemy_effect.status_bar_icon = RoyalFlame_StatusIcon
 	
 	var tower_effect = TowerOnHitEffectAdderEffect.new(burn_enemy_effect, StoreOfTowerEffectsUUID.ROYAL_FLAME_BURN)
 	
@@ -316,9 +318,10 @@ func _extinguish_on_enemy_beam_hit(enemy):
 		
 		get_tree().get_root().add_child(steam_explosion)
 		
+		
 		# extinguish
 		
-		enemy._dmg_over_time_id_effects_map.erase(StoreOfEnemyEffectsUUID.ROYAL_FLAME_BURN)
+		enemy._remove_effect(burn_enemy_effect)
 
 
 # Heat Module

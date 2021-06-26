@@ -39,8 +39,7 @@ const PingEye_awake_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Eye
 const PingEye_awakeRed_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Eye_AwakeRed.png")
 const PingEye_sleep_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Eye_Sleep.png")
 
-const Ping_seek_register_id : int = 117
-const Ping_shot_register_id : int = 207
+const Ping_seek_register_id : int = Towers.PING
 
 var arrow_attack_module : AbstractAttackModule
 #var template : SpawnAOETemplate
@@ -190,8 +189,7 @@ func _ready():
 	shot_attack_module.show_beam_at_windup = false
 	shot_attack_module.show_beam_regardless_of_state = true
 	
-	shot_attack_module.damage_register_id = Ping_shot_register_id
-	shot_attack_module.connect("on_post_mitigation_damage_dealt", self, "_check_if_shot_killed_enemy")
+	shot_attack_module.connect("on_post_mitigation_damage_dealt", self, "_check_if_shot_killed_enemy", [], CONNECT_PERSIST)
 	
 	shot_attack_module.use_self_range_module = true
 	shot_attack_module.range_module = shot_range_module
@@ -289,7 +287,7 @@ func _shoot_marked_enemies():
 
 
 func _check_if_shot_killed_enemy(damage_report, killed_enemy : bool, enemy, damage_register_id : int, module):
-	if damage_register_id == Ping_shot_register_id and killed_enemy == true:
+	if killed_enemy == true:
 		arrow_attack_module.call_deferred("reset_attack_timers")
 
 

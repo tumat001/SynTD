@@ -120,6 +120,7 @@ func _get_copy_scaled_by(scale : float):
 	var copy = get_script().new(attribute_type, attribute_as_modifier, effect_uuid)
 	copy.is_timebound = is_timebound
 	copy.time_in_seconds = time_in_seconds
+	copy.status_bar_icon = status_bar_icon
 	
 	return copy
 	

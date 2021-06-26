@@ -5,7 +5,7 @@ func _attack_enemy(enemy : AbstractEnemy):
 		var damage_instance : DamageInstance = construct_damage_instance()
 		emit_signal("on_damage_instance_constructed", damage_instance, self)
 		
-		enemy.connect("on_hit", self, "on_enemy_hit", [damage_register_id, damage_instance], CONNECT_ONESHOT)
+		enemy.connect("on_hit", self, "on_enemy_hit", [], CONNECT_ONESHOT)
 		enemy.connect("on_post_mitigated_damage_taken", self, "on_post_mitigation_damage_dealt", [damage_register_id], CONNECT_ONESHOT)
 		
 		enemy.hit_by_damage_instance(damage_instance)

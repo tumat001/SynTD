@@ -18,6 +18,9 @@ var effect_icon : Texture
 var is_timebound : bool
 var time_in_seconds : float
 
+var status_bar_icon : Texture
+
+
 func _init(arg_effect_type : int,
 		arg_effect_uuid : int):
 	

@@ -15,6 +15,7 @@ const SpikeBonusDamageEffect = preload("res://GameInfoRelated/TowerEffectRelated
 const ImpaleBonusDamageEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/ImpaleBonusDamage.gd")
 const LeaderTargetingTowerEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/LeaderTargetingTowerEffect.gd")
 const BleachShredEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/BleachShredEffect.gd")
+const TimeMachineEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TimeMachineEffect.gd")
 
 const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
@@ -65,6 +66,7 @@ const berrybush_image = preload("res://TowerRelated/Color_Green/BerryBush/BerryB
 const fruit_tree_image = preload("res://TowerRelated/Color_Green/FruitTree/FruitTree_Omni.png")
 const spike_image = preload("res://TowerRelated/Color_Green/Spike/Spike_Omni.png")
 const impale_image = preload("res://TowerRelated/Color_Green/Impale/Impale_Omni.png")
+const seeder_image = preload("res://TowerRelated/Color_Green/Seeder/Seeder_E.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -118,6 +120,7 @@ enum {
 	FRUIT_TREE = 501,
 	SPIKE = 502,
 	IMPALE = 503,
+	SEEDER = 504,
 	
 	# BLUE (600)
 	SPRINKLER = 600,
@@ -1316,11 +1319,31 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
-		var shred_effect = BleachShredEffect.new()
-		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, shred_effect)
+		var effect = TimeMachineEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, effect)
+		ing_effect.ignore_ingredient_limit = true
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "- toughness"
+		info.ingredient_effect_simple_description = "ing remove"
+		
+		
+	elif tower_id == SEEDER:
+		info = TowerTypeInformation.new("Seeder", tower_id)
+		info.tower_cost = 3
+		info.colors.append(TowerColors.GREEN)
+		info.tower_tier = 3
+		info.tower_image_in_buy_card = seeder_image
+		
+		info.base_damage = 2.5
+		info.base_attk_speed = 0.85
+		info.base_pierce = 1
+		info.base_range = 132
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			""
+		]
 		
 		
 	
@@ -1405,4 +1428,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Blue/Bleach/Bleach.tscn")
 	elif tower_id == TIME_MACHINE:
 		return load("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine.tscn")
-
+	elif tower_id == SEEDER:
+		return load("res://TowerRelated/Color_Green/Seeder/Seeder.tscn")

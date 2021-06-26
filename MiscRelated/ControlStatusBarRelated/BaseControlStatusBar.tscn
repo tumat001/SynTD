@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MiscRelated/ControlStatusBarRelated/BaseControlStatusBar.gd" type="Script" id=1]
+
+[node name="BaseControlStatusBar" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+grow_vertical = 0
+size_flags_vertical = 2
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GridContainer" type="GridContainer" parent="."]
+margin_right = 40.0
+grow_vertical = 0
+size_flags_vertical = 2
+custom_constants/vseparation = 2
+custom_constants/hseparation = 2

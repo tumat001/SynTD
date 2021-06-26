@@ -12,6 +12,8 @@ const TimeMachine_WindUpParticle_Scene = preload("res://TowerRelated/Color_Blue/
 
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 
+const TimeMachine_TimeDust_StatusIcon = preload("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine_Attks/TimeMachine_TimeDust_EnemyIcon.png")
+
 
 const base_position_shift : float = -50.0
 const base_rewind_cooldown : float = 15.0
@@ -90,8 +92,8 @@ func _construct_effect():
 	time_dust_effect.is_timebound = true
 	time_dust_effect.time_in_seconds = 6
 	time_dust_effect._current_stack = 3
+	time_dust_effect.status_bar_icon = TimeMachine_TimeDust_StatusIcon
 	
-
 
 
 # attk
@@ -110,7 +112,7 @@ func _on_main_post_mitigated_dmg_dealt(damage_instance_report, killed, enemy, da
 		enemy.shift_position(final_potency * base_position_shift)
 		
 		rewind_ability.start_time_cooldown(_get_cd_to_use(base_rewind_cooldown))
-		enemy._add_effect(time_dust_effect)
+		enemy._add_effect(time_dust_effect._get_copy_scaled_by(1))
 
 
 func _time_dust_stack_consumed():

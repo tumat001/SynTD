@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Healtbar_health.png-5916f2ec2c3982d7132d4628b633aa00.stex"
+path="res://.import/Seeder_ExplodingSeed_Stage0.png-9cb9d05665add867fa2ec9853ba401eb.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://EnemyRelated/Infobar/Healtbar/Healtbar_health.png"
-dest_files=[ "res://.import/Healtbar_health.png-5916f2ec2c3982d7132d4628b633aa00.stex" ]
+source_file="res://TowerRelated/Color_Green/Seeder/Seeder_Attks/Seeder_ExplodingSeed_Stage0.png"
+dest_files=[ "res://.import/Seeder_ExplodingSeed_Stage0.png-9cb9d05665add867fa2ec9853ba401eb.stex" ]
 
 [params]
 

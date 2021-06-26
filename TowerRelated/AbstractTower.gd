@@ -1042,13 +1042,21 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 		_emit_ingredients_absorbed_changed()
 
 
-func remove_ingredient(ingredient_effect : IngredientEffect):
+func remove_ingredient(ingredient_effect : IngredientEffect, refund_gold : bool = false):
 	if ingredient_effect != null:
 		remove_tower_effect(ingredients_absorbed[ingredient_effect.tower_id].tower_base_effect)
 		
+		if refund_gold:
+			var gold_cost = _ingredients_tower_id_base_gold_costs_map[ingredient_effect.tower_id]
+			if gold_cost > 1:
+				gold_cost -= 1
+			
+			emit_signal("tower_give_gold", gold_cost, GoldManager.IncreaseGoldSource.TOWER_EFFECT_RESET)
+		
 		_ingredients_tower_id_base_gold_costs_map.erase(ingredient_effect.tower_id)
-		ingredients_absorbed.clear()
+		ingredients_absorbed.erase(ingredient_effect.tower_id)
 		_emit_ingredients_absorbed_changed()
+
 
 
 func clear_ingredients():
@@ -1067,6 +1075,13 @@ func _clear_ingredients_by_effect_reset():
 	ingredients_absorbed.clear()
 	emit_signal("tower_give_gold", _calculate_sellback_of_ingredients(), GoldManager.IncreaseGoldSource.TOWER_EFFECT_RESET)
 	_ingredients_tower_id_base_gold_costs_map.clear()
+
+
+func _remove_latest_ingredient_by_effect():
+	if ingredients_absorbed.size() != 0:
+		var latest_effect = ingredients_absorbed.values()[ingredients_absorbed.size() - 1]
+		print(latest_effect.description)
+		remove_ingredient(latest_effect, true)
 
 
 func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:

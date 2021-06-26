@@ -1,0 +1,14 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://MiscRelated/ControlProgressBarRelated/ControlProgressBar.tscn" type="PackedScene" id=1]
+[ext_resource path="res://EnemyRelated/Infobar/Healthbar/Healtbar_background.png" type="Texture" id=2]
+[ext_resource path="res://EnemyRelated/Infobar/Healthbar/Healthbar_separator.png" type="Texture" id=3]
+[ext_resource path="res://EnemyRelated/Infobar/Healthbar/Healtbar_health.png" type="Texture" id=4]
+
+[node name="EnemyHealthBar" instance=ExtResource( 1 )]
+display_chunks = true
+chunk_separator_pic = ExtResource( 3 )
+bar_background_pic = ExtResource( 2 )
+fill_foreground_pic = ExtResource( 4 )
+fill_foreground_margin_top = 2.0
+fill_foreground_margin_left = 2.0

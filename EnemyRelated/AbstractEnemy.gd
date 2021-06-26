@@ -19,9 +19,12 @@ const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
 
+const BaseControlStatusBar = preload("res://MiscRelated/ControlStatusBarRelated/BaseControlStatusBar.gd")
+
+
 signal on_death_by_any_cause
 signal on_hit(me, damage_reg_id, damage_instance)
-signal on_post_mitigated_damage_taken(damage_instance_report, is_lethal, me, damage_reg_id)
+signal on_post_mitigated_damage_taken(damage_instance_report, is_lethal, me)
 signal before_damage_instance_is_processed(damage_instance, me)
 
 signal reached_end_of_path(me)
@@ -70,13 +73,13 @@ var distance_to_exit : float
 
 #
 
-onready var healthbar = $Healthbar
-
+onready var statusbar : BaseControlStatusBar = $EnemyInfoBar/VBoxContainer/EnemyStatusBar
+onready var healthbar = $EnemyInfoBar/VBoxContainer/EnemyHealthBar
+onready var infobar = $EnemyInfoBar
 
 #internals
 
 var _self_size : Vector2
-
 
 # Effects map
 
@@ -90,8 +93,8 @@ var _dmg_over_time_id_effects_map : Dictionary = {}
 func _ready():
 	_self_size = _get_current_anim_size()
 	
-	healthbar.position.y -= round((_self_size.y / 2) + 15)
-	healthbar.position.x -= round(healthbar.get_bar_fill_foreground_size().x / 2)
+	infobar.rect_position.y -= round((_self_size.y) + 11)
+	infobar.rect_position.x -= round(healthbar.get_bar_fill_foreground_size().x / 2)
 	
 	connect("on_current_health_changed", healthbar, "set_current_value")
 	
@@ -102,8 +105,10 @@ func _ready():
 	calculate_max_health()
 
 func _post_ready():
-	healthbar.max_value = base_health
+	healthbar.current_value = current_health
+	
 	# TODO INSTEAD OF base_health, make it "calculate_..."
+	healthbar.max_value = base_health
 	healthbar.redraw_chunks()
 
 
@@ -434,24 +439,24 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 		generic_bullet.hit_by_enemy(self)
 		generic_bullet.decrease_pierce(pierce_consumed_per_hit)
 		if generic_bullet.attack_module_source != null:
-			connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [generic_bullet.damage_register_id, generic_bullet.damage_instance], CONNECT_ONESHOT)
+			connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
 			connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
 		
-		hit_by_damage_instance(generic_bullet.damage_instance)
+		hit_by_damage_instance(generic_bullet.damage_instance, generic_bullet.damage_register_id)
 		generic_bullet.reduce_damage_by_beyond_first_multiplier()
 
 
 func hit_by_aoe(base_aoe):
 	if base_aoe.attack_module_source != null:
-		connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [base_aoe.damage_register_id, base_aoe.damage_instance], CONNECT_ONESHOT)
+		connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
 		connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
 	
-	hit_by_damage_instance(base_aoe.damage_instance)
+	hit_by_damage_instance(base_aoe.damage_instance, base_aoe.damage_register_id)
 
 
-func hit_by_damage_instance(damage_instance : DamageInstance, emit_on_hit_signal : bool = true):
+func hit_by_damage_instance(damage_instance : DamageInstance, damage_reg_id : int = 0, emit_on_hit_signal : bool = true):
 	if emit_on_hit_signal:
-		emit_signal("on_hit", self) #no damage_instance arg here, since InstantDamageAttackModule takes care of it
+		emit_signal("on_hit", self, damage_reg_id, damage_instance)
 	
 	emit_signal("before_damage_instance_is_processed", damage_instance, self)
 	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true), damage_instance)
@@ -519,6 +524,10 @@ func _process_effects(effects : Dictionary):
 
 func _add_effect(base_effect : EnemyBaseEffect):
 	var to_use_effect = base_effect._get_copy_scaled_by(1)
+	
+	if to_use_effect.status_bar_icon != null:
+		statusbar.add_status_icon(to_use_effect.effect_uuid, to_use_effect.status_bar_icon)
+	
 	
 	if to_use_effect is EnemyStunEffect:
 		if !_stun_id_effects_map.has(to_use_effect.effect_uuid):
@@ -591,6 +600,10 @@ func _add_effect(base_effect : EnemyBaseEffect):
 
 
 func _remove_effect(base_effect : EnemyBaseEffect):
+	if base_effect.status_bar_icon != null:
+		statusbar.remove_status_icon(base_effect.effect_uuid)
+	
+	
 	if base_effect is EnemyStunEffect:
 		_stun_id_effects_map.erase(base_effect.effect_uuid)
 		
@@ -676,7 +689,6 @@ func _clear_effects():
 	for effect in percent_resistance_id_effect_map.values():
 		_remove_effect(effect)
 	
-	
 
 
 # Timebounded related
@@ -700,7 +712,7 @@ func _decrease_time_of_timebounds(delta):
 		dmg_time_effect._curr_delay_per_tick -= delta
 		if dmg_time_effect._curr_delay_per_tick <= 0:
 			# does not cause self to emit "on hit" signal
-			hit_by_damage_instance(dmg_time_effect.damage_instance, false)
+			hit_by_damage_instance(dmg_time_effect.damage_instance, 0, false)
 			dmg_time_effect._curr_delay_per_tick += dmg_time_effect.delay_per_tick
 		
 		_decrease_time_of_effect(dmg_time_effect, delta)

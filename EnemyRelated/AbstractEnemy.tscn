@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://EnemyRelated/AbstractEnemy.gd" type="Script" id=1]
-[ext_resource path="res://EnemyRelated/Infobar/Healtbar/Healthbar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://EnemyRelated/Infobar/EnemyInfoBar.tscn" type="PackedScene" id=2]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -45,5 +45,6 @@ collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CollisionArea"]
 
-[node name="Healthbar" parent="." instance=ExtResource( 2 )]
+[node name="EnemyInfoBar" parent="." instance=ExtResource( 2 )]
+size_flags_vertical = 3
 [connection signal="body_entered" from="CollisionArea" to="." method="_on_CollisionArea_body_entered"]

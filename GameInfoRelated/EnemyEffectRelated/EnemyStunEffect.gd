@@ -16,6 +16,9 @@ func _get_copy_scaled_by(scale : float):
 	var scaled_stun = time_in_seconds * scale
 	
 	var copy = get_script().new(scaled_stun, effect_uuid)
+	
+	copy.status_bar_icon = status_bar_icon
+	
 	return copy
 
 
