@@ -43,3 +43,5 @@ texture = ExtResource( 2 )
 [connection signal="area_entered" from="PlacableDetector" to="." method="_on_PlacableDetector_area_entered"]
 [connection signal="area_exited" from="PlacableDetector" to="." method="_on_PlacableDetector_area_exited"]
 [connection signal="input_event" from="ClickableArea" to="." method="_on_ClickableArea_input_event"]
+[connection signal="mouse_entered" from="ClickableArea" to="." method="_on_ClickableArea_mouse_entered"]
+[connection signal="mouse_exited" from="ClickableArea" to="." method="_on_ClickableArea_mouse_exited"]

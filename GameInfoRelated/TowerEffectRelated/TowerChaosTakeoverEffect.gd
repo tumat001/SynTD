@@ -288,13 +288,9 @@ func untakeover(tower):
 			module.queue_free()
 	
 	for module in replaced_attack_modules:
-		
-		module.can_be_commanded_by_tower_other_clauses.erase(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
-		
-		# THE LAST PARAM (FALSE) IS ONLY BECAUSE THE ONLY WAY
-		# TO REMOVE CHAOS IS TO USE RE (which clears everything)
-		#tower.add_attack_module(module, false)
-	
+		if module != null:
+			module.can_be_commanded_by_tower_other_clauses.erase(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
+
 
 
 

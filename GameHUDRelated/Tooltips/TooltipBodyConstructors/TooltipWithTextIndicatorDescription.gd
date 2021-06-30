@@ -11,6 +11,9 @@ func _init(arg_indicator : String = "", arg_description : String = ""):
 func _ready():
 	$ColumnContainer/Indicator.text = indicator
 	$ColumnContainer/Label.text = description
+	
+	$ColumnContainer/Indicator.set("custom_colors/font_color", color)
+	$ColumnContainer/Label.set("custom_colors/font_color", color)
 
 func get_info_from_self_class(self_class):
 	description = self_class.description

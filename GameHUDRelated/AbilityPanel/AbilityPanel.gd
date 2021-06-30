@@ -23,3 +23,9 @@ func has_ability(ability : BaseAbility):
 	
 	return false
 
+
+func activate_ability_at_index(i : int):
+	if ability_container.get_child_count() > i:
+		var button_selected : AbilityButton = ability_container.get_children()[i]
+		button_selected._ability_button_left_pressed()
+

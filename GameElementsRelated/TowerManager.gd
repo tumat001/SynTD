@@ -61,6 +61,7 @@ func _ready():
 # Generic things that can branch out to other resp.
 
 func _tower_in_queue_free(tower):
+	_tower_inactivated_from_map(tower)
 	for color in _color_groups:
 		if tower.is_in_group(color):
 			tower.remove_from_group(color)
@@ -71,16 +72,18 @@ func _tower_in_queue_free(tower):
 		_show_round_panel()
 
 
+
 # Called after potentially updating synergy
 func _tower_active_in_map(tower):
 	_register_tower_to_color_grouping_tags(tower)
 	emit_signal("tower_to_benefit_from_synergy_buff", tower)
+	#call_deferred("emit_signal", "tower_to_benefit_from_synergy_buff", tower)
 
 # Called after potentially updating synergy
 func _tower_inactivated_from_map(tower):
 	_remove_tower_from_color_grouping_tags(tower)
 	emit_signal("tower_to_remove_from_synergy_buff", tower)
-
+	#call_deferred("emit_signal", "tower_to_remove_from_synergy_buff", tower)
 
 # Adding tower as child of this to monitor it
 func add_tower(tower_instance : AbstractTower):
@@ -115,7 +118,7 @@ func add_tower(tower_instance : AbstractTower):
 	
 	tower_instance.connect("tower_selected_in_selection_mode", self, "_tower_selected", [], CONNECT_PERSIST)
 	
-	tower_instance.add_to_group(TOWER_GROUP_ID)
+	tower_instance.add_to_group(TOWER_GROUP_ID, true)
 	
 	tower_instance._set_round_started(_is_round_on_going)
 	
@@ -192,9 +195,10 @@ func _register_ability_from_tower(ability, add_to_panel : bool = true):
 # Synergy Related
 
 func _update_active_synergy():
-	synergy_manager.update_synergies(_get_all_synegy_contributing_towers())
+	#synergy_manager.update_synergies(_get_all_synergy_contributing_towers())
+	synergy_manager.call_deferred("update_synergies", _get_all_synergy_contributing_towers())
 
-func _get_all_synegy_contributing_towers() -> Array:
+func _get_all_synergy_contributing_towers() -> Array:
 	var bucket : Array = []
 	for tower in get_children():
 		if tower is AbstractTower and tower.is_contributing_to_synergy:
@@ -207,6 +211,7 @@ func _get_all_synegy_contributing_towers() -> Array:
 
 func _tower_sold(sellback_gold : int):
 	gold_manager.increase_gold_by(sellback_gold, GoldManager.IncreaseGoldSource.TOWER_SELLBACK)
+
 
 func _tower_generate_gold(gold : int, source_type : int):
 	gold_manager.increase_gold_by(gold, source_type)
@@ -316,13 +321,26 @@ func get_all_active_towers() -> Array:
 	return bucket
 
 
-func get_all_active_towers_with_color(color : String) -> Array:
+func get_all_active_towers_with_color(color) -> Array:
+	if color is int:
+		color = str(color)
+	
 	var bucket : Array = []
 	for child in get_children():
 		if child.is_in_group(color):
 			bucket.append(child)
 	
 	return bucket
+
+
+# Tower prompt/selection related
+
+func get_tower_on_mouse_hover() -> AbstractTower:
+	for tower in get_all_towers():
+		if tower.is_being_hovered_by_mouse:
+			return tower
+	
+	return null
 
 
 # Input manager related

@@ -59,7 +59,6 @@ func set_current_value(value : float):
 	if fill_foreground != null:
 		var ratio = current_value / max_value
 		
-		yield(get_tree(), "idle_frame")
 		fill_foreground.rect_scale.x = ratio
 
 

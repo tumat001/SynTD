@@ -68,6 +68,7 @@ const spike_image = preload("res://TowerRelated/Color_Green/Spike/Spike_Omni.png
 const impale_image = preload("res://TowerRelated/Color_Green/Impale/Impale_Omni.png")
 const seeder_image = preload("res://TowerRelated/Color_Green/Seeder/Seeder_E.png")
 const cannon_image = preload("res://TowerRelated/Color_Green/Cannon/Cannon_E.png")
+const pestilence_image = preload("res://TowerRelated/Color_Green/Pestilence/Pestilence_Omni.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -123,6 +124,7 @@ enum {
 	IMPALE = 503,
 	SEEDER = 504,
 	CANNON = 505,
+	PESTILENCE = 506,
 	
 	# BLUE (600)
 	SPRINKLER = 600,
@@ -1073,12 +1075,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == IMPALE:
 		info = TowerTypeInformation.new("Impale", tower_id)
-		info.tower_cost = 5
+		info.tower_cost = 4
 		info.colors.append(TowerColors.GREEN)
-		info.tower_tier = 5
+		info.tower_tier = 4
 		info.tower_image_in_buy_card = impale_image
 		
-		info.base_damage = 10
+		info.base_damage = 9
 		info.base_attk_speed = 0.2
 		info.base_pierce = 0
 		info.base_range = 115
@@ -1089,7 +1091,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Impale shoots up a spike that stabs an enemy, stunning them for 2.2 seconds.",
 			"When the stun expires, Impale retracts the spike, dealing damage again.",
 			"The retract damage becomes 180% effective when the enemy has less than 75% of their max health.",
-			#"The retract damage does not apply on hit effects."
+			
 		]
 		
 		var imp_dmg_effect = ImpaleBonusDamageEffect.new()
@@ -1398,6 +1400,35 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "+ expl"
 		
 		
+	elif tower_id == PESTILENCE:
+		info = TowerTypeInformation.new("Pestilence", tower_id)
+		info.tower_cost = 5
+		info.colors.append(TowerColors.GREEN)
+		info.colors.append(TowerColors.GRAY)
+		info.tower_tier = 5
+		info.tower_image_in_buy_card = pestilence_image
+		
+		info.base_damage = 0.5
+		info.base_attk_speed = 1.1
+		info.base_pierce = 0
+		info.base_range = 145
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0.2
+		
+		info.tower_descriptions = [
+			"Pestilence permanently poisons enemies it hits. The poison deals 1 elemental damage per second.",
+			"Pestilence also applies one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply.",
+			"An enemy permanently becomes Noxious upon gaining 8 Toxin stacks.",
+			"",
+			"Pestilence's main attacks against Noxious enemies causes 6 exploding posion darts to rain around the target enemy's location.",
+			"Explosions apply a stack of Toxin. Explosions benefit from base damage buffs, on hit damages and effects at 33% efficiency.",
+			"",
+			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25%.",
+			"Per tower affected, Pestilence gains 35% attack speed."
+		]
+		
+		
+		
 	
 	
 	return info
@@ -1485,3 +1516,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/Seeder/Seeder.tscn")
 	elif tower_id == CANNON:
 		return load("res://TowerRelated/Color_Green/Cannon/Cannon.tscn")
+	elif tower_id == PESTILENCE:
+		return load("res://TowerRelated/Color_Green/Pestilence/Pestilence.tscn")

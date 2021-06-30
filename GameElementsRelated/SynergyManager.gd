@@ -150,28 +150,30 @@ func _apply_active_synergies_and_remove_old(previous_synergies_res : Array):
 
 func _apply_synergies(synergies_reses : Array, towers : Array, tower_synergies_only : bool = false):
 	for syn_res in synergies_reses:
-		var synergy_effects = syn_res.synergy.synergy_effects
-		
-		for synergy_effect in synergy_effects:
-			if synergy_effect is AbstractTowerModifyingSynergyEffect:
-				for tower in towers:
-					synergy_effect._apply_syn_to_tower(tower, syn_res.synergy_tier)
-				
-			elif synergy_effect is AbstractGameElementsModifyingSynergyEffect and !tower_synergies_only:
-				synergy_effect._apply_syn_to_game_elements(game_elements, syn_res.synergy_tier)
+		syn_res.synergy.apply_this_synergy_to_towers(syn_res.synergy_tier, towers, game_elements, tower_synergies_only)
+#		var synergy_effects = syn_res.synergy.synergy_effects
+#
+#		for synergy_effect in synergy_effects:
+#			if synergy_effect is AbstractTowerModifyingSynergyEffect:
+#				for tower in towers:
+#					synergy_effect._apply_syn_to_tower(tower, syn_res.synergy_tier)
+#
+#			elif synergy_effect is AbstractGameElementsModifyingSynergyEffect and !tower_synergies_only:
+#				synergy_effect._apply_syn_to_game_elements(game_elements, syn_res.synergy_tier)
 
 
 func _remove_synergies(synergies_reses : Array, towers : Array, tower_synergies_only : bool = false):
 	for syn_res in synergies_reses:
-		var synergy_effects = syn_res.synergy.synergy_effects
-		
-		for synergy_effect in synergy_effects:
-			if synergy_effect is AbstractTowerModifyingSynergyEffect:
-				for tower in towers:
-					synergy_effect._remove_syn_from_tower(tower, syn_res.synergy_tier)
-				
-			elif synergy_effect is AbstractGameElementsModifyingSynergyEffect and !tower_synergies_only:
-				synergy_effect._remove_syn_from_game_elements(game_elements, syn_res.synergy_tier)
+		syn_res.synergy.remove_this_synergy_from_towers(syn_res.synergy_tier, towers, game_elements, tower_synergies_only)
+#		var synergy_effects = syn_res.synergy.synergy_effects
+#
+#		for synergy_effect in synergy_effects:
+#			if synergy_effect is AbstractTowerModifyingSynergyEffect:
+#				for tower in towers:
+#					synergy_effect._remove_syn_from_tower(tower, syn_res.synergy_tier)
+#
+#			elif synergy_effect is AbstractGameElementsModifyingSynergyEffect and !tower_synergies_only:
+#				synergy_effect._remove_syn_from_game_elements(game_elements, syn_res.synergy_tier)
 
 
 # From signals

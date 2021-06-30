@@ -125,6 +125,7 @@ var is_contributing_to_synergy : bool
 
 var is_being_dragged : bool = false
 var is_in_ingredient_mode : bool = false
+var is_being_hovered_by_mouse : bool = false
 
 var is_in_select_tower_prompt : bool = false setget set_is_in_selection_mode
 
@@ -1306,16 +1307,24 @@ func _self_is_selected_in_selection_mode():
 	emit_signal("tower_selected_in_selection_mode", self)
 
 
+
 # Show Ranges of modules and Tower Info
 
 func toggle_module_ranges():
+	var range_modules_showing : Array = []
+	
 	if range_module != null:
 		range_module.toggle_show_range()
+		range_modules_showing.append(range_module)
 	
 	for attack_module in all_attack_modules:
 		if attack_module.range_module != null and attack_module.use_self_range_module and attack_module.range_module.can_display_range:
-			attack_module.range_module.toggle_show_range()
+			if !range_modules_showing.has(attack_module.range_module):
+				attack_module.range_module.toggle_show_range()
+				range_modules_showing.append(range_module)
 	
+	
+	range_modules_showing.clear()
 	is_showing_ranges = !is_showing_ranges
 
 
@@ -1415,8 +1424,6 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 				emit_signal("update_active_synergy")
 			
 			emit_signal("tower_active_in_map")
-	
-	
 
 
 func _on_PlacableDetector_area_entered(area):
@@ -1503,6 +1510,13 @@ func _update_last_calculated_disabled_from_attacking():
 func is_current_placable_in_map() -> bool:
 	return current_placable is InMapAreaPlacable
 
+func _on_ClickableArea_mouse_entered():
+	is_being_hovered_by_mouse = true
+
+func _on_ClickableArea_mouse_exited():
+	is_being_hovered_by_mouse = false
+
+
 func queue_free():
 	is_contributing_to_synergy = false
 	current_placable.tower_occupying = null
@@ -1520,9 +1534,10 @@ func _physics_process(delta):
 # Detecting tower interacting stuffs
 
 func _on_AbstractTower_body_entered(body):
-	if body is BaseTowerDetectingBullet:
-		body.hit_by_tower(self)
-		body.decrease_pierce(1)
+	if is_current_placable_in_map():
+		if body is BaseTowerDetectingBullet:
+			body.hit_by_tower(self)
+			body.decrease_pierce(1)
 
 
 
@@ -1584,3 +1599,4 @@ func _emit_heat_module_should_change_visibility():
 
 func _heat_module_current_heat_effect_changed():
 	pass
+

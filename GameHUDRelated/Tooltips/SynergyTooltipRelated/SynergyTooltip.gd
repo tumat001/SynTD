@@ -3,25 +3,52 @@ extends "res://GameHUDRelated/Tooltips/BaseTooltip.gd"
 const ColorSynergyCheckResults = preload("res://GameInfoRelated/ColorSynergyCheckResults.gd")
 const ColorSynergy = preload("res://GameInfoRelated/ColorSynergy.gd")
 
+const TooltipWithTextIndicatorDescription = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithTextIndicatorDescription.gd")
+const TooltipWithTextIndicatorDescriptionScene = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithTextIndicatorDescription.tscn")
+const TooltipWithImageIndicatorDescription = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithImageIndicatorDescription.gd")
+const TooltipWithImageIndicatorDescriptionScene = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithImageIndicatorDescription.tscn")
+
+
+const highlighted_color : Color = Color(0, 0, 0, 1)
+const not_highlighted_color : Color = Color(0.3, 0.3, 0.3, 1)
+
 var result : ColorSynergyCheckResults
 
+onready var syn_icon_texture_rect = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/SynIcon
+onready var syn_name_label = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer/SynName
+onready var syn_num_of_towers_label = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer/NumOfTowers
+
+onready var syn_towers_in_tier_label = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/Marginer/SynTowersInTier
+onready var syn_tier_texture_rect = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/SynTier
+onready var syn_tier_label = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/Marginer/SynTierLabel
+
+onready var tooltip_body = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/TooltipBody
+
 func _ready():
+	tooltip_body.override_color_of_descs = false
 	update_display()
 
 func update_display():
 	if result != null:
 		var synergy : ColorSynergy = result.synergy
 		
-		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/SynIcon.texture = synergy.synergy_picture
-		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer/SynName.text = synergy.synergy_name
-		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer/NumOfTowers.text = _get_number_of_towers_per_color_text()
+		syn_icon_texture_rect.texture = synergy.synergy_picture
+		syn_name_label.text = synergy.synergy_name
+		syn_num_of_towers_label.text = _get_number_of_towers_per_color_text()
 		
-		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/Marginer/SynTowersInTier.text = _get_needed_towers_per_tier_text(synergy)
-		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/SynTier.texture = result.tier_pic
-		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/Marginer/SynTierLabel.text = _convert_number_to_roman_numeral(result.synergy_tier)
+		syn_towers_in_tier_label.text = _get_needed_towers_per_tier_text(synergy)
+		syn_tier_texture_rect.texture = result.tier_pic
+		syn_tier_label.text = _convert_number_to_roman_numeral(result.synergy_tier)
 		
-		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/TooltipBody.descriptions = synergy.synergy_descriptions
-		$VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/TooltipBody.update_display()
+		
+		var final_descs : Array = []
+		for desc in synergy.synergy_descriptions:
+			final_descs.append(desc)
+		for desc in _construct_tooltips_descs_for_curr_effects(synergy):
+			final_descs.append(desc)
+		
+		tooltip_body.descriptions = final_descs
+		tooltip_body.update_display()
 
 
 func _get_number_of_towers_per_color_text() -> String:
@@ -76,3 +103,21 @@ func _convert_number_to_roman_numeral(number : int) -> String:
 		return_val = "VI"
 	
 	return return_val
+
+
+func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy) -> Array:
+	var descs : Array = []
+	
+	for desc_i in synergy.synergy_effects_descriptions.size():
+		var text_desc = TooltipWithTextIndicatorDescriptionScene.instance()
+		text_desc.description = synergy.synergy_effects_descriptions[desc_i]
+		text_desc.indicator = _convert_number_to_roman_numeral(desc_i + 1) + ")"
+		
+		if synergy.current_highlighted_index_effects_descriptions.has(desc_i):
+			text_desc.color = highlighted_color
+		else:
+			text_desc.color = not_highlighted_color
+		
+		descs.append(text_desc)
+	
+	return descs

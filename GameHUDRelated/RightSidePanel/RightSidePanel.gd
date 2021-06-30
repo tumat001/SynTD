@@ -21,7 +21,6 @@ func _ready():
 
 
 func show_round_panel():
-	
 	# Tower Info
 	tower_info_panel.set_visible(false)
 	
@@ -35,8 +34,8 @@ func show_round_panel():
 	
 	panel_showing = Panels.ROUND
 
+
 func show_tower_info_panel(tower : AbstractTower = null):
-	
 	# Round
 	round_status_panel.visible = false
 	
@@ -45,6 +44,7 @@ func show_tower_info_panel(tower : AbstractTower = null):
 	tower_info_panel.tower = tower
 	tower_info_panel.update_display()
 	current_tower_showing = tower
+	
 	if !tower.is_showing_ranges:
 		tower.toggle_module_ranges()
 	

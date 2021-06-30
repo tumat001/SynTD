@@ -6,6 +6,10 @@ const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelat
 signal on_tower_entered(tower)
 signal on_tower_exited(tower)
 
+signal on_tower_in_range_entered_map(tower)
+signal on_tower_in_range_exited_map(tower)
+
+
 var _all_towers_in_range : Array = []
 
 var _make_towers_glow : bool = false
@@ -50,6 +54,11 @@ func _on_TowerDetectingRangeModule_area_entered(area):
 			if _make_towers_glow:
 				_apply_glow_to_tower(area)
 			
+			#
+			if !area.is_connected("tower_active_in_map", self, "_emit_tower_in_range_placed_in_map"):
+				area.connect("tower_active_in_map", self, "_emit_tower_in_range_placed_in_map", [area], CONNECT_PERSIST)
+				area.connect("tower_not_in_active_map", self, "_emit_tower_in_range_placed_not_in_map", [area], CONNECT_PERSIST)
+			
 			call_deferred("emit_signal", "on_tower_entered", area)
 
 
@@ -59,6 +68,11 @@ func _on_TowerDetectingRangeModule_area_exited(area):
 			_unapply_glow_to_tower(area)
 		
 		_all_towers_in_range.erase(area)
+		
+		#
+		if area.is_connected("tower_active_in_map", self, "_emit_tower_in_range_placed_in_map"):
+			area.disconnect("tower_active_in_map", self, "_emit_tower_in_range_placed_in_map")
+			area.disconnect("tower_not_in_active_map", self, "_emit_tower_in_range_placed_not_in_map")
 		
 		call_deferred("emit_signal", "on_tower_exited", area)
 
@@ -74,6 +88,15 @@ func get_all_in_map_towers_in_range() -> Array:
 			bucket.append(tower)
 	
 	return bucket
+
+
+# Signal related
+
+func _emit_tower_in_range_placed_in_map(tower):
+	emit_signal("on_tower_in_range_entered_map", tower)
+
+func _emit_tower_in_range_placed_not_in_map(tower):
+	emit_signal("on_tower_in_range_exited_map", tower)
 
 # Glow related
 

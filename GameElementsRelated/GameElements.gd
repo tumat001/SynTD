@@ -150,16 +150,16 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.TESLA,
-			Towers.ROYAL_FLAME,
-			Towers.SEEDER,
+			Towers.PING,
+			Towers.MAGNETIZER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.VOLCANO,
-			Towers.MAGNETIZER,
-			Towers._704,
-			Towers.LEADER,
-			Towers.CANNON,
+			Towers.BEACON_DISH,
+			Towers.COIN,
+			Towers.SUNFLOWER,
+			Towers.IEU,
+			Towers.MINI_TESLA,
 		])
 	
 	even = !even
@@ -175,24 +175,55 @@ func _on_BuySellLevelRollPanel_tower_bought(tower_id):
 func _on_ColorWheelSprite_pressed():
 	tower_manager._toggle_ingredient_combine_mode()
 
-
-func _unhandled_key_input(event):
-	if !event.echo and event.scancode == KEY_A and event.pressed:
-		tower_manager._toggle_ingredient_combine_mode()
-	elif !event.echo and event.scancode == KEY_SPACE and event.pressed:
-		right_side_panel.round_status_panel._on_RoundStatusButton_pressed()
-	elif !event.echo and event.scancode == KEY_ESCAPE and event.pressed:
-		_esc_pressed()
-	
-
-func _esc_pressed():
-	if input_prompt_manager.current_selection_mode != InputPromptManager.SelectionMode.NONE:
-		input_prompt_manager.cancel_selection()
-
-
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed and (event.button_index == BUTTON_RIGHT or event.button_index == BUTTON_LEFT):
 			if right_side_panel.panel_showing == right_side_panel.Panels.TOWER_INFO:
 				tower_manager._show_round_panel()
+
+
+func _unhandled_key_input(event):
+	if !event.echo and event.pressed:
+		if event.is_action_pressed("game_ingredient_toggle"):
+			tower_manager._toggle_ingredient_combine_mode()
+			
+		elif event.is_action_pressed("game_round_toggle"):
+			right_side_panel.round_status_panel._on_RoundStatusButton_pressed()
+			
+		elif event.scancode == KEY_ESCAPE:
+			_esc_pressed()
+			
+		elif event.is_action_pressed("game_tower_sell"):
+			_sell_hovered_tower()
+			
+			
+			
+		elif event.is_action("game_ability_01"):
+			round_status_panel.ability_panel.activate_ability_at_index(0)
+		elif event.is_action("game_ability_02"):
+			round_status_panel.ability_panel.activate_ability_at_index(1)
+		elif event.is_action("game_ability_03"):
+			round_status_panel.ability_panel.activate_ability_at_index(2)
+		elif event.is_action("game_ability_04"):
+			round_status_panel.ability_panel.activate_ability_at_index(3)
+		elif event.is_action("game_ability_05"):
+			round_status_panel.ability_panel.activate_ability_at_index(4)
+		elif event.is_action("game_ability_06"):
+			round_status_panel.ability_panel.activate_ability_at_index(5)
+		elif event.is_action("game_ability_07"):
+			round_status_panel.ability_panel.activate_ability_at_index(6)
+		elif event.is_action("game_ability_08"):
+			round_status_panel.ability_panel.activate_ability_at_index(7)
+		
+
+
+func _esc_pressed():
+	if input_prompt_manager.current_selection_mode != InputPromptManager.SelectionMode.NONE:
+		input_prompt_manager.cancel_selection()
+
+func _sell_hovered_tower():
+	var tower = tower_manager.get_tower_on_mouse_hover()
+	if tower != null and !tower.is_being_dragged:
+		tower.sell_tower()
+
 

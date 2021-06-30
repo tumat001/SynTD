@@ -2,7 +2,7 @@ extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifying
 
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 
-const tier_1_gold_income : int = 3
+#const tier_1_gold_income : int = 2
 const tier_3_gold_income : int = 1
 
 var gold_manager : GoldManager
@@ -16,10 +16,10 @@ func _apply_syn_to_game_elements(game_elements : GameElements, tier : int):
 	if !game_elements.stage_round_manager.is_connected("round_ended", self, "_give_gold_income"):
 		game_elements.stage_round_manager.connect("round_ended", self, "_give_gold_income")
 	
-	if tier == 1:
-		gold_income_per_round = tier_1_gold_income
-	elif tier == 3 or tier == 2:
-		gold_income_per_round = tier_3_gold_income
+	#if tier == 1:
+	#	gold_income_per_round = tier_1_gold_income
+	#elif tier == 3 or tier == 2:
+	gold_income_per_round = tier_3_gold_income
 	
 	._apply_syn_to_game_elements(game_elements, tier)
 

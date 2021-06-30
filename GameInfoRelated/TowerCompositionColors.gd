@@ -48,8 +48,19 @@ func _init():
 	"YellowViolet" : ColorSynergy.new("YellowViolet", [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_compo_compli_yellowviolet,
-	["YellowViolet description"],
-	[inst_complesyn_yelvio_energymodule, CompleSyn_YelVio_YellowIng.new()]),
+	[
+		"Gain bonuses depending on this synergy's tier.",
+		""
+	],
+	[inst_complesyn_yelvio_energymodule, CompleSyn_YelVio_YellowIng.new()],
+	[
+		"Gain +1 energy after a round when that round is won.",
+		"Gain +1 energy after a round when that round is lost.",
+		"Yellow towers can absorb 3 more ingredients.",
+		"Violet towers can now gain an Energy Module from the Yellow Synergy."
+	],
+	ColorSynergy.HighlightDeterminer.ALL_BELOW
+	),
 	
 	"OrangeBlue" : ColorSynergy.new("OrangeBlue", [TowerColors.ORANGE, TowerColors.BLUE], [9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],

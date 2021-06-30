@@ -46,14 +46,14 @@ func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int
 
 # Energy generation
 
-func _on_round_over_tier_1():
+func _on_round_over_tier_1(curr_stage_round):
 	if !game_elements.stage_round_manager.lost_life_in_round:
 		_generate_power(1)
 
 
-func _on_round_over_tier_2_and_1():
+func _on_round_over_tier_2_and_1(curr_stage_round):
 	if game_elements.stage_round_manager.lost_life_in_round:
-		_generate_power(2)
+		_generate_power(1)
 
 
 func _generate_power(power_amount : int):

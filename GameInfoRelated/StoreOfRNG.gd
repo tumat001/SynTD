@@ -6,6 +6,7 @@ var coin_type_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var inaccuracy_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var non_essential_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var fruit_tree_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var pestilence_spread : RandomNumberGenerator = RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -15,6 +16,7 @@ enum RNGSource {
 	
 	COIN, # Choosing of whether bronze, silver or gold coin
 	FRUIT_TREE,
+	PESTILENCE_SPREAD,
 	
 	INACCURACY,
 	
@@ -34,5 +36,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return non_essential_rng
 	elif rng_source == RNGSource.FRUIT_TREE:
 		return fruit_tree_rng
+	elif rng_source == RNGSource.PESTILENCE_SPREAD:
+		return pestilence_spread
 	
 	return null

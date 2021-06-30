@@ -173,7 +173,6 @@ custom_constants/margin_top = 3
 margin_top = 3.0
 margin_right = 169.0
 margin_bottom = 3.0
-size_flags_vertical = 1
 
 [node name="TooltipBottomSprite" type="TextureRect" parent="VBoxContainer"]
 margin_top = 98.0

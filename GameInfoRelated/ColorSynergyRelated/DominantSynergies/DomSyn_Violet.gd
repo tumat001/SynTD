@@ -18,7 +18,7 @@ func _apply_syn_to_tower(tower : AbstractTower, tier : int):
 			
 		elif tier == 1:
 			tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.VIOLET_SYNERGY, tier_1_tower_ing_limit)
-			
+
 
 
 func _remove_syn_from_tower(tower : AbstractTower, tier : int):
