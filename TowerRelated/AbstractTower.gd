@@ -1272,7 +1272,7 @@ func _calculate_final_percent_ability_cdr():
 	
 	# everything is treated as BASE
 	for effect in _percent_base_ability_cdr_effects.values():
-		final_percent_cdr += effect.attribute_as.modifier.get_modification_to_value(base_percent_ability_cdr)
+		final_percent_cdr += effect.attribute_as_modifier.percent_amount
 	
 	if final_percent_cdr > 95:
 		final_percent_cdr = 95
@@ -1538,7 +1538,6 @@ func _on_AbstractTower_body_entered(body):
 		if body is BaseTowerDetectingBullet:
 			body.hit_by_tower(self)
 			body.decrease_pierce(1)
-
 
 
 # SYNERGIES RELATED ---------------------

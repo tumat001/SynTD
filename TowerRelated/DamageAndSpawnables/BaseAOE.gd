@@ -4,6 +4,9 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
 
+signal before_enemy_hit_aoe(enemy)
+
+
 var damage_instance : DamageInstance
 var damage_register_id : int
 
@@ -28,6 +31,9 @@ var initial_delay : float = 0.05
 var offset : Vector2 setget set_offset_of_coll_area
 
 var attack_module_source
+
+var coll_source_layer : int = CollidableSourceAndDest.Source.FROM_TOWER
+var coll_destination_mask : int = CollidableSourceAndDest.Destination.TO_ENEMY
 
 
 # internal stuffs
@@ -54,6 +60,7 @@ func _on_AOEArea_area_shape_entered(area_id, area, area_shape, self_shape):
 			if !enemies_to_ignore.has(parent):
 				_enemies_inside_damage_cd_map[parent] = 0
 
+
 func _on_AOEArea_area_shape_exited(area_id, area, area_shape, self_shape):
 	if area != null:
 		var parent = area.get_parent()
@@ -67,6 +74,10 @@ func _ready():
 	_current_pierce_refresh_delay = initial_delay
 	_current_damage_delay = initial_delay
 	_delay_in_between_repeats = _calculate_delay_in_between_repeats()
+	
+	CollidableSourceAndDest.set_coll_layer_source(get_aoe_area(), coll_source_layer)
+	CollidableSourceAndDest.set_coll_mask_destination(get_aoe_area(), coll_destination_mask)
+	
 	
 	if offset != null:
 		aoe_area.position += offset
@@ -108,7 +119,7 @@ func _process(delta):
 		else:
 			if _enemies_inside_damage_cd_map.size() != 0:
 				#_current_damage_repeat_count += 1
-				_attempt_damage_enemies_inside(delta)
+				_attempt_damage_entities_inside(delta)
 		
 	else:
 		queue_free()
@@ -175,25 +186,27 @@ func _set_default_rectangle_shape():
 
 #
 
-func _attempt_damage_enemies_inside(delta):
+func _attempt_damage_entities_inside(delta):
 	#if _current_damage_repeat_count < damage_repeat_count:
-	for enemy in _enemies_inside_damage_cd_map.keys():
-		if _enemies_inside_damage_cd_map[enemy] <= 0:
-			_attempt_damage_enemy(enemy)
+	for entity in _enemies_inside_damage_cd_map.keys():
+		if _enemies_inside_damage_cd_map[entity] <= 0:
+			_attempt_damage_entity(entity)
 		else:
-			_enemies_inside_damage_cd_map[enemy] -= delta
+			_enemies_inside_damage_cd_map[entity] -= delta
 	
 	_enemies_inside_damage_cd_map.erase(null)
 
 
-func _attempt_damage_enemy(enemy : AbstractEnemy):
+func _attempt_damage_entity(entity):
 	var successful = _pierce_available > 0 or pierce == -1
 	
 	if successful:
-		if enemy != null:
-			enemy.hit_by_aoe(self)
-			_enemies_inside_damage_cd_map[enemy] = _delay_in_between_repeats
+		if entity is AbstractEnemy:
+			emit_signal("before_enemy_hit_aoe", entity)
+			entity.hit_by_aoe(self)
+			_enemies_inside_damage_cd_map[entity] = _delay_in_between_repeats
 			_pierce_available -= 1
+			
 	
 	return successful
 
@@ -201,3 +214,7 @@ func _attempt_damage_enemy(enemy : AbstractEnemy):
 func queue_free():
 	.queue_free()
 
+#
+
+func get_aoe_area() -> Area2D:
+	return $AOEArea as Area2D

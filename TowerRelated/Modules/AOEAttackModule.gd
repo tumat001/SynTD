@@ -10,6 +10,7 @@ enum SpawnLocationAndChange {
 	STRECHED_AS_BEAM,
 }
 
+
 signal before_aoe_is_added_as_child(aoe)
 
 

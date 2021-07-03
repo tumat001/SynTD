@@ -28,9 +28,16 @@ var enemies_ignored : Array = []
 
 var destroy_self_after_zero_pierce : bool = true
 
+var coll_source_layer : int = CollidableSourceAndDest.Source.FROM_TOWER
+var coll_destination_mask : int = CollidableSourceAndDest.Destination.TO_ENEMY
+
 
 func _ready():
 	current_life_distance = life_distance
+	
+	CollidableSourceAndDest.set_coll_layer_source(self, coll_source_layer)
+	CollidableSourceAndDest.set_coll_mask_destination(self, coll_destination_mask)
+	
 
 
 func _process(delta):

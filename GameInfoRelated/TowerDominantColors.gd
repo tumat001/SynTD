@@ -21,6 +21,7 @@ const DomSyn_Violet = preload("res://GameInfoRelated/ColorSynergyRelated/Dominan
 const DomSyn_Yellow_GoldIncome = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_GoldIncome.gd")
 const DomSyn_Yellow_EnergyBattery = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_EnergyBattery.gd")
 const DomSyn_Orange = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/DomSyn_Orange.gd")
+const DomSyn_Blue = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/DomSyn_Blue.gd")
 
 var inst_domsyn_yellow_energybattery : DomSyn_Yellow_EnergyBattery
 
@@ -87,10 +88,12 @@ func _init():
 	syn_dom_green,
 	["GREEN description"]),
 	
-	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [9, 7, 5, 3],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [3, 2, 1],
+	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
-	["BLUE description"]),
+	["BLUE description"],
+	[DomSyn_Blue.new()]
+	),
 	
 	"Violet" : ColorSynergy.new("Violet", [TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_silver_pic, tier_bronze_pic, tier_gold_pic, tier_dia_pic],

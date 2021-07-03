@@ -208,7 +208,7 @@ func _construct_effects():
 # cd and ap related
 
 func _on_acd_changed_w():
-	current_debuff_duration = _get_cd_to_use(base_debuff_duration)
+	current_debuff_duration = tidal_wave_ability._get_cd_to_use(_get_cd_to_use(base_debuff_duration))
 
 
 func _on_ap_changed_w():
@@ -262,6 +262,11 @@ func _construct_and_connect_ability():
 	
 	tidal_wave_ability.activation_conditional_clauses.attempt_insert_clause(no_enemy_in_range_clause)
 	tidal_ability_activation_clause = tidal_wave_ability.activation_conditional_clauses
+	
+	tidal_wave_ability.set_properties_to_auto_castable()
+	tidal_wave_ability.auto_cast_func = "_ability_activated_w"
+	
+	tidal_wave_ability.connect("final_ability_cdr_changed", self, "_on_acd_changed_w", [], CONNECT_PERSIST)
 	
 	register_ability_to_manager(tidal_wave_ability)
 

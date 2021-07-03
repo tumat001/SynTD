@@ -124,7 +124,8 @@ func _ready():
 	stage_round_manager.end_round()
 	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.set_health(150)
-
+	
+	
 
 
 # From bottom panel
@@ -151,15 +152,15 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.RE,
 			Towers.TESLA,
 			Towers.PING,
-			Towers.MAGNETIZER,
+			Towers.WAVE,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.BEACON_DISH,
-			Towers.COIN,
-			Towers.SUNFLOWER,
-			Towers.IEU,
-			Towers.MINI_TESLA,
+			Towers.IMPALE,
+			Towers.ORB,
+			Towers.LEADER,
+			Towers.SPRINKLER,
+			Towers.SPIKE,
 		])
 	
 	even = !even

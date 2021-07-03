@@ -39,7 +39,7 @@ func _ready():
 func set_interpreter(interpreter : SpawnInstructionInterpreter):
 	spawn_instruction_interpreter = interpreter
 	spawn_instruction_interpreter.connect("no_enemies_to_spawn_left", self,"_interpreter_done_spawning")
-	spawn_instruction_interpreter.connect("spawn_enemy", self, "_spawn_enemy")
+	spawn_instruction_interpreter.connect("spawn_enemy", self, "spawn_enemy")
 
 
 func set_spawn_paths(paths : Array):
@@ -62,7 +62,6 @@ func append_instructions_to_interpreter(inses : Array):
 
 # Spawning related
 
-
 func start_run():
 	_is_running = true
 
@@ -73,6 +72,9 @@ func end_run():
 	_is_running = false
 	_enemy_first_damage_applied = false
 
+func reset_path_index():
+	_spawn_path_index_to_take = 0
+
 
 func _process(delta):
 	if _is_running:
@@ -80,11 +82,7 @@ func _process(delta):
 
 
 
-func reset_path_index():
-	_spawn_path_index_to_take = 0
-
-
-func _spawn_enemy(enemy_id):
+func spawn_enemy(enemy_id):
 	var enemy_instance : AbstractEnemy = EnemyConstants.get_enemy_scene(enemy_id).instance()
 	
 	# Enemy set properties
@@ -142,3 +140,11 @@ func _enemy_reached_end(enemy : AbstractEnemy):
 	
 	emit_signal("enemy_escaped", self)
 	enemy.queue_free()
+
+
+# Queries
+
+func get_all_enemies() -> Array:
+	return get_tree().get_nodes_in_group(ENEMY_GROUP_TAG)
+
+

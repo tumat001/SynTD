@@ -36,6 +36,7 @@ StoreOfRNG="*res://GameInfoRelated/StoreOfRNG.gd"
 StoreOfIngredientLimitModifierID="*res://GameInfoRelated/TowerIngredientRelated/StoreOfIngredientLimitModifierID.gd"
 StoreOfAbilityEffectsUUID="*res://GameInfoRelated/AbilityRelated/AbilityEffectRelated/StoreOfAbilityEffectsUUID.gd"
 Targeting="*res://GameInfoRelated/Targeting.gd"
+CollidableSourceAndDest="*res://GameInfoRelated/CollidableSourceAndDest.gd"
 
 [debug]
 

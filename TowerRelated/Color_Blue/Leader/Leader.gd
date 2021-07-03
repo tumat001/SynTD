@@ -194,11 +194,15 @@ func _construct_abilities():
 	]
 	coordinated_attack_ability.display_name = "Coordinated Attack"
 	
+	coordinated_attack_ability.set_properties_to_auto_castable()
+	coordinated_attack_ability.auto_cast_func = "_cast_use_coordinated_attack"
+	
 	register_ability_to_manager(coordinated_attack_ability)
 	
 	coordinated_attack_activation_conditional_clauses = coordinated_attack_ability.activation_conditional_clauses
 	coordinated_attack_activation_conditional_clauses.attempt_insert_clause(ca_activation_clause_no_member)
 	coordinated_attack_activation_conditional_clauses.attempt_insert_clause(ca_activation_clause_no_mark)
+	
 
 
 func _ability_prompt_add_member():

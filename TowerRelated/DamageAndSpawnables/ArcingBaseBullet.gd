@@ -13,7 +13,6 @@ var max_height : float
 var collide_with_any : bool
 
 
-
 var _midpoint : float
 var _x_speed : float
 var _y_speed : float

@@ -17,6 +17,12 @@ signal destroying_self()
 
 signal should_be_displaying_changed(bool_value)
 
+signal auto_cast_state_changed(is_autocast_on)
+
+signal final_ability_potency_changed()
+signal final_ability_cdr_changed()
+
+
 enum ActivationClauses {
 	ROUND_INTERMISSION_STATE = 0,
 	ROUND_ONGOING_STATE = 1,
@@ -38,6 +44,10 @@ enum ShouldBeDisplayingClauses {
 	SYNERGY_INACTIVE = 3,
 }
 
+enum AutoCastableClauses {
+	CANNOT_BE_AUTOCASTED = 4,
+}
+
 
 var is_timebound : bool = false
 var _time_max_cooldown : float = 0
@@ -50,6 +60,7 @@ var _round_current_cooldown : int = 0
 var activation_conditional_clauses : ConditionalClauses
 var counter_decrease_clauses : ConditionalClauses
 var should_be_displaying_clauses : ConditionalClauses
+var auto_castable_clauses : ConditionalClauses
 
 var icon : Texture setget set_icon
 
@@ -57,9 +68,12 @@ var descriptions : Array = [] setget set_descriptions
 var display_name : String
 
 var tower : Node setget set_tower
-var synergy : Node setget set_synergy
+var synergy setget set_synergy
 
 var should_be_displaying : bool setget, _get_should_be_displaying
+
+var auto_cast_on : bool = false setget set_auto_cast_val
+var auto_cast_func : String
 
 # Ability Power related
 
@@ -93,6 +107,13 @@ func _init():
 	should_be_displaying_clauses = ConditionalClauses.new()
 	should_be_displaying_clauses.connect("clause_inserted", self, "emit_updated_should_be_displayed", [], CONNECT_PERSIST)
 	should_be_displaying_clauses.connect("clause_removed", self, "emit_updated_should_be_displayed", [], CONNECT_PERSIST)
+	
+	#
+	
+	auto_castable_clauses = ConditionalClauses.new()
+	auto_castable_clauses.attempt_insert_clause(AutoCastableClauses.CANNOT_BE_AUTOCASTED)
+	auto_castable_clauses.connect("clause_inserted", self, "emit_auto_cast_state_changed", [], CONNECT_PERSIST)
+	auto_castable_clauses.connect("clause_removed", self, "emit_auto_cast_state_changed", [], CONNECT_PERSIST)
 	
 	_calculate_final_ability_potency()
 	_calculate_final_flat_ability_cdr()
@@ -226,7 +247,7 @@ func set_descriptions(arg_desc : Array):
 		descriptions.append(des)
 
 
-func set_synergy(arg_synergy : Node):
+func set_synergy(arg_synergy):
 	synergy = arg_synergy
 	
 	synergy.connect("synergy_applied", self, "_synergy_active", [], CONNECT_PERSIST)
@@ -266,6 +287,44 @@ func _synergy_removed():
 	should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.SYNERGY_INACTIVE)
 
 
+# Autocast stuffs
+
+func set_auto_cast_val(value : bool):
+	auto_cast_on = value
+	emit_auto_cast_state_changed(null)
+
+
+func emit_auto_cast_state_changed(clause):
+	var is_passed = auto_castable_clauses.is_passed
+	
+	if !is_passed:
+		auto_cast_on = false
+		if is_connected("updated_is_ready_for_activation", self, "_on_ability_attempt_auto_cast"):
+			disconnect("updated_is_ready_for_activation", self, "_on_ability_attempt_auto_cast")
+		
+	else:
+		if auto_cast_on:
+			if !is_connected("updated_is_ready_for_activation", self, "_on_ability_attempt_auto_cast"):
+				connect("updated_is_ready_for_activation", self, "_on_ability_attempt_auto_cast", [], CONNECT_PERSIST)
+			_on_ability_attempt_auto_cast(null)
+			
+		else:
+			if is_connected("updated_is_ready_for_activation", self, "_on_ability_attempt_auto_cast"):
+				disconnect("updated_is_ready_for_activation", self, "_on_ability_attempt_auto_cast")
+	
+	emit_signal("auto_cast_state_changed", auto_cast_on)
+
+
+func _on_ability_attempt_auto_cast(any_var):
+	if is_ready_for_activation() and auto_cast_on:
+		if auto_cast_func != null:
+			if tower != null:
+				tower.call_deferred(auto_cast_func)
+			
+			elif synergy != null:
+				synergy.call_deferred(auto_cast_func)
+
+
 # destroying self
 
 func destroy_self():
@@ -280,7 +339,34 @@ func set_properties_to_usual_tower_based():
 	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.TOWER_IN_BENCH)
 
 
+func set_properties_to_usual_synergy_based():
+	#should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.SYNERGY_INACTIVE)
+	#activation_conditional_clauses.attempt_insert_clause(ActivationClauses.SYNERGY_INACTIVE)
+	#counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.SYNERGY_INACTIVE)
+	pass
+
+func set_properties_to_auto_castable():
+	auto_castable_clauses.remove_clause(AutoCastableClauses.CANNOT_BE_AUTOCASTED)
+
+
 # Ability adding removing stats related
+
+func add_ability_effect(attr_effect : AbilityAttributesEffect):
+	if attr_effect.attribute_type == AbilityAttributesEffect.FLAT_ABILITY_POTENCY or attr_effect.attribute_type == AbilityAttributesEffect.PERCENT_ABILITY_POTENCY:
+		add_ability_potency_effect(attr_effect)
+	elif attr_effect.attribute_type == AbilityAttributesEffect.FLAT_ABILITY_CDR or attr_effect.attribute_type == AbilityAttributesEffect.PERCENT_ABILITY_CDR:
+		add_ability_cdr_effect(attr_effect)
+
+func remove_ability_effect(attr_effect : AbilityAttributesEffect):
+	if attr_effect.attribute_type == AbilityAttributesEffect.FLAT_ABILITY_POTENCY or attr_effect.attribute_type == AbilityAttributesEffect.PERCENT_ABILITY_POTENCY:
+		remove_ability_potency_effect(attr_effect.effect_uuid)
+	elif attr_effect.attribute_type == AbilityAttributesEffect.FLAT_ABILITY_CDR:
+		remove_flat_ability_cdr_effect(attr_effect.effect_uuid)
+	elif attr_effect.attribute_type == AbilityAttributesEffect.PERCENT_ABILITY_CDR:
+		remove_percent_ability_cdr_effect(attr_effect.effect_uuid)
+
+
+#
 
 func add_ability_potency_effect(attr_effect : AbilityAttributesEffect):
 	if attr_effect.attribute_type == AbilityAttributesEffect.FLAT_ABILITY_POTENCY:
@@ -339,6 +425,7 @@ func _calculate_final_ability_potency():
 	final_ap = final_base_ap
 	
 	last_calculated_final_ability_potency = final_ap
+	emit_signal("final_ability_potency_changed")
 	return last_calculated_final_ability_potency
 
 
@@ -349,6 +436,7 @@ func _calculate_final_flat_ability_cdr():
 		final_cdr += effect.attribute_as_modifier.get_modification_to_value(base_flat_ability_cdr)
 	
 	last_calculated_final_flat_ability_cdr = final_cdr
+	emit_signal("final_ability_cdr_changed")
 	return last_calculated_final_flat_ability_cdr
 
 
@@ -357,10 +445,11 @@ func _calculate_final_percent_ability_cdr():
 	
 	# everything is treated as BASE
 	for effect in _percent_base_ability_cdr_effects.values():
-		final_percent_cdr += effect.attribute_as.modifier.get_modification_to_value(base_percent_ability_cdr)
+		final_percent_cdr += effect.attribute_as_modifier.percent_amount
 	
 	if final_percent_cdr > 95:
 		final_percent_cdr = 95
 	
 	last_calculated_final_percent_ability_cdr = final_percent_cdr
+	emit_signal("final_ability_cdr_changed")
 	return last_calculated_final_percent_ability_cdr

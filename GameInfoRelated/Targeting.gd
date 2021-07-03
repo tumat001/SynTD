@@ -9,9 +9,13 @@ enum {
 	LAST = 1,
 	CLOSE = 2,
 	FAR = 3, #NOT MADE YET
-
+	
 	EXECUTE = 10,
-
+	HEALTHIEST = 11,
+	
+	WEAKEST = 12,
+	STRONGEST = 13,
+	
 	RANDOM = 20,
 }
 
@@ -21,9 +25,16 @@ static func get_all_targeting_options() -> Array:
 	
 	bucket.append(FIRST)
 	bucket.append(LAST)
+	
 	bucket.append(CLOSE)
 	bucket.append(FAR)
+	
 	bucket.append(EXECUTE)
+	bucket.append(HEALTHIEST)
+	
+	bucket.append(WEAKEST)
+	bucket.append(STRONGEST)
+	
 	bucket.append(RANDOM)
 	
 	return bucket
@@ -72,6 +83,17 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 	elif targeting == EXECUTE:
 		enemies.sort_custom(CustomSorter, "sort_enemies_by_execute")
 		
+	elif targeting == HEALTHIEST:
+		enemies.sort_custom(CustomSorter, "sort_enemies_by_healthiest")
+		
+		
+	elif targeting == WEAKEST:
+		enemies.sort_custom(CustomSorter, "sort_enemies_by_weakest")
+		
+	elif targeting == STRONGEST:
+		enemies.sort_custom(CustomSorter, "sort_enemies_by_strongest")
+		
+		
 	elif targeting == RANDOM:
 		enemies = _find_random_distinct_enemies(enemies, num_of_enemies)
 		
@@ -97,15 +119,36 @@ class CustomSorter:
 	
 	static func sort_enemies_by_close(a_enemy_dist, b_enemy_dist):
 		return a_enemy_dist[1] < b_enemy_dist[1]
-		
 	
 	static func sort_enemies_by_far(a_enemy_dist, b_enemy_dist):
 		return a_enemy_dist[1] > b_enemy_dist[1]
-		
+	
 	
 	static func sort_enemies_by_execute(a, b):
-		return a.current_health < b.current_health
-
+		if a.current_health != b.current_health:
+			return a.current_health < b.current_health
+		else:
+			return sort_enemies_by_first(a, b)
+	
+	static func sort_enemies_by_healthiest(a, b):
+		if a.current_health != b.current_health:
+			return a.current_health > b.current_health
+		else:
+			return sort_enemies_by_first(a, b)
+	
+	
+	static func sort_enemies_by_weakest(a, b):
+		if a._last_calculated_max_health != b._last_calculated_max_health:
+			return a._last_calculated_max_health < b._last_calculated_max_health
+		else:
+			return sort_enemies_by_first(a, b)
+	
+	
+	static func sort_enemies_by_strongest(a, b):
+		if a._last_calculated_max_health != b._last_calculated_max_health:
+			return a._last_calculated_max_health > b._last_calculated_max_health
+		else:
+			return sort_enemies_by_first(a, b)
 
 # Computing of other stuffs
 
@@ -139,6 +182,12 @@ static func get_name_as_string(targeting : int) -> String:
 		return "Far"
 	elif targeting == EXECUTE:
 		return "Execute"
+	elif targeting == HEALTHIEST:
+		return "Healthiest"
+	elif targeting == WEAKEST:
+		return "Weakest"
+	elif targeting == STRONGEST:
+		return "Strongest"
 	elif targeting == RANDOM:
 		return "Random"
 	

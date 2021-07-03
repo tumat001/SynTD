@@ -1,13 +1,8 @@
 extends KinematicBody2D
 
-
 signal hit_a_tower(me, tower)
 signal on_zero_pierce(me)
 signal on_current_life_distance_expire()
-
-
-var attack_module_source
-var damage_register_id : int
 
 var pierce
 var direction_as_relative_location : Vector2
@@ -19,9 +14,16 @@ var current_life_distance
 
 var rotation_per_second : float = 0
 
+var coll_source_layer : int = CollidableSourceAndDest.Source.FROM_ENEMY
+var coll_destination_mask : int = CollidableSourceAndDest.Destination.TO_TOWER
+
 
 func _ready():
 	current_life_distance = life_distance
+	
+	CollidableSourceAndDest.set_coll_layer_source(self, coll_source_layer)
+	CollidableSourceAndDest.set_coll_mask_destination(self, coll_destination_mask)
+	
 
 
 func _process(delta):

@@ -11,6 +11,7 @@ const not_ready_modulate_color = Color(0.6, 0.6, 0.6, 1)
 
 onready var cooldown_bar : TextureProgress = $CooldownBar
 onready var ability_button : TextureButton = $AbilityButtonPressable
+onready var auto_cast_frame : TextureRect = $AutocastFrame
 
 var ability_tooltip : AbilityTooltip
 
@@ -34,6 +35,7 @@ func set_ability(arg_ability : BaseAbility):
 			ability.connect("started_time_cooldown", self, "_started_cd", [], CONNECT_PERSIST)
 			ability.connect("updated_is_ready_for_activation", self, "_updated_is_ready_for_activation", [], CONNECT_PERSIST)
 			ability.connect("should_be_displaying_changed", self, "_should_be_displaying", [], CONNECT_PERSIST)
+			ability.connect("auto_cast_state_changed", self, "_ability_autocast_state_changed", [], CONNECT_PERSIST)
 		
 		if ability_button != null:
 			ability_button.texture_normal = ability.icon
@@ -49,6 +51,7 @@ func set_ability(arg_ability : BaseAbility):
 			
 			_updated_is_ready_for_activation(ability.is_ready_for_activation())
 			_should_be_displaying(ability.should_be_displaying)
+			_ability_autocast_state_changed(ability.auto_cast_on)
 
 
 func _disconnect_ability_signals():
@@ -61,6 +64,7 @@ func _disconnect_ability_signals():
 		ability.disconnect("started_time_cooldown", self, "_started_cd")
 		ability.disconnect("updated_is_ready_for_activation", self, "_updated_is_ready_for_activation")
 		ability.disconnect("should_be_displaying_changed", self, "_should_be_displaying")
+		ability.disconnect("auto_cast_state_changed", self, "_ability_autocast_state_changed")
 
 # Current cd changed
 
@@ -94,6 +98,12 @@ func _is_not_ready():
 	ability_button.modulate = not_ready_modulate_color
 	
 
+# autocast related
+
+func _ability_autocast_state_changed(autocast):
+	if ability != null:
+		auto_cast_frame.visible = ability.auto_cast_on
+
 
 # other changes
 
@@ -118,10 +128,12 @@ func _should_be_displaying(value : bool):
 func _on_AbilityButton_pressed_mouse_event(event):
 	if ability != null:
 		if event is InputEventMouseButton and event.pressed:
-			if event.button_index == BUTTON_LEFT:
+			if event.button_index == BUTTON_LEFT and !event.shift:
 				_ability_button_left_pressed()
 			elif event.button_index == BUTTON_RIGHT:
 				_ability_button_right_pressed()
+			elif event.button_index == BUTTON_LEFT and event.shift:
+				_ability_button_autocast_pressed()
 
 
 func _ability_button_left_pressed():
@@ -141,6 +153,11 @@ func _ability_button_right_pressed():
 			ability_tooltip.header_left_text = ability.display_name
 			ability_tooltip.update_display()
 			ability_tooltip.visible = true
+
+
+func _ability_button_autocast_pressed():
+	if ability != null:
+		ability.auto_cast_on = !ability.auto_cast_on
 
 
 # Tooltip related
