@@ -37,6 +37,7 @@ StoreOfIngredientLimitModifierID="*res://GameInfoRelated/TowerIngredientRelated/
 StoreOfAbilityEffectsUUID="*res://GameInfoRelated/AbilityRelated/AbilityEffectRelated/StoreOfAbilityEffectsUUID.gd"
 Targeting="*res://GameInfoRelated/Targeting.gd"
 CollidableSourceAndDest="*res://GameInfoRelated/CollidableSourceAndDest.gd"
+StoreOfScreenEffectsUUID="*res://MiscRelated/ScreenEffectsRelated/StoreOfScreenEffectsUUID.gd"
 
 [debug]
 

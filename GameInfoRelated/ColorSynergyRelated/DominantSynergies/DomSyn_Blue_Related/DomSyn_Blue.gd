@@ -4,6 +4,8 @@ const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
 const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
 const ConditionalClause = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
+const ScreenTintEffect = preload("res://MiscRelated/ScreenEffectsRelated/ScreenTintEffect.gd")
+
 const BreezeAbility_Pic = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/AbilityAssets/Ability_Breeze_Icon.png")
 const ManaBlast_Pic = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/AbilityAssets/Ability_ManaBlast_Icon.png")
 
@@ -79,7 +81,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	
 	if tier <= 3:
 		if breeze_ability == null:
-			_construct_breeze_ability()
+			_construct_breeze_relateds()
 	
 	if tier <= 2:
 		if mana_blast_ability == null:
@@ -100,7 +102,7 @@ func register_ability_to_manager(ability : BaseAbility, add_to_panel : bool = tr
 
 # Breeze related
 
-func _construct_breeze_ability():
+func _construct_breeze_relateds():
 	breeze_ability = BaseAbility.new()
 	
 	breeze_ability.is_timebound = true
@@ -155,6 +157,15 @@ func _breeze_ability_activated():
 	dmg_instance.on_hit_effects[StoreOfEnemyEffectsUUID.BLUE_BREEZE_FIRST_SLOW] = breeze_first_slow_effect
 	dmg_instance.on_hit_effects[StoreOfEnemyEffectsUUID.BLUE_BREEZE_SECOND_SLOW] = breeze_second_slow_effect
 	
+	var breeze_screen_effect = ScreenTintEffect.new()
+	breeze_screen_effect.main_duration = 1.5
+	breeze_screen_effect.fade_in_duration = 0.5
+	breeze_screen_effect.fade_out_duration = 0.5
+	breeze_screen_effect.tint_color = Color(186.0 / 255.0, 0.99, 0.99, 0.4)
+	breeze_screen_effect.ins_uuid = StoreOfScreenEffectsUUID.BLUE_BREEZE
+	breeze_screen_effect.custom_z_index = ZIndexStore.SCREEN_EFFECTS
+	game_elements.screen_effect_manager.add_screen_tint_effect(breeze_screen_effect)
+	
 	for enemy in enemy_manager.get_all_enemies():
 		call_deferred("_apply_breeze_to_enemy", enemy, dmg_instance)
 	
@@ -177,7 +188,7 @@ func _construct_mana_blast_relateds():
 	mana_blast_ability.synergy = self
 	
 	mana_blast_ability.descriptions = [
-		"After a brief delay, summon a blast of mana to the strongest enemy's location.",
+		"Summon a mark at the strongest enemy's location. After a brief delay, the mark releases a mana blast.",
 		"The blast deals 30 damage to the main target, and deals 33% of that damage to secondary targets.",
 		"Towers caught in the blast gain 0.75 ability potency for 12 seconds.",
 		"Cooldown: 40s"
@@ -305,6 +316,9 @@ func _on_explosion_hit_enemy(enemy, main_enemy):
 
 func _on_buff_aoe_hit_tower(tower):
 	tower.add_tower_effect(mana_blast_buff_tower_effect._shallow_duplicate())
+
+
+#
 
 
 

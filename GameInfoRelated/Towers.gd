@@ -1420,11 +1420,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Pestilence also applies one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply.",
 			"An enemy permanently becomes Noxious upon gaining 8 Toxin stacks.",
 			"",
-			"Pestilence's main attacks against Noxious enemies causes 6 exploding posion darts to rain around the target enemy's location.",
+			"Pestilence's main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
 			"Explosions apply a stack of Toxin. Explosions benefit from base damage buffs, on hit damages and effects at 33% efficiency.",
 			"",
 			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25%.",
-			"Per tower affected, Pestilence gains 35% attack speed."
+			"For each tower affected, Pestilence gains 35% attack speed for the round."
 		]
 		
 		

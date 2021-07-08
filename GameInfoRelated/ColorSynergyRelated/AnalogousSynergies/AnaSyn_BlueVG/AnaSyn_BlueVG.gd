@@ -36,7 +36,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	ability_manager.add_effect_to_all_abilities(cdr_effect)
 	
 	._apply_syn_to_game_elements(arg_game_elements, tier)
-	
+
 
 func _construct_cdr_effect():
 	cdr_modi = PercentModifier.new(StoreOfAbilityEffectsUUID.BLUEVG_CDR)

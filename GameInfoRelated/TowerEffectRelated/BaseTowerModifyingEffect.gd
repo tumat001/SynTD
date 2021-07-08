@@ -11,3 +11,8 @@ func _make_modifications_to_tower(tower):
 func _undo_modifications_to_tower(tower):
 	pass
 
+
+func _shallow_duplicate():
+	var copy = get_script().new(effect_uuid)
+	
+	return copy

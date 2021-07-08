@@ -341,7 +341,8 @@ func _heat_module_current_heat_effect_changed():
 	._heat_module_current_heat_effect_changed()
 	
 	for module in all_attack_modules:
-		if module.benefits_from_bonus_base_damage:
-			module.calculate_final_base_damage()
+		if module != null:
+			if module.benefits_from_bonus_base_damage:
+				module.calculate_final_base_damage()
 	
 	emit_signal("final_base_damage_changed")

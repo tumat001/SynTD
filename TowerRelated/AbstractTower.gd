@@ -98,6 +98,10 @@ signal register_ability(ability, add_to_panel)
 
 signal global_position_changed(old_pos, new_pos)
 
+signal on_heat_module_overheat()
+signal on_heat_module_overheat_cooldown()
+
+
 # syn signals
 
 signal energy_module_attached
@@ -979,6 +983,11 @@ func has_tower_effect_type_in_buff_map(tower_effect : TowerBaseEffect):
 	
 	return false
 
+func get_tower_effect(effect_uuid : int) -> TowerBaseEffect:
+	if _all_uuid_tower_buffs_map.has(effect_uuid):
+		return _all_uuid_tower_buffs_map[effect_uuid]
+	else:
+		return null
 
 # Decreasing timebounds related
 
@@ -1318,10 +1327,11 @@ func toggle_module_ranges():
 		range_modules_showing.append(range_module)
 	
 	for attack_module in all_attack_modules:
-		if attack_module.range_module != null and attack_module.use_self_range_module and attack_module.range_module.can_display_range:
-			if !range_modules_showing.has(attack_module.range_module):
-				attack_module.range_module.toggle_show_range()
-				range_modules_showing.append(range_module)
+		if attack_module != null:
+			if attack_module.range_module != null and attack_module.use_self_range_module and attack_module.range_module.can_display_range:
+				if !range_modules_showing.has(attack_module.range_module):
+					attack_module.range_module.toggle_show_range()
+					range_modules_showing.append(range_module)
 	
 	
 	range_modules_showing.clear()
@@ -1579,6 +1589,8 @@ func set_heat_module(arg_heat_module):
 		if heat_module.is_connected("should_be_shown_in_info_panel_changed", self, "_emit_heat_module_should_change_visibility"):
 			heat_module.disconnect("should_be_shown_in_info_panel_changed", self, "_emit_heat_module_should_change_visibility")
 			heat_module.disconnect("current_heat_effect_changed", self, "_heat_module_current_heat_effect_changed")
+			heat_module.disconnect("on_overheat_reached", self, "_emit_heat_module_overheat")
+			heat_module.disconnect("in_overheat_cooldown", self, "_emit_heat_module_overheat_cooldown")
 	
 	heat_module = arg_heat_module
 	
@@ -1589,6 +1601,8 @@ func set_heat_module(arg_heat_module):
 		if !heat_module.is_connected("should_be_shown_in_info_panel_changed", self, "_emit_heat_module_should_change_visibility"):
 			heat_module.connect("should_be_shown_in_info_panel_changed", self, "_emit_heat_module_should_change_visibility", [], CONNECT_PERSIST)
 			heat_module.connect("current_heat_effect_changed", self, "_heat_module_current_heat_effect_changed", [], CONNECT_PERSIST)
+			heat_module.connect("on_overheat_reached", self, "_emit_heat_module_overheat", [], CONNECT_PERSIST)
+			heat_module.connect("in_overheat_cooldown", self, "_emit_heat_module_overheat_cooldown", [], CONNECT_PERSIST)
 
 func _construct_heat_effect():
 	pass
@@ -1599,3 +1613,8 @@ func _emit_heat_module_should_change_visibility():
 func _heat_module_current_heat_effect_changed():
 	pass
 
+func _emit_heat_module_overheat():
+	emit_signal("on_heat_module_overheat")
+
+func _emit_heat_module_overheat_cooldown():
+	emit_signal("on_heat_module_overheat_cooldown")

@@ -19,6 +19,7 @@ signal current_heat_effect_changed
 signal base_heat_effect_changed
 
 signal in_overheat_cooldown
+signal on_overheat_reached
 
 
 var base_effect_multiplier : float = 1 setget set_base_effect_multiplier
@@ -30,7 +31,7 @@ var tower : AbstractTower setget set_tower
 const max_heat : int = 100
 const heat_reduction_per_inactive_round : int = 50
 var heat_per_attack : int = 1 setget set_heat_per_attack
-var current_heat : int setget set_current_heat
+var current_heat : int = 0 setget set_current_heat
 var _current_heat_gained_in_round : int
 const max_heat_gain_per_round : int = 75
 var last_calculated_final_effect_multiplier : float
@@ -63,7 +64,6 @@ func on_round_end():
 			is_in_overheat_active = false
 			_tower_exited_overheat()
 			
-			call_deferred("emit_signal", "in_overheat_cooldown")
 			tower.set_disabled_from_attacking_clause(tower.DisabledFromAttackingSource.HEAT_MODULE, true)
 			
 		else:
@@ -95,7 +95,6 @@ func increment_current_heat():
 		
 		if _current_heat_gained_in_round >= max_heat_gain_per_round:
 			is_max_heat_per_round_reached = true
-			_tower_reached_overheat()
 			call_deferred("emit_signal", "max_heat_per_round_reached")
 		
 		
@@ -110,8 +109,9 @@ func set_current_heat(arg_current_heat : int):
 		current_heat = 0
 	
 	if current_heat == 100:
+		if !is_in_overheat_active:
+			_tower_reached_overheat()
 		is_in_overheat_active = true
-		_tower_reached_overheat()
 	
 	call_deferred("emit_signal", "current_heat_changed")
 	_calculate_final_effect_multiplier()
@@ -187,10 +187,10 @@ func _remove_tower_current_heat_effect():
 
 func _tower_reached_overheat():
 	# pass overheat effects to tower
-	pass
+	call_deferred("emit_signal", "on_overheat_reached")
 
 func _tower_exited_overheat():
-	pass
+	call_deferred("emit_signal", "in_overheat_cooldown")
 
 
 # Current heat effect calcs/updates

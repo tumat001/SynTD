@@ -16,6 +16,8 @@ export(int) var current_value : float = 5 setget set_current_value
 
 var scale_of_scale : Vector2 = Vector2(1, 1)
 
+export(bool) var yield_before_update : bool = false
+
 onready var bar_backround : TextureRect = $BarBackgroundPanel/BarBackground
 onready var fill_foreground : TextureRect = $BarFillForeground/FillForeground
 onready var chunks_container : Control = $BarFillForeground/Chunks
@@ -58,6 +60,9 @@ func set_current_value(value : float):
 	
 	if fill_foreground != null:
 		var ratio = current_value / max_value
+		
+		if yield_before_update:
+			yield(get_tree(), "idle_frame")
 		
 		fill_foreground.rect_scale.x = ratio
 

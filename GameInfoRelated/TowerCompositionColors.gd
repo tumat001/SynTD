@@ -30,8 +30,10 @@ const syn_compo_special_ROYGBV = preload("res://GameHUDRelated/LeftSidePanel/Syn
 
 const CompleSyn_YelVio_EnergyModule = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio/CompliSyn_YelVio_EnergyModule.gd")
 const CompleSyn_YelVio_YellowIng = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio/CompliSyn_YelVio_YellowIng.gd")
+const CompleSyn_OrangeBlue = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_OrangeBlue/CompliSyn_OrangeBlue.gd")
 
 const AnaSyn_BlueVG = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_BlueVG/AnaSyn_BlueVG.gd")
+const AnaSyn_VioletRB = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB/AnaSyn_VioletRB.gd")
 
 var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
 
@@ -63,10 +65,26 @@ func _init():
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
 	
-	"OrangeBlue" : ColorSynergy.new("OrangeBlue", [TowerColors.ORANGE, TowerColors.BLUE], [9, 6, 3],
-	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"OrangeBlue" : ColorSynergy.new("OrangeBlue", [TowerColors.ORANGE, TowerColors.BLUE], [6, 5, 4, 3],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_compli_orangeblue,
-	["OrangeBlue description"]),
+	[
+		"Heat modules that becomes overheated causes towers's shots to explode every x seconds.",
+		"Explosions deal 1.5 elemental damage to two enemies, but not including the main target.",
+		"Explosions benefit from base damage on on hit damage buffs at 50% efficiency. Explosions also benefit from explosion size buffs.",
+		"",
+		"All towers also gain ability potency.",
+		""
+	],
+	[CompleSyn_OrangeBlue.new()],
+	[
+		"Explosion per 1 second. Towers gain 1 ap. Explosions are 100% bigger.",
+		"Explosion per 1.5 seconds. Towers gain 0.75 ap. Explosions are 50% bigger.",
+		"Explosion per 2.25 seconds. Towers gain 0.50 ap. Explosions are 25% bigger.",
+		"Explosion per 3.0 seconds. Towers gain 0.25 ap."
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE
+	),
 	
 	
 	# Ana
@@ -106,10 +124,23 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"VioletRB" : ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [5, 4, 3, 2],
+	"VioletRB" : ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
-	["VioletRB description"]),
+	[
+		"Each absorbed active ingredient gives additional effects.",
+		"Only 10% of the bonus effect is gained when the additional ingredient absorbed is beyond the limit given by natural leveling and relics.",
+		""
+	],
+	[AnaSyn_VioletRB.new()],
+	[
+		"+4 physical on hit damage",
+		"+1.5 physical on hit damage",
+		"+1.5 elemental on hit damage",
+		"+30 range"
+	],
+	ColorSynergy.HighlightDeterminer.ALL_BELOW
+		),
 	
 	
 	#Tria

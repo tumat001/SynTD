@@ -16,6 +16,7 @@ const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
 const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
 const InputPromptManager = preload("res://GameElementsRelated/InputPromptManager.gd")
 const SelectionNotifPanel = preload("res://GameHUDRelated/NotificationPanel/SelectionNotifPanel/SelectionNotifPanel.gd")
+const ScreenEffectsManager = preload("res://GameElementsRelated/ScreenEffectsManager.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var in_map_placables_manager : InMapPlacablesManager
@@ -31,6 +32,7 @@ var health_manager : HealthManager
 var enemy_manager : EnemyManager
 var ability_manager : AbilityManager
 var input_prompt_manager : InputPromptManager
+var screen_effect_manager : ScreenEffectsManager
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
@@ -54,7 +56,7 @@ func _ready():
 	enemy_manager = $EnemyManager
 	ability_manager = $AbilityManager
 	input_prompt_manager = $InputPromptManager
-	
+	screen_effect_manager = $ScreenEffectsManager
 	
 	targeting_panel = right_side_panel.tower_info_panel.targeting_panel
 	
@@ -152,14 +154,14 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.RE,
 			Towers.TESLA,
 			Towers.PING,
-			Towers.WAVE,
+			Towers.ORB,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.IMPALE,
-			Towers.ORB,
-			Towers.LEADER,
-			Towers.SPRINKLER,
+			Towers.IEU,
+			Towers._704,
+			Towers.ROYAL_FLAME,
 			Towers.SPIKE,
 		])
 	

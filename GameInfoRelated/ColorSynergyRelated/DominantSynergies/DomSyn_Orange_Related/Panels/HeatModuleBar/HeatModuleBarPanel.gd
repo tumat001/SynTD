@@ -16,6 +16,10 @@ onready var current_heat_label = $VBoxContainer/Headers/TotalHeader/Marginer/Cur
 onready var heat_per_attack_label = $VBoxContainer/Headers/PerAttackHeader/Marginer/HeatPerAttackLabel
 onready var current_heat_bar = $VBoxContainer/Body/CurrentHeatBar
 
+func _ready():
+	current_heat_bar.yield_before_update = true
+
+
 func set_heat_module(arg_heat_module : HeatModule):
 	if heat_module != null:
 		heat_module.disconnect("current_heat_changed", self, "_module_current_heat_changed")
