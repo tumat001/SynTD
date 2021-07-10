@@ -249,10 +249,11 @@ func takeover(tower):
 		if module.module_id == StoreOfAttackModuleID.MAIN or module.module_id == StoreOfAttackModuleID.PART_OF_SELF:
 			replaced_attack_modules.append(module)
 			module.can_be_commanded_by_tower_other_clauses[AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER] = false
-			#tower.remove_attack_module(module)
+	
 	
 	for module in chaos_attack_modules:
 		tower.add_attack_module(module)
+
 
 func _construct_chaos_shadow():
 	chaos_shadow_anim_sprite = AnimatedSprite.new()
@@ -274,12 +275,10 @@ func untakeover(tower):
 	tower.range_module = replaced_range_module
 	tower.main_attack_module = replaced_main_attack_module
 	
-	#sword_attack_module.queue_free()
-	
 	tower.ingredient_of_self = replaced_self_ingredient
-	tower.remove_child(chaos_shadow_anim_sprite)
 	
 	if chaos_shadow_anim_sprite != null:
+		tower.remove_child(chaos_shadow_anim_sprite)
 		chaos_shadow_anim_sprite.queue_free()
 	
 	for module in chaos_attack_modules:
@@ -290,7 +289,7 @@ func untakeover(tower):
 	for module in replaced_attack_modules:
 		if module != null:
 			module.can_be_commanded_by_tower_other_clauses.erase(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
-
+	
 
 
 

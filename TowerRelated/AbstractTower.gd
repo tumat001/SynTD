@@ -110,10 +110,10 @@ signal energy_module_detached
 signal heat_module_should_be_displayed_changed
 
 
+
 export var tower_highlight_sprite : Resource
 
 var tower_id : int
-
 
 enum DisabledFromAttackingSource {
 	
@@ -273,7 +273,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 	if attack_module.get_parent() == null:
 		add_child(attack_module)
 	
-	if attack_module.range_module == null:
+	if attack_module.range_module == null and range_module != null:
 		attack_module.range_module = range_module
 	
 	if !attack_module.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
@@ -686,10 +686,7 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 			
 			range_module.update_range()
 			_emit_final_range_changed()
-			
-			if main_attack_module is BulletAttackModule:
-				#main_attack_module.base_proj_life_distance = range_module.last_calculated_final_range
-				pass
+	
 	
 	for module in target_modules:
 		if module.range_module != null:

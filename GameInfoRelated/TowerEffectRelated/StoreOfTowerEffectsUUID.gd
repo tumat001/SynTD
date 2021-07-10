@@ -6,6 +6,7 @@ enum {
 	
 	# --TOWERS ING EFFECTS---------
 	# RED (100)
+	ING_REAPER = 100
 	
 	# ORANGE (200)
 	ING_EMBER = 200
@@ -66,6 +67,7 @@ enum {
 	# --TOWER EFFECTS----------------------
 	
 	# RED (1100)
+	REAPER_PERCENT_HEALTH_DAMAGE = 1100
 	
 	# ORANGE (1200)
 	EMBER_BURN = 1200

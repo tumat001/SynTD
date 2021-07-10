@@ -1,0 +1,47 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_Slash02.png" type="Texture" id=2]
+[ext_resource path="res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_Slash05.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_Slash03.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_Slash07.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_Slash08.png" type="Texture" id=6]
+[ext_resource path="res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_Slash01.png" type="Texture" id=7]
+[ext_resource path="res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_Slash04.png" type="Texture" id=8]
+[ext_resource path="res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_Slash06.png" type="Texture" id=9]
+[ext_resource path="res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_SlashAttk.gd" type="Script" id=10]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 6.41293, 8.31051 )
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 7 ), ExtResource( 2 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 3 ), ExtResource( 9 ), ExtResource( 5 ), ExtResource( 6 ) ],
+"loop": false,
+"name": "default",
+"speed": 64.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 10.5077, 5.73419 )
+
+[node name="Reaper_SlashAttk" instance=ExtResource( 1 )]
+scale = Vector2( 1, 2 )
+script = ExtResource( 10 )
+
+[node name="Shape" parent="AOEArea" index="0"]
+position = Vector2( 5, 0 )
+shape = SubResource( 2 )
+
+[node name="AnimatedSprite" parent="AOEArea" index="1"]
+frames = SubResource( 1 )
+frame = 7
+playing = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AOEArea" index="2"]
+position = Vector2( -0.834274, -14.1669 )
+shape = SubResource( 3 )
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="AOEArea" index="3"]
+position = Vector2( -0.639324, 14.0145 )
+shape = SubResource( 3 )

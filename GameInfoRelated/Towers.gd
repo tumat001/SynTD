@@ -37,6 +37,7 @@ const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
 const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omni.png")
 
 # RED
+const reaper_image = preload("res://TowerRelated/Color_Red/Reaper/Reaper_Omni.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -93,6 +94,7 @@ enum {
 	SIMPLEX = 101,
 	
 	# RED (200)
+	REAPER = 200
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -1428,6 +1430,44 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
+	elif tower_id == REAPER:
+		info = TowerTypeInformation.new("Reaper", tower_id)
+		info.tower_cost = 4
+		info.colors.append(TowerColors.RED)
+		info.colors.append(TowerColors.GRAY)
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = reaper_image
+		
+		info.base_damage = 2.75
+		info.base_attk_speed = 0.725
+		info.base_pierce = 1
+		info.base_range = 135
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Reaper's attacks deal additional 12% of the enemy's missing health on hit as elemental damage, up to 20 health.",
+			"",
+			"Killing an enemy allows reaper to cast Slash. Each slash has a cooldown of 0.1 seconds.",
+			"Slash: Reaper shashes the area of the closest enemy, dealing 200% of this tower's base damage as physical damage. Does not apply on hit damages and effects.",
+			"Casting Slash reduces the damage of subsequent slashes by 75% for 1 second. This does not stack."
+		]
+		
+		var reap_dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_REAPER)
+		reap_dmg_modifier.percent_amount = 8
+		reap_dmg_modifier.percent_based_on = PercentType.MISSING
+		reap_dmg_modifier.ignore_flat_limits = false
+		reap_dmg_modifier.flat_maximum = 15
+		reap_dmg_modifier.flat_minimum = 0
+		
+		var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_REAPER, reap_dmg_modifier, DamageType.ELEMENTAL)
+		
+		var reap_dmg_effect = TowerOnHitDamageAdderEffect.new(on_hit_dmg, StoreOfTowerEffectsUUID.ING_REAPER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, reap_dmg_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
+		
 		
 	
 	
@@ -1518,3 +1558,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/Cannon/Cannon.tscn")
 	elif tower_id == PESTILENCE:
 		return load("res://TowerRelated/Color_Green/Pestilence/Pestilence.tscn")
+	elif tower_id == REAPER:
+		return load("res://TowerRelated/Color_Red/Reaper/Reaper.tscn")

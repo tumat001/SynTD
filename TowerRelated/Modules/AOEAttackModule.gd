@@ -8,6 +8,8 @@ enum SpawnLocationAndChange {
 	CENTERED_TO_ORIGIN,
 	CENTERED_TO_ENEMY,
 	STRECHED_AS_BEAM,
+	
+	TO_ENEMY_FACING_AWAY_FROM_ORIGIN,
 }
 
 
@@ -143,7 +145,7 @@ func _attack_at_positions(positions : Array):
 func _attack_at_position(enemy_pos : Vector2):
 	var created_aoe = construct_aoe(global_position, enemy_pos)
 	
-	._modify_attack(created_aoe)
+	#._modify_attack(created_aoe)
 	emit_signal("before_aoe_is_added_as_child", created_aoe)
 	
 	get_tree().get_root().add_child(created_aoe)
@@ -167,6 +169,13 @@ func _modify_center_pos_and_sizeshape_of_aoe(original_pos : Vector2, enemy_pos :
 		center_pos = (original_pos + enemy_pos) / 2
 		aoe.aoe_scale_of_initial_scale = Vector2(1, final_scale.y)
 		_update_destination_position(aoe, original_pos, enemy_pos)
+		
+	elif spawn_location_and_change == SpawnLocationAndChange.TO_ENEMY_FACING_AWAY_FROM_ORIGIN:
+		center_pos = enemy_pos
+		aoe.aoe_scale_of_initial_scale = final_scale
+		
+		aoe.rotation_degrees = rad2deg(enemy_pos.angle_to_point(original_pos))
+	
 	
 	aoe.global_position = center_pos
 	

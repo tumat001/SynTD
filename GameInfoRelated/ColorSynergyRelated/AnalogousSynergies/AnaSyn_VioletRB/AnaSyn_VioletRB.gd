@@ -6,7 +6,7 @@ const TowerEffect_AnaSyn_VioletRB = preload("res://GameInfoRelated/TowerEffectRe
 const tier_1_major_amount : float = 4.0
 const tier_2_phy_amount : float = 1.5
 const tier_3_ele_amount : float = 1.5
-const tier_4_range_amount : float = 30.0
+const tier_4_range_amount : float = 20.0
 
 var game_elements : GameElements
 var curr_tier : int
@@ -52,7 +52,7 @@ func _tower_to_benefit_from_synergy(tower : AbstractTower):
 	_attempt_add_effect_to_tower(tower)
 
 func _attempt_add_effect_to_tower(tower : AbstractTower):
-	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.ORANGE_BLUE_AM_ADDER):
+	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.VIOLET_RB_GIVER_EFFECT):
 		var effect = TowerEffect_AnaSyn_VioletRB.new()
 		
 		if curr_tier == 1:

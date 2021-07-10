@@ -54,7 +54,7 @@ func _make_modifications_to_tower(tower):
 func _construct_attk_module():
 	explosion_attack_module = AOEAttackModule_Scene.instance()
 	explosion_attack_module.base_damage_scale = explosion_base_and_on_hit_damage_scale
-	explosion_attack_module.base_damage = 1.5 / explosion_attack_module.base_damage_scale
+	explosion_attack_module.base_damage = 3 / explosion_attack_module.base_damage_scale
 	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0

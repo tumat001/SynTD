@@ -18,10 +18,10 @@ const expl_scale_tier_2 : float = 1.50
 const expl_scale_tier_3 : float = 1.25
 const expl_scale_tier_4 : float = 1.0
 
-const expl_unit_time_tier_1 : float = 1.0
-const expl_unit_time_tier_2 : float = 1.5
-const expl_unit_time_tier_3 : float = 2.25
-const expl_unit_time_tier_4 : float = 3.0
+const expl_unit_time_tier_1 : float = 0.5
+const expl_unit_time_tier_2 : float = 1.25
+const expl_unit_time_tier_3 : float = 2.0
+const expl_unit_time_tier_4 : float = 2.5
 
 var game_elements : GameElements
 var curr_tier : int

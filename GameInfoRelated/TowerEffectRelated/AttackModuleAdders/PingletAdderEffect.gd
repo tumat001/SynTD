@@ -45,7 +45,7 @@ func _construct_pinglet():
 	shot_attack_module.base_attack_speed = 0.8
 	shot_attack_module.base_attack_wind_up = 1.0 / 0.15
 	shot_attack_module.is_main_attack = false
-	shot_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	shot_attack_module.module_id = StoreOfAttackModuleID.INDEPENDENT
 	shot_attack_module.position.y -= 10
 	shot_attack_module.position.x += 20
 	shot_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE

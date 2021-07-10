@@ -69,8 +69,8 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_compli_orangeblue,
 	[
-		"Heat modules that becomes overheated causes towers's shots to explode every x seconds.",
-		"Explosions deal 1.5 elemental damage to two enemies, but not including the main target.",
+		"Main attacks of towers with overheated modules explode every few seconds.",
+		"Explosions deal 3 elemental damage to two enemies, but not including the main target.",
 		"Explosions benefit from base damage on on hit damage buffs at 50% efficiency. Explosions also benefit from explosion size buffs.",
 		"",
 		"All towers also gain ability potency.",
@@ -78,10 +78,10 @@ func _init():
 	],
 	[CompleSyn_OrangeBlue.new()],
 	[
-		"Explosion per 1 second. Towers gain 1 ap. Explosions are 100% bigger.",
-		"Explosion per 1.5 seconds. Towers gain 0.75 ap. Explosions are 50% bigger.",
-		"Explosion per 2.25 seconds. Towers gain 0.50 ap. Explosions are 25% bigger.",
-		"Explosion per 3.0 seconds. Towers gain 0.25 ap."
+		"Explosion per 0.5 seconds. Towers gain 1 ap. Explosions are 100% bigger.",
+		"Explosion per 1.25 seconds. Towers gain 0.75 ap. Explosions are 50% bigger.",
+		"Explosion per 2.0 seconds. Towers gain 0.50 ap. Explosions are 25% bigger.",
+		"Explosion per 2.5 seconds. Towers gain 0.25 ap."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -137,10 +137,10 @@ func _init():
 		"+4 physical on hit damage",
 		"+1.5 physical on hit damage",
 		"+1.5 elemental on hit damage",
-		"+30 range"
+		"+20 range"
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
-		),
+	),
 	
 	
 	#Tria

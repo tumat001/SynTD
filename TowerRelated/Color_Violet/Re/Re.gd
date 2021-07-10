@@ -181,8 +181,7 @@ func set_energy_module(module):
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	if !re_range_module.all_targeting_options.has(Targeting.RANDOM):
-		re_range_module.add_targeting_option(Targeting.RANDOM)
+	re_range_module.add_targeting_option(Targeting.RANDOM)
 	
 	for module in all_attack_modules:
 		if !module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
@@ -194,13 +193,11 @@ func _module_turned_on(_first_time_per_round : bool):
 
 
 func _module_turned_off():
-	if re_range_module.all_targeting_options.has(Targeting.RANDOM):
-		re_range_module.remove_targeting_option(Targeting.RANDOM)
+	re_range_module.remove_targeting_option(Targeting.RANDOM)
 	
 	for module in all_attack_modules:
 		if module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
 			module.disconnect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure")
-			print("uwu")
 	
 	if is_connected("attack_module_added", self, "_attack_module_attached"):
 		disconnect("attack_module_added", self, "_attack_module_attached")
@@ -220,9 +217,7 @@ func _attack_module_attached(attack_module : AbstractAttackModule):
 		if energy_module != null and energy_module.is_turned_on:
 			if !attack_module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
 				attack_module.connect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure")
-			
-		else:
-			pass
+
 
 
 func _convert_all_damage_type_to_pure(damage_instance : DamageInstance, module):

@@ -165,13 +165,13 @@ func _final_base_damage_changed():
 
 # range related
 
-func _enemy_entered_range(enemy, range_module):
+func _enemy_entered_range(enemy, module, range_module):
 	if is_current_placable_in_map():
 		if !enemy.is_connected("on_post_mitigated_damage_taken", self, "_enemy_damage_taken"):
 			enemy.connect("on_post_mitigated_damage_taken", self, "_enemy_damage_taken")
 
 
-func _enemy_exited_range(enemy, range_module):
+func _enemy_exited_range(enemy, module, range_module):
 	if is_current_placable_in_map():
 		if enemy.is_connected("on_post_mitigated_damage_taken", self, "_enemy_damage_taken"):
 			enemy.disconnect("on_post_mitigated_damage_taken", self, "_enemy_damage_taken")
