@@ -160,7 +160,7 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.REAPER,
 			Towers.FLAMEBURST,
-			Towers.LEADER,
+			Towers.REBOUND,
 			Towers.ROYAL_FLAME,
 			Towers.BEACON_DISH,
 		])

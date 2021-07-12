@@ -41,6 +41,7 @@ const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omn
 const reaper_image = preload("res://TowerRelated/Color_Red/Reaper/Reaper_Omni.png")
 const shocker_image = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Omni.png")
 const adept_image = preload("res://TowerRelated/Color_Red/Adept/Adept_E.png")
+const rebound_image = preload("res://TowerRelated/Color_Red/Rebound/Rebound_E.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -100,6 +101,7 @@ enum {
 	REAPER = 200,
 	SHOCKER = 201,
 	ADEPT = 202,
+	REBOUND = 203,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -1519,12 +1521,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0
+		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Adept's attacks gain bonus effects based on its current target's distance from itself upon hitting.",
-			"Beyond 85% of range: Adept's main attacks deal 30% more damage, and slows enemies hit by 10% for 1 second.",
-			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered as Adept's main attack.",
+			"Adept's attacks gain bonus effects based on its current target's distance from itself on hit.",
+			"Beyond 85% of range: Adept's main attack deals 30% more damage, and slows enemies hit by 10% for 1 second.",
+			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack.",
 			"The secondary attack deals 1.5 physical damage and applies on hit effects. The shot benefits from base damage buffs and on hit damages at 15% efficiency.",
 			"",
 			"After 3 rounds of being active, Adept gains Far and Close targeting options."
@@ -1535,6 +1537,26 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "adeptling"
+		
+		
+	elif tower_id == REBOUND:
+		info = TowerTypeInformation.new("Rebound", tower_id)
+		info.tower_cost = 1
+		info.colors.append(TowerColors.RED)
+		info.tower_tier = 1
+		info.tower_image_in_buy_card = rebound_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.4
+		info.base_pierce = 2
+		info.base_range = 115
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Rebound shoots discs that slow down upon hitting its first enemy.",
+			"Upon reaching its max distance, the disc travels back to Rebound, refreshing its pierce and dealing damage to enemies in the path again."
+		]
 		
 	
 	
@@ -1632,3 +1654,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Shocker/Shocker.tscn")
 	elif tower_id == ADEPT:
 		return load("res://TowerRelated/Color_Red/Adept/Adept.tscn")
+	elif tower_id == REBOUND:
+		return load("res://TowerRelated/Color_Red/Rebound/Rebound.tscn")
+
+

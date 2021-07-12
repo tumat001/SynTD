@@ -27,6 +27,7 @@ var rotation_per_second : float = 0
 var enemies_ignored : Array = []
 
 var destroy_self_after_zero_pierce : bool = true
+var destroy_self_after_zero_life_distance : bool = true
 
 var coll_source_layer : int = CollidableSourceAndDest.Source.FROM_TOWER
 var coll_destination_mask : int = CollidableSourceAndDest.Destination.TO_ENEMY
@@ -46,7 +47,8 @@ func _process(delta):
 	
 	if current_life_distance <= 0:
 		emit_signal("on_current_life_distance_expire")
-		trigger_on_death_events()
+		if destroy_self_after_zero_life_distance:
+			trigger_on_death_events()
 	
 	rotation_degrees += rotation_per_second * delta
 
