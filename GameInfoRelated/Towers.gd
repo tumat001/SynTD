@@ -21,6 +21,7 @@ const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/Att
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
 const LavaJetModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/LavaJetModuleAdderEffect.gd")
 const FlameBurstModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/FlameBurstModuleAdderEffect.gd")
+const AdeptModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/AdeptModuleAdderEffect.gd")
 
 const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
@@ -38,6 +39,8 @@ const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omn
 
 # RED
 const reaper_image = preload("res://TowerRelated/Color_Red/Reaper/Reaper_Omni.png")
+const shocker_image = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Omni.png")
+const adept_image = preload("res://TowerRelated/Color_Red/Adept/Adept_E.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -94,7 +97,9 @@ enum {
 	SIMPLEX = 101,
 	
 	# RED (200)
-	REAPER = 200
+	REAPER = 200,
+	SHOCKER = 201,
+	ADEPT = 202,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -1446,11 +1451,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Reaper's attacks deal additional 12% of the enemy's missing health on hit as elemental damage, up to 20 health.",
+			"Reaper's attacks deal additional 12% of the enemy's missing health as elemental damage, up to 20 health.",
 			"",
-			"Killing an enemy allows reaper to cast Slash. Each slash has a cooldown of 0.1 seconds.",
-			"Slash: Reaper shashes the area of the closest enemy, dealing 200% of this tower's base damage as physical damage. Does not apply on hit damages and effects.",
-			"Casting Slash reduces the damage of subsequent slashes by 75% for 1 second. This does not stack."
+			"Killing an enemy allows Reaper to cast Slash once. Slash has a cooldown of 0.125 seconds.",
+			"Slash: Reaper shashes the area of the closest enemy, dealing 200% of this tower's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
+			"Casting Slash reduces the damage of subsequent slashes by 50% for 1 second. This does not stack."
 		]
 		
 		var reap_dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_REAPER)
@@ -1469,9 +1474,72 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "+ on hit"
 		
 		
+	elif tower_id == SHOCKER:
+		info = TowerTypeInformation.new("Shocker", tower_id)
+		info.tower_cost = 2
+		info.colors.append(TowerColors.RED)
+		info.tower_tier = 2
+		info.tower_image_in_buy_card = shocker_image
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0.5
+		info.base_pierce = 1
+		info.base_range = 115
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Shocker possesses one shocker ball, which is shot when an enemy is in range. The shocker ball sticks to the first enemy it hits.",
+			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack. This event does not occur when the triggering attack is from another shocker ball.",
+			"The ball returns to Shocker when the enemy dies, exits the map, or when the ball fails to stick to a target.",
+			"",
+			"Shocker ball has 100 range. Its bolts deal 2 elemental damage. Bolts apply on hit damages and effects at 50% efficiency.",
+		]
+		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SHOCKER)
+		attr_mod.flat_modifier = 1.5
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_SHOCKER, attr_mod, DamageType.ELEMENTAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_SHOCKER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
+		
+		
+	elif tower_id == ADEPT:
+		info = TowerTypeInformation.new("Adept", tower_id)
+		info.tower_cost = 4
+		info.colors.append(TowerColors.RED)
+		info.tower_tier = 4
+		info.tower_image_in_buy_card = adept_image
+		
+		info.base_damage = 2.5
+		info.base_attk_speed = 1.15
+		info.base_pierce = 1
+		info.base_range = 140
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Adept's attacks gain bonus effects based on its current target's distance from itself upon hitting.",
+			"Beyond 85% of range: Adept's main attacks deal 30% more damage, and slows enemies hit by 10% for 1 second.",
+			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered as Adept's main attack.",
+			"The secondary attack deals 1.5 physical damage and applies on hit effects. The shot benefits from base damage buffs and on hit damages at 15% efficiency.",
+			"",
+			"After 3 rounds of being active, Adept gains Far and Close targeting options."
+		]
+		
+		var tower_base_effect : AdeptModuleAdderEffect = AdeptModuleAdderEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_base_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "adeptling"
+		
 	
 	
 	return info
+
 
 static func get_tower_scene(tower_id : int):
 	if tower_id == MONO:
@@ -1560,3 +1628,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/Pestilence/Pestilence.tscn")
 	elif tower_id == REAPER:
 		return load("res://TowerRelated/Color_Red/Reaper/Reaper.tscn")
+	elif tower_id == SHOCKER:
+		return load("res://TowerRelated/Color_Red/Shocker/Shocker.tscn")
+	elif tower_id == ADEPT:
+		return load("res://TowerRelated/Color_Red/Adept/Adept.tscn")

@@ -72,6 +72,7 @@ signal on_main_attack_finished(module)
 signal on_main_attack(attk_speed_delay, enemies, module)
 signal on_any_attack_finished(module)
 signal on_any_attack(attk_speed_delay, enemies, module)
+
 # on any damage instance constructed
 signal on_damage_instance_constructed(damage_instance, module)
 
@@ -286,6 +287,14 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 	
 	#if main_attack_module == null and attack_module.module_id == StoreOfAttackModuleID.MAIN:
 	if attack_module.module_id == StoreOfAttackModuleID.MAIN:
+		# Pre-existing attack module
+		if main_attack_module != null:
+			if range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):
+				range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
+				range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
+				range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
+		
+		
 		main_attack_module = attack_module
 		
 		if !main_attack_module.is_connected("in_attack_end", self, "_emit_on_main_attack_finished"):
@@ -302,7 +311,6 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			if range_module.get_parent() == null:
 				add_child(range_module)
 			
-			#range_module.update_range() 
 			if !range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):
 				range_module.connect("final_range_changed", self, "_emit_final_range_changed", [], CONNECT_PERSIST)
 				range_module.connect("targeting_changed", self, "_emit_targeting_changed", [], CONNECT_PERSIST)
@@ -353,9 +361,19 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 	all_attack_modules.erase(attack_module_to_remove)
 	
 	if main_attack_module == attack_module_to_remove:
-		for module in all_attack_modules:
+		#for module in all_attack_modules:
+		for module_index in range(all_attack_modules.size() - 1, -1, -1):
+			var module = all_attack_modules[module_index]
 			if module.module_id == StoreOfAttackModuleID.MAIN:
 				main_attack_module = module
+				
+				if main_attack_module != null:
+					if !main_attack_module.range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):
+						main_attack_module.range_module.connect("final_range_changed", self, "_emit_final_range_changed", [], CONNECT_PERSIST)
+						main_attack_module.range_module.connect("targeting_changed", self, "_emit_targeting_changed", [], CONNECT_PERSIST)
+						main_attack_module.range_module.connect("targeting_options_modified", self, "_emit_targeting_options_modified", [], CONNECT_PERSIST)
+						main_attack_module.range_module.update_range()
+				
 				break
 	
 	emit_signal("attack_module_removed", attack_module_to_remove)

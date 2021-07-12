@@ -1,0 +1,158 @@
+extends "res://TowerRelated/AbstractTower.gd"
+
+const Towers = preload("res://GameInfoRelated/Towers.gd")
+
+const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
+const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
+const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
+
+const WithBeamInstantDamageAttackModule = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.gd")
+const WithBeamInstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.tscn")
+const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
+
+const ShockerBall = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/ShockerBall.gd")
+const ShockerBall_Scene = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/ShockerBall.tscn")
+
+const ShockBolt_01 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt01.png")
+const ShockBolt_02 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt02.png")
+const ShockBolt_03 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt03.png")
+const ShockBolt_04 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt04.png")
+const ShockBolt_05 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt05.png")
+
+const shock_base_damage_ratio : float = 0.5
+const shock_ball_range : float = 100.0
+const no_shock_ball_clause : int = AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01
+
+
+onready var ball_display_sprite : Sprite = $BallDisplay
+
+var shock_attack_module : WithBeamInstantDamageAttackModule
+var shock_range_module : RangeModule
+
+var ball_launcher_attack_module : BulletAttackModule
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	var info : TowerTypeInformation = Towers.get_tower_info(Towers.SHOCKER)
+	
+	tower_id = info.tower_type_id
+	tower_highlight_sprite = info.tower_image_in_buy_card
+	_tower_colors = info.colors
+	ingredient_of_self = info.ingredient_effect
+	_base_gold_cost = info.tower_cost
+	
+	
+	range_module = RangeModule_Scene.instance()
+	range_module.base_range_radius = info.base_range
+	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += 20
+	
+	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
+	attack_module.base_damage = info.base_damage
+	attack_module.base_damage_type = info.base_damage_type
+	attack_module.base_attack_speed = info.base_attk_speed
+	attack_module.base_attack_wind_up = 1
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	attack_module.is_main_attack = true
+	attack_module.base_pierce = info.base_pierce
+	attack_module.base_proj_speed = 210
+	attack_module.base_proj_life_distance = info.base_range
+	attack_module.module_id = StoreOfAttackModuleID.MAIN
+	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	attack_module.position.y -= 20
+	
+	var bullet_shape = CircleShape2D.new()
+	bullet_shape.radius = 6
+	
+	attack_module.bullet_shape = bullet_shape
+	attack_module.bullet_scene = ShockerBall_Scene
+	
+	attack_module.connect("before_bullet_is_shot", self, "_on_shock_ball_launched", [], CONNECT_PERSIST)
+	
+	ball_launcher_attack_module = attack_module
+	
+	add_attack_module(attack_module)
+	
+	
+	# shock attack
+	
+	shock_range_module = RangeModule_Scene.instance()
+	shock_range_module.base_range_radius = shock_ball_range
+	shock_range_module.set_range_shape(CircleShape2D.new())
+	shock_range_module.clear_all_targeting()
+	shock_range_module.add_targeting_option(Targeting.CLOSE)
+	shock_range_module.set_current_targeting(Targeting.CLOSE)
+	
+	shock_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
+	shock_attack_module.base_damage = 2
+	shock_attack_module.base_damage_type = DamageType.ELEMENTAL
+	shock_attack_module.base_attack_speed = 0
+	shock_attack_module.base_attack_wind_up = 0
+	shock_attack_module.is_main_attack = false
+	shock_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	shock_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.SHOCKER_SHOCK_BALL_MAIN_DAMAGE
+	
+	shock_attack_module.on_hit_damage_scale = 0.5
+	shock_attack_module.on_hit_effect_scale = 0.5
+	
+	shock_attack_module.benefits_from_bonus_attack_speed = false
+	
+	var beam_sprite_frame : SpriteFrames = SpriteFrames.new()
+	beam_sprite_frame.add_frame("default", ShockBolt_01)
+	beam_sprite_frame.add_frame("default", ShockBolt_02)
+	beam_sprite_frame.add_frame("default", ShockBolt_03)
+	beam_sprite_frame.add_frame("default", ShockBolt_04)
+	beam_sprite_frame.add_frame("default", ShockBolt_05)
+	beam_sprite_frame.set_animation_loop("default", false)
+	beam_sprite_frame.set_animation_speed("default", 5 / 0.15)
+	
+	shock_attack_module.beam_scene = BeamAesthetic_Scene
+	shock_attack_module.beam_sprite_frames = beam_sprite_frame
+	shock_attack_module.beam_is_timebound = true
+	shock_attack_module.beam_time_visible = 0.15
+	
+	shock_attack_module.range_module = shock_range_module
+	shock_attack_module.can_be_commanded_by_tower = false
+	
+	add_attack_module(shock_attack_module)
+	
+	_post_inherit_ready()
+
+
+func _on_shock_ball_launched(ball : ShockerBall):
+	ball.connect("on_enemy_stucked_to_exiting", self, "_on_shock_ball_enemy_tree_exiting", [ball], CONNECT_ONESHOT)
+	ball.connect("on_current_life_distance_expire", self, "_on_shock_ball_life_distance_expired", [], CONNECT_ONESHOT)
+	ball.connect("on_enemy_hit", self, "_on_shock_ball_enemy_hit")
+	ball.connect("on_position_changed", self, "_on_shock_ball_pos_changed")
+	ball.rotation_per_second = 0
+	
+	ball_launcher_attack_module.can_be_commanded_by_tower_other_clauses[no_shock_ball_clause] = false
+	ball_display_sprite.visible = false
+
+func _on_shock_ball_enemy_tree_exiting(enemy, ball):
+	ball.queue_free()
+	ball_launcher_attack_module.can_be_commanded_by_tower_other_clauses.erase(no_shock_ball_clause)
+	ball_display_sprite.visible = true
+
+func _on_shock_ball_life_distance_expired(ball):
+	ball.queue_free()
+	ball_launcher_attack_module.can_be_commanded_by_tower_other_clauses.erase(no_shock_ball_clause)
+	ball_display_sprite.visible = true
+
+
+func _on_shock_ball_pos_changed(new_pos : Vector2):
+	shock_attack_module.global_position = new_pos
+
+
+func _on_shock_ball_enemy_hit(enemy):
+	var enemies = shock_range_module.get_targets(2)
+	
+	for cand_enemy in enemies:
+		if cand_enemy != enemy and cand_enemy != null:
+			_shock_to_attack_enemy(cand_enemy)
+			break
+
+
+func _shock_to_attack_enemy(enemy):
+	shock_attack_module._attack_enemies([enemy])
+

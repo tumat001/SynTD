@@ -4,6 +4,7 @@ extends Node
 enum {
 	# TOWERS
 	# RED (-100)
+	ADEPT_SLOW = -100
 	
 	# ORANGE (-200)
 	EMBER_BURN = -200

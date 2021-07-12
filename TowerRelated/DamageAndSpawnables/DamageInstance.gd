@@ -54,3 +54,17 @@ func get_copy_damage_only_scaled_by(scale : float):
 	copy.final_percent_enemy_resistance_pierce = final_percent_enemy_resistance_pierce
 	
 	return copy
+
+#
+
+func scale_by(scale : float):
+	for dmg_key in on_hit_damages.keys():
+		on_hit_damages[dmg_key] = on_hit_damages[dmg_key].get_copy_scaled_by(scale)
+	
+	for eff_key in on_hit_effects.keys():
+		on_hit_effects[eff_key] = on_hit_effects[eff_key]._get_copy_scaled_by(scale)
+
+
+func scale_only_damage_by(scale : float):
+	for dmg_key in on_hit_damages.keys():
+		on_hit_damages[dmg_key] = on_hit_damages[dmg_key].get_copy_scaled_by(scale)

@@ -173,7 +173,7 @@ func _ready():
 	# also test if crater is dealing the right amount of damage
 	var slow_modifier : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.VOLCANO_SLOW)
 	slow_modifier.percent_amount = -20
-	slow_modifier.percent_based_on = PercentType.MAX
+	slow_modifier.percent_based_on = PercentType.BASE
 	
 	var enemy_attr_eff : EnemyAttributesEffect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED, slow_modifier, StoreOfEnemyEffectsUUID.VOLCANO_SLOW)
 	enemy_attr_eff.is_timebound = true

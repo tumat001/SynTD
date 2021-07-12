@@ -8,7 +8,7 @@ func _attack_enemy(enemy : AbstractEnemy):
 		enemy.connect("on_hit", self, "on_enemy_hit", [], CONNECT_ONESHOT)
 		enemy.connect("on_post_mitigated_damage_taken", self, "on_post_mitigation_damage_dealt", [damage_register_id], CONNECT_ONESHOT)
 		
-		enemy.hit_by_damage_instance(damage_instance)
+		enemy.hit_by_damage_instance(damage_instance, damage_register_id)
 
 
 func _attack_enemies(enemies : Array):

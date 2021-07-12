@@ -81,7 +81,7 @@ func _construct_attack_module():
 	# effect
 	var slow_modifier : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_BLUE_FRUIT)
 	slow_modifier.percent_amount = -22.5
-	slow_modifier.percent_based_on = PercentType.MAX
+	slow_modifier.percent_based_on = PercentType.BASE
 	
 	var enemy_attr_eff : EnemyAttributesEffect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED, slow_modifier, StoreOfEnemyEffectsUUID.ING_BLUE_FRUIT_SLOW)
 	enemy_attr_eff.is_timebound = true

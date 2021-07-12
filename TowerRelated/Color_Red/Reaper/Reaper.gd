@@ -24,7 +24,7 @@ const Reaper_SlashAttk_AOE = preload("res://TowerRelated/Color_Red/Reaper/Reaper
 const no_enemies_killed_clause : int = -10
 const no_enemy_in_range_clause : int = -11
 const slash_static_cooldown : float = 0.125
-const slash_subsequent_damage_ratio : float = 0.5
+const slash_subsequent_damage_ratio : float = 1.0
 const slash_primary_damage_ratio : float = 2.0
 const slash_subsequent_dmg_reduction_duration : float = 1.0
 
@@ -197,10 +197,14 @@ func _slash_at_enemy():
 		var slash_aoe = slash_attack_module.construct_aoe(slash_attack_module.global_position, enemy.global_position)
 		var main_on_hit_dmg = slash_aoe.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE]
 		
+		var final_modi
 		if current_slash_subsequent_dmg_reduction_duration <= 0:
-			main_on_hit_dmg.damage_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * slash_primary_damage_ratio
+			final_modi = main_attack_module.last_calculated_final_damage * slash_primary_damage_ratio
 		else:
-			main_on_hit_dmg.damage_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * slash_subsequent_damage_ratio
+			final_modi = main_attack_module.last_calculated_final_damage * slash_subsequent_damage_ratio
+		
+		final_modi *= last_calculated_final_ability_potency * slash_ability.last_calculated_final_ability_potency
+		main_on_hit_dmg.damage_as_modifier.flat_modifier = final_modi
 		
 		get_tree().get_root().add_child(slash_aoe)
 		
@@ -216,11 +220,13 @@ func _ready_for_activation_ability(val):
 
 func _on_round_end_r():
 	enemies_killed = 0
+	current_slash_subsequent_dmg_reduction_duration = 0
 	
 	slash_ability_activation_clause.attempt_insert_clause(no_enemies_killed_clause)
 
 #
 
 func _process(delta):
-	current_slash_subsequent_dmg_reduction_duration -= delta
+	if is_round_started:
+		current_slash_subsequent_dmg_reduction_duration -= delta
 

@@ -156,7 +156,6 @@ func toggle_show_range():
 	update() #calls _draw()
 
 func _draw():
-	
 	if displaying_range:
 		if can_display_range:
 			var final_range = calculate_final_range_radius()

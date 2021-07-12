@@ -37,7 +37,7 @@ func _get_description() -> String:
 		var first_part : String = modifier_desc[0]
 		var second_part : String = modifier_desc[1]
 		
-		var part1 = (first_part + " enemy health as " + type_name + " damage")
+		var part1 = (first_part + " enemy health as " + type_name + " damage on hit,")
 		if second_part != null:
 			part1 += " " + second_part
 		
