@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/DomSyn_Red_IconSymbolOutline.png" type="Texture" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_GUI/Red_SynergyIconInteractable.gd" type="Script" id=2]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButton.tscn" type="PackedScene" id=3]
+
+[node name="Red_SynergyIconInteractable" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AdvancedButton" parent="." instance=ExtResource( 3 )]
+margin_top = 2.0
+margin_right = 48.0
+margin_bottom = 38.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+texture_normal = ExtResource( 1 )
+[connection signal="pressed_mouse_event" from="AdvancedButton" to="." method="_on_AdvancedButton_pressed_mouse_event"]

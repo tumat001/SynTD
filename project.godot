@@ -38,6 +38,7 @@ StoreOfAbilityEffectsUUID="*res://GameInfoRelated/AbilityRelated/AbilityEffectRe
 Targeting="*res://GameInfoRelated/Targeting.gd"
 CollidableSourceAndDest="*res://GameInfoRelated/CollidableSourceAndDest.gd"
 StoreOfScreenEffectsUUID="*res://MiscRelated/ScreenEffectsRelated/StoreOfScreenEffectsUUID.gd"
+StoreOfPactUUID="*res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/StoreOfPactUUID.gd"
 
 [debug]
 
@@ -114,6 +115,16 @@ game_ability_07={
 game_ability_08={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":56,"unicode":0,"echo":false,"script":null)
+ ]
+}
+game_tower_targeting_left={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777231,"unicode":0,"echo":false,"script":null)
+ ]
+}
+game_tower_targeting_right={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777233,"unicode":0,"echo":false,"script":null)
  ]
 }
 

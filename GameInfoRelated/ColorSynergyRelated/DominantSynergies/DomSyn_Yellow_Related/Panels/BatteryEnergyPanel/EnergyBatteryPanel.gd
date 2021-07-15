@@ -10,6 +10,8 @@ onready var energy_display_label : Label = $VBoxContainer/HeaderMarginer/MarginC
 onready var energy_display_bar : ControlProgressBar = $VBoxContainer/BodyMarginer/EnergyDisplayBar
 
 func _ready():
+	energy_display_bar.yield_before_update = true
+	
 	if energy_battery != null:
 		_energy_display_updated()
 
@@ -17,7 +19,7 @@ func _ready():
 func _set_energy_battery(battery):
 	if battery != null:
 		energy_battery = battery
-		energy_battery.connect("display_output_changed", self, "_energy_display_updated")
+		energy_battery.connect("display_output_changed", self, "_energy_display_updated", [], CONNECT_PERSIST)
 		
 		_energy_display_updated()
 

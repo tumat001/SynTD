@@ -20,6 +20,8 @@ var _coin_id_to_use : int
 func _ready():
 	bullet_scene = CoinProjectile_Scene
 	_coin_id_to_use = 0
+	
+	connect("before_bullet_is_shot", self, "_before_bullet_is_shot_a", [], CONNECT_PERSIST)
 
 func _process(delta):
 	for coin_id in _coin_id_time_left_map.keys():
@@ -29,8 +31,8 @@ func _process(delta):
 			_coin_id_time_left_map.erase(coin_id)
 
 
-func _modify_attack(bullet : CoinProjectile):
-	bullet.connect("on_gold_coin_rng", self, "_generate_gold", [gold_coin_roll_gold_amount])
+func _before_bullet_is_shot_a(bullet):
+	bullet.connect("on_gold_coin_rng", self, "_generate_gold", [gold_coin_roll_gold_amount], CONNECT_ONESHOT)
 	bullet.damage_register_id = _coin_id_to_use
 	_coin_id_to_use += 1
 	

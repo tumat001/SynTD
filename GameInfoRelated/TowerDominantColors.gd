@@ -22,6 +22,7 @@ const DomSyn_Yellow_GoldIncome = preload("res://GameInfoRelated/ColorSynergyRela
 const DomSyn_Yellow_EnergyBattery = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_EnergyBattery.gd")
 const DomSyn_Orange = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/DomSyn_Orange.gd")
 const DomSyn_Blue = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/DomSyn_Blue.gd")
+const DomSyn_Red = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red.gd")
 
 var inst_domsyn_yellow_energybattery : DomSyn_Yellow_EnergyBattery
 
@@ -30,10 +31,19 @@ func _init():
 	inst_domsyn_yellow_energybattery = DomSyn_Yellow_EnergyBattery.new()
 	
 	synergies = {
-	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [6, 4, 2],
+	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [6, 4, 2], #[9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
-	["RED description"]),
+	[
+		"Opens the Pact shop, which shows a list of up to three unsworn pacts. At the end of each round, a new unsworn pact is added.",
+		"The Pact shop also allows the swearing of a Pact, during which the Pact's buffs and debuffs take effect. Only up to 3 pacts can be sworn at a time. Attempting to swear another pact will remove the oldest sworn pact.",
+		"",
+		"Synergy level affects the quality and types of unsworn pacts that appear in the shop.",
+		"",
+		"Not having the Red synergy active will cause you to take 10 damage at the end of each round, and no new unsworn pacts will be added."
+	],
+	[DomSyn_Red.new()]
+	),
 	
 	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [12, 9, 6, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],

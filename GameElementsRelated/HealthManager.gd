@@ -4,14 +4,16 @@ const RoundInfoPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPa
 
 enum IncreaseHealthSource {
 	
-	TOWER,
-	SYNERGY,
+	TOWER = 100,
+	SYNERGY = 200,
 	
 }
 
 enum DecreaseHealthSource {
 	
-	ENEMY,
+	TOWER = 100,
+	ENEMY = 110,
+	SYNERGY = 200,
 	
 }
 
@@ -19,6 +21,7 @@ signal current_health_changed(current_health)
 signal zero_health_reached
 
 
+var starting_health : float
 var current_health : float setget set_health
 var round_info_panel : RoundInfoPanel
 

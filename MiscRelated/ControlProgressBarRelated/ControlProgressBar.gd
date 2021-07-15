@@ -52,7 +52,7 @@ func _ready():
 	bar_fill_foreground_marginer.add_constant_override("margin_left", fill_foreground_margin_left)
 	
 	set_current_value(current_value)
-	redraw_chunks()
+	set_max_value(max_value)
 
 
 func set_current_value(value : float):

@@ -1516,8 +1516,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = 4
 		info.tower_image_in_buy_card = adept_image
 		
-		info.base_damage = 2.5
-		info.base_attk_speed = 1.15
+		info.base_damage = 2.25
+		info.base_attk_speed = 1.1
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1539,6 +1539,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "adeptling"
 		
 		
+		
 	elif tower_id == REBOUND:
 		info = TowerTypeInformation.new("Rebound", tower_id)
 		info.tower_cost = 1
@@ -1557,6 +1558,17 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Rebound shoots discs that slow down upon hitting its first enemy.",
 			"Upon reaching its max distance, the disc travels back to Rebound, refreshing its pierce and dealing damage to enemies in the path again."
 		]
+		
+		var base_pierce_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_REBOUND)
+		base_pierce_attr_mod.flat_modifier = 1
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_PIERCE , base_pierce_attr_mod, StoreOfTowerEffectsUUID.ING_REBOUND)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ pierce"
+		
+		
 		
 	
 	

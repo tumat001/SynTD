@@ -1,0 +1,104 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://GameHUDRelated/SynergyPanel/SynergyInteractablePanel.gd" type="Script" id=2]
+[ext_resource path="res://GameHUDRelated/SynergyPanel/SynergyPanel_BodyBackground.png" type="Texture" id=3]
+[ext_resource path="res://GameHUDRelated/SynergyPanel/SynergyPanel_BottomBorder.png" type="Texture" id=4]
+[ext_resource path="res://GameHUDRelated/SynergyPanel/SynergyPanel_LeftButton.png" type="Texture" id=5]
+[ext_resource path="res://GameHUDRelated/SynergyPanel/SynergyPanel_TopComponent.png" type="Texture" id=6]
+[ext_resource path="res://GameHUDRelated/SynergyPanel/SynergyPanel_RightButton.png" type="Texture" id=7]
+
+[node name="SynergyInteractablePanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 85.0
+margin_bottom = 68.0
+mouse_filter = 2
+custom_constants/separation = 0
+
+[node name="ButtonContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_right = 85.0
+margin_bottom = 15.0
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/ButtonContainer"]
+margin_right = 85.0
+margin_bottom = 15.0
+mouse_filter = 2
+texture = ExtResource( 6 )
+
+[node name="Marginer2" type="MarginContainer" parent="VBoxContainer/ButtonContainer"]
+margin_right = 29.0
+margin_bottom = 13.0
+mouse_filter = 2
+size_flags_horizontal = 2
+size_flags_vertical = 2
+custom_constants/margin_top = 1
+custom_constants/margin_left = 1
+
+[node name="LeftButton" type="TextureButton" parent="VBoxContainer/ButtonContainer/Marginer2"]
+margin_left = 1.0
+margin_top = 1.0
+margin_right = 29.0
+margin_bottom = 13.0
+focus_mode = 0
+enabled_focus_mode = 0
+texture_normal = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Marginer" type="MarginContainer" parent="VBoxContainer/ButtonContainer"]
+margin_left = 56.0
+margin_right = 85.0
+margin_bottom = 13.0
+mouse_filter = 2
+size_flags_horizontal = 10
+size_flags_vertical = 2
+custom_constants/margin_right = 1
+custom_constants/margin_top = 1
+
+[node name="RightButton" type="TextureButton" parent="VBoxContainer/ButtonContainer/Marginer"]
+margin_top = 1.0
+margin_right = 28.0
+margin_bottom = 13.0
+focus_mode = 0
+enabled_focus_mode = 0
+texture_normal = ExtResource( 7 )
+
+[node name="MainContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 15.0
+margin_right = 85.0
+margin_bottom = 65.0
+rect_min_size = Vector2( 0, 50 )
+mouse_filter = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/MainContainer"]
+margin_right = 85.0
+margin_bottom = 50.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="ContentPanel" type="MarginContainer" parent="VBoxContainer/MainContainer"]
+margin_left = 42.0
+margin_top = 25.0
+margin_right = 42.0
+margin_bottom = 25.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+
+[node name="BottomBorder" type="TextureRect" parent="VBoxContainer"]
+margin_top = 65.0
+margin_right = 85.0
+margin_bottom = 68.0
+mouse_filter = 2
+texture = ExtResource( 4 )
+[connection signal="pressed" from="VBoxContainer/ButtonContainer/Marginer2/LeftButton" to="." method="_on_LeftButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/ButtonContainer/Marginer/RightButton" to="." method="_on_RightButton_pressed"]

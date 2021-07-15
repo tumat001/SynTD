@@ -10,8 +10,11 @@ const ENEMY_GROUP_TAG : String = "Enemies"
 
 
 signal no_enemies_left
+signal before_enemy_spawned(enemy)
 signal enemy_spawned(enemy)
+
 signal enemy_escaped(enemy)
+signal first_enemy_escaped(enemy, first_damage)
 
 var health_manager : HealthManager
 
@@ -95,9 +98,10 @@ func spawn_enemy(enemy_id):
 	
 	# Path related
 	var path = _pick_path_and_switch_index_to_next()
+	emit_signal("before_enemy_spawned", enemy_instance)
 	path.add_child(enemy_instance)
 	
-	call_deferred("emit_signal", "enemy_spawned", self)
+	call_deferred("emit_signal", "enemy_spawned", enemy_instance)
 
 
 func _pick_path_and_switch_index_to_next() -> EnemyPath:
@@ -135,10 +139,12 @@ func _enemy_reached_end(enemy : AbstractEnemy):
 	if !_enemy_first_damage_applied:
 		_enemy_first_damage_applied = true
 		total_damage += enemy_first_damage
+		
+		emit_signal("first_enemy_escaped", enemy, enemy_first_damage)
 	
 	health_manager.decrease_health_by(total_damage, HealthManager.DecreaseHealthSource.ENEMY)
 	
-	emit_signal("enemy_escaped", self)
+	emit_signal("enemy_escaped", enemy)
 	enemy.queue_free()
 
 

@@ -34,7 +34,8 @@ func _ready():
 	elif chosen_num <= upper_limit_gold:
 		bullet_sprite.frames.add_frame("default", gold_coin_pic) 
 		call_deferred("emit_signal", "on_gold_coin_rng")
-
+	else:
+		print("ayayayayyayya " + str(chosen_num) + " " + str(total_of_ratio))
 
 func _process(delta):
 	rotation_degrees += 60 * delta

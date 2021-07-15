@@ -34,6 +34,7 @@ const CompleSyn_OrangeBlue = preload("res://GameInfoRelated/ColorSynergyRelated/
 
 const AnaSyn_BlueVG = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_BlueVG/AnaSyn_BlueVG.gd")
 const AnaSyn_VioletRB = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB/AnaSyn_VioletRB.gd")
+const AnaSyn_OrangeYR = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/AnaSyn_OrangeYR.gd")
 
 var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
 
@@ -69,7 +70,7 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_compli_orangeblue,
 	[
-		"Main attacks of towers with overheated modules explode every few seconds.",
+		"Main attacks of towers with overheated modules explode every few seconds of attacking.",
 		"Explosions deal 3 elemental damage to two enemies, but not including the main target.",
 		"Explosions benefit from base damage on on hit damage buffs at 50% efficiency. Explosions also benefit from explosion size buffs.",
 		"",
@@ -96,7 +97,18 @@ func _init():
 	"OrangeYR" : ColorSynergy.new("OrangeYR", [TowerColors.ORANGE, TowerColors.YELLOW, TowerColors.RED], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_orangeYR,
-	["OrangeYR description"]),
+	[
+		"Towers gain attack speed after attacking, which stacks up to a limit. Bonuses received per attack inversely scales with tower's attack speed.",
+		""
+	],
+	[AnaSyn_OrangeYR.new()],
+	[
+		"150% attack speed",
+		"90% attack speed",
+		"60% attack speed",
+		"30% attack speed",
+	]
+	),
 	
 	"YellowGO" : ColorSynergy.new("YellowGO", [TowerColors.YELLOW, TowerColors.GREEN, TowerColors.ORANGE], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],

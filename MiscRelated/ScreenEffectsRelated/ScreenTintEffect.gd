@@ -57,6 +57,7 @@ func _process(delta):
 			emit_signal("on_duration_over")
 			queue_free()
 	
+	
 	update()
 
 

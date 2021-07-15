@@ -14,6 +14,7 @@ const original_ratio_gold_coin : int = 1
 var coin_attack_module : CoinAttackModule
 var info : TowerTypeInformation
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	info = Towers.get_tower_info(Towers.COIN)

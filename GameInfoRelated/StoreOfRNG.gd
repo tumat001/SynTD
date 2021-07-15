@@ -7,6 +7,9 @@ var inaccuracy_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var non_essential_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var fruit_tree_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var pestilence_spread : RandomNumberGenerator = RandomNumberGenerator.new()
+var domsyn_red_pact_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var domsyn_red_pact_mag_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -19,6 +22,9 @@ enum RNGSource {
 	PESTILENCE_SPREAD,
 	
 	INACCURACY,
+	
+	DOMSYN_RED_PACT,
+	DOMSYN_RED_PACT_MAGNITUDE,
 	
 	NON_ESSENTIAL,
 }
@@ -38,5 +44,9 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return fruit_tree_rng
 	elif rng_source == RNGSource.PESTILENCE_SPREAD:
 		return pestilence_spread
+	elif rng_source == RNGSource.DOMSYN_RED_PACT:
+		return domsyn_red_pact_rng
+	elif rng_source == RNGSource.DOMSYN_RED_PACT_MAGNITUDE:
+		return domsyn_red_pact_mag_rng
 	
 	return null

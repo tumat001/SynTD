@@ -4,8 +4,6 @@
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/ActiveIngredientsPanel/ActiveIngredientsPanel_Background.png" type="Texture" id=2]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/ActiveIngredientsPanel/ActiveIngredientsPanel_TopDownLine.png" type="Texture" id=3]
 
-[sub_resource type="StyleBoxEmpty" id=1]
-
 [sub_resource type="StyleBoxEmpty" id=2]
 
 [sub_resource type="StyleBoxEmpty" id=3]
@@ -14,16 +12,18 @@
 
 [sub_resource type="StyleBoxEmpty" id=5]
 
-[sub_resource type="Theme" id=6]
+[sub_resource type="StyleBoxEmpty" id=6]
+
+[sub_resource type="Theme" id=7]
 VScrollBar/icons/decrement = null
 VScrollBar/icons/decrement_highlight = null
 VScrollBar/icons/increment = null
 VScrollBar/icons/increment_highlight = null
-VScrollBar/styles/grabber = SubResource( 1 )
-VScrollBar/styles/grabber_highlight = SubResource( 2 )
-VScrollBar/styles/grabber_pressed = SubResource( 3 )
-VScrollBar/styles/scroll = SubResource( 4 )
-VScrollBar/styles/scroll_focus = SubResource( 5 )
+VScrollBar/styles/grabber = SubResource( 2 )
+VScrollBar/styles/grabber_highlight = SubResource( 3 )
+VScrollBar/styles/grabber_pressed = SubResource( 4 )
+VScrollBar/styles/scroll = SubResource( 5 )
+VScrollBar/styles/scroll_focus = SubResource( 6 )
 
 [node name="MultiIngredientPanel" type="MarginContainer"]
 margin_right = 84.0
@@ -81,7 +81,7 @@ margin_right = 98.0
 margin_bottom = 26.0
 mouse_filter = 1
 size_flags_vertical = 3
-theme = SubResource( 6 )
+theme = SubResource( 7 )
 scroll_horizontal_enabled = false
 
 [node name="SingleIngredientPanelList" type="VBoxContainer" parent="VBoxContainer/ListMargin/Marginer/ScrollContainer"]

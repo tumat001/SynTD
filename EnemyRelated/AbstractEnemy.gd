@@ -35,13 +35,10 @@ signal effect_removed(effect, me)
 
 
 var base_health : float = 1
-# NOT YET UPDATED TO MAKE USE OF EFFECTS
-var _flat_base_health_effect_map : Dictionary = {}
-var _percent_base_health_effect_map : Dictionary = {}
+var _flat_base_health_id_effect_map : Dictionary = {}
+var _percent_base_health_id_effect_map : Dictionary = {}
 var current_health : float = 1
 var _last_calculated_max_health : float
-
-var active_effects = {}
 
 var pierce_consumed_per_hit : float = 1
 
@@ -137,20 +134,19 @@ func _physics_process(delta):
 # and percentages are added
 func calculate_max_health() -> float:
 	var max_health = base_health
-	for modifier in _percent_base_health_effect_map.values():
-		max_health += modifier.get_modification_to_value(base_health)
+	for effect in _percent_base_health_id_effect_map.values():
+		max_health += effect.attribute_as_modifier.get_modification_to_value(base_health)
 	
-	for flat in _flat_base_health_effect_map.values():
-		max_health += flat.get_modification_to_value(max_health)
+	for effect in _flat_base_health_id_effect_map.values():
+		max_health += effect.attribute_as_modifier.get_modification_to_value(max_health)
 	
 	_last_calculated_max_health = max_health
 	return max_health
 
 func heal_without_overhealing(heal_amount):
 	var total_amount : float = current_health + heal_amount
-	var max_health = calculate_max_health()
-	if total_amount > max_health:
-		current_health = max_health
+	if total_amount > _last_calculated_max_health:
+		current_health = _last_calculated_max_health
 	else:
 		current_health += heal_amount
 	
@@ -218,38 +214,50 @@ func queue_free():
 	.queue_free()
 
 
-# OLD.. NEED TO REMAKE THIS SOON TO COMPLY WITH EFFECTS
-func add_flat_base_health_modifier_with_heal(modifier_name : String, 
-		modifier : FlatModifier):
-	
-	_flat_base_health_effect_map[modifier_name] = modifier
-	var heal = modifier.get_modification_to_value(base_health)
-	heal_without_overhealing(heal)
 
-func add_percent_base_health_modifier_with_heal(modifier_name : String,
-		modifier : PercentModifier):
+func add_flat_base_health_effect(effect : EnemyAttributesEffect, with_heal : bool = true):
+	_flat_base_health_id_effect_map[effect.effect_uuid] = effect
+	var old_max_health = _last_calculated_max_health
+	calculate_max_health()
+	if current_health > _last_calculated_max_health:
+		current_health = _last_calculated_max_health
 	
-	_percent_base_health_effect_map[modifier_name] = modifier
-	var heal = modifier.get_modification_to_value(base_health)
-	heal_without_overhealing(heal)
+	if with_heal:
+		var heal = _last_calculated_max_health - old_max_health
+		if heal > 0:
+			heal_without_overhealing(heal)
 
-func remove_flat_base_health_preserve_percent(modifier_name : String):
-	if _flat_base_health_effect_map.has(modifier_name):
-		var flat_mod : FlatModifier = _flat_base_health_effect_map[modifier_name]
+func add_percent_base_health_effect(effect : EnemyAttributesEffect, with_heal : bool = true):
+	_percent_base_health_id_effect_map[effect.effect_uuid] = effect
+	var old_max_health = _last_calculated_max_health
+	calculate_max_health()
+	if current_health > _last_calculated_max_health:
+		current_health = _last_calculated_max_health
+	
+	if with_heal:
+		var heal = old_max_health - _last_calculated_max_health
+		if heal > 0:
+			heal_without_overhealing(heal)
+
+func remove_flat_base_health_effect_preserve_percent(effect_uuid : int):
+	if _flat_base_health_id_effect_map.has(effect_uuid):
+		var flat_mod : FlatModifier = _flat_base_health_id_effect_map[effect_uuid]
 		var flat_remove = flat_mod.flat_modifier
 		_set_current_health_to(PercentPreserver.removed_flat_amount(
-				calculate_max_health(), current_health, flat_remove))
+				_last_calculated_max_health, current_health, flat_remove))
 		
-		_flat_base_health_effect_map.erase(modifier_name)
+		_flat_base_health_id_effect_map.erase(effect_uuid)
+		calculate_max_health()
 
-func remove_percent_base_health_preserve_percent(modifier_name : String):
-	if _percent_base_health_effect_map.has(modifier_name):
-		var percent_mod : PercentModifier = _percent_base_health_effect_map[modifier_name]
+func remove_percent_base_health_effect_preserve_percent(effect_uuid : int):
+	if _percent_base_health_id_effect_map.has(effect_uuid):
+		var percent_mod : PercentModifier = _percent_base_health_id_effect_map[effect_uuid]
 		var percent_remove = percent_mod.percent_modifier
 		_set_current_health_to(PercentPreserver.removed_percent_amount(
-				calculate_max_health(), current_health, percent_remove))
+				_last_calculated_max_health, current_health, percent_remove))
 		
-		_percent_base_health_effect_map.erase(modifier_name)
+		_percent_base_health_id_effect_map.erase(effect_uuid)
+		calculate_max_health()
 
 class PercentPreserver:
 	
@@ -279,10 +287,6 @@ func calculate_final_armor() -> float:
 	for effect in flat_armor_id_effect_map.values():
 		final_armor += effect.attribute_as_modifier.get_modification_to_value(base_armor)
 	
-	
-	if final_armor < 0:
-		final_armor = 0
-	
 	_last_calculated_final_armor = final_armor
 	return final_armor
 
@@ -294,10 +298,6 @@ func calculate_final_toughness() -> float:
 	
 	for effect in flat_toughness_id_effect_map.values():
 		final_toughness += effect.attribute_as_modifier.get_modification_to_value(base_toughness)
-	
-	
-	if final_toughness < 0:
-		final_toughness = 0
 	
 	_last_calculated_final_toughness = final_toughness
 	return final_toughness
@@ -597,6 +597,12 @@ func _add_effect(base_effect : EnemyBaseEffect):
 		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_RESISTANCE:
 			percent_resistance_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
 			calculate_final_resistance()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_HEALTH:
+			add_flat_base_health_effect(to_use_effect)
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_HEALTH:
+			add_percent_base_health_effect(to_use_effect)
+		
 
 
 func _remove_effect(base_effect : EnemyBaseEffect):
@@ -646,6 +652,11 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 			percent_resistance_id_effect_map.erase(base_effect.effect_uuid)
 			calculate_final_resistance()
 			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_HEALTH:
+			remove_flat_base_health_effect_preserve_percent(base_effect.effect_uuid)
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_HEALTH:
+			remove_percent_base_health_effect_preserve_percent(base_effect.effect_uuid)
+		
 		
 	
 	if base_effect != null:

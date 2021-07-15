@@ -17,6 +17,8 @@ const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
 const InputPromptManager = preload("res://GameElementsRelated/InputPromptManager.gd")
 const SelectionNotifPanel = preload("res://GameHUDRelated/NotificationPanel/SelectionNotifPanel/SelectionNotifPanel.gd")
 const ScreenEffectsManager = preload("res://GameElementsRelated/ScreenEffectsManager.gd")
+const SynergyInteractablePanel = preload("res://GameHUDRelated/SynergyPanel/SynergyInteractablePanel.gd")
+const WholeScreenGUI = preload("res://GameElementsRelated/WholeScreenGUI.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var in_map_placables_manager : InMapPlacablesManager
@@ -36,9 +38,11 @@ var screen_effect_manager : ScreenEffectsManager
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
+var tower_info_panel
 var selection_notif_panel : SelectionNotifPanel
+var whole_screen_gui : WholeScreenGUI
 
-onready var extra_side_panel : MarginContainer = $BottomPanel/HBoxContainer/ExtraSidePanel
+onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -57,8 +61,12 @@ func _ready():
 	ability_manager = $AbilityManager
 	input_prompt_manager = $InputPromptManager
 	screen_effect_manager = $ScreenEffectsManager
+	whole_screen_gui = $WSContainer/WholeScreenGUI
+	
+	$WSContainer.layer = ZIndexStore.WHOLE_SCREEN_GUI
 	
 	targeting_panel = right_side_panel.tower_info_panel.targeting_panel
+	tower_info_panel = right_side_panel.tower_info_panel
 	
 	round_status_panel = right_side_panel.round_status_panel
 	round_info_panel = round_status_panel.round_info_panel
@@ -120,11 +128,16 @@ func _ready():
 	# Selection Notif panel
 	selection_notif_panel.visible = false
 	
+	# Whole screen GUI
+	whole_screen_gui.game_elements = self
+	whole_screen_gui.screen_effect_manager = screen_effect_manager
+	
 	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round()
 	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	health_manager.starting_health = 150
 	health_manager.set_health(150)
 	
 	
@@ -153,16 +166,16 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.TESLA,
-			Towers.SIMPLE_OBELISK,
-			Towers.ADEPT,
+			Towers.REAPER,
+			Towers.CHARGE,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.REAPER,
-			Towers.FLAMEBURST,
-			Towers.REBOUND,
-			Towers.ROYAL_FLAME,
+			Towers.COIN,
+			Towers.MAGNETIZER,
 			Towers.BEACON_DISH,
+			Towers.IEU,
+			Towers.CAMPFIRE,
 		])
 	
 	even = !even
@@ -187,40 +200,53 @@ func _unhandled_input(event):
 
 func _unhandled_key_input(event):
 	if !event.echo and event.pressed:
-		if event.is_action_pressed("game_ingredient_toggle"):
-			tower_manager._toggle_ingredient_combine_mode()
+		if whole_screen_gui.current_showing_control == null:
+			if event.is_action_pressed("game_ingredient_toggle"):
+				tower_manager._toggle_ingredient_combine_mode()
+				
+			elif event.is_action_pressed("game_round_toggle"):
+				right_side_panel.round_status_panel._on_RoundStatusButton_pressed()
+				
+			elif event.scancode == KEY_ESCAPE:
+				_esc_no_wholescreen_gui_pressed()
+				
+			elif event.is_action_pressed("game_tower_sell"):
+				_sell_hovered_tower()
+				
+				
+				
+			elif event.is_action("game_ability_01"):
+				round_status_panel.ability_panel.activate_ability_at_index(0)
+			elif event.is_action("game_ability_02"):
+				round_status_panel.ability_panel.activate_ability_at_index(1)
+			elif event.is_action("game_ability_03"):
+				round_status_panel.ability_panel.activate_ability_at_index(2)
+			elif event.is_action("game_ability_04"):
+				round_status_panel.ability_panel.activate_ability_at_index(3)
+			elif event.is_action("game_ability_05"):
+				round_status_panel.ability_panel.activate_ability_at_index(4)
+			elif event.is_action("game_ability_06"):
+				round_status_panel.ability_panel.activate_ability_at_index(5)
+			elif event.is_action("game_ability_07"):
+				round_status_panel.ability_panel.activate_ability_at_index(6)
+			elif event.is_action("game_ability_08"):
+				round_status_panel.ability_panel.activate_ability_at_index(7)
+				
+				
+			elif event.is_action("game_tower_targeting_left"):
+				targeting_panel.cycle_targeting_left()
+			elif event.is_action("game_tower_targeting_right"):
+				targeting_panel.cycle_targeting_right()
 			
-		elif event.is_action_pressed("game_round_toggle"):
-			right_side_panel.round_status_panel._on_RoundStatusButton_pressed()
 			
-		elif event.scancode == KEY_ESCAPE:
-			_esc_pressed()
-			
-		elif event.is_action_pressed("game_tower_sell"):
-			_sell_hovered_tower()
-			
-			
-			
-		elif event.is_action("game_ability_01"):
-			round_status_panel.ability_panel.activate_ability_at_index(0)
-		elif event.is_action("game_ability_02"):
-			round_status_panel.ability_panel.activate_ability_at_index(1)
-		elif event.is_action("game_ability_03"):
-			round_status_panel.ability_panel.activate_ability_at_index(2)
-		elif event.is_action("game_ability_04"):
-			round_status_panel.ability_panel.activate_ability_at_index(3)
-		elif event.is_action("game_ability_05"):
-			round_status_panel.ability_panel.activate_ability_at_index(4)
-		elif event.is_action("game_ability_06"):
-			round_status_panel.ability_panel.activate_ability_at_index(5)
-		elif event.is_action("game_ability_07"):
-			round_status_panel.ability_panel.activate_ability_at_index(6)
-		elif event.is_action("game_ability_08"):
-			round_status_panel.ability_panel.activate_ability_at_index(7)
-		
+		else: # if there is wholescreen gui
+			if event.scancode == KEY_ESCAPE:
+				_esc_with_wholescreen_gui_pressed()
 
 
-func _esc_pressed():
+#
+
+func _esc_no_wholescreen_gui_pressed():
 	if input_prompt_manager.current_selection_mode != InputPromptManager.SelectionMode.NONE:
 		input_prompt_manager.cancel_selection()
 
@@ -229,4 +255,5 @@ func _sell_hovered_tower():
 	if tower != null and !tower.is_being_dragged:
 		tower.sell_tower()
 
-
+func _esc_with_wholescreen_gui_pressed():
+	whole_screen_gui.hide_control(whole_screen_gui.current_showing_control)

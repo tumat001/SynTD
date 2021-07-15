@@ -52,8 +52,8 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 			energy_battery_panel = EnergyBatteryPanel_Scene.instance()
 			energy_battery_panel.energy_battery = energy_battery
 		
-		if !game_elements.extra_side_panel.get_children().has(energy_battery_panel):
-			game_elements.extra_side_panel.add_child(energy_battery_panel)
+		if !game_elements.synergy_interactable_panel.has_synergy_interactable(energy_battery_panel):
+			game_elements.synergy_interactable_panel.add_synergy_interactable(energy_battery_panel)
 		
 		
 		if game_elements.stage_round_manager.round_started:

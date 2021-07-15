@@ -161,7 +161,7 @@ func _breeze_ability_activated():
 	breeze_screen_effect.main_duration = 1.5
 	breeze_screen_effect.fade_in_duration = 0.5
 	breeze_screen_effect.fade_out_duration = 0.5
-	breeze_screen_effect.tint_color = Color(186.0 / 255.0, 0.99, 0.99, 0.4)
+	breeze_screen_effect.tint_color = Color(186.0 / 255.0, 0.99, 0.99, 0.15)
 	breeze_screen_effect.ins_uuid = StoreOfScreenEffectsUUID.BLUE_BREEZE
 	breeze_screen_effect.custom_z_index = ZIndexStore.SCREEN_EFFECTS
 	game_elements.screen_effect_manager.add_screen_tint_effect(breeze_screen_effect)

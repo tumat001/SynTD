@@ -123,7 +123,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance._set_round_started(_is_round_on_going)
 	
 	# TODO TEMPORARY
-	tower_instance.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.LEVEL, 2)
+	tower_instance.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.LEVEL, 4)
 
 
 # Color and grouping related

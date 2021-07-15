@@ -111,10 +111,10 @@ signal energy_module_detached
 signal heat_module_should_be_displayed_changed
 
 
-
 export var tower_highlight_sprite : Resource
 
 var tower_id : int
+
 
 enum DisabledFromAttackingSource {
 	
@@ -451,8 +451,8 @@ func _process(delta):
 		position.x = mouse_pos.x
 		position.y = mouse_pos.y
 	
-	# timebounded
 	
+	# timebounded
 	_decrease_time_of_timebounded(delta)
 
 
