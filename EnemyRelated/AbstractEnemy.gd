@@ -93,19 +93,21 @@ func _ready():
 	infobar.rect_position.y -= round((_self_size.y) + 11)
 	infobar.rect_position.x -= round(healthbar.get_bar_fill_foreground_size().x / 2)
 	
-	connect("on_current_health_changed", healthbar, "set_current_value")
+	connect("on_current_health_changed", healthbar, "set_current_value", [], CONNECT_PERSIST)
+	connect("on_max_health_changed", healthbar, "set_max_value", [], CONNECT_PERSIST)
 	
 	calculate_final_armor()
 	calculate_final_toughness()
 	calculate_final_resistance()
 	calculate_final_movement_speed()
 	calculate_max_health()
+	
+	_post_ready()
 
 func _post_ready():
 	healthbar.current_value = current_health
 	
-	# TODO INSTEAD OF base_health, make it "calculate_..."
-	healthbar.max_value = base_health
+	healthbar.max_value = _last_calculated_max_health
 	healthbar.redraw_chunks()
 
 
@@ -138,9 +140,10 @@ func calculate_max_health() -> float:
 		max_health += effect.attribute_as_modifier.get_modification_to_value(base_health)
 	
 	for effect in _flat_base_health_id_effect_map.values():
-		max_health += effect.attribute_as_modifier.get_modification_to_value(max_health)
+		max_health += effect.attribute_as_modifier.flat_modifier
 	
 	_last_calculated_max_health = max_health
+	emit_signal("on_max_health_changed", _last_calculated_max_health)
 	return max_health
 
 func heal_without_overhealing(heal_amount):
@@ -162,6 +165,9 @@ func _set_current_health_to(health_amount):
 	
 	emit_signal("on_current_health_changed", current_health)
 
+
+func execute_self_by(source_id : int):
+	_take_unmitigated_damages([[current_health, DamageType.PURE, source_id]])
 
 # The only function that should handle taking
 # damage and health deduction. Also where
@@ -235,45 +241,38 @@ func add_percent_base_health_effect(effect : EnemyAttributesEffect, with_heal : 
 		current_health = _last_calculated_max_health
 	
 	if with_heal:
-		var heal = old_max_health - _last_calculated_max_health
+		var heal = _last_calculated_max_health - old_max_health
 		if heal > 0:
 			heal_without_overhealing(heal)
 
 func remove_flat_base_health_effect_preserve_percent(effect_uuid : int):
 	if _flat_base_health_id_effect_map.has(effect_uuid):
-		var flat_mod : FlatModifier = _flat_base_health_id_effect_map[effect_uuid]
+		var flat_mod : FlatModifier = _flat_base_health_id_effect_map[effect_uuid].attribute_as_modifier
 		var flat_remove = flat_mod.flat_modifier
-		_set_current_health_to(PercentPreserver.removed_flat_amount(
-				_last_calculated_max_health, current_health, flat_remove))
 		
+		var old_max = _last_calculated_max_health
 		_flat_base_health_id_effect_map.erase(effect_uuid)
 		calculate_max_health()
+		var new_max = _last_calculated_max_health
+		
+		_set_current_health_to(preserve_percent(old_max, new_max, current_health))
+
 
 func remove_percent_base_health_effect_preserve_percent(effect_uuid : int):
 	if _percent_base_health_id_effect_map.has(effect_uuid):
-		var percent_mod : PercentModifier = _percent_base_health_id_effect_map[effect_uuid]
-		var percent_remove = percent_mod.percent_modifier
-		_set_current_health_to(PercentPreserver.removed_percent_amount(
-				_last_calculated_max_health, current_health, percent_remove))
+		var percent_mod : PercentModifier = _percent_base_health_id_effect_map[effect_uuid].attribute_as_modifier
+		var percent_remove = percent_mod.percent_amount
 		
+		var old_max = _last_calculated_max_health
 		_percent_base_health_id_effect_map.erase(effect_uuid)
 		calculate_max_health()
+		var new_max = _last_calculated_max_health
+		
+		_set_current_health_to(preserve_percent(old_max, new_max, current_health))
 
-class PercentPreserver:
-	
-	static func removed_flat_amount(max_arg : float, 
-			current : float, flat_remove : float) -> float:
-		
-		var initial_ratio = current / max_arg
-		var reduced = max_arg - flat_remove
-		return reduced * initial_ratio
-	
-	static func removed_percent_amount(max_arg : float,
-			current : float, percent_remove : float) -> float:
-		
-		var initial_ratio = current / max_arg
-		var reduced = max_arg * (1 - (percent_remove / 100))
-		return reduced * initial_ratio
+static func preserve_percent(old_max : float, new_max : float, current : float) -> float:
+	var old_ratio = current / old_max
+	return new_max * old_ratio
 
 
 # Calculation of attributes
@@ -460,7 +459,7 @@ func hit_by_damage_instance(damage_instance : DamageInstance, damage_reg_id : in
 	
 	emit_signal("before_damage_instance_is_processed", damage_instance, self)
 	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true), damage_instance)
-	_process_effects(damage_instance.on_hit_effects.duplicate(true))
+	_process_effects(damage_instance.on_hit_effects.duplicate(true), damage_instance.on_hit_effect_multiplier)
 
 
 func _process_on_hit_damages(on_hit_damages : Dictionary, damage_instance):
@@ -499,6 +498,13 @@ func _process_flat_damage(damage_as_modifier : FlatModifier, damage_type : int, 
 
 func _process_direct_damage_and_type(damage : float, damage_type : int, damage_instance : DamageInstance, on_hit_id) -> Array:
 	var final_damage = damage
+	
+	if on_hit_id == StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE:
+		final_damage *= damage_instance.base_damage_multiplier
+	else:
+		final_damage *= damage_instance.on_hit_damage_multiplier
+	
+	
 	if damage_type == DamageType.ELEMENTAL:
 		final_damage *= _calculate_multiplier_from_total_toughness(damage_instance.final_toughness_pierce, damage_instance.final_percent_enemy_toughness_pierce)
 		final_damage *= _calculate_multiplier_from_total_resistance(damage_instance.final_resistance_pierce, damage_instance.final_percent_enemy_resistance_pierce)
@@ -509,21 +515,22 @@ func _process_direct_damage_and_type(damage : float, damage_type : int, damage_i
 		
 	elif damage_type == DamageType.PURE:
 		pass
-		#final_damage *= 1
 	
-	#_take_unmitigated_damage(final_damage, damage_type)
+	if final_damage < 0:
+		final_damage = 0
+	
 	return [final_damage, damage_type, on_hit_id]
 
 
 # Process effects related
 
-func _process_effects(effects : Dictionary):
+func _process_effects(effects : Dictionary, multiplier : float = 1):
 	for effect in effects.values():
-		_add_effect(effect)
+		_add_effect(effect, multiplier)
 
 
-func _add_effect(base_effect : EnemyBaseEffect):
-	var to_use_effect = base_effect._get_copy_scaled_by(1)
+func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1):
+	var to_use_effect = base_effect._get_copy_scaled_by(multiplier)
 	
 	if to_use_effect.status_bar_icon != null:
 		statusbar.add_status_icon(to_use_effect.effect_uuid, to_use_effect.status_bar_icon)
@@ -700,6 +707,11 @@ func _clear_effects():
 	for effect in percent_resistance_id_effect_map.values():
 		_remove_effect(effect)
 	
+	for effect in _flat_base_health_id_effect_map.values():
+		_remove_effect(effect)
+	
+	for effect in _percent_base_health_id_effect_map.values():
+		_remove_effect(effect)
 
 
 # Timebounded related
@@ -760,7 +772,15 @@ func _decrease_time_of_timebounds(delta):
 	
 	for res_eff in percent_resistance_id_effect_map.values():
 		_decrease_time_of_effect(res_eff, delta)
-
+	
+	
+	# Health
+	for res_eff in _flat_base_health_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in _percent_base_health_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
 
 
 func _decrease_time_of_effect(effect, delta : float):

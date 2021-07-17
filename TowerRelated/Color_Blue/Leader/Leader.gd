@@ -369,8 +369,8 @@ func _member_finished_with_main_attack(module, tower):
 func _member_mat_damage_instance_constructed(damage_instance, module, tower):
 	var final_potency = coordinated_attack_ability.get_potency_to_use(last_calculated_final_ability_potency)
 	if final_potency != 1:
-		damage_instance.on_hit_damages = damage_instance.get_copy_scaled_by(final_potency).on_hit_damages
-
+		#damage_instance.on_hit_damages = damage_instance.get_copy_scaled_by(final_potency).on_hit_damages
+		damage_instance.scale_only_damage_by(final_potency)
 
 # Mark Indicator related
 

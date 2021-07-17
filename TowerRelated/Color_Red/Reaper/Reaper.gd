@@ -206,6 +206,7 @@ func _slash_at_enemy():
 		final_modi *= last_calculated_final_ability_potency * slash_ability.last_calculated_final_ability_potency
 		main_on_hit_dmg.damage_as_modifier.flat_modifier = final_modi
 		
+		
 		get_tree().get_root().add_child(slash_aoe)
 		
 		current_slash_subsequent_dmg_reduction_duration = slash_subsequent_dmg_reduction_duration

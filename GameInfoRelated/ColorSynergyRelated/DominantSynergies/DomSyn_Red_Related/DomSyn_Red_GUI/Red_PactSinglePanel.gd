@@ -47,14 +47,13 @@ func _ready():
 func add_pact(pact : Red_BasePact):
 	var pact_card := _create_pact_card(pact)
 	
+	var card_count = pact_card_container.get_children().size()
+	if  card_count >= card_limit:
+		remove_pact(pact_card_container.get_children()[card_count - 1].base_pact)
+	
 	pact_card.connect("pact_card_pressed", self, "_emit_pact_card_clicked", [], CONNECT_PERSIST)
 	pact_card_container.add_child(pact_card)
 	pact_card_container.move_child(pact_card, 0)
-	
-	var card_count = pact_card_container.get_children().size()
-	if  card_count > card_limit:
-		remove_pact(pact_card_container.get_children()[card_count - 1].base_pact)
-
 
 func _create_pact_card(pact : Red_BasePact) -> Red_PactCard:
 	var card = Red_PactCard_Scene.instance()
@@ -73,6 +72,7 @@ func _emit_pact_card_removed(pact):
 func remove_pact(pact : Red_BasePact):
 	for card in pact_card_container.get_children():
 		if card.base_pact == pact:
+			pact_card_container.remove_child(card)
 			_emit_pact_card_removed(card.base_pact)
 			card.queue_free()
 			return

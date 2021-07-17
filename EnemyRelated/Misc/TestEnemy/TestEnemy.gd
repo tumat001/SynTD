@@ -1,11 +1,6 @@
 extends "res://EnemyRelated/AbstractEnemy.gd"
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	_post_ready()
-
-
 func _init():
 	base_health = 54
 	current_health = 54

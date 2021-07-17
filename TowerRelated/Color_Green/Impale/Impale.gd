@@ -83,8 +83,8 @@ func _on_impale_rectract(enemy):
 		dmg_instance.on_hit_effects.erase(StoreOfEnemyEffectsUUID.IMPALE_STUN)
 		
 		if _check_if_within_threshold(enemy):
-			dmg_instance = dmg_instance.get_copy_damage_only_scaled_by(bonus_damage_scale)
-		
+			#dmg_instance = dmg_instance.get_copy_damage_only_scaled_by(bonus_damage_scale)
+			dmg_instance.scale_only_damage_by(bonus_damage_scale)
 		
 		enemy.hit_by_damage_instance(dmg_instance)
 

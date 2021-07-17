@@ -40,7 +40,7 @@ func _init():
 		"",
 		"Synergy level affects the quality and types of unsworn pacts that appear in the shop.",
 		"",
-		"Not having the Red synergy active will cause you to take 10 damage at the end of each round, and no new unsworn pacts will be added."
+		"Not having the Red synergy active while having sworn pacts will cause you to take 10 damage at the end of each round. Also, no new unsworn pacts will be added."
 	],
 	[DomSyn_Red.new()]
 	),

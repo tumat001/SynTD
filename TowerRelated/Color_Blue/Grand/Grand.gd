@@ -148,5 +148,5 @@ func _grand_before_bullet_shot(bullet):
 
 
 func _main_damage_instance_constructed(damage_instance, module):
-	damage_instance.on_hit_damages = damage_instance.get_copy_damage_only_scaled_by(last_calculated_final_ability_potency).on_hit_damages
-
+	#damage_instance.on_hit_damages = damage_instance.get_copy_damage_only_scaled_by(last_calculated_final_ability_potency).on_hit_damages
+	damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)

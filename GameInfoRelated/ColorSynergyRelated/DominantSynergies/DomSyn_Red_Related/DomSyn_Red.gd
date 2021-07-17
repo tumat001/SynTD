@@ -5,6 +5,8 @@ const Red_PactWholePanel_Scene = preload("res://GameInfoRelated/ColorSynergyRela
 const Red_SynergyIconInteractable = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_GUI/Red_SynergyIconInteractable.gd")
 const Red_SynergyIconInteractable_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_GUI/Red_SynergyIconInteractable.tscn")
 
+const Red_BasePact = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Red_BasePact.gd")
+
 const red_inactive_health_deduct : float = 10.0
 
 var game_elements : GameElements
@@ -13,6 +15,8 @@ var red_pact_whole_panel : Red_PactWholePanel
 var pact_decider_rng : RandomNumberGenerator
 var tier_3_pacts_uuids : Array = []
 var tier_2_pacts_uuids : Array = []
+var tier_1_pacts_uuids : Array = []
+var tier_0_pacts_uuids : Array = []
 
 var syn_icon_interactable : Red_SynergyIconInteractable
 
@@ -46,6 +50,9 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 			var pact = _generate_random_untaken_tier_3_pact()
 			if pact != null:
 				red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
+		
+		# debugging only
+		red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.TIGER_SOUL, 0))
 	
 	
 	if syn_icon_interactable == null:
@@ -62,7 +69,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	
 	._apply_syn_to_game_elements(arg_game_elements, tier)
 
-
+# ini pacts
 func _initialize_tier_3_pacts():
 	tier_3_pacts_uuids.append(StoreOfPactUUID.FIRST_IMPRESSION)
 	tier_3_pacts_uuids.append(StoreOfPactUUID.SECOND_IMPRESSION)
@@ -70,49 +77,77 @@ func _initialize_tier_3_pacts():
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PLAYING_WITH_FIRE)
 	tier_3_pacts_uuids.append(StoreOfPactUUID.FUTURE_SIGHT)
 
+
 func _initialize_tier_2_pacts():
 	tier_2_pacts_uuids.append(StoreOfPactUUID.FIRST_IMPRESSION)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.SECOND_IMPRESSION)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.A_CHALLENGE)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PLAYING_WITH_FIRE)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.FUTURE_SIGHT)
-
-
-
-func _generate_random_untaken_tier_3_pact():
-	var copy_of_tier_3s = tier_3_pacts_uuids.duplicate()
-	for pact_uuid in red_pact_whole_panel.unsworn_pact_list.get_all_pact_uuids():
-		copy_of_tier_3s.erase(pact_uuid)
-	for pact_uuid in red_pact_whole_panel.sworn_pact_list.get_all_pact_uuids():
-		copy_of_tier_3s.erase(pact_uuid)
 	
-	if copy_of_tier_3s.size() > 0:
-		var pact_uuid : int = copy_of_tier_3s[pact_decider_rng.randi_range(0, copy_of_tier_3s.size() - 1)]
-		var pact = StoreOfPactUUID.construct_pact(pact_uuid, 3)
-		
-		if pact_uuid == StoreOfPactUUID.FUTURE_SIGHT and pact != null:
-			pact.red_syn = self
-		
-		return pact
+	tier_2_pacts_uuids.append(StoreOfPactUUID.DRAGON_SOUL)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.TIGER_SOUL)
+
+
+func _initialize_tier_1_pacts():
+	tier_1_pacts_uuids.append(StoreOfPactUUID.FIRST_IMPRESSION)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.SECOND_IMPRESSION)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.A_CHALLENGE)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PLAYING_WITH_FIRE)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.FUTURE_SIGHT)
+	
+	tier_1_pacts_uuids.append(StoreOfPactUUID.DRAGON_SOUL)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.TIGER_SOUL)
+
+
+func _initialize_tier_0_pacts():
+	tier_0_pacts_uuids.append(StoreOfPactUUID.FIRST_IMPRESSION)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.SECOND_IMPRESSION)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.A_CHALLENGE)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PLAYING_WITH_FIRE)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.FUTURE_SIGHT)
+	
+	tier_0_pacts_uuids.append(StoreOfPactUUID.DRAGON_SOUL)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.TIGER_SOUL)
+
+
+#
+func _generate_random_untaken_tier_3_pact() -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_3_pacts_uuids, 3)
+
+func _generate_random_untaken_tier_2_pact() -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_2_pacts_uuids, 2)
+
+func _generate_random_untaken_tier_1_pact() -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_1_pacts_uuids, 1)
+
+func _generate_random_untaken_tier_0_pact() -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_0_pacts_uuids, 0)
+
+
+
+func _generate_random_untaken_pact_from_source(source : Array, tier) -> Red_BasePact:
+	var copy = source.duplicate()
+	for pact_uuid in red_pact_whole_panel.unsworn_pact_list.get_all_pact_uuids():
+		copy.erase(pact_uuid)
+	for pact_uuid in red_pact_whole_panel.sworn_pact_list.get_all_pact_uuids():
+		copy.erase(pact_uuid)
+	
+	if copy.size() > 0:
+		var pact_uuid : int = copy[pact_decider_rng.randi_range(0, copy.size() - 1)]
+		return _generate_pact_with_tier(pact_uuid, tier)
 	else:
 		return null
 
-func _generate_random_untaken_tier_2_pact():
-	var copy_of_tier_2s = tier_2_pacts_uuids.duplicate()
-	for pact_uuid in red_pact_whole_panel.unsworn_pact_list.get_all_pact_uuids():
-		copy_of_tier_2s.erase(pact_uuid)
-	for pact_uuid in red_pact_whole_panel.sworn_pact_list.get_all_pact_uuids():
-		copy_of_tier_2s.erase(pact_uuid)
+func _generate_pact_with_tier(pact_uuid : int, tier : int) -> Red_BasePact:
+	var pact = StoreOfPactUUID.construct_pact(pact_uuid, tier)
 	
-	if copy_of_tier_2s.size() > 0:
-		var pact_uuid : int = copy_of_tier_2s[pact_decider_rng.randi_range(0, copy_of_tier_2s.size() - 1)]
-		var pact = StoreOfPactUUID.construct_pact(pact_uuid, 2)
-		
-		if pact_uuid == StoreOfPactUUID.FUTURE_SIGHT:
-			pact.red_syn = self
-	else:
-		return null
+	if pact_uuid == StoreOfPactUUID.FUTURE_SIGHT:
+		pact.red_syn = self
+	
+	return pact
 
+#
 
 func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int):
 	if game_elements.stage_round_manager.is_connected("round_ended", self, "_on_round_end"):
@@ -130,7 +165,7 @@ func _on_round_end(curr_stageround):
 	var pact
 	
 	if curr_tier == 1:
-		pass
+		pact = _generate_random_untaken_tier_1_pact()
 	elif curr_tier == 2:
 		pact = _generate_random_untaken_tier_2_pact()
 	elif curr_tier == 3:
@@ -152,10 +187,10 @@ func _on_sworn_pact_card_removed(pact):
 #
 
 func _on_round_end_red_inactive(curr_stageround):
-	game_elements.health_manager.decrease_health_by(red_inactive_health_deduct, game_elements.HealthManager.DecreaseHealthSource.SYNERGY)
+	if red_pact_whole_panel.sworn_pact_list.get_pact_count() > 0:
+		game_elements.health_manager.decrease_health_by(red_inactive_health_deduct, game_elements.HealthManager.DecreaseHealthSource.SYNERGY)
 
 #
 
 func _on_show_syn_shop():
 	game_elements.whole_screen_gui.show_control(red_pact_whole_panel)
-

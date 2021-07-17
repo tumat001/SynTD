@@ -10,12 +10,14 @@ func _init(arg_tier : int).(StoreOfPactUUID.PLAYING_WITH_FIRE, "Playing With Fir
 	var possible_damage_gain_values : Array
 	
 	if tier == 0:
-		pass
+		possible_speed_gain_values = [120, 130, 140]
+		possible_damage_gain_values = [19, 20, 21]
 	elif tier == 1:
-		pass
+		possible_speed_gain_values = [80, 85, 90]
+		possible_damage_gain_values = [11, 12, 13]
 	elif tier == 2:
-		possible_speed_gain_values = [55, 65, 70]
-		possible_damage_gain_values = [4, 5, 6]
+		possible_speed_gain_values = [55, 60, 65]
+		possible_damage_gain_values = [5, 6, 7]
 	elif tier == 3:
 		possible_speed_gain_values = [40, 45, 50]
 		possible_damage_gain_values = [3, 4, 5]
@@ -43,6 +45,9 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 		game_elements.tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy", [], CONNECT_PERSIST)
 		game_elements.tower_manager.connect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy", [], CONNECT_PERSIST)
 	
+	var towers = game_elements.tower_manager.get_all_active_towers()
+	for tower in towers:
+		_tower_to_benefit_from_synergy(tower)
 
 
 func _first_enemy_escaped(enemy, first_damage):
@@ -54,7 +59,10 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 		game_elements.enemy_manager.disconnect("first_enemy_escaped", self, "_first_enemy_escaped")
 		game_elements.tower_manager.disconnect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy")
 		game_elements.tower_manager.disconnect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy")
-
+	
+	var towers = game_elements.tower_manager.get_all_active_towers()
+	for tower in towers:
+		_tower_to_remove_from_synergy(tower)
 
 
 #
@@ -65,7 +73,7 @@ func _tower_to_benefit_from_synergy(tower : AbstractTower):
 
 func _attempt_add_effect_to_tower(tower : AbstractTower):
 	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.RED_PACT_PLAYING_WITH_FIRE_BUFF_GIVER):
-		var effect = TowerEffect_DomSyn_Red_PlayingWithFireBuff.new()
+		var effect = TowerEffect_DomSyn_Red_PlayingWithFireBuff.new(game_elements.health_manager)
 		
 		effect.base_max_attk_speed_amount = attk_speed_gain_val
 		

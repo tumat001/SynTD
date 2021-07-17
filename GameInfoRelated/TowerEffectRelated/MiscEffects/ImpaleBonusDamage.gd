@@ -24,7 +24,8 @@ func _on_enemy_hit_s(enemy, damage_register_id, damage_instance, module):
 		var ratio_health = enemy.current_health / enemy._last_calculated_max_health
 		
 		if ratio_health < bonus_damage_percent_threshold:
-			damage_instance.on_hit_damages = damage_instance.get_copy_damage_only_scaled_by(bonus_damage_new_scale).on_hit_damages
+			#damage_instance.on_hit_damages = damage_instance.get_copy_damage_only_scaled_by(bonus_damage_new_scale).on_hit_damages
+			damage_instance.scale_only_damage_by(bonus_damage_new_scale)
 
 
 func _undo_modifications_to_tower(tower):

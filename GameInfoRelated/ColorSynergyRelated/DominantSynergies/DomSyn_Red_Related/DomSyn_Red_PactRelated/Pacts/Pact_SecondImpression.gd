@@ -20,15 +20,17 @@ func _init(arg_tier : int).(StoreOfPactUUID.SECOND_IMPRESSION, "Second Impressio
 	var possible_loss_values : Array
 	
 	if tier == 0:
-		pass
+		possible_gain_values = [14, 15, 16]
+		possible_loss_values = [-14, -15, -16]
 	elif tier == 1:
-		pass
+		possible_gain_values = [10, 11, 12]
+		possible_loss_values = [-10, -11, -12]
 	elif tier == 2:
-		possible_gain_values = [5, 6, 7]
-		possible_loss_values = [-11, -12, -13]
+		possible_gain_values = [6, 7, 8]
+		possible_loss_values = [-6, -7, -8]
 	elif tier == 3:
 		possible_gain_values = [4, 5, 6]
-		possible_loss_values = [-6, -8, -10]
+		possible_loss_values = [-4, -5, -6]
 	
 	var index_rng = pact_mag_rng.randi_range(0, 2)
 	gain_val = possible_gain_values[index_rng]

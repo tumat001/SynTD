@@ -166,7 +166,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.TESLA,
-			Towers.REAPER,
+			Towers.ADEPT,
 			Towers.CHARGE,
 		])
 	else:

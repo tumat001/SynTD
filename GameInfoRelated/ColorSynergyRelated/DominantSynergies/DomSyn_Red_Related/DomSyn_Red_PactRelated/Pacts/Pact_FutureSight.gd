@@ -31,13 +31,18 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 
 
 func _remove_pact_from_game_elements(arg_game_elements : GameElements):
+	var pact
+	
 	if new_tier == 0:
-		pass
+		pact = red_syn._generate_random_untaken_tier_0_pact()
 	elif new_tier == 1:
-		pass
+		pact = red_syn._generate_random_untaken_tier_1_pact()
 	elif new_tier == 2:
-		pass
+		pact = red_syn._generate_random_untaken_tier_2_pact()
 	elif new_tier == 3:
-		pass
+		pact = red_syn._generate_random_untaken_tier_3_pact()
+	
+	if pact != null:
+		red_syn.red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 	
 	._remove_pact_from_game_elements(arg_game_elements)

@@ -14,22 +14,23 @@ var tower_affected
 
 var health_manager
 
-func _init().(StoreOfTowerEffectsUUID.RED_PACT_PLAYING_WITH_FIRE_BUFF_GIVER):
-	pass
+func _init(arg_health_manager).(StoreOfTowerEffectsUUID.RED_PACT_PLAYING_WITH_FIRE_BUFF_GIVER):
+	health_manager = arg_health_manager
 
 
 func _make_modifications_to_tower(tower):
 	if attk_speed_effect == null:
 		_construct_effect()
 	
-	if tower_affected == null:
-		tower_affected = tower
-		tower_affected.add_tower_effect(attk_speed_effect)
-		_update_effect_modi()
-	
-	health_manager = tower.game_elements.health_manager
 	if !health_manager.is_connected("current_health_changed", self, "_health_changed"):
 		health_manager.connect("current_health_changed", self, "_health_changed", [], CONNECT_PERSIST)
+	
+	tower_affected = tower
+	
+	if !tower_affected.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.RED_PACT_PLAYING_WITH_FIRE_BUFF):
+		tower_affected.add_tower_effect(attk_speed_effect)
+		_update_effect_modi()
+
 
 
 

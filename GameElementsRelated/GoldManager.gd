@@ -7,6 +7,7 @@ enum IncreaseGoldSource {
 	TOWER_SELLBACK,
 	TOWER_EFFECT_RESET,
 	TOWER_GOLD_INCOME,
+	SYNERGY,
 	
 }
 

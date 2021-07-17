@@ -109,7 +109,8 @@ func _on_tower_main_attack_hit(enemy, damage_register_id, damage_instance, modul
 			
 			var explosion = explosion_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
 			explosion.enemies_to_ignore.append(enemy)
-			explosion.damage_instance = explosion.damage_instance.get_copy_damage_only_scaled_by(tower.last_calculated_final_ability_potency)
+			#explosion.damage_instance = explosion.damage_instance.get_copy_damage_only_scaled_by(tower.last_calculated_final_ability_potency)
+			explosion.damage_instance.scale_only_damage_by(tower.last_calculated_final_ability_potency)
 			explosion.scale *= explosion_scale
 			
 			tower.get_tree().get_root().add_child(explosion)
