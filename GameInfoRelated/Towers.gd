@@ -24,6 +24,7 @@ const FlameBurstModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRe
 const AdeptModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/AdeptModuleAdderEffect.gd")
 
 const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
+const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
@@ -42,6 +43,9 @@ const reaper_image = preload("res://TowerRelated/Color_Red/Reaper/Reaper_Omni.pn
 const shocker_image = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Omni.png")
 const adept_image = preload("res://TowerRelated/Color_Red/Adept/Adept_E.png")
 const rebound_image = preload("res://TowerRelated/Color_Red/Rebound/Rebound_E.png")
+const striker_image = preload("res://TowerRelated/Color_Red/Striker/Striker_E.png")
+const hextribute_image = preload("res://TowerRelated/Color_Red/HexTribute/HexTribute_Omni.png")
+const transmutator_image = preload("res://TowerRelated/Color_Red/Transmutator/Transmutator_E.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -102,6 +106,9 @@ enum {
 	SHOCKER = 201,
 	ADEPT = 202,
 	REBOUND = 203,
+	STRIKER = 204,
+	HEXTRIBUTE = 205,
+	TRANSMUTATOR = 206,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -1570,6 +1577,99 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		
+	elif tower_id == STRIKER:
+		info = TowerTypeInformation.new("Striker", tower_id)
+		info.tower_cost = 1
+		info.colors.append(TowerColors.RED)
+		info.tower_tier = 1
+		info.tower_image_in_buy_card = striker_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.725
+		info.base_pierce = 1
+		info.base_range = 125
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Every 3rd main attack deals extra 1 physical damage on hit.",
+			"Every 9th main attack deals extra 2.5 physical damage on hit instead."
+		]
+		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_STRIKER)
+		attr_mod.flat_modifier = 0.75
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_STRIKER, attr_mod, DamageType.PHYSICAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_STRIKER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
+		
+		
+	elif tower_id == HEXTRIBUTE:
+		info = TowerTypeInformation.new("Hextribute", tower_id)
+		info.tower_cost = 6
+		info.colors.append(TowerColors.RED)
+		info.tower_tier = 6
+		info.tower_image_in_buy_card = hextribute_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 2.15
+		info.base_pierce = 1
+		info.base_range = 155
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Each main attack is infused with a hex. Enemies gain curses as effects after reaching a certain number of hexes. Hexes and Curses last indefinitely.",
+			"3 hex: Enemies take extra 1.5 elemental damage from HexTribute's main attack.",
+			"6 hex: Enemies's armor is reduced by 25%.",
+			"9 hex: Enemies's toughness is reduced by 25%.",
+			"12 hex: Enemies become 75% more vulnerable to effects.",
+			"15 hex: Enemy buffs HexTribute to infuse 3 hexes per main attack for the rest of the round.",
+			"210 hex: Executes the enemy."
+		]
+		
+		
+		var effect_vul_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.ING_HEXTRIBUTE_EFFECT_VUL)
+		effect_vul_modi.percent_amount = 50
+		effect_vul_modi.percent_based_on = PercentType.BASE
+		var hextribute_effect_vul_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_EFFECT_VULNERABILITY, effect_vul_modi, StoreOfEnemyEffectsUUID.ING_HEXTRIBUTE_EFFECT_VUL)
+		hextribute_effect_vul_effect.is_timebound = true
+		hextribute_effect_vul_effect.time_in_seconds = 10
+		
+		var on_hit_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(hextribute_effect_vul_effect, StoreOfTowerEffectsUUID.ING_HEXTRIBUTE)
+		
+		
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, on_hit_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ effect vul"
+		
+		
+	elif tower_id == TRANSMUTATOR:
+		info = TowerTypeInformation.new("Transmutator", tower_id)
+		info.tower_cost = 2
+		info.colors.append(TowerColors.RED)
+		info.tower_tier = 2
+		info.tower_image_in_buy_card = transmutator_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.4
+		info.base_pierce = 1
+		info.base_range = 120
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Main attacks cause different effects based on the enemy’s current health",
+			"If the enemy has missing health, the enemy is healed by 300% of this tower's base damage. The enemy is also slowed by 70% for 0.3 seconds.",
+			"If the enemy has full health, the enemy’s maximum health is reduced by 12.5%. This effect does not stack.",
+			"Ability potency increases maximum health percent reduction."
+		]
+		
+		
 	
 	
 	return info
@@ -1668,5 +1768,9 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Adept/Adept.tscn")
 	elif tower_id == REBOUND:
 		return load("res://TowerRelated/Color_Red/Rebound/Rebound.tscn")
-
-
+	elif tower_id == STRIKER:
+		return load("res://TowerRelated/Color_Red/Striker/Striker.tscn")
+	elif tower_id == HEXTRIBUTE:
+		return load("res://TowerRelated/Color_Red/HexTribute/HexTribute.tscn")
+	elif tower_id == TRANSMUTATOR:
+		return load("res://TowerRelated/Color_Red/Transmutator/Transmutator.tscn")

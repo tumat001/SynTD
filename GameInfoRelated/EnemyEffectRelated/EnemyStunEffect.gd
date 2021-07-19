@@ -9,7 +9,7 @@ func _init(arg_duration : float,
 	time_in_seconds = arg_duration
 	is_timebound = true
 	effect_icon = stun_icon
-	description = "Stuns enemies for " + str(time_in_seconds) + " seconds on hit"
+	description = "Stuns enemies for " + str(time_in_seconds) + " seconds on hit."
 
 
 func _get_copy_scaled_by(scale : float):

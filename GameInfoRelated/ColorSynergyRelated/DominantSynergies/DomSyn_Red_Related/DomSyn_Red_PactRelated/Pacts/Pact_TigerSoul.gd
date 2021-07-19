@@ -17,7 +17,7 @@ var enemy_bleed_effect : EnemyDmgOverTimeEffect
 func _init(arg_tier : int).(StoreOfPactUUID.TIGER_SOUL, "Tiger Soul", arg_tier):
 	
 	if tier == 0:
-		player_damage_per_round = 2.5
+		player_damage_per_round = 2
 		enemy_bleed_per_second = 2 #30
 	elif tier == 1:
 		player_damage_per_round = 1.5
@@ -27,11 +27,11 @@ func _init(arg_tier : int).(StoreOfPactUUID.TIGER_SOUL, "Tiger Soul", arg_tier):
 		enemy_bleed_per_second = 0.75 #11.25
 	elif tier == 3:
 		player_damage_per_round = 0.5
-		enemy_bleed_per_second = 0.25 #3.75
+		enemy_bleed_per_second = 0.5 #7.5
 	
 	
 	good_descriptions = [
-		"The Tiger causes bleed to enemies hit by attacks. The bleed deals %s damage per second for %s seconds. Does not stack." % [enemy_bleed_per_second, bleed_duration]
+		"The Tiger causes bleed to enemies hit by attacks. The bleed deals %s physical damage per second for %s seconds. Does not stack." % [enemy_bleed_per_second, bleed_duration]
 	]
 	
 	bad_descriptions = [
@@ -73,7 +73,7 @@ func _on_enemy_spawned(enemy):
 
 func _on_enemy_hit(enemy, damage_reg_id, damage_instance):
 	if enemy != null:
-		enemy._add_effect(enemy_bleed_effect._get_copy_scaled_by(1))
+		enemy._add_effect(enemy_bleed_effect)
 
 
 

@@ -135,7 +135,7 @@ func _ready():
 	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
-	stage_round_manager.end_round()
+	stage_round_manager.end_round(true)
 	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.starting_health = 150
 	health_manager.set_health(150)
@@ -166,8 +166,8 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.TESLA,
-			Towers.ADEPT,
-			Towers.CHARGE,
+			Towers.HEXTRIBUTE,
+			Towers.TRANSMUTATOR,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([

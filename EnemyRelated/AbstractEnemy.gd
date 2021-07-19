@@ -15,6 +15,8 @@ const EnemyClearAllEffects = preload("res://GameInfoRelated/EnemyEffectRelated/E
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
+const EnemyHealEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyHealEffect.gd")
+const EnemyHealOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyHealOverTimeEffect.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
@@ -30,6 +32,8 @@ signal before_damage_instance_is_processed(damage_instance, me)
 signal reached_end_of_path(me)
 signal on_current_health_changed(current_health)
 signal on_max_health_changed(max_health)
+
+signal on_overheal(overheal_amount)
 
 signal effect_removed(effect, me)
 
@@ -60,11 +64,22 @@ var _last_calculated_final_resistance : float
 var base_player_damage : float = 1
 var flat_player_damage_id_effect_map : Dictionary = {}
 var percent_player_damage_id_effect_map : Dictionary = {}
+# final player damage is calculated when enemy escapes
 
 var base_movement_speed : float
 var flat_movement_speed_id_effect_map : Dictionary = {}
 var percent_movement_speed_id_effect_map : Dictionary = {}
 var _last_calculated_final_movement_speed
+
+var base_effect_vulnerability : float = 1
+var flat_effect_vulnerability_id_effect_map : Dictionary = {}
+var percent_effect_vulnerability_id_effect_map : Dictionary = {}
+var last_calculated_final_effect_vulnerability
+
+var base_percent_health_hit_scale : float = 1
+var flat_percent_health_hit_scale_id_effect_map : Dictionary = {}
+var percent_percent_health_hit_scale_id_effect_map : Dictionary = {}
+var last_calculated_percent_health_hit_scale
 
 var distance_to_exit : float
 
@@ -84,6 +99,7 @@ var _stack_id_effects_map : Dictionary = {}
 var _stun_id_effects_map : Dictionary = {}
 var _is_stunned : bool
 var _dmg_over_time_id_effects_map : Dictionary = {}
+var _heal_over_time_id_effects_map : Dictionary = {}
 
 
 # Called when the node enters the scene tree for the first time.
@@ -96,19 +112,21 @@ func _ready():
 	connect("on_current_health_changed", healthbar, "set_current_value", [], CONNECT_PERSIST)
 	connect("on_max_health_changed", healthbar, "set_max_value", [], CONNECT_PERSIST)
 	
+	_post_ready()
+
+func _post_ready():
 	calculate_final_armor()
 	calculate_final_toughness()
 	calculate_final_resistance()
 	calculate_final_movement_speed()
 	calculate_max_health()
+	calculate_effect_vulnerability()
+	calculate_percent_health_hit_scale()
 	
-	_post_ready()
-
-func _post_ready():
+	
 	healthbar.current_value = current_health
-	
 	healthbar.max_value = _last_calculated_max_health
-	healthbar.redraw_chunks()
+	#healthbar.redraw_chunks()
 
 
 func _get_current_anim_size() -> Vector2:
@@ -144,24 +162,88 @@ func calculate_max_health() -> float:
 	
 	_last_calculated_max_health = max_health
 	emit_signal("on_max_health_changed", _last_calculated_max_health)
+	if current_health > _last_calculated_max_health:
+		current_health = _last_calculated_max_health
+		emit_signal("on_current_health_changed", current_health)
+	
 	return max_health
 
-func heal_without_overhealing(heal_amount):
+
+# healing
+
+func heal_from_effect(eff : EnemyHealEffect):
+	var mod = eff.heal_as_modifier
+	if mod is FlatModifier:
+		if eff.allows_overhealing:
+			flat_heal_with_overhealing(mod.flat_modifier)
+		else:
+			flat_heal_without_overhealing(mod.flat_modifier)
+		
+	elif mod is PercentModifier:
+		if eff.allows_overhealing:
+			percent_heal_with_overhealing(mod)
+		else:
+			percent_heal_without_overhealing(mod)
+
+
+func flat_heal_without_overhealing(heal_amount):
+	if heal_amount < 0:
+		heal_amount = 0
+	
 	var total_amount : float = current_health + heal_amount
+	var final_hp_set : float
 	if total_amount > _last_calculated_max_health:
-		current_health = _last_calculated_max_health
+		var diff = _last_calculated_max_health - current_health
+		final_hp_set = current_health + diff
 	else:
-		current_health += heal_amount
+		final_hp_set = current_health + heal_amount
 	
-	emit_signal("on_current_health_changed", current_health)
+	_set_current_health_to(final_hp_set)
 
-func heal_with_overhealing(heal_amount):
-	current_health += heal_amount
+func flat_heal_with_overhealing(heal_amount):
+	if heal_amount < 0:
+		heal_amount = 0
 	
-	emit_signal("on_current_health_changed", current_health)
+	_set_current_health_to(current_health + heal_amount, true)
 
-func _set_current_health_to(health_amount):
+
+func percent_heal_without_overhealing(heal_mod : PercentModifier):
+	var total_amount : float
+	
+	if heal_mod.percent_based_on == PercentType.MAX:
+		total_amount = heal_mod.get_modification_to_value(_last_calculated_max_health)
+	elif heal_mod.percent_based_on == PercentType.BASE:
+		total_amount = heal_mod.get_modification_to_value(base_health)
+	elif heal_mod.percent_based_on == PercentType.CURRENT:
+		total_amount = heal_mod.get_modification_to_value(current_health)
+	elif heal_mod.percent_based_on == PercentType.MISSING:
+		total_amount = heal_mod.get_modification_to_value(_last_calculated_max_health - current_health)
+	
+	flat_heal_without_overhealing(total_amount)
+
+func percent_heal_with_overhealing(heal_mod : PercentModifier):
+	var total_amount : float
+	
+	if heal_mod.percent_based_on == PercentType.MAX:
+		total_amount = heal_mod.get_modification_to_value(_last_calculated_max_health)
+	elif heal_mod.percent_based_on == PercentType.BASE:
+		total_amount = heal_mod.get_modification_to_value(base_health)
+	elif heal_mod.percent_based_on == PercentType.CURRENT:
+		total_amount = heal_mod.get_modification_to_value(current_health)
+	elif heal_mod.percent_based_on == PercentType.MISSING:
+		total_amount = heal_mod.get_modification_to_value(_last_calculated_max_health - current_health)
+	
+	flat_heal_with_overhealing(total_amount)
+
+#
+
+func _set_current_health_to(health_amount, from_overheal : bool = false):
 	current_health = health_amount
+	
+	if current_health > _last_calculated_max_health:
+		if from_overheal:
+			emit_signal("on_overheal", current_health - _last_calculated_max_health)
+		current_health = _last_calculated_max_health
 	
 	emit_signal("on_current_health_changed", current_health)
 
@@ -186,7 +268,7 @@ func _take_unmitigated_damages(damages_and_types : Array):
 		if current_health > 0:
 			effective_on_hit_report = on_hit_report
 			
-			current_health -= damage_amount
+			_set_current_health_to(current_health - damage_amount)
 			
 			if current_health <= 0:
 				var effective_damage = damage_amount + current_health
@@ -204,8 +286,6 @@ func _take_unmitigated_damages(damages_and_types : Array):
 		
 	else:
 		emit_signal("on_post_mitigated_damage_taken", damage_instance_report, false, self)
-		emit_signal("on_current_health_changed", current_health)
-
 
 
 func _destroy_self():
@@ -225,25 +305,21 @@ func add_flat_base_health_effect(effect : EnemyAttributesEffect, with_heal : boo
 	_flat_base_health_id_effect_map[effect.effect_uuid] = effect
 	var old_max_health = _last_calculated_max_health
 	calculate_max_health()
-	if current_health > _last_calculated_max_health:
-		current_health = _last_calculated_max_health
 	
 	if with_heal:
 		var heal = _last_calculated_max_health - old_max_health
 		if heal > 0:
-			heal_without_overhealing(heal)
+			flat_heal_without_overhealing(heal)
 
 func add_percent_base_health_effect(effect : EnemyAttributesEffect, with_heal : bool = true):
 	_percent_base_health_id_effect_map[effect.effect_uuid] = effect
 	var old_max_health = _last_calculated_max_health
 	calculate_max_health()
-	if current_health > _last_calculated_max_health:
-		current_health = _last_calculated_max_health
 	
 	if with_heal:
 		var heal = _last_calculated_max_health - old_max_health
 		if heal > 0:
-			heal_without_overhealing(heal)
+			flat_heal_without_overhealing(heal)
 
 func remove_flat_base_health_effect_preserve_percent(effect_uuid : int):
 	if _flat_base_health_id_effect_map.has(effect_uuid):
@@ -319,6 +395,29 @@ func calculate_final_resistance() -> float:
 	_last_calculated_final_resistance = final_resistance
 	return final_resistance
 
+func calculate_effect_vulnerability() -> float:
+	#All percent modifiers here are to BASE values only
+	var final_effect_vul = base_effect_vulnerability
+	for effect in percent_effect_vulnerability_id_effect_map.values():
+		final_effect_vul += effect.attribute_as_modifier.get_modification_to_value(base_effect_vulnerability)
+	
+	for effect in flat_effect_vulnerability_id_effect_map.values():
+		final_effect_vul += effect.attribute_as_modifier.flat_modifier
+	
+	last_calculated_final_effect_vulnerability = final_effect_vul
+	return final_effect_vul
+
+func calculate_percent_health_hit_scale() -> float:
+	#All percent modifiers here are to BASE values only
+	var final_scale = base_percent_health_hit_scale
+	for effect in percent_percent_health_hit_scale_id_effect_map.values():
+		final_scale += effect.attribute_as_modifier.get_modification_to_value(base_percent_health_hit_scale)
+	
+	for effect in flat_percent_health_hit_scale_id_effect_map.values():
+		final_scale += effect.attribute_as_modifier.flat_modifier
+	
+	last_calculated_percent_health_hit_scale = final_scale
+	return final_scale
 
 # damage multiplier
 
@@ -486,10 +585,9 @@ func _process_percent_damage(damage_as_modifier: PercentModifier, damage_type : 
 	elif percent_type == PercentType.CURRENT:
 		damage_as_flat = damage_as_modifier.get_modification_to_value(current_health)
 	elif percent_type == PercentType.MISSING:
-		var missing_health = _last_calculated_max_health - current_health
-		if missing_health < 0:
-			missing_health = 0
-		damage_as_flat = damage_as_modifier.get_modification_to_value(missing_health)
+		damage_as_flat = damage_as_modifier.get_modification_to_value(_last_calculated_max_health - current_health)
+	
+	damage_as_flat *= last_calculated_percent_health_hit_scale
 	
 	return _process_direct_damage_and_type(damage_as_flat, damage_type, damage_instance, on_hit_id)
 
@@ -530,6 +628,7 @@ func _process_effects(effects : Dictionary, multiplier : float = 1):
 
 
 func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1):
+	multiplier *= last_calculated_final_effect_vulnerability
 	var to_use_effect = base_effect._get_copy_scaled_by(multiplier)
 	
 	if to_use_effect.status_bar_icon != null:
@@ -609,7 +708,33 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1):
 			add_flat_base_health_effect(to_use_effect)
 		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_HEALTH:
 			add_percent_base_health_effect(to_use_effect)
+			
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_EFFECT_VULNERABILITY:
+			flat_effect_vulnerability_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_effect_vulnerability()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_EFFECT_VULNERABILITY:
+			percent_effect_vulnerability_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_effect_vulnerability()
+			
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_PERCENT_HEALTH_HIT_SCALE:
+			flat_percent_health_hit_scale_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_percent_health_hit_scale()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_PERCENT_HEALTH_HIT_SCALE:
+			percent_percent_health_hit_scale_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_percent_health_hit_scale()
+			
+			
 		
+		# HEAL EFFECTS not affected by effect vul
+	elif to_use_effect is EnemyHealOverTimeEffect:
+		_heal_over_time_id_effects_map[to_use_effect.effect_uuid] = base_effect._get_copy_scaled_by(1)
+		
+	elif to_use_effect is EnemyHealEffect:
+		heal_from_effect(base_effect._get_copy_scaled_by(1))
 
 
 func _remove_effect(base_effect : EnemyBaseEffect):
@@ -663,7 +788,27 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 			remove_flat_base_health_effect_preserve_percent(base_effect.effect_uuid)
 		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_HEALTH:
 			remove_percent_base_health_effect_preserve_percent(base_effect.effect_uuid)
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_EFFECT_VULNERABILITY:
+			flat_effect_vulnerability_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_effect_vulnerability()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_EFFECT_VULNERABILITY:
+			percent_effect_vulnerability_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_effect_vulnerability()
+			
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_PERCENT_HEALTH_HIT_SCALE:
+			flat_percent_health_hit_scale_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_percent_health_hit_scale()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_PERCENT_HEALTH_HIT_SCALE:
+			percent_percent_health_hit_scale_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_percent_health_hit_scale()
+			
 		
+	elif base_effect is EnemyHealOverTimeEffect:
+		_heal_over_time_id_effects_map.erase(base_effect.effect_uuid)
 		
 	
 	if base_effect != null:
@@ -711,6 +856,24 @@ func _clear_effects():
 		_remove_effect(effect)
 	
 	for effect in _percent_base_health_id_effect_map.values():
+		_remove_effect(effect)
+	
+	
+	for effect in flat_effect_vulnerability_id_effect_map.values():
+		_remove_effect(effect)
+	
+	for effect in percent_effect_vulnerability_id_effect_map.values():
+		_remove_effect(effect)
+	
+	
+	for effect in flat_percent_health_hit_scale_id_effect_map.values():
+		_remove_effect(effect)
+	
+	for effect in percent_percent_health_hit_scale_id_effect_map.values():
+		_remove_effect(effect)
+	
+	
+	for effect in _heal_over_time_id_effects_map.values():
 		_remove_effect(effect)
 
 
@@ -779,6 +942,28 @@ func _decrease_time_of_timebounds(delta):
 		_decrease_time_of_effect(res_eff, delta)
 	
 	for res_eff in _percent_base_health_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in flat_effect_vulnerability_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in percent_effect_vulnerability_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	
+	for res_eff in flat_percent_health_hit_scale_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in percent_percent_health_hit_scale_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	
+	for res_eff in _heal_over_time_id_effects_map.values():
+		res_eff._curr_delay_per_tick -= delta
+		if res_eff._curr_delay_per_tick <= 0:
+			heal_from_effect(res_eff)
+			res_eff._curr_delay_per_tick += res_eff.delay_per_tick
+		
 		_decrease_time_of_effect(res_eff, delta)
 	
 

@@ -15,19 +15,22 @@ var domsyn_red_pact_mag_rng : RandomNumberGenerator = RandomNumberGenerator.new(
 
 
 enum RNGSource {
-	RANDOM_TARGETING,
+	NON_ESSENTIAL = -10,
+	RANDOM_TARGETING = 10,
 	
-	COIN, # Choosing of whether bronze, silver or gold coin
-	FRUIT_TREE,
-	PESTILENCE_SPREAD,
+	COIN = 20, # Choosing of whether bronze, silver or gold coin
+	FRUIT_TREE = 21,
+	PESTILENCE_SPREAD = 22,
 	
-	INACCURACY,
+	INACCURACY = 30,
 	
-	DOMSYN_RED_PACT,
-	DOMSYN_RED_PACT_MAGNITUDE,
-	
-	NON_ESSENTIAL,
+	DOMSYN_RED_PACT = 40,
+	DOMSYN_RED_PACT_MAGNITUDE = 41,
 }
+
+func _ready():
+	for rng_id in RNGSource.values():
+		get_rng(rng_id).randomize()
 
 
 func get_rng(rng_source : int) -> RandomNumberGenerator:

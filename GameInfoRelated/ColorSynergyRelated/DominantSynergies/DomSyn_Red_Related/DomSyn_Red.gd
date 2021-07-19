@@ -52,7 +52,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 				red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 		
 		# debugging only
-		red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.TIGER_SOUL, 0))
+		#red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.ADRENALINE, 0))
 	
 	
 	if syn_icon_interactable == null:

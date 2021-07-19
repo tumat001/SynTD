@@ -58,7 +58,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 
 func _enemy_spawned(enemy):
 	if enemy != null:
-		enemy._add_effect(health_gain_effect._get_copy_scaled_by(1))
+		enemy._add_effect(health_gain_effect)
 
 
 func _on_round_end(curr_stageround):

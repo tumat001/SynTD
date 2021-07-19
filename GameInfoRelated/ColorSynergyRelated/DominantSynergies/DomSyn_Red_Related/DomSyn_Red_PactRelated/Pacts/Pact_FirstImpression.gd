@@ -20,17 +20,17 @@ func _init(arg_tier : int).(StoreOfPactUUID.FIRST_IMPRESSION, "First Impression"
 	var possible_loss_values : Array
 	
 	if tier == 0:
-		possible_gain_values = [11, 12, 13]
-		possible_loss_values = [-28, -30, -32]
+		possible_gain_values = [13, 14, 15]
+		possible_loss_values = [-20, -21, -22]
 	elif tier == 1:
 		possible_gain_values = [9, 10, 11]
-		possible_loss_values = [-17, -18, -19]
+		possible_loss_values = [-13, -14, -15]
 	elif tier == 2:
-		possible_gain_values = [6, 7, 8]
-		possible_loss_values = [-10, -11, -12]
+		possible_gain_values = [5, 6, 7]
+		possible_loss_values = [-8, -9, -10]
 	elif tier == 3:
-		possible_gain_values = [3, 4, 5]
-		possible_loss_values = [-7, -8, -9]
+		possible_gain_values = [2, 3, 4]
+		possible_loss_values = [-5, -6, -7]
 	
 	var index_rng = pact_mag_rng.randi_range(0, 2)
 	gain_val = possible_gain_values[index_rng]
@@ -79,15 +79,15 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 
 func _enemy_spawned(enemy):
 	if enemy != null:
-		enemy._add_effect(armor_loss_effect._get_copy_scaled_by(1))
-		enemy._add_effect(toughness_loss_effect._get_copy_scaled_by(1))
+		enemy._add_effect(armor_loss_effect)
+		enemy._add_effect(toughness_loss_effect)
 		enemy.connect("effect_removed", self, "_enemy_lost_effect")
 
 func _enemy_lost_effect(effect, enemy):
 	if effect.effect_uuid == StoreOfEnemyEffectsUUID.RED_PACT_FIRST_IMPRESSION_ARMOR_LOSS:
 		enemy.disconnect("effect_removed", self, "_enemy_lost_effect")
-		enemy._add_effect(armor_gain_effect._get_copy_scaled_by(1))
-		enemy._add_effect(toughness_gain_effect._get_copy_scaled_by(1))
+		enemy._add_effect(armor_gain_effect)
+		enemy._add_effect(toughness_gain_effect)
 
 
 

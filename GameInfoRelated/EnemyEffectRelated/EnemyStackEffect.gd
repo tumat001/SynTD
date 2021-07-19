@@ -27,6 +27,7 @@ func _init(arg_base_effect : EnemyBaseEffect,
 
 func _get_copy_scaled_by(scale : float):
 	var effect
+	
 	if base_effect != null:
 		effect = base_effect._get_copy_scaled_by(scale)
 	
@@ -39,5 +40,6 @@ func _get_copy_scaled_by(scale : float):
 	copy.is_timebound = is_timebound
 	copy.time_in_seconds = time_in_seconds
 	copy.status_bar_icon = status_bar_icon
+	
 	
 	return copy

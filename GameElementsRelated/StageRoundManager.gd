@@ -41,7 +41,10 @@ var enemy_manager : EnemyManager setget _set_enemy_manager
 
 # 
 
-var lost_life_in_round : bool 
+var lost_life_in_round : bool
+
+var current_win_streak : int
+var current_lose_streak : int
 
 
 func set_game_mode_to_normal():
@@ -95,12 +98,20 @@ func _after_round_start():
 
 # Round end related
 
-func end_round():
+func end_round(from_game_start : bool = false):
 	round_started = false
 	
 	_before_round_end()
 	_at_round_end()
 	_after_round_end()
+	
+	if !from_game_start:
+		if lost_life_in_round:
+			current_win_streak = 0
+			current_lose_streak += 1
+		else:
+			current_win_streak += 1
+			current_lose_streak = 0
 	
 	emit_signal("round_ended", current_stageround)
 
@@ -108,8 +119,6 @@ func end_round():
 func _before_round_end():
 	current_stageround_index += 1
 	current_stageround = stagerounds.stage_rounds[current_stageround_index]
-	
-	call_deferred("emit_signal", "end_of_round_gold_earned", current_stageround.end_of_round_gold, GoldManager.IncreaseGoldSource.END_OF_ROUND)
 
 
 func _at_round_end():
@@ -117,6 +126,9 @@ func _at_round_end():
 
 func _after_round_end():
 	enemy_manager.end_run()
+	
+	call_deferred("emit_signal", "end_of_round_gold_earned", current_stageround.end_of_round_gold, GoldManager.IncreaseGoldSource.END_OF_ROUND)
+
 
 
 # If lives lost

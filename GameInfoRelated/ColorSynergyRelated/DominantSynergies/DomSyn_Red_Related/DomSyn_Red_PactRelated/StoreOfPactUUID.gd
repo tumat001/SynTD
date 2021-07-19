@@ -10,7 +10,7 @@ const Pact_PlayingWithFire = preload("res://GameInfoRelated/ColorSynergyRelated/
 const Pact_FutureSight = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_FutureSight.gd")
 const Pact_DragonSoul = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_DragonSoul.gd")
 const Pact_TigerSoul = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_TigerSoul.gd")
-
+const Pact_Adrenaline = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_Adrenaline.gd")
 
 enum {
 	FIRST_IMPRESSION = 100,
@@ -21,6 +21,7 @@ enum {
 	
 	DRAGON_SOUL = 105,
 	TIGER_SOUL = 106,
+	ADRENALINE = 107,
 }
 
 
@@ -47,6 +48,9 @@ func construct_pact(pact_uuid : int, tier : int) -> Red_BasePact:
 		
 	elif pact_uuid == TIGER_SOUL:
 		pact = Pact_TigerSoul.new(tier)
+		
+	elif pact_uuid == ADRENALINE:
+		pact = Pact_Adrenaline.new(tier)
 	
 	
 	return pact

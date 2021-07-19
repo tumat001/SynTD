@@ -88,9 +88,9 @@ func decrease_pierce(amount):
 func reduce_damage_by_beyond_first_multiplier():
 	if _first_hit:
 		_first_hit = false
-		for dmg_id in damage_instance.on_hit_damages.keys():
-			damage_instance.on_hit_damages[dmg_id].damage_as_modifier = damage_instance.on_hit_damages[dmg_id].damage_as_modifier.get_copy_scaled_by(beyond_first_hit_multiplier)
-
+		#for dmg_id in damage_instance.on_hit_damages.keys():
+		#	damage_instance.on_hit_damages[dmg_id].damage_as_modifier = damage_instance.on_hit_damages[dmg_id].damage_as_modifier.get_copy_scaled_by(beyond_first_hit_multiplier)
+		damage_instance.scale_only_damage_by(beyond_first_hit_multiplier)
 
 
 func trigger_on_death_events():

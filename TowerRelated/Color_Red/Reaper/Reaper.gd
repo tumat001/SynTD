@@ -203,7 +203,7 @@ func _slash_at_enemy():
 		else:
 			final_modi = main_attack_module.last_calculated_final_damage * slash_subsequent_damage_ratio
 		
-		final_modi *= last_calculated_final_ability_potency * slash_ability.last_calculated_final_ability_potency
+		final_modi *= slash_ability.get_potency_to_use(last_calculated_final_ability_potency)
 		main_on_hit_dmg.damage_as_modifier.flat_modifier = final_modi
 		
 		

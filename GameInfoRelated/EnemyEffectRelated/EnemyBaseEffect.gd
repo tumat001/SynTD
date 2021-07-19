@@ -2,18 +2,24 @@
 
 enum EffectType {
 	ATTRIBUTES,
+	
 	DAMAGE_OVER_TIME,
 	HEAL_OVER_TIME,
+	
 	STACK_EFFECT,
+	
 	STUN,
+	
+	HEAL,
 	CLEAR_ALL_EFFECTS,
+	
 	MISC,
 }
 
 var effect_uuid : int
 var effect_type : int
 var description : String setget ,_get_overriden_description
-var effect_icon : Texture
+var effect_icon : Texture setget ,_get_overriden_icon
 
 var is_timebound : bool
 var time_in_seconds : float
@@ -35,6 +41,8 @@ func _get_copy_scaled_by(scale : float):
 func _get_overriden_description() -> String:
 	return description
 
+func _get_overriden_icon() -> Texture:
+	return effect_icon
 
 func _reapply(copy):
 	pass

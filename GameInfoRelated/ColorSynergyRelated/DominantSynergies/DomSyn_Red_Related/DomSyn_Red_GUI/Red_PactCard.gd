@@ -39,7 +39,7 @@ func update_display():
 func _convert_number_to_roman_numeral(number : int) -> String:
 	var return_val : String = ""
 	if number == 0:
-		return_val = ""
+		return_val = "0"
 	elif number == 1:
 		return_val = "I"
 	elif number == 2:
