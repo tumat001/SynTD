@@ -17,7 +17,7 @@ func show_control(control : Control, make_background_dark : bool = true):
 		hide_control(current_showing_control, false)
 	
 	#
-	if !get_children().has(control):
+	if !has_control(control):
 		add_child(control)
 	
 	current_showing_control = control
@@ -40,6 +40,25 @@ func hide_control(control : Control, update_vis : bool = true):
 	current_showing_control = null
 	
 	visible = false
+
+
+func has_control(control : Control) -> bool:
+	return get_children().has(control)
+
+func has_control_with_script(script : Reference) -> bool:
+	for child in get_children():
+		if child.get_script() == script:
+			return true
+	
+	return false
+
+func get_control_with_script(script : Reference) -> Control:
+	for child in get_children():
+		if child.get_script() == script:
+			return child
+	
+	return null
+
 
 
 #func _update_visibility_based_on_children():

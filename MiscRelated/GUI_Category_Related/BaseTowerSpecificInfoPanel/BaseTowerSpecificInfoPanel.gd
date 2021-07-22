@@ -23,5 +23,5 @@ func _on_AdvancedButton_pressed_mouse_event(event):
 				about_tooltip = null
 
 
-func _construct_about_tooltip():
-	pass
+func _construct_about_tooltip() -> BaseTooltip:
+	return null

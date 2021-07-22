@@ -10,4 +10,6 @@ enum {
 	YELVIO_SYNERGY = 101,
 	
 	ING_VIOLET_FRUIT = 200,
+	
+	HERO = 1000
 }

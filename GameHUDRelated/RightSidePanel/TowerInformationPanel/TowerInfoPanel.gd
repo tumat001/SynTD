@@ -16,6 +16,8 @@ const Orb_InfoPanel = preload("res://TowerRelated/Color_Blue/Orb/Orb_InfoPanel/O
 const Orb_InfoPanel_Scene = preload("res://TowerRelated/Color_Blue/Orb/Orb_InfoPanel/Orb_InfoPanel.tscn")
 const Wave_InfoPanel = preload("res://TowerRelated/Color_Blue/Wave/Ability/WaveInfoPanel.gd")
 const Wave_InfoPanel_Scene = preload("res://TowerRelated/Color_Blue/Wave/Ability/WaveInfoPanel.tscn")
+const Hero_InfoPanel = preload("res://TowerRelated/Color_White/Hero/HeroInfoPanel_Related/HeroInfoPanel.gd")
+const Hero_InfoPanel_Scene = preload("res://TowerRelated/Color_White/Hero/HeroInfoPanel_Related/HeroInfoPanel.tscn")
 
 var tower : AbstractTower
 
@@ -38,6 +40,7 @@ var _704_info_panel : _704_InfoPanel
 var leader_selection_panel : Leader_SelectionPanel
 var orb_info_panel : Orb_InfoPanel
 var wave_info_panel : Wave_InfoPanel
+var hero_info_panel : Hero_InfoPanel
 
 
 func _ready():
@@ -212,6 +215,19 @@ func _update_tower_specific_info_panel():
 			wave_info_panel.visible = false
 			wave_info_panel.set_wave_tower(null)
 	
+	
+	# Hero
+	if Hero_InfoPanel.should_display_self_for(tower):
+		if hero_info_panel == null:
+			hero_info_panel = Hero_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(hero_info_panel)
+		
+		hero_info_panel.visible = true
+		hero_info_panel.set_hero(tower)
+	else:
+		if hero_info_panel != null:
+			hero_info_panel.visible = false
+			hero_info_panel.set_hero(null)
 	
 	
 	# KEEP THIS AT THE BOTTOM

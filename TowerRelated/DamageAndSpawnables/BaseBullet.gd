@@ -16,6 +16,7 @@ var direction_as_relative_location : Vector2
 var speed
 var life_distance
 var decrease_life_distance : bool = true
+var decrease_pierce : bool = true
 
 var current_life_distance
 
@@ -74,7 +75,9 @@ func hit_by_enemy(enemy):
 	emit_signal("hit_an_enemy", self, enemy)
 
 func decrease_pierce(amount):
-	pierce -= amount
+	if decrease_pierce:
+		pierce -= amount
+	
 	if pierce <= 0:
 		emit_signal("on_zero_pierce", self)
 		

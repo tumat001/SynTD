@@ -125,7 +125,9 @@ func _init():
 	"White" : ColorSynergy.new("White", [TowerColors.WHITE], [1],
 	[tier_dia_pic],
 	syn_dom_white,
-	["WHITE description"]),
+	[
+		"Hero relies on the powers of the color White to channel its powers.",
+	]),
 	
 	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [1],
 	[tier_dia_pic],

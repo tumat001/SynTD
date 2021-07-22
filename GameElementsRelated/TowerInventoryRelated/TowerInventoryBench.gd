@@ -17,6 +17,7 @@ var all_bench_slots : Array
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	z_index = ZIndexStore.TOWER_BENCH
+	z_as_relative = false
 	
 	all_bench_slots = [
 		$BenchSlot01,

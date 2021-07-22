@@ -14,6 +14,7 @@ enum IncreaseGoldSource {
 enum DecreaseGoldSource {
 	
 	TOWER_BUY,
+	TOWER_USE,
 	
 }
 

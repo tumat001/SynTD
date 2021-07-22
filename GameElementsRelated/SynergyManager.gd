@@ -12,9 +12,16 @@ const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 const AbstractTowerModifyingSynergyEffect = preload("res://GameInfoRelated/ColorSynergyRelated/AbstractTowerModifyingSynergyEffect.gd")
 const AbstractGameElementsModifyingSynergyEffect = preload("res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifyingSynergyEffect.gd")
 
+
+signal synergies_updated()
+
+
 var non_active_group_synergies_res : Array
 var non_active_dominant_synergies_res : Array
 var active_synergies_res : Array
+
+var active_dom_color_synergies_res : Array
+var active_compo_color_synergies_res : Array
 
 var previous_active_synergies_res : Array
 
@@ -60,12 +67,18 @@ func update_synergies(towers : Array):
 	var dom_to_activate : Array = ColorSynergyChecker.get_synergies_with_results_to_activate(results_of_dom, 1)
 	var compo_to_activate : Array = ColorSynergyChecker.get_synergies_with_results_to_activate(results_of_compo, 1)
 	
+	active_dom_color_synergies_res = []
+	active_compo_color_synergies_res = []
+	
+	
 	for res in dom_to_activate:
 		syn_res_to_activate.append(res)
 		results_of_dom.erase(res)
+		active_dom_color_synergies_res.append(res)
 	for res in compo_to_activate:
 		syn_res_to_activate.append(res)
 		results_of_compo.erase(res)
+		active_compo_color_synergies_res.append(res)
 	
 	# Assign-ments
 	
@@ -78,6 +91,8 @@ func update_synergies(towers : Array):
 	_update_synergy_displayer()
 	
 	_apply_active_synergies_and_remove_old(previous_active_synergies_res)
+	call_deferred("emit_signal", "synergies_updated")
+
 
 # Synergy Calculation
 

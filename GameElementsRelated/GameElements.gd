@@ -19,6 +19,7 @@ const SelectionNotifPanel = preload("res://GameHUDRelated/NotificationPanel/Sele
 const ScreenEffectsManager = preload("res://GameElementsRelated/ScreenEffectsManager.gd")
 const SynergyInteractablePanel = preload("res://GameHUDRelated/SynergyPanel/SynergyInteractablePanel.gd")
 const WholeScreenGUI = preload("res://GameElementsRelated/WholeScreenGUI.gd")
+const RelicManager = preload("res://GameElementsRelated/RelicManager.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var in_map_placables_manager : InMapPlacablesManager
@@ -35,6 +36,7 @@ var enemy_manager : EnemyManager
 var ability_manager : AbilityManager
 var input_prompt_manager : InputPromptManager
 var screen_effect_manager : ScreenEffectsManager
+var relic_manager : RelicManager
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
@@ -49,7 +51,6 @@ func _ready():
 	panel_buy_sell_level_roll = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel
 	in_map_placables_manager = $MapManager/InMapPlacablesManager
 	synergy_manager = $SynergyManager
-	synergy_manager.left_panel = $LeftsidePanel
 	inner_bottom_panel = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel
 	right_side_panel = $RightSidePanel
 	tower_inventory_bench = $TowerInventoryBench
@@ -61,9 +62,8 @@ func _ready():
 	ability_manager = $AbilityManager
 	input_prompt_manager = $InputPromptManager
 	screen_effect_manager = $ScreenEffectsManager
-	whole_screen_gui = $WSContainer/WholeScreenGUI
-	
-	$WSContainer.layer = ZIndexStore.WHOLE_SCREEN_GUI
+	whole_screen_gui = $WholeScreenGUI
+	relic_manager = $RelicManager
 	
 	targeting_panel = right_side_panel.tower_info_panel.targeting_panel
 	tower_info_panel = right_side_panel.tower_info_panel
@@ -91,10 +91,12 @@ func _ready():
 	tower_manager.synergy_manager = synergy_manager
 	tower_manager.tower_info_panel = right_side_panel.tower_info_panel
 	tower_manager.input_prompt_manager = input_prompt_manager
+	tower_manager.game_elements = self
 	
 	# syn manager
 	synergy_manager.tower_manager = tower_manager
 	synergy_manager.game_elements = self
+	synergy_manager.left_panel = $LeftsidePanel
 	
 	# gold manager
 	gold_manager.gold_amount_label = $BottomPanel/HBoxContainer/VBoxContainer/GoldPanel/MarginContainer3/MarginContainer2/GoldAmountLabel
@@ -139,7 +141,7 @@ func _ready():
 	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.starting_health = 150
 	health_manager.set_health(150)
-	
+	#relic_manager.increase_relic_count_by(5, RelicManager.IncreaseRelicSource.ROUND)
 	
 
 
@@ -167,7 +169,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.RE,
 			Towers.TESLA,
 			Towers.HEXTRIBUTE,
-			Towers.TRANSMUTATOR,
+			Towers.HERO,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([

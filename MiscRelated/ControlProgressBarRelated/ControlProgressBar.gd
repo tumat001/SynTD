@@ -13,6 +13,7 @@ export(float) var fill_foreground_margin_left : float
 
 export(int) var max_value : float = 5 setget set_max_value
 export(int) var current_value : float = 5 setget set_current_value
+export(bool) var allow_overflow : bool = false setget set_overflow
 
 var scale_of_scale : Vector2 = Vector2(1, 1)
 
@@ -64,6 +65,9 @@ func set_current_value(value : float):
 		if yield_before_update:
 			yield(get_tree(), "idle_frame")
 		
+		if !allow_overflow and ratio > 1:
+			ratio = 1
+		
 		fill_foreground.rect_scale.x = ratio
 
 
@@ -82,6 +86,11 @@ func set_value_per_chunk(value : float):
 	value_per_chunk = value
 	
 	redraw_chunks()
+
+func set_overflow(value : bool):
+	allow_overflow = value
+	
+	set_current_value(current_value)
 
 
 # Chunks related

@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseTowerSpecificInfoPanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://MiscRelated/ControlProgressBarRelated/ControlProgressBar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://TowerRelated/Color_White/Hero/HeroGUI_Related/GUIAssets/XPBar_Background.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_White/Hero/HeroGUI_Related/GUIAssets/XPBar_Fill.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_White/Hero/HeroGUI_Related/GUIParts/HeroXPBar_Panel.gd" type="Script" id=5]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseTowerSpecificInfoPanel_BodyBackground.png" type="Texture" id=6]
+
+[node name="HeroXPBar_Panel" instance=ExtResource( 1 )]
+script = ExtResource( 5 )
+
+[node name="VBoxContainer" parent="." index="0"]
+margin_bottom = 16.0
+
+[node name="MarginContainer" parent="VBoxContainer/HeaderMarginer" index="0"]
+margin_left = 30.0
+margin_right = 80.0
+size_flags_horizontal = 6
+
+[node name="MarginContainer" parent="VBoxContainer/HeaderMarginer/MarginContainer" index="1"]
+margin_left = 9.0
+margin_right = 41.0
+
+[node name="Label" parent="VBoxContainer/HeaderMarginer/MarginContainer/MarginContainer" index="0"]
+margin_right = 32.0
+text = "Hero EXP"
+
+[node name="BodyMarginer" parent="VBoxContainer" index="2"]
+margin_bottom = 15.0
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/BodyMarginer" index="0"]
+margin_right = 110.0
+margin_bottom = 1.0
+texture = ExtResource( 6 )
+stretch_mode = 2
+
+[node name="HeroXPBar" parent="VBoxContainer/BodyMarginer" index="1" instance=ExtResource( 2 )]
+margin_left = 55.0
+margin_right = 55.0
+margin_bottom = 1.0
+size_flags_horizontal = 6
+bar_background_pic = ExtResource( 3 )
+fill_foreground_pic = ExtResource( 4 )
+fill_foreground_margin_top = 1.0
+fill_foreground_margin_left = 1.0
+yield_before_update = true
+
+[node name="BottomBorder" parent="VBoxContainer" index="3"]
+margin_top = 15.0
+margin_bottom = 16.0

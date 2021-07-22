@@ -19,9 +19,9 @@ func set_tooltip_owner(arg_owner : Control):
 
 
 func _tooltip_owner_visibility_changed():
-	if tooltip_owner.visible == false:
-		tooltip_owner = null
-		queue_free()
+	#if tooltip_owner.visible == false:
+	tooltip_owner = null
+	queue_free()
 
 func _tooltip_owner_mouse_exited():
 	tooltip_owner = null

@@ -96,6 +96,9 @@ const telsa_image = preload("res://TowerRelated/Color_Violet/Tesla/Tesla.png")
 const chaos_image = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_01.png")
 const ping_image = preload("res://TowerRelated/Color_Violet/Ping/PingWholeBody.png")
 
+# WHITE
+const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
+
 enum {
 	# GRAY (100)
 	MONO = 100,
@@ -159,9 +162,11 @@ enum {
 	CHAOS = 703,
 	PING = 704,
 	
+	# OTHERS (900)
+	HERO = 900,
+	
 	
 	# MISC (2000)
-	
 	FRUIT_TREE_FRUIT = 2000, #THIS VALUE IS HARDCODED IN AbstractTower's can_accept_ingredient..
 }
 
@@ -384,9 +389,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == CHAOS:
 		info = TowerTypeInformation.new("CHAOS", CHAOS)
-		info.tower_cost = 5
+		info.tower_cost = 6
 		info.colors.append(TowerColors.VIOLET)
-		info.tower_tier = 5
+		info.tower_tier = 6
 		info.tower_image_in_buy_card = chaos_image
 		
 		info.base_damage = 1.5
@@ -1670,6 +1675,27 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
+	elif tower_id == HERO:
+		info = TowerTypeInformation.new("Hero", tower_id)
+		info.tower_cost = 2
+		info.colors.append(TowerColors.WHITE)
+		info.tower_tier = 2
+		info.tower_image_in_buy_card = hero_image
+		
+		info.base_damage = 1.75
+		info.base_attk_speed = 0.90
+		info.base_pierce = 1
+		info.base_range = 140
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
+			"Levels are gained by spending EXP and gold. Only 3 levels can be naturally gained. Levels are used to unlock and upgrade the Hero's skills.",
+			"Hero skills are applied only when White is currently the active dominant color.",
+			"",
+			"The Hero can absorb any ingredient color. Hero can also absorb 3 more ingredients.",
+		]
 	
 	
 	return info
@@ -1774,3 +1800,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/HexTribute/HexTribute.tscn")
 	elif tower_id == TRANSMUTATOR:
 		return load("res://TowerRelated/Color_Red/Transmutator/Transmutator.tscn")
+	elif tower_id == HERO:
+		return load("res://TowerRelated/Color_White/Hero/Hero.tscn")
+
+

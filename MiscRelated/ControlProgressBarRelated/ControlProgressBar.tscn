@@ -15,16 +15,19 @@ __meta__ = {
 margin_right = 54.0
 margin_bottom = 9.0
 mouse_filter = 2
+size_flags_horizontal = 3
 
 [node name="BarBackground" type="TextureRect" parent="BarBackgroundPanel"]
 margin_right = 54.0
 margin_bottom = 9.0
 mouse_filter = 2
+size_flags_horizontal = 3
 
 [node name="BarFillForeground" type="MarginContainer" parent="."]
 margin_right = 54.0
 margin_bottom = 9.0
 mouse_filter = 2
+size_flags_horizontal = 3
 custom_constants/margin_right = 0
 custom_constants/margin_top = 0
 custom_constants/margin_left = 0
@@ -37,8 +40,10 @@ __meta__ = {
 margin_right = 54.0
 margin_bottom = 9.0
 mouse_filter = 2
+size_flags_horizontal = 3
 
 [node name="Chunks" type="Control" parent="BarFillForeground"]
 margin_right = 54.0
 margin_bottom = 9.0
 mouse_filter = 2
+size_flags_horizontal = 3

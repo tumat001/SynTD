@@ -9,6 +9,9 @@ signal on_tower_exited(tower)
 signal on_tower_in_range_entered_map(tower)
 signal on_tower_in_range_exited_map(tower)
 
+signal showing_range()
+signal hiding_range()
+
 
 var _all_towers_in_range : Array = []
 
@@ -18,16 +21,22 @@ var detection_range : float setget update_range
 var can_display_range : bool
 var displaying_range : bool
 
+var can_display_circle_arc : bool = false
+var circle_arc_color : Color = Color(1, 1, 1, 1)
 
 # Range related
 
 func show_range():
 	displaying_range = true
 	update() #calls _draw()
+	
+	emit_signal("showing_range")
 
 func hide_range():
 	displaying_range = false
 	update()
+	
+	emit_signal("hiding_range")
 
 func _draw():
 	if displaying_range:
@@ -35,6 +44,10 @@ func _draw():
 			var color : Color = Color.gray
 			color.a = 0.1
 			draw_circle(Vector2(0, 0), detection_range, color)
+		
+		if can_display_circle_arc:
+			draw_circle_arc(Vector2(0, 0), detection_range, 0, 360, circle_arc_color)
+
 
 
 func update_range(arg_detection_range : float):
@@ -119,3 +132,16 @@ func unglow_all_towers_in_range():
 func _unapply_glow_to_tower(tower : AbstractTower):
 	tower.set_tower_sprite_modulate(Color(1, 1, 1, 1))
 
+
+#
+
+func draw_circle_arc(center, radius, angle_from, angle_to, color):
+	var nb_points = 32
+	var points_arc = PoolVector2Array()
+	
+	for i in range(nb_points + 1):
+		var angle_point = deg2rad(angle_from + i * (angle_to-angle_from) / nb_points - 90)
+		points_arc.push_back(center + Vector2(cos(angle_point), sin(angle_point)) * radius)
+	
+	for index_point in range(nb_points):
+		draw_line(points_arc[index_point], points_arc[index_point + 1], color, 2)

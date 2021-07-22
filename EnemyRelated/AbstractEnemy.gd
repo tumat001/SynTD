@@ -85,9 +85,10 @@ var distance_to_exit : float
 
 #
 
-onready var statusbar : BaseControlStatusBar = $EnemyInfoBar/VBoxContainer/EnemyStatusBar
-onready var healthbar = $EnemyInfoBar/VBoxContainer/EnemyHealthBar
-onready var infobar = $EnemyInfoBar
+onready var statusbar : BaseControlStatusBar = $Layer/EnemyInfoBar/VBoxContainer/EnemyStatusBar
+onready var healthbar = $Layer/EnemyInfoBar/VBoxContainer/EnemyHealthBar
+onready var infobar = $Layer/EnemyInfoBar
+onready var layer_infobar = $Layer
 
 #internals
 
@@ -106,8 +107,13 @@ var _heal_over_time_id_effects_map : Dictionary = {}
 func _ready():
 	_self_size = _get_current_anim_size()
 	
-	infobar.rect_position.y -= round((_self_size.y) + 11)
-	infobar.rect_position.x -= round(healthbar.get_bar_fill_foreground_size().x / 2)
+	layer_infobar.z_index = ZIndexStore.ENEMY_INFO_BAR
+	layer_infobar.z_as_relative = false
+	#infobar.rect_position.y -= round((_self_size.y) + 11)
+	#infobar.rect_position.x -= round(healthbar.get_bar_fill_foreground_size().x / 2)
+	layer_infobar.position.y -= round((_self_size.y) + 11)
+	layer_infobar.position.x -= round(healthbar.get_bar_fill_foreground_size().x / 2)
+	
 	
 	connect("on_current_health_changed", healthbar, "set_current_value", [], CONNECT_PERSIST)
 	connect("on_max_health_changed", healthbar, "set_max_value", [], CONNECT_PERSIST)
@@ -660,7 +666,8 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1):
 				else:
 					stored_effect._current_stack -= stored_effect.stack_cap
 				
-				_add_effect(stored_effect.base_effect)
+				if stored_effect.base_effect != null:
+					_add_effect(stored_effect.base_effect)
 			else:
 				if stored_effect.duration_refresh_per_apply:
 					stored_effect.time_in_seconds = to_use_effect.time_in_seconds

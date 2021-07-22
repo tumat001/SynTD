@@ -205,6 +205,8 @@ var tower_manager
 var tower_inventory_bench
 var input_prompt_manager
 var ability_manager
+var synergy_manager
+var game_elements
 
 
 # SYN RELATED ---------------------------- #
@@ -1121,11 +1123,17 @@ func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected
 		if tower_selected.tower_id == 2000:
 			return true
 		
-		for color in tower_selected.ingredient_compatible_colors:
-			if _tower_colors.has(color):
-				return true
+		return _can_accept_ingredient_color(tower_selected)
 	
 	return false
+
+func _can_accept_ingredient_color(tower_selected) -> bool:
+	for color in tower_selected.ingredient_compatible_colors:
+		if _tower_colors.has(color):
+			return true
+	
+	return false
+
 
 func show_acceptability_with_ingredient(ingredient_effect : IngredientEffect, tower_selected):
 	if tower_selected != self:

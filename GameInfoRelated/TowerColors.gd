@@ -11,6 +11,8 @@ enum {
 }
 
 const gray_symbol = preload("res://GameHUDRelated/BuySellPanel/GraySymbol.png")
+const white_symbol = preload("res://GameHUDRelated/BuySellPanel/WhiteSymbol.png")
+const black_symbol = preload("res://GameHUDRelated/BuySellPanel/BlackSymbol.png")
 const red_symbol = preload("res://GameHUDRelated/BuySellPanel/RedSymbol.png")
 const orange_symbol = preload("res://GameHUDRelated/BuySellPanel/OrangeSymbol.png")
 const yellow_symbol = preload("res://GameHUDRelated/BuySellPanel/YellowSymbol.png")
@@ -36,6 +38,10 @@ static func get_all_colors() -> Array:
 static func get_color_symbol_on_card(tower_color : int):
 	if tower_color == GRAY:
 		return gray_symbol
+	elif tower_color == WHITE:
+		return white_symbol
+	elif tower_color == BLACK:
+		return black_symbol
 	elif tower_color == RED:
 		return red_symbol
 	elif tower_color == ORANGE:
@@ -52,6 +58,10 @@ static func get_color_symbol_on_card(tower_color : int):
 static func get_color_name_on_card(tower_color : int) -> String:
 	if tower_color == GRAY:
 		return "Gray"
+	elif tower_color == WHITE:
+		return "White"
+	elif tower_color == BLACK:
+		return "Black"
 	elif tower_color == RED:
 		return "Red"
 	elif tower_color == ORANGE:
