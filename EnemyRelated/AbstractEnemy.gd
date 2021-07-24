@@ -26,7 +26,7 @@ const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/Rep
 const BaseControlStatusBar = preload("res://MiscRelated/ControlStatusBarRelated/BaseControlStatusBar.gd")
 const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
 const EnemyTypeInformation = preload("res://EnemyRelated/EnemyTypeInformation.gd")
-
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 signal on_death_by_any_cause
 signal on_hit(me, damage_reg_id, damage_instance)
@@ -96,6 +96,7 @@ var percent_percent_health_hit_scale_id_effect_map : Dictionary = {}
 var last_calculated_percent_health_hit_scale
 
 var distance_to_exit : float
+var no_movement_from_self : bool = false
 
 var all_abilities : Array = []
 
@@ -186,7 +187,7 @@ func _process(delta):
 
 
 func _physics_process(delta):
-	if !_is_stunned:
+	if !_is_stunned and !no_movement_from_self:
 		var distance_traveled = delta * _last_calculated_final_movement_speed
 		offset += distance_traveled
 		distance_to_exit -= distance_traveled

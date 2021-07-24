@@ -2,11 +2,8 @@ extends "res://EnemyRelated/AbstractEnemy.gd"
 
 const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
-const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
-const Healer_HealParticle_Scene = preload("res://EnemyRelated/EnemyTypes/Type_Basic/Healer/HealParticle/Healer_HealParticle.tscn")
-
-const Heal_Particle_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Basic/Healer/HealParticle/Heal_Particle.png")
+const HealParticle_Scene = preload("res://EnemyRelated/CommonParticles/HealParticle/HealParticle.tscn")
 
 const _heal_cooldown : float = 10.0
 const _heal_range : float = 140.0
@@ -18,8 +15,6 @@ const no_enemies_in_range_clause : int = -10
 var heal_ability : BaseAbility
 var heal_activation_clause : ConditionalClauses
 var heal_effect : EnemyHealEffect
-
-var heal_sprite_frames : SpriteFrames
 
 var range_module : RangeModule
 
@@ -78,9 +73,6 @@ func _construct_heal_effect():
 	heal_modi.flat_modifier = _heal_amount
 	
 	heal_effect = EnemyHealEffect.new(heal_modi, StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
-	
-	heal_sprite_frames = SpriteFrames.new()
-	heal_sprite_frames.add_frame("default", Heal_Particle_Pic)
 
 
 func _heal_ready_for_activation_updated(is_ready):
@@ -93,17 +85,18 @@ func _heal_ability_activated():
 	for target in targets:
 		if target != self:
 			
-			target._add_effect(heal_effect._get_copy_scaled_by(1))
+			target._add_effect(heal_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
 			_construct_and_add_heal_particle(target.global_position)
 			heal_ability.start_time_cooldown(_heal_cooldown)
+			no_movement_from_self = true
 			return
 
 func _construct_and_add_heal_particle(pos):
-	var attk_sprite : AttackSprite = Healer_HealParticle_Scene.instance()
-	attk_sprite.lifetime = 0.3
-	attk_sprite.has_lifetime = true
-	attk_sprite.frames = heal_sprite_frames
+	var attk_sprite : AttackSprite = HealParticle_Scene.instance()
 	attk_sprite.position = pos
+	attk_sprite.connect("tree_exiting", self, "_particle_expired", [], CONNECT_ONESHOT)
 	
 	get_tree().get_root().add_child(attk_sprite)
 
+func _particle_expired():
+	no_movement_from_self = false

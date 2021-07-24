@@ -11,6 +11,7 @@ const TowerBenchSlot = preload("res://GameElementsRelated/AreaTowerPlacablesRela
 const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.gd")
 const AbstractAttackModule = preload("res://TowerRelated/Modules/AbstractAttackModule.gd")
 const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
+const LifeBar = preload("res://EnemyRelated/Infobar/LifeBar/LifeBar.gd")
 
 const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerBaseEffect.gd")
 const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerAttributesEffect.gd")
@@ -29,6 +30,7 @@ const AOEAttackModule = preload("res://TowerRelated/Modules/AOEAttackModule.gd")
 
 const StoreOfTowerEffectsUUID = preload("res://GameInfoRelated/TowerEffectRelated/StoreOfTowerEffectsUUID.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const ingredient_decline_pic = preload("res://GameHUDRelated/BottomPanel/IngredientMode_CannotCombine.png")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
@@ -67,6 +69,11 @@ signal targeting_changed
 signal targeting_options_modified
 signal final_ability_potency_changed
 signal final_ability_cd_changed
+
+signal on_max_health_changed(new_max)
+signal on_current_health_changed(new_curr)
+signal on_tower_no_health()
+
 
 signal on_main_attack_finished(module)
 signal on_main_attack(attk_speed_delay, enemies, module)
@@ -116,9 +123,12 @@ export var tower_highlight_sprite : Resource
 var tower_id : int
 
 
-enum DisabledFromAttackingSource {
+enum DisabledFromAttackingSourceClauses {
 	
 	HEAT_MODULE = 1,
+	TOWER_NO_HEALTH = 2,
+	TOWER_BEING_DRAGGED = 3,
+	TOWER_IN_BENCH = 4,
 	
 }
 
@@ -146,9 +156,9 @@ var all_attack_modules : Array = []
 var main_attack_module : AbstractAttackModule
 var range_module : RangeModule
 
-var disabled_from_attacking : bool = false
-var _other_disabled_from_attacking_clauses : Dictionary = {}
-var last_calculated_disabled_from_attacking : bool
+
+var disabled_from_attacking_clauses : ConditionalClauses = ConditionalClauses.new()
+var last_calculated_disabled_from_attacking : bool = false
 
 # Tower buffs related
 
@@ -194,6 +204,16 @@ var base_percent_ability_cdr : float = 0
 var _percent_base_ability_cdr_effects : Dictionary = {}
 var last_calculated_final_percent_ability_cdr : float
 
+
+# Other stats
+
+var base_health : float = 10
+var flat_base_health_id_effect_map : Dictionary = {}
+var percent_base_health_id_effect_map : Dictionary = {}
+var last_calculated_max_health : float
+var current_health : float
+
+
 # tracker
 
 var old_global_position : Vector2
@@ -218,12 +238,22 @@ var heat_module setget set_heat_module
 var base_heat_effect : TowerBaseEffect
 
 
+# -- node related
+onready var life_bar_layer = $LifeBarLayer
+onready var life_bar = $LifeBarLayer/LifeBar
+onready var tower_base_sprites = $TowerBase/BaseSprites
+
 
 # Initialization -------------------------- #
 
 func _ready():
 	$IngredientDeclinePic.visible = false
 	_end_drag()
+	
+	connect("on_current_health_changed", life_bar, "set_current_health_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+	connect("on_max_health_changed", life_bar, "set_max_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+
+
 
 func _post_inherit_ready():
 	_update_ingredient_compatible_colors()
@@ -237,6 +267,20 @@ func _post_inherit_ready():
 	_calculate_final_ability_potency()
 	_calculate_final_flat_ability_cdr()
 	_calculate_final_percent_ability_cdr()
+	_calculate_max_health()
+	_set_health(last_calculated_max_health)
+	
+	_update_last_calculated_disabled_from_attacking()
+	
+	var _self_size = _get_current_anim_size()
+	life_bar_layer.position.y -= round((_self_size.y) + 4)
+	life_bar_layer.position.x -= round(life_bar.get_bar_fill_foreground_size().x / 3)
+	
+
+
+func _get_current_anim_size() -> Vector2:
+	return tower_base_sprites.frames.get_frame(tower_base_sprites.animation, tower_base_sprites.frame).get_size()
+
 
 
 func _emit_final_range_changed():
@@ -262,6 +306,17 @@ func _emit_final_ability_potency_changed():
 
 func _emit_final_ability_cd_changed():
 	call_deferred("emit_signal", "final_ability_cd_changed")
+
+func _emit_max_health_changed():
+	#life_bar.max_value = last_calculated_max_health
+	emit_signal("on_max_health_changed", last_calculated_max_health)
+
+func _emit_current_health_changed():
+	#life_bar.current_health_value = current_health
+	emit_signal("on_current_health_changed", current_health)
+
+func _emit_tower_no_health():
+	emit_signal("on_tower_no_health")
 
 # Adding Attack modules related
 
@@ -431,7 +486,7 @@ func _emit_on_any_range_module_current_enemies_acquired(module, range_module):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if !disabled_from_attacking and !last_calculated_disabled_from_attacking:
+	if !last_calculated_disabled_from_attacking:
 		for attack_module in all_attack_modules:
 			if attack_module == null:
 				continue
@@ -470,6 +525,8 @@ func _set_round_started(arg_is_round_started : bool):
 
 
 func _on_round_end():
+	_set_health(last_calculated_max_health)
+	
 	for module in all_attack_modules:
 		module.on_round_end()
 		
@@ -481,6 +538,8 @@ func _on_round_end():
 
 
 func _on_round_start():
+	_set_health(last_calculated_max_health)
+	
 	emit_signal("on_round_start")
 
 
@@ -1006,6 +1065,7 @@ func get_tower_effect(effect_uuid : int) -> TowerBaseEffect:
 	else:
 		return null
 
+
 # Decreasing timebounds related
 
 func _decrease_time_of_timebounded(delta):
@@ -1382,7 +1442,10 @@ func _start_drag():
 	$PlacableDetector/DetectorShape.set_deferred("disabled", false)
 	$PlacableDetector.monitoring = true
 	is_being_dragged = true
-	disabled_from_attacking = true
+	
+	#disabled_from_attacking_clauses.attempt_insert_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED_OR_IN_BENCH)
+	set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
+	
 	_disable_modules()
 	z_index = ZIndexStore.TOWERS_BEING_DRAGGED
 	
@@ -1391,6 +1454,7 @@ func _start_drag():
 func _end_drag():
 	z_index = ZIndexStore.TOWERS
 	transfer_to_placable(hovering_over_placable)
+	erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
 	emit_signal("tower_dropped_from_dragged", self)
 
 
@@ -1438,7 +1502,8 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 		position.y = pos.y
 		
 		if current_placable is TowerBenchSlot:
-			disabled_from_attacking = true
+			set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_IN_BENCH)
+			
 			_disable_modules()
 			is_contributing_to_synergy = false
 			
@@ -1448,7 +1513,8 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 			
 			emit_signal("tower_not_in_active_map")
 		elif current_placable is InMapAreaPlacable:
-			disabled_from_attacking = false
+			erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_IN_BENCH)
+			
 			_enable_modules()
 			is_contributing_to_synergy = true
 			
@@ -1520,22 +1586,18 @@ func set_tower_sprite_modulate(color : Color):
 
 # Disabled from attacking clauses
 
-func set_disabled_from_attacking_clause(id : int, clause : bool):
-	_other_disabled_from_attacking_clauses[id] = clause
+func set_disabled_from_attacking_clause(id : int):
+	disabled_from_attacking_clauses.attempt_insert_clause(id)
 	_update_last_calculated_disabled_from_attacking()
 
+
 func erase_disabled_from_attacking_clause(id : int):
-	_other_disabled_from_attacking_clauses.erase(id)
+	disabled_from_attacking_clauses.remove_clause(id)
 	_update_last_calculated_disabled_from_attacking()
 
 
 func _update_last_calculated_disabled_from_attacking():
-	for clause in _other_disabled_from_attacking_clauses.values():
-		if clause:
-			last_calculated_disabled_from_attacking = true
-			return
-	
-	last_calculated_disabled_from_attacking = false
+	last_calculated_disabled_from_attacking = !disabled_from_attacking_clauses.is_passed_clauses()
 
 
 # Tracking of towers related
@@ -1571,6 +1633,63 @@ func _on_AbstractTower_body_entered(body):
 		if body is BaseTowerDetectingBullet:
 			body.hit_by_tower(self)
 			body.decrease_pierce(1)
+
+
+# Health related
+
+func _calculate_max_health() -> float:
+	var max_health = base_health
+	for effect in percent_base_health_id_effect_map.values():
+		max_health += effect.attribute_as_modifier.get_modification_to_value(base_health)
+	
+	for effect in flat_base_health_id_effect_map.values():
+		max_health += effect.attribute_as_modifier.flat_modifier
+	
+	last_calculated_max_health = max_health
+	_emit_max_health_changed()
+	if current_health > last_calculated_max_health:
+		current_health = last_calculated_max_health
+		_emit_current_health_changed()
+	
+	return max_health
+
+
+func _take_damage(damage_mod):
+	var amount : float = 0
+	
+	if typeof(damage_mod) == TYPE_REAL:
+		amount = damage_mod
+	elif damage_mod is FlatModifier:
+		amount = damage_mod.flat_modifier
+	elif damage_mod is PercentModifier:
+		if damage_mod.percent_based_on == PercentType.MAX:
+			amount = damage_mod.get_modification_to_value(last_calculated_max_health)
+		elif damage_mod.percent_based_on == PercentType.BASE:
+			amount = damage_mod.get_modification_to_value(base_health)
+		elif damage_mod.percent_based_on == PercentType.CURRENT:
+			amount = damage_mod.get_modification_to_value(current_health)
+		elif damage_mod.percent_based_on == PercentType.MISSING:
+			amount = damage_mod.get_modification_to_value(last_calculated_max_health - current_health)
+	
+	_set_health(current_health - amount)
+
+
+func _set_health(val : float):
+	current_health = val
+	
+	if current_health <= 0:
+		_emit_tower_no_health()
+		set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_NO_HEALTH)
+		
+		life_bar_layer.visible = false
+		
+	else:
+		erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_NO_HEALTH)
+		
+		life_bar_layer.visible = current_health < last_calculated_max_health
+	
+	_emit_current_health_changed()
+
 
 
 # SYNERGIES RELATED ---------------------

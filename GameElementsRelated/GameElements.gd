@@ -177,7 +177,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.MAGNETIZER,
 			Towers.BEACON_DISH,
 			Towers.IEU,
-			Towers.CAMPFIRE,
+			Towers.ROYAL_FLAME,
 		])
 	
 	even = !even

@@ -97,7 +97,16 @@ func get_all_in_map_towers_in_range() -> Array:
 	var bucket : Array = []
 	
 	for tower in _all_towers_in_range:
-		if tower.current_placable is InMapAreaPlacable:
+		if tower.is_current_placable_in_map():
+			bucket.append(tower)
+	
+	return bucket
+
+func get_all_in_map_and_active_towers_in_range() -> Array:
+	var bucket : Array = []
+	
+	for tower in _all_towers_in_range:
+		if tower.is_current_placable_in_map() and !tower.last_calculated_disabled_from_attacking:
 			bucket.append(tower)
 	
 	return bucket

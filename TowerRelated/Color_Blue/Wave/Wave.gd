@@ -25,7 +25,6 @@ const Wave_Explosion_06 = preload("res://TowerRelated/Color_Blue/Wave/Wave_Attac
 const Wave_Explosion_07 = preload("res://TowerRelated/Color_Blue/Wave/Wave_Attacks/Wave_AbilityExplosion07.png")
 
 const WaveColumnProj_Scene = preload("res://TowerRelated/Color_Blue/Wave/Wave_Attacks/WaveColumn.tscn")
-const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 signal effect_modifier_changed()
 

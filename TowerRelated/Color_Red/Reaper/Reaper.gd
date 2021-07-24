@@ -10,7 +10,6 @@ const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBul
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
-const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const Reaper_NormalAttk_Pic01 = preload("res://TowerRelated/Color_Red/Reaper/Reaper_NormalAttk/Reaper_NormalAttk01.png")
 const Reaper_NormalAttk_Pic02 = preload("res://TowerRelated/Color_Red/Reaper/Reaper_NormalAttk/Reaper_NormalAttk02.png")

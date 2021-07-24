@@ -147,7 +147,7 @@ func _process(delta):
 		_current_refresh_cooldown -= delta
 		
 		if _current_refresh_cooldown <= 0:
-			if current_placable is InMapAreaPlacable:
+			if current_placable is InMapAreaPlacable and !last_calculated_disabled_from_attacking:
 				_current_refresh_cooldown += _get_cd_to_use(refresh_cooldown)
 				
 				_update_elemental_on_hit_effect()

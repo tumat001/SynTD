@@ -101,7 +101,7 @@ func _enemy_damage_taken(damage_report, is_lethal, enemy):
 	_current_rage += damage_report.get_total_effective_damage_excluding([StoreOfTowerEffectsUUID.CAMPFIRE_PHY_ON_HIT])
 	
 	if _current_rage >= last_calculated_rage_threshold:
-		if heat_module == null or !heat_module.is_in_overheat_cooldown:
+		if heat_module == null or !last_calculated_disabled_from_attacking:
 			_update_physical_on_hit_effect()
 			_give_buffs_to_towers()
 			_construct_particle()

@@ -21,16 +21,19 @@ enum Enemies {
 	BRUTE = 101,
 	DASH = 102,
 	HEALER = 103,
+	WIZARD = 104,
 }
 
 static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	var info : EnemyTypeInformation
 	
+	# MISC
 	if enemy_id == Enemies.TEST_ENEMY:
 		info = EnemyTypeInformation.new(Enemies.TEST_ENEMY, EnemyFactions.MISC)
 		info.base_health = 54
 		info.base_movement_speed = 22
 		
+	# BASIC FACTION
 	elif enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
 		info.base_health = 8
@@ -51,6 +54,10 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info.base_health = 14
 		info.base_movement_speed = 23
 		
+	elif enemy_id == Enemies.WIZARD:
+		info = EnemyTypeInformation.new(Enemies.WIZARD, EnemyFactions.BASIC)
+		info.base_health = 12
+		info.base_movement_speed = 21
 	
 	return info
 
@@ -66,3 +73,5 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Basic/Dash/Dash.tscn")
 	elif enemy_id == Enemies.HEALER:
 		return load("res://EnemyRelated/EnemyTypes/Type_Basic/Healer/Healer.tscn")
+	elif enemy_id == Enemies.WIZARD:
+		return load("res://EnemyRelated/EnemyTypes/Type_Basic/Wizard/Wizard.tscn")

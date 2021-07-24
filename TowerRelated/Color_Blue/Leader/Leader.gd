@@ -12,7 +12,6 @@ const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const AttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn")
 
-const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 const ArcingBaseBullet = preload("res://TowerRelated/DamageAndSpawnables/ArcingBaseBullet.gd")
 const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 

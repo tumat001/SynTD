@@ -24,28 +24,28 @@ signal final_ability_cdr_changed()
 
 
 enum ActivationClauses {
-	ROUND_INTERMISSION_STATE = 0,
-	ROUND_ONGOING_STATE = 1,
+	ROUND_INTERMISSION_STATE = 1000,
+	ROUND_ONGOING_STATE = 1001,
 	
-	TOWER_IN_BENCH = 2,
-	SYNERGY_INACTIVE = 3,
+	TOWER_IN_BENCH = 1002,
+	SYNERGY_INACTIVE = 1003,
 }
 
 enum CounterDecreaseClauses {
-	ROUND_INTERMISSION_STATE = 0,
-	ROUND_ONGOING_STATE = 1,
+	ROUND_INTERMISSION_STATE = 1000,
+	ROUND_ONGOING_STATE = 1001,
 	
-	TOWER_IN_BENCH = 2,
-	SYNERGY_INACTIVE = 3,
+	TOWER_IN_BENCH = 1002,
+	SYNERGY_INACTIVE = 1003,
 }
 
 enum ShouldBeDisplayingClauses {
-	TOWER_IN_BENCH = 2,
-	SYNERGY_INACTIVE = 3,
+	TOWER_IN_BENCH = 1002,
+	SYNERGY_INACTIVE = 1003,
 }
 
 enum AutoCastableClauses {
-	CANNOT_BE_AUTOCASTED = 4,
+	CANNOT_BE_AUTOCASTED = 1004,
 }
 
 
@@ -240,6 +240,7 @@ func set_tower(arg_tower : Node):
 			tower.disconnect("tree_exiting", self, "destroy_self")
 			tower.disconnect("tower_active_in_map", self, "_tower_active_in_map")
 			tower.disconnect("tower_not_in_active_map", self, "_tower_not_active_in_map")
+			activation_conditional_clauses.remove_clause(tower.disabled_from_attacking_clauses)
 	
 	tower = arg_tower
 	
@@ -248,6 +249,7 @@ func set_tower(arg_tower : Node):
 			tower.connect("tree_exiting", self, "destroy_self", [], CONNECT_PERSIST)
 			tower.connect("tower_active_in_map", self, "_tower_active_in_map", [], CONNECT_PERSIST)
 			tower.connect("tower_not_in_active_map", self, "_tower_not_active_in_map", [], CONNECT_PERSIST)
+			activation_conditional_clauses.attempt_insert_clause(tower.disabled_from_attacking_clauses)
 
 func set_synergy(arg_synergy):
 	synergy = arg_synergy

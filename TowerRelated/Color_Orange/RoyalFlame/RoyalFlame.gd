@@ -45,7 +45,6 @@ const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModul
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
 
-const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 
 var burn_damage_modifier : FlatModifier
