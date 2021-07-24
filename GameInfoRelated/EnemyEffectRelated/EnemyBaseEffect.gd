@@ -11,6 +11,7 @@ enum EffectType {
 	STUN,
 	
 	HEAL,
+	SHIELD,
 	CLEAR_ALL_EFFECTS,
 	
 	MISC,
@@ -23,6 +24,8 @@ var effect_icon : Texture setget ,_get_overriden_icon
 
 var is_timebound : bool
 var time_in_seconds : float
+
+var respect_scale : bool = true
 
 var status_bar_icon : Texture
 

@@ -41,24 +41,29 @@ func _ready():
 		_tint_a_fade_out_rate = tint_color.a / fade_out_duration
 	
 	_viewport_rect = get_viewport_rect()
+	
+	
+	if !is_timebounded:
+		_current_tint_color.a = tint_color.a
 
 
 func _process(delta):
-	_current_duration += delta
-	
-	if _current_duration < fade_in_duration:
-		_current_tint_color.a += _tint_a_fade_in_rate * delta
-	
 	if is_timebounded:
+		_current_duration += delta
+		
+		if _current_duration < fade_in_duration:
+			_current_tint_color.a += _tint_a_fade_in_rate * delta
+		
+		
 		if _current_duration > fade_in_duration + main_duration:
 			_current_tint_color.a -= _tint_a_fade_out_rate * delta
 		
 		if _current_duration > _total_duration:
 			emit_signal("on_duration_over")
 			queue_free()
-	
-	
-	update()
+		
+		
+		update()
 
 
 func _draw():

@@ -30,8 +30,8 @@ func add_ability(ability : BaseAbility, add_ability_to_panel : bool = true):
 		connect("time_decreased", ability, "time_decreased", [], CONNECT_PERSIST)
 		connect("round_ended", ability, "round_ended", [], CONNECT_PERSIST)
 		connect("round_started", ability, "round_started", [], CONNECT_PERSIST)
-		connect("add_ability_effect", ability, "add_ability_effect", [], CONNECT_PERSIST)
-		connect("remove_ability_effect", ability, "remove_ability_effect", [], CONNECT_PERSIST)
+		connect("add_ability_effect", ability, "add_ability_effect_from_manager", [], CONNECT_PERSIST)
+		connect("remove_ability_effect", ability, "remove_ability_effect_from_manager", [], CONNECT_PERSIST)
 		
 		for effect in all_effects.values():
 			ability.add_ability_effect(effect)

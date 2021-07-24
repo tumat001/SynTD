@@ -27,9 +27,9 @@ func show_control(control : Control, make_background_dark : bool = true):
 	if make_background_dark:
 		var screen_effect = ScreenTintEffect.new()
 		screen_effect.is_timebounded = false
-		screen_effect.fade_in_duration = 0.05
-		screen_effect.fade_out_duration = 0.05
-		screen_effect.tint_color = Color(0, 0, 0, 0.925)
+		#screen_effect.fade_in_duration = 0.05
+		#screen_effect.fade_out_duration = 0.05
+		screen_effect.tint_color = Color(0, 0, 0, 0.75)
 		screen_effect.ins_uuid = StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI
 		screen_effect.custom_z_index = ZIndexStore.SCREEN_EFFECTS_ABOVE_ALL
 		screen_effect_manager.add_screen_tint_effect(screen_effect)

@@ -1423,10 +1423,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == PESTILENCE:
 		info = TowerTypeInformation.new("Pestilence", tower_id)
-		info.tower_cost = 5
+		info.tower_cost = 6
 		info.colors.append(TowerColors.GREEN)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_tier = 5
+		info.tower_tier = 6
 		info.tower_image_in_buy_card = pestilence_image
 		
 		info.base_damage = 0.5
@@ -1439,12 +1439,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Pestilence permanently poisons enemies it hits. The poison deals 1 elemental damage per second.",
 			"Pestilence also applies one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply.",
-			"An enemy permanently becomes Noxious upon gaining 8 Toxin stacks.",
+			"Enemies become permanently Noxious upon gaining 8 Toxin stacks.",
 			"",
 			"Pestilence's main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
 			"Explosions apply a stack of Toxin. Explosions benefit from base damage buffs, on hit damages and effects at 33% efficiency.",
 			"",
-			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25%.",
+			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25% for the round.",
 			"For each tower affected, Pestilence gains 35% attack speed for the round."
 		]
 		
@@ -1691,8 +1691,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
-			"Levels are gained by spending EXP and gold. Only 3 levels can be naturally gained. Levels are used to unlock and upgrade the Hero's skills.",
-			"Hero skills are applied only when White is currently the active dominant color.",
+			"Levels are gained by spending EXP and gold. Only 3 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
+			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
 			"The Hero can absorb any ingredient color. Hero can also absorb 3 more ingredients.",
 		]
@@ -1800,7 +1800,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/HexTribute/HexTribute.tscn")
 	elif tower_id == TRANSMUTATOR:
 		return load("res://TowerRelated/Color_Red/Transmutator/Transmutator.tscn")
-	elif tower_id == HERO:
+	elif tower_id == HERO: #50
 		return load("res://TowerRelated/Color_White/Hero/Hero.tscn")
 
 

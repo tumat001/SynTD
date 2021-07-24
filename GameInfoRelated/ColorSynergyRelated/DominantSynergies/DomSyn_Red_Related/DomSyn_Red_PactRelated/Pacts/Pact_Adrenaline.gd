@@ -64,6 +64,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 		toughness_loss_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_TOUGHNESS, toughness_loss_modi, StoreOfEnemyEffectsUUID.RED_ADRENALINE_TOUGHNESS_DECREASE)
 		toughness_loss_effect.is_timebound = true
 		toughness_loss_effect.time_in_seconds = debuff_duration
+		toughness_loss_effect.respect_scale = false
 		
 		var speed_dec_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.RED_ADRENALINE_SPEED_DECREASE)
 		speed_dec_modi.percent_amount = speed_percent_decrease
@@ -71,6 +72,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 		speed_decrease_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED, speed_dec_modi, StoreOfEnemyEffectsUUID.RED_ADRENALINE_SPEED_DECREASE)
 		speed_decrease_effect.is_timebound = true
 		speed_decrease_effect.time_in_seconds = debuff_duration
+		speed_decrease_effect.respect_scale = false
 		
 		var speed_inc_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.RED_ADRENALINE_SPEED_INCREASE)
 		speed_inc_modi.percent_amount = speed_percent_increase
@@ -78,10 +80,12 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 		speed_increase_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED, speed_inc_modi, StoreOfEnemyEffectsUUID.RED_ADRENALINE_SPEED_INCREASE)
 		speed_increase_effect.is_timebound = true
 		speed_increase_effect.time_in_seconds = speed_increase_duration
+		speed_increase_effect.respect_scale = false
 		
 		adrenaline_initial_marker_effect = EnemyStackEffect.new(null, 1, 999, StoreOfEnemyEffectsUUID.RED_ADRENALINE_MARKER, false, false)
 		adrenaline_initial_marker_effect.time_in_seconds = initial_window_duration
 		adrenaline_initial_marker_effect.is_timebound = true
+		adrenaline_initial_marker_effect.respect_scale = false
 
 
 func _enemy_spawned(enemy):

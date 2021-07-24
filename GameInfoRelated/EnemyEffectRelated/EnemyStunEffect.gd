@@ -12,7 +12,10 @@ func _init(arg_duration : float,
 	description = "Stuns enemies for " + str(time_in_seconds) + " seconds on hit."
 
 
-func _get_copy_scaled_by(scale : float):
+func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
+	if !respect_scale and !force_apply_scale:
+		scale = 1
+	
 	var scaled_stun = time_in_seconds * scale
 	
 	var copy = get_script().new(scaled_stun, effect_uuid)

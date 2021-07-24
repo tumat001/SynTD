@@ -40,7 +40,7 @@ position = Vector2( -0.5, 7.5 )
 texture = ExtResource( 3 )
 
 [node name="StaffProjPosition" type="Position2D" parent="TowerBase" index="4"]
-position = Vector2( 11.5, -6.5 )
+position = Vector2( 11.5, -8 )
 
 [node name="CollisionShape" parent="." index="1"]
 position = Vector2( -0.5, -9.5 )

@@ -118,7 +118,7 @@ func _construct_lock_on_sprites():
 	attack_sprite.frames.add_frame("default", Re_lockon_sprite)
 	attack_sprite.has_lifetime = true
 	attack_sprite.lifetime = main_attack_module._last_calculated_attack_wind_up
-	attack_sprite.scale = Vector2(1.5, 1.5)
+	attack_sprite.scale = Vector2(1, 1)
 	attack_sprite.offset = Vector2(-0.5, -2)
 	
 	lock_on_sprites_to_enemy[attack_sprite] = null

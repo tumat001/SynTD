@@ -2,6 +2,15 @@ extends Node
 
 
 enum {
+	# ENEMIES
+	# BASIC (100)
+	DASH_SPEED_BOOST = 100
+	HEALER_HEAL_EFFECT = 101
+	
+	
+	
+	
+	
 	# TOWERS
 	# RED (-100)
 	ADEPT_SLOW = -100

@@ -9,6 +9,7 @@ const EnemyBaseEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyB
 const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
+const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
 
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 const EnemyClearAllEffects = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyClearAllEffects.gd")
@@ -17,11 +18,14 @@ const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 const EnemyHealEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyHealEffect.gd")
 const EnemyHealOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyHealOverTimeEffect.gd")
+const EnemyShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyShieldEffect.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
 
 const BaseControlStatusBar = preload("res://MiscRelated/ControlStatusBarRelated/BaseControlStatusBar.gd")
+const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
+const EnemyTypeInformation = preload("res://EnemyRelated/EnemyTypeInformation.gd")
 
 
 signal on_death_by_any_cause
@@ -31,11 +35,16 @@ signal before_damage_instance_is_processed(damage_instance, me)
 
 signal reached_end_of_path(me)
 signal on_current_health_changed(current_health)
+signal on_current_shield_changed(current_shield)
 signal on_max_health_changed(max_health)
+
+signal shield_broken(shield_id)
+signal all_shields_broken()
 
 signal on_overheal(overheal_amount)
 
 signal effect_removed(effect, me)
+signal effect_added(effect, me)
 
 
 var base_health : float = 1
@@ -43,6 +52,11 @@ var _flat_base_health_id_effect_map : Dictionary = {}
 var _percent_base_health_id_effect_map : Dictionary = {}
 var current_health : float = 1
 var _last_calculated_max_health : float
+
+
+var shield_id_effect_map : Dictionary = {}
+var current_shield : float = 0
+
 
 var pierce_consumed_per_hit : float = 1
 
@@ -83,10 +97,12 @@ var last_calculated_percent_health_hit_scale
 
 var distance_to_exit : float
 
+var all_abilities : Array = []
+
 #
 
 onready var statusbar : BaseControlStatusBar = $Layer/EnemyInfoBar/VBoxContainer/EnemyStatusBar
-onready var healthbar = $Layer/EnemyInfoBar/VBoxContainer/EnemyHealthBar
+onready var lifebar = $Layer/EnemyInfoBar/VBoxContainer/LifeBar
 onready var infobar = $Layer/EnemyInfoBar
 onready var layer_infobar = $Layer
 
@@ -103,6 +119,14 @@ var _dmg_over_time_id_effects_map : Dictionary = {}
 var _heal_over_time_id_effects_map : Dictionary = {}
 
 
+func _stats_initialize(info : EnemyTypeInformation):
+	base_health = info.base_health
+	base_movement_speed = info.base_movement_speed
+	base_armor = info.base_armor
+	base_toughness = info.base_toughness
+	base_resistance = info.base_resistance
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_self_size = _get_current_anim_size()
@@ -112,15 +136,21 @@ func _ready():
 	#infobar.rect_position.y -= round((_self_size.y) + 11)
 	#infobar.rect_position.x -= round(healthbar.get_bar_fill_foreground_size().x / 2)
 	layer_infobar.position.y -= round((_self_size.y) + 11)
-	layer_infobar.position.x -= round(healthbar.get_bar_fill_foreground_size().x / 2)
+	layer_infobar.position.x -= round(lifebar.get_bar_fill_foreground_size().x / 4)
 	
 	
-	connect("on_current_health_changed", healthbar, "set_current_value", [], CONNECT_PERSIST)
-	connect("on_max_health_changed", healthbar, "set_max_value", [], CONNECT_PERSIST)
+	var shift = (_self_size.y / 2) - 5
+	$AnimatedSprite.position.y -= shift
+	$CollisionArea.position.y -= shift
+	$Layer.position.y -= shift
 	
-	_post_ready()
+	connect("on_current_health_changed", lifebar, "set_current_health_value", [], CONNECT_PERSIST)
+	connect("on_current_shield_changed", lifebar, "set_current_shield_value", [], CONNECT_PERSIST)
+	connect("on_max_health_changed", lifebar, "set_max_value", [], CONNECT_PERSIST)
+	
+	_post_inherit_ready()
 
-func _post_ready():
+func _post_inherit_ready():
 	calculate_final_armor()
 	calculate_final_toughness()
 	calculate_final_resistance()
@@ -128,11 +158,20 @@ func _post_ready():
 	calculate_max_health()
 	calculate_effect_vulnerability()
 	calculate_percent_health_hit_scale()
+	calculate_current_shield()
 	
+#	var mod : FlatModifier = FlatModifier.new(99999)
+#	mod.flat_modifier = 10
+#	var shield_effect : EnemyShieldEffect = EnemyShieldEffect.new(mod, 99999)
+#	_add_effect(shield_effect)
+#
 	
-	healthbar.current_value = current_health
-	healthbar.max_value = _last_calculated_max_health
-	#healthbar.redraw_chunks()
+	current_health = _last_calculated_max_health
+	
+	lifebar.current_health_value = current_health
+	lifebar.current_shield_value = current_shield
+	lifebar.max_value = _last_calculated_max_health
+
 
 
 func _get_current_anim_size() -> Vector2:
@@ -141,6 +180,9 @@ func _get_current_anim_size() -> Vector2:
 
 func _process(delta):
 	_decrease_time_of_timebounds(delta)
+	
+	for ability in all_abilities:
+		ability.time_decreased(delta)
 
 
 func _physics_process(delta):
@@ -274,7 +316,7 @@ func _take_unmitigated_damages(damages_and_types : Array):
 		if current_health > 0:
 			effective_on_hit_report = on_hit_report
 			
-			_set_current_health_to(current_health - damage_amount)
+			_take_unmitigated_damage_to_life(damage_amount)
 			
 			if current_health <= 0:
 				var effective_damage = damage_amount + current_health
@@ -293,6 +335,44 @@ func _take_unmitigated_damages(damages_and_types : Array):
 	else:
 		emit_signal("on_post_mitigated_damage_taken", damage_instance_report, false, self)
 
+
+func _take_unmitigated_damage_to_life(damage_amount : float):
+	var overflow_damage : float = damage_amount
+	var had_shields : bool = false
+	var shield_effects_id_to_remove : Array = []
+	
+	for i in range(shield_id_effect_map.size() - 1, -1, -1):
+		had_shields = true
+		
+		if overflow_damage <= 0:
+			break
+		
+		var effect : EnemyShieldEffect = shield_id_effect_map.values()[i]
+		
+		effect._current_shield -= overflow_damage
+		if effect._current_shield <= 0:
+			shield_effects_id_to_remove.append(effect.effect_uuid)
+			
+			if effect.absorb_overflow_damage:
+				overflow_damage = 0
+			else:
+				overflow_damage = -effect._current_shield
+		else:
+			overflow_damage = 0
+	
+	
+	for shield_uuid in shield_effects_id_to_remove:
+		remove_shield_effect(shield_uuid, false)
+	
+	if had_shields:
+		calculate_current_shield()
+	
+	if overflow_damage > 0:
+		_set_current_health_to(current_health - overflow_damage)
+
+
+
+#
 
 func _destroy_self():
 	$CollisionArea.set_deferred("monitorable", false)
@@ -352,9 +432,55 @@ func remove_percent_base_health_effect_preserve_percent(effect_uuid : int):
 		
 		_set_current_health_to(preserve_percent(old_max, new_max, current_health))
 
+
 static func preserve_percent(old_max : float, new_max : float, current : float) -> float:
 	var old_ratio = current / old_max
 	return new_max * old_ratio
+
+
+# Calc of shield
+
+func calculate_current_shield() -> float:
+	var final_shield : float
+	for effect in shield_id_effect_map.values():
+		final_shield += effect._current_shield
+	
+	current_shield = final_shield
+	
+	emit_signal("on_current_shield_changed", current_shield)
+	
+	return current_shield
+
+
+func add_shield_effect(shield_effect : EnemyShieldEffect):
+	shield_id_effect_map[shield_effect.effect_uuid] = shield_effect
+	var mod = shield_effect.shield_as_modifier
+	var curr_shield : float
+	
+	if mod is FlatModifier:
+		curr_shield = mod.flat_modifier
+	elif mod is PercentModifier:
+		if mod.percent_type == PercentType.MAX:
+			curr_shield = mod.get_modification_to_value(_last_calculated_max_health)
+		elif mod.percent_type == PercentType.BASE:
+			curr_shield = mod.get_modification_to_value(base_health)
+		elif mod.percent_type == PercentType.CURRENT:
+			curr_shield = mod.get_modification_to_value(current_health)
+		elif mod.percent_type == PercentType.MISSING:
+			curr_shield = mod.get_modification_to_value(_last_calculated_max_health - current_health)
+	
+	shield_effect._current_shield = curr_shield
+	
+	calculate_current_shield()
+
+
+func remove_shield_effect(effect_uuid : int, cause_calculate : bool = true):
+	shield_id_effect_map.erase(effect_uuid)
+	emit_signal("shield_broken", effect_uuid)
+	
+	if cause_calculate:
+		calculate_current_shield()
+
 
 
 # Calculation of attributes
@@ -733,15 +859,20 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1):
 		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_PERCENT_HEALTH_HIT_SCALE:
 			percent_percent_health_hit_scale_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
 			calculate_percent_health_hit_scale()
-			
-			
 		
-		# HEAL EFFECTS not affected by effect vul
+		
+		
 	elif to_use_effect is EnemyHealOverTimeEffect:
-		_heal_over_time_id_effects_map[to_use_effect.effect_uuid] = base_effect._get_copy_scaled_by(1)
+		_heal_over_time_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
 		
 	elif to_use_effect is EnemyHealEffect:
-		heal_from_effect(base_effect._get_copy_scaled_by(1))
+		heal_from_effect(to_use_effect)
+		
+	elif to_use_effect is EnemyShieldEffect:
+		add_shield_effect(to_use_effect)
+	
+	
+	emit_signal("effect_added", to_use_effect, self)
 
 
 func _remove_effect(base_effect : EnemyBaseEffect):
@@ -817,6 +948,9 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 	elif base_effect is EnemyHealOverTimeEffect:
 		_heal_over_time_id_effects_map.erase(base_effect.effect_uuid)
 		
+	elif base_effect is EnemyShieldEffect:
+		remove_shield_effect(base_effect.effect_uuid)
+	
 	
 	if base_effect != null:
 		emit_signal("effect_removed", base_effect, self)
@@ -881,6 +1015,9 @@ func _clear_effects():
 	
 	
 	for effect in _heal_over_time_id_effects_map.values():
+		_remove_effect(effect)
+	
+	for effect in shield_id_effect_map.values():
 		_remove_effect(effect)
 
 
@@ -973,6 +1110,9 @@ func _decrease_time_of_timebounds(delta):
 		
 		_decrease_time_of_effect(res_eff, delta)
 	
+	for res_eff in shield_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
 
 
 func _decrease_time_of_effect(effect, delta : float):
@@ -1003,3 +1143,8 @@ func _on_CollisionArea_body_entered(body):
 func get_enemy_parent():
 	return self
 
+
+#
+
+func register_ability(ability : BaseAbility):
+	all_abilities.append(ability)

@@ -281,16 +281,18 @@ func untakeover(tower):
 		tower.remove_child(chaos_shadow_anim_sprite)
 		chaos_shadow_anim_sprite.queue_free()
 	
+	for module in replaced_attack_modules:
+		if module != null:
+			module.can_be_commanded_by_tower_other_clauses.erase(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
+			
+			if module.range_module == sword_attack_module.range_module or module.range_module == null:
+				module.range_module = replaced_range_module
+	
 	for module in chaos_attack_modules:
 		if module != null:
 			tower.remove_attack_module(module)
 			module.queue_free()
 	
-	for module in replaced_attack_modules:
-		if module != null:
-			module.can_be_commanded_by_tower_other_clauses.erase(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
-	
-
 
 
 # Sword related

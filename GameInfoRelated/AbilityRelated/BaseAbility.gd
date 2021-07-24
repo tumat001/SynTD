@@ -75,6 +75,10 @@ var should_be_displaying : bool setget, _get_should_be_displaying
 var auto_cast_on : bool = false setget set_auto_cast_val
 var auto_cast_func : String
 
+
+var ignore_ability_effects_from_manager : bool = false
+
+
 # Ability Power related
 
 var base_ability_potency : float = 1
@@ -224,6 +228,11 @@ func set_icon(arg_icon):
 	icon = arg_icon
 	call_deferred("emit_signal", "icon_changed", icon)
 
+func set_descriptions(arg_desc : Array):
+	descriptions.clear()
+	for des in arg_desc:
+		descriptions.append(des)
+
 
 func set_tower(arg_tower : Node):
 	if tower != null:
@@ -239,13 +248,6 @@ func set_tower(arg_tower : Node):
 			tower.connect("tree_exiting", self, "destroy_self", [], CONNECT_PERSIST)
 			tower.connect("tower_active_in_map", self, "_tower_active_in_map", [], CONNECT_PERSIST)
 			tower.connect("tower_not_in_active_map", self, "_tower_not_active_in_map", [], CONNECT_PERSIST)
-
-
-func set_descriptions(arg_desc : Array):
-	descriptions.clear()
-	for des in arg_desc:
-		descriptions.append(des)
-
 
 func set_synergy(arg_synergy):
 	synergy = arg_synergy
@@ -349,7 +351,20 @@ func set_properties_to_auto_castable():
 	auto_castable_clauses.remove_clause(AutoCastableClauses.CANNOT_BE_AUTOCASTED)
 
 
+func set_properties_to_enemy_based():
+	ignore_ability_effects_from_manager = true
+
+
 # Ability adding removing stats related
+
+func add_ability_effect_from_manager(attr_effect : AbilityAttributesEffect):
+	if !ignore_ability_effects_from_manager:
+		add_ability_effect(attr_effect)
+
+func remove_ability_effect_from_manager(attr_effect : AbilityAttributesEffect):
+	if !ignore_ability_effects_from_manager:
+		remove_ability_effect(attr_effect)
+
 
 func add_ability_effect(attr_effect : AbilityAttributesEffect):
 	if attr_effect.attribute_type == AbilityAttributesEffect.FLAT_ABILITY_POTENCY or attr_effect.attribute_type == AbilityAttributesEffect.PERCENT_ABILITY_POTENCY:

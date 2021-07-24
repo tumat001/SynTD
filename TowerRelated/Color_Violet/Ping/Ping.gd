@@ -228,7 +228,6 @@ func _enemy_seeked(enemy, damage_register_id : int, damage_instance, module):
 func _construct_mark_sprite():
 	var mark_sprite_child = Sprite.new()
 	mark_sprite_child.texture = PingMarked_pic
-	mark_sprite_child.scale = Vector2(2, 2)
 	
 	_markers.append(mark_sprite_child)
 	

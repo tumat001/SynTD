@@ -54,6 +54,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	if health_gain_effect == null:
 		health_gain_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_HEALTH, health_gain_mod, StoreOfEnemyEffectsUUID.RED_PACT_A_CHALLENGE_ENEMY_BONUS_HEALTH)
 		health_gain_effect.is_timebound = false
+		health_gain_effect.respect_scale = false
 		
 
 func _enemy_spawned(enemy):

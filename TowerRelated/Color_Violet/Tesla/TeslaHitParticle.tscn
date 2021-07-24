@@ -16,9 +16,7 @@ animations = [ {
 } ]
 
 [node name="TeslaHitParticle" instance=ExtResource( 1 )]
-scale = Vector2( 2, 2 )
 frames = SubResource( 1 )
-frame = 1
 script = ExtResource( 6 )
 lifetime = 0.2
 frames_based_on_lifetime = true

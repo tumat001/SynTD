@@ -16,28 +16,32 @@ enum {
 	WEAKEST = 12,
 	STRONGEST = 13,
 	
+	PERCENT_EXECUTE = 14,
+	PERCENT_HEALTHIEST = 15,
+	
 	RANDOM = 20,
 }
 
 # UPDATE THIS WHEN CHANING THE ENUM
 static func get_all_targeting_options() -> Array:
-	var bucket : Array = []
-	
-	bucket.append(FIRST)
-	bucket.append(LAST)
-	
-	bucket.append(CLOSE)
-	bucket.append(FAR)
-	
-	bucket.append(EXECUTE)
-	bucket.append(HEALTHIEST)
-	
-	bucket.append(WEAKEST)
-	bucket.append(STRONGEST)
-	
-	bucket.append(RANDOM)
-	
-	return bucket
+	return [
+		FIRST,
+		LAST,
+		
+		CLOSE,
+		FAR,
+		
+		EXECUTE,
+		HEALTHIEST,
+		
+		WEAKEST,
+		STRONGEST,
+		
+		PERCENT_EXECUTE,
+		PERCENT_HEALTHIEST,
+		
+		RANDOM,
+	]
 
 
 static func _find_random_distinct_enemies(enemies : Array, count : int):
@@ -94,6 +98,12 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 		enemies.sort_custom(CustomSorter, "sort_enemies_by_strongest")
 		
 		
+	elif targeting == PERCENT_EXECUTE:
+		enemies.sort_custom(CustomSorter, "sort_enemies_by_percent_execute")
+		
+	elif targeting == PERCENT_HEALTHIEST:
+		enemies.sort_custom(CustomSorter, "sort_enemies_by_percent_healthiest")
+		
 	elif targeting == RANDOM:
 		enemies = _find_random_distinct_enemies(enemies, num_of_enemies)
 		
@@ -149,6 +159,26 @@ class CustomSorter:
 			return a._last_calculated_max_health > b._last_calculated_max_health
 		else:
 			return sort_enemies_by_first(a, b)
+	
+	
+	static func sort_enemies_by_percent_execute(a, b):
+		var a_ratio = a.current_health / a._last_calculated_max_health
+		var b_ratio = b.current_health / b._last_calculated_max_health
+		
+		if a_ratio != b_ratio:
+			return a_ratio < b_ratio
+		else:
+			return sort_enemies_by_first(a, b)
+	
+	static func sort_enemies_by_percent_healthiest(a, b):
+		var a_ratio = a.current_health / a._last_calculated_max_health
+		var b_ratio = b.current_health / b._last_calculated_max_health
+		
+		if a_ratio != b_ratio:
+			return a_ratio > b_ratio
+		else:
+			return sort_enemies_by_first(a, b)
+	
 
 # Computing of other stuffs
 

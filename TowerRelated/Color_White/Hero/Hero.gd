@@ -58,6 +58,7 @@ signal vol_level_changed(new_level)
 signal can_spend_gold_and_xp_for_level_up_updated(val)
 signal can_spend_relics_for_level_up_updated(val)
 
+signal notify_xp_cap_of_level_reached()
 
 const xp_about_descriptions = [
 	"Hero gains EXP from damaging enemies, killing enemies, and casting Voice of Light.",
@@ -65,7 +66,7 @@ const xp_about_descriptions = [
 	"Hero gains 3 EXP from a kill.",
 	"Hero gains EXP from casting Voice of Light. The amount depends on this ability's level.",
 	"",
-	"There is no EXP limit for Hero.",
+	"There is no EXP limit for Hero. Hero can only gain 3 levels from gold and EXP.",
 	"Only 66% of exp is earned when White is not the dominant color."
 ]
 
@@ -78,22 +79,22 @@ const xp_needed_per_level : Array = [150, 650, 1500]
 const gold_needed_per_level : Array = [1, 2, 4]
 
 const main_attack_proj_speed : float = 500.0
-const attks_needed_for_light_wave_in_levels : Array = [3, 3, 1, 1]
-const attks_needed_for_light_explosion : int = 20
+const attks_needed_for_light_wave_in_levels : Array = [3, 2, 1, 1]
+const attks_needed_for_light_explosion : int = 30
 const light_wave_base_damage_in_levels : Array = [1, 1.5, 2.25, 3.5]
 const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.75, 1]
 
-const judgement_dmg_ratio_in_levels : Array = [2, 3, 4, 6]
+const judgement_dmg_ratio_in_levels : Array = [2.5, 4.5, 6.5, 10]
 const judgement_bonus_dmg_ratio : float = 1.5
-const judgement_bonus_dmg_threshold_trigger : float = 0.2
+const judgement_bonus_dmg_threshold_trigger : float = 0.25
 const judgement_stack_trigger : int = 5
 
 const current_attks_needed_for_vol : int = 7
 const VOL_towers_affected_in_levels : Array = [3, 5, 7, 12]
 const VOL_range_in_levels : Array = [70, 105, 160, 250]
-const VOL_dmg_ratio_buff_in_levels : Array = [1.25, 1.25, 4.0/3.0, 1.5]
-const VOL_buff_attack_count_in_levels : Array = [4, 5, 6, 21]
-const VOL_xp_gain_per_tower_affected_in_levels : Array = [3, 4, 0, 0]
+const VOL_dmg_ratio_buff_in_levels : Array = [1.20, 1.25, 1.25, 1.5]
+const VOL_buff_attack_count_in_levels : Array = [4, 6, 9, 25]
+const VOL_xp_gain_per_tower_affected_in_levels : Array = [3, 5, 0, 0]
 
 const hero_extra_ingredient_limit : int = 3
 
@@ -134,6 +135,9 @@ var current_vol_count : int
 
 var current_judgement_dmg_ratio : float
 
+#
+
+var notify_xp_cap_of_level_reached : bool = false
 
 onready var staff_proj_origin_pos2D : Position2D = $TowerBase/StaffProjPosition
 onready var staff_sprite : Sprite = $TowerBase/StaffSprite
@@ -396,8 +400,8 @@ func set_light_waves_level(new_level):
 
 func _construct_and_add_judgement_effect():
 	var enemy_stack_effect = EnemyStackEffect.new(null, 1, judgement_stack_trigger, StoreOfEnemyEffectsUUID.HERO_JUDGEMENT_STACK, true, true)
-	enemy_stack_effect.is_timebound = true
-	enemy_stack_effect.time_in_seconds = 5
+	enemy_stack_effect.is_timebound = false
+	#enemy_stack_effect.time_in_seconds = 5
 	
 	judgement_effect_adder = TowerOnHitEffectAdderEffect.new(enemy_stack_effect, StoreOfTowerEffectsUUID.HERO_JUDGEMENT_STACK_EFFECT)
 	judgement_effect_adder.is_timebound = false
@@ -417,7 +421,7 @@ func _construct_and_add_judgement_attack_module():
 	judgement_attack_module.benefits_from_bonus_attack_speed = false
 	judgement_attack_module.benefits_from_bonus_base_damage = false
 	judgement_attack_module.benefits_from_bonus_on_hit_effect = false
-	judgement_attack_module.benefits_from_bonus_on_hit_damage = false
+	judgement_attack_module.benefits_from_bonus_on_hit_damage = true
 	
 	judgement_attack_module.attack_sprite_scene = Judgement_AttkSprite
 	judgement_attack_module.attack_sprite_match_lifetime_to_windup = true
@@ -658,6 +662,10 @@ func _increase_exp(amount):
 	if current_hero_natural_level < max_hero_level:
 		if current_hero_xp >= xp_needed_per_level[current_hero_natural_level]:
 			can_spend_gold_and_xp_for_level_up()
+			
+			if !notify_xp_cap_of_level_reached:
+				notify_xp_cap_of_level_reached = true
+				emit_signal("notify_xp_cap_of_level_reached")
 
 
 func _increase_spendables(amount):
@@ -675,6 +683,9 @@ func _attempt_spend_gold_and_xp_for_level_up():
 		current_hero_effective_level += 1
 		_increase_exp(-xp_needed)
 		_increase_spendables(1)
+		
+		notify_xp_cap_of_level_reached = false
+		emit_signal("notify_xp_cap_of_level_reached")
 		
 		emit_signal("hero_level_changed", current_hero_effective_level)
 		can_spend_relics_for_level_up()
@@ -769,6 +780,7 @@ func get_judgement_ability_descs() -> Array:
 		return [
 			"Every attack that applies on hit effects applies a Judge stack to enemies hit.",
 			"At 5 Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage." % (str(current_judgement_dmg_ratio * 100) + "%"),
+			"Judgement is enhanced to deal %s damage when the enemy has less than %s health. This bonus stacks multiplicatively." % [(str(judgement_bonus_dmg_ratio * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
 			"Judgement does not apply on hit effects."
 		]
 	else:
@@ -842,6 +854,7 @@ func get_judgement_upgrade_descs():
 			descs = [
 				"Every attack that applies on hit effects applies a Judge stack to enemies hit.",
 				"At 5 Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage." % (str(judgement_dmg_ratio_in_levels[0] * 100) + "%"),
+				"Judgement is enhanced to deal %s damage when the enemy has less than %s health. This bonus stacks multiplicatively." % [(str(judgement_bonus_dmg_ratio * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
 				"Judgement does not apply on hit effects."
 			]
 	
@@ -892,7 +905,7 @@ func get_gold_xp_level_up_desc() -> Array:
 		]
 	else:
 		return [
-			"Hero already reached max level."
+			"Hero has already gained all levels from gold and EXP."
 		]
 
 func get_relic_level_up_desc() -> Array:

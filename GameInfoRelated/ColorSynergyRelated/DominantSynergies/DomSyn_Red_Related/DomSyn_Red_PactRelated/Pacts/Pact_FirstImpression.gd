@@ -58,23 +58,27 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 		toughness_gain_modi.flat_modifier = gain_val
 		toughness_gain_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_TOUGHNESS, toughness_gain_modi, StoreOfEnemyEffectsUUID.RED_PACT_FIRST_IMPRESSION_TOUGHNESS_GAIN)
 		toughness_gain_effect.is_timebound = false
+		toughness_gain_effect.respect_scale = false
 		
 		var toughness_loss_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.RED_PACT_FIRST_IMPRESSION_TOUGHNESS_LOSS)
 		toughness_loss_modi.flat_modifier = loss_val
 		toughness_loss_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_TOUGHNESS, toughness_loss_modi, StoreOfEnemyEffectsUUID.RED_PACT_FIRST_IMPRESSION_TOUGHNESS_LOSS)
 		toughness_loss_effect.is_timebound = true
 		toughness_loss_effect.time_in_seconds = loss_duration
+		toughness_gain_effect.respect_scale = false
 		
 		var armor_gain_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.RED_PACT_FIRST_IMPRESSION_ARMOR_GAIN)
 		armor_gain_modi.flat_modifier = gain_val
 		armor_gain_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_ARMOR, armor_gain_modi, StoreOfEnemyEffectsUUID.RED_PACT_FIRST_IMPRESSION_ARMOR_GAIN)
 		armor_gain_effect.is_timebound = false
+		armor_gain_effect.respect_scale = false
 		
 		var armor_loss_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.RED_PACT_FIRST_IMPRESSION_ARMOR_LOSS)
 		armor_loss_modi.flat_modifier = loss_val
 		armor_loss_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_ARMOR, armor_loss_modi, StoreOfEnemyEffectsUUID.RED_PACT_FIRST_IMPRESSION_ARMOR_LOSS)
 		armor_loss_effect.is_timebound = true
 		armor_loss_effect.time_in_seconds = loss_duration
+		armor_loss_effect.respect_scale = false
 
 
 func _enemy_spawned(enemy):

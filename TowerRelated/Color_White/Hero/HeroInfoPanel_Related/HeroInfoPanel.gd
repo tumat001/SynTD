@@ -8,10 +8,32 @@ const Hero_WholeScreenGUI = preload("res://TowerRelated/Color_White/Hero/HeroGUI
 const Hero_WholeScreenGUI_Scene = preload("res://TowerRelated/Color_White/Hero/HeroGUI_Related/Hero_WholeScreenGUI.tscn")
 const WholeScreenGUI = preload("res://GameElementsRelated/WholeScreenGUI.gd")
 
+const Hero_NormalPic = preload("res://TowerRelated/Color_White/Hero/HeroInfoPanel_Related/Assets/HeroButtonImage.png")
+const Hero_LvlUpPic = preload("res://TowerRelated/Color_White/Hero/HeroInfoPanel_Related/Assets/HeroButtonImage_WithSpendables.png")
+
 var hero : Hero setget set_hero
 
+onready var show_hero_gui_button = $VBoxContainer/BodyMarginer/MarginContainer/ShowHeroGUI
+
+
 func set_hero(arg_hero : Hero):
+	if hero != null:
+		hero.disconnect("notify_xp_cap_of_level_reached", self, "_hero_reached_xp_cap_of_level")
+	
 	hero = arg_hero
+	
+	if hero != null:
+		hero.connect("notify_xp_cap_of_level_reached", self, "_hero_reached_xp_cap_of_level")
+		
+		_hero_reached_xp_cap_of_level()
+
+
+func _hero_reached_xp_cap_of_level():
+	if hero.notify_xp_cap_of_level_reached:
+		show_hero_gui_button.texture_normal = Hero_LvlUpPic
+	else:
+		show_hero_gui_button.texture_normal = Hero_NormalPic
+
 
 
 func _construct_about_tooltip() -> BaseTooltip:

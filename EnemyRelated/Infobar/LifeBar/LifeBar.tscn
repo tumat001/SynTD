@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://EnemyRelated/Infobar/LifeBar/LifeBar.gd" type="Script" id=1]
+
+[node name="LifeBar" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BarBackgroundPanel" type="MarginContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="BarBackground" type="TextureRect" parent="BarBackgroundPanel"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="BarFillForeground" type="MarginContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="FillHealthForeground" type="TextureRect" parent="BarFillForeground"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="FillShieldForeground" type="TextureRect" parent="BarFillForeground"]
+modulate = Color( 1, 1, 1, 0.784314 )
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Chunks" type="Control" parent="BarFillForeground"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2

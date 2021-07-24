@@ -1,32 +1,14 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://EnemyRelated/AbstractEnemy.tscn" type="PackedScene" id=1]
-[ext_resource path="res://EnemyRelated/Misc/TestEnemy/TestEnemySprite_Left.png" type="Texture" id=2]
-[ext_resource path="res://EnemyRelated/Misc/TestEnemy/TestEnemySprite_Up.png" type="Texture" id=3]
 [ext_resource path="res://EnemyRelated/Misc/TestEnemy/TestEnemySprite_Right.png" type="Texture" id=4]
 [ext_resource path="res://EnemyRelated/Misc/TestEnemy/TestEnemy.gd" type="Script" id=5]
-[ext_resource path="res://EnemyRelated/Misc/TestEnemy/TestEnemySprite_Down.png" type="Texture" id=6]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
-"frames": [ ExtResource( 3 ) ],
-"loop": true,
-"name": "walk_N",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 2 ) ],
-"loop": true,
-"name": "walk_W",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 6 ) ],
-"loop": true,
-"name": "walk_S",
-"speed": 5.0
-}, {
 "frames": [ ExtResource( 4 ) ],
 "loop": true,
-"name": "walk_E",
+"name": "default",
 "speed": 5.0
 } ]
 
@@ -42,3 +24,6 @@ frames = SubResource( 1 )
 
 [node name="CollisionShape2D" parent="CollisionArea" index="0"]
 shape = SubResource( 2 )
+
+[node name="Layer" parent="." index="2"]
+scale = Vector2( 1, 1 )

@@ -146,13 +146,17 @@ func _get_overriden_icon() -> Texture:
 	
 	return null
 
-func _get_copy_scaled_by(scale : float):
+func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
+	if !respect_scale and !force_apply_scale:
+		scale = 1
+	
 	var modifier = attribute_as_modifier.get_copy_scaled_by(scale)
 	
 	var copy = get_script().new(attribute_type, attribute_as_modifier, effect_uuid)
 	copy.is_timebound = is_timebound
 	copy.time_in_seconds = time_in_seconds
 	copy.status_bar_icon = status_bar_icon
+	copy.respect_scale = respect_scale
 	
 	return copy
 	

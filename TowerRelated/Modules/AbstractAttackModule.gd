@@ -183,8 +183,9 @@ func _set_range_module(new_module):
 			remove_child(range_module)
 		range_module.attack_modules_using_this.erase(self)
 	
-	if new_module != null and new_module.get_parent() == null:
-		add_child(new_module)
+	if new_module != null:
+		if new_module.get_parent() == null:
+			add_child(new_module)
 		new_module.attack_modules_using_this.append(self)
 	
 	range_module = new_module
@@ -197,7 +198,7 @@ func time_passed(delta):
 	if !_disabled:
 		_current_attack_wait -= delta
 		
-		if range_module.enemies_in_range.size() != 0 or (commit_to_targets_of_windup and _is_in_windup):#_targets_during_windup.size() > 0):
+		if (range_module != null and range_module.enemies_in_range.size() != 0) or (commit_to_targets_of_windup and _is_in_windup):#_targets_during_windup.size() > 0):
 			_current_wind_up_wait -= delta
 		
 		if _is_bursting:

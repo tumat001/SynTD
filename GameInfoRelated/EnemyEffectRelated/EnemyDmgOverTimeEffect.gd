@@ -99,13 +99,17 @@ func _get_icon():
 
 # copy
 
-func _get_copy_scaled_by(scale : float):
+func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
+	if !respect_scale and !force_apply_scale:
+		scale = 1
+	
 	var scaled_dmg_inst = damage_instance.get_copy_scaled_by(scale)
 	
 	var copy = get_script().new(scaled_dmg_inst, effect_uuid, delay_per_tick)
 	copy.is_timebound = is_timebound
 	copy.time_in_seconds = time_in_seconds
 	copy.status_bar_icon = status_bar_icon
+	copy.respect_scale = respect_scale
 	
 	return copy
 
