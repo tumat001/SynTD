@@ -19,6 +19,7 @@ const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/
 const EnemyHealEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyHealEffect.gd")
 const EnemyHealOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyHealOverTimeEffect.gd")
 const EnemyShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyShieldEffect.gd")
+const EnemyInvisibilityEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyInvisibilityEffect.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
@@ -57,7 +58,6 @@ var _last_calculated_max_health : float
 var shield_id_effect_map : Dictionary = {}
 var current_shield : float = 0
 
-
 var pierce_consumed_per_hit : float = 1
 
 var base_armor : float = 0
@@ -75,7 +75,7 @@ var flat_resistance_id_effect_map : Dictionary = {}
 var percent_resistance_id_effect_map : Dictionary= {}
 var _last_calculated_final_resistance : float
 
-var base_player_damage : float = 1
+var base_player_damage : float
 var flat_player_damage_id_effect_map : Dictionary = {}
 var percent_player_damage_id_effect_map : Dictionary = {}
 # final player damage is calculated when enemy escapes
@@ -94,6 +94,10 @@ var base_percent_health_hit_scale : float = 1
 var flat_percent_health_hit_scale_id_effect_map : Dictionary = {}
 var percent_percent_health_hit_scale_id_effect_map : Dictionary = {}
 var last_calculated_percent_health_hit_scale
+
+var invisibility_id_effect_map : Dictionary = {}
+var last_calculated_invisibility_status : bool = false
+
 
 var distance_to_exit : float
 var no_movement_from_self : bool = false
@@ -126,12 +130,15 @@ func _stats_initialize(info : EnemyTypeInformation):
 	base_armor = info.base_armor
 	base_toughness = info.base_toughness
 	base_resistance = info.base_resistance
+	base_player_damage = info.base_player_damage
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_self_size = _get_current_anim_size()
 	
+	var scale_of_layer : float = _get_scale_for_layer_lifebar()
+	layer_infobar.scale = Vector2(scale_of_layer, scale_of_layer)
 	layer_infobar.z_index = ZIndexStore.ENEMY_INFO_BAR
 	layer_infobar.z_as_relative = false
 	#infobar.rect_position.y -= round((_self_size.y) + 11)
@@ -160,12 +167,7 @@ func _post_inherit_ready():
 	calculate_effect_vulnerability()
 	calculate_percent_health_hit_scale()
 	calculate_current_shield()
-	
-#	var mod : FlatModifier = FlatModifier.new(99999)
-#	mod.flat_modifier = 10
-#	var shield_effect : EnemyShieldEffect = EnemyShieldEffect.new(mod, 99999)
-#	_add_effect(shield_effect)
-#
+	calculate_invisibility_status()
 	
 	current_health = _last_calculated_max_health
 	
@@ -178,6 +180,16 @@ func _post_inherit_ready():
 func _get_current_anim_size() -> Vector2:
 	return $AnimatedSprite.frames.get_frame($AnimatedSprite.animation, $AnimatedSprite.frame).get_size()
 
+func _get_scale_for_layer_lifebar() -> float:
+	var threshold_health_for_inc : float = 100
+	var base_scale : float = 0.5
+	
+	
+	
+	return base_scale
+
+
+#
 
 func _process(delta):
 	_decrease_time_of_timebounds(delta)
@@ -461,13 +473,13 @@ func add_shield_effect(shield_effect : EnemyShieldEffect):
 	if mod is FlatModifier:
 		curr_shield = mod.flat_modifier
 	elif mod is PercentModifier:
-		if mod.percent_type == PercentType.MAX:
+		if mod.percent_based_on == PercentType.MAX:
 			curr_shield = mod.get_modification_to_value(_last_calculated_max_health)
-		elif mod.percent_type == PercentType.BASE:
+		elif mod.percent_based_on == PercentType.BASE:
 			curr_shield = mod.get_modification_to_value(base_health)
-		elif mod.percent_type == PercentType.CURRENT:
+		elif mod.percent_based_on == PercentType.CURRENT:
 			curr_shield = mod.get_modification_to_value(current_health)
-		elif mod.percent_type == PercentType.MISSING:
+		elif mod.percent_based_on == PercentType.MISSING:
 			curr_shield = mod.get_modification_to_value(_last_calculated_max_health - current_health)
 	
 	shield_effect._current_shield = curr_shield
@@ -552,6 +564,17 @@ func calculate_percent_health_hit_scale() -> float:
 	last_calculated_percent_health_hit_scale = final_scale
 	return final_scale
 
+func calculate_invisibility_status() -> bool:
+	last_calculated_invisibility_status = invisibility_id_effect_map.size() != 0
+	
+	if last_calculated_invisibility_status:
+		modulate.a = 0.4
+	else:
+		modulate.a = 1
+	
+	return last_calculated_invisibility_status
+
+
 # damage multiplier
 
 func _calculate_multiplier_from_total_armor(armor_pierce : float, percent_self_armor_pierce : float) -> float:
@@ -597,6 +620,9 @@ func calculate_final_player_damage() -> float:
 	
 	for effect in flat_player_damage_id_effect_map.values():
 		final_player_damage += effect.attribute_as_modifier.get_modification_to_value(base_player_damage)
+	
+	if final_player_damage < 0:
+		final_player_damage = 0
 	
 	return final_player_damage
 
@@ -760,7 +786,7 @@ func _process_effects(effects : Dictionary, multiplier : float = 1):
 		_add_effect(effect, multiplier)
 
 
-func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1):
+func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1) -> EnemyBaseEffect:
 	multiplier *= last_calculated_final_effect_vulnerability
 	var to_use_effect = base_effect._get_copy_scaled_by(multiplier)
 	
@@ -871,9 +897,14 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1):
 		
 	elif to_use_effect is EnemyShieldEffect:
 		add_shield_effect(to_use_effect)
+		
+	elif to_use_effect is EnemyInvisibilityEffect:
+		invisibility_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+		calculate_invisibility_status()
 	
 	
 	emit_signal("effect_added", to_use_effect, self)
+	return to_use_effect
 
 
 func _remove_effect(base_effect : EnemyBaseEffect):
@@ -951,7 +982,10 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		
 	elif base_effect is EnemyShieldEffect:
 		remove_shield_effect(base_effect.effect_uuid)
-	
+		
+	elif base_effect is EnemyInvisibilityEffect:
+		invisibility_id_effect_map.erase(base_effect.effect_uuid)
+		calculate_invisibility_status()
 	
 	if base_effect != null:
 		emit_signal("effect_removed", base_effect, self)
@@ -1019,6 +1053,9 @@ func _clear_effects():
 		_remove_effect(effect)
 	
 	for effect in shield_id_effect_map.values():
+		_remove_effect(effect)
+	
+	for effect in invisibility_id_effect_map.values():
 		_remove_effect(effect)
 
 
@@ -1112,6 +1149,10 @@ func _decrease_time_of_timebounds(delta):
 		_decrease_time_of_effect(res_eff, delta)
 	
 	for res_eff in shield_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	
+	for res_eff in invisibility_id_effect_map.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
 

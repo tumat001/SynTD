@@ -1,5 +1,6 @@
 extends "res://EnemyRelated/AbstractEnemy.gd"
 
+
 const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
@@ -7,7 +8,8 @@ const HealParticle_Scene = preload("res://EnemyRelated/CommonParticles/HealParti
 
 const _heal_cooldown : float = 10.0
 const _heal_range : float = 140.0
-const _heal_amount : float = 6.0
+const _heal_amount : float = 8.0
+const _shield_ratio : float = 45.0
 
 const no_enemies_in_range_clause : int = -10
 
@@ -16,12 +18,14 @@ var heal_ability : BaseAbility
 var heal_activation_clause : ConditionalClauses
 var heal_effect : EnemyHealEffect
 
+var shield_effect : EnemyShieldEffect
+
 var range_module : RangeModule
 var targeting_option : int = Targeting.PERCENT_EXECUTE
 
 
 func _init():
-	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.HEALER))
+	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.ENCHANTRESS))
 
 
 func _ready():
@@ -41,7 +45,7 @@ func _ready():
 	range_module.update_range()
 	
 	_construct_and_connect_ability()
-	_construct_heal_effect()
+	_construct_heal_and_shield_effect()
 
 
 #
@@ -68,11 +72,19 @@ func _construct_and_connect_ability():
 	
 	register_ability(heal_ability)
 
-func _construct_heal_effect():
-	var heal_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
+func _construct_heal_and_shield_effect():
+	var heal_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.ENCHANTRESS_HEAL_EFFECT)
 	heal_modi.flat_modifier = _heal_amount
 	
-	heal_effect = EnemyHealEffect.new(heal_modi, StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
+	heal_effect = EnemyHealEffect.new(heal_modi, StoreOfEnemyEffectsUUID.ENCHANTRESS_HEAL_EFFECT)
+	
+	var shield_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.ENCHANTRESS_SHIELD_EFFECT)
+	shield_modi.percent_amount = _shield_ratio
+	shield_modi.percent_based_on = PercentType.MISSING
+	
+	shield_effect = EnemyShieldEffect.new(shield_modi, StoreOfEnemyEffectsUUID.ENCHANTRESS_SHIELD_EFFECT)
+	shield_effect.time_in_seconds = 5
+	shield_effect.is_timebound = true
 
 
 func _heal_ready_for_activation_updated(is_ready):
@@ -84,12 +96,14 @@ func _heal_ability_activated():
 	var targets = range_module.get_targets(2, targeting_option, true)
 	for target in targets:
 		if target != self:
-			
+			target._add_effect(shield_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
 			target._add_effect(heal_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
+			
 			_construct_and_add_heal_particle(target.global_position)
 			heal_ability.start_time_cooldown(_heal_cooldown)
 			no_movement_from_self = true
 			return
+
 
 func _construct_and_add_heal_particle(pos):
 	var attk_sprite : AttackSprite = HealParticle_Scene.instance()

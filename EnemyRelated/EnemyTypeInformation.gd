@@ -15,6 +15,7 @@ var base_movement_speed : float = 0
 var base_armor : float = 0
 var base_toughness : float = 0
 var base_resistance : float = 0
+var base_player_damage : float = 1
 
 
 func _init(arg_id : int, arg_faction):

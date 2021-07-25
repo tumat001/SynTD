@@ -217,7 +217,7 @@ var current_health : float
 # tracker
 
 var old_global_position : Vector2
-
+var distance_to_exit : float = 0 # this is here for Targeting purposes
 
 # managers
 
@@ -1678,15 +1678,20 @@ func _set_health(val : float):
 	current_health = val
 	
 	if current_health <= 0:
-		_emit_tower_no_health()
+		current_health = 0
 		set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_NO_HEALTH)
 		
-		life_bar_layer.visible = false
+		life_bar_layer.visible = true
+		_emit_tower_no_health()
 		
 	else:
+		if current_health > last_calculated_max_health:
+			current_health = last_calculated_max_health
+		
 		erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_NO_HEALTH)
 		
 		life_bar_layer.visible = current_health < last_calculated_max_health
+		
 	
 	_emit_current_health_changed()
 

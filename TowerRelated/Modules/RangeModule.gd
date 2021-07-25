@@ -244,7 +244,7 @@ func get_current_targeting_option() -> int:
 #	_current_enemies[0] = Targeting.enemy_to_target(enemies_in_range, targeting)
 #	return _current_enemies[0]
 
-func get_targets(num : int, targeting : int = get_current_targeting_option()) -> Array:
+func get_targets(num : int, targeting : int = get_current_targeting_option(), include_invis_enemies : bool = false) -> Array:
 	_current_enemies = Targeting.enemies_to_target(enemies_in_range, targeting, num, global_position)
 	while _current_enemies.has(null):
 		_current_enemies.erase(null)
@@ -255,8 +255,14 @@ func get_targets(num : int, targeting : int = get_current_targeting_option()) ->
 	for i in range(priority_enemies.size() - 1, 0, -1):
 		_current_enemies.push_front(priority_enemies[i])
 	
+	if !include_invis_enemies:
+		for enemy in _current_enemies:
+			if enemy.last_calculated_invisibility_status:
+				_current_enemies.erase(enemy)
+	
+	
 	emit_signal("current_enemies_acquired")
 	return _current_enemies
 
-func get_all_targets(targeting : int = get_current_targeting_option()) -> Array:
+func get_all_targets(targeting : int = get_current_targeting_option(), include_invis_enemies : bool = false) -> Array:
 	return get_targets(_current_enemies.size(), targeting)

@@ -32,7 +32,7 @@ func _construct_effect_d():
 #
 
 func _on_health_threshold_reached(curr_health):
-	if curr_health / _last_calculated_max_health <= 0.5:
+	if curr_health / _last_calculated_max_health <= _health_ratio_threshold:
 		disconnect("on_current_health_changed", self, "_on_health_threshold_reached")
 		_perform_dash()
 

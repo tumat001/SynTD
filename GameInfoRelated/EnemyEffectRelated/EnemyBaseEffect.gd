@@ -12,6 +12,9 @@ enum EffectType {
 	
 	HEAL,
 	SHIELD,
+	
+	INVISIBILITY,
+	
 	CLEAR_ALL_EFFECTS,
 	
 	MISC,
