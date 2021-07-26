@@ -90,10 +90,10 @@ func _on_EmblemButtonFire_emblem_button_right_pressed():
 			"704's attacks causes enemies to burn on hit. Burned enemies take elemental damage every 0.5 seconds for 5 seconds.",
 			"",
 			"Lvl 0: No burn.",
-			"Lvl 1: Burn damage = 0.33",
-			"Lvl 2: Burn damage = 0.66",
-			"Lvl 3: Burn damage = 1",
-			"Lvl 4: Burn damage = 1.5"
+			"Lvl 1: Burn damage = 0.2",
+			"Lvl 2: Burn damage = 0.3",
+			"Lvl 3: Burn damage = 0.4",
+			"Lvl 4: Burn damage = 0.6"
 		]
 		
 		get_tree().get_root().add_child(tower_tooltip)

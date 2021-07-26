@@ -40,6 +40,6 @@ func _get_copy_scaled_by(scale : float):
 	copy.is_timebound = is_timebound
 	copy.time_in_seconds = time_in_seconds
 	copy.status_bar_icon = status_bar_icon
-	
+	copy.is_from_enemy = is_from_enemy
 	
 	return copy

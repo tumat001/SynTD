@@ -1,7 +1,6 @@
 extends Node
 
 const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
-const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
 const AbilityPanel = preload("res://GameHUDRelated/AbilityPanel/AbilityPanel.gd")
 
 signal time_decreased(delta)
@@ -11,7 +10,7 @@ signal round_started()
 signal add_ability_effect(effect)
 signal remove_ability_effect(effect)
 
-var stage_round_manager : StageRoundManager setget set_stage_round_manager
+var stage_round_manager setget set_stage_round_manager
 var ability_panel : AbilityPanel setget set_ability_panel
 
 
@@ -49,7 +48,7 @@ func add_ability(ability : BaseAbility, add_ability_to_panel : bool = true):
 
 # setters
 
-func set_stage_round_manager(arg_manager : StageRoundManager):
+func set_stage_round_manager(arg_manager):
 	stage_round_manager = arg_manager
 	
 	stage_round_manager.connect("round_ended", self, "on_round_ended", [], CONNECT_PERSIST)

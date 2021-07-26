@@ -1,5 +1,6 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
+[ext_resource path="res://EnemyRelated/Infobar/Healthbar/Healthbar_separator_big.png" type="Texture" id=1]
 [ext_resource path="res://MiscRelated/ControlStatusBarRelated/BaseControlStatusBar.tscn" type="PackedScene" id=2]
 [ext_resource path="res://EnemyRelated/Infobar/Healthbar/Healtbar_health.png" type="Texture" id=3]
 [ext_resource path="res://EnemyRelated/Infobar/Healthbar/Healthbar_separator.png" type="Texture" id=4]
@@ -41,6 +42,7 @@ margin_bottom = 22.0
 size_flags_vertical = 2
 display_chunks = true
 chunk_separator_pic = ExtResource( 4 )
+chunk_big_separator_pic = ExtResource( 1 )
 bar_background_pic = ExtResource( 6 )
 fill_health_foreground_pic = ExtResource( 3 )
 fill_shield_foreground_pic = ExtResource( 5 )

@@ -3,21 +3,16 @@ const EnemyTypeInformation = preload("res://EnemyRelated/EnemyTypeInformation.gd
 
 
 enum EnemyFactions {
-	MISC,
+	BASIC = 0,
+	EXPERT = 1,
 	
-	BASIC,
-	EXPERT,
-	
-	BEAST,
-	LIFE_MEDDLERS,
-	REBELS,
-	CULTISTS,
+	#BEAST,
+	#LIFE_MEDDLERS,
+	#REBELS,
+	#CULTISTS,
 }
 
 enum Enemies {
-	# MISC (0)
-	TEST_ENEMY = 0,
-	
 	# BASIC (100)
 	BASIC = 100,
 	BRUTE = 101,
@@ -33,20 +28,15 @@ enum Enemies {
 	ENCHANTRESS = 203,
 	MAGUS = 204,
 	ASSASSIN = 205,
+	GRANDMASTER = 206,
 	
 }
 
 static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	var info : EnemyTypeInformation
 	
-	# MISC
-	if enemy_id == Enemies.TEST_ENEMY:
-		info = EnemyTypeInformation.new(Enemies.TEST_ENEMY, EnemyFactions.MISC)
-		info.base_health = 54
-		info.base_movement_speed = 22
-		
 	# BASIC FACTION
-	elif enemy_id == Enemies.BASIC:
+	if enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
 		info.base_health = 8
 		info.base_movement_speed = 28
@@ -83,7 +73,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info = EnemyTypeInformation.new(Enemies.EXPERIENCED, EnemyFactions.EXPERT)
 		info.base_health = 18
 		info.base_movement_speed = 28
-		info.base_resistance = 50
+		info.base_resistance = 25
 		info.base_toughness = 5
 		
 	elif enemy_id == Enemies.FIEND:
@@ -112,15 +102,21 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info.base_movement_speed = 26
 		info.base_player_damage = 4
 		
+	elif enemy_id == Enemies.GRANDMASTER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
+		info.base_health = 30
+		info.base_movement_speed = 26
+		info.base_effect_vulnerability = 0.1
+		info.base_resistance = 25
+		
+	
 	
 	return info
 
 
 static func get_enemy_scene(enemy_id : int):
-	if enemy_id == Enemies.TEST_ENEMY:
-		return load("res://EnemyRelated/Misc/TestEnemy/TestEnemy.tscn")
 	# BASIC FACTION
-	elif enemy_id == Enemies.BASIC:
+	if enemy_id == Enemies.BASIC:
 		return load("res://EnemyRelated/EnemyTypes/Type_Basic/Basic/Basic.tscn")
 	elif enemy_id == Enemies.BRUTE:
 		return load("res://EnemyRelated/EnemyTypes/Type_Basic/Brute/Brute.tscn")
@@ -145,6 +141,7 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Expert/Magus(Wizard)/Magus.tscn")
 	elif enemy_id == Enemies.ASSASSIN:
 		return load("res://EnemyRelated/EnemyTypes/Type_Expert/Assassin(Pain)/Assassin.tscn")
-	
+	elif enemy_id == Enemies.GRANDMASTER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Expert/Grandmaster/Grandmaster.tscn")
 	
 

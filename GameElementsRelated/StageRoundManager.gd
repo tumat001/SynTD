@@ -7,11 +7,14 @@ const StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/StageRo
 const ModeNormal_StageRounds = preload("res://GameplayRelated/StagesAndRoundsRelated/ModeNormal_StageRounds.gd")
 
 const BaseMode_EnemySpawnIns = preload("res://GameplayRelated/EnemiesInRounds/BaseMode_EnemySpawnIns.gd")
-const ModeNormal_EnemySpawnIns = preload("res://GameplayRelated/EnemiesInRounds/ModeNormal_EnemySpawnIns.gd")
+
+const FactionBasic_EnemySpawnIns = preload("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionBasic_EnemySpawnIns.gd")
 
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
-
 const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
+
+const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
+
 
 enum Mode {
 	NORMAL,
@@ -32,7 +35,7 @@ var round_status_panel : RoundStatusPanel setget _set_round_status_panel
 var stagerounds : BaseMode_StageRound
 var current_stageround_index : int = -1
 var current_stageround : StageRound
-var spawn_ins_of_mode : BaseMode_EnemySpawnIns
+var spawn_ins_of_faction_mode : BaseMode_EnemySpawnIns
 
 var round_started : bool
 var round_fast_forwarded : bool
@@ -53,7 +56,7 @@ func set_game_mode_to_normal():
 func set_game_mode(mode : int):
 	if mode == Mode.NORMAL:
 		stagerounds = ModeNormal_StageRounds.new()
-		spawn_ins_of_mode = ModeNormal_EnemySpawnIns.new()
+		spawn_ins_of_faction_mode = FactionBasic_EnemySpawnIns.new()
 
 #
 
@@ -89,10 +92,6 @@ func _at_round_start():
 	pass
 
 func _after_round_start():
-	var spawn_ins_in_stageround = spawn_ins_of_mode.get_instructions_for_stageround(current_stageround.id)
-	enemy_manager.set_instructions_of_interpreter(spawn_ins_in_stageround)
-	enemy_manager.enemy_first_damage = current_stageround.enemy_first_damage
-	
 	enemy_manager.start_run()
 
 
@@ -112,6 +111,22 @@ func end_round(from_game_start : bool = false):
 		else:
 			current_win_streak += 1
 			current_lose_streak = 0
+	
+	
+	# spawn inses related
+	var spawn_ins_in_stageround
+	if !spawn_ins_of_faction_mode.is_transition_time_in_stageround(current_stageround.id):
+		spawn_ins_in_stageround = spawn_ins_of_faction_mode.get_instructions_for_stageround(current_stageround.id)
+	else:
+		_replace_current_spawn_ins_to_second_half(stagerounds.get_second_half_faction())
+		spawn_ins_in_stageround = spawn_ins_of_faction_mode.get_instructions_for_stageround(current_stageround.id)
+	
+	enemy_manager.set_instructions_of_interpreter(spawn_ins_in_stageround)
+	enemy_manager.enemy_first_damage = current_stageround.enemy_first_damage
+	enemy_manager.enemy_health_multiplier = current_stageround.enemy_health_multiplier
+	enemy_manager.enemy_damage_multiplier = current_stageround.enemy_damage_multiplier
+	enemy_manager.apply_faction_passive(spawn_ins_of_faction_mode.get_faction_passive())
+	
 	
 	emit_signal("round_ended", current_stageround)
 
@@ -140,3 +155,12 @@ func _life_lost_from_enemy(enemy):
 		emit_signal("life_lost_from_enemy_first_time_in_round", enemy)
 	
 	lost_life_in_round = true
+
+
+# Enemy faction spawn ins related
+
+func _replace_current_spawn_ins_to_second_half(new_faction_id : int):
+	if new_faction_id == EnemyConstants.EnemyFactions.EXPERT:
+		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionExpert_EnemySpawnIns.gd").new()
+
+

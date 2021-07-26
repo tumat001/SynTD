@@ -157,6 +157,7 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 	copy.time_in_seconds = time_in_seconds
 	copy.status_bar_icon = status_bar_icon
 	copy.respect_scale = respect_scale
+	copy.is_from_enemy = is_from_enemy
 	
 	return copy
 	

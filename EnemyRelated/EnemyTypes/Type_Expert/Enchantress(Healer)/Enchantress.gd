@@ -6,9 +6,9 @@ const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const HealParticle_Scene = preload("res://EnemyRelated/CommonParticles/HealParticle/HealParticle.tscn")
 
-const _heal_cooldown : float = 10.0
+const _heal_cooldown : float = 7.0
 const _heal_range : float = 140.0
-const _heal_amount : float = 8.0
+const _heal_amount : float = 15.0
 const _shield_ratio : float = 45.0
 
 const no_enemies_in_range_clause : int = -10
@@ -77,6 +77,7 @@ func _construct_heal_and_shield_effect():
 	heal_modi.flat_modifier = _heal_amount
 	
 	heal_effect = EnemyHealEffect.new(heal_modi, StoreOfEnemyEffectsUUID.ENCHANTRESS_HEAL_EFFECT)
+	heal_effect.is_from_enemy = true
 	
 	var shield_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.ENCHANTRESS_SHIELD_EFFECT)
 	shield_modi.percent_amount = _shield_ratio
@@ -85,6 +86,7 @@ func _construct_heal_and_shield_effect():
 	shield_effect = EnemyShieldEffect.new(shield_modi, StoreOfEnemyEffectsUUID.ENCHANTRESS_SHIELD_EFFECT)
 	shield_effect.time_in_seconds = 5
 	shield_effect.is_timebound = true
+	shield_effect.is_from_enemy = true
 
 
 func _heal_ready_for_activation_updated(is_ready):
@@ -95,14 +97,14 @@ func _heal_ready_for_activation_updated(is_ready):
 func _heal_ability_activated():
 	var targets = range_module.get_targets(2, targeting_option, true)
 	for target in targets:
-		if target != self:
-			target._add_effect(shield_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
-			target._add_effect(heal_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
-			
-			_construct_and_add_heal_particle(target.global_position)
-			heal_ability.start_time_cooldown(_heal_cooldown)
-			no_movement_from_self = true
-			return
+		target._add_effect(shield_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
+		target._add_effect(heal_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
+		
+		_construct_and_add_heal_particle(target.global_position)
+		heal_ability.start_time_cooldown(_heal_cooldown)
+		
+		no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.CUSTOM_CLAUSE_01)
+
 
 
 func _construct_and_add_heal_particle(pos):
@@ -113,4 +115,4 @@ func _construct_and_add_heal_particle(pos):
 	get_tree().get_root().add_child(attk_sprite)
 
 func _particle_expired():
-	no_movement_from_self = false
+	no_movement_from_self_clauses.remove_clause(NoMovementClauses.CUSTOM_CLAUSE_01)

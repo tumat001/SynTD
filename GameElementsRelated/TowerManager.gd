@@ -8,7 +8,6 @@ const ActiveIngredientsPanel = preload("res://GameHUDRelated/RightSidePanel/Towe
 const TowerColorsPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerColorsPanel/TowerColorsPanel.gd")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const InnerBottomPanel = preload("res://GameElementsRelated/InnerBottomPanel.gd")
-const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
 const TargetingPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TargetingPanel/TargetingPanel.gd")
 const TowerInfoPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerInfoPanel.gd")
 const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
@@ -43,7 +42,7 @@ var targeting_panel : TargetingPanel
 var tower_info_panel : TowerInfoPanel
 
 var synergy_manager
-var stage_round_manager : StageRoundManager
+var stage_round_manager
 var ability_manager : AbilityManager
 var input_prompt_manager : InputPromptManager setget set_input_prompt_manager
 var game_elements

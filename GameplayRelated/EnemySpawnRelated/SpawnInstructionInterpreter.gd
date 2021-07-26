@@ -8,7 +8,6 @@ signal no_enemies_to_spawn_left
 
 var _current_time : float
 
-
 var _instructions_near_exe : Array
 var _instructions_far_from_exe : Array
 const _instruction_exe_time : float = 5.0
@@ -37,16 +36,23 @@ func reset_time():
 
 # Instructions related
 
-func set_instructions(inses : Array):
+# Returns the number of enemies (number of single ins)
+func set_instructions(inses : Array) -> int:
 	_instructions_far_from_exe = _get_interpreted_spawn_instructions(inses)
+	var enemy_count : int = _instructions_far_from_exe.size()
+	
 	_instructions_near_exe = []
 	_segragate_instructions_to_near_or_far_from_exe()
+	
+	return enemy_count
 
-func append_instructions(inses : Array):
+func append_instructions(inses : Array) -> int:
 	var bucket = _get_interpreted_spawn_instructions(inses)
 	
 	for ins in bucket:
 		_instructions_far_from_exe.append(ins)
+	
+	return bucket.size()
 
 
 # Turns all instructions found into a series of

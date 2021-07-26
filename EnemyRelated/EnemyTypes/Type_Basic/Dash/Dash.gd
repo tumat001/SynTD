@@ -24,9 +24,10 @@ func _construct_effect_d():
 	speed_bonus_modi.flat_modifier = _starting_boost_amount
 	
 	speed_bonus_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_MOV_SPEED, speed_bonus_modi, StoreOfEnemyEffectsUUID.DASH_SPEED_BOOST)
-	speed_bonus_effect.respect_scale = false
+	speed_bonus_effect.respect_scale = true
 	speed_bonus_effect.is_timebound = true
 	speed_bonus_effect.time_in_seconds = _boost_duration
+	speed_bonus_effect.is_from_enemy = true
 
 
 #

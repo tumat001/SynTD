@@ -17,6 +17,7 @@ var ability_tooltip : AbilityTooltip
 
 export var destroy_button_if_ability_lost : bool = true
 
+
 # setting and connections
 
 func set_ability(arg_ability : BaseAbility):
@@ -37,21 +38,25 @@ func set_ability(arg_ability : BaseAbility):
 			ability.connect("should_be_displaying_changed", self, "_should_be_displaying", [], CONNECT_PERSIST)
 			ability.connect("auto_cast_state_changed", self, "_ability_autocast_state_changed", [], CONNECT_PERSIST)
 		
-		if ability_button != null:
-			ability_button.texture_normal = ability.icon
-			
-			if ability.is_timebound:
-				if ability._time_max_cooldown != 0:
-					_started_cd(ability._time_max_cooldown, 0)
-				_current_cd_changed(ability._time_current_cooldown)
-			elif ability.is_roundbound:
-				if ability._round_max_cooldown != 0:
-					_started_cd(ability._round_max_cooldown, 0)
-				_current_cd_changed(ability._round_current_cooldown)
-			
-			_updated_is_ready_for_activation(ability.is_ready_for_activation())
-			_should_be_displaying(ability.should_be_displaying)
-			_ability_autocast_state_changed(ability.auto_cast_on)
+		_update_button_status()
+
+
+func _update_button_status():
+	if ability_button != null and ability != null:
+		ability_button.texture_normal = ability.icon
+		
+		if ability.is_timebound:
+			if ability._time_max_cooldown != 0:
+				_started_cd(ability._time_max_cooldown, 0)
+			_current_cd_changed(ability._time_current_cooldown)
+		elif ability.is_roundbound:
+			if ability._round_max_cooldown != 0:
+				_started_cd(ability._round_max_cooldown, 0)
+			_current_cd_changed(ability._round_current_cooldown)
+		
+		_should_be_displaying(ability.should_be_displaying)
+		_ability_autocast_state_changed(ability.auto_cast_on)
+		_updated_is_ready_for_activation(ability.is_ready_for_activation())
 
 
 func _disconnect_ability_signals():
@@ -70,6 +75,8 @@ func _disconnect_ability_signals():
 
 func _current_cd_changed(curr_cd):
 	cooldown_bar.value = curr_cd
+	
+	cooldown_bar.visible = curr_cd > 0
 
 
 # Started cd
@@ -96,7 +103,7 @@ func _is_ready():
 
 func _is_not_ready():
 	ability_button.modulate = not_ready_modulate_color
-	
+
 
 # autocast related
 

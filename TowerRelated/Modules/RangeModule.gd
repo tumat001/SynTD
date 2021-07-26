@@ -255,11 +255,6 @@ func get_targets(num : int, targeting : int = get_current_targeting_option(), in
 	for i in range(priority_enemies.size() - 1, 0, -1):
 		_current_enemies.push_front(priority_enemies[i])
 	
-	if !include_invis_enemies:
-		for enemy in _current_enemies:
-			if enemy.last_calculated_invisibility_status:
-				_current_enemies.erase(enemy)
-	
 	
 	emit_signal("current_enemies_acquired")
 	return _current_enemies

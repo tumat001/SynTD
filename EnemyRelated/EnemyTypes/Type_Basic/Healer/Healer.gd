@@ -73,6 +73,7 @@ func _construct_heal_effect():
 	heal_modi.flat_modifier = _heal_amount
 	
 	heal_effect = EnemyHealEffect.new(heal_modi, StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
+	heal_effect.is_from_enemy = true
 
 
 func _heal_ready_for_activation_updated(is_ready):
@@ -81,15 +82,14 @@ func _heal_ready_for_activation_updated(is_ready):
 
 
 func _heal_ability_activated():
-	var targets = range_module.get_targets(2, targeting_option, true)
+	var targets = range_module.get_targets(1, targeting_option, true)
 	for target in targets:
-		if target != self:
-			
-			target._add_effect(heal_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
-			_construct_and_add_heal_particle(target.global_position)
-			heal_ability.start_time_cooldown(_heal_cooldown)
-			no_movement_from_self = true
-			return
+		target._add_effect(heal_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
+		_construct_and_add_heal_particle(target.global_position)
+		heal_ability.start_time_cooldown(_heal_cooldown)
+		
+		no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.CUSTOM_CLAUSE_01)
+
 
 func _construct_and_add_heal_particle(pos):
 	var attk_sprite : AttackSprite = HealParticle_Scene.instance()
@@ -99,4 +99,4 @@ func _construct_and_add_heal_particle(pos):
 	get_tree().get_root().add_child(attk_sprite)
 
 func _particle_expired():
-	no_movement_from_self = false
+	no_movement_from_self_clauses.remove_clause(NoMovementClauses.CUSTOM_CLAUSE_01)

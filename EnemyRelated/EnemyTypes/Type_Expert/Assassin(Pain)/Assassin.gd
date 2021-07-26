@@ -1,9 +1,9 @@
 extends "res://EnemyRelated/AbstractEnemy.gd"
 
 
-const _invis_health_ratio_threshold : float = 0.75
+const _invis_health_ratio_threshold : float = 0.60
 const _invis_duration : float = 14.0
-const _invis_premature_cancel_distance : float = 75.0
+const _invis_premature_cancel_distance : float = 100.0
 
 var invis_effect : EnemyInvisibilityEffect
 var _is_invis : bool
@@ -20,6 +20,7 @@ func _ready():
 
 func _construct_effect_d():
 	invis_effect = EnemyInvisibilityEffect.new(_invis_duration, StoreOfEnemyEffectsUUID.ASSASSIN_INVIS_EFFECT)
+	invis_effect.is_from_enemy = true
 
 #
 

@@ -250,6 +250,18 @@ func set_tower(arg_tower : Node):
 			tower.connect("tower_active_in_map", self, "_tower_active_in_map", [], CONNECT_PERSIST)
 			tower.connect("tower_not_in_active_map", self, "_tower_not_active_in_map", [], CONNECT_PERSIST)
 			activation_conditional_clauses.attempt_insert_clause(tower.disabled_from_attacking_clauses)
+			
+			if tower.is_current_placable_in_map():
+				_tower_active_in_map()
+			else:
+				_tower_not_active_in_map()
+			
+			if tower.is_round_started:
+				round_started()
+			else:
+				round_ended()
+
+
 
 func set_synergy(arg_synergy):
 	synergy = arg_synergy

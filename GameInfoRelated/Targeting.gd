@@ -65,7 +65,7 @@ static func _find_random_distinct_enemies(enemies : Array, count : int):
 
 
 # Random, Close and Far will be shared for tower detection as well
-static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int, pos : Vector2):
+static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int, pos : Vector2, include_invis_enemies : bool = false):
 	var enemies = arg_enemies.duplicate(false)
 	
 	if targeting == FIRST:
@@ -106,7 +106,12 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 		
 	elif targeting == RANDOM:
 		enemies = _find_random_distinct_enemies(enemies, num_of_enemies)
-		
+	
+	
+	for enemy in enemies:
+		if (!include_invis_enemies and enemy.last_calculated_invisibility_status) or enemy.is_reviving:
+			enemies.erase(enemy)
+	
 	
 	enemies.resize(num_of_enemies)
 	while enemies.has(null):

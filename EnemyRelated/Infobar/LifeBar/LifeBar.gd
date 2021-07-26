@@ -2,9 +2,11 @@ extends MarginContainer
 
 
 export(float) var value_per_chunk : float = 10.0
+export(int) var big_chunk_interval : int = 5
 export(bool) var display_chunks : bool = false
 var chunks : Array = []
 export(Texture) var chunk_separator_pic : Texture
+export(Texture) var chunk_big_separator_pic : Texture
 
 export(Texture) var bar_background_pic : Texture setget set_bar_background_pic
 export(Texture) var fill_health_foreground_pic : Texture setget set_fill_health_foreground_pic
@@ -75,6 +77,8 @@ func set_current_health_value(value : float):
 		
 		if !allow_overflow and ratio > 1:
 			ratio = 1
+		if ratio < 0:
+			ratio = 0
 		
 		fill_health_foreground.rect_scale.x = ratio
 
@@ -86,6 +90,8 @@ func set_current_shield_value(value : float):
 		
 		if !allow_overflow and ratio > 1:
 			ratio = 1
+		if ratio < 0:
+			ratio = 0
 		
 		fill_shield_foreground.rect_scale.x = ratio
 
@@ -132,6 +138,11 @@ func redraw_chunks():
 				var chunk = chunks[i]
 				chunk.rect_position.x = poses[i]
 				chunk.visible = true
+				
+				if (i + 1) % big_chunk_interval == 0:
+					chunk.texture = chunk_big_separator_pic
+				else:
+					chunk.texture = chunk_separator_pic
 				#chunks_container.add_child(chunk)
 			
 		else:
@@ -151,7 +162,7 @@ func _number_of_chunks():
 
 func _construct_chunk_sprite_node() -> TextureRect:
 	var sprite : TextureRect = TextureRect.new()
-	sprite.texture = chunk_separator_pic
+	#sprite.texture = chunk_separator_pic
 	sprite.mouse_filter = MOUSE_FILTER_IGNORE
 	sprite.visible = false
 	

@@ -8,7 +8,7 @@ const InnerBottomPanel = preload("res://GameElementsRelated/InnerBottomPanel.gd"
 const RightSidePanel = preload("res://GameHUDRelated/RightSidePanel/RightSidePanel.gd")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const TowerManager = preload("res://GameElementsRelated/TowerManager.gd")
-const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
+#const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
 const HealthManager = preload("res://GameElementsRelated/HealthManager.gd")
 const RoundStatusPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundStatusPanel.gd")
 const RoundInfoPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel.gd")
@@ -30,7 +30,7 @@ var targeting_panel
 var tower_inventory_bench
 var tower_manager : TowerManager
 var gold_manager : GoldManager
-var stage_round_manager : StageRoundManager
+var stage_round_manager
 var health_manager : HealthManager
 var enemy_manager : EnemyManager
 var ability_manager : AbilityManager
@@ -118,6 +118,7 @@ func _ready():
 	enemy_manager.set_spawn_paths([$EnemyPath])
 	enemy_manager.connect("no_enemies_left", round_status_panel, "_update_round_ended")
 	enemy_manager.health_manager = health_manager
+	enemy_manager.game_elements = self
 	
 	# Ability manager
 	ability_manager.stage_round_manager = stage_round_manager
@@ -168,7 +169,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.TESLA,
-			Towers.HEXTRIBUTE,
+			Towers.IMPALE,
 			Towers.HERO,
 		])
 	else:
@@ -176,7 +177,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers._704,
 			Towers.MAGNETIZER,
 			Towers.BEACON_DISH,
-			Towers.IEU,
+			Towers.LEADER,
 			Towers.ROYAL_FLAME,
 		])
 	

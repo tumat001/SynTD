@@ -1,5 +1,7 @@
 extends Node
 
+#const BaseFactionPassive = preload("res://EnemyRelated/EnemyFactionPassives/BaseFactionPassive.gd")
+
 const SpawnInstructionInterpreter = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionInterpreter.gd")
 const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
@@ -17,6 +19,7 @@ signal enemy_escaped(enemy)
 signal first_enemy_escaped(enemy, first_damage)
 
 var health_manager : HealthManager
+var game_elements
 
 var spawn_instruction_interpreter : SpawnInstructionInterpreter setget set_interpreter
 var spawn_paths : Array setget set_spawn_paths
@@ -30,12 +33,17 @@ var _is_running : bool
 #
 
 var enemy_damage_multiplier : float
+var enemy_health_multiplier : float
 var _enemy_first_damage_applied : bool
 var enemy_first_damage : float
 
+var enemy_count_in_round : int
+
+#
 
 func _ready():
 	set_interpreter(SpawnInstructionInterpreter.new())
+
 
 # Setting related
 
@@ -56,11 +64,13 @@ func set_spawn_paths(paths : Array):
 
 func set_instructions_of_interpreter(inses : Array):
 	_is_interpreter_done_spawning = false
-	spawn_instruction_interpreter.set_instructions(inses)
+	var count = spawn_instruction_interpreter.set_instructions(inses)
+	enemy_count_in_round = count
 
 func append_instructions_to_interpreter(inses : Array):
 	_is_interpreter_done_spawning = false
-	spawn_instruction_interpreter.set_instructions(inses)
+	var count = spawn_instruction_interpreter.set_instructions(inses)
+	enemy_count_in_round += count
 
 
 # Spawning related
@@ -89,6 +99,7 @@ func spawn_enemy(enemy_id):
 	var enemy_instance : AbstractEnemy = EnemyConstants.get_enemy_scene(enemy_id).instance()
 	
 	# Enemy set properties
+	enemy_instance.base_health *= enemy_health_multiplier
 	enemy_instance.base_player_damage *= enemy_damage_multiplier
 	enemy_instance.z_index = ZIndexStore.ENEMIES
 	
@@ -153,4 +164,22 @@ func _enemy_reached_end(enemy : AbstractEnemy):
 func get_all_enemies() -> Array:
 	return get_tree().get_nodes_in_group(ENEMY_GROUP_TAG)
 
+func get_all_non_invisible_enemies() -> Array:
+	var enemies = get_all_enemies()
+	
+	for enemy in enemies:
+		if enemy.last_calculated_invisibility_status:
+			enemies.erase(enemy)
+	
+	return enemies
 
+
+# Faction passive related
+
+func apply_faction_passive(passive):
+	if passive != null:
+		passive._apply_faction_to_game_elements(game_elements)
+
+func remove_faction_passive(passive):
+	if passive != null:
+		passive._remove_faction_from_game_elements(game_elements)

@@ -3,3 +3,6 @@ const StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/StageRo
 
 
 var stage_rounds : Array
+
+func get_second_half_faction() -> int:
+	return -1

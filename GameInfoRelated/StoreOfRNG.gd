@@ -9,6 +9,7 @@ var fruit_tree_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var pestilence_spread : RandomNumberGenerator = RandomNumberGenerator.new()
 var domsyn_red_pact_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var domsyn_red_pact_mag_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var second_half_faction_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
@@ -26,6 +27,8 @@ enum RNGSource {
 	
 	DOMSYN_RED_PACT = 40,
 	DOMSYN_RED_PACT_MAGNITUDE = 41,
+	
+	SECOND_HALF_FACTION = 42
 }
 
 func _ready():
@@ -51,5 +54,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return domsyn_red_pact_rng
 	elif rng_source == RNGSource.DOMSYN_RED_PACT_MAGNITUDE:
 		return domsyn_red_pact_mag_rng
+	elif rng_source == RNGSource.SECOND_HALF_FACTION:
+		return second_half_faction_rng
 	
 	return null

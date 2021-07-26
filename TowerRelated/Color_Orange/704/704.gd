@@ -281,13 +281,13 @@ func set_emblem_fire_level(level : int):
 	if level == 0:
 		pass
 	elif level == 1:
-		burn_per_tick = 0.33
+		burn_per_tick = 0.2
 	elif level == 2:
-		burn_per_tick = 0.66
+		burn_per_tick = 0.3
 	elif level == 3:
-		burn_per_tick = 1
+		burn_per_tick = 0.4
 	elif level == 4:
-		burn_per_tick = 1.5
+		burn_per_tick = 0.6
 	
 	fire_burn_dmg_modifier.flat_modifier = burn_per_tick
 	emit_signal("fire_level_changed")

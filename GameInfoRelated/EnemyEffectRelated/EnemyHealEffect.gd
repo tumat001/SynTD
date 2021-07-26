@@ -6,7 +6,7 @@ var allows_overhealing : bool
 func _init(arg_heal_as_modifier,
 		arg_effect_uuid : int,
 		arg_allow_overhealing : bool = false,
-		arg_respect_scale : bool = false).(EffectType.HEAL, arg_effect_uuid):
+		arg_respect_scale : bool = true).(EffectType.HEAL, arg_effect_uuid):
 	
 	heal_as_modifier = arg_heal_as_modifier
 	allows_overhealing = arg_allow_overhealing
@@ -27,6 +27,7 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 	copy.time_in_seconds = time_in_seconds
 	copy.status_bar_icon = status_bar_icon
 	copy.respect_scale = respect_scale
+	copy.is_from_enemy = is_from_enemy
 	
 	return copy
 

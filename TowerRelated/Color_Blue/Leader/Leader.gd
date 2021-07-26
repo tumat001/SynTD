@@ -390,7 +390,7 @@ func _process(delta):
 		mark_indicator.global_position = marked_enemy.global_position
 
 
-func _marked_enemy_died():
+func _marked_enemy_cancel_focus():
 	mark_indicator.visible = false
 	
 	for member in tower_members_beam_map.keys():
@@ -416,10 +416,10 @@ func _marked_enemy_died():
 func _on_main_am_enemy_hit_l(enemy, damage_register_id, damage_instance, module):
 	if enemy != null and marked_enemy != enemy:
 		if marked_enemy != null:
-			marked_enemy.disconnect("tree_exiting", self, "_marked_enemy_died")
+			marked_enemy.disconnect("cancel_all_lockons", self, "_marked_enemy_cancel_focus")
 		
 		marked_enemy = enemy
-		marked_enemy.connect("tree_exiting", self, "_marked_enemy_died")
+		marked_enemy.connect("cancel_all_lockons", self, "_marked_enemy_cancel_focus", [], CONNECT_ONESHOT)
 		mark_indicator.global_position = marked_enemy.global_position
 		mark_indicator.visible = true
 		coordinated_attack_activation_conditional_clauses.remove_clause(ca_activation_clause_no_mark)

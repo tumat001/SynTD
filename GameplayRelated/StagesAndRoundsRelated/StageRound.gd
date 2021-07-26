@@ -6,6 +6,7 @@ var id : String
 var end_of_round_gold : int
 
 var enemy_damage_multiplier : float = 1
+var enemy_health_multiplier : float = 1
 var enemy_first_damage : float = 1
 
 

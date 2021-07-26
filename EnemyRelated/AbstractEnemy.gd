@@ -20,6 +20,7 @@ const EnemyHealEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyH
 const EnemyHealOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyHealOverTimeEffect.gd")
 const EnemyShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyShieldEffect.gd")
 const EnemyInvisibilityEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyInvisibilityEffect.gd")
+const EnemyReviveEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyReviveEffect.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
@@ -28,6 +29,10 @@ const BaseControlStatusBar = preload("res://MiscRelated/ControlStatusBarRelated/
 const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
 const EnemyTypeInformation = preload("res://EnemyRelated/EnemyTypeInformation.gd")
 const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
+
+const DuringReviveParticle = preload("res://EnemyRelated/CommonParticles/ReviveParticle/DuringReviveParticle.gd")
+const DuringReviveParticle_Scene = preload("res://EnemyRelated/CommonParticles/ReviveParticle/DuringReviveParticle.tscn")
+
 
 signal on_death_by_any_cause
 signal on_hit(me, damage_reg_id, damage_instance)
@@ -47,6 +52,21 @@ signal on_overheal(overheal_amount)
 signal effect_removed(effect, me)
 signal effect_added(effect, me)
 
+signal on_starting_revive()
+signal on_revive_completed()
+signal cancel_all_lockons() # on death, reviving, etc
+
+
+enum NoMovementClauses {
+	IS_REVIVING = 100,
+	
+	CUSTOM_CLAUSE_01 = 200,
+	CUSTOM_CLAUSE_02 = 201,
+}
+
+enum NoActionClauses {
+	IS_REVIVING = 100,
+}
 
 var base_health : float = 1
 var _flat_base_health_id_effect_map : Dictionary = {}
@@ -98,9 +118,19 @@ var last_calculated_percent_health_hit_scale
 var invisibility_id_effect_map : Dictionary = {}
 var last_calculated_invisibility_status : bool = false
 
+var revive_id_effect_map : Dictionary = {}
+var current_revive_effect : EnemyReviveEffect
+var is_reviving : bool = false
+
 
 var distance_to_exit : float
-var no_movement_from_self : bool = false
+
+var no_movement_from_self_clauses : ConditionalClauses
+var last_calculated_no_movement_from_self : bool = false
+
+var no_action_from_self_clauses : ConditionalClauses
+var last_calculated_no_action_from_self : bool = false
+
 
 var all_abilities : Array = []
 
@@ -110,6 +140,8 @@ onready var statusbar : BaseControlStatusBar = $Layer/EnemyInfoBar/VBoxContainer
 onready var lifebar = $Layer/EnemyInfoBar/VBoxContainer/LifeBar
 onready var infobar = $Layer/EnemyInfoBar
 onready var layer_infobar = $Layer
+onready var collision_area = $CollisionArea
+onready var anim_sprite = $AnimatedSprite
 
 #internals
 
@@ -131,6 +163,35 @@ func _stats_initialize(info : EnemyTypeInformation):
 	base_toughness = info.base_toughness
 	base_resistance = info.base_resistance
 	base_player_damage = info.base_player_damage
+	base_effect_vulnerability = info.base_effect_vulnerability
+	
+	no_movement_from_self_clauses = ConditionalClauses.new()
+	no_movement_from_self_clauses.connect("clause_inserted", self, "_no_movement_clause_added")
+	no_movement_from_self_clauses.connect("clause_removed", self, "_no_movement_clause_removed")
+	
+	no_action_from_self_clauses = ConditionalClauses.new()
+	no_action_from_self_clauses.connect("clause_inserted", self, "_no_action_clause_added")
+	no_action_from_self_clauses.connect("clause_removed", self, "_no_action_clause_removed")
+	
+
+
+# no movement clause related
+
+func _no_movement_clause_added(clause):
+	last_calculated_no_movement_from_self = true
+
+func _no_movement_clause_removed(clause):
+	last_calculated_no_movement_from_self = !no_movement_from_self_clauses.is_passed
+
+
+# no action clause related
+
+func _no_action_clause_added(clause):
+	last_calculated_no_action_from_self = true
+
+func _no_action_clause_removed(clause):
+	last_calculated_no_action_from_self = !no_action_from_self_clauses.is_passed
+
 
 
 # Called when the node enters the scene tree for the first time.
@@ -148,8 +209,8 @@ func _ready():
 	
 	
 	var shift = (_self_size.y / 2) - 5
-	$AnimatedSprite.position.y -= shift
-	$CollisionArea.position.y -= shift
+	anim_sprite.position.y -= shift
+	collision_area.position.y -= shift
 	$Layer.position.y -= shift
 	
 	connect("on_current_health_changed", lifebar, "set_current_health_value", [], CONNECT_PERSIST)
@@ -169,6 +230,18 @@ func _post_inherit_ready():
 	calculate_current_shield()
 	calculate_invisibility_status()
 	
+	#
+	var heal_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
+	heal_modi.flat_modifier = 10.0
+	
+	var heal_effect = EnemyHealEffect.new(heal_modi, StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
+	heal_effect.is_from_enemy = true
+	
+	var revive_effect = EnemyReviveEffect.new(heal_effect, 9999, 5)
+	revive_effect.is_from_enemy = true
+	_add_effect(revive_effect)
+	
+	#
 	current_health = _last_calculated_max_health
 	
 	lifebar.current_health_value = current_health
@@ -178,7 +251,7 @@ func _post_inherit_ready():
 
 
 func _get_current_anim_size() -> Vector2:
-	return $AnimatedSprite.frames.get_frame($AnimatedSprite.animation, $AnimatedSprite.frame).get_size()
+	return anim_sprite.frames.get_frame(anim_sprite.animation, anim_sprite.frame).get_size()
 
 func _get_scale_for_layer_lifebar() -> float:
 	var threshold_health_for_inc : float = 100
@@ -196,10 +269,13 @@ func _process(delta):
 	
 	for ability in all_abilities:
 		ability.time_decreased(delta)
+	
+	_decrease_time_of_current_revive_effect(delta)
+
 
 
 func _physics_process(delta):
-	if !_is_stunned and !no_movement_from_self:
+	if !_is_stunned and !last_calculated_no_movement_from_self:
 		var distance_traveled = delta * _last_calculated_final_movement_speed
 		offset += distance_traveled
 		distance_to_exit -= distance_traveled
@@ -316,37 +392,37 @@ func execute_self_by(source_id : int):
 # damage and health deduction. Also where
 # death is handled
 func _take_unmitigated_damages(damages_and_types : Array):
-	
-	var damage_instance_report : DamageInstanceReport = DamageInstanceReport.new()
-	
-	for damage_and_type in damages_and_types: #on hit id in third index
-		var damage_amount = damage_and_type[0]
-		var on_hit_id = damage_and_type[2]
+	if !is_reviving:
+		var damage_instance_report : DamageInstanceReport = DamageInstanceReport.new()
 		
-		var on_hit_report := OnHitDamageReport.new(damage_amount, damage_and_type[1], on_hit_id)
-		var effective_on_hit_report : OnHitDamageReport
-		
-		if current_health > 0:
-			effective_on_hit_report = on_hit_report
+		for damage_and_type in damages_and_types: #on hit id in third index
+			var damage_amount = damage_and_type[0]
+			var on_hit_id = damage_and_type[2]
 			
-			_take_unmitigated_damage_to_life(damage_amount)
+			var on_hit_report := OnHitDamageReport.new(damage_amount, damage_and_type[1], on_hit_id)
+			var effective_on_hit_report : OnHitDamageReport
 			
-			if current_health <= 0:
-				var effective_damage = damage_amount + current_health
-				effective_on_hit_report = effective_on_hit_report.duplicate()
-				effective_on_hit_report.damage = effective_damage
+			if current_health > 0:
+				effective_on_hit_report = on_hit_report
+				
+				_take_unmitigated_damage_to_life(damage_amount)
+				
+				if current_health <= 0:
+					var effective_damage = damage_amount + current_health
+					effective_on_hit_report = effective_on_hit_report.duplicate()
+					effective_on_hit_report.damage = effective_damage
+			
+			damage_instance_report.all_post_mitigated_on_hit_damages[on_hit_id] = on_hit_report
+			if effective_on_hit_report != null:
+				damage_instance_report.all_effective_on_hit_damages[on_hit_id] = effective_on_hit_report
 		
-		damage_instance_report.all_post_mitigated_on_hit_damages[on_hit_id] = on_hit_report
-		if effective_on_hit_report != null:
-			damage_instance_report.all_effective_on_hit_damages[on_hit_id] = effective_on_hit_report
-	
-	
-	if current_health <= 0:
-		emit_signal("on_post_mitigated_damage_taken", damage_instance_report, true, self)
-		_destroy_self()
 		
-	else:
-		emit_signal("on_post_mitigated_damage_taken", damage_instance_report, false, self)
+		if current_health <= 0:
+			emit_signal("on_post_mitigated_damage_taken", damage_instance_report, true, self)
+			_destroy_self()
+			
+		else:
+			emit_signal("on_post_mitigated_damage_taken", damage_instance_report, false, self)
 
 
 func _take_unmitigated_damage_to_life(damage_amount : float):
@@ -388,13 +464,18 @@ func _take_unmitigated_damage_to_life(damage_amount : float):
 #
 
 func _destroy_self():
-	$CollisionArea.set_deferred("monitorable", false)
-	$CollisionArea.set_deferred("monitoring", false)
-	queue_free()
+	collision_area.set_deferred("monitorable", false)
+	collision_area.set_deferred("monitoring", false)
+	
+	if revive_id_effect_map.size() == 0:
+		queue_free()
+	else:
+		_trigger_start_of_revive()
 
 
 func queue_free():
 	emit_signal("on_death_by_any_cause")
+	emit_signal("cancel_all_lockons")
 	
 	.queue_free()
 
@@ -569,6 +650,7 @@ func calculate_invisibility_status() -> bool:
 	
 	if last_calculated_invisibility_status:
 		modulate.a = 0.4
+		emit_signal("cancel_all_lockons")
 	else:
 		modulate.a = 1
 	
@@ -692,32 +774,35 @@ func calculate_final_movement_speed() -> float:
 # hit by things functions here. Processes
 # on hit damages and effects.
 func hit_by_bullet(generic_bullet : BaseBullet):
-	if !generic_bullet.enemies_ignored.has(self):
-		generic_bullet.hit_by_enemy(self)
-		generic_bullet.decrease_pierce(pierce_consumed_per_hit)
-		if generic_bullet.attack_module_source != null:
-			connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
-			connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
-		
-		hit_by_damage_instance(generic_bullet.damage_instance, generic_bullet.damage_register_id)
-		generic_bullet.reduce_damage_by_beyond_first_multiplier()
+	if !is_reviving:
+		if !generic_bullet.enemies_ignored.has(self):
+			generic_bullet.hit_by_enemy(self)
+			generic_bullet.decrease_pierce(pierce_consumed_per_hit)
+			if generic_bullet.attack_module_source != null:
+				connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
+				connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
+			
+			hit_by_damage_instance(generic_bullet.damage_instance, generic_bullet.damage_register_id)
+			generic_bullet.reduce_damage_by_beyond_first_multiplier()
 
 
 func hit_by_aoe(base_aoe):
-	if base_aoe.attack_module_source != null:
-		connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
-		connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
-	
-	hit_by_damage_instance(base_aoe.damage_instance, base_aoe.damage_register_id)
+	if is_reviving:
+		if base_aoe.attack_module_source != null:
+			connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
+			connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
+		
+		hit_by_damage_instance(base_aoe.damage_instance, base_aoe.damage_register_id)
 
 
 func hit_by_damage_instance(damage_instance : DamageInstance, damage_reg_id : int = 0, emit_on_hit_signal : bool = true):
-	if emit_on_hit_signal:
-		emit_signal("on_hit", self, damage_reg_id, damage_instance)
-	
-	emit_signal("before_damage_instance_is_processed", damage_instance, self)
-	_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true), damage_instance)
-	_process_effects(damage_instance.on_hit_effects.duplicate(true), damage_instance.on_hit_effect_multiplier)
+	if !is_reviving:
+		if emit_on_hit_signal:
+			emit_signal("on_hit", self, damage_reg_id, damage_instance)
+		
+		emit_signal("before_damage_instance_is_processed", damage_instance, self)
+		_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true), damage_instance)
+		_process_effects(damage_instance.on_hit_effects.duplicate(true), damage_instance.on_hit_effect_multiplier)
 
 
 func _process_on_hit_damages(on_hit_damages : Dictionary, damage_instance):
@@ -787,7 +872,9 @@ func _process_effects(effects : Dictionary, multiplier : float = 1):
 
 
 func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1) -> EnemyBaseEffect:
-	multiplier *= last_calculated_final_effect_vulnerability
+	if !base_effect.is_from_enemy:
+		multiplier *= last_calculated_final_effect_vulnerability
+	
 	var to_use_effect = base_effect._get_copy_scaled_by(multiplier)
 	
 	if to_use_effect.status_bar_icon != null:
@@ -901,6 +988,11 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1) -> Enemy
 	elif to_use_effect is EnemyInvisibilityEffect:
 		invisibility_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
 		calculate_invisibility_status()
+		
+		
+	elif to_use_effect is EnemyReviveEffect:
+		revive_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+		
 	
 	
 	emit_signal("effect_added", to_use_effect, self)
@@ -986,6 +1078,10 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 	elif base_effect is EnemyInvisibilityEffect:
 		invisibility_id_effect_map.erase(base_effect.effect_uuid)
 		calculate_invisibility_status()
+		
+	elif base_effect is EnemyReviveEffect:
+		revive_id_effect_map.erase(base_effect.effect_uuid)
+	
 	
 	if base_effect != null:
 		emit_signal("effect_removed", base_effect, self)
@@ -1057,7 +1153,10 @@ func _clear_effects():
 	
 	for effect in invisibility_id_effect_map.values():
 		_remove_effect(effect)
-
+	
+	for effect in revive_id_effect_map.values():
+		_remove_effect(effect)
+	
 
 # Timebounded related
 
@@ -1155,6 +1254,10 @@ func _decrease_time_of_timebounds(delta):
 	for res_eff in invisibility_id_effect_map.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
+	
+	for res_eff in revive_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
 
 
 func _decrease_time_of_effect(effect, delta : float):
@@ -1189,4 +1292,58 @@ func get_enemy_parent():
 #
 
 func register_ability(ability : BaseAbility):
+	ability.activation_conditional_clauses.attempt_insert_clause(no_action_from_self_clauses)
 	all_abilities.append(ability)
+
+
+# Revive related
+
+func _trigger_start_of_revive():
+	is_reviving = true
+	
+	anim_sprite.visible = false
+	no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.IS_REVIVING)
+	no_action_from_self_clauses.attempt_insert_clause(NoActionClauses.IS_REVIVING)
+	
+	current_revive_effect = revive_id_effect_map.values()[revive_id_effect_map.size() - 1]
+	_remove_effect(current_revive_effect)
+	
+	_construct_during_revive_particle(current_revive_effect.time_before_revive)
+	emit_signal("on_starting_revive")
+	emit_signal("cancel_all_lockons")
+
+func _construct_during_revive_particle(lifetime : float):
+	var particle = DuringReviveParticle_Scene.instance()
+	particle.lifetime = lifetime
+	particle.position = global_position
+	
+	get_tree().get_root().add_child(particle)
+
+
+
+func _decrease_time_of_current_revive_effect(delta):
+	if current_revive_effect != null:
+		current_revive_effect._current_time_before_revive -= delta
+		if current_revive_effect._current_time_before_revive <= 0:
+			_trigger_end_of_revive()
+
+
+func _trigger_end_of_revive():
+	_add_effect(current_revive_effect.heal_effect_upon_revival)
+	for effect in current_revive_effect.other_effects_upon_revival:
+		_add_effect(effect)
+	
+	
+	call_deferred("_after_end_of_revive")
+
+func _after_end_of_revive():
+	anim_sprite.visible = true
+	collision_area.set_deferred("monitorable", true)
+	collision_area.set_deferred("monitoring", true)
+	
+	current_revive_effect = null
+	is_reviving = false
+	no_movement_from_self_clauses.remove_clause(NoMovementClauses.IS_REVIVING)
+	no_action_from_self_clauses.remove_clause(NoActionClauses.IS_REVIVING)
+	
+	emit_signal("on_revive_completed")

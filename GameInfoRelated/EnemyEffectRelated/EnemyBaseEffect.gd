@@ -14,6 +14,7 @@ enum EffectType {
 	SHIELD,
 	
 	INVISIBILITY,
+	REVIVE,
 	
 	CLEAR_ALL_EFFECTS,
 	
@@ -29,6 +30,8 @@ var is_timebound : bool
 var time_in_seconds : float
 
 var respect_scale : bool = true
+
+var is_from_enemy : bool = false
 
 var status_bar_icon : Texture
 

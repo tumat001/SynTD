@@ -10,7 +10,7 @@ var absorb_overflow_damage : bool
 func _init(arg_shield_as_modifier,
 		arg_effect_uuid : int,
 		arg_absorb_overlow_dmg : bool = false,
-		arg_respect_scale : bool = false).(EffectType.SHIELD, arg_effect_uuid):
+		arg_respect_scale : bool = true).(EffectType.SHIELD, arg_effect_uuid):
 	
 	shield_as_modifier = arg_shield_as_modifier
 	absorb_overflow_damage = arg_absorb_overlow_dmg
@@ -32,5 +32,6 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 	copy._current_shield = _current_shield
 	copy.absorb_overflow_damage = absorb_overflow_damage
 	copy.respect_scale = respect_scale
+	copy.is_from_enemy = is_from_enemy
 	
 	return copy
