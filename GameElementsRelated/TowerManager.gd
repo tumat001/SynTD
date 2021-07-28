@@ -25,6 +25,10 @@ signal cancelled_tower_selection_mode()
 signal tower_to_benefit_from_synergy_buff(tower)
 signal tower_to_remove_from_synergy_buff(tower)
 
+signal tower_in_queue_free(tower)
+signal tower_being_sold(sellback_gold, tower)
+
+
 var tower_inventory_bench
 var in_map_placables_manager : InMapPlacablesManager
 var gold_manager : GoldManager
@@ -61,6 +65,8 @@ func _ready():
 # Generic things that can branch out to other resp.
 
 func _tower_in_queue_free(tower):
+	emit_signal("tower_in_queue_free", tower)
+	
 	_tower_inactivated_from_map(tower)
 	for color in _color_groups:
 		if tower.is_in_group(color):
@@ -104,7 +110,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("tower_toggle_show_info", self, "_tower_toggle_show_info", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_in_queue_free", self, "_tower_in_queue_free", [], CONNECT_PERSIST)
 	tower_instance.connect("update_active_synergy", self, "_update_active_synergy", [], CONNECT_PERSIST)
-	tower_instance.connect("tower_being_sold", self, "_tower_sold", [], CONNECT_PERSIST)
+	tower_instance.connect("tower_being_sold", self, "_tower_sold", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("tower_give_gold", self, "_tower_generate_gold", [], CONNECT_PERSIST)
 	
 	tower_instance.connect("tower_colors_changed", self, " _register_tower_to_color_grouping_tags", [tower_instance], CONNECT_PERSIST)
@@ -211,7 +217,8 @@ func _get_all_synergy_contributing_towers() -> Array:
 
 # Gold Related
 
-func _tower_sold(sellback_gold : int):
+func _tower_sold(sellback_gold : int, tower):
+	emit_signal("tower_being_sold", sellback_gold, tower)
 	gold_manager.increase_gold_by(sellback_gold, GoldManager.IncreaseGoldSource.TOWER_SELLBACK)
 
 

@@ -120,8 +120,8 @@ func _init():
 	syn_compo_ana_greenBY,
 	["GreenBY description"]),
 	
-	"BlueVG" : ColorSynergy.new("BlueVG", [TowerColors.BLUE, TowerColors.VIOLET, TowerColors.GREEN], [4, 3, 2],
-	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"BlueVG" : ColorSynergy.new("BlueVG", [TowerColors.BLUE, TowerColors.VIOLET, TowerColors.GREEN], [4, 3, 2, 1],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_blueVG,
 	[
 		"Most abilities gain cooldown reduction.",
@@ -131,7 +131,8 @@ func _init():
 	[
 		"80% cdr",
 		"55% cdr",
-		"35% cdr"
+		"35% cdr",
+		"10% cdr"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),

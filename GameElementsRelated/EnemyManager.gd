@@ -7,6 +7,7 @@ const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const EnemyPath = preload("res://EnemyRelated/EnemyPath.gd")
 const HealthManager = preload("res://GameElementsRelated/HealthManager.gd")
+const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 
 const ENEMY_GROUP_TAG : String = "Enemies"
 
@@ -164,14 +165,20 @@ func _enemy_reached_end(enemy : AbstractEnemy):
 func get_all_enemies() -> Array:
 	return get_tree().get_nodes_in_group(ENEMY_GROUP_TAG)
 
-func get_all_non_invisible_enemies() -> Array:
+func get_all_targetable_enemies() -> Array:
 	var enemies = get_all_enemies()
 	
-	for enemy in enemies:
-		if enemy.last_calculated_invisibility_status:
-			enemies.erase(enemy)
+	Targeting.filter_untargetable_enemies(enemies, false)
 	
 	return enemies
+
+func get_all_targetable_and_invisible_enemies() -> Array:
+	var enemies = get_all_enemies()
+	
+	Targeting.filter_untargetable_enemies(enemies, true)
+	
+	return enemies
+
 
 
 # Faction passive related

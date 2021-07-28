@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/GoldIndicatorBackground.png-19d392085b42ea09046bbd696965ed8b.stex"
+path="res://.import/RelicPic.png-88d419ba2a1f03597196ad2e5c7a3eeb.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/GoldPanel/GoldIndicatorBackground.png"
-dest_files=[ "res://.import/GoldIndicatorBackground.png-19d392085b42ea09046bbd696965ed8b.stex" ]
+source_file="res://GameHUDRelated/BuySellPanel/RelicPic.png"
+dest_files=[ "res://.import/RelicPic.png-88d419ba2a1f03597196ad2e5c7a3eeb.stex" ]
 
 [params]
 

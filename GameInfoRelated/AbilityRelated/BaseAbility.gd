@@ -6,9 +6,12 @@ const AbilityAttributesEffect = preload("res://GameInfoRelated/AbilityRelated/Ab
 signal ability_activated()
 signal current_time_cd_changed(current_time_cd)
 signal current_round_cd_changed(current_round_cd)
+signal current_time_cd_reached_zero()
 
 signal updated_is_ready_for_activation(is_ready)
 signal icon_changed(icon)
+signal display_name_changed(display_name)
+signal descriptions_changed(descriptions)
 
 signal started_time_cooldown(max_time_cd, current_time_cd)
 signal started_round_cooldown(max_round_cd, current_round_cd)
@@ -29,6 +32,7 @@ enum ActivationClauses {
 	
 	TOWER_IN_BENCH = 1002,
 	SYNERGY_INACTIVE = 1003,
+	SYNERGY_LEVEL_INSUFFICIENT = 1004,
 }
 
 enum CounterDecreaseClauses {
@@ -37,11 +41,13 @@ enum CounterDecreaseClauses {
 	
 	TOWER_IN_BENCH = 1002,
 	SYNERGY_INACTIVE = 1003,
+	SYNERGY_LEVEL_INSUFFICIENT = 1004,
 }
 
 enum ShouldBeDisplayingClauses {
 	TOWER_IN_BENCH = 1002,
 	SYNERGY_INACTIVE = 1003,
+	SYNERGY_LEVEL_INSUFFICIENT = 1004,
 }
 
 enum AutoCastableClauses {
@@ -65,7 +71,7 @@ var auto_castable_clauses : ConditionalClauses
 var icon : Texture setget set_icon
 
 var descriptions : Array = [] setget set_descriptions
-var display_name : String
+var display_name : String setget set_display_name
 
 var tower : Node setget set_tower
 var synergy setget set_synergy
@@ -189,7 +195,19 @@ func time_decreased(delta : float):
 			emit_signal("current_time_cd_changed", _time_current_cooldown)
 			
 			if _time_current_cooldown <= 0:
+				emit_signal("current_time_cd_reached_zero")
 				emit_updated_is_ready_for_activation(0)
+
+
+func remove_all_time_cooldown():
+	if is_timebound and _time_current_cooldown > 0:
+		_time_current_cooldown = 0
+		emit_signal("current_time_cd_changed", _time_current_cooldown)
+		
+		if _time_current_cooldown <= 0:
+			emit_signal("current_time_cd_reached_zero")
+			emit_updated_is_ready_for_activation(0)
+
 
 
 # round related
@@ -232,6 +250,12 @@ func set_descriptions(arg_desc : Array):
 	descriptions.clear()
 	for des in arg_desc:
 		descriptions.append(des)
+		
+	call_deferred("emit_signal", "descriptions_changed", arg_desc)
+
+func set_display_name(arg_name : String):
+	display_name = arg_name
+	call_deferred("emit_signal", "display_name_changed", arg_name)
 
 
 func set_tower(arg_tower : Node):
@@ -356,10 +380,8 @@ func set_properties_to_usual_tower_based():
 
 
 func set_properties_to_usual_synergy_based():
-	#should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.SYNERGY_INACTIVE)
-	#activation_conditional_clauses.attempt_insert_clause(ActivationClauses.SYNERGY_INACTIVE)
-	#counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.SYNERGY_INACTIVE)
 	pass
+
 
 func set_properties_to_auto_castable():
 	auto_castable_clauses.remove_clause(AutoCastableClauses.CANNOT_BE_AUTOCASTED)
@@ -367,6 +389,20 @@ func set_properties_to_auto_castable():
 
 func set_properties_to_enemy_based():
 	ignore_ability_effects_from_manager = true
+
+
+#
+
+func set_clauses_to_usual_synergy_insufficient_based():
+	should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.SYNERGY_LEVEL_INSUFFICIENT)
+	activation_conditional_clauses.attempt_insert_clause(ActivationClauses.SYNERGY_LEVEL_INSUFFICIENT)
+	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.SYNERGY_LEVEL_INSUFFICIENT)
+
+func set_clauses_to_usual_synergy_sufficient_based():
+	should_be_displaying_clauses.remove_clause(ShouldBeDisplayingClauses.SYNERGY_LEVEL_INSUFFICIENT)
+	activation_conditional_clauses.remove_clause(ActivationClauses.SYNERGY_LEVEL_INSUFFICIENT)
+	counter_decrease_clauses.remove_clause(CounterDecreaseClauses.SYNERGY_LEVEL_INSUFFICIENT)
+
 
 
 # Ability adding removing stats related

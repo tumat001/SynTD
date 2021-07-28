@@ -65,7 +65,7 @@ func _ready():
 	attack_module.bullet_scene = BaseBullet_Scene
 	attack_module.set_texture_as_sprite_frame(LavaJet_Bullet_Pic)
 	
-	attack_module.connect("in_attack", self, "_on_attack_of_lavajet_bullet")
+	#attack_module.connect("in_attack", self, "_on_attack_of_lavajet_bullet")
 	
 	add_attack_module(attack_module)
 	
@@ -115,6 +115,11 @@ func _ready():
 	
 	add_attack_module(beam_attack_module)
 	
+	
+	#
+	
+	connect("on_main_attack", self, "_on_attack_of_lavajet_bullet", [], CONNECT_PERSIST)
+	
 	var percent_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.LAVA_JET_BEAM)
 	percent_mod.percent_amount = 50
 	percent_mod.percent_based_on = PercentType.MAX
@@ -130,7 +135,7 @@ func _ready():
 	_post_inherit_ready()
 
 
-func _on_attack_of_lavajet_bullet(attk_spd_delay, enemies : Array):
+func _on_attack_of_lavajet_bullet(attk_spd_delay, enemies : Array, module):
 	_curr_num_of_attacks += 1
 	
 	if _curr_num_of_attacks >= num_of_attacks_before_beam:

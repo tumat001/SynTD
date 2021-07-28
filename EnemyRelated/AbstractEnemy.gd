@@ -68,6 +68,11 @@ enum NoActionClauses {
 	IS_REVIVING = 100,
 }
 
+enum UntargetabilityClauses {
+	IS_REVIVING = 100,
+	IS_INVISIBLE = 101,
+}
+
 var base_health : float = 1
 var _flat_base_health_id_effect_map : Dictionary = {}
 var _percent_base_health_id_effect_map : Dictionary = {}
@@ -131,6 +136,10 @@ var last_calculated_no_movement_from_self : bool = false
 var no_action_from_self_clauses : ConditionalClauses
 var last_calculated_no_action_from_self : bool = false
 
+var untargetable_clauses : ConditionalClauses
+var last_calculated_is_untargetable : bool = false
+
+
 
 var all_abilities : Array = []
 
@@ -173,9 +182,13 @@ func _stats_initialize(info : EnemyTypeInformation):
 	no_action_from_self_clauses.connect("clause_inserted", self, "_no_action_clause_added")
 	no_action_from_self_clauses.connect("clause_removed", self, "_no_action_clause_removed")
 	
+	untargetable_clauses = ConditionalClauses.new()
+	untargetable_clauses.connect("clause_inserted", self, "_untargetability_clause_added")
+	untargetable_clauses.connect("clause_removed", self, "_untargetability_clause_removed")
 
 
-# no movement clause related
+
+# Clauses related
 
 func _no_movement_clause_added(clause):
 	last_calculated_no_movement_from_self = true
@@ -184,14 +197,21 @@ func _no_movement_clause_removed(clause):
 	last_calculated_no_movement_from_self = !no_movement_from_self_clauses.is_passed
 
 
-# no action clause related
-
 func _no_action_clause_added(clause):
 	last_calculated_no_action_from_self = true
 
 func _no_action_clause_removed(clause):
 	last_calculated_no_action_from_self = !no_action_from_self_clauses.is_passed
 
+
+func _untargetability_clause_added(clause):
+	last_calculated_is_untargetable = true
+
+func _untargetability_clause_removed(clause):
+	last_calculated_is_untargetable = !untargetable_clauses.is_passed
+
+func is_untargetable_only_from_invisibility():
+	return untargetable_clauses.has_clause(UntargetabilityClauses.IS_INVISIBLE) and untargetable_clauses._clauses.size() == 1
 
 
 # Called when the node enters the scene tree for the first time.
@@ -651,8 +671,10 @@ func calculate_invisibility_status() -> bool:
 	if last_calculated_invisibility_status:
 		modulate.a = 0.4
 		emit_signal("cancel_all_lockons")
+		untargetable_clauses.attempt_insert_clause(UntargetabilityClauses.IS_INVISIBLE)
 	else:
 		modulate.a = 1
+		untargetable_clauses.remove_clause(UntargetabilityClauses.IS_INVISIBLE)
 	
 	return last_calculated_invisibility_status
 
@@ -787,7 +809,7 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 
 
 func hit_by_aoe(base_aoe):
-	if is_reviving:
+	if !is_reviving:
 		if base_aoe.attack_module_source != null:
 			connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
 			connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
@@ -1304,6 +1326,7 @@ func _trigger_start_of_revive():
 	anim_sprite.visible = false
 	no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.IS_REVIVING)
 	no_action_from_self_clauses.attempt_insert_clause(NoActionClauses.IS_REVIVING)
+	untargetable_clauses.attempt_insert_clause(UntargetabilityClauses.IS_REVIVING)
 	
 	current_revive_effect = revive_id_effect_map.values()[revive_id_effect_map.size() - 1]
 	_remove_effect(current_revive_effect)
@@ -1345,5 +1368,6 @@ func _after_end_of_revive():
 	is_reviving = false
 	no_movement_from_self_clauses.remove_clause(NoMovementClauses.IS_REVIVING)
 	no_action_from_self_clauses.remove_clause(NoActionClauses.IS_REVIVING)
+	untargetable_clauses.remove_clause(UntargetabilityClauses.IS_REVIVING)
 	
 	emit_signal("on_revive_completed")

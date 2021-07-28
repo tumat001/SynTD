@@ -37,8 +37,24 @@ func set_ability(arg_ability : BaseAbility):
 			ability.connect("updated_is_ready_for_activation", self, "_updated_is_ready_for_activation", [], CONNECT_PERSIST)
 			ability.connect("should_be_displaying_changed", self, "_should_be_displaying", [], CONNECT_PERSIST)
 			ability.connect("auto_cast_state_changed", self, "_ability_autocast_state_changed", [], CONNECT_PERSIST)
-		
+			ability.connect("display_name_changed", self, "_ability_name_changed", [], CONNECT_PERSIST)
+			ability.connect("descriptions_changed", self, "_ability_descriptions_changed", [], CONNECT_PERSIST)
+			
 		_update_button_status()
+
+func _disconnect_ability_signals():
+	if ability.is_connected("current_round_cd_changed", self, "_current_cd_changed"):
+		ability.disconnect("current_round_cd_changed", self, "_current_cd_changed")
+		ability.disconnect("current_time_cd_changed", self, "_current_cd_changed")
+		ability.disconnect("destroying_self", self, "_ability_destroying_self")
+		ability.disconnect("icon_changed", self, "_icon_texture_changed")
+		ability.disconnect("started_round_cooldown", self, "_started_cd")
+		ability.disconnect("started_time_cooldown", self, "_started_cd")
+		ability.disconnect("updated_is_ready_for_activation", self, "_updated_is_ready_for_activation")
+		ability.disconnect("should_be_displaying_changed", self, "_should_be_displaying")
+		ability.disconnect("auto_cast_state_changed", self, "_ability_autocast_state_changed")
+		ability.disconnect("display_name_changed", self, "_ability_name_changed")
+		ability.disconnect("descriptions_changed", self, "_ability_descriptions_changed")
 
 
 func _update_button_status():
@@ -57,19 +73,6 @@ func _update_button_status():
 		_should_be_displaying(ability.should_be_displaying)
 		_ability_autocast_state_changed(ability.auto_cast_on)
 		_updated_is_ready_for_activation(ability.is_ready_for_activation())
-
-
-func _disconnect_ability_signals():
-	if ability.is_connected("current_round_cd_changed", self, "_current_cd_changed"):
-		ability.disconnect("current_round_cd_changed", self, "_current_cd_changed")
-		ability.disconnect("current_time_cd_changed", self, "_current_cd_changed")
-		ability.disconnect("destroying_self", self, "_ability_destroying_self")
-		ability.disconnect("icon_changed", self, "_icon_texture_changed")
-		ability.disconnect("started_round_cooldown", self, "_started_cd")
-		ability.disconnect("started_time_cooldown", self, "_started_cd")
-		ability.disconnect("updated_is_ready_for_activation", self, "_updated_is_ready_for_activation")
-		ability.disconnect("should_be_displaying_changed", self, "_should_be_displaying")
-		ability.disconnect("auto_cast_state_changed", self, "_ability_autocast_state_changed")
 
 # Current cd changed
 
@@ -117,6 +120,12 @@ func _ability_autocast_state_changed(autocast):
 func _icon_texture_changed(icon : Texture):
 	ability_button.texture_normal = icon
 
+func _ability_name_changed(new_name : String):
+	_update_tooltip()
+
+func _ability_descriptions_changed(desc : Array):
+	_update_tooltip()
+
 
 func _ability_destroying_self():
 	if ability != null:
@@ -156,9 +165,7 @@ func _ability_button_right_pressed():
 			
 		else:
 			_construct_tooltip()
-			ability_tooltip.descriptions = ability.descriptions
-			ability_tooltip.header_left_text = ability.display_name
-			ability_tooltip.update_display()
+			_update_tooltip()
 			ability_tooltip.visible = true
 
 
@@ -174,3 +181,9 @@ func _construct_tooltip():
 	ability_tooltip.tooltip_owner = ability_button
 	
 	get_tree().get_root().add_child(ability_tooltip)
+
+func _update_tooltip():
+	if ability_tooltip != null:
+		ability_tooltip.descriptions = ability.descriptions
+		ability_tooltip.header_left_text = ability.display_name
+		ability_tooltip.update_display()

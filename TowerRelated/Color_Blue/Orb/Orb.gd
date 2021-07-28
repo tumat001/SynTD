@@ -136,7 +136,7 @@ func _ready():
 	# Sticky explosion
 	
 	explosion_attack_module = AOEAttackModule_Scene.instance()
-	explosion_attack_module.base_damage = 7.5
+	explosion_attack_module.base_damage = 6
 	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0
@@ -347,6 +347,9 @@ func _sticky_bullet_shot(bullet : OrbSticky):
 func _sticky_bullet_time_expire(bullet):
 	var bullet_position = bullet.global_position
 	var explosion = explosion_attack_module.construct_aoe(bullet_position, bullet_position)
+	
+	explosion.damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)
+	
 	get_tree().get_root().add_child(explosion)
 	bullet.queue_free()
 

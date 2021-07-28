@@ -170,14 +170,74 @@ enum {
 	FRUIT_TREE_FRUIT = 2000, #THIS VALUE IS HARDCODED IN AbstractTower's can_accept_ingredient..
 }
 
+const TowerTiersMap : Dictionary = {
+	
+	MONO : 1,
+	SPRINKLER : 1,
+	SIMPLEX : 1,
+	COIN : 1,
+	MINI_TESLA : 1,
+	EMBER : 1,
+	COAL_LAUNCHER : 1,
+	SPIKE : 1,
+	REBOUND : 1,
+	STRIKER : 1,
+	
+	BERRY_BUSH : 2,
+	RAILGUN : 2,
+	SCATTER : 2,
+	ENTHALPHY : 2,
+	ENTROPY : 2,
+	BLEACH : 2,
+	TIME_MACHINE : 2,
+	CANNON : 2,
+	SHOCKER : 2,
+	TRANSMUTATOR : 2,
+	HERO : 2,
+	FRUIT_TREE_FRUIT : 2,
+	
+	SIMPLE_OBELISK : 3,
+	BEACON_DISH : 3,
+	CHARGE : 3,
+	CAMPFIRE : 3,
+	FLAMEBURST : 3,
+	GRAND : 3,
+	DOUSER : 3,
+	WAVE : 3,
+	SEEDER : 3,
+	
+	RE : 4,
+	PING : 4,
+	MAGNETIZER : 4,
+	SUNFLOWER : 4,
+	_704 : 4,
+	IEU : 4,
+	IMPALE : 4,
+	ORB : 4,
+	REAPER : 4,
+	ADEPT : 4,
+	
+	VOLCANO : 5,
+	FRUIT_TREE : 5,
+	LEADER : 5,
+	LAVA_JET : 5,
+	
+	TESLA : 6,
+	CHAOS : 6,
+	ROYAL_FLAME : 6,
+	PESTILENCE : 6,
+	HEXTRIBUTE : 6,
+	
+}
+
 static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 	var info
 	
 	if tower_id == MONO:
 		info = TowerTypeInformation.new("Mono", MONO)
-		info.tower_cost = 1
+		info.tower_tier = TowerTiersMap[MONO]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GRAY)
-		info.tower_tier = 1
 		info.tower_image_in_buy_card = mono_image
 		
 		info.base_damage = 2.5
@@ -195,9 +255,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == SPRINKLER:
 		info = TowerTypeInformation.new("Sprinkler", SPRINKLER)
-		info.tower_cost = 1
+		info.tower_tier = TowerTiersMap[SPRINKLER]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_tier = 1
 		info.tower_image_in_buy_card = sprinkler_image
 		
 		info.base_damage = 0.8
@@ -225,9 +285,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == BERRY_BUSH:
 		info = TowerTypeInformation.new("Berry Bush", BERRY_BUSH)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[BERRY_BUSH]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = berrybush_image
 		
 		info.base_damage = 0
@@ -255,10 +315,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == SIMPLE_OBELISK:
 		info = TowerTypeInformation.new("Simple Obelisk", SIMPLE_OBELISK)
-		info.tower_cost = 3
+		info.tower_tier = TowerTiersMap[SIMPLE_OBELISK]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_tier = 3
 		info.tower_image_in_buy_card = simpleobelisk_image
 		
 		info.base_damage = 8
@@ -286,9 +346,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == SIMPLEX:
 		info = TowerTypeInformation.new("Simplex", SIMPLEX)
-		info.tower_cost = 1
+		info.tower_tier = TowerTiersMap[SIMPLEX]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GRAY)
-		info.tower_tier = 1
 		info.tower_image_in_buy_card = simplex_image
 		
 		info.base_damage = 0.25
@@ -306,9 +366,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == RAILGUN:
 		info = TowerTypeInformation.new("Railgun", RAILGUN)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[RAILGUN]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = railgun_image
 		
 		info.base_damage = 7
@@ -335,12 +395,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == RE:
 		info = TowerTypeInformation.new("Re", RE)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[RE]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = re_image
 		
-		info.base_damage = 3
+		info.base_damage = 2.5
 		info.base_attk_speed = 0.5
 		info.base_pierce = 0
 		info.base_range = 115
@@ -361,10 +421,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == TESLA:
 		info = TowerTypeInformation.new("Tesla", TESLA)
-		info.tower_cost = 6
+		info.tower_tier = TowerTiersMap[TESLA]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_tier = 6
 		info.tower_image_in_buy_card = telsa_image
 		
 		info.base_damage = 3.5
@@ -389,9 +449,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == CHAOS:
 		info = TowerTypeInformation.new("CHAOS", CHAOS)
-		info.tower_cost = 6
+		info.tower_tier = TowerTiersMap[CHAOS]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
-		info.tower_tier = 6
 		info.tower_image_in_buy_card = chaos_image
 		
 		info.base_damage = 1.5
@@ -419,10 +479,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == PING:
 		info = TowerTypeInformation.new("Ping", PING)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[PING]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
 		info.colors.append(TowerColors.BLUE)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = ping_image
 		
 		info.base_damage = 1
@@ -434,8 +494,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Stats shown are for the arrow.",
-			"Shoots an arrow that releases a ring. The ring marks up to 4 enemies.",
-			"After a brief delay, Ping shoots up to 4 marked enemies. If only 1 enemy is marked, the shot is empowered, gaining +6 base damage and on hit damages become 150% effective.",
+			"Shoots an arrow that releases a ring. The ring marks up to 4 unmarked enemies.",
+			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process. If only 1 enemy is marked, the shot is empowered, gaining +6 base damage and on hit damages become 150% effective.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
 			"Shots deal 7 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
 		]
@@ -449,9 +509,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == COIN:
 		info = TowerTypeInformation.new("Coin", COIN)
-		info.tower_cost = 1
+		info.tower_tier = TowerTiersMap[COIN]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_tier = 1
 		info.tower_image_in_buy_card = coin_image
 		
 		info.base_damage = 1.5
@@ -477,10 +537,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == BEACON_DISH:
 		info = TowerTypeInformation.new("Beacon-Dish", BEACON_DISH)
-		info.tower_cost = 3
+		info.tower_tier = TowerTiersMap[BEACON_DISH]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GRAY)
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_tier = 3
 		info.tower_image_in_buy_card = beacon_dish_image
 		
 		info.base_damage = 1.5
@@ -512,10 +572,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == MINI_TESLA:
 		info = TowerTypeInformation.new("Mini Tesla", MINI_TESLA)
-		info.tower_cost = 1
+		info.tower_tier = TowerTiersMap[MINI_TESLA]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GRAY)
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_tier = 1
 		info.tower_image_in_buy_card = mini_tesla_image
 		
 		info.base_damage = 1.25
@@ -547,10 +607,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == CHARGE:
 		info = TowerTypeInformation.new("Charge", CHARGE)
-		info.tower_cost = 3
+		info.tower_tier = TowerTiersMap[CHARGE]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
 		info.colors.append(TowerColors.RED)
-		info.tower_tier = 3
 		info.tower_image_in_buy_card = charge_image
 		
 		info.base_damage = 3
@@ -581,9 +641,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == MAGNETIZER:
 		info = TowerTypeInformation.new("Magnetizer", MAGNETIZER)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = magnetizer_image
 		
 		info.base_damage = 0
@@ -617,10 +677,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == SUNFLOWER:
 		info = TowerTypeInformation.new("Sunflower", tower_id)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = sunflower_image
 		
 		info.base_damage = 1
@@ -650,9 +710,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == EMBER:
 		info = TowerTypeInformation.new("Ember", tower_id)
-		info.tower_cost = 1
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_tier = 1
 		info.tower_image_in_buy_card = ember_image
 		
 		info.base_damage = 0.5
@@ -688,20 +748,20 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == LAVA_JET:
 		info = TowerTypeInformation.new("Lava Jet", tower_id)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = lava_jet_image
 		
 		info.base_damage = 2
-		info.base_attk_speed = 0.92
+		info.base_attk_speed = 0.975
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"On its 5th attack, Lava Jet releases a beam of lava that deals 50% of the enemy's max health as elemental damage, up to a limit."
+			"On its 5th main attack, Lava Jet releases a beam of lava that deals 50% of the enemy's max health as elemental damage, up to a limit."
 		]
 		
 		var tower_effect = LavaJetModuleAdderEffect.new()
@@ -713,10 +773,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == CAMPFIRE:
 		info = TowerTypeInformation.new("Campfire", tower_id)
-		info.tower_cost = 3
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
 		info.colors.append(TowerColors.RED)
-		info.tower_tier = 3
 		info.tower_image_in_buy_card = campfire_image
 		
 		info.base_damage = 4
@@ -757,9 +817,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == VOLCANO:
 		info = TowerTypeInformation.new("Volcano", tower_id)
-		info.tower_cost = 5
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_tier = 5
 		info.tower_image_in_buy_card = volcano_image
 		
 		info.base_damage = 0
@@ -789,10 +849,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == _704:
 		info = TowerTypeInformation.new("704", tower_id)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = _704_image
 		
 		info.base_damage = 3
@@ -818,9 +878,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == FLAMEBURST:
 		info = TowerTypeInformation.new("Flameburst", tower_id)
-		info.tower_cost = 3
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_tier = 3
 		info.tower_image_in_buy_card = flameburst_image
 		
 		info.base_damage = 3
@@ -845,9 +905,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == SCATTER:
 		info = TowerTypeInformation.new("Scatter", tower_id)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = scatter_image
 		
 		info.base_damage = 1.5
@@ -864,10 +924,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == COAL_LAUNCHER:
 		info = TowerTypeInformation.new("Coal Launcher", tower_id)
-		info.tower_cost = 1
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.colors.append(TowerColors.GRAY)
-		info.tower_tier = 1
 		info.tower_image_in_buy_card = coal_launcher_image
 		
 		info.base_damage = 3
@@ -894,9 +953,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == ENTHALPHY:
 		info = TowerTypeInformation.new("Enthalphy", tower_id)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = enthalphy_image
 		
 		info.base_damage = 1.25
@@ -926,9 +985,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == ENTROPY:
 		info = TowerTypeInformation.new("Entropy", tower_id)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = entropy_image
 		
 		info.base_damage = 2
@@ -959,10 +1018,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == ROYAL_FLAME:
 		info = TowerTypeInformation.new("Royal Flame", tower_id)
-		info.tower_cost = 6
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
 		info.colors.append(TowerColors.BLUE)
-		info.tower_tier = 6
 		info.tower_image_in_buy_card = royal_flame_image
 		
 		info.base_damage = 3
@@ -996,10 +1055,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == IEU:
 		info = TowerTypeInformation.new("IE=U", tower_id)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = ieu_image
 		
 		info.base_damage = 2
@@ -1031,9 +1090,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == FRUIT_TREE:
 		info = TowerTypeInformation.new("Fruit Tree", tower_id)
-		info.tower_cost = 5
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_tier = 5
 		info.tower_image_in_buy_card = fruit_tree_image
 		
 		info.base_damage = 0
@@ -1052,8 +1111,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == FRUIT_TREE_FRUIT:
 		info = TowerTypeInformation.new("Fruit", tower_id)
-		info.tower_cost = 4
-		info.tower_tier = 4
+#		info.tower_tier = TowerTiersMap[tower_id]
+#		info.tower_cost = info.tower_tier
+		info.tower_tier = 2
+		info.tower_cost = 2
 		info.tower_image_in_buy_card = fruit_tree_image
 		
 		info.base_damage = 0
@@ -1070,9 +1131,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == SPIKE:
 		info = TowerTypeInformation.new("Spike", tower_id)
-		info.tower_cost = 1
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_tier = 1
 		info.tower_image_in_buy_card = spike_image
 		
 		info.base_damage = 2
@@ -1096,9 +1157,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == IMPALE:
 		info = TowerTypeInformation.new("Impale", tower_id)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = impale_image
 		
 		info.base_damage = 9
@@ -1125,9 +1186,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == LEADER:
 		info = TowerTypeInformation.new("Leader", tower_id)
-		info.tower_cost = 5
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_tier = 5
 		info.tower_image_in_buy_card = leader_image
 		
 		info.base_damage = 0.5
@@ -1159,9 +1220,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == ORB:
 		info = TowerTypeInformation.new("Orb", tower_id)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = orb_image
 		
 		info.base_damage = 1.75
@@ -1190,9 +1251,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == GRAND:
 		info = TowerTypeInformation.new("Grand", tower_id)
-		info.tower_cost = 3
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_tier = 3
 		info.tower_image_in_buy_card = grand_image
 		
 		info.base_damage = 4
@@ -1223,9 +1284,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == DOUSER:
 		info = TowerTypeInformation.new("Douser", tower_id)
-		info.tower_cost = 3
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_tier = 3
 		info.tower_image_in_buy_card = douser_image
 		
 		info.base_damage = 2
@@ -1259,9 +1320,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == WAVE:
 		info = TowerTypeInformation.new("Wave", tower_id)
-		info.tower_cost = 3
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_tier = 3
 		info.tower_image_in_buy_card = wave_image
 		
 		info.base_damage = 0.5
@@ -1298,9 +1359,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == BLEACH:
 		info = TowerTypeInformation.new("Bleach", tower_id)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = bleach_image
 		
 		info.base_damage = 2.0
@@ -1324,10 +1385,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == TIME_MACHINE:
 		info = TowerTypeInformation.new("Time Machine", tower_id)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = time_machine_image
 		
 		info.base_damage = 2.5
@@ -1356,9 +1417,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == SEEDER:
 		info = TowerTypeInformation.new("Seeder", tower_id)
-		info.tower_cost = 3
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_tier = 3
 		info.tower_image_in_buy_card = seeder_image
 		
 		info.base_damage = 2.5
@@ -1392,9 +1453,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == CANNON:
 		info = TowerTypeInformation.new("Cannon", tower_id)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = cannon_image
 		
 		info.base_damage = 0
@@ -1423,10 +1484,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == PESTILENCE:
 		info = TowerTypeInformation.new("Pestilence", tower_id)
-		info.tower_cost = 6
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_tier = 6
 		info.tower_image_in_buy_card = pestilence_image
 		
 		info.base_damage = 0.5
@@ -1451,10 +1512,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == REAPER:
 		info = TowerTypeInformation.new("Reaper", tower_id)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = reaper_image
 		
 		info.base_damage = 2.75
@@ -1490,9 +1551,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == SHOCKER:
 		info = TowerTypeInformation.new("Shocker", tower_id)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = shocker_image
 		
 		info.base_damage = 0
@@ -1523,9 +1584,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == ADEPT:
 		info = TowerTypeInformation.new("Adept", tower_id)
-		info.tower_cost = 4
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_tier = 4
 		info.tower_image_in_buy_card = adept_image
 		
 		info.base_damage = 2.25
@@ -1554,9 +1615,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == REBOUND:
 		info = TowerTypeInformation.new("Rebound", tower_id)
-		info.tower_cost = 1
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_tier = 1
 		info.tower_image_in_buy_card = rebound_image
 		
 		info.base_damage = 2
@@ -1584,9 +1645,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == STRIKER:
 		info = TowerTypeInformation.new("Striker", tower_id)
-		info.tower_cost = 1
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_tier = 1
 		info.tower_image_in_buy_card = striker_image
 		
 		info.base_damage = 2
@@ -1614,9 +1675,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == HEXTRIBUTE:
 		info = TowerTypeInformation.new("Hextribute", tower_id)
-		info.tower_cost = 6
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_tier = 6
 		info.tower_image_in_buy_card = hextribute_image
 		
 		info.base_damage = 2
@@ -1655,9 +1716,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == TRANSMUTATOR:
 		info = TowerTypeInformation.new("Transmutator", tower_id)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = transmutator_image
 		
 		info.base_damage = 2
@@ -1677,9 +1738,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 	elif tower_id == HERO:
 		info = TowerTypeInformation.new("Hero", tower_id)
-		info.tower_cost = 2
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.WHITE)
-		info.tower_tier = 2
 		info.tower_image_in_buy_card = hero_image
 		
 		info.base_damage = 1.75
@@ -1696,6 +1757,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"The Hero can absorb any ingredient color. Hero can also absorb 3 more ingredients.",
 		]
+		
+	
 	
 	
 	return info

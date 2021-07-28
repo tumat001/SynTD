@@ -10,6 +10,8 @@ var pestilence_spread : RandomNumberGenerator = RandomNumberGenerator.new()
 var domsyn_red_pact_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var domsyn_red_pact_mag_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var second_half_faction_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var roll_towers_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var tier_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
@@ -28,7 +30,10 @@ enum RNGSource {
 	DOMSYN_RED_PACT = 40,
 	DOMSYN_RED_PACT_MAGNITUDE = 41,
 	
-	SECOND_HALF_FACTION = 42
+	SECOND_HALF_FACTION = 42,
+	
+	ROLL_TOWERS = 43,
+	TIER = 44,
 }
 
 func _ready():
@@ -56,5 +61,9 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return domsyn_red_pact_mag_rng
 	elif rng_source == RNGSource.SECOND_HALF_FACTION:
 		return second_half_faction_rng
+	elif rng_source == RNGSource.ROLL_TOWERS:
+		return roll_towers_rng
+	elif rng_source == RNGSource.TIER:
+		return tier_rng
 	
 	return null

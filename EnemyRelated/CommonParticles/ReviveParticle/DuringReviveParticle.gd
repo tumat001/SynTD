@@ -24,5 +24,5 @@ func _in_exiting():
 	particle.position = global_position
 	particle.position.y += 3
 	
-	get_tree().get_root().add_child(particle)
-	
+	get_tree().get_root().call_deferred("add_child", particle)
+

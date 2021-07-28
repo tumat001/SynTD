@@ -45,11 +45,11 @@ func _init():
 	[DomSyn_Red.new()]
 	),
 	
-	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [12, 9, 6, 3],
+	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [11, 9, 6, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
 	[
-		"Orange towers gain Heat Modules. Heat Module gains heat per main attack of a tower. The heat per attack depends on the tower.",
+		"Orange towers gain Heat Modules. Heat Modules gain heat per main attack of a tower. The heat gained per attack depends on the tower.",
 		"Heat Modules give an effect, which scale depending on the current heat. A maximum of 75 heat can be gained per round. Not attacking in a round reduces the current heat by 50.",
 		"Upon reaching 100 heat, the tower becomes Overheated. At the end of the round, Overheated towers undergo Cooling, where they are unable to attack for the round. Cooling towers lose all heat at the end of the round.",
 		"",
@@ -75,7 +75,7 @@ func _init():
 		"Energy Battery allows storage of energy.",
 		"Energy Modules allow a tower to spend 1 energy to gain special effects.",
 		"",
-		"Energy Battery and Modules (and module's effects) persist even when the synergy is lost. The Energy Module of a tower persists even when the tower is benched.",
+		"Energy Battery and attached Modules (and Module's effects) persist even when the synergy is lost. The Energy Module of a tower persists even when the tower is benched.",
 		"",
 	],
 	[DomSyn_Yellow_GoldIncome.new(), inst_domsyn_yellow_energybattery],
@@ -98,10 +98,12 @@ func _init():
 	syn_dom_green,
 	["GREEN description"]),
 	
-	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [3, 2, 1],
-	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [4, 3, 2, 1], #[9, 7, 5, 3],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
-	["BLUE description"],
+	[
+		""
+	],
 	[DomSyn_Blue.new()]
 	),
 	
@@ -114,7 +116,7 @@ func _init():
 	],
 	[DomSyn_Violet.new()],
 	[
-		"+9 ingredients, 13 tower limit",
+		"+9 ingredients, 12 tower limit",
 		"+8 ingredients, 9 tower limit",
 		"+12 ingredients, 6 tower limit",
 		"+40 ingredients, 3 tower limit",

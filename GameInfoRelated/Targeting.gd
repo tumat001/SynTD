@@ -108,9 +108,7 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 		enemies = _find_random_distinct_enemies(enemies, num_of_enemies)
 	
 	
-	for enemy in enemies:
-		if (!include_invis_enemies and enemy.last_calculated_invisibility_status) or enemy.is_reviving:
-			enemies.erase(enemy)
+	filter_untargetable_enemies(enemies, include_invis_enemies)
 	
 	
 	enemies.resize(num_of_enemies)
@@ -118,6 +116,18 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 		enemies.erase(null)
 	
 	return enemies
+
+
+static func filter_untargetable_enemies(enemies, include_invis_enemies : bool = false) -> Array:
+	for enemy in enemies:
+		if enemy.last_calculated_is_untargetable:
+			if include_invis_enemies and enemy.is_untargetable_only_from_invisibility():
+				continue
+			else:
+				enemies.erase(enemy)
+	
+	return enemies
+
 
 
 # Sorter

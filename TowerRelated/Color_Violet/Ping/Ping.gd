@@ -109,7 +109,7 @@ func _ready():
 	
 	arrow_attack_module = attack_module
 	
-	arrow_attack_module.connect("before_bullet_is_shot", self, "_before_arrow_is_shot")
+	arrow_attack_module.connect("before_bullet_is_shot", self, "_before_arrow_is_shot", [], CONNECT_PERSIST)
 	
 	add_attack_module(attack_module)
 	
@@ -146,7 +146,7 @@ func _ready():
 	
 	seek_attack_module.can_be_commanded_by_tower = false
 	
-	seek_attack_module.connect("on_enemy_hit", self, "_enemy_seeked")
+	seek_attack_module.connect("on_enemy_hit", self, "_enemy_seeked", [], CONNECT_PERSIST)
 	
 	add_attack_module(seek_attack_module)
 	
@@ -208,11 +208,15 @@ func _before_arrow_is_shot(arrow : BaseBullet):
 
 func _enemy_hit_by_arrow(arrow, enemy):
 	var aoe : BaseAOE = seek_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
+	for enemy in _enemies_marked:
+		aoe.enemies_to_ignore.append(enemy)
+	
 	get_tree().get_root().call_deferred("add_child", aoe)
 
 
 func _enemy_seeked(enemy, damage_register_id : int, damage_instance, module):
-	if damage_register_id == Ping_seek_register_id and _enemies_marked.size() < current_mark_count_limit:
+	#if damage_register_id == Ping_seek_register_id and _enemies_marked.size() < current_mark_count_limit:
+	if !_enemies_marked.has(enemy):
 		_enemies_marked.append(enemy)
 		enemy.add_child(_construct_mark_sprite())
 		
@@ -222,7 +226,7 @@ func _enemy_seeked(enemy, damage_register_id : int, damage_instance, module):
 			ping_eye_sprite.texture = PingEye_awake_pic
 		elif _enemies_marked.size() <= empowered_num_of_targets_limit and !_enemies_marked.size() < 0:
 			ping_eye_sprite.texture = PingEye_awakeRed_pic
-		
+
 
 
 func _construct_mark_sprite():
@@ -297,14 +301,14 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Ping can mark up to 6 enemies per shot.",
+			"Ping can mark up to 7 enemies per shot.",
 			"Ping can empower its shots when marking up to 2 enemies."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
 	empowered_num_of_targets_limit = 2
-	current_mark_count_limit = 6
+	current_mark_count_limit = 7
 	seek_attack_module.pierce = current_mark_count_limit
 
 func _module_turned_off():

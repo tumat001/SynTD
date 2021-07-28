@@ -15,27 +15,23 @@ enum DecreaseGoldSource {
 	
 	TOWER_BUY,
 	TOWER_USE,
+	LEVEL_UP,
 	
 }
 
 
 signal current_gold_changed(current_gold)
 
-var current_gold : int = 0
-var gold_amount_label : Label
+var current_gold : int = 0 setget set_gold_value
 
 
 func increase_gold_by(increase : int, increase_source : int):
-	current_gold += increase
-	call_deferred("emit_signal", "current_gold_changed", current_gold)
-	_update_gold_amount_label()
-
+	set_gold_value(current_gold + increase)
 
 func decrease_gold_by(decrease : int, decrease_source : int):
-	current_gold -= decrease
+	set_gold_value(current_gold - decrease)
+
+func set_gold_value(val : int):
+	current_gold = val
 	call_deferred("emit_signal", "current_gold_changed", current_gold)
-	_update_gold_amount_label()
 
-
-func _update_gold_amount_label():
-	gold_amount_label.text = str(current_gold)

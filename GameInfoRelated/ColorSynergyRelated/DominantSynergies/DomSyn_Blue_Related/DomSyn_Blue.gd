@@ -8,6 +8,9 @@ const ScreenTintEffect = preload("res://MiscRelated/ScreenEffectsRelated/ScreenT
 
 const BreezeAbility_Pic = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/AbilityAssets/Ability_Breeze_Icon.png")
 const ManaBlast_Pic = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/AbilityAssets/Ability_ManaBlast_Icon.png")
+const Renew_Pic = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/AbilityAssets/Ability_Renew_Icon.png")
+const Empower_Pic = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/AbilityAssets/Ability_Empower_Icon.png")
+const Empower_Pic_Selected = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/AbilityAssets/Ability_Empower_Icon_Selected.png")
 
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
@@ -16,6 +19,7 @@ const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
+const AbilityButton = preload("res://GameHUDRelated/AbilityPanel/AbilityButton.gd")
 
 const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerAttributesEffect.gd")
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
@@ -43,7 +47,7 @@ var enemy_manager : EnemyManager
 
 #
 var breeze_ability : BaseAbility
-const base_breeze_ability_cooldown : float = 28.0
+const base_breeze_ability_cooldown : float = 24.0
 
 const base_breeze_first_slow_amount : float = -50.0
 const base_breeze_first_slow_duration : float = 4.0
@@ -57,11 +61,34 @@ var breeze_second_slow_effect : EnemyAttributesEffect
 
 const base_breeze_damage : float = 1.0
 
+const breeze_ability_descriptions = [
+	"Slows all enemies by 50% for 4 seconds, then slows by 15% for 6 seconds. Also deals 1 elemental damage.",
+	"Cooldown : 28s",
+	"",
+	"Ability potency increases the slow percentage and the damage."
+]
+
+
+const empowered_base_breeze_second_slow_amount : float = -90.0
+const empowered_base_breeze_second_slow_duration : float = 8.0 + base_breeze_first_slow_duration
+
+const empowered_breeze_extra_descriptions = [
+	"",
+	"Empowered: The second slow from breeze is empowered to slow by %s and lasts for %s" % [(str(-empowered_base_breeze_second_slow_amount) + "%,"), (str(empowered_base_breeze_second_slow_duration) + "s.")]
+]
+
+const linked_breeze_descriptions : Array = [
+	breeze_ability_descriptions,
+	empowered_breeze_extra_descriptions
+]
+
+
 #
 var mana_blast_ability : BaseAbility
-const mana_blast_ability_cooldown : float = 40.0
+const mana_blast_ability_cooldown : float = 30.0
 
 var mana_blast_module : AOEAttackModule
+# 10 + 10 x 2 = 30 (the total damage)
 const mana_blast_base_damage : float = 10.0
 const mana_blast_extra_main_target_dmg_scale : float = 2.0
 
@@ -69,6 +96,65 @@ var mana_blast_buff_aoe_module : TD_AOEAttackModule
 var mana_blast_buff_tower_effect : TowerAttributesEffect
 const mana_blast_ap_buff_amount : float = 0.75
 const mana_blast_buff_duration : float = 12.0
+
+const mana_blast_ability_descriptions = [
+	"Summon a mark at the strongest enemy's location. After a brief delay, the mark releases a mana blast.",
+	"The blast deals 30 damage to the main target, and deals 33% of that damage to secondary targets.",
+	"Towers caught in the blast gain 0.75 ability potency for 12 seconds.",
+	"Cooldown: 40s"
+]
+
+
+
+const empowered_mana_blast_ap_buff_amount : float = 2.5
+
+const empowered_mana_blast_extra_descriptions = [
+	"",
+	"Empowered: Towers caught in the mana blast recieve %s instead." % (str(empowered_mana_blast_ap_buff_amount) + " ability potency"),
+]
+
+const linked_mana_blast_descriptions : Array = [
+	mana_blast_ability_descriptions,
+	empowered_mana_blast_extra_descriptions
+]
+
+
+#
+
+var renew_empower_ability : BaseAbility
+var renew_empower_ability_button : AbilityButton
+const renew_empower_ability_cooldown : float = 70.0
+const renew_empower_ability_empower_static_cooldown : float = 0.25
+
+const renew_empower_side_renew_icon : Texture = Renew_Pic
+
+const renew_empower_ability_constant_description : Array = [
+	"This ability comes with two possible outcomes: Renew and Empower. These two outcomes share the same cooldown. Cooldown: %s" % (str(renew_empower_ability_cooldown) + "s"),
+	"",
+	"Renew: Removes remaining cooldowns of all other blue abilities. Renew is castable only when at least one blue ability is in cooldown.",
+	"",
+	"Empower: Greatly empowers the next blue ability that is casted. Empower is castable only when no blue ability is in cooldown.",
+	"Re-casting empower cancels the effect instead, putting this ability at a %s cooldown." % (str(renew_empower_ability_empower_static_cooldown) + "s"),
+	"",
+]
+
+const renew_empower_ability_renew_active_description : Array = [
+	"Current castable ability: Renew"
+]
+
+const renew_empower_ability_empower_active_description : Array = [
+	"Current castable ability: Empower"
+]
+
+const renew_empower_ability_connected_ability_empowered_name_extension : String = " (Empowered)"
+
+
+var is_next_ability_empowered : bool = false
+var connected_blue_abilities : Array = []
+
+var blue_abilities_descriptions_map : Dictionary = {}
+
+
 
 #
 
@@ -79,20 +165,34 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		game_elements = arg_game_elements
 		enemy_manager = game_elements.enemy_manager
 	
-	if tier <= 3:
+	if tier <= 4:
 		if breeze_ability == null:
 			_construct_breeze_relateds()
 	
-	if tier <= 2:
+	if tier <= 3:
 		if mana_blast_ability == null:
 			_construct_mana_blast_relateds()
+		else:
+			mana_blast_ability.set_clauses_to_usual_synergy_sufficient_based()
+	else:
+		if mana_blast_ability != null:
+			mana_blast_ability.set_clauses_to_usual_synergy_insufficient_based()
+	
+	
+	if tier <= 2:
+		if renew_empower_ability == null:
+			_construct_renew_empower_ability()
+		else:
+			renew_empower_ability.set_clauses_to_usual_synergy_sufficient_based()
+	else:
+		if renew_empower_ability != null:
+			renew_empower_ability.set_clauses_to_usual_synergy_insufficient_based()
 	
 	
 	._apply_syn_to_game_elements(arg_game_elements, tier)
 
 
 func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int):
-	
 	._remove_syn_from_game_elements(arg_game_elements, tier)
 
 
@@ -112,12 +212,7 @@ func _construct_breeze_relateds():
 	breeze_ability.set_properties_to_usual_synergy_based()
 	breeze_ability.synergy = self
 	
-	breeze_ability.descriptions = [
-		"Slows all enemies by 50% for 4 seconds, then slows by 15% for 6 seconds. Also deals 1 elemental damage.",
-		"Cooldown : 28s",
-		"",
-		"Ability potency increases the slow percentage and the damage."
-	]
+	breeze_ability.descriptions = breeze_ability_descriptions
 	breeze_ability.display_name = "Breeze"
 	
 	breeze_ability.set_properties_to_auto_castable()
@@ -142,12 +237,21 @@ func _construct_breeze_relateds():
 	breeze_second_slow_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED, breeze_second_slow_modifier, StoreOfEnemyEffectsUUID.BLUE_BREEZE_SECOND_SLOW)
 	breeze_second_slow_effect.is_timebound = true
 	breeze_second_slow_effect.time_in_seconds = base_breeze_second_slow_duration
+	
+	blue_abilities_descriptions_map[breeze_ability] = [
+		breeze_ability_descriptions,
+		empowered_breeze_extra_descriptions
+	]
 
 
 func _breeze_ability_activated():
 	var final_ap_scale : float = breeze_ability.get_potency_to_use(1)
 	breeze_first_slow_modifier.percent_amount = base_breeze_first_slow_amount * final_ap_scale
-	breeze_second_slow_modifier.percent_amount = base_breeze_second_slow_amount * final_ap_scale
+	
+	if !is_next_ability_empowered:
+		breeze_second_slow_modifier.percent_amount = base_breeze_second_slow_amount * final_ap_scale
+	else:
+		breeze_second_slow_modifier.percent_amount = empowered_base_breeze_second_slow_amount * final_ap_scale
 	
 	var dmg_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.BREEZE_DAMAGE)
 	dmg_modi.flat_modifier = base_breeze_damage * final_ap_scale
@@ -155,7 +259,12 @@ func _breeze_ability_activated():
 	var dmg_instance : DamageInstance = DamageInstance.new()
 	dmg_instance.on_hit_damages[StoreOfTowerEffectsUUID.BREEZE_DAMAGE] = on_hit_dmg
 	dmg_instance.on_hit_effects[StoreOfEnemyEffectsUUID.BLUE_BREEZE_FIRST_SLOW] = breeze_first_slow_effect
-	dmg_instance.on_hit_effects[StoreOfEnemyEffectsUUID.BLUE_BREEZE_SECOND_SLOW] = breeze_second_slow_effect
+	
+	var copy_of_second_slow = breeze_second_slow_effect._get_copy_scaled_by(1)
+	if is_next_ability_empowered:
+		copy_of_second_slow.time_in_seconds = empowered_base_breeze_second_slow_duration
+	
+	dmg_instance.on_hit_effects[StoreOfEnemyEffectsUUID.BLUE_BREEZE_SECOND_SLOW] = copy_of_second_slow
 	
 	var breeze_screen_effect = ScreenTintEffect.new()
 	breeze_screen_effect.main_duration = 1.5
@@ -166,7 +275,7 @@ func _breeze_ability_activated():
 	breeze_screen_effect.custom_z_index = ZIndexStore.SCREEN_EFFECTS
 	game_elements.screen_effect_manager.add_screen_tint_effect(breeze_screen_effect)
 	
-	for enemy in enemy_manager.get_all_enemies():
+	for enemy in enemy_manager.get_all_targetable_and_invisible_enemies():
 		call_deferred("_apply_breeze_to_enemy", enemy, dmg_instance)
 	
 	breeze_ability.start_time_cooldown(base_breeze_ability_cooldown)
@@ -187,13 +296,7 @@ func _construct_mana_blast_relateds():
 	mana_blast_ability.set_properties_to_usual_synergy_based()
 	mana_blast_ability.synergy = self
 	
-	mana_blast_ability.descriptions = [
-		"Summon a mark at the strongest enemy's location. After a brief delay, the mark releases a mana blast.",
-		"The blast deals 30 damage to the main target, and deals 33% of that damage to secondary targets.",
-		"Towers caught in the blast gain 0.75 ability potency for 12 seconds.",
-		"Cooldown: 40s"
-		
-	]
+	mana_blast_ability.descriptions = mana_blast_ability_descriptions
 	mana_blast_ability.display_name = "Mana Blast"
 	
 	mana_blast_ability.set_properties_to_auto_castable()
@@ -269,13 +372,28 @@ func _construct_mana_blast_relateds():
 	mana_blast_buff_tower_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY, buff_modi, StoreOfTowerEffectsUUID.MANA_BLAST_BONUS_AP)
 	mana_blast_buff_tower_effect.time_in_seconds = mana_blast_buff_duration
 	mana_blast_buff_tower_effect.is_timebound = true
+	
+	# descs
+	
+	blue_abilities_descriptions_map[mana_blast_ability] = [
+		mana_blast_ability_descriptions,
+		empowered_mana_blast_extra_descriptions
+	]
 
 
 func _mana_blast_ability_activated():
-	var enemies : Array = Targeting.enemies_to_target(enemy_manager.get_all_enemies(), Targeting.STRONGEST, 1, Vector2(0, 0))
+	var enemies : Array = Targeting.enemies_to_target(enemy_manager.get_all_enemies(), Targeting.STRONGEST, 1, Vector2(0, 0), true)
 	if enemies.size() >= 1:
+		_set_ap_buff_to_give()
 		_place_marker(enemies[0])
 		mana_blast_ability.start_time_cooldown(mana_blast_ability_cooldown)
+
+
+func _set_ap_buff_to_give():
+	if is_next_ability_empowered:
+		mana_blast_buff_tower_effect.attribute_as_modifier.flat_modifier = empowered_mana_blast_ap_buff_amount
+	else:
+		mana_blast_buff_tower_effect.attribute_as_modifier.flat_modifier = mana_blast_ap_buff_amount
 
 func _place_marker(enemy):
 	var marker = ManaBurst_Mark_Scene.instance()
@@ -285,6 +403,7 @@ func _place_marker(enemy):
 	
 	marker.connect("tree_exiting", self, "_marker_expire", [marker, enemy], CONNECT_ONESHOT)
 	game_elements.get_tree().get_root().add_child(marker)
+
 
 func _marker_expire(marker : Node2D, enemy):
 	var pos := marker.global_position
@@ -317,12 +436,148 @@ func _on_explosion_hit_enemy(enemy, main_enemy):
 func _on_buff_aoe_hit_tower(tower):
 	tower.add_tower_effect(mana_blast_buff_tower_effect._shallow_duplicate())
 
+#
+
+func _construct_renew_empower_ability():
+	renew_empower_ability = BaseAbility.new()
+	
+	renew_empower_ability.is_timebound = true
+	renew_empower_ability.connect("ability_activated", self, "_renew_empower_ability_activated", [], CONNECT_PERSIST)
+	renew_empower_ability.icon = Renew_Pic
+	
+	renew_empower_ability.set_properties_to_usual_synergy_based()
+	renew_empower_ability.synergy = self
+	
+	renew_empower_ability.display_name = "Renew/Empower"
+	
+	#
+	_monitor_and_connect_ability(breeze_ability)
+	_monitor_and_connect_ability(mana_blast_ability)
+	
+	register_ability_to_manager(renew_empower_ability)
+	
+	_check_if_blue_abilities_are_in_cooldown()
+
+
+func _monitor_and_connect_ability(arg_ability : BaseAbility):
+	if arg_ability != null:
+		arg_ability.connect("current_time_cd_reached_zero", self, "_check_if_blue_abilities_are_in_cooldown", [], CONNECT_PERSIST)
+		arg_ability.connect("ability_activated", self, "_monitored_ability_casted", [], CONNECT_PERSIST)
+		arg_ability.connect("started_time_cooldown", self, "_monitored_ability_cd_started", [], CONNECT_PERSIST)
+		connected_blue_abilities.append(arg_ability)
+
+
+func _monitored_ability_cd_started(max_time_cd, current_time_cd):
+	_check_if_blue_abilities_are_in_cooldown()
+
+func _check_if_blue_abilities_are_in_cooldown():
+	if _if_at_least_one_blue_abilities_is_in_cooldown():
+		_show_renew_as_display()
+	else:
+		_show_empower_as_display()
+
+
+func _if_at_least_one_blue_abilities_is_in_cooldown() -> bool:
+	for ability in connected_blue_abilities:
+		if ability != null:
+			if !ability.is_time_ready_or_round_ready() and !ability.activation_conditional_clauses.has_clause(BaseAbility.ActivationClauses.SYNERGY_INACTIVE):
+				return true
+	
+	return false
+
+
+func _show_empower_as_display():
+	renew_empower_ability.icon = Empower_Pic
+	
+	var descs : Array = renew_empower_ability_constant_description.duplicate()
+	for desc in renew_empower_ability_empower_active_description:
+		descs.append(desc)
+	renew_empower_ability.descriptions = descs
+
+
+func _show_renew_as_display():
+	renew_empower_ability.icon = renew_empower_side_renew_icon
+	
+	var descs : Array = renew_empower_ability_constant_description.duplicate()
+	for desc in renew_empower_ability_renew_active_description:
+		descs.append(desc)
+	renew_empower_ability.descriptions = descs
+
+#
+
+func _renew_empower_ability_activated():
+	if _if_at_least_one_blue_abilities_is_in_cooldown():
+		_cast_as_renew()
+	else:
+		_cast_as_empower()
+
+#
+
+func _cast_as_renew():
+	for ability in connected_blue_abilities:
+		ability.remove_all_time_cooldown()
+	
+	renew_empower_ability.start_time_cooldown(renew_empower_ability_cooldown)
+
+
+#
+
+func _cast_as_empower():
+	if !is_next_ability_empowered:
+		is_next_ability_empowered = true
+		renew_empower_ability.icon = Empower_Pic_Selected
+		
+		_display_empowered_version_of_monitored_ability_descriptions()
+	else:
+		_return_from_empowered(true)
+
+func _display_empowered_version_of_monitored_ability_descriptions():
+	for ability in connected_blue_abilities:
+		var linked_descs : Array = blue_abilities_descriptions_map[ability]
+		var final_descs : Array = []
+		
+		for descs in linked_descs:
+			for desc in descs:
+				final_descs.append(desc)
+		
+		ability.descriptions = final_descs
+		
+		ability.display_name = ability.display_name + renew_empower_ability_connected_ability_empowered_name_extension
+
+
+
+func _monitored_ability_casted():
+	if is_next_ability_empowered:
+		_return_from_empowered(false)
+
+
+func _return_from_empowered(is_recast : bool = false):
+	if is_recast:
+		renew_empower_ability.start_time_cooldown(renew_empower_ability_empower_static_cooldown)
+		_show_empower_as_display()
+	else:
+		renew_empower_ability.start_time_cooldown(renew_empower_ability_cooldown)
+		_show_renew_as_display()
+	
+	_display_normal_version_of_monitored_ability_descriptions()
+	
+	set_deferred("is_next_ability_empowered", false)
+
+
+func _display_normal_version_of_monitored_ability_descriptions():
+	for ability in connected_blue_abilities:
+		var linked_descs : Array = blue_abilities_descriptions_map[ability]
+		var final_descs : Array = []
+		
+		for desc in linked_descs[0]:
+			final_descs.append(desc)
+		
+		ability.descriptions = final_descs
+		
+		ability.display_name = ability.display_name.replace(renew_empower_ability_connected_ability_empowered_name_extension, "")
+
 
 #
 
 
 
-
-# GIDEAS
-
-# for last tier, make 3rd blue ability casted have special/empowered effect

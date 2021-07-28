@@ -24,6 +24,7 @@ enum Mode {
 signal stage_round_changed(stage_num, round_num)
 signal round_started(current_stageround)
 signal round_ended(current_stageround)
+signal round_ended_game_start_aware(current_stageround, is_game_start)
 
 signal life_lost_from_enemy_first_time_in_round(enemy)
 signal life_lost_from_enemy(enemy)
@@ -127,7 +128,7 @@ func end_round(from_game_start : bool = false):
 	enemy_manager.enemy_damage_multiplier = current_stageround.enemy_damage_multiplier
 	enemy_manager.apply_faction_passive(spawn_ins_of_faction_mode.get_faction_passive())
 	
-	
+	emit_signal("round_ended_game_start_aware", current_stageround, from_game_start)
 	emit_signal("round_ended", current_stageround)
 
 

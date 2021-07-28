@@ -11,6 +11,7 @@ const AbilityAttributesEffect = preload("res://GameInfoRelated/AbilityRelated/Ab
 var cdr_effect : AbilityAttributesEffect
 var cdr_modi : PercentModifier
 
+const tier4_cdr_amount : float = 10.0
 const tier3_cdr_amount : float = 35.0
 const tier2_cdr_amount : float = 55.0
 const tier1_cdr_amount : float = 80.0
@@ -26,7 +27,9 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		game_elements = arg_game_elements
 		ability_manager = game_elements.ability_manager
 	
-	if tier == 3:
+	if tier == 4:
+		cdr_modi.percent_amount = tier4_cdr_amount
+	elif tier == 3:
 		cdr_modi.percent_amount = tier3_cdr_amount
 	elif tier == 2:
 		cdr_modi.percent_amount = tier2_cdr_amount

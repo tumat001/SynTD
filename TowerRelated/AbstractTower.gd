@@ -221,8 +221,11 @@ var old_global_position : Vector2
 
 # compatibility stuffs
 var distance_to_exit : float = 0 # this is here for Targeting purposes
-var last_calculated_invisibility_status : bool = false # this is here for Targeting purposes
-var is_reviving : bool = false 
+#var last_calculated_invisibility_status : bool = false # this is here for Targeting purposes
+#var is_reviving : bool = false
+var last_calculated_is_untargetable : bool = false
+func is_untargetable_only_from_invisibility(): return true
+
 
 # managers
 

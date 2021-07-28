@@ -72,7 +72,7 @@ func _on_StickyIcon_pressed_mouse_event(event):
 		attack_tooltip.descriptions = [
 			"Orb throws a curse bomb that latches onto the first enemy it hits. The curse explodes after 2 seconds, or when the enemy dies.",
 			"",
-			"The explosion deals 7.5 elemental damage, and affects up to 3 enemies.",
+			"The explosion deals 6 elemental damage, and affects up to 3 enemies. The damage scales with Orb's ability potency.",
 			"The explosion does not benefit from bonus on hit damages and on hit effects."
 		]
 		
