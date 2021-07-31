@@ -1,0 +1,240 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://GameHUDRelated/StatsPanel/Assets/TierIcons/TierIcon02.png" type="Texture" id=2]
+[ext_resource path="res://GameHUDRelated/StatsPanel/Assets/ShopStatsBackground.png" type="Texture" id=3]
+[ext_resource path="res://GameHUDRelated/StatsPanel/Assets/TierIcons/TierIcon03.png" type="Texture" id=4]
+[ext_resource path="res://GameHUDRelated/StatsPanel/Assets/TierIcons/TierIcon04.png" type="Texture" id=5]
+[ext_resource path="res://GameHUDRelated/StatsPanel/Assets/TierIcons/TierIcon01.png" type="Texture" id=6]
+[ext_resource path="res://GameHUDRelated/StatsPanel/Assets/TierIcons/TierIcon05.png" type="Texture" id=7]
+[ext_resource path="res://GameHUDRelated/StatsPanel/Assets/TierIcons/TierIcon06.png" type="Texture" id=8]
+[ext_resource path="res://GameHUDRelated/StatsPanel/ShopPercentStatsPanel.gd" type="Script" id=9]
+
+[sub_resource type="DynamicFont" id=1]
+size = 8
+font_data = ExtResource( 1 )
+
+[node name="ShopPercentStatsPanel" type="MarginContainer"]
+margin_right = 190.0
+margin_bottom = 15.0
+mouse_filter = 2
+size_flags_vertical = 10
+script = ExtResource( 9 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 190.0
+margin_bottom = 16.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 190.0
+margin_bottom = 16.0
+mouse_filter = 2
+custom_constants/margin_right = 4
+custom_constants/margin_top = 3
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 2
+
+[node name="MainContent" type="HBoxContainer" parent="MarginContainer"]
+margin_left = 4.0
+margin_top = 3.0
+margin_right = 186.0
+margin_bottom = 14.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+
+[node name="Tier01Container" type="HBoxContainer" parent="MarginContainer/MainContent"]
+margin_right = 27.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_horizontal = 2
+
+[node name="Tier01Pic" type="TextureRect" parent="MarginContainer/MainContent/Tier01Container"]
+margin_top = 2.0
+margin_right = 7.0
+margin_bottom = 9.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 6 )
+
+[node name="Marginer" type="MarginContainer" parent="MarginContainer/MainContent/Tier01Container"]
+margin_left = 11.0
+margin_right = 27.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_vertical = 6
+custom_constants/margin_top = 2
+
+[node name="Tier01Label" type="Label" parent="MarginContainer/MainContent/Tier01Container/Marginer"]
+margin_top = 2.0
+margin_right = 16.0
+margin_bottom = 11.0
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 1 )
+text = "100%"
+valign = 1
+
+[node name="Tier02Container" type="HBoxContainer" parent="MarginContainer/MainContent"]
+margin_left = 31.0
+margin_right = 58.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_horizontal = 2
+
+[node name="Tier02Pic" type="TextureRect" parent="MarginContainer/MainContent/Tier02Container"]
+margin_top = 2.0
+margin_right = 7.0
+margin_bottom = 9.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 2 )
+
+[node name="Marginer" type="MarginContainer" parent="MarginContainer/MainContent/Tier02Container"]
+margin_left = 11.0
+margin_right = 27.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_vertical = 6
+custom_constants/margin_top = 2
+
+[node name="Tier02Label" type="Label" parent="MarginContainer/MainContent/Tier02Container/Marginer"]
+margin_top = 2.0
+margin_right = 16.0
+margin_bottom = 11.0
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 1 )
+text = "100%"
+valign = 1
+
+[node name="Tier03Container" type="HBoxContainer" parent="MarginContainer/MainContent"]
+margin_left = 62.0
+margin_right = 89.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_horizontal = 2
+
+[node name="Tier03Pic" type="TextureRect" parent="MarginContainer/MainContent/Tier03Container"]
+margin_top = 2.0
+margin_right = 7.0
+margin_bottom = 9.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 4 )
+
+[node name="Marginer" type="MarginContainer" parent="MarginContainer/MainContent/Tier03Container"]
+margin_left = 11.0
+margin_right = 27.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_vertical = 6
+custom_constants/margin_top = 2
+
+[node name="Tier03Label" type="Label" parent="MarginContainer/MainContent/Tier03Container/Marginer"]
+margin_top = 2.0
+margin_right = 16.0
+margin_bottom = 11.0
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 1 )
+text = "100%"
+valign = 1
+
+[node name="Tier04Container" type="HBoxContainer" parent="MarginContainer/MainContent"]
+margin_left = 93.0
+margin_right = 120.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_horizontal = 2
+
+[node name="Tier04Pic" type="TextureRect" parent="MarginContainer/MainContent/Tier04Container"]
+margin_top = 2.0
+margin_right = 7.0
+margin_bottom = 9.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 5 )
+
+[node name="Marginer" type="MarginContainer" parent="MarginContainer/MainContent/Tier04Container"]
+margin_left = 11.0
+margin_right = 27.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_vertical = 6
+custom_constants/margin_top = 2
+
+[node name="Tier04Label" type="Label" parent="MarginContainer/MainContent/Tier04Container/Marginer"]
+margin_top = 2.0
+margin_right = 16.0
+margin_bottom = 11.0
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 1 )
+text = "100%"
+valign = 1
+
+[node name="Tier05Container" type="HBoxContainer" parent="MarginContainer/MainContent"]
+margin_left = 124.0
+margin_right = 151.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_horizontal = 2
+
+[node name="Tier05Pic" type="TextureRect" parent="MarginContainer/MainContent/Tier05Container"]
+margin_top = 2.0
+margin_right = 7.0
+margin_bottom = 9.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 7 )
+
+[node name="Marginer" type="MarginContainer" parent="MarginContainer/MainContent/Tier05Container"]
+margin_left = 11.0
+margin_right = 27.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_vertical = 6
+custom_constants/margin_top = 2
+
+[node name="Tier05Label" type="Label" parent="MarginContainer/MainContent/Tier05Container/Marginer"]
+margin_top = 2.0
+margin_right = 16.0
+margin_bottom = 11.0
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 1 )
+text = "100%"
+valign = 1
+
+[node name="Tier06Container" type="HBoxContainer" parent="MarginContainer/MainContent"]
+margin_left = 155.0
+margin_right = 182.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_horizontal = 2
+
+[node name="Tier06Pic" type="TextureRect" parent="MarginContainer/MainContent/Tier06Container"]
+margin_top = 2.0
+margin_right = 7.0
+margin_bottom = 9.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 8 )
+
+[node name="Marginer" type="MarginContainer" parent="MarginContainer/MainContent/Tier06Container"]
+margin_left = 11.0
+margin_right = 27.0
+margin_bottom = 11.0
+mouse_filter = 2
+size_flags_vertical = 6
+custom_constants/margin_top = 2
+
+[node name="Tier06Label" type="Label" parent="MarginContainer/MainContent/Tier06Container/Marginer"]
+margin_top = 2.0
+margin_right = 16.0
+margin_bottom = 11.0
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 1 )
+text = "100%"
+valign = 1

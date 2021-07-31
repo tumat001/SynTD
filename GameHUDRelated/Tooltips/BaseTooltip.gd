@@ -47,6 +47,10 @@ func _process(delta):
 		
 		if new_y_pos < 0:
 			new_y_pos = new_position.y
+			
+			# if newly adjusted position makes tooltip dip below
+			if new_y_pos + tooltip_height + 20 > get_viewport().get_visible_rect().size.y:
+				new_y_pos = 20
 		
 		new_position.y = new_y_pos
 	

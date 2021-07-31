@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/GoldIndicatorBackground.png-bd15ed69e4e1439ba0dafc71c8e4d09a.stex"
+path="res://.import/BlackBeam_01.png-aedc8747fed098a2bd092dd1461346a8.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/StatsPanel/GoldPanel/GoldIndicatorBackground.png"
-dest_files=[ "res://.import/GoldIndicatorBackground.png-bd15ed69e4e1439ba0dafc71c8e4d09a.stex" ]
+source_file="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/BlackBeam/BlackBeam_01.png"
+dest_files=[ "res://.import/BlackBeam_01.png-aedc8747fed098a2bd092dd1461346a8.stex" ]
 
 [params]
 

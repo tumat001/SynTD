@@ -22,7 +22,7 @@ const WholeScreenGUI = preload("res://GameElementsRelated/WholeScreenGUI.gd")
 const RelicManager = preload("res://GameElementsRelated/RelicManager.gd")
 const ShopManager = preload("res://GameElementsRelated/ShopManager.gd")
 const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
-const GoldRelicStatsPanel = preload("res://GameHUDRelated/StatsPanel/GoldRelicStatsPanel.gd")
+const GeneralStatsPanel = preload("res://GameHUDRelated/StatsPanel/GeneralStatsPanel.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var in_map_placables_manager : InMapPlacablesManager
@@ -48,7 +48,7 @@ var round_info_panel : RoundInfoPanel
 var tower_info_panel
 var selection_notif_panel : SelectionNotifPanel
 var whole_screen_gui : WholeScreenGUI
-var gold_relic_stats_panel : GoldRelicStatsPanel
+var general_stats_panel : GeneralStatsPanel
 
 onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
 
@@ -72,7 +72,7 @@ func _ready():
 	relic_manager = $RelicManager
 	shop_manager = $ShopManager
 	level_manager = $LevelManager
-	gold_relic_stats_panel = $BottomPanel/HBoxContainer/VBoxContainer/GoldRelicStatsPanel
+	general_stats_panel = $BottomPanel/HBoxContainer/VBoxContainer/GeneralStatsPanel
 	
 	targeting_panel = right_side_panel.tower_info_panel.targeting_panel
 	tower_info_panel = right_side_panel.tower_info_panel
@@ -80,9 +80,6 @@ func _ready():
 	round_status_panel = right_side_panel.round_status_panel
 	round_info_panel = round_status_panel.round_info_panel
 	selection_notif_panel = $SelectionNotifPanel
-	
-	panel_buy_sell_level_roll.gold_manager = gold_manager
-	panel_buy_sell_level_roll.relic_manager = relic_manager
 	
 	# tower manager
 	tower_manager.right_side_panel = right_side_panel
@@ -150,6 +147,7 @@ func _ready():
 	shop_manager.buy_sell_level_roll_panel = panel_buy_sell_level_roll
 	shop_manager.level_manager = level_manager
 	shop_manager.tower_manager = tower_manager
+	shop_manager.gold_manager = gold_manager
 	
 	# Level manager
 	level_manager.game_elements = self
@@ -158,11 +156,17 @@ func _ready():
 	level_manager.relic_manager = relic_manager
 	
 	# Gold relic stats panel
-	gold_relic_stats_panel.game_elements = self
-	gold_relic_stats_panel.gold_manager = gold_manager
-	gold_relic_stats_panel.relic_manager = relic_manager
-	gold_relic_stats_panel.level_manager = level_manager
-	gold_relic_stats_panel.shop_manager = shop_manager
+	general_stats_panel.game_elements = self
+	general_stats_panel.gold_manager = gold_manager
+	general_stats_panel.relic_manager = relic_manager
+	general_stats_panel.shop_manager = shop_manager
+	general_stats_panel.level_manager = level_manager
+	
+	# buy sell reroll
+	panel_buy_sell_level_roll.gold_manager = gold_manager
+	panel_buy_sell_level_roll.relic_manager = relic_manager
+	panel_buy_sell_level_roll.level_manager = level_manager
+	panel_buy_sell_level_roll.shop_manager = shop_manager
 	
 	
 	#GAME START
@@ -177,28 +181,25 @@ func _ready():
 
 # From bottom panel
 func _on_BuySellLevelRollPanel_level_up():
-	#for tower in tower_manager.get_all_towers():
-	#	tower.set_active_ingredient_limit(tower.ingredient_active_limit + 2)
-	
-	pass
+	level_manager.level_up_with_spend_currency()
 
 
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop(5)
+	#shop_manager.roll_towers_in_shop_with_cost(5)
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.TESLA,
-			Towers.PING,
-			Towers.LAVA_JET,
+			Towers.SUNFLOWER,
+			Towers.AMALGAMATOR,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers._704,
-			Towers.MAGNETIZER,
+			Towers.SPRINKLER,
+			Towers.SIMPLEX,
 			Towers.ORB,
 			Towers.LEADER,
 			Towers.ROYAL_FLAME,

@@ -251,15 +251,15 @@ func _post_inherit_ready():
 	calculate_invisibility_status()
 	
 	#
-	var heal_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
-	heal_modi.flat_modifier = 10.0
-	
-	var heal_effect = EnemyHealEffect.new(heal_modi, StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
-	heal_effect.is_from_enemy = true
-	
-	var revive_effect = EnemyReviveEffect.new(heal_effect, 9999, 5)
-	revive_effect.is_from_enemy = true
-	_add_effect(revive_effect)
+#	var heal_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
+#	heal_modi.flat_modifier = 10.0
+#
+#	var heal_effect = EnemyHealEffect.new(heal_modi, StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
+#	heal_effect.is_from_enemy = true
+#
+#	var revive_effect = EnemyReviveEffect.new(heal_effect, 9999, 5)
+#	revive_effect.is_from_enemy = true
+#	_add_effect(revive_effect)
 	
 	#
 	current_health = _last_calculated_max_health

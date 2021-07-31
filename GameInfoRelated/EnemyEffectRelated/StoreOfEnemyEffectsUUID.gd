@@ -114,6 +114,9 @@ enum {
 	
 	# VIOLET (-2600)
 	
+	# OTHERS (-2900)
+	BLACK_CORRUPTION_STACK = -2900
+	
 	
 	# ------------
 	# RED GREEN (-3000)

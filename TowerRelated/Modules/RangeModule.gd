@@ -260,4 +260,23 @@ func get_targets(num : int, targeting : int = get_current_targeting_option(), in
 	return _current_enemies
 
 func get_all_targets(targeting : int = get_current_targeting_option(), include_invis_enemies : bool = false) -> Array:
-	return get_targets(_current_enemies.size(), targeting)
+	return get_targets(_current_enemies.size(), targeting, include_invis_enemies)
+
+#
+
+func get_targets_without_affecting_self_current_targets(num : int, targeting : int = get_current_targeting_option(), include_invis_enemies : bool = false) -> Array:
+	var bucket : Array = Targeting.enemies_to_target(enemies_in_range, targeting, num, global_position)
+	
+	while bucket.has(null):
+		bucket.erase(null)
+	
+	while priority_enemies.has(null):
+		priority_enemies.erase(null)
+	
+	for i in range(priority_enemies.size() - 1, 0, -1):
+		bucket.push_front(priority_enemies[i])
+	
+	return bucket
+
+func get_all_targets_without_affecting_self_current_targets(targeting : int = get_current_targeting_option(), include_invis_enemies : bool = false) -> Array:
+	return get_targets_without_affecting_self_current_targets(_current_enemies.size(), targeting, include_invis_enemies)

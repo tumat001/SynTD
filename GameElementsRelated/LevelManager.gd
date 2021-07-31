@@ -1,8 +1,11 @@
 extends Node
 
-const BuySellLevelRollPanel = preload("res://GameHUDRelated/BuySellPanel/BuySellLevelRollPanel.gd")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const RelicManager = preload("res://GameElementsRelated/RelicManager.gd")
+
+const gold_currency_icon = preload("res://GameHUDRelated/BuySellPanel/GoldPic.png")
+const relic_currency_icon = preload("res://GameHUDRelated/BuySellPanel/RelicPic.png")
+
 
 signal on_current_level_up_cost_amount_changed(new_cost)
 signal on_current_level_up_cost_currency_changed(new_currency)
@@ -79,9 +82,8 @@ func set_relic_manager(arg_manager : RelicManager):
 #
 
 func _ready():
-	current_level = LEVEL_1
 	current_level_up_currency = Currency.GOLD
-	set_current_level(current_level)
+	set_current_level(LEVEL_5)
 
 
 # on round end
@@ -108,7 +110,7 @@ func set_level_up_cost(val : int):
 func set_level_up_cost_currency(curr : int):
 	current_level_up_currency = curr
 	
-	emit_signal("on_current_level_up_cost_currency_changed")
+	emit_signal("on_current_level_up_cost_currency_changed", curr)
 
 
 # level related
@@ -155,7 +157,14 @@ func _gold_amount_changed(gold_amount):
 func _relic_count_changed(relic_amount):
 	emit_signal("on_can_level_up_changed", can_level_up())
 
-#
 
+# miscs
 
+func get_currency_icon(currency : int) -> Texture:
+	if currency == Currency.GOLD:
+		return gold_currency_icon
+	elif currency == Currency.RELIC:
+		return relic_currency_icon
+	
+	return null
 

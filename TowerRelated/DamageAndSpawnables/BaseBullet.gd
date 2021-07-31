@@ -21,7 +21,7 @@ var decrease_pierce : bool = true
 var current_life_distance
 
 var _first_hit : bool = true
-var beyond_first_hit_multiplier : float = 0.5
+var beyond_first_hit_multiplier : float = 0.75
 
 var rotation_per_second : float = 0
 

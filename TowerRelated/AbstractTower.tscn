@@ -23,6 +23,7 @@ flags = 4
 load_path = "res://.import/Healtbar_health.png-46e9df2e5b75a965b897a60417b5b1f6.stex"
 
 [node name="AbstractTower" type="Area2D"]
+position = Vector2( -0.749146, -0.749146 )
 gravity_vec = Vector2( 0, 0 )
 gravity = 0.0
 script = ExtResource( 1 )
@@ -33,6 +34,7 @@ __meta__ = {
 [node name="TowerBase" type="Node2D" parent="."]
 
 [node name="BaseSprites" type="AnimatedSprite" parent="TowerBase"]
+use_parent_material = true
 
 [node name="CollisionShape" type="CollisionShape2D" parent="."]
 

@@ -12,6 +12,7 @@ var domsyn_red_pact_mag_rng : RandomNumberGenerator = RandomNumberGenerator.new(
 var second_half_faction_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var roll_towers_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var tier_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var black_buff_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
@@ -34,6 +35,8 @@ enum RNGSource {
 	
 	ROLL_TOWERS = 43,
 	TIER = 44,
+	
+	BLACK_BUFF = 45,
 }
 
 func _ready():
@@ -65,5 +68,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return roll_towers_rng
 	elif rng_source == RNGSource.TIER:
 		return tier_rng
+	elif rng_source == RNGSource.BLACK_BUFF:
+		return black_buff_rng
 	
 	return null

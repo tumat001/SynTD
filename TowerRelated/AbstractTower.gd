@@ -250,6 +250,7 @@ var base_heat_effect : TowerBaseEffect
 onready var life_bar_layer = $LifeBarLayer
 onready var life_bar = $LifeBarLayer/LifeBar
 onready var tower_base_sprites = $TowerBase/BaseSprites
+onready var tower_base = $TowerBase
 
 
 # Initialization -------------------------- #
@@ -260,6 +261,10 @@ func _ready():
 	
 	connect("on_current_health_changed", life_bar, "set_current_health_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 	connect("on_max_health_changed", life_bar, "set_max_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+	
+	for child in tower_base_sprites.get_children():
+		child.use_parent_material = true
+	tower_base.material = ShaderMaterial.new()
 
 
 
@@ -1295,6 +1300,10 @@ func _update_ingredient_compatible_colors():
 			
 		elif color == TowerColors.GRAY:
 			ingredient_compatible_colors.append(TowerColors.GRAY)
+			
+		elif color == TowerColors.BLACK:
+			ingredient_compatible_colors.append(TowerColors.BLACK)
+
 
 # Tower Colors Related
 
@@ -1308,6 +1317,12 @@ func add_color_to_tower(color : int):
 func remove_color_from_tower(color : int):
 	#if _tower_colors.has(color):
 	_tower_colors.erase(color)
+	call_deferred("emit_signal", "update_active_synergy")
+	call_deferred("emit_signal", "tower_colors_changed")
+	_update_ingredient_compatible_colors()
+
+func remove_all_colors_from_tower():
+	_tower_colors.clear()
 	call_deferred("emit_signal", "update_active_synergy")
 	call_deferred("emit_signal", "tower_colors_changed")
 	_update_ingredient_compatible_colors()
@@ -1688,6 +1703,7 @@ func _set_health(val : float):
 	if current_health <= 0:
 		current_health = 0
 		set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_NO_HEALTH)
+		last_calculated_is_untargetable = true
 		
 		life_bar_layer.visible = true
 		_emit_tower_no_health()
@@ -1695,6 +1711,8 @@ func _set_health(val : float):
 	else:
 		if current_health > last_calculated_max_health:
 			current_health = last_calculated_max_health
+		
+		last_calculated_is_untargetable = false
 		
 		erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_NO_HEALTH)
 		

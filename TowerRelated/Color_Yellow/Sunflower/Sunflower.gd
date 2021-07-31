@@ -31,7 +31,8 @@ func _ready():
 	range_module.set_range_shape(CircleShape2D.new())
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	attack_module.base_damage = info.base_damage
+	attack_module.base_damage_scale = 0.75
+	attack_module.base_damage = info.base_damage / attack_module.base_damage_scale
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 0
@@ -44,7 +45,7 @@ func _ready():
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.base_proj_inaccuracy = sunflower_original_inaccuracy
 	
-	attack_module.burst_amount = 9
+	attack_module.burst_amount = 7
 	attack_module.burst_attack_speed = 12
 	attack_module.has_burst = true
 	

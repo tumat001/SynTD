@@ -29,7 +29,7 @@ const subsequent_absorbed_entropy_attk_speed_buff : float = 20.0
 const first_absorbed_enthalphy_range_buff : float = 125.0
 const subsequent_absorbed_enthalphy_range_buff : float = 45.0
 
-var energy_module_is_on : bool
+var energy_module_is_on : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -115,18 +115,12 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 
 
 func _enthalphy_absorbed():
-	if energy_module_is_on and is_round_started:
-		absorbed_enthalphy_range_rounds_left.push_front(-1)
-	else:
-		absorbed_enthalphy_range_rounds_left.push_front(round_duration)
+	absorbed_enthalphy_range_rounds_left.push_front(round_duration)
 	
 	_update_range_buff()
 
 func _entropy_absorbed():
-	if energy_module_is_on and is_round_started:
-		absorbed_entropy_attk_speed_rounds_left.push_front(-1)
-	else:
-		absorbed_entropy_attk_speed_rounds_left.push_front(round_duration)
+	absorbed_entropy_attk_speed_rounds_left.push_front(round_duration)
 	
 	_update_attk_speed_buff()
 
@@ -157,11 +151,12 @@ func _calculate_enthalphy_range():
 # round end
 
 func _ieu_on_round_end():
-	for i in absorbed_enthalphy_range_rounds_left.size():
-		absorbed_enthalphy_range_rounds_left[i] -= 1
-	
-	for i in absorbed_entropy_attk_speed_rounds_left.size():
-		absorbed_entropy_attk_speed_rounds_left[i] -= 1
+	if !energy_module_is_on:
+		for i in absorbed_enthalphy_range_rounds_left.size():
+			absorbed_enthalphy_range_rounds_left[i] -= 1
+		
+		for i in absorbed_entropy_attk_speed_rounds_left.size():
+			absorbed_entropy_attk_speed_rounds_left[i] -= 1
 	
 	while absorbed_enthalphy_range_rounds_left.find_last(0) != -1:
 		absorbed_enthalphy_range_rounds_left.pop_back()
@@ -231,7 +226,7 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Absorbing Entropy or Enthalphy while this module is turned on, and while the round is ongoing, makes their effects last forever instead."
+			"Absorbed buffs's round duration is not decreased."
 		]
 
 

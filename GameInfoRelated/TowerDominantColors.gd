@@ -23,6 +23,7 @@ const DomSyn_Yellow_EnergyBattery = preload("res://GameInfoRelated/ColorSynergyR
 const DomSyn_Orange = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/DomSyn_Orange.gd")
 const DomSyn_Blue = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/DomSyn_Blue.gd")
 const DomSyn_Red = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red.gd")
+const DomSyn_Black = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/DomSyn_Black.gd")
 
 var inst_domsyn_yellow_energybattery : DomSyn_Yellow_EnergyBattery
 
@@ -102,9 +103,17 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
 	[
+		"Gain access to Blue Abilities.",
 		""
 	],
-	[DomSyn_Blue.new()]
+	[DomSyn_Blue.new()],
+	[
+		"",
+		"Renew/Empower : Multi purpose ability.",
+		"Mana Blast: Big AOE damage, and bonus Ability Potency buff.",
+		"Sea Breeze : Slow all enemies."
+	],
+	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
 	
 	"Violet" : ColorSynergy.new("Violet", [TowerColors.VIOLET], [5, 4, 3, 2],
@@ -128,13 +137,27 @@ func _init():
 	[tier_dia_pic],
 	syn_dom_white,
 	[
-		"Hero relies on the powers of the color White to channel its powers.",
+		"Hero relies on the color White to channel its powers.",
 	]),
 	
-	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [1],
-	[tier_dia_pic],
+	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [4, 3, 2, 1],#[12, 9, 6, 3],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_black,
-	["BLACK description"])
+	[
+		"Black tower's attacks give a stack of Corruption to enemies on hit. Black towers with base damages 4.5 or higher will apply 7 stacks instead.",
+		"Corruption stacks last for 3 seconds. Re-applications refresh all stacks.",
+		"Black towers that hit enemies with a certain number of stacks cause effects.",
+		""
+	],
+	[DomSyn_Black.new()],
+	[
+		"12+ stacks: All attacks on hit deal 5% of the enemy's missing health as elemental damage, up to 7.",
+		"10+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. Can only be triggered every 0.2 seconds. The beam deals 1.25 physical damage, and benefits from base damage and on hit damage buffs at 10% efficiency. Also applies on hit effects.",
+		"5+ stacks: Causes the attacking tower to give a random black tower 40% bonus attack speed for 5 attacks for 8 seconds. This effect has a 5 second cooldown, and can only be triggered by main attacks.",
+		"3+ stacks: All attack's base damage against enemies is increased by 15%."
+	],
+	ColorSynergy.HighlightDeterminer.ALL_BELOW
+	)
 }
 
 var synergies : Dictionary

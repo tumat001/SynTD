@@ -3,6 +3,11 @@ extends Node
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 const BuySellLevelRollPanel = preload("res://GameHUDRelated/BuySellPanel/BuySellLevelRollPanel.gd")
 const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
+const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
+
+
+signal on_cost_per_roll_changed(new_cost)
+signal can_roll_changed(can_roll)
 
 const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_1 : [100, 0, 0, 0, 0, 0],
@@ -10,9 +15,9 @@ const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_3 : [85, 15, 0, 0, 0, 0],
 	LevelManager.LEVEL_4 : [65, 25, 10, 0, 0, 0],
 	LevelManager.LEVEL_5 : [40, 40, 20, 0, 0, 0],
-	LevelManager.LEVEL_6 : [25, 35, 40, 0, 0, 0],
-	LevelManager.LEVEL_7 : [10, 35, 48, 7, 0, 0],
-	LevelManager.LEVEL_8 : [10, 15, 40, 30, 5, 0],
+	LevelManager.LEVEL_6 : [22, 33, 40, 5, 0, 0],
+	LevelManager.LEVEL_7 : [10, 28, 50, 10, 2, 0],
+	LevelManager.LEVEL_8 : [10, 10, 40, 30, 10, 0],
 	LevelManager.LEVEL_9 : [10, 10, 20, 40, 20, 0],
 	LevelManager.LEVEL_10 : [5, 5, 5, 30, 30, 25],
 }
@@ -28,19 +33,18 @@ const base_tower_tier_stock : Dictionary = {
 	6 : 2
 }
 
+# When a tower should have a different initial stock amount
 const tower_stock_amount_exceptions : Dictionary = {
 	#Towers.HERO : 1
 }
 
+# When a tower should not appear in shop nor replenish stock (by selling)
 const blacklisted_towers_to_inventory : Array = [
 	Towers.FRUIT_TREE_FRUIT
 ]
 
 
-var current_tower_stock_inventory : Dictionary = {
-	
-}
-
+var current_tower_stock_inventory : Dictionary = {}
 var tier_tower_map : Dictionary = {
 	1 : [],
 	2 : [],
@@ -58,9 +62,13 @@ var buy_sell_level_roll_panel : BuySellLevelRollPanel
 var stage_round_manager setget set_stage_round_manager
 var level_manager setget set_level_manager
 var tower_manager setget set_tower_manager
+var gold_manager : GoldManager setget set_gold_manager
 
 var tier_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.TIER)
 var roll_towers_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.ROLL_TOWERS)
+
+var current_cost_per_roll : int = 2 setget set_cost_per_roll
+
 
 # setters
 
@@ -76,6 +84,18 @@ func set_tower_manager(arg_manager):
 	tower_manager = arg_manager
 	
 	tower_manager.connect("tower_being_sold", self, "_on_tower_being_sold", [], CONNECT_PERSIST)
+
+func set_gold_manager(arg_manager : GoldManager):
+	gold_manager = arg_manager
+	
+	gold_manager.connect("current_gold_changed", self, "_emit_can_roll_changed", [], CONNECT_PERSIST)
+
+
+func set_cost_per_roll(new_cost):
+	current_cost_per_roll = new_cost
+	
+	_emit_can_roll_changed(-1)
+	emit_signal("on_cost_per_roll_changed", new_cost)
 
 #
 
@@ -103,6 +123,19 @@ func _on_round_end_game_start_aware(curr_stageround, is_game_start):
 
 
 # roll related
+
+func _emit_can_roll_changed(_new_val):
+	emit_signal("can_roll_changed", if_can_roll())
+
+
+func roll_towers_in_shop_with_cost(level_of_roll : int = level_manager.current_level, arg_cost : int = current_cost_per_roll):
+	if if_can_roll():
+		roll_towers_in_shop(level_of_roll)
+		gold_manager.decrease_gold_by(arg_cost, GoldManager.DecreaseGoldSource.SHOP_ROLL)
+
+func if_can_roll() -> bool:
+	return gold_manager.current_gold >= current_cost_per_roll 
+
 
 func roll_towers_in_shop(level_of_roll : int = level_manager.current_level):
 	for tower_id in buy_sell_level_roll_panel.get_all_unbought_tower_ids():
@@ -142,7 +175,7 @@ func _determine_tower_id_to_be_rolled(level_of_roll : int) -> int:
 
 
 func _determine_tier_to_be_rolled(level_of_roll : int) -> int:
-	var tier_probabilities : Array = base_level_tier_roll_probabilities[level_of_roll]
+	var tier_probabilities : Array = get_shop_roll_chances_at_level(level_of_roll)
 	
 	var decided_tier_weight_rand : int = tier_rng.randi_range(1, 100)
 	
@@ -157,6 +190,9 @@ func _determine_tier_to_be_rolled(level_of_roll : int) -> int:
 	
 	# should not reach here
 	return -1
+
+func get_shop_roll_chances_at_level(current_level : int = level_manager.current_level):
+	return base_level_tier_roll_probabilities[current_level]
 
 func _remove_tower_ids_with_no_available_inventory_from_array(arg_tower_ids : Array):
 	for tower_id in arg_tower_ids:
@@ -198,4 +234,6 @@ func _on_tower_being_sold(sellback, tower):
 	for ids in tower_ids_in_ingredients:
 		_add_stock_to_tower_id(ids, 1)
 
+
+# 
 

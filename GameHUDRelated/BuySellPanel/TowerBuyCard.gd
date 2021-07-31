@@ -13,21 +13,36 @@ const tier04_crown = preload("res://GameHUDRelated/BuySellPanel/Tier04_Crown.png
 const tier05_crown = preload("res://GameHUDRelated/BuySellPanel/Tier05_Crown.png")
 const tier06_crown = preload("res://GameHUDRelated/BuySellPanel/Tier06_Crown.png")
 
+signal tower_bought(tower_type_id, tower_cost)
+
+const can_afford_modulate : Color = Color(1, 1, 1, 1)
+const cannot_afford_modulate : Color = Color(0.4, 0.4, 0.4, 1)
+
 var tower_information : TowerTypeInformation
 var disabled : bool = false
 var current_tooltip : TowerTooltip
 
 var current_gold : int
 
+onready var ingredient_icon_rect = $MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/IngredientIcon
+onready var tower_name_label = $MarginContainer/VBoxContainer/MarginerLower/Lower/TowerNameLabel
+onready var tower_cost_label = $MarginContainer/VBoxContainer/MarginerLower/Lower/TowerCostLabel
 
-signal tower_bought(tower_type_id, tower_cost)
+onready var color_icon_01 = $MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Color01Icon
+onready var color_label_01 = $MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Marginer/Color01Label
+onready var color_icon_02 = $MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Color02Icon
+onready var color_label_02 = $MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Marginer/Color02Label
+
+onready var tower_image_rect = $MarginContainer/VBoxContainer/MarginerUpper/Upper/Marginer/TowerImage
+onready var tier_crown_rect = $MarginContainer/VBoxContainer/TierCrownPanel/TierCrown
+
 
 func _ready():
 	update_display()
 
 func update_display():
-	$MarginContainer/VBoxContainer/MarginerLower/Lower/TowerNameLabel.text = tower_information.tower_name
-	$MarginContainer/VBoxContainer/MarginerLower/Lower/TowerCostLabel.text = str(tower_information.tower_cost)
+	tower_name_label.text = tower_information.tower_name
+	tower_cost_label.text = str(tower_information.tower_cost)
 	
 	# Color related
 	var color01
@@ -39,53 +54,45 @@ func update_display():
 		color02 = tower_information.colors[1]
 	
 	if color01 != null:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Color01Icon.texture = TowerColors.get_color_symbol_on_card(color01)
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Marginer/Color01Label.text = TowerColors.get_color_name_on_card(color01)
+		color_icon_01.texture = TowerColors.get_color_symbol_on_card(color01)
+		color_label_01.text = TowerColors.get_color_name_on_card(color01)
 	else:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Color01Icon.self_modulate.a = 0
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo1/HBoxContainer/Marginer/Color01Label.self_modulate.a = 0
+		color_icon_01.self_modulate.a = 0
+		color_label_01.self_modulate.a = 0
 	
 	if color02 != null:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Color02Icon.texture = TowerColors.get_color_symbol_on_card(color02)
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Marginer/Color02Label.text = TowerColors.get_color_name_on_card(color02)
+		color_icon_02.texture = TowerColors.get_color_symbol_on_card(color02)
+		color_label_02.text = TowerColors.get_color_name_on_card(color02)
 	else:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Color02Icon.self_modulate.a = 0
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/ColorInfo2/HBoxContainer/Marginer/Color02Label.self_modulate.a = 0
-	
-	# Energy Related
-	if tower_information.energy_consumption_levels.size() > 0:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer/Marginer/EnergyLabel.text = create_energy_display(tower_information.energy_consumption_levels)
-	else:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer/Marginer/EnergyLabel.self_modulate.a = 0
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/EnergyInfo/HBoxContainer/EnergyIcon.self_modulate.a = 0
+		color_icon_02.self_modulate.a = 0
+		color_label_02.self_modulate.a = 0
 	
 	# Ingredient Related
 	if tower_information.ingredient_effect != null:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/Marginer/IngredientLabel.text = tower_information.ingredient_effect_simple_description
+		ingredient_icon_rect.texture = tower_information.ingredient_effect.tower_base_effect.effect_icon
 	else:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/IngredientIcon.self_modulate.a = 0
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/Marginer/IngredientLabel.self_modulate.a = 0
+		ingredient_icon_rect.self_modulate.a = 0
 	
 	# TowerImageRelated
 	if tower_information.tower_image_in_buy_card != null:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/Marginer/TowerImage.texture = tower_information.tower_image_in_buy_card
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/Marginer/TowerImage.visible = true
+		tower_image_rect.texture = tower_information.tower_image_in_buy_card
+		tower_image_rect.visible = true
 	else:
-		$MarginContainer/VBoxContainer/MarginerUpper/Upper/Marginer/TowerImage.visible = false
+		tower_image_rect.visible = false
 	
 	# Tier Crown Related
 	if tower_information.tower_tier == 1:
-		$MarginContainer/VBoxContainer/TierCrownPanel/TierCrown.texture = tier01_crown
+		tier_crown_rect.texture = tier01_crown
 	elif tower_information.tower_tier == 2:
-		$MarginContainer/VBoxContainer/TierCrownPanel/TierCrown.texture = tier02_crown
+		tier_crown_rect.texture = tier02_crown
 	elif tower_information.tower_tier == 3:
-		$MarginContainer/VBoxContainer/TierCrownPanel/TierCrown.texture = tier03_crown
+		tier_crown_rect.texture = tier03_crown
 	elif tower_information.tower_tier == 4:
-		$MarginContainer/VBoxContainer/TierCrownPanel/TierCrown.texture = tier04_crown
+		tier_crown_rect.texture = tier04_crown
 	elif tower_information.tower_tier == 5:
-		$MarginContainer/VBoxContainer/TierCrownPanel/TierCrown.texture = tier05_crown
+		tier_crown_rect.texture = tier05_crown
 	elif tower_information.tower_tier == 6:
-		$MarginContainer/VBoxContainer/TierCrownPanel/TierCrown.texture = tier06_crown
+		tier_crown_rect.texture = tier06_crown
 	
 	# Gold related
 	_update_display_based_on_gold(current_gold)
@@ -141,9 +148,9 @@ func _update_display_based_on_gold(arg_current_gold):
 	current_gold = arg_current_gold
 	
 	if _can_afford():
-		modulate = Color(1, 1, 1, 1)
+		modulate = can_afford_modulate
 	else:
-		modulate = Color(0.3, 0.3, 0.3, 1)
+		modulate = cannot_afford_modulate
 
 func _can_afford() -> bool:
 	return current_gold >= tower_information.tower_cost

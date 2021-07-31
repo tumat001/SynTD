@@ -96,8 +96,9 @@ const telsa_image = preload("res://TowerRelated/Color_Violet/Tesla/Tesla.png")
 const chaos_image = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_01.png")
 const ping_image = preload("res://TowerRelated/Color_Violet/Ping/PingWholeBody.png")
 
-# WHITE
+# OTHERS
 const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
+const amalgamator_image = preload("res://TowerRelated/Color_Black/Amalgamator/Amalgamator_Omni.png")
 
 enum {
 	# GRAY (100)
@@ -163,7 +164,8 @@ enum {
 	PING = 704,
 	
 	# OTHERS (900)
-	HERO = 900,
+	HERO = 900, # WHITE
+	AMALGAMATOR = 901 # BLACK
 	
 	
 	# MISC (2000)
@@ -205,6 +207,7 @@ const TowerTiersMap : Dictionary = {
 	DOUSER : 3,
 	WAVE : 3,
 	SEEDER : 3,
+	AMALGAMATOR : 3,
 	
 	RE : 4,
 	PING : 4,
@@ -260,15 +263,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLUE)
 		info.tower_image_in_buy_card = sprinkler_image
 		
-		info.base_damage = 0.8
-		info.base_attk_speed = 2.75
+		info.base_damage = 1
+		info.base_attk_speed = 2.25
 		info.base_pierce = 1
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Sprinkles water droplets to enemies"
+			"Sprinkles water droplets at enemies, dealing elemental damage."
 		]
 		
 		# Ingredient related
@@ -298,7 +301,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
-			"Does not attack, but instead gives 1 gold at the end of the round"
+			"Does not attack, but instead gives 1 gold at the end of the round."
 		]
 		
 		
@@ -321,7 +324,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GRAY)
 		info.tower_image_in_buy_card = simpleobelisk_image
 		
-		info.base_damage = 8
+		info.base_damage = 3.5
 		info.base_attk_speed = 0.5
 		info.base_pierce = 1
 		info.base_range = 180
@@ -329,12 +332,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Fires arcane bolts at enemies that explode before fizzling out. The explosion deals half of this tower's total base damage"
+			"Fires arcane bolts at enemies that explode before fizzling out. The explosion deals half of this tower's total base damage.",
+			"The explosion does not benefit from bonus on hit damages and effects."
 		]
 		
 		# Ingredient related
 		var range_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SIMPLE_OBELISK)
-		range_attr_mod.percent_amount = 50
+		range_attr_mod.percent_amount = 45
 		range_attr_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_SIMPLE_OBELISK)
@@ -466,8 +470,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Only the orbs are affected by targeting options. The orbs are considered to be CHAOS's main attack.",
 			"Only the diamonds benefit from pierce buffs and apply on hit damage and effects. On hit effects are 200% effective.",
 			"Only the bolts benefit from attack speed buffs.",
-			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 50% efficiency.",
-			"Upon dealing enough damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 500% of its total base damage."
+			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 20% efficiency.",
+			"Upon dealing enough damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 20 + 500% of CHAOS's total base damage as physical damage."
 		]
 		
 		var tower_base_effect : TowerChaosTakeoverEffect = TowerChaosTakeoverEffect.new()
@@ -495,9 +499,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Stats shown are for the arrow.",
 			"Shoots an arrow that releases a ring. The ring marks up to 4 unmarked enemies.",
-			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process. If only 1 enemy is marked, the shot is empowered, gaining +6 base damage and on hit damages become 150% effective.",
+			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process. If only 1 enemy is marked, the shot is empowered, dealing 9 base damage and on hit damages become 150% effective.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
-			"Shots deal 7 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
+			"Shots deal 3.5 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
 		]
 		
 		var tower_base_effect : PingletAdderEffect = PingletAdderEffect.new()
@@ -688,10 +692,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0.75
+		info.on_hit_multiplier = 0.6
 		
 		info.tower_descriptions = [
-			"Sprays lots of seeds at enemies. Attacks in bursts of 9.",
+			"Sprays lots of seeds at enemies. Attacks in bursts of 7.",
+			"Benefits from base damage buffs at 75% efficiency and from on hit damages at 60% efficiency.",
 			"",
 			"\"Half plant half machine\""
 		]
@@ -724,12 +729,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Heats up its shots, causing them to burn enemies hit.",
-			"Burns enemies for 0.75 elemental damage per second for 5 seconds."
+			"Burns enemies for 0.5 elemental damage per second for 5 seconds."
 		]
 		
 		# Ingredient related TODO REPLACE THIS
 		var burn_dmg : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_EMBER)
-		burn_dmg.flat_modifier = 0.75
+		burn_dmg.flat_modifier = 0.5
 		
 		var burn_on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_EMBER, burn_dmg, DamageType.ELEMENTAL)
 		var burn_dmg_instance = DamageInstance.new()
@@ -1459,7 +1464,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = cannon_image
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.525
+		info.base_attk_speed = 0.425
 		info.base_pierce = 0
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1467,7 +1472,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Shoots an exploding fruit.",
-			"The explosion deals 3 physical damage to 3 enemies. The explosion benefits from base damage buffs, on hit damages and effects."
+			"The explosion deals 1.25 physical damage to 3 enemies. The explosion benefits from base damage buffs, on hit damages and effects."
 		]
 		
 		
@@ -1736,6 +1741,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
+		
 	elif tower_id == HERO:
 		info = TowerTypeInformation.new("Hero", tower_id)
 		info.tower_tier = TowerTiersMap[tower_id]
@@ -1747,7 +1753,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_attk_speed = 0.90
 		info.base_pierce = 1
 		info.base_range = 140
-		info.base_damage_type = DamageType.ELEMENTAL
+		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
@@ -1757,6 +1763,29 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"The Hero can absorb any ingredient color. Hero can also absorb 3 more ingredients.",
 		]
+		
+		
+		
+	elif tower_id == AMALGAMATOR:
+		info = TowerTypeInformation.new("Amalgamator", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.BLACK)
+		info.tower_image_in_buy_card = amalgamator_image
+		
+		info.base_damage = 2.75
+		info.base_attk_speed = 0.90
+		info.base_pierce = 1
+		info.base_range = 140
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Every end of round, Amalgamator selects a random non-black tower in the map to apply Amalgamate.",
+			"Amalgamate: Sets a tower's color to black, erasing all previous colors."
+		]
+		
+		
 		
 	
 	
@@ -1865,5 +1894,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Transmutator/Transmutator.tscn")
 	elif tower_id == HERO: #50
 		return load("res://TowerRelated/Color_White/Hero/Hero.tscn")
-
+	elif tower_id == AMALGAMATOR:
+		return load("res://TowerRelated/Color_Black/Amalgamator/Amalgamator.tscn")
 

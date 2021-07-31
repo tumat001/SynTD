@@ -113,7 +113,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("tower_being_sold", self, "_tower_sold", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("tower_give_gold", self, "_tower_generate_gold", [], CONNECT_PERSIST)
 	
-	tower_instance.connect("tower_colors_changed", self, " _register_tower_to_color_grouping_tags", [tower_instance], CONNECT_PERSIST)
+	tower_instance.connect("tower_colors_changed", self, "_register_tower_to_color_grouping_tags", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("tower_active_in_map", self, "_tower_active_in_map", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("tower_not_in_active_map", self, "_tower_inactivated_from_map", [tower_instance], CONNECT_PERSIST)
 	
@@ -337,6 +337,17 @@ func get_all_active_towers_with_color(color) -> Array:
 	var bucket : Array = []
 	for child in get_children():
 		if child.is_in_group(color):
+			bucket.append(child)
+	
+	return bucket
+
+func get_all_active_towers_without_color(color) -> Array:
+	if color is int:
+		color = str(color)
+	
+	var bucket : Array = []
+	for child in get_children():
+		if child.is_current_placable_in_map() and !child.is_in_group(color):
 			bucket.append(child)
 	
 	return bucket

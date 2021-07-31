@@ -96,7 +96,7 @@ mouse_filter = 2
 size_flags_horizontal = 10
 custom_constants/margin_left = 10
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer3"]
+[node name="LevelUpCurrencyIcon" type="TextureRect" parent="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer3"]
 margin_left = 10.0
 margin_top = 13.0
 margin_right = 23.0
@@ -165,7 +165,7 @@ mouse_filter = 2
 size_flags_horizontal = 10
 custom_constants/margin_left = 10
 
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer/MarginContainer4"]
+[node name="RerollCurrencyIcon" type="TextureRect" parent="HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer/MarginContainer4"]
 margin_left = 10.0
 margin_top = 13.0
 margin_right = 23.0

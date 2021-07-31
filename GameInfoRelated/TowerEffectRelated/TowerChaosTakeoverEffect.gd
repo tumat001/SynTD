@@ -53,7 +53,7 @@ const CHAOS_TOWER_ID = 703
 
 
 func _init().(EffectType.CHAOS_TAKEOVER, StoreOfTowerEffectsUUID.ING_CHAOS):
-	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting. CHAOS benefits from buffs of the tower. The tower's self ingredient is replaced by this."
+	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting with its own. CHAOS benefits from buffs and (usually) passives of the tower. The tower's self ingredient is replaced by this."
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Chaos.png")
 
 
@@ -118,7 +118,8 @@ func _construct_modules():
 	dia_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	var diamond_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	diamond_attack_module.base_damage = 8
+	diamond_attack_module.base_damage_scale = 0.2
+	diamond_attack_module.base_damage = 1.5 / diamond_attack_module.base_damage_scale
 	diamond_attack_module.base_damage_type = DamageType.PHYSICAL
 	diamond_attack_module.base_attack_speed = 0.85
 	diamond_attack_module.base_attack_wind_up = 2
@@ -131,7 +132,6 @@ func _construct_modules():
 	diamond_attack_module.position.y -= 22
 	diamond_attack_module.on_hit_damage_scale = 1
 	diamond_attack_module.on_hit_effect_scale = 2
-	diamond_attack_module.base_damage_scale = 0.5
 	diamond_attack_module.benefits_from_bonus_attack_speed = false
 	diamond_attack_module.benefits_from_bonus_base_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_damage = true
@@ -164,7 +164,8 @@ func _construct_modules():
 	bolt_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	var bolt_attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
-	bolt_attack_module.base_damage = 3
+	bolt_attack_module.base_damage_scale = 0.2
+	bolt_attack_module.base_damage = 0.75 / bolt_attack_module.base_damage_scale
 	bolt_attack_module.base_damage_type = DamageType.ELEMENTAL
 	bolt_attack_module.base_attack_speed = 1.3
 	bolt_attack_module.base_attack_wind_up = 0
@@ -172,7 +173,6 @@ func _construct_modules():
 	bolt_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	bolt_attack_module.position.y -= 22
 	bolt_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	bolt_attack_module.base_damage_scale = 0.5
 	bolt_attack_module.benefits_from_bonus_attack_speed = true
 	bolt_attack_module.benefits_from_bonus_base_damage = true
 	bolt_attack_module.benefits_from_bonus_on_hit_damage = false
@@ -202,7 +202,8 @@ func _construct_modules():
 	# Sword related
 	
 	sword_attack_module = InstantDamageAttackModule_Scene.instance()
-	sword_attack_module.base_damage = 7
+	sword_attack_module.base_damage_scale = 5
+	sword_attack_module.base_damage = 20 / sword_attack_module.base_damage_scale
 	sword_attack_module.base_damage_type = DamageType.PHYSICAL
 	sword_attack_module.base_attack_speed = 0
 	sword_attack_module.base_attack_wind_up = 0
@@ -211,7 +212,6 @@ func _construct_modules():
 	sword_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	sword_attack_module.on_hit_damage_scale = 1
 	sword_attack_module.range_module = orb_range_module
-	sword_attack_module.base_damage_scale = 5
 	sword_attack_module.benefits_from_bonus_attack_speed = false
 	sword_attack_module.benefits_from_bonus_base_damage = true
 	sword_attack_module.benefits_from_bonus_on_hit_damage = false

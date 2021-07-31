@@ -25,21 +25,15 @@ func is_transition_time_in_stageround(uuid : String) -> bool:
 
 func _get_instructions_for_0_1():
 	return [
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.ASSASSIN),
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BRUTE),
 	]
 
 func _get_instructions_for_0_2():
 	return [
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.GRANDMASTER),
 		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.BASIC),
-		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.DASH),
-		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.PAIN),
-		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.PAIN),
-		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.HEALER),
-		SingleEnemySpawnInstruction.new(9, EnemyConstants.Enemies.HEALER),
-		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.BASIC),
-		SingleEnemySpawnInstruction.new(7.5, EnemyConstants.Enemies.BASIC),
-		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.BASIC),
+		SingleEnemySpawnInstruction.new(2, EnemyConstants.Enemies.DASH),
+		SingleEnemySpawnInstruction.new(3, EnemyConstants.Enemies.PAIN),
+		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.PAIN),
 	]
 
 func _get_instructions_for_0_3():
