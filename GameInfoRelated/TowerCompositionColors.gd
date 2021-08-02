@@ -35,6 +35,7 @@ const CompleSyn_OrangeBlue = preload("res://GameInfoRelated/ColorSynergyRelated/
 const AnaSyn_BlueVG = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_BlueVG/AnaSyn_BlueVG.gd")
 const AnaSyn_VioletRB = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB/AnaSyn_VioletRB.gd")
 const AnaSyn_OrangeYR = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/AnaSyn_OrangeYR.gd")
+const AnaSyn_RedOV = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV/AnaSyn_RedOV.gd")
 
 var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
 
@@ -58,47 +59,57 @@ func _init():
 	],
 	[inst_complesyn_yelvio_energymodule, CompleSyn_YelVio_YellowIng.new()],
 	[
-		"Gain +1 energy after a round when that round is won.",
-		"Gain +1 energy after a round when that round is lost.",
+		"Gain 2 energy after a round when that round is won.",
+		"Gain 1 energy after a round when that round is lost.",
 		"Yellow towers can absorb 3 more ingredients.",
 		"Violet towers can now gain an Energy Module from the Yellow Synergy."
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
 	
-	"OrangeBlue" : ColorSynergy.new("OrangeBlue", [TowerColors.ORANGE, TowerColors.BLUE], [6, 5, 4, 3],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"OrangeBlue" : ColorSynergy.new("OrangeBlue", [TowerColors.ORANGE, TowerColors.BLUE], [5, 4, 3],
+	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_compli_orangeblue,
 	[
-		"Main attacks of towers with overheated modules explode every few seconds of attacking.",
+		"Main attacks of towers with overheating modules explode every few seconds of attacking.",
 		"Explosions deal 3 elemental damage to two enemies, but not including the main target.",
-		"Explosions benefit from base damage on on hit damage buffs at 50% efficiency. Explosions also benefit from explosion size buffs.",
+		"Explosions benefit from base damage and on hit damage buffs at 50% efficiency. Explosions also benefit from explosion size buffs.",
 		"",
-		"All towers also gain ability potency.",
+		"All towers gain ability potency.",
 		""
 	],
 	[CompleSyn_OrangeBlue.new()],
 	[
-		"Explosion per 0.5 seconds. Towers gain 1 ap. Explosions are 100% bigger.",
-		"Explosion per 1.25 seconds. Towers gain 0.75 ap. Explosions are 50% bigger.",
-		"Explosion per 2.0 seconds. Towers gain 0.50 ap. Explosions are 25% bigger.",
-		"Explosion per 2.5 seconds. Towers gain 0.25 ap."
+		#"Explosion per 0.5 seconds. Towers gain 1 ap. Explosions are 100% bigger.",
+		"Explosion per 0.75 seconds. Towers gain 0.75 ap. Explosions are 75% bigger.",
+		"Explosion per 1.25 seconds. Towers gain 0.50 ap. Explosions are 25% bigger.",
+		"Explosion per 2.0 seconds. Towers gain 0.25 ap."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
 	
 	# Ana
-	"RedOV" : ColorSynergy.new("RedOV", [TowerColors.RED, TowerColors.ORANGE, TowerColors.VIOLET], [4, 3, 2],
+	"RedOV" : ColorSynergy.new("RedOV", [TowerColors.RED, TowerColors.ORANGE, TowerColors.VIOLET], [3, 2, 1],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_redOV,
-	["RedOV description"]),
+	[
+		"All towers gain armor pierce and toughness pierce. These bonuses are doubled for the round after killing 4 enemies or dealing 140 post-mitigated damage."
+	],
+	[AnaSyn_RedOV.new()],
+	[
+		"+8 armor and toughness pierce.",
+		"+5 armor and toughness pierce.",
+		"+3 armor and toughness pierce."
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE
+	),
 	
 	"OrangeYR" : ColorSynergy.new("OrangeYR", [TowerColors.ORANGE, TowerColors.YELLOW, TowerColors.RED], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_orangeYR,
 	[
-		"Towers gain attack speed after attacking, which stacks up to a limit. Bonuses received per attack inversely scales with tower's attack speed.",
+		"All towers gain attack speed after attacking, which stacks up to a limit. Bonuses received per attack inversely scales with tower's attack speed.",
 		""
 	],
 	[AnaSyn_OrangeYR.new()],
@@ -107,13 +118,16 @@ func _init():
 		"90% attack speed",
 		"60% attack speed",
 		"30% attack speed",
-	]
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
 	"YellowGO" : ColorSynergy.new("YellowGO", [TowerColors.YELLOW, TowerColors.GREEN, TowerColors.ORANGE], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_yellowGO,
-	["YellowGO description"]),
+	[
+		"YellowGO description"
+	]),
 	
 	"GreenBY" : ColorSynergy.new("GreenBY", [TowerColors.GREEN, TowerColors.BLUE, TowerColors.YELLOW], [4, 3, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
@@ -129,9 +143,9 @@ func _init():
 	],
 	[AnaSyn_BlueVG.new()],
 	[
-		"80% cdr",
-		"55% cdr",
-		"35% cdr",
+		"60% cdr",
+		"40% cdr",
+		"20% cdr",
 		"10% cdr"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -142,7 +156,7 @@ func _init():
 	syn_compo_ana_violetRB,
 	[
 		"Each absorbed active ingredient gives additional effects.",
-		"Only 10% of the bonus effect is gained when the additional ingredient absorbed is beyond the limit given by natural leveling and relics.",
+		"Only 10% of the bonus effect is gained when the additional ingredient absorbed is beyond the limit given by relics or natural leveling.",
 		""
 	],
 	[AnaSyn_VioletRB.new()],
@@ -157,28 +171,35 @@ func _init():
 	
 	
 	#Tria
-	"RYB" : ColorSynergy.new("RYB", [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2],
-	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"RYB" : ColorSynergy.new("RYB", [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2, 1],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_RYB,
-	["RYB description"]),
+	[
+		"RYB description"
+	]
+	),
 	
-	"OGV" : ColorSynergy.new("OGV", [TowerColors.ORANGE, TowerColors.GREEN, TowerColors.VIOLET], [4, 3, 2],
-	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"OGV" : ColorSynergy.new("OGV", [TowerColors.ORANGE, TowerColors.GREEN, TowerColors.VIOLET], [4, 3, 2, 1],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_OGV,
-	["OGV description"]),
+	[
+		"OGV description"
+	]
+	),
 	
 	
 	# Special
-	"RGB" : ColorSynergy.new("RGB", [TowerColors.RED, TowerColors.GREEN, TowerColors.BLUE], [3, 2, 1],
-	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_special_RGB,
-	["RGB description"]),
-	
 	"ROYGBV" : ColorSynergy.new("ROYGBV", [TowerColors.RED, TowerColors.ORANGE, TowerColors.YELLOW, TowerColors.GREEN, TowerColors.BLUE, TowerColors.VIOLET], 
-	[3, 2, 1],
-	[tier_prestigeW_pic, tier_dia_pic, tier_gold_pic],
+	[2, 1],
+	[tier_dia_pic, tier_gold_pic],
 	syn_compo_special_ROYGBV,
 	["ROYGBV description"]),
+	
+#	"RGB" : ColorSynergy.new("RGB", [TowerColors.RED, TowerColors.GREEN, TowerColors.BLUE], [3, 2, 1],
+#	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+#	syn_compo_special_RGB,
+#	["RGB description"]),
+	
 }
 
 var synergies : Dictionary

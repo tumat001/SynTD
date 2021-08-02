@@ -21,5 +21,5 @@ func set_leader(leader):
 	leader_selection_panel_body.tower_leader = leader
 
 
-static func should_display_self_for(tower):
+static func should_display_self_for(tower) -> bool:
 	return tower.tower_id == Towers.LEADER

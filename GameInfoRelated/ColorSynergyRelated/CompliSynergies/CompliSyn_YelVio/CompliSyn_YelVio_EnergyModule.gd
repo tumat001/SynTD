@@ -3,6 +3,9 @@ extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifying
 const DomSyn_Yellow_EnergyBattery = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_EnergyBattery.gd")
 const EnergyBattery = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/EnergyBattery.gd")
 
+const _energy_gain_if_won : int = 2 #tier 1
+const _energy_gain_if_lost : int = 1 # tier 2
+
 var domsyn_yellow_energy : DomSyn_Yellow_EnergyBattery
 var game_elements : GameElements
 
@@ -48,12 +51,12 @@ func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int
 
 func _on_round_over_tier_1(curr_stage_round):
 	if !game_elements.stage_round_manager.lost_life_in_round:
-		_generate_power(1)
+		_generate_power(_energy_gain_if_won)
 
 
 func _on_round_over_tier_2_and_1(curr_stage_round):
 	if game_elements.stage_round_manager.lost_life_in_round:
-		_generate_power(1)
+		_generate_power(_energy_gain_if_lost)
 
 
 func _generate_power(power_amount : int):

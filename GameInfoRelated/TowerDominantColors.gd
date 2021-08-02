@@ -140,7 +140,7 @@ func _init():
 		"Hero relies on the color White to channel its powers.",
 	]),
 	
-	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [4, 3, 2, 1],#[12, 9, 6, 3],
+	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [12, 9, 6, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_black,
 	[
@@ -153,7 +153,7 @@ func _init():
 	[
 		"12+ stacks: All attacks on hit deal 5% of the enemy's missing health as elemental damage, up to 7.",
 		"10+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. Can only be triggered every 0.2 seconds. The beam deals 1.25 physical damage, and benefits from base damage and on hit damage buffs at 10% efficiency. Also applies on hit effects.",
-		"5+ stacks: Causes the attacking tower to give a random black tower 40% bonus attack speed for 5 attacks for 8 seconds. This effect has a 5 second cooldown, and can only be triggered by main attacks.",
+		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 40% bonus attack speed for 5 attacks for 8 seconds. This effect has a 3 second cooldown.",
 		"3+ stacks: All attack's base damage against enemies is increased by 15%."
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW

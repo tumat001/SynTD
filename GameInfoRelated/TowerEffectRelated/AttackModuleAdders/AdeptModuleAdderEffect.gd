@@ -85,7 +85,7 @@ func _on_tower_main_attack_hit_enemy(enemy, damage_register_id, damage_instance,
 			call_deferred("_attack_secondary_target", enemies[1])
 
 func _attack_secondary_target(enemy):
-	if enemy != null:
+	if enemy != null and adeptling_am != null:
 		adeptling_am.on_command_attack_enemies_and_attack_when_ready([enemy], 1)
 
 

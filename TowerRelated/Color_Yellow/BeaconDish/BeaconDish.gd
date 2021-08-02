@@ -30,8 +30,8 @@ var bd_attack_module : AbstractAttackModule
 
 # ratios
 
-const original_ratio_elemental_on_hit : float = 0.5
-const original_ratio_attack_speed : float = 50.0
+const original_ratio_elemental_on_hit : float = 0.25
+const original_ratio_attack_speed : float = 25.0
 const original_ratio_range : float = 0.1
 
 var ratio_elemental_on_hit : float = original_ratio_elemental_on_hit
@@ -200,15 +200,15 @@ func set_energy_module(module):
 	if module != null:
 		module.module_effect_descriptions = [
 			"The ratio this tower's total stats compared to its given bonuses is increased.",
-			"125% of its total base damage as a buff (from 50%).",
-			"100% of its total attack speed as a buff (from 50%)",
+			"75% of its total base damage as a buff (from 25%).",
+			"75% of its total attack speed as a buff (from 25%)",
 			"20% of its total range as a buff. (from 10%)"
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	ratio_elemental_on_hit = 1.25
-	ratio_attack_speed = 1.00
+	ratio_elemental_on_hit = 0.75
+	ratio_attack_speed = 0.75
 	ratio_range = 0.2
 
 

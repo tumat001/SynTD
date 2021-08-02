@@ -537,7 +537,6 @@ func remove_flat_base_health_effect_preserve_percent(effect_uuid : int):
 func remove_percent_base_health_effect_preserve_percent(effect_uuid : int):
 	if _percent_base_health_id_effect_map.has(effect_uuid):
 		var percent_mod : PercentModifier = _percent_base_health_id_effect_map[effect_uuid].attribute_as_modifier
-		var percent_remove = percent_mod.percent_amount
 		
 		var old_max = _last_calculated_max_health
 		_percent_base_health_id_effect_map.erase(effect_uuid)

@@ -6,6 +6,7 @@
 margin_right = 40.0
 margin_bottom = 40.0
 grow_vertical = 0
+mouse_filter = 2
 size_flags_vertical = 2
 script = ExtResource( 1 )
 __meta__ = {
@@ -15,6 +16,7 @@ __meta__ = {
 [node name="GridContainer" type="GridContainer" parent="."]
 margin_right = 40.0
 grow_vertical = 0
+mouse_filter = 2
 size_flags_vertical = 2
 custom_constants/vseparation = 2
 custom_constants/hseparation = 2

@@ -84,6 +84,7 @@ func set_tower_manager(arg_manager):
 	tower_manager = arg_manager
 	
 	tower_manager.connect("tower_being_sold", self, "_on_tower_being_sold", [], CONNECT_PERSIST)
+	tower_manager.connect("tower_being_absorbed_as_ingredient", self, "_on_tower_being_absorbed", [], CONNECT_PERSIST)
 
 func set_gold_manager(arg_manager : GoldManager):
 	gold_manager = arg_manager
@@ -231,6 +232,12 @@ func _on_tower_being_sold(sellback, tower):
 	var tower_ids_in_ingredients = tower.ingredients_absorbed.keys()
 	
 	_add_stock_to_tower_id(tower_id_being_sold, 1)
+	for ids in tower_ids_in_ingredients:
+		_add_stock_to_tower_id(ids, 1)
+
+func _on_tower_being_absorbed(tower):
+	var tower_ids_in_ingredients = tower.ingredients_absorbed.keys()
+	
 	for ids in tower_ids_in_ingredients:
 		_add_stock_to_tower_id(ids, 1)
 

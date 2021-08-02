@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://TowerRelated/AbstractTower.gd" type="Script" id=1]
 [ext_resource path="res://GameHUDRelated/BottomPanel/IngredientMode_CannotCombine.png" type="Texture" id=2]
 [ext_resource path="res://EnemyRelated/Infobar/LifeBar/LifeBar.tscn" type="PackedScene" id=3]
+[ext_resource path="res://MiscRelated/ControlStatusBarRelated/BaseControlStatusBar.tscn" type="PackedScene" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 1, 1 )
@@ -55,10 +56,27 @@ shape = SubResource( 2 )
 [node name="IngredientDeclinePic" type="Sprite" parent="."]
 texture = ExtResource( 2 )
 
-[node name="LifeBarLayer" type="Node2D" parent="."]
+[node name="InfoBarLayer" type="Node2D" parent="."]
 scale = Vector2( 0.5, 0.5 )
 
-[node name="LifeBar" parent="LifeBarLayer" instance=ExtResource( 3 )]
+[node name="InfoBar" type="MarginContainer" parent="InfoBarLayer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="InfoBarLayer/InfoBar"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="TowerStatusBar" parent="InfoBarLayer/InfoBar/VBoxContainer" instance=ExtResource( 4 )]
+margin_bottom = 0.0
+
+[node name="LifeBar" parent="InfoBarLayer/InfoBar/VBoxContainer" instance=ExtResource( 3 )]
+margin_top = 40.0
 value_per_chunk = 5.0
 display_chunks = true
 chunk_separator_pic = SubResource( 3 )

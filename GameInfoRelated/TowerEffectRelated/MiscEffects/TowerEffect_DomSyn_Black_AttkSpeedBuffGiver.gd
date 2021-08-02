@@ -10,7 +10,7 @@ const _stack_amount_trigger : int = 5
 const _attk_speed_buff_amount : float = 40.0
 const _attk_speed_buff_duration : float = 8.0
 const _attk_speed_buff_count : int = 5
-const _buff_cooldown : float = 5.0
+const _buff_cooldown : float = 3.0
 
 const _y_shift_of_particle : float = -12.0
 

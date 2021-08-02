@@ -23,6 +23,7 @@ const BaseTowerAttackModuleAdderEffect = preload("res://GameInfoRelated/TowerEff
 const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerFullSellbackEffect.gd")
 const _704EmblemPointsEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/704EmblemPointsEffect.gd")
 const BaseTowerModifyingEffect = preload("res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd")
+const TowerMarkEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerMarkEffect.gd")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
@@ -49,6 +50,7 @@ signal tower_in_queue_free
 signal update_active_synergy
 signal tower_being_sold(sellback_gold)
 signal tower_give_gold(gold, gold_source_as_int)
+signal tower_being_absorbed_as_ingredient(tower_self)
 
 signal tower_selected_in_selection_mode(tower_self)
 
@@ -132,6 +134,13 @@ enum DisabledFromAttackingSourceClauses {
 	
 }
 
+enum UntargetabilityClauses {
+	
+	TOWER_NO_HEALTH = 1,
+	IS_INVISIBLE = 2,
+	
+}
+
 ###
 
 var hovering_over_placable : BaseAreaTowerPlacable
@@ -159,6 +168,9 @@ var range_module : RangeModule
 
 var disabled_from_attacking_clauses : ConditionalClauses = ConditionalClauses.new()
 var last_calculated_disabled_from_attacking : bool = false
+
+var untargetability_clauses : ConditionalClauses = ConditionalClauses.new()
+var last_calculated_is_untargetable : bool = false
 
 # Tower buffs related
 
@@ -204,6 +216,14 @@ var base_percent_ability_cdr : float = 0
 var _percent_base_ability_cdr_effects : Dictionary = {}
 var last_calculated_final_percent_ability_cdr : float
 
+# Vamp related
+
+var _flat_omnivamp_effects : Dictionary = {}
+var last_calculated_flat_omnivamp : float = 0
+
+var _percent_damage_omnivamp_effects : Dictionary = {}
+var last_calculated_percent_damage_omnivamp : float = 0
+
 
 # Other stats
 
@@ -213,18 +233,26 @@ var percent_base_health_id_effect_map : Dictionary = {}
 var last_calculated_max_health : float
 var current_health : float
 
+var is_dead_for_the_round : bool = false
+
 
 # tracker
 
 var old_global_position : Vector2
 
 
+# Damage tracker
+
+var in_round_total_damage_dealt : float setget ,get_in_round_total_damage_dealt
+var in_round_pure_damage_dealt : float
+var in_round_elemental_damage_dealt : float
+var in_round_physical_damage_dealt : float
+
+
 # compatibility stuffs
 var distance_to_exit : float = 0 # this is here for Targeting purposes
 #var last_calculated_invisibility_status : bool = false # this is here for Targeting purposes
 #var is_reviving : bool = false
-var last_calculated_is_untargetable : bool = false
-func is_untargetable_only_from_invisibility(): return true
 
 
 # managers
@@ -247,8 +275,10 @@ var base_heat_effect : TowerBaseEffect
 
 
 # -- node related
-onready var life_bar_layer = $LifeBarLayer
-onready var life_bar = $LifeBarLayer/LifeBar
+onready var info_bar_layer = $InfoBarLayer
+onready var life_bar = $InfoBarLayer/InfoBar/VBoxContainer/LifeBar
+onready var status_bar = $InfoBarLayer/InfoBar/VBoxContainer/TowerStatusBar
+
 onready var tower_base_sprites = $TowerBase/BaseSprites
 onready var tower_base = $TowerBase
 
@@ -281,14 +311,22 @@ func _post_inherit_ready():
 	_calculate_final_flat_ability_cdr()
 	_calculate_final_percent_ability_cdr()
 	_calculate_max_health()
+	
+	_calculate_final_flat_omnivamp()
+	_calculate_final_percent_damage_omnivamp()
+	
 	_set_health(last_calculated_max_health)
 	
 	_update_last_calculated_disabled_from_attacking()
 	
 	var _self_size = _get_current_anim_size()
-	life_bar_layer.position.y -= round((_self_size.y) + 4)
-	life_bar_layer.position.x -= round(life_bar.get_bar_fill_foreground_size().x / 3)
+	#info_bar_layer.position.y -= round((_self_size.y) + 4)
+	#info_bar_layer.position.x -= round(life_bar.get_bar_fill_foreground_size().x / 3)
+	info_bar_layer.position.y -= round((_self_size.y) + 20)
+	info_bar_layer.position.x -= round(life_bar.get_bar_fill_foreground_size().x / 4)
 	
+	
+	connect("on_any_post_mitigation_damage_dealt", self, "_on_tower_any_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
 
 
 func _get_current_anim_size() -> Vector2:
@@ -413,12 +451,12 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 	for tower_effect in _all_uuid_tower_buffs_map.values():
 		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
 	
-	
-	if range_module.attack_modules_using_this.has(attack_module_to_remove) and range_module.attack_modules_using_this.size() == 1:
-		if attack_module_to_remove.range_module == range_module:
-			range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
-			range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
-			range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
+	if range_module != null:
+		if range_module.attack_modules_using_this.has(attack_module_to_remove) and range_module.attack_modules_using_this.size() == 1:
+			if attack_module_to_remove.range_module == range_module:
+				range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
+				range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
+				range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
 	
 	if attack_module_to_remove.range_module.attack_modules_using_this.has(attack_module_to_remove) and attack_module_to_remove.range_module.attack_modules_using_this.size() == 1:
 		if attack_module_to_remove.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
@@ -547,6 +585,13 @@ func _on_round_end():
 			module.range_module.clear_all_detected_enemies()
 	
 	_remove_all_timebound_and_countbound_effects()
+	
+	
+	# dmg tracker related
+	in_round_elemental_damage_dealt = 0
+	in_round_physical_damage_dealt = 0
+	in_round_pure_damage_dealt = 0
+	
 	emit_signal("on_round_end")
 
 
@@ -561,6 +606,10 @@ func _on_round_start():
 func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, register_to_buff_map : bool = true, include_non_module_effects : bool = true, ing_effect : IngredientEffect = null):
 	if include_non_module_effects and register_to_buff_map:
 		_all_uuid_tower_buffs_map[tower_base_effect.effect_uuid] = tower_base_effect
+	
+	if tower_base_effect.status_bar_icon != null:
+		status_bar.add_status_icon(tower_base_effect.effect_uuid, tower_base_effect.status_bar_icon)
+	
 	
 	if tower_base_effect is TowerAttributesEffect:
 		if tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ATTACK_SPEED or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED:
@@ -588,6 +637,23 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ABILITY_CDR or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_ABILITY_CDR:
 			if include_non_module_effects:
 				_add_ability_cdr_effect(tower_base_effect)
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_OMNIVAMP:
+			if include_non_module_effects:
+				_add_flat_omnivamp_effect(tower_base_effect)
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_DAMAGE_OMNIVAMP:
+			if include_non_module_effects:
+				_add_percent_omnivamp_effect(tower_base_effect)
+			
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_HEALTH:
+			if include_non_module_effects:
+				_add_flat_base_health_effect(tower_base_effect)
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_HEALTH:
+			if include_non_module_effects:
+				_add_percent_base_health_effect(tower_base_effect)
 		
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
@@ -617,6 +683,10 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		if include_non_module_effects:
 			_add_tower_modifying_effect(tower_base_effect)
 		
+		
+	elif tower_base_effect is TowerMarkEffect:
+		pass
+		
 	elif tower_base_effect is TowerResetEffects:
 		if include_non_module_effects:
 			_clear_ingredients_by_effect_reset()
@@ -632,6 +702,10 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, erase_from_buff_map : bool = true, include_non_module_effects : bool = true):
 	if include_non_module_effects and erase_from_buff_map:
 		_all_uuid_tower_buffs_map.erase(tower_base_effect.effect_uuid)
+	
+	if tower_base_effect.status_bar_icon != null:
+		status_bar.remove_status_icon(tower_base_effect.effect_uuid)
+	
 	
 	if tower_base_effect is TowerAttributesEffect:
 		if tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ATTACK_SPEED or tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED:
@@ -662,6 +736,15 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_ABILITY_CDR:
 			if include_non_module_effects:
 				_remove_percent_ability_cdr_effect(tower_base_effect.effect_uuid)
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_HEALTH:
+			if include_non_module_effects:
+				_remove_flat_base_health_effect_preserve_percent(tower_base_effect.effect_uuid)
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_HEALTH:
+			if include_non_module_effects:
+				_remove_percent_base_health_effect_preserve_percent(tower_base_effect.effect_uuid)
+		
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_remove_on_hit_damage_adder_effect(tower_base_effect.effect_uuid, target_modules)
@@ -684,6 +767,9 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 	elif tower_base_effect is BaseTowerModifyingEffect:
 		if include_non_module_effects:
 			_remove_tower_modifying_effect(tower_base_effect)
+		
+	elif tower_base_effect is TowerMarkEffect:
+		pass
 
 
 func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect, target_modules : Array):
@@ -979,7 +1065,7 @@ func _remove_toughness_pierce_effect(attr_effect_uuid : int, target_modules : Ar
 	for module in target_modules:
 		module.flat_base_toughness_pierce_effects.erase(attr_effect_uuid)
 		
-		module.calculate_final_tougness_pierce()
+		module.calculate_final_toughness_pierce()
 		
 		if module._all_countbound_effects.has(attr_effect_uuid):
 			module._all_countbound_effects.erase(attr_effect_uuid)
@@ -1046,11 +1132,84 @@ func _remove_percent_ability_cdr_effect(attr_effect_uuid : int):
 	_emit_final_ability_cd_changed()
 
 
+func _add_flat_omnivamp_effect(attr_effect : TowerAttributesEffect):
+	_flat_omnivamp_effects[attr_effect.effect_uuid] = attr_effect
+	_calculate_final_flat_omnivamp()
+
+func _add_percent_omnivamp_effect(attr_effect : TowerAttributesEffect):
+	_percent_damage_omnivamp_effects[attr_effect.effect_uuid] = attr_effect
+	_calculate_final_percent_damage_omnivamp()
+
+func _remove_flat_omnivamp_effect(attr_effect_uuid : int):
+	_flat_omnivamp_effects.erase(attr_effect_uuid)
+	_calculate_final_flat_omnivamp()
+
+func _remove_percent_omnivamp_effect(attr_effect_uuid : int):
+	_percent_damage_omnivamp_effects.erase(attr_effect_uuid)
+	_calculate_final_percent_damage_omnivamp()
+
+
+
 func _add_tower_modifying_effect(tower_mod : BaseTowerModifyingEffect):
 	tower_mod._make_modifications_to_tower(self)
 
 func _remove_tower_modifying_effect(tower_mod : BaseTowerModifyingEffect):
 	tower_mod._undo_modifications_to_tower(self)
+
+
+# adding heal effects
+
+func _add_flat_base_health_effect(effect : TowerAttributesEffect, with_heal : bool = true):
+	flat_base_health_id_effect_map[effect.effect_uuid] = effect
+	var old_max_health = last_calculated_max_health
+	_calculate_max_health()
+	
+	if with_heal:
+		var heal = last_calculated_max_health - old_max_health
+		if heal > 0:
+			heal_by_amount(heal)
+
+func _add_percent_base_health_effect(effect : TowerAttributesEffect, with_heal : bool = true):
+	percent_base_health_id_effect_map[effect.effect_uuid] = effect
+	var old_max_health = last_calculated_max_health
+	_calculate_max_health()
+	
+	if with_heal:
+		var heal = last_calculated_max_health - old_max_health
+		if heal > 0:
+			heal_by_amount(heal)
+
+func _remove_flat_base_health_effect_preserve_percent(effect_uuid : int):
+	if flat_base_health_id_effect_map.has(effect_uuid):
+		var flat_mod : FlatModifier = flat_base_health_id_effect_map[effect_uuid].attribute_as_modifier
+		var flat_remove = flat_mod.flat_modifier
+		
+		var old_max = last_calculated_max_health
+		var old_curr_health = current_health
+		flat_base_health_id_effect_map.erase(effect_uuid)
+		_calculate_max_health()
+		var new_max = last_calculated_max_health
+		
+		_set_health(preserve_percent(old_max, new_max, old_curr_health))
+
+
+func _remove_percent_base_health_effect_preserve_percent(effect_uuid : int):
+	if percent_base_health_id_effect_map.has(effect_uuid):
+		var percent_mod : PercentModifier = percent_base_health_id_effect_map[effect_uuid].attribute_as_modifier
+		
+		var old_max = last_calculated_max_health
+		var old_curr_health = current_health
+		percent_base_health_id_effect_map.erase(effect_uuid)
+		_calculate_max_health()
+		var new_max = last_calculated_max_health
+		
+		_set_health(preserve_percent(old_max, new_max, old_curr_health))
+
+
+static func preserve_percent(old_max : float, new_max : float, current : float) -> float:
+	var old_ratio = current / old_max
+	return new_max * old_ratio
+
 
 
 
@@ -1062,7 +1221,7 @@ func _special_case_tower_effect_added(effect : TowerBaseEffect):
 
 # has tower effects
 
-func has_tower_effect_uuid_in_buff_map(effect_uuid) -> bool:
+func has_tower_effect_uuid_in_buff_map(effect_uuid : int) -> bool:
 	return _all_uuid_tower_buffs_map.has(effect_uuid)
 
 func has_tower_effect_type_in_buff_map(tower_effect : TowerBaseEffect):
@@ -1387,6 +1546,7 @@ func _calculate_final_percent_ability_cdr():
 	
 	# everything is treated as BASE
 	for effect in _percent_base_ability_cdr_effects.values():
+		# Intentionally does not use "get_modification_to"
 		final_percent_cdr += effect.attribute_as_modifier.percent_amount
 	
 	if final_percent_cdr > 95:
@@ -1394,6 +1554,27 @@ func _calculate_final_percent_ability_cdr():
 	
 	last_calculated_final_percent_ability_cdr = final_percent_cdr
 	return last_calculated_final_percent_ability_cdr
+
+# Vamp calculations
+
+func _calculate_final_flat_omnivamp():
+	var final_flat_vamp : float = 0
+	
+	for effect in _flat_omnivamp_effects.values():
+		final_flat_vamp += effect.attribute_as_modifier.get_modification_to_value(final_flat_vamp)
+	
+	last_calculated_flat_omnivamp = final_flat_vamp
+	return final_flat_vamp
+
+func _calculate_final_percent_damage_omnivamp():
+	var final_vamp : float = 0
+	
+	for effect in _percent_damage_omnivamp_effects.values():
+		# Intentionally does not use "get_modification_to"
+		final_vamp += effect.attribute_as_modifier.percent_amount
+	
+	last_calculated_percent_damage_omnivamp = final_vamp
+	return final_vamp
 
 
 # Inputs related
@@ -1420,7 +1601,6 @@ func set_is_in_selection_mode(value : bool):
 
 func _self_is_selected_in_selection_mode():
 	emit_signal("tower_selected_in_selection_mode", self)
-
 
 
 # Show Ranges of modules and Tower Info
@@ -1572,6 +1752,8 @@ func _set_is_in_ingredient_mode(mode : bool):
 
 func _give_self_ingredient_buff_to(absorber):
 	absorber.absorb_ingredient(ingredient_of_self, _calculate_sellback_value())
+	
+	emit_signal("tower_being_absorbed_as_ingredient", self)
 	queue_free()
 
 
@@ -1621,6 +1803,22 @@ func erase_disabled_from_attacking_clause(id : int):
 
 func _update_last_calculated_disabled_from_attacking():
 	last_calculated_disabled_from_attacking = !disabled_from_attacking_clauses.is_passed_clauses()
+
+# Untargetability Clauses
+
+func set_untargetability_clause(id : int):
+	untargetability_clauses.attempt_insert_clause(id)
+	_update_untargetability_state()
+
+func erase_untargetability_clause(id : int):
+	untargetability_clauses.remove_clause(id)
+	_update_untargetability_state()
+
+func _update_untargetability_state():
+	last_calculated_is_untargetable = !untargetability_clauses.is_passed
+
+func is_untargetable_only_from_invisibility():
+	return untargetability_clauses.has_clause(UntargetabilityClauses.IS_INVISIBLE) and untargetability_clauses._clauses.size() == 1
 
 
 # Tracking of towers related
@@ -1677,24 +1875,30 @@ func _calculate_max_health() -> float:
 	return max_health
 
 
-func _take_damage(damage_mod):
+func take_damage(damage_mod):
+	var amount : float = _get_amount_from_arg(damage_mod)
+	
+	if amount > 0:
+		_set_health(current_health - amount)
+
+func _get_amount_from_arg(val):
 	var amount : float = 0
 	
-	if typeof(damage_mod) == TYPE_REAL:
-		amount = damage_mod
-	elif damage_mod is FlatModifier:
-		amount = damage_mod.flat_modifier
-	elif damage_mod is PercentModifier:
-		if damage_mod.percent_based_on == PercentType.MAX:
-			amount = damage_mod.get_modification_to_value(last_calculated_max_health)
-		elif damage_mod.percent_based_on == PercentType.BASE:
-			amount = damage_mod.get_modification_to_value(base_health)
-		elif damage_mod.percent_based_on == PercentType.CURRENT:
-			amount = damage_mod.get_modification_to_value(current_health)
-		elif damage_mod.percent_based_on == PercentType.MISSING:
-			amount = damage_mod.get_modification_to_value(last_calculated_max_health - current_health)
+	if typeof(val) == TYPE_REAL:
+		amount = val
+	elif val is FlatModifier:
+		amount = val.flat_modifier
+	elif val is PercentModifier:
+		if val.percent_based_on == PercentType.MAX:
+			amount = val.get_modification_to_value(last_calculated_max_health)
+		elif val.percent_based_on == PercentType.BASE:
+			amount = val.get_modification_to_value(base_health)
+		elif val.percent_based_on == PercentType.CURRENT:
+			amount = val.get_modification_to_value(current_health)
+		elif val.percent_based_on == PercentType.MISSING:
+			amount = val.get_modification_to_value(last_calculated_max_health - current_health)
 	
-	_set_health(current_health - amount)
+	return amount
 
 
 func _set_health(val : float):
@@ -1703,24 +1907,68 @@ func _set_health(val : float):
 	if current_health <= 0:
 		current_health = 0
 		set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_NO_HEALTH)
-		last_calculated_is_untargetable = true
+		set_untargetability_clause(UntargetabilityClauses.TOWER_NO_HEALTH)
 		
-		life_bar_layer.visible = true
+		is_dead_for_the_round = true
+		
+		life_bar.visible = true
 		_emit_tower_no_health()
 		
 	else:
 		if current_health > last_calculated_max_health:
 			current_health = last_calculated_max_health
 		
-		last_calculated_is_untargetable = false
-		
 		erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_NO_HEALTH)
+		erase_untargetability_clause(UntargetabilityClauses.TOWER_NO_HEALTH)
 		
-		life_bar_layer.visible = current_health < last_calculated_max_health
+		is_dead_for_the_round = false
 		
+		life_bar.visible = current_health < last_calculated_max_health
 	
 	_emit_current_health_changed()
 
+
+func heal_by_amount(heal, revive_tower_if_dead : bool = false):
+	if !is_dead_for_the_round or revive_tower_if_dead:
+		var amount : float = _get_amount_from_arg(heal)
+		
+		if amount > 0:
+			_set_health(current_health + amount)
+
+
+
+func _heal_by_omnivamp_stat(dmg_type_damage_map : Dictionary):
+	if last_calculated_flat_omnivamp != 0 or last_calculated_percent_damage_omnivamp != 0:
+		var total_dmg = 0
+		for dmg in dmg_type_damage_map.values():
+			total_dmg += dmg
+		
+		var final_heal : float = 0
+		
+		final_heal += last_calculated_flat_omnivamp
+		final_heal += (last_calculated_percent_damage_omnivamp / 100) * total_dmg
+		
+		heal_by_amount(final_heal)
+
+
+ # Damage tracking related
+
+func _on_tower_any_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module):
+	var dmg_type_damage_map : Dictionary = damage_instance_report.get_total_effective_damages_by_type()
+	
+	_heal_by_omnivamp_stat(dmg_type_damage_map)
+	
+	for dmg_type in dmg_type_damage_map.keys():
+		var dmg = dmg_type_damage_map[dmg_type]
+		if dmg_type == DamageType.ELEMENTAL:
+			in_round_elemental_damage_dealt += dmg
+		elif dmg_type == DamageType.PHYSICAL:
+			in_round_physical_damage_dealt += dmg
+		elif dmg_type == DamageType.PURE:
+			in_round_pure_damage_dealt += dmg
+
+func get_in_round_total_damage_dealt() -> float:
+	return in_round_elemental_damage_dealt + in_round_physical_damage_dealt + in_round_pure_damage_dealt
 
 
 # SYNERGIES RELATED ---------------------

@@ -20,13 +20,14 @@ signal show_ingredient_acceptability(ingredient_effect, tower_selected)
 signal hide_ingredient_acceptability
 
 signal in_tower_selection_mode()
-signal cancelled_tower_selection_mode()
+signal tower_selection_mode_ended()
 
 signal tower_to_benefit_from_synergy_buff(tower)
 signal tower_to_remove_from_synergy_buff(tower)
 
 signal tower_in_queue_free(tower)
 signal tower_being_sold(sellback_gold, tower)
+signal tower_being_absorbed_as_ingredient(tower)
 
 
 var tower_inventory_bench
@@ -112,6 +113,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("update_active_synergy", self, "_update_active_synergy", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_being_sold", self, "_tower_sold", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("tower_give_gold", self, "_tower_generate_gold", [], CONNECT_PERSIST)
+	tower_instance.connect("tower_being_absorbed_as_ingredient", self, "_emit_tower_being_absorbed_as_ingredient", [], CONNECT_PERSIST)
 	
 	tower_instance.connect("tower_colors_changed", self, "_register_tower_to_color_grouping_tags", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("tower_active_in_map", self, "_tower_active_in_map", [tower_instance], CONNECT_PERSIST)
@@ -122,7 +124,7 @@ func add_tower(tower_instance : AbstractTower):
 	connect("hide_ingredient_acceptability", tower_instance, "hide_acceptability_with_ingredient", [], CONNECT_PERSIST)
 	
 	connect("in_tower_selection_mode", tower_instance, "set_is_in_selection_mode", [true], CONNECT_PERSIST)
-	connect("cancelled_tower_selection_mode" , tower_instance, "set_is_in_selection_mode", [false], CONNECT_PERSIST)
+	connect("tower_selection_mode_ended" , tower_instance, "set_is_in_selection_mode", [false], CONNECT_PERSIST)
 	
 	tower_instance.connect("tower_selected_in_selection_mode", self, "_tower_selected", [], CONNECT_PERSIST)
 	
@@ -192,6 +194,9 @@ func _toggle_ingredient_combine_mode():
 	else:
 		emit_signal("hide_ingredient_acceptability")
 		inner_bottom_panel.show_only_buy_sell_panel()
+
+func _emit_tower_being_absorbed_as_ingredient(tower):
+	emit_signal("tower_being_absorbed_as_ingredient", tower)
 
 
 # Ability related
@@ -369,14 +374,14 @@ func set_input_prompt_manager(arg_manager):
 	input_prompt_manager = arg_manager
 	
 	input_prompt_manager.connect("prompted_for_tower_selection", self, "_prompted_for_tower_selection", [], CONNECT_PERSIST)
-	input_prompt_manager.connect("cancelled_tower_selection", self, "_cancel_tower_selection", [], CONNECT_PERSIST)
+	input_prompt_manager.connect("tower_selection_ended", self, "_tower_selection_ended", [], CONNECT_PERSIST)
 
 
 func _prompted_for_tower_selection():
 	emit_signal("in_tower_selection_mode")
 
-func _cancel_tower_selection():
-	emit_signal("cancelled_tower_selection_mode")
+func _tower_selection_ended():
+	emit_signal("tower_selection_mode_ended")
 
 
 func _tower_selected(tower):

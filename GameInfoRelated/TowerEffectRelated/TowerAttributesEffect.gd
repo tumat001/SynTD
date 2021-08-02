@@ -10,6 +10,7 @@ const proj_speed_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInforma
 const explosion_size_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_ExplosionSizeIncrease.png")
 const ability_power_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_AbilityPower.png")
 const ability_cdr_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_AbilityCDR.png")
+const health_inc = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Health.png")
 
 enum {
 	FLAT_BASE_DAMAGE_BONUS,
@@ -44,6 +45,9 @@ enum {
 	
 	FLAT_HEALTH,
 	PERCENT_BASE_HEALTH,
+	
+	FLAT_OMNIVAMP,
+	PERCENT_DAMAGE_OMNIVAMP,
 	
 	# PUT OTHER CUSTOM THINGS HERE
 }
@@ -101,6 +105,11 @@ func _get_description() -> String:
 		return _generate_flat_description("bonus ability cdr")
 	elif attribute_type == PERCENT_ABILITY_CDR:
 		return _generate_percent_description("ability cdr")
+	elif attribute_type == FLAT_HEALTH:
+		return _generate_flat_description("bonus health")
+	elif attribute_type == PERCENT_BASE_HEALTH:
+		return _generate_percent_description("health")
+	
 	
 	return "Err"
 
@@ -154,6 +163,10 @@ func _get_icon() -> Texture:
 		return ability_cdr_inc
 	elif attribute_type == PERCENT_ABILITY_CDR:
 		return ability_cdr_inc
+	elif attribute_type == FLAT_HEALTH:
+		return health_inc
+	elif attribute_type == PERCENT_BASE_HEALTH:
+		return health_inc
 	
 	return null
 
@@ -169,6 +182,9 @@ func _shallow_duplicate():
 	copy.is_countbound = is_countbound
 	copy.count = count
 	copy.count_reduced_by_main_attack_only = count_reduced_by_main_attack_only
+	
+	copy.effect_icon = effect_icon
+	copy.status_bar_icon = status_bar_icon
 	
 	copy.force_apply = force_apply
 	copy.should_respect_attack_module_scale = should_respect_attack_module_scale

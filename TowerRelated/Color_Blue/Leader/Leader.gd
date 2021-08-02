@@ -205,33 +205,20 @@ func _construct_abilities():
 
 
 func _ability_prompt_add_member():
-	if !input_prompt_manager.is_in_selection_mode():
-		if !input_prompt_manager.is_connected("tower_selected", self, "_ability_add_selected_member"):
-			input_prompt_manager.connect("tower_selected", self, "_ability_add_selected_member", [], CONNECT_ONESHOT)
-			input_prompt_manager.connect("cancelled_tower_selection", self, "_ability_prompt_cancelled", [], CONNECT_ONESHOT)
-			input_prompt_manager.prompt_select_tower(self)
-		
+	if input_prompt_manager.can_prompt():
+		input_prompt_manager.prompt_select_tower(self, "_ability_add_selected_member", "_ability_prompt_cancelled")
 	else:
 		input_prompt_manager.cancel_selection()
 
 func _ability_prompt_remove_member():
-	if !input_prompt_manager.is_in_selection_mode():
-		if !input_prompt_manager.is_connected("tower_selected", self, "_ability_remove_selected_member"):
-			input_prompt_manager.connect("tower_selected", self, "_ability_remove_selected_member", [], CONNECT_ONESHOT)
-			input_prompt_manager.connect("cancelled_tower_selection", self, "_ability_prompt_cancelled", [], CONNECT_ONESHOT)
-			input_prompt_manager.prompt_select_tower(self)
-		
+	if input_prompt_manager.can_prompt():
+		input_prompt_manager.prompt_select_tower(self, "_ability_remove_selected_member", "_ability_prompt_cancelled")
 	else:
 		input_prompt_manager.cancel_selection()
 
 
 func _ability_prompt_cancelled():
-	if input_prompt_manager.is_connected("tower_selected", self, "_ability_remove_selected_member"):
-		input_prompt_manager.disconnect("tower_selected", self, "_ability_remove_selected_member")
-	
-	if input_prompt_manager.is_connected("tower_selected", self, "_ability_add_selected_member"):
-		input_prompt_manager.disconnect("tower_selected", self, "_ability_add_selected_member")
-
+	pass
 
 # member adding/removing
 
@@ -266,8 +253,9 @@ func _ability_remove_selected_member(tower):
 		tower.disconnect("tree_exiting", self, "_ability_remove_selected_member")
 		tower.disconnect("global_position_changed", self, "_member_global_pos_changed")
 		
-		if tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
-			tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+		if tower.main_attack_module != null:
+			if tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
+				tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
 		
 		if tower.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
 			tower.disconnect("on_main_attack_finished", self, "_member_finished_with_main_attack")
@@ -293,8 +281,9 @@ func _remove_all_tower_members():
 		tower.disconnect("tree_exiting", self, "_ability_remove_selected_member")
 		tower.disconnect("global_position_changed", self, "_member_global_pos_changed")
 		
-		if tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
-			tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+		if tower.main_attack_module != null:
+			if tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
+				tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
 		
 		if tower.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
 			tower.disconnect("on_main_attack_finished", self, "_member_finished_with_main_attack")
@@ -394,7 +383,9 @@ func _marked_enemy_cancel_focus():
 	mark_indicator.visible = false
 	
 	for member in tower_members_beam_map.keys():
-		member.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+		if member.main_attack_module != null:
+			member.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+		
 		if member.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
 			member.disconnect("on_main_attack_finished", self, "_member_finished_with_main_attack")
 		

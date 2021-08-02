@@ -58,14 +58,16 @@ func _explosion_ability_activated():
 	if targets.size() == 0:
 		explosion_ability.start_time_cooldown(_explosion_cooldown_no_targets_in_range)
 	else:
-		var target = Targeting.enemies_to_target(targets, _targeting_for_explosion, 1, global_position)[0]
-		_summon_explosion_to_target(target)
-		explosion_ability.start_time_cooldown(_explosion_cooldown)
+		var valid_targets = Targeting.enemies_to_target(targets, _targeting_for_explosion, 1, global_position)
+		
+		if valid_targets.size() > 0:
+			_summon_explosion_to_target(valid_targets[0])
+			explosion_ability.start_time_cooldown(_explosion_cooldown)
 
 
 func _summon_explosion_to_target(target):
 	if target != null:
-		target._take_damage(explosion_ability.last_calculated_final_ability_potency * _explosion_dmg)
+		target.take_damage(explosion_ability.last_calculated_final_ability_potency * _explosion_dmg)
 		_create_and_show_expl_particle(target.global_position)
 
 

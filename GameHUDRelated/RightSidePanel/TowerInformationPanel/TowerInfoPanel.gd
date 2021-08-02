@@ -18,6 +18,8 @@ const Wave_InfoPanel = preload("res://TowerRelated/Color_Blue/Wave/Ability/WaveI
 const Wave_InfoPanel_Scene = preload("res://TowerRelated/Color_Blue/Wave/Ability/WaveInfoPanel.tscn")
 const Hero_InfoPanel = preload("res://TowerRelated/Color_White/Hero/HeroInfoPanel_Related/HeroInfoPanel.gd")
 const Hero_InfoPanel_Scene = preload("res://TowerRelated/Color_White/Hero/HeroInfoPanel_Related/HeroInfoPanel.tscn")
+const Blossom_InfoPanel = preload("res://TowerRelated/Color_Green/Blossom/AbilityPanel/Blossom_InfoPanel.gd")
+const Blossom_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/Blossom/AbilityPanel/Blossom_InfoPanel.tscn")
 
 var tower : AbstractTower
 
@@ -41,6 +43,7 @@ var leader_selection_panel : Leader_SelectionPanel
 var orb_info_panel : Orb_InfoPanel
 var wave_info_panel : Wave_InfoPanel
 var hero_info_panel : Hero_InfoPanel
+var blossom_info_panel : Blossom_InfoPanel
 
 
 func _ready():
@@ -228,6 +231,21 @@ func _update_tower_specific_info_panel():
 		if hero_info_panel != null:
 			hero_info_panel.visible = false
 			hero_info_panel.set_hero(null)
+	
+	
+	# Blossom
+	if Blossom_InfoPanel.should_display_self_for(tower):
+		if blossom_info_panel == null:
+			blossom_info_panel = Blossom_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(blossom_info_panel)
+		
+		blossom_info_panel.visible = true
+		blossom_info_panel.set_blossom(tower)
+	else:
+		if blossom_info_panel != null:
+			blossom_info_panel.visible = false
+			blossom_info_panel.set_blossom(null)
+	
 	
 	
 	# KEEP THIS AT THE BOTTOM

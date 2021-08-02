@@ -8,6 +8,15 @@ export(bool) var reset_frame_to_start : bool = true
 export(float) var x_displacement_per_sec : float = 0
 export(float) var y_displacement_per_sec : float = 0
 
+export(float) var inc_in_x_displacement_per_sec : float = 0
+export(float) var inc_in_y_displacement_per_sec : float = 0
+
+export(float) var upper_limit_x_displacement_per_sec : float = 0
+export(float) var upper_limit_y_displacement_per_sec : float = 0
+
+export(float) var lifetime_to_start_transparency : float = 0
+export(float) var transparency_per_sec : float = 0
+
 
 func _init():
 	z_index = ZIndexStore.PARTICLE_EFFECTS
@@ -34,3 +43,16 @@ func _process(delta):
 	
 	global_position.y += y_displacement_per_sec * delta
 	global_position.x += x_displacement_per_sec * delta
+	
+	x_displacement_per_sec += inc_in_x_displacement_per_sec * delta
+	y_displacement_per_sec += inc_in_y_displacement_per_sec * delta
+	
+	if x_displacement_per_sec > upper_limit_x_displacement_per_sec:
+		x_displacement_per_sec = upper_limit_x_displacement_per_sec
+	
+	if y_displacement_per_sec > upper_limit_y_displacement_per_sec:
+		y_displacement_per_sec = upper_limit_y_displacement_per_sec
+	
+	if lifetime_to_start_transparency >= lifetime:
+		modulate.a -= transparency_per_sec * delta
+	

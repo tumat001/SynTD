@@ -78,6 +78,7 @@ const impale_image = preload("res://TowerRelated/Color_Green/Impale/Impale_Omni.
 const seeder_image = preload("res://TowerRelated/Color_Green/Seeder/Seeder_E.png")
 const cannon_image = preload("res://TowerRelated/Color_Green/Cannon/Cannon_E.png")
 const pestilence_image = preload("res://TowerRelated/Color_Green/Pestilence/Pestilence_Omni.png")
+const blossom_image = preload("res://TowerRelated/Color_Green/Blossom/Blossom_Omni_Unpaired.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -145,6 +146,7 @@ enum {
 	SEEDER = 504,
 	CANNON = 505,
 	PESTILENCE = 506,
+	BLOSSOM = 507,
 	
 	# BLUE (600)
 	SPRINKLER = 600,
@@ -224,6 +226,7 @@ const TowerTiersMap : Dictionary = {
 	FRUIT_TREE : 5,
 	LEADER : 5,
 	LAVA_JET : 5,
+	BLOSSOM : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
@@ -547,8 +550,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = beacon_dish_image
 		
-		info.base_damage = 1.5
-		info.base_attk_speed = 0.3
+		info.base_damage = 1.0
+		info.base_attk_speed = 0.6
 		info.base_pierce = 0
 		info.base_range = 150
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -556,9 +559,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Does not attack, but instead casts an aura that buffs towers in range every 5 seconds for 7 seconds.",
-			"Grants 50% of its total base damage as an elemental on hit damage buff.",
-			"Grants 50% x 100 of its total attack speed as percent attack speed (of receiving tower).",
+			"Grants 25% of its total base damage as an elemental on hit damage buff.",
+			"Grants 25% x 100 of its total attack speed as percent attack speed (of receiving tower).",
 			"Grants 10% of its total range as bonus range.",
+			"These bonuses are increased by ability potency.",
 			"Note: Does not grant these buffs to another Beacon-Dish. Also overrides any existing Beacon-Dish buffs a tower may have.",
 			"",
 			"\"Is it a beacon, or a dish?\""
@@ -1514,6 +1518,17 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"For each tower affected, Pestilence gains 35% attack speed for the round."
 		]
 		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_PESTILENCE)
+		attk_speed_attr_mod.percent_amount = 60.0
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_PESTILENCE)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
+		
 		
 	elif tower_id == REAPER:
 		info = TowerTypeInformation.new("Reaper", tower_id)
@@ -1787,6 +1802,43 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		
+	elif tower_id == BLOSSOM:
+		info = TowerTypeInformation.new("Blossom", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.GREEN)
+		info.colors.append(TowerColors.RED)
+		info.tower_image_in_buy_card = blossom_image
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0
+		info.base_pierce = 1
+		info.base_range = 0
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Blossom can assign a tower as its Partner.",
+			"The Partner receives these bonus effects while Blossom is alive:",
+			"+ 30% total attack speed, up to 2 attack speed.",
+			"+ 40% total base damage, up to 4 base damage.",
+			"+ 3% healing from all post mitigated damage dealt.",
+			"+ Instant Revive effect. If the Partner reaches 0 health, Blossom sacrifices itself for the rest of the round to revive its Partner to full health.",
+			"",
+			"Blossom can only have one Partner. Blossom cannot pair with another Blossom. Blossom cannot pair with a tower that's already paired with another Blossom."
+		]
+		
+		
+		var base_health_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_BLOSSOM)
+		base_health_mod.percent_amount = 100
+		base_health_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_HEALTH , base_health_mod, StoreOfTowerEffectsUUID.ING_BLOSSOM)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ health"
+		
 	
 	
 	
@@ -1896,4 +1948,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_White/Hero/Hero.tscn")
 	elif tower_id == AMALGAMATOR:
 		return load("res://TowerRelated/Color_Black/Amalgamator/Amalgamator.tscn")
-
+	elif tower_id == BLOSSOM:
+		return load("res://TowerRelated/Color_Green/Blossom/Blossom.tscn")

@@ -193,13 +193,13 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.TESLA,
-			Towers.SUNFLOWER,
+			Towers.IMPALE,
 			Towers.AMALGAMATOR,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.SPRINKLER,
-			Towers.SIMPLEX,
+			Towers.SUNFLOWER,
+			Towers.ADEPT,
 			Towers.ORB,
 			Towers.LEADER,
 			Towers.ROYAL_FLAME,
@@ -273,7 +273,7 @@ func _unhandled_key_input(event):
 #
 
 func _esc_no_wholescreen_gui_pressed():
-	if input_prompt_manager.current_selection_mode != InputPromptManager.SelectionMode.NONE:
+	if input_prompt_manager.is_in_selection_mode():
 		input_prompt_manager.cancel_selection()
 
 func _sell_hovered_tower():

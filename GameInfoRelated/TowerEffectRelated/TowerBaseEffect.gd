@@ -9,6 +9,8 @@ enum EffectType {
 	CHAOS_TAKEOVER,
 	RESET,
 	FULL_SELLBACK,
+	MARK_EFFECT,
+	
 	_704_EMBLEM_POINTS,
 	
 	TOWER_MODIFIER,
@@ -26,6 +28,8 @@ var time_in_seconds : float
 var is_countbound : bool
 var count : int
 var count_reduced_by_main_attack_only : bool
+
+var status_bar_icon : Texture
 
 var force_apply : bool = false
 var should_respect_attack_module_scale : bool = true
