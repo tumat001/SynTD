@@ -21,13 +21,14 @@ const Explosion_Pic08 = preload("res://GameInfoRelated/ColorSynergyRelated/Compl
 
 var explosion_attack_module : AOEAttackModule
 
-var tower_final_attk_speed : float = 1
+const _explosion_base_damage : float = 2.0
+const _explosion_cooldown_lowered_ratio : float = 0.125
+const _explosion_buffed_dmg_ratio : float = 2.0
 
-var _curr_unit_time_before_explosion : float = 0
+var _explosion_timer : Timer
 
-
-var base_unit_time_per_explosion : float = 2.5
-var explosion_scale : float = 1.0
+var base_unit_time_per_explosion : float
+var explosion_scale : float
 var explosion_base_and_on_hit_damage_scale : float = 0.5
 
 
@@ -42,25 +43,28 @@ func _make_modifications_to_tower(tower):
 	
 	if !tower.is_connected("on_round_end", self, "_on_tower_round_end"):
 		tower.connect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit", [tower], CONNECT_PERSIST)
-		tower.connect("on_round_end", self, "_on_tower_round_end", [], CONNECT_PERSIST)
-		tower.connect("final_attack_speed_changed", self, "_tower_final_attk_speed_changed", [tower], CONNECT_PERSIST)
+		tower.connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
 		
 		tower.add_attack_module(explosion_attack_module)
-		
-		if tower.main_attack_module != null:
-			tower_final_attk_speed = tower.main_attack_module.last_calculated_final_attk_speed
-
+	
+	if _explosion_timer == null:
+		_explosion_timer = Timer.new()
+		_explosion_timer.one_shot = true
+		_explosion_timer.wait_time = 0.1
+		tower.get_tree().get_root().add_child(_explosion_timer)
+	
 
 func _construct_attk_module():
 	explosion_attack_module = AOEAttackModule_Scene.instance()
 	explosion_attack_module.base_damage_scale = explosion_base_and_on_hit_damage_scale
-	explosion_attack_module.base_damage = 3 / explosion_attack_module.base_damage_scale
+	explosion_attack_module.base_damage = _explosion_base_damage / explosion_attack_module.base_damage_scale
 	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0
 	explosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	explosion_attack_module.is_main_attack = false
 	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	explosion_attack_module.on_hit_damage_scale = explosion_base_and_on_hit_damage_scale
 	
 	explosion_attack_module.benefits_from_bonus_explosion_scale = true
 	explosion_attack_module.benefits_from_bonus_base_damage = true
@@ -68,7 +72,6 @@ func _construct_attk_module():
 	explosion_attack_module.benefits_from_bonus_on_hit_damage = true
 	explosion_attack_module.benefits_from_bonus_on_hit_effect = false
 	
-	explosion_attack_module.on_hit_damage_scale = explosion_base_and_on_hit_damage_scale
 	
 	
 	var sprite_frames = SpriteFrames.new()
@@ -94,42 +97,41 @@ func _construct_attk_module():
 	explosion_attack_module.can_be_commanded_by_tower = false
 
 
-func _tower_final_attk_speed_changed(tower):
-	if tower.main_attack_module != null:
-		tower_final_attk_speed = tower.main_attack_module.last_calculated_final_attk_speed
-
-
 func _on_tower_main_attack_hit(enemy, damage_register_id, damage_instance, module, tower):
-	if tower.heat_module != null and tower.heat_module.is_in_overheat_active:
-		if tower_final_attk_speed != 0:
-			_curr_unit_time_before_explosion -= 1 / tower_final_attk_speed
+	if _explosion_timer.time_left <= 0:
+		var explosion = explosion_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
 		
-		if _curr_unit_time_before_explosion <= 0:
-			_curr_unit_time_before_explosion = base_unit_time_per_explosion
-			
-			var explosion = explosion_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
-			explosion.enemies_to_ignore.append(enemy)
-			#explosion.damage_instance = explosion.damage_instance.get_copy_damage_only_scaled_by(tower.last_calculated_final_ability_potency)
-			explosion.damage_instance.scale_only_damage_by(tower.last_calculated_final_ability_potency)
-			explosion.scale *= explosion_scale
-			
-			tower.get_tree().get_root().add_child(explosion)
+		if tower.heat_module != null and tower.heat_module.is_in_overheat_active:
+			_explosion_timer.start(base_unit_time_per_explosion * _explosion_cooldown_lowered_ratio)
+			explosion.damage_instance.scale_only_damage_by(_explosion_buffed_dmg_ratio)
+		else:
+			_explosion_timer.start(base_unit_time_per_explosion)
+		
+		explosion.enemies_to_ignore.append(enemy)
+		explosion.scale *= explosion_scale
+		
+		tower.get_tree().get_root().add_child(explosion)
 
 
-func _on_tower_round_end():
-	_curr_unit_time_before_explosion = 0
+func _on_round_end():
+	if _explosion_timer != null:
+		_explosion_timer.wait_time = 0.1
+		_explosion_timer.start()
+
 
 #
 
 func _undo_modifications_to_tower(tower):
 	if tower.is_connected("on_round_end", self, "_on_tower_round_end"):
 		tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit")
-		tower.disconnect("on_round_end", self, "_on_tower_round_end")
-		tower.disconnect("final_attack_speed_changed", self, "_tower_final_attk_speed_changed")
+		tower.disconnect("on_round_end", self, "_on_round_end")
 		tower.remove_attack_module(explosion_attack_module)
 		
 		explosion_attack_module.queue_free()
 		explosion_attack_module = null
+		
+		_explosion_timer.queue_free()
+		_explosion_timer = null
 
 
 

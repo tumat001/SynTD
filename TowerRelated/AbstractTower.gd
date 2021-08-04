@@ -108,6 +108,10 @@ signal register_ability(ability, add_to_panel)
 
 signal global_position_changed(old_pos, new_pos)
 
+signal on_effect_added(effect)
+signal on_effect_removed(effect)
+
+
 signal on_heat_module_overheat()
 signal on_heat_module_overheat_cooldown()
 
@@ -278,6 +282,7 @@ var base_heat_effect : TowerBaseEffect
 onready var info_bar_layer = $InfoBarLayer
 onready var life_bar = $InfoBarLayer/InfoBar/VBoxContainer/LifeBar
 onready var status_bar = $InfoBarLayer/InfoBar/VBoxContainer/TowerStatusBar
+onready var info_bar = $InfoBarLayer/InfoBar
 
 onready var tower_base_sprites = $TowerBase/BaseSprites
 onready var tower_base = $TowerBase
@@ -322,9 +327,9 @@ func _post_inherit_ready():
 	var _self_size = _get_current_anim_size()
 	#info_bar_layer.position.y -= round((_self_size.y) + 4)
 	#info_bar_layer.position.x -= round(life_bar.get_bar_fill_foreground_size().x / 3)
-	info_bar_layer.position.y -= round((_self_size.y) + 20)
+	info_bar_layer.position.y -= round((_self_size.y) + 15)
 	info_bar_layer.position.x -= round(life_bar.get_bar_fill_foreground_size().x / 4)
-	
+	info_bar.rect_size.x = life_bar.rect_size.x
 	
 	connect("on_any_post_mitigation_damage_dealt", self, "_on_tower_any_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
 
@@ -694,6 +699,7 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 			if main_attack_module != null:
 				main_attack_module.reset_attack_timers()
 	
+	emit_signal("on_effect_added", tower_base_effect)
 	
 	if ing_effect != null and ing_effect.discard_after_absorb:
 		remove_tower_effect(ing_effect.tower_base_effect)
@@ -770,6 +776,9 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 		
 	elif tower_base_effect is TowerMarkEffect:
 		pass
+	
+	
+	emit_signal("on_effect_removed", tower_base_effect)
 
 
 func _add_attack_speed_effect(tower_attr_effect : TowerAttributesEffect, target_modules : Array):
@@ -1924,6 +1933,7 @@ func _set_health(val : float):
 		is_dead_for_the_round = false
 		
 		life_bar.visible = current_health < last_calculated_max_health
+		#life_bar.visible = true
 	
 	_emit_current_health_changed()
 

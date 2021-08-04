@@ -20,6 +20,13 @@ enum {
 	PERCENT_HEALTHIEST = 15,
 	
 	RANDOM = 20,
+	
+	
+	# TOWERS ONLY (1000)
+	TOWERS_HIGHEST_IN_ROUND_DAMAGE = 1000 
+	TOWERS_HIGHEST_TOTAL_BASE_DAMAGE = 1001
+	TOWERS_HIGHEST_TOTAL_ATTACK_SPEED = 1002
+	
 }
 
 # UPDATE THIS WHEN CHANING THE ENUM
@@ -64,9 +71,12 @@ static func _find_random_distinct_enemies(enemies : Array, count : int):
 	return bucket
 
 
+# Also shared by towers
 # Random, Close and Far will be shared for tower detection as well
 static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int, pos : Vector2, include_invis_enemies : bool = false):
 	var enemies = arg_enemies.duplicate(false)
+	
+	filter_untargetable_enemies(enemies, include_invis_enemies)
 	
 	if targeting == FIRST:
 		enemies.sort_custom(CustomSorter, "sort_enemies_by_first")
@@ -106,9 +116,24 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 		
 	elif targeting == RANDOM:
 		enemies = _find_random_distinct_enemies(enemies, num_of_enemies)
-	
-	
-	filter_untargetable_enemies(enemies, include_invis_enemies)
+		
+		
+		
+	# TOWERS
+	elif targeting == TOWERS_HIGHEST_IN_ROUND_DAMAGE:
+		enemies.sort_custom(CustomSorter, "sort_towers_by_highest_in_round_damage")
+		
+	elif targeting == TOWERS_HIGHEST_TOTAL_ATTACK_SPEED:
+		for tower in enemies:
+			if tower.main_attack_module == null:
+				enemies.erase(tower)
+		enemies.sort_custom(CustomSorter, "sort_towers_by_highest_total_attack_speed")
+		
+	elif targeting == TOWERS_HIGHEST_TOTAL_BASE_DAMAGE:
+		for tower in enemies:
+			if tower.main_attack_module == null:
+				enemies.erase(tower)
+		enemies.sort_custom(CustomSorter, "sort_towers_by_highest_total_base_damage")
 	
 	
 	enemies.resize(num_of_enemies)
@@ -193,6 +218,20 @@ class CustomSorter:
 			return a_ratio > b_ratio
 		else:
 			return sort_enemies_by_first(a, b)
+	
+	
+	
+	# TOWERS
+	
+	static func sort_towers_by_highest_in_round_damage(a, b):
+		return a.in_round_total_damage_dealt > b.in_round_total_damage_dealt
+	
+	static func sort_towers_by_highest_total_attack_speed(a, b):
+		return a.main_attack_module.last_calculated_final_attk_speed > b.main_attack_module.last_calculated_final_attk_speed
+	
+	static func sort_towers_by_highest_total_base_damage(a, b):
+		return a.main_attack_module.last_calculated_final_damage > b.main_attack_module.last_calculated_final_damage
+	
 	
 
 # Computing of other stuffs

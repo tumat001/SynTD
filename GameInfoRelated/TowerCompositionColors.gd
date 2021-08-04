@@ -36,6 +36,7 @@ const AnaSyn_BlueVG = preload("res://GameInfoRelated/ColorSynergyRelated/Analogo
 const AnaSyn_VioletRB = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB/AnaSyn_VioletRB.gd")
 const AnaSyn_OrangeYR = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/AnaSyn_OrangeYR.gd")
 const AnaSyn_RedOV = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV/AnaSyn_RedOV.gd")
+const AnaSyn_YellowGO = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_YellowGO/AnaSyn_YellowGO.gd")
 
 var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
 
@@ -67,23 +68,24 @@ func _init():
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
 	
-	"OrangeBlue" : ColorSynergy.new("OrangeBlue", [TowerColors.ORANGE, TowerColors.BLUE], [5, 4, 3],
-	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"OrangeBlue" : ColorSynergy.new("OrangeBlue", [TowerColors.ORANGE, TowerColors.BLUE], [5, 4, 3, 2],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_compli_orangeblue,
 	[
-		"Main attacks of towers with overheating modules explode every few seconds of attacking.",
-		"Explosions deal 3 elemental damage to two enemies, but not including the main target.",
+		"Main attacks of towers explode every few seconds",
+		"Explosions deal 2 elemental damage to two enemies, but not including the main target.",
 		"Explosions benefit from base damage and on hit damage buffs at 50% efficiency. Explosions also benefit from explosion size buffs.",
+		"Towers with overheating heat modules have 1/8 of the explosion cooldown, and explosions deal twice the damage.",
 		"",
-		"All towers gain ability potency.",
+		"Additionally, all towers gain ability potency.",
 		""
 	],
 	[CompleSyn_OrangeBlue.new()],
 	[
-		#"Explosion per 0.5 seconds. Towers gain 1 ap. Explosions are 100% bigger.",
-		"Explosion per 0.75 seconds. Towers gain 0.75 ap. Explosions are 75% bigger.",
-		"Explosion per 1.25 seconds. Towers gain 0.50 ap. Explosions are 25% bigger.",
-		"Explosion per 2.0 seconds. Towers gain 0.25 ap."
+		"Explosion per 1.5 seconds. Towers gain 1 ap. Explosions are 100% bigger.",
+		"Explosion per 2.5 seconds. Towers gain 0.75 ap. Explosions are 75% bigger.",
+		"Explosion per 3.5 seconds. Towers gain 0.50 ap. Explosions are 25% bigger.",
+		"Explosion per 5.0 seconds. Towers gain 0.25 ap."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -126,8 +128,22 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_yellowGO,
 	[
-		"YellowGO description"
-	]),
+		"Brings about a Fluctuation, which buffs a tower for 3 seconds. Fluctuation then seeks another tower.",
+		"Cycle: Fluctuation first goes to the first tower that attacks. Afterwards, Fluctuation loops to the highest base damage tower, then to the highest attack speed tower, then to the tower that has dealt the most damage in the round.",
+		"Fluctuation cannot re-target to the same tower. Fluctuation will avoid towers with no enemies in its range. When no viable towers are found, the Cycle is reset.",
+		"",
+		"A Fluctuated tower gains buffs.",
+		""
+	],
+	[AnaSyn_YellowGO.new()],
+	[
+		"+6.0 elemental on hit damage, +150% total base damage, +150% total attack speed, +50% range.",
+		"+4.0 elemental on hit damage, +100% total base damage, +100% total attack speed, +40% range",
+		"+2.0 elemental on hit damage, +50% total base damage, +50% total attack speed, +20% range.",
+		"+0.75 elemental on hit damage"
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE
+	),
 	
 	"GreenBY" : ColorSynergy.new("GreenBY", [TowerColors.GREEN, TowerColors.BLUE, TowerColors.YELLOW], [4, 3, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],

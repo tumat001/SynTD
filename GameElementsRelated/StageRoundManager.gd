@@ -29,8 +29,6 @@ signal round_ended_game_start_aware(current_stageround, is_game_start)
 signal life_lost_from_enemy_first_time_in_round(enemy)
 signal life_lost_from_enemy(enemy)
 
-signal end_of_round_gold_earned(gold)
-
 
 var round_status_panel : RoundStatusPanel setget _set_round_status_panel
 var stagerounds : BaseMode_StageRound
@@ -42,6 +40,7 @@ var round_started : bool
 var round_fast_forwarded : bool
 
 var enemy_manager : EnemyManager setget _set_enemy_manager
+var gold_manager : GoldManager
 
 # 
 
@@ -105,6 +104,7 @@ func end_round(from_game_start : bool = false):
 	_at_round_end()
 	_after_round_end()
 	
+	# streak related
 	if !from_game_start:
 		if lost_life_in_round:
 			current_win_streak = 0
@@ -112,6 +112,26 @@ func end_round(from_game_start : bool = false):
 		else:
 			current_win_streak += 1
 			current_lose_streak = 0
+	
+	# gold income related
+	
+	gold_manager.set_gold_income(GoldManager.GoldIncomeIds.ROUND_END, current_stageround.end_of_round_gold)
+	if current_win_streak >= 1:
+		var gold_from_streak = gold_manager.get_gold_amount_from_win_streak(current_win_streak)
+		gold_manager.set_gold_income(GoldManager.GoldIncomeIds.WIN_STREAK, gold_from_streak)
+		gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.LOSE_STREAK)
+		
+	elif current_lose_streak >= 1:
+		var gold_from_streak = gold_manager.get_gold_amount_from_lose_streak(current_lose_streak)
+		gold_manager.set_gold_income(GoldManager.GoldIncomeIds.LOSE_STREAK, gold_from_streak)
+		gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.WIN_STREAK)
+		
+	else:
+		gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.LOSE_STREAK)
+		gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.WIN_STREAK)
+	
+	if !from_game_start:
+		gold_manager.increase_gold_by(gold_manager.get_total_income_for_the_round(), GoldManager.IncreaseGoldSource.END_OF_ROUND)
 	
 	
 	# spawn inses related
@@ -143,7 +163,7 @@ func _at_round_end():
 func _after_round_end():
 	enemy_manager.end_run()
 	
-	call_deferred("emit_signal", "end_of_round_gold_earned", current_stageround.end_of_round_gold, GoldManager.IncreaseGoldSource.END_OF_ROUND)
+	#call_deferred("emit_signal", "end_of_round_gold_earned", current_stageround.end_of_round_gold, GoldManager.IncreaseGoldSource.END_OF_ROUND)
 
 
 

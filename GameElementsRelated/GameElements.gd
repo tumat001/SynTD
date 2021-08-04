@@ -107,6 +107,7 @@ func _ready():
 	
 	# gold manager
 	gold_manager.connect("current_gold_changed", panel_buy_sell_level_roll, "_update_tower_cards_buyability_based_on_gold")
+	gold_manager.stage_round_manager = stage_round_manager
 	
 	# stage round manager related
 	stage_round_manager.round_status_panel = right_side_panel.round_status_panel
@@ -114,8 +115,8 @@ func _ready():
 	stage_round_manager.connect("round_started", tower_manager, "_round_started")
 	stage_round_manager.connect("round_ended", tower_manager, "_round_ended")
 	stage_round_manager.connect("round_ended", round_info_panel, "set_stageround")
-	stage_round_manager.connect("end_of_round_gold_earned", gold_manager, "increase_gold_by")
 	stage_round_manager.enemy_manager = enemy_manager
+	stage_round_manager.gold_manager = gold_manager
 	
 	# health manager
 	health_manager.round_info_panel = round_info_panel
@@ -176,7 +177,7 @@ func _ready():
 	health_manager.starting_health = 150
 	health_manager.set_health(150)
 	#relic_manager.increase_relic_count_by(5, RelicManager.IncreaseRelicSource.ROUND)
-	
+
 
 
 # From bottom panel
@@ -193,13 +194,13 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.TESLA,
-			Towers.IMPALE,
+			Towers.SPIKE,
 			Towers.AMALGAMATOR,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers._704,
 			Towers.SUNFLOWER,
-			Towers.ADEPT,
 			Towers.ORB,
 			Towers.LEADER,
 			Towers.ROYAL_FLAME,

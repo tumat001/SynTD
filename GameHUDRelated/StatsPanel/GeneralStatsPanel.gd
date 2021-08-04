@@ -1,5 +1,9 @@
 extends MarginContainer
 
+const BaseTooltip = preload("res://GameHUDRelated/Tooltips/BaseTooltip.gd")
+const GoldIncomeTooltip = preload("res://GameHUDRelated/StatsPanel/GoldIncomeTooltip.gd")
+const GoldIncomeTooltip_Scene = preload("res://GameHUDRelated/StatsPanel/GoldIncomeTooltip.tscn")
+
 
 var game_elements
 var gold_manager setget set_gold_manager
@@ -11,8 +15,10 @@ onready var gold_amount_label = $HBoxContainer/GoldPanel/MarginContainer3/Margin
 onready var level_label = $HBoxContainer/LeftSide/LevelPanel/MarginContainer3/MarginContainer2/LevelLabel
 onready var relic_label = $HBoxContainer/RelicPanel/MarginContainer3/MarginContainer2/RelicAmountLabel
 onready var shop_percentage_stat_panel = $HBoxContainer/LeftSide/ShopPercentStatsPanel
+onready var gold_button = $HBoxContainer/GoldPanel/GoldButton
 
 onready var relic_panel = $HBoxContainer/RelicPanel
+
 
 # setters
 
@@ -51,3 +57,16 @@ func set_level_label(new_level):
 func set_relic_amount_label(new_amount):
 	relic_panel.visible = new_amount != 0
 	relic_label.text = str(new_amount)
+
+
+# gold income tooltip
+
+
+func _on_GoldButton_about_tooltip_construction_requested():
+	var tooltip = GoldIncomeTooltip_Scene.instance()
+	tooltip.gold_manager = gold_manager
+	
+	gold_button.display_requested_about_tooltip(tooltip)
+
+
+

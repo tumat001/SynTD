@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://GameHUDRelated/StatsPanel/Assets/GoldIndicatorBackground.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://GameHUDRelated/StatsPanel/Assets/LevelIndicatorBackground.png" type="Texture" id=4]
 [ext_resource path="res://GameHUDRelated/StatsPanel/ShopPercentStatsPanel.tscn" type="PackedScene" id=5]
 [ext_resource path="res://GameHUDRelated/StatsPanel/Assets/RelicIndicatorBackground.png" type="Texture" id=6]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWithTooltip.tscn" type="PackedScene" id=7]
 
 [sub_resource type="DynamicFont" id=1]
 size = 10
@@ -102,17 +103,20 @@ size_flags_horizontal = 2
 margin_left = 105.0
 margin_right = 164.0
 margin_bottom = 19.0
+mouse_filter = 2
 size_flags_horizontal = 6
 
-[node name="GoldBackground" type="TextureRect" parent="HBoxContainer/GoldPanel"]
+[node name="GoldButton" parent="HBoxContainer/GoldPanel" instance=ExtResource( 7 )]
 margin_right = 59.0
 margin_bottom = 19.0
-mouse_filter = 2
-texture = ExtResource( 2 )
+texture_normal = ExtResource( 2 )
+about_button_index_trigger = 1
+define_tooltip_construction_in_button = false
 
 [node name="MarginContainer3" type="MarginContainer" parent="HBoxContainer/GoldPanel"]
 margin_right = 59.0
 margin_bottom = 19.0
+mouse_filter = 2
 custom_constants/margin_right = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/GoldPanel/MarginContainer3"]
@@ -215,3 +219,4 @@ custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 text = "0"
 valign = 1
+[connection signal="about_tooltip_construction_requested" from="HBoxContainer/GoldPanel/GoldButton" to="." method="_on_GoldButton_about_tooltip_construction_requested"]

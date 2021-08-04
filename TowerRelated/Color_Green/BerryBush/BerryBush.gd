@@ -22,4 +22,3 @@ func _ready():
 func _bb_on_round_end():
 	if is_current_placable_in_map():
 		call_deferred("emit_signal", "tower_give_gold", berry_bush_gold_per_round, GoldManager.IncreaseGoldSource.TOWER_GOLD_INCOME)
-

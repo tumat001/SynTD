@@ -5,23 +5,23 @@ const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 
 
-const tower_ap_tier_1 : float = 0.75
-const tower_ap_tier_2 : float = 0.5
-const tower_ap_tier_3 : float = 0.25
-#const tower_ap_tier_4 : float = 0.25
+const tower_ap_tier_1 : float = 1.0
+const tower_ap_tier_2 : float = 0.75
+const tower_ap_tier_3 : float = 0.50
+const tower_ap_tier_4 : float = 0.25
 
 var tower_ap_effect : TowerAttributesEffect
 var tower_ap_modi : FlatModifier
 
-const expl_scale_tier_1 : float = 1.75
-const expl_scale_tier_2 : float = 1.25
-const expl_scale_tier_3 : float = 1.0
-#const expl_scale_tier_4 : float = 1.0
+const expl_scale_tier_1 : float = 2.0
+const expl_scale_tier_2 : float = 1.75
+const expl_scale_tier_3 : float = 1.25
+const expl_scale_tier_4 : float = 1.0
 
-const expl_unit_time_tier_1 : float = 0.75
-const expl_unit_time_tier_2 : float = 1.25
-const expl_unit_time_tier_3 : float = 2.0
-#const expl_unit_time_tier_4 : float = 2.5
+const expl_unit_time_tier_1 : float = 1.5
+const expl_unit_time_tier_2 : float = 2.5
+const expl_unit_time_tier_3 : float = 3.5
+const expl_unit_time_tier_4 : float = 5.0
 
 var game_elements : GameElements
 var curr_tier : int
@@ -89,14 +89,12 @@ func _attempt_add_effect_to_tower(tower : AbstractTower):
 			tower_ap_modi.flat_modifier = tower_ap_tier_3
 			expl_module_adder.explosion_scale = expl_scale_tier_3
 			expl_module_adder.base_unit_time_per_explosion = expl_unit_time_tier_3
-		#elif curr_tier == 4:
-		#	tower_ap_modi.flat_modifier = tower_ap_tier_4
-		#	expl_module_adder.explosion_scale = expl_scale_tier_4
-		#	expl_module_adder.base_unit_time_per_explosion = expl_unit_time_tier_4
+		elif curr_tier == 4:
+			tower_ap_modi.flat_modifier = tower_ap_tier_4
+			expl_module_adder.explosion_scale = expl_scale_tier_4
+			expl_module_adder.base_unit_time_per_explosion = expl_unit_time_tier_4
 		
-		if tower._tower_colors.has(TowerColors.ORANGE):
-			tower.add_tower_effect(expl_module_adder)
-		
+		tower.add_tower_effect(expl_module_adder)
 		tower.add_tower_effect(tower_ap_effect._shallow_duplicate())
 
 
@@ -106,7 +104,6 @@ func _tower_to_remove_from_synergy(tower : AbstractTower):
 
 func _remove_effect_from_tower(tower : AbstractTower):
 	var effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.ORANGE_BLUE_AM_ADDER)
-	
 	if effect != null:
 		tower.remove_tower_effect(effect)
 	
