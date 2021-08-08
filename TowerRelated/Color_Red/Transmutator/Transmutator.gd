@@ -13,9 +13,9 @@ const Transmutator_Proj = preload("res://TowerRelated/Color_Red/Transmutator/Tra
 
 
 const base_slow_percent : float = -70.0
-const base_slow_duration : float = 0.3
+const base_slow_duration : float = 0.5
 const base_max_health_reduc_percent : float = -12.5
-const base_heal_ratio : float = 3.0
+#const base_heal_ratio : float = 3.0
 
 var enemy_slow_modi : PercentModifier
 var enemy_slow_effect : EnemyAttributesEffect
@@ -23,8 +23,8 @@ var enemy_slow_effect : EnemyAttributesEffect
 var enemy_max_health_modi : PercentModifier
 var enemy_max_health_reduc_effect : EnemyAttributesEffect
 
-var enemy_heal_modi : FlatModifier
-var enemy_heal_effect : EnemyHealEffect
+#var enemy_heal_modi : FlatModifier
+#var enemy_heal_effect : EnemyHealEffect
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -88,9 +88,9 @@ func _construct_effects():
 	enemy_max_health_reduc_effect.is_timebound = false
 	
 	#
-	enemy_heal_modi = FlatModifier.new(StoreOfEnemyEffectsUUID.TRANSMUTATOR_HEAL)
+	#enemy_heal_modi = FlatModifier.new(StoreOfEnemyEffectsUUID.TRANSMUTATOR_HEAL)
 	
-	enemy_heal_effect = EnemyHealEffect.new(enemy_heal_modi, StoreOfEnemyEffectsUUID.TRANSMUTATOR_HEAL)
+	#enemy_heal_effect = EnemyHealEffect.new(enemy_heal_modi, StoreOfEnemyEffectsUUID.TRANSMUTATOR_HEAL)
 
 
 #
@@ -108,10 +108,11 @@ func _on_main_attack_hit_enemy_t(enemy, damage_register_id, damage_instance, mod
 		
 		
 	else:
-		var copy_of_heal_eff = enemy_heal_effect._get_copy_scaled_by(1)
+		#var copy_of_heal_eff = enemy_heal_effect._get_copy_scaled_by(1)
 		
 		if main_attack_module != null:
-			copy_of_heal_eff.heal_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * base_heal_ratio
-			damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.TRANSMUTATOR_HEAL] = copy_of_heal_eff
+			#copy_of_heal_eff.heal_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * base_heal_ratio
+			#damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.TRANSMUTATOR_HEAL] = copy_of_heal_eff
+			pass
 		
 		damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.TRANSMUTATOR_SLOW_EFFECT] = enemy_slow_effect._get_copy_scaled_by(1)

@@ -25,13 +25,13 @@ var tree
 
 func _init().(StoreOfTowerEffectsUUID.ING_FLAMEBURST):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_FlameburtBurst.png")
-	description = "This tower's main attacks on hit causes 4 flamelets to be spewed from enemies hit. The flamelets deal 1 elemental damage, and benefit from base damage buffs and on hit damages at 10% efficiency."
+	description = "This tower's main attacks on hit causes 4 flamelets to be spewed from enemies hit. The flamelets deal 0.75 elemental damage, and benefit from base damage buffs and on hit damages at 10% efficiency."
 
 
 func _construct_burst_module():
 	burst_attack_module = BulletAttackModule_Scene.instance()
 	burst_attack_module.base_damage_scale = 0.1
-	burst_attack_module.base_damage = 1 / burst_attack_module.base_damage_scale
+	burst_attack_module.base_damage = 0.75 / burst_attack_module.base_damage_scale
 	burst_attack_module.base_damage_type = DamageType.ELEMENTAL
 	burst_attack_module.base_attack_speed = 0
 	burst_attack_module.base_attack_wind_up = 0
@@ -41,10 +41,10 @@ func _construct_burst_module():
 	burst_attack_module.base_proj_speed = 200
 	burst_attack_module.base_proj_life_distance = 30
 	burst_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	burst_attack_module.on_hit_damage_scale = 0.1
 	
 	burst_attack_module.benefits_from_bonus_on_hit_effect = false
 	burst_attack_module.benefits_from_bonus_attack_speed = false
-	burst_attack_module.on_hit_damage_scale = 0.1
 	
 	
 	var burst_bullet_shape = RectangleShape2D.new()

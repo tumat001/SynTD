@@ -49,6 +49,9 @@ enum {
 	FLAT_OMNIVAMP,
 	PERCENT_DAMAGE_OMNIVAMP,
 	
+	FLAT_ENEMY_EFFECT_VULNERABILITY,
+	PERCENT_ENEMY_EFFECT_VULNERABILITY
+	
 	# PUT OTHER CUSTOM THINGS HERE
 }
 
@@ -175,18 +178,12 @@ func _get_icon() -> Texture:
 
 func _shallow_duplicate():
 	var copy = get_script().new(attribute_type, attribute_as_modifier, effect_uuid)
-	copy.is_timebound = is_timebound
-	copy.time_in_seconds = time_in_seconds
-	copy.is_ingredient_effect = is_ingredient_effect
+	_configure_copy_to_match_self(copy)
 	
-	copy.is_countbound = is_countbound
-	copy.count = count
-	copy.count_reduced_by_main_attack_only = count_reduced_by_main_attack_only
-	
-	copy.effect_icon = effect_icon
-	copy.status_bar_icon = status_bar_icon
-	
-	copy.force_apply = force_apply
-	copy.should_respect_attack_module_scale = should_respect_attack_module_scale
+	return copy
+
+func _get_copy_scaled_by(scale):
+	var copy = get_script().new(attribute_type, attribute_as_modifier.get_copy_scaled_by(scale), effect_uuid)
+	_configure_copy_to_match_self(copy)
 	
 	return copy

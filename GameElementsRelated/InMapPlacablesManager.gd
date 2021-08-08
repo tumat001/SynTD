@@ -11,6 +11,8 @@ func _ready():
 			all_in_map_placables.append(placables)
 
 
+# glow related
+
 func make_all_placables_glow():
 	for placables in all_in_map_placables:
 		placables.set_area_texture_to_glow()
@@ -18,6 +20,28 @@ func make_all_placables_glow():
 func make_all_placables_not_glow():
 	for placables in all_in_map_placables:
 		placables.set_area_texture_to_not_glow()
+
+func make_all_placables_with_towers_glow():
+	for placables in all_in_map_placables:
+		if placables.tower_occupying != null:
+			placables.set_area_texture_to_glow()
+
+func make_all_placables_with_no_towers_glow():
+	for placables in all_in_map_placables:
+		if placables.tower_occupying == null:
+			placables.set_area_texture_to_glow()
+
+
+func make_all_placables_with_tower_colors_glow(tower_colors : Array):
+	for placables in all_in_map_placables:
+		if placables.tower_occupying != null:
+			for color in tower_colors:
+				if placables.tower_occupying._tower_colors.has(color):
+					placables.set_area_texture_to_glow()
+					break
+
+
+# hidden related
 
 func make_all_placables_hidden():
 	for placables in all_in_map_placables:

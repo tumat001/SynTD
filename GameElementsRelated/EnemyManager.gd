@@ -50,16 +50,16 @@ func _ready():
 
 func set_interpreter(interpreter : SpawnInstructionInterpreter):
 	spawn_instruction_interpreter = interpreter
-	spawn_instruction_interpreter.connect("no_enemies_to_spawn_left", self,"_interpreter_done_spawning")
-	spawn_instruction_interpreter.connect("spawn_enemy", self, "spawn_enemy")
+	spawn_instruction_interpreter.connect("no_enemies_to_spawn_left", self,"_interpreter_done_spawning", [], CONNECT_PERSIST)
+	spawn_instruction_interpreter.connect("spawn_enemy", self, "spawn_enemy", [], CONNECT_PERSIST)
 
 
 func set_spawn_paths(paths : Array):
 	spawn_paths = []
 	
 	for path in paths:
-		path.connect("on_enemy_death", self, "_on_enemy_death")
-		path.connect("on_enemy_reached_end", self, "_enemy_reached_end")
+		path.connect("on_enemy_death", self, "_on_enemy_death", [], CONNECT_PERSIST)
+		path.connect("on_enemy_reached_end", self, "_enemy_reached_end", [], CONNECT_PERSIST)
 		spawn_paths.append(path)
 
 

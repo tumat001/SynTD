@@ -107,6 +107,7 @@ func _connect_beam_to_enemy(enemy : AbstractEnemy):
 	beam.visible = true
 	beam.update_destination_position(enemy.position)
 	beam_to_enemy_map[beam] = enemy
+	
 	emit_signal("beam_connected_to_enemy", beam, enemy)
 
 
@@ -126,6 +127,7 @@ func _get_available_beam_instance() -> BeamAesthetic:
 	elif beam_sprite_frames != null:
 		available_beam_instance.set_sprite_frames(beam_sprite_frames)
 	
-	add_child(available_beam_instance)
+	available_beam_instance.position = global_position
+	get_tree().get_root().add_child(available_beam_instance)
 	
 	return available_beam_instance

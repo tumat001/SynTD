@@ -3,6 +3,7 @@ var stage_num : int
 var round_num : int
 var id : String
 
+var can_gain_streak : bool = true
 var end_of_round_gold : int
 
 var enemy_damage_multiplier : float = 1

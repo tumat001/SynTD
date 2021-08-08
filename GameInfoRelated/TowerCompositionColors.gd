@@ -100,9 +100,9 @@ func _init():
 	],
 	[AnaSyn_RedOV.new()],
 	[
-		"+8 armor and toughness pierce.",
-		"+5 armor and toughness pierce.",
-		"+3 armor and toughness pierce."
+		"+15 armor and toughness pierce.",
+		"+9 armor and toughness pierce.",
+		"+4 armor and toughness pierce."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -116,10 +116,10 @@ func _init():
 	],
 	[AnaSyn_OrangeYR.new()],
 	[
-		"150% attack speed",
-		"90% attack speed",
-		"60% attack speed",
-		"30% attack speed",
+		"120% attack speed",
+		"70% attack speed",
+		"40% attack speed",
+		"15% attack speed",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -128,7 +128,7 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_yellowGO,
 	[
-		"Brings about a Fluctuation, which buffs a tower for 3 seconds. Fluctuation then seeks another tower.",
+		"Brings about a Fluctuation, which buffs a tower for 3 seconds. Fluctuation then seeks another tower to buff.",
 		"Cycle: Fluctuation first goes to the first tower that attacks. Afterwards, Fluctuation loops to the highest base damage tower, then to the highest attack speed tower, then to the tower that has dealt the most damage in the round.",
 		"Fluctuation cannot re-target to the same tower. Fluctuation will avoid towers with no enemies in its range. When no viable towers are found, the Cycle is reset.",
 		"",
@@ -137,10 +137,10 @@ func _init():
 	],
 	[AnaSyn_YellowGO.new()],
 	[
-		"+6.0 elemental on hit damage, +150% total base damage, +150% total attack speed, +50% range.",
-		"+4.0 elemental on hit damage, +100% total base damage, +100% total attack speed, +40% range",
-		"+2.0 elemental on hit damage, +50% total base damage, +50% total attack speed, +20% range.",
-		"+0.75 elemental on hit damage"
+		"+5.0 elemental on hit damage, +200% total base damage, +150% total attack speed, +50% base range.",
+		"+3.0 elemental on hit damage, +150% total base damage, +100% total attack speed, +40% base range",
+		"+2.0 elemental on hit damage, +75% total base damage, +50% total attack speed, +20% base range.",
+		"+0.75 elemental on hit damage, +10% total base damage, +10% total attack speed, +10% base range."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),

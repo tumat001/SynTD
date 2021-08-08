@@ -326,12 +326,12 @@ func _extinguish_on_enemy_beam_hit(enemy):
 # Heat Module
 
 func set_heat_module(module):
-	module.heat_per_attack = 2
+	module.heat_per_attack = 1
 	.set_heat_module(module)
 
 func _construct_heat_effect():
 	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_dmg_attr_mod.flat_modifier = 1.25
+	base_dmg_attr_mod.flat_modifier = 2
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
 

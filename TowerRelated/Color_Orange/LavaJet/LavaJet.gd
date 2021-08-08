@@ -152,12 +152,12 @@ func _on_round_end():
 # HeatModule
 
 func set_heat_module(module):
-	module.heat_per_attack = 2
+	module.heat_per_attack = 1
 	.set_heat_module(module)
 
 func _construct_heat_effect():
 	var base_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_attr_mod.percent_amount = 25
+	base_attr_mod.percent_amount = 40
 	base_attr_mod.percent_based_on = PercentType.BASE
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)

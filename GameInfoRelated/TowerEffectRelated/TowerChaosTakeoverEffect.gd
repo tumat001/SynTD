@@ -41,7 +41,7 @@ var replaced_main_attack_module
 var replaced_self_ingredient
 
 var sword_attack_module : InstantDamageAttackModule
-const damage_accumulated_trigger : float = 125.0
+const damage_accumulated_trigger : float = 80.0
 var damage_accumulated : float = 0
 
 var tower_taken_over
@@ -118,8 +118,8 @@ func _construct_modules():
 	dia_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	var diamond_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	diamond_attack_module.base_damage_scale = 0.2
-	diamond_attack_module.base_damage = 1.5 / diamond_attack_module.base_damage_scale
+	diamond_attack_module.base_damage_scale = 0.25
+	diamond_attack_module.base_damage = 2 / diamond_attack_module.base_damage_scale
 	diamond_attack_module.base_damage_type = DamageType.PHYSICAL
 	diamond_attack_module.base_attack_speed = 0.85
 	diamond_attack_module.base_attack_wind_up = 2
@@ -164,7 +164,7 @@ func _construct_modules():
 	bolt_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	var bolt_attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
-	bolt_attack_module.base_damage_scale = 0.2
+	bolt_attack_module.base_damage_scale = 0.25
 	bolt_attack_module.base_damage = 0.75 / bolt_attack_module.base_damage_scale
 	bolt_attack_module.base_damage_type = DamageType.ELEMENTAL
 	bolt_attack_module.base_attack_speed = 1.3
@@ -248,7 +248,7 @@ func takeover(tower):
 	for module in tower.all_attack_modules:
 		if module.module_id == StoreOfAttackModuleID.MAIN or module.module_id == StoreOfAttackModuleID.PART_OF_SELF:
 			replaced_attack_modules.append(module)
-			module.can_be_commanded_by_tower_other_clauses[AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER] = false
+			module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
 	
 	
 	for module in chaos_attack_modules:
@@ -283,7 +283,7 @@ func untakeover(tower):
 	
 	for module in replaced_attack_modules:
 		if module != null:
-			module.can_be_commanded_by_tower_other_clauses.erase(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
+			module.can_be_commanded_by_tower_other_clauses.remove_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
 			
 			if module.range_module == sword_attack_module.range_module or module.range_module == null:
 				module.range_module = replaced_range_module

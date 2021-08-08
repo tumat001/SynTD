@@ -23,7 +23,6 @@ separator_text = "Non-active Groups"
 margin_top = 22.0
 margin_right = 91.0
 margin_bottom = 22.0
-mouse_filter = 2
 custom_constants/margin_left = 3
 
 [node name="NonActiveDominantSeparator" parent="." instance=ExtResource( 3 )]
@@ -38,7 +37,6 @@ separator_text = "Non-active Dominants"
 margin_top = 48.0
 margin_right = 91.0
 margin_bottom = 48.0
-mouse_filter = 2
 custom_constants/margin_left = 3
 
 [node name="ActiveSeparator" parent="." instance=ExtResource( 3 )]
@@ -53,6 +51,5 @@ separator_text = "Active Synergies:"
 margin_top = 74.0
 margin_right = 91.0
 margin_bottom = 77.0
-mouse_filter = 2
 custom_constants/margin_left = 3
 custom_constants/margin_bottom = 3

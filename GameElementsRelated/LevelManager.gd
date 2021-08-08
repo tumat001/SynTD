@@ -33,13 +33,13 @@ enum Currency {
 
 const base_level_up_costs : Dictionary = {
 	LEVEL_1 : [2, Currency.GOLD],
-	LEVEL_2 : [2, Currency.GOLD],
-	LEVEL_3 : [12, Currency.GOLD],
-	LEVEL_4 : [20, Currency.GOLD],
-	LEVEL_5 : [30, Currency.GOLD],
-	LEVEL_6 : [40, Currency.GOLD],
+	LEVEL_2 : [4, Currency.GOLD],
+	LEVEL_3 : [8, Currency.GOLD],
+	LEVEL_4 : [18, Currency.GOLD],
+	LEVEL_5 : [26, Currency.GOLD],
+	LEVEL_6 : [42, Currency.GOLD],
 	LEVEL_7 : [60, Currency.GOLD],
-	LEVEL_8 : [80, Currency.GOLD],
+	LEVEL_8 : [76, Currency.GOLD],
 	LEVEL_9 : [1, Currency.RELIC],
 	LEVEL_10 : [0, Currency.GOLD],
 }
@@ -50,7 +50,7 @@ const max_level : int = LEVEL_10
 var current_level_up_cost : int = 0 setget set_level_up_cost
 var current_level_up_currency : int
 
-var current_level : int
+var current_level : int setget set_current_level
 
 
 #
@@ -82,8 +82,7 @@ func set_relic_manager(arg_manager : RelicManager):
 #
 
 func _ready():
-	current_level_up_currency = Currency.GOLD
-	set_current_level(LEVEL_5)
+	set_current_level(LEVEL_1)
 
 
 # on round end

@@ -244,4 +244,3 @@ custom_fonts/font = SubResource( 3 )
 custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 align = 2
 [connection signal="gui_input" from="BuyCard" to="." method="_on_BuyCard_gui_input"]
-[connection signal="mouse_exited" from="BuyCard" to="." method="_on_BuyCard_mouse_exited"]

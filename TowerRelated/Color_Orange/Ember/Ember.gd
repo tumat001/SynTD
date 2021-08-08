@@ -90,7 +90,7 @@ func set_heat_module(module):
 
 func _construct_heat_effect():
 	var base_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_attr_mod.percent_amount = 30
+	base_attr_mod.percent_amount = 35
 	base_attr_mod.percent_based_on = PercentType.BASE
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)

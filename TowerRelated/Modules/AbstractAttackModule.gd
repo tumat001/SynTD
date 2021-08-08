@@ -7,6 +7,7 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
@@ -26,6 +27,7 @@ signal before_attack_sprite_is_shown(attack_sprite)
 
 signal ready_to_attack()
 
+signal can_be_commanded_changed(can_be_commanded)
 
 enum CanBeCommandedByTower_ClauseId {
 	CHAOS_TAKEOVER = 1
@@ -38,8 +40,9 @@ var module_id : int
 var is_main_attack : bool = false
 var number_of_unique_targets : int = 1
 
-var can_be_commanded_by_tower : bool = true setget, _get_can_be_commanded_by_tower
-var can_be_commanded_by_tower_other_clauses : Dictionary = {}
+var can_be_commanded_by_tower : bool = true setget _set_can_be_commanded_by_tower, _get_can_be_commanded_by_tower
+var can_be_commanded_by_tower_other_clauses : ConditionalClauses
+var last_calculated_can_be_commanded_by_tower : bool
 
 var benefits_from_bonus_attack_speed : bool = true
 var benefits_from_bonus_on_hit_damage : bool = true
@@ -145,18 +148,43 @@ var _last_calculated_burst_pause : float
 var _last_calculated_attack_speed_as_delay : float
 
 
-# MISC
+# Can be commanded related
 
-func _get_can_be_commanded_by_tower() -> bool:
+func _init():
+	can_be_commanded_by_tower_other_clauses = ConditionalClauses.new()
+	
+	can_be_commanded_by_tower_other_clauses.connect("clause_inserted", self, "_can_be_commanded_clause_inserted", [], CONNECT_PERSIST)
+	can_be_commanded_by_tower_other_clauses.connect("clause_removed", self, "_can_be_commanded_clause_removed", [], CONNECT_PERSIST)
+	
+	_calculate_can_be_commanded_by_tower_clause()
+
+
+func _can_be_commanded_clause_inserted(inserted):
+	_calculate_can_be_commanded_by_tower_clause()
+
+func _can_be_commanded_clause_removed(removed):
+	_calculate_can_be_commanded_by_tower_clause()
+
+func _calculate_can_be_commanded_by_tower_clause():
+	last_calculated_can_be_commanded_by_tower = _if_can_be_commanded_by_tower()
+
+
+func _if_can_be_commanded_by_tower() -> bool:
 	if can_be_commanded_by_tower == false:
 		return false
 	
-	for clause in can_be_commanded_by_tower_other_clauses.values():
-		if clause == false:
-			return false
-	
-	return true
+	return can_be_commanded_by_tower_other_clauses.is_passed
 
+
+# for compatibility stuffs
+func _get_can_be_commanded_by_tower() -> bool:
+	return _if_can_be_commanded_by_tower()
+
+func _set_can_be_commanded_by_tower(val):
+	can_be_commanded_by_tower = val
+	_calculate_can_be_commanded_by_tower_clause()
+
+# Misc
 
 func reset_attack_timers():
 	_is_bursting = false
@@ -369,7 +397,7 @@ func calculate_final_attack_speed() -> float:
 	
 	var final_base_attk_speed = final_attack_speed
 	for effect in totals_bucket:
-		final_base_attk_speed += effect.attribute_as_modifier.get_modification_to_value(final_attack_speed)
+		final_base_attk_speed += effect.attribute_as_modifier.get_modification_to_value(final_base_attk_speed)
 	
 	final_attack_speed = final_base_attk_speed
 
@@ -380,7 +408,7 @@ func calculate_final_attack_speed() -> float:
 		return _last_calculated_attack_speed_as_delay
 	else:
 		last_calculated_final_attk_speed = 0.0
-		return 0.0
+		return last_calculated_final_attk_speed
 
 
 func calculate_final_attack_wind_up() -> float:
@@ -615,17 +643,17 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 		return false
 	
 	if !_is_attacking:
-		if calculate_final_attack_wind_up() == 0:
+		if _last_calculated_attack_wind_up == 0:
 			_check_attack_enemies(enemies)
 			
 			if has_burst:
 				_is_attacking = true
 				_current_burst_count += 1
-				_current_burst_delay = calculate_final_burst_attack_speed()
+				_current_burst_delay = _last_calculated_burst_pause
 				_is_bursting = true
 				return false #wdad
 			else:
-				_current_attack_wait = calculate_final_attack_speed()
+				_current_attack_wait = _last_calculated_attack_speed_as_delay
 				_is_attacking = false
 				_is_in_windup = false
 				_finished_attacking()
@@ -633,7 +661,7 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 			
 			#return true
 		else:
-			_current_wind_up_wait = calculate_final_attack_wind_up()
+			_current_wind_up_wait = _last_calculated_attack_wind_up
 			_is_attacking = true
 			_is_in_windup = true
 			_during_windup_multiple(enemies)
@@ -642,7 +670,7 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 	else:
 		if !has_burst:
 			_check_attack_enemies(enemies)
-			_current_attack_wait = calculate_final_attack_speed()
+			_current_attack_wait = _last_calculated_attack_speed_as_delay
 			_is_attacking = false
 			_is_in_windup = false
 			_finished_attacking()
@@ -650,7 +678,7 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 		else:
 			if _current_burst_count < burst_amount - 1:
 				_check_attack_enemies(enemies)
-				_current_burst_delay = calculate_final_burst_attack_speed()
+				_current_burst_delay = _last_calculated_burst_pause
 				_is_bursting = true
 				_current_burst_count += 1
 				#return true
@@ -658,7 +686,7 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 			else:
 				_check_attack_enemies(enemies)
 				_is_in_windup = false
-				_current_attack_wait = calculate_final_attack_speed()
+				_current_attack_wait = _last_calculated_attack_speed_as_delay
 				_is_bursting = false
 				_is_attacking = false
 				_current_burst_count = 0
@@ -812,7 +840,7 @@ func calculate_final_base_damage():
 	
 	var final_base_base_damage = final_base_damage
 	for effect in totals_bucket:
-		final_base_base_damage += effect.attribute_as_modifier.get_modification_to_value(final_base_damage)
+		final_base_base_damage += effect.attribute_as_modifier.get_modification_to_value(final_base_base_damage)
 	final_base_damage = final_base_base_damage
 	
 	last_calculated_final_damage = final_base_damage

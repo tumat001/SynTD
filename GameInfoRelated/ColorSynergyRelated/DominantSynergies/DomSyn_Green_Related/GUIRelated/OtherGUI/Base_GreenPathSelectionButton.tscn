@@ -1,0 +1,13 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/SelectionFrame_Normal.png" type="Texture" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/SelectionFrame_Highlighted.png" type="Texture" id=2]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWithTooltip.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/OtherGUI/Base_GreenPathSelectionButton.gd" type="Script" id=4]
+
+[node name="Base_GreenPathSelectionButton" instance=ExtResource( 3 )]
+texture_normal = ExtResource( 1 )
+texture_hover = ExtResource( 2 )
+script = ExtResource( 4 )
+about_button_index_trigger = -1001
+[connection signal="pressed_mouse_event" from="." to="." method="_on_Base_GreenPathSelectionButton_pressed_mouse_event"]

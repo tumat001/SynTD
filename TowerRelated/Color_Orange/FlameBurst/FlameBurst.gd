@@ -79,7 +79,8 @@ func _ready():
 	# SPAWNED flames
 	
 	burst_attack_module = BulletAttackModule_Scene.instance()
-	burst_attack_module.base_damage = 2
+	burst_attack_module.base_damage_scale = 0.15
+	burst_attack_module.base_damage = 1 / burst_attack_module.base_damage_scale
 	burst_attack_module.base_damage_type = DamageType.ELEMENTAL
 	burst_attack_module.base_attack_speed = 0
 	burst_attack_module.base_attack_wind_up = 0
@@ -92,8 +93,7 @@ func _ready():
 	
 	burst_attack_module.benefits_from_bonus_on_hit_effect = false
 	burst_attack_module.benefits_from_bonus_attack_speed = false
-	burst_attack_module.on_hit_damage_scale = 0.5
-	burst_attack_module.base_damage_scale = 0.5
+	burst_attack_module.on_hit_damage_scale = 0.15
 	
 	var burst_bullet_shape = RectangleShape2D.new()
 	burst_bullet_shape.extents = Vector2(5, 3)
@@ -147,7 +147,7 @@ func _bullet_burst(enemy, damage_reg_id, damage_instance, module):
 # Heat Module
 
 func set_heat_module(module):
-	module.heat_per_attack = 2
+	module.heat_per_attack = 1
 	.set_heat_module(module)
 
 func _construct_heat_effect():

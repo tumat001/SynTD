@@ -36,6 +36,7 @@ onready var color_label_02 = $MarginContainer/VBoxContainer/MarginerUpper/Upper/
 onready var tower_image_rect = $MarginContainer/VBoxContainer/MarginerUpper/Upper/Marginer/TowerImage
 onready var tier_crown_rect = $MarginContainer/VBoxContainer/TierCrownPanel/TierCrown
 
+onready var buy_card = $BuyCard
 
 func _ready():
 	update_display()
@@ -131,11 +132,12 @@ func _free_old_and_create_tooltip_for_tower():
 	if !disabled:
 		current_tooltip = TowerTooltipScene.instance()
 		current_tooltip.tower_info = tower_information
+		current_tooltip.tooltip_owner = buy_card
 		
 		get_tree().get_root().add_child(current_tooltip)
 
-func _on_BuyCard_mouse_exited():
-	kill_current_tooltip()
+#func _on_BuyCard_mouse_exited():
+#	kill_current_tooltip()
 
 func kill_current_tooltip():
 	if current_tooltip != null:

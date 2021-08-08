@@ -114,7 +114,7 @@ func set_heat_module(module):
 
 func _construct_heat_effect():
 	var base_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_attr_mod.flat_modifier = 60
+	base_attr_mod.flat_modifier = 50
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
 

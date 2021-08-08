@@ -111,7 +111,8 @@ func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy) -> Array
 	for desc_i in synergy.synergy_effects_descriptions.size():
 		var text_desc = TooltipWithTextIndicatorDescriptionScene.instance()
 		text_desc.description = synergy.synergy_effects_descriptions[desc_i]
-		text_desc.indicator = _convert_number_to_roman_numeral(desc_i + 1) + ")"
+		#text_desc.indicator = _convert_number_to_roman_numeral(desc_i + 1) + ")"
+		text_desc.indicator = str(result.synergy.number_of_towers_in_tier[desc_i]) + ")"
 		
 		if synergy.current_highlighted_index_effects_descriptions.has(desc_i):
 			text_desc.color = highlighted_color

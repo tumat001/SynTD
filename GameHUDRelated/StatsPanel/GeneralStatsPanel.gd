@@ -10,14 +10,19 @@ var gold_manager setget set_gold_manager
 var relic_manager setget set_relic_manager
 var shop_manager setget set_shop_manager
 var level_manager setget set_level_manager
+var stage_round_manager setget set_stage_round_manager
 
-onready var gold_amount_label = $HBoxContainer/GoldPanel/MarginContainer3/MarginContainer2/GoldAmountLabel
+onready var gold_amount_label = $HBoxContainer/Middle/GoldPanel/MarginContainer3/MarginContainer2/GoldAmountLabel
+onready var gold_button = $HBoxContainer/Middle/GoldPanel/GoldButton
+
+onready var streak_panel = $HBoxContainer/Middle/StreakPanel
+
 onready var level_label = $HBoxContainer/LeftSide/LevelPanel/MarginContainer3/MarginContainer2/LevelLabel
 onready var relic_label = $HBoxContainer/RelicPanel/MarginContainer3/MarginContainer2/RelicAmountLabel
 onready var shop_percentage_stat_panel = $HBoxContainer/LeftSide/ShopPercentStatsPanel
-onready var gold_button = $HBoxContainer/GoldPanel/GoldButton
 
 onready var relic_panel = $HBoxContainer/RelicPanel
+
 
 
 # setters
@@ -45,6 +50,10 @@ func set_level_manager(arg_manager):
 	set_level_label(level_manager.current_level)
 	shop_percentage_stat_panel.level_manager = level_manager
 
+func set_stage_round_manager(arg_manager):
+	stage_round_manager = arg_manager
+	
+	streak_panel.stage_round_manager = stage_round_manager
 
 # updating of stuffs
 

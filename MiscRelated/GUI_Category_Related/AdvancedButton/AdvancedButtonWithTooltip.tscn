@@ -5,3 +5,4 @@
 
 [node name="AdvancedButtonWithTooltip" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+[connection signal="mouse_entered" from="." to="." method="_on_AdvancedButtonWithTooltip_mouse_entered"]

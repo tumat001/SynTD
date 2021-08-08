@@ -216,7 +216,7 @@ func is_untargetable_only_from_invisibility():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_self_size = _get_current_anim_size()
+	_self_size = get_current_anim_size()
 	
 	var scale_of_layer : float = _get_scale_for_layer_lifebar()
 	layer_infobar.scale = Vector2(scale_of_layer, scale_of_layer)
@@ -270,7 +270,7 @@ func _post_inherit_ready():
 
 
 
-func _get_current_anim_size() -> Vector2:
+func get_current_anim_size() -> Vector2:
 	return anim_sprite.frames.get_frame(anim_sprite.animation, anim_sprite.frame).get_size()
 
 func _get_scale_for_layer_lifebar() -> float:
@@ -686,7 +686,7 @@ func _calculate_multiplier_from_total_armor(armor_pierce : float, percent_self_a
 	if total_armor >= 0:
 		return 20 / (20 + total_armor)
 	else:
-		return 2 - (20 / (20 - total_armor))
+		return 2 - (40 / (40 - total_armor))
 
 func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percent_self_toughness_pierce : float):
 	var total_toughness = _last_calculated_final_toughness - (percent_self_toughness_pierce * _last_calculated_final_toughness / 100)
@@ -694,7 +694,7 @@ func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percen
 	if total_toughness >= 0:
 		return 20 / (20 + total_toughness)
 	else:
-		return 2 - (20 / (20 - total_toughness))
+		return 2 - (40 / (40 - total_toughness))
 
 func _calculate_multiplier_from_total_resistance(resistance_pierce : float, percent_self_resistance_pierce : float):
 	var total_resistance = _last_calculated_final_resistance - (percent_self_resistance_pierce * _last_calculated_final_resistance / 100)

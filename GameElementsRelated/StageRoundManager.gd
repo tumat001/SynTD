@@ -46,6 +46,7 @@ var gold_manager : GoldManager
 
 var lost_life_in_round : bool
 
+var can_gain_streak : bool
 var current_win_streak : int
 var current_lose_streak : int
 
@@ -105,13 +106,14 @@ func end_round(from_game_start : bool = false):
 	_after_round_end()
 	
 	# streak related
-	if !from_game_start:
+	if !from_game_start and can_gain_streak:
 		if lost_life_in_round:
 			current_win_streak = 0
 			current_lose_streak += 1
 		else:
 			current_win_streak += 1
 			current_lose_streak = 0
+	
 	
 	# gold income related
 	
@@ -147,6 +149,8 @@ func end_round(from_game_start : bool = false):
 	enemy_manager.enemy_health_multiplier = current_stageround.enemy_health_multiplier
 	enemy_manager.enemy_damage_multiplier = current_stageround.enemy_damage_multiplier
 	enemy_manager.apply_faction_passive(spawn_ins_of_faction_mode.get_faction_passive())
+	
+	can_gain_streak = current_stageround.can_gain_streak
 	
 	emit_signal("round_ended_game_start_aware", current_stageround, from_game_start)
 	emit_signal("round_ended", current_stageround)

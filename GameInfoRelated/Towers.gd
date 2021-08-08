@@ -79,6 +79,7 @@ const seeder_image = preload("res://TowerRelated/Color_Green/Seeder/Seeder_E.png
 const cannon_image = preload("res://TowerRelated/Color_Green/Cannon/Cannon_E.png")
 const pestilence_image = preload("res://TowerRelated/Color_Green/Pestilence/Pestilence_Omni.png")
 const blossom_image = preload("res://TowerRelated/Color_Green/Blossom/Blossom_Omni_Unpaired.png")
+const pinecone_image = preload("res://TowerRelated/Color_Green/PineCone/PineCone_E.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -147,6 +148,7 @@ enum {
 	CANNON = 505,
 	PESTILENCE = 506,
 	BLOSSOM = 507,
+	PINECONE = 508,
 	
 	# BLUE (600)
 	SPRINKLER = 600,
@@ -186,6 +188,7 @@ const TowerTiersMap : Dictionary = {
 	SPIKE : 1,
 	REBOUND : 1,
 	STRIKER : 1,
+	PINECONE : 1,
 	
 	BERRY_BUSH : 2,
 	RAILGUN : 2,
@@ -199,6 +202,7 @@ const TowerTiersMap : Dictionary = {
 	TRANSMUTATOR : 2,
 	HERO : 2,
 	FRUIT_TREE_FRUIT : 2,
+	AMALGAMATOR : 2,
 	
 	SIMPLE_OBELISK : 3,
 	BEACON_DISH : 3,
@@ -209,7 +213,6 @@ const TowerTiersMap : Dictionary = {
 	DOUSER : 3,
 	WAVE : 3,
 	SEEDER : 3,
-	AMALGAMATOR : 3,
 	
 	RE : 4,
 	PING : 4,
@@ -236,6 +239,34 @@ const TowerTiersMap : Dictionary = {
 	
 }
 
+const tier_base_dmg_map : Dictionary = {
+	1 : 0.5,
+	2 : 0.75,
+	3 : 1.25,
+	4 : 1.75,
+	5 : 2.5,
+	6 : 4.0,
+}
+
+const tier_attk_speed_map : Dictionary = {
+	1 : 10,
+	2 : 20,
+	3 : 30,
+	4 : 40,
+	5 : 50,
+	6 : 75,
+}
+
+const tier_on_hit_dmg_map : Dictionary = {
+	1 : 0.5,
+	2 : 1,
+	3 : 1.5,
+	4 : 2,
+	5 : 3,
+	6 : 5,
+}
+
+
 static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 	var info
 	
@@ -246,7 +277,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GRAY)
 		info.tower_image_in_buy_card = mono_image
 		
-		info.base_damage = 2.5
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.75
 		info.base_pierce = 1
 		info.base_range = 100
@@ -279,7 +310,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SPRINKLER)
-		attk_speed_attr_mod.percent_amount = 12.5
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
 		attk_speed_attr_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_SPRINKLER)
@@ -310,7 +341,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_BERRY_BUSH)
-		base_dmg_attr_mod.flat_modifier = 0.75
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_BERRY_BUSH)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -327,7 +358,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GRAY)
 		info.tower_image_in_buy_card = simpleobelisk_image
 		
-		info.base_damage = 3.5
+		info.base_damage = 4
 		info.base_attk_speed = 0.5
 		info.base_pierce = 1
 		info.base_range = 180
@@ -341,7 +372,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var range_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SIMPLE_OBELISK)
-		range_attr_mod.percent_amount = 45
+		range_attr_mod.percent_amount = 35
 		range_attr_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_SIMPLE_OBELISK)
@@ -358,12 +389,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GRAY)
 		info.tower_image_in_buy_card = simplex_image
 		
-		info.base_damage = 0.25
+		info.base_damage = 0.325
 		info.base_attk_speed = 8
 		info.base_pierce = 0
 		info.base_range = 110
 		info.base_damage_type = DamageType.PURE
-		info.on_hit_multiplier = 1.0 / 8.0
+		info.on_hit_multiplier = 0.125
 		
 		info.tower_descriptions = [
 			"Directs a constant pure energy beam at a single target.",
@@ -378,7 +409,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = railgun_image
 		
-		info.base_damage = 7
+		info.base_damage = 5
 		info.base_attk_speed = 0.25
 		info.base_pierce = 4
 		info.base_range = 100
@@ -386,7 +417,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Shoots a dart like projectile that pierces through 4 enemies."
+			"Shoots a dart that pierces through 4 enemies."
 		]
 		
 		# Ingredient related
@@ -473,8 +504,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Only the orbs are affected by targeting options. The orbs are considered to be CHAOS's main attack.",
 			"Only the diamonds benefit from pierce buffs and apply on hit damage and effects. On hit effects are 200% effective.",
 			"Only the bolts benefit from attack speed buffs.",
-			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 20% efficiency.",
-			"Upon dealing enough damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 20 + 500% of CHAOS's total base damage as physical damage."
+			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 25% efficiency.",
+			"Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 20 + 500% of CHAOS's total base damage as physical damage."
 		]
 		
 		var tower_base_effect : TowerChaosTakeoverEffect = TowerChaosTakeoverEffect.new()
@@ -521,7 +552,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = coin_image
 		
-		info.base_damage = 1.5
+		info.base_damage = 1.75
 		info.base_attk_speed = 0.60
 		info.base_pierce = 2
 		info.base_range = 100
@@ -586,7 +617,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = mini_tesla_image
 		
-		info.base_damage = 1.25
+		info.base_damage = 1.5
 		info.base_attk_speed = 0.8
 		info.base_pierce = 0
 		info.base_range = 110
@@ -621,7 +652,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = charge_image
 		
-		info.base_damage = 3
+		info.base_damage = 2
 		info.base_attk_speed = 0.65
 		info.base_pierce = 1
 		info.base_range = 90
@@ -637,7 +668,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_CHARGE)
-		attr_mod.flat_modifier = 1.75
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
 		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_CHARGE, attr_mod, DamageType.PHYSICAL)
 		
 		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_CHARGE)
@@ -692,22 +723,22 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = sunflower_image
 		
 		info.base_damage = 1
-		info.base_attk_speed = 0.4
+		info.base_attk_speed = 0.35
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0.6
+		info.on_hit_multiplier = 0.5
 		
 		info.tower_descriptions = [
 			"Sprays lots of seeds at enemies. Attacks in bursts of 7.",
-			"Benefits from base damage buffs at 75% efficiency and from on hit damages at 60% efficiency.",
+			"Sunflower's attacks benefit from base damage and on hit damages at 50% efficiency.",
 			"",
 			"\"Half plant half machine\""
 		]
 		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SUNFLOWER)
-		attk_speed_attr_mod.percent_amount = 25
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
 		attk_speed_attr_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_SUNFLOWER)
@@ -785,7 +816,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = campfire_image
 		
 		info.base_damage = 4
@@ -795,13 +825,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 0
 		
-#		info.tower_descriptions = [
-#			"Campfire gains Rage equivalent to the damage taken by enemies within its range.",
-#			"When enough Rage is built up, Campfire consumes all Rage to give bonus physical on hit damage to the next benefiting attack of all towers in range.",
-#			"Campfire does not gain Rage from the damage its buff has dealt.",
-#			"The bonus on hit damage is equal to Campfire's total base damage.",
-#			"The rage threshold to trigger the buff inversely scales with Campfire's total attack speed. The base rage threshold is 50.",
-#		]
 		info.tower_descriptions = [
 			"Campfire gains Rage equivalent to the damage taken by enemies within its range.",
 			"Upon reaching the Rage limit, Campfire consumes all Rage to cast Heat-Pact",
@@ -815,7 +838,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_CAMPFIRE)
-		base_dmg_attr_mod.flat_modifier = 1.25
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_CAMPFIRE)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -901,8 +924,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Flameburst's main attack causes enemies to spew out 6 flamelets around itself.",
-			"The flamelets deal 1 elemental damage. These benefit from base damage buffs and on hit damages at 50% efficiency. Does not apply on hit effects.",
-			"Any bonus range gained increases the range of the flamelets."
+			"The flamelets deal 1 elemental damage. These benefit from base damage buffs and on hit damages at 15% efficiency. Does not apply on hit effects.",
+			"Bonus range gained increases the range of the flamelets."
 		]
 		
 		var effect := FlameBurstModuleAdderEffect.new()
@@ -938,7 +961,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = coal_launcher_image
 		
-		info.base_damage = 3
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.475
 		info.base_pierce = 1
 		info.base_range = 115
@@ -967,7 +990,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = enthalphy_image
 		
-		info.base_damage = 1.25
+		info.base_damage = 2
 		info.base_attk_speed = 0.8
 		info.base_pierce = 0
 		info.base_range = 135
@@ -982,7 +1005,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ENTHALPHY)
-		attr_mod.flat_modifier = 1.25
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
 		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_ENTHALPHY, attr_mod, DamageType.ELEMENTAL)
 		
 		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_ENTHALPHY)
@@ -1000,7 +1023,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = entropy_image
 		
 		info.base_damage = 2
-		info.base_attk_speed = 0.65
+		info.base_attk_speed = 0.70
 		info.base_pierce = 0
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1015,7 +1038,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_ENTROPY)
-		attk_speed_attr_mod.percent_amount = 15
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
 		attk_speed_attr_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_ENTROPY)
@@ -1053,7 +1076,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ROYAL_FLAME)
-		base_dmg_attr_mod.flat_modifier = 4
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_ROYAL_FLAME)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -1087,7 +1110,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_IEU)
-		attk_speed_attr_mod.percent_amount = 22.5
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
 		attk_speed_attr_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_IEU)
@@ -1112,7 +1135,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
-			"Does not attack, but instead gives a fruit every 4th round of being placed in the map.",
+			"Does not attack, but instead gives a fruit at the end of every 3rd round of being in the map.",
 			"Fruits appear in the tower bench, and will be converted into gold when no space is available.",
 			"Fruits do not attack, but have an ingredient effect. Fruits can be given to any tower disregarding tower color.",
 		]
@@ -1146,14 +1169,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = spike_image
 		
 		info.base_damage = 2
-		info.base_attk_speed = 0.6
+		info.base_attk_speed = 0.75
 		info.base_pierce = 0
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Spike's main attack deals 2 extra physical damage to enemies below 25% health."
+			"Spike's main attack deals 2 extra physical damage to enemies below 50% health."
 		]
 		
 		
@@ -1318,7 +1341,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_DOUSER)
-		base_dmg_attr_mod.flat_modifier = 1.25
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_DOUSER)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -1335,7 +1358,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = wave_image
 		
 		info.base_damage = 0.5
-		info.base_attk_speed = 0.4
+		info.base_attk_speed = 0.25
 		info.base_pierce = 0
 		info.base_range = 150
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1347,7 +1370,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Ability: Tidal Wave. Wave sprays 8 columns of water in a cone facing its current target.",
 			"Each column deals twice of Wave's passive on hit damage to all enemies hit.",
-			"Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals 1.25 elemental damage to 2 enemies.",
+			"Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals 0.75 elemental damage to 2 enemies.",
 			"Activating Tidal Wave reduces the passive on hit damage by 0.5 for 30 seconds. This effect stacks, but does not refresh other stacks.",
 			"Cooldown : 6 s",
 			"",
@@ -1356,7 +1379,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_WAVE)
-		attr_mod.flat_modifier = 1.75
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
 		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_WAVE, attr_mod, DamageType.ELEMENTAL)
 		
 		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_WAVE)
@@ -1373,7 +1396,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLUE)
 		info.tower_image_in_buy_card = bleach_image
 		
-		info.base_damage = 2.0
+		info.base_damage = 2.25
 		info.base_attk_speed = 0.92
 		info.base_pierce = 1
 		info.base_range = 125
@@ -1451,7 +1474,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SEEDER)
-		base_dmg_attr_mod.flat_modifier = 1.25
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_SEEDER)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -1476,7 +1499,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Shoots an exploding fruit.",
-			"The explosion deals 1.25 physical damage to 3 enemies. The explosion benefits from base damage buffs, on hit damages and effects."
+			"The explosion deals 2.75 physical damage to 3 enemies. The explosion benefits from base damage buffs, on hit damages and effects."
 		]
 		
 		
@@ -1520,7 +1543,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_PESTILENCE)
-		attk_speed_attr_mod.percent_amount = 60.0
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
 		attk_speed_attr_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_PESTILENCE)
@@ -1592,7 +1615,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SHOCKER)
-		attr_mod.flat_modifier = 1.5
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
 		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_SHOCKER, attr_mod, DamageType.ELEMENTAL)
 		
 		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_SHOCKER)
@@ -1670,8 +1693,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = striker_image
 		
-		info.base_damage = 2
-		info.base_attk_speed = 0.725
+		info.base_damage = 1.75
+		info.base_attk_speed = 0.675
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1683,7 +1706,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_STRIKER)
-		attr_mod.flat_modifier = 0.75
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
 		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_STRIKER, attr_mod, DamageType.PHYSICAL)
 		
 		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_STRIKER)
@@ -1750,7 +1773,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Main attacks cause different effects based on the enemy’s current health",
-			"If the enemy has missing health, the enemy is healed by 300% of this tower's base damage. The enemy is also slowed by 70% for 0.3 seconds.",
+			"If the enemy has missing health, the enemy is slowed by 70% for 0.5 seconds.",
 			"If the enemy has full health, the enemy’s maximum health is reduced by 12.5%. This effect does not stack.",
 			"Ability potency increases maximum health percent reduction."
 		]
@@ -1764,8 +1787,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.WHITE)
 		info.tower_image_in_buy_card = hero_image
 		
-		info.base_damage = 1.75
-		info.base_attk_speed = 0.90
+		info.base_damage = 1.25
+		info.base_attk_speed = 0.80
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1773,7 +1796,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
-			"Levels are gained by spending EXP and gold. Only 3 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
+			"Levels are gained by spending EXP and gold. Only 6 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
 			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
 			"The Hero can absorb any ingredient color. Hero can also absorb 3 more ingredients.",
@@ -1788,7 +1811,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLACK)
 		info.tower_image_in_buy_card = amalgamator_image
 		
-		info.base_damage = 2.75
+		info.base_damage = 2.25
 		info.base_attk_speed = 0.90
 		info.base_pierce = 1
 		info.base_range = 140
@@ -1799,7 +1822,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Every end of round, Amalgamator selects a random non-black tower in the map to apply Amalgamate.",
 			"Amalgamate: Sets a tower's color to black, erasing all previous colors."
 		]
-		
 		
 		
 	elif tower_id == BLOSSOM:
@@ -1838,6 +1860,39 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ health"
+		
+		
+	elif tower_id == PINECONE:
+		info = TowerTypeInformation.new("Pinecone", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.GREEN)
+		info.tower_image_in_buy_card = pinecone_image
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.575
+		info.base_pierce = 1
+		info.base_range = 100
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Shoots a cone that fragments into 3 pieces upon hitting an enemy.",
+			"Each piece deals 1 physical damage.",
+			"",
+			"Cones do not benefit from bonus pierce."
+		]
+		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_PINECONE)
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_PINECONE, attr_mod, DamageType.PHYSICAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_PINECONE)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
+		
 		
 	
 	
@@ -1950,3 +2005,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Black/Amalgamator/Amalgamator.tscn")
 	elif tower_id == BLOSSOM:
 		return load("res://TowerRelated/Color_Green/Blossom/Blossom.tscn")
+	elif tower_id == PINECONE:
+		return load("res://TowerRelated/Color_Green/PineCone/PineCone.tscn")

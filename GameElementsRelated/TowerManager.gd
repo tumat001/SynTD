@@ -12,8 +12,29 @@ const TargetingPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInforma
 const TowerInfoPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerInfoPanel.gd")
 const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
 const InputPromptManager = preload("res://GameElementsRelated/InputPromptManager.gd")
+const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
 
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
+
+enum StoreOfTowerLimitIncId {
+	NATURAL_LEVEL = 10,
+	RELIC = 11,
+	SYNERGY = 12,
+	TOWER = 13,
+}
+
+const level_tower_limit_amount_map : Dictionary = {
+	LevelManager.LEVEL_1 : 1,
+	LevelManager.LEVEL_2 : 2,
+	LevelManager.LEVEL_3 : 3,
+	LevelManager.LEVEL_4 : 4,
+	LevelManager.LEVEL_5 : 5,
+	LevelManager.LEVEL_6 : 6,
+	LevelManager.LEVEL_7 : 7,
+	LevelManager.LEVEL_8 : 8,
+	LevelManager.LEVEL_9 : 9,
+	LevelManager.LEVEL_10 : 9,
+}
 
 signal ingredient_mode_turned_into(on_or_off)
 signal show_ingredient_acceptability(ingredient_effect, tower_selected)
@@ -28,6 +49,12 @@ signal tower_to_remove_from_synergy_buff(tower)
 signal tower_in_queue_free(tower)
 signal tower_being_sold(sellback_gold, tower)
 signal tower_being_absorbed_as_ingredient(tower)
+
+signal tower_being_dragged(tower)
+signal tower_dropped_from_dragged(tower)
+
+signal tower_max_limit_changed(new_limit)
+signal tower_current_limit_taken_changed(curr_slots_taken)
 
 
 var tower_inventory_bench
@@ -45,6 +72,8 @@ var active_ing_panel : ActiveIngredientsPanel
 var inner_bottom_panel : InnerBottomPanel
 var targeting_panel : TargetingPanel
 var tower_info_panel : TowerInfoPanel
+var level_manager : LevelManager setget set_level_manager
+var left_panel setget set_left_panel
 
 var synergy_manager
 var stage_round_manager
@@ -53,9 +82,29 @@ var input_prompt_manager : InputPromptManager setget set_input_prompt_manager
 var game_elements
 
 var _color_groups : Array
-const TOWER_GROUP_ID : String = "Towers"
+const TOWER_GROUP_ID : String = "All_Towers"
 
 var _is_round_on_going : bool
+
+var _tower_limit_id_amount_map : Dictionary = {}
+var last_calculated_tower_limit : int
+var current_tower_limit_taken : int
+
+
+# setters
+
+func set_level_manager(arg_manager : LevelManager):
+	level_manager = arg_manager
+	
+	level_manager.connect("on_current_level_changed", self, "_level_manager_leveled_up", [], CONNECT_PERSIST)
+	_level_manager_leveled_up(level_manager.current_level)
+
+func set_left_panel(arg_panel):
+	left_panel = arg_panel
+	
+	left_panel.connect("on_single_syn_tooltip_shown", self, "_glow_placables_of_towers_with_color_of_syn", [], CONNECT_PERSIST)
+	left_panel.connect("on_single_syn_tooltip_hidden", self, "_unglow_all_placables", [], CONNECT_PERSIST)
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -75,22 +124,26 @@ func _tower_in_queue_free(tower):
 	
 	_update_active_synergy()
 	
+	if tower == tower_being_dragged:
+		emit_signal("tower_dropped_from_dragged", tower)
+	
 	if tower == tower_being_shown_in_info:
 		_show_round_panel()
 
-
-
 # Called after potentially updating synergy
-func _tower_active_in_map(tower):
+func _tower_active_in_map(tower : AbstractTower):
 	_register_tower_to_color_grouping_tags(tower)
 	emit_signal("tower_to_benefit_from_synergy_buff", tower)
 	#call_deferred("emit_signal", "tower_to_benefit_from_synergy_buff", tower)
+	call_deferred("calculate_current_tower_limit_taken")
 
 # Called after potentially updating synergy
-func _tower_inactivated_from_map(tower):
+func _tower_inactivated_from_map(tower : AbstractTower):
 	_remove_tower_from_color_grouping_tags(tower)
 	emit_signal("tower_to_remove_from_synergy_buff", tower)
 	#call_deferred("emit_signal", "tower_to_remove_from_synergy_buff", tower)
+	call_deferred("calculate_current_tower_limit_taken")
+
 
 # Adding tower as child of this to monitor it
 func add_tower(tower_instance : AbstractTower):
@@ -133,7 +186,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance._set_round_started(_is_round_on_going)
 	
 	# TODO TEMPORARY
-	tower_instance.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.LEVEL, 4)
+	tower_instance.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.LEVEL, 2)
 
 
 # Color and grouping related
@@ -157,14 +210,22 @@ func _remove_tower_from_color_grouping_tags(tower : AbstractTower):
 
 func _tower_being_dragged(tower_dragged : AbstractTower):
 	tower_being_dragged = tower_dragged
+	
 	tower_inventory_bench.make_all_slots_glow()
-	in_map_placables_manager.make_all_placables_glow()
+	
+	if can_place_tower_based_on_limit_and_curr_placement(tower_being_dragged):
+		in_map_placables_manager.make_all_placables_glow()
+	else:
+		in_map_placables_manager.make_all_placables_with_towers_glow()
 	
 	inner_bottom_panel.sell_panel.tower = tower_dragged
 	inner_bottom_panel.make_sell_panel_visible()
 	
+	emit_signal("tower_being_dragged", tower_dragged)
+	
 	if is_in_ingredient_mode:
 		emit_signal("show_ingredient_acceptability", tower_being_dragged.ingredient_of_self, tower_being_dragged)
+
 
 func _tower_dropped_from_dragged(tower_released : AbstractTower):
 	tower_being_dragged = null
@@ -174,9 +235,15 @@ func _tower_dropped_from_dragged(tower_released : AbstractTower):
 	#inner_bottom_panel.sell_panel.tower = null
 	inner_bottom_panel.make_sell_panel_invisible()
 	
+	emit_signal("tower_dropped_from_dragged", tower_released)
+	
 	if is_in_ingredient_mode:
 		emit_signal("hide_ingredient_acceptability")
-	
+
+
+func can_place_tower_based_on_limit_and_curr_placement(tower : AbstractTower) -> bool:
+	return tower.is_current_placable_in_map() or !is_beyond_limit_after_placing_tower(tower)
+
 
 # Ingredient drag related
 
@@ -387,3 +454,47 @@ func _tower_selection_ended():
 func _tower_selected(tower):
 	input_prompt_manager.tower_selected_from_prompt(tower)
 
+
+# Glowing of towers on syn info hover
+
+func _glow_placables_of_towers_with_color_of_syn(syn):
+	in_map_placables_manager.make_all_placables_with_tower_colors_glow(syn.colors_required)
+
+func _unglow_all_placables(syn):
+	in_map_placables_manager.make_all_placables_not_glow()
+
+
+# Tower limit related
+
+func _level_manager_leveled_up(new_level):
+	set_tower_limit_id_amount(StoreOfTowerLimitIncId.NATURAL_LEVEL, level_tower_limit_amount_map[new_level])
+
+func set_tower_limit_id_amount(limit_id : int, limit_amount : int):
+	_tower_limit_id_amount_map[limit_id] = limit_amount
+	calculate_tower_limit()
+
+func erase_tower_limit_id_amount(limit_id : int):
+	_tower_limit_id_amount_map.erase(limit_id)
+	calculate_tower_limit()
+
+func calculate_tower_limit():
+	var final_limit : int = 0
+	for lim in _tower_limit_id_amount_map.values():
+		final_limit += lim
+	
+	last_calculated_tower_limit = final_limit
+	emit_signal("tower_max_limit_changed", last_calculated_tower_limit)
+
+
+func is_beyond_limit_after_placing_tower(tower : AbstractTower) -> bool:
+	return last_calculated_tower_limit < current_tower_limit_taken + tower.tower_limit_slots_taken
+
+
+func calculate_current_tower_limit_taken():
+	var total : int = 0
+	
+	for tower in _get_all_synergy_contributing_towers():
+		total += tower.tower_limit_slots_taken
+	
+	current_tower_limit_taken = total
+	emit_signal("tower_current_limit_taken_changed", current_tower_limit_taken)

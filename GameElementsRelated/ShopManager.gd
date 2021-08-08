@@ -13,23 +13,23 @@ const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_1 : [100, 0, 0, 0, 0, 0],
 	LevelManager.LEVEL_2 : [90, 10, 0, 0, 0, 0],
 	LevelManager.LEVEL_3 : [85, 15, 0, 0, 0, 0],
-	LevelManager.LEVEL_4 : [65, 25, 10, 0, 0, 0],
+	LevelManager.LEVEL_4 : [53, 39, 8, 0, 0, 0],
 	LevelManager.LEVEL_5 : [40, 40, 20, 0, 0, 0],
 	LevelManager.LEVEL_6 : [22, 33, 40, 5, 0, 0],
-	LevelManager.LEVEL_7 : [10, 28, 50, 10, 2, 0],
-	LevelManager.LEVEL_8 : [10, 10, 40, 30, 10, 0],
+	LevelManager.LEVEL_7 : [16, 28, 45, 10, 1, 0],
+	LevelManager.LEVEL_8 : [10, 15, 40, 30, 5, 0],
 	LevelManager.LEVEL_9 : [10, 10, 20, 40, 20, 0],
-	LevelManager.LEVEL_10 : [5, 5, 5, 30, 30, 25],
+	LevelManager.LEVEL_10 : [2, 4, 4, 30, 30, 30],
 }
 
 #
 
 const base_tower_tier_stock : Dictionary = {
 	1 : 16,
-	2 : 14,
-	3 : 12,
-	4 : 7,
-	5 : 5,
+	2 : 15,
+	3 : 14,
+	4 : 10,
+	5 : 8,
 	6 : 2
 }
 

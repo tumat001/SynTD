@@ -7,6 +7,7 @@ enum IncreaseGoldSource {
 	TOWER_SELLBACK,
 	TOWER_EFFECT_RESET,
 	SYNERGY,
+	TOWER_GOLD_INCOME,
 }
 
 enum DecreaseGoldSource {
@@ -27,7 +28,10 @@ enum GoldIncomeIds {
 
 # ORDER MATTERS HERE
 const total_gold_interest_with_income_intervals : Dictionary = {
-	30 : 2,
+	50 : 5,
+	40 : 4,
+	30 : 3,
+	20 : 2,
 	10 : 1,
 }
 
@@ -35,20 +39,21 @@ const win_streak_income_map : Dictionary = {
 	2 : 1,
 	3 : 1,
 	4 : 2,
+	5 : 2,
+	6 : 3,
 }
 # highest win streak in the income map
-const highest_win_streak : int = 4
+const highest_win_streak : int = 6
 
 
 const lose_streak_income_map : Dictionary = {
 	2 : 1,
 	3 : 1,
 	4 : 2,
-	5 : 2,
-	6 : 3,
+	5 : 3,
 }
 # highest lose streak in the income map
-const highest_lose_streak : int = 6
+const highest_lose_streak : int = 5
 
 
 signal current_gold_changed(current_gold)

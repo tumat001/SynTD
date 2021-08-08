@@ -142,6 +142,7 @@ func is_ready_for_activation() -> bool:
 	else:
 		return false
 
+
 func is_time_ready_or_round_ready() -> bool:
 	return (is_timebound and _time_current_cooldown <= 0) or (is_roundbound and _round_current_cooldown <= 0)
 
@@ -307,12 +308,10 @@ func _tower_active_in_map():
 	counter_decrease_clauses.remove_clause(CounterDecreaseClauses.TOWER_IN_BENCH)
 	should_be_displaying_clauses.remove_clause(ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 
-
 func _tower_not_active_in_map():
 	activation_conditional_clauses.attempt_insert_clause(ActivationClauses.TOWER_IN_BENCH)
 	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.TOWER_IN_BENCH)
 	should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.TOWER_IN_BENCH)
-
 
 # synergy related clauses
 

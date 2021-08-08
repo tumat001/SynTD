@@ -31,7 +31,7 @@ func _ready():
 	range_module.set_range_shape(CircleShape2D.new())
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	attack_module.base_damage_scale = 0.75
+	attack_module.base_damage_scale = 0.5
 	attack_module.base_damage = info.base_damage / attack_module.base_damage_scale
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed

@@ -9,26 +9,29 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const TowerEffect_AnaSyn_YellowGO_FluctuationEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_AnaSyn_YellowGO_FluctuationEffect.gd")
 const Fluctuation_Icon = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_YellowGO/Assets/Fluctuation_StatusBarIcon.png")
+const FluctuationParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_YellowGO/Assets/FluctuationParticle/FluctuationParticle.tscn")
+const FluctuationParticle = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_YellowGO/Assets/FluctuationParticle/FluctuationParticle.gd")
 
-const ele_on_hit_tier_1 : float = 6.0
-const ele_on_hit_tier_2 : float = 4.0
+
+const ele_on_hit_tier_1 : float = 5.0
+const ele_on_hit_tier_2 : float = 3.0
 const ele_on_hit_tier_3 : float = 2.0
 const ele_on_hit_tier_4 : float = 0.75
 
-const base_dmg_tier_1 : float = 150.0
-const base_dmg_tier_2 : float = 100.0
-const base_dmg_tier_3 : float = 50.0
-const base_dmg_tier_4 : float = 0.0
+const base_dmg_tier_1 : float = 200.0
+const base_dmg_tier_2 : float = 150.0
+const base_dmg_tier_3 : float = 75.0
+const base_dmg_tier_4 : float = 10.0
 
 const attk_speed_tier_1 : float = 150.0
 const attk_speed_tier_2 : float = 100.0
 const attk_speed_tier_3 : float = 50.0
-const attk_speed_tier_4 : float = 0.0
+const attk_speed_tier_4 : float = 10.0
 
 const range_tier_1 : float = 50.0
 const range_tier_2 : float = 40.0
 const range_tier_3 : float = 20.0
-const range_tier_4 : float = 0.0
+const range_tier_4 : float = 10.0
 
 const fluctuation_duration : float = 3.0
 
@@ -60,6 +63,9 @@ var fluctuation_effect : TowerEffect_AnaSyn_YellowGO_FluctuationEffect
 var game_elements : GameElements
 var fluctuated_tower : AbstractTower
 var fluctuation_timer : Timer
+var is_fluctuation_active : bool = false
+
+var fluctutation_particle : FluctuationParticle
 
 
 func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
@@ -73,6 +79,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		arg_game_elements.get_tree().get_root().add_child(fluctuation_timer)
 		fluctuation_timer.connect("timeout", self, "_on_flucuation_timer_done", [], CONNECT_PERSIST)
 	
+	# FLUCTUATION Cycle is set here
 	if fluctuation_cycle_targeting.size() == 0:
 		fluctuation_cycle_targeting.append(Targeting.TOWERS_HIGHEST_TOTAL_BASE_DAMAGE)
 		fluctuation_cycle_targeting.append(Targeting.TOWERS_HIGHEST_TOTAL_ATTACK_SPEED)
@@ -117,6 +124,8 @@ func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int
 	if game_elements.stage_round_manager.is_connected("round_ended", self, "_on_round_end"):
 		game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end")
 	
+	_clean_up_fluc_modifications()
+	
 	fluctuated_tower = null
 	_untrack_for_first_attack()
 	
@@ -139,8 +148,8 @@ func _construct_effects():
 	attk_speed_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_modi, StoreOfTowerEffectsUUID.YELLOW_GO_ATTK_SPEED_EFFECT)
 	
 	range_modi = PercentModifier.new(StoreOfTowerEffectsUUID.YELLOW_GO_RANGE_EFFECT)
-	attk_speed_modi.percent_based_on = PercentType.BASE
-	attk_speed_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_modi, StoreOfTowerEffectsUUID.YELLOW_GO_ATTK_SPEED_EFFECT)
+	range_modi.percent_based_on = PercentType.BASE
+	range_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_RANGE, range_modi, StoreOfTowerEffectsUUID.YELLOW_GO_RANGE_EFFECT)
 	
 	fluctuation_effect = TowerEffect_AnaSyn_YellowGO_FluctuationEffect.new()
 	fluctuation_effect.on_hit_effect = on_hit_dmg_adder_effect
@@ -154,8 +163,10 @@ func _construct_effects():
 
 func _on_round_end(curr_stageround):
 	if fluctuated_tower != null:
-		_disconnect_from_current_fluctuated_tower()
-		_remove_fluctuation_effect_from_curr_tower()
+		_clean_up_fluc_modifications()
+		
+		fluctuation_timer.wait_time = 0.1
+		fluctuation_timer.paused = true
 		
 		fluctuated_tower = null
 		_untrack_for_first_attack()
@@ -175,7 +186,7 @@ func _track_for_first_attack():
 
 func _tower_to_benefit_from_synergy(tower : AbstractTower):
 	if !tower.is_connected("on_any_attack", self, "_tower_attacked"):
-		tower.connect("on_any_attack", self, "_tower_attacked", [tower])
+		tower.connect("on_any_attack", self, "_tower_attacked", [tower], CONNECT_DEFERRED)
 		tower.add_to_group("tracked_towers_for_attacking_group_id")
 
 
@@ -187,19 +198,18 @@ func _untrack_for_first_attack():
 		game_elements.tower_manager.disconnect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy")
 		game_elements.tower_manager.disconnect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy")
 
-
 func _tower_to_remove_from_synergy(tower : AbstractTower):
 	if tower.is_connected("on_any_attack", self, "_tower_attacked"):
 		tower.disconnect("on_any_attack", self, "_tower_attacked")
 		tower.remove_from_group("tracked_towers_for_attacking_group_id")
 
 
-
 func _tower_attacked(attk_speed_delay, enemies, module, tower : AbstractTower):
-	var successful_assign = _attempt_assign_fluctuation_to_tower(tower)
-	
-	if successful_assign:
-		_untrack_for_first_attack()
+	if !is_fluctuation_active:
+		var successful_assign = _attempt_assign_fluctuation_to_tower(tower)
+		
+		if successful_assign:
+			_untrack_for_first_attack()
 
 
 # Fluctuation onto tower
@@ -207,19 +217,24 @@ func _tower_attacked(attk_speed_delay, enemies, module, tower : AbstractTower):
 func _attempt_assign_fluctuation_to_tower(tower : AbstractTower) -> bool:
 	if fluctuated_tower != tower:
 		fluctuated_tower = tower
+		is_fluctuation_active = true
 		
 		if !fluctuated_tower.is_connected("on_tower_no_health", self, "_on_fluctuating_tower_zero_health_reached"):
 			fluctuated_tower.connect("on_tower_no_health", self, "_on_fluctuating_tower_zero_health_reached")
 			fluctuated_tower.connect("tree_exiting", self, "_on_flucutating_tower_tree_exiting")
 			fluctuated_tower.connect("tower_not_in_active_map", self, "_on_fluctuating_tower_benched")
 			fluctuated_tower.connect("on_effect_removed", self, "_on_effect_removed")
-			fluctuated_tower.connect("on_range_module_enemy_exited", self, "_on_enemy_left_tower_range")
+			#fluctuated_tower.connect("on_range_module_enemy_exited", self, "_on_enemy_left_tower_range")
 		
 		fluctuated_tower.add_tower_effect(fluctuation_effect)
 		
+		_attach_particle_to_tower(fluctuated_tower)
+		
 		advance_cycle_step()
 		
+		fluctuation_timer.paused = false
 		fluctuation_timer.start(fluctuation_duration)
+		
 		return true
 	
 	return false
@@ -239,19 +254,25 @@ func _on_effect_removed(effect):
 	if effect.effect_uuid == fluctuation_effect.effect_uuid:
 		_attempt_pass_flucutation_to_next_candidate()
 
-func _on_enemy_left_tower_range(enemy, module, range_module):
-	if fluctuated_tower.range_module == null or (fluctuated_tower.range_module != null and fluctuated_tower.range_module.enemies_in_range.size() == 0):
-		_attempt_pass_flucutation_to_next_candidate()
+#func _on_enemy_left_tower_range(enemy, module, range_module):
+#	if fluctuated_tower.range_module == null or (fluctuated_tower.range_module != null and fluctuated_tower.range_module.enemies_in_range.size() == 0):
+#		_attempt_pass_flucutation_to_next_candidate()
 
 func _on_flucuation_timer_done():
 	_remove_fluctuation_effect_from_curr_tower()
+	# triggers "on_effect_removed" signal
+
+func _attach_particle_to_tower(tower):
+	fluctutation_particle = FluctuationParticle_Scene.instance()
+	fluctutation_particle.tower = tower
+	
+	tower.get_tree().get_root().add_child(fluctutation_particle)
 
 
 #
 
 func _attempt_pass_flucutation_to_next_candidate():
-	_disconnect_from_current_fluctuated_tower()
-	_remove_fluctuation_effect_from_curr_tower()
+	_clean_up_fluc_modifications()
 	
 	var candidate_tower = _find_next_candidate_tower()
 	var success : bool = false
@@ -261,6 +282,12 @@ func _attempt_pass_flucutation_to_next_candidate():
 	if !success:
 		_track_for_first_attack()
 
+func _clean_up_fluc_modifications():
+	_disconnect_from_current_fluctuated_tower()
+	_remove_fluctuation_effect_from_curr_tower()
+	_destroy_fluctuation_particle()
+	
+	is_fluctuation_active = false
 
 func _disconnect_from_current_fluctuated_tower():
 	if fluctuated_tower != null:
@@ -269,12 +296,17 @@ func _disconnect_from_current_fluctuated_tower():
 			fluctuated_tower.disconnect("tree_exiting", self, "_on_flucutating_tower_tree_exiting")
 			fluctuated_tower.disconnect("tower_not_in_active_map", self, "_on_fluctuating_tower_benched")
 			fluctuated_tower.disconnect("on_effect_removed", self, "_on_effect_removed")
-			fluctuated_tower.disconnect("on_range_module_enemy_exited", self, "_on_enemy_left_tower_range")
+			#fluctuated_tower.disconnect("on_range_module_enemy_exited", self, "_on_enemy_left_tower_range")
 
 func _remove_fluctuation_effect_from_curr_tower():
 	if fluctuated_tower != null:
 		if fluctuated_tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.YELLOW_GO_EFFECT_BUNDLE):
 			fluctuated_tower.remove_tower_effect(fluctuation_effect)
+
+func _destroy_fluctuation_particle():
+	if fluctutation_particle != null:
+		fluctutation_particle.queue_free()
+
 
 
 func _find_next_candidate_tower() -> AbstractTower:

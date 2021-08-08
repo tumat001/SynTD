@@ -2,6 +2,7 @@
 const AbstractSpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/AbstractSpawnInstruction.gd")
 const SingleEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/SingleEnemySpawnInstruction.gd")
 const ChainSpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/ChainSpawnInstruction.gd")
+const MultipleEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/MultipleEnemySpawnInstruction.gd")
 
 signal spawn_enemy(enemy_id)
 signal no_enemies_to_spawn_left
@@ -69,6 +70,10 @@ func _get_interpreted_spawn_instructions(inses : Array) -> Array:
 			for inner_ins in _get_interpreted_spawn_instructions(ins.instructions):
 				inner_ins.local_timepos += timepos
 				bucket.append(inner_ins)
+			
+		elif ins is MultipleEnemySpawnInstruction:
+			for single_ins in ins._get_spawn_instructions():
+				bucket.append(single_ins)
 	
 	return bucket
 
@@ -92,7 +97,8 @@ func _segragate_instructions_to_near_or_far_from_exe():
 func _signal_enemy_id_ins_below_timepos(timepos : float):
 	for ins in _instructions_near_exe:
 		if ins.local_timepos <= timepos:
-			call_deferred("emit_signal", "spawn_enemy", ins.enemy_id)
+			#call_deferred("emit_signal", "spawn_enemy", ins.enemy_id)
+			emit_signal("spawn_enemy", ins.enemy_id)
 			_instructions_near_exe.erase(ins)
 	
 	

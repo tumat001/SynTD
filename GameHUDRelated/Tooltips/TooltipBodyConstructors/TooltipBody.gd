@@ -11,9 +11,9 @@ var descriptions : Array = []
 
 var specific_font_colors : Array = []
 export(Color) var default_font_color : Color
+export(bool)var override_color_of_descs : bool = true
 
-var override_color_of_descs : bool = true
-
+export(int) var default_font_size : int = 8
 
 onready var row_container = $RowContainer
 
@@ -55,6 +55,9 @@ func update_display():
 					desc_instance.color = default_font_color
 			else:
 				desc_instance.color = default_font_color
+		
+		if desc_instance.get("font_size"):
+			desc_instance.font_size = default_font_size
 		
 		$RowContainer.add_child(desc_instance)
 		index += 1

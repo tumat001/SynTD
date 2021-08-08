@@ -23,6 +23,7 @@ const RelicManager = preload("res://GameElementsRelated/RelicManager.gd")
 const ShopManager = preload("res://GameElementsRelated/ShopManager.gd")
 const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
 const GeneralStatsPanel = preload("res://GameHUDRelated/StatsPanel/GeneralStatsPanel.gd")
+const TowerEmptySlotNotifPanel = preload("res://GameHUDRelated/NotificationPanel/TowerEmptySlotNotifPanel/TowerEmptySlotNotifPanel.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var in_map_placables_manager : InMapPlacablesManager
@@ -49,6 +50,8 @@ var tower_info_panel
 var selection_notif_panel : SelectionNotifPanel
 var whole_screen_gui : WholeScreenGUI
 var general_stats_panel : GeneralStatsPanel
+var tower_empty_slot_notif_panel : TowerEmptySlotNotifPanel
+var left_panel
 
 onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
 
@@ -73,13 +76,16 @@ func _ready():
 	shop_manager = $ShopManager
 	level_manager = $LevelManager
 	general_stats_panel = $BottomPanel/HBoxContainer/VBoxContainer/GeneralStatsPanel
+	left_panel = $LeftsidePanel
+	
+	selection_notif_panel = $NotificationNode/SelectionNotifPanel
+	tower_empty_slot_notif_panel = $NotificationNode/TowerEmptySlotNotifPanel
 	
 	targeting_panel = right_side_panel.tower_info_panel.targeting_panel
 	tower_info_panel = right_side_panel.tower_info_panel
 	
 	round_status_panel = right_side_panel.round_status_panel
 	round_info_panel = round_status_panel.round_info_panel
-	selection_notif_panel = $SelectionNotifPanel
 	
 	# tower manager
 	tower_manager.right_side_panel = right_side_panel
@@ -99,11 +105,13 @@ func _ready():
 	tower_manager.tower_info_panel = right_side_panel.tower_info_panel
 	tower_manager.input_prompt_manager = input_prompt_manager
 	tower_manager.game_elements = self
+	tower_manager.level_manager = level_manager
+	tower_manager.left_panel = left_panel
 	
 	# syn manager
 	synergy_manager.tower_manager = tower_manager
 	synergy_manager.game_elements = self
-	synergy_manager.left_panel = $LeftsidePanel
+	synergy_manager.left_panel = left_panel
 	
 	# gold manager
 	gold_manager.connect("current_gold_changed", panel_buy_sell_level_roll, "_update_tower_cards_buyability_based_on_gold")
@@ -162,6 +170,7 @@ func _ready():
 	general_stats_panel.relic_manager = relic_manager
 	general_stats_panel.shop_manager = shop_manager
 	general_stats_panel.level_manager = level_manager
+	general_stats_panel.stage_round_manager = stage_round_manager
 	
 	# buy sell reroll
 	panel_buy_sell_level_roll.gold_manager = gold_manager
@@ -169,13 +178,21 @@ func _ready():
 	panel_buy_sell_level_roll.level_manager = level_manager
 	panel_buy_sell_level_roll.shop_manager = shop_manager
 	
+	# tower empty slot notif panel
+	tower_empty_slot_notif_panel.tower_manager = tower_manager
+	
 	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round(true)
-	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	#gold_manager.increase_gold_by(1, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.starting_health = 150
 	health_manager.set_health(150)
+	# Level setting is done inside level manager itself
+	
+	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	level_manager.current_level = LevelManager.LEVEL_10
+	
 	#relic_manager.increase_relic_count_by(5, RelicManager.IncreaseRelicSource.ROUND)
 
 
@@ -188,21 +205,21 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost(5)
+	#shop_manager.roll_towers_in_shop_with_cost()
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.TESLA,
 			Towers.SPIKE,
-			Towers.AMALGAMATOR,
+			Towers.WAVE,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers._704,
-			Towers.SUNFLOWER,
-			Towers.ORB,
-			Towers.LEADER,
+			Towers.PINECONE,
+			Towers.COIN,
+			Towers.EMBER,
+			Towers.BEACON_DISH,
 			Towers.ROYAL_FLAME,
 		])
 	even = !even
@@ -239,7 +256,6 @@ func _unhandled_key_input(event):
 				
 			elif event.is_action_pressed("game_tower_sell"):
 				_sell_hovered_tower()
-				
 				
 				
 			elif event.is_action("game_ability_01"):

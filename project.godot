@@ -39,6 +39,7 @@ Targeting="*res://GameInfoRelated/Targeting.gd"
 CollidableSourceAndDest="*res://GameInfoRelated/CollidableSourceAndDest.gd"
 StoreOfScreenEffectsUUID="*res://MiscRelated/ScreenEffectsRelated/StoreOfScreenEffectsUUID.gd"
 StoreOfPactUUID="*res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/StoreOfPactUUID.gd"
+StoreOfFonts="*res://GameHUDRelated/StoreOfFonts.gd"
 
 [debug]
 

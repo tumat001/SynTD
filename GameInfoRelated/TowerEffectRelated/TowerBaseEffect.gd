@@ -36,6 +36,8 @@ var should_respect_attack_module_scale : bool = true
 
 var is_ingredient_effect : bool
 
+var is_from_enemy : bool = false
+
 
 func _init(arg_effect_type : int,
 		arg_effect_uuid : int):
@@ -46,3 +48,21 @@ func _init(arg_effect_type : int,
 
 func _shallow_duplicate():
 	pass
+
+
+func _configure_copy_to_match_self(copy):
+	copy.is_timebound = is_timebound
+	copy.time_in_seconds = time_in_seconds
+	copy.is_ingredient_effect = is_ingredient_effect
+	
+	copy.is_countbound = is_countbound
+	copy.count = count
+	copy.count_reduced_by_main_attack_only = count_reduced_by_main_attack_only
+	
+	copy.effect_icon = effect_icon
+	copy.status_bar_icon = status_bar_icon
+	
+	copy.force_apply = force_apply
+	copy.should_respect_attack_module_scale = should_respect_attack_module_scale
+	
+	copy.is_from_enemy = is_from_enemy

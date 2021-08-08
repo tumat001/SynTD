@@ -1,0 +1,126 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/Layer_Bloom_Background.png" type="Texture" id=1]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=2]
+[ext_resource path="res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipBody.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Layers/Base_GreenLayerPanel.gd" type="Script" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/YellowFlower_Icon.png" type="Texture" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 15
+font_data = ExtResource( 2 )
+
+[node name="Base_GreenLayerPanel" type="MarginContainer"]
+margin_right = 608.0
+margin_bottom = 75.0
+mouse_filter = 2
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 608.0
+margin_bottom = 75.0
+mouse_filter = 2
+
+[node name="TitleContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_right = 150.0
+margin_bottom = 75.0
+rect_min_size = Vector2( 150, 0 )
+mouse_filter = 2
+
+[node name="LabelMarginer" type="MarginContainer" parent="HBoxContainer/TitleContainer"]
+margin_top = 27.0
+margin_right = 150.0
+margin_bottom = 48.0
+mouse_filter = 2
+size_flags_vertical = 6
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+
+[node name="AdaptLayerNameLabel" type="Label" parent="HBoxContainer/TitleContainer/LabelMarginer"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 150.0
+margin_bottom = 21.0
+custom_fonts/font = SubResource( 1 )
+custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+text = "Adapt: Placeholder"
+autowrap = true
+
+[node name="ContentContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 154.0
+margin_right = 404.0
+margin_bottom = 75.0
+rect_min_size = Vector2( 250, 0 )
+mouse_filter = 2
+
+[node name="LayerBackground" type="TextureRect" parent="HBoxContainer/ContentContainer"]
+margin_left = 39.0
+margin_right = 211.0
+margin_bottom = 75.0
+mouse_filter = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+texture = ExtResource( 1 )
+
+[node name="ButtonFrameContainer" type="Control" parent="HBoxContainer/ContentContainer"]
+margin_right = 250.0
+margin_bottom = 75.0
+mouse_filter = 2
+
+[node name="ActiveDescContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 408.0
+margin_right = 608.0
+margin_bottom = 75.0
+rect_min_size = Vector2( 200, 0 )
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/ActiveDescContainer"]
+margin_right = 200.0
+margin_bottom = 75.0
+mouse_filter = 2
+custom_constants/separation = 0
+
+[node name="TitleMarginer" type="MarginContainer" parent="HBoxContainer/ActiveDescContainer/VBoxContainer"]
+margin_right = 200.0
+margin_bottom = 21.0
+mouse_filter = 2
+size_flags_vertical = 2
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+
+[node name="ChosenPathNameLabel" type="Label" parent="HBoxContainer/ActiveDescContainer/VBoxContainer/TitleMarginer"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 200.0
+margin_bottom = 21.0
+custom_fonts/font = SubResource( 1 )
+text = "Placeholder Name"
+autowrap = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/ActiveDescContainer/VBoxContainer"]
+margin_top = 31.0
+margin_right = 200.0
+margin_bottom = 75.0
+mouse_filter = 2
+size_flags_vertical = 3
+custom_constants/separation = 10
+
+[node name="ChosenPathTextureRect" type="TextureRect" parent="HBoxContainer/ActiveDescContainer/VBoxContainer/HBoxContainer"]
+margin_right = 44.0
+margin_bottom = 44.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 5 )
+
+[node name="PathDescriptions" parent="HBoxContainer/ActiveDescContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+margin_left = 54.0
+margin_top = 22.0
+margin_right = 54.0
+margin_bottom = 22.0
+size_flags_vertical = 6
+default_font_color = Color( 1, 1, 1, 1 )
+default_font_size = 12

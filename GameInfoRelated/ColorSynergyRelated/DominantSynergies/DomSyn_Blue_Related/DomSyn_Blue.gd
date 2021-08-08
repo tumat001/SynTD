@@ -59,10 +59,10 @@ const base_breeze_second_slow_duration : float = 6.0 + base_breeze_first_slow_du
 var breeze_second_slow_modifier : PercentModifier
 var breeze_second_slow_effect : EnemyAttributesEffect
 
-const base_breeze_damage : float = 1.0
+const base_breeze_damage : float = 4.0
 
 const breeze_ability_descriptions = [
-	"Slows all enemies by 50% for 4 seconds, then slows by 15% for 6 seconds. Also deals 1 elemental damage.",
+	"Slows all enemies by 50% for 4 seconds, then slows by 15% for 6 seconds. Also deals 4 elemental damage.",
 	"Cooldown : 28s",
 	"",
 	"Ability potency increases the slow percentage and the damage."

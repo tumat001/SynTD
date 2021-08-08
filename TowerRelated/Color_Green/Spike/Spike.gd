@@ -13,7 +13,7 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 const SpikeGroundProj = preload("res://TowerRelated/Color_Green/Spike/Spike_GroundProj/Spike_GroundProj.tscn")
 
 
-const bonus_damage_percent_threshold : float = 0.25
+const bonus_damage_percent_threshold : float = 0.50
 const bonus_damage : float = 2.0
 var bonus_damage_instance : DamageInstance
 

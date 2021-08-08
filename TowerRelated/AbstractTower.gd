@@ -228,6 +228,13 @@ var last_calculated_flat_omnivamp : float = 0
 var _percent_damage_omnivamp_effects : Dictionary = {}
 var last_calculated_percent_damage_omnivamp : float = 0
 
+# Effect vul related
+
+var base_enemy_effect_vulnerability : float = 1
+var _flat_enemy_effect_vulnerability_id_effect_map : Dictionary = {}
+var _percent_enemy_effect_vulnerability_id_effect_map : Dictionary = {}
+var last_calculated_enemy_final_effect_vulnerability : float
+
 
 # Other stats
 
@@ -239,6 +246,9 @@ var current_health : float
 
 var is_dead_for_the_round : bool = false
 
+var tower_limit_slots_taken : int = 1
+
+var last_calculated_has_attacking_modules : bool
 
 # tracker
 
@@ -324,7 +334,7 @@ func _post_inherit_ready():
 	
 	_update_last_calculated_disabled_from_attacking()
 	
-	var _self_size = _get_current_anim_size()
+	var _self_size = get_current_anim_size()
 	#info_bar_layer.position.y -= round((_self_size.y) + 4)
 	#info_bar_layer.position.x -= round(life_bar.get_bar_fill_foreground_size().x / 3)
 	info_bar_layer.position.y -= round((_self_size.y) + 15)
@@ -334,7 +344,7 @@ func _post_inherit_ready():
 	connect("on_any_post_mitigation_damage_dealt", self, "_on_tower_any_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
 
 
-func _get_current_anim_size() -> Vector2:
+func get_current_anim_size() -> Vector2:
 	return tower_base_sprites.frames.get_frame(tower_base_sprites.animation, tower_base_sprites.frame).get_size()
 
 
@@ -390,12 +400,13 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 	if attack_module.range_module == null and range_module != null:
 		attack_module.range_module = range_module
 	
-	if !attack_module.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
-		attack_module.range_module.connect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered", [attack_module, attack_module.range_module], CONNECT_PERSIST)
-		attack_module.range_module.connect("enemy_left_range" , self, "_emit_on_range_module_enemy_exited", [attack_module, attack_module.range_module], CONNECT_PERSIST)
-		attack_module.range_module.connect("current_enemy_left_range", self, "_emit_on_any_range_module_current_enemy_exited", [attack_module, attack_module.range_module], CONNECT_PERSIST)
-		attack_module.range_module.connect("current_enemies_acquired", self, "_emit_on_any_range_module_current_enemies_acquired", [attack_module, attack_module.range_module], CONNECT_PERSIST)
-	
+	if attack_module.range_module != null:
+		if !attack_module.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
+			attack_module.range_module.connect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered", [attack_module, attack_module.range_module], CONNECT_PERSIST)
+			attack_module.range_module.connect("enemy_left_range" , self, "_emit_on_range_module_enemy_exited", [attack_module, attack_module.range_module], CONNECT_PERSIST)
+			attack_module.range_module.connect("current_enemy_left_range", self, "_emit_on_any_range_module_current_enemy_exited", [attack_module, attack_module.range_module], CONNECT_PERSIST)
+			attack_module.range_module.connect("current_enemies_acquired", self, "_emit_on_any_range_module_current_enemies_acquired", [attack_module, attack_module.range_module], CONNECT_PERSIST)
+		
 	attack_module.range_module.update_range()
 	
 	#if main_attack_module == null and attack_module.module_id == StoreOfAttackModuleID.MAIN:
@@ -549,7 +560,7 @@ func _process(delta):
 			
 			attack_module.time_passed(delta)
 			
-			if attack_module.can_be_commanded_by_tower and attack_module.is_ready_to_attack():
+			if attack_module.last_calculated_can_be_commanded_by_tower and attack_module.is_ready_to_attack():
 				# If module itself does has a range_module
 				if attack_module.range_module != null:
 					attack_module.attempt_find_then_attack_enemies()
@@ -609,6 +620,11 @@ func _on_round_start():
 # Recieving buffs/debuff related
 
 func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, register_to_buff_map : bool = true, include_non_module_effects : bool = true, ing_effect : IngredientEffect = null):
+	if tower_base_effect.is_from_enemy:
+		# right now, only TowerAttrEffect is supported by this
+		tower_base_effect = tower_base_effect._get_copy_scaled_by(last_calculated_enemy_final_effect_vulnerability)
+	
+	
 	if include_non_module_effects and register_to_buff_map:
 		_all_uuid_tower_buffs_map[tower_base_effect.effect_uuid] = tower_base_effect
 	
@@ -651,7 +667,6 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 			if include_non_module_effects:
 				_add_percent_omnivamp_effect(tower_base_effect)
 			
-			
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_HEALTH:
 			if include_non_module_effects:
 				_add_flat_base_health_effect(tower_base_effect)
@@ -659,7 +674,15 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_HEALTH:
 			if include_non_module_effects:
 				_add_percent_base_health_effect(tower_base_effect)
-		
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ENEMY_EFFECT_VULNERABILITY:
+			if include_non_module_effects:
+				_add_flat_enemy_effect_vulnerability_effect(tower_base_effect)
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_ENEMY_EFFECT_VULNERABILITY:
+			if include_non_module_effects:
+				_add_percent_enemy_effect_vulnerability_effect(tower_base_effect)
+			
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_add_on_hit_damage_adder_effect(tower_base_effect, target_modules)
@@ -743,6 +766,14 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 			if include_non_module_effects:
 				_remove_percent_ability_cdr_effect(tower_base_effect.effect_uuid)
 			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_OMNIVAMP:
+			if include_non_module_effects:
+				_remove_flat_omnivamp_effect(tower_base_effect.effect_uuid)
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_DAMAGE_OMNIVAMP:
+			if include_non_module_effects:
+				_remove_percent_omnivamp_effect(tower_base_effect.effect_uuid)
+			
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_HEALTH:
 			if include_non_module_effects:
 				_remove_flat_base_health_effect_preserve_percent(tower_base_effect.effect_uuid)
@@ -750,7 +781,15 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 		elif tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_HEALTH:
 			if include_non_module_effects:
 				_remove_percent_base_health_effect_preserve_percent(tower_base_effect.effect_uuid)
-		
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.FLAT_ENEMY_EFFECT_VULNERABILITY:
+			if include_non_module_effects:
+				_remove_flat_enemy_effect_vulnerability_effect(tower_base_effect)
+			
+		elif tower_base_effect.attribute_type == TowerAttributesEffect.PERCENT_ENEMY_EFFECT_VULNERABILITY:
+			if include_non_module_effects:
+				_remove_percent_enemy_effect_vulnerability_effect(tower_base_effect)
+			
 		
 	elif tower_base_effect is TowerOnHitDamageAdderEffect:
 		_remove_on_hit_damage_adder_effect(tower_base_effect.effect_uuid, target_modules)
@@ -870,10 +909,9 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 				range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
 			elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
 				range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
-			
+	
 			range_module.update_range()
 			_emit_final_range_changed()
-	
 	
 	for module in target_modules:
 		if module.range_module != null:
@@ -1158,6 +1196,23 @@ func _remove_percent_omnivamp_effect(attr_effect_uuid : int):
 	_calculate_final_percent_damage_omnivamp()
 
 
+func _add_flat_enemy_effect_vulnerability_effect(attr_effect : TowerAttributesEffect):
+	_flat_enemy_effect_vulnerability_id_effect_map[attr_effect.effect_uuid] = attr_effect
+	_calculate_enemy_effect_vulnerability()
+
+func _add_percent_enemy_effect_vulnerability_effect(attr_effect : TowerAttributesEffect):
+	_percent_enemy_effect_vulnerability_id_effect_map[attr_effect.effect_uuid] = attr_effect
+	_calculate_enemy_effect_vulnerability()
+
+func _remove_flat_enemy_effect_vulnerability_effect(attr_effect : TowerAttributesEffect):
+	_flat_enemy_effect_vulnerability_id_effect_map.erase(attr_effect.effect_uuid)
+	_calculate_enemy_effect_vulnerability()
+
+func _remove_percent_enemy_effect_vulnerability_effect(attr_effect : TowerAttributesEffect):
+	_percent_enemy_effect_vulnerability_id_effect_map.erase(attr_effect.effect_uuid)
+	_calculate_enemy_effect_vulnerability()
+
+
 
 func _add_tower_modifying_effect(tower_mod : BaseTowerModifyingEffect):
 	tower_mod._make_modifications_to_tower(self)
@@ -1348,7 +1403,6 @@ func _clear_ingredients_by_effect_reset():
 func _remove_latest_ingredient_by_effect():
 	if ingredients_absorbed.size() != 0:
 		var latest_effect = ingredients_absorbed.values()[ingredients_absorbed.size() - 1]
-		print(latest_effect.description)
 		remove_ingredient(latest_effect, true)
 
 
@@ -1585,6 +1639,20 @@ func _calculate_final_percent_damage_omnivamp():
 	last_calculated_percent_damage_omnivamp = final_vamp
 	return final_vamp
 
+# effect vul calcs
+
+func _calculate_enemy_effect_vulnerability() -> float:
+	#All percent modifiers here are to BASE values only
+	var final_enemy_effect_vul = base_enemy_effect_vulnerability
+	for effect in _percent_enemy_effect_vulnerability_id_effect_map.values():
+		final_enemy_effect_vul += effect.attribute_as_modifier.get_modification_to_value(base_enemy_effect_vulnerability)
+	
+	for effect in _flat_enemy_effect_vulnerability_id_effect_map.values():
+		final_enemy_effect_vul += effect.attribute_as_modifier.flat_modifier
+	
+	last_calculated_enemy_final_effect_vulnerability = final_enemy_effect_vul
+	return final_enemy_effect_vul
+
 
 # Inputs related
 
@@ -1655,7 +1723,6 @@ func _start_drag():
 	$PlacableDetector.monitoring = true
 	is_being_dragged = true
 	
-	#disabled_from_attacking_clauses.attempt_insert_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED_OR_IN_BENCH)
 	set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
 	
 	_disable_modules()
@@ -1665,12 +1732,12 @@ func _start_drag():
 
 func _end_drag():
 	z_index = ZIndexStore.TOWERS
-	transfer_to_placable(hovering_over_placable)
+	transfer_to_placable(hovering_over_placable, false, !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self))
 	erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
 	emit_signal("tower_dropped_from_dragged", self)
 
 
-func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_update : bool = false):
+func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_update : bool = false, always_snap_back_to_orignal_pos : bool = false):
 	var should_update_active_synergy : bool
 	if new_area_placable != null and !do_not_update:
 		if (current_placable != null and current_placable.get_placable_type_name() != new_area_placable.get_placable_type_name()):
@@ -1683,10 +1750,13 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 		if current_placable.tower_occupying == self:
 			current_placable.tower_occupying = null
 	
+	var transferred_tower : bool = false
+	# ing related and swapping
 	if new_area_placable != null and new_area_placable.tower_occupying != null:
 		if !is_in_ingredient_mode:
 			if !(is_round_started and new_area_placable is InMapAreaPlacable):
 				new_area_placable.tower_occupying.transfer_to_placable(current_placable, true)
+				transferred_tower = true
 			else:
 				new_area_placable = null # return tower to original location
 		else:
@@ -1697,6 +1767,9 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 				return
 			else:
 				new_area_placable = null # return tower to original location
+	
+	if new_area_placable is InMapAreaPlacable and always_snap_back_to_orignal_pos and !transferred_tower:
+		new_area_placable = null
 	
 	# The "new" one
 	if new_area_placable != null:
@@ -1722,7 +1795,6 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 			# Update Synergy
 			if should_update_active_synergy:
 				emit_signal("update_active_synergy")
-			
 			emit_signal("tower_not_in_active_map")
 		elif current_placable is InMapAreaPlacable:
 			erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_IN_BENCH)
@@ -1733,7 +1805,6 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 			# Update Synergy
 			if should_update_active_synergy:
 				emit_signal("update_active_synergy")
-			
 			emit_signal("tower_active_in_map")
 
 

@@ -121,7 +121,7 @@ func _ready():
 
 func _on_shock_ball_launched(ball : ShockerBall):
 	ball.connect("on_enemy_stucked_to_exiting", self, "_on_shock_ball_enemy_tree_exiting", [ball], CONNECT_ONESHOT)
-	ball.connect("on_current_life_distance_expire", self, "_on_shock_ball_life_distance_expired", [], CONNECT_ONESHOT)
+	ball.connect("on_current_life_distance_expire", self, "_on_shock_ball_life_distance_expired", [ball], CONNECT_ONESHOT)
 	ball.connect("on_enemy_hit", self, "_on_shock_ball_enemy_hit")
 	ball.connect("on_position_changed", self, "_on_shock_ball_pos_changed")
 	ball.rotation_per_second = 0

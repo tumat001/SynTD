@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=35 format=2]
 
 [ext_resource path="res://GameHUDRelated/BottomPanelBackground.png" type="Texture" id=1]
 [ext_resource path="res://GameHUDRelated/StatsPanel/GeneralStatsPanel.tscn" type="PackedScene" id=2]
@@ -30,6 +30,7 @@
 [ext_resource path="res://GameElementsRelated/RelicManager.gd" type="Script" id=28]
 [ext_resource path="res://GameElementsRelated/ShopManager.gd" type="Script" id=29]
 [ext_resource path="res://GameElementsRelated/LevelManager.gd" type="Script" id=30]
+[ext_resource path="res://GameHUDRelated/NotificationPanel/TowerEmptySlotNotifPanel/TowerEmptySlotNotifPanel.tscn" type="PackedScene" id=31]
 
 [sub_resource type="Curve2D" id=1]
 _data = {
@@ -59,22 +60,22 @@ script = ExtResource( 8 )
 script = ExtResource( 9 )
 
 [node name="InMapAreaPlacable" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 243.666, 87.7723 )
+position = Vector2( 426, 171.5 )
 
 [node name="InMapAreaPlacable4" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 766.528, 95.3277 )
+position = Vector2( 496.046, 167 )
 
 [node name="InMapAreaPlacable5" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
 position = Vector2( 423.02, 241.457 )
 
 [node name="InMapAreaPlacable2" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 729.128, 45.7667 )
+position = Vector2( 374, 314.782 )
 
 [node name="InMapAreaPlacable3" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 669.451, 87.0958 )
+position = Vector2( 581.257, 301.282 )
 
 [node name="InMapAreaPlacable6" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 782.157, 154.086 )
+position = Vector2( 292, 287.782 )
 
 [node name="InMapAreaPlacable7" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
 position = Vector2( 477.046, 234.595 )
@@ -86,7 +87,7 @@ position = Vector2( 535.414, 231.227 )
 position = Vector2( 368.167, 254.799 )
 
 [node name="InMapAreaPlacable10" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
-position = Vector2( 337.86, 76.328 )
+position = Vector2( 581.257, 158 )
 
 [node name="SynergyManager" type="Node" parent="."]
 script = ExtResource( 12 )
@@ -134,13 +135,13 @@ __meta__ = {
 
 [node name="TextureRect" type="TextureRect" parent="BottomPanel"]
 margin_right = 960.0
-margin_bottom = 100.0
+margin_bottom = 101.0
 mouse_filter = 2
 texture = ExtResource( 1 )
 
 [node name="HBoxContainer" type="MarginContainer" parent="BottomPanel"]
 margin_right = 960.0
-margin_bottom = 100.0
+margin_bottom = 101.0
 
 [node name="ColorWheelPanel" type="MarginContainer" parent="BottomPanel/HBoxContainer"]
 margin_top = 10.0
@@ -165,18 +166,19 @@ texture_normal = ExtResource( 6 )
 [node name="VBoxContainer" type="VBoxContainer" parent="BottomPanel/HBoxContainer"]
 margin_left = 104.0
 margin_right = 855.0
-margin_bottom = 100.0
+margin_bottom = 101.0
 mouse_filter = 2
 size_flags_horizontal = 6
 custom_constants/separation = 0
 
 [node name="GeneralStatsPanel" parent="BottomPanel/HBoxContainer/VBoxContainer" instance=ExtResource( 2 )]
 margin_right = 751.0
+margin_bottom = 20.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="BottomPanel/HBoxContainer/VBoxContainer"]
-margin_top = 19.0
+margin_top = 20.0
 margin_right = 751.0
-margin_bottom = 100.0
+margin_bottom = 101.0
 mouse_filter = 2
 custom_constants/separation = 20
 
@@ -261,13 +263,25 @@ margin_bottom = 440.0
 [node name="LeftsidePanel" parent="." instance=ExtResource( 11 )]
 mouse_filter = 0
 
-[node name="SelectionNotifPanel" parent="." instance=ExtResource( 24 )]
+[node name="NotificationNode" type="Node" parent="."]
+
+[node name="SelectionNotifPanel" parent="NotificationNode" instance=ExtResource( 24 )]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -217.0
 margin_right = 0.0
 margin_bottom = -160.0
+
+[node name="TowerEmptySlotNotifPanel" parent="NotificationNode" instance=ExtResource( 31 )]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -78.0
+margin_top = -138.0
+margin_right = 82.0
+margin_bottom = -69.0
 
 [node name="ScreenEffectsManager" type="Node" parent="."]
 script = ExtResource( 25 )

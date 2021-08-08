@@ -6,6 +6,10 @@ const ColorSynergyCheckResults = preload("res://GameInfoRelated/ColorSynergyChec
 const SynergyTooltipScene = preload("res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltip.tscn")
 const SynergyTooltip = preload("res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltip.gd")
 
+signal on_single_syn_tooltip_displayed(synergy)
+signal on_single_syn_tooltip_hidden(synergy)
+
+
 var result : ColorSynergyCheckResults
 var current_tooltip : SynergyTooltip
 
@@ -72,9 +76,14 @@ func _on_SingleSynergyDisplayer_mouse_entered():
 	current_tooltip = tooltip
 	current_tooltip.result = result
 	
+	emit_signal("on_single_syn_tooltip_displayed", result.synergy)
+	
 	get_tree().get_root().add_child(current_tooltip)
-
 
 func _on_SingleSynergyDisplayer_mouse_exited():
 	if current_tooltip != null:
+		
+		emit_signal("on_single_syn_tooltip_hidden", result.synergy)
 		current_tooltip.queue_free()
+
+

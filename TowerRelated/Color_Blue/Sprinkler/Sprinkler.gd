@@ -7,7 +7,7 @@ const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
 
 #TODO CHANGE PIC EVENTUALLY
-const SprinklerBullet_pic = preload("res://TowerRelated/Color_Gray/Mono/Mono_Bullet.png")
+const SprinklerBullet_pic = preload("res://TowerRelated/Color_Blue/Sprinkler/Attks/Sprinkler_Proj.png")
 
 
 # Called when the node enters the scene tree for the first time.
@@ -38,8 +38,8 @@ func _ready():
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.base_proj_inaccuracy = 20
 	
-	var bullet_shape = CircleShape2D.new()
-	bullet_shape.radius = 3
+	var bullet_shape = RectangleShape2D.new()
+	bullet_shape.extents = Vector2(4, 3)
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene

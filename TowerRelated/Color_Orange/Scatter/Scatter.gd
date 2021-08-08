@@ -89,7 +89,7 @@ func _scatter_attack_module_in_attack(atk_speed_delay, enemies):
 # Heat Module
 
 func set_heat_module(module):
-	module.heat_per_attack = 4
+	module.heat_per_attack = 1
 	.set_heat_module(module)
 
 func _construct_heat_effect():

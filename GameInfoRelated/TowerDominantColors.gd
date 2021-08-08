@@ -24,6 +24,7 @@ const DomSyn_Orange = preload("res://GameInfoRelated/ColorSynergyRelated/Dominan
 const DomSyn_Blue = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/DomSyn_Blue.gd")
 const DomSyn_Red = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red.gd")
 const DomSyn_Black = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/DomSyn_Black.gd")
+const DomSyn_Green = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/DomSyn_Green.gd")
 
 var inst_domsyn_yellow_energybattery : DomSyn_Yellow_EnergyBattery
 
@@ -32,7 +33,7 @@ func _init():
 	inst_domsyn_yellow_energybattery = DomSyn_Yellow_EnergyBattery.new()
 	
 	synergies = {
-	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [6, 4, 2], #[9, 6, 3],
+	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
 	[
@@ -94,13 +95,28 @@ func _init():
 	}
 	),
 	
-	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [3],
+	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [11, 9, 6, 3],
 	[tier_bronze_pic],
 	syn_dom_green,
-	["GREEN description"]),
+	[
+		"Gain access to Adaptations, which grant various effects.",
+		"New Adaptations are available per tier. Only one Adaptation can be selected per tier.",
+		"",
+		"Adaptations are active only when their tier requirement is met.",
+		""
+	],
+	[DomSyn_Green.new()],
+	[
+		"Adapt: Beyond",
+		"Adapt: Fruits of Labor",
+		"Adapt: Bloom",
+		"Adapt: Foundation"
+	],
+	ColorSynergy.HighlightDeterminer.ALL_BELOW
+	),
 	
-	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [4, 3, 2, 1], #[9, 7, 5, 3],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [8, 5, 3],
+	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
 	[
 		"Gain access to Blue Abilities.",
@@ -108,10 +124,9 @@ func _init():
 	],
 	[DomSyn_Blue.new()],
 	[
-		"",
 		"Renew/Empower : Multi purpose ability.",
-		"Mana Blast: Big AOE damage, and bonus Ability Potency buff.",
-		"Sea Breeze : Slow all enemies."
+		"Mana Blast: Big damage, and bonus Ability Potency buff.",
+		"Sea Breeze : Slow and minor damage to all enemies."
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
@@ -120,7 +135,8 @@ func _init():
 	[tier_silver_pic, tier_bronze_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	[
-		"Violet towers can absorb more ingredients. This synergy applies only when there are a certain amount of towers or less in the map. Getting duplicate violet towers also disables the effects of this synergy.",
+		"Violet towers can absorb more ingredients",
+		"The synergy's effects apply only when there are a certain amount of towers or less in the map. Getting duplicate violet towers also disables the effects of this synergy.",
 		"",
 	],
 	[DomSyn_Violet.new()],
