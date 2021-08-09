@@ -23,7 +23,7 @@ func _init(arg_name : String, arg_descs : Array, arg_icon : Texture):
 func activate_path_with_green_syn(arg_dom_syn_green):
 	dom_syn_green = arg_dom_syn_green
 	
-	dom_syn_green.connect("synergy_applied", self, "_dom_syn_green_applied", [dom_syn_green.game_elements], CONNECT_PERSIST)
+	dom_syn_green.connect("synergy_applied", self, "_apply_path_tier_to_game_elements", [dom_syn_green.game_elements], CONNECT_PERSIST)
 	dom_syn_green.connect("synergy_removed", self, "_remove_path_from_game_elements", [dom_syn_green.game_elements], CONNECT_PERSIST)
 	
 	if dom_syn_green.curr_tier != dom_syn_green.SYN_INACTIVE:

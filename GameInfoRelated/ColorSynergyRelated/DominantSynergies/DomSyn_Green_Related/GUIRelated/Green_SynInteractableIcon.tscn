@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButton.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/SynIcon_ForBringingWholeScreenGUI.png" type="Texture" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Green_SynInteractableIcon.gd" type="Script" id=3]
+
+[node name="Green_SynInteractableIcon" instance=ExtResource( 1 )]
+texture_normal = ExtResource( 2 )
+script = ExtResource( 3 )
+[connection signal="pressed_mouse_event" from="." to="." method="_on_Green_SynInteractableIcon_pressed_mouse_event"]

@@ -95,14 +95,14 @@ func _init():
 	}
 	),
 	
-	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [11, 9, 6, 3],
-	[tier_bronze_pic],
+	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [4, 3, 2, 1],#[11, 9, 6, 3],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_green,
 	[
 		"Gain access to Adaptations, which grant various effects.",
 		"New Adaptations are available per tier. Only one Adaptation can be selected per tier.",
 		"",
-		"Adaptations are active only when their tier requirement is met.",
+		"Adaptations are active only when their tier requirement is met, unless otherwise stated.",
 		""
 	],
 	[DomSyn_Green.new()],

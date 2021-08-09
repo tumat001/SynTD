@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Layers/SpecLayers/Layer_Beyond.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Layers/SpecLayers/Layer_Foundation.tscn" type="PackedScene" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Layers/SpecLayers/Layer_Triumph.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Layers/SpecLayers/Layer_Bloom.tscn" type="PackedScene" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Green_WholeScreenGUI.gd" type="Script" id=5]
+
+[node name="Green_WholeScreenGUI" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 608.0
+margin_bottom = 345.0
+mouse_filter = 2
+
+[node name="Layer_Beyond" parent="VBoxContainer" instance=ExtResource( 1 )]
+margin_right = 608.0
+
+[node name="Layer_Triumph" parent="VBoxContainer" instance=ExtResource( 3 )]
+margin_top = 79.0
+margin_right = 608.0
+margin_bottom = 154.0
+
+[node name="Layer_Bloom" parent="VBoxContainer" instance=ExtResource( 4 )]
+margin_top = 158.0
+margin_right = 608.0
+margin_bottom = 233.0
+
+[node name="Layer_Foundation" parent="VBoxContainer" instance=ExtResource( 2 )]
+margin_top = 237.0
+margin_right = 608.0
+margin_bottom = 345.0

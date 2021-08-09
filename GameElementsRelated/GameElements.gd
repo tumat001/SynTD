@@ -217,8 +217,8 @@ func _on_BuySellLevelRollPanel_reroll():
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.PINECONE,
-			Towers.COIN,
-			Towers.EMBER,
+			Towers.IMPALE,
+			Towers.PESTILENCE,
 			Towers.BEACON_DISH,
 			Towers.ROYAL_FLAME,
 		])

@@ -15,6 +15,7 @@ func set_green_path_and_layer(arg_path : BaseGreenPath, arg_layer: BaseGreenLaye
 	_green_layer = arg_layer
 	
 	_green_layer.connect("on_available_green_paths_changed", self, "_on_available_green_paths_changed", [], CONNECT_PERSIST)
+	_on_available_green_paths_changed(_green_layer.available_green_paths)
 
 #
 
@@ -28,7 +29,7 @@ func _construct_about_tooltip() -> BaseTooltip:
 #
 
 func _on_available_green_paths_changed(available_paths):
-	if available_paths.has(_green_path):
+	if _green_layer.available_green_paths.has(_green_path):
 		disabled = false
 		visible = true
 	else:
