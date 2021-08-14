@@ -20,7 +20,7 @@ func get_modification_to_value(value):
 	if !ignore_flat_limits:
 		if modification < flat_minimum:
 			modification = flat_minimum
-		if modification > flat_maximum:
+		elif modification > flat_maximum:
 			modification = flat_maximum
 	
 	return modification

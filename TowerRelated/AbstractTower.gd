@@ -170,10 +170,10 @@ var main_attack_module : AbstractAttackModule
 var range_module : RangeModule
 
 
-var disabled_from_attacking_clauses : ConditionalClauses = ConditionalClauses.new()
+var disabled_from_attacking_clauses : ConditionalClauses
 var last_calculated_disabled_from_attacking : bool = false
 
-var untargetability_clauses : ConditionalClauses = ConditionalClauses.new()
+var untargetability_clauses : ConditionalClauses
 var last_calculated_is_untargetable : bool = false
 
 # Tower buffs related
@@ -248,7 +248,8 @@ var is_dead_for_the_round : bool = false
 
 var tower_limit_slots_taken : int = 1
 
-var last_calculated_has_attacking_modules : bool
+#var last_calculated_has_attacking_modules : bool
+var last_calculated_has_commandable_attack_modules : bool
 
 # tracker
 
@@ -299,6 +300,16 @@ onready var tower_base = $TowerBase
 
 
 # Initialization -------------------------- #
+
+func _init():
+	untargetability_clauses = ConditionalClauses.new()
+	untargetability_clauses.connect("clause_inserted", self, "_untargetability_clause_added_or_removed", [], CONNECT_PERSIST)
+	untargetability_clauses.connect("clause_removed", self, "_untargetability_clause_added_or_removed", [], CONNECT_PERSIST)
+	
+	disabled_from_attacking_clauses = ConditionalClauses.new()
+	disabled_from_attacking_clauses.connect("clause_inserted", self, "_disabled_from_attacking_clause_added_or_removed", [], CONNECT_PERSIST)
+	disabled_from_attacking_clauses.connect("clause_removed", self, "_disabled_from_attacking_clause_added_or_removed", [], CONNECT_PERSIST)
+	
 
 func _ready():
 	$IngredientDeclinePic.visible = false
@@ -446,6 +457,8 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			add_tower_effect(tower_effect, [attack_module], false, false)
 	
 	all_attack_modules.append(attack_module)
+	
+	_on_attack_module_added_or_removed()
 	emit_signal("attack_module_added", attack_module)
 
 
@@ -500,7 +513,18 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 				
 				break
 	
+	_on_attack_module_added_or_removed()
 	emit_signal("attack_module_removed", attack_module_to_remove)
+
+
+# Does not track attack modules's changes tho, only changes when module is added or removed
+func _on_attack_module_added_or_removed():
+	for module in all_attack_modules:
+		if module.last_calculated_can_be_commanded_by_tower:
+			last_calculated_has_commandable_attack_modules = true
+			return
+	
+	last_calculated_has_commandable_attack_modules = false
 
 
 # Module signals related
@@ -567,7 +591,6 @@ func _process(delta):
 				else:
 					var targets = range_module.get_targets(attack_module.number_of_unique_targets)
 					attack_module.on_command_attack_enemies(targets)
-	
 	
 	#Drag related
 	if is_being_dragged:
@@ -1442,6 +1465,13 @@ func hide_acceptability_with_ingredient():
 
 # Ingredient limit related
 
+func _tower_manager_ing_cap_set(cap_id, cap_amount):
+	set_ingredient_limit_modifier(cap_id, cap_amount)
+
+func _tower_manager_ing_cap_removed(cap_id):
+	remove_ingredient_limit_modifier(cap_id)
+
+
 func set_ingredient_limit_modifier(modifier_id : int, limit_modifier : int):
 	_ingredient_id_limit_modifier_map[modifier_id] = limit_modifier
 	_set_active_ingredient_limit(_calculate_final_ingredient_limit())
@@ -1524,8 +1554,9 @@ func _update_ingredient_compatible_colors():
 			ingredient_compatible_colors.append(TowerColors.GRAY)
 			
 		elif color == TowerColors.BLACK:
-			ingredient_compatible_colors.append(TowerColors.BLACK)
-
+			#ingredient_compatible_colors.append(TowerColors.BLACK)
+			for c in TowerColors.get_all_colors():
+				ingredient_compatible_colors.append(c)
 
 # Tower Colors Related
 
@@ -1873,11 +1904,11 @@ func set_tower_sprite_modulate(color : Color):
 
 func set_disabled_from_attacking_clause(id : int):
 	disabled_from_attacking_clauses.attempt_insert_clause(id)
-	_update_last_calculated_disabled_from_attacking()
-
 
 func erase_disabled_from_attacking_clause(id : int):
 	disabled_from_attacking_clauses.remove_clause(id)
+
+func _disabled_from_attacking_clause_added_or_removed(id):
 	_update_last_calculated_disabled_from_attacking()
 
 
@@ -1888,11 +1919,13 @@ func _update_last_calculated_disabled_from_attacking():
 
 func set_untargetability_clause(id : int):
 	untargetability_clauses.attempt_insert_clause(id)
-	_update_untargetability_state()
 
 func erase_untargetability_clause(id : int):
 	untargetability_clauses.remove_clause(id)
+
+func _untargetability_clause_added_or_removed(id):
 	_update_untargetability_state()
+
 
 func _update_untargetability_state():
 	last_calculated_is_untargetable = !untargetability_clauses.is_passed

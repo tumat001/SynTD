@@ -15,14 +15,14 @@ func _init(arg_tier : int).(StoreOfPactUUID.A_CHALLENGE, "A Challenge", arg_tier
 	
 	if tier == 0:
 		health_gain_mod.percent_amount = 40
-		health_gain_mod.flat_maximum = 180
+		health_gain_mod.flat_maximum = 80
 		gold_gain_val = 5
 	elif tier == 1:
-		health_gain_mod.percent_amount = 35
-		health_gain_mod.flat_maximum = 120
+		health_gain_mod.percent_amount = 30
+		health_gain_mod.flat_maximum = 60
 		gold_gain_val = 3
 	elif tier == 2:
-		health_gain_mod.percent_amount = 30
+		health_gain_mod.percent_amount = 20
 		health_gain_mod.flat_maximum = 40
 		gold_gain_val = 2
 	elif tier == 3:

@@ -241,17 +241,17 @@ const TowerTiersMap : Dictionary = {
 
 const tier_base_dmg_map : Dictionary = {
 	1 : 0.5,
-	2 : 0.75,
+	2 : 1.0,
 	3 : 1.25,
 	4 : 1.75,
 	5 : 2.5,
-	6 : 4.0,
+	6 : 4.5,
 }
 
 const tier_attk_speed_map : Dictionary = {
 	1 : 10,
-	2 : 20,
-	3 : 30,
+	2 : 15,
+	3 : 25,
 	4 : 40,
 	5 : 50,
 	6 : 75,
@@ -259,8 +259,8 @@ const tier_attk_speed_map : Dictionary = {
 
 const tier_on_hit_dmg_map : Dictionary = {
 	1 : 0.5,
-	2 : 1,
-	3 : 1.5,
+	2 : 1.0,
+	3 : 1.25,
 	4 : 2,
 	5 : 3,
 	6 : 5,
@@ -389,12 +389,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GRAY)
 		info.tower_image_in_buy_card = simplex_image
 		
-		info.base_damage = 0.325
-		info.base_attk_speed = 8
+		info.base_damage = 0.45
+		info.base_attk_speed = 6
 		info.base_pierce = 0
 		info.base_range = 110
 		info.base_damage_type = DamageType.PURE
-		info.on_hit_multiplier = 0.125
+		info.on_hit_multiplier = 0.2
 		
 		info.tower_descriptions = [
 			"Directs a constant pure energy beam at a single target.",
@@ -528,14 +528,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 1
 		info.base_range = 155
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 1
+		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
 			"Stats shown are for the arrow.",
 			"Shoots an arrow that releases a ring. The ring marks up to 4 unmarked enemies.",
-			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process. If only 1 enemy is marked, the shot is empowered, dealing 9 base damage and on hit damages become 150% effective.",
+			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process. If only 1 enemy is marked, the shot is empowered, dealing 5 base damage, and on hit damages become 150% effective.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
-			"Shots deal 3.5 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
+			"Shots deal 3 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
 		]
 		
 		var tower_base_effect : PingletAdderEffect = PingletAdderEffect.new()
@@ -552,8 +552,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = coin_image
 		
-		info.base_damage = 1.75
-		info.base_attk_speed = 0.60
+		info.base_damage = 1.5
+		info.base_attk_speed = 0.55
 		info.base_pierce = 2
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
@@ -584,7 +584,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 1.0
 		info.base_attk_speed = 0.6
 		info.base_pierce = 0
-		info.base_range = 150
+		info.base_range = 130
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
 		
@@ -613,11 +613,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info = TowerTypeInformation.new("Mini Tesla", MINI_TESLA)
 		info.tower_tier = TowerTiersMap[MINI_TESLA]
 		info.tower_cost = info.tower_tier
-		info.colors.append(TowerColors.GRAY)
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = mini_tesla_image
 		
-		info.base_damage = 1.5
+		info.base_damage = 2
 		info.base_attk_speed = 0.8
 		info.base_pierce = 0
 		info.base_range = 110
@@ -652,7 +651,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = charge_image
 		
-		info.base_damage = 2
+		info.base_damage = 2.5
 		info.base_attk_speed = 0.65
 		info.base_pierce = 1
 		info.base_range = 90
@@ -662,7 +661,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"When idle, Charge accumulates energy. Charge's energy is set to 50% when the round starts.",
 			"Upon attacking, Charge expends all energy to deal bonus physical on hit damage based on expended energy.",
-			"Max physical on hit damage: 16",
+			"Max physical on hit damage: 34",
 			"",
 			"Increasing this tower's total attack speed compared to its base attack speed increases the rate of energy accumulation."
 		]
@@ -755,7 +754,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = ember_image
 		
-		info.base_damage = 0.5
+		info.base_damage = 1.5
 		info.base_attk_speed = 0.65
 		info.base_pierce = 1
 		info.base_range = 95
@@ -915,7 +914,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = flameburst_image
 		
-		info.base_damage = 3
+		info.base_damage = 2
 		info.base_attk_speed = 0.775
 		info.base_pierce = 1
 		info.base_range = 115
@@ -923,8 +922,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Flameburst's main attack causes enemies to spew out 6 flamelets around itself.",
-			"The flamelets deal 1 elemental damage. These benefit from base damage buffs and on hit damages at 15% efficiency. Does not apply on hit effects.",
+			"Flameburst's main attack causes enemies to spew out 4 flamelets around itself.",
+			"Each flamelet deal 0.75 elemental damage. These benefit from base damage buffs and on hit damages at 15% efficiency. Does not apply on hit effects.",
 			"Bonus range gained increases the range of the flamelets."
 		]
 		
@@ -942,12 +941,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = scatter_image
 		
-		info.base_damage = 1.5
-		info.base_attk_speed = 0.575
+		info.base_damage = 1.25
+		info.base_attk_speed = 0.38
 		info.base_pierce = 1
 		info.base_range = 110
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0.75
+		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
 			"Shoots 3 heated iron fragments at enemies."
@@ -962,7 +961,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = coal_launcher_image
 		
 		info.base_damage = 2.75
-		info.base_attk_speed = 0.475
+		info.base_attk_speed = 0.5
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
@@ -974,7 +973,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_COAL_LAUNCHER)
-		base_dmg_attr_mod.flat_modifier = 0.75
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_COAL_LAUNCHER)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -990,7 +989,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = enthalphy_image
 		
-		info.base_damage = 2
+		info.base_damage = 2.25
 		info.base_attk_speed = 0.8
 		info.base_pierce = 0
 		info.base_range = 135
@@ -1022,7 +1021,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = entropy_image
 		
-		info.base_damage = 2
+		info.base_damage = 2.25
 		info.base_attk_speed = 0.70
 		info.base_pierce = 0
 		info.base_range = 120
@@ -1093,7 +1092,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = ieu_image
 		
-		info.base_damage = 2
+		info.base_damage = 2.5
 		info.base_attk_speed = 1
 		info.base_pierce = 0
 		info.base_range = 125
@@ -1168,7 +1167,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GREEN)
 		info.tower_image_in_buy_card = spike_image
 		
-		info.base_damage = 2
+		info.base_damage = 1.75
 		info.base_attk_speed = 0.75
 		info.base_pierce = 0
 		info.base_range = 115
@@ -1223,12 +1222,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLUE)
 		info.tower_image_in_buy_card = leader_image
 		
-		info.base_damage = 0.5
+		info.base_damage = 1
 		info.base_attk_speed = 1
 		info.base_pierce = 0
 		info.base_range = 155
 		info.base_damage_type = DamageType.ELEMENTAL
-		info.on_hit_multiplier = 0.5
+		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
 			"Leader's main attack marks the target enemy. Only one enemy can be marked at a time.",
@@ -1257,7 +1256,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLUE)
 		info.tower_image_in_buy_card = orb_image
 		
-		info.base_damage = 1.75
+		info.base_damage = 2.25
 		info.base_attk_speed = 0.875
 		info.base_pierce = 1
 		info.base_range = 130
@@ -1289,7 +1288,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = grand_image
 		
 		info.base_damage = 4
-		info.base_attk_speed = 0.55
+		info.base_attk_speed = 0.6
 		info.base_pierce = 1
 		info.base_range = 150
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1465,10 +1464,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Automatically attempts to casts Seed Bomb when hitting an enemy with its main attack.",
 			"Seed Bomb: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed to gain a stack of Fragile.",
 			"After 6 seconds or reaching 4 stacks of Fragile, the seed bomb explodes, hitting up to 5 enemies. The explosion's damage scales with its Fragile stacks.",
-			"Cooldown : 25 s",
+			"Cooldown : 10 s",
 			"",
+			"Each Fragile stack allows the explosion to deal 25% more damage (totalling up to 200%).",
 			"Seed Bomb's explosion deals 14 physical damage. The explosion benefits from base damage buffs at 400% efficiency, and benefits from on hit damages and effects at 200% efficiency.",
-			"The explosion only deals 25% of its damage, but each Fragile stack allows the explosion to deal 25% more of its damage (totalling up to 125%).",
 		]
 		
 		
@@ -1664,7 +1663,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = rebound_image
 		
 		info.base_damage = 2
-		info.base_attk_speed = 0.4
+		info.base_attk_speed = 0.45
 		info.base_pierce = 2
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1694,7 +1693,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = striker_image
 		
 		info.base_damage = 1.75
-		info.base_attk_speed = 0.675
+		info.base_attk_speed = 0.725
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1723,7 +1722,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = hextribute_image
 		
-		info.base_damage = 2
+		info.base_damage = 3
 		info.base_attk_speed = 2.15
 		info.base_pierce = 1
 		info.base_range = 155
@@ -1764,8 +1763,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = transmutator_image
 		
-		info.base_damage = 2
-		info.base_attk_speed = 0.4
+		info.base_damage = 0
+		info.base_attk_speed = 0.65
 		info.base_pierce = 1
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1773,9 +1772,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Main attacks cause different effects based on the enemy’s current health",
-			"If the enemy has missing health, the enemy is slowed by 70% for 0.5 seconds.",
-			"If the enemy has full health, the enemy’s maximum health is reduced by 12.5%. This effect does not stack.",
-			"Ability potency increases maximum health percent reduction."
+			"If the enemy has missing health, the enemy is slowed by 70% for 2 seconds.",
+			"If the enemy has full health, the enemy’s maximum health is reduced by 12.5% (with a minimum of 5 health, and a maximum of 25 health). This effect does not stack.",
+			"Ability potency increases maximum health percent reduction and limits."
 		]
 		
 		
@@ -1870,7 +1869,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = pinecone_image
 		
 		info.base_damage = 2
-		info.base_attk_speed = 0.575
+		info.base_attk_speed = 0.6
 		info.base_pierce = 1
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL

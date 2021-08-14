@@ -60,19 +60,24 @@ func on_round_end():
 	
 	if tower != null: #and tower.is_current_placable_in_map():
 		if is_in_overheat_active:
-			is_in_overheat_cooldown = true
 			is_in_overheat_active = false
-			_tower_exited_overheat()
+			set_current_heat(0)
 			
-			tower.set_disabled_from_attacking_clause(tower.DisabledFromAttackingSourceClauses.HEAT_MODULE)
+			
+			#is_in_overheat_cooldown = true
+			#is_in_overheat_active = false
+			#_tower_exited_overheat()
+			#
+			#tower.set_disabled_from_attacking_clause(tower.DisabledFromAttackingSourceClauses.HEAT_MODULE)
 			
 		else:
-			is_in_overheat_cooldown = false
+			pass
+			#is_in_overheat_cooldown = false
 			
-			if tower.disabled_from_attacking_clauses.has_clause(tower.DisabledFromAttackingSourceClauses.HEAT_MODULE):
-				# INTENTIONAL THAT THE SET METHOD IS NOT USED
-				current_heat = 0
-				tower.erase_disabled_from_attacking_clause(tower.DisabledFromAttackingSourceClauses.HEAT_MODULE)
+			#if tower.disabled_from_attacking_clauses.has_clause(tower.DisabledFromAttackingSourceClauses.HEAT_MODULE):
+			#	# INTENTIONAL THAT THE SET METHOD IS NOT USED
+			#	current_heat = 0
+			#	tower.erase_disabled_from_attacking_clause(tower.DisabledFromAttackingSourceClauses.HEAT_MODULE)
 		
 		
 		if !has_attacked_in_round:

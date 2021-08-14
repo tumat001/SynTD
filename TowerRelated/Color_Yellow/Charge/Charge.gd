@@ -27,7 +27,7 @@ const proj_speed_level_2 : float = 400.0
 const proj_speed_level_3 : float = 500.0
 const proj_speed_level_4 : float = 650.0
 
-const original_max_on_hit_damage : float = 16.0
+const original_max_on_hit_damage : float = 34.0
 const original_max_energy : float = 100.0
 const original_base_energy_recharge_per_sec : float = 20.0
 
@@ -228,12 +228,12 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Max on hit damage increased to 56. Recharges a little bit faster."
+			"Max on hit damage increased to 67. Recharges a little bit faster."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	max_on_hit_damage = 56.0
+	max_on_hit_damage = 67.0
 	base_energy_recharge_per_sec = 30.0
 	_current_chargebar_06 = ChargeBar_6_Special
 	

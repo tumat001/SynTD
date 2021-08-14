@@ -22,8 +22,8 @@ enum Mode {
 
 
 signal stage_round_changed(stage_num, round_num)
-signal round_started(current_stageround)
-signal round_ended(current_stageround)
+signal round_started(current_stageround) # incomming round
+signal round_ended(current_stageround) # new incomming round
 signal round_ended_game_start_aware(current_stageround, is_game_start)
 
 signal life_lost_from_enemy_first_time_in_round(enemy)

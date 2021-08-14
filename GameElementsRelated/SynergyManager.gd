@@ -8,13 +8,17 @@ const ColorSynergyResults = preload("res://GameInfoRelated/ColorSynergyCheckResu
 const LeftPanel = preload("res://GameHUDRelated/LeftSidePanel/LeftPanel.gd")
 const TowerManager = preload("res://GameElementsRelated/TowerManager.gd")
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
+const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
+const ConditonalClause = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const AbstractTowerModifyingSynergyEffect = preload("res://GameInfoRelated/ColorSynergyRelated/AbstractTowerModifyingSynergyEffect.gd")
 const AbstractGameElementsModifyingSynergyEffect = preload("res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifyingSynergyEffect.gd")
 
+enum DontAllowSameTotalsContionalClauseIds {
+	GREEN_PATH_BLESSING = 10
+}
 
 signal synergies_updated()
-
 
 var non_active_group_synergies_res : Array
 var non_active_dominant_synergies_res : Array
@@ -23,17 +27,46 @@ var active_synergies_res : Array
 var active_dom_color_synergies_res : Array
 var active_compo_color_synergies_res : Array
 
+
 var previous_active_synergies_res : Array
 
 var left_panel : LeftPanel
 var tower_manager : TowerManager setget _set_tower_manager
 var game_elements
 
+#
+
+var base_dominant_synergy_limit : int = 1
+var _flat_dominant_synergy_limit_modi : Dictionary = {}
+var last_calculated_dominant_synergy_limit : int
+
+var base_composite_synergy_limit : int = 1
+var _flat_composite_synergy_limit_modi : Dictionary = {}
+var last_calculated_composite_synergy_limit : int
+
+var dont_allow_same_total_conditonal_clause : ConditonalClause
+
+
+#
+
+func _ready():
+	dont_allow_same_total_conditonal_clause = ConditonalClause.new()
+	dont_allow_same_total_conditonal_clause.connect("clause_inserted", self, "_dont_allow_same_total_clause_added_or_removed", [], CONNECT_PERSIST)
+	dont_allow_same_total_conditonal_clause.connect("clause_removed", self, "_dont_allow_same_total_clause_added_or_removed", [], CONNECT_PERSIST)
+	
+	calculate_final_composite_synergy_limit()
+	calculate_final_dominant_synergy_limit()
+
+
+#
+
 func _set_tower_manager(arg_tower_manager):
 	arg_tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_make_tower_benefit_from_active_synergies")
 	arg_tower_manager.connect("tower_to_remove_from_synergy_buff", self, "_undo_tower_benefit_from_active_synergies")
 	
 	tower_manager = arg_tower_manager
+
+#
 
 func update_synergies(towers : Array):
 	var distinct_towers : Array = _get_list_of_distinct_towers(towers)
@@ -64,8 +97,8 @@ func update_synergies(towers : Array):
 	
 	
 	var syn_res_to_activate : Array = []
-	var dom_to_activate : Array = ColorSynergyChecker.get_synergies_with_results_to_activate(results_of_dom, 1)
-	var compo_to_activate : Array = ColorSynergyChecker.get_synergies_with_results_to_activate(results_of_compo, 1)
+	var dom_to_activate : Array = ColorSynergyChecker.get_synergies_with_results_to_activate(results_of_dom, last_calculated_dominant_synergy_limit, dont_allow_same_total_conditonal_clause.is_passed)
+	var compo_to_activate : Array = ColorSynergyChecker.get_synergies_with_results_to_activate(results_of_compo, last_calculated_composite_synergy_limit, dont_allow_same_total_conditonal_clause.is_passed)
 	
 	active_dom_color_synergies_res = []
 	active_compo_color_synergies_res = []
@@ -199,3 +232,57 @@ func _make_tower_benefit_from_active_synergies(tower : AbstractTower):
 func _undo_tower_benefit_from_active_synergies(tower : AbstractTower):
 	_remove_synergies(active_synergies_res, [tower], true)
 
+#
+
+func add_dominant_syn_limit_modi(modi : FlatModifier):
+	_flat_dominant_synergy_limit_modi[modi.internal_id] = modi
+	calculate_final_dominant_synergy_limit()
+	update_synergies(tower_manager.get_all_active_towers())
+
+func add_composite_syn_limit_modi(modi : FlatModifier):
+	_flat_composite_synergy_limit_modi[modi.internal_id] = modi
+	calculate_final_composite_synergy_limit()
+	update_synergies(tower_manager.get_all_active_towers())
+
+func remove_dominant_syn_limit_modi(modi_id : int):
+	_flat_dominant_synergy_limit_modi.erase(modi_id)
+	calculate_final_dominant_synergy_limit()
+	update_synergies(tower_manager.get_all_active_towers())
+
+func remove_composite_syn_limit_modi(modi_id : int):
+	_flat_composite_synergy_limit_modi.erase(modi_id)
+	calculate_final_composite_synergy_limit()
+	update_synergies(tower_manager.get_all_active_towers())
+
+
+func calculate_final_dominant_synergy_limit() -> int:
+	var final_val : int = base_dominant_synergy_limit
+	
+	for flat_modi in _flat_dominant_synergy_limit_modi.values():
+		final_val += flat_modi.get_modification_to_value(base_dominant_synergy_limit)
+	
+	last_calculated_dominant_synergy_limit = final_val
+	return final_val
+
+func calculate_final_composite_synergy_limit() -> int:
+	var final_val : int = base_composite_synergy_limit
+	
+	for flat_modi in _flat_composite_synergy_limit_modi.values():
+		final_val += flat_modi.get_modification_to_value(base_composite_synergy_limit)
+	
+	last_calculated_composite_synergy_limit = final_val
+	return final_val
+
+#
+
+func _dont_allow_same_total_clause_added_or_removed(id):
+	update_synergies(tower_manager.get_all_active_towers())
+
+#
+
+func is_dom_color_synergy_active(syn) -> bool:
+	for res in active_dom_color_synergies_res:
+		if res.synergy == syn:
+			return true
+	
+	return false

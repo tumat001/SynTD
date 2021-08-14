@@ -22,10 +22,10 @@ animations = [ {
 
 [node name="RedOV_BoostIndicator" instance=ExtResource( 11 )]
 frames = SubResource( 1 )
-frame = 7
+frame = 5
 lifetime = 0.75
 frames_based_on_lifetime = true
 y_displacement_per_sec = -40.0
 inc_in_y_displacement_per_sec = 70.0
-lifetime_to_start_transparency = 0.2
-transparency_per_sec = 40.0
+lifetime_to_start_transparency = 0.3
+transparency_per_sec = 2.0

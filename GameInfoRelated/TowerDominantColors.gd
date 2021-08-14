@@ -7,6 +7,8 @@ const tier_bronze_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoP
 const tier_silver_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Silver.png")
 const tier_gold_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Gold.png")
 const tier_dia_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Diamond.png")
+const tier_prestigeW_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Prestige_White.png")
+
 
 const syn_dom_red = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Red.png")
 const syn_dom_orange = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Orange.png")
@@ -28,6 +30,7 @@ const DomSyn_Green = preload("res://GameInfoRelated/ColorSynergyRelated/Dominant
 
 var inst_domsyn_yellow_energybattery : DomSyn_Yellow_EnergyBattery
 
+var synergies : Dictionary
 
 func _init():
 	inst_domsyn_yellow_energybattery = DomSyn_Yellow_EnergyBattery.new()
@@ -53,7 +56,8 @@ func _init():
 	[
 		"Orange towers gain Heat Modules. Heat Modules gain heat per main attack of a tower. The heat gained per attack depends on the tower.",
 		"Heat Modules give an effect, which scale depending on the current heat. A maximum of 75 heat can be gained per round. Not attacking in a round reduces the current heat by 50.",
-		"Upon reaching 100 heat, the tower becomes Overheated. At the end of the round, Overheated towers undergo Cooling, where they are unable to attack for the round. Cooling towers lose all heat at the end of the round.",
+		#"Upon reaching 100 heat, the tower becomes Overheated. At the end of the round, Overheated towers undergo Cooling, where they are unable to attack for the round. Cooling towers lose all heat at the end of the round.",
+		"Towers that reach 100 heat lose all heat at the end of the round.",
 		"",
 		"Synergy level increases the effectiveness of the effect.",
 		"",
@@ -61,8 +65,8 @@ func _init():
 	[DomSyn_Orange.new()],
 	[
 		"340% effectiveness",
-		"220% effectiveness",
-		"150% effectiveness",
+		"260% effectiveness",
+		"180% effectiveness",
 		"100% effectiveness",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -75,15 +79,15 @@ func _init():
 		"ENERGIZE: Creates an Energy Battery with 1 energy if one is not present. All yellow towers gain an energy module during the round.",
 		"",
 		"Energy Battery allows storage of energy.",
-		"Energy Modules allow a tower to spend 1 energy to gain special effects.",
+		"Energy Modules allow a tower to absorb 1 energy to gain special effects.",
 		"",
 		"Energy Battery and attached Modules (and Module's effects) persist even when the synergy is lost. The Energy Module of a tower persists even when the tower is benched.",
 		"",
 	],
 	[DomSyn_Yellow_GoldIncome.new(), inst_domsyn_yellow_energybattery],
 	[
-		"Activates ENERGIZE. Battery has 5 energy capacity. Battery recharges for 2 energy per turn.",
-		"Activates ENERGIZE. Battery has 2 energy capacity. Battery recharges for 1 energy per turn.",
+		"Activates ENERGIZE. Battery has 9 energy capacity. Battery recharges for 3 energy per turn.",
+		"Activates ENERGIZE. Battery has 4 energy capacity. Battery recharges for 2 energy per turn.",
 		"+1 gold per round."
 	],
 	ColorSynergy.HighlightDeterminer.CUSTOM,
@@ -95,8 +99,8 @@ func _init():
 	}
 	),
 	
-	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [4, 3, 2, 1],#[11, 9, 6, 3],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [11, 9, 6, 3],
+	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_green,
 	[
 		"Gain access to Adaptations, which grant various effects.",
@@ -108,7 +112,7 @@ func _init():
 	[DomSyn_Green.new()],
 	[
 		"Adapt: Beyond",
-		"Adapt: Fruits of Labor",
+		"Adapt: Triumph",
 		"Adapt: Bloom",
 		"Adapt: Foundation"
 	],
@@ -156,10 +160,12 @@ func _init():
 		"Hero relies on the color White to channel its powers.",
 	]),
 	
-	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [12, 9, 6, 3],
+	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [9, 7, 5, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_black,
 	[
+		"Black towers can absorb ingredients regardless of color.",
+		"",
 		"Black tower's attacks give a stack of Corruption to enemies on hit. Black towers with base damages 4.5 or higher will apply 7 stacks instead.",
 		"Corruption stacks last for 3 seconds. Re-applications refresh all stacks.",
 		"Black towers that hit enemies with a certain number of stacks cause effects.",
@@ -167,13 +173,11 @@ func _init():
 	],
 	[DomSyn_Black.new()],
 	[
-		"12+ stacks: All attacks on hit deal 5% of the enemy's missing health as elemental damage, up to 7.",
-		"10+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. Can only be triggered every 0.2 seconds. The beam deals 1.25 physical damage, and benefits from base damage and on hit damage buffs at 10% efficiency. Also applies on hit effects.",
-		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 40% bonus attack speed for 5 attacks for 8 seconds. This effect has a 3 second cooldown.",
-		"3+ stacks: All attack's base damage against enemies is increased by 15%."
+		"20+ stacks: All attacks on hit deal 10% of the enemy's missing health as elemental damage, up to 7.",
+		"7+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. Can only be triggered every 0.2 seconds. The beam deals 1.25 physical damage, and benefits from base damage and on hit damage buffs at 10% efficiency. Also applies on hit effects.",
+		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 80% bonus attack speed for 6 attacks for 8 seconds. This effect has a 3 second cooldown.",
+		"2+ stacks: All attack's base damage against enemies is increased by 30%."
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	)
 }
-
-var synergies : Dictionary

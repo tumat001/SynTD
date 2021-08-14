@@ -13,20 +13,20 @@ const FluctuationParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRel
 const FluctuationParticle = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_YellowGO/Assets/FluctuationParticle/FluctuationParticle.gd")
 
 
-const ele_on_hit_tier_1 : float = 5.0
-const ele_on_hit_tier_2 : float = 3.0
-const ele_on_hit_tier_3 : float = 2.0
-const ele_on_hit_tier_4 : float = 0.75
+const ele_on_hit_tier_1 : float = 11.0
+const ele_on_hit_tier_2 : float = 7.0
+const ele_on_hit_tier_3 : float = 4.0
+const ele_on_hit_tier_4 : float = 1.25
 
 const base_dmg_tier_1 : float = 200.0
 const base_dmg_tier_2 : float = 150.0
 const base_dmg_tier_3 : float = 75.0
-const base_dmg_tier_4 : float = 10.0
+const base_dmg_tier_4 : float = 20.0
 
 const attk_speed_tier_1 : float = 150.0
 const attk_speed_tier_2 : float = 100.0
 const attk_speed_tier_3 : float = 50.0
-const attk_speed_tier_4 : float = 10.0
+const attk_speed_tier_4 : float = 20.0
 
 const range_tier_1 : float = 50.0
 const range_tier_2 : float = 40.0
@@ -255,12 +255,14 @@ func _on_effect_removed(effect):
 		_attempt_pass_flucutation_to_next_candidate()
 
 #func _on_enemy_left_tower_range(enemy, module, range_module):
-#	if fluctuated_tower.range_module == null or (fluctuated_tower.range_module != null and fluctuated_tower.range_module.enemies_in_range.size() == 0):
-#		_attempt_pass_flucutation_to_next_candidate()
+#	#if fluctuated_tower.range_module == null or (fluctuated_tower.range_module != null and !fluctuated_tower.range_module.is_an_enemy_in_range()):
+#	#	_attempt_pass_flucutation_to_next_candidate()
+
+
 
 func _on_flucuation_timer_done():
-	_remove_fluctuation_effect_from_curr_tower()
 	# triggers "on_effect_removed" signal
+	_remove_fluctuation_effect_from_curr_tower()
 
 func _attach_particle_to_tower(tower):
 	fluctutation_particle = FluctuationParticle_Scene.instance()
@@ -315,7 +317,8 @@ func _find_next_candidate_tower() -> AbstractTower:
 		var sorted_towers = Targeting.enemies_to_target(towers, get_targeting_in_cycle(), towers.size(), Vector2(0, 0), true)
 		
 		for tower in sorted_towers:
-			if tower == fluctuated_tower or tower.range_module == null or tower.current_health <= 0 or tower.last_calculated_disabled_from_attacking or tower.range_module.enemies_in_range.size() == 0:
+			# if one of these conditions is met, then this tower cannot be chosen as the next candidate
+			if tower == fluctuated_tower or tower.range_module == null or tower.current_health <= 0 or tower.last_calculated_disabled_from_attacking or tower.range_module.enemies_in_range.size() == 0 or !tower.last_calculated_has_commandable_attack_modules:
 				continue
 			else:
 				return tower

@@ -22,14 +22,17 @@ const Explosion_Pic08 = preload("res://GameInfoRelated/ColorSynergyRelated/Compl
 var explosion_attack_module : AOEAttackModule
 
 const _explosion_base_damage : float = 2.0
-const _explosion_cooldown_lowered_ratio : float = 0.125
-const _explosion_buffed_dmg_ratio : float = 2.0
+
+# When towers are overheating (100 heat)
+const _explosion_cooldown_lowered_ratio : float = 0.5
+# When towers are overheating (100 heat)
+const _explosion_buffed_dmg_ratio : float = 1.0#2.0 
 
 var _explosion_timer : Timer
 
 var base_unit_time_per_explosion : float
 var explosion_scale : float
-var explosion_base_and_on_hit_damage_scale : float = 0.5
+var explosion_base_and_on_hit_damage_scale : float = 0.2
 
 
 func _init().(StoreOfTowerEffectsUUID.ORANGE_BLUE_AM_ADDER):
@@ -86,7 +89,7 @@ func _construct_attk_module():
 	
 	explosion_attack_module.aoe_sprite_frames = sprite_frames
 	explosion_attack_module.sprite_frames_only_play_once = true
-	explosion_attack_module.pierce = 2
+	explosion_attack_module.pierce = 3
 	explosion_attack_module.duration = 0.3
 	explosion_attack_module.damage_repeat_count = 1
 	
@@ -107,7 +110,8 @@ func _on_tower_main_attack_hit(enemy, damage_register_id, damage_instance, modul
 		else:
 			_explosion_timer.start(base_unit_time_per_explosion)
 		
-		explosion.enemies_to_ignore.append(enemy)
+		#explosion.enemies_to_ignore.append(enemy)
+		explosion.damage_instance.scale_only_damage_by(tower.last_calculated_final_ability_potency)
 		explosion.scale *= explosion_scale
 		
 		tower.get_tree().get_root().add_child(explosion)

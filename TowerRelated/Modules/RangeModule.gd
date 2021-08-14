@@ -44,8 +44,10 @@ var attack_modules_using_this : Array = []
 onready var range_shape = $RangeShape
 
 func _ready():
-	connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
-	connect("area_shape_exited" , self, "_on_Range_area_shape_exited", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
+	#connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
+	#connect("area_shape_exited" , self, "_on_Range_area_shape_exited", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
+	connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_PERSIST)
+	connect("area_shape_exited" , self, "_on_Range_area_shape_exited", [], CONNECT_PERSIST)
 	
 
 func _init():
@@ -198,33 +200,34 @@ func _on_Range_area_shape_entered(area_id, area, area_shape, self_shape):
 		if area.get_parent() is AbstractEnemy:
 			_on_enemy_enter_range(area.get_parent())
 	
-	connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
+	#connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
 
 func _on_Range_area_shape_exited(area_id, area, area_shape, self_shape):
 	if area != null:
 		if area.get_parent() is AbstractEnemy:
 			_on_enemy_leave_range(area.get_parent())
 	
-	connect("area_shape_exited", self, "_on_Range_area_shape_exited", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
+	#connect("area_shape_exited", self, "_on_Range_area_shape_exited", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
 
 
 func _on_enemy_enter_range(enemy : AbstractEnemy):
 	enemies_in_range.append(enemy)
 	emit_signal("enemy_entered_range", enemy)
 	
-	enemy.connect("tree_exiting", self, "_on_enemy_leave_range", [enemy])
+	#enemy.connect("tree_exiting", self, "_on_enemy_leave_range", [enemy])
 
 # by leaving range or by dying
 func _on_enemy_leave_range(enemy : AbstractEnemy):
 	enemies_in_range.erase(enemy)
-	emit_signal("enemy_left_range", enemy)
-	
-	if enemy.is_connected("tree_exiting", self, "_on_enemy_leave_range"):
-		enemy.disconnect("tree_exiting", self, "_on_enemy_leave_range")
 	
 	if _current_enemies.has(enemy):
+		_current_enemies.erase(enemy)
 		emit_signal("current_enemy_left_range", enemy)
-	_current_enemies.erase(enemy)
+	
+	emit_signal("enemy_left_range", enemy)
+	
+	#if enemy.is_connected("tree_exiting", self, "_on_enemy_leave_range"):
+	#	enemy.disconnect("tree_exiting", self, "_on_enemy_leave_range")
 
 
 func is_an_enemy_in_range():

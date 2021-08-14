@@ -105,6 +105,7 @@ func _connect_beam_to_enemy(enemy : AbstractEnemy):
 	var beam = _get_available_beam_instance()
 	beam.frame = 0
 	beam.visible = true
+	beam.position = global_position
 	beam.update_destination_position(enemy.position)
 	beam_to_enemy_map[beam] = enemy
 	

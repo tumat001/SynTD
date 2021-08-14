@@ -31,6 +31,12 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	if tier_2_pacts_uuids.size() == 0:
 		_initialize_tier_2_pacts()
 	
+	if tier_1_pacts_uuids.size() == 0:
+		_initialize_tier_1_pacts()
+	
+	if tier_0_pacts_uuids.size() == 0:
+		_initialize_tier_0_pacts()
+	
 	if game_elements == null:
 		game_elements = arg_game_elements
 	

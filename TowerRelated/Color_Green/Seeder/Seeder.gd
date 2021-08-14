@@ -26,7 +26,7 @@ const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/Bas
 
 
 
-const base_implant_cooldown : float = 25.0
+const base_implant_cooldown : float = 10.0
 var implant_ability : BaseAbility
 var implant_ability_is_ready : bool = false
 
@@ -201,7 +201,7 @@ func _on_exploding_seed_before_shot(bullet : Seeder_ExplodingSeed):
 
 func _seed_to_explode(bullet : Seeder_ExplodingSeed):
 	var final_pos = bullet.global_position - Seeder_ExplodingSeed.bullet_attach_shift
-	var final_potency = implant_ability.get_potency_to_use(last_calculated_final_ability_potency) * float(bullet.stage) * dmg_ratio_per_stage
+	var final_potency = implant_ability.get_potency_to_use(last_calculated_final_ability_potency) * (1 + (float(bullet.stage) * dmg_ratio_per_stage))
 	
 	var explosion = explosion_attack_module.construct_aoe(final_pos, final_pos)
 	#explosion.damage_instance = explosion.damage_instance.get_copy_damage_only_scaled_by(final_potency)

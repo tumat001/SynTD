@@ -7,9 +7,9 @@ const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const Black_BuffParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/BuffParticle/Black_BuffParticle.tscn")
 
 const _stack_amount_trigger : int = 5
-const _attk_speed_buff_amount : float = 40.0
+const _attk_speed_buff_amount : float = 80.0
 const _attk_speed_buff_duration : float = 8.0
-const _attk_speed_buff_count : int = 5
+const _attk_speed_buff_count : int = 6
 const _buff_cooldown : float = 3.0
 
 const _y_shift_of_particle : float = -12.0
@@ -26,6 +26,7 @@ func _init().(StoreOfTowerEffectsUUID.BLACK_ATTACK_SPEED_BUFF_GIVER):
 func _make_modifications_to_tower(tower):
 	if !tower.is_connected("on_main_attack_module_enemy_hit", self, "_main_attk_hit_enemy"):
 		tower.connect("on_main_attack_module_enemy_hit", self, "_main_attk_hit_enemy", [], CONNECT_PERSIST)
+		tower.connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
 	
 	if own_timer == null:
 		own_timer = Timer.new()
@@ -48,11 +49,13 @@ func _make_modifications_to_tower(tower):
 func _undo_modifications_to_tower(tower):
 	if tower.is_connected("on_main_attack_module_enemy_hit", self, "_main_attk_hit_enemy"):
 		tower.disconnect("on_main_attack_module_enemy_hit", self, "_main_attk_hit_enemy")
+		tower.disconnect("on_round_end", self, "_on_round_end")
 	
 	if own_timer != null:
 		own_timer.queue_free()
 		own_timer = null
 
+#
 
 func _main_attk_hit_enemy(enemy, damage_register_id, damage_instance, module):
 	if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.BLACK_CORRUPTION_STACK):
@@ -85,3 +88,8 @@ func _buff_random_tower():
 		particle.position = decided_tower.global_position
 		particle.position.y += _y_shift_of_particle
 		decided_tower.get_tree().get_root().call_deferred("add_child", particle)
+
+
+func _on_round_end():
+	if own_timer != null:
+		own_timer.start(0.1)

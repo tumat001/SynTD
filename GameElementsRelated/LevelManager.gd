@@ -36,15 +36,16 @@ const base_level_up_costs : Dictionary = {
 	LEVEL_2 : [4, Currency.GOLD],
 	LEVEL_3 : [8, Currency.GOLD],
 	LEVEL_4 : [18, Currency.GOLD],
-	LEVEL_5 : [26, Currency.GOLD],
-	LEVEL_6 : [42, Currency.GOLD],
-	LEVEL_7 : [60, Currency.GOLD],
-	LEVEL_8 : [76, Currency.GOLD],
+	LEVEL_5 : [32, Currency.GOLD],
+	LEVEL_6 : [50, Currency.GOLD],
+	LEVEL_7 : [70, Currency.GOLD],
+	LEVEL_8 : [90, Currency.GOLD],
 	LEVEL_9 : [1, Currency.RELIC],
 	LEVEL_10 : [0, Currency.GOLD],
 }
 
 const base_level_up_gold_cost_reduction_per_round : int = 2
+const before_max_level : int = LEVEL_9
 const max_level : int = LEVEL_10
 
 var current_level_up_cost : int = 0 setget set_level_up_cost
@@ -95,8 +96,11 @@ func _on_round_end_game_start_aware(curr_stageround, is_game_start):
 # level costs related
 
 func reduce_level_up_gold_cost(amount : int = base_level_up_gold_cost_reduction_per_round):
-	if !is_in_max_level():
+	if _if_can_reduce_next_level_cost():
 		set_level_up_cost(current_level_up_cost - amount)
+
+func _if_can_reduce_next_level_cost():
+	return !is_in_max_level() and current_level != before_max_level
 
 
 func set_level_up_cost(val : int):

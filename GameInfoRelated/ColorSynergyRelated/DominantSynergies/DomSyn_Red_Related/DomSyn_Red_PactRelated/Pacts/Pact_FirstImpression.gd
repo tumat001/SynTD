@@ -21,13 +21,13 @@ func _init(arg_tier : int).(StoreOfPactUUID.FIRST_IMPRESSION, "First Impression"
 	
 	if tier == 0:
 		possible_gain_values = [13, 14, 15]
-		possible_loss_values = [-20, -21, -22]
+		possible_loss_values = [-30, -32, -34]
 	elif tier == 1:
 		possible_gain_values = [9, 10, 11]
-		possible_loss_values = [-13, -14, -15]
+		possible_loss_values = [-18, -19, -20]
 	elif tier == 2:
 		possible_gain_values = [5, 6, 7]
-		possible_loss_values = [-8, -9, -10]
+		possible_loss_values = [-10, -11, -12]
 	elif tier == 3:
 		possible_gain_values = [2, 3, 4]
 		possible_loss_values = [-5, -6, -7]

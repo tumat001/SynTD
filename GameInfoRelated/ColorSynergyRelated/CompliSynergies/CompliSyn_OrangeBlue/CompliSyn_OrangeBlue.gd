@@ -6,8 +6,8 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 
 
 const tower_ap_tier_1 : float = 1.0
-const tower_ap_tier_2 : float = 0.75
-const tower_ap_tier_3 : float = 0.50
+const tower_ap_tier_2 : float = 0.50
+const tower_ap_tier_3 : float = 0.25
 const tower_ap_tier_4 : float = 0.25
 
 var tower_ap_effect : TowerAttributesEffect
@@ -20,8 +20,8 @@ const expl_scale_tier_4 : float = 1.0
 
 const expl_unit_time_tier_1 : float = 1.5
 const expl_unit_time_tier_2 : float = 2.5
-const expl_unit_time_tier_3 : float = 3.5
-const expl_unit_time_tier_4 : float = 5.0
+const expl_unit_time_tier_3 : float = 4.0
+const expl_unit_time_tier_4 : float = 8.0
 
 var game_elements : GameElements
 var curr_tier : int

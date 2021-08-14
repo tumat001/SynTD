@@ -13,6 +13,7 @@ const TowerInfoPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInforma
 const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
 const InputPromptManager = preload("res://GameElementsRelated/InputPromptManager.gd")
 const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
+const RelicManager = preload("res://GameElementsRelated/RelicManager.gd")
 
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 
@@ -56,6 +57,13 @@ signal tower_dropped_from_dragged(tower)
 signal tower_max_limit_changed(new_limit)
 signal tower_current_limit_taken_changed(curr_slots_taken)
 
+signal tower_ing_cap_set(cap_id, cap_amount)
+signal tower_ing_cap_removed(cap_id)
+
+const ing_cap_per_relic : int = 2
+const tower_limit_per_relic : int = 1
+
+#
 
 var tower_inventory_bench
 var in_map_placables_manager : InMapPlacablesManager
@@ -74,6 +82,7 @@ var targeting_panel : TargetingPanel
 var tower_info_panel : TowerInfoPanel
 var level_manager : LevelManager setget set_level_manager
 var left_panel setget set_left_panel
+var relic_manager : RelicManager
 
 var synergy_manager
 var stage_round_manager
@@ -86,9 +95,18 @@ const TOWER_GROUP_ID : String = "All_Towers"
 
 var _is_round_on_going : bool
 
+
+#
+
 var _tower_limit_id_amount_map : Dictionary = {}
 var last_calculated_tower_limit : int
 var current_tower_limit_taken : int
+
+var _tower_ing_cap_amount_map : Dictionary = {}
+
+#
+
+
 
 
 # setters
@@ -108,6 +126,10 @@ func set_left_panel(arg_panel):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	calculate_tower_limit()
+	set_ing_cap_changer(StoreOfIngredientLimitModifierID.LEVEL, 2)
+	
+	
 	for color in TowerColors.get_all_colors():
 		_color_groups.append(str(color))
 
@@ -179,14 +201,17 @@ func add_tower(tower_instance : AbstractTower):
 	connect("in_tower_selection_mode", tower_instance, "set_is_in_selection_mode", [true], CONNECT_PERSIST)
 	connect("tower_selection_mode_ended" , tower_instance, "set_is_in_selection_mode", [false], CONNECT_PERSIST)
 	
+	connect("tower_ing_cap_set", tower_instance, "_tower_manager_ing_cap_set", [], CONNECT_PERSIST)
+	connect("tower_ing_cap_removed", tower_instance, "_tower_manager_ing_cap_removed", [], CONNECT_PERSIST)
+	
 	tower_instance.connect("tower_selected_in_selection_mode", self, "_tower_selected", [], CONNECT_PERSIST)
 	
 	tower_instance.add_to_group(TOWER_GROUP_ID, true)
 	
 	tower_instance._set_round_started(_is_round_on_going)
 	
-	# TODO TEMPORARY
-	tower_instance.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.LEVEL, 2)
+	for lim_id in _tower_ing_cap_amount_map:
+		tower_instance.set_ingredient_limit_modifier(lim_id, _tower_ing_cap_amount_map[lim_id])
 
 
 # Color and grouping related
@@ -498,3 +523,38 @@ func calculate_current_tower_limit_taken():
 	
 	current_tower_limit_taken = total
 	emit_signal("tower_current_limit_taken_changed", current_tower_limit_taken)
+
+
+# ing cap
+
+func set_ing_cap_changer(cap_id : int, cap_amount : int):
+	_tower_ing_cap_amount_map[cap_id] = cap_amount
+	
+	emit_signal("tower_ing_cap_set", cap_id, cap_amount)
+
+func remove_ing_cap_changer(cap_id : int):
+	_tower_ing_cap_amount_map.erase(cap_id)
+	
+	emit_signal("tower_ing_cap_removed", cap_id)
+
+
+#
+
+func attempt_spend_relic_for_ing_cap_increase():
+	if relic_manager.current_relic_count >= 1:
+		if _tower_ing_cap_amount_map.has(StoreOfIngredientLimitModifierID.RELIC):
+			set_ing_cap_changer(StoreOfIngredientLimitModifierID.RELIC, _tower_ing_cap_amount_map[StoreOfIngredientLimitModifierID.RELIC] + ing_cap_per_relic)
+		else:
+			set_ing_cap_changer(StoreOfIngredientLimitModifierID.RELIC, ing_cap_per_relic)
+		
+		relic_manager.decrease_relic_count_by(1, RelicManager.DecreaseRelicSource.ING_CAP_INCREASE)
+
+
+func attempt_spend_relic_for_tower_lim_increase():
+	if relic_manager.current_relic_count >= 1:
+		if _tower_limit_id_amount_map.has(StoreOfTowerLimitIncId.RELIC):
+			set_tower_limit_id_amount(StoreOfTowerLimitIncId.RELIC, _tower_limit_id_amount_map[StoreOfTowerLimitIncId.RELIC] + tower_limit_per_relic)
+		else:
+			set_tower_limit_id_amount(StoreOfTowerLimitIncId.RELIC, tower_limit_per_relic)
+		
+		relic_manager.decrease_relic_count_by(1, RelicManager.DecreaseRelicSource.TOWER_CAP_INCREASE)

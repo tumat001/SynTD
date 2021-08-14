@@ -15,17 +15,24 @@ const BurstProj_05 = preload("res://TowerRelated/Color_Orange/FlameBurst/FlameBu
 const BurstProj_06 = preload("res://TowerRelated/Color_Orange/FlameBurst/FlameBurst_Proj/FlameBurst_Proj06.png")
 
 var burst_attack_module : BulletAttackModule
-var directions : Array = [
-	Vector2(1, 1),
+var directions_01 : Array = [
+	Vector2(0, 1),
 	Vector2(1, -1),
-	Vector2(-1, 1),
 	Vector2(-1, -1),
 ]
+var directions_02 : Array = [
+	Vector2(0, -1),
+	Vector2(1, 1),
+	Vector2(-1, 1),
+]
+
+var _curr_direction_index : int = 0
+
 var tree
 
 func _init().(StoreOfTowerEffectsUUID.ING_FLAMEBURST):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_FlameburtBurst.png")
-	description = "This tower's main attacks on hit causes 4 flamelets to be spewed from enemies hit. The flamelets deal 0.75 elemental damage, and benefit from base damage buffs and on hit damages at 10% efficiency."
+	description = "This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals 0.75 elemental damage, and benefits from base damage buffs and on hit damages at 10% efficiency."
 
 
 func _construct_burst_module():
@@ -101,7 +108,7 @@ func _undo_modifications_to_tower(tower):
 func _bullet_burst(enemy, damage_reg_id, damage_instance, module):
 	var spawn_pos : Vector2 = enemy.global_position
 	
-	for dir in directions:
+	for dir in _get_directions():
 		var bullet : BaseBullet = burst_attack_module.construct_bullet(spawn_pos + dir)
 		bullet.life_distance = 30
 		bullet.enemies_ignored.append(enemy)
@@ -111,7 +118,20 @@ func _bullet_burst(enemy, damage_reg_id, damage_instance, module):
 		bullet.scale *= 0.75
 		
 		tree.get_root().call_deferred("add_child", bullet)
+	
+	_inc_directions_index()
 
+
+func _get_directions():
+	if _curr_direction_index == 0:
+		return directions_01
+	else:
+		return directions_02
+
+func _inc_directions_index():
+	_curr_direction_index += 1
+	if _curr_direction_index >= 2:
+		_curr_direction_index = 0
 
 # connect
 

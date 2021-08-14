@@ -313,14 +313,15 @@ func _tower_not_active_in_map():
 	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.TOWER_IN_BENCH)
 	should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 
+
 # synergy related clauses
 
-func _synergy_active():
+func _synergy_active(tier):
 	activation_conditional_clauses.remove_clause(ActivationClauses.SYNERGY_INACTIVE)
 	counter_decrease_clauses.remove_clause(CounterDecreaseClauses.SYNERGY_INACTIVE)
 	should_be_displaying_clauses.remove_clause(ShouldBeDisplayingClauses.SYNERGY_INACTIVE)
 
-func _synergy_removed():
+func _synergy_removed(tier):
 	activation_conditional_clauses.attempt_insert_clause(ActivationClauses.SYNERGY_INACTIVE)
 	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.SYNERGY_INACTIVE)
 	should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.SYNERGY_INACTIVE)

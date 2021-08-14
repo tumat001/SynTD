@@ -10,17 +10,17 @@ func _init(arg_tier : int).(StoreOfPactUUID.PLAYING_WITH_FIRE, "Playing With Fir
 	var possible_damage_gain_values : Array
 	
 	if tier == 0:
-		possible_speed_gain_values = [120, 130, 140]
-		possible_damage_gain_values = [19, 20, 21]
+		possible_speed_gain_values = [210, 230, 250]
+		possible_damage_gain_values = [21, 23, 25]
 	elif tier == 1:
-		possible_speed_gain_values = [80, 85, 90]
-		possible_damage_gain_values = [11, 12, 13]
+		possible_speed_gain_values = [110, 130, 150]
+		possible_damage_gain_values = [4, 5, 6]
 	elif tier == 2:
-		possible_speed_gain_values = [55, 60, 65]
-		possible_damage_gain_values = [5, 6, 7]
+		possible_speed_gain_values = [60, 65, 70]
+		possible_damage_gain_values = [2, 2, 3]
 	elif tier == 3:
 		possible_speed_gain_values = [40, 45, 50]
-		possible_damage_gain_values = [3, 4, 5]
+		possible_damage_gain_values = [1, 1, 1]
 	
 	var index_rng = pact_mag_rng.randi_range(0, 2)
 	attk_speed_gain_val = possible_speed_gain_values[index_rng]

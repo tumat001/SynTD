@@ -34,11 +34,13 @@ onready var level_up_button = $HBoxContainer/LevelRerollContainer/HBoxContainer/
 onready var reroll_button = $HBoxContainer/LevelRerollContainer/RerollPanel/RerollButton
 onready var level_up_panel = $HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel
 onready var reroll_panel = $HBoxContainer/LevelRerollContainer/RerollPanel
+onready var relic_buy_etc_panel = $HBoxContainer/RelicBuyEtcPanel
 
 var gold_manager : GoldManager
-var relic_manager : RelicManager
+var relic_manager : RelicManager setget set_relic_manager
 var level_manager setget set_level_manager
 var shop_manager setget set_shop_manager
+var tower_manager setget set_tower_manager
 
 #
 
@@ -58,6 +60,17 @@ func set_shop_manager(arg_manager):
 	shop_manager.connect("on_cost_per_roll_changed", self, "update_reroll_gold_cost", [], CONNECT_PERSIST)
 	shop_manager.connect("can_roll_changed", self, "_can_roll_changed", [], CONNECT_PERSIST)
 	update_reroll_gold_cost(shop_manager.current_cost_per_roll)
+
+
+func set_tower_manager(arg_manager):
+	tower_manager = arg_manager
+	
+	relic_buy_etc_panel.tower_manager = arg_manager
+
+func set_relic_manager(arg_manager):
+	relic_manager = arg_manager
+	
+	relic_buy_etc_panel.relic_manager = arg_manager
 
 
 # Called when the node enters the scene tree for the first time.

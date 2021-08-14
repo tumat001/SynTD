@@ -6,5 +6,6 @@ func _ready():
 	anim_sprite.scale = Vector2(0.5, 0.5)
 
 func _process(delta):
-	anim_sprite.scale *= (1.25 + delta) - total_time
+	var inc = 12 * delta
+	anim_sprite.scale += Vector2(inc, inc)
 	total_time += delta

@@ -165,11 +165,11 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		game_elements = arg_game_elements
 		enemy_manager = game_elements.enemy_manager
 	
-	if tier <= 4:
+	if tier <= 3:
 		if breeze_ability == null:
 			_construct_breeze_relateds()
 	
-	if tier <= 3:
+	if tier <= 2:
 		if mana_blast_ability == null:
 			_construct_mana_blast_relateds()
 		else:
@@ -179,7 +179,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 			mana_blast_ability.set_clauses_to_usual_synergy_insufficient_based()
 	
 	
-	if tier <= 2:
+	if tier <= 1:
 		if renew_empower_ability == null:
 			_construct_renew_empower_ability()
 		else:

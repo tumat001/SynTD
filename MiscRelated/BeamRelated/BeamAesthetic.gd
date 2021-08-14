@@ -10,6 +10,10 @@ var _current_time_visible : float
 
 var queue_free_if_time_over : bool = false
 
+func _init():
+	z_as_relative = false
+	z_index = ZIndexStore.PARTICLE_EFFECTS
+
 func _process(delta):
 	if visible and is_timebound:
 		if _current_time_visible >= time_visible:

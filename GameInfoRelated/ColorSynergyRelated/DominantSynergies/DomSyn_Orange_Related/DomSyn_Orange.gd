@@ -7,8 +7,8 @@ signal on_base_multiplier_changed(scale)
 
 
 const tier_1_heat_effect_scale : float = 3.4
-const tier_2_heat_effect_scale : float = 2.2
-const tier_3_heat_effect_scale : float = 1.5
+const tier_2_heat_effect_scale : float = 2.6
+const tier_3_heat_effect_scale : float = 1.8
 const tier_4_heat_effect_scale : float = 1.0
 var current_heat_effect_scale : float
 

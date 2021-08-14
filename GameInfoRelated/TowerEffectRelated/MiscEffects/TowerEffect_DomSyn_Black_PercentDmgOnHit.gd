@@ -7,8 +7,8 @@ const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 const Black_HitParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/HitParticle/Black_HitParticle.tscn")
 
-const _stack_amount_trigger : int = 12
-const _dmg_ratio : float = 5.0
+const _stack_amount_trigger : int = 20
+const _dmg_ratio : float = 10.0
 const _dmg_flat_maximum : float = 7.0
 
 

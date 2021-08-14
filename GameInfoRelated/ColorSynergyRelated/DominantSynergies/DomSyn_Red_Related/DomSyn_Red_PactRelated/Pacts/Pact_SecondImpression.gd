@@ -20,14 +20,14 @@ func _init(arg_tier : int).(StoreOfPactUUID.SECOND_IMPRESSION, "Second Impressio
 	var possible_loss_values : Array
 	
 	if tier == 0:
-		possible_gain_values = [14, 15, 16]
-		possible_loss_values = [-14, -15, -16]
+		possible_gain_values = [23, 24, 25]
+		possible_loss_values = [-23, -24, -25]
 	elif tier == 1:
-		possible_gain_values = [10, 11, 12]
-		possible_loss_values = [-10, -11, -12]
+		possible_gain_values = [15, 16, 17]
+		possible_loss_values = [-15, -16, -17]
 	elif tier == 2:
-		possible_gain_values = [6, 7, 8]
-		possible_loss_values = [-6, -7, -8]
+		possible_gain_values = [9, 10, 11]
+		possible_loss_values = [-9, -10, -11]
 	elif tier == 3:
 		possible_gain_values = [4, 5, 6]
 		possible_loss_values = [-4, -5, -6]

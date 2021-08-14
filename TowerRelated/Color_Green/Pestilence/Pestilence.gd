@@ -252,8 +252,9 @@ func _on_main_attack_p(attk_speed_delay, enemies, module):
 	if enemies.size() != 0:
 		var enemy = enemies[0]
 		
-		if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.PESTILENCE_NOXIOUS):
-			_execute_air_attack(enemy.global_position)
+		if enemy != null:
+			if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.PESTILENCE_NOXIOUS):
+				_execute_air_attack(enemy.global_position)
 
 
 func _on_any_attack_hit_enemy_p(enemy, damage_register_id, damage_instance, module):

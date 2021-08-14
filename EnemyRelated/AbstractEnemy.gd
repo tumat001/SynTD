@@ -237,7 +237,12 @@ func _ready():
 	connect("on_current_shield_changed", lifebar, "set_current_shield_value", [], CONNECT_PERSIST)
 	connect("on_max_health_changed", lifebar, "set_max_value", [], CONNECT_PERSIST)
 	
+	# TEST
+	
+	#
+	
 	_post_inherit_ready()
+
 
 func _post_inherit_ready():
 	calculate_final_armor()
@@ -818,12 +823,14 @@ func hit_by_aoe(base_aoe):
 
 func hit_by_damage_instance(damage_instance : DamageInstance, damage_reg_id : int = 0, emit_on_hit_signal : bool = true):
 	if !is_reviving:
+		damage_instance = damage_instance.get_copy_scaled_by(1)
+		
 		if emit_on_hit_signal:
 			emit_signal("on_hit", self, damage_reg_id, damage_instance)
 		
 		emit_signal("before_damage_instance_is_processed", damage_instance, self)
-		_process_on_hit_damages(damage_instance.on_hit_damages.duplicate(true), damage_instance)
-		_process_effects(damage_instance.on_hit_effects.duplicate(true), damage_instance.on_hit_effect_multiplier)
+		_process_on_hit_damages(damage_instance.on_hit_damages, damage_instance)
+		_process_effects(damage_instance.on_hit_effects, damage_instance.on_hit_effect_multiplier)
 
 
 func _process_on_hit_damages(on_hit_damages : Dictionary, damage_instance):

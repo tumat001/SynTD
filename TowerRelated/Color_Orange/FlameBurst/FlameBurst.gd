@@ -17,14 +17,29 @@ const BurstProj_06 = preload("res://TowerRelated/Color_Orange/FlameBurst/FlameBu
 
 
 var burst_attack_module : BulletAttackModule
-var directions : Array = [
-	Vector2(0.5, -sqrt(3)/2),
+
+# Up Down Left Right
+var directions_01 : Array = [ 
+	#Vector2(0.5, -sqrt(3)/2),
 	Vector2(1, 0), # L
-	Vector2(0.5, sqrt(3)/2),
-	Vector2(-0.5, sqrt(3)/2),
+	#Vector2(0.5, sqrt(3)/2),
+	#Vector2(-0.5, sqrt(3)/2),
 	Vector2(-1, 0), # R
-	Vector2(-0.5, -sqrt(3)/2)
+	#Vector2(-0.5, -sqrt(3)/2)
+	Vector2(0, 1),
+	Vector2(0, -1)
 ]
+
+# directions_01, but rotated 45 deg
+var directions_02 : Array = [ #
+	Vector2(1, 1),
+	Vector2(1, -1),
+	Vector2(-1, 1),
+	Vector2(-1, -1),
+]
+
+var _curr_direction_index : int = 0
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -80,7 +95,7 @@ func _ready():
 	
 	burst_attack_module = BulletAttackModule_Scene.instance()
 	burst_attack_module.base_damage_scale = 0.15
-	burst_attack_module.base_damage = 1 / burst_attack_module.base_damage_scale
+	burst_attack_module.base_damage = 0.75 / burst_attack_module.base_damage_scale
 	burst_attack_module.base_damage_type = DamageType.ELEMENTAL
 	burst_attack_module.base_attack_speed = 0
 	burst_attack_module.base_attack_wind_up = 0
@@ -90,10 +105,10 @@ func _ready():
 	burst_attack_module.base_proj_speed = 200
 	burst_attack_module.base_proj_life_distance = 30
 	burst_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	burst_attack_module.on_hit_damage_scale = 0.15
 	
 	burst_attack_module.benefits_from_bonus_on_hit_effect = false
 	burst_attack_module.benefits_from_bonus_attack_speed = false
-	burst_attack_module.on_hit_damage_scale = 0.15
 	
 	var burst_bullet_shape = RectangleShape2D.new()
 	burst_bullet_shape.extents = Vector2(5, 3)
@@ -132,7 +147,7 @@ func _attack_module_removed_from_self(module : AbstractAttackModule):
 func _bullet_burst(enemy, damage_reg_id, damage_instance, module):
 	var spawn_pos : Vector2 = enemy.global_position
 	
-	for dir in directions:
+	for dir in _get_directions():
 		var bullet : BaseBullet = burst_attack_module.construct_bullet(spawn_pos + dir)
 		bullet.life_distance = 30 + (main_attack_module.range_module.last_calculated_final_range - main_attack_module.range_module.base_range_radius)
 		bullet.enemies_ignored.append(enemy)
@@ -142,6 +157,19 @@ func _bullet_burst(enemy, damage_reg_id, damage_instance, module):
 		bullet.scale *= 0.75
 		
 		get_tree().get_root().call_deferred("add_child", bullet)
+	
+	_inc_directions_index()
+
+func _get_directions():
+	if _curr_direction_index == 0:
+		return directions_01
+	else:
+		return directions_02
+
+func _inc_directions_index():
+	_curr_direction_index += 1
+	if _curr_direction_index >= 2:
+		_curr_direction_index = 0
 
 
 # Heat Module

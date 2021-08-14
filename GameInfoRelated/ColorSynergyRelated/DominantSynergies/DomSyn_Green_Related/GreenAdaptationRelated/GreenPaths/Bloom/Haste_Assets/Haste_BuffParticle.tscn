@@ -1,0 +1,21 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GreenAdaptationRelated/GreenPaths/Bloom/Haste_Assets/Haste_Particle05.png" type="Texture" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GreenAdaptationRelated/GreenPaths/Bloom/Haste_Assets/Haste_Particle01.png" type="Texture" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GreenAdaptationRelated/GreenPaths/Bloom/Haste_Assets/Haste_Particle02.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GreenAdaptationRelated/GreenPaths/Bloom/Haste_Assets/Haste_Particle04.png" type="Texture" id=5]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GreenAdaptationRelated/GreenPaths/Bloom/Haste_Assets/Haste_Particle03.png" type="Texture" id=6]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 5 ), ExtResource( 2 ) ],
+"loop": false,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Haste_BuffParticle" instance=ExtResource( 1 )]
+position = Vector2( -0.5, -0.5 )
+frames = SubResource( 1 )
+frame = 4

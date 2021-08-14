@@ -13,8 +13,10 @@ const Transmutator_Proj = preload("res://TowerRelated/Color_Red/Transmutator/Tra
 
 
 const base_slow_percent : float = -70.0
-const base_slow_duration : float = 0.5
+const base_slow_duration : float = 2.0
 const base_max_health_reduc_percent : float = -12.5
+const min_max_health_reduc_amount : float = 5.0
+const max_max_health_reduc_amount : float = 25.0
 #const base_heal_ratio : float = 3.0
 
 var enemy_slow_modi : PercentModifier
@@ -83,6 +85,9 @@ func _construct_effects():
 	#
 	enemy_max_health_modi = PercentModifier.new(StoreOfEnemyEffectsUUID.TRANSMUTATOR_MAX_HEALTH_REDUCTION_EFFECT)
 	enemy_max_health_modi.percent_based_on = PercentType.BASE
+	enemy_max_health_modi.ignore_flat_limits = false
+	enemy_max_health_modi.flat_minimum = min_max_health_reduc_amount
+	enemy_max_health_modi.flat_maximum = max_max_health_reduc_amount
 	
 	enemy_max_health_reduc_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_HEALTH, enemy_max_health_modi, StoreOfEnemyEffectsUUID.TRANSMUTATOR_MAX_HEALTH_REDUCTION_EFFECT)
 	enemy_max_health_reduc_effect.is_timebound = false

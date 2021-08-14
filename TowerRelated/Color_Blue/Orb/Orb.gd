@@ -128,7 +128,7 @@ func _ready():
 	
 	sticky_attack_module.connect("before_bullet_is_shot", self, "_sticky_bullet_shot", [], CONNECT_PERSIST)
 	
-	sticky_attack_module.can_be_commanded_by_tower_other_clauses[AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01] = false
+	sticky_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
 	
 	add_attack_module(sticky_attack_module)
 	
@@ -206,7 +206,7 @@ func _ready():
 	beam_attack_module.beam_is_timebound = true
 	beam_attack_module.beam_time_visible = 1.0 / 6.0
 	
-	beam_attack_module.can_be_commanded_by_tower_other_clauses[AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01] = false
+	beam_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
 	
 	add_attack_module(beam_attack_module)
 	
@@ -313,11 +313,11 @@ func _apply_level_01():
 
 func _apply_level_02():
 	orb_hat_sprite.texture = Orb_HatLevel02
-	sticky_attack_module.can_be_commanded_by_tower_other_clauses.erase(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
+	sticky_attack_module.can_be_commanded_by_tower_other_clauses.remove_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
 	sticky_attack_active = true
 
 func _remove_level_02():
-	sticky_attack_module.can_be_commanded_by_tower_other_clauses[AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01] = false
+	sticky_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
 	sticky_attack_active = false
 
 
@@ -331,11 +331,11 @@ func _remove_level_03():
 
 func _apply_level_04():
 	orb_hat_sprite.texture = Orb_HatLevel04
-	beam_attack_module.can_be_commanded_by_tower_other_clauses.erase(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
+	beam_attack_module.can_be_commanded_by_tower_other_clauses.remove_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
 	beam_attack_active = true
 
 func _remove_level_04():
-	beam_attack_module.can_be_commanded_by_tower_other_clauses[AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01] = false
+	beam_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
 	beam_attack_active = false
 
 

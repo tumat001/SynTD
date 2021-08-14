@@ -18,13 +18,13 @@ func _init(arg_tier : int).(StoreOfPactUUID.TIGER_SOUL, "Tiger Soul", arg_tier):
 	
 	if tier == 0:
 		player_damage_per_round = 2
-		enemy_bleed_per_second = 2 #30
+		enemy_bleed_per_second = 4 #60
 	elif tier == 1:
 		player_damage_per_round = 1.5
-		enemy_bleed_per_second = 1.25 #18.75
+		enemy_bleed_per_second = 2 #30
 	elif tier == 2:
 		player_damage_per_round = 1
-		enemy_bleed_per_second = 0.75 #11.25
+		enemy_bleed_per_second = 1.25 #18.75
 	elif tier == 3:
 		player_damage_per_round = 0.5
 		enemy_bleed_per_second = 0.5 #7.5

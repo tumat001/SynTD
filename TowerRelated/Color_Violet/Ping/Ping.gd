@@ -63,8 +63,8 @@ var _shot_trigger_time : float = 0.75
 
 var shot_attack_module : WithBeamInstantDamageAttackModule
 
-const empowered_base_damage : float = 9.0
-const normal_base_damage : float = 3.5
+const empowered_base_damage : float = 5.0
+const normal_base_damage : float = 3.0
 const empowered_on_hit_damage_scale : float = 1.5
 const normal_on_hit_damage_scale : float = 1.0
 

@@ -28,10 +28,10 @@ enum GoldIncomeIds {
 
 # ORDER MATTERS HERE
 const total_gold_interest_with_income_intervals : Dictionary = {
-	50 : 5,
-	40 : 4,
-	30 : 3,
-	20 : 2,
+	70 : 5,
+	50 : 4,
+	40 : 3,
+	30 : 2,
 	10 : 1,
 }
 
@@ -39,11 +39,12 @@ const win_streak_income_map : Dictionary = {
 	2 : 1,
 	3 : 1,
 	4 : 2,
-	5 : 2,
+	5 : 3,
 	6 : 3,
+	7 : 4
 }
 # highest win streak in the income map
-const highest_win_streak : int = 6
+const highest_win_streak : int = 7
 
 
 const lose_streak_income_map : Dictionary = {
@@ -51,9 +52,10 @@ const lose_streak_income_map : Dictionary = {
 	3 : 1,
 	4 : 2,
 	5 : 3,
+	6 : 4,
 }
 # highest lose streak in the income map
-const highest_lose_streak : int = 5
+const highest_lose_streak : int = 6
 
 
 signal current_gold_changed(current_gold)

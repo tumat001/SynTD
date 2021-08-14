@@ -16,4 +16,4 @@ func _process(delta):
 	
 	
 	if lifetime < 0.2:
-		modulate.a -= delta * 10
+		modulate.a -= delta * 2

@@ -28,16 +28,16 @@ var soul_execute_sf : SpriteFrames
 func _init(arg_tier : int).(StoreOfPactUUID.DRAGON_SOUL, "Dragon Soul", arg_tier):
 	
 	if tier == 0:
-		enemy_execute_ratio = 0.25
+		enemy_execute_ratio = 0.35
 		player_execute_ratio = 0.25 
 	elif tier == 1:
-		enemy_execute_ratio = 0.175
+		enemy_execute_ratio = 0.25
 		player_execute_ratio = 0.2 
 	elif tier == 2:
-		enemy_execute_ratio = 0.125
+		enemy_execute_ratio = 0.20
 		player_execute_ratio = 0.15 
 	elif tier == 3:
-		enemy_execute_ratio = 0.05
+		enemy_execute_ratio = 0.1
 		player_execute_ratio = 0.1 
 	
 	

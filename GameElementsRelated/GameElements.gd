@@ -107,6 +107,7 @@ func _ready():
 	tower_manager.game_elements = self
 	tower_manager.level_manager = level_manager
 	tower_manager.left_panel = left_panel
+	tower_manager.relic_manager = relic_manager
 	
 	# syn manager
 	synergy_manager.tower_manager = tower_manager
@@ -116,6 +117,9 @@ func _ready():
 	# gold manager
 	gold_manager.connect("current_gold_changed", panel_buy_sell_level_roll, "_update_tower_cards_buyability_based_on_gold")
 	gold_manager.stage_round_manager = stage_round_manager
+	
+	# relic manager
+	relic_manager.stage_round_manager = stage_round_manager
 	
 	# stage round manager related
 	stage_round_manager.round_status_panel = right_side_panel.round_status_panel
@@ -177,21 +181,23 @@ func _ready():
 	panel_buy_sell_level_roll.relic_manager = relic_manager
 	panel_buy_sell_level_roll.level_manager = level_manager
 	panel_buy_sell_level_roll.shop_manager = shop_manager
+	panel_buy_sell_level_roll.tower_manager = tower_manager
 	
 	# tower empty slot notif panel
 	tower_empty_slot_notif_panel.tower_manager = tower_manager
-	
+	tower_empty_slot_notif_panel.synergy_manager = synergy_manager
+	tower_empty_slot_notif_panel.all_properties_set()
 	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round(true)
-	#gold_manager.increase_gold_by(1, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	gold_manager.increase_gold_by(2, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.starting_health = 150
 	health_manager.set_health(150)
-	# Level setting is done inside level manager itself
 	
-	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_10
+	
+	#gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	#level_manager.current_level = LevelManager.LEVEL_9
 	
 	#relic_manager.increase_relic_count_by(5, RelicManager.IncreaseRelicSource.ROUND)
 
@@ -205,24 +211,24 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHAOS,
-			Towers.RE,
-			Towers.TESLA,
-			Towers.SPIKE,
-			Towers.WAVE,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.PINECONE,
-			Towers.IMPALE,
-			Towers.PESTILENCE,
-			Towers.BEACON_DISH,
-			Towers.ROYAL_FLAME,
-		])
-	even = !even
+	shop_manager.roll_towers_in_shop_with_cost()
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.CHAOS,
+#			Towers.RE,
+#			Towers.TESLA,
+#			Towers.STRIKER,
+#			Towers.REBOUND,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.SHOCKER,
+#			Towers.IMPALE,
+#			Towers.EMBER,
+#			Towers.COAL_LAUNCHER,
+#			Towers._704,
+#		])
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
