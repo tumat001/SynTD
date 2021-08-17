@@ -86,6 +86,7 @@ func _ready():
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
+	tower_type_info = info
 	
 	tower_detecting_range_module = TowerDetectingRangeModule_Scene.instance()
 	tower_detecting_range_module.detection_range = info.base_range
@@ -210,6 +211,7 @@ func _post_inherit_ready():
 	
 	var psn_effect = EnemyDmgOverTimeEffect.new(psn_dmg_instance, StoreOfEnemyEffectsUUID.PESTILENCE_POISON, 1)
 	psn_effect.is_timebound = false
+	psn_effect.effect_source_ref = self
 	
 	var tower_effect = TowerOnHitEffectAdderEffect.new(psn_effect, StoreOfTowerEffectsUUID.PESTILENCE_POISON)
 	

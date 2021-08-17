@@ -37,6 +37,7 @@ const DuringReviveParticle_Scene = preload("res://EnemyRelated/CommonParticles/R
 signal on_death_by_any_cause
 signal on_hit(me, damage_reg_id, damage_instance)
 signal on_post_mitigated_damage_taken(damage_instance_report, is_lethal, me)
+signal on_killed_by_damage(damage_instance_report, me)
 signal before_damage_instance_is_processed(damage_instance, me)
 
 signal reached_end_of_path(me)
@@ -140,8 +141,17 @@ var untargetable_clauses : ConditionalClauses
 var last_calculated_is_untargetable : bool = false
 
 
-
 var all_abilities : Array = []
+
+
+# Enemy properties
+
+# makes the round not end when there is at least one of these enemies with this property on.
+# does not update in real time (only before enemy is added to manager)
+var blocks_from_round_ending : bool = true
+var exits_when_at_map_end : bool = true
+
+var respect_stage_round_health_scale : bool = true
 
 #
 
@@ -164,16 +174,10 @@ var _is_stunned : bool
 var _dmg_over_time_id_effects_map : Dictionary = {}
 var _heal_over_time_id_effects_map : Dictionary = {}
 
+var _all_effects_map : Dictionary = {}
 
-func _stats_initialize(info : EnemyTypeInformation):
-	base_health = info.base_health
-	base_movement_speed = info.base_movement_speed
-	base_armor = info.base_armor
-	base_toughness = info.base_toughness
-	base_resistance = info.base_resistance
-	base_player_damage = info.base_player_damage
-	base_effect_vulnerability = info.base_effect_vulnerability
-	
+
+func _init():
 	no_movement_from_self_clauses = ConditionalClauses.new()
 	no_movement_from_self_clauses.connect("clause_inserted", self, "_no_movement_clause_added")
 	no_movement_from_self_clauses.connect("clause_removed", self, "_no_movement_clause_removed")
@@ -185,6 +189,16 @@ func _stats_initialize(info : EnemyTypeInformation):
 	untargetable_clauses = ConditionalClauses.new()
 	untargetable_clauses.connect("clause_inserted", self, "_untargetability_clause_added")
 	untargetable_clauses.connect("clause_removed", self, "_untargetability_clause_removed")
+
+
+func _stats_initialize(info : EnemyTypeInformation):
+	base_health = info.base_health
+	base_movement_speed = info.base_movement_speed
+	base_armor = info.base_armor
+	base_toughness = info.base_toughness
+	base_resistance = info.base_resistance
+	base_player_damage = info.base_player_damage
+	base_effect_vulnerability = info.base_effect_vulnerability
 
 
 
@@ -236,6 +250,8 @@ func _ready():
 	connect("on_current_health_changed", lifebar, "set_current_health_value", [], CONNECT_PERSIST)
 	connect("on_current_shield_changed", lifebar, "set_current_shield_value", [], CONNECT_PERSIST)
 	connect("on_max_health_changed", lifebar, "set_max_value", [], CONNECT_PERSIST)
+	
+	
 	
 	# TEST
 	
@@ -305,7 +321,7 @@ func _physics_process(delta):
 		offset += distance_traveled
 		distance_to_exit -= distance_traveled
 	
-	if unit_offset == 1:
+	if unit_offset == 1 and exits_when_at_map_end:
 		call_deferred("emit_signal", "reached_end_of_path", self)
 
 
@@ -411,14 +427,15 @@ func _set_current_health_to(health_amount, from_overheal : bool = false):
 
 
 func execute_self_by(source_id : int):
-	_take_unmitigated_damages([[current_health, DamageType.PURE, source_id]])
+	_take_unmitigated_damages([[current_health, DamageType.PURE, source_id]], null)
 
 # The only function that should handle taking
 # damage and health deduction. Also where
 # death is handled
-func _take_unmitigated_damages(damages_and_types : Array):
+func _take_unmitigated_damages(damages_and_types : Array, dmg_instance):
 	if !is_reviving:
 		var damage_instance_report : DamageInstanceReport = DamageInstanceReport.new()
+		damage_instance_report.dmg_instance_ref = weakref(dmg_instance)
 		
 		for damage_and_type in damages_and_types: #on hit id in third index
 			var damage_amount = damage_and_type[0]
@@ -444,12 +461,15 @@ func _take_unmitigated_damages(damages_and_types : Array):
 		
 		if current_health <= 0:
 			emit_signal("on_post_mitigated_damage_taken", damage_instance_report, true, self)
+			emit_signal("on_killed_by_damage", damage_instance_report, self)
 			_destroy_self()
 			
 		else:
 			emit_signal("on_post_mitigated_damage_taken", damage_instance_report, false, self)
 
 
+
+# see _take_unmitigated_damages()
 func _take_unmitigated_damage_to_life(damage_amount : float):
 	var overflow_damage : float = damage_amount
 	var had_shields : bool = false
@@ -823,7 +843,8 @@ func hit_by_aoe(base_aoe):
 
 func hit_by_damage_instance(damage_instance : DamageInstance, damage_reg_id : int = 0, emit_on_hit_signal : bool = true):
 	if !is_reviving:
-		damage_instance = damage_instance.get_copy_scaled_by(1)
+		# no need for copy since we don't make changes to it
+		#damage_instance = damage_instance.get_copy_scaled_by(1)
 		
 		if emit_on_hit_signal:
 			emit_signal("on_hit", self, damage_reg_id, damage_instance)
@@ -844,7 +865,7 @@ func _process_on_hit_damages(on_hit_damages : Dictionary, damage_instance):
 		elif on_hit_damage.damage_as_modifier is PercentModifier:
 			damages.append(_process_percent_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type, damage_instance, on_hit_damage.internal_id))
 	
-	_take_unmitigated_damages(damages)
+	_take_unmitigated_damages(damages, damage_instance)
 
 func _process_percent_damage(damage_as_modifier: PercentModifier, damage_type : int, damage_instance, on_hit_id) -> Array:
 	var percent_type = damage_as_modifier.percent_based_on
@@ -899,14 +920,22 @@ func _process_effects(effects : Dictionary, multiplier : float = 1):
 		_add_effect(effect, multiplier)
 
 
-func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1) -> EnemyBaseEffect:
+# WHEN ADDING NEW EFFECT, LOOK AT:
+# _remove_effect(), copy_enemy_stats(), decrease_timebounds()
+func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_multiplier : bool = false) -> EnemyBaseEffect:
 	if !base_effect.is_from_enemy:
 		multiplier *= last_calculated_final_effect_vulnerability
+	
+	if ignore_multiplier:
+		multiplier = 1
 	
 	var to_use_effect = base_effect._get_copy_scaled_by(multiplier)
 	
 	if to_use_effect.status_bar_icon != null:
 		statusbar.add_status_icon(to_use_effect.effect_uuid, to_use_effect.status_bar_icon)
+	
+	if !(to_use_effect is EnemyClearAllEffects):
+		_all_effects_map[to_use_effect.effect_uuid] = to_use_effect
 	
 	
 	if to_use_effect is EnemyStunEffect:
@@ -943,6 +972,7 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1) -> Enemy
 	elif to_use_effect is EnemyDmgOverTimeEffect:
 		if !_dmg_over_time_id_effects_map.has(to_use_effect.effect_uuid):
 			_dmg_over_time_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
+			to_use_effect.connect_to_enemy(self)
 		else:
 			_dmg_over_time_id_effects_map[to_use_effect.effect_uuid]._reapply(to_use_effect)
 		
@@ -1020,7 +1050,6 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1) -> Enemy
 		
 	elif to_use_effect is EnemyReviveEffect:
 		revive_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
-		
 	
 	
 	emit_signal("effect_added", to_use_effect, self)
@@ -1039,6 +1068,9 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		_stack_id_effects_map.erase(base_effect.effect_uuid)
 		
 	elif base_effect is EnemyDmgOverTimeEffect:
+		var dmg_effect = _dmg_over_time_id_effects_map[base_effect.effect_uuid]
+		dmg_effect.disconnect_from_enemy(self)
+		
 		_dmg_over_time_id_effects_map.erase(base_effect.effect_uuid)
 		
 	elif base_effect is EnemyAttributesEffect:
@@ -1112,78 +1144,81 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 	
 	
 	if base_effect != null:
+		_all_effects_map.erase(base_effect.effect_uuid)
 		emit_signal("effect_removed", base_effect, self)
 
 
 
 func _clear_effects():
-	for effect in _stun_id_effects_map.values():
+	for effect in _all_effects_map:
 		_remove_effect(effect)
-	
-	for effect in _stack_id_effects_map.values():
-		_remove_effect(effect)
-	
-	for effect in _dmg_over_time_id_effects_map.values():
-		_remove_effect(effect)
-	
-	
-	# Attributes
-	for effect in flat_movement_speed_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in percent_movement_speed_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in flat_armor_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in percent_armor_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in flat_toughness_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in percent_toughness_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in flat_resistance_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in percent_resistance_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in _flat_base_health_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in _percent_base_health_id_effect_map.values():
-		_remove_effect(effect)
-	
-	
-	for effect in flat_effect_vulnerability_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in percent_effect_vulnerability_id_effect_map.values():
-		_remove_effect(effect)
-	
-	
-	for effect in flat_percent_health_hit_scale_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in percent_percent_health_hit_scale_id_effect_map.values():
-		_remove_effect(effect)
-	
-	
-	for effect in _heal_over_time_id_effects_map.values():
-		_remove_effect(effect)
-	
-	for effect in shield_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in invisibility_id_effect_map.values():
-		_remove_effect(effect)
-	
-	for effect in revive_id_effect_map.values():
-		_remove_effect(effect)
+#	for effect in _stun_id_effects_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in _stack_id_effects_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in _dmg_over_time_id_effects_map.values():
+#		_remove_effect(effect)
+#
+#
+#	# Attributes
+#	for effect in flat_movement_speed_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in percent_movement_speed_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in flat_armor_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in percent_armor_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in flat_toughness_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in percent_toughness_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in flat_resistance_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in percent_resistance_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in _flat_base_health_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in _percent_base_health_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#
+#	for effect in flat_effect_vulnerability_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in percent_effect_vulnerability_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#
+#	for effect in flat_percent_health_hit_scale_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in percent_percent_health_hit_scale_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#
+#	for effect in _heal_over_time_id_effects_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in shield_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in invisibility_id_effect_map.values():
+#		_remove_effect(effect)
+#
+#	for effect in revive_id_effect_map.values():
+#		_remove_effect(effect)
 	
 
 # Timebounded related
@@ -1300,8 +1335,8 @@ func _decrease_time_of_effect(effect, delta : float):
 
 func shift_position(shift : float):
 	var final_shift = shift
-	if offset + shift < 0:
-		final_shift = -offset
+	#if offset + shift < 0:
+	#	final_shift = -offset
 	
 	offset += final_shift
 	distance_to_exit -= final_shift
@@ -1377,3 +1412,58 @@ func _after_end_of_revive():
 	untargetable_clauses.remove_clause(UntargetabilityClauses.IS_REVIVING)
 	
 	emit_signal("on_revive_completed")
+
+
+# 
+
+func copy_enemy_stats(arg_enemy,
+		including_curr_health : bool = false,
+		update_last_calcs : bool = true):
+	
+	# Base stats
+	base_health = arg_enemy.base_health
+	pierce_consumed_per_hit = arg_enemy.pierce_consumed_per_hit
+	base_armor = arg_enemy.base_armor
+	base_toughness = arg_enemy.base_toughness
+	base_resistance = arg_enemy.base_resistance
+	base_player_damage = arg_enemy.base_player_damage
+	base_movement_speed = arg_enemy.base_movement_speed
+	base_effect_vulnerability = arg_enemy.base_effect_vulnerability
+	base_percent_health_hit_scale = arg_enemy.base_percent_health_hit_scale
+	
+	if update_last_calcs:
+		calculate_max_health()
+		calculate_final_armor()
+		calculate_final_toughness()
+		calculate_final_resistance()
+		calculate_final_movement_speed()
+		calculate_effect_vulnerability()
+		calculate_percent_health_hit_scale()
+	
+	# Health
+	if including_curr_health:
+		#current_health = arg_enemy.current_health
+		_set_current_health_to(arg_enemy.current_health)
+
+
+func copy_enemy_stats_and_effects(arg_enemy,
+		including_curr_health : bool = false):
+	
+	copy_enemy_stats(arg_enemy, including_curr_health, false)
+	
+	# Effects
+	for effect in _all_effects_map:
+		_add_effect(effect, 1, true)
+
+
+func copy_enemy_location_and_offset(arg_enemy):
+	unit_offset = arg_enemy.unit_offset
+	offset = arg_enemy.offset
+	
+	if is_inside_tree():
+		global_position = arg_enemy.global_position
+	else:
+		position = arg_enemy.global_position
+	
+	distance_to_exit = arg_enemy.distance_to_exit
+

@@ -17,6 +17,8 @@ var base_damage_multiplier : float = 1
 var on_hit_damage_multiplier : float = 1
 var on_hit_effect_multiplier : float = 1
 
+var source_ref : WeakRef
+
 
 func get_copy_scaled_by(scale : float):
 	var copy = get_script().new()
@@ -39,6 +41,8 @@ func get_copy_scaled_by(scale : float):
 	
 	copy.final_resistance_pierce = final_resistance_pierce
 	copy.final_percent_enemy_resistance_pierce = final_percent_enemy_resistance_pierce
+	
+	copy.source_ref = source_ref
 	
 	return copy
 
@@ -64,6 +68,8 @@ func get_copy_damage_only_scaled_by(scale : float):
 	
 	copy.final_resistance_pierce = final_resistance_pierce
 	copy.final_percent_enemy_resistance_pierce = final_percent_enemy_resistance_pierce
+	
+	copy.source_ref = source_ref
 	
 	return copy
 

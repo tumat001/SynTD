@@ -119,7 +119,6 @@ func _module_attempted_turn_on(module):
 func _module_attempted_turn_off(module):
 	if stage_round_manager.round_started:
 		pass
-		
 	else:
 		if _energy_modules_taken_energy_this_round.has(module):
 			_energy_modules_taken_energy_this_round.erase(module)

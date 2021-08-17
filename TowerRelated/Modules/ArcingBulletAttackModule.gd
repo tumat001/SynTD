@@ -8,7 +8,7 @@ var collide_with_any : bool
 func _ready():
 	benefits_from_bonus_proj_speed = false
 
-func _adjust_bullet_physics_settings(bullet : BaseBullet, arg_enemy_pos : Vector2):
+func _adjust_bullet_physics_settings(bullet : BaseBullet, arg_enemy_pos : Vector2, arg_ref_pos : Vector2 = global_position):
 	if bullet is ArcingBaseBullet:
 		bullet.speed = last_calculated_final_proj_speed
 		bullet.max_height = max_height

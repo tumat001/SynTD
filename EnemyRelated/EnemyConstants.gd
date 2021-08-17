@@ -78,7 +78,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.FIEND:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 200
+		info.base_health = 260
 		info.base_movement_speed = 18
 		info.base_armor = 30
 		info.base_toughness = 20
@@ -90,25 +90,25 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.ENCHANTRESS:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 52
+		info.base_health = 58
 		info.base_movement_speed = 25
 		info.base_toughness = 10
 		
 	elif enemy_id == Enemies.MAGUS:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 52
+		info.base_health = 58
 		info.base_movement_speed = 23
 		
 	elif enemy_id == Enemies.ASSASSIN:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
 		info.base_health = 40
-		info.base_movement_speed = 28
+		info.base_movement_speed = 32
 		info.base_player_damage = 4
 		
 	elif enemy_id == Enemies.GRANDMASTER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 125
-		info.base_movement_speed = 32
+		info.base_health = 130
+		info.base_movement_speed = 34
 		info.base_effect_vulnerability = 0.1
 		info.base_resistance = 25
 		info.base_toughness = 5

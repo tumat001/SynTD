@@ -144,7 +144,7 @@ func is_ready_for_activation() -> bool:
 
 
 func is_time_ready_or_round_ready() -> bool:
-	return (is_timebound and _time_current_cooldown <= 0) or (is_roundbound and _round_current_cooldown <= 0)
+	return (is_timebound and _time_current_cooldown <= 0) or (is_roundbound and _round_current_cooldown <= 0) or (!is_timebound and !is_roundbound)
 
 
 # Setting of cooldown

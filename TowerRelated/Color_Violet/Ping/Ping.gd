@@ -63,8 +63,8 @@ var _shot_trigger_time : float = 0.75
 
 var shot_attack_module : WithBeamInstantDamageAttackModule
 
-const empowered_base_damage : float = 5.0
-const normal_base_damage : float = 3.0
+const empowered_base_damage : float = 10.0
+const normal_base_damage : float = 5.0
 const empowered_on_hit_damage_scale : float = 1.5
 const normal_on_hit_damage_scale : float = 1.0
 
@@ -80,6 +80,7 @@ func _ready():
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
+	tower_type_info = info
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -94,7 +95,7 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 167
+	attack_module.base_proj_speed = 245
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.position.y -= 16

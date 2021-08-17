@@ -74,7 +74,7 @@ const empowered_base_breeze_second_slow_duration : float = 8.0 + base_breeze_fir
 
 const empowered_breeze_extra_descriptions = [
 	"",
-	"Empowered: The second slow from breeze is empowered to slow by %s and lasts for %s" % [(str(-empowered_base_breeze_second_slow_amount) + "%,"), (str(empowered_base_breeze_second_slow_duration) + "s.")]
+	"Empowered: The slow from breeze is empowered to slow by %s and lasts for %s" % [(str(-empowered_base_breeze_second_slow_amount) + "%,"), (str(empowered_base_breeze_second_slow_duration) + "s.")]
 ]
 
 const linked_breeze_descriptions : Array = [
@@ -104,7 +104,7 @@ const mana_blast_ability_descriptions = [
 	"Cooldown: 40s"
 ]
 
-
+#
 
 const empowered_mana_blast_ap_buff_amount : float = 2.5
 
@@ -148,13 +148,22 @@ const renew_empower_ability_empower_active_description : Array = [
 
 const renew_empower_ability_connected_ability_empowered_name_extension : String = " (Empowered)"
 
-
 var is_next_ability_empowered : bool = false
 var connected_blue_abilities : Array = []
 
 var blue_abilities_descriptions_map : Dictionary = {}
 
+ 
+# AP related
 
+const tower_ap_tier_1 : float = 0.50
+const tower_ap_tier_2 : float = 0.25
+const tower_ap_tier_3 : float = 0.25
+
+var tower_ap_effect : TowerAttributesEffect
+var tower_ap_modi : FlatModifier
+
+var curr_tier : int
 
 #
 
@@ -164,6 +173,9 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	if game_elements == null:
 		game_elements = arg_game_elements
 		enemy_manager = game_elements.enemy_manager
+	
+	
+	# Abilities
 	
 	if tier <= 3:
 		if breeze_ability == null:
@@ -189,10 +201,35 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 			renew_empower_ability.set_clauses_to_usual_synergy_insufficient_based()
 	
 	
+	# Ability Potency
+	if tower_ap_effect == null:
+		_construct_ap_effect()
+	
+	curr_tier = tier
+	
+	if !game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy"):
+		game_elements.tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy", [], CONNECT_PERSIST)
+		game_elements.tower_manager.connect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy", [], CONNECT_PERSIST)
+	
+	var all_towers = game_elements.tower_manager.get_all_active_towers()
+	for tower in all_towers:
+		_tower_to_benefit_from_synergy(tower)
+	
+	
 	._apply_syn_to_game_elements(arg_game_elements, tier)
 
 
 func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int):
+	if game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy"):
+		game_elements.tower_manager.disconnect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy")
+		game_elements.tower_manager.disconnect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy")
+	
+	curr_tier = 0
+	
+	var all_towers = game_elements.tower_manager.get_all_active_towers()
+	for tower in all_towers:
+		_tower_to_remove_from_synergy(tower)
+	
 	._remove_syn_from_game_elements(arg_game_elements, tier)
 
 
@@ -577,7 +614,36 @@ func _display_normal_version_of_monitored_ability_descriptions():
 		ability.display_name = ability.display_name.replace(renew_empower_ability_connected_ability_empowered_name_extension, "")
 
 
-#
+# AP Effect related
+
+func _construct_ap_effect():
+	tower_ap_modi = FlatModifier.new(StoreOfTowerEffectsUUID.BLUE_AP_EFFECT)
+	tower_ap_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY, tower_ap_modi, StoreOfTowerEffectsUUID.BLUE_AP_EFFECT)
 
 
+
+func _tower_to_benefit_from_synergy(tower : AbstractTower):
+	_attempt_add_effect_to_tower(tower)
+
+func _attempt_add_effect_to_tower(tower : AbstractTower):
+	if tower._tower_colors.has(TowerColors.BLUE) and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLUE_AP_EFFECT):
+		
+		if curr_tier == 1:
+			tower_ap_modi.flat_modifier = tower_ap_tier_1
+		elif curr_tier == 2:
+			tower_ap_modi.flat_modifier = tower_ap_tier_2
+		elif curr_tier == 3:
+			tower_ap_modi.flat_modifier = tower_ap_tier_3
+		
+		tower.add_tower_effect(tower_ap_effect._shallow_duplicate())
+
+
+
+func _tower_to_remove_from_synergy(tower : AbstractTower):
+	_remove_effect_from_tower(tower)
+
+func _remove_effect_from_tower(tower : AbstractTower):
+	var effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.BLUE_AP_EFFECT)
+	if effect != null:
+		tower.remove_tower_effect(effect)
 

@@ -15,7 +15,7 @@ const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/Enemy
 const TimeMachine_TimeDust_StatusIcon = preload("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine_Attks/TimeMachine_TimeDust_EnemyIcon.png")
 
 
-const base_position_shift : float = -50.0
+const base_position_shift : float = -65.0
 const base_rewind_cooldown : float = 15.0
 var rewind_ability : BaseAbility
 var rewind_ability_is_ready : bool = false
@@ -37,6 +37,7 @@ func _ready():
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
+	tower_type_info = info
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -82,15 +83,15 @@ func _construct_and_register_ability():
 	
 	rewind_ability.connect("updated_is_ready_for_activation", self, "_can_cast_rewind_updated", [], CONNECT_PERSIST)
 	register_ability_to_manager(rewind_ability, false)
+	
 
 func _can_cast_rewind_updated(is_ready):
 	rewind_ability_is_ready = is_ready
 
-
 func _construct_effect():
 	time_dust_effect = EnemyStackEffect.new(null, 0, 99999, StoreOfEnemyEffectsUUID.TIME_MACHINE_TIME_DUST)
 	time_dust_effect.is_timebound = true
-	time_dust_effect.time_in_seconds = 6
+	time_dust_effect.time_in_seconds = 10
 	time_dust_effect._current_stack = 3
 	time_dust_effect.status_bar_icon = TimeMachine_TimeDust_StatusIcon
 	
@@ -109,7 +110,9 @@ func _on_main_post_mitigated_dmg_dealt(damage_instance_report, killed, enemy, da
 	
 	if !killed and rewind_ability_is_ready:
 		var final_potency = rewind_ability.get_potency_to_use(last_calculated_final_ability_potency)
-		enemy.shift_position(final_potency * base_position_shift)
+		var final_shift = final_potency * base_position_shift
+		
+		enemy.shift_position(final_shift)
 		
 		rewind_ability.start_time_cooldown(_get_cd_to_use(base_rewind_cooldown))
 		enemy._add_effect(time_dust_effect._get_copy_scaled_by(1))
@@ -131,7 +134,7 @@ func set_energy_module(module):
 	if module != null:
 		module.module_effect_descriptions = [
 			"Consuming a stack of Time Dust instead reduces all abilities’s cooldown by 2.5 seconds.",
-			"Turning this on while in round also sets Rewind's current cooldown to 0."
+			"Turning this on while in round also sets Rewind's current cooldown to 0.",
 		]
 
 

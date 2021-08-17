@@ -336,16 +336,18 @@ func _show_tower_info_panel(tower : AbstractTower):
 	right_side_panel.show_tower_info_panel(tower)
 	
 	tower_being_shown_in_info = tower
-	tower.connect("final_range_changed", self, "_update_final_range_in_info")
-	tower.connect("final_attack_speed_changed", self, "_update_final_attack_speed_in_info")
-	tower.connect("final_base_damage_changed", self, "_update_final_base_damage_in_info")
-	tower.connect("ingredients_absorbed_changed", self, "_update_ingredients_absorbed_in_info")
-	tower.connect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
-	tower.connect("targeting_changed", self, "_update_targeting")
-	tower.connect("targeting_options_modified", self, "_update_targeting")
-	tower.connect("energy_module_attached", self, "_update_energy_module_display")
-	tower.connect("energy_module_detached", self ,"_update_energy_module_display")
-	tower.connect("heat_module_should_be_displayed_changed", self, "_update_heat_module_should_display_display")
+	
+	if !tower.is_connected("final_range_changed", self, "_update_final_range_in_info"):
+		tower.connect("final_range_changed", self, "_update_final_range_in_info")
+		tower.connect("final_attack_speed_changed", self, "_update_final_attack_speed_in_info")
+		tower.connect("final_base_damage_changed", self, "_update_final_base_damage_in_info")
+		tower.connect("ingredients_absorbed_changed", self, "_update_ingredients_absorbed_in_info")
+		tower.connect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
+		tower.connect("targeting_changed", self, "_update_targeting")
+		tower.connect("targeting_options_modified", self, "_update_targeting")
+		tower.connect("energy_module_attached", self, "_update_energy_module_display")
+		tower.connect("energy_module_detached", self ,"_update_energy_module_display")
+		tower.connect("heat_module_should_be_displayed_changed", self, "_update_heat_module_should_display_display")
 
 func _update_final_range_in_info():
 	tower_stats_panel.update_final_range()

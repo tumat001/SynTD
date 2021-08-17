@@ -33,6 +33,8 @@ var respect_scale : bool = true
 
 var is_from_enemy : bool = false
 
+var effect_source_ref setget set_effect_source
+
 var status_bar_icon : Texture
 
 
@@ -42,6 +44,15 @@ func _init(arg_effect_type : int,
 	effect_type = arg_effect_type
 	effect_uuid = arg_effect_uuid
 
+#
+
+func set_effect_source(source):
+	if source is WeakRef:
+		effect_source_ref = source
+	else:
+		effect_source_ref = weakref(source)
+
+#
 
 func _get_copy_scaled_by(scale : float):
 	pass
@@ -55,3 +66,16 @@ func _get_overriden_icon() -> Texture:
 
 func _reapply(copy):
 	pass
+
+#
+
+func _configure_copy_to_match_self(copy):
+	copy.is_timebound = is_timebound
+	copy.time_in_seconds = time_in_seconds
+	copy.status_bar_icon = status_bar_icon
+	copy.respect_scale = respect_scale
+	copy.is_from_enemy = is_from_enemy
+	copy.set_effect_source(effect_source_ref)
+
+#
+

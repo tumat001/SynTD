@@ -11,8 +11,8 @@ export(Texture) var fill_foreground_pic : Texture setget set_fill_foreground_pic
 export(float) var fill_foreground_margin_top : float
 export(float) var fill_foreground_margin_left : float
 
-export(int) var max_value : float = 5 setget set_max_value
-export(int) var current_value : float = 5 setget set_current_value
+export(float) var max_value : float = 5 setget set_max_value
+export(float) var current_value : float = 5 setget set_current_value
 export(bool) var allow_overflow : bool = false setget set_overflow
 
 var scale_of_scale : Vector2 = Vector2(1, 1)

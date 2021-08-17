@@ -36,10 +36,6 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 	for effect in other_effects_upon_revival:
 		copy.other_effects_upon_revival.append(effect.get_copy_scaled_by(scale))
 	
-	copy.is_timebound = is_timebound
-	copy.time_in_seconds = time_in_seconds
-	copy.status_bar_icon = status_bar_icon
-	copy.respect_scale = respect_scale
-	copy.is_from_enemy = is_from_enemy
+	_configure_copy_to_match_self(copy)
 	
 	return copy

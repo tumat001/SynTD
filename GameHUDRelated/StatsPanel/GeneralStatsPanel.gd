@@ -11,6 +11,8 @@ var relic_manager setget set_relic_manager
 var shop_manager setget set_shop_manager
 var level_manager setget set_level_manager
 var stage_round_manager setget set_stage_round_manager
+var right_side_panel setget set_right_side_panel
+
 
 onready var gold_amount_label = $HBoxContainer/Middle/GoldPanel/MarginContainer3/MarginContainer2/GoldAmountLabel
 onready var gold_button = $HBoxContainer/Middle/GoldPanel/GoldButton
@@ -18,11 +20,11 @@ onready var gold_button = $HBoxContainer/Middle/GoldPanel/GoldButton
 onready var streak_panel = $HBoxContainer/Middle/StreakPanel
 
 onready var level_label = $HBoxContainer/LeftSide/LevelPanel/MarginContainer3/MarginContainer2/LevelLabel
-onready var relic_label = $HBoxContainer/RelicPanel/MarginContainer3/MarginContainer2/RelicAmountLabel
+onready var relic_label = $HBoxContainer/Right/RelicPanel/MarginContainer3/MarginContainer2/RelicAmountLabel
 onready var shop_percentage_stat_panel = $HBoxContainer/LeftSide/ShopPercentStatsPanel
 
-onready var relic_panel = $HBoxContainer/RelicPanel
-
+onready var relic_panel = $HBoxContainer/Right/RelicPanel
+onready var round_damage_stats_button = $HBoxContainer/Right/RoundDamageStatsButton
 
 
 # setters
@@ -54,6 +56,12 @@ func set_stage_round_manager(arg_manager):
 	stage_round_manager = arg_manager
 	
 	streak_panel.stage_round_manager = stage_round_manager
+
+func set_right_side_panel(arg_panel):
+	right_side_panel = arg_panel
+	
+	round_damage_stats_button.right_side_panel = right_side_panel
+
 
 # updating of stuffs
 

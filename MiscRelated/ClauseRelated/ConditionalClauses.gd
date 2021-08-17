@@ -81,6 +81,33 @@ func _update_is_passed():
 
 func _compo_clause_clause_inserted(val_inserted):
 	_update_is_passed()
+	emit_signal("clause_inserted", val_inserted)
+	
 
 func _compo_clause_clause_removed(val_removed):
 	_update_is_passed()
+	emit_signal("clause_removed", val_removed)
+
+
+#
+
+func duplicate():
+	var copy = get_script().new()
+	
+	copy._clauses = _clauses.duplicate(true)
+	copy.blacklisted_clauses = blacklisted_clauses.duplicate(true)
+	copy._composite_clauses = _composite_clauses.duplicate(true)
+	
+	copy._update_is_passed()
+	
+	return copy
+
+
+func copy_clauses_of_condtional_clause(other_conditional_clause):
+	_clauses = other_conditional_clause._clauses.duplicate(true)
+	blacklisted_clauses = other_conditional_clause.blacklisted_clauses.duplicate(true)
+	_composite_clauses = other_conditional_clause._composite_clauses.duplicate(true)
+	
+	_update_is_passed()
+
+

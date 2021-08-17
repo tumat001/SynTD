@@ -24,7 +24,7 @@ var explosion_attack_module : AOEAttackModule
 const _explosion_base_damage : float = 2.0
 
 # When towers are overheating (100 heat)
-const _explosion_cooldown_lowered_ratio : float = 0.5
+const _explosion_cooldown_lowered_ratio : float = 0.25
 # When towers are overheating (100 heat)
 const _explosion_buffed_dmg_ratio : float = 1.0#2.0 
 

@@ -24,6 +24,8 @@ const ShopManager = preload("res://GameElementsRelated/ShopManager.gd")
 const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
 const GeneralStatsPanel = preload("res://GameHUDRelated/StatsPanel/GeneralStatsPanel.gd")
 const TowerEmptySlotNotifPanel = preload("res://GameHUDRelated/NotificationPanel/TowerEmptySlotNotifPanel/TowerEmptySlotNotifPanel.gd")
+const RoundDamageStatsPanel = preload("res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/RoundDamageStatsPanel.gd")
+
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var in_map_placables_manager : InMapPlacablesManager
@@ -52,6 +54,7 @@ var whole_screen_gui : WholeScreenGUI
 var general_stats_panel : GeneralStatsPanel
 var tower_empty_slot_notif_panel : TowerEmptySlotNotifPanel
 var left_panel
+var round_damage_stats_panel : RoundDamageStatsPanel
 
 onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
 
@@ -175,6 +178,7 @@ func _ready():
 	general_stats_panel.shop_manager = shop_manager
 	general_stats_panel.level_manager = level_manager
 	general_stats_panel.stage_round_manager = stage_round_manager
+	general_stats_panel.right_side_panel = right_side_panel
 	
 	# buy sell reroll
 	panel_buy_sell_level_roll.gold_manager = gold_manager
@@ -188,6 +192,12 @@ func _ready():
 	tower_empty_slot_notif_panel.synergy_manager = synergy_manager
 	tower_empty_slot_notif_panel.all_properties_set()
 	
+	# round damage stats panel
+	round_damage_stats_panel = right_side_panel.round_damage_stats_panel
+	round_damage_stats_panel.set_tower_manager(tower_manager)
+	round_damage_stats_panel.set_stage_round_manager(stage_round_manager)
+	
+	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round(true)
@@ -196,8 +206,8 @@ func _ready():
 	health_manager.set_health(150)
 	
 	
-	#gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	#level_manager.current_level = LevelManager.LEVEL_9
+	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	level_manager.current_level = LevelManager.LEVEL_9
 	
 	#relic_manager.increase_relic_count_by(5, RelicManager.IncreaseRelicSource.ROUND)
 
@@ -211,24 +221,24 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	shop_manager.roll_towers_in_shop_with_cost()
-#	if !even:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.CHAOS,
-#			Towers.RE,
-#			Towers.TESLA,
-#			Towers.STRIKER,
-#			Towers.REBOUND,
-#		])
-#	else:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.SHOCKER,
-#			Towers.IMPALE,
-#			Towers.EMBER,
-#			Towers.COAL_LAUNCHER,
-#			Towers._704,
-#		])
-#	even = !even
+	#shop_manager.roll_towers_in_shop_with_cost()
+	if !even:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.CHAOS,
+			Towers.RE,
+			Towers.TESLA,
+			Towers.TIME_MACHINE,
+			Towers.SOUL,
+		])
+	else:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.ORB,
+			Towers.LEADER,
+			Towers.BEACON_DISH,
+			Towers.COAL_LAUNCHER,
+			Towers._704,
+		])
+	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -244,7 +254,7 @@ func _on_ColorWheelSprite_pressed():
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed and (event.button_index == BUTTON_RIGHT or event.button_index == BUTTON_LEFT):
-			if right_side_panel.panel_showing == right_side_panel.Panels.TOWER_INFO:
+			if right_side_panel.panel_showing != right_side_panel.Panels.ROUND:
 				tower_manager._show_round_panel()
 
 

@@ -42,6 +42,7 @@ func _tower_connected_in_queue_free(arg_tower):
 func _tower_not_active_in_map():
 	attempt_turn_off()
 
+
 # Attempt
 
 func attempt_turn_on():
@@ -51,8 +52,8 @@ func attempt_turn_off():
 	call_deferred("emit_signal", "attempt_turn_module_off", self)
 
 
-# Battery called functions
 
+# Functions called by EnergyBattery. Do not touch
 func module_turn_on(first_time_per_round : bool):
 	is_turned_on = true
 	call_deferred("emit_signal", "module_turned_on", first_time_per_round)
@@ -66,4 +67,4 @@ func module_turn_off():
 # Call this when queue freeing the tower
 
 func disconnect_from_battery():
-	emit_signal("disconnect_from_battery", self)
+	call_deferred("emit_signal", "disconnect_from_battery", self)

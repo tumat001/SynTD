@@ -80,20 +80,19 @@ func _init():
 	syn_compo_compli_orangeblue,
 	[
 		"Main attacks of towers explode every few seconds.",
-		"Explosions deal 2 elemental damage to three enemies.",
+		"Explosions deal 2 elemental damage to 3 enemies.",
 		"Explosions benefit from base damage and on hit damage buffs at 20% efficiency. Explosions also benefit from explosion size buffs.",
-		"Towers with overheating heat modules have 1/2 of the explosion cooldown.",
-		"Explosion's damage scales with the tower's ability potency.",
 		"",
-		"Additionally, all towers gain ability potency.",
+		"Towers with overheating heat modules gain 75% cooldown reduction for the explosion.",
+		"Explosion's damage scales with the tower's ability potency.",
 		""
 	],
 	[CompleSyn_OrangeBlue.new()],
 	[
-		"Explosion per 1.5 seconds. Towers gain 1 ap. Explosions are 100% bigger.",
-		"Explosion per 2.5 seconds. Towers gain 0.50 ap. Explosions are 75% bigger.",
-		"Explosion per 4.0 seconds. Towers gain 0.25 ap. Explosions are 25% bigger.",
-		"Explosion per 8.0 seconds. Towers gain 0.25 ap."
+		"Explosion per 2.0 seconds. Explosions are 100% bigger.",
+		"Explosion per 4.0 seconds. Explosions are 75% bigger.",
+		"Explosion per 7.0 seconds. Explosions are 25% bigger.",
+		"Explosion per 10.0 seconds."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -162,10 +161,10 @@ func _init():
 	],
 	[AnaSyn_GreenBY.new()],
 	[
-		"+0.600 on hit, up to 12",
-		"+0.400 on hit, up to 8",
-		"+0.200 on hit, up to 4",
-		"+0.075 on hit, up to 1.5"
+		"+0.60 on hit, up to 12",
+		"+0.40 on hit, up to 8",
+		"+0.15 on hit, up to 3",
+		"+0.05 on hit, up to 1"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),

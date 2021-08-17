@@ -18,6 +18,10 @@ const ap_level02 : float = 1.25
 const ap_level03 : float = 1.50
 const ap_level04 : float = 2.0
 
+const bonus_pierce_ap_level02 : int = 1
+const bonus_pierce_ap_level03 : int = 2
+const bonus_pierce_ap_level04 : int = 4
+
 var current_level : int = 0
 
 #var grand_pierce_effect : TowerAttributesEffect
@@ -34,6 +38,7 @@ func _ready():
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
+	tower_type_info = info
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -107,15 +112,15 @@ func _final_ap_changed():
 		current_level = new_level
 		
 		if current_level == 4:
-			pierce_mod.flat_modifier = 4
+			pierce_mod.flat_modifier = bonus_pierce_ap_level04
 			pspeed_mod.flat_modifier = 350
 			
 		elif current_level == 3:
-			pierce_mod.flat_modifier = 2
+			pierce_mod.flat_modifier = bonus_pierce_ap_level03
 			pspeed_mod.flat_modifier = 150
 			
 		elif current_level == 2:
-			pierce_mod.flat_modifier = 1
+			pierce_mod.flat_modifier = bonus_pierce_ap_level02
 			pspeed_mod.flat_modifier = 100
 			
 		elif current_level == 1:
@@ -143,9 +148,32 @@ func _calculate_new_level_from_change() -> int:
 func _grand_before_bullet_shot(bullet):
 	bullet.set_current_frame(current_level - 1)
 	
+	# size scale
 	var scale_mag = last_calculated_final_ability_potency / 2
 	bullet.scale = Vector2(scale_mag, scale_mag)
+	
+	bullet.destroy_self_after_zero_life_distance = false
+	bullet.connect("on_current_life_distance_expire", self, "_grand_bullet_curr_distance_expired", [bullet], CONNECT_ONESHOT)
 
 
 func _main_damage_instance_constructed(damage_instance, module):
 	damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)
+
+
+#
+
+func _grand_bullet_curr_distance_expired(bullet):
+	var targets = grand_attack_module.range_module.get_targets_without_affecting_self_current_targets(1, Targeting.FAR)
+	
+	if targets.size() > 0:
+		var enemy = targets[0]
+		if enemy != null:
+			grand_attack_module._adjust_bullet_physics_settings(bullet, enemy.global_position, bullet.global_position)
+			
+			bullet.current_life_distance *= 2
+			bullet.set_deferred("destroy_self_after_zero_life_distance", true)
+		else:
+			bullet.trigger_on_death_events()
+	else:
+		bullet.trigger_on_death_events()
+

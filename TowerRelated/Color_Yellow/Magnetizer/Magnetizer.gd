@@ -47,7 +47,7 @@ func _ready():
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
-	
+	tower_type_info = info
 	
 	# Magnet related
 	
@@ -84,7 +84,7 @@ func _ready():
 	# Stretched AOE 
 	
 	beam_attack_module = AOEAttackModule_Scene.instance()
-	beam_attack_module.base_damage = 7
+	beam_attack_module.base_damage = 9
 	beam_attack_module.base_damage_type = DamageType.ELEMENTAL
 	beam_attack_module.base_attack_speed = 0
 	beam_attack_module.base_attack_wind_up = 0
@@ -94,8 +94,6 @@ func _ready():
 	beam_attack_module.pierce = -1
 	
 	beam_attack_module.benefits_from_bonus_attack_speed = false
-	beam_attack_module.on_hit_damage_scale = 0.67
-	beam_attack_module.on_hit_effect_scale = 0.67
 	
 	var sprite_frames : SpriteFrames = SpriteFrames.new()
 	sprite_frames.add_frame("default", MagnetizerBeam_Pic01)

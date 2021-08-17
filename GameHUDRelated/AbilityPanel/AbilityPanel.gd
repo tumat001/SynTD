@@ -25,7 +25,14 @@ func has_ability(ability : BaseAbility):
 
 
 func activate_ability_at_index(i : int):
-	if ability_container.get_child_count() > i:
-		var button_selected : AbilityButton = ability_container.get_children()[i]
+	var ability_buttons : Array = ability_container.get_children()
+	var displayed_buttons : Array = []
+	
+	for button in ability_buttons:
+		if button.visible:
+			displayed_buttons.append(displayed_buttons)
+	
+	if displayed_buttons.size() > i:
+		var button_selected : AbilityButton = displayed_buttons[i]
 		button_selected._ability_button_left_pressed()
 

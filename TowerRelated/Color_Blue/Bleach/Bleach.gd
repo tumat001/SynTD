@@ -17,9 +17,12 @@ const Bleach_EmpoweredProj03 = preload("res://TowerRelated/Color_Blue/Bleach/Ble
 
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 
+const toughness_remove_amount : float = -10.0
+const toughness_debuff_duration : float = 8.0
+
 var cycle : int = 0
 
-var base_attack_count_for_buff : int = 5
+var base_attack_count_for_buff : int = 3
 var current_attack_count : int = 0
 
 var toughness_shred_effect : EnemyAttributesEffect
@@ -34,6 +37,7 @@ func _ready():
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
+	tower_type_info = info
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -73,11 +77,11 @@ func _ready():
 
 func _construct_effect():
 	var tou_mod : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.BLEACH_SHREAD)
-	tou_mod.flat_modifier = -7.5
+	tou_mod.flat_modifier = toughness_remove_amount
 	
 	toughness_shred_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_TOUGHNESS, tou_mod, StoreOfEnemyEffectsUUID.BLEACH_SHREAD)
 	toughness_shred_effect.is_timebound = true
-	toughness_shred_effect.time_in_seconds = 5
+	toughness_shred_effect.time_in_seconds = toughness_debuff_duration
 
 
 # Only Self module modify

@@ -111,6 +111,11 @@ signal global_position_changed(old_pos, new_pos)
 signal on_effect_added(effect)
 signal on_effect_removed(effect)
 
+#
+
+signal on_per_round_total_damage_changed(per_round_total_dmg)
+
+#
 
 signal on_heat_module_overheat()
 signal on_heat_module_overheat_cooldown()
@@ -123,11 +128,15 @@ signal energy_module_detached
 
 signal heat_module_should_be_displayed_changed
 
+#
 
-export var tower_highlight_sprite : Resource
+# the sprite shown indicating that the tower will be placed there
+var tower_highlight_sprite : Texture
+var tower_image_icon_atlas_texture : AtlasTexture
+
 
 var tower_id : int
-
+var tower_type_info : TowerTypeInformation
 
 enum DisabledFromAttackingSourceClauses {
 	
@@ -258,7 +267,7 @@ var old_global_position : Vector2
 
 # Damage tracker
 
-var in_round_total_damage_dealt : float setget ,get_in_round_total_damage_dealt
+var in_round_total_damage_dealt : float# setget ,get_in_round_total_damage_dealt
 var in_round_pure_damage_dealt : float
 var in_round_elemental_damage_dealt : float
 var in_round_physical_damage_dealt : float
@@ -353,6 +362,8 @@ func _post_inherit_ready():
 	info_bar.rect_size.x = life_bar.rect_size.x
 	
 	connect("on_any_post_mitigation_damage_dealt", self, "_on_tower_any_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
+	
+	initialize_atlas_texture()
 
 
 func get_current_anim_size() -> Vector2:
@@ -625,17 +636,19 @@ func _on_round_end():
 	
 	_remove_all_timebound_and_countbound_effects()
 	
-	
-	# dmg tracker related
-	in_round_elemental_damage_dealt = 0
-	in_round_physical_damage_dealt = 0
-	in_round_pure_damage_dealt = 0
-	
 	emit_signal("on_round_end")
 
 
 func _on_round_start():
 	_set_health(last_calculated_max_health)
+	
+	# dmg tracker related
+	in_round_elemental_damage_dealt = 0
+	in_round_physical_damage_dealt = 0
+	in_round_pure_damage_dealt = 0
+	in_round_total_damage_dealt = 0
+	
+	emit_signal("on_per_round_total_damage_changed", in_round_total_damage_dealt)
 	
 	emit_signal("on_round_start")
 
@@ -711,6 +724,7 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		_add_on_hit_damage_adder_effect(tower_base_effect, target_modules)
 		
 	elif tower_base_effect is TowerOnHitEffectAdderEffect:
+		tower_base_effect.set_source(self)
 		_add_on_hit_effect_adder_effect(tower_base_effect, target_modules)
 		
 	elif tower_base_effect is TowerChaosTakeoverEffect:
@@ -2067,7 +2081,11 @@ func _heal_by_omnivamp_stat(dmg_type_damage_map : Dictionary):
 
  # Damage tracking related
 
-func _on_tower_any_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module):
+func _on_post_mitigated_dmg_dealt_from_effect(damage_instance_report, is_lethal, enemy, effect):
+	_on_tower_any_post_mitigation_damage_dealt(damage_instance_report, is_lethal, enemy, -1, null)
+
+
+func _on_tower_any_post_mitigation_damage_dealt(damage_instance_report, _killed, _enemy, _damage_register_id, _module):
 	var dmg_type_damage_map : Dictionary = damage_instance_report.get_total_effective_damages_by_type()
 	
 	_heal_by_omnivamp_stat(dmg_type_damage_map)
@@ -2080,9 +2098,38 @@ func _on_tower_any_post_mitigation_damage_dealt(damage_instance_report, killed, 
 			in_round_physical_damage_dealt += dmg
 		elif dmg_type == DamageType.PURE:
 			in_round_pure_damage_dealt += dmg
+		
+		in_round_total_damage_dealt += dmg
+	
+	emit_signal("on_per_round_total_damage_changed", in_round_total_damage_dealt)
 
-func get_in_round_total_damage_dealt() -> float:
-	return in_round_elemental_damage_dealt + in_round_physical_damage_dealt + in_round_pure_damage_dealt
+#
+
+
+func initialize_atlas_texture():
+	if tower_image_icon_atlas_texture == null:
+		tower_image_icon_atlas_texture = AtlasTexture.new()
+	
+	tower_image_icon_atlas_texture.atlas = tower_highlight_sprite
+	tower_image_icon_atlas_texture.region = _get_atlas_region()
+
+
+
+func _get_default_center_for_atlas() -> Vector2:
+	var highlight_sprite_size = tower_highlight_sprite.get_size()
+	
+	return Vector2(highlight_sprite_size.x / 4, 0)
+
+func _get_default_region_size_for_atlas() -> Vector2:
+	return Vector2(18, 18)
+
+
+func _get_atlas_region() -> Rect2:
+	var center = _get_default_center_for_atlas()
+	var size = _get_default_region_size_for_atlas()
+	
+	#return Rect2(0, 0, size.x, size.y)
+	return Rect2(center.x, center.y, size.x, size.y)
 
 
 # SYNERGIES RELATED ---------------------

@@ -73,6 +73,7 @@ func _ready():
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
+	tower_type_info = info
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -171,6 +172,7 @@ func _construct_burn_effect():
 	var burn_effect = EnemyDmgOverTimeEffect.new(fire_burn_dmg_instance, StoreOfEnemyEffectsUUID._704_FIRE_BURN, 0.5)
 	burn_effect.is_timebound = true
 	burn_effect.time_in_seconds = 5
+	burn_effect.effect_source_ref = self
 	
 	fire_effect = TowerOnHitEffectAdderEffect.new(burn_effect, StoreOfTowerEffectsUUID._704_FIRE_BURN)
 	

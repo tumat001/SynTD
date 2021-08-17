@@ -37,9 +37,7 @@ func _get_copy_scaled_by(scale : float):
 			consume_all_stacks_on_cap)
 	
 	copy._current_stack = _current_stack
-	copy.is_timebound = is_timebound
-	copy.time_in_seconds = time_in_seconds
-	copy.status_bar_icon = status_bar_icon
-	copy.is_from_enemy = is_from_enemy
+	
+	_configure_copy_to_match_self(copy)
 	
 	return copy

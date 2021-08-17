@@ -40,6 +40,7 @@ func _ready():
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
+	tower_type_info = info
 	
 	original_base_range = info.base_range
 	original_base_pierce = info.base_pierce

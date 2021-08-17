@@ -39,18 +39,9 @@ func _ready():
 	
 	CollidableSourceAndDest.set_coll_layer_source(self, coll_source_layer)
 	CollidableSourceAndDest.set_coll_mask_destination(self, coll_destination_mask)
-	
 
 
 func _process(delta):
-	if decrease_life_distance:
-		current_life_distance -= delta * speed
-	
-	if current_life_distance <= 0:
-		emit_signal("on_current_life_distance_expire")
-		if destroy_self_after_zero_life_distance:
-			trigger_on_death_events()
-	
 	rotation_degrees += rotation_per_second * delta
 
 
@@ -60,6 +51,14 @@ func _physics_process(delta):
 	_move(delta)
 
 func _move(delta):
+	if decrease_life_distance:
+		current_life_distance -= delta * speed
+	
+	if current_life_distance <= 0:
+		emit_signal("on_current_life_distance_expire")
+		if destroy_self_after_zero_life_distance:
+			trigger_on_death_events()
+	
 	if direction_as_relative_location != null:
 		var vector_mov = direction_as_relative_location
 		vector_mov.x *= delta

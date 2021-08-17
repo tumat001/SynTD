@@ -3,6 +3,8 @@ extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 
+const SecondImpressionDebuff_Icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_FirstAndSecondImpression_Icons/SecondImpressionDebuff_Icon.png")
+
 var toughness_gain_effect : EnemyAttributesEffect
 var armor_gain_effect : EnemyAttributesEffect
 
@@ -79,6 +81,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 		armor_loss_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_ARMOR, armor_loss_modi, StoreOfEnemyEffectsUUID.RED_PACT_SECOND_IMPRESSION_ARMOR_LOSS)
 		armor_loss_effect.is_timebound = false
 		armor_loss_effect.respect_scale = false
+		armor_loss_effect.effect_icon = SecondImpressionDebuff_Icon
 
 func _enemy_spawned(enemy):
 	if enemy != null:

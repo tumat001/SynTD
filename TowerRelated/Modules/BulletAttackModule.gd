@@ -245,8 +245,8 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	return bullet
 
 
-func _adjust_bullet_physics_settings(bullet : BaseBullet, arg_enemy_pos : Vector2):
-	var dir : Vector2 = Vector2(arg_enemy_pos.x - global_position.x, arg_enemy_pos.y - global_position.y)
+func _adjust_bullet_physics_settings(bullet : BaseBullet, arg_enemy_pos : Vector2, reference_location : Vector2 = global_position):
+	var dir : Vector2 = Vector2(arg_enemy_pos.x - reference_location.x, arg_enemy_pos.y - reference_location.y)
 	var rand_x = 0
 	var rand_y = 0
 	var ratio = 1
@@ -256,7 +256,7 @@ func _adjust_bullet_physics_settings(bullet : BaseBullet, arg_enemy_pos : Vector
 		rand_x = rand_gen.randf_range(-last_calculated_final_proj_inaccuracy, last_calculated_final_proj_inaccuracy)
 		rand_y = rand_gen.randf_range(-last_calculated_final_proj_inaccuracy, last_calculated_final_proj_inaccuracy)
 		
-		var self_enemy_distance = global_position.distance_to(arg_enemy_pos)
+		var self_enemy_distance = reference_location.distance_to(arg_enemy_pos)
 		
 		if self_enemy_distance != 0:
 			ratio = range_module.base_range_radius / self_enemy_distance
@@ -267,14 +267,14 @@ func _adjust_bullet_physics_settings(bullet : BaseBullet, arg_enemy_pos : Vector
 	bullet.speed = last_calculated_final_proj_speed
 	bullet.life_distance = last_calculated_final_proj_life_distance
 	bullet.current_life_distance = bullet.life_distance
-	bullet.rotation_degrees = _get_angle(arg_enemy_pos)
+	bullet.rotation_degrees = _get_angle(arg_enemy_pos, reference_location)
 	
 	bullet.rotation_per_second = bullet_rotation_per_second
 
 
-func _get_angle(destination_pos : Vector2):
-	var dx = destination_pos.x - global_position.x
-	var dy = destination_pos.y - global_position.y
+func _get_angle(destination_pos : Vector2, reference_location : Vector2 = global_position):
+	var dx = destination_pos.x - reference_location.x
+	var dy = destination_pos.y - reference_location.y
 	
 	return rad2deg(atan2(dy, dx))
 

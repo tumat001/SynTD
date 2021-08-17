@@ -1,9 +1,9 @@
 extends "res://EnemyRelated/AbstractEnemy.gd"
 
 
-const _invis_health_ratio_threshold : float = 0.60
-const _invis_duration : float = 14.0
-const _invis_premature_cancel_distance : float = 100.0
+const _invis_health_ratio_threshold : float = 0.33
+const _invis_duration : float = 8.0
+const _invis_premature_cancel_distance : float = 120.0
 
 var invis_effect : EnemyInvisibilityEffect
 var _is_invis : bool

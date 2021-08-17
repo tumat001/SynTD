@@ -15,6 +15,7 @@ func _ready():
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
+	tower_type_info = info
 	
 	connect("on_round_end", self, "_bb_on_round_end", [], CONNECT_PERSIST)
 	connect("on_round_start", self, "_bb_on_round_start", [], CONNECT_PERSIST)

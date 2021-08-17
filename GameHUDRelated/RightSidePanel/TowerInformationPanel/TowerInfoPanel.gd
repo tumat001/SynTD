@@ -81,6 +81,7 @@ func update_display():
 	_update_tower_specific_info_panel()
 
 
+
 # Visibility
 
 func set_visible(value : bool):

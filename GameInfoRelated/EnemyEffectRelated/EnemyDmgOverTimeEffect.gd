@@ -10,6 +10,7 @@ const img_physical_bleed = preload("res://GameHUDRelated/RightSidePanel/TowerInf
 const img_elemental_bleed = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_EnemyBleedElemental.png")
 const img_pure_bleed = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_EnemyBleedPure.png")
 
+#signal on_post_mitigated_dmg_dealt(damage_instance_report, is_lethal, enemy, this_effect)
 
 var damage_type : int
 var damage_instance : DamageInstance # Damage per tick
@@ -17,6 +18,7 @@ var primary_on_hit_damage : OnHitDamage
 
 var delay_per_tick : float
 var _curr_delay_per_tick : float
+
 
 func _init(arg_damage_instance : DamageInstance,
 		arg_effect_uuid : int,
@@ -106,11 +108,7 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 	var scaled_dmg_inst = damage_instance.get_copy_scaled_by(scale)
 	
 	var copy = get_script().new(scaled_dmg_inst, effect_uuid, delay_per_tick)
-	copy.is_timebound = is_timebound
-	copy.time_in_seconds = time_in_seconds
-	copy.status_bar_icon = status_bar_icon
-	copy.respect_scale = respect_scale
-	copy.is_from_enemy = is_from_enemy
+	_configure_copy_to_match_self(copy)
 	
 	return copy
 
@@ -120,3 +118,20 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 func _reapply(copy):
 	time_in_seconds = copy.time_in_seconds
 	damage_instance = copy.damage_instance
+
+#
+
+func connect_to_enemy(enemy):
+	if !enemy.is_connected("on_post_mitigated_damage_taken", self, "_on_enemy_post_mitigated_dmg_dealt"):
+		enemy.connect("on_post_mitigated_damage_taken", self, "_on_enemy_post_mitigated_dmg_dealt")
+
+func disconnect_from_enemy(enemy):
+	if enemy.is_connected("on_post_mitigated_damage_taken", self, "_on_enemy_post_mitigated_dmg_dealt"):
+		enemy.disconnect("on_post_mitigated_damage_taken", self, "_on_enemy_post_mitigated_dmg_dealt")
+
+
+func _on_enemy_post_mitigated_dmg_dealt(damage_instance_report, is_lethal, enemy):
+	#emit_signal("on_post_mitigated_dmg_dealt", damage_instance_report, is_lethal, enemy, self)
+	if effect_source_ref != null and effect_source_ref.get_ref() != null and damage_instance_report.dmg_instance_ref.get_ref() == damage_instance:
+		effect_source_ref.get_ref()._on_post_mitigated_dmg_dealt_from_effect(damage_instance_report, is_lethal, enemy, self)
+

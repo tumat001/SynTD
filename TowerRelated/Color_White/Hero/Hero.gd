@@ -61,13 +61,14 @@ signal can_spend_relics_for_level_up_updated(val)
 signal notify_xp_cap_of_level_reached()
 
 const hero_base_health : float = 20.0
+const extra_comp_syn_slot_amount_at_max_level : int = 1
 
 const xp_ratio_per_damage : float = 1.0
 const xp_per_kill : float = 3.0
 const xp_scale_if_not_white_dom_color : float = 2.0/3.0
 const max_hero_level : int = 6
 
-const xp_needed_per_level : Array = [130, 685, 1950, 3100, 3950, 4500]
+const xp_needed_per_level : Array = [130, 685, 1950, 3100, 3150, 3100]
 const gold_needed_per_level : Array = [1, 2, 4, 5, 6, 7]
 
 const xp_about_descriptions = [
@@ -84,19 +85,19 @@ const xp_about_descriptions = [
 const main_attack_proj_speed : float = 500.0
 const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
 const attks_needed_for_light_explosion : int = 40
-const light_wave_base_damage_in_levels : Array = [1, 1.5, 2, 2]
-const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.25, 0.5]
+const light_wave_base_damage_in_levels : Array = [1, 1.5, 2, 3]
+const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.5, 1.0]
 
-const judgement_dmg_ratio_in_levels : Array = [2, 3, 6, 8]
+const judgement_dmg_ratio_in_levels : Array = [2, 3, 6, 9]
 const judgement_bonus_dmg_ratio : float = 1.25
 const judgement_bonus_dmg_threshold_trigger : float = 0.25
 const judgement_stack_trigger : int = 3
 
 const current_attks_needed_for_vol : int = 6
-const VOL_towers_affected_in_levels : Array = [3, 5, 7, 12]
+const VOL_towers_affected_in_levels : Array = [3, 4, 6, 12]
 const VOL_range_in_levels : Array = [70, 105, 160, 250]
-const VOL_dmg_ratio_buff_in_levels : Array = [1.20, 1.20, 1.25, 1.3]
-const VOL_buff_attack_count_in_levels : Array = [4, 6, 9, 25]
+const VOL_dmg_ratio_buff_in_levels : Array = [1.20, 1.25, 1.55, 1.75]
+const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 25]
 const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 9, 9]
 
 const hero_extra_ingredient_limit : int = 3
@@ -155,6 +156,7 @@ func _ready():
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
+	tower_type_info = info
 	
 	base_health = hero_base_health
 	
@@ -697,7 +699,13 @@ func _attempt_spend_gold_and_xp_for_level_up():
 		if current_hero_natural_level < max_hero_level:
 			emit_signal("xp_needed_for_next_level_changed", xp_needed_per_level[current_hero_natural_level])
 		else:
-			emit_signal("max_level_reached")
+			emit_signal("max_level_reached") # max natural level
+			
+			var compo_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HERO_COMPO_SYN_MODI_ID)
+			compo_modi.flat_modifier = extra_comp_syn_slot_amount_at_max_level
+			
+			synergy_manager.add_composite_syn_limit_modi(compo_modi)
+
 
 func can_spend_gold_and_xp_for_level_up() -> bool:
 	var can = false

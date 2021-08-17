@@ -73,6 +73,7 @@ func _ready():
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
+	tower_type_info = info
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -227,6 +228,7 @@ func _post_inherit_ready():
 	burn_enemy_effect.is_timebound = true
 	burn_enemy_effect.time_in_seconds = 8
 	burn_enemy_effect.status_bar_icon = RoyalFlame_StatusIcon
+	burn_enemy_effect.effect_source_ref = self
 	
 	var tower_effect = TowerOnHitEffectAdderEffect.new(burn_enemy_effect, StoreOfTowerEffectsUUID.ROYAL_FLAME_BURN)
 	

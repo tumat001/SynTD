@@ -124,13 +124,14 @@ func _init():
 	syn_dom_blue,
 	[
 		"Gain access to Blue Abilities.",
+		"Additionally, all blue towers gain bonus ability potency.",
 		""
 	],
 	[DomSyn_Blue.new()],
 	[
-		"Renew/Empower : Multi purpose ability.",
-		"Mana Blast: Big damage, and bonus Ability Potency buff.",
-		"Sea Breeze : Slow and minor damage to all enemies."
+		"Renew/Empower : Multi purpose ability. +0.25 Ability Potency.",
+		"Mana Blast: Big AOE damage, and AOE Ability Potency buff.",
+		"Sea Breeze : Slow and minor damage to all enemies. +0.25 Ability Potency."
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),

@@ -30,7 +30,7 @@ func hit_by_enemy(enemy):
 		
 		call_deferred("emit_signal", "hit_an_enemy", self)
 		enemy.connect("tree_exiting", self, "enemy_died", [enemy], CONNECT_ONESHOT)
-		enemy.connect("on_hit", self, "enemy_hit", [], CONNECT_PERSIST)
+		enemy.connect("on_hit", self, "enemy_hit")
 
 
 func decrease_pierce(amount):

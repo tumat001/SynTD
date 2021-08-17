@@ -10,6 +10,7 @@ const HealthManager = preload("res://GameElementsRelated/HealthManager.gd")
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 
 const ENEMY_GROUP_TAG : String = "Enemies"
+const ENEMY_BLOCKING_NEXT_ROUND_ADVANCE_TAG : String = "EnemiesBlockingNextRoundAdvanceTag"
 
 
 signal no_enemies_left
@@ -83,6 +84,9 @@ func start_run():
 func end_run():
 	spawn_instruction_interpreter.reset_time()
 	reset_path_index()
+	
+	kill_all_enemies()
+	
 	_is_running = false
 	_enemy_first_damage_applied = false
 
@@ -90,30 +94,50 @@ func reset_path_index():
 	_spawn_path_index_to_take = 0
 
 
+func kill_all_enemies():
+	for enemy in get_all_enemies():
+		enemy.queue_free()
+
+
+#
+
 func _process(delta):
 	if _is_running:
 		spawn_instruction_interpreter.time_passed(delta)
 
 
 
-func spawn_enemy(enemy_id):
+func spawn_enemy(enemy_id : int, arg_path : EnemyPath = null):
 	var enemy_instance : AbstractEnemy = EnemyConstants.get_enemy_scene(enemy_id).instance()
-	
+	spawn_enemy_instance(enemy_instance, arg_path)
+
+
+func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = null):
 	# Enemy set properties
-	enemy_instance.base_health *= enemy_health_multiplier
+	
+	if enemy_instance.respect_stage_round_health_scale:
+		enemy_instance.base_health *= enemy_health_multiplier
 	enemy_instance.base_player_damage *= enemy_damage_multiplier
 	enemy_instance.z_index = ZIndexStore.ENEMIES
 	
 	
 	# Enemy add to group
 	enemy_instance.add_to_group(ENEMY_GROUP_TAG)
+	if enemy_instance.blocks_from_round_ending:
+		enemy_instance.add_to_group(ENEMY_BLOCKING_NEXT_ROUND_ADVANCE_TAG)
+	
 	
 	# Path related
-	var path = _pick_path_and_switch_index_to_next()
+	var path : EnemyPath = arg_path
+	if path == null:
+		path = _pick_path_and_switch_index_to_next()
+	
 	emit_signal("before_enemy_spawned", enemy_instance)
 	path.add_child(enemy_instance)
 	
 	call_deferred("emit_signal", "enemy_spawned", enemy_instance)
+
+
 
 
 func _pick_path_and_switch_index_to_next() -> EnemyPath:
@@ -134,11 +158,11 @@ func _interpreter_done_spawning():
 	_check_if_no_enemies_left()
 
 func _on_enemy_death(enemy : AbstractEnemy):
-	if _is_interpreter_done_spawning:
+	if _is_interpreter_done_spawning and enemy.blocks_from_round_ending:
 		_check_if_no_enemies_left()
 
 func _check_if_no_enemies_left():
-	if !get_tree().has_group(ENEMY_GROUP_TAG):
+	if !get_tree().has_group(ENEMY_BLOCKING_NEXT_ROUND_ADVANCE_TAG):
 		end_run()
 		emit_signal("no_enemies_left")
 
@@ -179,6 +203,13 @@ func get_all_targetable_and_invisible_enemies() -> Array:
 	
 	return enemies
 
+
+func get_path_of_enemy(arg_enemy) -> EnemyPath:
+	for path in spawn_paths:
+		if path.get_children().has(arg_enemy):
+			return path
+	
+	return null
 
 
 # Faction passive related

@@ -3,6 +3,8 @@ extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 
+const FirstImpressionDebuff_Icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_FirstAndSecondImpression_Icons/FirstImpressionDebuff_Icon.png")
+
 var toughness_gain_effect : EnemyAttributesEffect
 var armor_gain_effect : EnemyAttributesEffect
 
@@ -79,6 +81,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 		armor_loss_effect.is_timebound = true
 		armor_loss_effect.time_in_seconds = loss_duration
 		armor_loss_effect.respect_scale = false
+		armor_loss_effect.effect_icon = FirstImpressionDebuff_Icon
 
 
 func _enemy_spawned(enemy):

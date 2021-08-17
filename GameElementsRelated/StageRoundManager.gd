@@ -23,6 +23,8 @@ enum Mode {
 
 signal stage_round_changed(stage_num, round_num)
 signal round_started(current_stageround) # incomming round
+
+signal before_round_ends(current_stageround) # new incomming round
 signal round_ended(current_stageround) # new incomming round
 signal round_ended_game_start_aware(current_stageround, is_game_start)
 
@@ -159,7 +161,8 @@ func end_round(from_game_start : bool = false):
 func _before_round_end():
 	current_stageround_index += 1
 	current_stageround = stagerounds.stage_rounds[current_stageround_index]
-
+	
+	emit_signal("before_round_ends", current_stageround)
 
 func _at_round_end():
 	pass

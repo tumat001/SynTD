@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://GameHUDRelated/StatsPanel/Assets/GoldIndicatorBackground.png" type="Texture" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://GameHUDRelated/StatsPanel/Assets/RelicIndicatorBackground.png" type="Texture" id=6]
 [ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWithTooltip.tscn" type="PackedScene" id=7]
 [ext_resource path="res://GameHUDRelated/StatsPanel/StreakPanel.tscn" type="PackedScene" id=8]
+[ext_resource path="res://GameHUDRelated/StatsPanel/RoundDamageStatsButton.tscn" type="PackedScene" id=9]
 
 [sub_resource type="DynamicFont" id=1]
 size = 10
@@ -173,24 +174,29 @@ margin_left = 59.0
 margin_right = 100.0
 size_flags_horizontal = 6
 
-[node name="RelicPanel" type="MarginContainer" parent="HBoxContainer"]
-margin_left = 211.0
+[node name="Right" type="HBoxContainer" parent="HBoxContainer"]
+margin_left = 192.0
 margin_right = 270.0
 margin_bottom = 20.0
 size_flags_horizontal = 10
+custom_constants/separation = 0
 
-[node name="RelicBackground" type="TextureRect" parent="HBoxContainer/RelicPanel"]
+[node name="RelicPanel" type="MarginContainer" parent="HBoxContainer/Right"]
+margin_right = 59.0
+margin_bottom = 20.0
+
+[node name="RelicBackground" type="TextureRect" parent="HBoxContainer/Right/RelicPanel"]
 margin_right = 59.0
 margin_bottom = 20.0
 mouse_filter = 2
 texture = ExtResource( 6 )
 
-[node name="MarginContainer3" type="MarginContainer" parent="HBoxContainer/RelicPanel"]
+[node name="MarginContainer3" type="MarginContainer" parent="HBoxContainer/Right/RelicPanel"]
 margin_right = 59.0
 margin_bottom = 20.0
 custom_constants/margin_right = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/RelicPanel/MarginContainer3"]
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Right/RelicPanel/MarginContainer3"]
 margin_right = 35.0
 margin_bottom = 20.0
 mouse_filter = 2
@@ -198,7 +204,7 @@ size_flags_horizontal = 2
 custom_constants/margin_top = 2
 custom_constants/margin_left = 5
 
-[node name="RelicTextLabel" type="Label" parent="HBoxContainer/RelicPanel/MarginContainer3/MarginContainer"]
+[node name="RelicTextLabel" type="Label" parent="HBoxContainer/Right/RelicPanel/MarginContainer3/MarginContainer"]
 margin_left = 5.0
 margin_top = 2.0
 margin_right = 35.0
@@ -210,7 +216,7 @@ custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 text = "Relic"
 valign = 1
 
-[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/RelicPanel/MarginContainer3"]
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/Right/RelicPanel/MarginContainer3"]
 margin_left = 30.0
 margin_right = 57.0
 margin_bottom = 20.0
@@ -220,7 +226,7 @@ custom_constants/margin_right = 2
 custom_constants/margin_top = 1
 custom_constants/margin_left = 18
 
-[node name="RelicAmountLabel" type="Label" parent="HBoxContainer/RelicPanel/MarginContainer3/MarginContainer2"]
+[node name="RelicAmountLabel" type="Label" parent="HBoxContainer/Right/RelicPanel/MarginContainer3/MarginContainer2"]
 margin_left = 18.0
 margin_top = 1.0
 margin_right = 25.0
@@ -231,4 +237,9 @@ custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 text = "0"
 valign = 1
+
+[node name="RoundDamageStatsButton" parent="HBoxContainer/Right" instance=ExtResource( 9 )]
+margin_left = 59.0
+margin_right = 78.0
+margin_bottom = 20.0
 [connection signal="about_tooltip_construction_requested" from="HBoxContainer/Middle/GoldPanel/GoldButton" to="." method="_on_GoldButton_about_tooltip_construction_requested"]

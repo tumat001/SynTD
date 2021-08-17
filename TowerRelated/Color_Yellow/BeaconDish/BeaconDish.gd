@@ -48,6 +48,7 @@ func _ready():
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
+	tower_type_info = info
 	
 	
 	tower_detecting_range_module = TowerDetectingRangeModule_Scene.instance()

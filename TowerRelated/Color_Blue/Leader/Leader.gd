@@ -1,7 +1,5 @@
 extends "res://TowerRelated/AbstractTower.gd"
 
-signal show_member_connection_mode_changed(is_showing)
-
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
@@ -29,8 +27,12 @@ const LeaderMark_Pic = preload("res://TowerRelated/Color_Blue/Leader/LeaderMark.
 const AddMember_Pic = preload("res://TowerRelated/Color_Blue/Leader/Ability/TowerSelectionPanel/TowerAdd_Icon.png")
 const RemoveMember_Pic = preload("res://TowerRelated/Color_Blue/Leader/Ability/TowerSelectionPanel/TowerRemove_Icon.png")
 const CoordinatedAttack_Pic = preload("res://TowerRelated/Color_Blue/Leader/Ability/CoordinatedAttack_Icon.png")
+const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 
 const LeaderMemberConnectionBeam_Pic = preload("res://TowerRelated/Color_Blue/Leader/Leader_MemberConnectionBeam.png")
+const LeaderCommandAttack_ParticleScene = preload("res://TowerRelated/Color_Blue/Leader/Leader_CommandMark/Leader_CommandAttkParticle.tscn")
+
+signal show_member_connection_mode_changed(is_showing)
 
 
 var marked_enemy
@@ -56,8 +58,13 @@ const member_upper_limit : int = 5
 
 var tower_members_beam_map : Dictionary = {}
 
-
 var is_showing_member_connections : bool = false
+
+#
+
+const base_stun_duration : float = 3.25
+var stun_effect : EnemyStunEffect
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -68,6 +75,7 @@ func _ready():
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
+	tower_type_info = info
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -116,6 +124,7 @@ func _ready():
 	connect("global_position_changed", self, "_self_global_pos_changed", [], CONNECT_PERSIST)
 	
 	_construct_abilities()
+	_construct_effect()
 	
 	_construct_mark_indicator()
 	_post_inherit_ready()
@@ -189,7 +198,8 @@ func _construct_abilities():
 		"Orders all members to attack the marked enemy once, regardless of range.",
 		"Projectiles gain extra range to be able to reach the marked target.",
 		"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
-		"Cooldown: 12.5 s"
+		"The marked enemy is also stunned for %s seconds" % str(base_stun_duration),
+		"Cooldown: %s s" % str(coordinated_attack_cooldown)
 	]
 	coordinated_attack_ability.display_name = "Coordinated Attack"
 	
@@ -306,7 +316,7 @@ func _remove_all_tower_members():
 		remove_tower_activation_conditional_clauses.attempt_insert_clause(rt_activation_clause_no_member)
 
 
-# Ability coordinated attack
+# Ability: coordinated attack
 
 func _cast_use_coordinated_attack():
 	_atomic_marked_enemy = marked_enemy
@@ -326,8 +336,18 @@ func _cast_use_coordinated_attack():
 				
 				tower.main_attack_module.on_command_attack_enemies_and_attack_when_ready([_atomic_marked_enemy], 1)
 	
+	if _atomic_marked_enemy != null:
+		_atomic_marked_enemy._add_effect(stun_effect)
+		_construct_and_show_particle_at_pos(_atomic_marked_enemy.global_position)
+	
 	var cd = _get_cd_to_use(coordinated_attack_cooldown)
 	coordinated_attack_ability.start_time_cooldown(cd)
+
+func _construct_and_show_particle_at_pos(pos : Vector2):
+	var particle = LeaderCommandAttack_ParticleScene.instance()
+	particle.position = pos
+	
+	get_tree().get_root().add_child(particle)
 
 
 func _member_bullet_is_shot(bullet : BaseBullet, tower):
@@ -468,6 +488,13 @@ func _self_global_pos_changed(old_pos, new_pos):
 			beam.global_position = global_position
 			beam.update_destination_position(tower.global_position)
 
+
+# effect related
+
+func _construct_effect():
+	stun_effect = EnemyStunEffect.new(base_stun_duration, StoreOfEnemyEffectsUUID.LEADER_STUN)
+	stun_effect.is_timebound = true
+	stun_effect.is_from_enemy = false
 
 
 # freeing

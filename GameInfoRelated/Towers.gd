@@ -46,6 +46,7 @@ const rebound_image = preload("res://TowerRelated/Color_Red/Rebound/Rebound_E.pn
 const striker_image = preload("res://TowerRelated/Color_Red/Striker/Striker_E.png")
 const hextribute_image = preload("res://TowerRelated/Color_Red/HexTribute/HexTribute_Omni.png")
 const transmutator_image = preload("res://TowerRelated/Color_Red/Transmutator/Transmutator_E.png")
+const soul_image = preload("res://TowerRelated/Color_Red/Soul/Soul_Omni.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -115,6 +116,7 @@ enum {
 	STRIKER = 204,
 	HEXTRIBUTE = 205,
 	TRANSMUTATOR = 206,
+	SOUL = 207,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -213,6 +215,7 @@ const TowerTiersMap : Dictionary = {
 	DOUSER : 3,
 	WAVE : 3,
 	SEEDER : 3,
+	SOUL : 3,
 	
 	RE : 4,
 	PING : 4,
@@ -224,10 +227,10 @@ const TowerTiersMap : Dictionary = {
 	ORB : 4,
 	REAPER : 4,
 	ADEPT : 4,
+	LEADER : 4,
 	
 	VOLCANO : 5,
 	FRUIT_TREE : 5,
-	LEADER : 5,
 	LAVA_JET : 5,
 	BLOSSOM : 5,
 	
@@ -277,7 +280,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GRAY)
 		info.tower_image_in_buy_card = mono_image
 		
-		info.base_damage = 2.75
+		info.base_damage = 3.5
 		info.base_attk_speed = 0.75
 		info.base_pierce = 1
 		info.base_range = 100
@@ -298,7 +301,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = sprinkler_image
 		
 		info.base_damage = 1
-		info.base_attk_speed = 2.25
+		info.base_attk_speed = 1.5
 		info.base_pierce = 1
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -358,7 +361,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GRAY)
 		info.tower_image_in_buy_card = simpleobelisk_image
 		
-		info.base_damage = 4
+		info.base_damage = 6
 		info.base_attk_speed = 0.5
 		info.base_pierce = 1
 		info.base_range = 180
@@ -389,7 +392,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GRAY)
 		info.tower_image_in_buy_card = simplex_image
 		
-		info.base_damage = 0.45
+		info.base_damage = 0.5
 		info.base_attk_speed = 6
 		info.base_pierce = 0
 		info.base_range = 110
@@ -409,7 +412,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = railgun_image
 		
-		info.base_damage = 5
+		info.base_damage = 6
 		info.base_attk_speed = 0.25
 		info.base_pierce = 4
 		info.base_range = 100
@@ -465,7 +468,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = telsa_image
 		
-		info.base_damage = 3.5
+		info.base_damage = 4
 		info.base_attk_speed = 1.5
 		info.base_pierce = 0
 		info.base_range = 145
@@ -524,7 +527,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = ping_image
 		
 		info.base_damage = 1
-		info.base_attk_speed = 0.30
+		info.base_attk_speed = 0.35
 		info.base_pierce = 1
 		info.base_range = 155
 		info.base_damage_type = DamageType.PHYSICAL
@@ -533,9 +536,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Stats shown are for the arrow.",
 			"Shoots an arrow that releases a ring. The ring marks up to 4 unmarked enemies.",
-			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process. If only 1 enemy is marked, the shot is empowered, dealing 5 base damage, and on hit damages become 150% effective.",
+			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process. If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 150% effective.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
-			"Shots deal 3 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
+			"Shots deal 5 physical damage, benefit from base damage bonuses, and apply on hit damages and effects."
 		]
 		
 		var tower_base_effect : PingletAdderEffect = PingletAdderEffect.new()
@@ -552,8 +555,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = coin_image
 		
-		info.base_damage = 1.5
-		info.base_attk_speed = 0.55
+		info.base_damage = 1.75
+		info.base_attk_speed = 0.525
 		info.base_pierce = 2
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
@@ -616,8 +619,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = mini_tesla_image
 		
-		info.base_damage = 2
-		info.base_attk_speed = 0.8
+		info.base_damage = 2.5
+		info.base_attk_speed = 0.775
 		info.base_pierce = 0
 		info.base_range = 110
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -651,7 +654,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = charge_image
 		
-		info.base_damage = 2.5
+		info.base_damage = 3
 		info.base_attk_speed = 0.65
 		info.base_pierce = 1
 		info.base_range = 90
@@ -685,7 +688,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = magnetizer_image
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.48
+		info.base_attk_speed = 0.675
 		info.base_pierce = 1
 		info.base_range = 155
 		info.base_damage_type = DamageType.PHYSICAL
@@ -698,7 +701,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"When there is at least one blue and one red magnet that has hit an enemy, Magnetizer casts Magnetize.",
 			"",
 			"Magnetize: Calls upon all of this tower's non traveling magnets to form a beam between their opposite types.",
-			"The beam has 7 base damage and deals elemental damage. The beam benefits from base damage buffs. On hit effects and on hit damages are 67% effective."
+			"The beam deals 9 elemental damage. The beam benefits from base damage buffs, on hit damages and effects."
 		]
 		
 		
@@ -721,7 +724,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = sunflower_image
 		
-		info.base_damage = 1
+		info.base_damage = 1.5
 		info.base_attk_speed = 0.35
 		info.base_pierce = 1
 		info.base_range = 115
@@ -754,8 +757,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = ember_image
 		
-		info.base_damage = 1.5
-		info.base_attk_speed = 0.65
+		info.base_damage = 1
+		info.base_attk_speed = 0.55
 		info.base_pierce = 1
 		info.base_range = 95
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -792,7 +795,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = lava_jet_image
 		
-		info.base_damage = 2
+		info.base_damage = 2.5
 		info.base_attk_speed = 0.975
 		info.base_pierce = 1
 		info.base_range = 125
@@ -914,7 +917,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = flameburst_image
 		
-		info.base_damage = 2
+		info.base_damage = 2.5
 		info.base_attk_speed = 0.775
 		info.base_pierce = 1
 		info.base_range = 115
@@ -941,8 +944,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = scatter_image
 		
-		info.base_damage = 1.25
-		info.base_attk_speed = 0.38
+		info.base_damage = 1.5
+		info.base_attk_speed = 0.39
 		info.base_pierce = 1
 		info.base_range = 110
 		info.base_damage_type = DamageType.PHYSICAL
@@ -960,15 +963,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = coal_launcher_image
 		
-		info.base_damage = 2.75
-		info.base_attk_speed = 0.5
+		info.base_damage = 3.25
+		info.base_attk_speed = 0.55
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Launches a piece of coal at enemies. The coal increases the duration of all burns the enemy is suffering from for 1.5 seconds."
+			"Launches a piece of coal at enemies. The coal increases the duration of all burns the enemy is suffering from for 2 seconds."
 		]
 		
 		# Ingredient related
@@ -989,7 +992,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = enthalphy_image
 		
-		info.base_damage = 2.25
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.8
 		info.base_pierce = 0
 		info.base_range = 135
@@ -1021,7 +1024,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = entropy_image
 		
-		info.base_damage = 2.25
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.70
 		info.base_pierce = 0
 		info.base_range = 120
@@ -1055,7 +1058,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLUE)
 		info.tower_image_in_buy_card = royal_flame_image
 		
-		info.base_damage = 3
+		info.base_damage = 3.5
 		info.base_attk_speed = 1.05
 		info.base_pierce = 1
 		info.base_range = 140
@@ -1092,7 +1095,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = ieu_image
 		
-		info.base_damage = 2.5
+		info.base_damage = 3.25
 		info.base_attk_speed = 1
 		info.base_pierce = 0
 		info.base_range = 125
@@ -1167,7 +1170,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GREEN)
 		info.tower_image_in_buy_card = spike_image
 		
-		info.base_damage = 1.75
+		info.base_damage = 2
 		info.base_attk_speed = 0.75
 		info.base_pierce = 0
 		info.base_range = 115
@@ -1193,7 +1196,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GREEN)
 		info.tower_image_in_buy_card = impale_image
 		
-		info.base_damage = 9
+		info.base_damage = 10
 		info.base_attk_speed = 0.2
 		info.base_pierce = 0
 		info.base_range = 115
@@ -1236,6 +1239,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ability: Coordinated Attack. Orders all members to attack the marked enemy once, regardless of range.",
 			"Projectiles gain extra range to be able to reach the marked target.",
 			"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
+			"The marked enemy is also stunned for 3.25 seconds",
 			"Cooldown: 12.5 s"
 			# THIS SAME PASSAGE is placed in leader's
 			# ability tooltip. If this is changed, then
@@ -1256,7 +1260,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLUE)
 		info.tower_image_in_buy_card = orb_image
 		
-		info.base_damage = 2.25
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.875
 		info.base_pierce = 1
 		info.base_range = 130
@@ -1288,15 +1292,19 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = grand_image
 		
 		info.base_damage = 4
-		info.base_attk_speed = 0.6
+		info.base_attk_speed = 0.375
 		info.base_pierce = 1
-		info.base_range = 150
+		info.base_range = 135
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
 			"Grand gains bonus pierce and projectile speed at 1.25, 1.50, and 2.00 total ability potency.",
-			"Grand's main attack damage also scales with its total ability potency.",
+			"1, 2, and 4 bonus pierce is gained respectively per listed total ability potency.",
+			"",
+			"Grand's main attack damage scales with its total ability potency.",
+			"",
+			"When Grand's orb attack reaches its max distance, the bullet redirects to the farthest enemy from Grand.",
 			"",
 			"\"Where does the power reside? The (hand of a) wizard, or the orb?\""
 		]
@@ -1320,10 +1328,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLUE)
 		info.tower_image_in_buy_card = douser_image
 		
-		info.base_damage = 2
+		info.base_damage = 2.5
 		info.base_attk_speed = 0.85
 		info.base_pierce = 0
-		info.base_range = 150
+		info.base_range = 130
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -1356,7 +1364,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLUE)
 		info.tower_image_in_buy_card = wave_image
 		
-		info.base_damage = 0.5
+		info.base_damage = 1
 		info.base_attk_speed = 0.25
 		info.base_pierce = 0
 		info.base_range = 150
@@ -1395,7 +1403,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLUE)
 		info.tower_image_in_buy_card = bleach_image
 		
-		info.base_damage = 2.25
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.92
 		info.base_pierce = 1
 		info.base_range = 125
@@ -1403,7 +1411,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Every 5th attack, Bleach's main attack removes 7.5 toughness from enemies hit for 5 seconds. Does not stack."
+			"Every 3rd attack, Bleach's main attack removes 10 toughness from enemies hit for 8 seconds. Does not stack."
 		]
 		
 		
@@ -1423,7 +1431,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = time_machine_image
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.70
+		info.base_attk_speed = 0.75
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1434,7 +1442,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Rewind: After a brief delay, Time machine teleports an enemy a few paces backwards.",
 			"Cooldown: 15 s",
 			"",
-			"Rewind also applies 3 stacks of Time Dust onto an enemy for 6 seconds. Time Machine’s main attacks onto an enemy consume a stack of Time Dust, reducing Rewind’s cooldown by 2 seconds."
+			"Rewind also applies 3 stacks of Time Dust onto an enemy for 10 seconds. Time Machine’s main attacks onto an enemy consume a stack of Time Dust, reducing Rewind’s cooldown by 2 seconds."
 		]
 		
 		
@@ -1560,7 +1568,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GRAY)
 		info.tower_image_in_buy_card = reaper_image
 		
-		info.base_damage = 2.75
+		info.base_damage = 3
 		info.base_attk_speed = 0.725
 		info.base_pierce = 1
 		info.base_range = 135
@@ -1662,7 +1670,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = rebound_image
 		
-		info.base_damage = 2
+		info.base_damage = 3
 		info.base_attk_speed = 0.45
 		info.base_pierce = 2
 		info.base_range = 115
@@ -1692,8 +1700,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = striker_image
 		
-		info.base_damage = 1.75
-		info.base_attk_speed = 0.725
+		info.base_damage = 2.5
+		info.base_attk_speed = 0.825
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1796,6 +1804,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
 			"Levels are gained by spending EXP and gold. Only 6 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
+			"Upon reaching level 6, Hero increases the limit of activated composite synergies by 1.",
+			"",
 			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
 			"The Hero can absorb any ingredient color. Hero can also absorb 3 more ingredients.",
@@ -1810,8 +1820,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLACK)
 		info.tower_image_in_buy_card = amalgamator_image
 		
-		info.base_damage = 2.25
-		info.base_attk_speed = 0.90
+		info.base_damage = 3
+		info.base_attk_speed = 0.93
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1868,7 +1878,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GREEN)
 		info.tower_image_in_buy_card = pinecone_image
 		
-		info.base_damage = 2
+		info.base_damage = 3
 		info.base_attk_speed = 0.6
 		info.base_pierce = 1
 		info.base_range = 100
@@ -1877,9 +1887,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Shoots a cone that fragments into 3 pieces upon hitting an enemy.",
-			"Each piece deals 1 physical damage.",
-			"",
-			"Cones do not benefit from bonus pierce."
+			"Each fragment deals 1 physical damage.",
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_PINECONE)
@@ -1893,7 +1901,34 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "+ on hit"
 		
 		
-	
+	elif tower_id == SOUL:
+		info = TowerTypeInformation.new("Soul", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		info.tower_image_in_buy_card = soul_image
+		
+		info.base_damage = 3
+		info.base_attk_speed = 0.725
+		info.base_pierce = 1
+		info.base_range = 115
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Main attacks on hit causes Soul to attempt to cast Effigize.",
+			"Effigize: Spawns an Effigy of the enemy. Only one Effigy can be maintained by Soul at a time.",
+			"Effigy gains max health equal to 50% of the enemy hit's current health. This is increased by Soul's ability potency.",
+			"Effigy inherits the enemy's stats.",
+			"All damage and on hit effects taken by the Effigy is shared to the enemy associated with the Effigy. This does not trigger on hit events, and does not share execute damage.",
+			"Cooldown : 1 s. Cooldown starts when the Effigy is destroyed.",
+			"",
+			"The Effigy's spawn location is determined by Soul's targeting. \"First\" targeting spawns the Effigy ahead of the enemy, while all other targeting options spawns the Effigy behind the enemy.",
+			"",
+			"If the associated enemy dies while the Effigy is standing, the Effigy explodes, dealing 50% of its current health as elemental damage to 5 enemies.",
+		]
+		
+		
 	
 	
 	return info
@@ -2006,3 +2041,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/Blossom/Blossom.tscn")
 	elif tower_id == PINECONE:
 		return load("res://TowerRelated/Color_Green/PineCone/PineCone.tscn")
+	elif tower_id == SOUL:
+		return load("res://TowerRelated/Color_Red/Soul/Soul.tscn")

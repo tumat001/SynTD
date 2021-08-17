@@ -21,8 +21,6 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 	
 	var copy = get_script().new(time_in_seconds * scale, effect_uuid, respect_scale)
 	
-	copy.is_timebound = is_timebound
-	copy.status_bar_icon = status_bar_icon
-	copy.is_from_enemy = is_from_enemy
+	_configure_copy_to_match_self(copy)
 	
 	return copy
