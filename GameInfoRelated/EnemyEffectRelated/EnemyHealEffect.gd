@@ -12,6 +12,8 @@ func _init(arg_heal_as_modifier,
 	allows_overhealing = arg_allow_overhealing
 	respect_scale = arg_respect_scale
 	
+	should_map_in_all_effects_map = false
+	
 	is_timebound = false
 
 

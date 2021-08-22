@@ -16,6 +16,9 @@ const TowerDetectingRangeModule_Scene = preload("res://EnemyRelated/TowerInterac
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 const Hero_VOLEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/Hero_VOLEffect.gd")
 
+const Hero_LevelUpParticle_Scene = preload("res://TowerRelated/Color_White/Hero/Hero_OtherAssets/Hero_LevelUpParticle.tscn")
+const CommonAttackSpriteTemplater = preload("res://MiscRelated/AttackSpriteRelated/CommonTemplates/CommonAttackSpriteTemplater.gd")
+
 const HeroAttk_NormalPic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_Normal.png")
 const HeroAttk_LightWavePic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_LightWave.png")
 const HeroAttk_LightBlast01Pic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_LightExplosion01.png")
@@ -43,6 +46,7 @@ const Hero_VOLRobe02Pic = preload("res://TowerRelated/Color_White/Hero/HeroWeapo
 const Hero_VOLRobe03Pic = preload("res://TowerRelated/Color_White/Hero/HeroWeapons_Assets/Hero_VOLRobe03.png")
 const Hero_VOLRobe04Pic = preload("res://TowerRelated/Color_White/Hero/HeroWeapons_Assets/Hero_VOLRobe04.png")
 
+const Hero_VOL_StatusBarIcon = preload("res://TowerRelated/Color_White/Hero/Hero_OtherAssets/VOL_StatusBarIcon.png")
 
 signal current_xp_changed(gained_amount, curr_xp)
 signal xp_needed_for_next_level_changed(new_req)
@@ -60,21 +64,21 @@ signal can_spend_relics_for_level_up_updated(val)
 
 signal notify_xp_cap_of_level_reached()
 
-const hero_base_health : float = 20.0
+const hero_base_health : float = 25.0
 const extra_comp_syn_slot_amount_at_max_level : int = 1
 
 const xp_ratio_per_damage : float = 1.0
-const xp_per_kill : float = 3.0
+const xp_per_kill : float = 2.0
 const xp_scale_if_not_white_dom_color : float = 2.0/3.0
 const max_hero_level : int = 6
 
-const xp_needed_per_level : Array = [130, 685, 1950, 3100, 3150, 3100]
-const gold_needed_per_level : Array = [1, 2, 4, 5, 6, 7]
+const xp_needed_per_level : Array = [130, 685, 1950, 3100, 3500, 4000]
+const gold_needed_per_level : Array = [1, 2, 3, 5, 5, 5]
 
 const xp_about_descriptions = [
 	"Hero gains EXP from damaging enemies, killing enemies, and casting Voice of Light.",
 	"Hero gains EXP equal to the post-mitigated damage dealt to enemies.",
-	"Hero gains 3 EXP from a kill.",
+	"Hero gains 2 EXP from a kill.",
 	"Hero gains EXP from casting Voice of Light. The amount depends on this ability's level.",
 	"",
 	"There is no EXP limit for Hero. Hero can only gain %s levels from gold and EXP." % str(max_hero_level),
@@ -84,19 +88,19 @@ const xp_about_descriptions = [
 
 const main_attack_proj_speed : float = 500.0
 const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
-const attks_needed_for_light_explosion : int = 40
+const attks_needed_for_light_explosion : int = 35
 const light_wave_base_damage_in_levels : Array = [1, 1.5, 2, 3]
-const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.5, 1.0]
+const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.5, 0.75]
 
-const judgement_dmg_ratio_in_levels : Array = [2, 3, 6, 9]
-const judgement_bonus_dmg_ratio : float = 1.25
+const judgement_dmg_ratio_in_levels : Array = [1.5, 2, 3, 4]
+const judgement_bonus_dmg_ratio : float = 1.20
 const judgement_bonus_dmg_threshold_trigger : float = 0.25
 const judgement_stack_trigger : int = 3
 
 const current_attks_needed_for_vol : int = 6
 const VOL_towers_affected_in_levels : Array = [3, 4, 6, 12]
 const VOL_range_in_levels : Array = [70, 105, 160, 250]
-const VOL_dmg_ratio_buff_in_levels : Array = [1.20, 1.25, 1.55, 1.75]
+const VOL_dmg_ratio_buff_in_levels : Array = [1.20, 1.25, 1.3, 1.4]
 const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 25]
 const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 9, 9]
 
@@ -138,6 +142,15 @@ var current_vol_damage_scale : float
 var current_vol_count : int
 
 var current_judgement_dmg_ratio : float
+
+# particle related
+
+var non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
+var particle_timer : Timer
+
+const total_particle_count_per_show : int = 15
+const delay_per_particle : float = 0.2
+var _current_particle_showing_count : int = 0
 
 #
 
@@ -252,7 +265,7 @@ func _on_main_attack_h(attk_speed_delay, enemies, module):
 func _on_main_attack_hit_h(enemy, damage_register_id, damage_instance, module):
 	if white_dom_active:
 		if ability_light_waves_level >= 3 and current_attack_count_in_round >= attks_needed_for_light_explosion:
-			call_deferred("_summon_light_explosion_to_enemy", enemy, damage_instance)
+			call_deferred("_summon_light_explosion_to_enemy", enemy, damage_instance.get_copy_damage_only_scaled_by(current_light_explosion_dmg_ratio))
 
 func _on_any_attack_hit_h(enemy, damage_register_id, damage_instance, module):
 	if white_dom_active:
@@ -271,11 +284,10 @@ func _summon_light_wave_to_enemy(enemy):
 		var wave = lightwave_attack_module.construct_bullet(enemy.global_position)
 		get_tree().get_root().add_child(wave)
 
-func _summon_light_explosion_to_enemy(enemy, damage_instance):
+func _summon_light_explosion_to_enemy(enemy, damage_instance_copy):
 	if enemy != null:
 		var explosion = lightexplosion_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
-		explosion.enemies_to_ignore.append(enemy)
-		explosion.damage_instance = damage_instance.get_copy_damage_only_scaled_by(current_light_explosion_dmg_ratio)
+		explosion.damage_instance = damage_instance_copy
 		explosion.damage_instance.on_hit_effects.clear()
 		
 		get_tree().get_root().add_child(explosion)
@@ -526,6 +538,8 @@ func _construct_VOL_effect():
 	VOL_effect = Hero_VOLEffect.new()
 	VOL_effect.is_timebound = false
 	VOL_effect.is_countbound = true
+	
+	VOL_effect.status_bar_icon = Hero_VOL_StatusBarIcon
 
 
 func toggle_module_ranges():
@@ -672,6 +686,7 @@ func _increase_exp(amount):
 			
 			if !notify_xp_cap_of_level_reached:
 				notify_xp_cap_of_level_reached = true
+				_show_level_up_cosmetic_effects()
 				emit_signal("notify_xp_cap_of_level_reached")
 
 
@@ -765,7 +780,7 @@ func get_light_waves_ability_descriptions() -> Array:
 		
 		var descs = [
 			"Every %s main attack is followed by a light wave." % every_attk_desc,
-			"Light waves deal %s elemental damage, and has 3 pierce" % current_light_wave_base_damage,
+			"Light waves deal %s elemental damage, and have 3 pierce" % current_light_wave_base_damage,
 			"Light waves do not benefit from base damage buffs, on hit damages and effects.",
 		]
 		
@@ -784,7 +799,7 @@ func _get_light_explosion_ability_descs() -> Array:
 		"",
 		"After %s main attacks in a round, every main attack that hits an enemy causes an explosion." % attks_needed_for_light_explosion,
 		"The explosion deals elemental damage equal to %s of the damage of the main attack." % (str(current_light_explosion_dmg_ratio * 100) + "%"),
-		"The explosion does not affect the main target, and does not apply on hit effects."
+		"The explosion does not apply on hit effects."
 	]
 
 
@@ -793,7 +808,7 @@ func get_judgement_ability_descs() -> Array:
 		return [
 			"Every attack that applies on hit effects applies a Judge stack to enemies hit.",
 			"At %s Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage." % [str(judgement_stack_trigger), (str(current_judgement_dmg_ratio * 100) + "%")],
-			"Judgement is enhanced to deal %s damage when the enemy has less than %s health. This bonus stacks multiplicatively." % [(str(judgement_bonus_dmg_ratio * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
+			"Judgement is enhanced to deal %s more damage when the enemy has less than %s health." % [(str((judgement_bonus_dmg_ratio - 1) * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
 			"Judgement does not apply on hit effects."
 		]
 	else:
@@ -847,7 +862,7 @@ func get_light_waves_upgrade_descs() -> Array:
 		else:
 			descs = [
 				"Every %s main attack is followed by a light wave." % (str(attks_needed_for_light_wave_in_levels[0]) + "rd"),
-				"Light waves deal %s elemental damage, and has 3 pierce." % light_wave_base_damage_in_levels[0],
+				"Light waves deal %s elemental damage, and have 3 pierce." % light_wave_base_damage_in_levels[0],
 				"Light waves do not benefit from base damage buffs, on hit damages and effects.",
 			]
 	
@@ -866,8 +881,8 @@ func get_judgement_upgrade_descs():
 		else:
 			descs = [
 				"Every attack that applies on hit effects applies a Judge stack to enemies hit.",
-				"At 3 Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage." % [str(judgement_stack_trigger), (str(judgement_dmg_ratio_in_levels[0] * 100) + "%")],
-				"Judgement is enhanced to deal %s damage when the enemy has less than %s health. This bonus stacks multiplicatively." % [(str(judgement_bonus_dmg_ratio * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
+				"At %s Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage." % [str(judgement_stack_trigger), (str(judgement_dmg_ratio_in_levels[0] * 100) + "%")],
+				"Judgement is enhanced to deal %s more damage when the enemy has less than %s health." % [(str((judgement_bonus_dmg_ratio - 1) * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
 				"Judgement does not apply on hit effects."
 			]
 	
@@ -924,7 +939,7 @@ func get_gold_xp_level_up_desc() -> Array:
 func get_relic_level_up_desc() -> Array:
 	return [
 		"Costs 1 relic to level up trice.",
-		"Hero needs to be level 3 or above to use this option."
+		"Hero needs to be level %s or above to use this option." % str(max_hero_level)
 	]
 
 
@@ -939,3 +954,38 @@ func get_self_description_in_info_panel() -> Array:
 		"Hero will save %s" % last_part,
 		"Click on the icon to view the hero's level and skills."
 	]
+
+#
+
+func _show_level_up_cosmetic_effects():
+	if particle_timer == null:
+		particle_timer = Timer.new()
+		particle_timer.one_shot = true
+		particle_timer.connect("timeout", self, "_on_particle_timer_expired", [], CONNECT_PERSIST)
+		add_child(particle_timer)
+	
+	_on_particle_timer_expired()
+
+func _on_particle_timer_expired():
+	if _current_particle_showing_count < total_particle_count_per_show:
+		_create_and_show_level_up_particle()
+		_current_particle_showing_count += 1
+		
+		particle_timer.start(delay_per_particle)
+	else:
+		_current_particle_showing_count = 0
+
+
+func _create_and_show_level_up_particle():
+	var particle = Hero_LevelUpParticle_Scene.instance()
+	
+	CommonAttackSpriteTemplater.configure_properties_of_attk_sprite(particle, CommonAttackSpriteTemplater.TemplateIDs.COMMON_UPWARD_DECELERATING_PARTICLE)
+	particle.position = global_position
+	particle.scale *= 2
+	
+	particle.position.x += non_essential_rng.randi_range(-17, 17)
+	particle.position.y += non_essential_rng.randi_range(-16, 10)
+	
+	get_tree().get_root().add_child(particle)
+
+

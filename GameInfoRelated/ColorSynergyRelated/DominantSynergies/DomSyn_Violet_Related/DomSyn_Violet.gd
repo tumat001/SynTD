@@ -1,5 +1,10 @@
 extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifyingSynergyEffect.gd"
 
+const TowerEffect_DomSyn_VioletColorMasteryGiver = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_DomSyn_VioletColorMasteryGiver.gd")
+
+
+const rounds_before_color_mastery : int = 1
+
 const tier_4_tower_ing_boost : int = 40
 const tier_4_tower_limit : int = 3
 const tier_4_tower_violet_limit : int = 2
@@ -77,6 +82,9 @@ func _add_towers_to_benefit_from_synergy(violet_towers : Array):
 func _tower_to_benefit_from_synergy(tower : AbstractTower):
 	if tower._tower_colors.has(TowerColors.VIOLET):
 		tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.VIOLET_SYNERGY, current_ing_boost)
+		
+		var giver_effect := TowerEffect_DomSyn_VioletColorMasteryGiver.new(rounds_before_color_mastery)
+		tower.add_tower_effect(giver_effect)
 
 
 func _remove_towers_from_synergy(violet_towers : Array):
@@ -86,6 +94,10 @@ func _remove_towers_from_synergy(violet_towers : Array):
 func _tower_to_remove_from_synergy(tower : AbstractTower):
 	if tower._tower_colors.has(TowerColors.VIOLET):
 		tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.VIOLET_SYNERGY, 0)
+		
+		var effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.VIOLET_COLOR_MASTERY_EFFECT_GIVER)
+		if effect != null:
+			tower.remove_tower_effect(effect)
 
 
 func _tower_added_or_removed(tower, removing : bool):

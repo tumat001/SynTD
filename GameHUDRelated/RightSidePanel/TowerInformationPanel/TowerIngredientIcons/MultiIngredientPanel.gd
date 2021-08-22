@@ -9,6 +9,8 @@ var ingredient_effect_limit : int
 var _single_ingredient_panels : Array = []
 var _single_ingredient_list : VBoxContainer
 
+export(bool) var collapsed_value_by_default : bool = false
+
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
@@ -30,6 +32,8 @@ func _allocate_single_ingredient_panels():
 	if difference > 0:
 		for i in difference:
 			var single_panel = SingleIngredientPanel_Scene.instance()
+			single_panel.collapsed = collapsed_value_by_default
+			
 			_single_ingredient_panels.append(single_panel)
 			_single_ingredient_list.add_child(single_panel)
 

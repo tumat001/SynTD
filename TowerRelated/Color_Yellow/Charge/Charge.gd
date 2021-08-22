@@ -229,13 +229,13 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Max on hit damage increased to 67. Recharges a little bit faster."
+			"Max on hit damage increased to 125. Also recharges faster."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	max_on_hit_damage = 67.0
-	base_energy_recharge_per_sec = 30.0
+	max_on_hit_damage = 125.0
+	base_energy_recharge_per_sec = 50.0
 	_current_chargebar_06 = ChargeBar_6_Special
 	
 	if charge_bar_sprite != null:

@@ -12,6 +12,8 @@ const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelat
 const AbstractAttackModule = preload("res://TowerRelated/Modules/AbstractAttackModule.gd")
 const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
 const LifeBar = preload("res://EnemyRelated/Infobar/LifeBar/LifeBar.gd")
+const TowerHeatModuleBar = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/Panels/TowerHeatBar/TowerHeatModuleBar.gd")
+const TowerHeatModuleBar_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/Panels/TowerHeatBar/TowerHeatModuleBar.tscn")
 
 const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerBaseEffect.gd")
 const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerAttributesEffect.gd")
@@ -24,6 +26,8 @@ const TowerFullSellbackEffect = preload("res://GameInfoRelated/TowerEffectRelate
 const _704EmblemPointsEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/704EmblemPointsEffect.gd")
 const BaseTowerModifyingEffect = preload("res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd")
 const TowerMarkEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerMarkEffect.gd")
+const TowerIngredientColorCompatibilityEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerIngredientColorCompatibilityEffect.gd")
+const TowerIngredientColorAcceptabilityEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerIngredientColorAcceptabilityEffect.gd")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
@@ -164,7 +168,7 @@ var is_being_dragged : bool = false
 var is_in_ingredient_mode : bool = false
 var is_being_hovered_by_mouse : bool = false
 
-var is_in_select_tower_prompt : bool = false setget set_is_in_selection_mode
+var _is_in_select_tower_prompt : bool = false
 
 var is_showing_ranges : bool
 
@@ -198,6 +202,9 @@ var ingredient_compatible_colors : Array = []
 
 var _ingredient_id_limit_modifier_map : Dictionary
 var last_calculated_ingredient_limit : int
+
+var _ingredient_compatible_color_effects : Dictionary = {}
+var _ingredient_acceptability_color_effects : Dictionary = {}
 
 # Color related
 
@@ -257,7 +264,7 @@ var is_dead_for_the_round : bool = false
 
 var tower_limit_slots_taken : int = 1
 
-#var last_calculated_has_attacking_modules : bool
+
 var last_calculated_has_commandable_attack_modules : bool
 
 # tracker
@@ -297,6 +304,8 @@ var energy_module setget set_energy_module
 var heat_module setget set_heat_module
 var base_heat_effect : TowerBaseEffect
 
+var tower_heat_module_bar : TowerHeatModuleBar
+
 
 # -- node related
 onready var info_bar_layer = $InfoBarLayer
@@ -306,6 +315,10 @@ onready var info_bar = $InfoBarLayer/InfoBar
 
 onready var tower_base_sprites = $TowerBase/BaseSprites
 onready var tower_base = $TowerBase
+
+onready var info_bar_vbox_container = $InfoBarLayer/InfoBar/VBoxContainer
+
+onready var cannot_apply_pic = $DoesNotApplyPic
 
 
 # Initialization -------------------------- #
@@ -322,6 +335,7 @@ func _init():
 
 func _ready():
 	$IngredientDeclinePic.visible = false
+	cannot_apply_pic.visible = false
 	_end_drag()
 	
 	connect("on_current_health_changed", life_bar, "set_current_health_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
@@ -429,7 +443,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			attack_module.range_module.connect("current_enemy_left_range", self, "_emit_on_any_range_module_current_enemy_exited", [attack_module, attack_module.range_module], CONNECT_PERSIST)
 			attack_module.range_module.connect("current_enemies_acquired", self, "_emit_on_any_range_module_current_enemies_acquired", [attack_module, attack_module.range_module], CONNECT_PERSIST)
 		
-	attack_module.range_module.update_range()
+		attack_module.range_module.update_range()
 	
 	#if main_attack_module == null and attack_module.module_id == StoreOfAttackModuleID.MAIN:
 	if attack_module.module_id == StoreOfAttackModuleID.MAIN:
@@ -752,6 +766,14 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 	elif tower_base_effect is TowerMarkEffect:
 		pass
 		
+	elif tower_base_effect is TowerIngredientColorCompatibilityEffect:
+		if include_non_module_effects: 
+			add_ingredient_compatibility_color_effect(tower_base_effect)
+		
+	elif tower_base_effect is TowerIngredientColorAcceptabilityEffect:
+		if include_non_module_effects:
+			add_ingredient_color_acceptability_effect(tower_base_effect)
+		
 	elif tower_base_effect is TowerResetEffects:
 		if include_non_module_effects:
 			_clear_ingredients_by_effect_reset()
@@ -852,7 +874,14 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 		
 	elif tower_base_effect is TowerMarkEffect:
 		pass
-	
+		
+	elif tower_base_effect is TowerIngredientColorCompatibilityEffect:
+		if include_non_module_effects:
+			remove_ingredient_compatibility_color_effect(tower_base_effect.effect_uuid)
+		
+	elif tower_base_effect is TowerIngredientColorAcceptabilityEffect:
+		if include_non_module_effects:
+			remove_ingredient_color_acceptability_effect(tower_base_effect.effect_uuid)
 	
 	emit_signal("on_effect_removed", tower_base_effect)
 
@@ -1464,7 +1493,18 @@ func _can_accept_ingredient_color(tower_selected) -> bool:
 		if _tower_colors.has(color):
 			return true
 	
-	return false
+	if _tower_colors.has(TowerColors.BLACK):
+		return true
+	
+	var final_verdict : bool = false
+	for effect in _ingredient_acceptability_color_effects.values():
+		for color in tower_selected.ingredient_compatible_colors:
+			if effect.color_list.has(color):
+				final_verdict = (effect.acceptability_type == TowerIngredientColorAcceptabilityEffect.AcceptabilityType.WHITELIST)
+				break
+	
+	
+	return final_verdict
 
 
 func show_acceptability_with_ingredient(ingredient_effect : IngredientEffect, tower_selected):
@@ -1475,6 +1515,14 @@ func show_acceptability_with_ingredient(ingredient_effect : IngredientEffect, to
 
 func hide_acceptability_with_ingredient():
 	$IngredientDeclinePic.visible = false
+
+
+func add_ingredient_color_acceptability_effect(effect : TowerIngredientColorAcceptabilityEffect):
+	_ingredient_acceptability_color_effects[effect.effect_uuid] = effect
+
+func remove_ingredient_color_acceptability_effect(effect_uuid : int):
+	_ingredient_acceptability_color_effects.erase(effect_uuid)
+
 
 
 # Ingredient limit related
@@ -1530,6 +1578,8 @@ func _set_active_ingredient_limit(new_limit : int):
 		emit_signal("ingredients_limit_changed", new_limit)
 
 
+# ing compatible color related
+
 func _update_ingredient_compatible_colors():
 	ingredient_compatible_colors.clear()
 	
@@ -1568,9 +1618,22 @@ func _update_ingredient_compatible_colors():
 			ingredient_compatible_colors.append(TowerColors.GRAY)
 			
 		elif color == TowerColors.BLACK:
-			#ingredient_compatible_colors.append(TowerColors.BLACK)
-			for c in TowerColors.get_all_colors():
-				ingredient_compatible_colors.append(c)
+			ingredient_compatible_colors.append(TowerColors.BLACK)
+	
+	
+	for effect in _ingredient_compatible_color_effects.values():
+		effect.modify_ing_color_compatibility_list(ingredient_compatible_colors)
+
+
+
+func add_ingredient_compatibility_color_effect(effect : TowerIngredientColorCompatibilityEffect):
+	_ingredient_compatible_color_effects[effect.effect_uuid] = effect
+	_update_ingredient_compatible_colors()
+
+func remove_ingredient_compatibility_color_effect(effect_uuid : int):
+	_ingredient_compatible_color_effects.erase(effect_uuid)
+	_update_ingredient_compatible_colors()
+
 
 # Tower Colors Related
 
@@ -1706,7 +1769,7 @@ func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 		if event.pressed and event.button_index == BUTTON_RIGHT:
 			_toggle_show_tower_info()
 		elif event.pressed and event.button_index == BUTTON_LEFT:
-			if is_in_select_tower_prompt:
+			if _is_in_select_tower_prompt:
 				_self_is_selected_in_selection_mode()
 				
 			elif !(is_round_started and current_placable is InMapAreaPlacable):
@@ -1718,8 +1781,22 @@ func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 
 # Tower selection related
 
-func set_is_in_selection_mode(value : bool):
-	is_in_select_tower_prompt = value
+func enter_selection_mode(prompter, arg_prompt_tower_checker_predicate_name : String):
+	_is_in_select_tower_prompt = true
+	if prompter.has_method(arg_prompt_tower_checker_predicate_name):
+		var passed_predicate = prompter.call(arg_prompt_tower_checker_predicate_name, self)
+		
+		if !passed_predicate:
+			cannot_apply_pic.visible = true
+		else:
+			cannot_apply_pic.visible = false
+
+func exit_selection_mode():
+	_is_in_select_tower_prompt = false
+	
+	if cannot_apply_pic != null:
+		cannot_apply_pic.visible = false
+
 
 func _self_is_selected_in_selection_mode():
 	emit_signal("tower_selected_in_selection_mode", self)
@@ -2132,6 +2209,15 @@ func _get_atlas_region() -> Rect2:
 	return Rect2(center.x, center.y, size.x, size.y)
 
 
+# Tower Infobar related
+
+func add_infobar_control(control : Control, index = info_bar_vbox_container.get_child_count()):
+	info_bar_vbox_container.add_child(control)
+	
+	info_bar_vbox_container.move_child(control, index)
+
+
+
 # SYNERGIES RELATED ---------------------
 # YELLOW - energy module related
 
@@ -2144,8 +2230,9 @@ func set_energy_module(module):
 		energy_module.disconnect("module_turned_on", self, "_module_turned_on")
 		energy_module.disconnect("module_turned_off", self, "_module_turned_off")
 	
+	energy_module = module
+	
 	if module != null:
-		energy_module = module
 		energy_module.tower_connected_to = self
 		call_deferred("emit_signal", "energy_module_attached")
 		energy_module.connect("module_turned_on", self, "_module_turned_on")
@@ -2165,6 +2252,9 @@ func set_heat_module(arg_heat_module):
 	if base_heat_effect == null:
 		_construct_heat_effect()
 	
+	# this is just here for future purposes. Although
+	# right now setting the tower's heat module
+	# to null is never used yet.
 	if heat_module != null:
 		heat_module.tower = null
 		
@@ -2173,6 +2263,9 @@ func set_heat_module(arg_heat_module):
 			heat_module.disconnect("current_heat_effect_changed", self, "_heat_module_current_heat_effect_changed")
 			heat_module.disconnect("on_overheat_reached", self, "_emit_heat_module_overheat")
 			heat_module.disconnect("in_overheat_cooldown", self, "_emit_heat_module_overheat_cooldown")
+		
+		#if tower_heat_module_bar != null:
+		#	tower_heat_module_bar.queue_free()
 	
 	heat_module = arg_heat_module
 	
@@ -2185,6 +2278,13 @@ func set_heat_module(arg_heat_module):
 			heat_module.connect("current_heat_effect_changed", self, "_heat_module_current_heat_effect_changed", [], CONNECT_PERSIST)
 			heat_module.connect("on_overheat_reached", self, "_emit_heat_module_overheat", [], CONNECT_PERSIST)
 			heat_module.connect("in_overheat_cooldown", self, "_emit_heat_module_overheat_cooldown", [], CONNECT_PERSIST)
+		
+		if tower_heat_module_bar == null:
+			tower_heat_module_bar = TowerHeatModuleBar_Scene.instance()
+			tower_heat_module_bar.heat_module = heat_module
+			
+			add_infobar_control(tower_heat_module_bar)
+
 
 func _construct_heat_effect():
 	pass

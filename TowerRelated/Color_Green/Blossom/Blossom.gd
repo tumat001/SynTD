@@ -148,25 +148,29 @@ func _emit_can_unassign_current_partner():
 
 
 func assign_new_tower_partner(tower):
-	if tower != null and partner_tower != tower and tower.is_current_placable_in_map() and !tower is get_script():
-		if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLOSSOM_MARK_EFFECT):
-			if partner_tower != null:
-				unassign_current_partner()
-			
-			partner_tower = tower
-			_add_effects_to_partner()
-			
-			if !partner_tower.is_connected("on_tower_no_health", self, "_on_partner_zero_health_reached"):
-				partner_tower.connect("on_tower_no_health", self, "_on_partner_zero_health_reached", [], CONNECT_PERSIST)
-				partner_tower.connect("tree_exiting", self, "_on_partner_tree_exiting", [], CONNECT_PERSIST)
-				partner_tower.connect("tower_not_in_active_map", self, "_on_partner_not_in_map", [], CONNECT_PERSIST)
-			
-			if partner_tower.current_health <= 0:
-				_on_partner_zero_health_reached()
-			
-			tower_beam_connection_component.attempt_add_connection_to_node(partner_tower)
-			
-			_partner_changed()
+	if _can_assign_tower_as_partner(tower):
+		
+		if partner_tower != null:
+			unassign_current_partner()
+		
+		partner_tower = tower
+		_add_effects_to_partner()
+		
+		if !partner_tower.is_connected("on_tower_no_health", self, "_on_partner_zero_health_reached"):
+			partner_tower.connect("on_tower_no_health", self, "_on_partner_zero_health_reached", [], CONNECT_PERSIST)
+			partner_tower.connect("tree_exiting", self, "_on_partner_tree_exiting", [], CONNECT_PERSIST)
+			partner_tower.connect("tower_not_in_active_map", self, "_on_partner_not_in_map", [], CONNECT_PERSIST)
+		
+		if partner_tower.current_health <= 0:
+			_on_partner_zero_health_reached()
+		
+		tower_beam_connection_component.attempt_add_connection_to_node(partner_tower)
+		
+		_partner_changed()
+
+func _can_assign_tower_as_partner(tower) -> bool:
+	return tower != null and partner_tower != tower and tower.is_current_placable_in_map() and !tower is get_script() and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLOSSOM_MARK_EFFECT)
+
 
 func unassign_current_partner():
 	if partner_tower != null:
@@ -347,7 +351,7 @@ func _unassign_ability_activated():
 
 func _assign_ability_activated():
 	if input_prompt_manager.can_prompt():
-		input_prompt_manager.prompt_select_tower(self, "assign_new_tower_partner", "_assign_cancelled")
+		input_prompt_manager.prompt_select_tower(self, "assign_new_tower_partner", "_assign_cancelled", "_can_assign_tower_as_partner")
 	else:
 		input_prompt_manager.cancel_selection()
 

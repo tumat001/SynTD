@@ -44,6 +44,7 @@ StoreOfFonts="*res://GameHUDRelated/StoreOfFonts.gd"
 [debug]
 
 settings/stdout/verbose_stdout=true
+gdscript/warnings/enable=false
 gdscript/warnings/unused_argument=false
 shapes/collision/shape_color=Color( 0, 0.6, 0.701961, 0.501961 )
 shapes/collision/contact_color=Color( 1, 0.2, 0.101961, 0.8 )

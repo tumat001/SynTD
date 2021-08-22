@@ -18,6 +18,7 @@ const Douser_Beam05 = preload("res://TowerRelated/Color_Blue/Douser/Douser_AttkB
 const Douser_Beam06 = preload("res://TowerRelated/Color_Blue/Douser/Douser_AttkBeam/Douser_AttkBeam06.png")
 
 const Douser_Bullet = preload("res://TowerRelated/Color_Blue/Douser/Douser_Bullet.png")
+const Douser_BuffIcon = preload("res://TowerRelated/Color_Blue/Douser/Douser_BuffIcon.png")
 
 const TowerDetectingRangeModule = preload("res://EnemyRelated/TowerInteractingRelated/TowerInteractingModules/TowerDetectingRangeModule.gd")
 const TowerDetectingRangeModule_Scene = preload("res://EnemyRelated/TowerInteractingRelated/TowerInteractingModules/TowerDetectingRangeModule.tscn")
@@ -141,10 +142,11 @@ func _construct_effect():
 	
 	base_damage_buff_effect.is_countbound = true
 	base_damage_buff_effect.count = base_douser_base_count
-
+	
+	base_damage_buff_effect.status_bar_icon = Douser_BuffIcon
 
 func _on_ap_changed_d():
-	base_damage_buff_mod.flat_modifier = base_damage_buff_mod.flat_modifier * last_calculated_final_ability_potency
+	base_damage_buff_mod.flat_modifier = base_douser_base_damage_buff * last_calculated_final_ability_potency
 
 func _on_acd_changed_d():
 	current_attack_count_for_buff = int(ceil(float(base_attack_count_for_buff) * (1 - last_calculated_final_percent_ability_cdr)))
@@ -196,11 +198,15 @@ func _find_closest_unbuffed_tower() -> Node:
 	var active_towers_in_range = tower_detecting_range_module.get_all_in_map_towers_in_range()
 	active_towers_in_range = Targeting.enemies_to_target(active_towers_in_range, Targeting.CLOSE, active_towers_in_range.size(), global_position)
 	
+	var unattacking_tower = null
 	for tower in active_towers_in_range:
-		if tower != self and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.DOUSER_BASE_DAMAGE_INC):
+		if tower != self and tower.last_calculated_has_commandable_attack_modules and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.DOUSER_BASE_DAMAGE_INC):
 			return tower
+		elif !tower.last_calculated_has_commandable_attack_modules:
+			if unattacking_tower == null:
+				unattacking_tower = tower
 	
-	return null
+	return unattacking_tower
 
 
 func _construct_buffing_bullet(arg_tower_pos : Vector2) -> BaseTowerDetectingBullet:

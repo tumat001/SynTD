@@ -8,5 +8,6 @@ func _ready():
 	scale = Vector2(0.1, 0.1)
 
 func _process(delta):
-	scale *= 1.35
 	
+	var inc = 12 * delta
+	scale += Vector2(inc, inc)

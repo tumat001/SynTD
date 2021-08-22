@@ -39,23 +39,25 @@ const win_streak_income_map : Dictionary = {
 	2 : 1,
 	3 : 1,
 	4 : 2,
-	5 : 3,
+	5 : 2,
 	6 : 3,
-	7 : 4
+	7 : 3,
+	8 : 4,
 }
 # highest win streak in the income map
-const highest_win_streak : int = 7
+const highest_win_streak : int = 8
 
 
 const lose_streak_income_map : Dictionary = {
 	2 : 1,
-	3 : 1,
+	3 : 2,
 	4 : 2,
 	5 : 3,
 	6 : 4,
+	7 : 5,
 }
 # highest lose streak in the income map
-const highest_lose_streak : int = 6
+const highest_lose_streak : int = 7
 
 
 signal current_gold_changed(current_gold)

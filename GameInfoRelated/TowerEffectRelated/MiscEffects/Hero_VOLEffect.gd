@@ -26,8 +26,7 @@ func _undo_modifications_to_tower(tower):
 func _shallow_duplicate():
 	var copy = get_script().new()
 	copy.damage_scale = damage_scale
-	copy.count = count
-	copy.is_timebound = is_timebound
-	copy.is_countbound = is_countbound
+	
+	_configure_copy_to_match_self(copy)
 	
 	return copy

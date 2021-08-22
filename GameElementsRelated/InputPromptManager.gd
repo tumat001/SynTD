@@ -3,7 +3,8 @@ extends Node
 const SelectionNotifPanel = preload("res://GameHUDRelated/NotificationPanel/SelectionNotifPanel/SelectionNotifPanel.gd")
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 
-signal prompted_for_tower_selection()
+
+signal prompted_for_tower_selection(prompter, prompt_predicate_method)
 
 signal cancelled_tower_selection()
 signal tower_selection_ended()
@@ -17,10 +18,12 @@ enum SelectionMode {
 
 const notif_message_select_tower : String = "Select a tower"
 
+
 var current_selection_mode : int = SelectionMode.NONE
 var selection_notif_panel : SelectionNotifPanel
 
 var _current_prompter
+var _current_prompt_tower_checker_predicate_name : String
 
 var _prompt_successful_method_handler : String
 var _prompt_cancelled_method_handler : String
@@ -28,12 +31,14 @@ var _prompt_cancelled_method_handler : String
 
 # Prompt select tower related
 
-func prompt_select_tower(prompter, arg_prompt_successful_method_handler : String, arg_prompt_cancelled_method_handler : String):
+func prompt_select_tower(prompter, arg_prompt_successful_method_handler : String, arg_prompt_cancelled_method_handler : String, arg_prompt_tower_checker_predicate_name : String = ""):
 	if current_selection_mode == SelectionMode.NONE:
 		current_selection_mode = SelectionMode.TOWER
 		_prompt_successful_method_handler = arg_prompt_successful_method_handler
 		_prompt_cancelled_method_handler = arg_prompt_cancelled_method_handler
+		
 		_current_prompter = prompter
+		_current_prompt_tower_checker_predicate_name = arg_prompt_tower_checker_predicate_name
 		
 		if _current_prompter != null:
 			_current_prompter.connect("tree_exiting", self, "cancel_selection")
@@ -42,7 +47,7 @@ func prompt_select_tower(prompter, arg_prompt_successful_method_handler : String
 				_current_prompter.connect("tower_not_in_active_map", self, "cancel_selection")
 		
 		
-		emit_signal("prompted_for_tower_selection")
+		emit_signal("prompted_for_tower_selection", prompter, arg_prompt_tower_checker_predicate_name)
 		_show_selection_notif_panel(notif_message_select_tower)
 
 
@@ -77,6 +82,7 @@ func clean_up_selection():
 		_current_prompter = null
 		_prompt_cancelled_method_handler = ""
 		_prompt_successful_method_handler = ""
+		_current_prompt_tower_checker_predicate_name = ""
 		
 		emit_signal("tower_selection_ended")
 		

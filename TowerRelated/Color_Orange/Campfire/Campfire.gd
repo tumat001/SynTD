@@ -14,6 +14,7 @@ const CampfireParticle_Scene = preload("res://TowerRelated/Color_Orange/Campfire
 const HeatModule = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/HeatModule.gd")
 
 var tower_detecting_range_module : TowerDetectingRangeModule
+
 const base_rage_threshold : float = 50.0
 var _current_rage : float = 0
 var last_calculated_rage_threshold : float = base_rage_threshold
@@ -23,10 +24,15 @@ var cf_attack_module : InstantDamageAttackModule
 var physical_on_hit_effect : TowerOnHitDamageAdderEffect
 var physical_on_hit : OnHitDamage
 
+var campfire_base_damage : float
+
+const initial_cooldown_after_ability_cast : float = 1.0
+var initial_cd_timer : Timer
+
+#
+
 onready var flame_anim_sprite := $TowerBase/BaseSprites
 const base_frame_rate : int = 5
-
-var campfire_base_damage : float
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.CAMPFIRE)
@@ -78,6 +84,7 @@ func _ready():
 	
 	_construct_on_hit_and_modifiers()
 	_construct_effects()
+	_construct_timer()
 	
 	_post_inherit_ready()
 
@@ -95,19 +102,25 @@ func _construct_effects():
 	physical_on_hit_effect.count = 1
 	physical_on_hit_effect.count_reduced_by_main_attack_only = false
 
+func _construct_timer():
+	initial_cd_timer = Timer.new()
+	initial_cd_timer.one_shot = true
+	
+	add_child(initial_cd_timer)
 
 # Giving effects and trigger
 
 func _enemy_damage_taken(damage_report, is_lethal, enemy):
-	_current_rage += damage_report.get_total_effective_damage_excluding([StoreOfTowerEffectsUUID.CAMPFIRE_PHY_ON_HIT])
-	
-	if _current_rage >= last_calculated_rage_threshold:
-		if heat_module == null or !last_calculated_disabled_from_attacking:
-			_update_physical_on_hit_effect()
-			_give_buffs_to_towers()
-			_construct_particle()
+	if initial_cd_timer.time_left <= 0:
+		_current_rage += damage_report.get_total_effective_damage_excluding([StoreOfTowerEffectsUUID.CAMPFIRE_PHY_ON_HIT])
 		
-		_current_rage = 0
+		if _current_rage >= last_calculated_rage_threshold:
+			if heat_module == null or !last_calculated_disabled_from_attacking:
+				_update_physical_on_hit_effect()
+				_give_buffs_to_towers()
+				_construct_particle()
+			
+			_current_rage = 0
 
 
 func _update_physical_on_hit_effect():
@@ -120,6 +133,8 @@ func _give_buffs_to_towers():
 	_campfire_attack_equivalent()
 	for tower in tower_detecting_range_module.get_all_in_map_towers_in_range():
 		tower.add_tower_effect(physical_on_hit_effect._shallow_duplicate())
+	
+	initial_cd_timer.start(initial_cooldown_after_ability_cast)
 
 
 func _construct_particle():
@@ -206,6 +221,10 @@ func _on_round_end():
 	._on_round_end()
 	
 	_current_rage = 0
+	
+	if initial_cd_timer != null:
+		initial_cd_timer.wait_time = 0.1
+		initial_cd_timer.start()
 
 
 # Heat Module
@@ -217,7 +236,7 @@ func set_heat_module(module : HeatModule):
 
 func _construct_heat_effect():
 	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_dmg_attr_mod.flat_modifier = 2
+	base_dmg_attr_mod.flat_modifier = 3
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
 

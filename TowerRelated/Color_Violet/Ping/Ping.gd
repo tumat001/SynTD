@@ -198,7 +198,12 @@ func _ready():
 	shot_attack_module.can_be_commanded_by_tower = false
 	add_attack_module(shot_attack_module)
 	
+	#
+	
+	info_bar_layer.position.y -= 25
+	
 	_post_inherit_ready()
+
 
 
 # Mark related

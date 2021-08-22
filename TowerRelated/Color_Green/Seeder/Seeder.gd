@@ -118,7 +118,7 @@ func _ready():
 	
 	explosion_attack_module = AOEAttackModule_Scene.instance()
 	explosion_attack_module.base_damage_scale = 4
-	explosion_attack_module.base_damage = 14 / explosion_attack_module.base_damage_scale
+	explosion_attack_module.base_damage = 10 / explosion_attack_module.base_damage_scale
 	explosion_attack_module.base_damage_type = DamageType.PHYSICAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0

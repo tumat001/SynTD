@@ -47,8 +47,8 @@ func _init():
 	
 	synergies = {
 	# Comple
-	"RedGreen" : ColorSynergy.new("RedGreen", [TowerColors.RED, TowerColors.GREEN], [9, 6, 3],
-	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
+	"RedGreen" : ColorSynergy.new("RedGreen", [TowerColors.RED, TowerColors.GREEN], [5, 4, 3, 2],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_compo_compli_redgreen,
 	[
 		"RedGreen description"
@@ -80,7 +80,7 @@ func _init():
 	syn_compo_compli_orangeblue,
 	[
 		"Main attacks of towers explode every few seconds.",
-		"Explosions deal 2 elemental damage to 3 enemies.",
+		"Explosions deal 3 elemental damage to 3 enemies.",
 		"Explosions benefit from base damage and on hit damage buffs at 20% efficiency. Explosions also benefit from explosion size buffs.",
 		"",
 		"Towers with overheating heat modules gain 75% cooldown reduction for the explosion.",
@@ -91,8 +91,8 @@ func _init():
 	[
 		"Explosion per 2.0 seconds. Explosions are 100% bigger.",
 		"Explosion per 4.0 seconds. Explosions are 75% bigger.",
-		"Explosion per 7.0 seconds. Explosions are 25% bigger.",
-		"Explosion per 10.0 seconds."
+		"Explosion per 6.0 seconds. Explosions are 25% bigger.",
+		"Explosion per 8.0 seconds."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -123,9 +123,9 @@ func _init():
 	],
 	[AnaSyn_OrangeYR.new()],
 	[
-		"190% attack speed",
-		"130% attack speed",
-		"65% attack speed",
+		"100% attack speed",
+		"60% attack speed",
+		"40% attack speed",
 		"20% attack speed",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -137,16 +137,16 @@ func _init():
 	[
 		"Brings about a Fluctuation, which buffs a tower for 3 seconds. Fluctuation then seeks another tower to buff.",
 		"Cycle: Fluctuation first goes to the first tower that attacks. Afterwards, Fluctuation loops to the highest base damage tower, then to the highest attack speed tower, then to the tower that has dealt the most damage in the round.",
-		"Fluctuation cannot re-target to the same tower. Fluctuation will avoid towers with no enemies in its range. When no viable towers are found, the Cycle is reset.",
+		"Fluctuation cannot re-target to the same tower. Fluctuation will avoid towers that cannot attack, or with no enemies in its range. When no viable towers are found, the Cycle is reset.",
 		"",
 		"A Fluctuated tower gains buffs.",
 		""
 	],
 	[AnaSyn_YellowGO.new()],
 	[
-		"+11.0 elemental on hit damage, +200% total base damage, +150% total attack speed, +50% base range.",
-		"+7.00 elemental on hit damage, +150% total base damage, +100% total attack speed, +40% base range",
-		"+4.00 elemental on hit damage, +75% total base damage, +50% total attack speed, +20% base range.",
+		"+8.00 elemental on hit damage, +160% total base damage, +160% total attack speed, +50% base range.",
+		"+5.00 elemental on hit damage, +130% total base damage, +130% total attack speed, +40% base range",
+		"+2.50 elemental on hit damage, +65% total base damage, +65% total attack speed, +20% base range.",
 		"+1.25 elemental on hit damage, +20% total base damage, +20% total attack speed, +10% base range."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -161,8 +161,8 @@ func _init():
 	],
 	[AnaSyn_GreenBY.new()],
 	[
-		"+0.60 on hit, up to 12",
-		"+0.40 on hit, up to 8",
+		"+0.60 on hit, up to 6",
+		"+0.25 on hit, up to 5",
 		"+0.15 on hit, up to 3",
 		"+0.05 on hit, up to 1"
 	],
@@ -178,9 +178,9 @@ func _init():
 	],
 	[AnaSyn_BlueVG.new()],
 	[
+		"80% reduction",
 		"60% reduction",
-		"40% reduction",
-		"20% reduction",
+		"30% reduction",
 		"10% reduction"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -196,9 +196,9 @@ func _init():
 	],
 	[AnaSyn_VioletRB.new()],
 	[
-		"+4 physical on hit damage",
-		"+1.5 physical on hit damage",
-		"+1.5 elemental on hit damage",
+		"+3 physical on hit damage",
+		"+1 physical on hit damage",
+		"+1 elemental on hit damage",
 		"+20 range"
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW

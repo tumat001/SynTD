@@ -7,7 +7,7 @@ const _dmg_threshold_for_increase : float = 4.5
 const _increased_stack_amount : int = 7
 const _base_stack_amount : int = 1
 
-const _corruption_time_in_seconds : float = 3.0
+const _corruption_time_in_seconds : float = 15.0
 
 
 var tower_side_stack_effect : TowerOnHitEffectAdderEffect

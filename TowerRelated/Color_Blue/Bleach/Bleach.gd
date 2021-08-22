@@ -87,7 +87,7 @@ func _construct_effect():
 # Only Self module modify
 
 func _modify_bullet(bullet : BaseBullet):
-	if current_attack_count >= base_attack_count_for_buff - 1:
+	if current_attack_count >= base_attack_count_for_buff:
 		if cycle == 0:
 			bullet.set_texture_as_sprite_frames(Bleach_EmpoweredProj01)
 		elif cycle == 1:
@@ -111,11 +111,11 @@ func _modify_bullet(bullet : BaseBullet):
 # Modify
 
 func _on_main_attack_finished_b(module):
-	if current_attack_count >= base_attack_count_for_buff - 1:
+	if current_attack_count >= base_attack_count_for_buff:
 		current_attack_count = 0
 	
 	current_attack_count += 1
-	if current_attack_count >= base_attack_count_for_buff - 1:
+	if current_attack_count >= base_attack_count_for_buff:
 		connect("on_main_attack_module_damage_instance_constructed", self, "_on_benefiting_attack_damage_inst_constructed", [], CONNECT_ONESHOT)
 
 

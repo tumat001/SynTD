@@ -23,6 +23,9 @@ const LavaJet_Beam07 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_
 const LavaJet_Beam08 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_Beam/LavaJetBeam_08.png")
 const LavaJet_Beam09 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_Beam/LavaJetBeam_09.png")
 
+const health_percent_dmg : float = 50.0
+const percent_dmg_max_limit : float = 50.0 # max damage on enemies with health above 200
+
 
 const num_of_attacks_before_beam : int = 5
 var _curr_num_of_attacks : int = 0
@@ -122,9 +125,9 @@ func _ready():
 	connect("on_main_attack", self, "_on_attack_of_lavajet_bullet", [], CONNECT_PERSIST)
 	
 	var percent_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.LAVA_JET_BEAM)
-	percent_mod.percent_amount = 50
+	percent_mod.percent_amount = health_percent_dmg
 	percent_mod.percent_based_on = PercentType.MAX
-	percent_mod.flat_maximum = 125 # Max damage on enemy with 250 max health
+	percent_mod.flat_maximum = percent_dmg_max_limit
 	percent_mod.ignore_flat_limits = false
 	
 	var beam_on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.LAVA_JET_BEAM, percent_mod, DamageType.ELEMENTAL)
@@ -158,7 +161,7 @@ func set_heat_module(module):
 
 func _construct_heat_effect():
 	var base_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_attr_mod.percent_amount = 40
+	base_attr_mod.percent_amount = 50
 	base_attr_mod.percent_based_on = PercentType.BASE
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)

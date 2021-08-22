@@ -183,7 +183,6 @@ const TowerTiersMap : Dictionary = {
 	MONO : 1,
 	SPRINKLER : 1,
 	SIMPLEX : 1,
-	COIN : 1,
 	MINI_TESLA : 1,
 	EMBER : 1,
 	COAL_LAUNCHER : 1,
@@ -205,6 +204,7 @@ const TowerTiersMap : Dictionary = {
 	HERO : 2,
 	FRUIT_TREE_FRUIT : 2,
 	AMALGAMATOR : 2,
+	COIN : 2,
 	
 	SIMPLE_OBELISK : 3,
 	BEACON_DISH : 3,
@@ -244,28 +244,28 @@ const TowerTiersMap : Dictionary = {
 
 const tier_base_dmg_map : Dictionary = {
 	1 : 0.5,
-	2 : 1.0,
-	3 : 1.25,
-	4 : 1.75,
-	5 : 2.5,
-	6 : 4.5,
+	2 : 0.75,
+	3 : 1,
+	4 : 1.5,
+	5 : 2,
+	6 : 4,
 }
 
 const tier_attk_speed_map : Dictionary = {
-	1 : 10,
-	2 : 15,
-	3 : 25,
-	4 : 40,
-	5 : 50,
+	1 : 20,
+	2 : 25,
+	3 : 30,
+	4 : 45,
+	5 : 55,
 	6 : 75,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
 	1 : 0.5,
-	2 : 1.0,
-	3 : 1.25,
+	2 : 0.75,
+	3 : 1,
 	4 : 2,
-	5 : 3,
+	5 : 2.5,
 	6 : 5,
 }
 
@@ -412,9 +412,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = railgun_image
 		
-		info.base_damage = 6
+		info.base_damage = 4.5
 		info.base_attk_speed = 0.25
-		info.base_pierce = 4
+		info.base_pierce = 5
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
@@ -441,7 +441,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.VIOLET)
 		info.tower_image_in_buy_card = re_image
 		
-		info.base_damage = 2.5
+		info.base_damage = 3
 		info.base_attk_speed = 0.5
 		info.base_pierce = 0
 		info.base_range = 115
@@ -477,7 +477,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Shocks and stuns its target for 0.3 seconds on hit.",
-			"Simple, yet effective."
+			"",
+			"\"Simple, yet effective.\""
 		]
 		
 		var enemy_effect : EnemyStunEffect = EnemyStunEffect.new(0.3, StoreOfEnemyEffectsUUID.ING_TESLA)
@@ -488,7 +489,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "stun on hit"
 		
 		
-	elif tower_id == CHAOS:
+	elif tower_id == CHAOS: #WHEN CHANGING CHAOS's tower id, look at the takeover effect as well
 		info = TowerTypeInformation.new("CHAOS", CHAOS)
 		info.tower_tier = TowerTiersMap[CHAOS]
 		info.tower_cost = info.tower_tier
@@ -508,7 +509,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Only the diamonds benefit from pierce buffs and apply on hit damage and effects. On hit effects are 200% effective.",
 			"Only the bolts benefit from attack speed buffs.",
 			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 25% efficiency.",
-			"Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 20 + 500% of CHAOS's total base damage as physical damage."
+			"Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 20 + 1500% of CHAOS's total base damage as physical damage."
 		]
 		
 		var tower_base_effect : TowerChaosTakeoverEffect = TowerChaosTakeoverEffect.new()
@@ -556,7 +557,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = coin_image
 		
 		info.base_damage = 1.75
-		info.base_attk_speed = 0.525
+		info.base_attk_speed = 0.55
 		info.base_pierce = 2
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
@@ -688,7 +689,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = magnetizer_image
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.675
+		info.base_attk_speed = 0.575
 		info.base_pierce = 1
 		info.base_range = 155
 		info.base_damage_type = DamageType.PHYSICAL
@@ -701,7 +702,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"When there is at least one blue and one red magnet that has hit an enemy, Magnetizer casts Magnetize.",
 			"",
 			"Magnetize: Calls upon all of this tower's non traveling magnets to form a beam between their opposite types.",
-			"The beam deals 9 elemental damage. The beam benefits from base damage buffs, on hit damages and effects."
+			"The beam deals 7 elemental damage. The beam benefits from base damage buffs, on hit damages and effects."
 		]
 		
 		
@@ -724,16 +725,16 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = sunflower_image
 		
-		info.base_damage = 1.5
+		info.base_damage = 2
 		info.base_attk_speed = 0.35
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0.5
+		info.on_hit_multiplier = 0.75
 		
 		info.tower_descriptions = [
 			"Sprays lots of seeds at enemies. Attacks in bursts of 7.",
-			"Sunflower's attacks benefit from base damage and on hit damages at 50% efficiency.",
+			"Sunflower's attacks benefit on hit damages at 75% efficiency.",
 			"",
 			"\"Half plant half machine\""
 		]
@@ -803,7 +804,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"On its 5th main attack, Lava Jet releases a beam of lava that deals 50% of the enemy's max health as elemental damage, up to a limit."
+			"On its 5th main attack, Lava Jet releases a beam of lava that deals 50% of the enemy's max health as elemental damage, up to 50."
 		]
 		
 		var tower_effect = LavaJetModuleAdderEffect.new()
@@ -829,12 +830,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Campfire gains Rage equivalent to the damage taken by enemies within its range.",
-			"Upon reaching the Rage limit, Campfire consumes all Rage to cast Heat-Pact",
+			"Upon reaching 50 Rage, Campfire consumes all Rage to cast Heat Pact.",
 			"",
 			"Heat Pact: The next (benefiting) shot of a tower deals bonus physical on hit damage equal to Campfire's total damage.",
 			"",
 			"Campfire does not gain Rage from the damage its buff has dealt.",
-			"The Rage threshold is decreased by increasing Campfire's total attack speed or increasing Campfire's ability cdr."
+			"Campfire cannot gain Rage for 1 second after casting Heat Pact.",
+			"The Rage threshold to cast Heat Pact is decreased by increasing Campfire's attack speed or ability cdr."
 		]
 		
 		
@@ -866,7 +868,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Launches a molten boulder at the target's location.",
 			"The boulder explodes upon reaching the location, dealing 6 physical base damage. The explosion applies on hit effects, and applies on hit damages at 500% efficiency.",
-			"The explosion also leaves behind scorched earth that lasts for 6 seconds, which slows enemies and deals 0.75 elemental damage per 0.75 seconds while inside it. This does not apply on hit damages and effects.",
+			"The explosion also leaves behind scorched earth that lasts for 6 seconds, which slows and deals 0.75 elemental damage per 0.75 seconds to enemies while inside it. This does not apply on hit damages and effects.",
 			"Both the explosion and scorched earth benefit from base damage buffs."
 		]
 		
@@ -926,7 +928,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Flameburst's main attack causes enemies to spew out 4 flamelets around itself.",
-			"Each flamelet deal 0.75 elemental damage. These benefit from base damage buffs and on hit damages at 15% efficiency. Does not apply on hit effects.",
+			"Each flamelet deal 0.75 elemental damage.",
 			"Bonus range gained increases the range of the flamelets."
 		]
 		
@@ -944,7 +946,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = scatter_image
 		
-		info.base_damage = 1.5
+		info.base_damage = 1.75
 		info.base_attk_speed = 0.39
 		info.base_pierce = 1
 		info.base_range = 110
@@ -992,7 +994,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.ORANGE)
 		info.tower_image_in_buy_card = enthalphy_image
 		
-		info.base_damage = 2.75
+		info.base_damage = 2.35
 		info.base_attk_speed = 0.8
 		info.base_pierce = 0
 		info.base_range = 135
@@ -1001,7 +1003,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Enthalphy gains bonus elemental on hit damage based on the ratio of its total range to its base range. For every 40 bonus range, Enthalphy gains 0.75 damage.",
-			"Enthalphy also deals bonus 1.25 elemental on hit damage for its next two attacks after killing an enemy.",
+			"Enthalphy also deals bonus 1.25 elemental on hit damage for its next three attacks after killing an enemy.",
 			"",
 			"\"H. 1) Increase reach of system. 2) Increase will of system.\""
 		]
@@ -1032,8 +1034,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Entropy gains 20% bonus attack speed for its first 130 attacks.",
-			"Entropy also gains 20% bonus attack speed for its first 230 attacks.",
+			"Entropy gains 30% bonus attack speed for its first 130 attacks.",
+			"Entropy also gains 30% bonus attack speed for its first 230 attacks.",
 			"",
 			"\"S. The inevitable end of all systems.\""
 		]
@@ -1095,7 +1097,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = ieu_image
 		
-		info.base_damage = 3.25
+		info.base_damage = 3
 		info.base_attk_speed = 1
 		info.base_pierce = 0
 		info.base_range = 125
@@ -1196,7 +1198,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GREEN)
 		info.tower_image_in_buy_card = impale_image
 		
-		info.base_damage = 10
+		info.base_damage = 15
 		info.base_attk_speed = 0.2
 		info.base_pierce = 0
 		info.base_range = 115
@@ -1207,7 +1209,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Impale shoots up a spike that stabs an enemy, stunning them for 2.2 seconds.",
 			"When the stun expires, Impale retracts the spike, dealing damage again.",
 			"The retract damage becomes 180% effective when the enemy has less than 75% of their max health.",
-			
 		]
 		
 		var imp_dmg_effect = ImpaleBonusDamageEffect.new()
@@ -1340,10 +1341,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Buffing Waters: Douser shoots a water ball at the closest tower.",
 			"Towers hit by Buffing Waters gain 0.75 bonus base damage for the next 4 benefiting attacks within 10 seconds.",
-			"The casting Douser also benefits from its own Buffing Water's buff.",
-			"Douser does not target towers that currently have the buff. Douser also does not target other Dousers, but can affect them if hit.",
+			"Douser also benefits from its own Buffing Water's buff.",
+			"Douser does not target towers that currently have the buff, and unprioritizes towers that have no means of attacking. Douser also does not target other Dousers, but can affect them if hit.",
 			"",
-			"Buffing Waters benefits from bonus pierce. Ability cdr reduces the needed attacks to trigger this ability."
+			"Buffing Waters's projectile benefits from bonus pierce. Ability cdr reduces the needed attacks to trigger this ability."
 		]
 		
 		# Ingredient related
@@ -1365,7 +1366,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = wave_image
 		
 		info.base_damage = 1
-		info.base_attk_speed = 0.25
+		info.base_attk_speed = 0.40
 		info.base_pierce = 0
 		info.base_range = 150
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1376,10 +1377,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Passive: Wave gains 2 elemental on hit damage.",
 			"",
 			"Ability: Tidal Wave. Wave sprays 8 columns of water in a cone facing its current target.",
-			"Each column deals twice of Wave's passive on hit damage to all enemies hit.",
+			"Each column deals 1 + twice of Wave's passive on hit damage as elemental damage to all enemies hit.",
 			"Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals 0.75 elemental damage to 2 enemies.",
 			"Activating Tidal Wave reduces the passive on hit damage by 0.5 for 30 seconds. This effect stacks, but does not refresh other stacks.",
-			"Cooldown : 6 s",
+			"Cooldown: 6 s",
 			"",
 			"Additional info is present in this ability's tooltip."
 		]
@@ -1403,7 +1404,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.BLUE)
 		info.tower_image_in_buy_card = bleach_image
 		
-		info.base_damage = 2.75
+		info.base_damage = 2.5
 		info.base_attk_speed = 0.92
 		info.base_pierce = 1
 		info.base_range = 125
@@ -1462,7 +1463,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = seeder_image
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.85
+		info.base_attk_speed = 0.90
 		info.base_pierce = 1
 		info.base_range = 132
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1472,10 +1473,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Automatically attempts to casts Seed Bomb when hitting an enemy with its main attack.",
 			"Seed Bomb: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed to gain a stack of Fragile.",
 			"After 6 seconds or reaching 4 stacks of Fragile, the seed bomb explodes, hitting up to 5 enemies. The explosion's damage scales with its Fragile stacks.",
-			"Cooldown : 10 s",
+			"Cooldown: 10 s",
 			"",
 			"Each Fragile stack allows the explosion to deal 25% more damage (totalling up to 200%).",
-			"Seed Bomb's explosion deals 14 physical damage. The explosion benefits from base damage buffs at 400% efficiency, and benefits from on hit damages and effects at 200% efficiency.",
+			"Seed Bomb's explosion deals 10 physical damage. The explosion benefits from base damage buffs at 400% efficiency, and benefits from on hit damages and effects at 200% efficiency.",
 		]
 		
 		
@@ -1568,26 +1569,26 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GRAY)
 		info.tower_image_in_buy_card = reaper_image
 		
-		info.base_damage = 3
+		info.base_damage = 4
 		info.base_attk_speed = 0.725
 		info.base_pierce = 1
-		info.base_range = 135
+		info.base_range = 130
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Reaper's attacks deal additional 12% of the enemy's missing health as elemental damage, up to 20 health.",
+			"Reaper's attacks deal additional 8% of the enemy's missing health as elemental damage, up to 6 health.",
 			"",
-			"Killing an enemy allows Reaper to cast Slash once. Slash has a cooldown of 0.125 seconds.",
-			"Slash: Reaper shashes the area of the closest enemy, dealing 200% of this tower's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
-			"Casting Slash reduces the damage of subsequent slashes by 50% for 1 second. This does not stack."
+			"Killing an enemy allows Reaper to cast Slash once. Slash has a cooldown of 0.125 seconds. Slash casts are queued.",
+			"Slash: Reaper slashes the area of the closest enemy, dealing 400% of this tower's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
+			"Casting Slash reduces the damage of subsequent slashes by 50% for 0.5 seconds. This does not stack."
 		]
 		
 		var reap_dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_REAPER)
-		reap_dmg_modifier.percent_amount = 8
+		reap_dmg_modifier.percent_amount = 6
 		reap_dmg_modifier.percent_based_on = PercentType.MISSING
 		reap_dmg_modifier.ignore_flat_limits = false
-		reap_dmg_modifier.flat_maximum = 15
+		reap_dmg_modifier.flat_maximum = 5
 		reap_dmg_modifier.flat_minimum = 0
 		
 		var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_REAPER, reap_dmg_modifier, DamageType.ELEMENTAL)
@@ -1639,10 +1640,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = adept_image
 		
-		info.base_damage = 2.25
-		info.base_attk_speed = 1.1
+		info.base_damage = 2.75
+		info.base_attk_speed = 1.15
 		info.base_pierce = 1
-		info.base_range = 140
+		info.base_range = 145
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -1670,7 +1671,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.RED)
 		info.tower_image_in_buy_card = rebound_image
 		
-		info.base_damage = 3
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.45
 		info.base_pierce = 2
 		info.base_range = 115
@@ -1701,7 +1702,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = striker_image
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.825
+		info.base_attk_speed = 0.85
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1843,7 +1844,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0
-		info.base_pierce = 1
+		info.base_pierce = 0
 		info.base_range = 0
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
@@ -1861,7 +1862,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var base_health_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_BLOSSOM)
-		base_health_mod.percent_amount = 100
+		base_health_mod.percent_amount = 200
 		base_health_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_HEALTH , base_health_mod, StoreOfTowerEffectsUUID.ING_BLOSSOM)
@@ -1878,7 +1879,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.colors.append(TowerColors.GREEN)
 		info.tower_image_in_buy_card = pinecone_image
 		
-		info.base_damage = 3
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.6
 		info.base_pierce = 1
 		info.base_range = 100
@@ -1921,7 +1922,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Effigy gains max health equal to 50% of the enemy hit's current health. This is increased by Soul's ability potency.",
 			"Effigy inherits the enemy's stats.",
 			"All damage and on hit effects taken by the Effigy is shared to the enemy associated with the Effigy. This does not trigger on hit events, and does not share execute damage.",
-			"Cooldown : 1 s. Cooldown starts when the Effigy is destroyed.",
+			"Cooldown: 1 s. Cooldown starts when the Effigy is destroyed.",
 			"",
 			"The Effigy's spawn location is determined by Soul's targeting. \"First\" targeting spawns the Effigy ahead of the enemy, while all other targeting options spawns the Effigy behind the enemy.",
 			"",

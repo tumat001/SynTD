@@ -50,8 +50,11 @@ func set_level_manager(arg_manager):
 	level_manager.connect("on_current_level_up_cost_amount_changed", self, "_level_cost_currency_changed", [], CONNECT_PERSIST)
 	level_manager.connect("on_current_level_up_cost_currency_changed", self, "_level_cost_currency_changed", [], CONNECT_PERSIST)
 	level_manager.connect("on_can_level_up_changed", self, "_can_level_up_changed", [], CONNECT_PERSIST)
+	level_manager.connect("on_current_level_changed", self, "_on_current_level_changed", [], CONNECT_PERSIST)
+	
 	_level_cost_currency_changed(level_manager.current_level_up_cost)
 	_can_level_up_changed(level_manager.can_level_up())
+	_on_current_level_changed(level_manager.current_level)
 
 
 func set_shop_manager(arg_manager):
@@ -182,3 +185,13 @@ func _can_roll_changed(can_roll):
 	else:
 		reroll_button.disabled = true
 		reroll_panel.modulate = cannot_press_button_color
+
+
+func _on_current_level_changed(curr_level : int):
+	if curr_level == level_manager.LEVEL_1:
+		reroll_panel.visible = false
+		level_up_panel.visible = false
+	else:
+		reroll_panel.visible = true
+		level_up_panel.visible = true
+	

@@ -642,6 +642,9 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 #
 		return false
 	
+	while enemies.has(null):
+		enemies.erase(null)
+	
 	if !_is_attacking:
 		if _last_calculated_attack_wind_up == 0:
 			_check_attack_enemies(enemies)
@@ -745,6 +748,10 @@ func on_command_attack_at_positions(positions : Array):
 
 func _check_attack_enemies(enemies : Array):
 	if enemies.size() != 0:
+		# moved above to on command attack func
+		#while enemies.has(null):
+		#	enemies.erase(null)
+		
 		_attack_enemies(enemies)
 
 func _attack_enemies(enemies : Array):

@@ -12,7 +12,8 @@ const BrownSeed_Pic = preload("res://TowerRelated/Color_Yellow/Sunflower/BrownSe
 const GreenSeed_Pic = preload("res://TowerRelated/Color_Yellow/Sunflower/GreenSeed.png")
 const YellowSeed_Pic = preload("res://TowerRelated/Color_Yellow/Sunflower/YellowSeed.png")
 
-const sunflower_original_inaccuracy : float = 40.0
+const base_sunflower_burst_amount : int = 7
+const sunflower_original_inaccuracy : float = 30.0
 var sunflower_attack_module : BulletAttackModule
 var cycle : int = 0
 
@@ -32,7 +33,7 @@ func _ready():
 	range_module.set_range_shape(CircleShape2D.new())
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	attack_module.base_damage_scale = 0.5
+	attack_module.base_damage_scale = 1
 	attack_module.base_damage = info.base_damage / attack_module.base_damage_scale
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
@@ -56,7 +57,7 @@ func _ready():
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene
 	
-	attack_module.connect("before_bullet_is_shot", self, "_modify_bullet")
+	attack_module.connect("before_bullet_is_shot", self, "_modify_bullet", [], CONNECT_PERSIST)
 	
 	sunflower_attack_module = attack_module
 	add_attack_module(attack_module)
@@ -84,14 +85,16 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Greatly increases sunflower's accuracy."
+			"Greatly increases sunflower's accuracy. Attacks in bursts of 15 instead."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	sunflower_attack_module.base_proj_inaccuracy = 5
+	sunflower_attack_module.base_proj_inaccuracy = 3
 	sunflower_attack_module.calculate_final_proj_inaccuracy()
+	sunflower_attack_module.burst_amount = 15
 
 func _module_turned_off():
 	sunflower_attack_module.base_proj_inaccuracy = sunflower_original_inaccuracy
 	sunflower_attack_module.calculate_final_proj_inaccuracy()
+	sunflower_attack_module.burst_amount = base_sunflower_burst_amount

@@ -44,7 +44,7 @@ var has_attacked_in_round : bool
 
 
 # Syn stuffs
-var should_be_shown_in_info_panel : bool
+var should_be_shown_in_info_panel : bool setget set_should_be_shown_in_info_panel
 var overheat_effects : Array
 
 

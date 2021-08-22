@@ -11,7 +11,6 @@ font_data = ExtResource( 3 )
 [node name="SingleIngredientPanel" type="MarginContainer"]
 margin_right = 65.0
 margin_bottom = 14.0
-mouse_filter = 2
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -34,7 +33,7 @@ margin_right = 65.0
 margin_bottom = 14.0
 mouse_filter = 2
 size_flags_horizontal = 3
-custom_constants/margin_top = 1
+custom_constants/margin_top = 2
 
 [node name="IngredientLabel" type="Label" parent="HBoxContainer/Marginer"]
 margin_top = 3.0
@@ -45,3 +44,4 @@ custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 text = "PlaceHolder"
 autowrap = true
+[connection signal="gui_input" from="." to="." method="_on_SingleIngredientPanel_gui_input"]

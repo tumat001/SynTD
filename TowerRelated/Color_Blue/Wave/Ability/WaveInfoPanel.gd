@@ -35,5 +35,5 @@ func set_wave_tower(tower):
 		wave_tower.connect("effect_modifier_changed", self, "_wave_effect_modifier_changed")
 
 
-func _wave_effect_modifier_changed():
+func _wave_effect_modifier_changed(mod_amount):
 	wave_effect_panel.update_display()

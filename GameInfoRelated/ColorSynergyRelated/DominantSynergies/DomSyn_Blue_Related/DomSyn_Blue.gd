@@ -47,10 +47,10 @@ var enemy_manager : EnemyManager
 
 #
 var breeze_ability : BaseAbility
-const base_breeze_ability_cooldown : float = 24.0
+const base_breeze_ability_cooldown : float = 28.0
 
 const base_breeze_first_slow_amount : float = -50.0
-const base_breeze_first_slow_duration : float = 4.0
+const base_breeze_first_slow_duration : float = 3.0
 var breeze_first_slow_modifier : PercentModifier
 var breeze_first_slow_effect : EnemyAttributesEffect
 
@@ -62,8 +62,8 @@ var breeze_second_slow_effect : EnemyAttributesEffect
 const base_breeze_damage : float = 4.0
 
 const breeze_ability_descriptions = [
-	"Slows all enemies by 50% for 4 seconds, then slows by 15% for 6 seconds. Also deals 4 elemental damage.",
-	"Cooldown : 28s",
+	"Slows all enemies by 50% for 3 seconds, then slows by 15% for 6 seconds. Also deals 4 elemental damage.",
+	"Cooldown: 28 s",
 	"",
 	"Ability potency increases the slow percentage and the damage."
 ]
@@ -98,10 +98,10 @@ const mana_blast_ap_buff_amount : float = 0.75
 const mana_blast_buff_duration : float = 12.0
 
 const mana_blast_ability_descriptions = [
-	"Summon a mark at the strongest enemy's location. After a brief delay, the mark releases a mana blast.",
-	"The blast deals 30 damage to the main target, and deals 33% of that damage to secondary targets.",
+	"Summon a mark at the first enemy's location. After a brief delay, the mark releases a mana blast.",
+	"The blast deals 30 damage to the main target, and deals 10 damage to secondary targets.",
 	"Towers caught in the blast gain 0.75 ability potency for 12 seconds.",
-	"Cooldown: 40s"
+	"Cooldown: 30 s"
 ]
 
 #
@@ -129,7 +129,7 @@ const renew_empower_ability_empower_static_cooldown : float = 0.25
 const renew_empower_side_renew_icon : Texture = Renew_Pic
 
 const renew_empower_ability_constant_description : Array = [
-	"This ability comes with two possible outcomes: Renew and Empower. These two outcomes share the same cooldown. Cooldown: %s" % (str(renew_empower_ability_cooldown) + "s"),
+	"This ability comes with two possible outcomes: Renew and Empower. These two outcomes share the same cooldown. Cooldown: %s" % (str(renew_empower_ability_cooldown) + " s"),
 	"",
 	"Renew: Removes remaining cooldowns of all other blue abilities. Renew is castable only when at least one blue ability is in cooldown.",
 	"",
@@ -419,7 +419,7 @@ func _construct_mana_blast_relateds():
 
 
 func _mana_blast_ability_activated():
-	var enemies : Array = Targeting.enemies_to_target(enemy_manager.get_all_enemies(), Targeting.STRONGEST, 1, Vector2(0, 0), true)
+	var enemies : Array = Targeting.enemies_to_target(enemy_manager.get_all_enemies(), Targeting.FIRST, 1, Vector2(0, 0), true)
 	if enemies.size() >= 1:
 		_set_ap_buff_to_give()
 		_place_marker(enemies[0])

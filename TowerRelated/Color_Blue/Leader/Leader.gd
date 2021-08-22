@@ -216,13 +216,13 @@ func _construct_abilities():
 
 func _ability_prompt_add_member():
 	if input_prompt_manager.can_prompt():
-		input_prompt_manager.prompt_select_tower(self, "_ability_add_selected_member", "_ability_prompt_cancelled")
+		input_prompt_manager.prompt_select_tower(self, "_ability_add_selected_member", "_ability_prompt_cancelled", "_can_add_tower_as_member")
 	else:
 		input_prompt_manager.cancel_selection()
 
 func _ability_prompt_remove_member():
 	if input_prompt_manager.can_prompt():
-		input_prompt_manager.prompt_select_tower(self, "_ability_remove_selected_member", "_ability_prompt_cancelled")
+		input_prompt_manager.prompt_select_tower(self, "_ability_remove_selected_member", "_ability_prompt_cancelled", "_can_remove_member_tower")
 	else:
 		input_prompt_manager.cancel_selection()
 
@@ -233,7 +233,7 @@ func _ability_prompt_cancelled():
 # member adding/removing
 
 func _ability_add_selected_member(tower):
-	if !tower_members_beam_map.has(tower) and tower.is_current_placable_in_map() and !tower is get_script():
+	if _can_add_tower_as_member(tower):
 		tower_members_beam_map[tower] = null
 		tower.connect("tower_not_in_active_map", self, "_ability_remove_selected_member", [tower], CONNECT_PERSIST)
 		tower.connect("tree_exiting", self, "_ability_remove_selected_member", [tower], CONNECT_PERSIST)
@@ -253,8 +253,12 @@ func _ability_add_selected_member(tower):
 		
 		_toggle_show_tower_info()
 
+func _can_add_tower_as_member(tower) -> bool:
+	return !tower_members_beam_map.has(tower) and tower.is_current_placable_in_map() and !tower is get_script()
+
+
 func _ability_remove_selected_member(tower):
-	if tower_members_beam_map.has(tower):
+	if _can_remove_member_tower(tower):
 		if tower_members_beam_map[tower] != null:
 			tower_members_beam_map[tower].queue_free()
 		
@@ -284,6 +288,10 @@ func _ability_remove_selected_member(tower):
 			remove_tower_activation_conditional_clauses.attempt_insert_clause(rt_activation_clause_no_member)
 		
 		_toggle_show_tower_info()
+
+func _can_remove_member_tower(tower) -> bool:
+	return tower != null and tower_members_beam_map.has(tower)
+
 
 func _remove_all_tower_members():
 	for tower in tower_members_beam_map.keys():

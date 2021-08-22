@@ -30,7 +30,7 @@ func activate_ability_at_index(i : int):
 	
 	for button in ability_buttons:
 		if button.visible:
-			displayed_buttons.append(displayed_buttons)
+			displayed_buttons.append(button)
 	
 	if displayed_buttons.size() > i:
 		var button_selected : AbilityButton = displayed_buttons[i]

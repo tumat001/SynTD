@@ -77,14 +77,14 @@ func _post_inherit_ready():
 func _construct_effects():
 	# First
 	var first_spd_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ENTROPY_FIRST_BONUS_ATTK_SPEED)
-	first_spd_mod.percent_amount = 20
+	first_spd_mod.percent_amount = 30
 	first_spd_mod.percent_based_on = PercentType.BASE
 	
 	first_attack_speed_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, first_spd_mod, StoreOfTowerEffectsUUID.ENTROPY_FIRST_BONUS_ATTK_SPEED)
 	
 	# Second
 	var second_spd_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ENTROPY_SECOND_BONUS_ATTK_SPEED)
-	second_spd_mod.percent_amount = 20
+	second_spd_mod.percent_amount = 30
 	second_spd_mod.percent_based_on = PercentType.BASE
 	
 	second_attack_speed_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, second_spd_mod, StoreOfTowerEffectsUUID.ENTROPY_SECOND_BONUS_ATTK_SPEED)
@@ -126,7 +126,7 @@ func set_heat_module(module):
 
 func _construct_heat_effect():
 	var base_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_attr_mod.percent_amount = 35
+	base_attr_mod.percent_amount = 50
 	base_attr_mod.percent_based_on = PercentType.BASE
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)

@@ -21,6 +21,7 @@ const EnemyHealOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelate
 const EnemyShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyShieldEffect.gd")
 const EnemyInvisibilityEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyInvisibilityEffect.gd")
 const EnemyReviveEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyReviveEffect.gd")
+const EnemyKnockUpEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyKnockUpEffect.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
@@ -152,6 +153,13 @@ var blocks_from_round_ending : bool = true
 var exits_when_at_map_end : bool = true
 
 var respect_stage_round_health_scale : bool = true
+
+
+# knock up related
+
+# makes use of anim_sprite.offset.y
+var _knock_up_current_acceleration : float
+var _knock_up_current_acceleration_deceleration : float
 
 #
 
@@ -320,6 +328,8 @@ func _physics_process(delta):
 		var distance_traveled = delta * _last_calculated_final_movement_speed
 		offset += distance_traveled
 		distance_to_exit -= distance_traveled
+	
+	_phy_process_knock_up(delta)
 	
 	if unit_offset == 1 and exits_when_at_map_end:
 		call_deferred("emit_signal", "reached_end_of_path", self)
@@ -934,7 +944,7 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 	if to_use_effect.status_bar_icon != null:
 		statusbar.add_status_icon(to_use_effect.effect_uuid, to_use_effect.status_bar_icon)
 	
-	if !(to_use_effect is EnemyClearAllEffects):
+	if to_use_effect.should_map_in_all_effects_map:
 		_all_effects_map[to_use_effect.effect_uuid] = to_use_effect
 	
 	
@@ -946,7 +956,7 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		
 	elif to_use_effect is EnemyClearAllEffects:
 		# When adding effects, update this
-		_clear_effects()
+		_clear_effects_from_clear_effect()
 		
 	elif to_use_effect is EnemyStackEffect:
 		
@@ -1050,6 +1060,9 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		
 	elif to_use_effect is EnemyReviveEffect:
 		revive_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+		
+	elif to_use_effect is EnemyKnockUpEffect:
+		knock_up_from_effect(to_use_effect)
 	
 	
 	emit_signal("effect_added", to_use_effect, self)
@@ -1149,9 +1162,10 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 
 
 
-func _clear_effects():
+func _clear_effects_from_clear_effect():
 	for effect in _all_effects_map:
-		_remove_effect(effect)
+		if effect.is_clearable:
+			_remove_effect(effect)
 #	for effect in _stun_id_effects_map.values():
 #		_remove_effect(effect)
 #
@@ -1226,10 +1240,9 @@ func _clear_effects():
 func _decrease_time_of_timebounds(delta):
 	
 	# Stun related
+	_is_stunned = _stun_id_effects_map.size() != 0
 	for stun_effect in _stun_id_effects_map.values():
 		_decrease_time_of_effect(stun_effect, delta)
-	
-	_is_stunned = _stun_id_effects_map.size() != 0
 	
 	
 	# Stack related
@@ -1414,6 +1427,26 @@ func _after_end_of_revive():
 	emit_signal("on_revive_completed")
 
 
+# Knock up effect related
+
+func knock_up_from_effect(effect : EnemyKnockUpEffect):
+	_knock_up_current_acceleration += effect.knock_up_y_acceleration
+	_knock_up_current_acceleration_deceleration += _knock_up_current_acceleration / effect.time_in_seconds * -1
+	
+	_add_effect(effect.generate_stun_effect_from_self())
+
+
+func _phy_process_knock_up(delta):
+	if anim_sprite.offset.y != 0:
+		anim_sprite.offset.y += _knock_up_current_acceleration * delta
+		_knock_up_current_acceleration -= _knock_up_current_acceleration_deceleration
+		
+		if anim_sprite.offset.y <= 0:
+			_knock_up_current_acceleration = 0
+			_knock_up_current_acceleration_deceleration = 0
+			anim_sprite.offset.y = 0
+
+
 # 
 
 func copy_enemy_stats(arg_enemy,
@@ -1466,4 +1499,10 @@ func copy_enemy_location_and_offset(arg_enemy):
 		position = arg_enemy.global_position
 	
 	distance_to_exit = arg_enemy.distance_to_exit
+
+#
+
+# spawned from something else than spawn instructions
+func set_properties_to_spawned_from_entity():
+	respect_stage_round_health_scale = false
 

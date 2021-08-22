@@ -224,7 +224,7 @@ func _kill_current_effigy(start_cooldown : bool = true, queue_free_effigy : bool
 # Explosion
 
 func _create_explosion(enemy, effigy):
-	if enemy != null and effigy != null:
+	if enemy != null and effigy != null and effigy.is_inside_tree():
 		var explosion = effigy_explosion_attack_module.construct_aoe(effigy.global_position, effigy.global_position)
 		
 		var modi_of_dmg = explosion.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE].damage_as_modifier

@@ -75,7 +75,7 @@ func _construct_on_hit_damage():
 	
 	effect_kill_on_hit_dmg = TowerOnHitDamageAdderEffect.new(on_hit_dmg, StoreOfTowerEffectsUUID.ENTHALPHY_KILL_ELE_ON_HIT)
 	effect_kill_on_hit_dmg.is_countbound = true
-	effect_kill_on_hit_dmg.count = 2
+	effect_kill_on_hit_dmg.count = 3
 	
 	
 	# Range

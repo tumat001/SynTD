@@ -18,6 +18,8 @@ enum EffectType {
 	
 	CLEAR_ALL_EFFECTS,
 	
+	KNOCK_UP,
+	
 	MISC,
 }
 
@@ -25,6 +27,7 @@ var effect_uuid : int
 var effect_type : int
 var description : String setget ,_get_overriden_description
 var effect_icon : Texture setget ,_get_overriden_icon
+var should_map_in_all_effects_map : bool = true
 
 var is_timebound : bool
 var time_in_seconds : float
@@ -32,6 +35,7 @@ var time_in_seconds : float
 var respect_scale : bool = true
 
 var is_from_enemy : bool = false
+var is_clearable : bool = true
 
 var effect_source_ref setget set_effect_source
 
@@ -76,6 +80,8 @@ func _configure_copy_to_match_self(copy):
 	copy.respect_scale = respect_scale
 	copy.is_from_enemy = is_from_enemy
 	copy.set_effect_source(effect_source_ref)
+	copy.should_map_in_all_effects_map = should_map_in_all_effects_map
+	copy.is_clearable = is_clearable
 
 #
 

@@ -177,10 +177,15 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.synergy_manager = synergy_manager
 	tower_instance.game_elements = game_elements
 	
-	tower_instance.is_in_select_tower_prompt = input_prompt_manager.is_in_tower_selection_mode()
 	tower_instance.is_in_ingredient_mode = is_in_ingredient_mode
 	
 	add_child(tower_instance)
+	
+	if input_prompt_manager.is_in_tower_selection_mode():
+		tower_instance.enter_selection_mode(input_prompt_manager._current_prompter, input_prompt_manager._current_prompt_tower_checker_predicate_name)
+	else:
+		tower_instance.exit_selection_mode()
+	
 	tower_instance.connect("tower_being_dragged", self, "_tower_being_dragged", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_dropped_from_dragged", self, "_tower_dropped_from_dragged", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_toggle_show_info", self, "_tower_toggle_show_info", [], CONNECT_PERSIST)
@@ -198,8 +203,8 @@ func add_tower(tower_instance : AbstractTower):
 	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient", [], CONNECT_PERSIST)
 	connect("hide_ingredient_acceptability", tower_instance, "hide_acceptability_with_ingredient", [], CONNECT_PERSIST)
 	
-	connect("in_tower_selection_mode", tower_instance, "set_is_in_selection_mode", [true], CONNECT_PERSIST)
-	connect("tower_selection_mode_ended" , tower_instance, "set_is_in_selection_mode", [false], CONNECT_PERSIST)
+	connect("in_tower_selection_mode", tower_instance, "enter_selection_mode", [], CONNECT_PERSIST)
+	connect("tower_selection_mode_ended" , tower_instance, "exit_selection_mode", [], CONNECT_PERSIST)
 	
 	connect("tower_ing_cap_set", tower_instance, "_tower_manager_ing_cap_set", [], CONNECT_PERSIST)
 	connect("tower_ing_cap_removed", tower_instance, "_tower_manager_ing_cap_removed", [], CONNECT_PERSIST)
@@ -342,7 +347,7 @@ func _show_tower_info_panel(tower : AbstractTower):
 		tower.connect("final_attack_speed_changed", self, "_update_final_attack_speed_in_info")
 		tower.connect("final_base_damage_changed", self, "_update_final_base_damage_in_info")
 		tower.connect("ingredients_absorbed_changed", self, "_update_ingredients_absorbed_in_info")
-		tower.connect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
+		tower.connect("ingredients_limit_changed", self, "_update_ingredient_limit_in_info")
 		tower.connect("targeting_changed", self, "_update_targeting")
 		tower.connect("targeting_options_modified", self, "_update_targeting")
 		tower.connect("energy_module_attached", self, "_update_energy_module_display")
@@ -358,8 +363,12 @@ func _update_final_attack_speed_in_info():
 func _update_final_base_damage_in_info():
 	tower_stats_panel.update_final_base_damage()
 
-func _update_ingredients_absorbed_in_info(_new_limit):
+func _update_ingredients_absorbed_in_info():
 	active_ing_panel.update_display()
+
+func _update_ingredient_limit_in_info(_new_limit):
+	active_ing_panel.update_display()
+
 
 func _update_targeting():
 	targeting_panel.update_display()
@@ -379,7 +388,7 @@ func _show_round_panel():
 		tower_being_shown_in_info.disconnect("final_attack_speed_changed", self, "_update_final_attack_speed_in_info")
 		tower_being_shown_in_info.disconnect("final_base_damage_changed", self, "_update_final_base_damage_in_info")
 		tower_being_shown_in_info.disconnect("ingredients_absorbed_changed", self, "_update_ingredients_absorbed_in_info")
-		tower_being_shown_in_info.disconnect("ingredients_limit_changed", self, "_update_ingredients_absorbed_in_info")
+		tower_being_shown_in_info.disconnect("ingredients_limit_changed", self, "_update_ingredient_limit_in_info")
 		tower_being_shown_in_info.disconnect("targeting_changed", self, "_update_targeting")
 		tower_being_shown_in_info.disconnect("targeting_options_modified", self, "_update_targeting")
 		tower_being_shown_in_info.disconnect("energy_module_attached", self, "_update_energy_module_display")
@@ -471,8 +480,8 @@ func set_input_prompt_manager(arg_manager):
 	input_prompt_manager.connect("tower_selection_ended", self, "_tower_selection_ended", [], CONNECT_PERSIST)
 
 
-func _prompted_for_tower_selection():
-	emit_signal("in_tower_selection_mode")
+func _prompted_for_tower_selection(prompter, arg_prompt_tower_checker_predicate_name : String):
+	emit_signal("in_tower_selection_mode", prompter, arg_prompt_tower_checker_predicate_name)
 
 func _tower_selection_ended():
 	emit_signal("tower_selection_mode_ended")

@@ -7,11 +7,11 @@ const PercentModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 const bonus_damage_percent_threshold : float = 0.5
-const bonus_damage_new_scale : float = 1.35
+const bonus_damage_new_scale : float = 1.25
 
 func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Impale.png")
-	description = "All of the tower's attacks deal 35% more damage to enemies below 50% health."
+	description = "All of the tower's attacks deal 25% more damage to enemies below 50% health."
 
 
 func _make_modifications_to_tower(tower):

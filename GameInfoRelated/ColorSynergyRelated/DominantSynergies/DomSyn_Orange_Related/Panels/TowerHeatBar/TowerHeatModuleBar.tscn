@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/Panels/TowerHeatBar/TowerHeatModuleBar.gd" type="Script" id=1]
+[ext_resource path="res://MiscRelated/ControlProgressBarRelated/ControlProgressBar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/Panels/TowerHeatBar/TowerHeatBar_Background.png" type="Texture" id=3]
+
+[node name="TowerHeatModuleBar" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+size_flags_horizontal = 6
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HeatBar" parent="." instance=ExtResource( 2 )]
+margin_right = 40.0
+margin_bottom = 40.0
+bar_background_pic = ExtResource( 3 )
+fill_foreground_margin_top = 1.0
+fill_foreground_margin_left = 1.0
+max_value = 100.0
+current_value = 0.0
+yield_before_update = true

@@ -201,16 +201,16 @@ func set_energy_module(module):
 	if module != null:
 		module.module_effect_descriptions = [
 			"The ratio this tower's total stats compared to its given bonuses is increased.",
-			"75% of its total base damage as a buff (from 25%).",
-			"75% of its total attack speed as a buff (from 25%)",
-			"20% of its total range as a buff. (from 10%)"
+			"100% of its total base damage as a buff (from 25%).",
+			"100% of its total attack speed as a buff (from 25%)",
+			"50% of its total range as a buff. (from 10%)"
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	ratio_elemental_on_hit = 0.75
-	ratio_attack_speed = 0.75
-	ratio_range = 0.2
+	ratio_elemental_on_hit = 1.0
+	ratio_attack_speed = 1.0
+	ratio_range = 0.5
 
 
 func _module_turned_off():

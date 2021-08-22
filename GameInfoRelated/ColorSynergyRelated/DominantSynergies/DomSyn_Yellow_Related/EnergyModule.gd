@@ -1,6 +1,7 @@
 
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
-
+const TowerEffect_DomSyn_YellowEnergyEffectGiver = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_DomSyn_YellowEnergyEffectGiver.gd")
+const CommonAttackSpriteTemplater = preload("res://MiscRelated/AttackSpriteRelated/CommonTemplates/CommonAttackSpriteTemplater.gd")
 
 signal disconnect_from_battery(me)
 
@@ -17,6 +18,8 @@ var is_turned_on : bool
 var module_effect_descriptions : Array = []
 
 var tower_connected_to : AbstractTower setget _set_tower_connected_to
+
+var _energy_on_attack_sprite
 
 # Setter
 
@@ -57,11 +60,18 @@ func attempt_turn_off():
 func module_turn_on(first_time_per_round : bool):
 	is_turned_on = true
 	call_deferred("emit_signal", "module_turned_on", first_time_per_round)
+	
+	var effect := TowerEffect_DomSyn_YellowEnergyEffectGiver.new()
+	tower_connected_to.add_tower_effect(effect)
 
 func module_turn_off():
 	is_turned_on = false
 	call_deferred("emit_signal", "module_turned_off")
-
+	
+	if tower_connected_to != null:
+		var effect = tower_connected_to.get_tower_effect(StoreOfTowerEffectsUUID.ENERGY_MODULE_ENERGY_EFFECT_GIVER)
+		if effect != null:
+			tower_connected_to.remove_tower_effect(effect)
 
 
 # Call this when queue freeing the tower

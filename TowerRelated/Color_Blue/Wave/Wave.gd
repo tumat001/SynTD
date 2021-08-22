@@ -25,8 +25,10 @@ const Wave_Explosion_06 = preload("res://TowerRelated/Color_Blue/Wave/Wave_Attac
 const Wave_Explosion_07 = preload("res://TowerRelated/Color_Blue/Wave/Wave_Attacks/Wave_AbilityExplosion07.png")
 
 const WaveColumnProj_Scene = preload("res://TowerRelated/Color_Blue/Wave/Wave_Attacks/WaveColumn.tscn")
+const Wave_SlotsBar_Scene = preload("res://TowerRelated/Color_Blue/Wave/Ability/Wave_SlotsBar.tscn")
 
-signal effect_modifier_changed()
+
+signal effect_modifier_changed(amount)
 
 const base_damage_amount_modifier : float = 2.0
 const debuff_damage_amount_per_cast : float = 0.5
@@ -99,7 +101,7 @@ func _ready():
 	# ability attack module
 	
 	ability_attack_module = BulletAttackModule_Scene.instance()
-	ability_attack_module.base_damage = 0
+	ability_attack_module.base_damage = 1
 	ability_attack_module.base_damage_type = DamageType.ELEMENTAL
 	ability_attack_module.base_attack_speed = 0
 	ability_attack_module.base_attack_wind_up = 0
@@ -109,7 +111,6 @@ func _ready():
 	ability_attack_module.base_proj_speed = 625
 	ability_attack_module.base_proj_life_distance = info.base_range
 	ability_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	ability_attack_module.on_hit_damage_scale = 2
 	
 	ability_attack_module.benefits_from_bonus_base_damage = false
 	ability_attack_module.benefits_from_bonus_on_hit_effect = false
@@ -193,6 +194,8 @@ func _post_inherit_ready():
 	
 	_on_acd_changed_w()
 	_on_ap_changed_w()
+	
+	_construct_and_add_slot_bar()
 
 
 
@@ -223,6 +226,16 @@ func _on_ap_changed_w():
 		current_column_angles_of_fire.append((twice_angle_of_fire * (f_i / (f_col_count - 1))) - max_angle_of_fire)
 
 
+# info bar wave indicator
+
+func _construct_and_add_slot_bar():
+	var slot_bar = Wave_SlotsBar_Scene.instance()
+	
+	#info_bar_vbox_container.add_child(slot_bar)
+	add_infobar_control(slot_bar)
+	slot_bar.wave_tower = self
+
+
 # enemy entered/exited range
 
 func _on_range_module_enemy_entered_w(enemy, attk_module, range_module : RangeModule):
@@ -249,7 +262,7 @@ func _construct_and_connect_ability():
 	
 	tidal_wave_ability.descriptions = [
 		"Wave sprays 8 columns of water in a cone facing its current target.",
-		"Each column deals twice of Wave's passive on hit damage to all enemies hit.",
+		"Each column deals 1 + twice of Wave's passive on hit damage as elemental damage to all enemies hit.",
 		"Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals 0.75 elemental damage to 2 enemies.",
 		"Activating Tidal Wave reduces the passive on hit damage by 0.5 for 30 seconds. This effect stacks, but does not refresh other stacks.",
 		"Cooldown : 6 s",
@@ -317,13 +330,9 @@ func _apply_debuff_stack():
 	current_debuffs_time_arr.push_front(current_debuff_duration)
 	
 	current_debuff_damage += debuff_damage_amount_per_cast
-	var final_mod = base_damage_amount_modifier - current_debuff_damage
-	if final_mod < 0:
-		final_mod = 0
-	elif final_mod > base_damage_amount_modifier:
-		final_mod = base_damage_amount_modifier
+	var final_mod = _get_final_damage_mod()
 	wave_dmg_modifier.flat_modifier = final_mod
-	call_deferred("emit_signal", "effect_modifier_changed")
+	call_deferred("emit_signal", "effect_modifier_changed", final_mod)
 
 
 func _process(delta):
@@ -340,12 +349,18 @@ func _process(delta):
 
 func _remove_debuff_stack():
 	current_debuffs_time_arr.erase(0)
-	
 	current_debuff_damage -= debuff_damage_amount_per_cast
+	
+	var final_mod = _get_final_damage_mod()
+	wave_dmg_modifier.flat_modifier = final_mod
+	call_deferred("emit_signal", "effect_modifier_changed", final_mod)
+
+
+func _get_final_damage_mod() -> float:
 	var final_mod = base_damage_amount_modifier - current_debuff_damage
 	if final_mod < 0:
 		final_mod = 0
 	elif final_mod > base_damage_amount_modifier:
 		final_mod = base_damage_amount_modifier
-	wave_dmg_modifier.flat_modifier = final_mod
-	call_deferred("emit_signal", "effect_modifier_changed")
+	
+	return final_mod

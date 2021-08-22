@@ -23,14 +23,16 @@ const Reaper_SlashAttk_AOE = preload("res://TowerRelated/Color_Red/Reaper/Reaper
 const no_enemies_killed_clause : int = -10
 const no_enemy_in_range_clause : int = -11
 const slash_static_cooldown : float = 0.125
-const slash_subsequent_damage_ratio : float = 1.0
-const slash_primary_damage_ratio : float = 2.0
-const slash_subsequent_dmg_reduction_duration : float = 1.0
+
+const slash_primary_damage_ratio : float = 4.0
+const slash_subsequent_damage_ratio : float = 2.0
+
+const slash_subsequent_dmg_reduction_duration : float = 0.5
 
 var slash_attack_module : AOEAttackModule
 var slash_ability : BaseAbility
 var slash_ability_activation_clause : ConditionalClauses
-var enemies_killed : int = 0
+var _current_slash_queue_count : int = 0
 var current_slash_subsequent_dmg_reduction_duration : float
 
 # Called when the node enters the scene tree for the first time.
@@ -133,10 +135,10 @@ func _post_inherit_ready():
 
 func _construct_and_add_effects():
 	var reap_dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.REAPER_PERCENT_HEALTH_DAMAGE)
-	reap_dmg_modifier.percent_amount = 12
+	reap_dmg_modifier.percent_amount = 8
 	reap_dmg_modifier.percent_based_on = PercentType.MISSING
 	reap_dmg_modifier.ignore_flat_limits = false
-	reap_dmg_modifier.flat_maximum = 20
+	reap_dmg_modifier.flat_maximum = 6
 	reap_dmg_modifier.flat_minimum = 0
 	
 	var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.REAPER_PERCENT_HEALTH_DAMAGE, reap_dmg_modifier, DamageType.ELEMENTAL)
@@ -177,7 +179,7 @@ func _on_range_module_enemy_exited_r(enemy, attk_module, range_module : RangeMod
 
 func _on_post_miti_dmg_dealt_r(damage_instance_report, killed, enemy, damage_register_id, module):
 	if killed:
-		enemies_killed += 1
+		_current_slash_queue_count += 1
 		slash_ability_activation_clause.remove_clause(no_enemies_killed_clause)
 
 
@@ -185,8 +187,8 @@ func _cast_slash_ability():
 	call_deferred("_slash_at_enemy")
 	slash_ability.start_time_cooldown(slash_static_cooldown)
 	
-	enemies_killed -= 1
-	if enemies_killed == 0:
+	_current_slash_queue_count -= 1
+	if _current_slash_queue_count == 0:
 		slash_ability_activation_clause.attempt_insert_clause(no_enemies_killed_clause)
 
 func _slash_at_enemy():
@@ -220,7 +222,7 @@ func _ready_for_activation_ability(val):
 #
 
 func _on_round_end_r():
-	enemies_killed = 0
+	_current_slash_queue_count = 0
 	current_slash_subsequent_dmg_reduction_duration = 0
 	
 	slash_ability_activation_clause.attempt_insert_clause(no_enemies_killed_clause)

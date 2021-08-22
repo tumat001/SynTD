@@ -106,11 +106,13 @@ func _get_instructions_for_1_1():
 		SingleEnemySpawnInstruction.new(17, EnemyConstants.Enemies.BASIC),
 		SingleEnemySpawnInstruction.new(17.5, EnemyConstants.Enemies.BASIC),
 		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.BASIC),
+		SingleEnemySpawnInstruction.new(21, EnemyConstants.Enemies.BASIC),
+		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.BASIC),
 	]
 
 func _get_instructions_for_1_2():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 14, 2.6, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(0, 17, 2.5, EnemyConstants.Enemies.BASIC),
 		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.HEALER),
 		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.HEALER)
 	]
@@ -124,16 +126,16 @@ func _get_instructions_for_1_3():
 func _get_instructions_for_1_4():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.DASH),
-		MultipleEnemySpawnInstruction.new(2, 14, 1.5, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(2, 16, 1.6, EnemyConstants.Enemies.BASIC),
 		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.HEALER),
-		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.HEALER),
-		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.DASH),
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HEALER),
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.DASH),
 	]
 
 
 func _get_instructions_for_1_5():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 14, 2.6, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(0, 14, 2.7, EnemyConstants.Enemies.BASIC),
 		MultipleEnemySpawnInstruction.new(2, 4, 0.6, EnemyConstants.Enemies.BASIC),
 		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.HEALER),
 		SingleEnemySpawnInstruction.new(27, EnemyConstants.Enemies.DASH),
@@ -145,8 +147,8 @@ func _get_instructions_for_1_5():
 func _get_instructions_for_2_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 7, 0.2, EnemyConstants.Enemies.BASIC),
-		MultipleEnemySpawnInstruction.new(13, 8, 0.2, EnemyConstants.Enemies.BASIC),
-		MultipleEnemySpawnInstruction.new(26, 9, 0.2, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(15, 8, 0.2, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(31, 9, 0.2, EnemyConstants.Enemies.BASIC),
 	]
 
 
@@ -175,7 +177,7 @@ func _get_instructions_for_2_4():
 
 func _get_instructions_for_2_5():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 20, 1.6, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(0, 18, 1.9, EnemyConstants.Enemies.BASIC),
 		MultipleEnemySpawnInstruction.new(5, 3, 0.5, EnemyConstants.Enemies.DASH),
 		MultipleEnemySpawnInstruction.new(15, 2, 0.5, EnemyConstants.Enemies.HEALER),
 		MultipleEnemySpawnInstruction.new(25, 1, 0.5, EnemyConstants.Enemies.BRUTE),
@@ -198,8 +200,8 @@ func _get_instructions_for_3_2():
 
 func _get_instructions_for_3_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 18, 2.4, EnemyConstants.Enemies.BASIC),
-		MultipleEnemySpawnInstruction.new(0.15, 18, 2.4, EnemyConstants.Enemies.PAIN),
+		MultipleEnemySpawnInstruction.new(0, 18, 2.5, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(0.15, 18, 2.5, EnemyConstants.Enemies.PAIN),
 	]
 
 func _get_instructions_for_3_4():
@@ -212,7 +214,7 @@ func _get_instructions_for_3_4():
 
 func _get_instructions_for_3_5():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 27, 1.8, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(0, 24, 2, EnemyConstants.Enemies.BASIC),
 		MultipleEnemySpawnInstruction.new(0, 6, 6, EnemyConstants.Enemies.WIZARD),
 		MultipleEnemySpawnInstruction.new(18, 1, 1, EnemyConstants.Enemies.BRUTE),
 		MultipleEnemySpawnInstruction.new(38, 4, 0.5, EnemyConstants.Enemies.PAIN),

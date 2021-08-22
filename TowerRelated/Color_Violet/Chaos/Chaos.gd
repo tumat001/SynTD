@@ -98,7 +98,7 @@ func _ready():
 	
 	var diamond_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	diamond_attack_module.base_damage_scale = 0.25
-	diamond_attack_module.base_damage = 2 / diamond_attack_module.base_damage_scale
+	diamond_attack_module.base_damage = 2.5 / diamond_attack_module.base_damage_scale
 	diamond_attack_module.base_damage_type = DamageType.PHYSICAL
 	diamond_attack_module.base_attack_speed = 0.85
 	diamond_attack_module.base_attack_wind_up = 2
@@ -146,7 +146,7 @@ func _ready():
 	
 	var bolt_attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
 	bolt_attack_module.base_damage_scale = 0.25
-	bolt_attack_module.base_damage = 0.75 / bolt_attack_module.base_damage_scale
+	bolt_attack_module.base_damage = 1.5 / bolt_attack_module.base_damage_scale
 	bolt_attack_module.base_damage_type = DamageType.ELEMENTAL
 	bolt_attack_module.base_attack_speed = 1.3
 	bolt_attack_module.base_attack_wind_up = 0
@@ -185,7 +185,7 @@ func _ready():
 	# Sword related
 	
 	sword_attack_module = InstantDamageAttackModule_Scene.instance()
-	sword_attack_module.base_damage_scale = 5
+	sword_attack_module.base_damage_scale = 15
 	sword_attack_module.base_damage = 20 / sword_attack_module.base_damage_scale
 	sword_attack_module.base_damage_type = DamageType.PHYSICAL
 	sword_attack_module.base_attack_speed = 0

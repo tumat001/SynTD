@@ -74,7 +74,10 @@ static func _find_random_distinct_enemies(enemies : Array, count : int):
 # Also shared by towers
 # Random, Close and Far will be shared for tower detection as well
 static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int, pos : Vector2, include_invis_enemies : bool = false):
-	var enemies = arg_enemies.duplicate(false)
+	var enemies = arg_enemies.duplicate(true)
+	
+	while enemies.has(null):
+		enemies.erase(null)
 	
 	filter_untargetable_enemies(enemies, include_invis_enemies)
 	

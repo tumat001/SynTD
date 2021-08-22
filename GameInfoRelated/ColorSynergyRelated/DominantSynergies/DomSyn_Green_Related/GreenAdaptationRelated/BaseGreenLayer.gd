@@ -56,8 +56,8 @@ func _dom_syn_tier_applied(tier, arg_game_elements):
 	emit_signal("on_tier_of_syn_changed", tier)
 
 func _dom_syn_removed(tier, arg_game_elements):
-	_update_available_path_state(tier)
-	emit_signal("on_tier_of_syn_changed", tier)
+	_update_available_path_state(dom_syn_green.SYN_INACTIVE)
+	emit_signal("on_tier_of_syn_changed", dom_syn_green.SYN_INACTIVE)
 
 
 func _update_available_path_state(tier):
@@ -98,6 +98,7 @@ func get_current_active_green_paths():
 
 func can_activate_path(path) -> bool:
 	return available_green_paths.has(path)
+
 
 func if_meets_tier_requirements(tier : int = dom_syn_green.curr_tier) -> bool:
 	return tier_to_activate >= tier and tier != dom_syn_green.SYN_INACTIVE

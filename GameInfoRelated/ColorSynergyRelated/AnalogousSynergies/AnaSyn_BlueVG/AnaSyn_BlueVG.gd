@@ -12,9 +12,9 @@ var cdr_effect : AbilityAttributesEffect
 var cdr_modi : PercentModifier
 
 const tier4_cdr_amount : float = 10.0
-const tier3_cdr_amount : float = 20.0
-const tier2_cdr_amount : float = 40.0
-const tier1_cdr_amount : float = 60.0
+const tier3_cdr_amount : float = 30.0
+const tier2_cdr_amount : float = 60.0
+const tier1_cdr_amount : float = 80.0
 
 var game_elements : GameElements
 var ability_manager : AbilityManager
