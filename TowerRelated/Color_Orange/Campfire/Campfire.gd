@@ -13,6 +13,7 @@ const CampfireParticle_Scene = preload("res://TowerRelated/Color_Orange/Campfire
 
 const HeatModule = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/HeatModule.gd")
 
+
 var tower_detecting_range_module : TowerDetectingRangeModule
 
 const base_rage_threshold : float = 50.0
@@ -31,7 +32,7 @@ var initial_cd_timer : Timer
 
 #
 
-onready var flame_anim_sprite := $TowerBase/BaseSprites
+onready var flame_anim_sprite = $TowerBase/BaseSprites
 const base_frame_rate : int = 5
 
 func _ready():
@@ -39,6 +40,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
@@ -231,12 +233,12 @@ func _on_round_end():
 
 
 func set_heat_module(module : HeatModule):
-	module.heat_per_attack = 3
+	module.heat_per_attack = 2
 	.set_heat_module(module)
 
 func _construct_heat_effect():
 	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_dmg_attr_mod.flat_modifier = 3
+	base_dmg_attr_mod.flat_modifier = 1.25
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
 

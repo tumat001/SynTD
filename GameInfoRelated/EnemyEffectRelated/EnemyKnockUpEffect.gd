@@ -4,6 +4,8 @@ const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyS
 
 var knock_up_y_acceleration : float
 
+var custom_stun_duration : float = -1
+
 func _init(arg_duration : float, 
 		arg_y_accel : float,
 		arg_effect_uuid : int).(EffectType.KNOCK_UP, arg_effect_uuid):
@@ -22,6 +24,9 @@ func generate_stun_effect_from_self() -> EnemyStunEffect:
 	stun_effect.respect_scale = respect_scale
 	stun_effect.is_clearable = false
 	
+	if custom_stun_duration != -1:
+		stun_effect.time_in_seconds = custom_stun_duration
+	
 	return stun_effect
 
 #
@@ -34,7 +39,8 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 	_configure_copy_to_match_self(copy)
 	
 	copy.time_in_seconds = time_in_seconds * scale
-	copy.knock_up_height = knock_up_y_acceleration * scale
+	copy.knock_up_y_acceleration = knock_up_y_acceleration * scale
+	copy.custom_stun_duration = custom_stun_duration * scale
 	
 	return copy
 

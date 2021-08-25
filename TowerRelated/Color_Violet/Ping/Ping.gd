@@ -65,8 +65,8 @@ var shot_attack_module : WithBeamInstantDamageAttackModule
 
 const empowered_base_damage : float = 10.0
 const normal_base_damage : float = 5.0
-const empowered_on_hit_damage_scale : float = 1.5
-const normal_on_hit_damage_scale : float = 1.0
+const empowered_on_hit_damage_scale : float = 4.0
+const normal_on_hit_damage_scale : float = 2.0
 
 const original_empowered_num_of_targets_limit : int = 1
 var empowered_num_of_targets_limit : int = original_empowered_num_of_targets_limit
@@ -77,6 +77,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
@@ -307,14 +308,14 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Ping can mark up to 7 enemies per shot.",
-			"Ping can empower its shots when marking up to 2 enemies."
+			"Ping can mark up to 13 enemies per shot.",
+			"Ping can empower its shots when marking up to 4 enemies."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	empowered_num_of_targets_limit = 2
-	current_mark_count_limit = 7
+	empowered_num_of_targets_limit = 4
+	current_mark_count_limit = 13
 	seek_attack_module.pierce = current_mark_count_limit
 
 func _module_turned_off():

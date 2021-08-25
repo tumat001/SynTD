@@ -51,9 +51,11 @@ var chaos_shadow_anim_sprite
 
 const CHAOS_TOWER_ID = 703
 
+const chaos_takeover_darksword_dmg_scale : float = 0.2
+
 
 func _init().(EffectType.CHAOS_TAKEOVER, StoreOfTowerEffectsUUID.ING_CHAOS):
-	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting with its own. CHAOS retains the tower's colors and ingredient effects. The tower's self ingredient is replaced by this."
+	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting with its own, however CHAOS's dark sword is only 20% effective. CHAOS retains the tower's colors and ingredient effects. The tower's self ingredient is replaced by this."
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Chaos.png")
 
 
@@ -217,7 +219,8 @@ func _construct_modules():
 	sword_attack_module.benefits_from_bonus_on_hit_damage = false
 	sword_attack_module.benefits_from_bonus_on_hit_effect = false
 	
-	sword_attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack")
+	sword_attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack", [], CONNECT_PERSIST)
+	sword_attack_module.connect("on_enemy_hit", self, "_on_sword_hit_enemy", [], CONNECT_PERSIST)
 	
 	chaos_attack_modules.append(sword_attack_module)
 	sword_attack_module.can_be_commanded_by_tower = false
@@ -246,13 +249,21 @@ func takeover(tower):
 	tower.add_child(_construct_chaos_shadow())
 	
 	for module in tower.all_attack_modules:
-		if module.module_id == StoreOfAttackModuleID.MAIN or module.module_id == StoreOfAttackModuleID.PART_OF_SELF:
-			replaced_attack_modules.append(module)
-			module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
-	
+		_attempt_set_module_to_uncommandable_by_tower(module)
 	
 	for module in chaos_attack_modules:
 		tower.add_attack_module(module)
+	
+	if !tower.is_connected("attack_module_added", self, "_tower_added_attack_module"):
+		tower.connect("attack_module_added", self, "_tower_added_attack_module", [], CONNECT_PERSIST)
+		tower.connect("attack_module_removed", self, "_tower_removed_attack_module", [], CONNECT_PERSIST)
+
+func _attempt_set_module_to_uncommandable_by_tower(module):
+	if module.module_id == StoreOfAttackModuleID.MAIN or module.module_id == StoreOfAttackModuleID.PART_OF_SELF:
+		replaced_attack_modules.append(module)
+		module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
+
+
 
 
 func _construct_chaos_shadow():
@@ -271,7 +282,14 @@ func _construct_chaos_shadow():
 	return chaos_shadow_anim_sprite
 
 
+#
+
 func untakeover(tower):
+	if tower.is_connected("attack_module_added", self, "_tower_added_attack_module"):
+		tower.disconnect("attack_module_added", self, "_tower_added_attack_module")
+		tower.disconnect("attack_module_removed", self, "_tower_removed_attack_module")
+
+	
 	tower.range_module = replaced_range_module
 	tower.main_attack_module = replaced_main_attack_module
 	
@@ -282,17 +300,20 @@ func untakeover(tower):
 		chaos_shadow_anim_sprite.queue_free()
 	
 	for module in replaced_attack_modules:
-		if module != null:
-			module.can_be_commanded_by_tower_other_clauses.remove_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
-			
-			if module.range_module == sword_attack_module.range_module or module.range_module == null:
-				module.range_module = replaced_range_module
+		_attempt_set_attack_module_to_commandable_by_tower(module)
 	
 	for module in chaos_attack_modules:
 		if module != null:
 			tower.remove_attack_module(module)
 			module.queue_free()
-	
+
+func _attempt_set_attack_module_to_commandable_by_tower(module):
+	if module != null:
+		module.can_be_commanded_by_tower_other_clauses.remove_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
+		
+		if module.range_module == sword_attack_module.range_module or module.range_module == null:
+			module.range_module = replaced_range_module
+
 
 
 # Sword related
@@ -327,3 +348,17 @@ func _show_attack_sprite_on_attack(_attk_speed_delay, enemies : Array):
 			
 			tower_taken_over.get_tree().get_root().add_child(sword)
 			break
+
+#
+
+func _on_sword_hit_enemy(enemy, damage_register_id, damage_instance, module):
+	damage_instance.scale_only_damage_by(chaos_takeover_darksword_dmg_scale)
+
+#
+
+func _tower_added_attack_module(module):
+	_attempt_set_module_to_uncommandable_by_tower(module)
+
+func _tower_removed_attack_module(module):
+	_attempt_set_attack_module_to_commandable_by_tower(module)
+

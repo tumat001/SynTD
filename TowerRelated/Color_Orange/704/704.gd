@@ -70,6 +70,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
@@ -311,15 +312,13 @@ func set_emblem_explosive_level(level : int):
 	elif level == 1:
 		exp_base_scale = 0.66
 	elif level == 2:
-		exp_on_hit_damage_scale = 0.33
-		exp_on_hit_effect_scale = 0.33
+		exp_on_hit_damage_scale = 0.2
 		exp_base_scale = 0.66
 	elif level == 3:
-		exp_on_hit_damage_scale = 0.5
-		exp_on_hit_effect_scale = 0.5
+		exp_on_hit_damage_scale = 0.4
 		exp_base_scale = 1
 	elif level == 4:
-		exp_on_hit_damage_scale = 1
+		exp_on_hit_damage_scale = 0.6
 		exp_on_hit_effect_scale = 1
 		exp_base_scale = 1.25
 	

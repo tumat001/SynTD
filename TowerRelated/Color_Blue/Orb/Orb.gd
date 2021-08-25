@@ -68,6 +68,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
@@ -178,7 +179,7 @@ func _ready():
 	# Beam
 	
 	beam_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	beam_attack_module.base_damage_scale = 1.0 / 3.0
+	beam_attack_module.base_damage_scale = 0.5
 	beam_attack_module.base_damage = 1 / beam_attack_module.base_damage_scale
 	beam_attack_module.base_damage_type = DamageType.ELEMENTAL
 	beam_attack_module.base_attack_speed = 6

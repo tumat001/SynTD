@@ -15,7 +15,7 @@ onready var tower_icon_panel = $HBoxContainer/TowerIconPanel
 
 func _ready():
 	if _tower != null:
-		tower_icon_panel.tower = _tower
+		tower_icon_panel.tower_type_info = _tower.tower_type_info
 
 
 #

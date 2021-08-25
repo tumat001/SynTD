@@ -64,8 +64,8 @@ func _init():
 	],
 	[DomSyn_Orange.new()],
 	[
-		"340% effectiveness",
-		"260% effectiveness",
+		"400% effectiveness",
+		"300% effectiveness",
 		"180% effectiveness",
 		"100% effectiveness",
 	],
@@ -119,7 +119,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
 	
-	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [8, 5, 3],
+	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [3, 2, 1],#[8, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
 	[
@@ -129,7 +129,7 @@ func _init():
 	],
 	[DomSyn_Blue.new()],
 	[
-		"Renew/Empower : Multi purpose ability. +0.25 Ability Potency.",
+		"Renew/Empower : Multi purpose ability. +0.50 Ability Potency.",
 		"Mana Blast: Big AOE damage, and AOE Ability Potency buff.",
 		"Sea Breeze : Slow and minor damage to all enemies. +0.25 Ability Potency."
 	],
@@ -137,20 +137,20 @@ func _init():
 	),
 	
 	"Violet" : ColorSynergy.new("Violet", [TowerColors.VIOLET], [5, 4, 3, 2],
-	[tier_silver_pic, tier_bronze_pic, tier_gold_pic, tier_dia_pic],
+	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	[
-		"Violet towers can absorb more ingredients. This effect applies only when there are a certain amount of towers or less in the map. Getting duplicate violet towers also disables this effect.",
+		"Violet towers can absorb more ingredients. This effect applies only when the amount of total and violet towers in the map is satisfied.",
 		"",
 		"Violet towers can absorb ingredients regardless of color only after being in the map for 1 round.",
 		"",
 	],
 	[DomSyn_Violet.new()],
 	[
-		"+9 ingredients, 12 tower limit",
-		"+8 ingredients, 9 tower limit",
-		"+12 ingredients, 6 tower limit",
-		"+40 ingredients, 3 tower limit",
+		"+5 ingredients. 13 total tower limit, 6 violet tower limit",
+		"+8 ingredients. 9 total tower limit, 4 violet tower limit",
+		"+12 ingredients. 6 total tower limit, 3 violet tower limit",
+		"+40 ingredients. 3 total tower limit, 2 violet tower limit.",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),

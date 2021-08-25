@@ -38,12 +38,12 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# BASIC FACTION
 	if enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
-		info.base_health = 27
+		info.base_health = 500#27
 		info.base_movement_speed = 32
 		
 	elif enemy_id == Enemies.BRUTE:
 		info = EnemyTypeInformation.new(Enemies.BRUTE, EnemyFactions.BASIC)
-		info.base_health = 170
+		info.base_health = 190
 		info.base_movement_speed = 18
 		
 	elif enemy_id == Enemies.DASH:

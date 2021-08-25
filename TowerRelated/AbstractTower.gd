@@ -377,7 +377,7 @@ func _post_inherit_ready():
 	
 	connect("on_any_post_mitigation_damage_dealt", self, "_on_tower_any_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
 	
-	initialize_atlas_texture()
+	#initialize_atlas_texture()
 
 
 func get_current_anim_size() -> Vector2:
@@ -449,11 +449,10 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 	if attack_module.module_id == StoreOfAttackModuleID.MAIN:
 		# Pre-existing attack module
 		if main_attack_module != null:
-			if range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):
+			if range_module != null and range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):
 				range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
 				range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
 				range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
-		
 		
 		main_attack_module = attack_module
 		
@@ -1813,7 +1812,7 @@ func toggle_module_ranges():
 	
 	for attack_module in all_attack_modules:
 		if attack_module != null:
-			if attack_module.range_module != null and attack_module.use_self_range_module and attack_module.range_module.can_display_range:
+			if attack_module.range_module != null and attack_module.use_self_range_module and (attack_module.range_module.can_display_range or attack_module.range_module.can_display_circle_arc):
 				if !range_modules_showing.has(attack_module.range_module):
 					attack_module.range_module.toggle_show_range()
 					range_modules_showing.append(range_module)
@@ -2183,30 +2182,28 @@ func _on_tower_any_post_mitigation_damage_dealt(damage_instance_report, _killed,
 #
 
 
-func initialize_atlas_texture():
-	if tower_image_icon_atlas_texture == null:
-		tower_image_icon_atlas_texture = AtlasTexture.new()
-	
-	tower_image_icon_atlas_texture.atlas = tower_highlight_sprite
-	tower_image_icon_atlas_texture.region = _get_atlas_region()
-
-
-
-func _get_default_center_for_atlas() -> Vector2:
-	var highlight_sprite_size = tower_highlight_sprite.get_size()
-	
-	return Vector2(highlight_sprite_size.x / 4, 0)
-
-func _get_default_region_size_for_atlas() -> Vector2:
-	return Vector2(18, 18)
-
-
-func _get_atlas_region() -> Rect2:
-	var center = _get_default_center_for_atlas()
-	var size = _get_default_region_size_for_atlas()
-	
-	#return Rect2(0, 0, size.x, size.y)
-	return Rect2(center.x, center.y, size.x, size.y)
+#func initialize_atlas_texture():
+#	if tower_image_icon_atlas_texture == null:
+#		tower_image_icon_atlas_texture = AtlasTexture.new()
+#
+#	tower_image_icon_atlas_texture.atlas = tower_highlight_sprite
+#	tower_image_icon_atlas_texture.region = _get_atlas_region()
+#
+#
+#func _get_atlas_region() -> Rect2:
+#	var center = _get_default_center_for_atlas()
+#	var size = _get_default_region_size_for_atlas()
+#
+#	#return Rect2(0, 0, size.x, size.y)
+#	return Rect2(center.x, center.y, size.x, size.y)
+#
+#func _get_default_center_for_atlas() -> Vector2:
+#	var highlight_sprite_size = tower_highlight_sprite.get_size()
+#
+#	return Vector2(highlight_sprite_size.x / 4, 0)
+#
+#func _get_default_region_size_for_atlas() -> Vector2:
+#	return Vector2(18, 18)
 
 
 # Tower Infobar related

@@ -45,6 +45,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
@@ -79,7 +80,7 @@ func _ready():
 	
 	add_attack_module(attack_module)
 	
-	connect("final_range_changed", self, "_final_range_changed")
+	connect("final_range_changed", self, "_final_range_changed", [], CONNECT_PERSIST)
 	
 	_construct_on_hit_and_modifiers()
 	_construct_effects()
@@ -116,6 +117,7 @@ func _on_round_start():
 	._on_round_start()
 	
 	_current_refresh_cooldown = 0
+
 
 # TDRange related
 

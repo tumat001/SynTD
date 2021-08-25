@@ -29,6 +29,7 @@ signal ready_to_attack()
 
 signal can_be_commanded_changed(can_be_commanded)
 
+
 enum CanBeCommandedByTower_ClauseId {
 	CHAOS_TAKEOVER = 1
 	
@@ -96,7 +97,7 @@ var on_hit_effects : Dictionary
 var _all_countbound_effects : Dictionary = {}
 
 var range_module : RangeModule setget _set_range_module
-var use_self_range_module : bool = false
+var use_self_range_module : bool = false # used for range displaying
 
 
 # Attack sprites
@@ -143,7 +144,7 @@ var last_calculated_final_resistance_pierce : float
 #var last_calculated_final_percent_enemy_resistance_pierce : float
 
 
-var _last_calculated_attack_wind_up : float
+var _last_calculated_attack_wind_up : float 
 var _last_calculated_burst_pause : float
 var _last_calculated_attack_speed_as_delay : float
 
@@ -795,7 +796,7 @@ func _during_windup_multiple(enemies_or_poses : Array = []):
 	
 	if attack_sprite_show_in_windup:
 		for enemy in enemies_or_poses:
-			if attack_sprite_scene != null:
+			if attack_sprite_scene != null and enemy != null:
 				var attack_sprite = attack_sprite_scene.instance()
 				
 				if attack_sprite_match_lifetime_to_windup:

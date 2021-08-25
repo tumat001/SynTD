@@ -135,7 +135,7 @@ func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = null):
 	emit_signal("before_enemy_spawned", enemy_instance)
 	path.add_child(enemy_instance)
 	
-	call_deferred("emit_signal", "enemy_spawned", enemy_instance)
+	emit_signal("enemy_spawned", enemy_instance)
 
 
 

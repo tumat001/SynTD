@@ -39,6 +39,8 @@ const AnaSyn_RedOV = preload("res://GameInfoRelated/ColorSynergyRelated/Analogou
 const AnaSyn_YellowGO = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_YellowGO/AnaSyn_YellowGO.gd")
 const AnaSyn_GreenBY = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_GreenBY/AnaSyn_GreenBY.gd")
 
+const TriaSyn_RYB = preload("res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_RYB/TriaSyn_RYB.gd")
+
 var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
 
 
@@ -83,15 +85,15 @@ func _init():
 		"Explosions deal 3 elemental damage to 3 enemies.",
 		"Explosions benefit from base damage and on hit damage buffs at 20% efficiency. Explosions also benefit from explosion size buffs.",
 		"",
-		"Towers with overheating heat modules gain 75% cooldown reduction for the explosion.",
+		"Towers with overheating heat modules gain 35% cooldown reduction for the explosion.",
 		"Explosion's damage scales with the tower's ability potency.",
 		""
 	],
 	[CompleSyn_OrangeBlue.new()],
 	[
-		"Explosion per 2.0 seconds. Explosions are 100% bigger.",
-		"Explosion per 4.0 seconds. Explosions are 75% bigger.",
-		"Explosion per 6.0 seconds. Explosions are 25% bigger.",
+		"Explosion per 1.0 seconds. Explosions are 100% larger.",
+		"Explosion per 2.5 seconds. Explosions are 75% larger.",
+		"Explosion per 5.0 seconds. Explosions are 25% larger.",
 		"Explosion per 8.0 seconds."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -123,10 +125,10 @@ func _init():
 	],
 	[AnaSyn_OrangeYR.new()],
 	[
-		"100% attack speed",
-		"60% attack speed",
-		"40% attack speed",
-		"20% attack speed",
+		"110% attack speed",
+		"70% attack speed",
+		"45% attack speed",
+		"15% attack speed",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -206,29 +208,47 @@ func _init():
 	
 	
 	#Tria
-	"RYB" : ColorSynergy.new("RYB", [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2, 1],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"RYB" : ColorSynergy.new("RYB", [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [3, 2, 1],#[4, 3, 2],
+	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_RYB,
 	[
-		"RYB description"
-	]
+		"Enemies that reach the end of the track for the first time are instead brought back to the start of the track.",
+		"Enemies brought back heal for 40% of their missing health, and receive damage resistance. The damage resistance cannot be removed by any means.",
+		"",
+		"\"Just when you thought that you did it...\"",
+		""
+	],
+	[TriaSyn_RYB.new()],
+	[
+		"40% damage resistance",
+		"50% damage resistance",
+		"65% damage resistance"
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"OGV" : ColorSynergy.new("OGV", [TowerColors.ORANGE, TowerColors.GREEN, TowerColors.VIOLET], [4, 3, 2, 1],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"OGV" : ColorSynergy.new("OGV", [TowerColors.ORANGE, TowerColors.GREEN, TowerColors.VIOLET], [4, 3, 2],
+	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_OGV,
 	[
-		"OGV description"
+		"",
+		""
+	],
+	[],
+	[
+		"",
+		"",
+		""
 	]
 	),
 	
 	
 	# Special
-	"ROYGBV" : ColorSynergy.new("ROYGBV", [TowerColors.RED, TowerColors.ORANGE, TowerColors.YELLOW, TowerColors.GREEN, TowerColors.BLUE, TowerColors.VIOLET], 
-	[2, 1],
-	[tier_dia_pic, tier_gold_pic],
-	syn_compo_special_ROYGBV,
-	["ROYGBV description"]),
+#	"ROYGBV" : ColorSynergy.new("ROYGBV", [TowerColors.RED, TowerColors.ORANGE, TowerColors.YELLOW, TowerColors.GREEN, TowerColors.BLUE, TowerColors.VIOLET], 
+#	[2, 1],
+#	[tier_dia_pic, tier_gold_pic],
+#	syn_compo_special_ROYGBV,
+#	["ROYGBV description"]),
 	
 #	"RGB" : ColorSynergy.new("RGB", [TowerColors.RED, TowerColors.GREEN, TowerColors.BLUE], [3, 2, 1],
 #	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],

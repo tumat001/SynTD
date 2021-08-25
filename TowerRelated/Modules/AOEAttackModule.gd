@@ -66,6 +66,7 @@ func construct_aoe(arg_origin_pos : Vector2, arg_enemy_pos : Vector2) -> BaseAOE
 	
 	base_aoe.damage_repeat_count = damage_repeat_count
 	base_aoe.duration = duration
+	base_aoe.collision_duration = duration
 	base_aoe.decrease_duration = is_decrease_duration
 	base_aoe.pierce = pierce
 	base_aoe.initial_delay = initial_delay

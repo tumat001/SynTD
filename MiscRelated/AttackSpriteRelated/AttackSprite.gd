@@ -56,3 +56,11 @@ func _process(delta):
 	if lifetime_to_start_transparency >= lifetime:
 		modulate.a -= transparency_per_sec * delta
 	
+
+
+#
+
+func get_sprite_size() -> Vector2:
+	return frames.get_frame(animation, frame).get_size()
+
+

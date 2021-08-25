@@ -34,7 +34,7 @@
 
 [sub_resource type="Curve2D" id=1]
 _data = {
-"points": PoolVector2Array( 0, 0, 0, 0, 289.495, 381.743, 0, 0, 0, 0, 339.797, 280.276, 0, 0, 0, 0, 596.841, 265.684, 0, 0, 0, 0, 614.8, 187.111, 0, 0, 0, 0, 382.451, 203.948 )
+"points": PoolVector2Array( 0, 0, 0, 0, 289.495, 381.743, 0, 0, 0, 0, 339.797, 280.276, 0, 0, 0, 0, 596.841, 265.684, 0, 0, 0, 0, 614.8, 187.111, 0, 0, 0, 0, 382.451, 203.948, 0, 0, 0, 0, 315.018, 177.96, 0, 0, 0, 0, 259.581, 72.7569, 0, 0, 0, 0, 196.585, 72.7569 )
 }
 
 [sub_resource type="DynamicFont" id=2]
@@ -88,6 +88,30 @@ position = Vector2( 368.167, 254.799 )
 
 [node name="InMapAreaPlacable10" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
 position = Vector2( 581.257, 158 )
+
+[node name="InMapAreaPlacable11" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 273, 158 )
+
+[node name="InMapAreaPlacable12" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 511, 301.282 )
+
+[node name="InMapAreaPlacable13" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 442.02, 308.782 )
+
+[node name="InMapAreaPlacable14" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 355, 153.5 )
+
+[node name="InMapAreaPlacable15" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 230, 101 )
+
+[node name="InMapAreaPlacable16" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 782, 32 )
+
+[node name="InMapAreaPlacable17" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 782, 76 )
+
+[node name="InMapAreaPlacable18" parent="MapManager/InMapPlacablesManager" instance=ExtResource( 10 )]
+position = Vector2( 782, 124 )
 
 [node name="SynergyManager" type="Node" parent="."]
 script = ExtResource( 12 )

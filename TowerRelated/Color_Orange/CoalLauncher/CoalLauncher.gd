@@ -13,7 +13,7 @@ const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const Coal_Proj01 = preload("res://TowerRelated/Color_Orange/CoalLauncher/Coal_Proj/Coal_Proj01.png")
 const Coal_Proj02 = preload("res://TowerRelated/Color_Orange/CoalLauncher/Coal_Proj/Coal_Proj02.png")
 
-const burn_duration_inc : float = 2.0
+const burn_duration_inc : float = 3.0
 
 var coal_attack_module : BulletAttackModule
 var burn_effect_ids_to_inc : Array = [
@@ -31,6 +31,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost

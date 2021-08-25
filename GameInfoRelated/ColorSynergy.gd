@@ -19,7 +19,7 @@ enum HighlightDeterminer {
 var colors_required : Array = []
 # Number of towers required per tier of synergy.
 # Ex: 9, 6, 3 -> 9 oranges, 6 oranges, 3 oranges
-# when the colors_required contains 'orange' only.
+# where the colors_required contains 'orange' only.
 # IMPORTANT: Highest to Lowest
 var number_of_towers_in_tier : Array = []
 # IMPORTANT: Highest to Lowest

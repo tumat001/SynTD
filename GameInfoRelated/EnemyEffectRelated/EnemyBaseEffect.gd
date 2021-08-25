@@ -20,6 +20,8 @@ enum EffectType {
 	
 	KNOCK_UP,
 	
+	BEFORE_ENEMY_REACHING_END_PATH
+	
 	MISC,
 }
 

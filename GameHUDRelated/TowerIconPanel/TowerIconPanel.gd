@@ -7,14 +7,21 @@ const Border_Tier04 = preload("res://GameHUDRelated/TowerIconPanel/BorderAssets/
 const Border_Tier05 = preload("res://GameHUDRelated/TowerIconPanel/BorderAssets/Border_Tier05.png")
 const Border_Tier06 = preload("res://GameHUDRelated/TowerIconPanel/BorderAssets/Border_Tier06.png")
 
-var tower setget set_tower
+#var tower setget set_tower
+var tower_type_info setget set_tower_type_info
+
 
 onready var tower_icon = $TowerIcon
 onready var tower_border = $TowerBorder
 
 
-func set_tower(arg_tower):
-	tower = arg_tower
+#func set_tower(arg_tower):
+#	tower = arg_tower
+#	
+#	_update_display()
+
+func set_tower_type_info(arg_type_info):
+	tower_type_info = arg_type_info
 	
 	_update_display()
 
@@ -26,11 +33,13 @@ func _ready():
 #
 
 func _update_display():
-	if tower != null and tower_icon != null:
-		var tower_tier = tower.tower_type_info.tower_tier
+	if is_inside_tree():
+		if tower_type_info != null:
+			var tower_tier = tower_type_info.tower_tier
+			
+			tower_border.texture = _get_border_to_use(tower_tier)
+			tower_icon.texture = tower_type_info.tower_atlased_image
 		
-		tower_border.texture = _get_border_to_use(tower_tier)
-		tower_icon.texture = tower.tower_image_icon_atlas_texture
 
 
 func _get_border_to_use(tower_tier : int) -> Texture:

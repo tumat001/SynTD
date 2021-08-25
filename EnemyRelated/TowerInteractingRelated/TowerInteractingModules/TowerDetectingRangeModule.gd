@@ -24,6 +24,18 @@ var displaying_range : bool
 var can_display_circle_arc : bool = false
 var circle_arc_color : Color = Color(1, 1, 1, 1)
 
+onready var coll_shape = $CollShape
+
+# 
+
+func _ready():
+	var shape := CircleShape2D.new()
+	shape.radius = detection_range
+	
+	coll_shape.shape = shape
+
+
+
 # Range related
 
 func show_range():
@@ -52,8 +64,10 @@ func _draw():
 
 func update_range(arg_detection_range : float):
 	detection_range = arg_detection_range
-	$CollShape.shape.set_deferred("radius", detection_range)
-	update()
+	
+	if is_inside_tree():
+		coll_shape.shape.set_deferred("radius", detection_range)
+		update()
 
 
 

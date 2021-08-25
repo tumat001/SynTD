@@ -33,6 +33,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
@@ -63,10 +64,10 @@ func _ready():
 	attack_module.burst_attack_speed = 5
 	attack_module.has_burst = true
 	
-	attack_module.connect("in_attack_windup", self, "_show_lock_ons")
-	attack_module.connect("in_attack", self, "_relock_lock_ons")
-	attack_module.connect("in_attack_end", self, "_kill_and_reset_lock_ons")
-	attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack")
+	attack_module.connect("in_attack_windup", self, "_show_lock_ons", [], CONNECT_PERSIST)
+	attack_module.connect("in_attack", self, "_relock_lock_ons", [], CONNECT_PERSIST)
+	attack_module.connect("in_attack_end", self, "_kill_and_reset_lock_ons", [], CONNECT_PERSIST)
+	attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack", [], CONNECT_PERSIST)
 	
 	add_attack_module(attack_module)
 	
@@ -176,7 +177,7 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Re now has the option to target enemies at random.",
+			"Re gain Random targeting option.",
 			"All of Re's outgoing damage is converted to Pure damage."
 		]
 
@@ -186,11 +187,11 @@ func _module_turned_on(_first_time_per_round : bool):
 	
 	for module in all_attack_modules:
 		if !module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
-			module.connect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure")
+			module.connect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure", [], CONNECT_PERSIST)
 	
 	if !is_connected("attack_module_added", self, "_attack_module_attached"):
-		connect("attack_module_added", self, "_attack_module_attached")
-		connect("attack_module_removed", self, "_attack_module_detached")
+		connect("attack_module_added", self, "_attack_module_attached", [], CONNECT_PERSIST)
+		connect("attack_module_removed", self, "_attack_module_detached", [], CONNECT_PERSIST)
 
 
 func _module_turned_off():
@@ -217,7 +218,7 @@ func _attack_module_attached(attack_module : AbstractAttackModule):
 	if attack_module == main_attack_module:
 		if energy_module != null and energy_module.is_turned_on:
 			if !attack_module.is_connected("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure"):
-				attack_module.connect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure")
+				attack_module.connect("on_damage_instance_constructed", self, "_convert_all_damage_type_to_pure", [], CONNECT_PERSIST)
 
 
 

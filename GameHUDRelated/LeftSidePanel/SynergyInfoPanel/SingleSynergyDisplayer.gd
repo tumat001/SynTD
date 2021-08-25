@@ -9,6 +9,8 @@ const SynergyTooltip = preload("res://GameHUDRelated/Tooltips/SynergyTooltipRela
 signal on_single_syn_tooltip_displayed(synergy)
 signal on_single_syn_tooltip_hidden(synergy)
 
+signal on_single_syn_displayer_pressed(input_mouse_event, syn_check_result)
+
 
 var result : ColorSynergyCheckResults
 var current_tooltip : SynergyTooltip
@@ -87,3 +89,6 @@ func _on_SingleSynergyDisplayer_mouse_exited():
 		current_tooltip.queue_free()
 
 
+func _on_SingleSynergyDisplayer_gui_input(event):
+	if event is InputEventMouseButton:
+		emit_signal("on_single_syn_displayer_pressed", event, result)

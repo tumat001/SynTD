@@ -21,6 +21,8 @@ var percent_range_effects : Dictionary = {}
 
 var displaying_range : bool = false
 var can_display_range : bool = true
+var can_display_circle_arc : bool = false
+var circle_arc_color : Color = Color(0.6, 0.6, 0.6, 0.3)
 
 var enemies_in_range : Array = []
 var _current_enemies : Array = []
@@ -136,7 +138,6 @@ func remove_targeting_options(targetings : Array):
 	call_deferred("emit_signal", "targeting_options_modified")
 
 
-
 func clear_all_targeting():
 	_current_targeting_option_index = 0
 	_last_used_targeting_option_index = 0
@@ -166,11 +167,28 @@ func toggle_show_range():
 
 func _draw():
 	if displaying_range:
+		var final_range = last_calculated_final_range
+		
 		if can_display_range:
-			var final_range = calculate_final_range_radius()
 			var color : Color = Color.gray
 			color.a = 0.1
 			draw_circle(Vector2(0, 0), final_range, color)
+		
+		if can_display_circle_arc:
+			draw_circle_arc(Vector2(0, 0), final_range, 0, 360, circle_arc_color)
+
+func draw_circle_arc(center, radius, angle_from, angle_to, color):
+	var nb_points = 32
+	var points_arc = PoolVector2Array()
+	
+	for i in range(nb_points + 1):
+		var angle_point = deg2rad(angle_from + i * (angle_to-angle_from) / nb_points - 90)
+		points_arc.push_back(center + Vector2(cos(angle_point), sin(angle_point)) * radius)
+	
+	for index_point in range(nb_points):
+		draw_line(points_arc[index_point], points_arc[index_point + 1], color, 2)
+
+
 
 
 func update_range():
@@ -261,6 +279,25 @@ func calculate_final_range_radius() -> float:
 	
 	last_calculated_final_range = final_range
 	return final_range
+
+
+# Other range module interaction
+
+func mirror_range_module_targeting_changes(other_module):
+	if other_module != null:
+		other_module.connect("targeting_changed", self, "_mirrored_range_module_targeting_changed", [other_module], CONNECT_PERSIST)
+		other_module.connect("targeting_options_modified", self, "_mirrored_range_module_targeting_options_modified", [other_module], CONNECT_PERSIST)
+
+
+func _mirrored_range_module_targeting_changed(module):
+	if module != null:
+		set_current_targeting(module.get_current_targeting_option())
+
+func _mirrored_range_module_targeting_options_modified(module):
+	if module != null:
+		clear_all_targeting()
+		add_targeting_options(module.all_distinct_targeting_options)
+
 
 
 # Uses

@@ -9,7 +9,10 @@ var energy_consumption_level_buffs : Array = []
 var colors : Array = []
 var ingredient_effect : IngredientEffect
 var ingredient_effect_simple_description : String = ""
-var tower_image_in_buy_card
+
+var tower_image_in_buy_card : Texture
+var tower_atlased_image : AtlasTexture
+
 var tower_descriptions : Array = []
 
 var base_damage : float

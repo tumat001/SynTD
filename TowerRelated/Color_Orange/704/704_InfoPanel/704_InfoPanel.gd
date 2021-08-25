@@ -133,9 +133,9 @@ func _on_EmblemButtonExplosive_emblem_button_right_pressed():
 			"",
 			"Lvl 0: No explosion.",
 			"Lvl 1: Small explosion.",
-			"Lvl 2: Explosion applies on hit damages and effects at 33% efficiency.",
-			"Lvl 3: Medium explosion. Applies on hit damages and effects at 50% efficiency.",
-			"Lvl 4: Big explosion. Applies on hit damages and effects at 100% efficiency."
+			"Lvl 2: Small explosion. Applies on hit damages at 20% efficiency.",
+			"Lvl 3: Medium explosion. Applies on hit damages at 40% efficiency.",
+			"Lvl 4: Big explosion. Applies on hit damages at 60% efficiency, and applies on hit effects."
 		]
 		
 		get_tree().get_root().add_child(tower_tooltip)

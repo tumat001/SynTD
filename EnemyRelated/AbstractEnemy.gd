@@ -22,6 +22,7 @@ const EnemyShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/Enem
 const EnemyInvisibilityEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyInvisibilityEffect.gd")
 const EnemyReviveEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyReviveEffect.gd")
 const EnemyKnockUpEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyKnockUpEffect.gd")
+const BeforeEnemyReachEndPathBaseEffect = preload("res://GameInfoRelated/EnemyEffectRelated/BeforeEnemyReachEndPathBaseEffect.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
@@ -110,17 +111,17 @@ var percent_player_damage_id_effect_map : Dictionary = {}
 var base_movement_speed : float
 var flat_movement_speed_id_effect_map : Dictionary = {}
 var percent_movement_speed_id_effect_map : Dictionary = {}
-var _last_calculated_final_movement_speed
+var _last_calculated_final_movement_speed : float
 
 var base_effect_vulnerability : float = 1
 var flat_effect_vulnerability_id_effect_map : Dictionary = {}
 var percent_effect_vulnerability_id_effect_map : Dictionary = {}
-var last_calculated_final_effect_vulnerability
+var last_calculated_final_effect_vulnerability : float = base_effect_vulnerability
 
 var base_percent_health_hit_scale : float = 1
 var flat_percent_health_hit_scale_id_effect_map : Dictionary = {}
 var percent_percent_health_hit_scale_id_effect_map : Dictionary = {}
-var last_calculated_percent_health_hit_scale
+var last_calculated_percent_health_hit_scale : float = base_percent_health_hit_scale
 
 var invisibility_id_effect_map : Dictionary = {}
 var last_calculated_invisibility_status : bool = false
@@ -131,6 +132,7 @@ var is_reviving : bool = false
 
 
 var distance_to_exit : float
+var current_path_length : float
 
 var no_movement_from_self_clauses : ConditionalClauses
 var last_calculated_no_movement_from_self : bool = false
@@ -181,6 +183,7 @@ var _stun_id_effects_map : Dictionary = {}
 var _is_stunned : bool
 var _dmg_over_time_id_effects_map : Dictionary = {}
 var _heal_over_time_id_effects_map : Dictionary = {}
+var _before_reaching_end_path_effects_map : Dictionary = {}
 
 var _all_effects_map : Dictionary = {}
 
@@ -324,15 +327,30 @@ func _process(delta):
 
 
 func _physics_process(delta):
+	_phy_process_knock_up(delta)
+	
 	if !_is_stunned and !last_calculated_no_movement_from_self:
 		var distance_traveled = delta * _last_calculated_final_movement_speed
 		offset += distance_traveled
 		distance_to_exit -= distance_traveled
 	
-	_phy_process_knock_up(delta)
-	
 	if unit_offset == 1 and exits_when_at_map_end:
-		call_deferred("emit_signal", "reached_end_of_path", self)
+		var exit_prevented : bool = false
+		var effects_consumed : Array = []
+		for effect in _before_reaching_end_path_effects_map.values():
+			if effect.prevent_exit:
+				exit_prevented = true
+			
+			effect.before_enemy_reached_exit(self)
+			#effect.call_deferred("before_enemy_reached_exit", self)
+			
+			effects_consumed.append(effect)
+		
+		for effect in effects_consumed:
+			_remove_effect(effect)
+		
+		if !exit_prevented:
+			call_deferred("emit_signal", "reached_end_of_path", self)
 
 
 
@@ -657,23 +675,30 @@ func calculate_final_toughness() -> float:
 	_last_calculated_final_toughness = final_toughness
 	return final_toughness
 
+
 func calculate_final_resistance() -> float:
 	#All percent modifiers here are to BASE resistance only
 	var final_resistance = base_resistance
 	for effect in percent_resistance_id_effect_map.values():
-		final_resistance += effect.attribute_as_modifier.get_modification_to_value(base_resistance)
+		final_resistance = _get_add_resistance_to_total_resistance(effect.attribute_as_modifier.get_modification_to_value(base_resistance), final_resistance)
 	
 	for effect in flat_resistance_id_effect_map.values():
-		final_resistance += effect.attribute_as_modifier.get_modification_to_value(base_resistance)
+		final_resistance = _get_add_resistance_to_total_resistance(effect.attribute_as_modifier.get_modification_to_value(base_resistance), final_resistance)
 	
 	
 	if final_resistance < 0:
 		final_resistance = 0
-	elif final_resistance > 100:
+	elif final_resistance > 100: # should not reach here
 		final_resistance = 100
 	
 	_last_calculated_final_resistance = final_resistance
 	return final_resistance
+
+func _get_add_resistance_to_total_resistance(arg_res, arg_total_res) -> float:
+	var missing = 100 - arg_total_res
+	
+	return arg_total_res + (arg_res * (1 - ((100 - missing) / 100)))
+
 
 func calculate_effect_vulnerability() -> float:
 	#All percent modifiers here are to BASE values only
@@ -1063,6 +1088,10 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		
 	elif to_use_effect is EnemyKnockUpEffect:
 		knock_up_from_effect(to_use_effect)
+		
+	elif to_use_effect is BeforeEnemyReachEndPathBaseEffect:
+		_before_reaching_end_path_effects_map[to_use_effect.effect_uuid] = to_use_effect
+	
 	
 	
 	emit_signal("effect_added", to_use_effect, self)
@@ -1154,6 +1183,9 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		
 	elif base_effect is EnemyReviveEffect:
 		revive_id_effect_map.erase(base_effect.effect_uuid)
+		
+	elif base_effect is BeforeEnemyReachEndPathBaseEffect:
+		_before_reaching_end_path_effects_map.erase(base_effect.effect_uuid)
 	
 	
 	if base_effect != null:
@@ -1163,7 +1195,7 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 
 
 func _clear_effects_from_clear_effect():
-	for effect in _all_effects_map:
+	for effect in _all_effects_map.values():
 		if effect.is_clearable:
 			_remove_effect(effect)
 #	for effect in _stun_id_effects_map.values():
@@ -1334,6 +1366,8 @@ func _decrease_time_of_timebounds(delta):
 	for res_eff in revive_id_effect_map.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
+	for res_eff in _before_reaching_end_path_effects_map.values():
+		_decrease_time_of_effect(res_eff, delta)
 
 
 func _decrease_time_of_effect(effect, delta : float):
@@ -1353,6 +1387,20 @@ func shift_position(shift : float):
 	
 	offset += final_shift
 	distance_to_exit -= final_shift
+	
+	if distance_to_exit < current_path_length:
+		distance_to_exit = current_path_length
+
+func shift_unit_position(unit_shift : float):
+	var final_unit_shift = unit_shift
+	#if offset + shift < 0:
+	#	final_shift = -offset
+	
+	unit_offset += final_unit_shift
+	
+	distance_to_exit -= final_unit_shift * current_path_length
+	if distance_to_exit < current_path_length:
+		distance_to_exit = current_path_length
 
 
 # Coll
@@ -1431,17 +1479,17 @@ func _after_end_of_revive():
 
 func knock_up_from_effect(effect : EnemyKnockUpEffect):
 	_knock_up_current_acceleration += effect.knock_up_y_acceleration
-	_knock_up_current_acceleration_deceleration += _knock_up_current_acceleration / effect.time_in_seconds * -1
+	_knock_up_current_acceleration_deceleration += _knock_up_current_acceleration * effect.time_in_seconds
 	
 	_add_effect(effect.generate_stun_effect_from_self())
 
 
 func _phy_process_knock_up(delta):
-	if anim_sprite.offset.y != 0:
-		anim_sprite.offset.y += _knock_up_current_acceleration * delta
-		_knock_up_current_acceleration -= _knock_up_current_acceleration_deceleration
+	if _knock_up_current_acceleration != 0:
+		anim_sprite.offset.y -= _knock_up_current_acceleration * delta
+		_knock_up_current_acceleration -= _knock_up_current_acceleration_deceleration * delta
 		
-		if anim_sprite.offset.y <= 0:
+		if anim_sprite.offset.y >= 0:
 			_knock_up_current_acceleration = 0
 			_knock_up_current_acceleration_deceleration = 0
 			anim_sprite.offset.y = 0

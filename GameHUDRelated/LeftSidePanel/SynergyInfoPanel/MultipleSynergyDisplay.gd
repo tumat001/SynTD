@@ -6,6 +6,8 @@ const SingleDisplayer_Scene = preload("res://GameHUDRelated/LeftSidePanel/Synerg
 signal on_single_syn_tooltip_shown(synergy)
 signal on_single_syn_tooltip_hidden(synergy)
 
+signal on_single_syn_displayer_pressed(input_mouse_event, syn_check_result)
+
 var synergy_results : Array = []
 var single_synergy_displayers : Array = []
 
@@ -23,6 +25,7 @@ func update_display():
 		
 		single_displayer.connect("on_single_syn_tooltip_displayed", self, "_on_single_syn_displayer_tooltip_shown", [], CONNECT_PERSIST)
 		single_displayer.connect("on_single_syn_tooltip_hidden", self, "_on_single_syn_displayer_tooltip_hidden", [], CONNECT_PERSIST)
+		single_displayer.connect("on_single_syn_displayer_pressed", self, "_on_single_syn_displayer_pressed", [], CONNECT_PERSIST)
 		
 		$VBoxContainer.add_child(single_displayer)
 		single_synergy_displayers.append(single_displayer)
@@ -41,3 +44,5 @@ func _on_single_syn_displayer_tooltip_shown(syn):
 func _on_single_syn_displayer_tooltip_hidden(syn):
 	emit_signal("on_single_syn_tooltip_hidden", syn)
 
+func _on_single_syn_displayer_pressed(event, syn_check_result):
+	emit_signal("on_single_syn_displayer_pressed", event, syn_check_result)

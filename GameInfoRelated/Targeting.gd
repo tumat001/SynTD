@@ -277,6 +277,10 @@ static func get_name_as_string(targeting : int) -> String:
 		return "Strongest"
 	elif targeting == RANDOM:
 		return "Random"
+	elif targeting == PERCENT_EXECUTE:
+		return "Percent Execute"
+	elif targeting == PERCENT_HEALTHIEST:
+		return "Percent Healthiest"
 	
 	return "Err Unnamed"
 

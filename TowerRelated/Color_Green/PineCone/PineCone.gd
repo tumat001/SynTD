@@ -24,6 +24,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
@@ -47,6 +48,8 @@ func _ready():
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.position.y -= 6
+	
+	attack_module.benefits_from_bonus_pierce = false
 	
 	var bullet_shape = RectangleShape2D.new()
 	bullet_shape.extents = Vector2(8, 5)

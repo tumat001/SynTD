@@ -37,6 +37,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
 	_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	ingredient_of_self = info.ingredient_effect
@@ -151,7 +152,7 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Arcane bolts explode per enemy hit. This tower's base range and base pierce is also increased."
+			"Arcane bolts explode per enemy hit. This tower's base range is increased by 125, and pierce is increased by 4."
 		]
 
 
@@ -161,7 +162,7 @@ func _module_turned_on(_first_time_per_round : bool):
 	obelisk_range_module.base_range_radius = original_base_range + 125
 	obelisk_range_module.update_range()
 	
-	obelisk_attack_module.base_pierce = original_base_pierce + 1
+	obelisk_attack_module.base_pierce = original_base_pierce + 4
 	obelisk_attack_module.calculate_final_pierce()
 	
 

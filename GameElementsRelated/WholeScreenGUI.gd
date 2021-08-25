@@ -2,6 +2,9 @@ extends MarginContainer
 
 const ScreenTintEffect = preload("res://MiscRelated/ScreenEffectsRelated/ScreenTintEffect.gd")
 
+
+const background_color : Color = Color(0, 0, 0, 0.8)
+
 var game_elements
 var screen_effect_manager
 
@@ -29,7 +32,7 @@ func show_control(control : Control, make_background_dark : bool = true):
 		screen_effect.is_timebounded = false
 		#screen_effect.fade_in_duration = 0.05
 		#screen_effect.fade_out_duration = 0.05
-		screen_effect.tint_color = Color(0, 0, 0, 0.75)
+		screen_effect.tint_color = background_color
 		screen_effect.ins_uuid = StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI
 		screen_effect.custom_z_index = ZIndexStore.SCREEN_EFFECTS_ABOVE_ALL
 		screen_effect_manager.add_screen_tint_effect(screen_effect)

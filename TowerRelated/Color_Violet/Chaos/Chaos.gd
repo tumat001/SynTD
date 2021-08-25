@@ -39,6 +39,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
 	_tower_colors = info.colors
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
@@ -255,7 +256,7 @@ func set_energy_module(module):
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	damage_accumulated_trigger = original_damage_accumulated_trigger / 2
+	damage_accumulated_trigger = original_damage_accumulated_trigger / 2.0
 
 func _module_turned_off():
 	damage_accumulated_trigger = original_damage_accumulated_trigger

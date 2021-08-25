@@ -36,7 +36,7 @@ func update_beams_state():
 			_should_update_beams = false
 	
 	#if range_module.enemies_in_range.size() == 0:
-	if range_module._current_enemies.size() == 0:
+	if range_module != null and range_module._current_enemies.size() == 0:
 		_terminate_update_on_next = true
 		
 	else:

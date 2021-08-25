@@ -21,6 +21,7 @@ var tower_connected_to : AbstractTower setget _set_tower_connected_to
 
 var _energy_on_attack_sprite
 
+
 # Setter
 
 func _set_tower_connected_to(arg_tower : AbstractTower):

@@ -6,7 +6,8 @@ func _ready():
 	scale = Vector2(0.4, 0.4)
 
 func _process(delta):
-	scale *= 1.05 + delta
+	var inc = 1.2 * delta
+	scale += Vector2(inc, inc)
 	
 	if lifetime > 0.3:
 		modulate.a -= 4 * delta

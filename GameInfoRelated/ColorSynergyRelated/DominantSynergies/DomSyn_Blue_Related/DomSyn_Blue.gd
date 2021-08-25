@@ -85,7 +85,7 @@ const linked_breeze_descriptions : Array = [
 
 #
 var mana_blast_ability : BaseAbility
-const mana_blast_ability_cooldown : float = 30.0
+const mana_blast_ability_cooldown : float = 35.0
 
 var mana_blast_module : AOEAttackModule
 # 10 + 10 x 2 = 30 (the total damage)
@@ -95,18 +95,18 @@ const mana_blast_extra_main_target_dmg_scale : float = 2.0
 var mana_blast_buff_aoe_module : TD_AOEAttackModule
 var mana_blast_buff_tower_effect : TowerAttributesEffect
 const mana_blast_ap_buff_amount : float = 0.75
-const mana_blast_buff_duration : float = 12.0
+const mana_blast_buff_duration : float = 15.0
 
 const mana_blast_ability_descriptions = [
 	"Summon a mark at the first enemy's location. After a brief delay, the mark releases a mana blast.",
 	"The blast deals 30 damage to the main target, and deals 10 damage to secondary targets.",
-	"Towers caught in the blast gain 0.75 ability potency for 12 seconds.",
-	"Cooldown: 30 s"
+	"Towers caught in the blast gain 0.75 ability potency for 15 seconds.",
+	"Cooldown: 35 s"
 ]
 
 #
 
-const empowered_mana_blast_ap_buff_amount : float = 2.5
+const empowered_mana_blast_ap_buff_amount : float = 3.0
 
 const empowered_mana_blast_extra_descriptions = [
 	"",
@@ -156,7 +156,7 @@ var blue_abilities_descriptions_map : Dictionary = {}
  
 # AP related
 
-const tower_ap_tier_1 : float = 0.50
+const tower_ap_tier_1 : float = 0.75
 const tower_ap_tier_2 : float = 0.25
 const tower_ap_tier_3 : float = 0.25
 
@@ -446,7 +446,7 @@ func _marker_expire(marker : Node2D, enemy):
 	var pos := marker.global_position
 	var explosion = mana_blast_module.construct_aoe(pos, pos)
 	
-	explosion.scale *= 3
+	explosion.scale *= 4
 	explosion.global_position = marker.global_position
 	explosion.connect("before_enemy_hit_aoe", self, "_on_explosion_hit_enemy", [enemy], CONNECT_DEFERRED)
 	
@@ -456,7 +456,7 @@ func _marker_expire(marker : Node2D, enemy):
 
 func _summon_tower_detecting_aoe(pos : Vector2):
 	var aoe = mana_blast_buff_aoe_module.construct_aoe(pos, pos)
-	aoe.scale *= 3
+	aoe.scale *= 4
 	aoe.global_position = pos
 	aoe.modulate = Color(0, 0, 0, 0)
 	aoe.coll_source_layer = CollidableSourceAndDest.Source.FROM_TOWER
@@ -493,7 +493,7 @@ func _construct_renew_empower_ability():
 	
 	register_ability_to_manager(renew_empower_ability)
 	
-	_check_if_blue_abilities_are_in_cooldown()
+	call_deferred("_check_if_blue_abilities_are_in_cooldown")
 
 
 func _monitor_and_connect_ability(arg_ability : BaseAbility):

@@ -14,6 +14,7 @@ var damage_repeat_count : int = 1
 var duration : float
 var decrease_duration : bool = true
 var pierce : int = -1
+var collision_duration : float = -1
 
 var enemies_to_ignore : Array = []
 
@@ -42,6 +43,7 @@ var _delay_in_between_repeats : float
 var _current_pierce_refresh_delay : float = 0.05
 var _current_damage_delay : float = 0.05
 var _current_duration : float
+var _current_collision_duration : float
 #var _current_damage_repeat_count : int = 0
 var _enemies_inside_damage_cd_map : Dictionary = {}
 var _pierce_available : int
@@ -71,6 +73,9 @@ func _on_AOEArea_area_shape_exited(area_id, area, area_shape, self_shape):
 #
 
 func _ready():
+	if collision_duration == -1:
+		collision_duration = duration
+	
 	_current_pierce_refresh_delay = initial_delay
 	_current_damage_delay = initial_delay
 	_delay_in_between_repeats = _calculate_delay_in_between_repeats()
@@ -103,9 +108,9 @@ func _ready():
 
 func _process(delta):
 	if _current_duration < duration:
-		
 		if decrease_duration:
 			_current_duration += delta
+			_current_collision_duration += delta
 		
 		if _current_pierce_refresh_delay <= 0:
 			_pierce_available = pierce
@@ -117,9 +122,10 @@ func _process(delta):
 		if _current_damage_delay > 0:
 			_current_damage_delay -= delta
 		else:
-			if _enemies_inside_damage_cd_map.size() != 0:
-				#_current_damage_repeat_count += 1
-				_attempt_damage_entities_inside(delta)
+			if _current_collision_duration < collision_duration:
+				if _enemies_inside_damage_cd_map.size() != 0:
+					#_current_damage_repeat_count += 1
+					_attempt_damage_entities_inside(delta)
 		
 	else:
 		queue_free()

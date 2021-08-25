@@ -157,6 +157,10 @@ func _ready():
 	whole_screen_gui.game_elements = self
 	whole_screen_gui.screen_effect_manager = screen_effect_manager
 	
+	# Leftside panel
+	left_panel.whole_screen_gui = whole_screen_gui
+	left_panel.tower_manager = tower_manager
+	
 	# Shop manager
 	shop_manager.game_elements = self
 	shop_manager.stage_round_manager = stage_round_manager
@@ -227,16 +231,16 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.RE,
 			Towers.TESLA,
-			Towers.BLOSSOM,
-			Towers.LEADER,
+			Towers.SIMPLE_OBELISK,
+			Towers.PROMINENCE,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.MAGNETIZER,
-			Towers.COIN,
-			Towers.BEACON_DISH,
-			Towers.SUNFLOWER,
-			Towers._704,
+			Towers.DOUSER,
+			Towers.LEADER,
+			Towers.GRAND,
+			Towers.ORB,
+			Towers.FLAMEBURST,
 		])
 	even = !even
 

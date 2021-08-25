@@ -70,7 +70,7 @@ func _on_StickyIcon_pressed_mouse_event(event):
 	if attack_tooltip == null:
 		_construct_tower_tooltip(sticky_icon)
 		attack_tooltip.descriptions = [
-			"Orb throws a curse bomb that latches onto the first enemy it hits. The curse explodes after 2 seconds, or when the enemy dies.",
+			"Orb throws a cosmic bomb that latches onto the first enemy it hits. The bomb explodes after 2 seconds, or when the enemy dies.",
 			"",
 			"The explosion deals 6 elemental damage, and affects up to 3 enemies. The damage scales with Orb's ability potency.",
 			"The explosion does not benefit from bonus on hit damages and on hit effects."
@@ -78,7 +78,7 @@ func _on_StickyIcon_pressed_mouse_event(event):
 		
 		get_tree().get_root().add_child(attack_tooltip)
 		
-		attack_tooltip.header_left_text = "Curse Bomb"
+		attack_tooltip.header_left_text = "Cosmic Bomb"
 		attack_tooltip.header_right_text = "Needs 1.25 ap"
 		attack_tooltip.update_display()
 		
@@ -116,7 +116,7 @@ func _on_RayIcon_pressed_mouse_event(event):
 		attack_tooltip.descriptions = [
 			"Orb channels a constant cosmic ray at its target.",
 			"",
-			"The ray damages its target 6 times per second, and has 1 base damage as elemental damage. Benefits from base damage at 33% effectiveness. Does not benefit from on hit damages and effects."
+			"The ray damages its target 6 times per second, and has 1 base damage as elemental damage. Benefits from base damage at 50% effectiveness. Does not benefit from on hit damages and effects."
 		]
 		
 		get_tree().get_root().add_child(attack_tooltip)

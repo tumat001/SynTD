@@ -17,6 +17,7 @@ var base_damage_multiplier : float = 1
 var on_hit_damage_multiplier : float = 1
 var on_hit_effect_multiplier : float = 1
 
+# source of damage instance
 var source_ref : WeakRef
 
 

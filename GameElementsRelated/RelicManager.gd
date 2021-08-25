@@ -18,7 +18,7 @@ enum DecreaseRelicSource {
 
 var relic_give_at_stageround : Dictionary = {
 	"41" : 1,
-	"71" : 1
+	"81" : 1
 }
 
 signal current_relic_count_changed(new_amount)
