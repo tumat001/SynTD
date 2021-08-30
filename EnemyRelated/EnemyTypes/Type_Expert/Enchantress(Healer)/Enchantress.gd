@@ -97,8 +97,8 @@ func _heal_ready_for_activation_updated(is_ready):
 func _heal_ability_activated():
 	var targets = range_module.get_targets(2, targeting_option, true)
 	for target in targets:
-		target._add_effect(shield_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
-		target._add_effect(heal_effect._get_copy_scaled_by(heal_ability.last_calculated_final_ability_potency))
+		target._add_effect(shield_effect._get_copy_scaled_by(heal_ability.get_potency_to_use(last_calculated_final_ability_potency)))
+		target._add_effect(heal_effect._get_copy_scaled_by(heal_ability.get_potency_to_use(last_calculated_final_ability_potency)))
 		
 		_construct_and_add_heal_particle(target.global_position)
 		heal_ability.start_time_cooldown(_heal_cooldown)

@@ -36,7 +36,7 @@ func _init():
 	inst_domsyn_yellow_energybattery = DomSyn_Yellow_EnergyBattery.new()
 	
 	synergies = {
-	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [9, 6, 3],
+	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [7, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
 	[
@@ -50,12 +50,12 @@ func _init():
 	[DomSyn_Red.new()]
 	),
 	
-	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [11, 9, 6, 3],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [12, 9, 6, 3],
+	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
 	[
 		"Orange towers gain Heat Modules. Heat Modules gain heat per main attack of a tower. The heat gained per attack depends on the tower.",
-		"Heat Modules give an effect, which scale depending on the current heat. A maximum of 75 heat can be gained per round. Not attacking in a round reduces the current heat by 50.",
+		"Heat Modules give an effect, which scale depending on the current heat. A maximum of 74 heat can be gained per round. Not attacking in a round reduces the current heat by 50.",
 		#"Upon reaching 100 heat, the tower becomes Overheated. At the end of the round, Overheated towers undergo Cooling, where they are unable to attack for the round. Cooling towers lose all heat at the end of the round.",
 		"Towers that reach 100 heat lose all heat at the end of the round.",
 		"",
@@ -64,9 +64,9 @@ func _init():
 	],
 	[DomSyn_Orange.new()],
 	[
-		"400% effectiveness",
-		"300% effectiveness",
-		"180% effectiveness",
+		"5000% effectiveness", # reachable only by green tier 1
+		"450% effectiveness",
+		"250% effectiveness",
 		"100% effectiveness",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -99,7 +99,7 @@ func _init():
 	}
 	),
 	
-	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [11, 9, 6, 3],
+	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [11, 8, 6, 3],
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_green,
 	[
@@ -111,7 +111,7 @@ func _init():
 	],
 	[DomSyn_Green.new()],
 	[
-		"Adapt: Beyond",
+		"Adapt: Beyond", # reachable only by fruit tree
 		"Adapt: Triumph",
 		"Adapt: Bloom",
 		"Adapt: Foundation"
@@ -119,7 +119,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
 	
-	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [3, 2, 1],#[8, 5, 3],
+	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [8, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
 	[
@@ -142,7 +142,7 @@ func _init():
 	[
 		"Violet towers can absorb more ingredients. This effect applies only when the amount of total and violet towers in the map is satisfied.",
 		"",
-		"Violet towers can absorb ingredients regardless of color only after being in the map for 1 round.",
+		"Violet towers can absorb ingredients regardless of color after being in the map for 1 round.",
 		"",
 	],
 	[DomSyn_Violet.new()],

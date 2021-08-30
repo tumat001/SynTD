@@ -68,7 +68,7 @@ func _explosion_ability_activated():
 
 func _summon_explosion_to_target(target):
 	if target != null:
-		target.take_damage(explosion_ability.last_calculated_final_ability_potency * _explosion_dmg)
+		target.take_damage(explosion_ability.get_potency_to_use(last_calculated_final_ability_potency) * _explosion_dmg)
 		_create_and_show_expl_particle(target.global_position)
 
 

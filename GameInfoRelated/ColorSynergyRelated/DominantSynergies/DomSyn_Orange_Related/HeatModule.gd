@@ -33,7 +33,7 @@ const heat_reduction_per_inactive_round : int = 50
 var heat_per_attack : int = 1 setget set_heat_per_attack
 var current_heat : int = 0 setget set_current_heat
 var _current_heat_gained_in_round : int
-const max_heat_gain_per_round : int = 75
+const max_heat_gain_per_round : int = 74
 var last_calculated_final_effect_multiplier : float
 
 var is_max_heat_per_round_reached : bool

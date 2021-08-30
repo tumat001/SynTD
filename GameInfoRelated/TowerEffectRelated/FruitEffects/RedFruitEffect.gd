@@ -12,7 +12,7 @@ var burn_effect : TowerOnHitEffectAdderEffect
 
 func _init().(StoreOfTowerEffectsUUID.ING_RED_FRUIT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_RedFruit.png")
-	description = "Adds a burn effect that burns enemies for 10 elemental damage over 10 seconds."
+	description = "Adds a burn effect that burns enemies for 15 elemental damage over 10 seconds."
 
 
 func _construct_burn_effect():
@@ -23,7 +23,7 @@ func _construct_burn_effect():
 	var burn_dmg_instance = DamageInstance.new()
 	burn_dmg_instance.on_hit_damages[burn_on_hit.internal_id] = burn_on_hit
 	
-	var enemy_burn_effect = EnemyDmgOverTimeEffect.new(burn_dmg_instance, StoreOfEnemyEffectsUUID.ING_RED_FRUIT_BURN, 0.5)
+	var enemy_burn_effect = EnemyDmgOverTimeEffect.new(burn_dmg_instance, StoreOfEnemyEffectsUUID.ING_RED_FRUIT_BURN, 0.75)
 	enemy_burn_effect.is_timebound = true
 	enemy_burn_effect.time_in_seconds = 10
 	

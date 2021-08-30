@@ -4,6 +4,7 @@ const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/
 const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
+const BuffParticle_StatusBarIcon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/BuffParticle/BuffParticle_StatusBarIcon.png")
 const Black_BuffParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/BuffParticle/Black_BuffParticle.tscn")
 
 const _stack_amount_trigger : int = 5
@@ -44,6 +45,7 @@ func _make_modifications_to_tower(tower):
 		attk_speed_effect.is_timebound = true
 		attk_speed_effect.count = _attk_speed_buff_count
 		attk_speed_effect.is_countbound = true
+		attk_speed_effect.status_bar_icon = BuffParticle_StatusBarIcon
 
 
 func _undo_modifications_to_tower(tower):

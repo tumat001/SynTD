@@ -149,7 +149,7 @@ func _ready():
 	explosion_attack_module.benefits_from_bonus_explosion_scale = true
 	explosion_attack_module.benefits_from_bonus_base_damage = true
 	explosion_attack_module.benefits_from_bonus_attack_speed = false
-	explosion_attack_module.benefits_from_bonus_on_hit_damage = false
+	explosion_attack_module.benefits_from_bonus_on_hit_damage = true
 	explosion_attack_module.benefits_from_bonus_on_hit_effect = false
 	
 	var aoe_sprite_frames = SpriteFrames.new()
@@ -180,7 +180,7 @@ func _ready():
 	
 	beam_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
 	beam_attack_module.base_damage_scale = 0.5
-	beam_attack_module.base_damage = 1 / beam_attack_module.base_damage_scale
+	beam_attack_module.base_damage = 1.3 / beam_attack_module.base_damage_scale
 	beam_attack_module.base_damage_type = DamageType.ELEMENTAL
 	beam_attack_module.base_attack_speed = 6
 	beam_attack_module.base_attack_wind_up = 0
@@ -188,7 +188,7 @@ func _ready():
 	beam_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	beam_attack_module.position.y -= 1
 	beam_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	beam_attack_module.on_hit_damage_scale = 0
+	#beam_attack_module.on_hit_damage_scale = 0.5
 	
 	beam_attack_module.benefits_from_bonus_on_hit_damage = false
 	beam_attack_module.benefits_from_bonus_on_hit_effect = false
@@ -216,7 +216,7 @@ func _ready():
 	# Sub attack
 	
 	sub_attack_module = BulletAttackModule_Scene.instance()
-	sub_attack_module.base_damage_scale = 0.75
+	sub_attack_module.base_damage_scale = 0.5
 	sub_attack_module.base_damage = 1.75 / sub_attack_module.base_damage_scale
 	sub_attack_module.base_damage_type = DamageType.ELEMENTAL
 	sub_attack_module.base_attack_speed = 0
@@ -227,10 +227,10 @@ func _ready():
 	sub_attack_module.base_proj_speed = 500
 	sub_attack_module.base_proj_life_distance = info.base_range
 	sub_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	sub_attack_module.on_hit_damage_scale = 0
+	sub_attack_module.on_hit_damage_scale = 0.5
 	
 	sub_attack_module.benefits_from_bonus_base_damage = true
-	sub_attack_module.benefits_from_bonus_on_hit_damage = false
+	sub_attack_module.benefits_from_bonus_on_hit_damage = true
 	sub_attack_module.benefits_from_bonus_on_hit_effect = false
 	sub_attack_module.benefits_from_bonus_pierce = true
 	sub_attack_module.benefits_from_bonus_attack_speed = false
@@ -250,6 +250,8 @@ func _ready():
 	sub_attack_module.set_texture_as_sprite_frame(Orb_SubAttack_Pic)
 	
 	sub_attack_module.can_be_commanded_by_tower = false
+	
+	sub_attack_module.connect("on_enemy_hit", self, "_sub_attack_hit_enemy", [], CONNECT_PERSIST)
 	
 	add_attack_module(sub_attack_module)
 	
@@ -377,3 +379,6 @@ func _sub_attack_finished_shots():
 	if sub_attack_module.is_connected("before_bullet_is_shot", self, "_sub_attack_bullet_shot"):
 		sub_attack_module.disconnect("before_bullet_is_shot", self, "_sub_attack_bullet_shot")
 
+
+func _sub_attack_hit_enemy(enemy, damage_register_id, damage_instance, module):
+	damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)

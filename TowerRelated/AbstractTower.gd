@@ -50,6 +50,7 @@ const BaseTowerDetectingBullet = preload("res://EnemyRelated/TowerInteractingRel
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self)
 signal tower_toggle_show_info
+signal on_tower_toggle_showing_range(is_showing_ranges)
 signal tower_in_queue_free
 signal update_active_synergy
 signal tower_being_sold(sellback_gold)
@@ -1212,7 +1213,6 @@ func _add_ability_potency_effect(attr_effect : TowerAttributesEffect):
 		_percent_base_ability_potency_effects[attr_effect.effect_uuid] = attr_effect
 	
 	_calculate_final_ability_potency()
-	_emit_final_ability_potency_changed()
 
 
 func _remove_ability_potency_effect(attr_effect_uuid : int):
@@ -1220,7 +1220,6 @@ func _remove_ability_potency_effect(attr_effect_uuid : int):
 	_percent_base_ability_potency_effects.erase(attr_effect_uuid)
 	
 	_calculate_final_ability_potency()
-	_emit_final_ability_potency_changed()
 
 
 func _add_ability_cdr_effect(attr_effect : TowerAttributesEffect):
@@ -1698,6 +1697,7 @@ func _calculate_final_ability_potency():
 	final_ap = final_base_ap
 	
 	last_calculated_final_ability_potency = final_ap
+	_emit_final_ability_potency_changed()
 	return last_calculated_final_ability_potency
 
 
@@ -1820,6 +1820,8 @@ func toggle_module_ranges():
 	
 	range_modules_showing.clear()
 	is_showing_ranges = !is_showing_ranges
+	
+	emit_signal("on_tower_toggle_showing_range", is_showing_ranges)
 
 
 func _toggle_show_tower_info():
@@ -1858,7 +1860,7 @@ func _end_drag():
 	emit_signal("tower_dropped_from_dragged", self)
 
 
-func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_update : bool = false, always_snap_back_to_orignal_pos : bool = false):
+func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_update : bool = false, always_snap_back_to_orignal_pos : bool = false, ignore_is_round_started : bool = false, ignore_ing_mode : bool = false):
 	var should_update_active_synergy : bool
 	if new_area_placable != null and !do_not_update:
 		if (current_placable != null and current_placable.get_placable_type_name() != new_area_placable.get_placable_type_name()):
@@ -1874,9 +1876,9 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 	var transferred_tower : bool = false
 	# ing related and swapping
 	if new_area_placable != null and new_area_placable.tower_occupying != null:
-		if !is_in_ingredient_mode:
-			if !(is_round_started and new_area_placable is InMapAreaPlacable):
-				new_area_placable.tower_occupying.transfer_to_placable(current_placable, true)
+		if !is_in_ingredient_mode or ignore_ing_mode:
+			if (!(is_round_started and new_area_placable is InMapAreaPlacable) or ignore_is_round_started):
+				new_area_placable.tower_occupying.transfer_to_placable(current_placable, true, false, true, ignore_ing_mode)
 				transferred_tower = true
 			else:
 				new_area_placable = null # return tower to original location

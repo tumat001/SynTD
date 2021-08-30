@@ -32,8 +32,11 @@ signal can_be_commanded_changed(can_be_commanded)
 
 enum CanBeCommandedByTower_ClauseId {
 	CHAOS_TAKEOVER = 1
+	ACCUMULAE_DISABLE = 2
 	
 	SELF_DEFINED_CLAUSE_01 = 10
+	
+	
 }
 
 var module_id : int

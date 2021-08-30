@@ -131,10 +131,11 @@ func _ready():
 	
 	add_attack_module(explosion_attack_module)
 	
+	
 	# CRATER/SCORCHED EARTH EXPLOSION AOE
 	
 	crater_attack_module = AOEAttackModule_Scene.instance()
-	crater_attack_module.base_damage = 0.75
+	crater_attack_module.base_damage = 1
 	crater_attack_module.base_damage_type = DamageType.ELEMENTAL
 	crater_attack_module.base_attack_speed = 0
 	crater_attack_module.base_attack_wind_up = 0
@@ -174,7 +175,7 @@ func _ready():
 	# add slow effect here
 	# also test if crater is dealing the right amount of damage
 	var slow_modifier : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.VOLCANO_SLOW)
-	slow_modifier.percent_amount = -20
+	slow_modifier.percent_amount = -30
 	slow_modifier.percent_based_on = PercentType.BASE
 	
 	var enemy_attr_eff : EnemyAttributesEffect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED, slow_modifier, StoreOfEnemyEffectsUUID.VOLCANO_SLOW)

@@ -232,7 +232,6 @@ func _on_ap_changed_w():
 func _construct_and_add_slot_bar():
 	var slot_bar = Wave_SlotsBar_Scene.instance()
 	
-	#info_bar_vbox_container.add_child(slot_bar)
 	add_infobar_control(slot_bar)
 	slot_bar.wave_tower = self
 

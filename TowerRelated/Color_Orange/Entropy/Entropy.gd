@@ -122,7 +122,7 @@ func _on_attack_sprite_constructed_e(attack_sprite):
 # Heat Module
 
 func set_heat_module(module):
-	module.heat_per_attack = 1
+	module.heat_per_attack = 2
 	.set_heat_module(module)
 
 func _construct_heat_effect():

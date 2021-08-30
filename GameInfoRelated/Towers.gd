@@ -18,6 +18,7 @@ const ImpaleBonusDamageEffect = preload("res://GameInfoRelated/TowerEffectRelate
 const LeaderTargetingTowerEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/LeaderTargetingTowerEffect.gd")
 const BleachShredEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/BleachShredEffect.gd")
 const TimeMachineEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TimeMachineEffect.gd")
+const Ing_ProminenceEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/Prominence_IngEffect.gd")
 
 const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
@@ -93,6 +94,8 @@ const douser_image = preload("res://TowerRelated/Color_Blue/Douser/Douser_E.png"
 const wave_image = preload("res://TowerRelated/Color_Blue/Wave/Wave_E.png")
 const bleach_image = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_E.png")
 const time_machine_image = preload("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine_Omni.png")
+const transpose_image = preload("res://TowerRelated/Color_Blue/Transpose/Transpose_Omni01.png")
+const accumulae_image = preload("res://TowerRelated/Color_Blue/Accumulae/Accumulae_Omni.png")
 
 # VIOLET
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
@@ -164,6 +167,8 @@ enum {
 	WAVE = 605,
 	BLEACH = 606,
 	TIME_MACHINE = 607,
+	TRANSPORTER = 608,
+	ACCUMULAE = 609,
 	
 	# VIOLET (700)
 	SIMPLE_OBELISK = 700,
@@ -195,7 +200,6 @@ const TowerTiersMap : Dictionary = {
 	STRIKER : 1,
 	PINECONE : 1,
 	
-	BERRY_BUSH : 2,
 	RAILGUN : 2,
 	SCATTER : 2,
 	ENTHALPHY : 2,
@@ -220,6 +224,7 @@ const TowerTiersMap : Dictionary = {
 	WAVE : 3,
 	SEEDER : 3,
 	SOUL : 3,
+	BERRY_BUSH : 3,
 	
 	RE : 4,
 	PING : 4,
@@ -232,45 +237,47 @@ const TowerTiersMap : Dictionary = {
 	REAPER : 4,
 	ADEPT : 4,
 	LEADER : 4,
+	FRUIT_TREE : 4,
 	
 	VOLCANO : 5,
-	FRUIT_TREE : 5,
 	LAVA_JET : 5,
 	BLOSSOM : 5,
+	TRANSPORTER : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
 	ROYAL_FLAME : 6,
 	PESTILENCE : 6,
 	HEXTRIBUTE : 6,
-	PROMINENCE : 6
+	PROMINENCE : 6,
+	ACCUMULAE : 6,
 	
 }
 
 const tier_base_dmg_map : Dictionary = {
-	1 : 0.5,
+	1 : 0.4,
 	2 : 0.75,
-	3 : 1,
-	4 : 1.5,
-	5 : 2,
+	3 : 1.25,
+	4 : 2,
+	5 : 2.5,
 	6 : 4,
 }
 
 const tier_attk_speed_map : Dictionary = {
-	1 : 20,
+	1 : 15,
 	2 : 25,
-	3 : 30,
-	4 : 45,
-	5 : 55,
+	3 : 35,
+	4 : 50,
+	5 : 60,
 	6 : 75,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
-	1 : 0.5,
+	1 : 0.4,
 	2 : 0.75,
-	3 : 1,
-	4 : 2,
-	5 : 2.5,
+	3 : 1.25,
+	4 : 2.25,
+	5 : 3,
 	6 : 5,
 }
 
@@ -285,7 +292,6 @@ const tower_color_to_tower_id_map : Dictionary = {}
 func _init():
 	for color in TowerColors.get_all_colors():
 		tower_color_to_tower_id_map[color] = []
-		print(color)
 	
 	for tower_id in TowerTiersMap:
 		var tower_info = get_tower_info(tower_id)
@@ -293,8 +299,7 @@ func _init():
 		
 		for color in tower_info.colors:
 			tower_color_to_tower_id_map[color].append(tower_id)
-	
-	print("passed init")
+
 
 #
 
@@ -571,7 +576,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Only the orbs are affected by targeting options. The orbs are considered to be CHAOS's main attack.",
 			"Only the diamonds benefit from pierce buffs and apply on hit damage and effects. On hit effects are 200% effective.",
 			"Only the bolts benefit from attack speed buffs.",
-			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 25% efficiency.",
+			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 75% efficiency.",
 			"Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 20 + 1500% of CHAOS's total base damage as physical damage."
 		]
 		
@@ -870,7 +875,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = lava_jet_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.5
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.975
 		info.base_pierce = 1
 		info.base_range = 125
@@ -944,7 +949,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Launches a molten boulder at the target's location.",
 			"The boulder explodes upon reaching the location, dealing 6 physical base damage. The explosion applies on hit effects, and applies on hit damages at 500% efficiency.",
-			"The explosion also leaves behind scorched earth that lasts for 6 seconds, which slows and deals 0.75 elemental damage per 0.75 seconds to enemies while inside it. This does not apply on hit damages and effects.",
+			"The explosion also leaves behind scorched earth that lasts for 6 seconds, which slows by 30% and deals 1 elemental damage per 0.75 seconds to enemies while inside it. This does not apply on hit damages and effects.",
 			"Both the explosion and scorched earth benefit from base damage buffs."
 		]
 		
@@ -968,10 +973,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = _704_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3
-		info.base_attk_speed = 0.8
+		info.base_damage = 2.75
+		info.base_attk_speed = 0.775
 		info.base_pierce = 0
-		info.base_range = 140
+		info.base_range = 135
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -1626,8 +1631,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = pestilence_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 0.5
-		info.base_attk_speed = 1.1
+		info.base_damage = 2
+		info.base_attk_speed = 1.2
 		info.base_pierce = 0
 		info.base_range = 145
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1639,6 +1644,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Enemies become permanently Noxious upon gaining 8 Toxin stacks.",
 			"",
 			"Pestilence's main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
+			"Each explosion deals 3 elemental damage.",
 			"Explosions apply a stack of Toxin. Explosions benefit from base damage buffs, on hit damages and effects at 33% efficiency.",
 			"",
 			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25% for the round.",
@@ -1913,7 +1919,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
-			"The Hero can absorb any ingredient color. Hero can also absorb 3 more ingredients.",
+			"The Hero can absorb any ingredient color. Hero can also absorb 4 more ingredients.",
 		]
 		
 		
@@ -1958,9 +1964,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Blossom can assign a tower as its Partner.",
 			"The Partner receives these bonus effects while Blossom is alive:",
-			"+ 30% total attack speed, up to 2 attack speed.",
-			"+ 40% total base damage, up to 4 base damage.",
-			"+ 3% healing from all post mitigated damage dealt.",
+			"+ 40% total attack speed, up to 4 attack speed.",
+			"+ 50% total base damage, up to 5 base damage.",
+			"+ 2% healing from all post mitigated damage dealt.",
 			"+ Instant Revive effect. If the Partner reaches 0 health, Blossom sacrifices itself for the rest of the round to revive its Partner to full health.",
 			"",
 			"Blossom can only have one Partner. Blossom cannot pair with another Blossom. Blossom cannot pair with a tower that's already paired with another Blossom."
@@ -2046,26 +2052,110 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = prominence_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2
-		info.base_attk_speed = 0.35
+		info.base_damage = 3
+		info.base_attk_speed = 0.375
 		info.base_pierce = 1
-		info.base_range = 110
+		info.base_range = 115
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
 			"Prominence attacks through its Globules. Prominence possesses 4 Globules, which attack indenpendently. Globules benefit from all buffs, and inherit Prominence's stats.",
-			"Globule's attacks trigger main attack on hit events.",
+			"Globule's attacks are considered to be Prominence's main attacks.",
 			"",
 			"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
 			"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 3 seconds, and dealing 12 physical damage.",
-			"The farthest tower with range from Prominence also casts Regards's knock up using Prominence's ability potency.",
+			"The farthest tower with range from Prominence also casts Regards using Prominence's ability potency. Enemies can only be affected once.",
 			"Prominece also gains 3 attacks with its sword, with each attack exploding, dealing 5 + 300% of its bonus base damage as elemental damage.",
-			"Cooldown: 70 s",
+			"Cooldown: 60 s",
 			"",
 			"Regards' stun duration scales with ability potency."
 		]
 		
+		var effect = Ing_ProminenceEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, effect)
+		
+		info.ingredient_effect = ing_effect
+		#info.ingredient_effect_simple_description = "+ on hit"
+		
+		
+		
+	elif tower_id == TRANSPORTER:
+		info = TowerTypeInformation.new("Transporter", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.BLUE)
+		info.tower_image_in_buy_card = transpose_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 2.75
+		info.base_attk_speed = 0.85
+		info.base_pierce = 1
+		info.base_range = 120
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Attacks two enemies at the same time with its beams. This is counted as executing a main attack only once.",
+			"",
+			"Ability: Transpose. Select a tower to swap places with. Swapping takes 1.5 seconds to complete.",
+			"Both the tower and Transporter gain 50% bonus attack speed for 5 seconds after swapping.",
+			"Ability potency increases the bonus attack speed and decreases swapping delay.",
+			"Cooldown: 45 s"
+		]
+		
+		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_TRANSPORTER)
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_TRANSPORTER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
+		
+		
+	elif tower_id == ACCUMULAE:
+		info = TowerTypeInformation.new("Accumulae", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.BLUE)
+		info.colors.append(TowerColors.GRAY)
+		info.tower_image_in_buy_card = accumulae_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 3.25
+		info.base_attk_speed = 0.535
+		info.base_pierce = 1
+		info.base_range = 125
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Main attacks drain 0.35 ability potency from enemies hit for 3 seconds. This does not stack.",
+			"Accumulae gains 1 Siphon stack per application of drain. Each Siphon stack gives 0.25 ability potency.",
+			"",
+			"Upon reaching 3.5 total ability potency with at least 1 Siphon stack, Accumulae casts Salvo.",
+			"Salvo: Fires a Spell Burst at a random enemy's location every 0.2 seconds regardless of range, consuming a Siphon stack in the process. This repeats until all Siphon stacks are consumed.",
+			"Cooldown: 1.5 s",
+			"",
+			"Accumulae is unable to execute its main attack while executing Salvo.",
+			"Each Spell Burst explodes upon reaching the target location, dealing 4 elemental damage to 4 enemies. The damage scales with the ability potency at the time of casting.",
+			"Spell bursts do not benefit from base damage buffs, on hit damages and effects.",
+			"Ability cdr also reduces delay per burst in salvo."
+		]
+		
+		
+		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ACCUMULAE)
+		base_ap_attr_mod.flat_modifier = 0.50
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_ACCUMULAE)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ ap"
 		
 	
 	
@@ -2183,3 +2273,8 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Soul/Soul.tscn")
 	elif tower_id == PROMINENCE:
 		return load("res://TowerRelated/Color_Violet/Prominence/Prominence.tscn")
+	elif tower_id == TRANSPORTER:
+		return load("res://TowerRelated/Color_Blue/Transpose/Transpose.tscn")
+	elif tower_id == ACCUMULAE:
+		return load("res://TowerRelated/Color_Blue/Accumulae/Accumulae.tscn")
+

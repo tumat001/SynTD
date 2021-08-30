@@ -17,13 +17,17 @@ const BurstProj_06 = preload("res://TowerRelated/Color_Orange/FlameBurst/FlameBu
 var burst_attack_module : BulletAttackModule
 var directions_01 : Array = [
 	Vector2(0, 1),
-	Vector2(1, -1),
-	Vector2(-1, -1),
+	#Vector2(1, -1),
+	#Vector2(-1, -1),
+	Vector2(sqrt(3)/2.0, -1/2.0),
+	Vector2(-sqrt(3)/2.0, -1.0/2.0)
 ]
 var directions_02 : Array = [
 	Vector2(0, -1),
-	Vector2(1, 1),
-	Vector2(-1, 1),
+	#Vector2(1, 1),
+	#Vector2(-1, 1),
+	Vector2(sqrt(3)/2.0, 1/2.0),
+	Vector2(-sqrt(3)/2.0, 1.0/2.0)
 ]
 
 var _curr_direction_index : int = 0

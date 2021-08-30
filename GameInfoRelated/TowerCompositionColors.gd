@@ -111,7 +111,7 @@ func _init():
 	[
 		"+15 armor and toughness pierce.",
 		"+9 armor and toughness pierce.",
-		"+4 armor and toughness pierce."
+		"+5 armor and toughness pierce."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -125,9 +125,9 @@ func _init():
 	],
 	[AnaSyn_OrangeYR.new()],
 	[
-		"110% attack speed",
-		"70% attack speed",
-		"45% attack speed",
+		"130% attack speed",
+		"75% attack speed",
+		"40% attack speed",
 		"15% attack speed",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -138,7 +138,7 @@ func _init():
 	syn_compo_ana_yellowGO,
 	[
 		"Brings about a Fluctuation, which buffs a tower for 3 seconds. Fluctuation then seeks another tower to buff.",
-		"Cycle: Fluctuation first goes to the first tower that attacks. Afterwards, Fluctuation loops to the highest base damage tower, then to the highest attack speed tower, then to the tower that has dealt the most damage in the round.",
+		"Cycle: Fluctuation goes to the first tower that attacks. Afterwards, Fluctuation loops to the highest base damage tower, then to the highest attack speed tower, then to the tower that has dealt the most damage in the round.",
 		"Fluctuation cannot re-target to the same tower. Fluctuation will avoid towers that cannot attack, or with no enemies in its range. When no viable towers are found, the Cycle is reset.",
 		"",
 		"A Fluctuated tower gains buffs.",
@@ -146,10 +146,10 @@ func _init():
 	],
 	[AnaSyn_YellowGO.new()],
 	[
-		"+8.00 elemental on hit damage, +160% total base damage, +160% total attack speed, +50% base range.",
-		"+5.00 elemental on hit damage, +130% total base damage, +130% total attack speed, +40% base range",
-		"+2.50 elemental on hit damage, +65% total base damage, +65% total attack speed, +20% base range.",
-		"+1.25 elemental on hit damage, +20% total base damage, +20% total attack speed, +10% base range."
+		"+5.0 elemental on hit damage, +150% total base damage, +150% total attack speed, +50% base range.",
+		"+3.0 elemental on hit damage, +100% total base damage, +100% total attack speed, +40% base range",
+		"+2.0 elemental on hit damage, +55% total base damage, +55% total attack speed, +20% base range.",
+		"+1.0 elemental on hit damage, +20% total base damage, +20% total attack speed, +10% base range."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -163,7 +163,7 @@ func _init():
 	],
 	[AnaSyn_GreenBY.new()],
 	[
-		"+0.60 on hit, up to 6",
+		"+0.40 on hit, up to 8",
 		"+0.25 on hit, up to 5",
 		"+0.15 on hit, up to 3",
 		"+0.05 on hit, up to 1"
@@ -172,7 +172,7 @@ func _init():
 	),
 	
 	"BlueVG" : ColorSynergy.new("BlueVG", [TowerColors.BLUE, TowerColors.VIOLET, TowerColors.GREEN], [4, 3, 2, 1],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_blueVG,
 	[
 		"Most abilities's cooldowns are reduced.",
@@ -180,16 +180,16 @@ func _init():
 	],
 	[AnaSyn_BlueVG.new()],
 	[
-		"80% reduction",
-		"60% reduction",
+		"90% reduction", # reachable only by green tier 1
+		"50% reduction",
 		"30% reduction",
-		"10% reduction"
+		"15% reduction"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
 	"VioletRB" : ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
 	[
 		"Each absorbed active ingredient gives additional effects.",
@@ -198,7 +198,7 @@ func _init():
 	],
 	[AnaSyn_VioletRB.new()],
 	[
-		"+3 physical on hit damage",
+		"+9 physical on hit damage", # reachable only by green tier 1
 		"+1 physical on hit damage",
 		"+1 elemental on hit damage",
 		"+20 range"
@@ -208,20 +208,20 @@ func _init():
 	
 	
 	#Tria
-	"RYB" : ColorSynergy.new("RYB", [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [3, 2, 1],#[4, 3, 2],
+	"RYB" : ColorSynergy.new("RYB", [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_RYB,
 	[
 		"Enemies that reach the end of the track for the first time are instead brought back to the start of the track.",
 		"Enemies brought back heal for 40% of their missing health, and receive damage resistance. The damage resistance cannot be removed by any means.",
 		"",
-		"\"Just when you thought that you did it...\"",
+		"\"Just when you thought it was all over...\"",
 		""
 	],
 	[TriaSyn_RYB.new()],
 	[
+		"20% damage resistance",
 		"40% damage resistance",
-		"50% damage resistance",
 		"65% damage resistance"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE

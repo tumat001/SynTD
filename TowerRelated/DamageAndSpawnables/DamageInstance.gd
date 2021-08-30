@@ -17,6 +17,11 @@ var base_damage_multiplier : float = 1
 var on_hit_damage_multiplier : float = 1
 var on_hit_effect_multiplier : float = 1
 
+#
+
+var current_on_hit_damage_reapply_count : int = 0
+var current_on_hit_effect_reapply_count : int = 0
+
 # source of damage instance
 var source_ref : WeakRef
 
@@ -45,6 +50,9 @@ func get_copy_scaled_by(scale : float):
 	
 	copy.source_ref = source_ref
 	
+	copy.current_on_hit_damage_reapply_count = current_on_hit_damage_reapply_count
+	copy.current_on_hit_effect_reapply_count = current_on_hit_effect_reapply_count
+	
 	return copy
 
 
@@ -72,6 +80,9 @@ func get_copy_damage_only_scaled_by(scale : float):
 	
 	copy.source_ref = source_ref
 	
+	copy.current_on_hit_damage_reapply_count = current_on_hit_damage_reapply_count
+	copy.current_on_hit_effect_reapply_count = current_on_hit_effect_reapply_count
+	
 	return copy
 
 #
@@ -95,3 +106,7 @@ func scale_only_on_hit_damage_by(scale : float):
 
 func scale_only_on_hit_effect_by(scale : float):
 	on_hit_effect_multiplier = on_hit_effect_multiplier + (scale - 1)
+
+#
+
+

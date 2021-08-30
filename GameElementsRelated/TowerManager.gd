@@ -60,6 +60,8 @@ signal tower_current_limit_taken_changed(curr_slots_taken)
 signal tower_ing_cap_set(cap_id, cap_amount)
 signal tower_ing_cap_removed(cap_id)
 
+const base_ing_limit_of_tower : int = 1
+
 const ing_cap_per_relic : int = 2
 const tower_limit_per_relic : int = 1
 
@@ -127,7 +129,7 @@ func set_left_panel(arg_panel):
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	calculate_tower_limit()
-	set_ing_cap_changer(StoreOfIngredientLimitModifierID.LEVEL, 2)
+	set_ing_cap_changer(StoreOfIngredientLimitModifierID.LEVEL, base_ing_limit_of_tower)
 	
 	
 	for color in TowerColors.get_all_colors():

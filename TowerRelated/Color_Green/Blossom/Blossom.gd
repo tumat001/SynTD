@@ -6,13 +6,13 @@ const Blossom_ConnectionBeamPic = preload("res://TowerRelated/Color_Green/Blosso
 const SetPartner_Pic = preload("res://TowerRelated/Color_Green/Blossom/AbilityPanel/SetPartner_ButtonImage.png")
 const UnassignPartner_Pic = preload("res://TowerRelated/Color_Green/Blossom/AbilityPanel/UnassignPartner_ButtonImage.png")
 
-const attk_speed_amount : float = 30.0
-const attk_speed_flat_maximum : float = 2.0
+const attk_speed_amount : float = 40.0
+const attk_speed_flat_maximum : float = 4.0
 
-const base_dmg_amount : float = 40.0
-const base_dmg_flat_maximum : float = 4.0
+const base_dmg_amount : float = 50.0
+const base_dmg_flat_maximum : float = 5.0
 
-const omnivamp_amount : float = 3.0
+const omnivamp_amount : float = 2.0
 
 const unpaired_frame_index : int = 0
 const paired_frame_index : int = 1

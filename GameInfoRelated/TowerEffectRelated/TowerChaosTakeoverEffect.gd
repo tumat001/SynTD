@@ -120,8 +120,8 @@ func _construct_modules():
 	dia_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	var diamond_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	diamond_attack_module.base_damage_scale = 0.25
-	diamond_attack_module.base_damage = 2.5 / diamond_attack_module.base_damage_scale
+	diamond_attack_module.base_damage_scale = 0.75
+	diamond_attack_module.base_damage = 2 / diamond_attack_module.base_damage_scale
 	diamond_attack_module.base_damage_type = DamageType.PHYSICAL
 	diamond_attack_module.base_attack_speed = 0.85
 	diamond_attack_module.base_attack_wind_up = 2
@@ -166,8 +166,8 @@ func _construct_modules():
 	bolt_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	var bolt_attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
-	bolt_attack_module.base_damage_scale = 0.25
-	bolt_attack_module.base_damage = 1.5 / bolt_attack_module.base_damage_scale
+	bolt_attack_module.base_damage_scale = 0.75
+	bolt_attack_module.base_damage = 1.25 / bolt_attack_module.base_damage_scale
 	bolt_attack_module.base_damage_type = DamageType.ELEMENTAL
 	bolt_attack_module.base_attack_speed = 1.3
 	bolt_attack_module.base_attack_wind_up = 0

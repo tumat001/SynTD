@@ -65,8 +65,8 @@ func _on_health_threshold_02_reached(curr_health):
 func _perform_dash():
 	if !_is_dashing:
 		connect("effect_added", self, "_speed_effect_added")
-		_add_effect(speed_bonus_effect)
-		_add_effect(shield_effect)
+		_add_effect(speed_bonus_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
+		_add_effect(shield_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
 		connect("effect_removed", self, "_on_speed_effect_removed")
 		_is_dashing = true
 
@@ -108,7 +108,7 @@ func _on_health_invis_threshold_reached(curr_health):
 
 func _become_invisible():
 	connect("effect_removed", self, "_on_invis_effect_removed")
-	_add_effect(invis_effect)
+	_add_effect(invis_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
 	_is_invis = true
 
 

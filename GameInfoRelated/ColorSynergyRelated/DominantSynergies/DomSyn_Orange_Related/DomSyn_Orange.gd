@@ -6,9 +6,9 @@ signal on_round_end()
 signal on_base_multiplier_changed(scale)
 
 
-const tier_1_heat_effect_scale : float = 4.0
-const tier_2_heat_effect_scale : float = 3.0
-const tier_3_heat_effect_scale : float = 1.8
+const tier_1_heat_effect_scale : float = 50.0
+const tier_2_heat_effect_scale : float = 4.5
+const tier_3_heat_effect_scale : float = 2.5
 const tier_4_heat_effect_scale : float = 1.0
 var current_heat_effect_scale : float
 

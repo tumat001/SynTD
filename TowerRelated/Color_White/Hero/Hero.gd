@@ -19,6 +19,9 @@ const Hero_VOLEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEff
 const Hero_LevelUpParticle_Scene = preload("res://TowerRelated/Color_White/Hero/Hero_OtherAssets/Hero_LevelUpParticle.tscn")
 const CommonAttackSpriteTemplater = preload("res://MiscRelated/AttackSpriteRelated/CommonTemplates/CommonAttackSpriteTemplater.gd")
 
+const ShowTowersWithParticleComponent = preload("res://MiscRelated/CommonComponents/ShowTowersWithParticleComponent.gd")
+
+
 const HeroAttk_NormalPic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_Normal.png")
 const HeroAttk_LightWavePic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_LightWave.png")
 const HeroAttk_LightBlast01Pic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_LightExplosion01.png")
@@ -64,35 +67,37 @@ signal can_spend_relics_for_level_up_updated(val)
 
 signal notify_xp_cap_of_level_reached()
 
+
 const hero_base_health : float = 25.0
-const extra_comp_syn_slot_amount_at_max_level : int = 1
+const extra_comp_syn_slot_amount_at_max_natural_level : int = 1
+const hero_extra_ingredient_limit : int = 4
 
 const xp_ratio_per_damage : float = 1.0
 const xp_per_kill : float = 2.0
-const xp_scale_if_not_white_dom_color : float = 2.0/3.0
-const max_hero_level : int = 6
+const xp_scale_if_not_white_dom_color : float = 0.7
+const max_hero_level : int = 6 # max hero natural level
 
-const xp_needed_per_level : Array = [130, 685, 1950, 3100, 3500, 4000]
-const gold_needed_per_level : Array = [1, 2, 3, 5, 5, 5]
+const xp_needed_per_level : Array = [130, 685, 2150, 3400, 3550, 3700]
+const gold_needed_per_level : Array = [2, 6, 10, 10, 10, 10]
 
 const xp_about_descriptions = [
 	"Hero gains EXP from damaging enemies, killing enemies, and casting Voice of Light.",
 	"Hero gains EXP equal to the post-mitigated damage dealt to enemies.",
-	"Hero gains 2 EXP from a kill.",
+	"Hero gains %s EXP from a kill." % [str(xp_per_kill)],
 	"Hero gains EXP from casting Voice of Light. The amount depends on this ability's level.",
 	"",
 	"There is no EXP limit for Hero. Hero can only gain %s levels from gold and EXP." % str(max_hero_level),
-	"Only 66% of exp is earned when White is not the dominant color."
+	"Only %s of exp is earned when White is not the dominant color." % [(str(xp_scale_if_not_white_dom_color * 100) + "%")]
 ]
 
 
 const main_attack_proj_speed : float = 500.0
 const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
-const attks_needed_for_light_explosion : int = 35
-const light_wave_base_damage_in_levels : Array = [1, 1.5, 2, 3]
-const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.5, 0.75]
+const attks_needed_for_light_explosion : int = 40
+const light_wave_base_damage_in_levels : Array = [1, 1, 1.5, 2.5]
+const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.3, 0.75]
 
-const judgement_dmg_ratio_in_levels : Array = [1.5, 2, 3, 4]
+const judgement_dmg_ratio_in_levels : Array = [2, 3, 4, 5]
 const judgement_bonus_dmg_ratio : float = 1.20
 const judgement_bonus_dmg_threshold_trigger : float = 0.25
 const judgement_stack_trigger : int = 3
@@ -103,8 +108,6 @@ const VOL_range_in_levels : Array = [70, 105, 160, 250]
 const VOL_dmg_ratio_buff_in_levels : Array = [1.20, 1.25, 1.3, 1.4]
 const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 25]
 const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 9, 9]
-
-const hero_extra_ingredient_limit : int = 3
 
 var white_dom_active : bool
 
@@ -142,6 +145,11 @@ var current_vol_damage_scale : float
 var current_vol_count : int
 
 var current_judgement_dmg_ratio : float
+
+#
+
+var vol_candidate_tower_indicator_shower : ShowTowersWithParticleComponent
+
 
 # particle related
 
@@ -222,7 +230,16 @@ func _ready():
 	judgement_sprite.visible = false
 	volrobe_sprite.visible = false
 	
+	_construct_vol_tower_indicator_shower()
+	
 	_post_inherit_ready()
+
+#
+
+func _construct_vol_tower_indicator_shower():
+	vol_candidate_tower_indicator_shower = ShowTowersWithParticleComponent.new()
+	vol_candidate_tower_indicator_shower.set_tower_particle_indicator_to_usual_properties()
+	vol_candidate_tower_indicator_shower.set_source_and_provider_func_name(self, "_get_vol_target_towers")
 
 
 # Xp gain
@@ -570,12 +587,12 @@ func _on_tower_hide_range():
 
 func _cast_VOL():
 	var counter : int = 0
-	for tower in VOL_range_module.get_all_in_map_towers_in_range():
+	for tower in _get_vol_target_towers():
 		var effect : Hero_VOLEffect = VOL_effect._shallow_duplicate()
 		effect.damage_scale *= VOL_ability.get_potency_to_use(last_calculated_final_ability_potency)
 		
 		tower.add_tower_effect(effect)
-		counter += 1
+		#counter += 1
 		
 		_increase_exp(current_xp_per_tower_affected_by_vol)
 		
@@ -585,8 +602,25 @@ func _cast_VOL():
 		particle.position = tower.global_position
 		get_tree().get_root().call_deferred("add_child", particle)
 		
-		if counter >= current_towers_affected_by_vol:
-			return
+		#if counter >= current_towers_affected_by_vol:
+		#	return
+
+func _get_vol_target_towers():
+	if VOL_range_module != null:
+		var in_range_towers = VOL_range_module.get_all_in_map_towers_in_range()
+		
+		var sorted_towers = Targeting.enemies_to_target(in_range_towers, Targeting.CLOSE, in_range_towers.size(), global_position, true)
+		var final_towers : Array = []
+		var counter : int = 0
+		for tower in sorted_towers:
+			if tower != self and tower.last_calculated_has_commandable_attack_modules:
+				final_towers.append(tower)
+				counter += 1
+				
+				if counter >= current_towers_affected_by_vol:
+					break
+		
+		return final_towers
 
 
 func can_level_up_VOL():
@@ -718,7 +752,7 @@ func _attempt_spend_gold_and_xp_for_level_up():
 			emit_signal("max_level_reached") # max natural level
 			
 			var compo_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HERO_COMPO_SYN_MODI_ID)
-			compo_modi.flat_modifier = extra_comp_syn_slot_amount_at_max_level
+			compo_modi.flat_modifier = extra_comp_syn_slot_amount_at_max_natural_level
 			
 			synergy_manager.add_composite_syn_limit_modi(compo_modi)
 
@@ -822,8 +856,8 @@ func get_vol_ability_descs() -> Array:
 	if ability_VOL_level != 0:
 		var descs = [
 			"Every %s attack is accompanied by Hero casting Voice of Light." % (str(current_attks_needed_for_vol) + "th"),
-			"Voice of Light buffs %s towers in range." % current_towers_affected_by_vol,
-			"Voice of Light buffs tower's outgoing damage %s times by %s" % [current_vol_count, (str(current_vol_damage_scale * 100) + "%.")],
+			"Voice of Light buffs %s towers in range, prioritizing closer towers, and ignoring towers that cannot attack." % current_towers_affected_by_vol,
+			"Voice of Light buffs tower's outgoing damage %s times by %s" % [current_vol_count, (str((current_vol_damage_scale * 100) - 100) + "%.")],
 		]
 		
 		descs.append("")
@@ -905,8 +939,8 @@ func get_vol_upgrade_descs():
 		else:
 			descs = [
 				"Every %s attack is accompanied by Hero casting Voice of Light." % (str(current_attks_needed_for_vol) + "th"),
-				"Voice of Light buffs %s towers in range." % VOL_towers_affected_in_levels[0],
-				"Voice of Light buffs tower's outgoing damage %s times by %s" % [VOL_buff_attack_count_in_levels[0] , str(VOL_dmg_ratio_buff_in_levels[0] * 100) + "%."],
+				"Voice of Light buffs %s towers in range, prioritizing closer towers, and ignoring towers that cannot attack." % VOL_towers_affected_in_levels[0],
+				"Voice of Light buffs tower's outgoing damage %s times by %s" % [VOL_buff_attack_count_in_levels[0] , str((VOL_dmg_ratio_buff_in_levels[0] * 100) - 100) + "%."],
 				"",
 				"Each tower affected by Voice of Light gives Hero additional %s EXP." % VOL_xp_gain_per_tower_affected_in_levels[0],
 				"Hero does not benefit from this ability."

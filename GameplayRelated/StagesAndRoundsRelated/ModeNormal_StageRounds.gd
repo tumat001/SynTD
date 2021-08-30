@@ -222,7 +222,7 @@ func _get_stageround_2_5():
 
 func _get_stageround_3_1():
 	var stageround = StageRound.new(3, 1)
-	stageround.end_of_round_gold = 2
+	stageround.end_of_round_gold = 3
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_health_multiplier = 0.85
 	stageround.enemy_first_damage = 1
@@ -231,7 +231,7 @@ func _get_stageround_3_1():
 
 func _get_stageround_3_2():
 	var stageround = StageRound.new(3, 2)
-	stageround.end_of_round_gold = 2
+	stageround.end_of_round_gold = 3
 	stageround.enemy_health_multiplier = 0.9
 	stageround.enemy_first_damage = 1
 	

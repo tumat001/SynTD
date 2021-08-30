@@ -25,6 +25,8 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 const Regards_Explosion_AS_Scene = preload("res://TowerRelated/Color_Violet/Prominence/Assets/RegardsAssets/Regards_ExplosionRing.tscn")
 const CommonAttackSpriteTemplater = preload("res://MiscRelated/AttackSpriteRelated/CommonTemplates/CommonAttackSpriteTemplater.gd")
 
+const ShowTowersWithParticleComponent = preload("res://MiscRelated/CommonComponents/ShowTowersWithParticleComponent.gd")
+
 const Prominence_SwordBeam_Pic01 = preload("res://TowerRelated/Color_Violet/Prominence/Assets/SwordAssets/SwordBeam_01.png")
 const Prominence_SwordBeam_Pic02 = preload("res://TowerRelated/Color_Violet/Prominence/Assets/SwordAssets/SwordBeam_02.png")
 const Prominence_SwordBeam_Pic03 = preload("res://TowerRelated/Color_Violet/Prominence/Assets/SwordAssets/SwordBeam_03.png")
@@ -65,7 +67,8 @@ var _current_regards_empowered_attks : int = 0
 
 # regards ability
 
-const regards_ability_cooldown : float = 2.0#32.0
+const regards_ability_cooldown : float = 60.0
+const regards_ability_energy_module_cooldown : float = 20.0
 const regards_stun_duration : float = 3.0
 const regards_height_y_accel : float = 60.0
 const regards_damage_amount : float = 12.0
@@ -86,6 +89,12 @@ var sword_y_max_height : float = -120.0
 
 
 var range_module_has_enemy_in_range_map : Dictionary = {}
+
+var regards_candidate_tower_indicator_shower : ShowTowersWithParticleComponent
+
+#
+
+var is_energy_module_on : bool = false
 
 #
 
@@ -247,9 +256,11 @@ func _ready():
 	#
 	
 	_construct_ability()
+	_construct_tower_indicator_shower()
 	
 	connect("final_ability_potency_changed", self, "_on_ap_changed_p", [], CONNECT_PERSIST)
-	connect("global_position_changed", self, "_on_global_pos_changed_p", [], CONNECT_PERSIST)
+	#connect("global_position_changed", self, "_on_global_pos_changed_p", [], CONNECT_PERSIST)
+	#connect("tower_dropped_from_dragged", self, "_on_dropped_from_drag", [], CONNECT_PERSIST)
 	
 	_post_inherit_ready()
 
@@ -327,9 +338,9 @@ func _construct_ability():
 	regards_ability.descriptions = [
 		"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
 		"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 3 seconds, and dealing 12 physical damage.",
-		"The farthest tower with range from Prominence also casts Regards's knock up using Prominence's ability potency.",
+		"The farthest tower with range from Prominence also casts Regards using Prominence's ability potency. Enemies can only be affected once.",
 		"Prominece also gains 3 attacks with its sword, with each attack exploding, dealing 5 + 300% of its bonus base damage as elemental damage.",
-		"Cooldown: 70 s",
+		"Cooldown: %s s" % [str(regards_ability_cooldown)],
 		"",
 		"Regards' stun duration scales with ability potency."
 	]
@@ -349,6 +360,14 @@ func _construct_and_add_knock_up_effect():
 	tower_effect.force_apply = true
 	
 	add_tower_effect(tower_effect, [regards_ability_attk_module], false)
+
+
+func _construct_tower_indicator_shower():
+	regards_candidate_tower_indicator_shower = ShowTowersWithParticleComponent.new()
+	regards_candidate_tower_indicator_shower.set_tower_particle_indicator_to_usual_properties()
+	regards_candidate_tower_indicator_shower.set_source_and_provider_func_name(self, "_get_candidate_towers")
+
+
 
 #
 
@@ -375,7 +394,10 @@ func _sword_beam_attk_module_hit_enemy(enemy, damage_register_id, damage_instanc
 
 
 func _regards_ability_activated():
-	regards_ability.start_time_cooldown(regards_ability_cooldown)
+	if !is_energy_module_on:
+		regards_ability.start_time_cooldown(regards_ability_cooldown)
+	else:
+		regards_ability.start_round_cooldown(regards_ability_energy_module_cooldown)
 	
 	_sword_gain_height()
 
@@ -414,41 +436,50 @@ func _sword_landed_to_ground():
 
 func _execute_knock_up():
 	var enemies : Array = range_module.enemies_in_range.duplicate(true)
-	var candidate_tower_and_enemies = _get_farthest_tower_and_enemies_in_range()
-	var candidate_tower
-	if candidate_tower_and_enemies.size() > 0:
-		for enemy in candidate_tower_and_enemies[1]:
+	var candidate_towers_and_enemies = _get_candidate_towers_and_enemies_in_range()
+	var candidate_towers : Array = []
+	if candidate_towers_and_enemies.size() > 0:
+		for enemy in candidate_towers_and_enemies[1]:
 			if !enemies.has(enemy):
 				enemies.append(enemy)
 		
-		candidate_tower = candidate_tower_and_enemies[0]
+		candidate_towers = candidate_towers_and_enemies[0]
 	
 	regards_ability_attk_module._attack_enemies(enemies)
 	
 	_construct_and_show_regards_expanding_attk_sprite(global_position, range_module)
 	
-	if candidate_tower != null:
-		_construct_and_show_regards_expanding_attk_sprite(candidate_tower.global_position, candidate_tower.range_module)
+	for tower in candidate_towers:
+		_construct_and_show_regards_expanding_attk_sprite(tower.global_position, tower.range_module)
 
 
-func _get_farthest_tower_and_enemies_in_range() -> Array:
-	var tower = _get_candidate_tower()
+func _get_candidate_towers_and_enemies_in_range() -> Array:
+	var towers = _get_candidate_towers()
 	
-	if tower != null:
-		return [tower, tower.range_module.enemies_in_range]
+	var enemies : Array = []
+	
+	for tower in towers:
+		for enemy in tower.range_module.enemies_in_range:
+			if !enemies.has(enemy):
+				enemies.append(enemy)
+	
+	return [towers, enemies]
 	
 	return []
 
-func _get_candidate_tower():
+func _get_candidate_towers():
 	var towers = tower_manager.get_all_active_towers()
 	var sorted_towers = Targeting.enemies_to_target(towers, Targeting.FAR, towers.size(), global_position, true)
+	var bucket : Array = []
 	
 	for tower in sorted_towers:
-		if tower.range_module != null:
-			return tower
+		if tower.range_module != null and tower != self:
+			bucket.append(tower)
+			
+			if bucket.size() > 0 and !is_energy_module_on:
+				break
 	
-	return null
-	
+	return bucket
 
 
 func _construct_and_show_regards_expanding_attk_sprite(arg_global_pos, arg_range_module):
@@ -501,16 +532,22 @@ func _on_ap_changed_p():
 	regards_knock_up_effect.custom_stun_duration = regards_stun_duration * ap_scale
 	regards_knock_up_effect.knock_up_y_acceleration = regards_height_y_accel * ap_scale
 
-#
 
-func _on_global_pos_changed_p(old_global_pos, new_global_pos):
-	pass
+# energy module related
 
 
-func toggle_module_ranges():
-	.toggle_module_ranges()
+func set_energy_module(module):
+	.set_energy_module(module)
 	
-	if is_showing_ranges:
-		pass
-	else:
-		pass
+	if module != null:
+		module.module_effect_descriptions = [
+			"All towers cast Regards using Prominence's ability potency.",
+			"Cooldown is reduced to 20 s."
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	is_energy_module_on = true
+
+func _module_turned_off():
+	is_energy_module_on = false

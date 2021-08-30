@@ -48,7 +48,7 @@ func _ready():
 	proj_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	proj_attack_module.is_main_attack = true
 	proj_attack_module.base_pierce = info.base_pierce
-	proj_attack_module.base_proj_speed = 0.35 # 0.5 sec to reach the location
+	proj_attack_module.base_proj_speed = 0.35 # 0.35 seconds to reach target
 	proj_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	proj_attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
@@ -64,7 +64,7 @@ func _ready():
 	proj_attack_module.max_height = 75
 	proj_attack_module.bullet_rotation_per_second = 0
 	
-	proj_attack_module.connect("before_bullet_is_shot", self, "_modify_bullet")
+	proj_attack_module.connect("before_bullet_is_shot", self, "_modify_bullet", [], CONNECT_PERSIST)
 	
 	add_attack_module(proj_attack_module)
 	

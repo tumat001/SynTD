@@ -10,6 +10,9 @@ const WithBeamInstantDamageAttackModule_Scene = preload("res://TowerRelated/Modu
 const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
 
+const ShowTowersWithParticleComponent = preload("res://MiscRelated/CommonComponents/ShowTowersWithParticleComponent.gd")
+
+
 const Douser_Beam01 = preload("res://TowerRelated/Color_Blue/Douser/Douser_AttkBeam/Douser_AttkBeam01.png")
 const Douser_Beam02 = preload("res://TowerRelated/Color_Blue/Douser/Douser_AttkBeam/Douser_AttkBeam02.png")
 const Douser_Beam03 = preload("res://TowerRelated/Color_Blue/Douser/Douser_AttkBeam/Douser_AttkBeam03.png")
@@ -39,7 +42,9 @@ var buffing_attack_module : BulletAttackModule
 var base_damage_buff_mod : FlatModifier
 var base_damage_buff_effect : TowerAttributesEffect
 
-# Called when the node enters the scene tree for the first time.
+var douser_buff_tower_indicator_shower : ShowTowersWithParticleComponent
+
+
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.DOUSER)
 	
@@ -113,12 +118,15 @@ func _ready():
 	
 	add_attack_module(buffing_attack_module)
 	
+	#
 	
 	connect("on_main_attack_finished", self, "_on_main_attack_finished_d", [], CONNECT_PERSIST)
 	connect("on_round_end", self, "_on_round_end_d", [], CONNECT_PERSIST)
 	connect("final_range_changed", self, "_on_range_changed_d", [], CONNECT_PERSIST)
 	connect("final_ability_potency_changed", self, "_on_ap_changed_d", [], CONNECT_PERSIST)
 	connect("final_ability_cd_changed", self, "on_acd_changed_d", [], CONNECT_PERSIST)
+	
+	_construct_tower_indicator_shower()
 	
 	_post_inherit_ready()
 
@@ -129,6 +137,14 @@ func _post_inherit_ready():
 	
 	_on_ap_changed_d()
 	_on_acd_changed_d()
+
+
+#
+
+func _construct_tower_indicator_shower():
+	douser_buff_tower_indicator_shower = ShowTowersWithParticleComponent.new()
+	douser_buff_tower_indicator_shower.set_tower_particle_indicator_to_usual_properties()
+	douser_buff_tower_indicator_shower.set_source_and_provider_func_name(self, "_find_closest_unbuffed_tower")
 
 
 # effect

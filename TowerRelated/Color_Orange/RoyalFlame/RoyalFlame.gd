@@ -62,7 +62,7 @@ var explosion_attack_module : AOEAttackModule
 var burst_missing_health_ratio : float = 0.4
 var burst_missing_health_limit : float = 300
 
-var burning_enemies_group_id = "RoyalFlameBurnGroupId"
+var burning_enemies_group_id = "RoyalFlameBurnGroupId" #unused thus far
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

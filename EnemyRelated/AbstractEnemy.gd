@@ -69,6 +69,7 @@ enum NoMovementClauses {
 
 enum NoActionClauses {
 	IS_REVIVING = 100,
+	IS_STUNNED = 101,
 }
 
 enum UntargetabilityClauses {
@@ -87,6 +88,12 @@ var shield_id_effect_map : Dictionary = {}
 var current_shield : float = 0
 
 var pierce_consumed_per_hit : float = 1
+
+
+var base_ability_potency : float = 1
+var _flat_base_ability_potency_effects : Dictionary = {}
+var _percent_base_ability_potency_effects : Dictionary = {}
+var last_calculated_final_ability_potency : float
 
 var base_armor : float = 0
 var flat_armor_id_effect_map : Dictionary = {}
@@ -281,6 +288,7 @@ func _post_inherit_ready():
 	calculate_percent_health_hit_scale()
 	calculate_current_shield()
 	calculate_invisibility_status()
+	calculate_final_ability_potency()
 	
 	#
 #	var heal_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
@@ -746,7 +754,7 @@ func _calculate_multiplier_from_total_armor(armor_pierce : float, percent_self_a
 	if total_armor >= 0:
 		return 20 / (20 + total_armor)
 	else:
-		return 2 - (40 / (40 - total_armor))
+		return 2 - (30 / (30 - total_armor))
 
 func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percent_self_toughness_pierce : float):
 	var total_toughness = _last_calculated_final_toughness - (percent_self_toughness_pierce * _last_calculated_final_toughness / 100)
@@ -754,7 +762,7 @@ func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percen
 	if total_toughness >= 0:
 		return 20 / (20 + total_toughness)
 	else:
-		return 2 - (40 / (40 - total_toughness))
+		return 2 - (30 / (30 - total_toughness))
 
 func _calculate_multiplier_from_total_resistance(resistance_pierce : float, percent_self_resistance_pierce : float):
 	var total_resistance = _last_calculated_final_resistance - (percent_self_resistance_pierce * _last_calculated_final_resistance / 100)
@@ -883,10 +891,19 @@ func hit_by_damage_instance(damage_instance : DamageInstance, damage_reg_id : in
 		
 		if emit_on_hit_signal:
 			emit_signal("on_hit", self, damage_reg_id, damage_instance)
-		
 		emit_signal("before_damage_instance_is_processed", damage_instance, self)
+		
+		
 		_process_on_hit_damages(damage_instance.on_hit_damages, damage_instance)
 		_process_effects(damage_instance.on_hit_effects, damage_instance.on_hit_effect_multiplier)
+		
+		while damage_instance.current_on_hit_damage_reapply_count > 0:
+			damage_instance.current_on_hit_damage_reapply_count -= 1
+			_process_on_hit_damages(damage_instance.on_hit_damages, damage_instance)
+		
+		while damage_instance.current_on_hit_effect_reapply_count > 0:
+			damage_instance.current_on_hit_effect_reapply_count -= 1
+			_process_effects(damage_instance.on_hit_effects, damage_instance.on_hit_effect_multiplier)
 
 
 func _process_on_hit_damages(on_hit_damages : Dictionary, damage_instance):
@@ -901,6 +918,7 @@ func _process_on_hit_damages(on_hit_damages : Dictionary, damage_instance):
 			damages.append(_process_percent_damage(on_hit_damage.damage_as_modifier, on_hit_damage.damage_type, damage_instance, on_hit_damage.internal_id))
 	
 	_take_unmitigated_damages(damages, damage_instance)
+
 
 func _process_percent_damage(damage_as_modifier: PercentModifier, damage_type : int, damage_instance, on_hit_id) -> Array:
 	var percent_type = damage_as_modifier.percent_based_on
@@ -978,6 +996,7 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 			_stun_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
 		else:
 			_stun_id_effects_map[to_use_effect.effect_uuid]._reapply(to_use_effect)
+		no_action_from_self_clauses.attempt_insert_clause(NoActionClauses.IS_STUNNED)
 		
 	elif to_use_effect is EnemyClearAllEffects:
 		# When adding effects, update this
@@ -1066,7 +1085,9 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_PERCENT_HEALTH_HIT_SCALE:
 			percent_percent_health_hit_scale_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
 			calculate_percent_health_hit_scale()
-		
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_ABILITY_POTENCY or to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_ABILITY_POTENCY:
+			_add_ability_potency_effect(to_use_effect)
 		
 		
 	elif to_use_effect is EnemyHealOverTimeEffect:
@@ -1105,6 +1126,8 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 	
 	if base_effect is EnemyStunEffect:
 		_stun_id_effects_map.erase(base_effect.effect_uuid)
+		if _stun_id_effects_map.size() == 0:
+			no_action_from_self_clauses.remove_clause(NoActionClauses.IS_STUNNED)
 		
 	elif base_effect is EnemyStackEffect:
 		_stack_id_effects_map.erase(base_effect.effect_uuid)
@@ -1170,6 +1193,9 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 			percent_percent_health_hit_scale_id_effect_map.erase(base_effect.effect_uuid)
 			calculate_percent_health_hit_scale()
 			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_ABILITY_POTENCY or base_effect.attribute_type == EnemyAttributesEffect.PERCENT_ABILITY_POTENCY:
+			_remove_ability_potency_effect(base_effect.effect_uuid)
+		
 		
 	elif base_effect is EnemyHealOverTimeEffect:
 		_heal_over_time_id_effects_map.erase(base_effect.effect_uuid)
@@ -1346,6 +1372,14 @@ func _decrease_time_of_timebounds(delta):
 	for res_eff in percent_percent_health_hit_scale_id_effect_map.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
+	for res_eff in _flat_base_ability_potency_effects.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in _percent_base_ability_potency_effects.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	
+	
 	
 	for res_eff in _heal_over_time_id_effects_map.values():
 		res_eff._curr_delay_per_tick -= delta
@@ -1368,6 +1402,8 @@ func _decrease_time_of_timebounds(delta):
 	
 	for res_eff in _before_reaching_end_path_effects_map.values():
 		_decrease_time_of_effect(res_eff, delta)
+	
+	
 
 
 func _decrease_time_of_effect(effect, delta : float):
@@ -1388,7 +1424,7 @@ func shift_position(shift : float):
 	offset += final_shift
 	distance_to_exit -= final_shift
 	
-	if distance_to_exit < current_path_length:
+	if distance_to_exit > current_path_length:
 		distance_to_exit = current_path_length
 
 func shift_unit_position(unit_shift : float):
@@ -1399,9 +1435,8 @@ func shift_unit_position(unit_shift : float):
 	unit_offset += final_unit_shift
 	
 	distance_to_exit -= final_unit_shift * current_path_length
-	if distance_to_exit < current_path_length:
+	if distance_to_exit > current_path_length:
 		distance_to_exit = current_path_length
-
 
 # Coll
 
@@ -1413,11 +1448,52 @@ func get_enemy_parent():
 	return self
 
 
-#
+# ability related
 
 func register_ability(ability : BaseAbility):
 	ability.activation_conditional_clauses.attempt_insert_clause(no_action_from_self_clauses)
 	all_abilities.append(ability)
+
+
+# ability potency related
+
+func _add_ability_potency_effect(attr_effect : EnemyAttributesEffect):
+	if attr_effect.attribute_type == EnemyAttributesEffect.FLAT_ABILITY_POTENCY:
+		_flat_base_ability_potency_effects[attr_effect.effect_uuid] = attr_effect
+	elif attr_effect.attribute_type == EnemyAttributesEffect.PERCENT_ABILITY_POTENCY:
+		_percent_base_ability_potency_effects[attr_effect.effect_uuid] = attr_effect
+	
+	calculate_final_ability_potency()
+
+func _remove_ability_potency_effect(attr_effect_uuid : int):
+	_flat_base_ability_potency_effects.erase(attr_effect_uuid)
+	_percent_base_ability_potency_effects.erase(attr_effect_uuid)
+	
+	calculate_final_ability_potency()
+
+
+func calculate_final_ability_potency():
+	var final_ap = base_ability_potency
+	
+	#if benefits_from_bonus_base_damage:
+	var totals_bucket : Array = []
+	
+	for effect in _percent_base_ability_potency_effects.values():
+		if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
+			final_ap += effect.attribute_as_modifier.get_modification_to_value(base_ability_potency)
+		else:
+			totals_bucket.append(effect)
+	
+	for effect in _flat_base_ability_potency_effects.values():
+		final_ap += effect.attribute_as_modifier.get_modification_to_value(base_ability_potency)
+	
+	var final_base_ap = final_ap
+	for effect in totals_bucket:
+		final_base_ap += effect.attribute_as_modifier.get_modification_to_value(final_base_ap)
+	final_ap = final_base_ap
+	
+	last_calculated_final_ability_potency = final_ap
+	return last_calculated_final_ability_potency
 
 
 # Revive related
@@ -1511,6 +1587,7 @@ func copy_enemy_stats(arg_enemy,
 	base_movement_speed = arg_enemy.base_movement_speed
 	base_effect_vulnerability = arg_enemy.base_effect_vulnerability
 	base_percent_health_hit_scale = arg_enemy.base_percent_health_hit_scale
+	base_ability_potency = arg_enemy.base_ability_potency
 	
 	if update_last_calcs:
 		calculate_max_health()
@@ -1520,6 +1597,7 @@ func copy_enemy_stats(arg_enemy,
 		calculate_final_movement_speed()
 		calculate_effect_vulnerability()
 		calculate_percent_health_hit_scale()
+		calculate_final_ability_potency()
 	
 	# Health
 	if including_curr_health:
