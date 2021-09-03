@@ -36,7 +36,7 @@ var tree
 
 func _init().(StoreOfTowerEffectsUUID.ING_FLAMEBURST):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_FlameburtBurst.png")
-	description = "This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals 0.75 elemental damage."
+	description = "This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals 0.75 elemental damage. Does not benefit from pierce."
 
 
 func _construct_burst_module():
@@ -54,6 +54,7 @@ func _construct_burst_module():
 	burst_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	#burst_attack_module.on_hit_damage_scale = 1
 	
+	burst_attack_module.benefits_from_bonus_on_hit_damage = false
 	burst_attack_module.benefits_from_bonus_on_hit_effect = false
 	burst_attack_module.benefits_from_bonus_base_damage = false
 	burst_attack_module.benefits_from_bonus_attack_speed = false

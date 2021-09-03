@@ -23,6 +23,7 @@ const EnemyInvisibilityEffect = preload("res://GameInfoRelated/EnemyEffectRelate
 const EnemyReviveEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyReviveEffect.gd")
 const EnemyKnockUpEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyKnockUpEffect.gd")
 const BeforeEnemyReachEndPathBaseEffect = preload("res://GameInfoRelated/EnemyEffectRelated/BeforeEnemyReachEndPathBaseEffect.gd")
+const EnemyForcedPathOffsetMovementEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyForcedPathOffsetMovementEffect.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
@@ -120,6 +121,7 @@ var flat_movement_speed_id_effect_map : Dictionary = {}
 var percent_movement_speed_id_effect_map : Dictionary = {}
 var _last_calculated_final_movement_speed : float
 
+
 var base_effect_vulnerability : float = 1
 var flat_effect_vulnerability_id_effect_map : Dictionary = {}
 var percent_effect_vulnerability_id_effect_map : Dictionary = {}
@@ -140,6 +142,7 @@ var is_reviving : bool = false
 
 var distance_to_exit : float
 var current_path_length : float
+var current_path # EnemyPath
 
 var no_movement_from_self_clauses : ConditionalClauses
 var last_calculated_no_movement_from_self : bool = false
@@ -165,10 +168,12 @@ var respect_stage_round_health_scale : bool = true
 
 
 # knock up related
-
 # makes use of anim_sprite.offset.y
 var _knock_up_current_acceleration : float
 var _knock_up_current_acceleration_deceleration : float
+
+# forced movement related
+var _current_forced_movement_effect : EnemyForcedPathOffsetMovementEffect 
 
 #
 
@@ -336,6 +341,7 @@ func _process(delta):
 
 func _physics_process(delta):
 	_phy_process_knock_up(delta)
+	_phy_process_forced_movement(delta)
 	
 	if !_is_stunned and !last_calculated_no_movement_from_self:
 		var distance_traveled = delta * _last_calculated_final_movement_speed
@@ -1112,7 +1118,9 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		
 	elif to_use_effect is BeforeEnemyReachEndPathBaseEffect:
 		_before_reaching_end_path_effects_map[to_use_effect.effect_uuid] = to_use_effect
-	
+		
+	elif to_use_effect is EnemyForcedPathOffsetMovementEffect:
+		set_current_forced_movement_effect(to_use_effect)
 	
 	
 	emit_signal("effect_added", to_use_effect, self)
@@ -1212,7 +1220,10 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		
 	elif base_effect is BeforeEnemyReachEndPathBaseEffect:
 		_before_reaching_end_path_effects_map.erase(base_effect.effect_uuid)
-	
+		
+	elif base_effect is EnemyForcedPathOffsetMovementEffect:
+		if _current_forced_movement_effect.effect_uuid == base_effect.effect_uuid:
+			remove_current_forced_movement_effect()
 	
 	if base_effect != null:
 		_all_effects_map.erase(base_effect.effect_uuid)
@@ -1403,6 +1414,8 @@ func _decrease_time_of_timebounds(delta):
 	for res_eff in _before_reaching_end_path_effects_map.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
+	if _current_forced_movement_effect != null:
+		_decrease_time_of_effect(_current_forced_movement_effect, delta)
 	
 
 
@@ -1554,8 +1567,9 @@ func _after_end_of_revive():
 # Knock up effect related
 
 func knock_up_from_effect(effect : EnemyKnockUpEffect):
-	_knock_up_current_acceleration += effect.knock_up_y_acceleration
-	_knock_up_current_acceleration_deceleration += _knock_up_current_acceleration * effect.time_in_seconds
+	if effect.time_in_seconds != 0:
+		_knock_up_current_acceleration += effect.knock_up_y_acceleration
+		_knock_up_current_acceleration_deceleration += 2 * (_knock_up_current_acceleration / effect.time_in_seconds)
 	
 	_add_effect(effect.generate_stun_effect_from_self())
 
@@ -1569,6 +1583,22 @@ func _phy_process_knock_up(delta):
 			_knock_up_current_acceleration = 0
 			_knock_up_current_acceleration_deceleration = 0
 			anim_sprite.offset.y = 0
+
+# Forced Mov related
+
+func set_current_forced_movement_effect(effect : EnemyForcedPathOffsetMovementEffect):
+	_current_forced_movement_effect = effect
+
+func remove_current_forced_movement_effect():
+	_current_forced_movement_effect = null
+
+
+func _phy_process_forced_movement(delta):
+	if _current_forced_movement_effect != null:
+		
+		shift_position(_current_forced_movement_effect._current_movement_speed * delta)
+		_current_forced_movement_effect.time_passed(delta)
+
 
 
 # 

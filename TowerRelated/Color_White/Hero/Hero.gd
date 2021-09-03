@@ -77,8 +77,8 @@ const xp_per_kill : float = 2.0
 const xp_scale_if_not_white_dom_color : float = 0.7
 const max_hero_level : int = 6 # max hero natural level
 
-const xp_needed_per_level : Array = [130, 685, 2150, 3400, 3550, 3700]
-const gold_needed_per_level : Array = [2, 6, 10, 10, 10, 10]
+const xp_needed_per_level : Array = [130, 685, 2150, 3500, 3550, 3700]
+const gold_needed_per_level : Array = [4, 6, 10, 10, 10, 10]
 
 const xp_about_descriptions = [
 	"Hero gains EXP from damaging enemies, killing enemies, and casting Voice of Light.",

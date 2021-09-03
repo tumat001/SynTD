@@ -353,8 +353,8 @@ func _construct_ability():
 
 
 func _construct_and_add_knock_up_effect():
-	regards_knock_up_effect = EnemyKnockUpEffect.new(1.5, regards_height_y_accel, StoreOfEnemyEffectsUUID.PROMINENCE_KNOCK_UP_EFFECT)
-	regards_knock_up_effect.custom_stun_duration = 2.0
+	regards_knock_up_effect = EnemyKnockUpEffect.new(1, regards_height_y_accel, StoreOfEnemyEffectsUUID.PROMINENCE_KNOCK_UP_EFFECT)
+	regards_knock_up_effect.custom_stun_duration = regards_stun_duration
 	
 	var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(regards_knock_up_effect, StoreOfTowerEffectsUUID.PROMINENCE_KNOCK_UP_EFFECT)
 	tower_effect.force_apply = true

@@ -12,7 +12,7 @@ var cdr_effect : AbilityAttributesEffect
 var cdr_modi : PercentModifier
 
 
-const tier1_cdr_amount : float = 90.0
+const tier1_cdr_amount : float = 70.0
 const tier2_cdr_amount : float = 50.0
 const tier3_cdr_amount : float = 30.0
 const tier4_cdr_amount : float = 15.0

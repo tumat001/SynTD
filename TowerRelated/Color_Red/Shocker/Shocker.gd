@@ -23,6 +23,7 @@ const shock_base_damage_ratio : float = 0.5
 const shock_ball_range : float = 100.0
 const no_shock_ball_clause : int = AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01
 
+const shock_ball_inactive_duration_queue_free : float = 5.0
 
 onready var ball_display_sprite : Sprite = $BallDisplay
 
@@ -121,6 +122,7 @@ func _ready():
 	_post_inherit_ready()
 
 
+# before ball is launched
 func _on_shock_ball_launched(ball : ShockerBall):
 	ball.connect("on_enemy_stucked_to_exiting", self, "_on_shock_ball_enemy_tree_exiting", [ball], CONNECT_ONESHOT)
 	ball.connect("on_current_life_distance_expire", self, "_on_shock_ball_life_distance_expired", [ball], CONNECT_ONESHOT)
@@ -131,6 +133,7 @@ func _on_shock_ball_launched(ball : ShockerBall):
 	
 	ball_launcher_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(no_shock_ball_clause)
 	ball_display_sprite.visible = false
+	ball.base_time_before_queue_free = shock_ball_inactive_duration_queue_free
 
 func _on_shock_ball_enemy_tree_exiting(enemy, ball):
 	ball.queue_free()

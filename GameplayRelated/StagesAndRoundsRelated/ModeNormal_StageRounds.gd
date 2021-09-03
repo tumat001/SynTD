@@ -268,7 +268,7 @@ func _get_stageround_3_5():
 
 func _get_stageround_4_1():
 	var stageround = StageRound.new(4, 1)
-	stageround.end_of_round_gold = 4
+	stageround.end_of_round_gold = 3
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 1
 	
@@ -276,7 +276,7 @@ func _get_stageround_4_1():
 
 func _get_stageround_4_2():
 	var stageround = StageRound.new(4, 2)
-	stageround.end_of_round_gold = 4
+	stageround.end_of_round_gold = 3
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 1
 	
@@ -284,7 +284,7 @@ func _get_stageround_4_2():
 
 func _get_stageround_4_3():
 	var stageround = StageRound.new(4, 3)
-	stageround.end_of_round_gold = 4
+	stageround.end_of_round_gold = 3
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 1
 	
@@ -292,7 +292,7 @@ func _get_stageround_4_3():
 
 func _get_stageround_4_4():
 	var stageround = StageRound.new(4, 4)
-	stageround.end_of_round_gold = 4
+	stageround.end_of_round_gold = 3
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 1
 	
@@ -300,7 +300,7 @@ func _get_stageround_4_4():
 
 func _get_stageround_4_5():
 	var stageround = StageRound.new(4, 5)
-	stageround.end_of_round_gold = 4
+	stageround.end_of_round_gold = 3
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 1
 	
@@ -310,7 +310,7 @@ func _get_stageround_4_5():
 
 func _get_stageround_5_1():
 	var stageround = StageRound.new(5, 1)
-	stageround.end_of_round_gold = 5
+	stageround.end_of_round_gold = 4
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 2
 	stageround.enemy_health_multiplier = 1.25
@@ -319,7 +319,7 @@ func _get_stageround_5_1():
 
 func _get_stageround_5_2():
 	var stageround = StageRound.new(5, 2)
-	stageround.end_of_round_gold = 5
+	stageround.end_of_round_gold = 4
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 2
 	stageround.enemy_health_multiplier = 1.25
@@ -328,7 +328,7 @@ func _get_stageround_5_2():
 
 func _get_stageround_5_3():
 	var stageround = StageRound.new(5, 3)
-	stageround.end_of_round_gold = 5
+	stageround.end_of_round_gold = 4
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 2
 	stageround.enemy_health_multiplier = 1.25
@@ -337,7 +337,7 @@ func _get_stageround_5_3():
 
 func _get_stageround_5_4():
 	var stageround = StageRound.new(5, 4)
-	stageround.end_of_round_gold = 5
+	stageround.end_of_round_gold = 4
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 2
 	stageround.enemy_health_multiplier = 1.25
@@ -346,7 +346,7 @@ func _get_stageround_5_4():
 
 func _get_stageround_5_5():
 	var stageround = StageRound.new(5, 5)
-	stageround.end_of_round_gold = 5
+	stageround.end_of_round_gold = 4
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 2
 	stageround.enemy_health_multiplier = 1.25

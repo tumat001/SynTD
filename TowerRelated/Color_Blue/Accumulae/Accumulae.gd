@@ -59,7 +59,7 @@ const base_enemy_ap_reduction_of_siphon : float = -0.35
 
 const base_ap_per_siphon_stack : float = 0.25
 
-const base_spell_burst_damage : float = 4.0
+const base_spell_burst_damage : float = 15.0
 
 # clause for attk module
 const lob_attk_module_not_yet_casted_clause : int = -10
@@ -109,7 +109,7 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 315
+	attack_module.base_proj_speed = 515
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
@@ -251,9 +251,9 @@ func _construct_and_add_spell_burst_explosion():
 	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	
 	explosion_attack_module.benefits_from_bonus_explosion_scale = true
-	explosion_attack_module.benefits_from_bonus_base_damage = true
+	explosion_attack_module.benefits_from_bonus_base_damage = false
 	explosion_attack_module.benefits_from_bonus_attack_speed = false
-	explosion_attack_module.benefits_from_bonus_on_hit_damage = true
+	explosion_attack_module.benefits_from_bonus_on_hit_damage = false
 	explosion_attack_module.benefits_from_bonus_on_hit_effect = true
 	
 	
@@ -271,7 +271,7 @@ func _construct_and_add_spell_burst_explosion():
 	
 	explosion_attack_module.aoe_sprite_frames = sprite_frames
 	explosion_attack_module.sprite_frames_only_play_once = true
-	explosion_attack_module.pierce = 4
+	explosion_attack_module.pierce = 5
 	explosion_attack_module.duration = 0.32
 	explosion_attack_module.damage_repeat_count = 1
 	
@@ -412,7 +412,7 @@ func _modify_bullet_a(bullet : ArcingBaseBullet):
 func _on_lob_arcing_bullet_landed(arg_final_location : Vector2, bullet : ArcingBaseBullet, arg_ap_to_use : float):
 	var explosion = spell_burst_attk_module.construct_aoe(arg_final_location, arg_final_location)
 	explosion.damage_instance.scale_only_damage_by(arg_ap_to_use)
-	explosion.scale *= 2
+	explosion.scale *= 2.5
 	
 	get_tree().get_root().add_child(explosion)
 

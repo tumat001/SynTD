@@ -92,8 +92,8 @@ func _on_EmblemButtonFire_emblem_button_right_pressed():
 			"Lvl 0: No burn.",
 			"Lvl 1: Burn damage = 0.2",
 			"Lvl 2: Burn damage = 0.3",
-			"Lvl 3: Burn damage = 0.4",
-			"Lvl 4: Burn damage = 0.6"
+			"Lvl 3: Burn damage = 0.5",
+			"Lvl 4: Burn damage = 0.7"
 		]
 		
 		get_tree().get_root().add_child(tower_tooltip)
@@ -128,7 +128,7 @@ func _on_EmblemButtonExplosive_emblem_button_right_pressed():
 	if tower_tooltip == null:
 		_construct_tower_tooltip(emblem_explosive_button)
 		tower_tooltip.descriptions = [
-			"704's launched attack explodes upon reaching the target location. Explosions affect up to 3 enemies.",
+			"704's launched attack explodes upon reaching the target location. Explosions affect up to 5 enemies.",
 			"Explosions deal 1.5 elemental damage and benefit from base damage buffs. Explosions do not affect 704's main target.",
 			"",
 			"Lvl 0: No explosion.",

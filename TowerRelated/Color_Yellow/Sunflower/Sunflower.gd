@@ -12,7 +12,7 @@ const BrownSeed_Pic = preload("res://TowerRelated/Color_Yellow/Sunflower/BrownSe
 const GreenSeed_Pic = preload("res://TowerRelated/Color_Yellow/Sunflower/GreenSeed.png")
 const YellowSeed_Pic = preload("res://TowerRelated/Color_Yellow/Sunflower/YellowSeed.png")
 
-const base_sunflower_burst_amount : int = 7
+const base_sunflower_burst_amount : int = 8
 const sunflower_original_inaccuracy : float = 30.0
 var sunflower_attack_module : BulletAttackModule
 var cycle : int = 0
@@ -48,7 +48,7 @@ func _ready():
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.base_proj_inaccuracy = sunflower_original_inaccuracy
 	
-	attack_module.burst_amount = 7
+	attack_module.burst_amount = base_sunflower_burst_amount
 	attack_module.burst_attack_speed = 12
 	attack_module.has_burst = true
 	

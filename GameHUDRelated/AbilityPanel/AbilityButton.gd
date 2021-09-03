@@ -4,6 +4,9 @@ const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd
 const AbilityTooltip = preload("res://GameHUDRelated/AbilityPanel/AbilityTooltip/AbilityTooltip.gd")
 const AbilityTooltip_Scene = preload("res://GameHUDRelated/AbilityPanel/AbilityTooltip/AbilityTooltip.tscn")
 
+const NO_HOTKEY_NUM : int = -1
+
+
 var ability : BaseAbility setget set_ability
 
 const ready_modulate_color = Color(1, 1, 1, 1)
@@ -14,6 +17,7 @@ onready var ability_button : TextureButton = $AbilityButtonPressable
 onready var auto_cast_frame : TextureRect = $AutocastFrame
 
 var ability_tooltip : AbilityTooltip
+var hotkey_num : int = NO_HOTKEY_NUM
 
 export var destroy_button_if_ability_lost : bool = true
 
@@ -182,8 +186,10 @@ func _construct_tooltip():
 	
 	get_tree().get_root().add_child(ability_tooltip)
 
+
 func _update_tooltip():
 	if ability_tooltip != null:
 		ability_tooltip.descriptions = ability.descriptions
 		ability_tooltip.header_left_text = ability.display_name
+		ability_tooltip.header_right_text = "Hotkey: %s" % str(hotkey_num)
 		ability_tooltip.update_display()

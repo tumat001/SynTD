@@ -88,7 +88,7 @@ func _update_final_stat_display():
 
 func update_final_base_damage():
 	if showing_stat == Stat.FINAL:
-		if tower.main_attack_module != null:
+		if tower != null and tower.main_attack_module != null:
 			var base_damage = tower.main_attack_module.base_damage
 			var final_base_damage = base_damage
 			
@@ -100,7 +100,7 @@ func update_final_base_damage():
 
 func update_final_attack_speed():
 	if showing_stat == Stat.FINAL:
-		if tower.main_attack_module != null:
+		if tower != null and tower.main_attack_module != null:
 			var attk_speed = tower.main_attack_module.base_attack_speed
 			var final_attk_speed = attk_speed
 			
@@ -112,7 +112,7 @@ func update_final_attack_speed():
 
 func update_final_range():
 	if showing_stat == Stat.FINAL:
-		if tower.main_attack_module != null and tower.main_attack_module.range_module != null:
+		if tower != null and tower.main_attack_module != null and tower.main_attack_module.range_module != null:
 			var base_range = tower.main_attack_module.range_module.base_range_radius
 			var final_range = base_range
 			

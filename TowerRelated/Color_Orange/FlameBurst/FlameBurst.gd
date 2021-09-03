@@ -109,10 +109,11 @@ func _ready():
 	burst_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	#burst_attack_module.on_hit_damage_scale = 0.15
 	
+	burst_attack_module.benefits_from_bonus_on_hit_damage = false
 	burst_attack_module.benefits_from_bonus_on_hit_effect = false
 	burst_attack_module.benefits_from_bonus_base_damage = false
 	burst_attack_module.benefits_from_bonus_attack_speed = false
-	burst_attack_module.benefits_from_bonus_pierce = false
+	burst_attack_module.benefits_from_bonus_pierce = true
 	
 	var burst_bullet_shape = RectangleShape2D.new()
 	burst_bullet_shape.extents = Vector2(5, 3)

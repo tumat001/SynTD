@@ -21,6 +21,9 @@ var beam_formation_triggered : bool = false
 var lifetime_after_beam_formation : float
 var _current_lifetime_after : float = 0
 
+var current_uses_left : int
+
+
 func _ready():
 	_set_sprite_frames_to_use()
 
@@ -71,7 +74,7 @@ func _process(delta):
 		_current_lifetime_after += delta
 		
 		if _current_lifetime_after >= lifetime_after_beam_formation:
-			queue_free()
+			_decrease_use_count_and_check()
 
 
 # Beam formation
@@ -92,3 +95,16 @@ func used_in_beam_formation():
 #	created_beam.set_frame_rate_based_on_lifetime()
 #
 
+#
+
+func _decrease_use_count_and_check():
+	current_uses_left -= 1
+	
+	beam_formation_triggered = false
+	_current_lifetime_after = 0
+	
+	if _if_ready_for_freeing_from_no_use_left():
+		queue_free()
+
+func _if_ready_for_freeing_from_no_use_left():
+	return current_uses_left <= 0

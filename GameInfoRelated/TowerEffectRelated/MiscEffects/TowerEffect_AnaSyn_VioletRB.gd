@@ -24,8 +24,8 @@ var ele_on_hit_effect : TowerOnHitDamageAdderEffect
 var ele_on_hit_modi : FlatModifier
 
 var base_major_phy_on_hit_amount : float = 0
-var major_phy_on_hit_effect : TowerOnHitDamageAdderEffect
-var major_phy_on_hit_modi : FlatModifier
+var major_on_hit_effect : TowerOnHitDamageAdderEffect
+var major_on_hit_modi : FlatModifier
 
 
 func _init().(StoreOfTowerEffectsUUID.VIOLET_RB_GIVER_EFFECT):
@@ -47,8 +47,8 @@ func _make_modifications_to_tower(tower):
 			tower.add_tower_effect(phy_on_hit_effect)
 		if ele_on_hit_effect != null:
 			tower.add_tower_effect(ele_on_hit_effect)
-		if major_phy_on_hit_effect != null:
-			tower.add_tower_effect(major_phy_on_hit_effect)
+		if major_on_hit_effect != null:
+			tower.add_tower_effect(major_on_hit_effect)
 		
 		_compute_bonuses_to_give_to_tower(tower)
 
@@ -74,9 +74,9 @@ func _construct_ele_effect():
 	ele_on_hit_effect = TowerOnHitDamageAdderEffect.new(ele_on_hit, StoreOfTowerEffectsUUID.VIOLET_RB_ELE_ON_HIT_EFFECT)
 
 func _construct_major_effect():
-	major_phy_on_hit_modi = FlatModifier.new(StoreOfTowerEffectsUUID.VIOLET_RB_MAJOR_ON_HIT_EFFECT)
-	var major_phy_on_hit = OnHitDamage.new(StoreOfTowerEffectsUUID.VIOLET_RB_MAJOR_ON_HIT_EFFECT, major_phy_on_hit_modi, DamageType.PHYSICAL)
-	major_phy_on_hit_effect = TowerOnHitDamageAdderEffect.new(major_phy_on_hit, StoreOfTowerEffectsUUID.VIOLET_RB_MAJOR_ON_HIT_EFFECT)
+	major_on_hit_modi = FlatModifier.new(StoreOfTowerEffectsUUID.VIOLET_RB_MAJOR_ON_HIT_EFFECT)
+	var major_on_hit = OnHitDamage.new(StoreOfTowerEffectsUUID.VIOLET_RB_MAJOR_ON_HIT_EFFECT, major_on_hit_modi, DamageType.PURE)
+	major_on_hit_effect = TowerOnHitDamageAdderEffect.new(major_on_hit, StoreOfTowerEffectsUUID.VIOLET_RB_MAJOR_ON_HIT_EFFECT)
 
 
 
@@ -126,7 +126,7 @@ func _change_modi_of_effects(ing_from_level_and_relic : int, ing_from_others : i
 		tower.add_tower_effect(ele_on_hit_effect)
 	
 	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.VIOLET_RB_MAJOR_ON_HIT_EFFECT):
-		tower.add_tower_effect(major_phy_on_hit_effect)
+		tower.add_tower_effect(major_on_hit_effect)
 	
 	
 	if range_modi != null:
@@ -151,11 +151,11 @@ func _change_modi_of_effects(ing_from_level_and_relic : int, ing_from_others : i
 		
 		ele_on_hit_modi.flat_modifier = final_amount
 	
-	if major_phy_on_hit_modi != null:
+	if major_on_hit_modi != null:
 		var final_amount = base_major_phy_on_hit_amount * ing_from_level_and_relic
 		final_amount += base_major_phy_on_hit_amount * base_lower_ratio * ing_from_others
 		
-		major_phy_on_hit_modi.flat_modifier = final_amount
+		major_on_hit_modi.flat_modifier = final_amount
 
 
 #
@@ -171,5 +171,5 @@ func _undo_modifications_to_tower(tower):
 			tower.remove_tower_effect(phy_on_hit_effect)
 		if ele_on_hit_effect != null:
 			tower.remove_tower_effect(ele_on_hit_effect)
-		if major_phy_on_hit_effect != null:
-			tower.remove_tower_effect(major_phy_on_hit_effect)
+		if major_on_hit_effect != null:
+			tower.remove_tower_effect(major_on_hit_effect)

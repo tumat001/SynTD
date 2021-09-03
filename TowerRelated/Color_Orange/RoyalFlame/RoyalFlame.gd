@@ -48,7 +48,7 @@ const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/Bas
 
 
 var burn_damage_modifier : FlatModifier
-const burn_base_damage_ratio : float = 0.225
+const burn_base_damage_ratio : float = 0.25
 
 var burn_enemy_effect : EnemyDmgOverTimeEffect
 
@@ -227,7 +227,7 @@ func _post_inherit_ready():
 	
 	burn_enemy_effect = EnemyDmgOverTimeEffect.new(burn_dmg_instance, StoreOfEnemyEffectsUUID.ROYAL_FLAME_BURN, 0.5)
 	burn_enemy_effect.is_timebound = true
-	burn_enemy_effect.time_in_seconds = 8
+	burn_enemy_effect.time_in_seconds = 10
 	burn_enemy_effect.status_bar_icon = RoyalFlame_StatusIcon
 	burn_enemy_effect.effect_source_ref = self
 	
@@ -250,7 +250,7 @@ func _construct_and_connect_ability():
 	
 	steam_burst_ability.descriptions = [
 		"Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to a limit.",
-		"The explosion does not affect the extinguished target. The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
+		"The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
 		"Cooldown: 25 s"
 	]
 	steam_burst_ability.display_name = "Steam Burst"
@@ -316,7 +316,6 @@ func _extinguish_on_enemy_beam_hit(enemy):
 		
 		var steam_explosion = explosion_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
 		steam_explosion.damage_instance.on_hit_damages[dmg_as_on_hit.internal_id] = dmg_as_on_hit
-		steam_explosion.enemies_to_ignore.append(enemy)
 		
 		get_tree().get_root().add_child(steam_explosion)
 		

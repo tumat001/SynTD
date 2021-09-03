@@ -224,3 +224,12 @@ func queue_free():
 
 func get_aoe_area() -> Area2D:
 	return $AOEArea as Area2D
+
+#
+
+func get_coll_circle_radius():
+	return collision_shape.shape.radius
+
+func get_coll_circle_radius_with_scale():
+	return get_coll_circle_radius() * scale
+

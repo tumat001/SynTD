@@ -89,21 +89,26 @@ func on_round_end():
 
 # setters and incs
 
-func increment_current_heat():
-	if _current_heat_gained_in_round < max_heat_gain_per_round:
-		var total = _current_heat_gained_in_round + heat_per_attack
-		var inc = heat_per_attack
+func increment_current_heat(arg_increment : int = heat_per_attack):
+	if _current_heat_gained_in_round < max_heat_gain_per_round and !is_max_heat_per_round_reached:
+		var total = _current_heat_gained_in_round + arg_increment
+		var inc = arg_increment
+		
 		if total > max_heat_gain_per_round:
 			inc = total - max_heat_gain_per_round
 		
 		_current_heat_gained_in_round += inc
 		
 		if _current_heat_gained_in_round >= max_heat_gain_per_round:
-			is_max_heat_per_round_reached = true
-			call_deferred("emit_signal", "max_heat_per_round_reached")
-		
+			set_max_heat_reached_in_round()
 		
 		set_current_heat(current_heat + inc)
+
+
+func set_max_heat_reached_in_round():
+	is_max_heat_per_round_reached = true
+	call_deferred("emit_signal", "max_heat_per_round_reached")
+
 
 
 func set_current_heat(arg_current_heat : int):

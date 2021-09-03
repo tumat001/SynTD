@@ -47,7 +47,7 @@ var enemy_manager : EnemyManager
 
 #
 var breeze_ability : BaseAbility
-const base_breeze_ability_cooldown : float = 28.0
+const base_breeze_ability_cooldown : float = 30.0
 
 const base_breeze_first_slow_amount : float = -50.0
 const base_breeze_first_slow_duration : float = 3.0
@@ -63,7 +63,7 @@ const base_breeze_damage : float = 4.0
 
 const breeze_ability_descriptions = [
 	"Slows all enemies by 50% for 3 seconds, then slows by 15% for 6 seconds. Also deals 4 elemental damage.",
-	"Cooldown: 28 s",
+	"Cooldown: %s s" % [str(base_breeze_ability_cooldown)],
 	"",
 	"Ability potency increases the slow percentage and the damage."
 ]
@@ -85,12 +85,12 @@ const linked_breeze_descriptions : Array = [
 
 #
 var mana_blast_ability : BaseAbility
-const mana_blast_ability_cooldown : float = 35.0
+const mana_blast_ability_cooldown : float = 45.0
 
 var mana_blast_module : AOEAttackModule
-# 10 + 10 x 2 = 30 (the total damage)
-const mana_blast_base_damage : float = 10.0
-const mana_blast_extra_main_target_dmg_scale : float = 2.0
+
+const mana_blast_base_damage : float = 20.0
+#const mana_blast_extra_main_target_dmg_scale : float = 2.0
 
 var mana_blast_buff_aoe_module : TD_AOEAttackModule
 var mana_blast_buff_tower_effect : TowerAttributesEffect
@@ -98,10 +98,10 @@ const mana_blast_ap_buff_amount : float = 0.75
 const mana_blast_buff_duration : float = 15.0
 
 const mana_blast_ability_descriptions = [
-	"Summon a mark at the first enemy's location. After a brief delay, the mark releases a mana blast.",
-	"The blast deals 30 damage to the main target, and deals 10 damage to secondary targets.",
-	"Towers caught in the blast gain 0.75 ability potency for 15 seconds.",
-	"Cooldown: 35 s"
+	"Summon a mark at the cursor's location. After a brief delay, the mark releases a mana blast.",
+	"The blast deals %s elemental damage to enemies inside." % str(mana_blast_base_damage),
+	"Towers caught in the blast gain %s ability potency for %s seconds." % [str(mana_blast_ap_buff_amount), str(mana_blast_buff_duration)],
+	"Cooldown: %s s" % str(mana_blast_ability_cooldown)
 ]
 
 #
@@ -436,7 +436,8 @@ func _place_marker(enemy):
 	var marker = ManaBurst_Mark_Scene.instance()
 	marker.frames_based_on_lifetime = true
 	marker.lifetime = 0.6
-	marker.global_position = enemy.global_position
+	#marker.global_position = enemy.global_position
+	marker.global_position = mana_blast_module.get_viewport().get_mouse_position()
 	
 	marker.connect("tree_exiting", self, "_marker_expire", [marker, enemy], CONNECT_ONESHOT)
 	game_elements.get_tree().get_root().add_child(marker)
@@ -448,7 +449,7 @@ func _marker_expire(marker : Node2D, enemy):
 	
 	explosion.scale *= 4
 	explosion.global_position = marker.global_position
-	explosion.connect("before_enemy_hit_aoe", self, "_on_explosion_hit_enemy", [enemy], CONNECT_DEFERRED)
+	#explosion.connect("before_enemy_hit_aoe", self, "_on_explosion_hit_enemy", [enemy], CONNECT_DEFERRED)
 	
 	game_elements.get_tree().get_root().add_child(explosion)
 	_summon_tower_detecting_aoe(marker.global_position)
@@ -465,10 +466,10 @@ func _summon_tower_detecting_aoe(pos : Vector2):
 	game_elements.get_tree().get_root().add_child(aoe)
 
 
-func _on_explosion_hit_enemy(enemy, main_enemy):
-	if enemy == main_enemy and main_enemy != null:
-		var dmg_instance = mana_blast_module.construct_damage_instance()
-		main_enemy.hit_by_damage_instance(dmg_instance.get_copy_damage_only_scaled_by(mana_blast_extra_main_target_dmg_scale))
+#func _on_explosion_hit_enemy(enemy, main_enemy):
+#	if enemy == main_enemy and main_enemy != null:
+#		var dmg_instance = mana_blast_module.construct_damage_instance()
+#		main_enemy.hit_by_damage_instance(dmg_instance.get_copy_damage_only_scaled_by(mana_blast_extra_main_target_dmg_scale))
 
 func _on_buff_aoe_hit_tower(tower):
 	tower.add_tower_effect(mana_blast_buff_tower_effect._shallow_duplicate())

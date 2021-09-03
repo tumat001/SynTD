@@ -28,18 +28,19 @@ enum GoldIncomeIds {
 
 # ORDER MATTERS HERE
 const total_gold_interest_with_income_intervals : Dictionary = {
-	70 : 5,
-	50 : 4,
-	40 : 3,
-	30 : 2,
+	#70 : 6,
+	50 : 5,
+	40 : 4,
+	30 : 3,
+	20 : 2,
 	10 : 1,
 }
 
 const win_streak_income_map : Dictionary = {
 	2 : 1,
-	3 : 1,
+	3 : 2,
 	4 : 2,
-	5 : 2,
+	5 : 3,
 	6 : 3,
 	7 : 3,
 	8 : 4,

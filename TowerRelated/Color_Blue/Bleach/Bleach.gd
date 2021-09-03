@@ -127,4 +127,4 @@ func _on_benefiting_attack_damage_inst_constructed(damage_instance, module):
 # Other signals
 
 func _on_round_end_b():
-	current_attack_count = 0
+	current_attack_count = 1

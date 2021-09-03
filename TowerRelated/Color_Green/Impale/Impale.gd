@@ -17,7 +17,7 @@ const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyS
 
 
 var impale_attack_module : InstantDamageAttackModule
-const bonus_damage_scale : float = 1.8
+const bonus_damage_scale : float = 2.0
 
 const bonus_damage_percent_threshold : float = 0.75
 

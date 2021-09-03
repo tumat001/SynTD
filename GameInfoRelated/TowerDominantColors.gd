@@ -59,12 +59,14 @@ func _init():
 		#"Upon reaching 100 heat, the tower becomes Overheated. At the end of the round, Overheated towers undergo Cooling, where they are unable to attack for the round. Cooling towers lose all heat at the end of the round.",
 		"Towers that reach 100 heat lose all heat at the end of the round.",
 		"",
+		"Gain abilities that give some control over Heat Modules.",
+		"",
 		"Synergy level increases the effectiveness of the effect.",
 		"",
 	],
 	[DomSyn_Orange.new()],
 	[
-		"5000% effectiveness", # reachable only by green tier 1
+		"6000% effectiveness", # reachable only by green tier 1
 		"450% effectiveness",
 		"250% effectiveness",
 		"100% effectiveness",
@@ -72,7 +74,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [7, 5, 3],
+	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [3, 2, 1],#[7, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[
@@ -124,7 +126,7 @@ func _init():
 	syn_dom_blue,
 	[
 		"Gain access to Blue Abilities.",
-		"Additionally, all blue towers gain bonus ability potency.",
+		"Additionally, all Blue towers gain bonus ability potency.",
 		""
 	],
 	[DomSyn_Blue.new()],
@@ -140,14 +142,14 @@ func _init():
 	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	[
-		"Violet towers can absorb more ingredients. This effect applies only when the amount of total and violet towers in the map is satisfied.",
+		"Violet towers can absorb more ingredients. This effect applies only when the amount of total and Violet towers in the map is satisfied.",
 		"",
 		"Violet towers can absorb ingredients regardless of color after being in the map for 1 round.",
 		"",
 	],
 	[DomSyn_Violet.new()],
 	[
-		"+5 ingredients. 13 total tower limit, 6 violet tower limit",
+		"+5 ingredients. 14 total tower limit, 6 violet tower limit",
 		"+8 ingredients. 9 total tower limit, 4 violet tower limit",
 		"+12 ingredients. 6 total tower limit, 3 violet tower limit",
 		"+40 ingredients. 3 total tower limit, 2 violet tower limit.",

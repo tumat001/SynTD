@@ -1,6 +1,9 @@
 extends "res://GameInfoRelated/TowerEffectRelated/TowerBaseEffect.gd"
 
 
+var metadata_map : Dictionary = {}
+
+
 func _init(arg_effect_uuid : int).(EffectType.MARK_EFFECT,
 			arg_effect_uuid):
 	
@@ -9,18 +12,10 @@ func _init(arg_effect_uuid : int).(EffectType.MARK_EFFECT,
 
 func _shallow_duplicate():
 	var copy = get_script().new(effect_uuid)
-	copy.is_timebound = is_timebound
-	copy.time_in_seconds = time_in_seconds
-	copy.is_ingredient_effect = is_ingredient_effect
+	_configure_copy_to_match_self(copy)
 	
-	copy.is_countbound = is_countbound
-	copy.count = count
-	copy.count_reduced_by_main_attack_only = count_reduced_by_main_attack_only
-	
-	copy.effect_icon = effect_icon
-	copy.status_bar_icon = status_bar_icon
-	
-	copy.force_apply = force_apply
-	copy.should_respect_attack_module_scale = should_respect_attack_module_scale
+	copy.metadata_map.clear()
+	for data_key in metadata_map.keys():
+		copy.metadata_map[data_key] = metadata_map[data_key]
 	
 	return copy

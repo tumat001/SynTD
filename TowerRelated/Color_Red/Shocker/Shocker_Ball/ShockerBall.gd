@@ -7,16 +7,22 @@ signal on_position_changed(new_pos)
 var offset_from_enemy : Vector2
 var enemy_stuck_to
 
+var base_time_before_queue_free : float
+var _current_time_before_queue_free : float
+
 
 onready var bullet_sprite = $BulletSprite
 
 func _ready():
 	pass
 
+
 # Enemy hit and pos related
 
 func hit_by_enemy(enemy):
 	if enemy_stuck_to == null:
+		_current_time_before_queue_free = base_time_before_queue_free
+		
 		offset_from_enemy = global_position - enemy.global_position
 		
 		enemy_stuck_to = enemy
@@ -44,6 +50,10 @@ func _physics_process(delta):
 		
 		global_position = curr_enemy_pos + offset_from_enemy
 		emit_signal("on_position_changed", global_position)
+		
+		_current_time_before_queue_free -= delta
+		if _current_time_before_queue_free <= 0:
+			queue_free()
 
 #
 
@@ -54,3 +64,4 @@ func enemy_died(enemy):
 func enemy_hit(enemy, damage_reg_id, damage_instance):
 	if !damage_instance.on_hit_damages.has(StoreOfTowerEffectsUUID.SHOCKER_SHOCK_BALL_MAIN_DAMAGE):
 		emit_signal("on_enemy_hit", enemy)
+		_current_time_before_queue_free = base_time_before_queue_free

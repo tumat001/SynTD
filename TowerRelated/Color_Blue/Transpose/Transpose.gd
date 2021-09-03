@@ -99,7 +99,7 @@ func _ready():
 	_construct_and_connect_ability()
 	_construct_effect()
 	
-	connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
+	connect("on_round_end", self, "_on_round_end_t", [], CONNECT_PERSIST)
 	
 	_post_inherit_ready()
 	
@@ -132,7 +132,9 @@ func _construct_and_connect_ability():
 		"Select a tower to swap places with. Swapping takes 1.5 seconds to complete.",
 		"Both the tower and Transporter gain 50% bonus attack speed for 5 seconds after swapping.",
 		"Ability potency increases the bonus attack speed and decreases swapping delay.",
-		"Cooldown: 45 s"
+		"Cooldown: 45 s",
+		"",
+		"\"To avoid nesting of spacetime, Transporter cannot Transpose a Transporter.\""
 	]
 	transpose_ability.display_name = "Transpose"
 	
@@ -179,7 +181,7 @@ func _start_transpose_timer_to_tower(tower):
 
 #
 
-func _on_round_end():
+func _on_round_end_t():
 	if transpose_delay_timer.is_connected("timeout", self, "_transpose_delay_timer_expired"):
 		transpose_delay_timer.disconnect("timeout", self, "_transpose_delay_timer_expired")
 		transpose_ability_activation_clauses.remove_clause(transpose_is_in_delay_timeline_clause)

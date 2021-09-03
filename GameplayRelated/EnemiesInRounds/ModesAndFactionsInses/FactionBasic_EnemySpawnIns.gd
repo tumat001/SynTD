@@ -57,6 +57,8 @@ func is_transition_time_in_stageround(uuid : String) -> bool:
 func _get_instructions_for_0_1():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BASIC),
+		SingleEnemySpawnInstruction.new(0.5, EnemyConstants.Enemies.BASIC),
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.BASIC),
 	]
 
 func _get_instructions_for_0_2():
@@ -112,14 +114,14 @@ func _get_instructions_for_1_1():
 
 func _get_instructions_for_1_2():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 17, 2.5, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(0, 19, 2.4, EnemyConstants.Enemies.BASIC),
 		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.HEALER),
 		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.HEALER)
 	]
 
 func _get_instructions_for_1_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 18, 1.8, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(0, 18, 1.75, EnemyConstants.Enemies.BASIC),
 	]
 
 
@@ -138,6 +140,10 @@ func _get_instructions_for_1_5():
 		MultipleEnemySpawnInstruction.new(0, 14, 2.7, EnemyConstants.Enemies.BASIC),
 		MultipleEnemySpawnInstruction.new(2, 4, 0.6, EnemyConstants.Enemies.BASIC),
 		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.HEALER),
+		SingleEnemySpawnInstruction.new(11.0, EnemyConstants.Enemies.PAIN),
+		SingleEnemySpawnInstruction.new(12.0, EnemyConstants.Enemies.PAIN),
+		SingleEnemySpawnInstruction.new(13.0, EnemyConstants.Enemies.PAIN),
+		SingleEnemySpawnInstruction.new(15.0, EnemyConstants.Enemies.PAIN),
 		SingleEnemySpawnInstruction.new(27, EnemyConstants.Enemies.DASH),
 		SingleEnemySpawnInstruction.new(28, EnemyConstants.Enemies.HEALER),
 	]
@@ -146,9 +152,9 @@ func _get_instructions_for_1_5():
 
 func _get_instructions_for_2_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 7, 0.2, EnemyConstants.Enemies.BASIC),
-		MultipleEnemySpawnInstruction.new(15, 8, 0.2, EnemyConstants.Enemies.BASIC),
-		MultipleEnemySpawnInstruction.new(31, 9, 0.2, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(0, 8, 0.2, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(15, 9, 0.2, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(31, 10, 0.2, EnemyConstants.Enemies.BASIC),
 	]
 
 

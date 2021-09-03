@@ -53,10 +53,19 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_compo_compli_redgreen,
 	[
-		"RedGreen description"
+		"Main attacks on hit apply a stack of Red or Green Technique, depending on the tower's color.",
+		"Applying a Technique while a different colored Technique exists on an enemy erases all Technique stacks, and triggers Detonation effects of the pre-existing Technique.",
+		"",
+		"Red Detonation: ",
+		"",
+		"Green Detonation: ",
+		""
 	],
 	[],
 	[
+		"",
+		"",
+		"",
 		""
 	]),
 	
@@ -69,10 +78,10 @@ func _init():
 	],
 	[inst_complesyn_yelvio_energymodule, CompleSyn_YelVio_YellowIng.new()],
 	[
-		"Gain 2 energy after a round when that round is won.",
-		"Gain 1 energy after a round when that round is lost.",
+		"Gain 3 energy after a round when that round is won.",
+		"Gain 3 energy after a round when that round is lost.",
 		"Yellow towers can absorb 3 more ingredients.",
-		"Violet towers can now gain an Energy Module from the Yellow Synergy."
+		"Violet towers can now gain an Energy Module from the Yellow Synergy.",
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
@@ -105,7 +114,8 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_redOV,
 	[
-		"All towers gain armor pierce and toughness pierce. These bonuses are doubled for the round after killing 4 enemies or dealing 140 post-mitigated damage."
+		"All towers gain armor pierce and toughness pierce. These bonuses are doubled for the round after killing 4 enemies or dealing 140 post-mitigated damage.",
+		""
 	],
 	[AnaSyn_RedOV.new()],
 	[
@@ -172,7 +182,7 @@ func _init():
 	),
 	
 	"BlueVG" : ColorSynergy.new("BlueVG", [TowerColors.BLUE, TowerColors.VIOLET, TowerColors.GREEN], [4, 3, 2, 1],
-	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_blueVG,
 	[
 		"Most abilities's cooldowns are reduced.",
@@ -180,7 +190,7 @@ func _init():
 	],
 	[AnaSyn_BlueVG.new()],
 	[
-		"90% reduction", # reachable only by green tier 1
+		"70% reduction",
 		"50% reduction",
 		"30% reduction",
 		"15% reduction"
@@ -189,7 +199,7 @@ func _init():
 	),
 	
 	"VioletRB" : ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
-	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
 	[
 		"Each absorbed active ingredient gives additional effects.",
@@ -198,10 +208,10 @@ func _init():
 	],
 	[AnaSyn_VioletRB.new()],
 	[
-		"+9 physical on hit damage", # reachable only by green tier 1
+		"+4 pure on hit damage",
 		"+1 physical on hit damage",
 		"+1 elemental on hit damage",
-		"+20 range"
+		"+15 range"
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
@@ -212,7 +222,7 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_RYB,
 	[
-		"Enemies that reach the end of the track for the first time are instead brought back to the start of the track.",
+		"The first 8 enemies that reach the end of the track for the first time are instead brought back to the start of the track. This counter resets every round.",
 		"Enemies brought back heal for 40% of their missing health, and receive damage resistance. The damage resistance cannot be removed by any means.",
 		"",
 		"\"Just when you thought it was all over...\"",
@@ -220,8 +230,8 @@ func _init():
 	],
 	[TriaSyn_RYB.new()],
 	[
-		"20% damage resistance",
-		"40% damage resistance",
+		"30% damage resistance",
+		"50% damage resistance",
 		"65% damage resistance"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE

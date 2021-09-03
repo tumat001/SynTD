@@ -3,10 +3,10 @@ extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifying
 const TowerEffect_AnaSyn_VioletRB = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_AnaSyn_VioletRB.gd")
 
 
-const tier_1_major_amount : float = 9.0
+const tier_1_major_amount : float = 4.0
 const tier_2_phy_amount : float = 1.0
 const tier_3_ele_amount : float = 1.0
-const tier_4_range_amount : float = 20.0
+const tier_4_range_amount : float = 15.0
 
 var game_elements : GameElements
 var curr_tier : int

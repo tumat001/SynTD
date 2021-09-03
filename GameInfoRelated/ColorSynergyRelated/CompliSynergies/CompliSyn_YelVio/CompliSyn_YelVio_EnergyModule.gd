@@ -3,8 +3,8 @@ extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifying
 const DomSyn_Yellow_EnergyBattery = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_EnergyBattery.gd")
 const EnergyBattery = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/EnergyBattery.gd")
 
-const _energy_gain_if_won : int = 2 #tier 1
-const _energy_gain_if_lost : int = 1 # tier 2
+const _energy_gain_if_won : int = 3 #tier 1
+const _energy_gain_if_lost : int = 3 # tier 2
 
 var domsyn_yellow_energy : DomSyn_Yellow_EnergyBattery
 var game_elements : GameElements

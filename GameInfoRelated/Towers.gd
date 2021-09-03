@@ -50,6 +50,7 @@ const striker_image = preload("res://TowerRelated/Color_Red/Striker/Striker_E.pn
 const hextribute_image = preload("res://TowerRelated/Color_Red/HexTribute/HexTribute_Omni.png")
 const transmutator_image = preload("res://TowerRelated/Color_Red/Transmutator/Transmutator_E.png")
 const soul_image = preload("res://TowerRelated/Color_Red/Soul/Soul_Omni.png")
+const probe_image = preload("res://TowerRelated/Color_Red/Probe/Probe_E.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -84,6 +85,7 @@ const cannon_image = preload("res://TowerRelated/Color_Green/Cannon/Cannon_E.png
 const pestilence_image = preload("res://TowerRelated/Color_Green/Pestilence/Pestilence_Omni.png")
 const blossom_image = preload("res://TowerRelated/Color_Green/Blossom/Blossom_Omni_Unpaired.png")
 const pinecone_image = preload("res://TowerRelated/Color_Green/PineCone/PineCone_E.png")
+const brewd_image = preload("res://TowerRelated/Color_Green/Brewd/Brewd_E.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -123,6 +125,7 @@ enum {
 	HEXTRIBUTE = 205,
 	TRANSMUTATOR = 206,
 	SOUL = 207,
+	PROBE = 208,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -148,7 +151,7 @@ enum {
 	SUNFLOWER = 406,
 	
 	# GREEN (500)
-	BERRY_BUSH = 500,
+	BERRY_BUSH = 500, #REMOVED FROM POOL
 	FRUIT_TREE = 501,
 	SPIKE = 502,
 	IMPALE = 503,
@@ -157,6 +160,7 @@ enum {
 	PESTILENCE = 506,
 	BLOSSOM = 507,
 	PINECONE = 508,
+	BREWD = 509,
 	
 	# BLUE (600)
 	SPRINKLER = 600,
@@ -224,7 +228,9 @@ const TowerTiersMap : Dictionary = {
 	WAVE : 3,
 	SEEDER : 3,
 	SOUL : 3,
-	BERRY_BUSH : 3,
+	#BERRY_BUSH : 3,
+	PROBE : 3,
+	BREWD : 3,
 	
 	RE : 4,
 	PING : 4,
@@ -243,6 +249,7 @@ const TowerTiersMap : Dictionary = {
 	LAVA_JET : 5,
 	BLOSSOM : 5,
 	TRANSPORTER : 5,
+	ACCUMULAE : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
@@ -250,7 +257,6 @@ const TowerTiersMap : Dictionary = {
 	PESTILENCE : 6,
 	HEXTRIBUTE : 6,
 	PROMINENCE : 6,
-	ACCUMULAE : 6,
 	
 }
 
@@ -258,15 +264,17 @@ const tier_base_dmg_map : Dictionary = {
 	1 : 0.4,
 	2 : 0.75,
 	3 : 1.25,
+	
 	4 : 2,
 	5 : 2.5,
-	6 : 4,
+	6 : 3.5,
 }
 
 const tier_attk_speed_map : Dictionary = {
 	1 : 15,
 	2 : 25,
 	3 : 35,
+	
 	4 : 50,
 	5 : 60,
 	6 : 75,
@@ -276,9 +284,10 @@ const tier_on_hit_dmg_map : Dictionary = {
 	1 : 0.4,
 	2 : 0.75,
 	3 : 1.25,
+	
 	4 : 2.25,
 	5 : 3,
-	6 : 5,
+	6 : 4,
 }
 
 # Do not use this when instancing new tower class. Only use
@@ -628,10 +637,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = coin_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1.75
-		info.base_attk_speed = 0.55
+		info.base_damage = 1.65
+		info.base_attk_speed = 0.45
 		info.base_pierce = 2
-		info.base_range = 100
+		info.base_range = 95
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -802,16 +811,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = sunflower_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2
-		info.base_attk_speed = 0.35
+		info.base_damage = 2.1
+		info.base_attk_speed = 0.375
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0.75
+		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Sprays lots of seeds at enemies. Attacks in bursts of 7.",
-			"Sunflower's attacks benefit on hit damages at 75% efficiency.",
+			"Sprays lots of seeds at enemies with slight inaccuracy. Attacks in bursts of 8.",
 			"",
 			"\"Half plant half machine\""
 		]
@@ -836,7 +844,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = ember_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1
+		info.base_damage = 1.75
 		info.base_attk_speed = 0.55
 		info.base_pierce = 1
 		info.base_range = 95
@@ -1030,7 +1038,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = scatter_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1.75
+		info.base_damage = 2
 		info.base_attk_speed = 0.39
 		info.base_pierce = 1
 		info.base_range = 110
@@ -1080,7 +1088,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = enthalphy_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.35
+		info.base_damage = 2.4
 		info.base_attk_speed = 0.8
 		info.base_pierce = 0
 		info.base_range = 135
@@ -1114,7 +1122,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.75
-		info.base_attk_speed = 0.70
+		info.base_attk_speed = 0.725
 		info.base_pierce = 0
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1156,10 +1164,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Royal Flame's attacks burn enemies for 22.5% of its base damage every 0.5 seconds for 8 seconds.",
+			"Royal Flame's attacks burn enemies for 25% of its base damage every 0.5 seconds for 10 seconds.",
 			"",
 			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to a limit.",
-			"The explosion does not affect the extinguished target. The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
+			"The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
 			"Cooldown: 25 s"
 			# THIS SAME PASSAGE is placed in royal flame's
 			# ability tooltip. If this is changed, then
@@ -1186,8 +1194,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = ieu_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3
-		info.base_attk_speed = 1
+		info.base_damage = 3.25
+		info.base_attk_speed = 1.1
 		info.base_pierce = 0
 		info.base_range = 125
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1299,7 +1307,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Impale shoots up a spike that stabs an enemy, stunning them for 2.2 seconds.",
 			"When the stun expires, Impale retracts the spike, dealing damage again.",
-			"The retract damage becomes 180% effective when the enemy has less than 75% of their max health.",
+			"The retract damage becomes 200% effective when the enemy has less than 75% of their max health.",
 		]
 		
 		var imp_dmg_effect = ImpaleBonusDamageEffect.new()
@@ -1562,7 +1570,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.90
+		info.base_attk_speed = 0.88
 		info.base_pierce = 1
 		info.base_range = 132
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1672,7 +1680,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = reaper_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 4
+		info.base_damage = 4.5
 		info.base_attk_speed = 0.725
 		info.base_pierce = 1
 		info.base_range = 130
@@ -1721,7 +1729,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Shocker possesses one shocker ball, which is shot when an enemy is in range. The shocker ball sticks to the first enemy it hits.",
 			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack. This event does not occur when the triggering attack is from another shocker ball.",
-			"The ball returns to Shocker when the enemy dies, exits the map, or when the ball fails to stick to a target.",
+			"The ball returns to Shocker when the enemy dies, exits the map, when the ball fails to stick to a target, or when the enemy is not hit after 5 seconds.",
 			"",
 			"Shocker ball has 100 range. Its bolts deal 2 elemental damage. Bolts apply on hit damages and effects at 50% efficiency.",
 		]
@@ -1746,7 +1754,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.75
-		info.base_attk_speed = 1.18
+		info.base_attk_speed = 1.22
 		info.base_pierce = 1
 		info.base_range = 145
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1754,9 +1762,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Adept's attacks gain bonus effects based on its current target's distance from itself on hit.",
-			"Beyond 85% of range: Adept's main attack deals 30% more damage, and slows enemies hit by 10% for 1 second.",
+			"Beyond 85% of range: Adept's main attack deals 50% more damage, and slows enemies hit by 15% for 1 second.",
 			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack.",
-			"The secondary attack deals 1.5 physical damage and applies on hit effects. The shot benefits from base damage buffs and on hit damages at 15% efficiency.",
+			"The secondary attack deals 1 physical damage and applies on hit effects. The shot benefits from base damage buffs and on hit damages at 15% efficiency.",
 			"",
 			"After 3 rounds of being active, Adept gains Far and Close targeting options."
 		]
@@ -1778,7 +1786,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.75
-		info.base_attk_speed = 0.45
+		info.base_attk_speed = 0.48
 		info.base_pierce = 2
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1808,7 +1816,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = striker_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.25
+		info.base_damage = 2.35
 		info.base_attk_speed = 0.85
 		info.base_pierce = 1
 		info.base_range = 125
@@ -2024,7 +2032,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 3
-		info.base_attk_speed = 0.725
+		info.base_attk_speed = 0.775
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -2042,6 +2050,21 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"If the associated enemy dies while the Effigy is standing, the Effigy explodes, dealing 50% of its current health as elemental damage to 5 enemies.",
 		]
+		
+		var dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SOUL)
+		dmg_modifier.percent_amount = 2
+		dmg_modifier.percent_based_on = PercentType.CURRENT
+		dmg_modifier.ignore_flat_limits = false
+		dmg_modifier.flat_maximum = 3
+		dmg_modifier.flat_minimum = 0
+		
+		var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_SOUL, dmg_modifier, DamageType.ELEMENTAL)
+		
+		var dmg_effect = TowerOnHitDamageAdderEffect.new(on_hit_dmg, StoreOfTowerEffectsUUID.ING_SOUL)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, dmg_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
 		
 		
 	elif tower_id == PROMINENCE:
@@ -2142,8 +2165,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Cooldown: 1.5 s",
 			"",
 			"Accumulae is unable to execute its main attack while executing Salvo.",
-			"Each Spell Burst explodes upon reaching the target location, dealing 4 elemental damage to 4 enemies. The damage scales with the ability potency at the time of casting.",
-			"Spell bursts do not benefit from base damage buffs, on hit damages and effects.",
+			"Each Spell Burst explodes upon reaching the target location, dealing 15 elemental damage to 5 enemies. The damage scales with the ability potency at the time of casting.",
+			"Spell burst explosions apply on hit effects.",
 			"Ability cdr also reduces delay per burst in salvo."
 		]
 		
@@ -2157,6 +2180,72 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ ap"
 		
+		
+		
+	elif tower_id == PROBE:
+		info = TowerTypeInformation.new("Probe", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		info.tower_image_in_buy_card = probe_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 2.5
+		info.base_attk_speed = 0.845
+		info.base_pierce = 1
+		info.base_range = 122
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Probe's attacks that apply on hit effects apply a stack of Research.",
+			"Probe's main attacks at enemies with 3 Research stacks triggers Searched.",
+			"Searched: Probe gains 60% attack speed for 5 seconds, consuming all stacks in the process. Does not stack.",
+			"",
+			"Triggering Searched while Searched is still active causes a piercing bullet to be shot.",
+			"The bullet deals 4 physical damage, and pierces through 5 enemies."
+		]
+		
+		
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_PROBE)
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_PROBE)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
+		
+		
+		
+	elif tower_id == BREWD:
+		info = TowerTypeInformation.new("Brewd", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.GREEN)
+		info.tower_image_in_buy_card = brewd_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 3.25
+		info.base_attk_speed = 0.685
+		info.base_pierce = 1
+		info.base_range = 122
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Brewd can brew multiple types of potions that have different effects.",
+			"",
+			"Brewd automatically attempts to cast Concoct.",
+			"Concoct: Throws the selected potion type at its current target.",
+			"Cooldown: 8 s"
+		]
+		
+		
+		
+		
+	
 	
 	
 	return info
@@ -2277,4 +2366,8 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Blue/Transpose/Transpose.tscn")
 	elif tower_id == ACCUMULAE:
 		return load("res://TowerRelated/Color_Blue/Accumulae/Accumulae.tscn")
+	elif tower_id == PROBE:
+		return load("res://TowerRelated/Color_Red/Probe/Probe.tscn")
+	elif tower_id == BREWD:
+		return load("res://TowerRelated/Color_Green/Brewd/Brewd.tscn")
 
