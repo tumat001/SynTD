@@ -36,7 +36,7 @@ func _init():
 	inst_domsyn_yellow_energybattery = DomSyn_Yellow_EnergyBattery.new()
 	
 	synergies = {
-	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [7, 5, 3],
+	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [8, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
 	[
@@ -74,7 +74,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [3, 2, 1],#[7, 5, 3],
+	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [8, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[
@@ -89,7 +89,7 @@ func _init():
 	[DomSyn_Yellow_GoldIncome.new(), inst_domsyn_yellow_energybattery],
 	[
 		"Activates ENERGIZE. Battery has 9 energy capacity. Battery recharges for 3 energy per turn.",
-		"Activates ENERGIZE. Battery has 4 energy capacity. Battery recharges for 2 energy per turn.",
+		"Activates ENERGIZE. Battery has 4 energy capacity. Battery recharges for 1 energy per turn.",
 		"+1 gold per round."
 	],
 	ColorSynergy.HighlightDeterminer.CUSTOM,

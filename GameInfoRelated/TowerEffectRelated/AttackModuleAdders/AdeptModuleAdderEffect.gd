@@ -22,7 +22,7 @@ var adeptling_am : WithBeamInstantDamageAttackModule
 
 func _init().(StoreOfTowerEffectsUUID.ING_ADEPT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Adeptling.png")
-	description = "Adeptling: Summons an adeptling beside your tower. Adeptling attacks a different target when its tower hits its main attack. Its shots deal 2 physical damage and applies on hit effects. Benefits from base damage and on hit damage buffs at 15% efficiency."
+	description = "Adeptling: Summons an adeptling beside your tower. Adeptling attacks a different target when its tower hits its main attack. Its shots deal 1.25 physical damage and apply on hit effects. Benefits from base damage and on hit damage buffs at 10% efficiency."
 
 
 func _make_modifications_to_tower(tower):
@@ -37,8 +37,8 @@ func _make_modifications_to_tower(tower):
 
 func _construct_attack_module():
 	adeptling_am = WithBeamInstantDamageAttackModule_Scene.instance()
-	adeptling_am.base_damage_scale = 0.15
-	adeptling_am.base_damage = 2 / adeptling_am.base_damage_scale
+	adeptling_am.base_damage_scale = 0.10
+	adeptling_am.base_damage = 1.25 / adeptling_am.base_damage_scale
 	adeptling_am.base_damage_type = DamageType.PHYSICAL
 	adeptling_am.base_attack_speed = 0
 	adeptling_am.base_attack_wind_up = 1 / 0.15
@@ -47,7 +47,7 @@ func _construct_attack_module():
 	adeptling_am.position.y -= 10
 	adeptling_am.position.x -= 20
 	adeptling_am.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	adeptling_am.on_hit_damage_scale = 0.15
+	adeptling_am.on_hit_damage_scale = 0.10
 	adeptling_am.on_hit_effect_scale = 1
 	
 	adeptling_am.commit_to_targets_of_windup = true

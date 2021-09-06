@@ -13,6 +13,9 @@ const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const AttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn")
 
+const CommonAttackSpriteTemplater = preload("res://MiscRelated/AttackSpriteRelated/CommonTemplates/CommonAttackSpriteTemplater.gd")
+const TargetingGained_Particle_Scene = preload("res://TowerRelated/Color_Red/Adept/Assets/TargetingGained_Particle/TargetingGained_Particle.tscn")
+
 const Adept_Beam01_Pic = preload("res://TowerRelated/Color_Red/Adept/Adept_Attks/Adept_Beam01.png")
 const Adept_Beam02_Pic = preload("res://TowerRelated/Color_Red/Adept/Adept_Attks/Adept_Beam02.png")
 const Adept_Beam03_Pic = preload("res://TowerRelated/Color_Red/Adept/Adept_Attks/Adept_Beam03.png")
@@ -52,7 +55,7 @@ const mini_dmg_reg_id : int = Towers.ADEPT
 
 
 var slow_effect : EnemyAttributesEffect
-const base_beyond_range_bonus_damage_ratio : float = 1.5
+const base_beyond_range_bonus_damage_ratio : float = 1.35
 var main_shot_sprite_frames : SpriteFrames
 
 const rounds_before_learn : int = 3
@@ -82,11 +85,11 @@ func _ready():
 	# mini attack
 	
 	mini_shot_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	mini_shot_attack_module.base_damage_scale = 0.15
+	mini_shot_attack_module.base_damage_scale = 0.1
 	mini_shot_attack_module.base_damage = 1 / mini_shot_attack_module.base_damage_scale
 	mini_shot_attack_module.base_damage_type = DamageType.PHYSICAL
 	mini_shot_attack_module.base_attack_speed = 0
-	mini_shot_attack_module.base_attack_wind_up = 1 / 0.15
+	mini_shot_attack_module.base_attack_wind_up = 1 / 0.1
 	mini_shot_attack_module.is_main_attack = true
 	mini_shot_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	mini_shot_attack_module.position.y -= 10
@@ -263,7 +266,17 @@ func _on_round_ended_a():
 	if is_current_placable_in_map():
 		current_round_before_learn -= 1
 		
-		if current_round_before_learn == 0:
+		if current_round_before_learn <= 0:
 			disconnect("on_round_end", self, "_on_round_ended_a")
 			main_shot_range_module.add_targeting_option(Targeting.CLOSE)
 			main_shot_range_module.add_targeting_option(Targeting.FAR)
+			
+			var particle = TargetingGained_Particle_Scene.instance()
+			CommonAttackSpriteTemplater.configure_properties_of_attk_sprite(particle, CommonAttackSpriteTemplater.TemplateIDs.COMMON_UPWARD_DECELERATING_PARTICLE)
+			particle.lifetime = 1.25
+			particle.lifetime_to_start_transparency = 0.5
+			particle.position = global_position
+			particle.position.y -= 10
+			
+			get_tree().get_root().add_child(particle)
+

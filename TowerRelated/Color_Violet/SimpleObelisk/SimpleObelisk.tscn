@@ -18,8 +18,10 @@ extents = Vector2( 8.26457, 19.6732 )
 [node name="SimpleObelisk" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 
+[node name="TowerBase" parent="." index="0"]
+position = Vector2( 0, -13 )
+
 [node name="BaseSprites" parent="TowerBase" index="0"]
-position = Vector2( 0, -13.2292 )
 frames = SubResource( 1 )
 animation = "Omni"
 

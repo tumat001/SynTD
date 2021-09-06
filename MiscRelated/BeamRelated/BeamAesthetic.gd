@@ -3,12 +3,12 @@ extends AnimatedSprite
 signal time_visible_is_over
 
 
-var time_visible : float
-var is_timebound : bool = false
+export(float) var time_visible : float
+export(bool) var is_timebound : bool = false
 
 var _current_time_visible : float
 
-var queue_free_if_time_over : bool = false
+export(bool) var queue_free_if_time_over : bool = false
 
 func _init():
 	z_as_relative = false

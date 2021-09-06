@@ -15,14 +15,15 @@ const tier06_crown = preload("res://GameHUDRelated/BuySellPanel/Tier06_Crown.png
 
 signal tower_bought(tower_type_id, tower_cost)
 
-const can_afford_modulate : Color = Color(1, 1, 1, 1)
-const cannot_afford_modulate : Color = Color(0.4, 0.4, 0.4, 1)
+const can_buy_modulate : Color = Color(1, 1, 1, 1)
+const cannot_buy_modulate : Color = Color(0.4, 0.4, 0.4, 1)
 
 var tower_information : TowerTypeInformation
 var disabled : bool = false
 var current_tooltip : TowerTooltip
 
 var current_gold : int
+var tower_inventory_bench setget set_tower_inventory_bench
 
 onready var ingredient_icon_rect = $MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/IngredientIcon
 onready var tower_name_label = $MarginContainer/VBoxContainer/MarginerLower/Lower/TowerNameLabel
@@ -95,8 +96,8 @@ func update_display():
 	elif tower_information.tower_tier == 6:
 		tier_crown_rect.texture = tier06_crown
 	
-	# Gold related
-	_update_display_based_on_gold(current_gold)
+	#
+	_update_can_buy_card()
 
 
 func create_energy_display(energy_array : Array) -> String:
@@ -115,7 +116,7 @@ func _on_BuyCard_gui_input(event):
 					current_tooltip.queue_free()
 
 func _on_BuyCard_pressed():
-	if !disabled and _can_afford():
+	if !disabled and can_buy_card():
 		disabled = true
 		emit_signal("tower_bought", tower_information)
 		
@@ -146,13 +147,31 @@ func kill_current_tooltip():
 
 # Gold related
 
-func _update_display_based_on_gold(arg_current_gold):
-	current_gold = arg_current_gold
-	
-	if _can_afford():
-		modulate = can_afford_modulate
-	else:
-		modulate = cannot_afford_modulate
-
 func _can_afford() -> bool:
 	return current_gold >= tower_information.tower_cost
+
+
+# Tower bench related
+
+func set_tower_inventory_bench(arg_bench):
+	tower_inventory_bench = arg_bench
+	
+	tower_inventory_bench.connect("tower_entered_bench_slot", self, "_tower_added_in_bench_slot", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+	tower_inventory_bench.connect("tower_removed_from_bench_slot", self, "_tower_removed_from_bench_slot", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+
+func _tower_added_in_bench_slot(tower, bench_slot):
+	_update_can_buy_card()
+
+func _tower_removed_from_bench_slot(tower, bench_slot):
+	_update_can_buy_card()
+
+# Can buy tower
+
+func _update_can_buy_card():
+	if can_buy_card():
+		modulate = can_buy_modulate
+	else:
+		modulate = cannot_buy_modulate
+
+func can_buy_card():
+	return _can_afford() and !tower_inventory_bench.is_bench_full()

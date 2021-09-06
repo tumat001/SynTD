@@ -267,16 +267,16 @@ const tier_base_dmg_map : Dictionary = {
 	
 	4 : 2,
 	5 : 2.5,
-	6 : 3.5,
+	6 : 3.75,
 }
 
 const tier_attk_speed_map : Dictionary = {
 	1 : 15,
-	2 : 25,
-	3 : 35,
+	2 : 22,
+	3 : 30,
 	
-	4 : 50,
-	5 : 60,
+	4 : 40,
+	5 : 50,
 	6 : 75,
 }
 
@@ -434,7 +434,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 6
-		info.base_attk_speed = 0.5
+		info.base_attk_speed = 0.475
 		info.base_pierce = 1
 		info.base_range = 185
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -486,7 +486,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = railgun_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 4.5
+		info.base_damage = 3
 		info.base_attk_speed = 0.25
 		info.base_pierce = 5
 		info.base_range = 100
@@ -494,7 +494,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Shoots a dart that pierces through 4 enemies."
+			"Shoots a dart that pierces through 5 enemies."
 		]
 		
 		# Ingredient related
@@ -524,8 +524,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"RE's attacks on hit cleanses enemies from all buffs and debuffs.",
-			"Attacks in bursts of 3"
+			"Re's attacks on hit cleanses enemies from all buffs and debuffs.",
+			"Attacks in bursts of 3."
 		]
 		
 		var tower_effect = TowerResetEffects.new(StoreOfTowerEffectsUUID.ING_RE)
@@ -552,7 +552,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Shocks and stuns its target for 0.3 seconds on hit.",
+			"Tesla's attacks stun its target for 0.3 seconds on hit.",
 			"",
 			"\"Simple, yet effective.\""
 		]
@@ -618,8 +618,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
 			"",
-			"Shots deal 5 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 200% efficiency.",
-			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage instead, and on hit damages become 400% effective instead."
+			"Shots deal 4 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 200% efficiency.",
+			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 400% effective instead."
 		]
 		
 		var tower_base_effect : PingletAdderEffect = PingletAdderEffect.new()
@@ -667,7 +667,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = beacon_dish_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1.0
+		info.base_damage = 2.0
 		info.base_attk_speed = 0.6
 		info.base_pierce = 0
 		info.base_range = 145
@@ -676,8 +676,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Does not attack, but instead casts an aura that buffs towers in range every 5 seconds for 7 seconds.",
-			"Grants 25% of its total base damage as an elemental on hit damage buff.",
-			"Grants 25% x 100 of its total attack speed as percent attack speed (of receiving tower).",
+			"Grants 15% of its total base damage as an elemental on hit damage buff.",
+			"Grants 20% x 100 of its total attack speed as percent attack speed (of receiving tower).",
 			"Grants 10% of its total range as bonus range.",
 			"These bonuses are increased by ability potency.",
 			"Note: Does not grant these buffs to another Beacon-Dish. Also overrides any existing Beacon-Dish buffs a tower may have.",
@@ -884,14 +884,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.75
-		info.base_attk_speed = 0.975
+		info.base_attk_speed = 0.955
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"On its 5th main attack, Lava Jet releases a beam of lava that deals 50% of the enemy's max health as elemental damage, up to 50."
+			"On its 5th main attack, Lava Jet releases a beam of lava that deals 50% of the enemy's max health as elemental damage, up to 40."
 		]
 		
 		var tower_effect = LavaJetModuleAdderEffect.new()
@@ -1121,8 +1121,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = entropy_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.75
-		info.base_attk_speed = 0.725
+		info.base_damage = 2.55
+		info.base_attk_speed = 0.645
 		info.base_pierce = 0
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1194,8 +1194,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = ieu_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3.25
-		info.base_attk_speed = 1.1
+		info.base_damage = 2.85
+		info.base_attk_speed = 1
 		info.base_pierce = 0
 		info.base_range = 125
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1270,7 +1270,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = spike_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2
+		info.base_damage = 1.65
 		info.base_attk_speed = 0.75
 		info.base_pierce = 0
 		info.base_range = 115
@@ -1307,7 +1307,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Impale shoots up a spike that stabs an enemy, stunning them for 2.2 seconds.",
 			"When the stun expires, Impale retracts the spike, dealing damage again.",
-			"The retract damage becomes 200% effective when the enemy has less than 75% of their max health.",
+			"The retract damage deals 100% extra damage when the enemy has less than 75% of their max health.",
 		]
 		
 		var imp_dmg_effect = ImpaleBonusDamageEffect.new()
@@ -1690,16 +1690,17 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Reaper's attacks deal additional 8% of the enemy's missing health as elemental damage, up to 12 health.",
 			"",
-			"Killing an enemy allows Reaper to cast Slash once. Slash has a cooldown of 0.125 seconds. Slash casts are queued.",
-			"Slash: Reaper slashes the area of the closest enemy, dealing 400% of this tower's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
-			"Casting Slash reduces the damage of subsequent slashes by 50% for 0.5 seconds. This does not stack."
+			"Killing an enemy grants Reaper a stack of Death. While Reaper has Death stacks, Reaper attempts to cast Slash.",
+			"Slash: Reaper consumes a Death stack to slash the area of the closest enemy, dealing 400% of Reaper's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
+			"Casting Slash reduces the damage of subsequent slashes by 50% for 0.5 seconds. This does not stack.",
+			"Cooldown: 0.2 s."
 		]
 		
 		var reap_dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_REAPER)
 		reap_dmg_modifier.percent_amount = 6
 		reap_dmg_modifier.percent_based_on = PercentType.MISSING
 		reap_dmg_modifier.ignore_flat_limits = false
-		reap_dmg_modifier.flat_maximum = 8
+		reap_dmg_modifier.flat_maximum = 5
 		reap_dmg_modifier.flat_minimum = 0
 		
 		var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_REAPER, reap_dmg_modifier, DamageType.ELEMENTAL)
@@ -1762,9 +1763,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Adept's attacks gain bonus effects based on its current target's distance from itself on hit.",
-			"Beyond 85% of range: Adept's main attack deals 50% more damage, and slows enemies hit by 15% for 1 second.",
+			"Beyond 85% of range: Adept's main attack deals 35% more damage, and slows enemies hit by 15% for 1 second.",
 			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack.",
-			"The secondary attack deals 1 physical damage and applies on hit effects. The shot benefits from base damage buffs and on hit damages at 15% efficiency.",
+			"The secondary attack deals 1 physical damage and applies on hit effects. The shot benefits from base damage buffs and on hit damages at 10% efficiency.",
 			"",
 			"After 3 rounds of being active, Adept gains Far and Close targeting options."
 		]
@@ -1848,25 +1849,27 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 3
-		info.base_attk_speed = 2.15
+		info.base_attk_speed = 1.65
 		info.base_pierce = 1
 		info.base_range = 155
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Each main attack is infused with a hex. Enemies gain curses as effects after reaching a certain number of hexes. Hexes and Curses last indefinitely.",
-			"3 hex: Enemies take extra 1.5 elemental damage from HexTribute's main attack.",
+			"Each attack that applies on hit effects is infused with a Hex. Enemies gain Curses as effects after reaching a certain number of Hexes. Hexes and Curses last indefinitely.",
+			"3 hex: Enemies take extra 1.5 elemental damage from HexTribute's attacks.",
 			"6 hex: Enemies's armor is reduced by 25%.",
 			"9 hex: Enemies's toughness is reduced by 25%.",
 			"12 hex: Enemies become 75% more vulnerable to effects.",
-			"15 hex: Enemy buffs HexTribute to infuse 3 hexes per main attack for the rest of the round.",
-			"210 hex: Executes the enemy."
+			"75 hex: Executes the enemy. Execute does not work on boss enemies.",
+			"",
+			"HexTribute applies 3 hexes per attack for the rest of the round upon infusing 15 hexes to an enemy for the first time.",
+			
 		]
 		
 		
 		var effect_vul_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.ING_HEXTRIBUTE_EFFECT_VUL)
-		effect_vul_modi.percent_amount = 50
+		effect_vul_modi.percent_amount = 25
 		effect_vul_modi.percent_based_on = PercentType.BASE
 		var hextribute_effect_vul_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_EFFECT_VULNERABILITY, effect_vul_modi, StoreOfEnemyEffectsUUID.ING_HEXTRIBUTE_EFFECT_VUL)
 		hextribute_effect_vul_effect.is_timebound = true
@@ -1898,7 +1901,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Main attacks cause different effects based on the enemy’s current health",
-			"If the enemy has missing health, the enemy is slowed by 70% for 2 seconds.",
+			"If the enemy has missing health, the enemy is slowed by 60% for 1.5 seconds.",
 			"If the enemy has full health, the enemy’s maximum health is reduced by 12.5% (with a minimum of 5 health, and a maximum of 25 health). This effect does not stack.",
 			"Ability potency increases maximum health percent reduction and limits."
 		]
@@ -1913,8 +1916,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = hero_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1.25
-		info.base_attk_speed = 0.80
+		info.base_damage = 1.35
+		info.base_attk_speed = 0.835
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1923,7 +1926,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
 			"Levels are gained by spending EXP and gold. Only 6 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
-			"Upon reaching level 6, Hero increases the limit of activated composite synergies by 1.",
+			"Upon reaching level 6, Hero increases the limit of activated composite synergies by 1. Hero also gains 3 bonus base damage, and 50% bonus attack speed.",
 			"",
 			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
@@ -2191,7 +2194,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.845
+		info.base_attk_speed = 0.645
 		info.base_pierce = 1
 		info.base_range = 122
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -2200,10 +2203,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Probe's attacks that apply on hit effects apply a stack of Research.",
 			"Probe's main attacks at enemies with 3 Research stacks triggers Searched.",
-			"Searched: Probe gains 60% attack speed for 5 seconds, consuming all stacks in the process. Does not stack.",
+			"Searched: Probe gains 50% attack speed for 5 seconds, consuming all stacks in the process. Does not stack.",
 			"",
 			"Triggering Searched while Searched is still active causes a piercing bullet to be shot.",
-			"The bullet deals 4 physical damage, and pierces through 5 enemies."
+			"The bullet deals 3 physical damage, and pierces through 4 enemies."
 		]
 		
 		
@@ -2227,7 +2230,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = brewd_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3.25
+		info.base_damage = 3
 		info.base_attk_speed = 0.685
 		info.base_pierce = 1
 		info.base_range = 122
@@ -2239,7 +2242,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Brewd automatically attempts to cast Concoct.",
 			"Concoct: Throws the selected potion type at its current target.",
-			"Cooldown: 8 s"
+			"Cooldown: 15 s"
 		]
 		
 		

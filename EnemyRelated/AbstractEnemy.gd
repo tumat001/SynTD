@@ -60,6 +60,10 @@ signal on_starting_revive()
 signal on_revive_completed()
 signal cancel_all_lockons() # on death, reviving, etc
 
+enum EnemyType {
+	NORMAL = 500,
+	BOSS = 600,
+}
 
 enum NoMovementClauses {
 	IS_REVIVING = 100,
@@ -77,6 +81,9 @@ enum UntargetabilityClauses {
 	IS_REVIVING = 100,
 	IS_INVISIBLE = 101,
 }
+
+
+var enemy_type : int = EnemyType.NORMAL
 
 var base_health : float = 1
 var _flat_base_health_id_effect_map : Dictionary = {}
@@ -155,6 +162,8 @@ var last_calculated_is_untargetable : bool = false
 
 
 var all_abilities : Array = []
+
+
 
 
 # Enemy properties
@@ -261,9 +270,6 @@ func _ready():
 	layer_infobar.z_as_relative = false
 	#infobar.rect_position.y -= round((_self_size.y) + 11)
 	#infobar.rect_position.x -= round(healthbar.get_bar_fill_foreground_size().x / 2)
-	layer_infobar.position.y -= round((_self_size.y) + 11)
-	layer_infobar.position.x -= round(lifebar.get_bar_fill_foreground_size().x / 4)
-	
 	
 	var shift = (_self_size.y / 2) - 5
 	anim_sprite.position.y -= shift
@@ -281,6 +287,7 @@ func _ready():
 	#
 	
 	_post_inherit_ready()
+
 
 
 func _post_inherit_ready():
@@ -309,9 +316,21 @@ func _post_inherit_ready():
 	#
 	current_health = _last_calculated_max_health
 	
+	
+	infobar.visible = false
+	yield(get_tree(), "idle_frame")
+	
+	
 	lifebar.current_health_value = current_health
 	lifebar.current_shield_value = current_shield
 	lifebar.max_value = _last_calculated_max_health
+	
+	
+	layer_infobar.position.y -= round((_self_size.y) + 6) + ((lifebar.get_bar_fill_foreground_size().y * (lifebar.scale_of_bars_scale.y / 2.0))) #- 40)
+	layer_infobar.position.x -= round(lifebar.get_bar_fill_foreground_size().x * lifebar.scale_of_bars_scale.x / 4)
+	
+	infobar.visible = true
+	lifebar.update_first_time()
 
 
 
@@ -1619,6 +1638,8 @@ func copy_enemy_stats(arg_enemy,
 	base_percent_health_hit_scale = arg_enemy.base_percent_health_hit_scale
 	base_ability_potency = arg_enemy.base_ability_potency
 	
+	enemy_type = arg_enemy.enemy_type
+	
 	if update_last_calcs:
 		calculate_max_health()
 		calculate_final_armor()
@@ -1661,4 +1682,10 @@ func copy_enemy_location_and_offset(arg_enemy):
 # spawned from something else than spawn instructions
 func set_properties_to_spawned_from_entity():
 	respect_stage_round_health_scale = false
+
+
+#
+
+func is_enemy_type_boss() -> bool:
+	return enemy_type == EnemyType.BOSS
 

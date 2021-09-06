@@ -223,7 +223,7 @@ func _get_total_inventory_count_of_towers(arg_tower_id_count_map : Dictionary) -
 # tower stock related
 
 func _add_stock_to_tower_id(tower_id : int, amount : int):
-	if !blacklisted_towers_to_inventory.has(tower_id):
+	if !blacklisted_towers_to_inventory.has(tower_id) and current_tower_stock_inventory.has(tower_id):
 		current_tower_stock_inventory[tower_id] += amount
 
 

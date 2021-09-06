@@ -5,9 +5,9 @@ const TowerEffect_AnaSyn_RedOV = preload("res://GameInfoRelated/TowerEffectRelat
 var game_elements : GameElements
 var curr_tier : int
 
-var tier_1_pierce_amount : float = 15.0
-var tier_2_pierce_amount : float = 9.0
-var tier_3_pierce_amount : float = 5.0
+var tier_1_pierce_amount : float = 14.0
+var tier_2_pierce_amount : float = 8.0
+var tier_3_pierce_amount : float = 4.0
 
 
 func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):

@@ -213,7 +213,7 @@ func _effigied_enemy_killed_by_damage(enemy):
 
 func _kill_current_effigy(start_cooldown : bool = true, queue_free_effigy : bool = true):
 	if start_cooldown:
-		effigy_ability.start_time_cooldown(base_effigy_ability_cooldown)
+		effigy_ability.start_time_cooldown(_get_cd_to_use(base_effigy_ability_cooldown))
 	
 	effigy_activation_clauses.remove_clause(effigy_exists_clause)
 	

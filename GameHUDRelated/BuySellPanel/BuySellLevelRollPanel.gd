@@ -42,6 +42,8 @@ var level_manager setget set_level_manager
 var shop_manager setget set_shop_manager
 var tower_manager setget set_tower_manager
 
+var tower_inventory_bench setget set_tower_inventory_bench
+
 #
 
 func set_level_manager(arg_manager):
@@ -75,6 +77,12 @@ func set_relic_manager(arg_manager):
 	
 	relic_buy_etc_panel.relic_manager = arg_manager
 
+func set_tower_inventory_bench(arg_bench):
+	tower_inventory_bench = arg_bench
+	
+	for slot in all_buy_slots:
+		slot.tower_inventory_bench = tower_inventory_bench
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -83,6 +91,11 @@ func _ready():
 	all_buy_slots.append(buy_slot_03)
 	all_buy_slots.append(buy_slot_04)
 	all_buy_slots.append(buy_slot_05)
+	
+	for slot in all_buy_slots:
+		slot.tower_inventory_bench = tower_inventory_bench
+
+
 
 
 func _on_RerollButton_pressed():
@@ -159,7 +172,8 @@ func _update_tower_cards_buyability_based_on_gold(current_gold : int):
 		var tower_card = buy_slot.current_child
 		
 		if tower_card != null and tower_card is TowerBuyCard:
-			tower_card._update_display_based_on_gold(current_gold)
+			tower_card.current_gold = current_gold
+			tower_card._update_can_buy_card()
 
 #
 

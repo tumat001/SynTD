@@ -4,7 +4,7 @@ extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifying
 const TowerEffect_AnaSyn_OrangeYR = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_AnaSyn_OrangeYR.gd")
 
 const tier_1_atk_speed_percent : float = 130.0
-const tier_2_atk_speed_percent : float = 75.0
+const tier_2_atk_speed_percent : float = 70.0
 const tier_3_atk_speed_percent : float = 40.0
 const tier_4_atk_speed_percent : float = 15.0
 

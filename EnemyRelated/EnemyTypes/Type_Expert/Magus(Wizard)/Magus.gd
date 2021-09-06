@@ -5,6 +5,9 @@ const TowerDetectingRangeModule_Scene = preload("res://EnemyRelated/TowerInterac
 const TowerDetectingRangeModule = preload("res://EnemyRelated/TowerInteractingRelated/TowerInteractingModules/TowerDetectingRangeModule.gd")
 const ExplosionParticle_Scene = preload("res://EnemyRelated/CommonParticles/ExplosionParticle/ExplosionParticle.tscn")
 
+const Wizard_Beam_Scene = preload("res://EnemyRelated/CommonParticles/Wizard_Beam/Wizard_Beam.tscn")
+
+
 const _base_range : float = 140.0
 
 const _explosion_dmg : float = 5.0
@@ -62,8 +65,24 @@ func _explosion_ability_activated():
 		var valid_targets = Targeting.enemies_to_target(targets, _targeting_for_explosion, 1, global_position)
 		
 		if valid_targets.size() > 0:
-			_summon_explosion_to_target(valid_targets[0])
+			_summon_beam_to_target(valid_targets[0])
 			explosion_ability.start_time_cooldown(_explosion_cooldown)
+
+
+func _summon_beam_to_target(target):
+	if target != null:
+		var beam = Wizard_Beam_Scene.instance()
+		beam.connect("time_visible_is_over", self, "_summon_explosion_to_target", [target], CONNECT_ONESHOT)
+		
+		beam.time_visible = 0.15
+		beam.frames.set_animation_speed("default", 8 / 0.15)
+		beam.visible = true
+		beam.global_position = global_position
+		beam.frame = 0
+		beam.modulate = _explosion_modulate
+		
+		get_tree().get_root().add_child(beam)
+		beam.update_destination_position(target.global_position)
 
 
 func _summon_explosion_to_target(target):

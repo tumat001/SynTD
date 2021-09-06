@@ -72,13 +72,16 @@ const hero_base_health : float = 25.0
 const extra_comp_syn_slot_amount_at_max_natural_level : int = 1
 const hero_extra_ingredient_limit : int = 4
 
+const hero_max_nat_level_bonus_base_damage_amount : float = 3.0
+const hero_max_nat_level_bonus_attk_speed_amount : float = 50.0
+
 const xp_ratio_per_damage : float = 1.0
 const xp_per_kill : float = 2.0
 const xp_scale_if_not_white_dom_color : float = 0.7
 const max_hero_level : int = 6 # max hero natural level
 
-const xp_needed_per_level : Array = [130, 685, 2150, 3500, 3550, 3700]
-const gold_needed_per_level : Array = [4, 6, 10, 10, 10, 10]
+const xp_needed_per_level : Array = [130, 685, 2050, 3500, 3550, 3700]
+const gold_needed_per_level : Array = [2, 4, 8, 10, 10, 10]
 
 const xp_about_descriptions = [
 	"Hero gains EXP from damaging enemies, killing enemies, and casting Voice of Light.",
@@ -94,18 +97,21 @@ const xp_about_descriptions = [
 const main_attack_proj_speed : float = 500.0
 const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
 const attks_needed_for_light_explosion : int = 40
-const light_wave_base_damage_in_levels : Array = [1, 1, 1.5, 2.5]
-const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.3, 0.75]
+const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3]
+const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.3, 1.0]
 
-const judgement_dmg_ratio_in_levels : Array = [2, 3, 4, 5]
+const judgement_dmg_ratio_in_levels : Array = [1, 2, 3, 7]
+const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 2, 2, 4]
+var judgement_bonus_on_hit_dmg_dmg_type : int = DamageType.PHYSICAL
+
 const judgement_bonus_dmg_ratio : float = 1.20
 const judgement_bonus_dmg_threshold_trigger : float = 0.25
 const judgement_stack_trigger : int = 3
 
 const current_attks_needed_for_vol : int = 6
-const VOL_towers_affected_in_levels : Array = [3, 4, 6, 12]
+const VOL_towers_affected_in_levels : Array = [3, 4, 6, 13]
 const VOL_range_in_levels : Array = [70, 105, 160, 250]
-const VOL_dmg_ratio_buff_in_levels : Array = [1.20, 1.25, 1.3, 1.4]
+const VOL_dmg_ratio_buff_in_levels : Array = [1.2, 1.2, 1.5, 1.75]
 const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 25]
 const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 9, 9]
 
@@ -145,6 +151,8 @@ var current_vol_damage_scale : float
 var current_vol_count : int
 
 var current_judgement_dmg_ratio : float
+var current_judgement_bonus_on_hit_amount : float
+var judgment_on_hit_dmg : OnHitDamage
 
 #
 
@@ -168,6 +176,7 @@ onready var staff_proj_origin_pos2D : Position2D = $TowerBase/StaffProjPosition
 onready var staff_sprite : Sprite = $TowerBase/StaffSprite
 onready var judgement_sprite : Sprite = $TowerBase/JudgementSprite
 onready var volrobe_sprite : Sprite = $TowerBase/VOLRobeSprite
+onready var max_nat_level_wings_sprite = $TowerBase/MaxNatLevelWingsSprite
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.HERO)
@@ -229,6 +238,7 @@ func _ready():
 	
 	judgement_sprite.visible = false
 	volrobe_sprite.visible = false
+	max_nat_level_wings_sprite.visible = false
 	
 	_construct_vol_tower_indicator_shower()
 	
@@ -470,16 +480,26 @@ func _construct_and_add_judgement_attack_module():
 	judgement_attack_module.can_be_commanded_by_tower = false
 	
 	add_attack_module(judgement_attack_module)
+	
+	#
+	var judgement_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HERO_JUDGEMENT_ON_HIT_DMG)
+	
+	judgment_on_hit_dmg = OnHitDamage.new(StoreOfTowerEffectsUUID.HERO_JUDGEMENT_ON_HIT_DMG, judgement_modi, judgement_bonus_on_hit_dmg_dmg_type)
+
 
 func _on_judgement_enemy_hit(enemy, damage_register_id, damage_instance, module):
 	if main_attack_module != null:
 		var health_ratio : float = enemy.current_health / enemy._last_calculated_max_health
 		
 		var final_mod : float = current_judgement_dmg_ratio * main_attack_module.last_calculated_final_damage
-		if health_ratio < judgement_bonus_dmg_threshold_trigger:
-			final_mod *= judgement_bonus_dmg_ratio
+		#if health_ratio < judgement_bonus_dmg_threshold_trigger:
+		#	final_mod *= judgement_bonus_dmg_ratio
 		
 		damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE].damage_as_modifier.flat_modifier = final_mod
+		damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.HERO_JUDGEMENT_ON_HIT_DMG] = judgment_on_hit_dmg
+		
+		if health_ratio < judgement_bonus_dmg_threshold_trigger:
+			damage_instance.scale_only_damage_by(judgement_bonus_dmg_ratio)
 
 
 func can_level_up_judgement():
@@ -500,27 +520,34 @@ func set_judgement_level(new_level):
 			_construct_and_add_judgement_effect()
 		
 		current_judgement_dmg_ratio = judgement_dmg_ratio_in_levels[0]
+		current_judgement_bonus_on_hit_amount = judgement_bonus_on_hit_dmg_in_levels[0]
 		judgement_sprite.texture = Hero_Judgement01Pic
 		judgement_sprite.visible = true
 		
 	elif ability_judgement_level == 2:
 		current_judgement_dmg_ratio = judgement_dmg_ratio_in_levels[1]
+		current_judgement_bonus_on_hit_amount = judgement_bonus_on_hit_dmg_in_levels[1]
 		judgement_sprite.texture = Hero_Judgement02Pic
 		judgement_sprite.visible = true
 		
 	elif ability_judgement_level == 3:
 		current_judgement_dmg_ratio = judgement_dmg_ratio_in_levels[2]
+		current_judgement_bonus_on_hit_amount = judgement_bonus_on_hit_dmg_in_levels[2]
 		judgement_sprite.texture = Hero_Judgement03Pic
 		judgement_sprite.visible = true
 		
 	elif ability_judgement_level == 4:
 		current_judgement_dmg_ratio = judgement_dmg_ratio_in_levels[3]
+		current_judgement_bonus_on_hit_amount = judgement_bonus_on_hit_dmg_in_levels[3]
 		judgement_sprite.texture = Hero_Judgement04Pic
 		judgement_sprite.visible = true
 		
 	else:
 		current_judgement_dmg_ratio = 0
+		current_judgement_bonus_on_hit_amount = 0
 		judgement_sprite.visible = false
+	
+	judgment_on_hit_dmg.damage_as_modifier.flat_modifier = current_judgement_bonus_on_hit_amount
 	
 	emit_signal("judgement_level_changed", ability_judgement_level)
 
@@ -751,10 +778,34 @@ func _attempt_spend_gold_and_xp_for_level_up():
 		else:
 			emit_signal("max_level_reached") # max natural level
 			
-			var compo_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HERO_COMPO_SYN_MODI_ID)
-			compo_modi.flat_modifier = extra_comp_syn_slot_amount_at_max_natural_level
-			
-			synergy_manager.add_composite_syn_limit_modi(compo_modi)
+			_max_natural_level_reached()
+
+func _max_natural_level_reached():
+	# compo syn
+	var compo_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HERO_COMPO_SYN_MODI_ID)
+	compo_modi.flat_modifier = extra_comp_syn_slot_amount_at_max_natural_level
+	
+	synergy_manager.add_composite_syn_limit_modi(compo_modi)
+	
+	
+	# stats related
+	var base_dmg_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HERO_MAX_NATURAL_LEVEL_BASE_DAMAGE_EFFECT)
+	base_dmg_modi.flat_modifier = hero_max_nat_level_bonus_base_damage_amount
+	
+	var base_dmg_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS, base_dmg_modi, StoreOfTowerEffectsUUID.HERO_MAX_NATURAL_LEVEL_BASE_DAMAGE_EFFECT)
+	
+	var attk_speed_modi : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HERO_MAX_NATURAL_LEVEL_ATTK_SPEED_EFFECT)
+	attk_speed_modi.percent_amount = hero_max_nat_level_bonus_attk_speed_amount
+	attk_speed_modi.percent_based_on = PercentType.BASE
+	
+	var attk_speed_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_modi, StoreOfTowerEffectsUUID.HERO_MAX_NATURAL_LEVEL_ATTK_SPEED_EFFECT)
+	
+	add_tower_effect(base_dmg_effect)
+	add_tower_effect(attk_speed_effect)
+	
+	
+	# visuals
+	max_nat_level_wings_sprite.visible = true
 
 
 func can_spend_gold_and_xp_for_level_up() -> bool:
@@ -842,7 +893,7 @@ func get_judgement_ability_descs() -> Array:
 	if ability_judgement_level != 0:
 		return [
 			"Every attack that applies on hit effects applies a Judge stack to enemies hit.",
-			"At %s Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage." % [str(judgement_stack_trigger), (str(current_judgement_dmg_ratio * 100) + "%")],
+			"At %s Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage, and dealing bonus %s physical damage." % [str(judgement_stack_trigger), (str(current_judgement_dmg_ratio * 100) + "%"), str(current_judgement_bonus_on_hit_amount)],
 			"Judgement is enhanced to deal %s more damage when the enemy has less than %s health." % [(str((judgement_bonus_dmg_ratio - 1) * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
 			"Judgement does not apply on hit effects."
 		]
@@ -910,13 +961,14 @@ func get_judgement_upgrade_descs():
 	if can_level_up_judgement():
 		if ability_judgement_level != 0:
 			descs = [
-				"Base damage ratio: %s -> %s" % [(str(current_judgement_dmg_ratio * 100) + "%"), (str(judgement_dmg_ratio_in_levels[ability_judgement_level]) + "%")]
+				"Base damage ratio: %s -> %s" % [(str(current_judgement_dmg_ratio * 100) + "%"), (str(judgement_dmg_ratio_in_levels[ability_judgement_level] * 100) + "%")],
+				"Bonus on hit dmg: %s -> %s" % [str(current_judgement_bonus_on_hit_amount), str(judgement_bonus_on_hit_dmg_in_levels[ability_judgement_level])]
 			]
 			
 		else:
 			descs = [
 				"Every attack that applies on hit effects applies a Judge stack to enemies hit.",
-				"At %s Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage." % [str(judgement_stack_trigger), (str(judgement_dmg_ratio_in_levels[0] * 100) + "%")],
+				"At %s Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage, and dealing bonus %s physical damage" % [str(judgement_stack_trigger), (str(judgement_dmg_ratio_in_levels[0] * 100) + "%"), str(judgement_bonus_on_hit_dmg_in_levels[0])],
 				"Judgement is enhanced to deal %s more damage when the enemy has less than %s health." % [(str((judgement_bonus_dmg_ratio - 1) * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
 				"Judgement does not apply on hit effects."
 			]

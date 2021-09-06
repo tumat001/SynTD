@@ -1,8 +1,9 @@
 
 
-# Random Info
+# 
 var enemy_id : int
 var faction
+
 
 # For random generation -> soon
 var value
@@ -17,6 +18,7 @@ var base_toughness : float = 0
 var base_resistance : float = 0
 var base_player_damage : float = 1
 var base_effect_vulnerability : float = 1
+
 
 func _init(arg_id : int, arg_faction):
 	enemy_id = arg_id

@@ -22,11 +22,11 @@ func _ready():
 	update_display()
 
 func update_display():
-	if ingredient_effect != null:
-		_update_panel(ingredient_effect.tower_base_effect)
-		
-	elif tower_base_effect != null:
-		_update_panel(tower_base_effect)
+	#if ingredient_effect != null:
+	#	_update_panel(ingredient_effect.tower_base_effect)
+	#	
+	#elif tower_base_effect != null:
+	#	_update_panel(tower_base_effect)
 	
 	set_collapsed(collapsed)
 

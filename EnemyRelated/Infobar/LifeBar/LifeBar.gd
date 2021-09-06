@@ -19,9 +19,9 @@ export(int) var current_health_value : float = 5 setget set_current_health_value
 export(int) var current_shield_value : float = 5 setget set_current_shield_value
 export(bool) var allow_overflow : bool = false setget set_overflow
 
-var scale_of_scale : Vector2 = Vector2(1, 1)
+export(Vector2) var scale_of_bars_scale : Vector2 = Vector2(1, 1)
 
-onready var bar_backround : TextureRect = $BarBackgroundPanel/BarBackground
+onready var bar_background : TextureRect = $BarBackgroundPanel/BarBackground
 onready var fill_health_foreground : TextureRect = $BarFillForeground/FillHealthForeground
 onready var fill_shield_foreground : TextureRect = $BarFillForeground/FillShieldForeground
 onready var chunks_container : Control = $BarFillForeground/Chunks
@@ -33,8 +33,8 @@ onready var bar_fill_foreground_marginer : MarginContainer = $BarFillForeground
 func set_bar_background_pic(value : Texture):
 	bar_background_pic = value
 	
-	if bar_backround != null:
-		bar_backround.texture = value
+	if bar_background != null:
+		bar_background.texture = value
 
 
 func set_fill_health_foreground_pic(value : Texture):
@@ -54,19 +54,36 @@ func set_fill_shield_foreground_pic(value : Texture):
 #
 
 func _ready():
-	rect_scale *= scale_of_scale
-	
-	bar_backround.texture = bar_background_pic
+	bar_background.texture = bar_background_pic
 	fill_health_foreground.texture = fill_health_foreground_pic
 	fill_shield_foreground.texture = fill_shield_foreground_pic
 	
-	bar_fill_foreground_marginer.add_constant_override("margin_top", fill_foreground_margin_top) 
-	bar_fill_foreground_marginer.add_constant_override("margin_left", fill_foreground_margin_left)
+	pass
+	#update_first_time()
+
+func update_first_time():
+	#rect_scale *= scale_of_bars_scale
+	
+	#bar_background.texture = bar_background_pic
+	#fill_health_foreground.texture = fill_health_foreground_pic
+	#fill_shield_foreground.texture = fill_shield_foreground_pic
+	
+	bar_fill_foreground_marginer.add_constant_override("margin_top", fill_foreground_margin_top * scale_of_bars_scale.y) 
+	bar_fill_foreground_marginer.add_constant_override("margin_left", fill_foreground_margin_left * scale_of_bars_scale.x)
 	
 	yield(get_tree(), "idle_frame") #
+	
+	bar_background.rect_scale *= scale_of_bars_scale
+	fill_health_foreground.rect_scale *= scale_of_bars_scale
+	fill_shield_foreground.rect_scale *= scale_of_bars_scale
+	
 	set_current_health_value(current_health_value)
 	set_current_shield_value(current_shield_value)
 	set_max_value(max_value)
+	
+	#rect_size.y = 0
+	#rect_min_size.y = 0
+
 
 
 func set_current_health_value(value : float):
@@ -80,7 +97,7 @@ func set_current_health_value(value : float):
 		if ratio < 0:
 			ratio = 0
 		
-		fill_health_foreground.rect_scale.x = ratio
+		fill_health_foreground.rect_scale.x = ratio * scale_of_bars_scale.x
 
 func set_current_shield_value(value : float):
 	current_shield_value = value
@@ -93,7 +110,7 @@ func set_current_shield_value(value : float):
 		if ratio < 0:
 			ratio = 0
 		
-		fill_shield_foreground.rect_scale.x = ratio
+		fill_shield_foreground.rect_scale.x = ratio * scale_of_bars_scale.x
 
 
 func set_max_value(value : float):
@@ -138,6 +155,7 @@ func redraw_chunks():
 				var chunk = chunks[i]
 				chunk.rect_position.x = poses[i]
 				chunk.visible = true
+				chunk.rect_scale.y = scale_of_bars_scale.y
 				
 				if (i + 1) % big_chunk_interval == 0:
 					chunk.texture = chunk_big_separator_pic
@@ -182,7 +200,7 @@ func _get_determined_positions_of_chunks(num) -> Array:
 	for i in num:
 		i += 1
 		
-		var indi_value = i * value_per_chunk
+		var indi_value = i * value_per_chunk * scale_of_bars_scale.x
 		var total_width = get_bar_fill_foreground_size().x
 		var precise_pos = (indi_value / max_value) * total_width  
 		precise_pos -= (chunk_separator_pic.get_size().x / 2)

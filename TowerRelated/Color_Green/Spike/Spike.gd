@@ -8,14 +8,12 @@ const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const InstantDamageAttackModule = preload("res://TowerRelated/Modules/InstantDamageAttackModule.gd")
 const InstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/InstantDamageAttackModule.tscn")
 
-const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
-
 const SpikeGroundProj = preload("res://TowerRelated/Color_Green/Spike/Spike_GroundProj/Spike_GroundProj.tscn")
 
 
 const bonus_damage_percent_threshold : float = 0.50
 const bonus_damage : float = 2.0
-var bonus_damage_instance : DamageInstance
+var bonus_on_hit : OnHitDamage
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -61,14 +59,11 @@ func _ready():
 
 
 func _construct_bonus_damage_instance():
-	var mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE)
+	var mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.SPIKE_BONUS_DAMAGE)
 	mod.flat_modifier = bonus_damage
 	
-	var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE, mod, DamageType.PHYSICAL)
-	
-	bonus_damage_instance = DamageInstance.new()
-	bonus_damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE] = on_hit
-	
+	bonus_on_hit = OnHitDamage.new(StoreOfTowerEffectsUUID.SPIKE_BONUS_DAMAGE, mod, DamageType.PHYSICAL)
+
 
 
 func _on_enemy_hit_s(enemy, damage_register_id, damage_instance, module):
@@ -76,10 +71,10 @@ func _on_enemy_hit_s(enemy, damage_register_id, damage_instance, module):
 		var ratio_health = enemy.current_health / enemy._last_calculated_max_health
 		
 		if ratio_health < bonus_damage_percent_threshold:
-			call_deferred("_deal_bonus_damage", enemy)
+			_deal_bonus_damage(damage_instance)
 
 
-func _deal_bonus_damage(enemy):
-	if enemy != null:
-		enemy.hit_by_damage_instance(bonus_damage_instance)
+func _deal_bonus_damage(damage_instance):
+	if damage_instance != null:
+		damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.SPIKE_BONUS_DAMAGE] = bonus_on_hit.get_copy_scaled_by(1)
 

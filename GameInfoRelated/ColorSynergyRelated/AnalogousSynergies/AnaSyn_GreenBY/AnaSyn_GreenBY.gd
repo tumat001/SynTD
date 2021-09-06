@@ -3,14 +3,14 @@ extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifying
 const TowerEffect_AnaSyn_GreenBY = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_AnaSyn_GreenBY.gd")
 
 
-const damage_per_tick_tier_1 : float = 0.4
-const max_damage_tier_1 : float = 8.0
+const damage_per_tick_tier_1 : float = 0.30
+const max_damage_tier_1 : float = 6.0
 
-const damage_per_tick_tier_2 : float = 0.25
-const max_damage_tier_2 : float = 5.0
+const damage_per_tick_tier_2 : float = 0.20
+const max_damage_tier_2 : float = 4.0
 
-const damage_per_tick_tier_3 : float = 0.15
-const max_damage_tier_3 : float = 3.0
+const damage_per_tick_tier_3 : float = 0.10
+const max_damage_tier_3 : float = 2.0
 
 const damage_per_tick_tier_4 : float = 0.05
 const max_damage_tier_4 : float = 1.0

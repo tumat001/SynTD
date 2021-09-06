@@ -395,9 +395,9 @@ func _sword_beam_attk_module_hit_enemy(enemy, damage_register_id, damage_instanc
 
 func _regards_ability_activated():
 	if !is_energy_module_on:
-		regards_ability.start_time_cooldown(regards_ability_cooldown)
+		regards_ability.start_time_cooldown(_get_cd_to_use(regards_ability_cooldown))
 	else:
-		regards_ability.start_round_cooldown(regards_ability_energy_module_cooldown)
+		regards_ability.start_round_cooldown(_get_cd_to_use(regards_ability_energy_module_cooldown))
 	
 	_sword_gain_height()
 

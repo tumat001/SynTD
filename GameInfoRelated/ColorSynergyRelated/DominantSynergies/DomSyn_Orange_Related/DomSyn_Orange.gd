@@ -16,9 +16,9 @@ const tier_3_heat_effect_scale : float = 2.5
 const tier_4_heat_effect_scale : float = 1.0
 
 const inc_heat_amount_from_ability : int = 20
-const inc_heat_amount_round_cooldown : int = 2
+const inc_heat_amount_round_cooldown : int = 3
 
-const dec_heat_amount_round_cooldown : int = 3
+const dec_heat_amount_round_cooldown : int = 4
 
 var current_heat_effect_scale : float
 
@@ -155,7 +155,7 @@ func _construct_inc_heat_ability():
 	inc_heat_ability.synergy = self
 	
 	inc_heat_ability.descriptions = [
-		"Immediately increases all in map tower's heat module's heat by %s. Does not surpass the round limit." % str(inc_heat_amount_from_ability),
+		"Immediately increases all in map tower's heat module's heat by %s. Heat gained this way does not surpass the heat limit per round." % str(inc_heat_amount_from_ability),
 		"Cooldown: %s rounds." % str(inc_heat_amount_round_cooldown)
 	]
 	inc_heat_ability.display_name = "Heat Up"

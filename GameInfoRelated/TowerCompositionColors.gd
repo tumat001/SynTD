@@ -119,9 +119,9 @@ func _init():
 	],
 	[AnaSyn_RedOV.new()],
 	[
-		"+15 armor and toughness pierce.",
-		"+9 armor and toughness pierce.",
-		"+5 armor and toughness pierce."
+		"+14 armor and toughness pierce.",
+		"+8 armor and toughness pierce.",
+		"+4 armor and toughness pierce."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -136,7 +136,7 @@ func _init():
 	[AnaSyn_OrangeYR.new()],
 	[
 		"130% attack speed",
-		"75% attack speed",
+		"70% attack speed",
 		"40% attack speed",
 		"15% attack speed",
 	],
@@ -156,9 +156,9 @@ func _init():
 	],
 	[AnaSyn_YellowGO.new()],
 	[
-		"+5.0 elemental on hit damage, +150% total base damage, +150% total attack speed, +50% base range.",
-		"+3.0 elemental on hit damage, +100% total base damage, +100% total attack speed, +40% base range",
-		"+2.0 elemental on hit damage, +55% total base damage, +55% total attack speed, +20% base range.",
+		"+6.0 elemental on hit damage, +250% total base damage, +250% total attack speed, +50% base range.",
+		"+4.0 elemental on hit damage, +150% total base damage, +150% total attack speed, +40% base range",
+		"+2.5 elemental on hit damage, +70% total base damage, +70% total attack speed, +20% base range.",
 		"+1.0 elemental on hit damage, +20% total base damage, +20% total attack speed, +10% base range."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -173,9 +173,9 @@ func _init():
 	],
 	[AnaSyn_GreenBY.new()],
 	[
-		"+0.40 on hit, up to 8",
-		"+0.25 on hit, up to 5",
-		"+0.15 on hit, up to 3",
+		"+0.30 on hit, up to 6",
+		"+0.20 on hit, up to 4",
+		"+0.10 on hit, up to 2",
 		"+0.05 on hit, up to 1"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE

@@ -22,6 +22,6 @@ func _on_AdvancedButton_pressed_mouse_event(event):
 				about_tooltip.queue_free()
 				about_tooltip = null
 
-
+# Override this to return a tooltip
 func _construct_about_tooltip() -> BaseTooltip:
 	return null

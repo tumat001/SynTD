@@ -22,7 +22,7 @@ const Reaper_SlashAttk_AOE = preload("res://TowerRelated/Color_Red/Reaper/Reaper
 
 const no_enemies_killed_clause : int = -10
 const no_enemy_in_range_clause : int = -11
-const slash_static_cooldown : float = 0.125
+const slash_static_cooldown : float = 0.2
 
 const slash_primary_damage_ratio : float = 4.0
 const slash_subsequent_damage_ratio : float = 2.0

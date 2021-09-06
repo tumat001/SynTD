@@ -63,14 +63,14 @@ func set_energy_module(module):
 	if module != null:
 		module.module_effect_descriptions = [
 			"Railgun's base pierce is increased to 77.",
-			"On hit damages and effects are 777% effective."
+			"On hit damages and effects are 400% effective."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
 	railgun_attack_module.base_pierce = 77
-	railgun_attack_module.on_hit_damage_scale = 7.77
-	railgun_attack_module.on_hit_effect_scale = 7.77
+	railgun_attack_module.on_hit_damage_scale = 4
+	railgun_attack_module.on_hit_effect_scale = 4
 	railgun_attack_module.base_proj_life_distance_scale = 4
 	
 	railgun_attack_module.calculate_final_pierce()

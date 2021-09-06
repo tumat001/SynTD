@@ -12,11 +12,11 @@ const EnemyHealEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyH
 const Transmutator_Proj = preload("res://TowerRelated/Color_Red/Transmutator/Transmutator_Attks/Transmutator_Proj.png")
 
 
-const base_slow_percent : float = -70.0
-const base_slow_duration : float = 2.0
+const base_slow_percent : float = -60.0
+const base_slow_duration : float = 1.5
 const base_max_health_reduc_percent : float = -12.5
-const min_max_health_reduc_amount : float = -5.0
-const max_max_health_reduc_amount : float = -25.0
+const min_max_health_reduc_amount : float = -25.0
+const max_max_health_reduc_amount : float = -5.0
 #const base_heal_ratio : float = 3.0
 
 var enemy_slow_modi : PercentModifier

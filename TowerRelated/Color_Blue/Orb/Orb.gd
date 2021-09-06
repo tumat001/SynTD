@@ -180,7 +180,7 @@ func _ready():
 	
 	beam_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
 	beam_attack_module.base_damage_scale = 0.5
-	beam_attack_module.base_damage = 1.3 / beam_attack_module.base_damage_scale
+	beam_attack_module.base_damage = 1 / beam_attack_module.base_damage_scale
 	beam_attack_module.base_damage_type = DamageType.ELEMENTAL
 	beam_attack_module.base_attack_speed = 6
 	beam_attack_module.base_attack_wind_up = 0
@@ -211,6 +211,8 @@ func _ready():
 	beam_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
 	
 	add_attack_module(beam_attack_module)
+	
+	beam_attack_module.connect("on_damage_instance_constructed", self, "_beam_dmg_instance_constructed", [], CONNECT_PERSIST)
 	
 	
 	# Sub attack
@@ -382,3 +384,9 @@ func _sub_attack_finished_shots():
 
 func _sub_attack_hit_enemy(enemy, damage_register_id, damage_instance, module):
 	damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)
+
+#
+
+func _beam_dmg_instance_constructed(damage_instance, module):
+	damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)
+

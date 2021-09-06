@@ -25,7 +25,7 @@ const hex_for_armor_reduction : int = 6
 const hex_for_toughness_reduction : int = 9
 const hex_for_effect_vulnerablility : int = 12
 const hex_for_hex_per_attk_buff : int = 15
-const hex_for_execute : int = 210
+const hex_for_execute : int = 75
 
 const hex_bonus_damage_amount : float = 1.5
 const hex_armor_reduction_ratio : float = 25.0
@@ -75,7 +75,7 @@ func _ready():
 	
 	add_attack_module(attack_module)
 	
-	connect("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_enemy_h", [], CONNECT_PERSIST)
+	connect("on_any_attack_module_enemy_hit", self, "_on_any_attack_hit_enemy_h", [], CONNECT_PERSIST)
 	connect("on_round_end", self, "_on_round_end_h", [], CONNECT_PERSIST)
 	
 	hextribute_crest.visible = false
@@ -128,34 +128,36 @@ func _construct_others():
 
 #
 
-func _on_main_attack_hit_enemy_h(enemy, damage_register_id, damage_instance, module):
-	var stack_amount : int = 0
-	
-	if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.HEXTRIBUTE_HEX_STACK):
-		var effect : EnemyStackEffect = enemy._stack_id_effects_map[StoreOfEnemyEffectsUUID.HEXTRIBUTE_HEX_STACK]
-		stack_amount = effect._current_stack
+func _on_any_attack_hit_enemy_h(enemy, damage_register_id, damage_instance, module):
+	if module.benefits_from_bonus_on_hit_effect:
+		var stack_amount : int = 0
 		
-		if stack_amount >= hex_for_damage_bonus - 1:
-			damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.HEXTRIBUTE_BONUS_DMG] = hextribute_bonus_on_hit_damage
+		if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.HEXTRIBUTE_HEX_STACK):
+			var effect : EnemyStackEffect = enemy._stack_id_effects_map[StoreOfEnemyEffectsUUID.HEXTRIBUTE_HEX_STACK]
+			stack_amount = effect._current_stack
 			
-		if stack_amount >= hex_for_armor_reduction - 1:
-			damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.HEXTRIBUTE_ARMOR_REDUCTION] = hextribute_armor_reduction_effect
+			if stack_amount >= hex_for_damage_bonus - 1:
+				damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.HEXTRIBUTE_BONUS_DMG] = hextribute_bonus_on_hit_damage
+				
+			if stack_amount >= hex_for_armor_reduction - 1:
+				damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.HEXTRIBUTE_ARMOR_REDUCTION] = hextribute_armor_reduction_effect
+				
+			if stack_amount >= hex_for_toughness_reduction - 1:
+				damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.HEXTRIBUTE_TOUGHNESS_REDUCTION] = hextribute_toughness_reduction_effect
+				
+			if stack_amount >= hex_for_effect_vulnerablility - 1:
+				damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.HEXTRIBUTE_EFFECT_VULNERABLE] = hextribute_effect_vul_effect
+				
+			if stack_amount >= hex_for_hex_per_attk_buff - 1:
+				current_hex_per_attack = empowered_hex_per_attack
+				hextribute_crest.visible = true
+				_update_stack_amount_of_hex_effect()
 			
-		if stack_amount >= hex_for_toughness_reduction - 1:
-			damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.HEXTRIBUTE_TOUGHNESS_REDUCTION] = hextribute_toughness_reduction_effect
-			
-		if stack_amount >= hex_for_effect_vulnerablility - 1:
-			damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.HEXTRIBUTE_EFFECT_VULNERABLE] = hextribute_effect_vul_effect
-			
-		if stack_amount >= hex_for_hex_per_attk_buff - 1:
-			current_hex_per_attack = empowered_hex_per_attack
-			hextribute_crest.visible = true
-			_update_stack_amount_of_hex_effect()
+			if stack_amount >= hex_for_execute - 1:
+				call_deferred("_attempt_execute_enemy", enemy)
 		
-		if stack_amount >= hex_for_execute - 1:
-			call_deferred("_execute_enemy", enemy)
-	
-	call_deferred("_create_attk_sprite", enemy.global_position, stack_amount)
+		call_deferred("_create_attk_sprite", enemy.global_position, stack_amount)
+
 
 func _create_attk_sprite(pos, stack_amount):
 	var attk_sprite : ExpandingAttackSprite = ExpandingAttackSprite_Scene.instance()
@@ -189,9 +191,10 @@ func _create_attk_sprite(pos, stack_amount):
 	
 
 
-func _execute_enemy(enemy):
-	if enemy != null:
+func _attempt_execute_enemy(enemy):
+	if enemy != null and !enemy.is_enemy_type_boss():
 		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE)
+
 
 func _update_stack_amount_of_hex_effect():
 	hextribute_hex_stack_effect.enemy_base_effect.num_of_stacks_per_apply = current_hex_per_attack

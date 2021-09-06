@@ -61,7 +61,7 @@ enum PotionTypes {
 }
 
 
-const attk_source_y_pos_shift : float = 14.0
+const attk_source_y_pos_shift : float = 12.0
 
 # REPEL
 const repel_knockup_accel : float = 40.0
@@ -72,8 +72,13 @@ const repel_mov_speed : float = 80.0
 const repel_mov_speed_deceleration : float = 65.0
 
 const repel_descriptions : Array = [
-	"Throws a potion that creates"
+	"Throws a potion that creates a blast at impact.",
+	"The blast knocks enemies away from its center. The blast also stuns enemies hit for %s seconds." % [str(repel_stun_duration)],
+	"The enemy hit directly by the potion is always knocked forward.",
+	"",
+	"\"Enemies tend to be separated with this potion.\""
 ]
+const repel_name : String = "Repel"
 
 var repel_attk_module : AOEAttackModule
 
@@ -84,10 +89,18 @@ var repel_forced_path_mov_effect : EnemyForcedPathOffsetMovementEffect
 # IMPLOSION
 const implosion_knockup_accel : float = 20.0
 const implosion_knockup_time : float = 0.4
-const implosion_stun_duration : float = 1.5
+const implosion_stun_duration : float = 1.25
 
 const implosion_base_mov_speed : float = 50.0
 const implosion_base_mov_speed_deceleration : float = 40.0
+
+const implosion_descriptions : Array = [
+	"Throws a potion that creates an void implosion at impact.",
+	"The implosion knocks enemies towards its center, with enemies closer to the center knocked less. The implosion also stuns enemies hit for %s seconds." % [str(implosion_stun_duration)],
+	"",
+	"\"Enemies tend to clump up with this potion.\"",
+]
+const implosion_name : String = "Implosion"
 
 var implosion_attk_module : AOEAttackModule
 
@@ -97,10 +110,19 @@ var implosion_forced_path_mov_template_effect : EnemyForcedPathOffsetMovementEff
 # SHUFFLE
 const shuffle_knockup_accel : float = 35.0
 const shuffle_knockup_time : float = 0.75
-const shuffle_stun_duration : float = 1.0
+const shuffle_stun_duration : float = 1.25
 
-const shuffle_base_mov_speed : float = 50.0
-const shuffle_base_mov_speed_deceleration : float = 40.0
+const shuffle_base_mov_speed : float = 120.0
+const shuffle_base_mov_speed_deceleration : float = 60.0
+
+const shuffle_descriptions : Array = [
+	"Throws a potion that creates a shuffling implosion at impact.",
+	"The implosion knocks enemies towards its center, with enemies farther from the center knocked more. The implosion also stuns enemies hit for %s seconds." % [str(shuffle_stun_duration)],
+	"",
+	"\"Enemies at the back tend to be sent forward, and vice versa, with this potion.\""
+]
+const shuffle_name : String = "Shuffle"
+
 
 var shuffle_attk_module : AOEAttackModule
 
@@ -109,15 +131,15 @@ var shuffle_forced_path_mov_template_effect : EnemyForcedPathOffsetMovementEffec
 
 #
 
-const potion_throw_cooldown : float = 4.0#8.0
+const potion_throw_cooldown : float = 15.0
 const potion_throw_ready_for_activation_cond_clause : int = -10
 
 var potion_attk_module : BulletAttackModule
 var potion_throw_ability : BaseAbility
 
-var current_potion_type_selected : int
+var current_potion_type_selected : int setget select_potion_type
 
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.BREWD)
 	
@@ -163,6 +185,7 @@ func _ready():
 	
 	_construct_repel_attk_module_and_relateds()
 	_construct_implosion_attk_module_and_relateds()
+	_construct_shuffle_attk_module_and_relateds()
 	
 	_construct_and_register_potion_throw_ability()
 	
@@ -170,7 +193,7 @@ func _ready():
 	
 	_post_inherit_ready()
 	
-	select_potion_type(PotionTypes.REPEL)
+	select_potion_type(PotionTypes.IMPLODE)
 
 
 # REPEL RELATED
@@ -318,6 +341,82 @@ func _before_implosion_explosion_hit_enemy(enemy, explosion):
 		enemy._add_effect(forced_mov_copy)
 
 
+# SHUFFLE RELATED
+
+func _construct_shuffle_attk_module_and_relateds():
+	var attk_module = AOEAttackModule_Scene.instance()
+	attk_module.base_damage = 0
+	attk_module.base_damage_type = DamageType.ELEMENTAL
+	attk_module.base_attack_speed = 0
+	attk_module.base_attack_wind_up = 0
+	attk_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	attk_module.is_main_attack = false
+	#potion_attk_module.base_pierce = 1
+	#potion_attk_module.base_proj_speed = 680
+	#potion_attk_module.base_proj_life_distance = info.base_range
+	attk_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	attk_module.on_hit_damage_scale = 0
+	attk_module.position.y -= attk_source_y_pos_shift
+	
+	attk_module.benefits_from_bonus_attack_speed = false
+	attk_module.benefits_from_bonus_base_damage = false
+	attk_module.benefits_from_bonus_on_hit_damage = false
+	attk_module.benefits_from_bonus_on_hit_effect = false
+	
+	var sprite_frames = SpriteFrames.new()
+	sprite_frames.add_frame("default", Shuffle_Pic01)
+	sprite_frames.add_frame("default", Shuffle_Pic02)
+	sprite_frames.add_frame("default", Shuffle_Pic03)
+	sprite_frames.add_frame("default", Shuffle_Pic04)
+	sprite_frames.add_frame("default", Shuffle_Pic05)
+	sprite_frames.add_frame("default", Shuffle_Pic06)
+	sprite_frames.add_frame("default", Shuffle_Pic07)
+	sprite_frames.add_frame("default", Shuffle_Pic08)
+	sprite_frames.add_frame("default", Shuffle_Pic09)
+	sprite_frames.add_frame("default", Shuffle_Pic10)
+	sprite_frames.add_frame("default", Shuffle_Pic11)
+	sprite_frames.add_frame("default", Shuffle_Pic12)
+	
+	attk_module.aoe_sprite_frames = sprite_frames
+	attk_module.sprite_frames_only_play_once = true
+	attk_module.pierce = -1
+	attk_module.duration = 0.25
+	attk_module.damage_repeat_count = 1
+	
+	attk_module.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
+	attk_module.base_aoe_scene = BaseAOE_Scene
+	attk_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
+	
+	attk_module.can_be_commanded_by_tower = false
+	
+	add_attack_module(attk_module)
+	
+	shuffle_attk_module = attk_module
+	
+	#
+	
+	shuffle_knockup_effect = EnemyKnockUpEffect.new(shuffle_knockup_time, shuffle_knockup_accel, StoreOfEnemyEffectsUUID.BREWD_SHUFFLE_KNOCKUP)
+	shuffle_knockup_effect.custom_stun_duration = shuffle_stun_duration
+	
+	shuffle_forced_path_mov_template_effect = EnemyForcedPathOffsetMovementEffect.new(shuffle_base_mov_speed, shuffle_base_mov_speed_deceleration, StoreOfEnemyEffectsUUID.BREWD_SHUFFLE_FORCED_PATH_MOV)
+
+func _before_shuffle_explosion_hit_enemy(enemy, explosion):
+	if enemy != null and explosion != null and enemy.current_path != null:
+		var knock_up_copy = shuffle_knockup_effect._get_copy_scaled_by(1)
+		var forced_mov_copy = shuffle_forced_path_mov_template_effect._get_copy_scaled_by(1)
+		
+		var explosion_nearest_offset_path = enemy.current_path.curve.get_closest_offset(explosion.global_position)
+		var offset_diff = explosion_nearest_offset_path - enemy.offset
+		
+		var mov_scale = (offset_diff / forced_mov_copy.initial_mov_speed) * 2
+		
+		forced_mov_copy.scale_movements(mov_scale)
+		
+		
+		enemy._add_effect(knock_up_copy)
+		enemy._add_effect(forced_mov_copy)
+
+
 
 #
 
@@ -384,7 +483,7 @@ func _potion_thrown_hit_enemy(enemy, damage_register_id, damage_instance, module
 	if current_potion_type_selected == PotionTypes.REPEL:
 		var repel_explosion = repel_attk_module.construct_aoe(enemy.global_position, enemy.global_position)
 		repel_explosion.connect("before_enemy_hit_aoe", self, "_before_repel_explosion_hit_enemy", [repel_explosion])
-		repel_explosion.scale *= 1.5
+		repel_explosion.scale *= 1.75
 		
 		get_tree().get_root().add_child(repel_explosion)
 		
@@ -393,7 +492,7 @@ func _potion_thrown_hit_enemy(enemy, damage_register_id, damage_instance, module
 	elif current_potion_type_selected == PotionTypes.IMPLODE:
 		var implode_explosion = implosion_attk_module.construct_aoe(enemy.global_position, enemy.global_position)
 		implode_explosion.connect("before_enemy_hit_aoe", self, "_before_implosion_explosion_hit_enemy", [implode_explosion])
-		implode_explosion.scale *= 1.5
+		implode_explosion.scale *= 1.75
 		
 		get_tree().get_root().add_child(implode_explosion)
 		
@@ -401,7 +500,12 @@ func _potion_thrown_hit_enemy(enemy, damage_register_id, damage_instance, module
 		
 	#----------
 	elif current_potion_type_selected == PotionTypes.SHUFFLE:
-		pass
+		var shuffle_explosion = shuffle_attk_module.construct_aoe(enemy.global_position, enemy.global_position)
+		shuffle_explosion.connect("before_enemy_hit_aoe", self, "_before_shuffle_explosion_hit_enemy", [shuffle_explosion])
+		shuffle_explosion.scale *= 1.75
+		
+		get_tree().get_root().add_child(shuffle_explosion)
+
 
 
 
@@ -410,4 +514,29 @@ func _potion_thrown_hit_enemy(enemy, damage_register_id, damage_instance, module
 func select_potion_type(arg_pot_type : int):
 	current_potion_type_selected = arg_pot_type
 	emit_signal("selected_potion_type_changed", arg_pot_type)
+
+func get_name_of_potion_type(arg_pot_type : int = current_potion_type_selected) -> String:
+	if arg_pot_type == PotionTypes.REPEL:
+		return repel_name
+	elif arg_pot_type == PotionTypes.IMPLODE:
+		return implosion_name
+	elif arg_pot_type == PotionTypes.SHUFFLE:
+		return shuffle_name
+	
+	return "err"
+
+func get_descriptions_of_potion_type(arg_pot_type : int = current_potion_type_selected) -> Array:
+	if arg_pot_type == PotionTypes.REPEL:
+		return repel_descriptions
+	elif arg_pot_type == PotionTypes.IMPLODE:
+		return implosion_descriptions
+	elif arg_pot_type == PotionTypes.SHUFFLE:
+		return shuffle_descriptions
+	
+	return [
+		"err"
+	]
+
+
+#
 

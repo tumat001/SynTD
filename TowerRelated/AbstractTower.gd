@@ -475,7 +475,12 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 				range_module.connect("final_range_changed", self, "_emit_final_range_changed", [], CONNECT_PERSIST)
 				range_module.connect("targeting_changed", self, "_emit_targeting_changed", [], CONNECT_PERSIST)
 				range_module.connect("targeting_options_modified", self, "_emit_targeting_options_modified", [], CONNECT_PERSIST)
+			
 			range_module.update_range()
+		
+		# update
+		_emit_final_base_damage_changed()
+		_emit_final_attack_speed_changed()
 	
 	if benefit_from_existing_tower_buffs:
 		for tower_effect in _all_uuid_tower_buffs_map.values():
@@ -1853,9 +1858,11 @@ func _start_drag():
 	
 	emit_signal("tower_being_dragged", self)
 
+
 func _end_drag():
 	z_index = ZIndexStore.TOWERS
-	transfer_to_placable(hovering_over_placable, false, !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self))
+	if !is_queued_for_deletion():
+		transfer_to_placable(hovering_over_placable, false, !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self))
 	erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
 	emit_signal("tower_dropped_from_dragged", self)
 

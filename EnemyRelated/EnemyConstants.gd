@@ -38,7 +38,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# BASIC FACTION
 	if enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
-		info.base_health = 900#25
+		info.base_health = 100#25
 		info.base_movement_speed = 35
 		
 	elif enemy_id == Enemies.BRUTE:
@@ -132,6 +132,7 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Basic/Wizard/Wizard.tscn")
 	elif enemy_id == Enemies.PAIN:
 		return load("res://EnemyRelated/EnemyTypes/Type_Basic/Pain/Pain.tscn")
+		
 	# EXPERT FACTION
 	elif enemy_id == Enemies.EXPERIENCED:
 		return load("res://EnemyRelated/EnemyTypes/Type_Expert/Experienced(Basic)/Experienced.tscn")
@@ -147,5 +148,6 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Expert/Assassin(Pain)/Assassin.tscn")
 	elif enemy_id == Enemies.GRANDMASTER:
 		return load("res://EnemyRelated/EnemyTypes/Type_Expert/Grandmaster/Grandmaster.tscn")
-	
+		
+		
 

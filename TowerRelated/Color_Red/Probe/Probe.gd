@@ -13,12 +13,12 @@ const Probe_PierceProj_Pic = preload("res://TowerRelated/Color_Red/Probe/AttkAss
 var EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 
 
-const attk_speed_research_amount : float = 60.0
+const attk_speed_research_amount : float = 50.0
 const attk_speed_research_duration : float = 5.0
 const research_stack_trigger_amount : int = 3
 
-const piercing_base_dmg : float = 4.0
-const piercing_pierce_amount : int = 5
+const piercing_base_dmg : float = 3.0
+const piercing_pierce_amount : int = 4
 
 
 var attk_speed_effect : TowerAttributesEffect
@@ -40,6 +40,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += 15
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -53,6 +54,7 @@ func _ready():
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	attack_module.position.y -= 15
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 3

@@ -190,6 +190,7 @@ func _ready():
 	panel_buy_sell_level_roll.level_manager = level_manager
 	panel_buy_sell_level_roll.shop_manager = shop_manager
 	panel_buy_sell_level_roll.tower_manager = tower_manager
+	panel_buy_sell_level_roll.tower_inventory_bench = tower_inventory_bench
 	
 	# tower empty slot notif panel
 	tower_empty_slot_notif_panel.tower_manager = tower_manager
@@ -210,8 +211,8 @@ func _ready():
 	health_manager.set_health(150)
 	
 	
-	gold_manager.increase_gold_by(40, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_9
+	#gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	#level_manager.current_level = LevelManager.LEVEL_9
 	
 	#relic_manager.increase_relic_count_by(5, RelicManager.IncreaseRelicSource.ROUND)
 
@@ -225,24 +226,24 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHAOS,
-			Towers.RE,
-			Towers.TESLA,
-			Towers.SIMPLE_OBELISK,
-			Towers.PROMINENCE,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHARGE,
-			Towers.PROBE,
-			Towers.BREWD,
-			Towers.FLAMEBURST,
-			Towers.ROYAL_FLAME,
-		])
-	even = !even
+	shop_manager.roll_towers_in_shop_with_cost()
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.CHAOS,
+#			Towers.RE,
+#			Towers.TESLA,
+#			Towers.SIMPLE_OBELISK,
+#			Towers.HERO,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.BLOSSOM,
+#			Towers.PROBE,
+#			Towers.SUNFLOWER,
+#			Towers.COAL_LAUNCHER,
+#			Towers.ROYAL_FLAME,
+#		])
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):

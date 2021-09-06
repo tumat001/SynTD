@@ -1,0 +1,84 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseTowerSpecificInfoPanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseTowerSpecificInfoPanel_BodyBackground.png" type="Texture" id=2]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWithTooltip.tscn" type="PackedScene" id=3]
+[ext_resource path="res://TowerRelated/Color_Green/Brewd/Panels/Brewd_InfoPanel.gd" type="Script" id=4]
+[ext_resource path="res://TowerRelated/Color_Green/Brewd/Panels/Potion_Shuffle_ButtonPic.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_Green/Brewd/Panels/Potion_Repel_ButtonPic.png" type="Texture" id=6]
+[ext_resource path="res://TowerRelated/Color_Green/Brewd/Panels/Potion_Implode_ButtonPic.png" type="Texture" id=7]
+
+[node name="Brewd_InfoPanel" instance=ExtResource( 1 )]
+size_flags_horizontal = 6
+script = ExtResource( 4 )
+
+[node name="VBoxContainer" parent="." index="0"]
+margin_bottom = 52.0
+
+[node name="MarginContainer" parent="VBoxContainer/HeaderMarginer/MarginContainer" index="1"]
+margin_left = 15.0
+margin_right = 35.0
+
+[node name="Label" parent="VBoxContainer/HeaderMarginer/MarginContainer/MarginContainer" index="0"]
+margin_right = 20.0
+text = "Brewd"
+
+[node name="BodyMarginer" parent="VBoxContainer" index="2"]
+margin_bottom = 51.0
+size_flags_horizontal = 6
+
+[node name="Background" type="TextureRect" parent="VBoxContainer/BodyMarginer" index="0"]
+margin_right = 110.0
+margin_bottom = 37.0
+mouse_filter = 2
+size_flags_horizontal = 6
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/BodyMarginer" index="1"]
+margin_left = 8.0
+margin_right = 101.0
+margin_bottom = 37.0
+mouse_filter = 2
+size_flags_horizontal = 6
+custom_constants/margin_top = 5
+custom_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BodyMarginer/MarginContainer" index="0"]
+margin_top = 5.0
+margin_right = 93.0
+margin_bottom = 32.0
+mouse_filter = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+custom_constants/separation = 6
+
+[node name="PotionRepel_Button" parent="VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer" index="0" instance=ExtResource( 3 )]
+margin_right = 27.0
+margin_bottom = 27.0
+texture_normal = ExtResource( 6 )
+define_tooltip_construction_in_button = false
+
+[node name="PotionImplosion_Button" parent="VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer" index="1" instance=ExtResource( 3 )]
+margin_left = 33.0
+margin_right = 60.0
+margin_bottom = 27.0
+texture_normal = ExtResource( 7 )
+define_tooltip_construction_in_button = false
+
+[node name="PotionShuffle_Button" parent="VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer" index="2" instance=ExtResource( 3 )]
+margin_left = 66.0
+margin_right = 93.0
+margin_bottom = 27.0
+texture_normal = ExtResource( 5 )
+define_tooltip_construction_in_button = false
+
+[node name="BottomBorder" parent="VBoxContainer" index="3"]
+margin_top = 51.0
+margin_bottom = 52.0
+[connection signal="about_tooltip_construction_requested" from="VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer/PotionRepel_Button" to="." method="_on_PotionRepel_Button_about_tooltip_construction_requested"]
+[connection signal="pressed_mouse_event" from="VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer/PotionRepel_Button" to="." method="_on_PotionRepel_Button_pressed_mouse_event"]
+[connection signal="about_tooltip_construction_requested" from="VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer/PotionImplosion_Button" to="." method="_on_PotionImplosion_Button_about_tooltip_construction_requested"]
+[connection signal="pressed_mouse_event" from="VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer/PotionImplosion_Button" to="." method="_on_PotionImplosion_Button_pressed_mouse_event"]
+[connection signal="about_tooltip_construction_requested" from="VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer/PotionShuffle_Button" to="." method="_on_PotionShuffle_Button_about_tooltip_construction_requested"]
+[connection signal="pressed_mouse_event" from="VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer/PotionShuffle_Button" to="." method="_on_PotionShuffle_Button_pressed_mouse_event"]

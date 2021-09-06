@@ -15,12 +15,14 @@ export(float) var max_value : float = 5 setget set_max_value
 export(float) var current_value : float = 5 setget set_current_value
 export(bool) var allow_overflow : bool = false setget set_overflow
 
-var scale_of_scale : Vector2 = Vector2(1, 1)
+export(Vector2) var scale_of_bars_scale : Vector2 = Vector2(2, 1)
 
 export(bool) var yield_before_update : bool = false
 
+
 onready var bar_backround : TextureRect = $BarBackgroundPanel/BarBackground
 onready var fill_foreground : TextureRect = $BarFillForeground/FillForeground
+
 onready var chunks_container : Control = $BarFillForeground/Chunks
 onready var bar_fill_foreground_marginer : MarginContainer = $BarFillForeground
 
@@ -44,7 +46,7 @@ func set_fill_foreground_pic(value : Texture):
 #
 
 func _ready():
-	rect_scale *= scale_of_scale
+	rect_scale *= scale_of_bars_scale
 	
 	bar_backround.texture = bar_background_pic
 	fill_foreground.texture = fill_foreground_pic

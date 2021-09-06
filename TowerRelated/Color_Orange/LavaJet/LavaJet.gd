@@ -24,7 +24,7 @@ const LavaJet_Beam08 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_
 const LavaJet_Beam09 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_Beam/LavaJetBeam_09.png")
 
 const health_percent_dmg : float = 50.0
-const percent_dmg_max_limit : float = 50.0 # max damage on enemies with health above 100
+const percent_dmg_max_limit : float = 40.0
 
 
 const num_of_attacks_before_beam : int = 5

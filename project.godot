@@ -63,6 +63,12 @@ window/stretch/aspect="keep"
 
 singletons=[ "res://git_api.gdnlib" ]
 
+[global]
+
+"message queue"=false
+max_size=false
+max_size_kb=false
+
 [input]
 
 game_round_toggle={
@@ -146,6 +152,10 @@ game_tower_targeting_right={
 2d_physics/layer_10="EnemyAuraToTowers"
 2d_physics/layer_16="TowerPlacables"
 2d_physics/layer_17="TowerClickableArea"
+
+[memory]
+
+limits/message_queue/max_size_kb=2048
 
 [rendering]
 

@@ -20,6 +20,11 @@ const Hero_InfoPanel = preload("res://TowerRelated/Color_White/Hero/HeroInfoPane
 const Hero_InfoPanel_Scene = preload("res://TowerRelated/Color_White/Hero/HeroInfoPanel_Related/HeroInfoPanel.tscn")
 const Blossom_InfoPanel = preload("res://TowerRelated/Color_Green/Blossom/AbilityPanel/Blossom_InfoPanel.gd")
 const Blossom_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/Blossom/AbilityPanel/Blossom_InfoPanel.tscn")
+const Brewd_InfoPanel = preload("res://TowerRelated/Color_Green/Brewd/Panels/Brewd_InfoPanel.gd")
+const Brewd_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/Brewd/Panels/Brewd_InfoPanel.tscn")
+const BeaconDish_EffectPanel = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish_Panel/BeaconDish_EffectPanel.gd")
+const BeaconDish_EffectPanel_Scene = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish_Panel/BeaconDish_EffectPanel.tscn")
+
 
 var tower : AbstractTower
 
@@ -44,6 +49,8 @@ var orb_info_panel : Orb_InfoPanel
 var wave_info_panel : Wave_InfoPanel
 var hero_info_panel : Hero_InfoPanel
 var blossom_info_panel : Blossom_InfoPanel
+var brewd_info_panel : Brewd_InfoPanel
+var beacon_dish_effect_panel : BeaconDish_EffectPanel
 
 
 func _ready():
@@ -246,6 +253,34 @@ func _update_tower_specific_info_panel():
 		if blossom_info_panel != null:
 			blossom_info_panel.visible = false
 			blossom_info_panel.set_blossom(null)
+	
+	
+	# Brewd
+	if Brewd_InfoPanel.should_display_self_for(tower):
+		if brewd_info_panel == null:
+			brewd_info_panel = Brewd_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(brewd_info_panel)
+		
+		brewd_info_panel.visible = true
+		brewd_info_panel.set_brewd_tower(tower)
+	else:
+		if brewd_info_panel != null:
+			brewd_info_panel.visible = false
+			brewd_info_panel.set_brewd_tower(null)
+	
+	
+	# BeaconDish
+	if BeaconDish_EffectPanel.should_display_self_for(tower):
+		if beacon_dish_effect_panel == null:
+			beacon_dish_effect_panel = BeaconDish_EffectPanel_Scene.instance()
+			tower_specific_slot.add_child(beacon_dish_effect_panel)
+		
+		beacon_dish_effect_panel.visible = true
+		beacon_dish_effect_panel.set_beacon_dish(tower)
+	else:
+		if beacon_dish_effect_panel != null:
+			beacon_dish_effect_panel.visible = false
+			beacon_dish_effect_panel.set_beacon_dish(null)
 	
 	
 	

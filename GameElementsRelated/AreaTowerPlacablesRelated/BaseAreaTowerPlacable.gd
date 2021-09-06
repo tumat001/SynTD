@@ -1,6 +1,20 @@
 extends Node2D
 
-var tower_occupying
+signal on_occupancy_changed(tower_occupying_nullable)
+signal on_tower_left_placement(tower_left)
+
+var tower_occupying setget set_tower_occupying
+
+#
+
+func set_tower_occupying(arg_tower):
+	if tower_occupying != null:
+		emit_signal("on_tower_left_placement", tower_occupying)
+	
+	tower_occupying = arg_tower
+	
+	emit_signal("on_occupancy_changed", tower_occupying)
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

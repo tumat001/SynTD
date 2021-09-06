@@ -11,6 +11,9 @@ const MONO_SCENE = preload("res://TowerRelated/Color_Gray/Mono/Mono.tscn")
 
 signal before_tower_is_added(tower)
 
+signal tower_entered_bench_slot(tower, bench_slot)
+signal tower_removed_from_bench_slot(tower, bench_slot)
+
 var tower_manager : TowerManager
 var all_bench_slots : Array
 
@@ -31,6 +34,11 @@ func _ready():
 		$BenchSlot09,
 		$BenchSlot10,
 	]
+	
+	for bench_slot in all_bench_slots:
+		bench_slot.connect("on_occupancy_changed", self, "_on_occupancy_in_bench_slot_changed", [bench_slot], CONNECT_PERSIST)
+		bench_slot.connect("on_tower_left_placement", self, "_on_tower_left_bench_slot", [bench_slot], CONNECT_PERSIST)
+
 
 func insert_tower(tower_id : int, arg_bench_slot = _find_empty_slot()):
 	var bench_slot = arg_bench_slot
@@ -73,3 +81,13 @@ func make_all_slots_glow():
 func make_all_slots_not_glow():
 	for bench in all_bench_slots:
 		bench.set_area_texture_to_not_glow()
+
+#
+
+
+func _on_occupancy_in_bench_slot_changed(tower, bench_slot):
+	if tower != null:
+		emit_signal("tower_entered_bench_slot", tower, bench_slot)
+
+func _on_tower_left_bench_slot(tower, bench_slot):
+	emit_signal("tower_removed_from_bench_slot", tower, bench_slot)

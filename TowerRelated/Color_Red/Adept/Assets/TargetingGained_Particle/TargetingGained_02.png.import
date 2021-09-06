@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Potion_Scorch_ButtonPic.png-371f23d1da09d2409f69517ed1b637e8.stex"
+path="res://.import/TargetingGained_02.png-7cae0e5ec759d1e1607d618701c20dd7.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TowerRelated/Color_Green/Brewd/Panels/Potion_Scorch_ButtonPic.png"
-dest_files=[ "res://.import/Potion_Scorch_ButtonPic.png-371f23d1da09d2409f69517ed1b637e8.stex" ]
+source_file="res://TowerRelated/Color_Red/Adept/Assets/TargetingGained_Particle/TargetingGained_02.png"
+dest_files=[ "res://.import/TargetingGained_02.png-7cae0e5ec759d1e1607d618701c20dd7.stex" ]
 
 [params]
 
