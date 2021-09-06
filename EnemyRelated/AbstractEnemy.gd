@@ -317,14 +317,15 @@ func _post_inherit_ready():
 	current_health = _last_calculated_max_health
 	
 	
+	# All this for scaling of the bar purposes,
+	# but the status bar (and any other) wont be
+	# aligned at the center...
 	infobar.visible = false
 	yield(get_tree(), "idle_frame")
-	
 	
 	lifebar.current_health_value = current_health
 	lifebar.current_shield_value = current_shield
 	lifebar.max_value = _last_calculated_max_health
-	
 	
 	layer_infobar.position.y -= round((_self_size.y) + 6) + ((lifebar.get_bar_fill_foreground_size().y * (lifebar.scale_of_bars_scale.y / 2.0))) #- 40)
 	layer_infobar.position.x -= round(lifebar.get_bar_fill_foreground_size().x * lifebar.scale_of_bars_scale.x / 4)

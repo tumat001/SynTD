@@ -58,7 +58,6 @@ func _ready():
 	fill_health_foreground.texture = fill_health_foreground_pic
 	fill_shield_foreground.texture = fill_shield_foreground_pic
 	
-	pass
 	#update_first_time()
 
 func update_first_time():
@@ -98,6 +97,8 @@ func set_current_health_value(value : float):
 			ratio = 0
 		
 		fill_health_foreground.rect_scale.x = ratio * scale_of_bars_scale.x
+		#fill_health_foreground.rect_size.x = fill_health_foreground_pic.get_size().x * ratio * scale_of_bars_scale.x
+
 
 func set_current_shield_value(value : float):
 	current_shield_value = value

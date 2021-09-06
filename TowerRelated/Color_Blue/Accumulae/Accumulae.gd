@@ -59,7 +59,7 @@ const base_enemy_ap_reduction_of_siphon : float = -0.35
 
 const base_ap_per_siphon_stack : float = 0.25
 
-const base_spell_burst_damage : float = 15.0
+const base_spell_burst_damage : float = 10.0
 
 # clause for attk module
 const lob_attk_module_not_yet_casted_clause : int = -10
@@ -242,8 +242,8 @@ func _construct_and_add_lob_attack_module():
 
 func _construct_and_add_spell_burst_explosion():
 	var explosion_attack_module = AOEAttackModule_Scene.instance()
-	explosion_attack_module.base_damage = 2.75
-	explosion_attack_module.base_damage_type = DamageType.PHYSICAL
+	explosion_attack_module.base_damage = base_spell_burst_damage
+	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0
 	explosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE

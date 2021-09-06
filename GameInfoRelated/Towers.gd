@@ -2168,7 +2168,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Cooldown: 1.5 s",
 			"",
 			"Accumulae is unable to execute its main attack while executing Salvo.",
-			"Each Spell Burst explodes upon reaching the target location, dealing 15 elemental damage to 5 enemies. The damage scales with the ability potency at the time of casting.",
+			"Each Spell Burst explodes upon reaching the target location, dealing 10 elemental damage to 5 enemies. The damage scales with the ability potency at the time of casting.",
 			"Spell burst explosions apply on hit effects.",
 			"Ability cdr also reduces delay per burst in salvo."
 		]
