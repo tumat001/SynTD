@@ -3,6 +3,9 @@ extends "res://TowerRelated/DamageAndSpawnables/BaseBullet.gd"
 const BlueMagnetPic = preload("res://TowerRelated/Color_Yellow/Magnetizer/BlueMagnet.png")
 const RedMagnetPic = preload("res://TowerRelated/Color_Yellow/Magnetizer/RedMagnet.png")
 
+signal on_curr_distance_expired_after_setup()
+
+
 enum {
 	BLUE, # SOUTH
 	RED, # NORTH btw
@@ -25,6 +28,9 @@ var current_uses_left : int
 
 
 func _ready():
+	destroy_self_after_zero_life_distance = false
+	connect("on_current_life_distance_expire", self, "_on_self_curr_distance_expired", [], CONNECT_ONESHOT)
+	
 	_set_sprite_frames_to_use()
 
 
@@ -38,6 +44,22 @@ func _set_sprite_frames_to_use():
 	bullet_sprite.frames = sf
 
 
+func _on_self_curr_distance_expired():
+	_set_self_up_for_no_movement()
+	call_deferred("emit_signal", "on_curr_distance_expired_after_setup")
+
+func _set_self_up_for_no_movement():
+	eligible_for_beam_formation = true
+	decrease_life_distance = false
+	current_life_distance = 500
+	direction_as_relative_location = Vector2(0, 0)
+	speed = 0
+	
+	collision_layer = 0
+	collision_mask = 0
+
+
+
 # Enemy hit and pos related
 
 func hit_by_enemy(enemy):
@@ -46,14 +68,8 @@ func hit_by_enemy(enemy):
 		offset_from_enemy = global_position - enemy.global_position
 		
 		enemy_stuck_to = enemy
-		eligible_for_beam_formation = true
-		decrease_life_distance = false
-		current_life_distance = 500
-		direction_as_relative_location = Vector2(0, 0)
-		speed = 0
 		
-		collision_layer = 0
-		collision_mask = 0
+		_set_self_up_for_no_movement()
 		
 		call_deferred("emit_signal", "hit_an_enemy", self)
 

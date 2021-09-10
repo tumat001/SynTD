@@ -18,7 +18,7 @@ extents = Vector2( 4.875, 8.25 )
 [node name="Experienced" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
 
-[node name="AnimatedSprite" parent="." index="0"]
+[node name="AnimatedSprite" parent="SpriteLayer/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
 
 [node name="CollisionArea" parent="." index="1"]

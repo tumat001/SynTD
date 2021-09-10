@@ -13,17 +13,23 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 #var tower_ap_effect : TowerAttributesEffect
 #var tower_ap_modi : FlatModifier
 
-const explosion_damage : float = 3.0
+const explosion_damage : float = 4.0
 
 const expl_scale_tier_1 : float = 2.0
 const expl_scale_tier_2 : float = 1.75
 const expl_scale_tier_3 : float = 1.25
 const expl_scale_tier_4 : float = 1.0
 
-const expl_unit_time_tier_1 : float = 1.0
-const expl_unit_time_tier_2 : float = 2.5
+const expl_unit_time_tier_1 : float = 0.5
+const expl_unit_time_tier_2 : float = 2.0
 const expl_unit_time_tier_3 : float = 5.0
-const expl_unit_time_tier_4 : float = 8.0
+const expl_unit_time_tier_4 : float = 10.0
+
+# When towers are overheating (100 heat)
+const _explosion_cooldown_lowered_ratio : float = 0.5
+# When towers are overheating (100 heat)
+const _explosion_buffed_dmg_ratio : float = 1.25
+
 
 var game_elements : GameElements
 var curr_tier : int
@@ -77,7 +83,7 @@ func _tower_to_benefit_from_synergy(tower : AbstractTower):
 
 func _attempt_add_effect_to_tower(tower : AbstractTower):
 	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.ORANGE_BLUE_AM_ADDER):
-		var expl_module_adder = AMAdder_CompliSyn_OrangeBlue.new(explosion_damage)
+		var expl_module_adder = AMAdder_CompliSyn_OrangeBlue.new(explosion_damage, _explosion_cooldown_lowered_ratio, _explosion_buffed_dmg_ratio)
 		
 		if curr_tier == 1:
 			#tower_ap_modi.flat_modifier = tower_ap_tier_1

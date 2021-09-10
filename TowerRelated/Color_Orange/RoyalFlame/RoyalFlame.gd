@@ -115,7 +115,7 @@ func _ready():
 	
 	add_attack_module(attack_module)
 	
-	connect("attack_module_added", self, "_main_am_added")
+	connect("attack_module_added", self, "_main_am_added", [], CONNECT_PERSIST)
 	
 	
 	# Extinguish attack module
@@ -280,7 +280,8 @@ func _royal_flame_ability_activated():
 	steam_burst_ability.start_time_cooldown(_get_cd_to_use(base_ability_cooldown))
 	
 	var bucket : Array = []
-	var targets_sorted_close : Array = Targeting.enemies_to_target(extinguish_range_module.enemies_in_range, Targeting.CLOSE, extinguish_range_module.enemies_in_range.size(), extinguish_range_module.global_position)
+	var all_enemies = game_elements.enemy_manager.get_all_targetable_enemies()
+	var targets_sorted_close : Array = Targeting.enemies_to_target(all_enemies, Targeting.CLOSE, all_enemies.size(), extinguish_range_module.global_position)
 	for enemy in targets_sorted_close:
 		if enemy._dmg_over_time_id_effects_map.has(StoreOfEnemyEffectsUUID.ROYAL_FLAME_BURN):
 			bucket.append(enemy)

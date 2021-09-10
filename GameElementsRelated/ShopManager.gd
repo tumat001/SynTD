@@ -15,10 +15,10 @@ const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_3 : [85, 15, 0, 0, 0, 0],
 	LevelManager.LEVEL_4 : [53, 39, 8, 0, 0, 0],
 	LevelManager.LEVEL_5 : [40, 40, 20, 0, 0, 0],
-	LevelManager.LEVEL_6 : [22, 35, 40, 3, 0, 0],
+	LevelManager.LEVEL_6 : [23, 35, 40, 2, 0, 0],
 	LevelManager.LEVEL_7 : [16, 30, 45, 8, 1, 0],
 	LevelManager.LEVEL_8 : [9, 20, 40, 28, 3, 0],
-	LevelManager.LEVEL_9 : [5, 10, 20, 40, 25, 0],
+	LevelManager.LEVEL_9 : [5, 15, 20, 35, 25, 0],
 	LevelManager.LEVEL_10 : [3, 10, 10, 25, 26, 26],
 }
 
@@ -120,7 +120,7 @@ func _register_tower_to_tower_tier_map(tower_id : int, tower_tier : int):
 # on round end
 
 func _on_round_end_game_start_aware(curr_stageround, is_game_start):
-	roll_towers_in_shop()
+	call_deferred("roll_towers_in_shop")
 
 
 # roll related

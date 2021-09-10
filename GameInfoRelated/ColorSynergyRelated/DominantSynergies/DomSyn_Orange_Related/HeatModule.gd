@@ -87,6 +87,7 @@ func on_round_end():
 	
 	call_deferred("emit_signal", "on_round_end")
 
+
 # setters and incs
 
 func increment_current_heat(arg_increment : int = heat_per_attack):
@@ -167,7 +168,9 @@ func set_tower(arg_tower : AbstractTower):
 
 func set_should_be_shown_in_info_panel(value : bool):
 	should_be_shown_in_info_panel = value
-	call_deferred("emit_signal", "should_be_shown_in_info_panel_changed")
+	
+	if tower != null and !tower.is_queued_for_deletion():
+		call_deferred("emit_signal", "should_be_shown_in_info_panel_changed")
 
 
 func set_heat_per_attack(arg_heat_per_attack : int):

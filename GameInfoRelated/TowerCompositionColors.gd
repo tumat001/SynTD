@@ -91,19 +91,19 @@ func _init():
 	syn_compo_compli_orangeblue,
 	[
 		"Main attacks of towers explode every few seconds.",
-		"Explosions deal 3 elemental damage to 3 enemies.",
+		"Explosions deal 4 elemental damage to 3 enemies.",
 		"Explosions benefit from base damage and on hit damage buffs at 20% efficiency. Explosions also benefit from explosion size buffs.",
 		"",
-		"Towers with overheating heat modules gain 35% cooldown reduction for the explosion.",
+		"Towers with overheating heat modules gain 50% cooldown reduction for the explosion, and explosions deal 25% increased damage.",
 		"Explosion's damage scales with the tower's ability potency.",
 		""
 	],
 	[CompleSyn_OrangeBlue.new()],
 	[
-		"Explosion per 1.0 seconds. Explosions are 100% larger.",
-		"Explosion per 2.5 seconds. Explosions are 75% larger.",
+		"Explosion per 0.5 seconds. Explosions are 100% larger.",
+		"Explosion per 2.0 seconds. Explosions are 75% larger.",
 		"Explosion per 5.0 seconds. Explosions are 25% larger.",
-		"Explosion per 8.0 seconds."
+		"Explosion per 10.0 seconds."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -131,14 +131,15 @@ func _init():
 	syn_compo_ana_orangeYR,
 	[
 		"All towers gain attack speed after attacking, which stacks up to a limit. Bonuses received per attack inversely scales with tower's attack speed.",
+		"It takes 15 seconds worth of attacks to reach the limit.",
 		""
 	],
 	[AnaSyn_OrangeYR.new()],
 	[
-		"130% attack speed",
-		"70% attack speed",
-		"40% attack speed",
-		"15% attack speed",
+		"Up to 200% attack speed",
+		"Up to 90% attack speed",
+		"Up to 40% attack speed",
+		"Up to 20% attack speed",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -156,9 +157,9 @@ func _init():
 	],
 	[AnaSyn_YellowGO.new()],
 	[
-		"+6.0 elemental on hit damage, +250% total base damage, +250% total attack speed, +50% base range.",
-		"+4.0 elemental on hit damage, +150% total base damage, +150% total attack speed, +40% base range",
-		"+2.5 elemental on hit damage, +70% total base damage, +70% total attack speed, +20% base range.",
+		"+6.0 elemental on hit damage, +200% total base damage, +200% total attack speed, +50% base range.",
+		"+4.0 elemental on hit damage, +120% total base damage, +120% total attack speed, +40% base range",
+		"+2.5 elemental on hit damage, +60% total base damage, +60% total attack speed, +20% base range.",
 		"+1.0 elemental on hit damage, +20% total base damage, +20% total attack speed, +10% base range."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -190,9 +191,9 @@ func _init():
 	],
 	[AnaSyn_BlueVG.new()],
 	[
-		"70% reduction",
+		"80% reduction",
 		"50% reduction",
-		"30% reduction",
+		"25% reduction",
 		"15% reduction"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -208,7 +209,7 @@ func _init():
 	],
 	[AnaSyn_VioletRB.new()],
 	[
-		"+4 pure on hit damage",
+		"+6 pure on hit damage",
 		"+1 physical on hit damage",
 		"+1 elemental on hit damage",
 		"+15 range"

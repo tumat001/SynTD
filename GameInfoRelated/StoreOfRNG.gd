@@ -13,7 +13,7 @@ var second_half_faction_rng : RandomNumberGenerator = RandomNumberGenerator.new(
 var roll_towers_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var tier_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var black_buff_rng : RandomNumberGenerator = RandomNumberGenerator.new()
-
+var shackled_pull_position_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -22,24 +22,25 @@ enum RNGSource {
 	NON_ESSENTIAL = -10,
 	RANDOM_TARGETING = 10,
 	
-	COIN = 20, # Choosing of whether bronze, silver or gold coin
-	FRUIT_TREE = 21,
-	PESTILENCE_SPREAD = 22,
+	COIN = 100, # Choosing of whether bronze, silver or gold coin
+	FRUIT_TREE = 101,
+	PESTILENCE_SPREAD = 102,
+	SHACKLED_PULL_POSITION = 103,
 	
-	INACCURACY = 30,
+	INACCURACY = 1000,
 	
-	DOMSYN_RED_PACT = 40,
-	DOMSYN_RED_PACT_MAGNITUDE = 41,
+	DOMSYN_RED_PACT = 1100,
+	DOMSYN_RED_PACT_MAGNITUDE = 1101,
 	
-	SECOND_HALF_FACTION = 42,
+	SECOND_HALF_FACTION = 1200,
 	
-	ROLL_TOWERS = 43,
-	TIER = 44,
+	ROLL_TOWERS = 2000,
+	TIER = 2001,
 	
-	BLACK_BUFF = 45,
+	BLACK_BUFF = 3000,
 }
 
-func _ready():
+func _init():
 	for rng_id in RNGSource.values():
 		get_rng(rng_id).randomize()
 
@@ -70,5 +71,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return tier_rng
 	elif rng_source == RNGSource.BLACK_BUFF:
 		return black_buff_rng
+	elif rng_source == RNGSource.SHACKLED_PULL_POSITION:
+		return shackled_pull_position_rng
 	
 	return null

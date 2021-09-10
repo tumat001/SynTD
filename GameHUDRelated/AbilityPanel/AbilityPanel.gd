@@ -14,6 +14,8 @@ func add_ability(ability : BaseAbility):
 		
 		ability_container.add_child(ability_button)
 		ability_button.ability = ability
+		ability_button._ability_panel = self
+		ability_button.is_drag_and_droppable = true
 		
 		ability_button.connect("visibility_changed", self, "_ability_button_visibility_changed", [], CONNECT_PERSIST)
 		_update_all_buttons_hotkey_num()
@@ -30,11 +32,15 @@ func has_ability(ability : BaseAbility):
 #
 
 func activate_ability_at_index(i : int):
-	var ability_buttons : Array = ability_container.get_children()
+	#var ability_buttons : Array = ability_container.get_children()
 	
-	for button in ability_buttons:
-		if button.hotkey_num == i + 1:
-			button._ability_button_left_pressed()
+	var ability_button_to_activate = get_ability_button_with_hotkey(i + 1)
+	if ability_button_to_activate != null:
+		ability_button_to_activate._ability_button_left_pressed()
+	
+	#for button in ability_buttons:
+	#	if button.hotkey_num == i + 1:
+	#		button._ability_button_left_pressed()
 #	var displayed_buttons : Array = []
 #
 #	for button in ability_buttons:
@@ -44,6 +50,15 @@ func activate_ability_at_index(i : int):
 #	if displayed_buttons.size() > i:
 #		var button_selected : AbilityButton = displayed_buttons[i]
 #		button_selected._ability_button_left_pressed()
+
+func get_ability_button_with_hotkey(hotkey : int) -> AbilityButton:
+	var ability_buttons : Array = ability_container.get_children()
+	
+	for button in ability_buttons:
+		if button.hotkey_num == hotkey:
+			return button
+	
+	return null
 
 #
 
@@ -66,4 +81,36 @@ func _update_all_buttons_hotkey_num():
 	
 	for i in displayed_buttons.size():
 		displayed_buttons[i].hotkey_num = i + 1
+
+
+#
+
+func get_all_ability_buttons() -> Array:
+	return ability_container.get_children()
+
+func get_current_hovered_ability_button() -> AbilityButton:
+	for button in get_all_ability_buttons():
+		if button.is_mouse_inside_button:
+			return button
+	
+	return null
+
+
+#
+
+func swap_buttons_with_hotkeys(hotkey01 : int, hotkey02 : int):
+	var button_with_hotkey01 = get_ability_button_with_hotkey(hotkey01)
+	var button_with_hotkey02 = get_ability_button_with_hotkey(hotkey02)
+	var all_ability_buttons = get_all_ability_buttons()
+	
+	if button_with_hotkey01 != null and button_with_hotkey02 != null:
+		var button_01_index : int = get_all_ability_buttons().find(button_with_hotkey01)
+		var button_02_index : int = get_all_ability_buttons().find(button_with_hotkey02)
+		
+		ability_container.move_child(button_with_hotkey01, button_02_index)
+		ability_container.move_child(button_with_hotkey02, button_01_index)
+		
+		button_with_hotkey01.hotkey_num = hotkey02
+		button_with_hotkey02.hotkey_num = hotkey01
+		
 

@@ -3,10 +3,12 @@ extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifying
 
 const TowerEffect_AnaSyn_OrangeYR = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_AnaSyn_OrangeYR.gd")
 
-const tier_1_atk_speed_percent : float = 130.0
-const tier_2_atk_speed_percent : float = 70.0
+const tier_1_atk_speed_percent : float = 200.0
+const tier_2_atk_speed_percent : float = 90.0
 const tier_3_atk_speed_percent : float = 40.0
-const tier_4_atk_speed_percent : float = 15.0
+const tier_4_atk_speed_percent : float = 20.0
+
+const base_unit_time_before_max : float = 15.0
 
 
 var game_elements : GameElements
@@ -54,7 +56,7 @@ func _tower_to_benefit_from_synergy(tower : AbstractTower):
 
 func _attempt_add_effect_to_tower(tower : AbstractTower):
 	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.ORANGE_YR_GIVER_EFFECT):
-		var effect = TowerEffect_AnaSyn_OrangeYR.new()
+		var effect = TowerEffect_AnaSyn_OrangeYR.new(base_unit_time_before_max)
 		
 		if curr_tier == 1:
 			effect.max_attk_speed_percent_amount = tier_1_atk_speed_percent

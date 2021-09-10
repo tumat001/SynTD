@@ -31,7 +31,7 @@ func _init(arg_damage_res_amount : float,
 
 func before_enemy_reached_exit(enemy):
 	if syn_weak_ref.get_ref().current_enemy_escape_count_in_round < syn_weak_ref.get_ref().enemy_escape_count_before_deactivation:
-		enemy.shift_unit_position(-1) # send back to start
+		enemy.shift_unit_offset(-1) # send back to start
 		
 		enemy._add_effect(_construct_heal_effect())
 		enemy._add_effect(_construct_damage_resistance_effect())

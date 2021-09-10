@@ -103,6 +103,9 @@ func _execute_enemy(enemy):
 #
 func _on_player_health_changed(curr_health):
 	if curr_health / game_elements.health_manager.starting_health < player_execute_ratio:
+		
+		# execute player
+		game_elements.health_manager.disconnect("current_health_changed", self, "_on_player_health_changed")
 		game_elements.health_manager.decrease_health_by(curr_health, game_elements.HealthManager.DecreaseHealthSource.SYNERGY)
 
 

@@ -54,6 +54,7 @@ func _ready():
 	bar_fill_foreground_marginer.add_constant_override("margin_top", fill_foreground_margin_top) 
 	bar_fill_foreground_marginer.add_constant_override("margin_left", fill_foreground_margin_left)
 	
+	
 	set_current_value(current_value)
 	set_max_value(max_value)
 

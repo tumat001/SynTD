@@ -8,8 +8,9 @@ const HealParticle_Scene = preload("res://EnemyRelated/CommonParticles/HealParti
 
 const _heal_cooldown : float = 7.0
 const _heal_range : float = 140.0
-const _heal_amount : float = 15.0
+const _heal_amount : float = 13.0
 const _shield_ratio : float = 45.0
+const _shield_duration : float = 5.0
 
 const no_enemies_in_range_clause : int = -10
 
@@ -84,7 +85,7 @@ func _construct_heal_and_shield_effect():
 	shield_modi.percent_based_on = PercentType.MISSING
 	
 	shield_effect = EnemyShieldEffect.new(shield_modi, StoreOfEnemyEffectsUUID.ENCHANTRESS_SHIELD_EFFECT)
-	shield_effect.time_in_seconds = 5
+	shield_effect.time_in_seconds = _shield_duration
 	shield_effect.is_timebound = true
 	shield_effect.is_from_enemy = true
 

@@ -38,12 +38,13 @@ func _construct_status_texture_rect(status_icon) -> TextureRect:
 
 
 func remove_status_icon(identifier):
-	var textureRect = id_status_texture_rect_map[identifier]
-	
-	grid_container.remove_child(textureRect)
-	id_status_texture_rect_map.erase(identifier)
-	
-	textureRect.queue_free()
+	if id_status_texture_rect_map.has(identifier):
+		var textureRect = id_status_texture_rect_map[identifier]
+		
+		grid_container.remove_child(textureRect)
+		id_status_texture_rect_map.erase(identifier)
+		
+		textureRect.queue_free()
 
 
 func clear_all_status_icons():

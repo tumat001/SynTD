@@ -1,4 +1,13 @@
 
+#const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
+
+# SHARED IN AbstractEnemy. Changes here must be
+# reflected in that class as well.
+enum EnemyType {
+	NORMAL = 500,
+	ELITE = 600,
+	BOSS = 700,
+}
 
 # 
 var enemy_id : int
@@ -18,6 +27,8 @@ var base_toughness : float = 0
 var base_resistance : float = 0
 var base_player_damage : float = 1
 var base_effect_vulnerability : float = 1
+
+var enemy_type : int = EnemyType.NORMAL
 
 
 func _init(arg_id : int, arg_faction):

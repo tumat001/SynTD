@@ -1,11 +1,11 @@
 extends MarginContainer
 
 
-const Bar_Normal = preload("res://MiscRelated/AbilityPotencyBar/AbilityPotencyBar_BarFill.png")
-const Bar_Overflow = preload("res://MiscRelated/AbilityPotencyBar/AbilityPotencyBar_BarFillOverflow.png")
+const Bar_Normal = preload("res://TowerRelated/Color_Blue/Accumulae/SiphonStacksBar/AbilityPotencyBar_BarFill.png")
+const Bar_Overflow = preload("res://TowerRelated/Color_Blue/Accumulae/SiphonStacksBar/AbilityPotencyBar_BarFillOverflow.png")
 
 
-onready var ap_bar = $APBar
+onready var siphon_bar = $APBar
 
 var tower setget set_tower
 
@@ -18,14 +18,14 @@ func _ready():
 
 func set_tower(arg_tower):
 	if tower != null:
-		tower.disconnect("final_ability_potency_changed", self, "_tower_ap_changed")
+		tower.disconnect("current_siphon_stacks_changed", self, "_tower_curr_stacks_changed")
 		tower.disconnect("tower_not_in_active_map", self, "_should_be_shown_status_changed")
 		tower.disconnect("tower_active_in_map", self, "_should_be_shown_status_changed")
 	
 	tower = arg_tower
 	
 	if tower != null:
-		tower.connect("final_ability_potency_changed", self, "_tower_ap_changed", [], CONNECT_PERSIST)
+		tower.connect("current_siphon_stacks_changed", self, "_tower_curr_stacks_changed", [], CONNECT_PERSIST)
 		tower.connect("tower_not_in_active_map", self, "_should_be_shown_status_changed", [], CONNECT_PERSIST)
 		tower.connect("tower_active_in_map", self, "_should_be_shown_status_changed", [], CONNECT_PERSIST)
 		
@@ -34,14 +34,14 @@ func set_tower(arg_tower):
 #
 
 
-func _tower_ap_changed():
-	ap_bar.current_value = tower.last_calculated_final_ability_potency
+func _tower_curr_stacks_changed():
+	siphon_bar.current_value = tower.current_siphon_stacks
 	#print(str(ap_bar.current_value) + " --- " + str(ap_bar.max_value))
 	
-	if tower.last_calculated_final_ability_potency > ap_bar.max_value:
-		ap_bar.fill_foreground_pic = Bar_Overflow
+	if tower.current_siphon_stacks > siphon_bar.max_value:
+		siphon_bar.fill_foreground_pic = Bar_Overflow
 	else:
-		ap_bar.fill_foreground_pic = Bar_Normal
+		siphon_bar.fill_foreground_pic = Bar_Normal
 
 
 func _should_be_shown_status_changed():
@@ -53,6 +53,6 @@ func _should_be_shown_status_changed():
 func update_display():
 	if tower != null:
 		_should_be_shown_status_changed()
-		_tower_ap_changed()
+		_tower_curr_stacks_changed()
 
 

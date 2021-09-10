@@ -10,10 +10,10 @@ func _init(arg_tier : int).(StoreOfPactUUID.PLAYING_WITH_FIRE, "Playing With Fir
 	var possible_damage_gain_values : Array
 	
 	if tier == 0:
-		possible_speed_gain_values = [210, 230, 250]
-		possible_damage_gain_values = [21, 23, 25]
+		possible_speed_gain_values = [160, 170, 180]
+		possible_damage_gain_values = [31, 33, 35]
 	elif tier == 1:
-		possible_speed_gain_values = [110, 130, 150]
+		possible_speed_gain_values = [80, 90, 100]
 		possible_damage_gain_values = [4, 5, 6]
 	elif tier == 2:
 		possible_speed_gain_values = [60, 65, 70]

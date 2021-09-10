@@ -131,7 +131,7 @@ var shuffle_forced_path_mov_template_effect : EnemyForcedPathOffsetMovementEffec
 
 #
 
-const potion_throw_cooldown : float = 15.0
+const potion_throw_cooldown : float = 12.0
 const potion_throw_ready_for_activation_cond_clause : int = -10
 
 var potion_attk_module : BulletAttackModule

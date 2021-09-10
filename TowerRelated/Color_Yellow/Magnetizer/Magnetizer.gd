@@ -30,7 +30,7 @@ const BasePic_Blue = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magneti
 const BasePic_Red = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Red.png")
 
 
-const use_count_energy_module_on : int = 3
+const use_count_energy_module_on : int = 4
 const use_count_energy_module_off : int = 1
 
 
@@ -138,6 +138,7 @@ func _ready():
 
 func _modify_magnet(magnet : MagnetizerMagnetBall):
 	magnet.connect("hit_an_enemy", self, "_magnet_hit_an_enemy")
+	magnet.connect("on_curr_distance_expired_after_setup", self, "_magnet_curr_distance_expired_after_setup", [magnet])
 	
 	magnet.type = next_magnet_type
 	magnet.lifetime_after_beam_formation = 0.15
@@ -159,12 +160,19 @@ func _cycle_magnet_type():
 		set_next_magnet_type_and_update_others(MagnetizerMagnetBall.BLUE)
 
 func _magnet_hit_an_enemy(magnet : MagnetizerMagnetBall):
-	if magnet.type == MagnetizerMagnetBall.RED:
-		activated_red_magnets.append(magnet)
-	else:
-		activated_blue_magnets.append(magnet)
+	_add_magnet_to_activated_list(magnet)
 	
 	_attempt_form_beam()
+
+func _add_magnet_to_activated_list(magnet):
+	if magnet != null:
+		if magnet.type == MagnetizerMagnetBall.RED:
+			activated_red_magnets.append(magnet)
+		else:
+			activated_blue_magnets.append(magnet)
+
+func _magnet_curr_distance_expired_after_setup(magnet : MagnetizerMagnetBall):
+	_add_magnet_to_activated_list(magnet)
 
 
 # Round related
@@ -230,7 +238,7 @@ func _can_form_beam() -> bool:
 func _form_beam_between_points(origin_pos : Vector2, destination_pos : Vector2):
 	var aoe = beam_attack_module.construct_aoe(origin_pos, destination_pos)
 	
-	aoe.damage_instance = aoe.damage_instance.get_copy_scaled_by(last_calculated_final_ability_potency)
+	aoe.damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)
 	
 	get_tree().get_root().add_child(aoe)
 

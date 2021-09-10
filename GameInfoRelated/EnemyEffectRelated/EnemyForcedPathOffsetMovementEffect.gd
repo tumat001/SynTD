@@ -5,7 +5,7 @@ var initial_mov_speed : float
 var mov_speed_dec_per_sec : float
 var allow_mov_sign_cross : bool
 
-var _current_movement_speed : float
+var current_movement_speed : float
 
 
 func _init(arg_initial_mov_speed : float,
@@ -17,7 +17,7 @@ func _init(arg_initial_mov_speed : float,
 	mov_speed_dec_per_sec = arg_mov_speed_dec_per_sec
 	allow_mov_sign_cross = arg_allow_mov_sign_cross
 	
-	_current_movement_speed = initial_mov_speed
+	current_movement_speed = initial_mov_speed
 	
 	should_map_in_all_effects_map = false
 
@@ -38,15 +38,15 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 #
 
 func time_passed(delta):
-	_current_movement_speed -= mov_speed_dec_per_sec * delta
+	current_movement_speed -= mov_speed_dec_per_sec * delta
 	
 	if !allow_mov_sign_cross:
 		if initial_mov_speed > 0:
-			if _current_movement_speed < 0:
-				_current_movement_speed = 0
+			if current_movement_speed < 0:
+				current_movement_speed = 0
 		else:
-			if _current_movement_speed > 0:
-				_current_movement_speed = 0
+			if current_movement_speed > 0:
+				current_movement_speed = 0
 
 
 func reverse_movements():
@@ -56,4 +56,4 @@ func reverse_movements():
 func scale_movements(mov_scale : float):
 	initial_mov_speed *= mov_scale
 	mov_speed_dec_per_sec *= mov_scale
-	_current_movement_speed *= mov_scale
+	current_movement_speed *= mov_scale

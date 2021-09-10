@@ -10,7 +10,6 @@
 margin_right = 35.0
 margin_bottom = 35.0
 rect_min_size = Vector2( 35, 35 )
-mouse_filter = 2
 size_flags_horizontal = 2
 size_flags_vertical = 2
 script = ExtResource( 3 )
@@ -21,6 +20,7 @@ __meta__ = {
 [node name="AbilityButtonPressable" parent="." instance=ExtResource( 4 )]
 margin_right = 35.0
 margin_bottom = 35.0
+mouse_filter = 1
 
 [node name="AutocastFrame" type="TextureRect" parent="."]
 margin_right = 35.0
@@ -42,4 +42,8 @@ value = 50.0
 texture_over = ExtResource( 2 )
 texture_progress = ExtResource( 1 )
 fill_mode = 5
+[connection signal="gui_input" from="AbilityButtonPressable" to="." method="_on_AbilityButtonPressable_gui_input"]
+[connection signal="mouse_entered" from="AbilityButtonPressable" to="." method="_on_AbilityButtonPressable_mouse_entered"]
+[connection signal="mouse_exited" from="AbilityButtonPressable" to="." method="_on_AbilityButtonPressable_mouse_exited"]
 [connection signal="pressed_mouse_event" from="AbilityButtonPressable" to="." method="_on_AbilityButton_pressed_mouse_event"]
+[connection signal="released_mouse_event" from="AbilityButtonPressable" to="." method="_on_AbilityButtonPressable_released_mouse_event"]

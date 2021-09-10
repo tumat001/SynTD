@@ -18,14 +18,14 @@ const ele_on_hit_tier_2 : float = 4.0
 const ele_on_hit_tier_3 : float = 2.5
 const ele_on_hit_tier_4 : float = 1.0
 
-const base_dmg_tier_1 : float = 250.0
-const base_dmg_tier_2 : float = 150.0
-const base_dmg_tier_3 : float = 70.0
+const base_dmg_tier_1 : float = 200.0
+const base_dmg_tier_2 : float = 120.0
+const base_dmg_tier_3 : float = 60.0
 const base_dmg_tier_4 : float = 20.0
 
-const attk_speed_tier_1 : float = 250.0
-const attk_speed_tier_2 : float = 150.0
-const attk_speed_tier_3 : float = 70.0
+const attk_speed_tier_1 : float = 200.0
+const attk_speed_tier_2 : float = 120.0
+const attk_speed_tier_3 : float = 60.0
 const attk_speed_tier_4 : float = 20.0
 
 const range_tier_1 : float = 50.0

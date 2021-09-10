@@ -106,6 +106,7 @@ const telsa_image = preload("res://TowerRelated/Color_Violet/Tesla/Tesla.png")
 const chaos_image = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_01.png")
 const ping_image = preload("res://TowerRelated/Color_Violet/Ping/PingWholeBody.png")
 const prominence_image = preload("res://TowerRelated/Color_Violet/Prominence/Prominence_OmniWholeBody.png")
+const shackled_image = preload("res://TowerRelated/Color_Violet/Shackled/Shackled_Omni_Stage02.png")
 
 # OTHERS
 const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
@@ -151,7 +152,7 @@ enum {
 	SUNFLOWER = 406,
 	
 	# GREEN (500)
-	BERRY_BUSH = 500, #REMOVED FROM POOL
+	BERRY_BUSH = 500,  # REMOVED FROM POOL
 	FRUIT_TREE = 501,
 	SPIKE = 502,
 	IMPALE = 503,
@@ -175,12 +176,13 @@ enum {
 	ACCUMULAE = 609,
 	
 	# VIOLET (700)
-	SIMPLE_OBELISK = 700,
+	SIMPLE_OBELISK = 700, # REMOVED FROM POOL
 	RE = 701,
 	TESLA = 702,
 	CHAOS = 703,
 	PING = 704,
 	PROMINENCE = 705,
+	SHACKLED = 706,
 	
 	# OTHERS (900)
 	HERO = 900, # WHITE
@@ -218,7 +220,7 @@ const TowerTiersMap : Dictionary = {
 	AMALGAMATOR : 2,
 	COIN : 2,
 	
-	SIMPLE_OBELISK : 3,
+	#SIMPLE_OBELISK : 3,
 	BEACON_DISH : 3,
 	CHARGE : 3,
 	CAMPFIRE : 3,
@@ -231,6 +233,7 @@ const TowerTiersMap : Dictionary = {
 	#BERRY_BUSH : 3,
 	PROBE : 3,
 	BREWD : 3,
+	SHACKLED : 3,
 	
 	RE : 4,
 	PING : 4,
@@ -249,7 +252,6 @@ const TowerTiersMap : Dictionary = {
 	LAVA_JET : 5,
 	BLOSSOM : 5,
 	TRANSPORTER : 5,
-	ACCUMULAE : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
@@ -257,6 +259,7 @@ const TowerTiersMap : Dictionary = {
 	PESTILENCE : 6,
 	HEXTRIBUTE : 6,
 	PROMINENCE : 6,
+	ACCUMULAE : 6,
 	
 }
 
@@ -272,12 +275,12 @@ const tier_base_dmg_map : Dictionary = {
 
 const tier_attk_speed_map : Dictionary = {
 	1 : 15,
-	2 : 22,
+	2 : 23,
 	3 : 30,
 	
 	4 : 40,
 	5 : 50,
-	6 : 75,
+	6 : 70,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
@@ -622,6 +625,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 400% effective instead."
 		]
 		
+		
 		var tower_base_effect : PingletAdderEffect = PingletAdderEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(PING, tower_base_effect)
 		
@@ -715,13 +719,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 2 seconds."
 		]
 		
-		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(1.5, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
+		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(1, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
 		var enemy_effect : EnemyStackEffect = EnemyStackEffect.new(enemy_final_effect, 1, 5, StoreOfEnemyEffectsUUID.ING_MINI_TESLA_STACK)
 		enemy_effect.is_timebound = true
 		enemy_effect.time_in_seconds = 3
 		
 		var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.ING_MINI_TESLA)
-		tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 1.5 seconds"
+		tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 1 second."
 		tower_effect.effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Static.png")
 		
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
@@ -784,10 +788,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Stats shown are for the magnets.",
 			"When shooting, Magnetizer alternates between blue magnet and red magnet. Magnetizer cycles to the next targeting option after shooting a magnet.",
 			"Magnets stick to the first enemy they hit. When the enemy they are stuck to dies, they drop on the ground.",
-			"When there is at least one blue and one red magnet that has hit an enemy, Magnetizer casts Magnetize.",
+			"When there is at least one blue and one red magnet that has hit an enemy or is on the ground, Magnetizer casts Magnetize.",
 			"",
-			"Magnetize: Calls upon all of this tower's non traveling magnets to form a beam between their opposite types.",
-			"The beam deals 7 elemental damage. The beam benefits from base damage buffs, on hit damages and effects."
+			"Magnetize: Calls upon all of this tower's non traveling magnets to form a beam between their opposite types, consuming them in the process.",
+			"The beam deals 7 elemental damage. The beam benefits from base damage buffs, on hit damages and effects. Damage scales with ability potency."
 		]
 		
 		
@@ -1010,8 +1014,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = flameburst_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.5
-		info.base_attk_speed = 0.775
+		info.base_damage = 2.50
+		info.base_attk_speed = 0.735
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1156,9 +1160,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = royal_flame_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3.5
-		info.base_attk_speed = 1.05
-		info.base_pierce = 1
+		info.base_damage = 4
+		info.base_attk_speed = 1.08
+		info.base_pierce = 11
 		info.base_range = 140
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
@@ -1167,7 +1171,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Royal Flame's attacks burn enemies for 25% of its base damage every 0.5 seconds for 10 seconds.",
 			"",
 			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to a limit.",
-			"The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
 			"Cooldown: 25 s"
 			# THIS SAME PASSAGE is placed in royal flame's
 			# ability tooltip. If this is changed, then
@@ -1190,11 +1193,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.colors.append(TowerColors.YELLOW)
 		info.tower_image_in_buy_card = ieu_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.85
+		info.base_damage = 3
 		info.base_attk_speed = 1
 		info.base_pierce = 0
 		info.base_range = 125
@@ -1680,15 +1682,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = reaper_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 4.5
-		info.base_attk_speed = 0.725
+		info.base_damage = 4.75
+		info.base_attk_speed = 0.74
 		info.base_pierce = 1
 		info.base_range = 130
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Reaper's attacks deal additional 8% of the enemy's missing health as elemental damage, up to 12 health.",
+			"Reaper's attacks deal additional 8% of the enemy's missing health as elemental damage, up to 10 health.",
 			"",
 			"Killing an enemy grants Reaper a stack of Death. While Reaper has Death stacks, Reaper attempts to cast Slash.",
 			"Slash: Reaper consumes a Death stack to slash the area of the closest enemy, dealing 400% of Reaper's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
@@ -1696,21 +1698,32 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Cooldown: 0.2 s."
 		]
 		
-		var reap_dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_REAPER)
-		reap_dmg_modifier.percent_amount = 6
-		reap_dmg_modifier.percent_based_on = PercentType.MISSING
-		reap_dmg_modifier.ignore_flat_limits = false
-		reap_dmg_modifier.flat_maximum = 5
-		reap_dmg_modifier.flat_minimum = 0
 		
-		var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_REAPER, reap_dmg_modifier, DamageType.ELEMENTAL)
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_REAPER)
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
 		
-		var reap_dmg_effect = TowerOnHitDamageAdderEffect.new(on_hit_dmg, StoreOfTowerEffectsUUID.ING_REAPER)
-		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, reap_dmg_effect)
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_REAPER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "+ on hit"
+		info.ingredient_effect_simple_description = "+ base dmg"
 		
+		
+#		var reap_dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_REAPER)
+#		reap_dmg_modifier.percent_amount = 5
+#		reap_dmg_modifier.percent_based_on = PercentType.MISSING
+#		reap_dmg_modifier.ignore_flat_limits = false
+#		reap_dmg_modifier.flat_maximum = 3.25
+#		reap_dmg_modifier.flat_minimum = 0
+#
+#		var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_REAPER, reap_dmg_modifier, DamageType.ELEMENTAL)
+#
+#		var reap_dmg_effect = TowerOnHitDamageAdderEffect.new(on_hit_dmg, StoreOfTowerEffectsUUID.ING_REAPER)
+#		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, reap_dmg_effect)
+#
+#		info.ingredient_effect = ing_effect
+#		info.ingredient_effect_simple_description = "+ on hit"
+#
 		
 	elif tower_id == SHOCKER:
 		info = TowerTypeInformation.new("Shocker", tower_id)
@@ -1818,7 +1831,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.35
-		info.base_attk_speed = 0.85
+		info.base_attk_speed = 0.81
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1901,7 +1914,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Main attacks cause different effects based on the enemy’s current health",
-			"If the enemy has missing health, the enemy is slowed by 60% for 1.5 seconds.",
+			"If the enemy has missing health, the enemy is slowed by 35% for 1.5 seconds.",
 			"If the enemy has full health, the enemy’s maximum health is reduced by 12.5% (with a minimum of 5 health, and a maximum of 25 health). This effect does not stack.",
 			"Ability potency increases maximum health percent reduction and limits."
 		]
@@ -1926,7 +1939,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
 			"Levels are gained by spending EXP and gold. Only 6 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
-			"Upon reaching level 6, Hero increases the limit of activated composite synergies by 1. Hero also gains 3 bonus base damage, and 50% bonus attack speed.",
+			"Upon reaching level 6, Hero increases the limit of activated composite synergies by 1. Hero also gains 3 bonus base damage, 60% bonus attack speed, and 0.5 ability potency.",
 			"",
 			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
@@ -2152,23 +2165,23 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = accumulae_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3.25
-		info.base_attk_speed = 0.535
+		info.base_damage = 2.75
+		info.base_attk_speed = 1.12
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Main attacks drain 0.35 ability potency from enemies hit for 3 seconds. This does not stack.",
-			"Accumulae gains 1 Siphon stack per application of drain. Each Siphon stack gives 0.25 ability potency.",
+			"Main attacks drain 0.35 ability potency from enemies hit for 7 seconds. This does not stack.",
+			"Accumulae gains 1 Siphon stack per application of drain.",
 			"",
-			"Upon reaching 3.5 total ability potency with at least 1 Siphon stack, Accumulae casts Salvo.",
+			"Upon reaching 15 Siphon stacks, Accumulae casts Salvo.",
 			"Salvo: Fires a Spell Burst at a random enemy's location every 0.2 seconds regardless of range, consuming a Siphon stack in the process. This repeats until all Siphon stacks are consumed.",
 			"Cooldown: 1.5 s",
 			"",
 			"Accumulae is unable to execute its main attack while executing Salvo.",
-			"Each Spell Burst explodes upon reaching the target location, dealing 10 elemental damage to 5 enemies. The damage scales with the ability potency at the time of casting.",
+			"Each Spell Burst explodes upon reaching the target location, dealing 10 elemental damage to 5 enemies.",
 			"Spell burst explosions apply on hit effects.",
 			"Ability cdr also reduces delay per burst in salvo."
 		]
@@ -2242,13 +2255,51 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Brewd automatically attempts to cast Concoct.",
 			"Concoct: Throws the selected potion type at its current target.",
-			"Cooldown: 15 s"
+			"Cooldown: 12 s"
+		]
+		
+		
+		var cooldown_modi : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_BREWD)
+		cooldown_modi.percent_amount = 20.0
+		cooldown_modi.percent_based_on = PercentType.BASE
+		
+		var effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_ABILITY_CDR, cooldown_modi, StoreOfTowerEffectsUUID.ING_BREWD)
+		
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ cdr"
+		
+		
+		
+	elif tower_id == SHACKLED:
+		info = TowerTypeInformation.new("Shackled", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.VIOLET)
+		info.colors.append(TowerColors.GRAY)
+		info.tower_image_in_buy_card = shackled_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 2.75
+		info.base_attk_speed = 0.85
+		info.base_pierce = 1
+		info.base_range = 160
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Shackled's main attacks explode upon hitting an enemy, dealing 1 elemental damage to 3 enemies.",
+			"",
+			"After 18 attacks or dealing 70 post-mitigated damage, Shackled attempts to cast Chains.",
+			"Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location, stunning them for 0.5 seconds. Targeting affects which enemies are pulled.",
+			"Cooldown: 25 s",
+			"",
+			"After 3 rounds of being active, Shackled is able to pull 1 more enemy per cast."
 		]
 		
 		
 		
-		
-	
 	
 	
 	return info
@@ -2373,4 +2424,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Probe/Probe.tscn")
 	elif tower_id == BREWD:
 		return load("res://TowerRelated/Color_Green/Brewd/Brewd.tscn")
+	elif tower_id == SHACKLED:
+		return load("res://TowerRelated/Color_Violet/Shackled/Shackled.tscn")
+
 

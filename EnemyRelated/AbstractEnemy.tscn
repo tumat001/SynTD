@@ -12,7 +12,11 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+[node name="SpriteLayer" type="Node2D" parent="."]
+
+[node name="KnockUpLayer" type="Node2D" parent="SpriteLayer"]
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="SpriteLayer/KnockUpLayer"]
 
 [node name="CollisionArea" type="Area2D" parent="."]
 collision_layer = 96

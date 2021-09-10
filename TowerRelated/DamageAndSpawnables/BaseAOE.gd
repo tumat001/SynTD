@@ -12,9 +12,11 @@ var damage_register_id : int
 
 var damage_repeat_count : int = 1
 var duration : float
+var collision_duration : float = -1
 var decrease_duration : bool = true
 var pierce : int = -1
-var collision_duration : float = -1
+var rotation_deg_per_sec : float = 0
+
 
 var enemies_to_ignore : Array = []
 
@@ -130,6 +132,9 @@ func _process(delta):
 	else:
 		queue_free()
 
+
+func _physics_process(delta):
+	rotation_degrees += rotation_deg_per_sec * delta
 
 
 # Expose methods

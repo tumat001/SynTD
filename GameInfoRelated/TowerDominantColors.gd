@@ -74,11 +74,11 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [8, 5, 3],
+	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [8, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[
-		"ENERGIZE: Creates an Energy Battery with 1 energy if one is not present. All yellow towers gain an energy module during the round.",
+		"ENERGIZE: Creates an Energy Battery with 1 energy if one is not present. All yellow towers gain an energy module.",
 		"",
 		"Energy Battery allows storage of energy.",
 		"Energy Modules allow a tower to absorb 1 energy to gain special effects.",
@@ -89,7 +89,7 @@ func _init():
 	[DomSyn_Yellow_GoldIncome.new(), inst_domsyn_yellow_energybattery],
 	[
 		"Activates ENERGIZE. Battery has 9 energy capacity. Battery recharges for 3 energy per turn.",
-		"Activates ENERGIZE. Battery has 4 energy capacity. Battery recharges for 1 energy per turn.",
+		"Activates ENERGIZE. Battery has 4 energy capacity. Battery recharges for 2 energy per turn.",
 		"+1 gold per round."
 	],
 	ColorSynergy.HighlightDeterminer.CUSTOM,

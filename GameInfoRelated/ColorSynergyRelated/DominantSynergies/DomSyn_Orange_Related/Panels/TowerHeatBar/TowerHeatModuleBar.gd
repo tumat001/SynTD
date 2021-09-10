@@ -61,7 +61,7 @@ func _module_current_heat_changed():
 	
 	if curr_heat == 100:
 		current_heat_bar.fill_foreground_pic = Bar_At100
-	
+
 
 func _should_be_shown_status_changed():
 	visible = heat_module.should_be_shown_in_info_panel

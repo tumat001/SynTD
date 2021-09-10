@@ -505,12 +505,13 @@ func _calculate_final_flat_ability_cdr():
 	return last_calculated_final_flat_ability_cdr
 
 
+
 func _calculate_final_percent_ability_cdr():
 	var final_percent_cdr = base_percent_ability_cdr
 	
-	# everything is treated as BASE
 	for effect in _percent_base_ability_cdr_effects.values():
-		final_percent_cdr += effect.attribute_as_modifier.percent_amount
+		# Intentionally does not use "get_modification_to"
+		final_percent_cdr = _get_add_cdr_to_total_cdr(effect.attribute_as_modifier.percent_amount, final_percent_cdr)
 	
 	if final_percent_cdr > 95:
 		final_percent_cdr = 95
@@ -518,3 +519,8 @@ func _calculate_final_percent_ability_cdr():
 	last_calculated_final_percent_ability_cdr = final_percent_cdr
 	emit_signal("final_ability_cdr_changed")
 	return last_calculated_final_percent_ability_cdr
+
+func _get_add_cdr_to_total_cdr(arg_cdr, arg_total_cdr) -> float:
+	var missing = 100 - arg_total_cdr
+	
+	return arg_total_cdr + (arg_cdr * (1 - ((100 - missing) / 100)))

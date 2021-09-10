@@ -314,7 +314,7 @@ onready var life_bar = $InfoBarLayer/InfoBar/VBoxContainer/LifeBar
 onready var status_bar = $InfoBarLayer/InfoBar/VBoxContainer/TowerStatusBar
 onready var info_bar = $InfoBarLayer/InfoBar
 
-onready var tower_base_sprites = $TowerBase/BaseSprites
+onready var tower_base_sprites : AnimatedSprite = $TowerBase/BaseSprites
 onready var tower_base = $TowerBase
 
 onready var info_bar_vbox_container = $InfoBarLayer/InfoBar/VBoxContainer
@@ -332,7 +332,7 @@ func _init():
 	disabled_from_attacking_clauses = ConditionalClauses.new()
 	disabled_from_attacking_clauses.connect("clause_inserted", self, "_disabled_from_attacking_clause_added_or_removed", [], CONNECT_PERSIST)
 	disabled_from_attacking_clauses.connect("clause_removed", self, "_disabled_from_attacking_clause_added_or_removed", [], CONNECT_PERSIST)
-	
+
 
 func _ready():
 	$IngredientDeclinePic.visible = false
@@ -375,6 +375,7 @@ func _post_inherit_ready():
 	info_bar_layer.position.y -= round((_self_size.y) + 15)
 	info_bar_layer.position.x -= round(life_bar.get_bar_fill_foreground_size().x / 4)
 	info_bar.rect_size.x = life_bar.rect_size.x
+	life_bar.update_first_time()
 	
 	connect("on_any_post_mitigation_damage_dealt", self, "_on_tower_any_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
 	
@@ -1719,16 +1720,22 @@ func _calculate_final_flat_ability_cdr():
 func _calculate_final_percent_ability_cdr():
 	var final_percent_cdr = base_percent_ability_cdr
 	
-	# everything is treated as BASE
 	for effect in _percent_base_ability_cdr_effects.values():
 		# Intentionally does not use "get_modification_to"
-		final_percent_cdr += effect.attribute_as_modifier.percent_amount
+		final_percent_cdr = _get_add_cdr_to_total_cdr(effect.attribute_as_modifier.percent_amount, final_percent_cdr)
 	
 	if final_percent_cdr > 95:
 		final_percent_cdr = 95
 	
 	last_calculated_final_percent_ability_cdr = final_percent_cdr
 	return last_calculated_final_percent_ability_cdr
+
+func _get_add_cdr_to_total_cdr(arg_cdr, arg_total_cdr) -> float:
+	var missing = 100 - arg_total_cdr
+	
+	return arg_total_cdr + (arg_cdr * (1 - ((100 - missing) / 100)))
+
+
 
 # Vamp calculations
 
@@ -2049,8 +2056,10 @@ func queue_free():
 	is_contributing_to_synergy = false
 	current_placable.tower_occupying = null
 	
-	emit_signal("tower_in_queue_free", self) # synergy updated from tower manager
+	# ORDER CHANGED FROM bottom to top (see commented code)
 	.queue_free()
+	emit_signal("tower_in_queue_free", self) # synergy updated from tower manager
+	#.queue_free()
 
 
 func _physics_process(delta):
@@ -2263,7 +2272,7 @@ func set_heat_module(arg_heat_module):
 	# to null is never used yet.
 	if heat_module != null:
 		heat_module.tower = null
-		
+	
 		if heat_module.is_connected("should_be_shown_in_info_panel_changed", self, "_emit_heat_module_should_change_visibility"):
 			heat_module.disconnect("should_be_shown_in_info_panel_changed", self, "_emit_heat_module_should_change_visibility")
 			heat_module.disconnect("current_heat_effect_changed", self, "_heat_module_current_heat_effect_changed")

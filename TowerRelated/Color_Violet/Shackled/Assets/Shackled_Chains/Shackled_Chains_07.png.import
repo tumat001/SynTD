@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/AbilityPotencyBar_BarFillOverflow.png-af34a4900feb1866a28355c1954dbac7.stex"
+path="res://.import/Shackled_Chains_07.png-efa2c364cacc62bd861dd0ab925ddbc3.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://MiscRelated/AbilityPotencyBar/AbilityPotencyBar_BarFillOverflow.png"
-dest_files=[ "res://.import/AbilityPotencyBar_BarFillOverflow.png-af34a4900feb1866a28355c1954dbac7.stex" ]
+source_file="res://TowerRelated/Color_Violet/Shackled/Assets/Shackled_Chains/Shackled_Chains_07.png"
+dest_files=[ "res://.import/Shackled_Chains_07.png-efa2c364cacc62bd861dd0ab925ddbc3.stex" ]
 
 [params]
 

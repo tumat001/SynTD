@@ -91,9 +91,9 @@ func _on_EmblemButtonFire_emblem_button_right_pressed():
 			"",
 			"Lvl 0: No burn.",
 			"Lvl 1: Burn damage = 0.2",
-			"Lvl 2: Burn damage = 0.3",
-			"Lvl 3: Burn damage = 0.5",
-			"Lvl 4: Burn damage = 0.7"
+			"Lvl 2: Burn damage = 0.5",
+			"Lvl 3: Burn damage = 0.8",
+			"Lvl 4: Burn damage = 1.0"
 		]
 		
 		get_tree().get_root().add_child(tower_tooltip)

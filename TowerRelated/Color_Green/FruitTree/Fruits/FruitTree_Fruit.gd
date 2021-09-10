@@ -46,37 +46,39 @@ func _ready():
 func _set_fruit_properties():
 	var ing_effect : IngredientEffect
 	
+	var new_sprite_frames = SpriteFrames.new()
 	
 	if fruit_type == BLUE:
-		anim_sprite.frames.add_frame("default", FruitBlue_Pic)
+		new_sprite_frames.add_frame("default", FruitBlue_Pic)
 		tower_highlight_sprite = FruitBlue_Pic
 		ing_effect = IngredientEffect.new(StoreOfTowerEffectsUUID.ING_BLUE_FRUIT, BlueFruitEffect.new())
 		
 	elif fruit_type == GREEN:
-		anim_sprite.frames.add_frame("default", FruitGreen_Pic)
+		new_sprite_frames.add_frame("default", FruitGreen_Pic)
 		tower_highlight_sprite = FruitGreen_Pic
 		ing_effect = IngredientEffect.new(StoreOfTowerEffectsUUID.ING_GREEN_FRUIT, GreenFruitEffect.new())
 		
 	elif fruit_type == RED:
-		anim_sprite.frames.add_frame("default", FruitRed_Pic)
+		new_sprite_frames.add_frame("default", FruitRed_Pic)
 		tower_highlight_sprite = FruitRed_Pic
 		ing_effect = IngredientEffect.new(StoreOfTowerEffectsUUID.ING_RED_FRUIT, RedFruitEffect.new())
 		
 	elif fruit_type == VIOLET:
-		anim_sprite.frames.add_frame("default", FruitViolet_Pic)
+		new_sprite_frames.add_frame("default", FruitViolet_Pic)
 		tower_highlight_sprite = FruitViolet_Pic
 		ing_effect = IngredientEffect.new(StoreOfTowerEffectsUUID.ING_VIOLET_FRUIT, VioletFruitEffect.new())
 		
 	elif fruit_type == WHITE:
-		anim_sprite.frames.add_frame("default", FruitWhite_Pic)
+		new_sprite_frames.add_frame("default", FruitWhite_Pic)
 		tower_highlight_sprite = FruitWhite_Pic
 		ing_effect = IngredientEffect.new(StoreOfTowerEffectsUUID.ING_WHITE_FRUIT, WhiteFruitEffect.new())
 		
 	elif fruit_type == YELLOW:
-		anim_sprite.frames.add_frame("default", FruitYellow_Pic)
+		new_sprite_frames.add_frame("default", FruitYellow_Pic)
 		tower_highlight_sprite = FruitYellow_Pic
 		ing_effect = IngredientEffect.new(StoreOfTowerEffectsUUID.ING_YELLOW_FRUIT, YellowFruitEffect.new())
-		
+	
+	anim_sprite.frames = new_sprite_frames
 	
 	ingredient_of_self = ing_effect
 

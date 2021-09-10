@@ -73,15 +73,16 @@ const extra_comp_syn_slot_amount_at_max_natural_level : int = 1
 const hero_extra_ingredient_limit : int = 4
 
 const hero_max_nat_level_bonus_base_damage_amount : float = 3.0
-const hero_max_nat_level_bonus_attk_speed_amount : float = 50.0
+const hero_max_nat_level_bonus_attk_speed_amount : float = 60.0
+const hero_max_nat_level_bonus_ability_potency : float = 0.5
 
 const xp_ratio_per_damage : float = 1.0
 const xp_per_kill : float = 2.0
 const xp_scale_if_not_white_dom_color : float = 0.7
 const max_hero_level : int = 6 # max hero natural level
 
-const xp_needed_per_level : Array = [130, 685, 2050, 3500, 3550, 3700]
-const gold_needed_per_level : Array = [2, 4, 8, 10, 10, 10]
+const xp_needed_per_level : Array = [130, 705, 2050, 3500, 3550, 3600]
+const gold_needed_per_level : Array = [2, 5, 8, 10, 10, 10]
 
 const xp_about_descriptions = [
 	"Hero gains EXP from damaging enemies, killing enemies, and casting Voice of Light.",
@@ -100,8 +101,8 @@ const attks_needed_for_light_explosion : int = 40
 const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3]
 const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.3, 1.0]
 
-const judgement_dmg_ratio_in_levels : Array = [1, 2, 3, 7]
-const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 2, 2, 4]
+const judgement_dmg_ratio_in_levels : Array = [1, 1.5, 2, 3]
+const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 1.5, 2.5, 4]
 var judgement_bonus_on_hit_dmg_dmg_type : int = DamageType.PHYSICAL
 
 const judgement_bonus_dmg_ratio : float = 1.20
@@ -111,9 +112,9 @@ const judgement_stack_trigger : int = 3
 const current_attks_needed_for_vol : int = 6
 const VOL_towers_affected_in_levels : Array = [3, 4, 6, 13]
 const VOL_range_in_levels : Array = [70, 105, 160, 250]
-const VOL_dmg_ratio_buff_in_levels : Array = [1.2, 1.2, 1.5, 1.75]
-const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 25]
-const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 9, 9]
+const VOL_dmg_ratio_buff_in_levels : Array = [1.2, 1.3, 1.4, 1.6]
+const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 35]
+const VOL_xp_gain_per_tower_affected_in_levels : Array = [7, 8, 10, 14]
 
 var white_dom_active : bool
 
@@ -159,7 +160,7 @@ var judgment_on_hit_dmg : OnHitDamage
 var vol_candidate_tower_indicator_shower : ShowTowersWithParticleComponent
 
 
-# particle related
+# level particle related
 
 var non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
 var particle_timer : Timer
@@ -794,14 +795,23 @@ func _max_natural_level_reached():
 	
 	var base_dmg_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS, base_dmg_modi, StoreOfTowerEffectsUUID.HERO_MAX_NATURAL_LEVEL_BASE_DAMAGE_EFFECT)
 	
+	
 	var attk_speed_modi : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HERO_MAX_NATURAL_LEVEL_ATTK_SPEED_EFFECT)
 	attk_speed_modi.percent_amount = hero_max_nat_level_bonus_attk_speed_amount
 	attk_speed_modi.percent_based_on = PercentType.BASE
 	
 	var attk_speed_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_modi, StoreOfTowerEffectsUUID.HERO_MAX_NATURAL_LEVEL_ATTK_SPEED_EFFECT)
 	
+	
+	var ap_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HERO_MAX_NATURAL_LEVEL_ABILITY_POTENCY_EFFECT)
+	ap_modi.flat_modifier = hero_max_nat_level_bonus_ability_potency
+	
+	var ap_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY, ap_modi, StoreOfTowerEffectsUUID.HERO_MAX_NATURAL_LEVEL_ABILITY_POTENCY_EFFECT)
+	
+	
 	add_tower_effect(base_dmg_effect)
 	add_tower_effect(attk_speed_effect)
+	add_tower_effect(ap_effect)
 	
 	
 	# visuals

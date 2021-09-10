@@ -139,7 +139,7 @@ func _construct_and_add_effects():
 	reap_dmg_modifier.percent_amount = 8
 	reap_dmg_modifier.percent_based_on = PercentType.MISSING
 	reap_dmg_modifier.ignore_flat_limits = false
-	reap_dmg_modifier.flat_maximum = 12
+	reap_dmg_modifier.flat_maximum = 10
 	reap_dmg_modifier.flat_minimum = 0
 	
 	var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.REAPER_PERCENT_HEALTH_DAMAGE, reap_dmg_modifier, DamageType.ELEMENTAL)

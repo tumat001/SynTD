@@ -24,13 +24,13 @@ const EnemyReviveEffect = preload("res://GameInfoRelated/EnemyEffectRelated/Enem
 const EnemyKnockUpEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyKnockUpEffect.gd")
 const BeforeEnemyReachEndPathBaseEffect = preload("res://GameInfoRelated/EnemyEffectRelated/BeforeEnemyReachEndPathBaseEffect.gd")
 const EnemyForcedPathOffsetMovementEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyForcedPathOffsetMovementEffect.gd")
+const EnemyForcedPositionalMovementEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyForcedPositionalMovementEffect.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
 
 const BaseControlStatusBar = preload("res://MiscRelated/ControlStatusBarRelated/BaseControlStatusBar.gd")
 const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
-const EnemyTypeInformation = preload("res://EnemyRelated/EnemyTypeInformation.gd")
 const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const DuringReviveParticle = preload("res://EnemyRelated/CommonParticles/ReviveParticle/DuringReviveParticle.gd")
@@ -60,13 +60,19 @@ signal on_starting_revive()
 signal on_revive_completed()
 signal cancel_all_lockons() # on death, reviving, etc
 
+
+# SHARED IN EnemyTypeInformation. Changes here must be
+# reflected in that class as well.
 enum EnemyType {
 	NORMAL = 500,
-	BOSS = 600,
+	ELITE = 600,
+	BOSS = 700,
 }
 
 enum NoMovementClauses {
 	IS_REVIVING = 100,
+	
+	IS_IN_FORCED_POSITIONAL_MOVEMENT = 101,
 	
 	CUSTOM_CLAUSE_01 = 200,
 	CUSTOM_CLAUSE_02 = 201,
@@ -75,6 +81,7 @@ enum NoMovementClauses {
 enum NoActionClauses {
 	IS_REVIVING = 100,
 	IS_STUNNED = 101,
+	IS_SILENCED = 102,
 }
 
 enum UntargetabilityClauses {
@@ -181,8 +188,10 @@ var respect_stage_round_health_scale : bool = true
 var _knock_up_current_acceleration : float
 var _knock_up_current_acceleration_deceleration : float
 
-# forced movement related
-var _current_forced_movement_effect : EnemyForcedPathOffsetMovementEffect 
+# forced movement related (even if there are two vars, only
+# one can be non null at a time
+var _current_forced_offset_movement_effect : EnemyForcedPathOffsetMovementEffect 
+var _current_forced_positional_movement_effect : EnemyForcedPositionalMovementEffect
 
 #
 
@@ -191,11 +200,16 @@ onready var lifebar = $Layer/EnemyInfoBar/VBoxContainer/LifeBar
 onready var infobar = $Layer/EnemyInfoBar
 onready var layer_infobar = $Layer
 onready var collision_area = $CollisionArea
-onready var anim_sprite = $AnimatedSprite
+
+onready var anim_sprite = $SpriteLayer/KnockUpLayer/AnimatedSprite
+onready var sprite_layer = $SpriteLayer
+onready var knock_up_layer = $SpriteLayer/KnockUpLayer
 
 #internals
 
 var _self_size : Vector2
+var _is_yielding_for_lifebar : bool
+var _is_queued_freed_during_yielding : bool
 
 # Effects map
 
@@ -223,7 +237,7 @@ func _init():
 	untargetable_clauses.connect("clause_removed", self, "_untargetability_clause_removed")
 
 
-func _stats_initialize(info : EnemyTypeInformation):
+func _stats_initialize(info):
 	base_health = info.base_health
 	base_movement_speed = info.base_movement_speed
 	base_armor = info.base_armor
@@ -263,6 +277,7 @@ func is_untargetable_only_from_invisibility():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_self_size = get_current_anim_size()
+	_is_yielding_for_lifebar = true
 	
 	var scale_of_layer : float = _get_scale_for_layer_lifebar()
 	layer_infobar.scale = Vector2(scale_of_layer, scale_of_layer)
@@ -272,7 +287,8 @@ func _ready():
 	#infobar.rect_position.x -= round(healthbar.get_bar_fill_foreground_size().x / 2)
 	
 	var shift = (_self_size.y / 2) - 5
-	anim_sprite.position.y -= shift
+	#anim_sprite.position.y -= shift
+	sprite_layer.position.y -= shift
 	collision_area.position.y -= shift
 	$Layer.position.y -= shift
 	
@@ -332,6 +348,13 @@ func _post_inherit_ready():
 	
 	infobar.visible = true
 	lifebar.update_first_time()
+	
+	_is_yielding_for_lifebar = false
+	
+	#
+	
+	if _is_queued_freed_during_yielding:
+		queue_free()
 
 
 
@@ -361,7 +384,8 @@ func _process(delta):
 
 func _physics_process(delta):
 	_phy_process_knock_up(delta)
-	_phy_process_forced_movement(delta)
+	_phy_process_forced_offset_movement(delta)
+	_phy_process_forced_positional_movement(delta)
 	
 	if !_is_stunned and !last_calculated_no_movement_from_self:
 		var distance_traveled = delta * _last_calculated_final_movement_speed
@@ -581,11 +605,14 @@ func _destroy_self():
 
 
 func queue_free():
-	emit_signal("on_death_by_any_cause")
-	emit_signal("cancel_all_lockons")
-	
-	.queue_free()
-
+	if !_is_yielding_for_lifebar:
+		emit_signal("on_death_by_any_cause")
+		emit_signal("cancel_all_lockons")
+		
+		
+		.queue_free()
+	else:
+		_is_queued_freed_during_yielding = true
 
 
 func add_flat_base_health_effect(effect : EnemyAttributesEffect, with_heal : bool = true):
@@ -919,17 +946,16 @@ func hit_by_damage_instance(damage_instance : DamageInstance, damage_reg_id : in
 			emit_signal("on_hit", self, damage_reg_id, damage_instance)
 		emit_signal("before_damage_instance_is_processed", damage_instance, self)
 		
-		
-		_process_on_hit_damages(damage_instance.on_hit_damages, damage_instance)
 		_process_effects(damage_instance.on_hit_effects, damage_instance.on_hit_effect_multiplier)
-		
-		while damage_instance.current_on_hit_damage_reapply_count > 0:
-			damage_instance.current_on_hit_damage_reapply_count -= 1
-			_process_on_hit_damages(damage_instance.on_hit_damages, damage_instance)
+		_process_on_hit_damages(damage_instance.on_hit_damages, damage_instance)
 		
 		while damage_instance.current_on_hit_effect_reapply_count > 0:
 			damage_instance.current_on_hit_effect_reapply_count -= 1
 			_process_effects(damage_instance.on_hit_effects, damage_instance.on_hit_effect_multiplier)
+		
+		while damage_instance.current_on_hit_damage_reapply_count > 0:
+			damage_instance.current_on_hit_damage_reapply_count -= 1
+			_process_on_hit_damages(damage_instance.on_hit_damages, damage_instance)
 
 
 func _process_on_hit_damages(on_hit_damages : Dictionary, damage_instance):
@@ -1140,8 +1166,10 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		_before_reaching_end_path_effects_map[to_use_effect.effect_uuid] = to_use_effect
 		
 	elif to_use_effect is EnemyForcedPathOffsetMovementEffect:
-		set_current_forced_movement_effect(to_use_effect)
-	
+		set_current_forced_offset_movement_effect(to_use_effect)
+		
+	elif to_use_effect is EnemyForcedPositionalMovementEffect:
+		set_current_forced_positional_movement_effect(to_use_effect)
 	
 	emit_signal("effect_added", to_use_effect, self)
 	return to_use_effect
@@ -1242,8 +1270,13 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		_before_reaching_end_path_effects_map.erase(base_effect.effect_uuid)
 		
 	elif base_effect is EnemyForcedPathOffsetMovementEffect:
-		if _current_forced_movement_effect.effect_uuid == base_effect.effect_uuid:
-			remove_current_forced_movement_effect()
+		if _current_forced_offset_movement_effect.effect_uuid == base_effect.effect_uuid:
+			remove_current_forced_offset_movement_effect()
+		
+	elif base_effect is EnemyForcedPositionalMovementEffect:
+		if _current_forced_positional_movement_effect.effect_uuid == base_effect.effect_uuid:
+			remove_current_forced_positional_movement_effect()
+	
 	
 	if base_effect != null:
 		_all_effects_map.erase(base_effect.effect_uuid)
@@ -1434,8 +1467,11 @@ func _decrease_time_of_timebounds(delta):
 	for res_eff in _before_reaching_end_path_effects_map.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
-	if _current_forced_movement_effect != null:
-		_decrease_time_of_effect(_current_forced_movement_effect, delta)
+	if _current_forced_offset_movement_effect != null:
+		_decrease_time_of_effect(_current_forced_offset_movement_effect, delta)
+	
+	if _current_forced_positional_movement_effect != null:
+		_decrease_time_of_effect(_current_forced_positional_movement_effect, delta)
 	
 
 
@@ -1449,7 +1485,7 @@ func _decrease_time_of_effect(effect, delta : float):
 
 # Special effects
 
-func shift_position(shift : float):
+func shift_offset(shift : float):
 	var final_shift = shift
 	#if offset + shift < 0:
 	#	final_shift = -offset
@@ -1460,7 +1496,7 @@ func shift_position(shift : float):
 	if distance_to_exit > current_path_length:
 		distance_to_exit = current_path_length
 
-func shift_unit_position(unit_shift : float):
+func shift_unit_offset(unit_shift : float):
 	var final_unit_shift = unit_shift
 	#if offset + shift < 0:
 	#	final_shift = -offset
@@ -1534,7 +1570,8 @@ func calculate_final_ability_potency():
 func _trigger_start_of_revive():
 	is_reviving = true
 	
-	anim_sprite.visible = false
+	#anim_sprite.visible = false
+	sprite_layer.visible = false
 	no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.IS_REVIVING)
 	no_action_from_self_clauses.attempt_insert_clause(NoActionClauses.IS_REVIVING)
 	untargetable_clauses.attempt_insert_clause(UntargetabilityClauses.IS_REVIVING)
@@ -1571,7 +1608,8 @@ func _trigger_end_of_revive():
 	call_deferred("_after_end_of_revive")
 
 func _after_end_of_revive():
-	anim_sprite.visible = true
+	#anim_sprite.visible = true
+	sprite_layer.visible = true
 	collision_area.set_deferred("monitorable", true)
 	collision_area.set_deferred("monitoring", true)
 	
@@ -1596,29 +1634,76 @@ func knock_up_from_effect(effect : EnemyKnockUpEffect):
 
 func _phy_process_knock_up(delta):
 	if _knock_up_current_acceleration != 0:
-		anim_sprite.offset.y -= _knock_up_current_acceleration * delta
+		knock_up_layer.position.y -= _knock_up_current_acceleration * delta
 		_knock_up_current_acceleration -= _knock_up_current_acceleration_deceleration * delta
 		
-		if anim_sprite.offset.y >= 0:
+		if knock_up_layer.position.y >= 0:
 			_knock_up_current_acceleration = 0
 			_knock_up_current_acceleration_deceleration = 0
-			anim_sprite.offset.y = 0
+			knock_up_layer.position.y = 0
+	
+	
+#	if _knock_up_current_acceleration != 0:
+#		anim_sprite.offset.y -= _knock_up_current_acceleration * delta
+#		_knock_up_current_acceleration -= _knock_up_current_acceleration_deceleration * delta
+#
+#		if anim_sprite.offset.y >= 0:
+#			_knock_up_current_acceleration = 0
+#			_knock_up_current_acceleration_deceleration = 0
+#			anim_sprite.offset.y = 0
+
+
+
 
 # Forced Mov related
 
-func set_current_forced_movement_effect(effect : EnemyForcedPathOffsetMovementEffect):
-	_current_forced_movement_effect = effect
+func set_current_forced_offset_movement_effect(effect : EnemyForcedPathOffsetMovementEffect):
+	if _current_forced_positional_movement_effect != null:
+		remove_current_forced_positional_movement_effect()
+	
+	_current_forced_offset_movement_effect = effect
 
-func remove_current_forced_movement_effect():
-	_current_forced_movement_effect = null
+func remove_current_forced_offset_movement_effect():
+	_current_forced_offset_movement_effect = null
 
 
-func _phy_process_forced_movement(delta):
-	if _current_forced_movement_effect != null:
+func _phy_process_forced_offset_movement(delta):
+	if _current_forced_offset_movement_effect != null:
 		
-		shift_position(_current_forced_movement_effect._current_movement_speed * delta)
-		_current_forced_movement_effect.time_passed(delta)
+		shift_offset(_current_forced_offset_movement_effect.current_movement_speed * delta)
+		_current_forced_offset_movement_effect.time_passed(delta)
+		
 
+
+
+func set_current_forced_positional_movement_effect(effect : EnemyForcedPositionalMovementEffect):
+	if _current_forced_offset_movement_effect != null:
+		remove_current_forced_offset_movement_effect()
+	
+	_current_forced_positional_movement_effect = effect
+	effect.set_up_movements_and_direction(global_position)
+	
+	no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.IS_IN_FORCED_POSITIONAL_MOVEMENT)
+
+func remove_current_forced_positional_movement_effect():
+	_current_forced_positional_movement_effect = null
+	no_movement_from_self_clauses.remove_clause(NoMovementClauses.IS_IN_FORCED_POSITIONAL_MOVEMENT)
+
+
+func _phy_process_forced_positional_movement(delta):
+	if _current_forced_positional_movement_effect != null:
+		
+		global_position += _current_forced_positional_movement_effect.get_direction_with_magnitude(delta, global_position)
+		
+		if global_position == _current_forced_positional_movement_effect.destination_position:
+			if _current_forced_positional_movement_effect.snap_to_offset_at_end:
+				offset = current_path.curve.get_closest_offset(global_position)
+				distance_to_exit = current_path_length - offset
+				
+				if distance_to_exit > current_path_length:
+					distance_to_exit = current_path_length
+			
+			remove_current_forced_positional_movement_effect()
 
 
 # 
@@ -1690,3 +1775,5 @@ func set_properties_to_spawned_from_entity():
 func is_enemy_type_boss() -> bool:
 	return enemy_type == EnemyType.BOSS
 
+func is_enemy_type_boss_or_elite() -> bool:
+	return enemy_type == EnemyType.BOSS or enemy_type == EnemyType.ELITE

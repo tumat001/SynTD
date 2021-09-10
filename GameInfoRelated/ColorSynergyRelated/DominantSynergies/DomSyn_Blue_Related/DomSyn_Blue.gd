@@ -41,6 +41,8 @@ const ManaBurst_Exp_Pic05 = preload("res://GameInfoRelated/ColorSynergyRelated/D
 const ManaBurst_Exp_Pic06 = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/AbilityAssets/ManaBurst/ManaBurst_06.png")
 const ManaBurst_Exp_Pic07 = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/AbilityAssets/ManaBurst/ManaBurst_07.png")
 
+const ManaBurst_StatusBarIcon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Blue_Related/AbilityAssets/Ability_ManaBlast_StatusBarIcon.png")
+
 
 var game_elements : GameElements
 var enemy_manager : EnemyManager
@@ -69,12 +71,12 @@ const breeze_ability_descriptions = [
 ]
 
 
-const empowered_base_breeze_second_slow_amount : float = -90.0
+const empowered_base_breeze_second_slow_amount : float = -75.0
 const empowered_base_breeze_second_slow_duration : float = 8.0 + base_breeze_first_slow_duration
 
 const empowered_breeze_extra_descriptions = [
 	"",
-	"Empowered: The slow from breeze is empowered to slow by %s and lasts for %s" % [(str(-empowered_base_breeze_second_slow_amount) + "%,"), (str(empowered_base_breeze_second_slow_duration) + "s.")]
+	"Empowered: Sea Breeze is empowered to slow by %s and lasts for %s" % [(str(-empowered_base_breeze_second_slow_amount) + "%,"), (str(empowered_base_breeze_second_slow_duration) + "s.")]
 ]
 
 const linked_breeze_descriptions : Array = [
@@ -123,7 +125,7 @@ const linked_mana_blast_descriptions : Array = [
 
 var renew_empower_ability : BaseAbility
 var renew_empower_ability_button : AbilityButton
-const renew_empower_ability_cooldown : float = 70.0
+const renew_empower_ability_cooldown : float = 60.0
 const renew_empower_ability_empower_static_cooldown : float = 0.25
 
 const renew_empower_side_renew_icon : Texture = Renew_Pic
@@ -409,6 +411,7 @@ func _construct_mana_blast_relateds():
 	mana_blast_buff_tower_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY, buff_modi, StoreOfTowerEffectsUUID.MANA_BLAST_BONUS_AP)
 	mana_blast_buff_tower_effect.time_in_seconds = mana_blast_buff_duration
 	mana_blast_buff_tower_effect.is_timebound = true
+	mana_blast_buff_tower_effect.status_bar_icon = ManaBurst_StatusBarIcon
 	
 	# descs
 	

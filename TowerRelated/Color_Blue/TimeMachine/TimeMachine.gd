@@ -8,7 +8,12 @@ const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const InstantDamageAttackModule = preload("res://TowerRelated/Modules/InstantDamageAttackModule.gd")
 const InstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/InstantDamageAttackModule.tscn")
 
+const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
+const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
+const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
+
 const TimeMachine_WindUpParticle_Scene = preload("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine_Attks/TimeMachine_WindUpParticle.tscn")
+const TimePortal_Pic = preload("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine_Attks/TimeMachine_TimePortal_Sprite.png")
 
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 
@@ -26,6 +31,10 @@ const time_dust_energy_module_cd_time_decrease : float = 2.5
 var time_dust_effect : EnemyStackEffect
 
 var is_energy_module_on : bool
+
+
+var time_portal_attack_module : AOEAttackModule
+const time_portal_duration : float = 5.0
 
 
 # Called when the node enters the scene tree for the first time.
@@ -65,8 +74,43 @@ func _ready():
 	
 	add_attack_module(attack_module)
 	
+	#
 	
-	connect("on_main_post_mitigation_damage_dealt" , self, "_on_main_post_mitigated_dmg_dealt", [], CONNECT_PERSIST)
+	time_portal_attack_module = AOEAttackModule_Scene.instance()
+	time_portal_attack_module.base_damage = 0
+	time_portal_attack_module.base_damage_type = DamageType.ELEMENTAL
+	time_portal_attack_module.base_attack_speed = 0
+	time_portal_attack_module.base_attack_wind_up = 0
+	time_portal_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	time_portal_attack_module.is_main_attack = false
+	time_portal_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	
+	time_portal_attack_module.benefits_from_bonus_explosion_scale = true
+	time_portal_attack_module.benefits_from_bonus_base_damage = false
+	time_portal_attack_module.benefits_from_bonus_attack_speed = false
+	time_portal_attack_module.benefits_from_bonus_on_hit_damage = false
+	time_portal_attack_module.benefits_from_bonus_on_hit_effect = false
+	
+	var sprite_frames = SpriteFrames.new()
+	sprite_frames.add_frame("default", TimePortal_Pic)
+	
+	time_portal_attack_module.aoe_sprite_frames = sprite_frames
+	time_portal_attack_module.sprite_frames_only_play_once = true
+	time_portal_attack_module.pierce = -1
+	time_portal_attack_module.duration = time_portal_duration
+	time_portal_attack_module.damage_repeat_count = 1
+	
+	time_portal_attack_module.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
+	time_portal_attack_module.base_aoe_scene = BaseAOE_Scene
+	time_portal_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
+	
+	time_portal_attack_module.can_be_commanded_by_tower = false
+	
+	add_attack_module(time_portal_attack_module)
+	
+	#
+	
+	connect("on_main_post_mitigation_damage_dealt" , self, "_on_main_post_mitigated_dmg_dealt_t", [], CONNECT_PERSIST)
 	
 	_construct_and_register_ability()
 	_construct_effect()
@@ -100,7 +144,7 @@ func _construct_effect():
 
 # attk
 
-func _on_main_post_mitigated_dmg_dealt(damage_instance_report, killed, enemy, damage_register_id, module):
+func _on_main_post_mitigated_dmg_dealt_t(damage_instance_report, killed, enemy, damage_register_id, module):
 	if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.TIME_MACHINE_TIME_DUST):
 		var effect = enemy._stack_id_effects_map[StoreOfEnemyEffectsUUID.TIME_MACHINE_TIME_DUST]
 		effect._current_stack -= 1
@@ -110,21 +154,25 @@ func _on_main_post_mitigated_dmg_dealt(damage_instance_report, killed, enemy, da
 		_time_dust_stack_consumed()
 	
 	if !killed and rewind_ability_is_ready:
-		var final_potency = rewind_ability.get_potency_to_use(last_calculated_final_ability_potency)
-		var final_shift = final_potency * base_position_shift
-		
-		enemy.shift_position(final_shift)
-		
+		_shift_enemy_position_t(enemy)
 		rewind_ability.start_time_cooldown(_get_cd_to_use(base_rewind_cooldown))
 		enemy._add_effect(time_dust_effect._get_copy_scaled_by(1))
-
+		
+		_enemy_shifted_by_main_attack(enemy, enemy.global_position)
 
 func _time_dust_stack_consumed():
 	if is_energy_module_on:
 		ability_manager._decrease_time_cooldown_of_all_abilities(time_dust_energy_module_cd_time_decrease)
-		
 	else:
 		rewind_ability.time_decreased(time_dust_cd_time_decrease)
+
+
+func _shift_enemy_position_t(enemy, shift_scale : float = 1):
+	var final_potency = rewind_ability.get_potency_to_use(last_calculated_final_ability_potency)
+	var final_shift = final_potency * base_position_shift * shift_scale
+	
+	enemy.shift_offset(final_shift)
+
 
 
 # module effects
@@ -134,8 +182,10 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Consuming a stack of Time Dust instead reduces all abilities’s cooldown by 2.5 seconds.",
+			"Consuming a stack of Time Dust instead reduces all abilities’s cooldown by %s seconds." % [str(time_dust_energy_module_cd_time_decrease)],
 			"Turning this on while in round also sets Rewind's current cooldown to 0.",
+			"",
+			"A time portal is opened beneath the teleported enemy for %s seconds. Enemies that enter the time portal for the first time are teleported backwards." % [str(time_portal_duration)],
 		]
 
 
@@ -148,3 +198,22 @@ func _module_turned_on(_first_time_per_round : bool):
 
 func _module_turned_off():
 	is_energy_module_on = false
+
+
+# time portal related
+
+func _enemy_shifted_by_main_attack(enemy, enemy_curr_position):
+	if is_energy_module_on and enemy != null:
+		var time_portal = time_portal_attack_module.construct_aoe(enemy_curr_position, enemy_curr_position)
+		time_portal.enemies_to_ignore.append(enemy)
+		time_portal.rotation_deg_per_sec = 360 / time_portal_duration
+		time_portal.connect("before_enemy_hit_aoe", self, "_time_portal_hit_enemy", [time_portal])
+		time_portal.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
+		
+		get_tree().get_root().add_child(time_portal)
+
+
+func _time_portal_hit_enemy(enemy, aoe):
+	if enemy != null:
+		_shift_enemy_position_t(enemy, 2)
+		aoe.enemies_to_ignore.append(enemy)

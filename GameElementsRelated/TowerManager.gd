@@ -62,7 +62,7 @@ signal tower_ing_cap_removed(cap_id)
 
 const base_ing_limit_of_tower : int = 1
 
-const ing_cap_per_relic : int = 2
+const ing_cap_per_relic : int = 1
 const tower_limit_per_relic : int = 1
 
 #

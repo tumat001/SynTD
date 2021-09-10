@@ -5,7 +5,7 @@ const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
 
-const base_unit_time_before_max : float = 7.5
+var base_unit_time_before_max : float
 var current_unit_time_before_max : float = 0
 var max_attk_speed_percent_amount : float
 
@@ -14,8 +14,8 @@ var attk_speed_effect : TowerAttributesEffect
 var attk_speed_modifier : PercentModifier
 var tower_affected
 
-func _init().(StoreOfTowerEffectsUUID.ORANGE_YR_GIVER_EFFECT):
-	pass
+func _init(arg_base_unit_time_before_max : float).(StoreOfTowerEffectsUUID.ORANGE_YR_GIVER_EFFECT):
+	base_unit_time_before_max = arg_base_unit_time_before_max
 
 
 func _make_modifications_to_tower(tower):

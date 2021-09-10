@@ -18,8 +18,8 @@ const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModul
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
 
-const AbilityPotencyBar = preload("res://MiscRelated/AbilityPotencyBar/AbilityPotencyBar.gd")
-const AbilityPotencyBar_Scene = preload("res://MiscRelated/AbilityPotencyBar/AbilityPotencyBar.tscn")
+const SiphonStacksBar = preload("res://TowerRelated/Color_Blue/Accumulae/SiphonStacksBar/SiphonStacksBar.gd")
+const SiphonStacksBar_Scene = preload("res://TowerRelated/Color_Blue/Accumulae/SiphonStacksBar/SiphonStacksBar.tscn")
 
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 
@@ -50,14 +50,16 @@ const Accumulae_BurstExplosion09 = preload("res://TowerRelated/Color_Blue/Accumu
 
 #
 
-const base_ap_to_cast_salvo : float = 3.5
+signal current_siphon_stacks_changed()
+
+const base_siphon_stacks_to_cast_salvo : int = 12
 const base_delay_per_burst_in_salvo : float = 0.2
 const base_salvo_cooldown : float = 1.5
 
-const enemy_siphon_effect_duration : float = 3.0
+const enemy_siphon_effect_duration : float = 7.0
 const base_enemy_ap_reduction_of_siphon : float = -0.35
 
-const base_ap_per_siphon_stack : float = 0.25
+#const base_ap_per_siphon_stack : float = 0.25
 
 const base_spell_burst_damage : float = 10.0
 
@@ -68,7 +70,7 @@ const attack_position_source_y_shift : float = 19.0
 
 
 var enemy_siphon_ap_effect : EnemyAttributesEffect
-var tower_siphon_ap_modi : FlatModifier
+#var tower_siphon_ap_modi : FlatModifier
 
 var siphon_attk_module : WithBeamInstantDamageAttackModule
 var burst_lob_attk_module : ArcingBulletAttackModule
@@ -134,7 +136,7 @@ func _ready():
 	#
 	
 	connect("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_enemy_a", [], CONNECT_PERSIST)
-	connect("final_ability_potency_changed", self, "_on_ap_changed_a", [], CONNECT_PERSIST)
+	#connect("final_ability_potency_changed", self, "_on_ap_changed_a", [], CONNECT_PERSIST)
 	connect("on_round_end", self, "_on_round_end_a", [], CONNECT_PERSIST)
 	
 	_construct_enemy_siphon_effect()
@@ -146,7 +148,7 @@ func _ready():
 func _post_inherit_ready():
 	._post_inherit_ready()
 	
-	_construct_and_add_self_siphon_effect()
+	#_construct_and_add_self_siphon_effect()
 	
 	_construct_and_add_slot_bar()
 	
@@ -310,22 +312,22 @@ func _construct_enemy_siphon_effect():
 	enemy_siphon_ap_effect.is_from_enemy = false
 	enemy_siphon_ap_effect.status_bar_icon = preload("res://TowerRelated/Color_Blue/Accumulae/AbilityAssets/Siphon_StatusBarIcon.png")
 
-func _construct_and_add_self_siphon_effect():
-	tower_siphon_ap_modi = FlatModifier.new(StoreOfTowerEffectsUUID.ACCUMULAE_SELF_SIPHON_BUFF)
-	
-	var siphon_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY, tower_siphon_ap_modi, StoreOfTowerEffectsUUID.ACCUMULAE_SELF_SIPHON_BUFF)
-	
-	add_tower_effect(siphon_effect)
+#func _construct_and_add_self_siphon_effect():
+#	tower_siphon_ap_modi = FlatModifier.new(StoreOfTowerEffectsUUID.ACCUMULAE_SELF_SIPHON_BUFF)
+#	
+#	var siphon_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY, tower_siphon_ap_modi, StoreOfTowerEffectsUUID.ACCUMULAE_SELF_SIPHON_BUFF)
+#	
+#	add_tower_effect(siphon_effect)
 
 #
 
 func _construct_and_add_slot_bar():
-	var ap_bar = AbilityPotencyBar_Scene.instance()
+	var siphon_bar = SiphonStacksBar_Scene.instance()
 	
-	add_infobar_control(ap_bar)
-	ap_bar.ap_bar.max_value = base_ap_to_cast_salvo
-	ap_bar.ap_bar.current_value = last_calculated_final_ability_potency
-	ap_bar.tower = self
+	add_infobar_control(siphon_bar)
+	siphon_bar.siphon_bar.max_value = base_siphon_stacks_to_cast_salvo
+	siphon_bar.siphon_bar.current_value = current_siphon_stacks
+	siphon_bar.tower = self
 
 #
 
@@ -338,15 +340,12 @@ func _attk_enemy_with_siphon(enemy):
 		siphon_attk_module.on_command_attack_enemies([enemy])
 		enemy._add_effect(enemy_siphon_ap_effect)
 		
-		current_siphon_stacks += 1
+		set_curr_siphon_stacks(current_siphon_stacks + 1)
 		
-		tower_siphon_ap_modi.flat_modifier += base_ap_per_siphon_stack
-		_calculate_final_ability_potency()
+		#tower_siphon_ap_modi.flat_modifier += base_ap_per_siphon_stack
+		#_calculate_final_ability_potency()
 
 #
-
-func _on_ap_changed_a():
-	_attempt_cast_salvo_ability()
 
 
 func _can_cast_salvo_updated(can_cast):
@@ -356,7 +355,7 @@ func _can_cast_salvo_updated(can_cast):
 
 func _attempt_cast_salvo_ability():
 	if _can_cast_salvo_ability:
-		if !is_in_salvo and last_calculated_final_ability_potency >= base_ap_to_cast_salvo and current_siphon_stacks > 0:
+		if !is_in_salvo and current_siphon_stacks >= base_siphon_stacks_to_cast_salvo:
 			_enter_in_salvo_mode()
 
 
@@ -390,7 +389,7 @@ func _fire_single_burst_from_salvo():
 	
 	salvo_delay_timer.start(_get_cd_to_use(base_delay_per_burst_in_salvo))
 	
-	current_siphon_stacks -= 1
+	set_curr_siphon_stacks(current_siphon_stacks - 1)
 	if is_in_salvo and current_siphon_stacks <= 0:
 		_exit_in_salvo_mode()
 		salvo_ability.start_time_cooldown(_get_cd_to_use(base_salvo_cooldown))
@@ -402,11 +401,11 @@ func _fire_single_burst_from_salvo():
 func _modify_bullet_a(bullet : ArcingBaseBullet):
 	bullet.connect("on_final_location_reached", self, "_on_lob_arcing_bullet_landed", [last_calculated_final_ability_potency], CONNECT_ONESHOT)
 	
-	tower_siphon_ap_modi.flat_modifier -= base_ap_per_siphon_stack
-	if tower_siphon_ap_modi.flat_modifier <= 0:
-		tower_siphon_ap_modi.flat_modifier = 0
+	#tower_siphon_ap_modi.flat_modifier -= base_ap_per_siphon_stack
+	#if tower_siphon_ap_modi.flat_modifier <= 0:
+	#	tower_siphon_ap_modi.flat_modifier = 0
 	
-	_calculate_final_ability_potency()
+	#_calculate_final_ability_potency()
 
 
 func _on_lob_arcing_bullet_landed(arg_final_location : Vector2, bullet : ArcingBaseBullet, arg_ap_to_use : float):
@@ -420,8 +419,17 @@ func _on_lob_arcing_bullet_landed(arg_final_location : Vector2, bullet : ArcingB
 #
 
 func _on_round_end_a():
-	tower_siphon_ap_modi.flat_modifier = 0
-	_calculate_final_ability_potency()
+	#tower_siphon_ap_modi.flat_modifier = 0
+	#_calculate_final_ability_potency()
 	
 	_exit_in_salvo_mode()
-	current_siphon_stacks = 0
+	set_curr_siphon_stacks(0)
+
+
+#
+
+func set_curr_siphon_stacks(new_amount : int):
+	current_siphon_stacks = new_amount
+	
+	emit_signal("current_siphon_stacks_changed")
+	_attempt_cast_salvo_ability()

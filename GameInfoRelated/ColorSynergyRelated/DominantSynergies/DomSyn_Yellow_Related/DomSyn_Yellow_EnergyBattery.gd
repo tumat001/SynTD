@@ -11,7 +11,7 @@ var game_elements : GameElements
 
 var _is_first_time_activated : bool = true
 
-const tier_2_recharge_rate : int = 1
+const tier_2_recharge_rate : int = 2
 const tier_1_recharge_rate : int = 3
 
 const tier_2_max_capacity = 4
@@ -58,8 +58,10 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		
 		
 		if game_elements.stage_round_manager.round_started:
-			_attempt_give_all_eligible_towers_energy_module()
+			#_attempt_give_all_eligible_towers_energy_module()
 			_first_time_activation("")
+		
+		_attempt_give_all_eligible_towers_energy_module()
 	
 	._apply_syn_to_game_elements(arg_game_elements, tier)
 
@@ -105,7 +107,7 @@ func _attempt_give_all_eligible_towers_energy_module():
 
 
 func _attempt_give_energy_module_to_eligible_tower(tower : AbstractTower):
-	if game_elements.stage_round_manager.round_started:
+	#if game_elements.stage_round_manager.round_started:
 		if tower.energy_module == null:
 			for color in eligible_colors:
 				if tower._tower_colors.has(color):

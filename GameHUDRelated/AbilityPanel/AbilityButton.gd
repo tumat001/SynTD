@@ -19,8 +19,17 @@ onready var auto_cast_frame : TextureRect = $AutocastFrame
 var ability_tooltip : AbilityTooltip
 var hotkey_num : int = NO_HOTKEY_NUM
 
-export var destroy_button_if_ability_lost : bool = true
+var is_mouse_inside_button : bool = false
 
+export(bool) var destroy_button_if_ability_lost : bool = true
+
+#
+
+var _ability_panel
+var is_drag_and_droppable : bool = false
+
+var _is_being_dragged : bool = false
+var _is_being_left_pressed : bool = false
 
 # setting and connections
 
@@ -147,13 +156,29 @@ func _should_be_displaying(value : bool):
 
 func _on_AbilityButton_pressed_mouse_event(event):
 	if ability != null:
-		if event is InputEventMouseButton and event.pressed:
-			if event.button_index == BUTTON_LEFT and !event.shift:
-				_ability_button_left_pressed()
-			elif event.button_index == BUTTON_RIGHT:
-				_ability_button_right_pressed()
-			elif event.button_index == BUTTON_LEFT and event.shift:
-				_ability_button_autocast_pressed()
+		if event.button_index == BUTTON_LEFT and !event.shift:
+			#_ability_button_left_pressed()
+			_is_being_left_pressed = true
+			
+		if event.button_index == BUTTON_RIGHT:
+			_ability_button_right_pressed()
+		elif event.button_index == BUTTON_LEFT and event.shift:
+			_ability_button_autocast_pressed()
+			
+
+
+func _on_AbilityButtonPressable_released_mouse_event(event):
+	if ability != null:
+		if event.button_index == BUTTON_LEFT and !event.shift:
+			_ability_button_left_pressed()
+			
+			_is_being_left_pressed = false
+			_end_of_being_dragged()
+		#elif event.button_index == BUTTON_RIGHT:
+		#	_ability_button_right_pressed()
+		#elif event.button_index == BUTTON_LEFT and event.shift:
+		#	_ability_button_autocast_pressed()
+
 
 
 func _ability_button_left_pressed():
@@ -191,5 +216,85 @@ func _update_tooltip():
 	if ability_tooltip != null:
 		ability_tooltip.descriptions = ability.descriptions
 		ability_tooltip.header_left_text = ability.display_name
-		ability_tooltip.header_right_text = "Hotkey: %s" % str(hotkey_num)
+		
+		if hotkey_num != -1:
+			ability_tooltip.header_right_text = "Hotkey: %s" % str(hotkey_num)
+		
 		ability_tooltip.update_display()
+
+
+# drag related
+
+func get_drag_data(position):
+	if is_drag_and_droppable:
+		var icon_preview = _get_drag_preview_of_self()
+		set_drag_preview(icon_preview)
+		
+		
+		return _get_drag_data_of_self()
+	else:
+		return null
+
+func _get_drag_data_of_self():
+	return DropData.new(hotkey_num)
+
+func _get_drag_preview_of_self() -> TextureRect:
+	var icon_preview = TextureRect.new()
+	icon_preview.texture = ability.icon
+	
+	var icon_size = ability.icon.get_size()
+	#icon_preview.position = Vector2(-icon_size.x / 2.0, -icon_size.y / 2.0)
+	icon_preview.anchor_left = 0.5
+	icon_preview.anchor_bottom = 0.5
+	icon_preview.anchor_right = 0.5
+	icon_preview.anchor_top = 0.5
+	icon_preview.mouse_filter = MOUSE_FILTER_IGNORE
+	icon_preview.connect("tree_exiting", self, "_preview_exiting", [], CONNECT_ONESHOT)
+	
+	return icon_preview
+
+func _preview_exiting():
+	_end_of_being_dragged()
+
+
+class DropData:
+	var hotkey_num
+	
+	func _init(arg_hotkey_num):
+		hotkey_num = arg_hotkey_num
+
+
+func can_drop_data(position, data):
+	return is_drag_and_droppable and data is DropData 
+
+
+func drop_data(position, data):
+	_ability_panel.swap_buttons_with_hotkeys(hotkey_num, data.hotkey_num)
+
+
+
+func _on_AbilityButtonPressable_gui_input(event):
+	if is_drag_and_droppable:
+		if event is InputEventMouseMotion:
+			if !_is_being_dragged and _is_being_left_pressed:
+				#force_drag(_get_drag_data_of_self(), _get_drag_preview_of_self())
+				_is_being_dragged = true
+
+func _end_of_being_dragged():
+	if _is_being_dragged:
+		_is_being_dragged = false
+		_is_being_left_pressed = false
+
+
+
+# hover related
+
+func _on_AbilityButtonPressable_mouse_entered():
+	is_mouse_inside_button = true
+
+
+func _on_AbilityButtonPressable_mouse_exited():
+	is_mouse_inside_button = false
+
+
+

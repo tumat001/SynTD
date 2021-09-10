@@ -22,11 +22,6 @@ const Explosion_Pic08 = preload("res://GameInfoRelated/ColorSynergyRelated/Compl
 var explosion_attack_module : AOEAttackModule
 
 
-# When towers are overheating (100 heat)
-const _explosion_cooldown_lowered_ratio : float = 0.65
-# When towers are overheating (100 heat)
-const _explosion_buffed_dmg_ratio : float = 1.0#2.0 
-
 var _explosion_timer : Timer
 
 var _explosion_base_damage : float
@@ -34,9 +29,17 @@ var base_unit_time_per_explosion : float
 var explosion_scale : float
 var explosion_base_and_on_hit_damage_scale : float = 0.2
 
+# When towers are overheating (100 heat)
+var _explosion_cooldown_lowered_ratio : float
+# When towers are overheating (100 heat)
+var _explosion_buffed_dmg_ratio : float
 
-func _init(arg_explosion_dmg : float).(StoreOfTowerEffectsUUID.ORANGE_BLUE_AM_ADDER):
+
+func _init(arg_explosion_dmg : float, arg_explosion_cooldown_lowered_ratio : float, arg_overheat_dmg_scale : float).(StoreOfTowerEffectsUUID.ORANGE_BLUE_AM_ADDER):
 	_explosion_base_damage = arg_explosion_dmg
+	
+	_explosion_cooldown_lowered_ratio = arg_explosion_cooldown_lowered_ratio
+	_explosion_buffed_dmg_ratio = arg_overheat_dmg_scale
 
 
 func _make_modifications_to_tower(tower):
