@@ -7,7 +7,7 @@
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ ExtResource( 3 ) ],
-"loop": false,
+"loop": true,
 "name": "default",
 "speed": 5.0
 } ]
@@ -21,7 +21,7 @@ script = ExtResource( 2 )
 [node name="TowerBase" parent="." index="0"]
 position = Vector2( 0, -6.25 )
 
-[node name="BaseSprites" parent="TowerBase" index="0"]
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
 
 [node name="CollisionShape" parent="." index="1"]

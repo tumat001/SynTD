@@ -47,7 +47,7 @@ const Orb_HatLevel04 = preload("res://TowerRelated/Color_Blue/Orb/Orb_Hat/Orb_Ha
 signal current_level_changed()
 
 
-onready var orb_hat_sprite : Sprite = $TowerBase/HatSprite
+onready var orb_hat_sprite : Sprite = $TowerBase/KnockUpLayer/HatSprite
 
 const ap_level04 : float = 2.0
 const ap_level03 : float = 1.5

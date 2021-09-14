@@ -78,6 +78,9 @@ func _decide_second_half_faction():
 	var rand_num = faction_rng.randi_range(0, factions.size() - 1)
 	
 	second_half_faction = factions[rand_num]
+	
+	#TEST
+	second_half_faction = EnemyConstants.EnemyFactions.FAITHFUL
 
 
 func get_second_half_faction() -> int:

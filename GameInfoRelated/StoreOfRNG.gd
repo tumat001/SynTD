@@ -14,6 +14,7 @@ var roll_towers_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var tier_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var black_buff_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var shackled_pull_position_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var faithful_mov_speed_delay_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -38,6 +39,9 @@ enum RNGSource {
 	TIER = 2001,
 	
 	BLACK_BUFF = 3000,
+	
+	
+	FAITHFUL_MOV_SPEED_DELAY = 10000
 }
 
 func _init():
@@ -73,5 +77,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return black_buff_rng
 	elif rng_source == RNGSource.SHACKLED_PULL_POSITION:
 		return shackled_pull_position_rng
+	elif rng_source == RNGSource.FAITHFUL_MOV_SPEED_DELAY:
+		return faithful_mov_speed_delay_rng
 	
 	return null

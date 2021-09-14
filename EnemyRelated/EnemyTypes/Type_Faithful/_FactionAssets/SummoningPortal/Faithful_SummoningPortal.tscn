@@ -1,0 +1,17 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/SummoningPortal/SummoningPortal_01.png" type="Texture" id=2]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/SummoningPortal/SummoningPortal_02.png" type="Texture" id=3]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/SummoningPortal/SummoningPortal_03.png" type="Texture" id=4]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "default",
+"speed": 10.0
+} ]
+
+[node name="Faithful_SummoningPortal" instance=ExtResource( 1 )]
+frames = SubResource( 1 )

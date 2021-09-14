@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Believer_E.png-7bf5c5d323fdef8f2d177cb7d046cea3.stex"
+path="res://.import/Deity_TauntIcon.png-46eb5f1de1149f85c0980b3ef5ad774f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://EnemyRelated/EnemyTypes/Type_Cultist/Believer_E.png"
-dest_files=[ "res://.import/Believer_E.png-7bf5c5d323fdef8f2d177cb7d046cea3.stex" ]
+source_file="res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/StatusBarIcons/Deity_TauntIcon.png"
+dest_files=[ "res://.import/Deity_TauntIcon.png-46eb5f1de1149f85c0980b3ef5ad774f.stex" ]
 
 [params]
 

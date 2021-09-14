@@ -33,8 +33,13 @@ func _on_health_threshold_reached(curr_health):
 
 func _become_invisible():
 	connect("effect_removed", self, "_on_invis_effect_removed")
-	_add_effect(invis_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
-	_is_invis = true
+	
+	var effect = _add_effect(invis_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
+	
+	if effect != null:
+		_is_invis = true
+	else:
+		disconnect("effect_removed", self, "_on_invis_effect_removed")
 
 
 func _on_invis_effect_removed(effect_removed, me):

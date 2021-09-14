@@ -35,7 +35,9 @@ __meta__ = {
 
 [node name="TowerBase" type="Node2D" parent="."]
 
-[node name="BaseSprites" type="AnimatedSprite" parent="TowerBase"]
+[node name="KnockUpLayer" type="Node2D" parent="TowerBase"]
+
+[node name="BaseSprites" type="AnimatedSprite" parent="TowerBase/KnockUpLayer"]
 use_parent_material = true
 
 [node name="CollisionShape" type="CollisionShape2D" parent="."]

@@ -98,7 +98,7 @@ var is_energy_module_on : bool = false
 
 #
 
-onready var prominence_sword_sprite = $TowerBase/ProminenceSword
+onready var prominence_sword_sprite = $TowerBase/KnockUpLayer/ProminenceSword
 
 
 func _ready():

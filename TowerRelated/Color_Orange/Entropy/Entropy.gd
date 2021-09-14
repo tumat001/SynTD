@@ -24,7 +24,7 @@ var first_speed_is_gone : bool = false
 var curr_second_attack_speed_amount : int = second_attack_speed_starting_amount
 var second_speed_is_gone : bool = false
 
-onready var body_sprite : AnimatedSprite = $TowerBase/BaseSprites
+onready var body_sprite : AnimatedSprite = $TowerBase/KnockUpLayer/BaseSprites
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

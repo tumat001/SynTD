@@ -39,9 +39,19 @@ enum CanBeCommandedByTower_ClauseId {
 	
 }
 
+enum Disabled_ClauseId {
+	IS_IN_DRAG,
+	
+	IS_STUNNED,
+}
+
+
 var module_id : int
-# OBSELETE
-var is_main_attack : bool = false
+var parent_tower
+
+var is_main_attack : bool = false # OBSELETE
+
+
 var number_of_unique_targets : int = 1
 
 var can_be_commanded_by_tower : bool = true setget _set_can_be_commanded_by_tower, _get_can_be_commanded_by_tower
@@ -129,8 +139,10 @@ var _current_burst_count : int
 var _current_burst_delay : float
 var _is_bursting : bool
 
-var _disabled : bool = false
 
+#var _disabled : bool = false
+var is_disabled_clauses : ConditionalClauses
+var _last_calculated_is_disabled : bool = false
 
 # last calculated vars
 
@@ -161,7 +173,18 @@ func _init():
 	can_be_commanded_by_tower_other_clauses.connect("clause_removed", self, "_can_be_commanded_clause_removed", [], CONNECT_PERSIST)
 	
 	_calculate_can_be_commanded_by_tower_clause()
+	
+	#
+	
+	is_disabled_clauses = ConditionalClauses.new()
+	
+	is_disabled_clauses.connect("clause_inserted", self, "_is_disabled_clause_inserted", [], CONNECT_PERSIST)
+	is_disabled_clauses.connect("clause_removed", self, "_is_disabled_clause_removed", [], CONNECT_PERSIST)
+	
+	_calculate_is_disabled_clause()
 
+
+# can be commanded clause
 
 func _can_be_commanded_clause_inserted(inserted):
 	_calculate_can_be_commanded_by_tower_clause()
@@ -178,6 +201,18 @@ func _if_can_be_commanded_by_tower() -> bool:
 		return false
 	
 	return can_be_commanded_by_tower_other_clauses.is_passed
+
+# is disabled clauses
+
+func _is_disabled_clause_inserted(inserted):
+	_calculate_is_disabled_clause()
+
+func _is_disabled_clause_removed(removed):
+	_calculate_is_disabled_clause()
+
+func _calculate_is_disabled_clause():
+	_last_calculated_is_disabled = !is_disabled_clauses.is_passed
+
 
 
 # for compatibility stuffs
@@ -226,8 +261,7 @@ func _set_range_module(new_module):
 
 
 func time_passed(delta):
-	
-	if !_disabled:
+	if !_last_calculated_is_disabled:
 		_current_attack_wait -= delta
 		
 		if (range_module != null and range_module.enemies_in_range.size() != 0) or (commit_to_targets_of_windup and _is_in_windup):#_targets_during_windup.size() > 0):
@@ -823,13 +857,16 @@ func _finished_attacking():
 	emit_signal("in_attack_end")
 	_targets_during_windup.clear()
 
+
 # Disabling and Enabling
 
-func disable_module():
-	_disabled = true
+func disable_module(disabled_clause_id : int):
+	#_disabled = true
+	is_disabled_clauses.attempt_insert_clause(disabled_clause_id)
 
-func enable_module():
-	_disabled = false
+func enable_module(disabled_clause_id : int):
+	#_disabled = false
+	is_disabled_clauses.remove_clause(disabled_clause_id)
 
 
 # On Hit Damages

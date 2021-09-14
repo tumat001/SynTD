@@ -527,7 +527,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Re's attacks on hit cleanses enemies from all buffs and debuffs.",
+			"Re's attacks on hit cleanses enemies from almost all buffs and debuffs.",
 			"Attacks in bursts of 3."
 		]
 		
@@ -719,13 +719,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 2 seconds."
 		]
 		
-		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(1, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
+		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(1.25, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
 		var enemy_effect : EnemyStackEffect = EnemyStackEffect.new(enemy_final_effect, 1, 5, StoreOfEnemyEffectsUUID.ING_MINI_TESLA_STACK)
 		enemy_effect.is_timebound = true
 		enemy_effect.time_in_seconds = 3
 		
 		var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.ING_MINI_TESLA)
-		tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 1 second."
+		tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 1.25 seconds."
 		tower_effect.effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Static.png")
 		
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
@@ -1299,7 +1299,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = impale_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 15
+		info.base_damage = 12
 		info.base_attk_speed = 0.2
 		info.base_pierce = 0
 		info.base_range = 115
@@ -1308,8 +1308,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Impale shoots up a spike that stabs an enemy, stunning them for 2.2 seconds.",
-			"When the stun expires, Impale retracts the spike, dealing damage again.",
-			"The retract damage deals 100% extra damage when the enemy has less than 75% of their max health.",
+			"When the stun expires, Impale retracts the spike, dealing damage again. The retract damage deals 100% extra damage when the enemy has less than 75% of their max health.",
 		]
 		
 		var imp_dmg_effect = ImpaleBonusDamageEffect.new()
@@ -1547,8 +1546,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Automatically attempts to casts Rewind after attacking an enemy.",
-			"Rewind: After a brief delay, Time machine teleports an enemy a few paces backwards.",
+			"Automatically attempts to cast Rewind at its target.",
+			"Rewind: After a brief delay, Time machine teleports its non-boss target a few paces backwards.",
 			"Cooldown: 15 s",
 			"",
 			"Rewind also applies 3 stacks of Time Dust onto an enemy for 10 seconds. Time Machine’s main attacks onto an enemy consume a stack of Time Dust, reducing Rewind’s cooldown by 2 seconds."
@@ -1642,19 +1641,18 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2
-		info.base_attk_speed = 1.2
+		info.base_attk_speed = 1.275
 		info.base_pierce = 0
 		info.base_range = 145
 		info.base_damage_type = DamageType.ELEMENTAL
-		info.on_hit_multiplier = 0.2
+		info.on_hit_multiplier = 0.1
 		
 		info.tower_descriptions = [
-			"Pestilence permanently poisons enemies it hits. The poison deals 1 elemental damage per second.",
-			"Pestilence also applies one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply.",
-			"Enemies become permanently Noxious upon gaining 8 Toxin stacks.",
+			"Pestilence permanently poisons enemies it hits. The poison deals 2 elemental damage per second.",
+			"Pestilence's attacks also apply one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply. Enemies become permanently Noxious upon gaining 8 Toxin stacks.",
 			"",
 			"Pestilence's main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
-			"Each explosion deals 3 elemental damage.",
+			"Each explosion deals 4 elemental damage.",
 			"Explosions apply a stack of Toxin. Explosions benefit from base damage buffs, on hit damages and effects at 33% efficiency.",
 			"",
 			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25% for the round.",
@@ -1692,7 +1690,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Reaper's attacks deal additional 8% of the enemy's missing health as elemental damage, up to 10 health.",
 			"",
-			"Killing an enemy grants Reaper a stack of Death. While Reaper has Death stacks, Reaper attempts to cast Slash.",
+			"Killing an enemy grants Reaper a stack of Death. Reaper attempts to cast Slash when gaining Death stacks while enemies are in range.",
 			"Slash: Reaper consumes a Death stack to slash the area of the closest enemy, dealing 400% of Reaper's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
 			"Casting Slash reduces the damage of subsequent slashes by 50% for 0.5 seconds. This does not stack.",
 			"Cooldown: 0.2 s."
@@ -1964,7 +1962,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Every end of round, Amalgamator selects a random non-black tower in the map to apply Amalgamate.",
+			"Every end of round, Amalgamator selects a random non-black or non_gray tower in the map to apply Amalgamate.",
 			"Amalgamate: Sets a tower's color to black, erasing all previous colors."
 		]
 		
@@ -2291,12 +2289,25 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Shackled's main attacks explode upon hitting an enemy, dealing 1 elemental damage to 3 enemies.",
 			"",
-			"After 18 attacks or dealing 70 post-mitigated damage, Shackled attempts to cast Chains.",
-			"Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location, stunning them for 0.5 seconds. Targeting affects which enemies are pulled.",
+			"After 15 attacks or dealing 70 post-mitigated damage, Shackled attempts to cast Chains.",
+			"Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and stunning them for 0.5 seconds. Targeting affects which enemies are pulled.",
 			"Cooldown: 25 s",
 			"",
 			"After 3 rounds of being active, Shackled is able to pull 1 more enemy per cast."
 		]
+		
+		
+		# Ingredient related
+		var range_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SHACKLED)
+		range_attr_mod.percent_amount = 35
+		range_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_SHACKLED)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ range"
+		
 		
 		
 		

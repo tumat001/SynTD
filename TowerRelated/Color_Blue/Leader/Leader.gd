@@ -269,8 +269,8 @@ func _ability_remove_selected_member(tower):
 		tower.disconnect("global_position_changed", self, "_member_global_pos_changed")
 		
 		if tower.main_attack_module != null:
-			if tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
-				tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+			if tower.main_attack_module.range_module.priority_enemies_regardless_of_range.has(_atomic_marked_enemy):
+				tower.main_attack_module.range_module.member.main_attack_module.range_module.remove_priority_target_regardless_of_range(_atomic_marked_enemy)
 		
 		if tower.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
 			tower.disconnect("on_main_attack_finished", self, "_member_finished_with_main_attack")
@@ -301,8 +301,8 @@ func _remove_all_tower_members():
 		tower.disconnect("global_position_changed", self, "_member_global_pos_changed")
 		
 		if tower.main_attack_module != null:
-			if tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
-				tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+			if tower.main_attack_module.range_module.priority_enemies_regardless_of_range.has(_atomic_marked_enemy):
+				tower.main_attack_module.range_module.member.main_attack_module.range_module.remove_priority_target_regardless_of_range(_atomic_marked_enemy)
 		
 		if tower.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
 			tower.disconnect("on_main_attack_finished", self, "_member_finished_with_main_attack")
@@ -334,8 +334,9 @@ func _cast_use_coordinated_attack():
 		if tower.main_attack_module != null and tower.main_attack_module.range_module != null and tower.main_attack_module.can_be_commanded_by_tower:
 			#if !tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
 			if !tower.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
-				tower.main_attack_module.range_module.priority_enemies.append(_atomic_marked_enemy)
-				tower.main_attack_module.range_module.enemies_in_range.append(_atomic_marked_enemy)
+				#tower.main_attack_module.range_module.priority_enemies.append(_atomic_marked_enemy)
+				#tower.main_attack_module.range_module.enemies_in_range.append(_atomic_marked_enemy)
+				tower.main_attack_module.range_module.add_priority_target_regardless_of_range(_atomic_marked_enemy)
 				
 				tower.connect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed", [tower], CONNECT_ONESHOT)
 				tower.connect("on_main_attack_finished", self, "_member_finished_with_main_attack", [tower], CONNECT_ONESHOT)
@@ -371,9 +372,11 @@ func _member_bullet_is_shot(bullet : BaseBullet, tower):
 
 func _member_finished_with_main_attack(module, tower):
 	if tower.main_attack_module != null and tower.main_attack_module.range_module != null:
-		tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+		#tower.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+		#tower.main_attack_module.range_module.enemies_in_range.erase(_atomic_marked_enemy)
+		tower.main_attack_module.range_module.remove_priority_target_regardless_of_range(_atomic_marked_enemy)
 		tower.main_attack_module.range_module._current_enemies.erase(_atomic_marked_enemy)
-		tower.main_attack_module.range_module.enemies_in_range.erase(_atomic_marked_enemy)
+		
 		
 		if tower.main_attack_module is WithBeamInstantDamageAttackModule and !tower.main_attack_module.beam_is_timebound:
 			tower.main_attack_module.call_deferred("force_update_beam_state")
@@ -413,7 +416,7 @@ func _marked_enemy_cancel_focus():
 	
 	for member in tower_members_beam_map.keys():
 		if member.main_attack_module != null:
-			member.main_attack_module.range_module.priority_enemies.erase(_atomic_marked_enemy)
+			member.main_attack_module.range_module.remove_priority_target_regardless_of_range(_atomic_marked_enemy)
 		
 		if member.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
 			member.disconnect("on_main_attack_finished", self, "_member_finished_with_main_attack")

@@ -28,6 +28,9 @@ const BaseTowerModifyingEffect = preload("res://GameInfoRelated/TowerEffectRelat
 const TowerMarkEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerMarkEffect.gd")
 const TowerIngredientColorCompatibilityEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerIngredientColorCompatibilityEffect.gd")
 const TowerIngredientColorAcceptabilityEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerIngredientColorAcceptabilityEffect.gd")
+const TowerPriorityTargetEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerPriorityTargetEffect.gd")
+const TowerStunEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerStunEffect.gd")
+const TowerKnockUpEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerKnockUpEffect.gd")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
@@ -150,6 +153,8 @@ enum DisabledFromAttackingSourceClauses {
 	TOWER_BEING_DRAGGED = 3,
 	TOWER_IN_BENCH = 4,
 	
+	IS_STUNNED = 10,
+	
 }
 
 enum UntargetabilityClauses {
@@ -253,6 +258,14 @@ var _percent_enemy_effect_vulnerability_id_effect_map : Dictionary = {}
 var last_calculated_enemy_final_effect_vulnerability : float
 
 
+# Other effects
+
+var _stun_id_effect_map : Dictionary = {}
+var last_calculated_is_stunned : bool
+
+
+
+
 # Other stats
 
 var base_health : float = 10
@@ -287,6 +300,11 @@ var distance_to_exit : float = 0 # this is here for Targeting purposes
 #var is_reviving : bool = false
 
 
+# knock up related
+# makes use of knockuplayer.position
+var _knock_up_current_acceleration : float
+var _knock_up_current_acceleration_deceleration : float
+
 # managers
 
 var tower_manager
@@ -314,8 +332,9 @@ onready var life_bar = $InfoBarLayer/InfoBar/VBoxContainer/LifeBar
 onready var status_bar = $InfoBarLayer/InfoBar/VBoxContainer/TowerStatusBar
 onready var info_bar = $InfoBarLayer/InfoBar
 
-onready var tower_base_sprites : AnimatedSprite = $TowerBase/BaseSprites
+onready var tower_base_sprites : AnimatedSprite = $TowerBase/KnockUpLayer/BaseSprites #$TowerBase/BaseSprites
 onready var tower_base = $TowerBase
+onready var knock_up_layer = $TowerBase/KnockUpLayer
 
 onready var info_bar_vbox_container = $InfoBarLayer/InfoBar/VBoxContainer
 
@@ -361,6 +380,7 @@ func _post_inherit_ready():
 	_calculate_final_flat_ability_cdr()
 	_calculate_final_percent_ability_cdr()
 	_calculate_max_health()
+	_calculate_enemy_effect_vulnerability()
 	
 	_calculate_final_flat_omnivamp()
 	_calculate_final_percent_damage_omnivamp()
@@ -434,6 +454,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 	
 	if attack_module.get_parent() == null:
 		add_child(attack_module)
+		attack_module.parent_tower = self
 	
 	if attack_module.range_module == null and range_module != null:
 		attack_module.range_module = range_module
@@ -525,6 +546,8 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 			attack_module_to_remove.range_module.disconnect("current_enemy_left_range", self, "_emit_on_any_range_module_current_enemy_exited")
 			attack_module_to_remove.range_module.disconnect("current_enemies_acquired", self, "_emit_on_any_range_module_current_enemies_acquired")
 	
+	if attack_module_to_remove.get_parent() == self:
+		attack_module_to_remove.parent_tower = null
 	
 	all_attack_modules.erase(attack_module_to_remove)
 	
@@ -681,7 +704,7 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		tower_base_effect = tower_base_effect._get_copy_scaled_by(last_calculated_enemy_final_effect_vulnerability)
 	
 	
-	if include_non_module_effects and register_to_buff_map:
+	if include_non_module_effects and register_to_buff_map and tower_base_effect.should_map_in_all_effects_map:
 		_all_uuid_tower_buffs_map[tower_base_effect.effect_uuid] = tower_base_effect
 	
 	if tower_base_effect.status_bar_icon != null:
@@ -779,6 +802,19 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 	elif tower_base_effect is TowerIngredientColorAcceptabilityEffect:
 		if include_non_module_effects:
 			add_ingredient_color_acceptability_effect(tower_base_effect)
+		
+		
+	elif tower_base_effect is TowerPriorityTargetEffect:
+		_add_priority_target_effect(tower_base_effect, target_modules)
+		
+		
+	elif tower_base_effect is TowerStunEffect:
+		if include_non_module_effects:
+			_add_stun_effect(tower_base_effect)
+		
+	elif tower_base_effect is TowerKnockUpEffect:
+		if include_non_module_effects:
+			knock_up_from_effect(tower_base_effect)
 		
 	elif tower_base_effect is TowerResetEffects:
 		if include_non_module_effects:
@@ -888,6 +924,15 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 	elif tower_base_effect is TowerIngredientColorAcceptabilityEffect:
 		if include_non_module_effects:
 			remove_ingredient_color_acceptability_effect(tower_base_effect.effect_uuid)
+		
+		
+	elif tower_base_effect is TowerPriorityTargetEffect:
+		_remove_priority_target_effect(tower_base_effect, target_modules)
+		
+	elif tower_base_effect is TowerStunEffect:
+		if include_non_module_effects:
+			_remove_stun_effect(tower_base_effect)
+	
 	
 	emit_signal("on_effect_removed", tower_base_effect)
 
@@ -1281,6 +1326,45 @@ func _remove_flat_enemy_effect_vulnerability_effect(attr_effect : TowerAttribute
 func _remove_percent_enemy_effect_vulnerability_effect(attr_effect : TowerAttributesEffect):
 	_percent_enemy_effect_vulnerability_id_effect_map.erase(attr_effect.effect_uuid)
 	_calculate_enemy_effect_vulnerability()
+
+
+func _add_priority_target_effect(effect : TowerPriorityTargetEffect, target_modules):
+	for module in target_modules:
+		if module.range_module != null:
+			module.range_module.add_priority_target_effect(effect)
+
+func _remove_priority_target_effect(effect : TowerPriorityTargetEffect, target_modules):
+	for module in target_modules:
+		if module.range_module != null:
+			module.range_module.remove_priority_target_effect(effect)
+
+
+func _add_stun_effect(effect : TowerStunEffect):
+	_stun_id_effect_map[effect.effect_uuid] = effect
+	last_calculated_is_stunned = true
+	disabled_from_attacking_clauses.attempt_insert_clause(DisabledFromAttackingSourceClauses.IS_STUNNED)
+	_disable_modules(AbstractAttackModule.Disabled_ClauseId.IS_STUNNED)
+
+
+func _remove_stun_effect(effect : TowerStunEffect):
+	_stun_id_effect_map.erase(effect.effect_uuid)
+	last_calculated_is_stunned = _stun_id_effect_map.size() > 0
+	
+	if last_calculated_is_stunned:
+		disabled_from_attacking_clauses.attempt_insert_clause(DisabledFromAttackingSourceClauses.IS_STUNNED)
+		_disable_modules(AbstractAttackModule.Disabled_ClauseId.IS_STUNNED)
+	else:
+		disabled_from_attacking_clauses.remove_clause(DisabledFromAttackingSourceClauses.IS_STUNNED)
+		_enable_modules(AbstractAttackModule.Disabled_ClauseId.IS_STUNNED)
+
+
+func knock_up_from_effect(effect : TowerKnockUpEffect):
+	if effect.time_in_seconds != 0:
+		_knock_up_current_acceleration += effect.knock_up_y_acceleration
+		_knock_up_current_acceleration_deceleration += 2 * (_knock_up_current_acceleration / effect.time_in_seconds)
+	
+	add_tower_effect(effect.generate_stun_effect_from_self())
+
 
 
 
@@ -1842,13 +1926,13 @@ func _toggle_show_tower_info():
 
 # Disable Modules for whatever reason
 
-func _disable_modules():
+func _disable_modules(disable_clause_id : int):
 	for module in all_attack_modules:
-		module.disable_module()
+		module.disable_module(disable_clause_id)
 
-func _enable_modules():
+func _enable_modules(disable_clause_id_to_remove : int):
 	for module in all_attack_modules:
-		module.enable_module()
+		module.enable_module(disable_clause_id_to_remove)
 
 
 # Movement Drag and Drop things related
@@ -1860,7 +1944,7 @@ func _start_drag():
 	
 	set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
 	
-	_disable_modules()
+	_disable_modules(AbstractAttackModule.Disabled_ClauseId.IS_IN_DRAG)
 	z_index = ZIndexStore.TOWERS_BEING_DRAGGED
 	
 	emit_signal("tower_being_dragged", self)
@@ -1926,7 +2010,7 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 		if current_placable is TowerBenchSlot:
 			set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_IN_BENCH)
 			
-			_disable_modules()
+			_disable_modules(AbstractAttackModule.Disabled_ClauseId.IS_IN_DRAG)
 			is_contributing_to_synergy = false
 			
 			# Update Synergy
@@ -1936,7 +2020,7 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 		elif current_placable is InMapAreaPlacable:
 			erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_IN_BENCH)
 			
-			_enable_modules()
+			_enable_modules(AbstractAttackModule.Disabled_ClauseId.IS_IN_DRAG)
 			is_contributing_to_synergy = true
 			
 			# Update Synergy
@@ -2066,7 +2150,20 @@ func _physics_process(delta):
 	if global_position != old_global_position:
 		emit_signal("global_position_changed", old_global_position, global_position)
 	old_global_position = global_position
+	
+	_phy_knock_up_process(delta)
 
+
+func _phy_knock_up_process(delta):
+	if _knock_up_current_acceleration != 0:
+		knock_up_layer.position.y -= _knock_up_current_acceleration * delta
+		_knock_up_current_acceleration -= _knock_up_current_acceleration_deceleration * delta
+		
+		if knock_up_layer.position.y >= 0:
+			_knock_up_current_acceleration = 0
+			_knock_up_current_acceleration_deceleration = 0
+			knock_up_layer.position.y = 0
+	
 
 # Detecting tower interacting stuffs
 

@@ -81,16 +81,16 @@ func _attack_enemy(enemy : AbstractEnemy):
 
 # Disabling and Enabling
 
-func disable_module():
-	.disable_module()
+func disable_module(disabled_clause_id : int):
+	.disable_module(disabled_clause_id)
 	
 	for beam in beam_to_enemy_map.keys():
 		beam_to_enemy_map[beam] = null
 	
 	update_beams_state()
 
-func enable_module():
-	.enable_module()
+func enable_module(disabled_clause_id : int):
+	.enable_module(disabled_clause_id)
 
 
 #

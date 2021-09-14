@@ -5,10 +5,11 @@ enum EnemyFactions {
 	BASIC = 0,
 	EXPERT = 1,
 	
+	FAITHFUL = 2,
+	
 	#BEAST,
 	#LIFE_MEDDLERS,
 	#REBELS,
-	#CULTISTS,
 }
 
 enum Enemies {
@@ -29,6 +30,15 @@ enum Enemies {
 	ASSASSIN = 205,
 	GRANDMASTER = 206,
 	
+	# FAITHFUL (300)
+	DEITY = 300,
+	BELIEVER = 301,
+	PRIEST = 302,
+	SACRIFICER = 303,
+	SEER = 304,
+	CROSS_BEARER = 305,
+	
+	
 }
 
 static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
@@ -37,7 +47,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# BASIC FACTION
 	if enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
-		info.base_health = 300#22
+		info.base_health = 22
 		info.base_movement_speed = 40
 		
 	elif enemy_id == Enemies.BRUTE:
@@ -115,6 +125,37 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info.base_toughness = 3
 		info.enemy_type = info.EnemyType.ELITE
 		
+		
+	# FAITHFUL FACTION
+	elif enemy_id == Enemies.DEITY:
+		# stats set by faction
+		pass
+		
+	elif enemy_id == Enemies.BELIEVER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
+		info.base_health = 42
+		info.base_movement_speed = 38
+		
+	elif enemy_id == Enemies.PRIEST:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
+		info.base_health = 38
+		info.base_movement_speed = 25
+		
+	elif enemy_id == Enemies.SACRIFICER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
+		info.base_health = 36
+		info.base_movement_speed = 22
+		
+	elif enemy_id == Enemies.SEER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
+		info.base_health = 45
+		info.base_movement_speed = 25
+		
+	elif enemy_id == Enemies.CROSS_BEARER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
+		info.base_health = 45
+		info.base_movement_speed = 34
+		
 	
 	
 	return info
@@ -152,4 +193,18 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Expert/Grandmaster/Grandmaster.tscn")
 		
 		
+	# FAITHFUL FACTION
+	elif enemy_id == Enemies.DEITY:
+		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity.tscn")
+	elif enemy_id == Enemies.BELIEVER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/Believer/Believer.tscn")
+	elif enemy_id == Enemies.PRIEST:
+		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/Priest/Priest.tscn")
+	elif enemy_id == Enemies.SACRIFICER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/Sacrificer/Sacrificer.tscn")
+	elif enemy_id == Enemies.SEER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/Seer/Seer.tscn")
+	elif enemy_id == Enemies.CROSS_BEARER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/CrossBearer/CrossBearer.tscn")
+
 

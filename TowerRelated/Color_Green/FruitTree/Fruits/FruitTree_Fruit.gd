@@ -27,7 +27,6 @@ enum {
 }
 
 
-onready var anim_sprite : AnimatedSprite = $TowerBase/BaseSprites
 var fruit_type : int = BLUE
 
 func _ready():
@@ -78,7 +77,7 @@ func _set_fruit_properties():
 		tower_highlight_sprite = FruitYellow_Pic
 		ing_effect = IngredientEffect.new(StoreOfTowerEffectsUUID.ING_YELLOW_FRUIT, YellowFruitEffect.new())
 	
-	anim_sprite.frames = new_sprite_frames
+	tower_base_sprites.frames = new_sprite_frames
 	
 	ingredient_of_self = ing_effect
 

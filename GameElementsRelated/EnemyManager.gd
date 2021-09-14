@@ -14,6 +14,8 @@ const ENEMY_BLOCKING_NEXT_ROUND_ADVANCE_TAG : String = "EnemiesBlockingNextRound
 
 
 signal no_enemies_left
+
+signal before_enemy_stats_are_set(enemy)
 signal before_enemy_spawned(enemy)
 signal enemy_spawned(enemy)
 
@@ -27,10 +29,13 @@ var spawn_instruction_interpreter : SpawnInstructionInterpreter setget set_inter
 var spawn_paths : Array setget set_spawn_paths
 var _spawn_path_index_to_take = 0
 
+var _spawning_paused : bool = false
+var _spawn_pause_timer : Timer
 
 var _is_interpreter_done_spawning : bool
 
 var _is_running : bool
+
 
 #
 
@@ -45,7 +50,11 @@ var enemy_count_in_round : int
 
 func _ready():
 	set_interpreter(SpawnInstructionInterpreter.new())
-
+	
+	_spawn_pause_timer = Timer.new()
+	_spawn_pause_timer.one_shot = true
+	_spawn_pause_timer.connect("timeout", self, "_pause_timer_timeout", [], CONNECT_PERSIST)
+	add_child(_spawn_pause_timer)
 
 # Setting related
 
@@ -102,7 +111,7 @@ func kill_all_enemies():
 #
 
 func _process(delta):
-	if _is_running:
+	if _is_running and !_spawning_paused:
 		spawn_instruction_interpreter.time_passed(delta)
 
 
@@ -114,6 +123,8 @@ func spawn_enemy(enemy_id : int, arg_path : EnemyPath = null):
 
 func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = null):
 	# Enemy set properties
+	
+	emit_signal("before_enemy_stats_are_set", enemy_instance)
 	
 	if enemy_instance.respect_stage_round_health_scale:
 		enemy_instance.base_health *= enemy_health_multiplier
@@ -184,7 +195,7 @@ func _enemy_reached_end(enemy : AbstractEnemy):
 	enemy.queue_free()
 
 
-# Queries
+# Enemy Queries
 
 func get_all_enemies() -> Array:
 	return get_tree().get_nodes_in_group(ENEMY_GROUP_TAG)
@@ -221,3 +232,19 @@ func apply_faction_passive(passive):
 func remove_faction_passive(passive):
 	if passive != null:
 		passive._remove_faction_from_game_elements(game_elements)
+
+
+#
+
+func pause_spawning(arg_duration : float = -1):
+	_spawning_paused = true
+	
+	if arg_duration > 0:
+		_spawn_pause_timer.start(arg_duration)
+
+func unpause_spawning():
+	_spawning_paused = false
+
+
+func _pause_timer_timeout():
+	unpause_spawning()

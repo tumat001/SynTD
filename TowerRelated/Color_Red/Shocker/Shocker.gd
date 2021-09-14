@@ -25,7 +25,7 @@ const no_shock_ball_clause : int = AbstractAttackModule.CanBeCommandedByTower_Cl
 
 const shock_ball_inactive_duration_queue_free : float = 5.0
 
-onready var ball_display_sprite : Sprite = $BallDisplay
+onready var ball_display_sprite : Sprite = $TowerBase/KnockUpLayer/BallDisplay
 
 var shock_attack_module : WithBeamInstantDamageAttackModule
 var shock_range_module : RangeModule

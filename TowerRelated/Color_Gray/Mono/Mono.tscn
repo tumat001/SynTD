@@ -7,8 +7,8 @@
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ ExtResource( 2 ) ],
-"loop": false,
-"name": "E",
+"loop": true,
+"name": "default",
 "speed": 5.0
 } ]
 
@@ -18,9 +18,8 @@ extents = Vector2( 8.57419, 6.84456 )
 [node name="Mono" instance=ExtResource( 1 )]
 script = ExtResource( 4 )
 
-[node name="BaseSprites" parent="TowerBase" index="0"]
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
-animation = "E"
 
 [node name="CollisionShape" parent="." index="1"]
 shape = SubResource( 2 )

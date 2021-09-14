@@ -2,7 +2,7 @@ extends Area2D
 
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
-
+const TowerPriorityTargetEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerPriorityTargetEffect.gd")
 
 signal final_range_changed
 signal enemy_entered_range(enemy)
@@ -19,14 +19,19 @@ var base_range_radius : float
 var flat_range_effects : Dictionary = {}
 var percent_range_effects : Dictionary = {}
 
+var priority_targets_effects : Dictionary = {}
+
+
 var displaying_range : bool = false
 var can_display_range : bool = true
 var can_display_circle_arc : bool = false
 var circle_arc_color : Color = Color(0.6, 0.6, 0.6, 0.3)
 
 var enemies_in_range : Array = []
+var _non_unique_enemies_in_range : Array = []
 var _current_enemies : Array = []
-var priority_enemies : Array = []
+var priority_enemies_within_range : Array = []
+var priority_enemies_regardless_of_range : Array = []
 
 var _current_targeting_option_index : int
 var _last_used_targeting_option_index : int
@@ -229,14 +234,16 @@ func _on_Range_area_shape_exited(area_id, area, area_shape, self_shape):
 
 
 func _on_enemy_enter_range(enemy : AbstractEnemy):
-	enemies_in_range.append(enemy)
+	#enemies_in_range.append(enemy)
+	_add_enemy_to_enemies_in_range(enemy)
 	emit_signal("enemy_entered_range", enemy)
 	
 	#enemy.connect("tree_exiting", self, "_on_enemy_leave_range", [enemy])
 
 # by leaving range or by dying
 func _on_enemy_leave_range(enemy : AbstractEnemy):
-	enemies_in_range.erase(enemy)
+	#enemies_in_range.erase(enemy)
+	_remove_enemy_from_enemies_in_range(enemy)
 	
 	if _current_enemies.has(enemy):
 		_current_enemies.erase(enemy)
@@ -262,9 +269,33 @@ func is_an_enemy_in_range():
 
 func clear_all_detected_enemies():
 	enemies_in_range.clear()
-	priority_enemies.clear()
+	_non_unique_enemies_in_range.clear()
+	priority_enemies_regardless_of_range.clear()
+	priority_enemies_within_range.clear()
 	_current_enemies.clear()
+	
+	
+	#
+	
+	var to_remove : Array = []
+	for effect in priority_targets_effects.values():
+		to_remove.append(effect)
+	
+	for effect in to_remove:
+		remove_priority_target_effect(effect)
 
+
+func _add_enemy_to_enemies_in_range(enemy):
+	_non_unique_enemies_in_range.append(enemy)
+	
+	if !enemies_in_range.has(enemy):
+		enemies_in_range.append(enemy)
+
+func _remove_enemy_from_enemies_in_range(enemy):
+	_non_unique_enemies_in_range.erase(enemy)
+	
+	if !_non_unique_enemies_in_range.has(enemy):
+		enemies_in_range.erase(enemy)
 
 # Calculations
 
@@ -279,6 +310,60 @@ func calculate_final_range_radius() -> float:
 	
 	last_calculated_final_range = final_range
 	return final_range
+
+
+# Priority effects related
+
+func add_priority_target_effect(effect : TowerPriorityTargetEffect):
+	if !priority_targets_effects.has(effect.effect_uuid) and effect.target != null:
+		priority_targets_effects[effect.effect_uuid] = effect
+		
+		if !effect.is_priority_regardless_of_range:
+			add_priority_target_within_range(effect.target)
+		else:
+			add_priority_target_regardless_of_range(effect.target)
+		
+		effect.set_up_signal_with_target()
+		effect.connect("on_target_tree_exiting", self, "_on_target_from_target_effect_tree_exiting", [effect], CONNECT_ONESHOT)
+
+func add_priority_target_within_range(target):
+	if target != null:
+		priority_enemies_within_range.append(target)
+		#_add_enemy_to_enemies_in_range(target)
+
+func add_priority_target_regardless_of_range(target):
+	if target != null:
+		priority_enemies_regardless_of_range.append(target)
+
+func _on_target_from_target_effect_tree_exiting(target, effect):
+	_remove_priority_target_effect_from_tower(effect)
+
+
+func _remove_priority_target_effect_from_tower(effect : TowerPriorityTargetEffect):
+	for am in attack_modules_using_this:
+		if am.parent_tower != null:
+			am.parent_tower.remove_tower_effect(effect)
+	
+
+
+func remove_priority_target_effect(effect : TowerPriorityTargetEffect):
+	if priority_targets_effects.has(effect.effect_uuid):
+		var effect_to_remove = priority_targets_effects[effect.effect_uuid]
+		
+		priority_targets_effects.erase(effect.effect_uuid)
+		
+		if !effect.is_priority_regardless_of_range:
+			remove_priority_target_within_range(effect_to_remove.target)
+		else:
+			remove_priority_target_regardless_of_range(effect_to_remove.target)
+
+
+func remove_priority_target_within_range(target):
+	priority_enemies_within_range.erase(target)
+
+func remove_priority_target_regardless_of_range(target):
+	priority_enemies_regardless_of_range.erase(target)
+
 
 
 # Other range module interaction
@@ -314,16 +399,25 @@ func get_current_targeting_option() -> int:
 #	return _current_enemies[0]
 
 func get_targets(num : int, targeting : int = get_current_targeting_option(), include_invis_enemies : bool = false) -> Array:
-	_current_enemies = Targeting.enemies_to_target(enemies_in_range, targeting, num, global_position)
+	var targeting_params : Targeting.TargetingParameters
+	
+	if priority_enemies_within_range.size() > 0 or priority_enemies_regardless_of_range.size() > 0:
+		targeting_params = Targeting.TargetingParameters.new()
+		targeting_params.priority_enemies_in_range = priority_enemies_within_range
+		targeting_params.priority_enemies_regardless_of_range = priority_enemies_regardless_of_range
+	
+	_current_enemies = Targeting.enemies_to_target(enemies_in_range, targeting, num, global_position, include_invis_enemies, targeting_params)
 	while _current_enemies.has(null):
 		_current_enemies.erase(null)
 	
-	while priority_enemies.has(null):
-		priority_enemies.erase(null)
-	
-	for i in range(priority_enemies.size() - 1, 0, -1):
-		_current_enemies.push_front(priority_enemies[i])
-	
+#	while priority_enemies.has(null):
+#		priority_enemies.erase(null)
+#
+#	#for i in range(priority_enemies.size() - 1, 0, -1):
+#	#	_current_enemies.push_front(priority_enemies[i])
+#	for enemy in priority_enemies:
+#		_current_enemies.push_front(enemy)
+#
 	
 	emit_signal("current_enemies_acquired")
 	return _current_enemies
@@ -334,16 +428,15 @@ func get_all_targets(targeting : int = get_current_targeting_option(), include_i
 #
 
 func get_targets_without_affecting_self_current_targets(num : int, targeting : int = get_current_targeting_option(), include_invis_enemies : bool = false) -> Array:
-	var bucket : Array = Targeting.enemies_to_target(enemies_in_range, targeting, num, global_position)
+	var targeting_params : Targeting.TargetingParameters
 	
-	while bucket.has(null):
-		bucket.erase(null)
+	if priority_enemies_within_range.size() > 0 or priority_enemies_regardless_of_range.size() > 0:
+		targeting_params = Targeting.TargetingParameters.new()
+		targeting_params.priority_enemies_in_range = priority_enemies_within_range
+		targeting_params.priority_enemies_regardless_of_range = priority_enemies_regardless_of_range
 	
-	while priority_enemies.has(null):
-		priority_enemies.erase(null)
 	
-	for i in range(priority_enemies.size() - 1, 0, -1):
-		bucket.push_front(priority_enemies[i])
+	var bucket : Array = Targeting.enemies_to_target(enemies_in_range, targeting, num, global_position, include_invis_enemies, targeting_params)
 	
 	return bucket
 

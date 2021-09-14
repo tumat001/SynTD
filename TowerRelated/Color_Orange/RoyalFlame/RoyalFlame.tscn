@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 13.3541, 11.5246 )
+extents = Vector2( 9.86742, 11.7525 )
 
 [node name="RoyalFlame" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
@@ -21,7 +21,7 @@ script = ExtResource( 3 )
 [node name="TowerBase" parent="." index="0"]
 position = Vector2( 0, -8 )
 
-[node name="BaseSprites" parent="TowerBase" index="0"]
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
 
 [node name="CollisionShape" parent="." index="1"]

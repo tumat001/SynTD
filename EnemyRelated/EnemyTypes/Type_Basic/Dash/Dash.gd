@@ -40,9 +40,13 @@ func _on_health_threshold_reached(curr_health):
 
 func _perform_dash():
 	connect("effect_added", self, "_speed_effect_added")
-	_add_effect(speed_bonus_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
-	connect("effect_removed", self, "_on_speed_effect_removed")
-	_is_dashing = true
+	var effect = _add_effect(speed_bonus_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
+	
+	if effect != null:
+		connect("effect_removed", self, "_on_speed_effect_removed")
+		_is_dashing = true
+	else:
+		disconnect("effect_added", self, "_speed_effect_added")
 
 
 func _process(delta):

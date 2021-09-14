@@ -26,6 +26,7 @@ func generate_stun_effect_from_self() -> EnemyStunEffect:
 	
 	if custom_stun_duration != -1:
 		stun_effect.time_in_seconds = custom_stun_duration
+		stun_effect.is_from_enemy = is_from_enemy
 	
 	return stun_effect
 

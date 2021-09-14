@@ -32,7 +32,7 @@ var initial_cd_timer : Timer
 
 #
 
-onready var flame_anim_sprite = $TowerBase/BaseSprites
+onready var flame_anim_sprite = $TowerBase/KnockUpLayer/BaseSprites
 const base_frame_rate : int = 5
 
 func _ready():

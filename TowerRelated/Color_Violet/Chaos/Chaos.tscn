@@ -13,7 +13,7 @@ animations = [ {
 "frames": [ ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 3 ), ExtResource( 4 ) ],
 "loop": true,
 "name": "default",
-"speed": 20.0
+"speed": 15.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
@@ -25,7 +25,7 @@ script = ExtResource( 2 )
 [node name="TowerBase" parent="." index="0"]
 position = Vector2( 0, -12 )
 
-[node name="BaseSprites" parent="TowerBase" index="0"]
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
 frame = 3
 playing = true

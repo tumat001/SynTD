@@ -41,7 +41,7 @@ var activated_blue_magnets : Array = []
 var activated_red_magnets : Array = []
 
 var next_magnet_type : int = MagnetizerMagnetBall.BLUE
-onready var tower_base_sprite : Sprite = $TowerBase/TowerBaseSprite
+onready var tower_base_sprite : Sprite = $TowerBase/KnockUpLayer/TowerBaseSprite
 
 var is_energy_module_on : bool = false
 

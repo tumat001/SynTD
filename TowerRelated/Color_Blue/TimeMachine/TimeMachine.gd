@@ -153,7 +153,7 @@ func _on_main_post_mitigated_dmg_dealt_t(damage_instance_report, killed, enemy, 
 		
 		_time_dust_stack_consumed()
 	
-	if !killed and rewind_ability_is_ready:
+	if !killed and rewind_ability_is_ready and !enemy.is_enemy_type_boss():
 		_shift_enemy_position_t(enemy)
 		rewind_ability.start_time_cooldown(_get_cd_to_use(base_rewind_cooldown))
 		enemy._add_effect(time_dust_effect._get_copy_scaled_by(1))
@@ -214,6 +214,6 @@ func _enemy_shifted_by_main_attack(enemy, enemy_curr_position):
 
 
 func _time_portal_hit_enemy(enemy, aoe):
-	if enemy != null:
+	if enemy != null and !enemy.is_enemy_type_boss():
 		_shift_enemy_position_t(enemy, 2)
 		aoe.enemies_to_ignore.append(enemy)

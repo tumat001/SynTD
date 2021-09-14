@@ -29,7 +29,7 @@ enum {
 	
 }
 
-# UPDATE THIS WHEN CHANING THE ENUM
+# UPDATE THIS WHEN CHANING THE ENUM.
 static func get_all_targeting_options() -> Array:
 	return [
 		FIRST,
@@ -50,6 +50,15 @@ static func get_all_targeting_options() -> Array:
 		RANDOM,
 	]
 
+#
+
+class TargetingParameters:
+	var priority_enemies_in_range : Array
+	var priority_enemies_regardless_of_range : Array
+
+
+
+#
 
 static func _find_random_distinct_enemies(enemies : Array, count : int):
 	var copy : Array = enemies.duplicate(false)
@@ -73,14 +82,47 @@ static func _find_random_distinct_enemies(enemies : Array, count : int):
 
 # Also shared by towers
 # Random, Close and Far will be shared for tower detection as well
-static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int, pos : Vector2, include_invis_enemies : bool = false):
-	var enemies : Array = [] 
+static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int, pos : Vector2,
+		 include_invis_enemies : bool = false, targeting_parameters : TargetingParameters = null):
+	
+	var enemies : Array = []
+	var priority_enemies_in_range : Array
+	var priority_enemies_regardless_of_range : Array
+	
+	
+	if targeting_parameters != null:
+		for enemy in targeting_parameters.priority_enemies_in_range:
+			if enemy != null and !enemy.is_queued_for_deletion():
+				priority_enemies_in_range.append(enemy)
+			
+		
+		for enemy in targeting_parameters.priority_enemies_regardless_of_range:
+			if enemy != null and !enemy.is_queued_for_deletion():
+				priority_enemies_regardless_of_range.append(enemy)
+			
+	
 	
 	for enemy in arg_enemies:
-		if enemy != null and !enemy.is_queued_for_deletion():
+		if enemy != null and !enemy.is_queued_for_deletion() and !priority_enemies_in_range.has(enemy) and !priority_enemies_regardless_of_range.has(enemy):
 			enemies.append(enemy)
 	
+	#
+	
+	var bucket_removal : Array = []
+	for enemy in priority_enemies_in_range:
+		if !arg_enemies.has(enemy):
+			bucket_removal.append(enemy)
+	
+	for enemy in bucket_removal:
+		priority_enemies_in_range.erase(enemy)
+	
+	#
+	
+	
 	filter_untargetable_enemies(enemies, include_invis_enemies)
+	filter_untargetable_enemies(priority_enemies_in_range, include_invis_enemies)
+	filter_untargetable_enemies(priority_enemies_regardless_of_range, include_invis_enemies)
+	
 	
 	if targeting == FIRST:
 		enemies.sort_custom(CustomSorter, "sort_enemies_by_first")
@@ -140,11 +182,26 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 		enemies.sort_custom(CustomSorter, "sort_towers_by_highest_total_base_damage")
 	
 	
-	enemies.resize(num_of_enemies)
-	while enemies.has(null):
-		enemies.erase(null)
+	var final_enemies : Array = []
 	
-	return enemies
+	for enemy in priority_enemies_regardless_of_range:
+		final_enemies.append(enemy)
+	for enemy in priority_enemies_in_range:
+		final_enemies.append(enemy)
+	for enemy in enemies:
+		final_enemies.append(enemy)
+	
+	final_enemies.resize(num_of_enemies)
+	var deletion_bucket : Array = []
+	
+	for enemy in final_enemies:
+		if enemy == null or enemy.is_queued_for_deletion():
+			deletion_bucket.append(enemy)
+	
+	for enemy in deletion_bucket:
+		final_enemies.erase(enemy)
+	
+	return final_enemies
 
 
 static func filter_untargetable_enemies(enemies, include_invis_enemies : bool = false) -> Array:

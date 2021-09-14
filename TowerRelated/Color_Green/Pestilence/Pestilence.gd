@@ -140,7 +140,7 @@ func _ready():
 	
 	explosion_attack_module = AOEAttackModule_Scene.instance()
 	explosion_attack_module.base_damage_scale = 1.0 / 3.0
-	explosion_attack_module.base_damage = 3 / explosion_attack_module.base_damage_scale
+	explosion_attack_module.base_damage = 4 / explosion_attack_module.base_damage_scale
 	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0
@@ -204,7 +204,7 @@ func _post_inherit_ready():
 	
 	# psn effect
 	var psn_dmg : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.PESTILENCE_POISON)
-	psn_dmg.flat_modifier = 0.75
+	psn_dmg.flat_modifier = 2
 	
 	var psn_on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.PESTILENCE_POISON, psn_dmg, DamageType.ELEMENTAL)
 	var psn_dmg_instance = DamageInstance.new()

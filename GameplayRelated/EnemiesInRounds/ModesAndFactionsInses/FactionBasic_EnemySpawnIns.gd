@@ -3,7 +3,8 @@ extends "res://GameplayRelated/EnemiesInRounds/BaseMode_EnemySpawnIns.gd"
 
 func get_instructions_for_stageround(uuid : String):
 	if uuid == "01":
-		return _get_instructions_for_0_1()
+		return null
+		#return _get_instructions_for_0_1()
 	elif uuid == "02":
 		return _get_instructions_for_0_2()
 	elif uuid == "03":
@@ -50,7 +51,8 @@ func get_instructions_for_stageround(uuid : String):
 
 
 func is_transition_time_in_stageround(uuid : String) -> bool:
-	return uuid == "41"
+	#return uuid == "41"
+	return uuid == "01"
 
 
 

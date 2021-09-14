@@ -47,7 +47,7 @@ var _current_chargebar_06 : Texture = ChargeBar_6
 var bonus_on_hit_damage : OnHitDamage
 var bonus_damage_as_modifier : FlatModifier
 
-onready var charge_bar_sprite : Sprite = $TowerBase/ChargeBarSprite
+onready var charge_bar_sprite : Sprite = $TowerBase/KnockUpLayer/ChargeBarSprite
 
 
 # Called when the node enters the scene tree for the first time.

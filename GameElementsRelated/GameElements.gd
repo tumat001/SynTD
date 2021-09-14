@@ -238,8 +238,8 @@ func _on_BuySellLevelRollPanel_reroll():
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.AMALGAMATOR,
-			Towers.BREWD,
-			Towers.MAGNETIZER,
+			Towers.ORB,
+			Towers.SIMPLEX,
 			Towers.IEU,
 			Towers.ENTROPY,
 		])

@@ -22,10 +22,10 @@ script = ExtResource( 4 )
 [node name="TowerBase" parent="." index="0"]
 position = Vector2( -0.5, -8 )
 
-[node name="BaseSprites" parent="TowerBase" index="0"]
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
 
-[node name="Crest" type="Sprite" parent="TowerBase" index="1"]
+[node name="Crest" type="Sprite" parent="TowerBase/KnockUpLayer" index="1"]
 position = Vector2( 0.5, 4 )
 texture = ExtResource( 1 )
 

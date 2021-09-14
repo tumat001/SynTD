@@ -86,21 +86,23 @@ func _ready():
 
 func _on_round_end_a():
 	if is_current_placable_in_map():
-		var tower_to_convert = _get_random_non_black_in_map_tower()
+		var tower_to_convert = _get_random_valid_in_map_tower()
 		
 		if tower_to_convert != null:
 			_convert_tower_to_black(tower_to_convert)
 
 
 
-func _get_random_non_black_in_map_tower():
-	var non_black_towers : Array = tower_manager.get_all_active_towers_without_color(TowerColors.BLACK)
+func _get_random_valid_in_map_tower():
+	#var valid_towers : Array = tower_manager.get_all_active_towers_without_color(TowerColors.BLACK)
+	var valid_towers : Array = tower_manager.get_all_active_towers_without_colors([TowerColors.BLACK, TowerColors.GRAY])
 	
-	if non_black_towers.size() != 0:
+	if valid_towers.size() != 0:
 		var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TARGETING)
-		var decided_num : int = rng.randi_range(0, non_black_towers.size() - 1)
+		var decided_num : int = rng.randi_range(0, valid_towers.size() - 1)
 		
-		return non_black_towers[decided_num]
+		return valid_towers[decided_num]
+
 
 func _convert_tower_to_black(arg_tower):
 	arg_tower.remove_all_colors_from_tower()

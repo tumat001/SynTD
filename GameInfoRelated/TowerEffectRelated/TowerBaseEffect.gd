@@ -11,6 +11,11 @@ enum EffectType {
 	FULL_SELLBACK,
 	MARK_EFFECT,
 	
+	PRIORITY_TARGET,
+	
+	STUN,
+	KNOCK_UP,
+	
 	_704_EMBLEM_POINTS,
 	
 	TOWER_MODIFIER,
@@ -35,6 +40,7 @@ var status_bar_icon : Texture
 
 var force_apply : bool = false
 var should_respect_attack_module_scale : bool = true
+var should_map_in_all_effects_map : bool = true
 
 var is_ingredient_effect : bool
 
@@ -68,3 +74,5 @@ func _configure_copy_to_match_self(copy):
 	copy.should_respect_attack_module_scale = should_respect_attack_module_scale
 	
 	copy.is_from_enemy = is_from_enemy
+	
+	copy.should_map_in_all_effects_map = should_map_in_all_effects_map

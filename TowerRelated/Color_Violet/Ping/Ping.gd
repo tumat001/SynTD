@@ -48,7 +48,7 @@ var seek_attack_module : AOEAttackModule
 
 # Eye
 
-onready var ping_eye_sprite = $TowerBase/PingEye
+onready var ping_eye_sprite = $TowerBase/KnockUpLayer/PingEye
 
 # Mark and hit related
 

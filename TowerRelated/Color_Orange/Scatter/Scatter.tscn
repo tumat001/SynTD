@@ -7,13 +7,13 @@
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ ExtResource( 2 ) ],
-"loop": false,
+"loop": true,
 "name": "default",
 "speed": 5.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 10.816, 9.08973 )
+extents = Vector2( 7.58465, 9.56058 )
 
 [node name="Scatter" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
@@ -21,7 +21,7 @@ script = ExtResource( 3 )
 [node name="TowerBase" parent="." index="0"]
 position = Vector2( 0, -7 )
 
-[node name="BaseSprites" parent="TowerBase" index="0"]
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
 
 [node name="CollisionShape" parent="." index="1"]

@@ -57,9 +57,9 @@ var fire_burn_dmg_modifier : FlatModifier
 var fire_burn_dmg_instance : DamageInstance
 var fire_effect : TowerOnHitEffectAdderEffect
 
-onready var in_field_emblem_fire : _704_EmblemBase = $TowerBase/Emblem_Fire
-onready var in_field_emblem_explosive : _704_EmblemBase = $TowerBase/Emblem_Explosive
-onready var in_field_emblem_toughness_pierce : _704_EmblemBase = $TowerBase/Emblem_ToughnessPierce
+onready var in_field_emblem_fire : _704_EmblemBase = $TowerBase/KnockUpLayer/Emblem_Fire
+onready var in_field_emblem_explosive : _704_EmblemBase = $TowerBase/KnockUpLayer/Emblem_Explosive
+onready var in_field_emblem_toughness_pierce : _704_EmblemBase = $TowerBase/KnockUpLayer/Emblem_ToughnessPierce
 
 
 # Called when the node enters the scene tree for the first time.

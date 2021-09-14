@@ -462,6 +462,34 @@ func get_all_active_towers_without_color(color) -> Array:
 	
 	return bucket
 
+func get_all_active_towers_without_colors(colors : Array) -> Array:
+	var converted_colors : Array = []
+	
+	for color in colors:
+		var converted : String
+		
+		if color is int:
+			converted = str(color)
+		else:
+			converted = color
+		
+		converted_colors.append(converted)
+	
+	var bucket : Array = []
+	for child in get_children():
+		if child.is_current_placable_in_map():
+			var to_add : bool = true
+			
+			for color in converted_colors:
+				if child.is_in_group(color):
+					to_add = false
+					break
+			
+			if to_add:
+				bucket.append(child)
+	
+	return bucket
+
 
 # Tower prompt/selection related
 

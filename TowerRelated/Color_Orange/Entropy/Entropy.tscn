@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
 [ext_resource path="res://TowerRelated/Color_Orange/Entropy/Entropy.gd" type="Script" id=2]
@@ -18,23 +18,30 @@ animations = [ {
 "speed": 10.0
 } ]
 
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 6.61953, 11.3982 )
+
 [node name="Entropy" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 
 [node name="TowerBase" parent="." index="0"]
 position = Vector2( 0, -5 )
 
-[node name="Sprite" type="Sprite" parent="TowerBase" index="0"]
-texture = ExtResource( 4 )
-
-[node name="BaseSprites" parent="TowerBase" index="1"]
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
-frame = 4
+frame = 1
 playing = true
 
-[node name="Sprite2" type="Sprite" parent="TowerBase" index="2"]
+[node name="Sprite" type="Sprite" parent="TowerBase/KnockUpLayer" index="1"]
+texture = ExtResource( 4 )
+
+[node name="Sprite2" type="Sprite" parent="TowerBase/KnockUpLayer" index="2"]
 position = Vector2( 0, 1.5 )
 texture = ExtResource( 3 )
+
+[node name="CollisionShape" parent="." index="1"]
+position = Vector2( 0, -5 )
+shape = SubResource( 2 )
 
 [node name="IngredientDeclinePic" parent="." index="4"]
 visible = false

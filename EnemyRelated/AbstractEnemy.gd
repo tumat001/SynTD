@@ -25,6 +25,8 @@ const EnemyKnockUpEffect = preload("res://GameInfoRelated/EnemyEffectRelated/Ene
 const BeforeEnemyReachEndPathBaseEffect = preload("res://GameInfoRelated/EnemyEffectRelated/BeforeEnemyReachEndPathBaseEffect.gd")
 const EnemyForcedPathOffsetMovementEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyForcedPathOffsetMovementEffect.gd")
 const EnemyForcedPositionalMovementEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyForcedPositionalMovementEffect.gd")
+const EnemyInvulnerabilityEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyInvulnerabilityEffect.gd")
+const EnemyEffectShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyEffectShieldEffect.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
@@ -41,6 +43,7 @@ signal on_death_by_any_cause
 signal on_hit(me, damage_reg_id, damage_instance)
 signal on_post_mitigated_damage_taken(damage_instance_report, is_lethal, me)
 signal on_killed_by_damage(damage_instance_report, me)
+signal on_killed_by_damage_with_no_more_revives(damage_instance_report, me)
 signal before_damage_instance_is_processed(damage_instance, me)
 
 signal reached_end_of_path(me)
@@ -59,6 +62,8 @@ signal effect_added(effect, me)
 signal on_starting_revive()
 signal on_revive_completed()
 signal cancel_all_lockons() # on death, reviving, etc
+
+signal final_ability_potency_changed(new_potency)
 
 
 # SHARED IN EnemyTypeInformation. Changes here must be
@@ -91,6 +96,7 @@ enum UntargetabilityClauses {
 
 
 var enemy_type : int = EnemyType.NORMAL
+var enemy_id : int
 
 var base_health : float = 1
 var _flat_base_health_id_effect_map : Dictionary = {}
@@ -149,9 +155,18 @@ var last_calculated_percent_health_hit_scale : float = base_percent_health_hit_s
 var invisibility_id_effect_map : Dictionary = {}
 var last_calculated_invisibility_status : bool = false
 
+var invulnerability_id_effect_map : Dictionary = {}
+var last_calculated_is_invulnerable : bool = false
+const invulnerable_sprite_layer_self_modulate : Color = Color(1.5, 1.5, 1, 1)
+const normal_sprite_layer_self_modulate : Color = Color(1, 1, 1, 1)
+
 var revive_id_effect_map : Dictionary = {}
 var current_revive_effect : EnemyReviveEffect
 var is_reviving : bool = false
+
+var effect_shield_effect_map : Dictionary = {}
+var last_calculated_has_effect_shield_against_towers : bool
+var last_calculated_has_effect_shield_against_enemies : bool
 
 
 var distance_to_exit : float
@@ -184,7 +199,7 @@ var respect_stage_round_health_scale : bool = true
 
 
 # knock up related
-# makes use of anim_sprite.offset.y
+# makes use of knockup layer position.y
 var _knock_up_current_acceleration : float
 var _knock_up_current_acceleration_deceleration : float
 
@@ -245,6 +260,9 @@ func _stats_initialize(info):
 	base_resistance = info.base_resistance
 	base_player_damage = info.base_player_damage
 	base_effect_vulnerability = info.base_effect_vulnerability
+	
+	enemy_id = info.enemy_id
+	enemy_type = info.enemy_type
 
 
 
@@ -317,6 +335,8 @@ func _post_inherit_ready():
 	calculate_current_shield()
 	calculate_invisibility_status()
 	calculate_final_ability_potency()
+	calculate_invulnerability_status()
+	calculate_final_has_effect_shield()
 	
 	#
 #	var heal_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
@@ -328,6 +348,7 @@ func _post_inherit_ready():
 #	var revive_effect = EnemyReviveEffect.new(heal_effect, 9999, 5)
 #	revive_effect.is_from_enemy = true
 #	_add_effect(revive_effect)
+	
 	
 	#
 	current_health = _last_calculated_max_health
@@ -519,6 +540,13 @@ func execute_self_by(source_id : int):
 # damage and health deduction. Also where
 # death is handled
 func _take_unmitigated_damages(damages_and_types : Array, dmg_instance):
+	var was_invul : bool = last_calculated_is_invulnerable
+	if last_calculated_is_invulnerable:
+		for damage_and_type in damages_and_types:
+			if damage_and_type[0] > 0:
+				_remove_count_from_single_invulnerability_effect()
+				break
+	
 	if !is_reviving:
 		var damage_instance_report : DamageInstanceReport = DamageInstanceReport.new()
 		damage_instance_report.dmg_instance_ref = weakref(dmg_instance)
@@ -531,13 +559,16 @@ func _take_unmitigated_damages(damages_and_types : Array, dmg_instance):
 			var effective_on_hit_report : OnHitDamageReport
 			
 			if current_health > 0:
-				effective_on_hit_report = on_hit_report
+				effective_on_hit_report = on_hit_report.duplicate()
+				
+				if was_invul:
+					damage_amount = 0
+					effective_on_hit_report.damage = 0
 				
 				_take_unmitigated_damage_to_life(damage_amount)
 				
 				if current_health <= 0:
 					var effective_damage = damage_amount + current_health
-					effective_on_hit_report = effective_on_hit_report.duplicate()
 					effective_on_hit_report.damage = effective_damage
 			
 			damage_instance_report.all_post_mitigated_on_hit_damages[on_hit_id] = on_hit_report
@@ -548,6 +579,8 @@ func _take_unmitigated_damages(damages_and_types : Array, dmg_instance):
 		if current_health <= 0:
 			emit_signal("on_post_mitigated_damage_taken", damage_instance_report, true, self)
 			emit_signal("on_killed_by_damage", damage_instance_report, self)
+			if revive_id_effect_map.size() == 0:
+				emit_signal("on_killed_by_damage_with_no_more_revives", damage_instance_report, self)
 			_destroy_self()
 			
 		else:
@@ -1028,6 +1061,19 @@ func _process_effects(effects : Dictionary, multiplier : float = 1):
 # WHEN ADDING NEW EFFECT, LOOK AT:
 # _remove_effect(), copy_enemy_stats(), decrease_timebounds()
 func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_multiplier : bool = false) -> EnemyBaseEffect:
+	
+	if base_effect.is_from_enemy:
+		if last_calculated_has_effect_shield_against_enemies:
+			_remove_count_from_single_effect_shield_effect(1, true, false)
+			return null
+	else:
+		if last_calculated_has_effect_shield_against_towers:
+			_remove_count_from_single_effect_shield_effect()
+			return null
+	
+	#
+	
+	
 	if !base_effect.is_from_enemy:
 		multiplier *= last_calculated_final_effect_vulnerability
 	
@@ -1170,6 +1216,13 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		
 	elif to_use_effect is EnemyForcedPositionalMovementEffect:
 		set_current_forced_positional_movement_effect(to_use_effect)
+		
+	elif to_use_effect is EnemyInvulnerabilityEffect:
+		_add_invulnerability_effect(to_use_effect)
+		
+	elif to_use_effect is EnemyEffectShieldEffect:
+		_add_effect_shield_effect(to_use_effect)
+	
 	
 	emit_signal("effect_added", to_use_effect, self)
 	return to_use_effect
@@ -1276,6 +1329,12 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 	elif base_effect is EnemyForcedPositionalMovementEffect:
 		if _current_forced_positional_movement_effect.effect_uuid == base_effect.effect_uuid:
 			remove_current_forced_positional_movement_effect()
+		
+	elif base_effect is EnemyInvulnerabilityEffect:
+		_remove_invulnerability_effect(base_effect)
+		
+	elif base_effect is EnemyEffectShieldEffect:
+		_remove_effect_shield_effect(base_effect)
 	
 	
 	if base_effect != null:
@@ -1288,74 +1347,8 @@ func _clear_effects_from_clear_effect():
 	for effect in _all_effects_map.values():
 		if effect.is_clearable:
 			_remove_effect(effect)
-#	for effect in _stun_id_effects_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in _stack_id_effects_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in _dmg_over_time_id_effects_map.values():
-#		_remove_effect(effect)
-#
-#
-#	# Attributes
-#	for effect in flat_movement_speed_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in percent_movement_speed_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in flat_armor_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in percent_armor_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in flat_toughness_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in percent_toughness_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in flat_resistance_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in percent_resistance_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in _flat_base_health_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in _percent_base_health_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#
-#	for effect in flat_effect_vulnerability_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in percent_effect_vulnerability_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#
-#	for effect in flat_percent_health_hit_scale_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in percent_percent_health_hit_scale_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#
-#	for effect in _heal_over_time_id_effects_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in shield_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in invisibility_id_effect_map.values():
-#		_remove_effect(effect)
-#
-#	for effect in revive_id_effect_map.values():
-#		_remove_effect(effect)
-	
+
+
 
 # Timebounded related
 
@@ -1473,6 +1466,14 @@ func _decrease_time_of_timebounds(delta):
 	if _current_forced_positional_movement_effect != null:
 		_decrease_time_of_effect(_current_forced_positional_movement_effect, delta)
 	
+	
+	for res_eff in invulnerability_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in effect_shield_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+
 
 
 func _decrease_time_of_effect(effect, delta : float):
@@ -1533,12 +1534,14 @@ func _add_ability_potency_effect(attr_effect : EnemyAttributesEffect):
 		_percent_base_ability_potency_effects[attr_effect.effect_uuid] = attr_effect
 	
 	calculate_final_ability_potency()
+	emit_signal("final_ability_potency_changed", last_calculated_final_ability_potency)
 
 func _remove_ability_potency_effect(attr_effect_uuid : int):
 	_flat_base_ability_potency_effects.erase(attr_effect_uuid)
 	_percent_base_ability_potency_effects.erase(attr_effect_uuid)
 	
 	calculate_final_ability_potency()
+	emit_signal("final_ability_potency_changed", last_calculated_final_ability_potency)
 
 
 func calculate_final_ability_potency():
@@ -1563,6 +1566,48 @@ func calculate_final_ability_potency():
 	
 	last_calculated_final_ability_potency = final_ap
 	return last_calculated_final_ability_potency
+
+
+# Invulnerability related
+
+func _add_invulnerability_effect(effect : EnemyInvulnerabilityEffect):
+	invulnerability_id_effect_map[effect.effect_uuid] = effect
+	calculate_invulnerability_status()
+
+func _remove_invulnerability_effect(effect : EnemyInvulnerabilityEffect):
+	invulnerability_id_effect_map.erase(effect.effect_uuid)
+	calculate_invulnerability_status()
+
+func _remove_count_from_single_invulnerability_effect(arg_count_reduction : int = 1):
+	var count_reduc_remaining : int = arg_count_reduction
+	var effects_to_remove : Array = []
+	
+	for effect in invulnerability_id_effect_map.values():
+		if effect.is_countbound:
+			var original_count = effect.count
+			
+			effect.count -= count_reduc_remaining
+			count_reduc_remaining -= original_count
+			
+			if effect.count <= 0:
+				count_reduc_remaining -= effect.count
+				effects_to_remove.append(effect)
+			
+			if count_reduc_remaining < 0:
+				break
+	
+	for effect in effects_to_remove:
+		_remove_effect(effect)
+
+
+func calculate_invulnerability_status():
+	last_calculated_is_invulnerable = invulnerability_id_effect_map.size() > 0
+	
+	if last_calculated_is_invulnerable:
+		sprite_layer.modulate = invulnerable_sprite_layer_self_modulate
+	else:
+		sprite_layer.modulate = normal_sprite_layer_self_modulate
+
 
 
 # Revive related
@@ -1620,6 +1665,50 @@ func _after_end_of_revive():
 	untargetable_clauses.remove_clause(UntargetabilityClauses.IS_REVIVING)
 	
 	emit_signal("on_revive_completed")
+
+#
+
+func _add_effect_shield_effect(effect : EnemyEffectShieldEffect):
+	effect_shield_effect_map[effect.effect_uuid] = effect
+	calculate_final_has_effect_shield()
+
+func _remove_effect_shield_effect(effect : EnemyEffectShieldEffect):
+	effect_shield_effect_map.erase(effect.effect_uuid)
+	calculate_final_has_effect_shield()
+
+func _remove_count_from_single_effect_shield_effect(arg_count_reduction : int = 1, reduce_shields_against_enemies : bool = false, reduce_shields_against_towers : bool = true):
+	var count_reduc_remaining : int = arg_count_reduction
+	var effects_to_remove : Array = []
+	
+	for effect in effect_shield_effect_map.values():
+		if effect.is_countbound:
+			if (effect.blocks_tower_effects and reduce_shields_against_towers) or (effect.blocks_enemy_effects and reduce_shields_against_enemies):
+				var original_count = effect.count
+				
+				effect.count -= count_reduc_remaining
+				count_reduc_remaining -= original_count
+				
+				if effect.count <= 0:
+					count_reduc_remaining -= effect.count
+					effects_to_remove.append(effect)
+				
+				if count_reduc_remaining <= 0:
+					break
+	
+	for effect in effects_to_remove:
+		_remove_effect(effect)
+
+
+func calculate_final_has_effect_shield():
+	last_calculated_has_effect_shield_against_enemies = false
+	last_calculated_has_effect_shield_against_towers = false
+	
+	for effect in effect_shield_effect_map.values():
+		if effect.blocks_tower_effects:
+			last_calculated_has_effect_shield_against_towers = true
+		elif effect.blocks_enemy_effects:
+			last_calculated_has_effect_shield_against_enemies = true
+
 
 
 # Knock up effect related
@@ -1777,3 +1866,4 @@ func is_enemy_type_boss() -> bool:
 
 func is_enemy_type_boss_or_elite() -> bool:
 	return enemy_type == EnemyType.BOSS or enemy_type == EnemyType.ELITE
+

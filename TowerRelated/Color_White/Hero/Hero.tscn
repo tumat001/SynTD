@@ -25,26 +25,26 @@ script = ExtResource( 6 )
 [node name="TowerBase" parent="." index="0"]
 position = Vector2( 0, -10 )
 
-[node name="MaxNatLevelWingsSprite" type="Sprite" parent="TowerBase" index="0"]
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
+frames = SubResource( 1 )
+
+[node name="MaxNatLevelWingsSprite" type="Sprite" parent="TowerBase/KnockUpLayer" index="1"]
 position = Vector2( -0.5, 1 )
 texture = ExtResource( 7 )
 
-[node name="BaseSprites" parent="TowerBase" index="1"]
-frames = SubResource( 1 )
-
-[node name="StaffSprite" type="Sprite" parent="TowerBase" index="2"]
+[node name="StaffSprite" type="Sprite" parent="TowerBase/KnockUpLayer" index="2"]
 position = Vector2( 11.5, 0 )
 texture = ExtResource( 2 )
 
-[node name="JudgementSprite" type="Sprite" parent="TowerBase" index="3"]
+[node name="JudgementSprite" type="Sprite" parent="TowerBase/KnockUpLayer" index="3"]
 position = Vector2( -10, -3 )
 texture = ExtResource( 4 )
 
-[node name="VOLRobeSprite" type="Sprite" parent="TowerBase" index="4"]
+[node name="VOLRobeSprite" type="Sprite" parent="TowerBase/KnockUpLayer" index="4"]
 position = Vector2( -0.5, 7.5 )
 texture = ExtResource( 3 )
 
-[node name="StaffProjPosition" type="Position2D" parent="TowerBase" index="5"]
+[node name="StaffProjPosition" type="Position2D" parent="TowerBase/KnockUpLayer" index="5"]
 position = Vector2( 11.5, -8 )
 
 [node name="CollisionShape" parent="." index="1"]

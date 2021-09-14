@@ -30,8 +30,8 @@ func _attack_at_positions(positions : Array):
 
 # Disabling and Enabling
 
-func disable_module():
-	.disable_module()
+func disable_module(disabled_clause_id : int):
+	.disable_module(disabled_clause_id)
 
-func enable_module():
-	.enable_module()
+func enable_module(disabled_clause_id : int):
+	.enable_module(disabled_clause_id)

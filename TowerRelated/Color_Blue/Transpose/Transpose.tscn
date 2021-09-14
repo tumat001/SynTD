@@ -15,7 +15,7 @@ animations = [ {
 "frames": [ ExtResource( 5 ), ExtResource( 2 ), ExtResource( 7 ), ExtResource( 4 ), ExtResource( 8 ), ExtResource( 6 ), ExtResource( 3 ) ],
 "loop": true,
 "name": "default",
-"speed": 10.0
+"speed": 20.0
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
@@ -24,7 +24,7 @@ extents = Vector2( 11.1183, 11.5962 )
 [node name="Transpose" instance=ExtResource( 1 )]
 script = ExtResource( 9 )
 
-[node name="BaseSprites" parent="TowerBase" index="0"]
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
 frame = 2
 playing = true

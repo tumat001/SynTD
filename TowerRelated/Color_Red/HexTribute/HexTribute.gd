@@ -44,7 +44,7 @@ var hextribute_toughness_reduction_effect : EnemyAttributesEffect
 var hextribute_effect_vul_effect : EnemyAttributesEffect
 
 var hex_attk_sprite_frames : SpriteFrames
-onready var hextribute_crest : Sprite = $TowerBase/Crest
+onready var hextribute_crest : Sprite = $TowerBase/KnockUpLayer/Crest
 
 
 # Called when the node enters the scene tree for the first time.

@@ -78,6 +78,7 @@ const hero_max_nat_level_bonus_ability_potency : float = 0.5
 
 const xp_ratio_per_damage : float = 1.0
 const xp_per_kill : float = 2.0
+const xp_scale_on_boss_enemy : float = 2.5
 const xp_scale_if_not_white_dom_color : float = 0.7
 const max_hero_level : int = 6 # max hero natural level
 
@@ -88,6 +89,7 @@ const xp_about_descriptions = [
 	"Hero gains EXP from damaging enemies, killing enemies, and casting Voice of Light.",
 	"Hero gains EXP equal to the post-mitigated damage dealt to enemies.",
 	"Hero gains %s EXP from a kill." % [str(xp_per_kill)],
+	"EXP gain from attacks and kills is %s greater against boss enemies" % [(str(xp_scale_on_boss_enemy) + "x")],
 	"Hero gains EXP from casting Voice of Light. The amount depends on this ability's level.",
 	"",
 	"There is no EXP limit for Hero. Hero can only gain %s levels from gold and EXP." % str(max_hero_level),
@@ -173,11 +175,11 @@ var _current_particle_showing_count : int = 0
 
 var notify_xp_cap_of_level_reached : bool = false
 
-onready var staff_proj_origin_pos2D : Position2D = $TowerBase/StaffProjPosition
-onready var staff_sprite : Sprite = $TowerBase/StaffSprite
-onready var judgement_sprite : Sprite = $TowerBase/JudgementSprite
-onready var volrobe_sprite : Sprite = $TowerBase/VOLRobeSprite
-onready var max_nat_level_wings_sprite = $TowerBase/MaxNatLevelWingsSprite
+onready var staff_proj_origin_pos2D : Position2D = $TowerBase/KnockUpLayer/StaffProjPosition
+onready var staff_sprite : Sprite = $TowerBase/KnockUpLayer/StaffSprite
+onready var judgement_sprite : Sprite = $TowerBase/KnockUpLayer/JudgementSprite
+onready var volrobe_sprite : Sprite = $TowerBase/KnockUpLayer/VOLRobeSprite
+onready var max_nat_level_wings_sprite = $TowerBase/KnockUpLayer/MaxNatLevelWingsSprite
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.HERO)
@@ -258,9 +260,14 @@ func _construct_vol_tower_indicator_shower():
 func _any_post_mitigation_dmg_dealt_h(damage_instance_report, killed, enemy, damage_register_id, module):
 	var effective_dmg = damage_instance_report.get_total_effective_damage()
 	
-	_increase_exp(effective_dmg * xp_ratio_per_damage)
+	var additional_scale : float = 1.0
+	
+	if enemy.is_enemy_type_boss():
+		additional_scale *= xp_scale_on_boss_enemy
+	
+	_increase_exp(effective_dmg * xp_ratio_per_damage * additional_scale)
 	if killed:
-		_increase_exp(xp_per_kill)
+		_increase_exp(xp_per_kill * additional_scale)
 
 
 # Random essential things

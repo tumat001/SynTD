@@ -38,6 +38,7 @@ func _ready():
 	for bench_slot in all_bench_slots:
 		bench_slot.connect("on_occupancy_changed", self, "_on_occupancy_in_bench_slot_changed", [bench_slot], CONNECT_PERSIST)
 		bench_slot.connect("on_tower_left_placement", self, "_on_tower_left_bench_slot", [bench_slot], CONNECT_PERSIST)
+		bench_slot.z_index = ZIndexStore.TOWER_BENCH_PLACABLES
 
 
 func insert_tower(tower_id : int, arg_bench_slot = _find_empty_slot()):

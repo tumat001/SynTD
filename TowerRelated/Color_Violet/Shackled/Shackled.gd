@@ -54,7 +54,7 @@ const chains_time_taken_for_pull : float = 0.2
 const chains_stun_duration : float = 0.5
 
 const chains_base_ability_cooldown : float = 25.0
-const chains_attk_count_needed : int = 18
+const chains_attk_count_needed : int = 15
 const chains_post_mitigated_dmg_needed : float = 70.0
 
 var _current_attk_count : int = 0
@@ -88,7 +88,7 @@ var chains_ability : BaseAbility
 var chains_ability_is_ready : bool = false
 
 var chains_pos_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SHACKLED_PULL_POSITION)
-const chains_upper_pos_limit : float = 30.0
+const chains_upper_pos_limit : float = 30.0 # adjust higher for more random positions
 
 
 func _ready():

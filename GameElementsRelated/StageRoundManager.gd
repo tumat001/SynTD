@@ -190,5 +190,6 @@ func _life_lost_from_enemy(enemy):
 func _replace_current_spawn_ins_to_second_half(new_faction_id : int):
 	if new_faction_id == EnemyConstants.EnemyFactions.EXPERT:
 		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionExpert_EnemySpawnIns.gd").new()
-
+	elif new_faction_id == EnemyConstants.EnemyFactions.FAITHFUL:
+		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionFaithful_EnemySpawnIns.gd").new()
 
