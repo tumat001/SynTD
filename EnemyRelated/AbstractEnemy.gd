@@ -40,7 +40,10 @@ const DuringReviveParticle_Scene = preload("res://EnemyRelated/CommonParticles/R
 
 
 signal on_death_by_any_cause
+
 signal on_hit(me, damage_reg_id, damage_instance)
+signal on_hit_by_attack_module(me, damage_reg_id, damage_instance, attk_module) #emitted when attk module is not null, and after on_hit
+
 signal on_post_mitigated_damage_taken(damage_instance_report, is_lethal, me)
 signal on_killed_by_damage(damage_instance_report, me)
 signal on_killed_by_damage_with_no_more_revives(damage_instance_report, me)
@@ -957,7 +960,7 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 				connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
 				connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
 			
-			hit_by_damage_instance(generic_bullet.damage_instance, generic_bullet.damage_register_id)
+			hit_by_damage_instance(generic_bullet.damage_instance, generic_bullet.damage_register_id, true, generic_bullet.attack_module_source)
 			generic_bullet.reduce_damage_by_beyond_first_multiplier()
 
 
@@ -967,16 +970,31 @@ func hit_by_aoe(base_aoe):
 			connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
 			connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
 		
-		hit_by_damage_instance(base_aoe.damage_instance, base_aoe.damage_register_id)
+		hit_by_damage_instance(base_aoe.damage_instance, base_aoe.damage_register_id, true, base_aoe.attack_module_source)
 
 
-func hit_by_damage_instance(damage_instance : DamageInstance, damage_reg_id : int = 0, emit_on_hit_signal : bool = true):
+func hit_by_instant_damage(damage_instance : DamageInstance, damage_reg_id : int, attack_module_source):
+	if !is_reviving:
+		if attack_module_source != null:
+			connect("on_hit", attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
+			connect("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt", [damage_reg_id], CONNECT_ONESHOT)
+		
+		
+		hit_by_damage_instance(damage_instance, damage_reg_id, true, attack_module_source)
+
+
+
+func hit_by_damage_instance(damage_instance : DamageInstance, damage_reg_id : int = 0, emit_on_hit_signal : bool = true, attack_module_source = null):
 	if !is_reviving:
 		# no need for copy since we don't make changes to it
 		#damage_instance = damage_instance.get_copy_scaled_by(1)
 		
 		if emit_on_hit_signal:
 			emit_signal("on_hit", self, damage_reg_id, damage_instance)
+			
+			if attack_module_source != null:
+				emit_signal("on_hit_by_attack_module", self, damage_reg_id, damage_instance, attack_module_source)
+		
 		emit_signal("before_damage_instance_is_processed", damage_instance, self)
 		
 		_process_effects(damage_instance.on_hit_effects, damage_instance.on_hit_effect_multiplier)

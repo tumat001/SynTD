@@ -12,6 +12,9 @@ const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalC
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
+const MainAttack_DefaultIcon = preload("res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/AttackModuleStatsPanel/Assets/Defaults/MainAttack_IconDefault.png")
+
+
 signal in_attack_windup(windup_time, enemies_or_poses)
 signal in_attack(attack_speed_delay, enemies_or_poses)
 signal in_attack_end()
@@ -28,6 +31,11 @@ signal before_attack_sprite_is_shown(attack_sprite)
 signal ready_to_attack()
 
 signal can_be_commanded_changed(can_be_commanded)
+
+signal on_in_round_total_dmg_changed(new_total)
+signal on_in_round_pure_dmg_dealt_changed(new_total)
+signal on_in_round_elemental_dmg_dealt_changed(new_total)
+signal on_in_round_physical_dmg_dealt_changed(new_total)
 
 
 enum CanBeCommandedByTower_ClauseId {
@@ -164,6 +172,20 @@ var _last_calculated_burst_pause : float
 var _last_calculated_attack_speed_as_delay : float
 
 
+# Damage tracker
+
+var in_round_total_damage_dealt : float setget set_in_round_total_damage_dealt
+var in_round_pure_damage_dealt : float setget set_in_round_pure_damage_dealt
+var in_round_elemental_damage_dealt : float setget set_in_round_elemental_damage_dealt
+var in_round_physical_damage_dealt : float setget set_in_round_physical_damage_dealt
+
+#
+var tracker_image : Texture
+var is_displayed_in_tracker : bool = true
+const image_size := Vector2(18, 18) # size of texture is 18x18
+
+#
+
 # Can be commanded related
 
 func _init():
@@ -182,6 +204,10 @@ func _init():
 	is_disabled_clauses.connect("clause_removed", self, "_is_disabled_clause_removed", [], CONNECT_PERSIST)
 	
 	_calculate_is_disabled_clause()
+	
+	#
+	
+	set_image_as_tracker_image(MainAttack_DefaultIcon)
 
 
 # can be commanded clause
@@ -987,3 +1013,61 @@ func on_enemy_hit(enemy, damage_register_id, damage_instance):
 	emit_signal("on_enemy_hit", enemy, damage_register_id, damage_instance, self)
 
 
+# Damage Tracking related
+
+func reset_damage_track_in_round():
+	set_in_round_total_damage_dealt(0)
+	set_in_round_pure_damage_dealt(0)
+	set_in_round_elemental_damage_dealt(0)
+	set_in_round_physical_damage_dealt(0)
+
+
+func set_in_round_total_damage_dealt(arg_total):
+	in_round_total_damage_dealt = arg_total
+	emit_signal("on_in_round_total_dmg_changed", arg_total)
+
+func set_in_round_pure_damage_dealt(arg_total):
+	in_round_pure_damage_dealt = arg_total
+	emit_signal("on_in_round_pure_dmg_dealt_changed", arg_total)
+
+func set_in_round_elemental_damage_dealt(arg_total):
+	in_round_elemental_damage_dealt = arg_total
+	emit_signal("on_in_round_elemental_dmg_dealt_changed", arg_total)
+
+func set_in_round_physical_damage_dealt(arg_total):
+	in_round_physical_damage_dealt = arg_total
+	emit_signal("on_in_round_physical_dmg_dealt_changed", arg_total)
+
+
+# Image related
+
+static func _generate_module_image_icon_atlas_texture(module_sprite) -> AtlasTexture:
+	var module_image_icon_atlas_texture := AtlasTexture.new()
+	
+	module_image_icon_atlas_texture.atlas = module_sprite
+	module_image_icon_atlas_texture.region = _get_atlas_region(module_sprite)
+	module_image_icon_atlas_texture.filter_clip = true
+	
+	return module_image_icon_atlas_texture
+
+
+static func _get_atlas_region(module_sprite) -> Rect2:
+	var center = _get_default_center_for_atlas(module_sprite)
+	var size = _get_default_region_size_for_atlas()
+	
+	#return Rect2(0, 0, size.x, size.y)
+	return Rect2(center.x, center.y, size.x, size.y)
+
+static func _get_default_center_for_atlas(module_sprite) -> Vector2:
+	#var highlight_sprite_size = module_sprite.get_size()
+	
+	#return Vector2(highlight_sprite_size.x / 4, highlight_sprite_size.y / 4)
+	return Vector2(0, 0)
+
+static func _get_default_region_size_for_atlas() -> Vector2:
+	return image_size
+
+
+
+func set_image_as_tracker_image(image : Texture):
+	tracker_image = image#_generate_module_image_icon_atlas_texture(image)

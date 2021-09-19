@@ -157,9 +157,9 @@ func _init():
 	],
 	[AnaSyn_YellowGO.new()],
 	[
-		"+6.0 elemental on hit damage, +200% total base damage, +200% total attack speed, +50% base range.",
-		"+4.0 elemental on hit damage, +120% total base damage, +120% total attack speed, +40% base range",
-		"+2.5 elemental on hit damage, +60% total base damage, +60% total attack speed, +20% base range.",
+		"+6.0 elemental on hit damage, +150% total base damage, +150% total attack speed, +50% base range.",
+		"+3.0 elemental on hit damage, +85% total base damage, +85% total attack speed, +30% base range",
+		"+2.0 elemental on hit damage, +40% total base damage, +40% total attack speed, +20% base range.",
 		"+1.0 elemental on hit damage, +20% total base damage, +20% total attack speed, +10% base range."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -174,8 +174,8 @@ func _init():
 	],
 	[AnaSyn_GreenBY.new()],
 	[
-		"+0.30 on hit, up to 6",
-		"+0.20 on hit, up to 4",
+		"+0.35 on hit, up to 7",
+		"+0.25 on hit, up to 5",
 		"+0.10 on hit, up to 2",
 		"+0.05 on hit, up to 1"
 	],

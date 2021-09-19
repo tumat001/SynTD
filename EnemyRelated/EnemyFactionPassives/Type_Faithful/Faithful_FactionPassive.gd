@@ -25,12 +25,12 @@ signal on_deity_tree_exiting()
 
 
 var _round_deity_stats_map : Dictionary = {
-	#"01" : _get_4_3_deity_stats(),
-	"02" : _get_4_3_deity_stats(),
-	"03" : _get_4_3_deity_stats(),
-	"04" : _get_4_3_deity_stats(),
-	"05" : _get_4_3_deity_stats(),
-	
+#	"01" : _get_4_3_deity_stats(),
+#	"02" : _get_4_3_deity_stats(),
+#	"03" : _get_4_3_deity_stats(),
+#	"04" : _get_4_3_deity_stats(),
+#	"05" : _get_4_3_deity_stats(),
+#
 	"43" : _get_4_3_deity_stats(),
 	"51" : _get_5_1_deity_stats(),
 	"54" : _get_5_4_deity_stats(),
@@ -54,7 +54,7 @@ var _deity_summoning_duration_timer : Timer
 var _current_deity : Deity
 var _is_deity_round : bool
 
-var _current_cross : Node2D
+var _current_cross
 var _current_cross_unit_offset : float
 
 #
@@ -180,7 +180,6 @@ func _on_round_start(curr_stageround):
 	
 	if _is_deity_round:
 		_set_up_deity_for_round(curr_stageround.id)
-	
 
 
 
@@ -196,21 +195,21 @@ func _deity_spawn_timer_timeout(round_id):
 		game_elements.enemy_manager.spawn_enemy(EnemyConstants.Enemies.DEITY)
 
 
-
+# before deity stats initialized and before added to scene
 func _on_deity_before_stats_initialized(deity : Deity, round_id):
 	var deity_info = get_deity_stats_for_round(round_id)
 	
 	deity._stats_initialize(deity_info)
+	
+	deity._current_cross_marker_unit_offset = _current_cross_unit_offset
 
-
+# after deity's ready
 func _on_deity_spawned(deity):
 	_current_deity = deity
 	
 	deity._add_effect(deity_stun_effect_while_summoning)
 	deity._add_effect(deity_effect_shield_while_summoning)
 	deity._add_effect(deity_invulnerability_effect_while_summoning)
-	
-	deity._current_cross_marker_unit_offset = _current_cross_unit_offset
 	
 	#
 	
@@ -257,8 +256,8 @@ func _on_round_end(curr_stageround):
 	if _is_deity_round:
 		if _current_cross != null:
 			_current_cross.queue_free()
-		
-		_current_cross_unit_offset = 0
+			
+			_current_cross_unit_offset = 0
 
 
 #
@@ -266,16 +265,24 @@ func _on_round_end(curr_stageround):
 func _on_cross_bearer_dies(cross_bearer):
 	if cross_bearer.unit_offset > _current_cross_unit_offset:
 		_get_current_cross_or_construct()
-		_current_cross = cross_bearer.global_position
+		if _current_cross.is_inside_tree():
+			_current_cross.global_position = cross_bearer.global_position
+		else:
+			_current_cross.position = cross_bearer.global_position
+		
 		_current_cross_unit_offset = cross_bearer.unit_offset
 
 
 
-func _get_current_cross_or_construct() -> Node2D:
+func _get_current_cross_or_construct():
 	if _current_cross != null:
 		return _current_cross
 	else:
 		_current_cross = CrossMarker_Scene.instance()
+		_current_cross.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
+		#game_elements.get_tree().get_root().add_child(_current_cross)
+		game_elements.get_tree().get_root().call_deferred("add_child", _current_cross)
+		
 		return _current_cross
 
 
@@ -292,8 +299,11 @@ func get_deity_stats_for_round(arg_round_id : String):
 func _construct_deity_enemy_type_info() -> EnemyTypeInformation:
 	var info = EnemyTypeInformation.new(EnemyConstants.EnemyFactions.FAITHFUL, EnemyConstants.Enemies.DEITY)
 	info.enemy_type = EnemyTypeInformation.EnemyType.BOSS
-	info.base_movement_speed = 17
-	info.base_player_damage = 10
+	info.base_movement_speed = 15
+	info.base_player_damage = 15
+	
+	info.base_armor = 30
+	info.base_toughness = 30
 	
 	return info
 
@@ -310,14 +320,14 @@ func _get_default_deity_stats(): # for un predefined rounds
 func _get_4_3_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 1000#100
+	info.base_health = 300
 	
 	return info
 
 func _get_5_1_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 300
+	info.base_health = 350
 	
 	return info
 
@@ -325,14 +335,14 @@ func _get_5_1_deity_stats():
 func _get_5_4_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 350
+	info.base_health = 400
 	
 	return info
 
 func _get_6_2_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 400
+	info.base_health = 500
 	info.base_effect_vulnerability = 0.9
 	
 	return info
@@ -341,8 +351,8 @@ func _get_6_2_deity_stats():
 func _get_6_5_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 450
-	info.base_effect_vulnerability = 0.7
+	info.base_health = 600
+	info.base_effect_vulnerability = 0.8
 	
 	return info
 
@@ -350,7 +360,7 @@ func _get_6_5_deity_stats():
 func _get_7_3_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 520
+	info.base_health = 750
 	info.base_effect_vulnerability = 0.6
 	
 	return info
@@ -358,7 +368,7 @@ func _get_7_3_deity_stats():
 func _get_8_1_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 590
+	info.base_health = 800
 	info.base_effect_vulnerability = 0.5
 	
 	return info
@@ -367,7 +377,7 @@ func _get_8_1_deity_stats():
 func _get_8_4_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 680
+	info.base_health = 850
 	info.base_effect_vulnerability = 0.5
 	
 	return info
@@ -376,7 +386,7 @@ func _get_8_4_deity_stats():
 func _get_9_1_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 770
+	info.base_health = 900
 	info.base_effect_vulnerability = 0.5
 	
 	return info

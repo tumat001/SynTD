@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://MiscRelated/ControlProgressBarRelated/ControlProgressBar.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/Assets/SingleTowerRoundDamagePanel_Assets/SingleDamagePanel_BarBackground.png" type="Texture" id=2]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/Assets/SingleTowerRoundDamagePanel_Assets/SingleDamagePanel_PhyDamageFill.png" type="Texture" id=3]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/AttackModuleStatsPanel/SingleAttackModuleRoundDamageStatsPanel.gd" type="Script" id=4]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 8
+font_data = ExtResource( 5 )
+
+[node name="SingleAttackModuleRoundDamageStatsPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+custom_constants/separation = 4
+
+[node name="AttackModuleIconMarginer" type="MarginContainer" parent="HBoxContainer"]
+margin_bottom = 40.0
+
+[node name="AttackModuleIcon" type="TextureRect" parent="HBoxContainer/AttackModuleIconMarginer"]
+margin_top = 20.0
+margin_bottom = 20.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 4.0
+margin_right = 4.0
+margin_bottom = 40.0
+mouse_filter = 2
+custom_constants/separation = 1
+
+[node name="DamageLabel" type="Label" parent="HBoxContainer/VBoxContainer"]
+margin_bottom = 9.0
+custom_fonts/font = SubResource( 1 )
+
+[node name="DamageBar" parent="HBoxContainer/VBoxContainer" instance=ExtResource( 1 )]
+margin_top = 10.0
+margin_right = 0.0
+margin_bottom = 10.0
+bar_background_pic = ExtResource( 2 )
+fill_foreground_pic = ExtResource( 3 )
+fill_foreground_margin_top = 1.0
+fill_foreground_margin_left = 1.0
+current_value = 0.0

@@ -21,6 +21,8 @@ const bonus_damage_scale : float = 2.0
 
 const bonus_damage_percent_threshold : float = 0.75
 
+const impale_retract_damage_dmg_reg_id : int = -10
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.IMPALE)
@@ -72,11 +74,12 @@ func _post_inherit_ready():
 
 
 func _on_enemy_implale_hit(enemy, damage_register_id, damage_instance, module):
-	var impale_proj : ImpaleGroundProj = ImpaleGroundProj_Scene.instance()
-	
-	impale_proj.enemy = enemy
-	impale_proj.connect("spike_retracted", self, "_on_impale_rectract")
-	get_tree().get_root().add_child(impale_proj)
+	if damage_register_id != impale_retract_damage_dmg_reg_id:
+		var impale_proj : ImpaleGroundProj = ImpaleGroundProj_Scene.instance()
+		
+		impale_proj.enemy = enemy
+		impale_proj.connect("spike_retracted", self, "_on_impale_rectract")
+		get_tree().get_root().add_child(impale_proj)
 
 
 func _on_impale_rectract(enemy):
@@ -85,10 +88,9 @@ func _on_impale_rectract(enemy):
 		dmg_instance.on_hit_effects.erase(StoreOfEnemyEffectsUUID.IMPALE_STUN)
 		
 		if _check_if_within_threshold(enemy):
-			#dmg_instance = dmg_instance.get_copy_damage_only_scaled_by(bonus_damage_scale)
 			dmg_instance.scale_only_damage_by(bonus_damage_scale)
 		
-		enemy.hit_by_damage_instance(dmg_instance)
+		enemy.hit_by_instant_damage(dmg_instance, impale_retract_damage_dmg_reg_id, impale_attack_module)
 
 
 

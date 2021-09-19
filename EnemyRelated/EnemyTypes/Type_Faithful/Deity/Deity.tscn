@@ -1,8 +1,12 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity_E.png" type="Texture" id=1]
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity.gd" type="Script" id=2]
 [ext_resource path="res://EnemyRelated/AbstractEnemy.tscn" type="PackedScene" id=3]
+[ext_resource path="res://EnemyRelated/Infobar/Healthbar/LargeSize/Healtbar_background_LargeSize.png" type="Texture" id=4]
+[ext_resource path="res://EnemyRelated/Infobar/Healthbar/LargeSize/Healtbar_health_LargeSize.png" type="Texture" id=5]
+[ext_resource path="res://EnemyRelated/Infobar/Healthbar/LargeSize/Healthbar_separator_big_LargeSize.png" type="Texture" id=6]
+[ext_resource path="res://EnemyRelated/Infobar/Healthbar/LargeSize/Healthbar_separator_LargeSize.png" type="Texture" id=7]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -23,3 +27,13 @@ frames = SubResource( 1 )
 
 [node name="CollisionShape2D" parent="CollisionArea" index="0"]
 shape = SubResource( 2 )
+
+[node name="LifeBar" parent="Layer/EnemyInfoBar/VBoxContainer" index="1"]
+margin_left = 0.0
+margin_right = 40.0
+chunk_separator_pic = ExtResource( 7 )
+chunk_big_separator_pic = ExtResource( 6 )
+bar_background_pic = ExtResource( 4 )
+fill_health_foreground_pic = ExtResource( 5 )
+
+[editable path="Layer/EnemyInfoBar"]

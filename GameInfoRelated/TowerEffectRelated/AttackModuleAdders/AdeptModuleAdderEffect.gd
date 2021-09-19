@@ -22,7 +22,7 @@ var adeptling_am : WithBeamInstantDamageAttackModule
 
 func _init().(StoreOfTowerEffectsUUID.ING_ADEPT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Adeptling.png")
-	description = "Adeptling: Summons an adeptling beside your tower. Adeptling attacks a different target when its tower hits its main attack. Its shots deal 1.25 physical damage and applies on hit effects. Benefits from base damage and on hit damage buffs at 10% efficiency."
+	description = "Adeptling: Summons an adeptling beside your tower. Adeptling attacks a different target when its tower hits its main attack. Its shots deal 1.5 physical damage and applies on hit effects. Benefits from base damage and on hit damage buffs at 10% efficiency."
 
 
 func _make_modifications_to_tower(tower):
@@ -38,7 +38,7 @@ func _make_modifications_to_tower(tower):
 func _construct_attack_module():
 	adeptling_am = WithBeamInstantDamageAttackModule_Scene.instance()
 	adeptling_am.base_damage_scale = 0.10
-	adeptling_am.base_damage = 1.25 / adeptling_am.base_damage_scale
+	adeptling_am.base_damage = 1.5 / adeptling_am.base_damage_scale
 	adeptling_am.base_damage_type = DamageType.PHYSICAL
 	adeptling_am.base_attack_speed = 0
 	adeptling_am.base_attack_wind_up = 1 / 0.15
@@ -75,6 +75,8 @@ func _construct_attack_module():
 	adeptling_am.beam_time_visible = 0.15
 	
 	adeptling_am.can_be_commanded_by_tower = false
+	
+	adeptling_am.set_image_as_tracker_image(Adeptling_Pic)
 	
 	var sprite : Sprite = Sprite.new()
 	sprite.texture = Adeptling_Pic

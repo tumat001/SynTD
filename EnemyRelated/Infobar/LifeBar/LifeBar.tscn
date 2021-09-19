@@ -13,12 +13,11 @@ __meta__ = {
 
 [node name="BarBackgroundPanel" type="MarginContainer" parent="."]
 margin_right = 40.0
-margin_bottom = 40.0
 mouse_filter = 2
+size_flags_vertical = 2
 
 [node name="BarBackground" type="TextureRect" parent="BarBackgroundPanel"]
 margin_right = 40.0
-margin_bottom = 40.0
 mouse_filter = 2
 
 [node name="BarFillForeground" type="MarginContainer" parent="."]

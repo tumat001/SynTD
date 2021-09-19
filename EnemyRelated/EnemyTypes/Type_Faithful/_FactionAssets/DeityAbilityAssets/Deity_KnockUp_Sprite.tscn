@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/ExpandingAttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/DeityAbilityAssets/KnockUp_CirclePic.png" type="Texture" id=2]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Deity_KnockUp_Sprite" instance=ExtResource( 1 )]
+scale = Vector2( 0.25, 0.25 )
+frames = SubResource( 1 )
+lifetime = 0.25
+lifetime_to_start_transparency = 0.1
+transparency_per_sec = 10.0
+scale_of_scale = 20.0

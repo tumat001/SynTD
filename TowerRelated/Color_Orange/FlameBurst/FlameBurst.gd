@@ -97,7 +97,7 @@ func _ready():
 	
 	burst_attack_module = BulletAttackModule_Scene.instance()
 	#burst_attack_module.base_damage_scale = 0.15
-	burst_attack_module.base_damage = 0.75 #/ burst_attack_module.base_damage_scale
+	burst_attack_module.base_damage = 1 #/ burst_attack_module.base_damage_scale
 	burst_attack_module.base_damage_type = DamageType.ELEMENTAL
 	burst_attack_module.base_attack_speed = 0
 	burst_attack_module.base_attack_wind_up = 0
@@ -105,7 +105,7 @@ func _ready():
 	burst_attack_module.is_main_attack = false
 	burst_attack_module.base_pierce = 1
 	burst_attack_module.base_proj_speed = 200
-	burst_attack_module.base_proj_life_distance = 30
+	burst_attack_module.base_proj_life_distance = 50
 	burst_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	#burst_attack_module.on_hit_damage_scale = 0.15
 	
@@ -131,6 +131,8 @@ func _ready():
 	burst_attack_module.bullet_sprite_frames = burst_sp
 	
 	burst_attack_module.can_be_commanded_by_tower = false
+	
+	burst_attack_module.set_image_as_tracker_image(preload("res://TowerRelated/Color_Orange/FlameBurst/Assets/FlameBurst_AttackModule_TrackerImage.png"))
 	
 	add_attack_module(burst_attack_module)
 	

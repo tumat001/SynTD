@@ -18,6 +18,8 @@ const Explosion_Pic06 = preload("res://GameInfoRelated/ColorSynergyRelated/Compl
 const Explosion_Pic07 = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_OrangeBlue/OrangeBlue_Explosion/OrangeBlue_Explosion07.png")
 const Explosion_Pic08 = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_OrangeBlue/OrangeBlue_Explosion/OrangeBlue_Explosion08.png")
 
+const OB_AttackModule_Icon = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_OrangeBlue/AMAssets/OrangeBlue_AttackModule_Icon.png")
+
 
 var explosion_attack_module : AOEAttackModule
 
@@ -101,6 +103,8 @@ func _construct_attk_module():
 	explosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
+	
+	explosion_attack_module.set_image_as_tracker_image(OB_AttackModule_Icon)
 
 
 func _on_tower_main_attack_hit(enemy, damage_register_id, damage_instance, module, tower):

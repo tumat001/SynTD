@@ -82,10 +82,12 @@ func _ready():
 	
 	main_shot_range_module = range_module
 	
+	
 	# mini attack
 	
 	mini_shot_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	mini_shot_attack_module.base_damage_scale = 0.1
+	mini_shot_attack_module.on_hit_damage_scale = 0.15
+	mini_shot_attack_module.base_damage_scale = 0.15
 	mini_shot_attack_module.base_damage = 1 / mini_shot_attack_module.base_damage_scale
 	mini_shot_attack_module.base_damage_type = DamageType.PHYSICAL
 	mini_shot_attack_module.base_attack_speed = 0
@@ -94,7 +96,7 @@ func _ready():
 	mini_shot_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	mini_shot_attack_module.position.y -= 10
 	mini_shot_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	mini_shot_attack_module.on_hit_damage_scale = 0.15
+	
 	mini_shot_attack_module.on_hit_effect_scale = 1
 	
 	mini_shot_attack_module.commit_to_targets_of_windup = true
@@ -120,6 +122,8 @@ func _ready():
 	mini_shot_attack_module.can_be_commanded_by_tower = false
 	
 	mini_shot_attack_module.damage_register_id = mini_dmg_reg_id
+	
+	mini_shot_attack_module.set_image_as_tracker_image(preload("res://TowerRelated/Color_Red/Adept/Assets/MiniShot_AM_Pic.png"))
 	
 	add_attack_module(mini_shot_attack_module)
 	

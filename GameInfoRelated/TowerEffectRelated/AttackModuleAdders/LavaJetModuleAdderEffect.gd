@@ -24,12 +24,13 @@ const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRe
 const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 
 const Ingredient_pic = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_LavaJetBeam.png")
+const AttackModule_Icon = preload("res://TowerRelated/Color_Orange/LavaJet/Assets/LavaJetIng_AttackModule_Icon.png")
 
-const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
+#const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 
 
-const health_percent_dmg : float = 35.0
-const percent_dmg_max_limit : float = 25.0 # max damage on enemies with health above 120
+const health_percent_dmg : float = 20.0
+const percent_dmg_max_limit : float = 20.0 # max damage on enemies with health above 120
 
 var lava_jet_beam_am : WithBeamInstantDamageAttackModule
 const num_of_attacks_before_beam : int = 5
@@ -40,10 +41,10 @@ var _curr_num_of_attacks : int = 0
 
 func _init().(StoreOfTowerEffectsUUID.LAVA_JET_BEAM):
 	effect_icon = Ingredient_pic
-	description = "Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals 35% of the enemy's max health damage as elemental damage, up to 25."
+	description = "Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals 20% of the enemy's max health damage as elemental damage, up to 20."
 
 
-func _make_modifications_to_tower(tower : AbstractTower):
+func _make_modifications_to_tower(tower):
 	_construct_lava_jet_module()
 	
 	tower.add_attack_module(lava_jet_beam_am)
@@ -104,6 +105,8 @@ func _construct_lava_jet_module():
 	effect.force_apply = true
 	
 	beam_attack_module.on_hit_damage_adder_effects[effect.effect_uuid] = effect
+	
+	beam_attack_module.set_image_as_tracker_image(AttackModule_Icon)
 
 
 func _on_main_tower_attack(attack_delay, enemies, module):
@@ -119,7 +122,7 @@ func _on_round_end():
 
 
 
-func _undo_modifications_to_tower(tower : AbstractTower):
+func _undo_modifications_to_tower(tower):
 	tower.disconnect("on_main_attack", self, "_on_main_tower_attack")
 	tower.disconnect("on_round_end", self, "_on_round_end")
 	

@@ -2,6 +2,8 @@ extends MarginContainer
 
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 
+signal on_left_clicked(tower, me)
+
 
 var _tower : AbstractTower setget set_tower
 
@@ -16,7 +18,8 @@ onready var tower_icon_panel = $HBoxContainer/TowerIconPanel
 func _ready():
 	if _tower != null:
 		tower_icon_panel.tower_type_info = _tower.tower_type_info
-
+	
+	
 
 #
 
@@ -30,7 +33,8 @@ func set_tower(arg_tower : AbstractTower):
 		_tower.connect("on_per_round_total_damage_changed", self, "_on_tower_in_round_total_damage_changed", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 		
 		if tower_icon_panel != null:
-			tower_icon_panel.tower = _tower
+			tower_icon_panel.tower_type_info = _tower.tower_type_info
+
 
 #
 
@@ -40,12 +44,16 @@ func _on_tower_in_round_total_damage_changed(new_total):
 
 # called update
 
-func update_display(new_max_value : float):
+func update_display(new_max_value : float, new_curr_value : float = in_round_total_dmg):
 	damage_bar.max_value = new_max_value
-	damage_bar.current_value = in_round_total_dmg
+	damage_bar.current_value = new_curr_value
 	
 	damage_label.text = str(stepify(in_round_total_dmg, 0.001))
 
 
 #
 
+func _on_SingleTowerRoundDamageStatsPanel_gui_input(event):
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == BUTTON_LEFT:
+			emit_signal("on_left_clicked", _tower, self)

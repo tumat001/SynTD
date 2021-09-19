@@ -69,6 +69,7 @@ func update_first_time():
 	
 	bar_fill_foreground_marginer.add_constant_override("margin_top", fill_foreground_margin_top * scale_of_bars_scale.y) 
 	bar_fill_foreground_marginer.add_constant_override("margin_left", fill_foreground_margin_left * scale_of_bars_scale.x)
+	bar_fill_foreground_marginer.add_constant_override("margin_bottom", fill_foreground_margin_top * scale_of_bars_scale.y) 
 	
 	yield(get_tree(), "idle_frame") #
 	
@@ -80,8 +81,11 @@ func update_first_time():
 	set_current_shield_value(current_shield_value)
 	set_max_value(max_value)
 	
-	#rect_size.y = 0
-	#rect_min_size.y = 0
+	rect_size.y = 0
+	rect_min_size.y = 0
+	bar_fill_foreground_marginer.rect_size.y = 0
+	bar_fill_foreground_marginer.rect_min_size.y = 0
+	#chunks_container.rect_position.y -= fill_health_foreground_pic.get_size().y
 
 
 

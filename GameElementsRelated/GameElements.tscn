@@ -323,7 +323,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 [connection signal="pressed" from="BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelSprite" to="." method="_on_ColorWheelSprite_pressed"]
-[connection signal="level_down" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_down"]
 [connection signal="level_up" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_up"]
 [connection signal="reroll" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_reroll"]
 [connection signal="tower_bought" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_tower_bought"]

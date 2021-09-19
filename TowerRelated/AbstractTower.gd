@@ -691,6 +691,9 @@ func _on_round_start():
 	in_round_pure_damage_dealt = 0
 	in_round_total_damage_dealt = 0
 	
+	for module in all_attack_modules:
+		module.reset_damage_track_in_round()
+	
 	emit_signal("on_per_round_total_damage_changed", in_round_total_damage_dealt)
 	
 	emit_signal("on_round_start")
@@ -2285,12 +2288,24 @@ func _on_tower_any_post_mitigation_damage_dealt(damage_instance_report, _killed,
 		var dmg = dmg_type_damage_map[dmg_type]
 		if dmg_type == DamageType.ELEMENTAL:
 			in_round_elemental_damage_dealt += dmg
+			if _module != null:
+				_module.in_round_elemental_damage_dealt += dmg
+			
 		elif dmg_type == DamageType.PHYSICAL:
 			in_round_physical_damage_dealt += dmg
+			if _module != null:
+				_module.in_round_physical_damage_dealt += dmg
+			
 		elif dmg_type == DamageType.PURE:
 			in_round_pure_damage_dealt += dmg
+			if _module != null:
+				_module.in_round_pure_damage_dealt += dmg
+			
 		
 		in_round_total_damage_dealt += dmg
+		if _module != null:
+			_module.in_round_total_damage_dealt += dmg
+	
 	
 	emit_signal("on_per_round_total_damage_changed", in_round_total_damage_dealt)
 

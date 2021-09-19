@@ -51,6 +51,7 @@ func insert_tower(tower_id : int, arg_bench_slot = _find_empty_slot()):
 		emit_signal("before_tower_is_added", tower_as_instance)
 		tower_manager.add_tower(tower_as_instance)
 
+
 func insert_tower_from_last(tower_id : int):
 	insert_tower(tower_id, _find_empty_slot_from_last())
 

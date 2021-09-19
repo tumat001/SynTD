@@ -57,6 +57,8 @@ func _ready():
 	
 	set_current_value(current_value)
 	set_max_value(max_value)
+	
+	connect("visibility_changed", self, "_on_visibility_changed", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 
 
 func set_current_value(value : float):
@@ -170,3 +172,12 @@ func queue_free():
 		n.queue_free()
 	
 	.queue_free()
+
+
+#
+
+func _on_visibility_changed():
+	if visible:
+		set_current_value(current_value)
+		set_max_value(max_value)
+

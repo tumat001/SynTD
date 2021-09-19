@@ -14,26 +14,30 @@ const AbstractFaithfulEnemy = preload("res://EnemyRelated/EnemyTypes/Type_Faithf
 const ArmorToughness_StatusBarIcon = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/StatusBarIcons/Faithful_ArmorToughnessGain.png")
 const HealthRegen_StatusBarIcon = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/StatusBarIcons/Faithful_HealthRegenGain.png")
 const AP_StatusBarIcon = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/StatusBarIcons/Faithful_APGain.png")
+const MaxHealhGain_StatusBarIcon = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/StatusBarIcons/Faithful_MaxHealthGain.png")
+
+const KnockUp_CircleParticle = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/DeityAbilityAssets/Deity_KnockUp_Sprite.tscn")
+const Taunt_CircleParticle = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/DeityAbilityAssets/Deity_Taunt_Sprite.tscn")
 
 #
 
 enum PeriodicAbilities {
 	
-	TAUNT_TOWERS,
-	GRANT_REVIVE,
 	KNOCK_UP_TOWERS,
+	GRANT_REVIVE,
+	TAUNT_TOWERS,
 	
 }
 const NO_ABILITY_CASTED_YET : int = -1
 
 
-const faithful_interaction_range_amount : float = 160.0
+const faithful_interaction_range_amount : float = 200.0
 const tower_interaction_range_amount : float = 160.0
 
-const base_armor_toughness_amount_per_faithful : float = 1.0
-const base_health_regen_per_sec_per_sacrificer : float = 5.0
+const base_armor_toughness_amount_per_faithful : float = 2.0
+const base_health_regen_per_sec_per_sacrificer : float = 12.0
 const base_ap_per_seer : float = 0.5
-const base_health_gain_scale_from_cross_marker : float = 0.2
+const base_health_gain_from_cross_marker : float = 20.0
 
 var faithfuls_in_range : int
 var sacrificers_in_range : int
@@ -67,23 +71,24 @@ var max_health_effect : EnemyAttributesEffect
 
 var current_abilities_ids_ability_map = {}
 
-var current_ability_rotation_cooldown_amount : float = 15.0
+var current_ability_rotation_cooldown_amount : float = 12.0
 var rotation_ability : BaseAbility # ability that determines when abilities should be casted
 var last_casted_ability_id : int = NO_ABILITY_CASTED_YET
 
 
 var taunt_ability : BaseAbility
 var taunt_ability_activation_clauses : ConditionalClauses
-const taunt_duration : float = 5.0
+const taunt_duration : float = 8.0
 var tower_target_priority_effect : TowerPriorityTargetEffect
+const taunt_health_cast_threshold : float = 0.25
 
 
 var grant_revive_ability : BaseAbility
 var grant_revive_ability_activation_clauses : ConditionalClauses
 const revive_target_count : int = 15
-const revive_heal_amount : float = 10.0
+const revive_heal_amount : float = 100.0
 const revive_delay : float = 3.0
-const revive_duration : float = 7.0
+const revive_duration : float = 15.0
 var revive_effect : EnemyReviveEffect
 
 
@@ -91,7 +96,7 @@ var knock_up_towers_ability : BaseAbility
 var knock_up_ability_activation_clauses : ConditionalClauses
 const knock_up_duration : float = 1.25
 const knock_up_stun_duration : float = 2.5
-const knock_up_y_accel_amount : float = 70.0
+const knock_up_y_accel_amount : float = 40.0
 var knock_up_effect : TowerKnockUpEffect
 
 
@@ -100,9 +105,16 @@ var knock_up_effect : TowerKnockUpEffect
 var range_module : RangeModule
 var tower_detecting_range_module : TowerDetectingRangeModule
 
+
+var no_tower_in_range_clause_id : int = -10
+var no_enemy_in_range_clause_id : int = -11
+var below_percent_health_threshold_clause_id : int = -12
+
 #
 
 func _ready():
+	#
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = faithful_interaction_range_amount
 	range_module.set_range_shape(CircleShape2D.new())
@@ -122,12 +134,16 @@ func _ready():
 	tower_detecting_range_module.can_display_range = false
 	tower_detecting_range_module.detection_range = tower_interaction_range_amount
 	
+	tower_detecting_range_module.connect("on_tower_entered", self, "_on_tower_entered_range_d")
+	tower_detecting_range_module.connect("on_tower_exited", self, "_on_tower_exited_range_d")
+	
 	add_child(tower_detecting_range_module)
 	
 	#
 	
 	_construct_and_register_abilities()
 	connect("final_ability_potency_changed", self, "_on_ability_potency_changed_d")
+	connect("on_current_health_changed", self, "_on_curr_health_changed_d")
 
 
 func _post_inherit_ready():
@@ -185,12 +201,13 @@ func _construct_and_add_effects():
 	
 	if !_if_surpassed_cross_marker():
 		max_health_gain_modi = PercentModifier.new(StoreOfEnemyEffectsUUID.DEITY_MAX_HEALTH_GAIN_EFFECT)
-		max_health_gain_modi.percent_amount = base_health_gain_scale_from_cross_marker
+		max_health_gain_modi.percent_amount = base_health_gain_from_cross_marker
 		max_health_gain_modi.percent_based_on = PercentType.MAX
 		
 		max_health_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_HEALTH, max_health_gain_modi, StoreOfEnemyEffectsUUID.DEITY_MAX_HEALTH_GAIN_EFFECT)
 		max_health_effect.is_clearable = false
 		max_health_effect.is_from_enemy = true
+		max_health_effect.status_bar_icon = MaxHealhGain_StatusBarIcon
 		
 		max_health_effect = _add_effect(max_health_effect)
 	
@@ -241,7 +258,10 @@ func _construct_and_register_abilities():
 	register_ability(taunt_ability)
 	
 	taunt_ability_activation_clauses = taunt_ability.activation_conditional_clauses
+	taunt_ability_activation_clauses.attempt_insert_clause(no_tower_in_range_clause_id)
+	taunt_ability_activation_clauses.attempt_insert_clause(no_enemy_in_range_clause_id)
 	current_abilities_ids_ability_map[PeriodicAbilities.TAUNT_TOWERS] = taunt_ability
+	
 	
 	taunt_ability.auto_cast_func = "_cast_taunt_ability"
 	
@@ -254,6 +274,7 @@ func _construct_and_register_abilities():
 	register_ability(grant_revive_ability)
 	
 	grant_revive_ability_activation_clauses = grant_revive_ability.activation_conditional_clauses
+	grant_revive_ability_activation_clauses.attempt_insert_clause(no_enemy_in_range_clause_id)
 	current_abilities_ids_ability_map[PeriodicAbilities.GRANT_REVIVE] = grant_revive_ability
 	
 	grant_revive_ability.auto_cast_func = "_cast_grant_revive_ability"
@@ -267,10 +288,26 @@ func _construct_and_register_abilities():
 	register_ability(knock_up_towers_ability)
 	
 	knock_up_ability_activation_clauses = knock_up_towers_ability.activation_conditional_clauses
+	knock_up_ability_activation_clauses.attempt_insert_clause(no_tower_in_range_clause_id)
 	current_abilities_ids_ability_map[PeriodicAbilities.KNOCK_UP_TOWERS] = knock_up_towers_ability
 	
 	knock_up_towers_ability.auto_cast_func = "_cast_knock_up_ability"
 	
+
+#
+
+func _on_tower_entered_range_d(tower):
+	taunt_ability_activation_clauses.remove_clause(no_tower_in_range_clause_id)
+	knock_up_ability_activation_clauses.remove_clause(no_tower_in_range_clause_id)
+
+func _on_tower_exited_range_d(tower):
+	if tower_detecting_range_module.get_all_in_map_and_active_towers_in_range().size() > 0:
+		taunt_ability_activation_clauses.remove_clause(no_tower_in_range_clause_id)
+		knock_up_ability_activation_clauses.remove_clause(no_tower_in_range_clause_id)
+	else:
+		taunt_ability_activation_clauses.attempt_insert_clause(no_tower_in_range_clause_id)
+		knock_up_ability_activation_clauses.attempt_insert_clause(no_tower_in_range_clause_id)
+
 
 #
 
@@ -283,6 +320,10 @@ func _on_enemy_entered_range_d(enemy):
 			_increment_sacrificers_in_range_by(1)
 		elif enemy.enemy_id == EnemyConstants.Enemies.SEER:
 			_increment_seers_in_range_by(1)
+		
+		
+		grant_revive_ability_activation_clauses.remove_clause(no_enemy_in_range_clause_id)
+		taunt_ability_activation_clauses.remove_clause(no_enemy_in_range_clause_id)
 
 
 func _on_enemy_left_range_d(enemy):
@@ -294,6 +335,14 @@ func _on_enemy_left_range_d(enemy):
 			_increment_sacrificers_in_range_by(-1)
 		elif enemy.enemy_id == EnemyConstants.Enemies.SEER:
 			_increment_seers_in_range_by(-1)
+		
+		
+		if (range_module.enemies_in_range.size() - 1) > 0:
+			grant_revive_ability_activation_clauses.remove_clause(no_enemy_in_range_clause_id)
+			taunt_ability_activation_clauses.remove_clause(no_enemy_in_range_clause_id)
+		else:
+			grant_revive_ability_activation_clauses.attempt_insert_clause(no_enemy_in_range_clause_id)
+			taunt_ability_activation_clauses.attempt_insert_clause(no_enemy_in_range_clause_id)
 
 #
 
@@ -362,7 +411,7 @@ func _on_ability_potency_changed_d(new_amount):
 	_update_armor_toughness_effect_from_faithfuls()
 	_update_heal_effect_from_sacrificers()
 	
-	revive_effect.heal_effect_upon_revival.heal_as_modifier.percent_amount = revive_heal_amount * last_calculated_final_ability_potency
+	#revive_effect.heal_effect_upon_revival.heal_as_modifier.percent_amount = revive_heal_amount * last_calculated_final_ability_potency
 	tower_target_priority_effect.time_in_seconds = taunt_duration * last_calculated_final_ability_potency
 	
 	knock_up_effect.time_in_seconds = knock_up_duration * last_calculated_final_ability_potency
@@ -427,7 +476,21 @@ func _cast_taunt_ability():
 	for tower in tower_detecting_range_module.get_all_in_map_and_active_towers_in_range():
 		if tower != null and tower.range_module != null and tower.range_module.is_an_enemy_in_range():
 			tower.add_tower_effect(tower_target_priority_effect)
+	
+	_construct_taunt_particle()
 
+func _construct_taunt_particle():
+	var particle = Taunt_CircleParticle.instance()
+	particle.position = global_position
+	
+	get_tree().get_root().add_child(particle)
+
+
+func _on_curr_health_changed_d(curr_health):
+	if curr_health >= taunt_health_cast_threshold:
+		taunt_ability_activation_clauses.remove_clause(below_percent_health_threshold_clause_id)
+	else:
+		taunt_ability_activation_clauses.attempt_insert_clause(below_percent_health_threshold_clause_id)
 
 
 #
@@ -441,7 +504,6 @@ func _cast_grant_revive_ability():
 
 
 
-
 #
 
 func _cast_knock_up_ability():
@@ -449,6 +511,14 @@ func _cast_knock_up_ability():
 		if tower != null:
 			tower.add_tower_effect(knock_up_effect)
 	
+	_construct_knock_up_particle()
+
+func _construct_knock_up_particle():
+	var particle = KnockUp_CircleParticle.instance()
+	particle.position = global_position
+	particle.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
+	
+	get_tree().get_root().add_child(particle)
 
 
 #
@@ -461,4 +531,4 @@ func _remove_max_health_if_surpassed_cross_marker():
 		_remove_effect(max_health_effect)
 
 func _if_surpassed_cross_marker():
-	return unit_offset > _current_cross_marker_unit_offset
+	return unit_offset >= _current_cross_marker_unit_offset

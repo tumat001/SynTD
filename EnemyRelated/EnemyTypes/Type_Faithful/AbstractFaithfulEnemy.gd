@@ -19,8 +19,8 @@ var _speed_effect
 func _ready():
 	pass
 
-func _construct_effects_afe():
-	pass
+#func _construct_effects_afe():
+#	pass
 
 #
 

@@ -48,6 +48,8 @@ const Accumulae_BurstExplosion07 = preload("res://TowerRelated/Color_Blue/Accumu
 const Accumulae_BurstExplosion08 = preload("res://TowerRelated/Color_Blue/Accumulae/Attks/Accumulae_Explosion/Accumulae_BurstExplosion08.png")
 const Accumulae_BurstExplosion09 = preload("res://TowerRelated/Color_Blue/Accumulae/Attks/Accumulae_Explosion/Accumulae_BurstExplosion09.png")
 
+const SalvoBurst_AttackModule_Icon = preload("res://TowerRelated/Color_Blue/Accumulae/AMAssets/SalvoBurst_AttackModule_Icon.png")
+
 #
 
 signal current_siphon_stacks_changed()
@@ -61,7 +63,7 @@ const base_enemy_ap_reduction_of_siphon : float = -0.35
 
 #const base_ap_per_siphon_stack : float = 0.25
 
-const base_spell_burst_damage : float = 10.0
+const base_spell_burst_damage : float = 8.0
 
 # clause for attk module
 const lob_attk_module_not_yet_casted_clause : int = -10
@@ -203,6 +205,8 @@ func _construct_and_add_siphon_attk_module():
 	
 	attack_module.can_be_commanded_by_tower = false
 	
+	attack_module.is_displayed_in_tracker = false
+	
 	siphon_attk_module = attack_module
 	
 	add_attack_module(attack_module)
@@ -236,6 +240,8 @@ func _construct_and_add_lob_attack_module():
 	proj_attack_module.connect("before_bullet_is_shot", self, "_modify_bullet_a", [], CONNECT_PERSIST)
 	
 	proj_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(lob_attk_module_not_yet_casted_clause)
+	
+	proj_attack_module.is_displayed_in_tracker = false
 	
 	burst_lob_attk_module = proj_attack_module
 	
@@ -282,6 +288,8 @@ func _construct_and_add_spell_burst_explosion():
 	explosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
+	
+	explosion_attack_module.set_image_as_tracker_image(SalvoBurst_AttackModule_Icon)
 	
 	spell_burst_attk_module = explosion_attack_module
 	

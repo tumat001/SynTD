@@ -266,27 +266,27 @@ const TowerTiersMap : Dictionary = {
 const tier_base_dmg_map : Dictionary = {
 	1 : 0.4,
 	2 : 0.75,
-	3 : 1.25,
+	3 : 1,
 	
 	4 : 2,
-	5 : 2.5,
+	5 : 2.75,
 	6 : 3.75,
 }
 
 const tier_attk_speed_map : Dictionary = {
-	1 : 15,
-	2 : 23,
-	3 : 30,
+	1 : 12,
+	2 : 20,
+	3 : 25,
 	
 	4 : 40,
-	5 : 50,
-	6 : 70,
+	5 : 55,
+	6 : 80,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
 	1 : 0.4,
 	2 : 0.75,
-	3 : 1.25,
+	3 : 1,
 	
 	4 : 2.25,
 	5 : 3,
@@ -887,15 +887,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = lava_jet_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.75
-		info.base_attk_speed = 0.955
+		info.base_damage = 2.7
+		info.base_attk_speed = 0.835
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"On its 5th main attack, Lava Jet releases a beam of lava that deals 50% of the enemy's max health as elemental damage, up to 40."
+			"On its 5th main attack, Lava Jet releases a beam of lava that deals 25% of the enemy's max health as elemental damage, up to 25."
 		]
 		
 		var tower_effect = LavaJetModuleAdderEffect.new()
@@ -1014,8 +1014,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = flameburst_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.50
-		info.base_attk_speed = 0.735
+		info.base_damage = 2.40
+		info.base_attk_speed = 0.745
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1023,7 +1023,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Flameburst's main attack causes enemies to spew out 4 flamelets around itself.",
-			"Each flamelet deal 0.75 elemental damage.",
+			"Each flamelet deal 1 elemental damage.",
 			"Bonus range gained increases the range of the flamelets."
 		]
 		
@@ -1161,8 +1161,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 4
-		info.base_attk_speed = 1.08
-		info.base_pierce = 11
+		info.base_attk_speed = 1.05
+		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
@@ -1511,7 +1511,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.92
+		info.base_attk_speed = 0.9
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1688,10 +1688,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Reaper's attacks deal additional 8% of the enemy's missing health as elemental damage, up to 10 health.",
+			"Reaper's attacks deal additional 6% of the enemy's missing health as elemental damage, up to 8 health.",
 			"",
-			"Killing an enemy grants Reaper a stack of Death. Reaper attempts to cast Slash when gaining Death stacks while enemies are in range.",
-			"Slash: Reaper consumes a Death stack to slash the area of the closest enemy, dealing 400% of Reaper's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
+			"Killing an enemy grants Reaper a stack of Death. Reaper attempts to cast Slash while having Death stacks.",
+			"Slash: Reaper consumes a Death stack to slash the area of the closest enemy, dealing 300% of Reaper's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
 			"Casting Slash reduces the damage of subsequent slashes by 50% for 0.5 seconds. This does not stack.",
 			"Cooldown: 0.2 s."
 		]
@@ -1766,7 +1766,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.75
-		info.base_attk_speed = 1.22
+		info.base_attk_speed = 1.26
 		info.base_pierce = 1
 		info.base_range = 145
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1776,7 +1776,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Adept's attacks gain bonus effects based on its current target's distance from itself on hit.",
 			"Beyond 85% of range: Adept's main attack deals 35% more damage, and slows enemies hit by 15% for 1 second.",
 			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack.",
-			"The secondary attack deals 1 physical damage and applies on hit effects. The shot benefits from base damage buffs and on hit damages at 10% efficiency.",
+			"The secondary attack deals 1 physical damage and applies on hit effects. The shot benefits from base damage buffs and on hit damages at 15% efficiency.",
 			"",
 			"After 3 rounds of being active, Adept gains Far and Close targeting options."
 		]
@@ -1937,7 +1937,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
 			"Levels are gained by spending EXP and gold. Only 6 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
-			"Upon reaching level 6, Hero increases the limit of activated composite synergies by 1. Hero also gains 3 bonus base damage, 60% bonus attack speed, and 0.5 ability potency.",
+			"Upon reaching level 6, Hero increases the limit of activated composite synergies by 1. Hero also gains 2 bonus base damage, 50% bonus attack speed, and 0.5 ability potency.",
 			"",
 			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
@@ -1986,8 +1986,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Blossom can assign a tower as its Partner.",
 			"The Partner receives these bonus effects while Blossom is alive:",
-			"+ 40% total attack speed, up to 4 attack speed.",
-			"+ 50% total base damage, up to 5 base damage.",
+			"+ 20% total attack speed, up to 2 attack speed.",
+			"+ 20% total base damage, up to 4 base damage.",
+			"+ 50% resistance against enemy effects.",
 			"+ 2% healing from all post mitigated damage dealt.",
 			"+ Instant Revive effect. If the Partner reaches 0 health, Blossom sacrifices itself for the rest of the round to revive its Partner to full health.",
 			"",
@@ -2178,8 +2179,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Salvo: Fires a Spell Burst at a random enemy's location every 0.2 seconds regardless of range, consuming a Siphon stack in the process. This repeats until all Siphon stacks are consumed.",
 			"Cooldown: 1.5 s",
 			"",
-			"Accumulae is unable to execute its main attack while executing Salvo.",
-			"Each Spell Burst explodes upon reaching the target location, dealing 10 elemental damage to 5 enemies.",
+			"Accumulae is unable to execute its main attack during Salvo.",
+			"Each Spell Burst explodes upon reaching the target location, dealing 8 elemental damage to 5 enemies.",
 			"Spell burst explosions apply on hit effects.",
 			"Ability cdr also reduces delay per burst in salvo."
 		]

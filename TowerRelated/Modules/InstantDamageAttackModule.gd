@@ -5,11 +5,12 @@ func _attack_enemy(enemy : AbstractEnemy):
 		var damage_instance : DamageInstance = construct_damage_instance()
 		emit_signal("on_damage_instance_constructed", damage_instance, self)
 		
-		if !enemy.is_connected("on_hit", self, "on_enemy_hit"):
-			enemy.connect("on_hit", self, "on_enemy_hit", [], CONNECT_ONESHOT)
-			enemy.connect("on_post_mitigated_damage_taken", self, "on_post_mitigation_damage_dealt", [damage_register_id], CONNECT_ONESHOT)
+		#if !enemy.is_connected("on_hit", self, "on_enemy_hit"):
+		#	enemy.connect("on_hit", self, "on_enemy_hit", [], CONNECT_ONESHOT)
+		#	enemy.connect("on_post_mitigated_damage_taken", self, "on_post_mitigation_damage_dealt", [damage_register_id], CONNECT_ONESHOT)
 		
-		enemy.hit_by_damage_instance(damage_instance, damage_register_id)
+		#enemy.hit_by_damage_instance(damage_instance, damage_register_id)
+		enemy.hit_by_instant_damage(damage_instance, damage_register_id, self)
 
 
 func _attack_enemies(enemies : Array):

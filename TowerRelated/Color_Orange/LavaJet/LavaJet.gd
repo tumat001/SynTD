@@ -23,8 +23,11 @@ const LavaJet_Beam07 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_
 const LavaJet_Beam08 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_Beam/LavaJetBeam_08.png")
 const LavaJet_Beam09 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_Beam/LavaJetBeam_09.png")
 
-const health_percent_dmg : float = 50.0
-const percent_dmg_max_limit : float = 40.0
+const LavaJet_AttackModule_Icon = preload("res://TowerRelated/Color_Orange/LavaJet/Assets/LavaJet_AttackModule_Icon.png")
+
+
+const health_percent_dmg : float = 25.0
+const percent_dmg_max_limit : float = 25.0
 
 
 const num_of_attacks_before_beam : int = 5
@@ -117,6 +120,8 @@ func _ready():
 	beam_attack_module.can_be_commanded_by_tower = false
 	
 	lava_jet_beam_am = beam_attack_module
+	
+	beam_attack_module.set_image_as_tracker_image(LavaJet_AttackModule_Icon)
 	
 	add_attack_module(beam_attack_module)
 	

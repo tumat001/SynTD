@@ -24,8 +24,8 @@ const no_enemies_killed_clause : int = -10
 const no_enemy_in_range_clause : int = -11
 const slash_static_cooldown : float = 0.2
 
-const slash_primary_damage_ratio : float = 4.0
-const slash_subsequent_damage_ratio : float = 2.0
+const slash_primary_damage_ratio : float = 3.0
+const slash_subsequent_damage_ratio : float = 1.5
 
 const slash_subsequent_dmg_reduction_duration : float = 0.5
 
@@ -136,10 +136,10 @@ func _post_inherit_ready():
 
 func _construct_and_add_effects():
 	var reap_dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.REAPER_PERCENT_HEALTH_DAMAGE)
-	reap_dmg_modifier.percent_amount = 8
+	reap_dmg_modifier.percent_amount = 6
 	reap_dmg_modifier.percent_based_on = PercentType.MISSING
 	reap_dmg_modifier.ignore_flat_limits = false
-	reap_dmg_modifier.flat_maximum = 10
+	reap_dmg_modifier.flat_maximum = 8
 	reap_dmg_modifier.flat_minimum = 0
 	
 	var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.REAPER_PERCENT_HEALTH_DAMAGE, reap_dmg_modifier, DamageType.ELEMENTAL)
@@ -152,7 +152,7 @@ func _construct_and_reg_ability():
 	slash_ability = BaseAbility.new()
 	
 	slash_ability.is_timebound = true
-	slash_ability.connect("ability_activated", self, "_royal_flame_ability_activated", [], CONNECT_PERSIST)
+	#slash_ability.connect("ability_activated", self, "_royal_flame_ability_activated", [], CONNECT_PERSIST)
 	slash_ability.connect("updated_is_ready_for_activation", self, "_ready_for_activation_ability", [], CONNECT_PERSIST)
 	
 	slash_ability.set_properties_to_usual_tower_based()
@@ -189,8 +189,9 @@ func _cast_slash_ability():
 	slash_ability.start_time_cooldown(slash_static_cooldown)
 	
 	_current_slash_queue_count -= 1
-	if _current_slash_queue_count == 0:
+	if _current_slash_queue_count <= 0:
 		slash_ability_activation_clause.attempt_insert_clause(no_enemies_killed_clause)
+		_current_slash_queue_count = 0
 
 func _slash_at_enemy():
 	var enemies = main_attack_module.range_module.get_targets(1, Targeting.CLOSE)
@@ -227,6 +228,7 @@ func _on_round_end_r():
 	current_slash_subsequent_dmg_reduction_duration = 0
 	
 	slash_ability_activation_clause.attempt_insert_clause(no_enemies_killed_clause)
+	slash_ability_activation_clause.attempt_insert_clause(no_enemy_in_range_clause)
 
 #
 

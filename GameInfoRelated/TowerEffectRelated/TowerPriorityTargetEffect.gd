@@ -37,4 +37,6 @@ func _get_copy_scaled_by(scale):
 	var copy = get_script().new(target, effect_uuid, is_priority_regardless_of_range)
 	_configure_copy_to_match_self(copy)
 	
+	copy.time_in_seconds = time_in_seconds * scale
+	
 	return copy

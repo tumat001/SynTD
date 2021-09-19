@@ -1,0 +1,60 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/AttackModuleStatsPanel/SingleTowerDetailedRDSP.gd" type="Script" id=1]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/Assets/RoundDamageStatsPanel_Background.png" type="Texture" id=2]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButton.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/AttackModuleStatsPanel/Assets/BackButton.png" type="Texture" id=4]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/AttackModuleStatsPanel/Assets/BackButton_Highlighted.png" type="Texture" id=5]
+
+[node name="SingleTowerDetailedRDSP" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+expand = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+custom_constants/separation = 5
+
+[node name="TowerInfoMarginer" type="MarginContainer" parent="VBoxContainer"]
+margin_right = 40.0
+
+[node name="AttackModuleMarginer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 5.0
+margin_right = 40.0
+margin_bottom = 5.0
+
+[node name="AttackModuleRDSPContainer" type="VBoxContainer" parent="VBoxContainer/AttackModuleMarginer"]
+margin_right = 40.0
+
+[node name="BackButtonMarginer" type="MarginContainer" parent="VBoxContainer"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 30.0
+margin_bottom = 35.0
+mouse_filter = 2
+size_flags_horizontal = 6
+custom_constants/margin_top = 5
+
+[node name="BackButton" parent="VBoxContainer/BackButtonMarginer" instance=ExtResource( 3 )]
+margin_top = 5.0
+margin_right = 20.0
+margin_bottom = 25.0
+texture_normal = ExtResource( 4 )
+texture_hover = ExtResource( 5 )
+[connection signal="pressed_mouse_event" from="VBoxContainer/BackButtonMarginer/BackButton" to="." method="_on_BackButton_pressed_mouse_event"]

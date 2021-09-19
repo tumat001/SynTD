@@ -72,24 +72,24 @@ const hero_base_health : float = 25.0
 const extra_comp_syn_slot_amount_at_max_natural_level : int = 1
 const hero_extra_ingredient_limit : int = 4
 
-const hero_max_nat_level_bonus_base_damage_amount : float = 3.0
-const hero_max_nat_level_bonus_attk_speed_amount : float = 60.0
+const hero_max_nat_level_bonus_base_damage_amount : float = 2.0
+const hero_max_nat_level_bonus_attk_speed_amount : float = 50.0
 const hero_max_nat_level_bonus_ability_potency : float = 0.5
 
 const xp_ratio_per_damage : float = 1.0
 const xp_per_kill : float = 2.0
-const xp_scale_on_boss_enemy : float = 2.5
+#const xp_scale_on_boss_enemy : float = 2.0
 const xp_scale_if_not_white_dom_color : float = 0.7
 const max_hero_level : int = 6 # max hero natural level
 
-const xp_needed_per_level : Array = [130, 705, 2050, 3500, 3550, 3600]
-const gold_needed_per_level : Array = [2, 5, 8, 10, 10, 10]
+const xp_needed_per_level : Array = [130, 725, 2000, 3700, 3700, 3700]
+const gold_needed_per_level : Array = [2, 5, 7, 10, 10, 10]
 
 const xp_about_descriptions = [
 	"Hero gains EXP from damaging enemies, killing enemies, and casting Voice of Light.",
 	"Hero gains EXP equal to the post-mitigated damage dealt to enemies.",
 	"Hero gains %s EXP from a kill." % [str(xp_per_kill)],
-	"EXP gain from attacks and kills is %s greater against boss enemies" % [(str(xp_scale_on_boss_enemy) + "x")],
+	#"EXP gain from attacks and kills is multiplied by %s against boss enemies" % [(str(xp_scale_on_boss_enemy) + "x")],
 	"Hero gains EXP from casting Voice of Light. The amount depends on this ability's level.",
 	"",
 	"There is no EXP limit for Hero. Hero can only gain %s levels from gold and EXP." % str(max_hero_level),
@@ -99,12 +99,12 @@ const xp_about_descriptions = [
 
 const main_attack_proj_speed : float = 500.0
 const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
-const attks_needed_for_light_explosion : int = 40
+const attks_needed_for_light_explosion : int = 35
 const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3]
 const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.3, 1.0]
 
 const judgement_dmg_ratio_in_levels : Array = [1, 1.5, 2, 3]
-const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 1.5, 2.5, 4]
+const judgement_bonus_on_hit_dmg_in_levels : Array = [1.5, 2, 4, 6]
 var judgement_bonus_on_hit_dmg_dmg_type : int = DamageType.PHYSICAL
 
 const judgement_bonus_dmg_ratio : float = 1.20
@@ -262,8 +262,8 @@ func _any_post_mitigation_dmg_dealt_h(damage_instance_report, killed, enemy, dam
 	
 	var additional_scale : float = 1.0
 	
-	if enemy.is_enemy_type_boss():
-		additional_scale *= xp_scale_on_boss_enemy
+	#if enemy.is_enemy_type_boss():
+	#	additional_scale *= xp_scale_on_boss_enemy
 	
 	_increase_exp(effective_dmg * xp_ratio_per_damage * additional_scale)
 	if killed:
@@ -360,6 +360,8 @@ func _construct_and_add_light_waves_attack_module():
 	
 	lightwave_attack_module.can_be_commanded_by_tower = false
 	
+	lightwave_attack_module.set_image_as_tracker_image(HeroAttk_LightWavePic)
+	
 	add_attack_module(lightwave_attack_module)
 
 func _construct_and_add_light_explosion_module():
@@ -398,6 +400,8 @@ func _construct_and_add_light_explosion_module():
 	lightexplosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
 	
 	lightexplosion_attack_module.can_be_commanded_by_tower = false
+	
+	lightexplosion_attack_module.set_image_as_tracker_image(HeroAttk_LightBlast05Pic)
 	
 	add_attack_module(lightexplosion_attack_module)
 
@@ -486,6 +490,8 @@ func _construct_and_add_judgement_attack_module():
 	judgement_attack_module.connect("on_enemy_hit", self, "_on_judgement_enemy_hit", [], CONNECT_PERSIST)
 	
 	judgement_attack_module.can_be_commanded_by_tower = false
+	
+	judgement_attack_module.set_image_as_tracker_image(Hero_Judgement03Pic)
 	
 	add_attack_module(judgement_attack_module)
 	

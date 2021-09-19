@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/MultipleTowerRoundDamageStatsPanel.gd" type="Script" id=1]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/Assets/RoundDamageStatsPanel_Background.png" type="Texture" id=2]
 
 [node name="MultipleTowerRoundDamageStatsPanel" type="MarginContainer"]
 margin_right = 40.0
@@ -10,6 +11,18 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+expand = true
 
 [node name="SingleTowerStatsPanelContainer" type="VBoxContainer" parent="."]
 margin_right = 40.0

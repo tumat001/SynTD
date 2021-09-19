@@ -18,6 +18,7 @@ const PingShot07_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Shot_0
 const PingShot08_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Shot_08.png")
 
 const Pinglet_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Eye_Awake.png")
+const Pinglet_AttackModule_Icon = preload("res://TowerRelated/Color_Violet/Ping/AttackModule_Assets/Pinglet_AttackModule_Icon.png")
 
 const Ingredient_pic = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Pinglet.png")
 
@@ -27,7 +28,7 @@ var shot_attack_module : WithBeamInstantDamageAttackModule
 
 func _init().(StoreOfTowerEffectsUUID.ING_PING):
 	effect_icon = Ingredient_pic
-	description = "Pinglet: Summons a Pinglet beside your tower. Has 120 range, 4 physical base damage and 0.7 attack speed. Applies on hit effects. Benefits from base damage and on hit damage buffs at 10% efficiency."
+	description = "Pinglet: Summons a Pinglet beside your tower. Has 120 range, 4 physical base damage and 0.8 attack speed. Applies on hit effects. Benefits from base damage and on hit damage buffs at 10% efficiency."
 
 
 func _construct_pinglet():
@@ -41,7 +42,7 @@ func _construct_pinglet():
 	shot_attack_module.base_damage_scale = 0.1
 	shot_attack_module.base_damage = 4 / shot_attack_module.base_damage_scale
 	shot_attack_module.base_damage_type = DamageType.PHYSICAL
-	shot_attack_module.base_attack_speed = 0.7
+	shot_attack_module.base_attack_speed = 0.8
 	shot_attack_module.base_attack_wind_up = 1.0 / 0.15
 	shot_attack_module.is_main_attack = false
 	shot_attack_module.module_id = StoreOfAttackModuleID.INDEPENDENT
@@ -77,6 +78,8 @@ func _construct_pinglet():
 	
 	shot_attack_module.commit_to_targets_of_windup = true
 	shot_attack_module.fill_empty_windup_target_slots = false
+	
+	shot_attack_module.set_image_as_tracker_image(Pinglet_AttackModule_Icon)
 	
 	var pinglet_sprite : Sprite = Sprite.new()
 	pinglet_sprite.texture = Pinglet_pic

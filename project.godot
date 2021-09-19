@@ -41,6 +41,7 @@ StoreOfScreenEffectsUUID="*res://MiscRelated/ScreenEffectsRelated/StoreOfScreenE
 StoreOfPactUUID="*res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/StoreOfPactUUID.gd"
 StoreOfFonts="*res://GameHUDRelated/StoreOfFonts.gd"
 Towers="*res://GameInfoRelated/Towers.gd"
+EnemyConstants="*res://EnemyRelated/EnemyConstants.gd"
 
 [debug]
 

@@ -18,6 +18,9 @@ extents = Vector2( 5.12721, 7.19138 )
 [node name="MiniTesla" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 
+[node name="TowerBase" parent="." index="0"]
+position = Vector2( -3, -3 )
+
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
 

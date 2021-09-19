@@ -4,6 +4,8 @@ const SingleTowerRoundDamageStatsPanel = preload("res://GameHUDRelated/RightSide
 const SingleTowerRoundDamageStatsPanel_Scene = preload("res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/SingleTowerRoundDamageStatsPanel.tscn")
 
 
+signal on_tower_in_single_panel_left_clicked(tower)
+
 const seconds_per_update : float = 0.2
 
 var update_timer : Timer
@@ -22,6 +24,17 @@ func _ready():
 	update_timer.one_shot = true
 	
 	add_child(update_timer)
+	
+#	connect("visibility_changed", self, "_visibility_changed", [], CONNECT_PERSIST)
+#
+#
+#
+#func _visibility_changed():
+#	if visible:
+#		_update_display_of_all_single_damage_stats()
+
+
+
 
 #
 
@@ -57,6 +70,7 @@ func _on_round_start(curr_stageround):
 	update_timer.paused = false
 	_update_display_of_all_single_damage_stats()
 
+
 func _attempt_create_single_stat_panel_for_tower(tower):
 	var is_tower_already_tracked : bool = false
 	
@@ -68,7 +82,9 @@ func _attempt_create_single_stat_panel_for_tower(tower):
 	if !is_tower_already_tracked:
 		var single_stat_panel = SingleTowerRoundDamageStatsPanel_Scene.instance()
 		single_stat_panel.set_tower(tower)
+		single_stat_panel.connect("on_left_clicked", self, "_on_single_stat_panel_left_clicked", [], CONNECT_PERSIST)
 		single_tower_stats_panel_container.add_child(single_stat_panel)
+		
 
 #
 
@@ -96,3 +112,8 @@ func _update_display_of_all_single_damage_stats():
 	for single_stat_panel in stat_panels:
 		single_stat_panel.update_display(highest_damage)
 
+
+#
+
+func _on_single_stat_panel_left_clicked(arg_tower, panel):
+	emit_signal("on_tower_in_single_panel_left_clicked", arg_tower)

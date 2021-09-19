@@ -6,14 +6,14 @@ const TowerPathEffect_HasteGiverEffect = preload("res://GameInfoRelated/TowerEff
 
 const path_name = "Shots of Haste"
 const path_descs = [
-	"For each green tower: After dealing 20 damage or attacking 6 times, gain 70% base attack speed."
+	"For each green tower: After dealing 20 damage or attacking 6 times, gain 55% base attack speed."
 ]
 const path_small_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/YellowFlower_Icon.png")
 
 
 const damage_amount_trigger : float = 20.0
 const attk_count_trigger : int = 6
-const attk_speed_amount : float = 70.0
+const attk_speed_amount : float = 55.0
 const attk_speed_percent_type : int = PercentType.BASE
 
 var game_elements

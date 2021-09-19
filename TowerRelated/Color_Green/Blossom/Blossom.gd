@@ -6,13 +6,15 @@ const Blossom_ConnectionBeamPic = preload("res://TowerRelated/Color_Green/Blosso
 const SetPartner_Pic = preload("res://TowerRelated/Color_Green/Blossom/AbilityPanel/SetPartner_ButtonImage.png")
 const UnassignPartner_Pic = preload("res://TowerRelated/Color_Green/Blossom/AbilityPanel/UnassignPartner_ButtonImage.png")
 
-const attk_speed_amount : float = 40.0
-const attk_speed_flat_maximum : float = 4.0
+const attk_speed_amount : float = 20.0
+const attk_speed_flat_maximum : float = 2.0
 
-const base_dmg_amount : float = 50.0
-const base_dmg_flat_maximum : float = 5.0
+const base_dmg_amount : float = 20.0
+const base_dmg_flat_maximum : float = 4.0
 
 const omnivamp_amount : float = 2.0
+
+const effect_vulnerability_amount : float = -50.0
 
 const unpaired_frame_index : int = 0
 const paired_frame_index : int = 1
@@ -34,6 +36,7 @@ var partner_tower
 var total_attk_speed_effect : TowerAttributesEffect
 var total_base_damage_effect : TowerAttributesEffect
 var percent_omnivamp_effect : TowerAttributesEffect
+var effect_vulnerability_effect : TowerAttributesEffect
 var blossom_mark_effect : TowerMarkEffect
 
 var partner_assign_ability : BaseAbility
@@ -99,6 +102,15 @@ func _construct_effects():
 	percent_omnivamp_effect.is_timebound = false
 	
 	blossom_mark_effect = TowerMarkEffect.new(StoreOfTowerEffectsUUID.BLOSSOM_MARK_EFFECT)
+	
+	
+	var effect_vul_modi : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.BLOSSOM_EFFECT_VUL_EFFECT)
+	effect_vul_modi.percent_amount = effect_vulnerability_amount
+	effect_vul_modi.percent_based_on = PercentType.BASE
+	
+	effect_vulnerability_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_ENEMY_EFFECT_VULNERABILITY, effect_vul_modi, StoreOfTowerEffectsUUID.BLOSSOM_EFFECT_VUL_EFFECT)
+	effect_vulnerability_effect.is_timebound = false
+
 
 # signals
 
@@ -230,6 +242,7 @@ func _add_effects_to_partner():
 			partner_tower.add_tower_effect(total_base_damage_effect)
 			partner_tower.add_tower_effect(percent_omnivamp_effect)
 			partner_tower.add_tower_effect(blossom_mark_effect)
+			partner_tower.add_tower_effect(effect_vulnerability_effect)
 
 
 func _remove_benefitting_effects_from_partner():
@@ -238,6 +251,8 @@ func _remove_benefitting_effects_from_partner():
 			partner_tower.remove_tower_effect(total_attk_speed_effect)
 			partner_tower.remove_tower_effect(total_base_damage_effect)
 			partner_tower.remove_tower_effect(percent_omnivamp_effect)
+			partner_tower.remove_tower_effect(effect_vulnerability_effect)
+
 
 func _remove_all_effects_from_partner():
 	if partner_tower != null:

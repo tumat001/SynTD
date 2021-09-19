@@ -39,6 +39,8 @@ const PingEye_awake_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Eye
 const PingEye_awakeRed_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Eye_AwakeRed.png")
 const PingEye_sleep_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Eye_Sleep.png")
 
+const Ping_ShotAttackModule_Icon = preload("res://TowerRelated/Color_Violet/Ping/AttackModule_Assets/Ping_ShotAttackModule_Icon.png")
+
 const Ping_seek_register_id : int = Towers.PING
 
 var arrow_attack_module : AbstractAttackModule
@@ -115,6 +117,8 @@ func _ready():
 	
 	arrow_attack_module.connect("before_bullet_is_shot", self, "_before_arrow_is_shot", [], CONNECT_PERSIST)
 	
+	arrow_attack_module.set_image_as_tracker_image(Ping_arrow_pic)
+	
 	add_attack_module(attack_module)
 	
 #	# AOE
@@ -151,6 +155,8 @@ func _ready():
 	seek_attack_module.can_be_commanded_by_tower = false
 	
 	seek_attack_module.connect("on_enemy_hit", self, "_enemy_seeked", [], CONNECT_PERSIST)
+	
+	seek_attack_module.is_displayed_in_tracker = false
 	
 	add_attack_module(seek_attack_module)
 	
@@ -199,6 +205,9 @@ func _ready():
 	shot_attack_module.range_module = shot_range_module
 	
 	shot_attack_module.can_be_commanded_by_tower = false
+	
+	shot_attack_module.set_image_as_tracker_image(Ping_ShotAttackModule_Icon)
+	
 	add_attack_module(shot_attack_module)
 	
 	#

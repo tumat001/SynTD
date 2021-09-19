@@ -18,6 +18,8 @@ const BlackBeam_Pic07 = preload("res://GameInfoRelated/ColorSynergyRelated/Domin
 const BlackBeam_Pic08 = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/BlackBeam/BlackBeam_08.png")
 const BlackBeam_Pic09 = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/BlackBeam/BlackBeam_09.png")
 
+const Black_AttackModule_Icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/AMAssets/Black_AttackModule_Icon.png")
+
 
 const _stack_amount_trigger : int = 10
 
@@ -102,6 +104,8 @@ func _construct_beam_am():
 	black_beam_attack_module.show_beam_at_windup = true
 	black_beam_attack_module.show_beam_regardless_of_state = true
 	black_beam_attack_module.can_be_commanded_by_tower = false
+	
+	black_beam_attack_module.set_image_as_tracker_image(Black_AttackModule_Icon)
 
 
 func _on_main_attk_module_enemy_hit(enemy, damage_register_id, damage_instance, module):

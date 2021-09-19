@@ -72,6 +72,7 @@ func show_round_damage_stats_panel():
 	
 	# Round damage stats
 	#round_damage_stats_panel.visible = true
+	round_damage_stats_panel.show_multiple_tower_rdsp_only()
 	
 	#
 	panel_showing = Panels.ROUND_DAMAGE_STATS

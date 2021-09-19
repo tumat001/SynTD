@@ -145,12 +145,12 @@ func end_round(from_game_start : bool = false):
 	else:
 		_replace_current_spawn_ins_to_second_half(stagerounds.get_second_half_faction())
 		spawn_ins_in_stageround = spawn_ins_of_faction_mode.get_instructions_for_stageround(current_stageround.id)
+		enemy_manager.apply_faction_passive(spawn_ins_of_faction_mode.get_faction_passive())
 	
 	enemy_manager.set_instructions_of_interpreter(spawn_ins_in_stageround)
 	enemy_manager.enemy_first_damage = current_stageround.enemy_first_damage
 	enemy_manager.enemy_health_multiplier = current_stageround.enemy_health_multiplier
 	enemy_manager.enemy_damage_multiplier = current_stageround.enemy_damage_multiplier
-	enemy_manager.apply_faction_passive(spawn_ins_of_faction_mode.get_faction_passive())
 	
 	can_gain_streak = current_stageround.can_gain_streak
 	

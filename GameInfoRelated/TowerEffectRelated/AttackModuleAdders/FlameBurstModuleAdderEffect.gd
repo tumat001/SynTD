@@ -50,7 +50,7 @@ func _construct_burst_module():
 	burst_attack_module.is_main_attack = false
 	burst_attack_module.base_pierce = 1
 	burst_attack_module.base_proj_speed = 200
-	burst_attack_module.base_proj_life_distance = 30
+	burst_attack_module.base_proj_life_distance = 50
 	burst_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	#burst_attack_module.on_hit_damage_scale = 1
 	
@@ -76,6 +76,8 @@ func _construct_burst_module():
 	burst_attack_module.bullet_sprite_frames = burst_sp
 	
 	burst_attack_module.can_be_commanded_by_tower = false
+	
+	burst_attack_module.set_image_as_tracker_image(preload("res://TowerRelated/Color_Orange/FlameBurst/Assets/FlameBurstIng_AttackModule_TrackerImage.png"))
 
 
 func _make_modifications_to_tower(tower):

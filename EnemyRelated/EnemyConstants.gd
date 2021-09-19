@@ -1,3 +1,5 @@
+extends Node
+
 
 const EnemyTypeInformation = preload("res://EnemyRelated/EnemyTypeInformation.gd")
 
@@ -37,9 +39,21 @@ enum Enemies {
 	SACRIFICER = 303,
 	SEER = 304,
 	CROSS_BEARER = 305,
-	
+	DVARAPALA = 306,
+	PROVIDENCE = 307,
 	
 }
+
+var faction_id_pool : Array
+
+
+func _init():
+	#for faction_id in EnemyFactions.values():
+	#	faction_id_pool.append(faction_id)
+	
+	#faction_id_pool.append(EnemyFactions.FAITHFUL)
+	faction_id_pool.append(EnemyFactions.EXPERT)
+
 
 static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	var info : EnemyTypeInformation
@@ -138,24 +152,40 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.PRIEST:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 38
+		info.base_health = 37
 		info.base_movement_speed = 25
 		
 	elif enemy_id == Enemies.SACRIFICER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 36
-		info.base_movement_speed = 22
+		info.base_health = 34
+		info.base_movement_speed = 23
 		
 	elif enemy_id == Enemies.SEER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 45
+		info.base_health = 40
 		info.base_movement_speed = 25
 		
 	elif enemy_id == Enemies.CROSS_BEARER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 45
+		info.base_health = 50
 		info.base_movement_speed = 34
 		
+	elif enemy_id == Enemies.DVARAPALA:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
+		info.base_health = 128
+		info.base_movement_speed = 26
+		info.base_armor = 18
+		info.base_toughness = 18
+		
+	elif enemy_id == Enemies.PROVIDENCE:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
+		info.base_health = 65
+		info.base_movement_speed = 29
+		info.base_armor = 10
+		info.base_toughness = 10
+		
+		
+	
 	
 	
 	return info
@@ -192,7 +222,6 @@ static func get_enemy_scene(enemy_id : int):
 	elif enemy_id == Enemies.GRANDMASTER:
 		return load("res://EnemyRelated/EnemyTypes/Type_Expert/Grandmaster/Grandmaster.tscn")
 		
-		
 	# FAITHFUL FACTION
 	elif enemy_id == Enemies.DEITY:
 		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity.tscn")
@@ -206,5 +235,8 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/Seer/Seer.tscn")
 	elif enemy_id == Enemies.CROSS_BEARER:
 		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/CrossBearer/CrossBearer.tscn")
-
+	elif enemy_id == Enemies.DVARAPALA:
+		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/Dvarapala/Dvarapala.tscn")
+	elif enemy_id == Enemies.PROVIDENCE:
+		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/Providence/Providence.tscn")
 
