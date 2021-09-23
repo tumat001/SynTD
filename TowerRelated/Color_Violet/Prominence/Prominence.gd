@@ -54,6 +54,13 @@ const Prominence_Sword_Empowered_Pic = preload("res://TowerRelated/Color_Violet/
 
 const Prominence_Regards_Ability_Icon = preload("res://TowerRelated/Color_Violet/Prominence/Assets/RegardsAssets/Regards_AbilityIcon.png")
 
+const GlobuleTopLeft_AttackModule_Icon = preload("res://TowerRelated/Color_Violet/Prominence/Assets/AMAssets/GlobuleTopLeft_AttackModule_Icon.png")
+const GlobuleTopRight_AttackModule_Icon = preload("res://TowerRelated/Color_Violet/Prominence/Assets/AMAssets/GlobuleTopRight_AttackModule_Icon.png")
+const GlobuleBottomLeft_AttackModule_Icon = preload("res://TowerRelated/Color_Violet/Prominence/Assets/AMAssets/GlobuleBottomLeft_AttackModule_Icon.png")
+const GlobuleBottomRight_AttackModule_Icon = preload("res://TowerRelated/Color_Violet/Prominence/Assets/AMAssets/GlobuleBottomRight_AttackModule_Icon.png")
+const RegardsShockwave_AttackModule_Icon = preload("res://TowerRelated/Color_Violet/Prominence/Assets/AMAssets/RegardsShockWave_AttackModule_Icon.png")
+const RegardsExplosionAttack_AttackModule_Icon = preload("res://TowerRelated/Color_Violet/Prominence/Assets/AMAssets/RegardsExplosionAttack_AttackModule_Icon.png")
+
 
 const globule_distance_from_center : float = 40.0
 const sword_epicenter_y_shift : float = 13.0
@@ -117,21 +124,25 @@ func _ready():
 	var top_left_globule = _construct_globule_attk_module(info)
 	top_left_globule.position.x -= globule_distance_from_center
 	top_left_globule.position.y -= globule_distance_from_center
+	top_left_globule.set_image_as_tracker_image(GlobuleTopLeft_AttackModule_Icon)
 	add_attack_module(top_left_globule)
 	
 	var top_right_globule = _construct_globule_attk_module(info)
 	top_right_globule.position.x += globule_distance_from_center
 	top_right_globule.position.y -= globule_distance_from_center
+	top_right_globule.set_image_as_tracker_image(GlobuleTopRight_AttackModule_Icon)
 	add_attack_module(top_right_globule)
 	
 	var bottom_left_globule = _construct_globule_attk_module(info)
 	bottom_left_globule.position.x -= globule_distance_from_center
 	bottom_left_globule.position.y += globule_distance_from_center
+	bottom_left_globule.set_image_as_tracker_image(GlobuleBottomLeft_AttackModule_Icon)
 	add_attack_module(bottom_left_globule)
 	
 	var bottom_right_globule = _construct_globule_attk_module(info)
 	bottom_right_globule.position.x += globule_distance_from_center
 	bottom_right_globule.position.y += globule_distance_from_center
+	bottom_right_globule.set_image_as_tracker_image(GlobuleBottomRight_AttackModule_Icon)
 	add_attack_module(bottom_right_globule)
 	
 	#
@@ -179,6 +190,7 @@ func _ready():
 	attack_module.connect("on_enemy_hit", self, "_sword_beam_attk_module_hit_enemy", [], CONNECT_PERSIST)
 	
 	prominence_attk_module = attack_module
+	prominence_attk_module.is_displayed_in_tracker = false
 	
 	add_attack_module(attack_module)
 	
@@ -200,6 +212,8 @@ func _ready():
 	regards_ability_attk_module.benefits_from_bonus_on_hit_damage = false
 	
 	regards_ability_attk_module.can_be_commanded_by_tower = false
+	
+	regards_ability_attk_module.set_image_as_tracker_image(RegardsShockwave_AttackModule_Icon)
 	
 	add_attack_module(regards_ability_attk_module)
 	
@@ -243,6 +257,8 @@ func _ready():
 	sword_explosion_attk_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
 	
 	sword_explosion_attk_module.can_be_commanded_by_tower = false
+	
+	sword_explosion_attk_module.set_image_as_tracker_image(RegardsExplosionAttack_AttackModule_Icon)
 	
 	add_attack_module(sword_explosion_attk_module)
 	

@@ -19,6 +19,8 @@ const Seeder_Explosion06 = preload("res://TowerRelated/Color_Green/Seeder/Seeder
 const Seeder_ExplodingSeed_Scene = preload("res://TowerRelated/Color_Green/Seeder/Seeder_Attks/Seeder_ExplodingSeed.tscn")
 const Seeder_ExplodingSeed = preload("res://TowerRelated/Color_Green/Seeder/Seeder_Attks/Seeder_ExplodingSeed.gd")
 
+const SeederExplosion_AttackModule_Icon = preload("res://TowerRelated/Color_Green/Seeder/AMAssets/SeederExplosion_AttackModule_Icon.png")
+
 
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
@@ -112,6 +114,8 @@ func _ready():
 	
 	exploding_seed_am.connect("before_bullet_is_shot", self, "_on_exploding_seed_before_shot", [], CONNECT_PERSIST)
 	
+	exploding_seed_am.is_displayed_in_tracker = false
+	
 	add_attack_module(exploding_seed_am)
 	
 	
@@ -157,6 +161,8 @@ func _ready():
 	explosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
+	
+	explosion_attack_module.set_image_as_tracker_image(SeederExplosion_AttackModule_Icon)
 	
 	add_attack_module(explosion_attack_module)
 	

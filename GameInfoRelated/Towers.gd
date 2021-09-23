@@ -74,6 +74,7 @@ const mini_tesla_image = preload("res://TowerRelated/Color_Yellow/MiniTesla/Mini
 const charge_image = preload("res://TowerRelated/Color_Yellow/Charge/Charge_E.png")
 const magnetizer_image = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_WholeBody.png")
 const sunflower_image = preload("res://TowerRelated/Color_Yellow/Sunflower/Sunflower_Idle.png")
+const nucleus_image = preload("res://TowerRelated/Color_Yellow/Nucleus/Nucleus_Omni.png")
 
 # GREEN
 const berrybush_image = preload("res://TowerRelated/Color_Green/BerryBush/BerryBush_Omni.png")
@@ -150,6 +151,7 @@ enum {
 	CHARGE = 404,
 	MAGNETIZER = 405,
 	SUNFLOWER = 406,
+	NUCLEUS = 407,
 	
 	# GREEN (500)
 	BERRY_BUSH = 500,  # REMOVED FROM POOL
@@ -217,7 +219,6 @@ const TowerTiersMap : Dictionary = {
 	TRANSMUTATOR : 2,
 	HERO : 2,
 	FRUIT_TREE_FRUIT : 2,
-	AMALGAMATOR : 2,
 	COIN : 2,
 	
 	#SIMPLE_OBELISK : 3,
@@ -234,6 +235,7 @@ const TowerTiersMap : Dictionary = {
 	PROBE : 3,
 	BREWD : 3,
 	SHACKLED : 3,
+	AMALGAMATOR : 3,
 	
 	RE : 4,
 	PING : 4,
@@ -252,6 +254,7 @@ const TowerTiersMap : Dictionary = {
 	LAVA_JET : 5,
 	BLOSSOM : 5,
 	TRANSPORTER : 5,
+	NUCLEUS : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
@@ -266,31 +269,31 @@ const TowerTiersMap : Dictionary = {
 const tier_base_dmg_map : Dictionary = {
 	1 : 0.4,
 	2 : 0.75,
-	3 : 1,
+	3 : 1.25,
 	
-	4 : 2,
-	5 : 2.75,
-	6 : 3.75,
+	4 : 2.25,
+	5 : 3,
+	6 : 4,
 }
 
 const tier_attk_speed_map : Dictionary = {
 	1 : 12,
-	2 : 20,
-	3 : 25,
+	2 : 23,
+	3 : 30,
 	
-	4 : 40,
-	5 : 55,
+	4 : 45,
+	5 : 60,
 	6 : 80,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
 	1 : 0.4,
 	2 : 0.75,
-	3 : 1,
+	3 : 1.25,
 	
-	4 : 2.25,
-	5 : 3,
-	6 : 4,
+	4 : 2.5,
+	5 : 3.25,
+	6 : 4.25,
 }
 
 # Do not use this when instancing new tower class. Only use
@@ -589,7 +592,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Only the diamonds benefit from pierce buffs and apply on hit damage and effects. On hit effects are 200% effective.",
 			"Only the bolts benefit from attack speed buffs.",
 			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 75% efficiency.",
-			"Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 20 + 1500% of CHAOS's total base damage as physical damage."
+			"Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 20 + 1500% of CHAOS's bonus base damage as physical damage."
 		]
 		
 		var tower_base_effect : TowerChaosTakeoverEffect = TowerChaosTakeoverEffect.new()
@@ -621,8 +624,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
 			"",
-			"Shots deal 4 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 200% efficiency.",
-			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 400% effective instead."
+			"Shots deal 5 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 200% efficiency.",
+			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 400% effective instead.",
+			"Ability potency increases the amount of marks per ring."
 		]
 		
 		
@@ -671,7 +675,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = beacon_dish_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.0
+		info.base_damage = 1.5
 		info.base_attk_speed = 0.6
 		info.base_pierce = 0
 		info.base_range = 145
@@ -680,8 +684,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Does not attack, but instead casts an aura that buffs towers in range every 5 seconds for 7 seconds.",
-			"Grants 15% of its total base damage as an elemental on hit damage buff.",
-			"Grants 20% x 100 of its total attack speed as percent attack speed (of receiving tower).",
+			"Grants 20% of its total base damage as an elemental on hit damage buff.",
+			"Grants 25% x 100 of its total attack speed as percent attack speed (of receiving tower).",
 			"Grants 10% of its total range as bonus range.",
 			"These bonuses are increased by ability potency.",
 			"Note: Does not grant these buffs to another Beacon-Dish. Also overrides any existing Beacon-Dish buffs a tower may have.",
@@ -1341,8 +1345,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ability: Coordinated Attack. Orders all members to attack the marked enemy once, regardless of range.",
 			"Projectiles gain extra range to be able to reach the marked target.",
 			"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
-			"The marked enemy is also stunned for 3.25 seconds",
-			"Cooldown: 12.5 s"
+			"The marked enemy is also stunned for 2.75 seconds",
+			"Cooldown: 8 s"
 			# THIS SAME PASSAGE is placed in leader's
 			# ability tooltip. If this is changed, then
 			# change the ability tooltip.
@@ -1652,7 +1656,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Pestilence's attacks also apply one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply. Enemies become permanently Noxious upon gaining 8 Toxin stacks.",
 			"",
 			"Pestilence's main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
-			"Each explosion deals 4 elemental damage.",
+			"Each explosion deals 3 elemental damage.",
 			"Explosions apply a stack of Toxin. Explosions benefit from base damage buffs, on hit damages and effects at 33% efficiency.",
 			"",
 			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25% for the round.",
@@ -1927,8 +1931,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = hero_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1.35
-		info.base_attk_speed = 0.835
+		info.base_damage = 1.3
+		info.base_attk_speed = 0.83
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1962,7 +1966,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Every end of round, Amalgamator selects a random non-black or non_gray tower in the map to apply Amalgamate.",
+			"Every end of round, Amalgamator selects a random non-black tower in the map to apply Amalgamate.",
 			"Amalgamate: Sets a tower's color to black, erasing all previous colors."
 		]
 		
@@ -2206,7 +2210,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.645
+		info.base_attk_speed = 0.785
 		info.base_pierce = 1
 		info.base_range = 122
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -2254,7 +2258,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Brewd automatically attempts to cast Concoct.",
 			"Concoct: Throws the selected potion type at its current target.",
-			"Cooldown: 12 s"
+			"Cooldown: 10 s"
 		]
 		
 		
@@ -2290,11 +2294,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Shackled's main attacks explode upon hitting an enemy, dealing 1 elemental damage to 3 enemies.",
 			"",
-			"After 15 attacks or dealing 70 post-mitigated damage, Shackled attempts to cast Chains.",
+			"After 14 attacks or dealing 50 post-mitigated damage, Shackled attempts to cast Chains.",
 			"Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and stunning them for 0.5 seconds. Targeting affects which enemies are pulled.",
-			"Cooldown: 25 s",
+			"Cooldown: 12 s",
 			"",
-			"After 3 rounds of being active, Shackled is able to pull 1 more enemy per cast."
+			"After 3 rounds of being active, Shackled is able to pull 2 more enemies per cast."
 		]
 		
 		
@@ -2311,6 +2315,42 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		
+	elif tower_id == NUCLEUS:
+		info = TowerTypeInformation.new("Nucleus", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.YELLOW)
+		info.tower_image_in_buy_card = nucleus_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 3
+		info.base_attk_speed = 0.97
+		info.base_pierce = 1
+		info.base_range = 130
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"Nucleus shuffles to Alpha and Beta phases every 5 attacks. Nucleus always starts at Alpha Phase.",
+			"Alpha: Nucleus's attacks deal 3 bonus physical damage on hit.",
+			"Beta: Nucleus's attacks pierce through 3 enemies.",
+			"",
+			"Ability: Gamma. Fires a constant beam towards its current target for 8 seconds.",
+			"Gamma deals 3 + 25% of Nucleus's bonus base damage as elemental damage every 0.5 seconds.",
+			"Cooldown: 40 s",
+			"Ability potency increases damage dealt by Gamma. Nucleus rotates the beam towards its current target."
+		]
+		
+		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_NUCLEUS)
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_NUCLEUS, attr_mod, DamageType.PHYSICAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_NUCLEUS)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
 		
 	
 	
@@ -2438,5 +2478,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/Brewd/Brewd.tscn")
 	elif tower_id == SHACKLED:
 		return load("res://TowerRelated/Color_Violet/Shackled/Shackled.tscn")
-
+	elif tower_id == NUCLEUS:
+		return load("res://TowerRelated/Color_Yellow/Nucleus/Nucleus.tscn")
 

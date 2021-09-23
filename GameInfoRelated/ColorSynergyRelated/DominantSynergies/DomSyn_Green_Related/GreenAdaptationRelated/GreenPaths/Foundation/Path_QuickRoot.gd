@@ -74,7 +74,7 @@ func _tower_to_benefit_from_path(tower : AbstractTower):
 	_attempt_add_effect_to_tower(tower)
 
 func _attempt_add_effect_to_tower(tower : AbstractTower):
-	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.GREEN_PATH_QUICK_ROOT_DMG_BOOST):
+	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.GREEN_PATH_QUICK_ROOT_DMG_BOOST) and tower._tower_colors.has(TowerColors.GREEN):
 		tower.add_tower_effect(on_hit_damage_effect)
 
 

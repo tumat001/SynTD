@@ -52,7 +52,7 @@ var coordinated_attack_activation_conditional_clauses : ConditionalClauses
 const ca_activation_clause_no_member : int = -10
 const ca_activation_clause_no_mark : int = -11
 
-const coordinated_attack_cooldown : float = 12.5
+const coordinated_attack_cooldown : float = 8.0
 
 const member_upper_limit : int = 5
 
@@ -62,7 +62,7 @@ var is_showing_member_connections : bool = false
 
 #
 
-const base_stun_duration : float = 3.25
+const base_stun_duration : float = 2.75
 var stun_effect : EnemyStunEffect
 
 

@@ -25,6 +25,8 @@ const MagnetizerBeam_Pic08 = preload("res://TowerRelated/Color_Yellow/Magnetizer
 const MagnetizerBeam_Pic09 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_08.png")
 const MagnetizerBeam_Pic10 = preload("res://TowerRelated/Color_Yellow/Magnetizer/MagnetizerBeam_09.png")
 
+const MagnetizerMagnet_AttackModule_Icon = preload("res://TowerRelated/Color_Yellow/Magnetizer/AMAssets/MagnetizerMagnet_AttackModule_Icon.png")
+const MagnetizerBeam_AttackModule_Icon = preload("res://TowerRelated/Color_Yellow/Magnetizer/AMAssets/MagnetizerBeam_AttackModule_Icon.png")
 
 const BasePic_Blue = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Blue.png")
 const BasePic_Red = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Red.png")
@@ -87,6 +89,8 @@ func _ready():
 	
 	magnet_attack_module.connect("before_bullet_is_shot", self, "_modify_magnet")
 	
+	magnet_attack_module.set_image_as_tracker_image(MagnetizerMagnet_AttackModule_Icon)
+	
 	add_attack_module(magnet_attack_module)
 	
 	
@@ -128,6 +132,8 @@ func _ready():
 	beam_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.STRECHED_AS_BEAM
 	
 	beam_attack_module.can_be_commanded_by_tower = false
+	
+	beam_attack_module.set_image_as_tracker_image(MagnetizerBeam_AttackModule_Icon)
 	
 	add_attack_module(beam_attack_module)
 	

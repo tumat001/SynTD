@@ -94,8 +94,8 @@ func _on_round_end_a():
 
 
 func _get_random_valid_in_map_tower():
-	#var valid_towers : Array = tower_manager.get_all_active_towers_without_color(TowerColors.BLACK)
-	var valid_towers : Array = tower_manager.get_all_active_towers_without_colors([TowerColors.BLACK, TowerColors.GRAY])
+	var valid_towers : Array = tower_manager.get_all_active_towers_without_color(TowerColors.BLACK)
+	#var valid_towers : Array = tower_manager.get_all_active_towers_without_colors([TowerColors.BLACK, TowerColors.GRAY])
 	
 	if valid_towers.size() != 0:
 		var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TARGETING)

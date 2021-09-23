@@ -42,6 +42,9 @@ const Chains_Pic10 = preload("res://TowerRelated/Color_Violet/Shackled/Assets/Sh
 const Chains_Pic11 = preload("res://TowerRelated/Color_Violet/Shackled/Assets/Shackled_Chains/Shackled_Chains_11.png")
 const Chains_Pic12 = preload("res://TowerRelated/Color_Violet/Shackled/Assets/Shackled_Chains/Shackled_Chains_12.png")
 
+const ShackledBullet_AttackModule_Icon = preload("res://TowerRelated/Color_Violet/Shackled/Assets/AMAssets/ShackledBullet_AttackModule_Icon.png")
+const ShackledExplosion_AttackModule_Icon = preload("res://TowerRelated/Color_Violet/Shackled/Assets/AMAssets/ShackledExplosion_AttackModule_Icon.png")
+
 #
 
 const aoe_base_damage : float = 1.0
@@ -53,9 +56,9 @@ var proj_aoe_attack_module : AOEAttackModule
 const chains_time_taken_for_pull : float = 0.2
 const chains_stun_duration : float = 0.5
 
-const chains_base_ability_cooldown : float = 25.0
-const chains_attk_count_needed : int = 15
-const chains_post_mitigated_dmg_needed : float = 70.0
+const chains_base_ability_cooldown : float = 12.0
+const chains_attk_count_needed : int = 14
+const chains_post_mitigated_dmg_needed : float = 50.0
 
 var _current_attk_count : int = 0
 var _current_post_mitigated_dmg_total : float = 0
@@ -65,7 +68,7 @@ var _current_post_mitigated_dmg_total : float = 0
 const chains_base_pull_amount : int = 2
 const chains_base_pull_modi_id : int = -10
 
-const chains_stage2_pull_amount : int = 1
+const chains_stage2_pull_amount : int = 2
 const chains_stage2_pull_modi_id : int = -11
 
 const chains_energy_module_pull_amount : int = 5
@@ -130,6 +133,8 @@ func _ready():
 	attack_module.bullet_scene = BaseBullet_Scene
 	attack_module.set_texture_as_sprite_frame(Shacked_ProjPic)
 	
+	attack_module.set_image_as_tracker_image(ShackledBullet_AttackModule_Icon)
+	
 	add_attack_module(attack_module)
 	
 	# AOE
@@ -170,20 +175,27 @@ func _ready():
 	
 	proj_aoe_attack_module.can_be_commanded_by_tower = false
 	
+	proj_aoe_attack_module.set_image_as_tracker_image(ShackledExplosion_AttackModule_Icon)
+	
 	add_attack_module(proj_aoe_attack_module)
 	
 	#
 	
 	chains_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	chains_attack_module.base_damage = info.base_damage
-	chains_attack_module.base_damage_type = info.base_damage_type
-	chains_attack_module.base_attack_speed = info.base_attk_speed
+	chains_attack_module.base_damage = 0
+	chains_attack_module.base_damage_type = DamageType.ELEMENTAL
+	chains_attack_module.base_attack_speed = 0
 	chains_attack_module.base_attack_wind_up = 1.0 / 0.20
-	chains_attack_module.is_main_attack = true
-	chains_attack_module.module_id = StoreOfAttackModuleID.MAIN
+	chains_attack_module.is_main_attack = false
+	chains_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	chains_attack_module.position.y -= 16
 	chains_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	chains_attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	
+	chains_attack_module.benefits_from_bonus_attack_speed = false
+	chains_attack_module.benefits_from_bonus_base_damage = false
+	chains_attack_module.benefits_from_bonus_on_hit_damage = false
+	chains_attack_module.benefits_from_bonus_on_hit_effect = false
 	
 	var beam_sprite_frame : SpriteFrames = SpriteFrames.new()
 	beam_sprite_frame.add_frame("default", Chains_Pic01)
@@ -211,6 +223,8 @@ func _ready():
 	chains_attack_module.show_beam_at_windup = true
 	
 	chains_attack_module.can_be_commanded_by_tower = false
+	
+	chains_attack_module.is_displayed_in_tracker = false
 	
 	add_attack_module(chains_attack_module)
 	

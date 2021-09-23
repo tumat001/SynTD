@@ -106,6 +106,8 @@ func _construct_modules():
 	
 	orb_attack_module.range_module = orb_range_module
 	
+	orb_attack_module.set_image_as_tracker_image(ChaosOrb_pic)
+	
 	chaos_attack_modules.append(orb_attack_module)
 	
 	
@@ -151,6 +153,8 @@ func _construct_modules():
 	diamond_attack_module.set_texture_as_sprite_frame(ChaosDiamond_pic)
 	
 	diamond_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
+	
+	diamond_attack_module.set_image_as_tracker_image(ChaosDiamond_pic)
 	
 	chaos_attack_modules.append(diamond_attack_module)
 	
@@ -198,6 +202,8 @@ func _construct_modules():
 	
 	bolt_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
 	
+	bolt_attack_module.set_image_as_tracker_image(preload("res://TowerRelated/Color_Violet/Chaos/AMAssets/ChaosBolt_AttackModule_Icon.png"))
+	
 	chaos_attack_modules.append(bolt_attack_module)
 	
 	
@@ -224,6 +230,8 @@ func _construct_modules():
 	
 	chaos_attack_modules.append(sword_attack_module)
 	sword_attack_module.can_be_commanded_by_tower = false
+	
+	sword_attack_module.set_image_as_tracker_image(preload("res://TowerRelated/Color_Violet/Chaos/AMAssets/ChaosSword_AttackModule_Icon.png"))
 
 
 # Takeover related

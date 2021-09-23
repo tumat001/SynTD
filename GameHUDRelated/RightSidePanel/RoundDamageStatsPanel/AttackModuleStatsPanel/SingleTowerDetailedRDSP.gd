@@ -122,7 +122,7 @@ func _create_attk_module_rdsp(arg_attk_module : AbstractAttackModule):
 #
 
 func _tower_attack_module_removed(arg_attk_module : AbstractAttackModule):
-	for child in attack_module_rdsp_panel:
+	for child in attack_module_rdsp_panel.get_children():
 		if child.attack_module == arg_attk_module:
 			child.queue_free()
 			return

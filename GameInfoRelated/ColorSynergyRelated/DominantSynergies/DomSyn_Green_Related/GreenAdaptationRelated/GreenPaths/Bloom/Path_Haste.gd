@@ -6,14 +6,14 @@ const TowerPathEffect_HasteGiverEffect = preload("res://GameInfoRelated/TowerEff
 
 const path_name = "Shots of Haste"
 const path_descs = [
-	"For each green tower: After dealing 20 damage or attacking 6 times, gain 55% base attack speed."
+	"For each green tower: After dealing 20 damage or attacking 6 times, gain 60% bonus attack speed."
 ]
 const path_small_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/YellowFlower_Icon.png")
 
 
 const damage_amount_trigger : float = 20.0
 const attk_count_trigger : int = 6
-const attk_speed_amount : float = 55.0
+const attk_speed_amount : float = 60.0
 const attk_speed_percent_type : int = PercentType.BASE
 
 var game_elements
@@ -59,7 +59,7 @@ func _tower_to_benefit_from_path(tower : AbstractTower):
 	_attempt_add_effect_to_tower(tower)
 
 func _attempt_add_effect_to_tower(tower : AbstractTower):
-	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.GREEN_PATH_HASTE_EFFECT_GIVER):
+	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.GREEN_PATH_HASTE_EFFECT_GIVER) and tower._tower_colors.has(TowerColors.GREEN):
 		var effect_giver = TowerPathEffect_HasteGiverEffect.new(damage_amount_trigger, attk_count_trigger, attk_speed_amount, attk_speed_percent_type)
 		
 		tower.add_tower_effect(effect_giver)

@@ -43,6 +43,8 @@ const Pestilence_Explosion08 = preload("res://TowerRelated/Color_Green/Pestilenc
 
 const Pestilence_Noxious_StatusIcon = preload("res://TowerRelated/Color_Green/Pestilence/Pestilence_Attks/Pestilence_Noxious_Icon.png")
 
+const PestilenceExplosion_AttackModule_Icon = preload("res://TowerRelated/Color_Green/Pestilence/AMAssets/PestilenceExplosion_AttackModule_Icon.png")
+
 const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
@@ -136,11 +138,12 @@ func _ready():
 	
 	add_attack_module(attack_module)
 	
+	
 	# explosion
 	
 	explosion_attack_module = AOEAttackModule_Scene.instance()
 	explosion_attack_module.base_damage_scale = 1.0 / 3.0
-	explosion_attack_module.base_damage = 4 / explosion_attack_module.base_damage_scale
+	explosion_attack_module.base_damage = 3 / explosion_attack_module.base_damage_scale
 	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0
@@ -179,6 +182,8 @@ func _ready():
 	explosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
+	
+	explosion_attack_module.set_image_as_tracker_image(PestilenceExplosion_AttackModule_Icon)
 	
 	add_attack_module(explosion_attack_module)
 	

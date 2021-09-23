@@ -26,6 +26,9 @@ const Effigy_ExplosionPic06 = preload("res://TowerRelated/Color_Red/Soul/EffigyR
 const Effigy_ExplosionPic07 = preload("res://TowerRelated/Color_Red/Soul/EffigyRelated/EffigyExplosion/EffigyExplosion_07.png")
 const Effigy_ExplosionPic08 = preload("res://TowerRelated/Color_Red/Soul/EffigyRelated/EffigyExplosion/EffigyExplosion_08.png")
 
+const SoulExplosion_AttackModule_Icon = preload("res://TowerRelated/Color_Red/Soul/AMAssets/SoulExplosion_AttackModule_Icon.png")
+
+
 const base_effigy_position_shift : float = 170.0
 const base_effigy_curr_health_scale : float = 0.5
 
@@ -122,6 +125,8 @@ func _ready():
 	effigy_explosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
 	
 	effigy_explosion_attack_module.can_be_commanded_by_tower = false
+	
+	effigy_explosion_attack_module.set_image_as_tracker_image(SoulExplosion_AttackModule_Icon)
 	
 	add_attack_module(effigy_explosion_attack_module)
 	

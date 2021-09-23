@@ -106,6 +106,8 @@ func _ready():
 	
 	time_portal_attack_module.can_be_commanded_by_tower = false
 	
+	time_portal_attack_module.is_displayed_in_tracker = false
+	
 	add_attack_module(time_portal_attack_module)
 	
 	#

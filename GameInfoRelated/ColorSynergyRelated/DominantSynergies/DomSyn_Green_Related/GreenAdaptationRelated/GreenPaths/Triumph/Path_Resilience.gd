@@ -55,7 +55,7 @@ func _tower_to_benefit_from_path(tower : AbstractTower):
 	_attempt_add_effect_to_tower(tower)
 
 func _attempt_add_effect_to_tower(tower : AbstractTower):
-	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.GREEN_PATH_OVERCOME_EFFECT):
+	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.GREEN_PATH_OVERCOME_EFFECT) and tower._tower_colors.has(TowerColors.GREEN):
 		var effect = TowerPathEffect_ResilienceGiverEffect.new(health_bonus_amount, effect_vulnerability_scale)
 		
 		tower.add_tower_effect(effect)

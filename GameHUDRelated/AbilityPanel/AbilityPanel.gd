@@ -18,6 +18,7 @@ func add_ability(ability : BaseAbility):
 		ability_button.is_drag_and_droppable = true
 		
 		ability_button.connect("visibility_changed", self, "_ability_button_visibility_changed", [], CONNECT_PERSIST)
+		ability_button.connect("button_destroying_self", self, "_ability_button_destroying_self", [], CONNECT_PERSIST)
 		_update_all_buttons_hotkey_num()
 
 
@@ -65,13 +66,17 @@ func get_ability_button_with_hotkey(hotkey : int) -> AbilityButton:
 func _ability_button_visibility_changed():
 	_update_all_buttons_hotkey_num()
 
+func _ability_button_destroying_self():
+	_update_all_buttons_hotkey_num()
+
+
 func _update_all_buttons_hotkey_num():
 	var ability_buttons : Array = ability_container.get_children()
 	var displayed_buttons : Array = []
 	var not_displayed_buttons : Array = []
 	
 	for button in ability_buttons:
-		if button.visible:
+		if button.visible and !button.is_queued_for_deletion():
 			displayed_buttons.append(button)
 		else:
 			not_displayed_buttons.append(button)

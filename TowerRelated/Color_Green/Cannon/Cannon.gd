@@ -66,6 +66,8 @@ func _ready():
 	
 	proj_attack_module.connect("before_bullet_is_shot", self, "_modify_bullet", [], CONNECT_PERSIST)
 	
+	proj_attack_module.is_displayed_in_tracker = false
+	
 	add_attack_module(proj_attack_module)
 	
 	

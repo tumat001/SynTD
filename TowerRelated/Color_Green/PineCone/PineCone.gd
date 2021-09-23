@@ -11,6 +11,8 @@ const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd
 const Pinecone_Proj = preload("res://TowerRelated/Color_Green/PineCone/Attks/PineCone_MainProj.png")
 const Pinecone_SmallProj = preload("res://TowerRelated/Color_Green/PineCone/Attks/PineCone_SmallerProj.png")
 
+const PineconeFrags_AttackModule_Icon = preload("res://TowerRelated/Color_Green/PineCone/AMAssets/PineconeFrags_AttackModule_Icon.png")
+
 var burst_attack_module : BulletAttackModule
 var base_angles_of_fire : Array = [
 	30,
@@ -68,7 +70,7 @@ func _ready():
 	add_attack_module(attack_module)
 	
 	
-	# SPAWNED flames
+	# SPAWNED fragments
 	
 	burst_attack_module = BulletAttackModule_Scene.instance()
 	burst_attack_module.base_damage = 1
@@ -79,7 +81,7 @@ func _ready():
 	burst_attack_module.is_main_attack = false
 	burst_attack_module.base_pierce = 1
 	burst_attack_module.base_proj_speed = 200
-	burst_attack_module.base_proj_life_distance = 30
+	burst_attack_module.base_proj_life_distance = 45
 	burst_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	
 	burst_attack_module.benefits_from_bonus_on_hit_effect = false
@@ -98,6 +100,8 @@ func _ready():
 	burst_attack_module.bullet_sprite_frames = burst_sp
 	
 	burst_attack_module.can_be_commanded_by_tower = false
+	
+	burst_attack_module.set_image_as_tracker_image(PineconeFrags_AttackModule_Icon)
 	
 	add_attack_module(burst_attack_module)
 	

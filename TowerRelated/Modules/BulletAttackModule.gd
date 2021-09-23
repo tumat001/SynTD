@@ -4,7 +4,7 @@ const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd
 
 
 signal before_bullet_is_shot(bullet)
-
+signal kill_all_spawned_bullets()
 
 var bullet_scene : PackedScene
 var bullet_sprite_frames : SpriteFrames
@@ -242,6 +242,8 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	bullet.z_as_relative = false
 	bullet.z_index = absolute_z_index_of_bullet
 	
+	connect("kill_all_spawned_bullets", bullet, "queue_free", [], CONNECT_ONESHOT)
+	
 	return bullet
 
 
@@ -312,9 +314,10 @@ func on_round_end():
 	kill_all_created_bullets()
 
 func kill_all_created_bullets():
-	for bullet in get_tree().get_nodes_in_group(bullet_group_tag):
-		if bullet != null:
-			bullet.queue_free()
+	emit_signal("kill_all_spawned_bullets")
+#	for bullet in get_tree().get_nodes_in_group(bullet_group_tag):
+#		if bullet != null:
+#			bullet.queue_free()
 
 func queue_free():
 	kill_all_created_bullets()

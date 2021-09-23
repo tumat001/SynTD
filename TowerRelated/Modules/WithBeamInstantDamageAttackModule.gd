@@ -4,7 +4,7 @@ const BeamAesthetic = preload("res://MiscRelated/BeamRelated/BeamAesthetic.gd")
 const BeamAestheric_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
 
 signal beam_connected_to_enemy(beam, enemy)
-
+signal kill_all_spawned_beams()
 
 # Used for allocation, as to avoid deleting
 # and creating many of them...
@@ -131,4 +131,17 @@ func _get_available_beam_instance() -> BeamAesthetic:
 	available_beam_instance.position = global_position
 	get_tree().get_root().add_child(available_beam_instance)
 	
+	connect("kill_all_spawned_beams", available_beam_instance, "queue_free", [], CONNECT_ONESHOT)
+	
 	return available_beam_instance
+
+
+#
+
+func queue_free():
+#	for beam in beam_to_enemy_map.keys():
+#		beam.queue_free()
+	emit_signal("kill_all_spawned_beams")
+	
+	.queue_free()
+

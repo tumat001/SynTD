@@ -7,6 +7,8 @@ const AbilityTooltip_Scene = preload("res://GameHUDRelated/AbilityPanel/AbilityT
 const NO_HOTKEY_NUM : int = -1
 
 
+signal button_destroying_self()
+
 var ability : BaseAbility setget set_ability
 
 const ready_modulate_color = Color(1, 1, 1, 1)
@@ -146,6 +148,7 @@ func _ability_destroying_self():
 	
 	if destroy_button_if_ability_lost:
 		queue_free()
+		emit_signal("button_destroying_self")
 
 
 func _should_be_displaying(value : bool):

@@ -57,6 +57,7 @@ onready var ping_eye_sprite = $TowerBase/KnockUpLayer/PingEye
 var _enemies_marked : Array = []
 var _markers : Array = []
 const original_mark_count_limit : int = 4
+var base_mark_count_limit : int = original_mark_count_limit
 var current_mark_count_limit : int = original_mark_count_limit
 
 var _started_timer : bool = false
@@ -67,7 +68,7 @@ var shot_attack_module : WithBeamInstantDamageAttackModule
 
 # shots related
 const empowered_base_damage : float = 10.0
-const normal_base_damage : float = 4.0
+const normal_base_damage : float = 5.0
 
 const empowered_on_hit_damage_scale : float = 4.0
 const normal_on_hit_damage_scale : float = 2.0
@@ -214,7 +215,14 @@ func _ready():
 	
 	info_bar_layer.position.y -= 25
 	
+	connect("final_ability_potency_changed", self, "_on_final_ap_changed_p", [], CONNECT_PERSIST)
+	
 	_post_inherit_ready()
+
+func _post_inherit_ready():
+	._post_inherit_ready()
+	
+	_set_mark_amount_amount(base_mark_count_limit)
 
 
 
@@ -312,6 +320,18 @@ func _check_if_shot_killed_enemy(damage_report, killed_enemy : bool, enemy, dama
 		arrow_attack_module.call_deferred("reset_attack_timers")
 
 
+#
+
+func _on_final_ap_changed_p():
+	_set_mark_amount_amount(base_mark_count_limit) # refresh
+
+func _set_mark_amount_amount(arg_pierce : int):
+	base_mark_count_limit = arg_pierce
+	current_mark_count_limit = int(round(arg_pierce + ((last_calculated_final_ability_potency - 1) * 4)))
+	
+	seek_attack_module.pierce = current_mark_count_limit
+
+
 # energy module related
 
 func set_energy_module(module):
@@ -326,10 +346,9 @@ func set_energy_module(module):
 
 func _module_turned_on(_first_time_per_round : bool):
 	empowered_num_of_targets_limit = 4
-	current_mark_count_limit = 13
-	seek_attack_module.pierce = current_mark_count_limit
+	_set_mark_amount_amount(13)
+
 
 func _module_turned_off():
 	empowered_num_of_targets_limit = original_empowered_num_of_targets_limit
-	current_mark_count_limit = original_mark_count_limit
-	seek_attack_module.pierce = current_mark_count_limit
+	_set_mark_amount_amount(original_mark_count_limit)

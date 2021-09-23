@@ -128,6 +128,8 @@ func _ready():
 	
 	ability_attack_module.can_be_commanded_by_tower = false
 	
+	ability_attack_module.set_image_as_tracker_image(Wave_AbilityBullet_Pic)
+	
 	add_attack_module(ability_attack_module)
 	
 	# ability explosion
@@ -167,6 +169,8 @@ func _ready():
 	explosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
+	
+	explosion_attack_module.set_image_as_tracker_image(Wave_Explosion_04)
 	
 	add_attack_module(explosion_attack_module)
 	

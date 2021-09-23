@@ -42,6 +42,9 @@ const _704_Explosion05 = preload("res://TowerRelated/Color_Orange/704/704_Explos
 const _704_Explosion06 = preload("res://TowerRelated/Color_Orange/704/704_Explosion/704_Explosion06.png")
 const _704_Explosion07 = preload("res://TowerRelated/Color_Orange/704/704_Explosion/704_Explosion07.png")
 
+const _704Explosion_AttackModule_Icon = preload("res://TowerRelated/Color_Orange/704/AMAssets/_704Explosion_AttackModule_Icon.png")
+
+
 var available_points : int = 4
 var emblem_fire_points : int = 0 setget set_emblem_fire_level
 var emblem_explosive_points : int = 0 setget set_emblem_explosive_level
@@ -99,7 +102,7 @@ func _ready():
 	
 	sky_attack_module = attack_module
 	
-	attack_module.connect("in_attack_windup", self, "_on_704_attack_windup", [], CONNECT_PERSIST)
+	sky_attack_module.connect("in_attack_windup", self, "_on_704_attack_windup", [], CONNECT_PERSIST)
 	
 	add_attack_module(attack_module)
 	
@@ -157,7 +160,12 @@ func _ready():
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
 	
+	explosion_attack_module.set_image_as_tracker_image(_704Explosion_AttackModule_Icon)
+	
 	add_attack_module(explosion_attack_module)
+	
+	#
+	connect("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_enemy_7", [], CONNECT_PERSIST)
 	
 	_post_inherit_ready()
 
@@ -259,14 +267,26 @@ func _construct_sky_beam():
 # AOE Related
 
 func _downward_beam_expired(enemy, explosion_pos : Vector2, beam):
+	
 	sky_attack_beams_enemy_map[beam] = null
 	
+	_attempt_summon_explosion(explosion_pos, enemy)
+
+func _attempt_summon_explosion(explosion_pos : Vector2, arg_enemy):
 	if emblem_explosive_points > 0:
 		var explosion = explosion_attack_module.construct_aoe(explosion_pos, explosion_pos)
-		if enemy != null:
-			explosion.enemies_to_ignore.append(enemy)
+		if arg_enemy != null:
+			explosion.enemies_to_ignore.append(arg_enemy)
 		
 		get_tree().get_root().add_child(explosion)
+
+
+
+func _on_main_attack_hit_enemy_7(enemy, damage_register_id, damage_instance, module):
+	if module != sky_attack_module:
+		_attempt_summon_explosion(enemy.global_position, enemy)
+
+
 
 
 

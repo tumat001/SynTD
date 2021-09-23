@@ -38,11 +38,15 @@ const Orb_Beam04 = preload("res://TowerRelated/Color_Blue/Orb/Orb_Attacks/Orb_Be
 const Orb_Beam05 = preload("res://TowerRelated/Color_Blue/Orb/Orb_Attacks/Orb_Beam/Orb_Beam05.png")
 const Orb_Beam06 = preload("res://TowerRelated/Color_Blue/Orb/Orb_Attacks/Orb_Beam/Orb_Beam06.png")
 
-
 const Orb_HatLevel01 = preload("res://TowerRelated/Color_Blue/Orb/Orb_Hat/Orb_Hat01.png")
 const Orb_HatLevel02 = preload("res://TowerRelated/Color_Blue/Orb/Orb_Hat/Orb_Hat02.png")
 const Orb_HatLevel03 = preload("res://TowerRelated/Color_Blue/Orb/Orb_Hat/Orb_Hat03.png")
 const Orb_HatLevel04 = preload("res://TowerRelated/Color_Blue/Orb/Orb_Hat/Orb_Hat04.png")
+
+const OrbSticky_AttackModule_Icon = preload("res://TowerRelated/Color_Blue/Orb/AMAssets/OrbSticky_AttackModule_Icon.png")
+const OrbStars_AttackModule_Icon = preload("res://TowerRelated/Color_Blue/Orb/AMAssets/OrbStars_AttackModule_Icon.png")
+const OrbBeam_AttackModule_Icon = preload("res://TowerRelated/Color_Blue/Orb/AMAssets/OrbBeam_AttackModule_Icon.png")
+
 
 signal current_level_changed()
 
@@ -132,6 +136,8 @@ func _ready():
 	
 	sticky_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
 	
+	sticky_attack_module.is_displayed_in_tracker = false
+	
 	add_attack_module(sticky_attack_module)
 	
 	
@@ -173,6 +179,8 @@ func _ready():
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
 	
+	explosion_attack_module.set_image_as_tracker_image(OrbSticky_AttackModule_Icon)
+	
 	add_attack_module(explosion_attack_module)
 	
 	
@@ -209,6 +217,8 @@ func _ready():
 	beam_attack_module.beam_time_visible = 1.0 / 6.0
 	
 	beam_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01)
+	
+	beam_attack_module.set_image_as_tracker_image(OrbBeam_AttackModule_Icon)
 	
 	add_attack_module(beam_attack_module)
 	
@@ -254,6 +264,8 @@ func _ready():
 	sub_attack_module.can_be_commanded_by_tower = false
 	
 	sub_attack_module.connect("on_enemy_hit", self, "_sub_attack_hit_enemy", [], CONNECT_PERSIST)
+	
+	sub_attack_module.set_image_as_tracker_image(OrbStars_AttackModule_Icon)
 	
 	add_attack_module(sub_attack_module)
 	

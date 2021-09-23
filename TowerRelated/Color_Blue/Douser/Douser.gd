@@ -116,6 +116,8 @@ func _ready():
 	
 	buffing_attack_module.can_be_commanded_by_tower = false
 	
+	buffing_attack_module.is_displayed_in_tracker = false
+	
 	add_attack_module(buffing_attack_module)
 	
 	#

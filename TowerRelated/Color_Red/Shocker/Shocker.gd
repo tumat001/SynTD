@@ -74,6 +74,8 @@ func _ready():
 	
 	ball_launcher_attack_module = attack_module
 	
+	attack_module.is_displayed_in_tracker = false
+	
 	add_attack_module(attack_module)
 	
 	

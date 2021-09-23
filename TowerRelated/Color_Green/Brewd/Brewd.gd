@@ -131,7 +131,7 @@ var shuffle_forced_path_mov_template_effect : EnemyForcedPathOffsetMovementEffec
 
 #
 
-const potion_throw_cooldown : float = 12.0
+const potion_throw_cooldown : float = 10.0
 const potion_throw_ready_for_activation_cond_clause : int = -10
 
 var potion_attk_module : BulletAttackModule
@@ -241,6 +241,8 @@ func _construct_repel_attk_module_and_relateds():
 	
 	attk_module.can_be_commanded_by_tower = false
 	
+	attk_module.is_displayed_in_tracker = false
+	
 	add_attack_module(attk_module)
 	
 	repel_attk_module = attk_module
@@ -311,6 +313,8 @@ func _construct_implosion_attk_module_and_relateds():
 	attk_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
 	
 	attk_module.can_be_commanded_by_tower = false
+	
+	attk_module.is_displayed_in_tracker = false
 	
 	add_attack_module(attk_module)
 	
@@ -389,6 +393,8 @@ func _construct_shuffle_attk_module_and_relateds():
 	
 	attk_module.can_be_commanded_by_tower = false
 	
+	attk_module.is_displayed_in_tracker = false
+	
 	add_attack_module(attk_module)
 	
 	shuffle_attk_module = attk_module
@@ -449,6 +455,8 @@ func _construct_and_add_potion_throwing_attk_module(info):
 	attack_module.set_texture_as_sprite_frame(Brewd_SpecialProjPic)
 	
 	attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(potion_throw_ready_for_activation_cond_clause)
+	
+	attack_module.is_displayed_in_tracker = false
 	
 	add_attack_module(attack_module)
 	

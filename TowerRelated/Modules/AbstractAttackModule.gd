@@ -41,8 +41,9 @@ signal on_in_round_physical_dmg_dealt_changed(new_total)
 enum CanBeCommandedByTower_ClauseId {
 	CHAOS_TAKEOVER = 1
 	ACCUMULAE_DISABLE = 2
+	NUCLEUS_DISABLE = 3
 	
-	SELF_DEFINED_CLAUSE_01 = 10
+	SELF_DEFINED_CLAUSE_01 = 100
 	
 	
 }

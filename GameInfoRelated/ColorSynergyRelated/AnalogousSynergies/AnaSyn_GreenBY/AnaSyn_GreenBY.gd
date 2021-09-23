@@ -6,14 +6,14 @@ const TowerEffect_AnaSyn_GreenBY = preload("res://GameInfoRelated/TowerEffectRel
 const damage_per_tick_tier_1 : float = 0.35
 const max_damage_tier_1 : float = 7.0
 
-const damage_per_tick_tier_2 : float = 0.25
-const max_damage_tier_2 : float = 5.0
+const damage_per_tick_tier_2 : float = 0.18
+const max_damage_tier_2 : float = 3.6
 
-const damage_per_tick_tier_3 : float = 0.10
-const max_damage_tier_3 : float = 2.0
+const damage_per_tick_tier_3 : float = 0.08
+const max_damage_tier_3 : float = 1.6
 
-const damage_per_tick_tier_4 : float = 0.05
-const max_damage_tier_4 : float = 1.0
+const damage_per_tick_tier_4 : float = 0.04
+const max_damage_tier_4 : float = 0.8
 
 const seconds_per_tick : float = 1.0
 

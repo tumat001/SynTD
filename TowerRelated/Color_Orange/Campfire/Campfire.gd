@@ -73,6 +73,8 @@ func _ready():
 	
 	attack_module.can_be_commanded_by_tower = false
 	
+	attack_module.is_displayed_in_tracker = false
+	
 	cf_attack_module = attack_module
 	
 	add_attack_module(attack_module)

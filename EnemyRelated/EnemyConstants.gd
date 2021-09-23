@@ -117,7 +117,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
 		info.base_health = 40
 		info.base_movement_speed = 30
-		info.base_toughness = 3
+		info.base_toughness = 2
 		
 	elif enemy_id == Enemies.MAGUS:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
@@ -136,7 +136,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info.base_movement_speed = 40
 		info.base_effect_vulnerability = 0.2
 		info.base_resistance = 25
-		info.base_toughness = 3
+		info.base_toughness = 2
 		info.enemy_type = info.EnemyType.ELITE
 		
 		

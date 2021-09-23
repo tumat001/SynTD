@@ -100,15 +100,15 @@ const xp_about_descriptions = [
 const main_attack_proj_speed : float = 500.0
 const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
 const attks_needed_for_light_explosion : int = 35
-const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3]
-const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.3, 1.0]
+const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3.25]
+const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.35, 1.0]
 
-const judgement_dmg_ratio_in_levels : Array = [1, 1.5, 2, 3]
-const judgement_bonus_on_hit_dmg_in_levels : Array = [1.5, 2, 4, 6]
+const judgement_dmg_ratio_in_levels : Array = [1, 2, 3, 4]
+const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 2, 4, 9]
 var judgement_bonus_on_hit_dmg_dmg_type : int = DamageType.PHYSICAL
 
 const judgement_bonus_dmg_ratio : float = 1.20
-const judgement_bonus_dmg_threshold_trigger : float = 0.25
+const judgement_bonus_dmg_threshold_trigger : float = 0.35
 const judgement_stack_trigger : int = 3
 
 const current_attks_needed_for_vol : int = 6
@@ -116,7 +116,7 @@ const VOL_towers_affected_in_levels : Array = [3, 4, 6, 13]
 const VOL_range_in_levels : Array = [70, 105, 160, 250]
 const VOL_dmg_ratio_buff_in_levels : Array = [1.2, 1.3, 1.4, 1.6]
 const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 35]
-const VOL_xp_gain_per_tower_affected_in_levels : Array = [7, 8, 10, 14]
+const VOL_xp_gain_per_tower_affected_in_levels : Array = [6, 11, 16, 22]
 
 var white_dom_active : bool
 

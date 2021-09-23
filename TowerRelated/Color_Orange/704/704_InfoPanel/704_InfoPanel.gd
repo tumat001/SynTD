@@ -128,8 +128,8 @@ func _on_EmblemButtonExplosive_emblem_button_right_pressed():
 	if tower_tooltip == null:
 		_construct_tower_tooltip(emblem_explosive_button)
 		tower_tooltip.descriptions = [
-			"704's launched attack explodes upon reaching the target location. Explosions affect up to 5 enemies.",
-			"Explosions deal 1.5 elemental damage and benefit from base damage buffs. Explosions do not affect 704's main target.",
+			"704's main attacks explode upon reaching the target location. Explosions affect up to 5 enemies, but not including the main target.",
+			"Explosions deal 1.5 elemental damage and benefit from base damage buffs.",
 			"",
 			"Lvl 0: No explosion.",
 			"Lvl 1: Small explosion.",

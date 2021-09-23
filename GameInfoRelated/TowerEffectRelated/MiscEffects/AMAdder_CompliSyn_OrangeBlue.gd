@@ -49,7 +49,7 @@ func _make_modifications_to_tower(tower):
 		_construct_attk_module()
 	
 	
-	if !tower.is_connected("on_round_end", self, "_on_tower_round_end"):
+	if !tower.is_connected("on_round_end", self, "_on_round_end"):
 		tower.connect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit", [tower], CONNECT_PERSIST)
 		tower.connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
 		
@@ -133,7 +133,7 @@ func _on_round_end():
 #
 
 func _undo_modifications_to_tower(tower):
-	if tower.is_connected("on_round_end", self, "_on_tower_round_end"):
+	if tower.is_connected("on_round_end", self, "_on_round_end"):
 		tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit")
 		tower.disconnect("on_round_end", self, "_on_round_end")
 		tower.remove_attack_module(explosion_attack_module)

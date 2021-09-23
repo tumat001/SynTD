@@ -66,6 +66,8 @@ func _ready():
 	attack_module.bullet_scene = BaseBullet_Scene
 	attack_module.set_texture_as_sprite_frame(Transmutator_Proj)
 	
+	attack_module.is_displayed_in_tracker = false
+	
 	add_attack_module(attack_module)
 	
 	connect("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_enemy_t", [], CONNECT_PERSIST)

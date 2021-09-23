@@ -4,12 +4,12 @@ const HealthManager = preload("res://GameElementsRelated/HealthManager.gd")
 
 const path_name = "Undying"
 const path_descs = [
-	"Gain 10 player health per round.",
+	"Gain 12 player health per round.",
 	"Additionally, immediately gain 20 health."
 ]
 const path_small_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/FruitHeart_Icon.png")
 
-const health_per_round_amount : int = 10
+const health_per_round_amount : int = 12
 const health_one_time_give_amount : int = 20
 
 

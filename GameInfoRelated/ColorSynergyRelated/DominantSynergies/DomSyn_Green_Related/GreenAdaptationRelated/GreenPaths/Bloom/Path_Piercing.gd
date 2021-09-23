@@ -4,15 +4,15 @@ const TowerPathEffect_PierceGiverEffect = preload("res://GameInfoRelated/TowerEf
 
 const path_name = "Shots of Piercing"
 const path_descs = [
-	"For each green tower: After dealing 20 damage or attacking 6 times, gain 10 armor and toughness pierce."
+	"For each green tower: After dealing 20 damage or attacking 6 times, gain 8 armor and toughness pierce."
 ]
 const path_small_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/BlueOrangeFlower_Icon.png")
 
 const damage_amount_trigger : float = 20.0
 const attk_count_trigger : int = 6
 
-const armor_pierce_amount : float = 10.0
-const toughness_pierce_amount : float = 10.0
+const armor_pierce_amount : float = 8.0
+const toughness_pierce_amount : float = 8.0
 
 var game_elements
 
@@ -59,7 +59,7 @@ func _tower_to_benefit_from_path(tower : AbstractTower):
 	_attempt_add_effect_to_tower(tower)
 
 func _attempt_add_effect_to_tower(tower : AbstractTower):
-	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.GREEN_PATH_PIERCING_EFFECT_GIVER):
+	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.GREEN_PATH_PIERCING_EFFECT_GIVER) and tower._tower_colors.has(TowerColors.GREEN):
 		var effect_giver = TowerPathEffect_PierceGiverEffect.new(damage_amount_trigger, attk_count_trigger, armor_pierce_amount, toughness_pierce_amount)
 		
 		tower.add_tower_effect(effect_giver)

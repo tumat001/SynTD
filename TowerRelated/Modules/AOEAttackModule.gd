@@ -14,7 +14,7 @@ enum SpawnLocationAndChange {
 
 
 signal before_aoe_is_added_as_child(aoe)
-
+signal kill_all_spawned_aoe()
 
 var spawn_location_and_change : int = SpawnLocationAndChange.NO_CHANGE
 
@@ -87,6 +87,9 @@ func construct_aoe(arg_origin_pos : Vector2, arg_enemy_pos : Vector2) -> BaseAOE
 	base_aoe.z_index = absolute_z_index_of_aoe
 	
 	_modify_center_pos_and_sizeshape_of_aoe(arg_origin_pos, arg_enemy_pos, base_aoe)
+	
+	
+	connect("kill_all_spawned_aoe", base_aoe, "queue_free", [], CONNECT_ONESHOT)
 	
 	return base_aoe
 
@@ -221,9 +224,10 @@ func on_round_end():
 	kill_all_created_aoe()
 
 func kill_all_created_aoe():
-	for aoe in get_tree().get_nodes_in_group(aoe_group_tag):
-		if aoe != null:
-			aoe.queue_free()
+	emit_signal("kill_all_spawned_aoe")
+#	for aoe in get_tree().get_nodes_in_group(aoe_group_tag):
+#		if aoe != null:
+#			aoe.queue_free()
 
 func queue_free():
 	kill_all_created_aoe()

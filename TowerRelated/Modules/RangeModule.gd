@@ -255,7 +255,7 @@ func _on_enemy_leave_range(enemy : AbstractEnemy):
 	#	enemy.disconnect("tree_exiting", self, "_on_enemy_leave_range")
 
 
-func is_an_enemy_in_range():
+func is_an_enemy_in_range() -> bool:
 	var to_remove = []
 	for target in enemies_in_range:
 		if target == null:
@@ -265,6 +265,11 @@ func is_an_enemy_in_range():
 		enemies_in_range.erase(removal)
 	
 	return enemies_in_range.size() > 0
+
+func is_a_targetable_enemy_in_range() -> bool:
+	var targetable_enemies : Array = get_targets_without_affecting_self_current_targets(1)
+
+	return targetable_enemies.size() > 0
 
 
 func clear_all_detected_enemies():

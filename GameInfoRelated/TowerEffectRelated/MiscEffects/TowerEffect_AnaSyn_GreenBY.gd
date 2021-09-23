@@ -61,7 +61,7 @@ func _construct_timer(tower):
 #
 
 func _on_main_attack(attk_speed_delay, enemies, module):
-	if _timer.time_left <= 0:
+	if _timer.time_left <= 0.01: # a bit of forgiveness leyway
 		_timer.start(seconds_per_tick)
 		
 		if _dmg_modi.flat_modifier < max_damage:

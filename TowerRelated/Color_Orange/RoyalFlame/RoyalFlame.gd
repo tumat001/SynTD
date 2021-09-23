@@ -34,6 +34,8 @@ const RoyalFlame_SteamBurst07 = preload("res://TowerRelated/Color_Orange/RoyalFl
 const RoyalFlame_AbilityIcon = preload("res://TowerRelated/Color_Orange/RoyalFlame/Ability/RoyalFlame_AbilityIcon.png")
 const RoyalFlame_StatusIcon = preload("res://TowerRelated/Color_Orange/RoyalFlame/Ability/RoyalFlame_StatusIcon.png")
 
+const RoyalFlameExplosion_AttackModule_Icon = preload("res://TowerRelated/Color_Orange/RoyalFlame/AMAssets/RoyalFlameExplosion_AttackModule_Assets.png")
+
 const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
@@ -169,6 +171,8 @@ func _ready():
 	
 	extinguish_attack_module.connect("beam_connected_to_enemy", self, "_extinguish_beam_created", [], CONNECT_PERSIST)
 	
+	extinguish_attack_module.is_displayed_in_tracker = false
+	
 	add_attack_module(extinguish_attack_module)
 	
 	
@@ -209,6 +213,8 @@ func _ready():
 	explosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
+	
+	explosion_attack_module.set_image_as_tracker_image(RoyalFlameExplosion_AttackModule_Icon)
 	
 	add_attack_module(explosion_attack_module)
 	

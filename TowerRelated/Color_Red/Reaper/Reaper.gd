@@ -19,6 +19,8 @@ const Reaper_NormalAttk_Pic04 = preload("res://TowerRelated/Color_Red/Reaper/Rea
 const Reaper_SlashAttk_AOE_Scene = preload("res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_SlashAttk.tscn")
 const Reaper_SlashAttk_AOE = preload("res://TowerRelated/Color_Red/Reaper/Reaper_SlashAttk/Reaper_SlashAttk.gd")
 
+const ReaperSlash_AttackModule_Icon = preload("res://TowerRelated/Color_Red/Reaper/AMAssets/ReaperSlash_AttackModule_Icon.png")
+
 
 const no_enemies_killed_clause : int = -10
 const no_enemy_in_range_clause : int = -11
@@ -112,6 +114,8 @@ func _ready():
 	slash_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.TO_ENEMY_FACING_AWAY_FROM_ORIGIN
 	
 	slash_attack_module.can_be_commanded_by_tower = false
+	
+	slash_attack_module.set_image_as_tracker_image(ReaperSlash_AttackModule_Icon)
 	
 	add_attack_module(slash_attack_module)
 	

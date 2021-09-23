@@ -84,6 +84,8 @@ func _ready():
 	
 	orb_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
 	
+	orb_attack_module.set_image_as_tracker_image(ChaosOrb_pic)
+	
 	add_attack_module(orb_attack_module)
 	
 	
@@ -131,6 +133,8 @@ func _ready():
 	diamond_attack_module.set_texture_as_sprite_frame(ChaosDiamond_pic)
 	
 	diamond_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
+	
+	diamond_attack_module.set_image_as_tracker_image(ChaosDiamond_pic)
 	
 	add_attack_module(diamond_attack_module)
 	
@@ -180,6 +184,8 @@ func _ready():
 	
 	bolt_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
 	
+	bolt_attack_module.set_image_as_tracker_image(preload("res://TowerRelated/Color_Violet/Chaos/AMAssets/ChaosBolt_AttackModule_Icon.png"))
+	
 	add_attack_module(bolt_attack_module)
 	
 	
@@ -205,6 +211,8 @@ func _ready():
 	
 	add_attack_module(sword_attack_module)
 	sword_attack_module.can_be_commanded_by_tower = false
+	
+	sword_attack_module.set_image_as_tracker_image(preload("res://TowerRelated/Color_Violet/Chaos/AMAssets/ChaosSword_AttackModule_Icon.png"))
 	
 	_post_inherit_ready()
 

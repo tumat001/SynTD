@@ -10,7 +10,9 @@ const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBul
 const Probe_NormalBullet_Pic = preload("res://TowerRelated/Color_Red/Probe/AttkAssets/Probe_NormalProj.png")
 const Probe_PierceProj_Pic = preload("res://TowerRelated/Color_Red/Probe/AttkAssets/Probe_PierceProj.png")
 
-var EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
+const ProbePiercing_AttackModule_Icon = preload("res://TowerRelated/Color_Red/Probe/AMAssets/ProbePiercing_AttackModule_Icon.png")
+
+const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 
 
 const attk_speed_research_amount : float = 50.0
@@ -108,6 +110,8 @@ func _construct_and_add_piercing_attk_module():
 	attack_module.set_texture_as_sprite_frame(Probe_PierceProj_Pic)
 	
 	attack_module.can_be_commanded_by_tower = false
+	
+	attack_module.set_image_as_tracker_image(ProbePiercing_AttackModule_Icon)
 	
 	piercing_attk_module = attack_module
 	

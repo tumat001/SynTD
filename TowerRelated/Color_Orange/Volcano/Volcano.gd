@@ -33,6 +33,10 @@ const Volcano_Explosion_Pic07 = preload("res://TowerRelated/Color_Orange/Volcano
 const Volcano_Explosion_Pic08 = preload("res://TowerRelated/Color_Orange/Volcano/Volcano_Explosion/Volano_Explosion08.png")
 const Volcano_Explosion_Pic09 = preload("res://TowerRelated/Color_Orange/Volcano/Volcano_Explosion/Volano_Explosion09.png")
 
+const VolcanoExplosion_AttackModule_Icon = preload("res://TowerRelated/Color_Orange/Volcano/AMAssets/VolcanoExplosion_AttackModule_Icon.png")
+const VolcanoCrater_AttackModule_Icon = preload("res://TowerRelated/Color_Orange/Volcano/AMAssets/VolcanoCrater_AttackModule_Icon.png")
+
+
 var explosion_attack_module : AOEAttackModule
 var crater_attack_module : AOEAttackModule
 
@@ -84,6 +88,8 @@ func _ready():
 	
 	proj_attack_module.connect("before_bullet_is_shot", self, "_modify_bullet")
 	
+	proj_attack_module.is_displayed_in_tracker = false
+	
 	add_attack_module(proj_attack_module)
 	
 	
@@ -129,6 +135,8 @@ func _ready():
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
 	
+	explosion_attack_module.set_image_as_tracker_image(VolcanoExplosion_AttackModule_Icon)
+	
 	add_attack_module(explosion_attack_module)
 	
 	
@@ -169,6 +177,8 @@ func _ready():
 	crater_attack_module.absolute_z_index_of_aoe = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
 	
 	crater_attack_module.can_be_commanded_by_tower = false
+	
+	crater_attack_module.set_image_as_tracker_image(VolcanoCrater_AttackModule_Icon)
 	
 	add_attack_module(crater_attack_module)
 	
