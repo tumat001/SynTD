@@ -21,6 +21,10 @@ const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 var attack_module : WithBeamInstantDamageAttackModule
 
 var mini_tesla_stun_effect : EnemyStunEffect
+var stack_effect : EnemyStackEffect
+
+var stack_amount_with_energy_module : int = 3
+var stack_amount_without_energy_module : int = 5
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -72,13 +76,14 @@ func _post_inherit_ready():
 	._post_inherit_ready()
 	
 	var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(2, StoreOfEnemyEffectsUUID.MINI_TESLA_STUN)
-	var enemy_effect : EnemyStackEffect = EnemyStackEffect.new(enemy_final_effect, 1, 5, StoreOfEnemyEffectsUUID.MINI_TESLA_STACK)
+	var enemy_effect : EnemyStackEffect = EnemyStackEffect.new(enemy_final_effect, 1, stack_amount_without_energy_module, StoreOfEnemyEffectsUUID.MINI_TESLA_STACK)
 	enemy_effect.is_timebound = true
 	enemy_effect.time_in_seconds = 3
 	
 	var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.MINI_TESLA_STACKING_STUN)
 	
 	mini_tesla_stun_effect = enemy_final_effect
+	stack_effect = enemy_effect
 	
 	add_tower_effect(tower_effect)
 
@@ -90,7 +95,8 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Attacking an enemy affected by \"static's\" stun stuns the enemy (with static) for 2 seconds."
+			"Static only needs 3 stacks to stun the enemy",
+			"Attacking an enemy affected by \"static's\" stun stuns the enemy again (with static) for 2 seconds."
 		]
 
 
@@ -101,6 +107,8 @@ func _module_turned_on(_first_time_per_round : bool):
 	if !is_connected("attack_module_added", self, "_attack_module_attached"):
 		connect("attack_module_added", self, "_attack_module_attached")
 		connect("attack_module_removed", self, "_attack_module_detached")
+	
+	stack_effect.stack_cap = stack_amount_with_energy_module
 
 
 func _module_turned_off():
@@ -110,7 +118,8 @@ func _module_turned_off():
 	if is_connected("attack_module_added", self, "_attack_module_attached"):
 		disconnect("attack_module_added", self, "_attack_module_attached")
 		disconnect("attack_module_removed", self, "_attack_module_detached")
-
+	
+	stack_effect.stack_cap = stack_amount_without_energy_module
 
 
 func _attack_module_detached(attack_module : AbstractAttackModule):
@@ -126,8 +135,9 @@ func _attack_module_attached(attack_module : AbstractAttackModule):
 		else:
 			attack_module.disconnect("on_enemy_hit", self, "_attempt_restun")
 
-#
+
 
 func _attempt_restun(enemy : AbstractEnemy, damage_reg_id : int, damage_instance, module):
 	if enemy._stun_id_effects_map.has(StoreOfEnemyEffectsUUID.MINI_TESLA_STUN):
 		enemy._add_effect(mini_tesla_stun_effect._get_copy_scaled_by(main_attack_module.on_hit_effect_scale))
+

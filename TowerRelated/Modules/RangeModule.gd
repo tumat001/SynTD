@@ -346,9 +346,8 @@ func _on_target_from_target_effect_tree_exiting(target, effect):
 
 func _remove_priority_target_effect_from_tower(effect : TowerPriorityTargetEffect):
 	for am in attack_modules_using_this:
-		if am.parent_tower != null:
+		if am != null and am.parent_tower != null:
 			am.parent_tower.remove_tower_effect(effect)
-	
 
 
 func remove_priority_target_effect(effect : TowerPriorityTargetEffect):

@@ -52,7 +52,8 @@ var coordinated_attack_activation_conditional_clauses : ConditionalClauses
 const ca_activation_clause_no_member : int = -10
 const ca_activation_clause_no_mark : int = -11
 
-const coordinated_attack_cooldown : float = 8.0
+const coordinated_attack_cooldown : float = 13.0
+const attacked_marked_enemy_cd_reduction : float = 1.0
 
 const member_upper_limit : int = 5
 
@@ -84,8 +85,7 @@ func _ready():
 	range_module.position.y += 23
 	
 	var attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
-	attack_module.base_damage_scale = 0.5
-	attack_module.base_damage = info.base_damage / attack_module.base_damage_scale
+	attack_module.base_damage = info.base_damage
 	attack_module.base_damage_type = info.base_damage_type
 	attack_module.base_attack_speed = info.base_attk_speed
 	attack_module.base_attack_wind_up = 5
@@ -199,7 +199,8 @@ func _construct_abilities():
 		"Orders all members to attack the marked enemy once, regardless of range.",
 		"Projectiles gain extra range to be able to reach the marked target.",
 		"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
-		"The marked enemy is also stunned for %s seconds" % str(base_stun_duration),
+		"The marked enemy is also stunned for %s seconds." % str(base_stun_duration),
+		"Attacking a marked enemy decreases the cooldown of Coordinated Attack by %s second." % [str(attacked_marked_enemy_cd_reduction)],
 		"Cooldown: %s s" % str(coordinated_attack_cooldown)
 	]
 	coordinated_attack_ability.display_name = "Coordinated Attack"
@@ -437,6 +438,9 @@ func _marked_enemy_cancel_focus():
 # Mark On hit 
 
 func _on_main_am_enemy_hit_l(enemy, damage_register_id, damage_instance, module):
+	if enemy != null and enemy == marked_enemy:
+		coordinated_attack_ability.time_decreased(attacked_marked_enemy_cd_reduction)
+	
 	if enemy != null and marked_enemy != enemy:
 		if marked_enemy != null:
 			marked_enemy.disconnect("cancel_all_lockons", self, "_marked_enemy_cancel_focus")

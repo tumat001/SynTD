@@ -51,7 +51,9 @@ const OrbBeam_AttackModule_Icon = preload("res://TowerRelated/Color_Blue/Orb/AMA
 signal current_level_changed()
 
 
-onready var orb_hat_sprite : Sprite = $TowerBase/KnockUpLayer/HatSprite
+const ap_amount_per_orb_absorbed : float = 0.25
+var ap_from_orbs_effect : TowerAttributesEffect
+var _original_gold_cost : int
 
 const ap_level04 : float = 2.0
 const ap_level03 : float = 1.5
@@ -66,6 +68,9 @@ var sub_attack_module : BulletAttackModule
 var sub_attack_active : bool = false
 var sticky_attack_active : bool = false
 var beam_attack_active : bool = false
+
+onready var orb_hat_sprite : Sprite = $TowerBase/KnockUpLayer/HatSprite
+
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.ORB)
@@ -114,7 +119,7 @@ func _ready():
 	sticky_attack_module.base_attack_wind_up = 6
 	sticky_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	sticky_attack_module.is_main_attack = false
-	sticky_attack_module.base_pierce = info.base_pierce
+	sticky_attack_module.base_pierce = 1
 	sticky_attack_module.base_proj_speed = 140
 	sticky_attack_module.base_proj_life_distance = info.base_range
 	sticky_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
@@ -229,7 +234,7 @@ func _ready():
 	
 	sub_attack_module = BulletAttackModule_Scene.instance()
 	sub_attack_module.base_damage_scale = 0.5
-	sub_attack_module.base_damage = 1.75 / sub_attack_module.base_damage_scale
+	sub_attack_module.base_damage = 1.5 / sub_attack_module.base_damage_scale
 	sub_attack_module.base_damage_type = DamageType.ELEMENTAL
 	sub_attack_module.base_attack_speed = 0
 	sub_attack_module.base_attack_wind_up = 0
@@ -271,16 +276,27 @@ func _ready():
 	
 	# Others
 	
+	_original_gold_cost = _base_gold_cost
+	
 	connect("final_ability_potency_changed", self, "_orb_final_ap_changed", [], CONNECT_PERSIST)
 	connect("on_main_attack_module_enemy_hit", self, "_main_attack_on_hit", [], CONNECT_DEFERRED | CONNECT_PERSIST)
+	
+	tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_tower_placed_in_map", [], CONNECT_PERSIST)
 	
 	_post_inherit_ready()
 
 func _post_inherit_ready():
-	_orb_final_ap_changed()
-	
 	._post_inherit_ready()
+	
+	_construct_and_add_orb_absorb_effect()
+	_orb_final_ap_changed()
 
+
+func _construct_and_add_orb_absorb_effect():
+	var modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ORB_ABSORB_ORB_BUFF)
+	
+	ap_from_orbs_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY, modi, StoreOfTowerEffectsUUID.ORB_ABSORB_ORB_BUFF)
+	add_tower_effect(ap_from_orbs_effect)
 
 func _orb_final_ap_changed():
 	var new_level = _calculate_new_level_from_change()
@@ -401,4 +417,35 @@ func _sub_attack_hit_enemy(enemy, damage_register_id, damage_instance, module):
 
 func _beam_dmg_instance_constructed(damage_instance, module):
 	damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)
+
+
+#
+
+func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
+	if ingredient_effect.tower_id == Towers.ORB:
+		return true
+	
+	return ._can_accept_ingredient(ingredient_effect, tower_selected)
+
+
+func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_base_cost : int):
+	if ingredient_effect != null:
+		if ingredient_effect.tower_id == Towers.ORB:
+			_gain_bonus_from_orb_absorbed()
+			_base_gold_cost += _original_gold_cost
+			return
+	
+	.absorb_ingredient(ingredient_effect, ingredient_gold_base_cost)
+
+func _gain_bonus_from_orb_absorbed():
+	ap_from_orbs_effect.attribute_as_modifier.flat_modifier += ap_amount_per_orb_absorbed
+	_calculate_final_ability_potency()
+
+#
+
+func _tower_placed_in_map(tower):
+	if is_current_placable_in_map():
+		if tower != null and tower.tower_id == Towers.ORB and tower != self:
+			tower.sell_tower()
+			_gain_bonus_from_orb_absorbed()
 

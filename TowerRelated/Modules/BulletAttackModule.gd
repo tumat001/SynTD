@@ -37,6 +37,8 @@ var absolute_z_index_of_bullet : int = ZIndexStore.PARTICLE_EFFECTS
 
 var bullet_rotation_per_second : float = 0
 
+var kill_bullets_at_end_of_round : bool = true
+
 #
 
 const bullet_group_tag : String = "BulletGroupTag"
@@ -311,7 +313,8 @@ func set_texture_as_sprite_frame(texture : Texture, anim_name : String = "defaul
 func on_round_end():
 	.on_round_end()
 	
-	kill_all_created_bullets()
+	if kill_bullets_at_end_of_round:
+		kill_all_created_bullets()
 
 func kill_all_created_bullets():
 	emit_signal("kill_all_spawned_bullets")

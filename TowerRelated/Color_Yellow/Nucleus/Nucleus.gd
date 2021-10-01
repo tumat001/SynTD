@@ -29,6 +29,7 @@ const Nucleus_Gamma_Pic07 = preload("res://TowerRelated/Color_Yellow/Nucleus/Ass
 const Nucleus_Gamma_Pic08 = preload("res://TowerRelated/Color_Yellow/Nucleus/Assets/BigBeam/Nucleus_BigBeam_08.png")
 
 const NucleusGamma_AbilityIcon = preload("res://TowerRelated/Color_Yellow/Nucleus/Assets/Ability/NucleusGamma_AbilityIcon.png")
+const NucleusGamma_AttackModule_Icon = preload("res://TowerRelated/Color_Yellow/Nucleus/Assets/AMAssets/NucleusGamma_AttackModule_Icon.png")
 
 
 enum Phase {
@@ -37,7 +38,7 @@ enum Phase {
 }
 
 const beta_bonus_pierce : int = 3
-const alpha_bonus_dmg_amount : float = 3.0
+const alpha_bonus_dmg_amount : float = 2.0
 const alpha_bonus_dmg_type : int = DamageType.PHYSICAL
 
 var alpha_on_hit_damage : OnHitDamage
@@ -50,11 +51,11 @@ var nucleus_original_attk_module : BulletAttackModule
 
 
 var gamma_ability : BaseAbility
-var gamma_ability_flat_damage_amount : float = 3.0
-var gamma_ability_percent_base_dmg_amount : float = 0.25
+var gamma_ability_flat_damage_amount : float = 1.0
+var gamma_ability_percent_base_dmg_amount : float = 0.75
 var gamma_ability_duration : float = 8.0
 var gamma_ability_damage_repeat_count : int = 16
-var gamma_ability_base_cooldown : float = 40.0
+var gamma_ability_base_cooldown : float = 50.0
 
 var gamma_ability_activation_clauses : ConditionalClauses
 const _no_enemies_in_range_clause : int = -10
@@ -167,7 +168,7 @@ func _ready():
 	
 	gamma_attack_module.can_be_commanded_by_tower = false
 	
-	#gamma_attack_module.set_image_as_tracker_image()
+	gamma_attack_module.set_image_as_tracker_image(NucleusGamma_AttackModule_Icon)
 	
 	add_attack_module(gamma_attack_module)
 	

@@ -9,6 +9,19 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 
+#[
+#		"Each absorbed active ingredient gives additional effects.",
+#		"Only 10% of the bonus effect is gained when the additional ingredient absorbed is beyond the limit given by relics or natural leveling.",
+#		""
+#	],
+
+#[
+#		"+6 pure on hit damage",
+#		"+1 physical on hit damage",
+#		"+1 elemental on hit damage",
+#		"+15 range"
+#	],
+
 const base_lower_ratio : float = 0.1
 
 var base_range_amount : float = 0

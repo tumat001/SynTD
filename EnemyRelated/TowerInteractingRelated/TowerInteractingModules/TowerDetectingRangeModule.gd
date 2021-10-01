@@ -168,3 +168,17 @@ func draw_circle_arc(center, radius, angle_from, angle_to, color):
 	
 	for index_point in range(nb_points):
 		draw_line(points_arc[index_point], points_arc[index_point + 1], color, 2)
+
+
+#
+
+func mirror_tower_range_module_range_changes(arg_tower):
+	if !arg_tower.is_connected("final_range_changed", self, "_mirrored_tower_range_module_range_changed"):
+		arg_tower.connect("final_range_changed", self, "_mirrored_tower_range_module_range_changed", [arg_tower], CONNECT_PERSIST)
+	
+	_mirrored_tower_range_module_range_changed(arg_tower)
+
+func _mirrored_tower_range_module_range_changed(arg_tower):
+	if arg_tower.range_module != null:
+		update_range(arg_tower.range_module.last_calculated_final_range)
+

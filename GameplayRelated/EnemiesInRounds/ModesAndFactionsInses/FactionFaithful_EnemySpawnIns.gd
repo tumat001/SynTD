@@ -150,7 +150,7 @@ func _get_instructions_for_4_5():
 func _get_instructions_for_5_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 8, 2, EnemyConstants.Enemies.BELIEVER),
-		MultipleEnemySpawnInstruction.new(13, 7, 2, EnemyConstants.Enemies.PRIEST)
+		MultipleEnemySpawnInstruction.new(13, 6, 3, EnemyConstants.Enemies.PRIEST)
 	]
 
 func _get_instructions_for_5_2():
@@ -194,8 +194,8 @@ func _get_instructions_for_6_2():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(5, 2, 0.5, EnemyConstants.Enemies.BELIEVER),
-		MultipleEnemySpawnInstruction.new(12, 11, 3, EnemyConstants.Enemies.SACRIFICER),
-		MultipleEnemySpawnInstruction.new(14.5, 11, 3, EnemyConstants.Enemies.PRIEST)
+		MultipleEnemySpawnInstruction.new(12, 5, 3, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(14.5, 5, 3, EnemyConstants.Enemies.PRIEST)
 	]
 
 func _get_instructions_for_6_3():

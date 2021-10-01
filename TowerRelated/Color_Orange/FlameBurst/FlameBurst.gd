@@ -88,7 +88,7 @@ func _ready():
 	attack_module.bullet_sprite_frames = sp
 	
 	connect("attack_module_added", self, "_attack_module_added_on_self", [], CONNECT_PERSIST)
-	connect("attack_module_removed", self, "_attack_module_removed_on_self", [], CONNECT_PERSIST)
+	connect("attack_module_removed", self, "_attack_module_removed_from_self", [], CONNECT_PERSIST)
 	
 	add_attack_module(attack_module)
 	

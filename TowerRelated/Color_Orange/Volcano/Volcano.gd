@@ -86,7 +86,7 @@ func _ready():
 	proj_attack_module.max_height = 300
 	proj_attack_module.bullet_rotation_per_second = 180
 	
-	proj_attack_module.connect("before_bullet_is_shot", self, "_modify_bullet")
+	proj_attack_module.connect("before_bullet_is_shot", self, "_modify_bullet", [], CONNECT_PERSIST)
 	
 	proj_attack_module.is_displayed_in_tracker = false
 	

@@ -63,7 +63,7 @@ const base_enemy_ap_reduction_of_siphon : float = -0.35
 
 #const base_ap_per_siphon_stack : float = 0.25
 
-const base_spell_burst_damage : float = 8.0
+const base_spell_burst_damage : float = 7.0
 
 # clause for attk module
 const lob_attk_module_not_yet_casted_clause : int = -10
@@ -279,7 +279,7 @@ func _construct_and_add_spell_burst_explosion():
 	
 	explosion_attack_module.aoe_sprite_frames = sprite_frames
 	explosion_attack_module.sprite_frames_only_play_once = true
-	explosion_attack_module.pierce = 5
+	explosion_attack_module.pierce = 4
 	explosion_attack_module.duration = 0.32
 	explosion_attack_module.damage_repeat_count = 1
 	

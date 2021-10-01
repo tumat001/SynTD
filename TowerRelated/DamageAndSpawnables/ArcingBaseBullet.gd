@@ -71,7 +71,9 @@ func _move(delta):
 	
 	if current_life_distance <= 0:
 		emit_signal("on_final_location_reached", final_location, self)
-		.trigger_on_death_events()
+		
+		if destroy_self_after_zero_life_distance:
+			.trigger_on_death_events()
 	else:
 		var movement : Vector2 = Vector2(0, 0)
 		var final_y_mov = _y_speed * delta

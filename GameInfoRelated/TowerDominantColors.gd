@@ -74,7 +74,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [8, 6, 3],
+	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [8, 6, 4],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[
@@ -88,8 +88,8 @@ func _init():
 	],
 	[DomSyn_Yellow_GoldIncome.new(), inst_domsyn_yellow_energybattery],
 	[
-		"Activates ENERGIZE. Battery has 9 energy capacity. Battery recharges for 3 energy per turn.",
-		"Activates ENERGIZE. Battery has 4 energy capacity. Battery recharges for 2 energy per turn.",
+		"Activates ENERGIZE. Battery has 8 energy capacity. Battery recharges for 2 energy per turn.",
+		"Activates ENERGIZE. Battery has 4 energy capacity. Battery recharges for 1 energy per turn.",
 		"+1 gold per round."
 	],
 	ColorSynergy.HighlightDeterminer.CUSTOM,
@@ -101,7 +101,7 @@ func _init():
 	}
 	),
 	
-	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [11, 8, 6, 3],
+	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [12, 8, 6, 3],
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_green,
 	[
@@ -131,8 +131,8 @@ func _init():
 	],
 	[DomSyn_Blue.new()],
 	[
-		"Renew/Empower : Multi purpose ability. +0.50 Ability Potency.",
-		"Mana Blast: Big AOE damage, and AOE Ability Potency buff.",
+		"Renew/Empower : Multi purpose ability. +0.25 Ability Potency.",
+		"Mana Blast: Big AOE damage, and AOE Ability Potency buff. +0.25 Ability Potency.",
 		"Sea Breeze : Slow and minor damage to all enemies. +0.25 Ability Potency."
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
@@ -142,17 +142,17 @@ func _init():
 	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	[
-		"Violet towers can absorb more ingredients. This effect applies only when the amount of total and Violet towers in the map is satisfied.",
+		"Violet towers can absorb more ingredients. This effect applies only when the limit of total and Violet towers in the map is satisfied.",
 		"",
 		"Violet towers can absorb ingredients regardless of color after being in the map for 1 round.",
 		"",
 	],
 	[DomSyn_Violet.new()],
 	[
-		"+5 ingredients. 14 total tower limit, 6 violet tower limit",
-		"+8 ingredients. 9 total tower limit, 4 violet tower limit",
-		"+12 ingredients. 6 total tower limit, 3 violet tower limit",
-		"+40 ingredients. 3 total tower limit, 2 violet tower limit.",
+		"+2 ingredients. 14 total tower limit, 6 violet tower limit",
+		"+3 ingredients. 9 total tower limit, 4 violet tower limit",
+		"+4 ingredients. 6 total tower limit, 3 violet tower limit",
+		"+50 ingredients. 3 total tower limit, 2 violet tower limit.",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),

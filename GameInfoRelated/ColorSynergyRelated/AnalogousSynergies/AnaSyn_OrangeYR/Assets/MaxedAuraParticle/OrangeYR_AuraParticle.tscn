@@ -1,0 +1,24 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/SizeAdaptingAttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/Assets/MaxedAuraParticle/OrangeYR_AuraParticle_01.png" type="Texture" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/Assets/MaxedAuraParticle/OrangeYR_AuraParticle_02.png" type="Texture" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/Assets/MaxedAuraParticle/OrangeYR_AuraParticle_06.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/Assets/MaxedAuraParticle/OrangeYR_AuraParticle_04.png" type="Texture" id=5]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/Assets/MaxedAuraParticle/OrangeYR_AuraParticle_07.png" type="Texture" id=6]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/Assets/MaxedAuraParticle/OrangeYR_AuraParticle_08.png" type="Texture" id=7]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/Assets/MaxedAuraParticle/OrangeYR_AuraParticle_03.png" type="Texture" id=8]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/Assets/MaxedAuraParticle/OrangeYR_AuraParticle_05.png" type="Texture" id=9]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 8 ), ExtResource( 5 ), ExtResource( 9 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ) ],
+"loop": true,
+"name": "default",
+"speed": 25.0
+} ]
+
+[node name="OrangeYR_AuraParticle" instance=ExtResource( 1 )]
+frames = SubResource( 1 )
+frame = 1
+has_lifetime = false

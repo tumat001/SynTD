@@ -35,7 +35,7 @@ const faithful_interaction_range_amount : float = 200.0
 const tower_interaction_range_amount : float = 160.0
 
 const base_armor_toughness_amount_per_faithful : float = 2.0
-const base_health_regen_per_sec_per_sacrificer : float = 12.0
+const base_health_regen_per_sec_per_sacrificer : float = 5.0
 const base_ap_per_seer : float = 0.5
 const base_health_gain_from_cross_marker : float = 20.0
 
@@ -59,6 +59,15 @@ var ap_modi_uuid : int
 
 var _heal_timer : Timer
 var _first_time_sacrificer_went_to_range : bool = false
+
+#
+
+var _time_stunlocked : float
+const _base_time_stunlock_for_buff : float = 5.0
+const _base_time_stunlock_expire_per_sec : float = 7.5
+const _base_effect_immunity_duration : float = 1.25
+
+var _self_effect_shield : EnemyEffectShieldEffect
 
 #
 
@@ -86,7 +95,7 @@ const taunt_health_cast_threshold : float = 0.25
 var grant_revive_ability : BaseAbility
 var grant_revive_ability_activation_clauses : ConditionalClauses
 const revive_target_count : int = 15
-const revive_heal_amount : float = 100.0
+const revive_heal_amount : float = 50.0
 const revive_delay : float = 3.0
 const revive_duration : float = 15.0
 var revive_effect : EnemyReviveEffect
@@ -411,13 +420,12 @@ func _on_ability_potency_changed_d(new_amount):
 	_update_armor_toughness_effect_from_faithfuls()
 	_update_heal_effect_from_sacrificers()
 	
-	#revive_effect.heal_effect_upon_revival.heal_as_modifier.percent_amount = revive_heal_amount * last_calculated_final_ability_potency
+	revive_effect.heal_effect_upon_revival.heal_as_modifier.percent_amount = revive_heal_amount * last_calculated_final_ability_potency
 	tower_target_priority_effect.time_in_seconds = taunt_duration * last_calculated_final_ability_potency
 	
 	knock_up_effect.time_in_seconds = knock_up_duration * last_calculated_final_ability_potency
 	knock_up_effect.custom_stun_duration = knock_up_stun_duration * last_calculated_final_ability_potency
 	knock_up_effect.knock_up_y_acceleration = knock_up_y_accel_amount * last_calculated_final_ability_potency
-	
 
 
 #
@@ -525,6 +533,19 @@ func _construct_knock_up_particle():
 
 func _physics_process(delta):
 	_remove_max_health_if_surpassed_cross_marker()
+	
+	if _is_stunned:
+		_time_stunlocked += delta
+		
+		if _time_stunlocked >= _base_time_stunlock_for_buff:
+			_time_stunlocked -= _base_time_stunlock_for_buff
+			
+			_time_stunlock_limit_reached()
+	else:
+		_time_stunlocked -= _base_time_stunlock_expire_per_sec * delta
+		if _time_stunlocked < 0:
+			_time_stunlocked = 0
+
 
 func _remove_max_health_if_surpassed_cross_marker():
 	if _if_surpassed_cross_marker() and _percent_base_health_id_effect_map.has(StoreOfEnemyEffectsUUID.DEITY_MAX_HEALTH_GAIN_EFFECT):
@@ -532,3 +553,25 @@ func _remove_max_health_if_surpassed_cross_marker():
 
 func _if_surpassed_cross_marker():
 	return unit_offset >= _current_cross_marker_unit_offset
+
+#
+
+func _time_stunlock_limit_reached():
+	if _self_effect_shield == null:
+		_construct_self_effect_shield()
+	
+	_add_effect(_self_effect_shield)
+	
+	var all_stun_effects : Array = []
+	for effect in _stun_id_effects_map.values():
+		if !effect.is_from_enemy:
+			all_stun_effects.append(effect)
+	
+	for effect in all_stun_effects:
+		_remove_effect(effect)
+
+
+func _construct_self_effect_shield() :
+	_self_effect_shield = EnemyEffectShieldEffect.new(StoreOfEnemyEffectsUUID.DEITY_SELF_EFFECT_SHIELD_EFFECT, _base_effect_immunity_duration)
+	_self_effect_shield.is_from_enemy = true
+	_self_effect_shield.status_bar_icon = preload("res://EnemyRelated/CommonStatusBarIcons/EffectShieldEffect/EffectShieldEffect_StatusBarIcon.png")

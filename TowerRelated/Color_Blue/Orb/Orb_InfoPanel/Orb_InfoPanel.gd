@@ -74,7 +74,7 @@ func _on_StickyIcon_pressed_mouse_event(event):
 			"Attack speed increases the rate at which cosmic bomb is thrown.",
 			"",
 			"The explosion deals 6 elemental damage, and affects up to 3 enemies. The damage scales with Orb's ability potency.",
-			"The explosion does not benefit from on hit effects."
+			"The explosion benefits from base damage and on hit damage bufs. Does not benefit from on hit effects."
 		]
 		
 		get_tree().get_root().add_child(attack_tooltip)
@@ -96,7 +96,7 @@ func _on_StarsIcon_pressed_mouse_event(event):
 			"Main attacks on hit causes Orb to follow up the attack with 3 stars.",
 			"Stars always gain range to be able to reach the enemy's position",
 			"",
-			"Each star deals 1 elemental damage. Stars benefit from base damage buffs and on hit damages at 50% effectiveness, and scale with ability potency. Does not benefit from on hit effects.",
+			"Each star deals 1.5 elemental damage. Stars benefit from base damage buffs and on hit damages at 50% efficiency, and scale with ability potency. Does not benefit from on hit effects.",
 		]
 		
 		get_tree().get_root().add_child(attack_tooltip)
@@ -117,7 +117,7 @@ func _on_RayIcon_pressed_mouse_event(event):
 		attack_tooltip.descriptions = [
 			"Orb channels a constant cosmic ray at its target.",
 			"",
-			"The ray damages its target 6 times per second, and has 1 base damage as elemental damage. Benefits from bonus attack speed. Benefits from base damage buffs at 50% effectiveness. The damage scales with Orb's ability potency. Does not benefit from on hit damages and effects."
+			"The ray deals 1 elemental damage 6 times per second. Benefits from bonus attack speed. Benefits from base damage buffs at 50% effectiveness. The damage scales with Orb's ability potency. Does not benefit from on hit damages and effects."
 		]
 		
 		get_tree().get_root().add_child(attack_tooltip)

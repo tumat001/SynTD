@@ -34,7 +34,10 @@ var is_energy_module_on : bool
 
 
 var time_portal_attack_module : AOEAttackModule
-const time_portal_duration : float = 5.0
+const time_portal_duration : float = 6.0
+const time_portal_rewind_scale : float = 2.0
+
+const rewind_effectiveness_on_boss_with_energy : float = 0.33
 
 
 # Called when the node enters the scene tree for the first time.
@@ -155,12 +158,18 @@ func _on_main_post_mitigated_dmg_dealt_t(damage_instance_report, killed, enemy, 
 		
 		_time_dust_stack_consumed()
 	
-	if !killed and rewind_ability_is_ready and !enemy.is_enemy_type_boss():
-		_shift_enemy_position_t(enemy)
-		rewind_ability.start_time_cooldown(_get_cd_to_use(base_rewind_cooldown))
-		enemy._add_effect(time_dust_effect._get_copy_scaled_by(1))
-		
-		_enemy_shifted_by_main_attack(enemy, enemy.global_position)
+	if !killed and rewind_ability_is_ready:
+		if !enemy.is_enemy_type_boss() or (enemy.is_enemy_type_boss() and is_energy_module_on):
+			var shift_scale : float = 1
+			
+			if enemy.is_enemy_type_boss():
+				shift_scale = rewind_effectiveness_on_boss_with_energy
+			
+			_shift_enemy_position_t(enemy, shift_scale)
+			rewind_ability.start_time_cooldown(_get_cd_to_use(base_rewind_cooldown))
+			enemy._add_effect(time_dust_effect._get_copy_scaled_by(1))
+			
+			_enemy_shifted_by_main_attack(enemy, enemy.global_position)
 
 func _time_dust_stack_consumed():
 	if is_energy_module_on:
@@ -185,18 +194,14 @@ func set_energy_module(module):
 	if module != null:
 		module.module_effect_descriptions = [
 			"Consuming a stack of Time Dust instead reduces all abilities’s cooldown by %s seconds." % [str(time_dust_energy_module_cd_time_decrease)],
-			"Turning this on while in round also sets Rewind's current cooldown to 0.",
+			"Boss enemies are now affected by teleportation at %s effectiveness." % [str(rewind_effectiveness_on_boss_with_energy * 100) + "%"],
 			"",
-			"A time portal is opened beneath the teleported enemy for %s seconds. Enemies that enter the time portal for the first time are teleported backwards." % [str(time_portal_duration)],
+			"A time portal is opened beneath the teleported enemy for %s seconds. Enemies that enter the time portal for the first time are teleported backwards at %s effectiveness." % [str(time_portal_duration), str(time_portal_rewind_scale * 100) + "%"],
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
 	is_energy_module_on = true
-	
-	if is_round_started:
-		rewind_ability.time_decreased(rewind_ability._time_current_cooldown)
-
 
 func _module_turned_off():
 	is_energy_module_on = false
@@ -216,6 +221,10 @@ func _enemy_shifted_by_main_attack(enemy, enemy_curr_position):
 
 
 func _time_portal_hit_enemy(enemy, aoe):
-	if enemy != null and !enemy.is_enemy_type_boss():
-		_shift_enemy_position_t(enemy, 2)
-		aoe.enemies_to_ignore.append(enemy)
+	if enemy != null:
+		if !enemy.is_enemy_type_boss():
+			_shift_enemy_position_t(enemy, time_portal_rewind_scale)
+			aoe.enemies_to_ignore.append(enemy)
+		elif is_energy_module_on and enemy.is_enemy_type_boss():
+			_shift_enemy_position_t(enemy, time_portal_rewind_scale * rewind_effectiveness_on_boss_with_energy)
+			aoe.enemies_to_ignore.append(enemy)

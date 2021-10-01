@@ -37,7 +37,7 @@ func copy_enemy_stats_and_location(arg_enemy, arg_offset_distance_inc : float, c
 
 func spawn_effigy_to_map():
 	enemy_manager.spawn_enemy_instance(self, enemy_manager.get_path_of_enemy(effigied_enemy))
-	effigied_enemy.shift_offset(_offset_distance_inc)
+	shift_offset(_offset_distance_inc)
 
 
 #

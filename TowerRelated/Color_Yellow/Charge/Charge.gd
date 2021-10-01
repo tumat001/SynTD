@@ -220,7 +220,7 @@ func _modify_bullet_before_shooting(bullet : BaseBullet):
 	bullet.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.CHARGE_BONUS_ON_HIT] = bonus_on_hit_damage
 	
 	_current_energy = 0
-	
+
 
 
 # Module related
@@ -230,17 +230,19 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Max on hit damage increased to 125. Also recharges faster."
+			"Max on hit damage increased to 135, and becomes pure damage instead. Also recharges faster."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	max_on_hit_damage = 125.0
+	max_on_hit_damage = 135.0
 	base_energy_recharge_per_sec = 50.0
 	_current_chargebar_06 = ChargeBar_6_Special
 	
 	if charge_bar_sprite != null:
 		charge_bar_sprite.texture = _current_chargebar_06
+	
+	bonus_on_hit_damage.damage_type = DamageType.PURE
 	
 	_calculate_recharge_per_sec()
 
@@ -252,5 +254,7 @@ func _module_turned_off():
 	
 	if charge_bar_sprite != null:
 		charge_bar_sprite.texture = _current_chargebar_06
+	
+	bonus_on_hit_damage.damage_type = DamageType.PHYSICAL
 	
 	_calculate_recharge_per_sec()

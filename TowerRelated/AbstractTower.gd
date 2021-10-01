@@ -364,7 +364,7 @@ func _ready():
 	connect("on_current_health_changed", life_bar, "set_current_health_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 	connect("on_max_health_changed", life_bar, "set_max_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 	
-	for child in tower_base_sprites.get_children():
+	for child in knock_up_layer.get_children():
 		child.use_parent_material = true
 	tower_base.material = ShaderMaterial.new()
 
@@ -558,12 +558,13 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 				range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
 				range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
 	
-	if attack_module_to_remove.range_module.attack_modules_using_this.has(attack_module_to_remove) and attack_module_to_remove.range_module.attack_modules_using_this.size() == 1:
-		if attack_module_to_remove.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
-			attack_module_to_remove.range_module.disconnect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered")
-			attack_module_to_remove.range_module.disconnect("enemy_left_range" , self, "_emit_on_range_module_enemy_exited")
-			attack_module_to_remove.range_module.disconnect("current_enemy_left_range", self, "_emit_on_any_range_module_current_enemy_exited")
-			attack_module_to_remove.range_module.disconnect("current_enemies_acquired", self, "_emit_on_any_range_module_current_enemies_acquired")
+	if attack_module_to_remove.range_module != null:
+		if attack_module_to_remove.range_module.attack_modules_using_this.has(attack_module_to_remove) and attack_module_to_remove.range_module.attack_modules_using_this.size() == 1:
+			if attack_module_to_remove.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
+				attack_module_to_remove.range_module.disconnect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered")
+				attack_module_to_remove.range_module.disconnect("enemy_left_range" , self, "_emit_on_range_module_enemy_exited")
+				attack_module_to_remove.range_module.disconnect("current_enemy_left_range", self, "_emit_on_any_range_module_current_enemy_exited")
+				attack_module_to_remove.range_module.disconnect("current_enemies_acquired", self, "_emit_on_any_range_module_current_enemies_acquired")
 	
 	if attack_module_to_remove.get_parent() == self:
 		attack_module_to_remove.parent_tower = null
@@ -1049,19 +1050,19 @@ func _remove_on_hit_damage_adder_effect(on_hit_adder_uuid : int, target_modules 
 
 
 func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
-	if range_module != null:
-		if range_module.benefits_from_bonus_range or attr_effect.force_apply:
-			if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
-				range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
-			elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
-				range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
-	
-			range_module.update_range()
-			_emit_final_range_changed()
-	
+#	if range_module != null:
+#		if range_module.benefits_from_bonus_range or attr_effect.force_apply:
+#			if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
+#				range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
+#			elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
+#				range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
+#
+#			range_module.update_range()
+#			_emit_final_range_changed()
+#
 	for module in target_modules:
 		if module.range_module != null:
-			if module.range_module.benefits_from_bonus_range or attr_effect.force_apply:
+			if module.parent_tower == self and (module.range_module.benefits_from_bonus_range or attr_effect.force_apply):
 				if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
 					module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
 				elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
@@ -1078,17 +1079,22 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 
 
 func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
-	if range_module != null:
-		range_module.flat_range_effects.erase(attr_effect_uuid)
-		range_module.percent_range_effects.erase(attr_effect_uuid)
-		
-		range_module.update_range()
-		_emit_final_range_changed()
-	
-	
+	var modules_to_remove_effect : Array = []
 	for module in target_modules:
 		if module.range_module != null:
+			var to_remove : bool = true
 			
+			for using_modules in module.range_module.attack_modules_using_this:
+				if !target_modules.has(using_modules) and all_attack_modules.has(using_modules):
+					to_remove = false
+					break
+			
+			if to_remove:
+				modules_to_remove_effect.append(module)
+	
+	
+	for module in modules_to_remove_effect:
+		if module.parent_tower == self:
 			module.range_module.flat_range_effects.erase(attr_effect_uuid)
 			module.range_module.percent_range_effects.erase(attr_effect_uuid)
 			
@@ -1096,6 +1102,18 @@ func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
 			
 			if module._all_countbound_effects.has(attr_effect_uuid):
 				module._all_countbound_effects.erase(attr_effect_uuid)
+
+	
+#	for module in target_modules:
+#		if module.range_module != null and range_module.attack_modules_using_this.size() == 1 and range_module.attack_modules_using_this.has(module):
+#
+#			module.range_module.flat_range_effects.erase(attr_effect_uuid)
+#			module.range_module.percent_range_effects.erase(attr_effect_uuid)
+#
+#			module.range_module.update_range()
+#
+#			if module._all_countbound_effects.has(attr_effect_uuid):
+#				module._all_countbound_effects.erase(attr_effect_uuid)
 
 
 

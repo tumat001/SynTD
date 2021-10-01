@@ -24,7 +24,7 @@ var tree
 
 func _init().(StoreOfTowerEffectsUUID.ING_BLUE_FRUIT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_BlueFruit.png")
-	description = "Tower's main attacks create an icy explosion deals 2 elemental damage and slows 4 enemies by 25% for 2 seconds."
+	description = "Tower's main attacks create an icy explosion that deals 0.5 elemental damage and slows 4 enemies by 25% for 2 seconds."
 
 
 # make mod
@@ -40,7 +40,7 @@ func _make_modifications_to_tower(tower):
 
 func _construct_attack_module():
 	explosion_attack_module = AOEAttackModule_Scene.instance()
-	explosion_attack_module.base_damage = 2
+	explosion_attack_module.base_damage = 0.5
 	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0
@@ -77,6 +77,7 @@ func _construct_attack_module():
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
 	
+	explosion_attack_module.set_image_as_tracker_image(preload("res://TowerRelated/Color_Green/FruitTree/Fruits/AMAssets/FruitBlue_AttackModule_Icon.png"))
 	
 	# effect
 	var slow_modifier : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_BLUE_FRUIT)

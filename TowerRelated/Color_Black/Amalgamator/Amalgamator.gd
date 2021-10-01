@@ -88,8 +88,7 @@ func _on_round_end_a():
 	if is_current_placable_in_map():
 		var tower_to_convert = _get_random_valid_in_map_tower()
 		
-		if tower_to_convert != null:
-			_convert_tower_to_black(tower_to_convert)
+		call_deferred("_convert_tower_to_black", tower_to_convert)
 
 
 
@@ -105,7 +104,9 @@ func _get_random_valid_in_map_tower():
 
 
 func _convert_tower_to_black(arg_tower):
-	arg_tower.remove_all_colors_from_tower()
-	arg_tower.add_color_to_tower(TowerColors.BLACK)
+	if arg_tower != null:
+		arg_tower.remove_all_colors_from_tower()
+		arg_tower.add_color_to_tower(TowerColors.BLACK)
+		
+		arg_tower.tower_base.material.shader = Shader_PureBlack
 	
-	arg_tower.tower_base.material.shader = Shader_PureBlack

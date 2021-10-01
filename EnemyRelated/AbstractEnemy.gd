@@ -27,6 +27,7 @@ const EnemyForcedPathOffsetMovementEffect = preload("res://GameInfoRelated/Enemy
 const EnemyForcedPositionalMovementEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyForcedPositionalMovementEffect.gd")
 const EnemyInvulnerabilityEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyInvulnerabilityEffect.gd")
 const EnemyEffectShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyEffectShieldEffect.gd")
+const BaseEnemyModifyingEffect = preload("res://GameInfoRelated/EnemyEffectRelated/BaseEnemyModifyingEffect.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
@@ -237,6 +238,8 @@ var _is_stunned : bool
 var _dmg_over_time_id_effects_map : Dictionary = {}
 var _heal_over_time_id_effects_map : Dictionary = {}
 var _before_reaching_end_path_effects_map : Dictionary = {}
+
+var _base_enemy_modifying_effects_map : Dictionary = {}
 
 var _all_effects_map : Dictionary = {}
 
@@ -1204,6 +1207,12 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 			
 		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_ABILITY_POTENCY or to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_ABILITY_POTENCY:
 			_add_ability_potency_effect(to_use_effect)
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_PLAYER_DAMAGE:
+			flat_player_damage_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_PLAYER_DAMAGE:
+			percent_player_damage_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
 		
 		
 	elif to_use_effect is EnemyHealOverTimeEffect:
@@ -1240,6 +1249,10 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		
 	elif to_use_effect is EnemyEffectShieldEffect:
 		_add_effect_shield_effect(to_use_effect)
+		
+	elif to_use_effect is BaseEnemyModifyingEffect:
+		_base_enemy_modifying_effects_map[to_use_effect.effect_uuid] = to_use_effect
+		to_use_effect._make_modifications_to_enemy(self)
 	
 	
 	emit_signal("effect_added", to_use_effect, self)
@@ -1322,6 +1335,13 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 			
 		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_ABILITY_POTENCY or base_effect.attribute_type == EnemyAttributesEffect.PERCENT_ABILITY_POTENCY:
 			_remove_ability_potency_effect(base_effect.effect_uuid)
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_PLAYER_DAMAGE:
+			flat_player_damage_id_effect_map.erase(base_effect.effect_uuid)
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_PLAYER_DAMAGE:
+			percent_player_damage_id_effect_map.erase(base_effect.effect_uuid)
+		
 		
 		
 	elif base_effect is EnemyHealOverTimeEffect:
@@ -1353,6 +1373,10 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		
 	elif base_effect is EnemyEffectShieldEffect:
 		_remove_effect_shield_effect(base_effect)
+		
+	elif base_effect is BaseEnemyModifyingEffect:
+		_base_enemy_modifying_effects_map.erase(base_effect.effect_uuid)
+		base_effect._undo_modifications_to_enemy(self)
 	
 	
 	if base_effect != null:
@@ -1453,6 +1477,13 @@ func _decrease_time_of_timebounds(delta):
 	for res_eff in _percent_base_ability_potency_effects.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
+	# player dmg
+	
+	for res_eff in flat_player_damage_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in percent_player_damage_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
 	
 	
 	
@@ -1489,6 +1520,9 @@ func _decrease_time_of_timebounds(delta):
 		_decrease_time_of_effect(res_eff, delta)
 	
 	for res_eff in effect_shield_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in _base_enemy_modifying_effects_map.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
 

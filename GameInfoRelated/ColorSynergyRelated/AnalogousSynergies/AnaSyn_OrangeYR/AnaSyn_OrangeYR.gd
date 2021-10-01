@@ -6,7 +6,7 @@ const TowerEffect_AnaSyn_OrangeYR = preload("res://GameInfoRelated/TowerEffectRe
 const tier_1_atk_speed_percent : float = 200.0
 const tier_2_atk_speed_percent : float = 90.0
 const tier_3_atk_speed_percent : float = 40.0
-const tier_4_atk_speed_percent : float = 20.0
+const tier_4_atk_speed_percent : float = 15.0
 
 const base_unit_time_before_max : float = 15.0
 

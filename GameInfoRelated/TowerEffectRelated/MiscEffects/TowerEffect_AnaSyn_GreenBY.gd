@@ -106,13 +106,13 @@ func _construct_and_show_max_particle_effect():
 	#
 	
 	aura_particle = GreenBY_AuraParticle_Scene.instance()
-	aura_particle.position = _attached_tower.global_position
+	#aura_particle.position = _attached_tower.global_position
 	aura_particle.size_adapting_to = _attached_tower
 	aura_particle.adapt_ratio = 0.4
 	aura_particle.position.y += (_attached_tower.get_current_anim_size().y / 2) - 3
 	
-	_attached_tower.get_tree().get_root().add_child(aura_particle)
-
+	#_attached_tower.get_tree().get_root().add_child(aura_particle)
+	_attached_tower.add_child(aura_particle)
 
 #
 

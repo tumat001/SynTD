@@ -83,7 +83,7 @@ const xp_scale_if_not_white_dom_color : float = 0.7
 const max_hero_level : int = 6 # max hero natural level
 
 const xp_needed_per_level : Array = [130, 725, 2000, 3700, 3700, 3700]
-const gold_needed_per_level : Array = [2, 5, 7, 10, 10, 10]
+const gold_needed_per_level : Array = [2, 5, 7, 9, 9, 9]
 
 const xp_about_descriptions = [
 	"Hero gains EXP from damaging enemies, killing enemies, and casting Voice of Light.",
@@ -114,7 +114,7 @@ const judgement_stack_trigger : int = 3
 const current_attks_needed_for_vol : int = 6
 const VOL_towers_affected_in_levels : Array = [3, 4, 6, 13]
 const VOL_range_in_levels : Array = [70, 105, 160, 250]
-const VOL_dmg_ratio_buff_in_levels : Array = [1.2, 1.3, 1.4, 1.6]
+const VOL_dmg_ratio_buff_in_levels : Array = [1.2, 1.3, 1.4, 1.5]
 const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 35]
 const VOL_xp_gain_per_tower_affected_in_levels : Array = [6, 11, 16, 22]
 

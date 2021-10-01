@@ -32,7 +32,7 @@ const BasePic_Blue = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magneti
 const BasePic_Red = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Red.png")
 
 
-const use_count_energy_module_on : int = 4
+const use_count_energy_module_on : int = 3
 const use_count_energy_module_off : int = 1
 
 

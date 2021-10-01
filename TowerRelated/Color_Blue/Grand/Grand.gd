@@ -18,9 +18,11 @@ const ap_level02 : float = 1.25
 const ap_level03 : float = 1.50
 const ap_level04 : float = 2.0
 
-const bonus_pierce_ap_level02 : int = 1
-const bonus_pierce_ap_level03 : int = 2
-const bonus_pierce_ap_level04 : int = 4
+#const bonus_pierce_ap_level02 : int = 1
+#const bonus_pierce_ap_level03 : int = 2
+#const bonus_pierce_ap_level04 : int = 4
+
+const bonus_pierce_per_025_ap : int = 1
 
 var current_level : int = 0
 
@@ -109,30 +111,38 @@ func _post_inherit_ready():
 func _final_ap_changed():
 	var new_level : int = _calculate_new_level_from_change()
 	
+	var final_pierce_bonus : int = 0
+	var extra_ap = last_calculated_final_ability_potency - 1
+	if extra_ap > 1:
+		final_pierce_bonus = (extra_ap * 4) * bonus_pierce_per_025_ap
+	
+	pierce_mod.flat_modifier = final_pierce_bonus
+	
+	
 	if current_level != new_level:
 		current_level = new_level
 		
 		if current_level == 4:
-			pierce_mod.flat_modifier = bonus_pierce_ap_level04
+			#pierce_mod.flat_modifier = bonus_pierce_ap_level04
 			pspeed_mod.flat_modifier = 350
 			
 		elif current_level == 3:
-			pierce_mod.flat_modifier = bonus_pierce_ap_level03
+			#pierce_mod.flat_modifier = bonus_pierce_ap_level03
 			pspeed_mod.flat_modifier = 150
 			
 		elif current_level == 2:
-			pierce_mod.flat_modifier = bonus_pierce_ap_level02
+			#pierce_mod.flat_modifier = bonus_pierce_ap_level02
 			pspeed_mod.flat_modifier = 100
 			
 		elif current_level == 1:
-			pierce_mod.flat_modifier = 0
+			#pierce_mod.flat_modifier = 0
 			pspeed_mod.flat_modifier = 0
-		
-		
-		for am in all_attack_modules:
-			if am is BulletAttackModule:
-				am.calculate_final_pierce()
-				am.calculate_final_proj_speed()
+	
+	
+	for am in all_attack_modules:
+		if am is BulletAttackModule:
+			am.calculate_final_pierce()
+			am.calculate_final_proj_speed()
 
 
 func _calculate_new_level_from_change() -> int:

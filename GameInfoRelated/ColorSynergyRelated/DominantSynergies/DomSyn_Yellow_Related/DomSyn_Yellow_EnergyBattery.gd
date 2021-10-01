@@ -11,11 +11,11 @@ var game_elements : GameElements
 
 var _is_first_time_activated : bool = true
 
-const tier_2_recharge_rate : int = 2
-const tier_1_recharge_rate : int = 3
+const tier_2_recharge_rate : int = 1
+const tier_1_recharge_rate : int = 2
 
 const tier_2_max_capacity = 4
-const tier_1_max_capacity = 9
+const tier_1_max_capacity = 8
 
 # used by violet yellow
 var eligible_colors : Array = [TowerColors.YELLOW]

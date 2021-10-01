@@ -1,7 +1,7 @@
 extends "res://GameInfoRelated/ColorSynergyRelated/AbstractTowerModifyingSynergyEffect.gd"
 
 
-const tier_3_tower_ing_limit : int = 3
+const tier_3_tower_ing_limit : int = 1
 
 func _apply_syn_to_tower(tower : AbstractTower, tier : int):
 	if tower._tower_colors.has(TowerColors.YELLOW):

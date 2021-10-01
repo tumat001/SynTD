@@ -86,14 +86,14 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Greatly increases sunflower's accuracy. Attacks in bursts of 15 instead."
+			"Greatly increases sunflower's accuracy. Attacks in bursts of 12 instead."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
 	sunflower_attack_module.base_proj_inaccuracy = 3
 	sunflower_attack_module.calculate_final_proj_inaccuracy()
-	sunflower_attack_module.burst_amount = 15
+	sunflower_attack_module.burst_amount = 12
 
 func _module_turned_off():
 	sunflower_attack_module.base_proj_inaccuracy = sunflower_original_inaccuracy

@@ -79,12 +79,13 @@ func _ready():
 	
 	add_attack_module(attack_module)
 	
-	connect("final_range_changed", self, "_final_range_changed")
-	connect("on_range_module_enemy_entered", self, "_enemy_entered_range")
-	connect("on_range_module_enemy_exited", self, "_enemy_exited_range")
-	connect("final_attack_speed_changed", self, "_calculate_final_rage_threshold")
-	connect("attack_module_added", self, "_on_main_attack_module_changed")
-	connect("final_base_damage_changed", self, "_final_base_damage_changed")
+	connect("final_range_changed", self, "_final_range_changed", [], CONNECT_PERSIST)
+	connect("on_range_module_enemy_entered", self, "_enemy_entered_range", [], CONNECT_PERSIST)
+	connect("on_range_module_enemy_exited", self, "_enemy_exited_range", [], CONNECT_PERSIST)
+	connect("final_attack_speed_changed", self, "_calculate_final_rage_threshold", [], CONNECT_PERSIST)
+	connect("attack_module_added", self, "_on_main_attack_module_changed", [], CONNECT_PERSIST)
+	connect("attack_module_removed", self, "_on_main_attack_module_changed", [], CONNECT_PERSIST)
+	connect("final_base_damage_changed", self, "_final_base_damage_changed", [], CONNECT_PERSIST)
 	
 	_construct_on_hit_and_modifiers()
 	_construct_effects()

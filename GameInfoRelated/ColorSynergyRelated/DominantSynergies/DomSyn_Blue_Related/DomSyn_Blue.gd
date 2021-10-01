@@ -159,7 +159,7 @@ var blue_abilities_descriptions_map : Dictionary = {}
 # AP related
 
 const tower_ap_tier_1 : float = 0.75
-const tower_ap_tier_2 : float = 0.25
+const tower_ap_tier_2 : float = 0.50
 const tower_ap_tier_3 : float = 0.25
 
 var tower_ap_effect : TowerAttributesEffect

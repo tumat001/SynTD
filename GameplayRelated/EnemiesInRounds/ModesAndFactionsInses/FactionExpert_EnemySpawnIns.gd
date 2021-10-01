@@ -211,7 +211,7 @@ func _get_instructions_for_6_5():
 
 func _get_instructions_for_7_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 40, 1.4, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0, 38, 1.5, EnemyConstants.Enemies.EXPERIENCED),
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.FIEND),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.FIEND),
 		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.FIEND),

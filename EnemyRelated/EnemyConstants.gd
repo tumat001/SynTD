@@ -51,8 +51,8 @@ func _init():
 	#for faction_id in EnemyFactions.values():
 	#	faction_id_pool.append(faction_id)
 	
-	#faction_id_pool.append(EnemyFactions.FAITHFUL)
-	faction_id_pool.append(EnemyFactions.EXPERT)
+	faction_id_pool.append(EnemyFactions.FAITHFUL)
+	#faction_id_pool.append(EnemyFactions.EXPERT)
 
 
 static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
@@ -61,7 +61,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# BASIC FACTION
 	if enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
-		info.base_health = 22
+		info.base_health = 400#22
 		info.base_movement_speed = 40
 		
 	elif enemy_id == Enemies.BRUTE:
@@ -102,7 +102,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.FIEND:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 180
+		info.base_health = 178
 		info.base_movement_speed = 25
 		info.base_armor = 35
 		info.base_toughness = 20

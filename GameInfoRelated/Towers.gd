@@ -87,6 +87,7 @@ const pestilence_image = preload("res://TowerRelated/Color_Green/Pestilence/Pest
 const blossom_image = preload("res://TowerRelated/Color_Green/Blossom/Blossom_Omni_Unpaired.png")
 const pinecone_image = preload("res://TowerRelated/Color_Green/PineCone/PineCone_E.png")
 const brewd_image = preload("res://TowerRelated/Color_Green/Brewd/Brewd_E.png")
+const burgeon_image = preload("res://TowerRelated/Color_Green/Burgeon/Burgeon_Omni.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -164,6 +165,7 @@ enum {
 	BLOSSOM = 507,
 	PINECONE = 508,
 	BREWD = 509,
+	BURGEON = 510,
 	
 	# BLUE (600)
 	SPRINKLER = 600,
@@ -244,7 +246,6 @@ const TowerTiersMap : Dictionary = {
 	_704 : 4,
 	IEU : 4,
 	IMPALE : 4,
-	ORB : 4,
 	REAPER : 4,
 	ADEPT : 4,
 	LEADER : 4,
@@ -255,15 +256,16 @@ const TowerTiersMap : Dictionary = {
 	BLOSSOM : 5,
 	TRANSPORTER : 5,
 	NUCLEUS : 5,
+	ORB : 5,
+	HEXTRIBUTE : 5,
+	BURGEON : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
 	ROYAL_FLAME : 6,
 	PESTILENCE : 6,
-	HEXTRIBUTE : 6,
 	PROMINENCE : 6,
 	ACCUMULAE : 6,
-	
 }
 
 const tier_base_dmg_map : Dictionary = {
@@ -283,7 +285,7 @@ const tier_attk_speed_map : Dictionary = {
 	
 	4 : 45,
 	5 : 60,
-	6 : 80,
+	6 : 75,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
@@ -563,7 +565,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"\"Simple, yet effective.\""
 		]
 		
-		var enemy_effect : EnemyStunEffect = EnemyStunEffect.new(0.3, StoreOfEnemyEffectsUUID.ING_TESLA)
+		var enemy_effect : EnemyStunEffect = EnemyStunEffect.new(0.25, StoreOfEnemyEffectsUUID.ING_TESLA)
 		var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.ING_TESLA)
 		var ing_effect : IngredientEffect = IngredientEffect.new(TESLA, tower_effect)
 		
@@ -589,7 +591,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Has many attacks. Shoots orbs, diamonds, and bolts. Stats shown are for the orbs.",
 			"Only the orbs are affected by targeting options. The orbs are considered to be CHAOS's main attack.",
-			"Only the diamonds benefit from pierce buffs and apply on hit damage and effects. On hit effects are 200% effective.",
+			"Only the diamonds benefit from on hit damages and effects, and are applied with 200% efficiency.",
 			"Only the bolts benefit from attack speed buffs.",
 			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 75% efficiency.",
 			"Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 20 + 1500% of CHAOS's bonus base damage as physical damage."
@@ -624,8 +626,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
 			"",
-			"Shots deal 5 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 200% efficiency.",
-			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 400% effective instead.",
+			"Shots deal 5 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 250% efficiency.",
+			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 500% effective instead.",
 			"Ability potency increases the amount of marks per ring."
 		]
 		
@@ -852,7 +854,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = ember_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1.75
+		info.base_damage = 1.35
 		info.base_attk_speed = 0.55
 		info.base_pierce = 1
 		info.base_range = 95
@@ -891,7 +893,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = lava_jet_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.7
+		info.base_damage = 2.45
 		info.base_attk_speed = 0.835
 		info.base_pierce = 1
 		info.base_range = 125
@@ -899,7 +901,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"On its 5th main attack, Lava Jet releases a beam of lava that deals 25% of the enemy's max health as elemental damage, up to 25."
+			"On its 5th main attack, Lava Jet releases a beam of lava that deals 25% of the enemy's max health as elemental damage, up to 35."
 		]
 		
 		var tower_effect = LavaJetModuleAdderEffect.new()
@@ -1331,7 +1333,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = leader_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1
+		info.base_damage = 2.65
 		info.base_attk_speed = 1
 		info.base_pierce = 0
 		info.base_range = 155
@@ -1345,8 +1347,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ability: Coordinated Attack. Orders all members to attack the marked enemy once, regardless of range.",
 			"Projectiles gain extra range to be able to reach the marked target.",
 			"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
-			"The marked enemy is also stunned for 2.75 seconds",
-			"Cooldown: 8 s"
+			"The marked enemy is also stunned for 2.75 seconds.",
+			"Attacking a marked enemy decreases the cooldown of Coordinated Attack by 1 second.",
+			"Cooldown: 13 s"
 			# THIS SAME PASSAGE is placed in leader's
 			# ability tooltip. If this is changed, then
 			# change the ability tooltip.
@@ -1368,7 +1371,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.75
-		info.base_attk_speed = 0.875
+		info.base_attk_speed = 0.86 #0.875
 		info.base_pierce = 1
 		info.base_range = 130
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1376,6 +1379,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Orb gains new attacks at 1.25, 1.50, and 2.00 total ability potency.",
+			"",
+			"While placed in the map, Orb absorbs all other Orbs placed in the map, gaining permanent 0.25 ability potency that stacks. Orb also applies this effect when absorbing another Orb's ingredient effect.",
 			"",
 			"\"Where does the power reside? The wizard, or the orb?\""
 		]
@@ -1400,15 +1405,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 4
-		info.base_attk_speed = 0.375
+		info.base_attk_speed = 0.385
 		info.base_pierce = 1
 		info.base_range = 135
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Grand gains bonus pierce and projectile speed at 1.25, 1.50, and 2.00 total ability potency.",
-			"1, 2, and 4 bonus pierce is gained respectively per listed total ability potency.",
+			"Grand gains projectile speed at 1.25, 1.50, and 2.00 total ability potency.",
+			"Grand also gains 1 bonus pierce per 0.25 bonus ability potency.",
 			"",
 			"Grand's main attack damage scales with its total ability potency.",
 			"",
@@ -1574,8 +1579,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = seeder_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.5
-		info.base_attk_speed = 0.88
+		info.base_damage = 2.25
+		info.base_attk_speed = 0.86
 		info.base_pierce = 1
 		info.base_range = 132
 		info.base_damage_type = DamageType.PHYSICAL
@@ -2001,7 +2006,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var base_health_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_BLOSSOM)
-		base_health_mod.percent_amount = 200
+		base_health_mod.percent_amount = 250
 		base_health_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_HEALTH , base_health_mod, StoreOfTowerEffectsUUID.ING_BLOSSOM)
@@ -2094,10 +2099,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = prominence_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3
-		info.base_attk_speed = 0.375
+		info.base_damage = 3.5
+		info.base_attk_speed = 0.6
 		info.base_pierce = 1
-		info.base_range = 115
+		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -2184,7 +2189,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Cooldown: 1.5 s",
 			"",
 			"Accumulae is unable to execute its main attack during Salvo.",
-			"Each Spell Burst explodes upon reaching the target location, dealing 8 elemental damage to 5 enemies.",
+			"Each Spell Burst explodes upon reaching the target location, dealing 7 elemental damage to 4 enemies.",
 			"Spell burst explosions apply on hit effects.",
 			"Ability cdr also reduces delay per burst in salvo."
 		]
@@ -2210,7 +2215,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.785
+		info.base_attk_speed = 0.765
 		info.base_pierce = 1
 		info.base_range = 122
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -2284,8 +2289,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = shackled_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.75
-		info.base_attk_speed = 0.85
+		info.base_damage = 2.35
+		info.base_attk_speed = 0.78
 		info.base_pierce = 1
 		info.base_range = 160
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -2332,13 +2337,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Nucleus shuffles to Alpha and Beta phases every 5 attacks. Nucleus always starts at Alpha Phase.",
-			"Alpha: Nucleus's attacks deal 3 bonus physical damage on hit.",
+			"Alpha: Nucleus's attacks deal 2 bonus physical damage on hit.",
 			"Beta: Nucleus's attacks pierce through 3 enemies.",
 			"",
-			"Ability: Gamma. Fires a constant beam towards its current target for 8 seconds.",
-			"Gamma deals 3 + 25% of Nucleus's bonus base damage as elemental damage every 0.5 seconds.",
-			"Cooldown: 40 s",
-			"Ability potency increases damage dealt by Gamma. Nucleus rotates the beam towards its current target."
+			"Ability: Gamma. Fires a constant beam towards its current target for 8 seconds. Nucleus rotates the beam towards its current target.",
+			"Gamma deals 1 + 75% of Nucleus's bonus base damage as elemental damage every 0.5 seconds.",
+			"Cooldown: 50 s",
+			"Ability potency increases damage dealt by Gamma."
 		]
 		
 		
@@ -2352,7 +2357,45 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ on hit"
 		
-	
+		
+	elif tower_id == BURGEON:
+		info = TowerTypeInformation.new("Burgeon", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.GREEN)
+		info.tower_image_in_buy_card = burgeon_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0.35
+		info.base_pierce = 0
+		info.base_range = 160
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 0
+		
+		info.tower_descriptions = [
+			"Burgeon launches seeds that land to the ground. Upon landing, seeds arm themselves after 2 seconds to explode when an enemy is nearby.",
+			"Seed explosions deal 3 elemental damage to 3 enemies, and benefit from base damage and on hit damage buffs at 50% efficiency. Also applies on hit effects.",
+			"",
+			"Burgeon automatically attempts to cast Proliferate.",
+			"Proliferate: Launches a seed at a tower in its range, prioritizing towers with enemies in their range. The seed grows to a mini burgeon. Mini burgeon attaches to the tower, and borrows its range.", 
+			"Mini burgeons attack just like Burgeons, and have the same stats. Mini burgeons benefit from Burgeon's effects. Each Mini burgeon lasts for 30 seconds, and die when Burgeon dies.",
+			"Cooldown: 20 s.",
+			"",
+			"Ability potency increases mini burgeon's lifespan."
+		]
+		
+		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_BURGEON)
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_BURGEON, attr_mod, DamageType.ELEMENTAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_BURGEON)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
+		
 	
 	return info
 
@@ -2480,4 +2523,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Shackled/Shackled.tscn")
 	elif tower_id == NUCLEUS:
 		return load("res://TowerRelated/Color_Yellow/Nucleus/Nucleus.tscn")
+	elif tower_id == BURGEON:
+		return load("res://TowerRelated/Color_Green/Burgeon/Burgeon.tscn")
 

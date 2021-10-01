@@ -72,7 +72,7 @@ func _ready():
 	orb_attack_module.benefits_from_bonus_base_damage = true
 	orb_attack_module.benefits_from_bonus_on_hit_damage = false
 	orb_attack_module.benefits_from_bonus_on_hit_effect = false
-	orb_attack_module.benefits_from_bonus_pierce = false
+	orb_attack_module.benefits_from_bonus_pierce = true
 	orb_attack_module.range_module = orb_range_module
 	
 	var bullet_shape = CircleShape2D.new()
@@ -112,7 +112,7 @@ func _ready():
 	diamond_attack_module.base_proj_life_distance = info.base_range
 	diamond_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	diamond_attack_module.position.y -= 22
-	diamond_attack_module.on_hit_damage_scale = 1
+	diamond_attack_module.on_hit_damage_scale = 2
 	diamond_attack_module.on_hit_effect_scale = 2
 	
 	diamond_attack_module.benefits_from_bonus_attack_speed = false

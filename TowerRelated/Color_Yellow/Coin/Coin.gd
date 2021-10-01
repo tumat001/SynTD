@@ -67,18 +67,19 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Coin's base pierce is increased to 777. Coin's base damage is also increased to 4.",
-			"The chance of shooting a gold coin is increased to 1/10."
+			"Coin's base pierce is increased to 777. Coin's base damage is also increased to 3.",
+			"The chance of shooting a gold coin is increased to 1/15."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
 	coin_attack_module.base_pierce = 777
-	coin_attack_module.ratio_bronze_coin = 5
-	coin_attack_module.ratio_silver_coin = 4
+	coin_attack_module.ratio_bronze_coin = 7
+	coin_attack_module.ratio_silver_coin = 7
 	coin_attack_module.ratio_gold_coin = 1
-	coin_attack_module.base_damage = 4
+	coin_attack_module.base_damage = 3
 	
+	coin_attack_module.calculate_final_base_damage()
 	coin_attack_module.calculate_final_pierce()
 
 
@@ -89,4 +90,5 @@ func _module_turned_off():
 	coin_attack_module.ratio_gold_coin = original_ratio_gold_coin
 	coin_attack_module.base_damage = info.base_damage
 	
+	coin_attack_module.calculate_final_base_damage()
 	coin_attack_module.calculate_final_pierce()

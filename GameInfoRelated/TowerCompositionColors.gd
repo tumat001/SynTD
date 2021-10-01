@@ -78,9 +78,9 @@ func _init():
 	],
 	[inst_complesyn_yelvio_energymodule, CompleSyn_YelVio_YellowIng.new()],
 	[
-		"Gain 3 energy after a round when that round is won.",
-		"Gain 3 energy after a round when that round is lost.",
-		"Yellow towers can absorb 3 more ingredients.",
+		"Gain 1 energy after a round when that round is won.",
+		"Gain 2 energy after a round when that round is lost.",
+		"Yellow towers can absorb 1 more ingredient.",
 		"Violet towers can now gain an Energy Module from the Yellow Synergy.",
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
@@ -139,7 +139,7 @@ func _init():
 		"Up to 200% attack speed",
 		"Up to 90% attack speed",
 		"Up to 40% attack speed",
-		"Up to 20% attack speed",
+		"Up to 15% attack speed",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -199,22 +199,21 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"VioletRB" : ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	"VioletRB" : ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2],
+	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
 	[
-		"Each absorbed active ingredient gives additional effects.",
-		"Only 10% of the bonus effect is gained when the additional ingredient absorbed is beyond the limit given by relics or natural leveling.",
+		"Enemies that reach below 40% of their max health become Voided.",
+		"Voided enemies deal less damage to the player. Void cannot be removed by any means.",
 		""
 	],
 	[AnaSyn_VioletRB.new()],
 	[
-		"+6 pure on hit damage",
-		"+1 physical on hit damage",
-		"+1 elemental on hit damage",
-		"+15 range"
+		"75% less player damage",
+		"50% less player damage",
+		"25% less player damage"
 	],
-	ColorSynergy.HighlightDeterminer.ALL_BELOW
+	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
 	

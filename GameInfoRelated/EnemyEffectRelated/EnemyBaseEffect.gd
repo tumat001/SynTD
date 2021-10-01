@@ -27,6 +27,8 @@ enum EffectType {
 	
 	BEFORE_ENEMY_REACHING_END_PATH,
 	
+	BASE_MODIFYING_EFFECT,
+	
 	MISC,
 }
 
