@@ -114,9 +114,9 @@ const judgement_stack_trigger : int = 3
 const current_attks_needed_for_vol : int = 6
 const VOL_towers_affected_in_levels : Array = [3, 4, 6, 13]
 const VOL_range_in_levels : Array = [70, 105, 160, 250]
-const VOL_dmg_ratio_buff_in_levels : Array = [1.2, 1.3, 1.4, 1.5]
-const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 35]
-const VOL_xp_gain_per_tower_affected_in_levels : Array = [6, 11, 16, 22]
+const VOL_dmg_ratio_buff_in_levels : Array = [1.2, 1.3, 1.5, 2.0]
+const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 24]
+const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 10, 15, 20]
 
 var white_dom_active : bool
 

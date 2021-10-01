@@ -302,8 +302,8 @@ func _construct_deity_enemy_type_info() -> EnemyTypeInformation:
 	info.base_movement_speed = 14
 	info.base_player_damage = 14
 	
-	info.base_armor = 28
-	info.base_toughness = 28
+	info.base_armor = 24
+	info.base_toughness = 24
 	
 	return info
 
@@ -321,6 +321,7 @@ func _get_4_3_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
 	info.base_health = 325
+	info.base_effect_vulnerability = 0.75
 	
 	return info
 
@@ -328,6 +329,7 @@ func _get_5_1_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
 	info.base_health = 375
+	info.base_effect_vulnerability = 0.75
 	
 	return info
 
@@ -336,6 +338,7 @@ func _get_5_4_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
 	info.base_health = 425
+	info.base_effect_vulnerability = 0.75
 	
 	return info
 
@@ -343,7 +346,7 @@ func _get_6_2_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
 	info.base_health = 475
-	info.base_effect_vulnerability = 0.9
+	info.base_effect_vulnerability = 0.70
 	
 	return info
 
@@ -352,7 +355,7 @@ func _get_6_5_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
 	info.base_health = 575
-	info.base_effect_vulnerability = 0.8
+	info.base_effect_vulnerability = 0.65
 	
 	return info
 
@@ -361,7 +364,7 @@ func _get_7_3_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
 	info.base_health = 675
-	info.base_effect_vulnerability = 0.8
+	info.base_effect_vulnerability = 0.60
 	
 	return info
 
@@ -369,7 +372,7 @@ func _get_8_1_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
 	info.base_health = 775
-	info.base_effect_vulnerability = 0.7
+	info.base_effect_vulnerability = 0.55
 	
 	return info
 
@@ -378,7 +381,7 @@ func _get_8_4_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
 	info.base_health = 850
-	info.base_effect_vulnerability = 0.7
+	info.base_effect_vulnerability = 0.50
 	
 	return info
 
@@ -387,7 +390,7 @@ func _get_9_1_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
 	info.base_health = 925
-	info.base_effect_vulnerability = 0.7
+	info.base_effect_vulnerability = 0.45
 	
 	return info
 
@@ -395,7 +398,7 @@ func _get_9_3_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
 	info.base_health = 1100
-	info.base_effect_vulnerability = 0.7
+	info.base_effect_vulnerability = 0.40
 	info.base_player_damage = 100000
 	
 	return info

@@ -29,10 +29,11 @@ const Burgeon_AirAttack_Explosion08 = preload("res://TowerRelated/Color_Green/Bu
 
 const Burgeon_Seed_Pic = preload("res://TowerRelated/Color_Green/Burgeon/Assets/Burgeon_Seed.png")
 const MiniBurgeon_Sprite = preload("res://TowerRelated/Color_Green/Burgeon/Assets/MiniBurgeon/MiniBurgeon_Omni.png")
-
+const BurgeonExplosion_AttackModule_Icon = preload("res://TowerRelated/Color_Green/Burgeon/Assets/AMAssets/BurgeonExplosion_AttackModule_Icon.png")
 
 const air_attack_arm_time : float = 2.0
 const sensor_modulate : Color = Color(1, 1, 1, 0)
+const aoe_modulate : Color = Color(1, 1, 1, 0.7)
 
 const air_attack_base_dmg : float = 3.0
 const air_attack_damage_scale : float = 0.5
@@ -150,7 +151,7 @@ func _ready():
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
 	
-	#explosion_attack_module.set_image_as_tracker_image(VolcanoExplosion_AttackModule_Icon)
+	explosion_attack_module.set_image_as_tracker_image(BurgeonExplosion_AttackModule_Icon)
 	
 	add_attack_module(explosion_attack_module)
 	
@@ -273,6 +274,7 @@ func _air_proj_arm_time_timeout(air_proj : BurgeonArcingSeed):
 func _air_proj_sensor_tripped(air_proj : BurgeonArcingSeed):
 	var explosion = explosion_attack_module.construct_aoe(air_proj.global_position, air_proj.global_position)
 	explosion.scale *= 1.5
+	explosion.modulate = aoe_modulate
 	get_tree().get_root().add_child(explosion)
 	
 	air_proj.queue_free()

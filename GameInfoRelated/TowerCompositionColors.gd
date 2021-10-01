@@ -54,9 +54,10 @@ func _init():
 	syn_compo_compli_redgreen,
 	[
 		"Main attacks on hit apply a stack of Red or Green Technique, depending on the tower's color.",
-		"Applying a Technique while a different colored Technique exists on an enemy erases all Technique stacks, and triggers Detonation effects of the pre-existing Technique.",
+		"Applying a Technique while a different colored Technique exists on an enemy erases all Technique stacks, and triggers Detonation effects of the pre-existing Technique. Higher stacks trigger stronger effects.",
 		"",
-		"Red Detonation: ",
+		"Red Detonation: Deals additional physical on hit damage upon detonation.",
+		"4+ stacks) ",
 		"",
 		"Green Detonation: ",
 		""

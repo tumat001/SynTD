@@ -35,6 +35,7 @@ const BasePic_Red = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetiz
 const use_count_energy_module_on : int = 3
 const use_count_energy_module_off : int = 1
 
+const beam_modulate : Color = Color(1, 1, 1, 0.7)
 
 var magnet_attack_module : BulletAttackModule
 var beam_attack_module : AOEAttackModule
@@ -244,6 +245,7 @@ func _can_form_beam() -> bool:
 func _form_beam_between_points(origin_pos : Vector2, destination_pos : Vector2):
 	var aoe = beam_attack_module.construct_aoe(origin_pos, destination_pos)
 	
+	aoe.modulate = Color(1, 1, 1, 0.7)
 	aoe.damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)
 	
 	get_tree().get_root().add_child(aoe)

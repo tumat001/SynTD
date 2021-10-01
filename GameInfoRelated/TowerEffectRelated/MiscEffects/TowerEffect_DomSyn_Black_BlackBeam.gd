@@ -23,8 +23,8 @@ const Black_AttackModule_Icon = preload("res://GameInfoRelated/ColorSynergyRelat
 
 const _stack_amount_trigger : int = 10
 
-const _beam_cooldown : float = 0.20
-const _beam_base_damage : float = 1.25
+const _beam_cooldown : float = 0.15
+const _beam_base_damage : float = 1.5
 
 
 var black_beam_attack_module : WithBeamInstantDamageAttackModule

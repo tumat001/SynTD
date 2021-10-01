@@ -9,7 +9,7 @@ const tier_4_tower_ing_boost : int = 50
 const tier_4_tower_limit : int = 3
 const tier_4_tower_violet_limit : int = 2
 
-const tier_3_tower_ing_boost : int = 4
+const tier_3_tower_ing_boost : int = 5
 const tier_3_tower_limit : int = 6
 const tier_3_tower_violet_limit : int = 3
 

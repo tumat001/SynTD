@@ -271,7 +271,7 @@ func _ability_remove_selected_member(tower):
 		
 		if tower.main_attack_module != null:
 			if tower.main_attack_module.range_module.priority_enemies_regardless_of_range.has(_atomic_marked_enemy):
-				tower.main_attack_module.range_module.member.main_attack_module.range_module.remove_priority_target_regardless_of_range(_atomic_marked_enemy)
+				tower.main_attack_module.range_module.remove_priority_target_regardless_of_range(_atomic_marked_enemy)
 		
 		if tower.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
 			tower.disconnect("on_main_attack_finished", self, "_member_finished_with_main_attack")
@@ -339,7 +339,9 @@ func _cast_use_coordinated_attack():
 				#tower.main_attack_module.range_module.enemies_in_range.append(_atomic_marked_enemy)
 				tower.main_attack_module.range_module.add_priority_target_regardless_of_range(_atomic_marked_enemy)
 				
-				tower.connect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed", [tower], CONNECT_ONESHOT)
+				if !tower.is_connected("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed"):
+					tower.connect("on_main_attack_module_damage_instance_constructed", self, "_member_mat_damage_instance_constructed", [tower], CONNECT_ONESHOT)
+				
 				tower.connect("on_main_attack_finished", self, "_member_finished_with_main_attack", [tower], CONNECT_ONESHOT)
 				
 				if tower.main_attack_module is BulletAttackModule:
@@ -432,7 +434,6 @@ func _marked_enemy_cancel_focus():
 	marked_enemy = null
 	_atomic_marked_enemy = null
 	coordinated_attack_activation_conditional_clauses.attempt_insert_clause(ca_activation_clause_no_mark)
-	
 
 
 # Mark On hit 
@@ -441,7 +442,8 @@ func _on_main_am_enemy_hit_l(enemy, damage_register_id, damage_instance, module)
 	if enemy != null and enemy == marked_enemy:
 		coordinated_attack_ability.time_decreased(attacked_marked_enemy_cd_reduction)
 	
-	if enemy != null and marked_enemy != enemy:
+	
+	if enemy != null and marked_enemy != enemy and !enemy.is_queued_for_deletion():
 		if marked_enemy != null:
 			marked_enemy.disconnect("cancel_all_lockons", self, "_marked_enemy_cancel_focus")
 		

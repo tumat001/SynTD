@@ -1348,7 +1348,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Projectiles gain extra range to be able to reach the marked target.",
 			"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
 			"The marked enemy is also stunned for 2.75 seconds.",
-			"Attacking a marked enemy decreases the cooldown of Coordinated Attack by 1 second.",
+			"Leader's attacks against the marked enemy on hit decreases the cooldown of Coordinated Attack by 1 second.",
 			"Cooldown: 13 s"
 			# THIS SAME PASSAGE is placed in leader's
 			# ability tooltip. If this is changed, then
@@ -2367,14 +2367,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.35
+		info.base_attk_speed = 0.333
 		info.base_pierce = 0
 		info.base_range = 160
-		info.base_damage_type = DamageType.PHYSICAL
+		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
-			"Burgeon launches seeds that land to the ground. Upon landing, seeds arm themselves after 2 seconds to explode when an enemy is nearby.",
+			"Burgeon launches seeds that land to the ground. Upon landing, seeds explode when an enemy is nearby after arming themselves for 2 seconds.",
 			"Seed explosions deal 3 elemental damage to 3 enemies, and benefit from base damage and on hit damage buffs at 50% efficiency. Also applies on hit effects.",
 			"",
 			"Burgeon automatically attempts to cast Proliferate.",
@@ -2395,6 +2395,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ on hit"
+		
+		
 		
 	
 	return info

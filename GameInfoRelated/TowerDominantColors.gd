@@ -151,7 +151,7 @@ func _init():
 	[
 		"+2 ingredients. 14 total tower limit, 6 violet tower limit",
 		"+3 ingredients. 9 total tower limit, 4 violet tower limit",
-		"+4 ingredients. 6 total tower limit, 3 violet tower limit",
+		"+5 ingredients. 6 total tower limit, 3 violet tower limit",
 		"+50 ingredients. 3 total tower limit, 2 violet tower limit.",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -177,9 +177,9 @@ func _init():
 	],
 	[DomSyn_Black.new()],
 	[
-		"10+ stacks: All attacks on hit deal 10% of the enemy's missing health as elemental damage, up to 7.",
-		"7+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. Can only be triggered every 0.2 seconds. The beam deals 1.25 physical damage, and benefits from base damage and on hit damage buffs at 10% efficiency. Also applies on hit effects.",
-		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 80% bonus attack speed for 6 attacks for 8 seconds. This effect has a 3 second cooldown.",
+		"10+ stacks: All attacks deal 10% of the enemy's missing health as elemental damage on hit, up to 7.",
+		"7+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. This can only be triggered every 0.15 seconds. The beam deals 1.5 physical damage, and benefits from base damage and on hit damage buffs at 10% efficiency. Also applies on hit effects.",
+		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 60% bonus attack speed for 6 attacks for 8 seconds. This effect has a 3 second cooldown.",
 		"2+ stacks: All attack's base damage against enemies is increased by 30%."
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
