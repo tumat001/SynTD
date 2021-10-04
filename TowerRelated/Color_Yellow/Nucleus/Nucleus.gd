@@ -310,6 +310,10 @@ func _start_gamma_mode(arg_enemy):
 	_set_current_direction_of_beam(gamma_attack_module.global_position.direction_to(arg_enemy.global_position), arg_enemy.global_position)
 	_current_gamma_beam.modulate = Color(1, 1, 1, 0.8)
 	_current_gamma_beam.damage_instance.scale_only_damage_by(gamma_ability.get_potency_to_use(last_calculated_final_ability_potency))
+	
+	if _is_energy_module_on:
+		_current_gamma_beam.damage_instance.scale_only_damage_by(2)
+	
 	get_tree().get_root().add_child(_current_gamma_beam)
 	
 	
@@ -436,7 +440,7 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Gamma is fired from both directions, and gains increased range."
+			"Gamma is fired from both directions, and gains increased range. Gamma also deals 100% more damage."
 		]
 
 

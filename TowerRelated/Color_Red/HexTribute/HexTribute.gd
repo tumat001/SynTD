@@ -25,7 +25,8 @@ const hex_for_armor_reduction : int = 6
 const hex_for_toughness_reduction : int = 9
 const hex_for_effect_vulnerablility : int = 12
 const hex_for_hex_per_attk_buff : int = 15
-const hex_for_execute : int = 75
+const hex_for_exeucte_normal : int = 15
+const hex_for_execute_elite : int = 60
 
 const hex_bonus_damage_amount : float = 1.5
 const hex_armor_reduction_ratio : float = 25.0
@@ -62,6 +63,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.add_targeting_option(Targeting.HEALTHIEST)
 	
 	var attack_module : InstantDamageAttackModule = InstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -153,8 +155,11 @@ func _on_any_attack_hit_enemy_h(enemy, damage_register_id, damage_instance, modu
 				hextribute_crest.visible = true
 				_update_stack_amount_of_hex_effect()
 			
-			if stack_amount >= hex_for_execute - 1:
-				call_deferred("_attempt_execute_enemy", enemy)
+			if stack_amount >= hex_for_exeucte_normal - 1 and enemy.is_enemy_type_normal():
+				call_deferred("_attempt_execute_normal_enemy", enemy)
+			
+			if stack_amount >= hex_for_execute_elite - 1 and !enemy.is_enemy_type_boss():
+				call_deferred("_attempt_execute_elite_enemy", enemy)
 		
 		call_deferred("_create_attk_sprite", enemy.global_position, stack_amount)
 
@@ -191,9 +196,14 @@ func _create_attk_sprite(pos, stack_amount):
 	
 
 
-func _attempt_execute_enemy(enemy):
-	if enemy != null and !enemy.is_enemy_type_boss():
+func _attempt_execute_elite_enemy(enemy):
+	if enemy != null:
 		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE)
+
+func _attempt_execute_normal_enemy(enemy):
+	if enemy != null:
+		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE)
+
 
 
 func _update_stack_amount_of_hex_effect():

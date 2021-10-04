@@ -9,11 +9,11 @@ const max_damage_tier_1 : float = 7.0
 const damage_per_tick_tier_2 : float = 0.18
 const max_damage_tier_2 : float = 3.6
 
-const damage_per_tick_tier_3 : float = 0.08
-const max_damage_tier_3 : float = 1.6
+const damage_per_tick_tier_3 : float = 0.07
+const max_damage_tier_3 : float = 1.4
 
-const damage_per_tick_tier_4 : float = 0.04
-const max_damage_tier_4 : float = 0.8
+const damage_per_tick_tier_4 : float = 0.03
+const max_damage_tier_4 : float = 0.6
 
 const seconds_per_tick : float = 1.0
 

@@ -135,10 +135,9 @@ func _towers_to_remove_from_syn(towers : Array):
 		_tower_to_remove_from_synergy(tower)
 
 func _tower_to_remove_from_synergy(tower : AbstractTower):
-	if tower._tower_colors.has(TowerColors.ORANGE):
-		if tower.heat_module != null:
-			tower.heat_module.base_effect_multiplier = 0
-			tower.heat_module.should_be_shown_in_info_panel = false
+	if tower.heat_module != null:
+		tower.heat_module.base_effect_multiplier = 0
+		tower.heat_module.should_be_shown_in_info_panel = false
 
 
 

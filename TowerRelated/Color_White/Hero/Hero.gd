@@ -111,12 +111,13 @@ const judgement_bonus_dmg_ratio : float = 1.20
 const judgement_bonus_dmg_threshold_trigger : float = 0.35
 const judgement_stack_trigger : int = 3
 
-const current_attks_needed_for_vol : int = 6
+const current_attks_needed_for_vol : int = 8
 const VOL_towers_affected_in_levels : Array = [3, 4, 6, 13]
 const VOL_range_in_levels : Array = [70, 105, 160, 250]
-const VOL_dmg_ratio_buff_in_levels : Array = [1.2, 1.3, 1.5, 2.0]
-const VOL_buff_attack_count_in_levels : Array = [4, 6, 12, 24]
-const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 10, 15, 20]
+const VOL_dmg_ratio_buff_in_levels : Array = [1.3, 1.4, 1.5, 2.0]
+const VOL_buff_attack_count_in_levels : Array = [3, 3, 4, 12]
+const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 8, 16]
+const VOL_hero_on_hit_effect_scale : Array = [1.1, 1.2, 1.3, 1.5]
 
 var white_dom_active : bool
 
@@ -152,6 +153,7 @@ var current_xp_per_tower_affected_by_vol : int
 
 var current_vol_damage_scale : float
 var current_vol_count : int
+var current_hero_on_hit_effect_scale : float
 
 var current_judgement_dmg_ratio : float
 var current_judgement_bonus_on_hit_amount : float
@@ -243,6 +245,8 @@ func _ready():
 	volrobe_sprite.visible = false
 	max_nat_level_wings_sprite.visible = false
 	
+	current_hero_on_hit_effect_scale = 1
+	
 	_construct_vol_tower_indicator_shower()
 	
 	_post_inherit_ready()
@@ -302,6 +306,10 @@ func _on_main_attack_hit_h(enemy, damage_register_id, damage_instance, module):
 	if white_dom_active:
 		if ability_light_waves_level >= 3 and current_attack_count_in_round >= attks_needed_for_light_explosion:
 			call_deferred("_summon_light_explosion_to_enemy", enemy, damage_instance.get_copy_damage_only_scaled_by(current_light_explosion_dmg_ratio))
+		
+		if ability_VOL_level > 0:
+			damage_instance.scale_only_on_hit_effect_by(current_hero_on_hit_effect_scale)
+
 
 func _on_any_attack_hit_h(enemy, damage_register_id, damage_instance, module):
 	if white_dom_active:
@@ -633,7 +641,6 @@ func _cast_VOL():
 		effect.damage_scale *= VOL_ability.get_potency_to_use(last_calculated_final_ability_potency)
 		
 		tower.add_tower_effect(effect)
-		#counter += 1
 		
 		_increase_exp(current_xp_per_tower_affected_by_vol)
 		
@@ -642,9 +649,7 @@ func _cast_VOL():
 		var particle = VOL_BlessSprite.instance()
 		particle.position = tower.global_position
 		get_tree().get_root().call_deferred("add_child", particle)
-		
-		#if counter >= current_towers_affected_by_vol:
-		#	return
+
 
 func _get_vol_target_towers():
 	if VOL_range_module != null:
@@ -692,6 +697,8 @@ func set_vol_level(new_level):
 		volrobe_sprite.texture = Hero_VOLRobe01Pic
 		volrobe_sprite.visible = true
 		
+		current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[0]
+		
 	elif ability_VOL_level == 2:
 		VOL_effect.count = VOL_buff_attack_count_in_levels[1]
 		VOL_effect.damage_scale = VOL_dmg_ratio_buff_in_levels[1]
@@ -701,6 +708,8 @@ func set_vol_level(new_level):
 		
 		volrobe_sprite.texture = Hero_VOLRobe02Pic
 		volrobe_sprite.visible = true
+		
+		current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[1]
 		
 	elif ability_VOL_level == 3:
 		VOL_effect.count = VOL_buff_attack_count_in_levels[2]
@@ -712,6 +721,8 @@ func set_vol_level(new_level):
 		volrobe_sprite.texture = Hero_VOLRobe03Pic
 		volrobe_sprite.visible = true
 		
+		current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[2]
+		
 	elif ability_VOL_level == 4:
 		VOL_effect.count = VOL_buff_attack_count_in_levels[3]
 		VOL_effect.damage_scale = VOL_dmg_ratio_buff_in_levels[3]
@@ -722,6 +733,8 @@ func set_vol_level(new_level):
 		volrobe_sprite.texture = Hero_VOLRobe04Pic
 		volrobe_sprite.visible = true
 		
+		current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[3]
+		
 	else:
 		VOL_effect.count = 1
 		VOL_effect.damage_scale = 0
@@ -730,6 +743,8 @@ func set_vol_level(new_level):
 		current_xp_per_tower_affected_by_vol = 0
 		
 		volrobe_sprite.visible = false
+		
+		current_hero_on_hit_effect_scale = 1
 	
 	current_vol_count = VOL_effect.count
 	current_vol_damage_scale = VOL_effect.damage_scale
@@ -930,14 +945,17 @@ func get_vol_ability_descs() -> Array:
 	if ability_VOL_level != 0:
 		var descs = [
 			"Every %s attack is accompanied by Hero casting Voice of Light." % (str(current_attks_needed_for_vol) + "th"),
-			"Voice of Light buffs %s towers in range, prioritizing closer towers, and ignoring towers that cannot attack." % current_towers_affected_by_vol,
+			"Voice of Light buffs %s towers in range, prioritizing the closest towers, and ignoring towers that cannot attack." % current_towers_affected_by_vol,
 			"Voice of Light buffs tower's outgoing damage %s times by %s" % [current_vol_count, (str((current_vol_damage_scale * 100) - 100) + "%.")],
 		]
 		
 		descs.append("")
 		if current_hero_natural_level < max_hero_level:
 			descs.append("Each tower affected by Voice of Light gives Hero additional %s EXP." % current_xp_per_tower_affected_by_vol)
-		descs.append("Hero does not benefit from this ability.")
+		descs.append("Hero does not benefit from Voice of Light.")
+		
+		descs.append("")
+		descs.append("Hero's attacks also apply on hit effects at %s efficiency" % (str(current_hero_on_hit_effect_scale * 100) + "%"))
 		
 		return descs
 	else:
@@ -1008,7 +1026,8 @@ func get_vol_upgrade_descs():
 				"Damage ratio buff: %s -> %s" % [(str(current_vol_damage_scale * 100) + "%"), (str(VOL_dmg_ratio_buff_in_levels[ability_VOL_level] * 100) + "%")],
 				"Number of attacks buffed: %s -> %s" % [current_vol_count, VOL_buff_attack_count_in_levels[ability_VOL_level]],
 				"Number of towers affected: %s -> %s" % [current_towers_affected_by_vol, VOL_towers_affected_in_levels[ability_VOL_level]],
-				"Buff range: %s -> %s" % [VOL_range_module.detection_range, VOL_range_in_levels[ability_VOL_level]]
+				"Buff range: %s -> %s" % [VOL_range_module.detection_range, VOL_range_in_levels[ability_VOL_level]],
+				"On hit effect efficiency: %s -> %s" % [(str(current_hero_on_hit_effect_scale * 100) + "%"), (str(VOL_hero_on_hit_effect_scale[ability_VOL_level] * 100) + "%")]
 			]
 			
 		else:
@@ -1018,7 +1037,10 @@ func get_vol_upgrade_descs():
 				"Voice of Light buffs tower's outgoing damage %s times by %s" % [VOL_buff_attack_count_in_levels[0] , str((VOL_dmg_ratio_buff_in_levels[0] * 100) - 100) + "%."],
 				"",
 				"Each tower affected by Voice of Light gives Hero additional %s EXP." % VOL_xp_gain_per_tower_affected_in_levels[0],
-				"Hero does not benefit from this ability."
+				"Hero does not benefit from this ability.",
+				"",
+				"Hero's attacks also apply on hit effects at %s efficiency" % (str(VOL_hero_on_hit_effect_scale[0] * 100) + "%"),
+				
 			]
 	
 	return descs

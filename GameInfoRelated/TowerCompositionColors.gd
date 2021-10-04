@@ -31,6 +31,7 @@ const syn_compo_special_ROYGBV = preload("res://GameHUDRelated/LeftSidePanel/Syn
 const CompleSyn_YelVio_EnergyModule = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio/CompliSyn_YelVio_EnergyModule.gd")
 const CompleSyn_YelVio_YellowIng = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio/CompliSyn_YelVio_YellowIng.gd")
 const CompleSyn_OrangeBlue = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_OrangeBlue/CompliSyn_OrangeBlue.gd")
+const CompliSyn_RedGreen = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_RedGreen/CompliSyn_RedGreen.gd")
 
 const AnaSyn_BlueVG = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_BlueVG/AnaSyn_BlueVG.gd")
 const AnaSyn_VioletRB = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB/AnaSyn_VioletRB.gd")
@@ -49,26 +50,28 @@ func _init():
 	
 	synergies = {
 	# Comple
-	"RedGreen" : ColorSynergy.new("RedGreen", [TowerColors.RED, TowerColors.GREEN], [5, 4, 3, 2],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
+	"RedGreen" : ColorSynergy.new("RedGreen", [TowerColors.RED, TowerColors.GREEN], [5, 4, 3],
+	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_compo_compli_redgreen,
 	[
 		"Main attacks on hit apply a stack of Red or Green Technique, depending on the tower's color.",
-		"Applying a Technique while a different colored Technique exists on an enemy erases all Technique stacks, and triggers Detonation effects of the pre-existing Technique. Higher stacks trigger stronger effects.",
+		"Applying a Technique while a different colored Technique exists on an enemy erases all applied Technique stacks, and triggers Detonation effects of the pre-existing Technique.",
 		"",
-		"Red Detonation: Deals additional physical on hit damage upon detonation.",
-		"4+ stacks) ",
+		"Red Detonation: Deal additional physical damage.",
+		"10+ stacks) Tantrum: Rapidly shoot (6 + 1/2 of total stacks) red bolts to random enemies in range. Bolts deal physical damage.",
 		"",
-		"Green Detonation: ",
-		""
+		"Green Detonation: Gain a single use effect shield for a duration.",
+		"10+ stacks) Pulse: Towers caught in the pulse have their next (3 + 1/4 of total stacks) attacks apply a slow for 5 seconds. Number of stacks inceases size of Pulse and the slow's effectiveness and duration.",
+		"",
 	],
-	[],
+	[CompliSyn_RedGreen.new()],
 	[
-		"",
-		"",
-		"",
-		""
-	]),
+		"(Red: 0.4 dmg per stack, 2.5 damage per bolt.) (Green: 0.4 seconds per stack. 40% slow minimum.)",
+		"(Red: 0.3 dmg per stack, 2.0 damage per bolt.) (Green: 0.3 seconds per stack. 30% slow minimum.)",
+		"(Red: 0.2 dmg per stack, 1.5 damage per bolt.) (Green: 0.2 seconds per stack. 20% slow minimum.)",
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE
+	),
 	
 	"YellowViolet" : ColorSynergy.new("YellowViolet", [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
@@ -177,8 +180,8 @@ func _init():
 	[
 		"+0.35 on hit, up to 7.0",
 		"+0.18 on hit, up to 3.6",
-		"+0.08 on hit, up to 1.6",
-		"+0.04 on hit, up to 0.8"
+		"+0.07 on hit, up to 1.4",
+		"+0.03 on hit, up to 0.6"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),

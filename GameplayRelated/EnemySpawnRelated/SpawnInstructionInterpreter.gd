@@ -3,6 +3,7 @@ const AbstractSpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelate
 const SingleEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/SingleEnemySpawnInstruction.gd")
 const ChainSpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/ChainSpawnInstruction.gd")
 const MultipleEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/MultipleEnemySpawnInstruction.gd")
+const LinearEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/LinearEnemySpawnInstruction.gd")
 
 signal spawn_enemy(enemy_id)
 signal no_enemies_to_spawn_left
@@ -71,9 +72,11 @@ func _get_interpreted_spawn_instructions(inses : Array) -> Array:
 				inner_ins.local_timepos += timepos
 				bucket.append(inner_ins)
 			
-		elif ins is MultipleEnemySpawnInstruction:
+		elif ins is MultipleEnemySpawnInstruction or ins is LinearEnemySpawnInstruction:
 			for single_ins in ins._get_spawn_instructions():
 				bucket.append(single_ins)
+		
+		
 	
 	return bucket
 

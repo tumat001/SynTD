@@ -29,6 +29,10 @@ func add_status_icon(identifier, status_icon : Texture):
 		
 		id_status_texture_rect_map[identifier] = textureRect
 		grid_container.add_child(textureRect)
+		
+	else:
+		replace_status_icon(identifier, status_icon)
+
 
 func _construct_status_texture_rect(status_icon) -> TextureRect:
 	var textureRect := TextureRect.new()

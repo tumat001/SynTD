@@ -1176,7 +1176,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Royal Flame's attacks burn enemies for 25% of its base damage every 0.5 seconds for 10 seconds.",
 			"",
-			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to a limit.",
+			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to 300.",
+			"Ability potency increases health ratio as damage dealt, but not damage limit.",
 			"Cooldown: 25 s"
 			# THIS SAME PASSAGE is placed in royal flame's
 			# ability tooltip. If this is changed, then
@@ -1881,7 +1882,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"6 hex: Enemies's armor is reduced by 25%.",
 			"9 hex: Enemies's toughness is reduced by 25%.",
 			"12 hex: Enemies become 75% more vulnerable to effects.",
-			"75 hex: Executes the enemy. Execute does not work on boss enemies.",
+			"15 hex: Executes normal enemies.",
+			"60 hex: Executes elite enemies.",
 			"",
 			"HexTribute applies 3 hexes per attack for the rest of the round upon infusing 15 hexes to an enemy for the first time.",
 			
@@ -2374,11 +2376,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
-			"Burgeon launches seeds that land to the ground. Upon landing, seeds explode when an enemy is nearby after arming themselves for 2 seconds.",
-			"Seed explosions deal 3 elemental damage to 3 enemies, and benefit from base damage and on hit damage buffs at 50% efficiency. Also applies on hit effects.",
+			"Burgeon launches seeds that land to the ground. Upon landing, seeds explode when an enemy is nearby only after arming themselves for 2 seconds.",
+			"Seed explosions deal 3 elemental damage to 4 enemies, and benefit from base damage and on hit damage buffs at 50% efficiency. Also applies on hit effects.",
 			"",
 			"Burgeon automatically attempts to cast Proliferate.",
-			"Proliferate: Launches a seed at a tower in its range, prioritizing towers with enemies in their range. The seed grows to a mini burgeon. Mini burgeon attaches to the tower, and borrows its range.", 
+			"Proliferate: Launches a seed at a tower in its range, prioritizing towers with enemies in their range. The seed grows to a mini burgeon. Mini burgeons attach to the tower, and borrows its range.", 
 			"Mini burgeons attack just like Burgeons, and have the same stats. Mini burgeons benefit from Burgeon's effects. Each Mini burgeon lasts for 30 seconds, and die when Burgeon dies.",
 			"Cooldown: 20 s.",
 			"",

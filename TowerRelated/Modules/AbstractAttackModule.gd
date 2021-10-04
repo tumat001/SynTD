@@ -115,12 +115,18 @@ var on_hit_effect_scale : float = 1
 # uuid to effect map
 var on_hit_effects : Dictionary
 
+# used by on command attack and attack when ready
+var queued_attack_count : int = 0
+
+
 # Managed by abstracttower completely
 var _all_countbound_effects : Dictionary = {}
 
 var range_module : RangeModule setget _set_range_module
 var use_self_range_module : bool = false # used for range displaying
 
+var use_own_targeting : bool = false
+var own_targeting_option : int
 
 # Attack sprites
 
@@ -209,6 +215,10 @@ func _init():
 	#
 	
 	set_image_as_tracker_image(MainAttack_DefaultIcon)
+	
+	#
+	
+	own_targeting_option = Targeting.FIRST
 
 
 # can be commanded clause
@@ -572,11 +582,23 @@ func attempt_find_then_attack_enemies(num : int = number_of_unique_targets) -> b
 	if range_module == null:
 		return false
 	
-	var targets : Array
-	if range_module.is_an_enemy_in_range():
-		targets = range_module.get_targets(num)
+	var targets : Array = _get_enemies_found_by_range_module(num)
 	
 	return on_command_attack_enemies(targets, num)
+
+
+func _get_enemies_found_by_range_module(arg_num_of_targets : int):
+	if range_module == null:
+		return null
+	
+	var targets : Array
+	if range_module.is_an_enemy_in_range():
+		if !use_own_targeting:
+			targets = range_module.get_targets(arg_num_of_targets)
+		else:
+			targets = range_module.get_targets(arg_num_of_targets, own_targeting_option)
+	
+	return targets
 
 
 #func on_command_attack_enemy(enemy : AbstractEnemy) -> bool:
@@ -671,15 +693,54 @@ func attempt_find_then_attack_enemies(num : int = number_of_unique_targets) -> b
 #				_current_burst_count = 0
 #				_finished_attacking()
 
-func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of_targets : int = number_of_unique_targets):
+#
+
+func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of_targets : int = number_of_unique_targets, attack_count : int = 1):
 	var success = on_command_attack_enemies(arg_enemies, num_of_targets)
+	queued_attack_count += attack_count
 	
 	if !success:
-		if !is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
-			connect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready", [arg_enemies, num_of_targets])
+		_connect_attack_enemies_when_ready(arg_enemies, num_of_targets)
 	else:
-		if is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
-			disconnect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready")
+		queued_attack_count -= 1
+		
+		if queued_attack_count <= 0:
+			queued_attack_count = 0
+			if is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
+				disconnect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready")
+		else:
+			_connect_attack_enemies_when_ready(arg_enemies, num_of_targets)
+
+func _connect_attack_enemies_when_ready(arg_enemies, num_of_targets):
+	if !is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
+		connect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready", [arg_enemies, num_of_targets, 0])
+
+#
+
+func on_command_attack_enemies_in_range_and_attack_when_ready(num_of_targets : int = number_of_unique_targets, attack_count : int = 1):
+	var enemies = _get_enemies_found_by_range_module(num_of_targets)
+	var success = on_command_attack_enemies(enemies, num_of_targets)
+	queued_attack_count += attack_count
+	
+	if !success:
+		_connect_attack_enemies_in_range_when_ready(enemies, num_of_targets)
+	else:
+		queued_attack_count -= 1
+		
+		if queued_attack_count <= 0:
+			queued_attack_count = 0
+			if is_connected("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready"):
+				disconnect("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready")
+		else:
+			_connect_attack_enemies_in_range_when_ready(enemies, num_of_targets)
+
+func _connect_attack_enemies_in_range_when_ready(arg_enemies, num_of_targets):
+	if !is_connected("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready"):
+		connect("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready", [num_of_targets, 0])
+
+
+
+#
 
 
 func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = number_of_unique_targets) -> bool:
@@ -1003,6 +1064,8 @@ func on_round_end():
 	
 	_all_countbound_effects.clear()
 	reset_attack_timers()
+	
+	queued_attack_count = 0
 
 
 # Damage report related

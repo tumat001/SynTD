@@ -201,7 +201,7 @@ func _get_instructions_for_6_2():
 func _get_instructions_for_6_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 15, 3, EnemyConstants.Enemies.BELIEVER),
-		MultipleEnemySpawnInstruction.new(0, 4, 5, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(0, 4, 6, EnemyConstants.Enemies.DVARAPALA),
 	]
 
 func _get_instructions_for_6_4():

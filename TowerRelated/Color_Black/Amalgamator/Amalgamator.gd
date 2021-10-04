@@ -24,7 +24,12 @@ const Amalgamator_Beam10 = preload("res://TowerRelated/Color_Black/Amalgamator/A
 
 const Amalgamator_Hit_Particle = preload("res://TowerRelated/Color_Black/Amalgamator/AmalAttks/Amalgamator_HitParticle.tscn")
 
+
+var convert_beam_sprite_frame : SpriteFrames
+
 onready var Shader_PureBlack = preload("res://MiscRelated/ShadersRelated/Shader_PureBlack.shader")
+
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -57,7 +62,7 @@ func _ready():
 	attack_module.attack_sprite_scene = Amalgamator_Hit_Particle
 	attack_module.attack_sprite_follow_enemy = true
 	
-	var beam_sprite_frame : SpriteFrames = SpriteFrames.new()
+	var beam_sprite_frame = SpriteFrames.new()
 	beam_sprite_frame.add_frame("default", Amalgamator_Beam01)
 	beam_sprite_frame.add_frame("default", Amalgamator_Beam02)
 	beam_sprite_frame.add_frame("default", Amalgamator_Beam03)
@@ -81,14 +86,19 @@ func _ready():
 	
 	connect("on_round_end", self, "_on_round_end_a", [], CONNECT_PERSIST)
 	
+	convert_beam_sprite_frame = beam_sprite_frame
+	
 	_post_inherit_ready()
 
+
+
+#
 
 func _on_round_end_a():
 	if is_current_placable_in_map():
 		var tower_to_convert = _get_random_valid_in_map_tower()
 		
-		call_deferred("_convert_tower_to_black", tower_to_convert)
+		call_deferred("_shoot_tower_converting_beam_to_tower", tower_to_convert)
 
 
 
@@ -103,10 +113,28 @@ func _get_random_valid_in_map_tower():
 		return valid_towers[decided_num]
 
 
+func _shoot_tower_converting_beam_to_tower(arg_tower):
+	if arg_tower != null:
+		var beam = BeamAesthetic_Scene.instance()
+		beam.set_sprite_frames(convert_beam_sprite_frame)
+		beam.connect("animation_finished", self, "_convert_tower_to_black", [arg_tower])
+		
+		beam.time_visible = 0.2
+		beam.is_timebound = true
+		beam.queue_free_if_time_over = true
+		beam.play_only_once(true)
+		
+		beam.position = global_position
+		
+		get_tree().get_root().add_child(beam)
+		beam.update_destination_position(arg_tower.global_position)
+
+
 func _convert_tower_to_black(arg_tower):
 	if arg_tower != null:
 		arg_tower.remove_all_colors_from_tower()
 		arg_tower.add_color_to_tower(TowerColors.BLACK)
 		
 		arg_tower.tower_base.material.shader = Shader_PureBlack
-	
+
+

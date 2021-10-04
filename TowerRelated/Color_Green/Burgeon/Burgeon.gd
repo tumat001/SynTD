@@ -141,7 +141,7 @@ func _ready():
 	
 	explosion_attack_module.aoe_sprite_frames = sprite_frames
 	explosion_attack_module.sprite_frames_only_play_once = true
-	explosion_attack_module.pierce = 3
+	explosion_attack_module.pierce = 4
 	explosion_attack_module.duration = 0.35
 	explosion_attack_module.damage_repeat_count = 1
 	

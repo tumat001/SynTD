@@ -1913,6 +1913,9 @@ func set_properties_to_spawned_from_entity():
 
 #
 
+func is_enemy_type_normal() -> bool:
+	return enemy_type == EnemyType.NORMAL
+
 func is_enemy_type_boss() -> bool:
 	return enemy_type == EnemyType.BOSS
 

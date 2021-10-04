@@ -29,3 +29,10 @@ func _shallow_copy():
 	_configure_copy_to_match_self(copy)
 	
 	return copy
+
+func _deep_copy():
+	var copy = get_script().new(enemy_base_effect._get_copy_scaled_by(1), effect_uuid)
+	_configure_copy_to_match_self(copy)
+	
+	return copy
+

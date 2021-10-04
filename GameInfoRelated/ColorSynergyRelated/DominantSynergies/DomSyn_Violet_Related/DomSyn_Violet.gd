@@ -92,12 +92,11 @@ func _remove_towers_from_synergy(violet_towers : Array):
 		_tower_to_remove_from_synergy(tower)
 
 func _tower_to_remove_from_synergy(tower : AbstractTower):
-	if tower._tower_colors.has(TowerColors.VIOLET):
-		tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.VIOLET_SYNERGY, 0)
-		
-		var effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.VIOLET_COLOR_MASTERY_EFFECT_GIVER)
-		if effect != null:
-			tower.remove_tower_effect(effect)
+	tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.VIOLET_SYNERGY, 0)
+	
+	var effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.VIOLET_COLOR_MASTERY_EFFECT_GIVER)
+	if effect != null:
+		tower.remove_tower_effect(effect)
 
 
 func _tower_added_or_removed(tower, removing : bool):

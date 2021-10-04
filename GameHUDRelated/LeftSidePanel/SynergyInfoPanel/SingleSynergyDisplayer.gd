@@ -77,17 +77,23 @@ func _on_SingleSynergyDisplayer_mouse_entered():
 	var tooltip = SynergyTooltipScene.instance()
 	current_tooltip = tooltip
 	current_tooltip.result = result
+	current_tooltip.tooltip_owner = self
 	
 	emit_signal("on_single_syn_tooltip_displayed", result.synergy)
 	
 	get_tree().get_root().add_child(current_tooltip)
 
+#func _on_SingleSynergyDisplayer_mouse_exited():
+#	if current_tooltip != null:
+#
+#		emit_signal("on_single_syn_tooltip_hidden", result.synergy)
+#		current_tooltip.queue_free()
+
 func _on_SingleSynergyDisplayer_mouse_exited():
 	if current_tooltip != null:
-		
-		emit_signal("on_single_syn_tooltip_hidden", result.synergy)
 		current_tooltip.queue_free()
-
+	
+	emit_signal("on_single_syn_tooltip_hidden", result.synergy)
 
 func _on_SingleSynergyDisplayer_gui_input(event):
 	if event is InputEventMouseButton:

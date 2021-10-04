@@ -152,6 +152,9 @@ func _calculate_fps_of_sprite_frames(frame_count : int) -> int:
 
 # Shape Related
 
+func _set_coll_shape_to(arg_shape):
+	collision_shape.shape = arg_shape
+
 func _set_default_circle_shape():
 	if anim_sprite.frames != null:
 		var size_of_sprite = _get_first_anim_size()

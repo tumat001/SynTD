@@ -31,6 +31,7 @@ const TowerIngredientColorAcceptabilityEffect = preload("res://GameInfoRelated/T
 const TowerPriorityTargetEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerPriorityTargetEffect.gd")
 const TowerStunEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerStunEffect.gd")
 const TowerKnockUpEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerKnockUpEffect.gd")
+const TowerEffectShieldEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerEffectShieldEffect.gd")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
@@ -266,6 +267,9 @@ var last_calculated_enemy_final_effect_vulnerability : float
 var _stun_id_effect_map : Dictionary = {}
 var last_calculated_is_stunned : bool
 
+var effect_shield_effect_map : Dictionary = {}
+var last_calculated_has_effect_shield_against_towers : bool
+var last_calculated_has_effect_shield_against_enemies : bool
 
 
 
@@ -734,6 +738,16 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		tower_base_effect = tower_base_effect._get_copy_scaled_by(last_calculated_enemy_final_effect_vulnerability)
 	
 	
+	if tower_base_effect.is_from_enemy:
+		if last_calculated_has_effect_shield_against_enemies:
+			_remove_count_from_single_effect_shield_effect(1, true, false)
+			return null
+	else:
+		if last_calculated_has_effect_shield_against_towers and tower_base_effect.ignore_effect_shield_effect:
+			_remove_count_from_single_effect_shield_effect()
+			return null
+	
+	
 	if include_non_module_effects and register_to_buff_map and tower_base_effect.should_map_in_all_effects_map:
 		_all_uuid_tower_buffs_map[tower_base_effect.effect_uuid] = tower_base_effect
 	
@@ -846,12 +860,18 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		if include_non_module_effects:
 			knock_up_from_effect(tower_base_effect)
 		
+	elif tower_base_effect is TowerEffectShieldEffect:
+		if include_non_module_effects:
+			_add_effect_shield_effect(tower_base_effect)
+		
+		
 	elif tower_base_effect is TowerResetEffects:
 		if include_non_module_effects:
 			_clear_ingredients_by_effect_reset()
 			
 			if main_attack_module != null:
 				main_attack_module.reset_attack_timers()
+		
 	
 	emit_signal("on_effect_added", tower_base_effect)
 	
@@ -962,7 +982,11 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 	elif tower_base_effect is TowerStunEffect:
 		if include_non_module_effects:
 			_remove_stun_effect(tower_base_effect)
-	
+		
+	elif tower_base_effect is TowerEffectShieldEffect:
+		if include_non_module_effects:
+			_remove_effect_shield_effect(tower_base_effect)
+		
 	
 	emit_signal("on_effect_removed", tower_base_effect)
 
@@ -2322,7 +2346,51 @@ func _heal_by_omnivamp_stat(dmg_type_damage_map : Dictionary):
 		heal_by_amount(final_heal)
 
 
- # Damage tracking related
+# Effect shield related
+
+func _add_effect_shield_effect(effect : TowerEffectShieldEffect):
+	effect_shield_effect_map[effect.effect_uuid] = effect
+	calculate_final_has_effect_shield()
+
+func _remove_effect_shield_effect(effect : TowerEffectShieldEffect):
+	effect_shield_effect_map.erase(effect.effect_uuid)
+	calculate_final_has_effect_shield()
+
+func _remove_count_from_single_effect_shield_effect(arg_count_reduction : int = 1, reduce_shields_against_enemies : bool = false, reduce_shields_against_towers : bool = true):
+	var count_reduc_remaining : int = arg_count_reduction
+	var effects_to_remove : Array = []
+	
+	for effect in effect_shield_effect_map.values():
+		if effect.is_countbound:
+			if (effect.blocks_tower_effects and reduce_shields_against_towers) or (effect.blocks_enemy_effects and reduce_shields_against_enemies):
+				var original_count = effect.count
+				
+				effect.count -= count_reduc_remaining
+				count_reduc_remaining -= original_count
+				
+				if effect.count <= 0:
+					count_reduc_remaining -= effect.count
+					effects_to_remove.append(effect)
+				
+				if count_reduc_remaining <= 0:
+					break
+	
+	for effect in effects_to_remove:
+		remove_tower_effect(effect)
+
+
+func calculate_final_has_effect_shield():
+	last_calculated_has_effect_shield_against_enemies = false
+	last_calculated_has_effect_shield_against_towers = false
+	
+	for effect in effect_shield_effect_map.values():
+		if effect.blocks_tower_effects:
+			last_calculated_has_effect_shield_against_towers = true
+		elif effect.blocks_enemy_effects:
+			last_calculated_has_effect_shield_against_enemies = true
+
+
+# Damage tracking related
 
 func _on_post_mitigated_dmg_dealt_from_effect(damage_instance_report, is_lethal, enemy, effect):
 	_on_tower_any_post_mitigation_damage_dealt(damage_instance_report, is_lethal, enemy, -1, null)
