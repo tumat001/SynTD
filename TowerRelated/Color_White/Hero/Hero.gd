@@ -103,8 +103,8 @@ const attks_needed_for_light_explosion : int = 35
 const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3.25]
 const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.35, 1.0]
 
-const judgement_dmg_ratio_in_levels : Array = [1, 2, 3, 4]
-const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 2, 4, 9]
+const judgement_dmg_ratio_in_levels : Array = [1, 1, 2, 3]
+const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 2, 2.5, 6]
 var judgement_bonus_on_hit_dmg_dmg_type : int = DamageType.PHYSICAL
 
 const judgement_bonus_dmg_ratio : float = 1.20

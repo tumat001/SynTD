@@ -46,7 +46,8 @@ var gold_manager : GoldManager
 
 # 
 
-var lost_life_in_round : bool
+var current_round_lost : bool
+var life_lost_to_enemy_in_round : bool
 
 var can_gain_streak : bool
 var current_win_streak : int
@@ -89,7 +90,8 @@ func start_round():
 
 
 func _before_round_start():
-	lost_life_in_round = false
+	current_round_lost = false
+	life_lost_to_enemy_in_round = false
 
 func _at_round_start():
 	pass
@@ -109,7 +111,7 @@ func end_round(from_game_start : bool = false):
 	
 	# streak related
 	if !from_game_start and can_gain_streak:
-		if lost_life_in_round:
+		if current_round_lost:
 			current_win_streak = 0
 			current_lose_streak += 1
 		else:
@@ -179,10 +181,14 @@ func _after_round_end():
 func _life_lost_from_enemy(enemy):
 	emit_signal("life_lost_from_enemy", enemy)
 	
-	if !lost_life_in_round:
+	if !life_lost_to_enemy_in_round:
 		emit_signal("life_lost_from_enemy_first_time_in_round", enemy)
+		life_lost_to_enemy_in_round = true
 	
-	lost_life_in_round = true
+	current_round_lost = true
+
+func set_current_round_to_lost():
+	current_round_lost = true
 
 
 # Enemy faction spawn ins related

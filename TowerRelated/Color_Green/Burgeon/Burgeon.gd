@@ -31,11 +31,17 @@ const Burgeon_Seed_Pic = preload("res://TowerRelated/Color_Green/Burgeon/Assets/
 const MiniBurgeon_Sprite = preload("res://TowerRelated/Color_Green/Burgeon/Assets/MiniBurgeon/MiniBurgeon_Omni.png")
 const BurgeonExplosion_AttackModule_Icon = preload("res://TowerRelated/Color_Green/Burgeon/Assets/AMAssets/BurgeonExplosion_AttackModule_Icon.png")
 
+const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
+
+
+const heal_reduc_amount : float = -40.0
+const heal_reduc_duration : float = 8.0
+
 const air_attack_arm_time : float = 2.0
 const sensor_modulate : Color = Color(1, 1, 1, 0)
 const aoe_modulate : Color = Color(1, 1, 1, 0.7)
 
-const air_attack_base_dmg : float = 3.0
+const air_attack_base_dmg : float = 4.0
 const air_attack_damage_scale : float = 0.5
 
 var air_proj_attack_module : ArcingBulletAttackModule
@@ -243,10 +249,12 @@ func _ready():
 	
 	_post_inherit_ready()
 
+
 func _post_inherit_ready():
 	._post_inherit_ready()
 	
 	_construct_tower_detecting_module()
+	_construct_and_add_heal_reduc_effect()
 
 
 
@@ -434,4 +442,21 @@ func _process(delta):
 func _mini_burgeon_tree_exiting(mini_burgeon):
 	remove_attack_module(mini_burgeon)
 	mini_burgeon_time_map.erase(mini_burgeon)
+
+#
+
+func _construct_and_add_heal_reduc_effect():
+	var modi = PercentModifier.new(StoreOfEnemyEffectsUUID.BURGEON_HEAL_REDUC_EFFECT)
+	modi.percent_amount = heal_reduc_amount
+	modi.percent_based_on = PercentType.BASE
+	
+	var heal_reduc_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_HEALTH_MODIFIER, modi, StoreOfEnemyEffectsUUID.BURGEON_HEAL_REDUC_EFFECT)
+	heal_reduc_effect.is_timebound = true
+	heal_reduc_effect.time_in_seconds = heal_reduc_duration
+	heal_reduc_effect.is_from_enemy = false
+	heal_reduc_effect.status_bar_icon = preload("res://EnemyRelated/CommonStatusBarIcons/HealReduc_StatusBarIcon.png")
+	
+	var tower_effect = TowerOnHitEffectAdderEffect.new(heal_reduc_effect, StoreOfTowerEffectsUUID.BURGEON_HEAL_REDUC_EFFECT)
+	
+	add_tower_effect(tower_effect)
 

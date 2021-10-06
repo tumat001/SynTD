@@ -226,17 +226,20 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_RYB,
 	[
-		"The first 8 enemies that reach the end of the track for the first time are instead brought back to the start of the track. This counter resets every round.",
+		"The first few enemies that reach the end of the track for the first time are instead brought back to the start of the track, preventing life loss. This counter resets every round.",
 		"Enemies brought back heal for 40% of their missing health, and receive damage resistance. The damage resistance cannot be removed by any means.",
+		"Elite and Boss enemies count as 2 enemies for this effect.",
+		"",
+		"Triggering this effect counts as a round loss.",
 		"",
 		"\"Just when you thought it was all over...\"",
 		""
 	],
 	[TriaSyn_RYB.new()],
 	[
-		"30% damage resistance",
-		"50% damage resistance",
-		"65% damage resistance"
+		"30% damage resistance, 14 enemies",
+		"50% damage resistance, 8 enemies",
+		"70% damage resistance, 6 enemies"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),

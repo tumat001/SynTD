@@ -699,6 +699,10 @@ func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of
 	var success = on_command_attack_enemies(arg_enemies, num_of_targets)
 	queued_attack_count += attack_count
 	
+	if arg_enemies.size() < 0:
+		queued_attack_count = 0
+		return
+	
 	if !success:
 		_connect_attack_enemies_when_ready(arg_enemies, num_of_targets)
 	else:
@@ -721,6 +725,10 @@ func on_command_attack_enemies_in_range_and_attack_when_ready(num_of_targets : i
 	var enemies = _get_enemies_found_by_range_module(num_of_targets)
 	var success = on_command_attack_enemies(enemies, num_of_targets)
 	queued_attack_count += attack_count
+	
+	if enemies.size() < 0:
+		queued_attack_count = 0
+		return
 	
 	if !success:
 		_connect_attack_enemies_in_range_when_ready(enemies, num_of_targets)
@@ -762,14 +770,16 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 	else:
 		enemies = arg_enemies
 	
-	if enemies.size() == 0 and !_is_attacking:
-#		if !fill_empty_windup_target_slots:
-#			_is_in_windup = false
-#
-		return false
 	
 	while enemies.has(null):
 		enemies.erase(null)
+	
+	if enemies.size() == 0 and !_is_attacking:
+		return false
+	
+	#while enemies.has(null):
+	#	enemies.erase(null)
+	
 	
 	if !_is_attacking:
 		if _last_calculated_attack_wind_up == 0:

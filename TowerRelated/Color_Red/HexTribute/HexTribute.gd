@@ -20,12 +20,12 @@ const Hex_Attk04 = preload("res://TowerRelated/Color_Red/HexTribute/HexTribute_A
 const Hex_Attk05 = preload("res://TowerRelated/Color_Red/HexTribute/HexTribute_Attks/HexTributeAttk_05.png")
 
 
-const hex_for_damage_bonus : int = 3
-const hex_for_armor_reduction : int = 6
-const hex_for_toughness_reduction : int = 9
-const hex_for_effect_vulnerablility : int = 12
-const hex_for_hex_per_attk_buff : int = 15
-const hex_for_exeucte_normal : int = 15
+const hex_for_damage_bonus : int = 2
+const hex_for_armor_reduction : int = 4
+const hex_for_toughness_reduction : int = 6
+const hex_for_effect_vulnerablility : int = 8
+const hex_for_hex_per_attk_buff : int = 10
+const hex_for_exeucte_normal : int = 20
 const hex_for_execute_elite : int = 60
 
 const hex_bonus_damage_amount : float = 1.5
@@ -35,7 +35,7 @@ const hex_effect_vulnerability_ratio : float = 75.0
 
 
 const base_hex_per_attack : int = 1
-const empowered_hex_per_attack : int = 3
+const empowered_hex_per_attack : int = 4
 var current_hex_per_attack : int = base_hex_per_attack
 
 var hextribute_hex_stack_effect : TowerOnHitEffectAdderEffect
@@ -47,6 +47,8 @@ var hextribute_effect_vul_effect : EnemyAttributesEffect
 var hex_attk_sprite_frames : SpriteFrames
 onready var hextribute_crest : Sprite = $TowerBase/KnockUpLayer/Crest
 
+
+var original_attack_module
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -81,6 +83,7 @@ func _ready():
 	connect("on_round_end", self, "_on_round_end_h", [], CONNECT_PERSIST)
 	
 	hextribute_crest.visible = false
+	original_attack_module = attack_module
 	
 	_post_inherit_ready()
 
@@ -198,11 +201,11 @@ func _create_attk_sprite(pos, stack_amount):
 
 func _attempt_execute_elite_enemy(enemy):
 	if enemy != null:
-		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE)
+		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE, original_attack_module)
 
 func _attempt_execute_normal_enemy(enemy):
 	if enemy != null:
-		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE)
+		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE, original_attack_module)
 
 
 

@@ -37,6 +37,8 @@ enum Phase {
 	BETA,
 }
 
+const percent_armor_ignore : float = 40.0
+
 const beta_bonus_pierce : int = 3
 const alpha_bonus_dmg_amount : float = 2.0
 const alpha_bonus_dmg_type : int = DamageType.PHYSICAL
@@ -185,6 +187,8 @@ func _ready():
 	connect("on_round_end", self, "_on_round_end_n", [], CONNECT_PERSIST)
 	connect("on_tower_no_health", self, "_on_tower_health_reached_zero", [], CONNECT_PERSIST)
 	
+	connect("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_enemy_n", [], CONNECT_PERSIST)
+	
 	_construct_bonus_damage_for_alpha()
 	_construct_and_connect_ability()
 	
@@ -312,7 +316,7 @@ func _start_gamma_mode(arg_enemy):
 	_current_gamma_beam.damage_instance.scale_only_damage_by(gamma_ability.get_potency_to_use(last_calculated_final_ability_potency))
 	
 	if _is_energy_module_on:
-		_current_gamma_beam.damage_instance.scale_only_damage_by(2)
+		_current_gamma_beam.damage_instance.scale_only_damage_by(2.5)
 	
 	get_tree().get_root().add_child(_current_gamma_beam)
 	
@@ -435,12 +439,26 @@ func _conv_angle_to_positive_val(arg_angle):
 
 #
 
+func _on_main_attack_hit_enemy_n(enemy, damage_register_id, damage_instance, module):
+	if enemy != null:
+		damage_instance.final_percent_enemy_armor_pierce = percent_armor_ignore
+#		var enemy_armor = enemy._last_calculated_final_armor
+#
+#		var ignore_armor_amount = enemy_armor * (percent_armor_ignore / 100.0)
+#		if ignore_armor_amount < 0:
+#			ignore_armor_amount = 0
+#
+#		damage_instance.final_armor_pierce = ignore_armor_amount
+
+
+#
+
 func set_energy_module(module):
 	.set_energy_module(module)
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Gamma is fired from both directions, and gains increased range. Gamma also deals 100% more damage."
+			"Gamma is fired from both directions, and gains increased range. Gamma also deals 150% more damage."
 		]
 
 

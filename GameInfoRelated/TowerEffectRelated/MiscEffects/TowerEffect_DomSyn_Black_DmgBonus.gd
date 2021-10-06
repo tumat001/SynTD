@@ -1,7 +1,7 @@
 extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd"
 
 const _stack_amount_trigger : int = 2
-const _dmg_scale : float = 1.3
+const _dmg_scale : float = 1.2
 
 
 func _init().(StoreOfTowerEffectsUUID.BLACK_ATTACK_DAMAGE_BUFF):
@@ -23,6 +23,6 @@ func _attempt_buff_dmg_instance_base_dmg(enemy, damage_register_id, damage_insta
 		var effect = enemy._stack_id_effects_map[StoreOfEnemyEffectsUUID.BLACK_CORRUPTION_STACK]
 		
 		if effect._current_stack >= _stack_amount_trigger:
-			damage_instance.scale_only_base_damage_by(_dmg_scale)
+			damage_instance.scale_only_damage_by(_dmg_scale)
 
 

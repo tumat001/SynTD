@@ -129,6 +129,7 @@ enum {
 	TRANSMUTATOR = 206,
 	SOUL = 207,
 	PROBE = 208,
+	WYVERN = 209,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -257,8 +258,8 @@ const TowerTiersMap : Dictionary = {
 	TRANSPORTER : 5,
 	NUCLEUS : 5,
 	ORB : 5,
-	HEXTRIBUTE : 5,
 	BURGEON : 5,
+	#WYVERN : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
@@ -266,6 +267,7 @@ const TowerTiersMap : Dictionary = {
 	PESTILENCE : 6,
 	PROMINENCE : 6,
 	ACCUMULAE : 6,
+	HEXTRIBUTE : 6,
 }
 
 const tier_base_dmg_map : Dictionary = {
@@ -1690,8 +1692,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = reaper_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 4.75
-		info.base_attk_speed = 0.74
+		info.base_damage = 4.0
+		info.base_attk_speed = 0.73
 		info.base_pierce = 1
 		info.base_range = 130
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1878,14 +1880,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Each attack that applies on hit effects is infused with a Hex. Enemies gain Curses as effects after reaching a certain number of Hexes. Hexes and Curses last indefinitely.",
-			"3 hex: Enemies take extra 1.5 elemental damage from HexTribute's attacks.",
-			"6 hex: Enemies's armor is reduced by 25%.",
-			"9 hex: Enemies's toughness is reduced by 25%.",
-			"12 hex: Enemies become 75% more vulnerable to effects.",
-			"15 hex: Executes normal enemies.",
+			"2 hex: Enemies take extra 1.5 elemental damage from HexTribute's attacks.",
+			"4 hex: Enemies's armor is reduced by 25%.",
+			"6 hex: Enemies's toughness is reduced by 25%.",
+			"8 hex: Enemies become 75% more vulnerable to effects.",
+			"20 hex: Executes normal enemies.",
 			"60 hex: Executes elite enemies.",
 			"",
-			"HexTribute applies 3 hexes per attack for the rest of the round upon infusing 15 hexes to an enemy for the first time.",
+			"HexTribute applies 4 hexes per attack for the rest of the round upon infusing 10 hexes to an enemy for the first time.",
 			
 		]
 		
@@ -2338,6 +2340,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
+			"Nucleus's main attacks ignore 40% of the enemy's armor.",
+			"",
 			"Nucleus shuffles to Alpha and Beta phases every 5 attacks. Nucleus always starts at Alpha Phase.",
 			"Alpha: Nucleus's attacks deal 2 bonus physical damage on hit.",
 			"Beta: Nucleus's attacks pierce through 3 enemies.",
@@ -2376,8 +2380,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
+			"Burgeon's attacks reduce enemy healing by 40% for 8 seconds.",
+			"",
 			"Burgeon launches seeds that land to the ground. Upon landing, seeds explode when an enemy is nearby only after arming themselves for 2 seconds.",
-			"Seed explosions deal 3 elemental damage to 4 enemies, and benefit from base damage and on hit damage buffs at 50% efficiency. Also applies on hit effects.",
+			"Seed explosions deal 4 elemental damage to 4 enemies, and benefit from base damage and on hit damage buffs at 50% efficiency. Also applies on hit effects.",
 			"",
 			"Burgeon automatically attempts to cast Proliferate.",
 			"Proliferate: Launches a seed at a tower in its range, prioritizing towers with enemies in their range. The seed grows to a mini burgeon. Mini burgeons attach to the tower, and borrows its range.", 

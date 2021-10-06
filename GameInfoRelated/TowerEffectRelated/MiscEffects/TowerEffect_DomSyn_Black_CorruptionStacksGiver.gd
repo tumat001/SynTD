@@ -3,8 +3,8 @@ extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd"
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
 
-const _dmg_threshold_for_increase : float = 4.5
-const _increased_stack_amount : int = 7
+const _dmg_threshold_for_increase : float = 5.5
+const _increased_stack_amount : int = 5
 const _base_stack_amount : int = 1
 
 const _corruption_time_in_seconds : float = 15.0

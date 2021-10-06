@@ -13,7 +13,7 @@ var _current_time : float
 var _instructions_near_exe : Array
 var _instructions_far_from_exe : Array
 const _instruction_exe_time : float = 5.0
-const _instruction_exe_time_allowance : float = 1.0
+const _instruction_exe_time_allowance : float = -1.0
 var _instruction_current_exe_time : float
 
 

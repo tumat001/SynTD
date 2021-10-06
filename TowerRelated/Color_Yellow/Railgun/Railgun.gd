@@ -12,6 +12,8 @@ const RailgunBullet_pic = preload("res://TowerRelated/Color_Yellow/Railgun/Railg
 var railgun_attack_module : BulletAttackModule
 var info : TowerTypeInformation
 
+var is_energy_module_on : bool = false
+
 func _ready():
 	info = Towers.get_tower_info(Towers.RAILGUN)
 	
@@ -55,6 +57,15 @@ func _ready():
 	_post_inherit_ready()
 
 
+func _on_main_attack_module_enemy_hit_r(enemy, damage_register_id, damage_instance, module):
+	if is_energy_module_on:
+		call_deferred("_punch_hole_at_enemy", enemy)
+
+func _punch_hole_at_enemy(enemy):
+	if enemy != null:
+		enemy.pierce_consumed_per_hit /= 2
+
+
 # Energy module
 
 func set_energy_module(module):
@@ -62,8 +73,10 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Railgun's base pierce is increased to 77.",
-			"On hit damages and effects are 400% effective."
+			"Railgun's base pierce is increased to 77. Bullets travel 3 times further.",
+			"On hit damages and effects are 400% effective.",
+			"",
+			"Railgun's main attack also punches a hole in enemies, making bullets pierce through them at twice the effectiveness. This effect stacks."
 		]
 
 
@@ -71,9 +84,11 @@ func _module_turned_on(_first_time_per_round : bool):
 	railgun_attack_module.base_pierce = 77
 	railgun_attack_module.on_hit_damage_scale = 4
 	railgun_attack_module.on_hit_effect_scale = 4
-	railgun_attack_module.base_proj_life_distance_scale = 4
+	railgun_attack_module.base_proj_life_distance_scale = 6
 	
 	railgun_attack_module.calculate_final_pierce()
+	
+	is_energy_module_on = true
 
 
 func _module_turned_off():
@@ -83,3 +98,5 @@ func _module_turned_off():
 	railgun_attack_module.base_proj_life_distance_scale = 2
 	
 	railgun_attack_module.calculate_final_pierce()
+	
+	is_energy_module_on = false

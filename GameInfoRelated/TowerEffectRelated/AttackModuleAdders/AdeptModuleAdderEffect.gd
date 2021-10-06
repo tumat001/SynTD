@@ -19,10 +19,13 @@ const Adeptling_Pic = preload("res://TowerRelated/Color_Red/Adept/Adeptling.png"
 
 var adeptling_am : WithBeamInstantDamageAttackModule
 
+const _beam_cooldown : float = 0.1
+var own_timer : Timer
+
 
 func _init().(StoreOfTowerEffectsUUID.ING_ADEPT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Adeptling.png")
-	description = "Adeptling: Summons an adeptling beside your tower. Adeptling attacks a different target when its tower hits its main attack. Its shots deal 1.5 physical damage and applies on hit effects. Benefits from base damage and on hit damage buffs at 10% efficiency."
+	description = "Adeptling: Summons an adeptling beside your tower. Adeptling attacks a different target when its tower hits its main attack. This can happen only once every 0.1 seconds. Its shots deal 1.5 physical damage and applies on hit effects. Benefits from base damage and on hit damage buffs at 10% efficiency."
 
 
 func _make_modifications_to_tower(tower):
@@ -32,7 +35,13 @@ func _make_modifications_to_tower(tower):
 	
 	if !tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy"):
 		tower.connect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy", [], CONNECT_PERSIST)
-
+	
+	if own_timer == null:
+		own_timer = Timer.new()
+		own_timer.one_shot = true
+		own_timer.wait_time = 0.1
+		tower.get_tree().get_root().add_child(own_timer)
+	
 
 
 func _construct_attack_module():
@@ -85,10 +94,16 @@ func _construct_attack_module():
 
 func _on_tower_main_attack_hit_enemy(enemy, damage_register_id, damage_instance, am):
 	if am != null and am.range_module != null:
-		var enemies = am.range_module.get_targets(2)
+		var enemies = am.range_module.get_targets_without_affecting_self_current_targets(2)
 		
 		if enemies.size() == 2:
-			call_deferred("_attack_secondary_target", enemies[1])
+			call_deferred("_attempt_command_am_to_attack", enemies[1])
+
+
+func _attempt_command_am_to_attack(enemy):
+	if own_timer.time_left <= 0:
+		_attack_secondary_target(enemy)
+		own_timer.start(_beam_cooldown)
 
 func _attack_secondary_target(enemy):
 	if enemy != null and adeptling_am != null:
@@ -104,4 +119,7 @@ func _undo_modifications_to_tower(tower):
 	
 	if tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy"):
 		tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy")
-
+	
+	if own_timer != null:
+		own_timer.queue_free()
+		own_timer = null

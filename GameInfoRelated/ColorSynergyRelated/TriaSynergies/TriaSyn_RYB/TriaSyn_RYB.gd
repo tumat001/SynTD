@@ -3,20 +3,24 @@ extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifying
 const TriaSyn_RYB_BeforeReachEndEffect = preload("res://GameInfoRelated/EnemyEffectRelated/MiscEffects/SynergySourced/TriaSyn_RYB_BeforeReachEndEffect.gd")
 
 
-const enemy_escape_count_before_deactivation : int = 8
 
 const heal_amount : float = 40.0
 
 const tier_1_dmg_res_amount : float = 30.0
 const tier_2_dmg_res_amount : float = 50.0
-const tier_3_dmg_res_amount : float = 65.0
+const tier_3_dmg_res_amount : float = 70.0
+
+const tier_1_enemy_escape_count_before_deactivation : int = 14
+const tier_2_enemy_escape_count_before_deactivation : int = 8
+const tier_3_enemy_escape_count_before_deactivation : int = 6
 
 
 var tria_syn_effect : TriaSyn_RYB_BeforeReachEndEffect
 
-var game_elements
+var game_elements : GameElements
 var curr_tier : int
 var current_enemy_escape_count_in_round : int = 0
+var current_enemy_escape_count_before_deactivation : int
 
 
 func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
@@ -42,15 +46,18 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	._apply_syn_to_game_elements(arg_game_elements, tier)
 
 func _construct_tria_effect():
-	tria_syn_effect = TriaSyn_RYB_BeforeReachEndEffect.new(tier_3_dmg_res_amount, heal_amount, weakref(self))
+	tria_syn_effect = TriaSyn_RYB_BeforeReachEndEffect.new(tier_3_dmg_res_amount, heal_amount, weakref(self), game_elements.stage_round_manager)
 
 func _configure_tria_effect_based_on_tier():
 	if curr_tier == 1:
 		tria_syn_effect.damage_res_amount = tier_1_dmg_res_amount
+		current_enemy_escape_count_before_deactivation = tier_1_enemy_escape_count_before_deactivation
 	elif curr_tier == 2:
 		tria_syn_effect.damage_res_amount == tier_2_dmg_res_amount
+		current_enemy_escape_count_before_deactivation = tier_2_enemy_escape_count_before_deactivation
 	elif curr_tier == 3:
 		tria_syn_effect.damage_res_amount == tier_3_dmg_res_amount
+		current_enemy_escape_count_before_deactivation = tier_3_enemy_escape_count_before_deactivation
 
 #
 

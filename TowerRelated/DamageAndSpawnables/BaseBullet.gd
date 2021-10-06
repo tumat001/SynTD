@@ -11,7 +11,7 @@ var attack_module_source
 var damage_register_id : int
 
 var damage_instance : DamageInstance
-var pierce
+var pierce : float
 var direction_as_relative_location : Vector2
 var speed
 var life_distance

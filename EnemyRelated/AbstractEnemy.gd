@@ -156,6 +156,16 @@ var flat_percent_health_hit_scale_id_effect_map : Dictionary = {}
 var percent_percent_health_hit_scale_id_effect_map : Dictionary = {}
 var last_calculated_percent_health_hit_scale : float = base_percent_health_hit_scale
 
+
+var base_flat_heal_modifier_amount : float = 0
+var flat_heal_modifier_id_effect_map : Dictionary = {}
+var last_calculated_flat_heal_modifier_amount : float
+
+var base_percent_heal_modifier_amount : float = 1
+var percent_heal_modifier_id_effect_map : Dictionary = {}
+var last_calculated_percent_heal_modifier_amount : float
+
+
 var invisibility_id_effect_map : Dictionary = {}
 var last_calculated_invisibility_status : bool = false
 
@@ -224,7 +234,7 @@ onready var anim_sprite = $SpriteLayer/KnockUpLayer/AnimatedSprite
 onready var sprite_layer = $SpriteLayer
 onready var knock_up_layer = $SpriteLayer/KnockUpLayer
 
-#internals
+# internals
 
 var _self_size : Vector2
 var _is_yielding_for_lifebar : bool
@@ -343,6 +353,8 @@ func _post_inherit_ready():
 	calculate_final_ability_potency()
 	calculate_invulnerability_status()
 	calculate_final_has_effect_shield()
+	calculate_flat_heal_modifier_amount()
+	calculate_percent_heal_modifier_amount()
 	
 	#
 #	var heal_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
@@ -464,6 +476,7 @@ func calculate_max_health() -> float:
 
 func heal_from_effect(eff : EnemyHealEffect):
 	var mod = eff.heal_as_modifier
+	
 	if mod is FlatModifier:
 		if eff.allows_overhealing:
 			flat_heal_with_overhealing(mod.flat_modifier)
@@ -478,6 +491,7 @@ func heal_from_effect(eff : EnemyHealEffect):
 
 
 func flat_heal_without_overhealing(heal_amount):
+	heal_amount = _get_final_amount_from_heal_modifier_effects(heal_amount)
 	if heal_amount < 0:
 		heal_amount = 0
 	
@@ -492,10 +506,19 @@ func flat_heal_without_overhealing(heal_amount):
 	_set_current_health_to(final_hp_set)
 
 func flat_heal_with_overhealing(heal_amount):
+	heal_amount = _get_final_amount_from_heal_modifier_effects(heal_amount)
 	if heal_amount < 0:
 		heal_amount = 0
 	
 	_set_current_health_to(current_health + heal_amount, true)
+
+func _get_final_amount_from_heal_modifier_effects(orig_heal_amount : float) -> float:
+	var final_amount = orig_heal_amount
+	
+	final_amount *= last_calculated_percent_heal_modifier_amount
+	final_amount += last_calculated_flat_heal_modifier_amount
+	
+	return final_amount
 
 
 func percent_heal_without_overhealing(heal_mod : PercentModifier):
@@ -539,7 +562,10 @@ func _set_current_health_to(health_amount, from_overheal : bool = false):
 	emit_signal("on_current_health_changed", current_health)
 
 
-func execute_self_by(source_id : int):
+func execute_self_by(source_id : int, attack_module_source = null):
+	if attack_module_source != null:
+		connect("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt", [attack_module_source.damage_register_id], CONNECT_ONESHOT)
+	
 	_take_unmitigated_damages([[current_health, DamageType.PURE, source_id]], null)
 
 # The only function that should handle taking
@@ -824,6 +850,27 @@ func calculate_percent_health_hit_scale() -> float:
 	last_calculated_percent_health_hit_scale = final_scale
 	return final_scale
 
+
+func calculate_flat_heal_modifier_amount() -> float:
+	var final_amount = base_flat_heal_modifier_amount
+	
+	for effect in flat_heal_modifier_id_effect_map.values():
+		final_amount += effect.attribute_as_modifier.flat_modifier
+	
+	last_calculated_flat_heal_modifier_amount = final_amount
+	return final_amount
+
+func calculate_percent_heal_modifier_amount() -> float:
+	var final_amount = base_percent_heal_modifier_amount
+	
+	for effect in percent_heal_modifier_id_effect_map.values():
+		final_amount += effect.attribute_as_modifier.get_modification_to_value(base_percent_heal_modifier_amount)
+	
+	last_calculated_percent_heal_modifier_amount = final_amount
+	return final_amount
+	
+
+
 func calculate_invisibility_status() -> bool:
 	last_calculated_invisibility_status = invisibility_id_effect_map.size() != 0
 	
@@ -841,7 +888,11 @@ func calculate_invisibility_status() -> bool:
 # damage multiplier
 
 func _calculate_multiplier_from_total_armor(armor_pierce : float, percent_self_armor_pierce : float) -> float:
-	var total_armor = _last_calculated_final_armor - (percent_self_armor_pierce * _last_calculated_final_armor / 100)
+	var reduc_from_percent = (percent_self_armor_pierce * _last_calculated_final_armor / 100)
+	if reduc_from_percent < 0:
+		reduc_from_percent = 0
+	
+	var total_armor = _last_calculated_final_armor - reduc_from_percent
 	total_armor = total_armor - armor_pierce
 	if total_armor >= 0:
 		return 20 / (20 + total_armor)
@@ -849,7 +900,11 @@ func _calculate_multiplier_from_total_armor(armor_pierce : float, percent_self_a
 		return 2 - (30 / (30 - total_armor))
 
 func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percent_self_toughness_pierce : float):
-	var total_toughness = _last_calculated_final_toughness - (percent_self_toughness_pierce * _last_calculated_final_toughness / 100)
+	var reduc_from_percent = (percent_self_toughness_pierce * _last_calculated_final_toughness / 100)
+	if reduc_from_percent < 0:
+		reduc_from_percent = 0
+	
+	var total_toughness = _last_calculated_final_toughness - reduc_from_percent
 	total_toughness = total_toughness - toughness_pierce
 	if total_toughness >= 0:
 		return 20 / (20 + total_toughness)
@@ -857,7 +912,11 @@ func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percen
 		return 2 - (30 / (30 - total_toughness))
 
 func _calculate_multiplier_from_total_resistance(resistance_pierce : float, percent_self_resistance_pierce : float):
-	var total_resistance = _last_calculated_final_resistance - (percent_self_resistance_pierce * _last_calculated_final_resistance / 100)
+	var reduc_from_percent = (percent_self_resistance_pierce * _last_calculated_final_resistance / 100)
+	if reduc_from_percent < 0:
+		reduc_from_percent = 0
+	
+	var total_resistance = _last_calculated_final_resistance - reduc_from_percent
 	total_resistance = total_resistance - resistance_pierce
 	
 	var multiplier = (100 - total_resistance) / 100
@@ -960,8 +1019,9 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 			generic_bullet.hit_by_enemy(self)
 			generic_bullet.decrease_pierce(pierce_consumed_per_hit)
 			if generic_bullet.attack_module_source != null:
-				connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
-				connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
+				if !is_connected("on_hit", generic_bullet.attack_module_source, "on_enemy_hit"):
+					connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
+					connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
 			
 			hit_by_damage_instance(generic_bullet.damage_instance, generic_bullet.damage_register_id, true, generic_bullet.attack_module_source)
 			generic_bullet.reduce_damage_by_beyond_first_multiplier()
@@ -970,8 +1030,9 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 func hit_by_aoe(base_aoe):
 	if !is_reviving:
 		if base_aoe.attack_module_source != null:
-			connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
-			connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
+			if !is_connected("on_hit", base_aoe.attack_module_source, "on_enemy_hit"):
+				connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
+				connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
 		
 		hit_by_damage_instance(base_aoe.damage_instance, base_aoe.damage_register_id, true, base_aoe.attack_module_source)
 
@@ -979,8 +1040,9 @@ func hit_by_aoe(base_aoe):
 func hit_by_instant_damage(damage_instance : DamageInstance, damage_reg_id : int, attack_module_source):
 	if !is_reviving:
 		if attack_module_source != null:
-			connect("on_hit", attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
-			connect("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt", [damage_reg_id], CONNECT_ONESHOT)
+			if !is_connected("on_hit", attack_module_source, "on_enemy_hit"):
+				connect("on_hit", attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
+				connect("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt", [damage_reg_id], CONNECT_ONESHOT)
 		
 		
 		hit_by_damage_instance(damage_instance, damage_reg_id, true, attack_module_source)
@@ -1213,6 +1275,15 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 			
 		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_PLAYER_DAMAGE:
 			percent_player_damage_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_HEALTH_MODIFIER:
+			flat_heal_modifier_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_flat_heal_modifier_amount()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_HEALTH_MODIFIER:
+			percent_heal_modifier_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_percent_heal_modifier_amount()
+		
 		
 		
 	elif to_use_effect is EnemyHealOverTimeEffect:
@@ -1341,7 +1412,14 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 			
 		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_PLAYER_DAMAGE:
 			percent_player_damage_id_effect_map.erase(base_effect.effect_uuid)
-		
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_HEALTH_MODIFIER:
+			flat_heal_modifier_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_flat_heal_modifier_amount()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_HEALTH_MODIFIER:
+			percent_heal_modifier_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_percent_heal_modifier_amount()
 		
 		
 	elif base_effect is EnemyHealOverTimeEffect:
@@ -1477,14 +1555,20 @@ func _decrease_time_of_timebounds(delta):
 	for res_eff in _percent_base_ability_potency_effects.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
-	# player dmg
-	
 	for res_eff in flat_player_damage_id_effect_map.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
 	for res_eff in percent_player_damage_id_effect_map.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
+	for res_eff in flat_heal_modifier_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in percent_heal_modifier_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	
+	#
 	
 	
 	for res_eff in _heal_over_time_id_effects_map.values():
@@ -1876,6 +1960,8 @@ func copy_enemy_stats(arg_enemy,
 		calculate_effect_vulnerability()
 		calculate_percent_health_hit_scale()
 		calculate_final_ability_potency()
+		calculate_flat_heal_modifier_amount()
+		calculate_percent_heal_modifier_amount()
 	
 	# Health
 	if including_curr_health:

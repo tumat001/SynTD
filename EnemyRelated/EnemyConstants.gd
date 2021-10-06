@@ -51,8 +51,8 @@ func _init():
 	#for faction_id in EnemyFactions.values():
 	#	faction_id_pool.append(faction_id)
 	
-	faction_id_pool.append(EnemyFactions.FAITHFUL)
-	#faction_id_pool.append(EnemyFactions.EXPERT)
+	#faction_id_pool.append(EnemyFactions.FAITHFUL)
+	faction_id_pool.append(EnemyFactions.EXPERT)
 
 
 static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
