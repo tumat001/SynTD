@@ -85,6 +85,8 @@ func _ready():
 	hextribute_crest.visible = false
 	original_attack_module = attack_module
 	
+	hextribute_crest.use_parent_material = false
+	
 	_post_inherit_ready()
 
 func _post_inherit_ready():

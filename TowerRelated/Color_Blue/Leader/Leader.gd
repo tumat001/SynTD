@@ -332,7 +332,7 @@ func _cast_use_coordinated_attack():
 	_atomic_marked_enemy = marked_enemy
 	
 	for tower in tower_members_beam_map:
-		if tower.main_attack_module != null and tower.main_attack_module.range_module != null and tower.main_attack_module.can_be_commanded_by_tower:
+		if tower.main_attack_module != null and tower.main_attack_module.range_module != null and tower.main_attack_module.can_be_commanded_by_tower and !tower.last_calculated_disabled_from_attacking:
 			#if !tower.main_attack_module.range_module.priority_enemies.has(_atomic_marked_enemy):
 			if !tower.is_connected("on_main_attack_finished", self, "_member_finished_with_main_attack"):
 				#tower.main_attack_module.range_module.priority_enemies.append(_atomic_marked_enemy)

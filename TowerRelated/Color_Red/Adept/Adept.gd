@@ -88,7 +88,7 @@ func _ready():
 	mini_shot_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
 	mini_shot_attack_module.on_hit_damage_scale = 0.15
 	mini_shot_attack_module.base_damage_scale = 0.15
-	mini_shot_attack_module.base_damage = 1 / mini_shot_attack_module.base_damage_scale
+	mini_shot_attack_module.base_damage = 2 / mini_shot_attack_module.base_damage_scale
 	mini_shot_attack_module.base_damage_type = DamageType.PHYSICAL
 	mini_shot_attack_module.base_attack_speed = 0
 	mini_shot_attack_module.base_attack_wind_up = 1 / 0.1
@@ -102,6 +102,9 @@ func _ready():
 	mini_shot_attack_module.commit_to_targets_of_windup = true
 	mini_shot_attack_module.fill_empty_windup_target_slots = false
 	mini_shot_attack_module.show_beam_at_windup = true
+	
+	mini_shot_attack_module.benefits_from_bonus_base_damage = false
+	mini_shot_attack_module.benefits_from_bonus_on_hit_damage = false
 	
 	var mini_beam_sprite_frame : SpriteFrames = SpriteFrames.new()
 	mini_beam_sprite_frame.add_frame("default", Adept_MiniBeam01_Pic)
@@ -190,7 +193,7 @@ func _calculate_range_thresholds():
 
 func _construct_effects():
 	var slow_modifier : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ADEPT_SLOW)
-	slow_modifier.percent_amount = -15
+	slow_modifier.percent_amount = -20
 	slow_modifier.percent_based_on = PercentType.BASE
 	
 	slow_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED, slow_modifier, StoreOfEnemyEffectsUUID.ADEPT_SLOW)

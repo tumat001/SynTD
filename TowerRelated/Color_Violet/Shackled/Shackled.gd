@@ -56,7 +56,7 @@ var proj_aoe_attack_module : AOEAttackModule
 const chains_time_taken_for_pull : float = 0.2
 const chains_stun_duration : float = 0.5
 
-const chains_base_ability_cooldown : float = 12.0
+const chains_base_ability_cooldown : float = 13.0
 const chains_attk_count_needed : int = 14
 const chains_post_mitigated_dmg_needed : float = 50.0
 

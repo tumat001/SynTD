@@ -93,10 +93,10 @@ signal on_any_attack(attk_speed_delay, enemies, module)
 
 # on any damage instance constructed
 signal on_damage_instance_constructed(damage_instance, module)
+signal on_main_attack_module_damage_instance_constructed(damage_instance, module)
 
 signal on_main_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module)
 signal on_any_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module)
-signal on_main_attack_module_damage_instance_constructed(damage_instance, module)
 
 signal on_any_bullet_attack_module_before_bullet_is_shot(bullet, attack_module)
 signal on_main_bullet_attack_module_before_bullet_is_shot(bullet, attack_module)

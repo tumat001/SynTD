@@ -51,6 +51,7 @@ const hextribute_image = preload("res://TowerRelated/Color_Red/HexTribute/HexTri
 const transmutator_image = preload("res://TowerRelated/Color_Red/Transmutator/Transmutator_E.png")
 const soul_image = preload("res://TowerRelated/Color_Red/Soul/Soul_Omni.png")
 const probe_image = preload("res://TowerRelated/Color_Red/Probe/Probe_E.png")
+const wyvern_image = preload("res://TowerRelated/Color_Red/Wyvern/Wyvern_E.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -129,7 +130,7 @@ enum {
 	TRANSMUTATOR = 206,
 	SOUL = 207,
 	PROBE = 208,
-	WYVERN = 209,
+	WYVERN = 209, # NOT INCLUDED IN POOL
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -277,7 +278,7 @@ const tier_base_dmg_map : Dictionary = {
 	
 	4 : 2.25,
 	5 : 3,
-	6 : 4,
+	6 : 3.5,
 }
 
 const tier_attk_speed_map : Dictionary = {
@@ -285,9 +286,9 @@ const tier_attk_speed_map : Dictionary = {
 	2 : 23,
 	3 : 30,
 	
-	4 : 45,
+	4 : 50,
 	5 : 60,
-	6 : 75,
+	6 : 70,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
@@ -297,7 +298,7 @@ const tier_on_hit_dmg_map : Dictionary = {
 	
 	4 : 2.5,
 	5 : 3.25,
-	6 : 4.25,
+	6 : 3.75,
 }
 
 # Do not use this when instancing new tower class. Only use
@@ -496,7 +497,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = railgun_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3
+		info.base_damage = 4
 		info.base_attk_speed = 0.25
 		info.base_pierce = 5
 		info.base_range = 100
@@ -896,14 +897,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.45
-		info.base_attk_speed = 0.835
+		info.base_attk_speed = 0.88
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"On its 5th main attack, Lava Jet releases a beam of lava that deals 25% of the enemy's max health as elemental damage, up to 35."
+			"On its 5th main attack, Lava Jet releases a beam of lava that deals 25% of the enemy's max health as elemental damage, up to 40."
 		]
 		
 		var tower_effect = LavaJetModuleAdderEffect.new()
@@ -1692,8 +1693,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = reaper_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 4.0
-		info.base_attk_speed = 0.73
+		info.base_damage = 4.75
+		info.base_attk_speed = 0.68
 		info.base_pierce = 1
 		info.base_range = 130
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1755,7 +1756,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack. This event does not occur when the triggering attack is from another shocker ball.",
 			"The ball returns to Shocker when the enemy dies, exits the map, when the ball fails to stick to a target, or when the enemy is not hit after 5 seconds.",
 			"",
-			"Shocker ball has 100 range. Its bolts deal 2 elemental damage. Bolts apply on hit damages and effects at 50% efficiency.",
+			"Shocker ball has 100 range. Its bolts deal 2 elemental damage. Bolts benefit from base damage buffs, on hit damages and effects at 50% efficiency.",
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SHOCKER)
@@ -1777,8 +1778,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = adept_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.75
-		info.base_attk_speed = 1.26
+		info.base_damage = 3
+		info.base_attk_speed = 1.2
 		info.base_pierce = 1
 		info.base_range = 145
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1786,9 +1787,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Adept's attacks gain bonus effects based on its current target's distance from itself on hit.",
-			"Beyond 85% of range: Adept's main attack deals 35% more damage, and slows enemies hit by 15% for 1 second.",
+			"Beyond 85% of range: Adept's main attack deals 35% more damage, and slows enemies hit by 20% for 1 second.",
 			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack.",
-			"The secondary attack deals 1 physical damage and applies on hit effects. The shot benefits from base damage buffs and on hit damages at 15% efficiency.",
+			"The secondary attack deals 2 physical damage and applies on hit effects.",
 			"",
 			"After 3 rounds of being active, Adept gains Far and Close targeting options."
 		]
@@ -1950,7 +1951,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
 			"Levels are gained by spending EXP and gold. Only 6 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
-			"Upon reaching level 6, Hero increases the limit of activated composite synergies by 1. Hero also gains 2 bonus base damage, 50% bonus attack speed, and 0.5 ability potency.",
+			"Upon reaching level 6, Hero increases the limit of activatable composite synergies by 1. Hero also gains 2.25 bonus base damage, 50% bonus attack speed, and 0.5 ability potency.",
 			"",
 			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
@@ -2070,7 +2071,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Main attacks on hit causes Soul to attempt to cast Effigize.",
 			"Effigize: Spawns an Effigy of the enemy. Only one Effigy can be maintained by Soul at a time.",
 			"Effigy gains max health equal to 50% of the enemy hit's current health. This is increased by Soul's ability potency.",
-			"Effigy inherits the enemy's stats.",
+			"Effigy inherits the enemy's stats, and takes 25% increased damage.",
 			"All damage and on hit effects taken by the Effigy is shared to the enemy associated with the Effigy. This does not trigger on hit events, and does not share execute damage.",
 			"Cooldown: 1 s. Cooldown starts when the Effigy is destroyed.",
 			"",
@@ -2147,10 +2148,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Attacks two enemies at the same time with its beams. This is counted as executing a main attack only once.",
+			"Attacks two enemies at the same time with its beams. This is counted as executing one main attack.",
 			"",
 			"Ability: Transpose. Select a tower to swap places with. Swapping takes 1.5 seconds to complete.",
-			"Both the tower and Transporter gain 50% bonus attack speed for 5 seconds after swapping.",
+			"Both the tower and Transporter gain 50% bonus attack speed and 0.25 ability potency for 5 seconds after swapping.",
 			"Ability potency increases the bonus attack speed and decreases swapping delay.",
 			"Cooldown: 45 s"
 		]
@@ -2259,7 +2260,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_attk_speed = 0.685
 		info.base_pierce = 1
 		info.base_range = 122
-		info.base_damage_type = DamageType.ELEMENTAL
+		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
@@ -2296,7 +2297,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 2.35
 		info.base_attk_speed = 0.78
 		info.base_pierce = 1
-		info.base_range = 160
+		info.base_range = 165
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -2305,7 +2306,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"After 14 attacks or dealing 50 post-mitigated damage, Shackled attempts to cast Chains.",
 			"Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and stunning them for 0.5 seconds. Targeting affects which enemies are pulled.",
-			"Cooldown: 12 s",
+			"Cooldown: 13 s",
 			"",
 			"After 3 rounds of being active, Shackled is able to pull 2 more enemies per cast."
 		]
@@ -2333,7 +2334,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 3
-		info.base_attk_speed = 0.97
+		info.base_attk_speed = 0.92
 		info.base_pierce = 1
 		info.base_range = 130
 		info.base_damage_type = DamageType.PHYSICAL
@@ -2343,25 +2344,25 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Nucleus's main attacks ignore 40% of the enemy's armor.",
 			"",
 			"Nucleus shuffles to Alpha and Beta phases every 5 attacks. Nucleus always starts at Alpha Phase.",
-			"Alpha: Nucleus's attacks deal 2 bonus physical damage on hit.",
-			"Beta: Nucleus's attacks pierce through 3 enemies.",
+			"Alpha: Nucleus's main attacks's base damage is increased by 100%.",
+			"Beta: Nucleus's main attacks pierce through 3 enemies.",
 			"",
 			"Ability: Gamma. Fires a constant beam towards its current target for 8 seconds. Nucleus rotates the beam towards its current target.",
-			"Gamma deals 1 + 75% of Nucleus's bonus base damage as elemental damage every 0.5 seconds.",
+			"Gamma deals 2 + 50% of Nucleus's bonus base damage as elemental damage every 0.5 seconds.",
 			"Cooldown: 50 s",
 			"Ability potency increases damage dealt by Gamma."
 		]
 		
 		
-		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_NUCLEUS)
-		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
-		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_NUCLEUS, attr_mod, DamageType.PHYSICAL)
+		# Ingredient related
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_NUCLEUS)
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
 		
-		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_NUCLEUS)
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_NUCLEUS)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "+ on hit"
+		info.ingredient_effect_simple_description = "+ base dmg"
 		
 		
 	elif tower_id == BURGEON:
@@ -2375,7 +2376,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 0
 		info.base_attk_speed = 0.333
 		info.base_pierce = 0
-		info.base_range = 160
+		info.base_range = 175
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
 		
@@ -2404,6 +2405,32 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ on hit"
 		
+		
+		
+#	elif tower_id == WYVERN:
+#		info = TowerTypeInformation.new("Wyvern", tower_id)
+#		info.tower_tier = TowerTiersMap[tower_id]
+#		info.tower_cost = info.tower_tier
+#		info.colors.append(TowerColors.RED)
+#		info.tower_image_in_buy_card = wyvern_image
+#		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+#
+#		info.base_damage = 9
+#		info.base_attk_speed = 0.35
+#		info.base_pierce = 1
+#		info.base_range = 185
+#		info.base_damage_type = DamageType.PHYSICAL
+#		info.on_hit_multiplier = 0
+#
+#		info.tower_descriptions = [
+#			"Wyvern stores 8% of its post mitigated damage dealt as Fury.",
+#			"When Wyvern has at least 10 Fury, it attempts to cast Fulminate.",
+#			"Fulminate: Wyvern's next 2 main attacks explode, dealing bonus on hit physical damage equal to the Fury amount.",
+#			"Bonus on hit damage scales with ability potency.",
+#			"Cooldown: 18 s",
+#			"",
+#
+#		]
 		
 		
 	

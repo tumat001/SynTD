@@ -11,11 +11,15 @@ var game_elements : GameElements
 
 var _is_first_time_activated : bool = true
 
-const tier_2_recharge_rate : int = 1
-const tier_1_recharge_rate : int = 2
+const tier_1_recharge_rate : int = 3
+const tier_2_recharge_rate : int = 2
+const tier_3_recharge_rate : int = 1
 
-const tier_2_max_capacity = 4
+
 const tier_1_max_capacity = 8
+const tier_2_max_capacity = 6
+const tier_3_max_capacity = 4
+
 
 # used by violet yellow
 var eligible_colors : Array = [TowerColors.YELLOW]
@@ -24,7 +28,7 @@ var eligible_colors : Array = [TowerColors.YELLOW]
 func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	game_elements = arg_game_elements
 	
-	if (tier == 1 or tier == 2) and energy_battery == null:
+	if (tier == 1 or tier == 2 or tier == 3) and energy_battery == null:
 		energy_battery = EnergyBattery.new(game_elements.stage_round_manager)
 	
 	if tier == 1:
@@ -35,10 +39,16 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		
 		if energy_battery.max_energy_capacity < tier_2_max_capacity:
 			energy_battery.max_energy_capacity = tier_2_max_capacity
+		
+	elif tier == 3:
+		energy_battery.recharge_rate_per_round_from_main = tier_3_recharge_rate
+		
+		if energy_battery.max_energy_capacity < tier_3_max_capacity:
+			energy_battery.max_energy_capacity = tier_3_max_capacity
 	else:
 		_inactivate_self()
 	
-	if tier == 1 or tier == 2:
+	if tier == 1 or tier == 2 or tier == 3:
 		if !game_elements.stage_round_manager.is_connected("round_started", self, "_first_time_activation"):
 			game_elements.stage_round_manager.connect("round_started", self, "_first_time_activation", [], CONNECT_ONESHOT)
 		

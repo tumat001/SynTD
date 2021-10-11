@@ -63,7 +63,6 @@ func get_control_with_script(script : Reference) -> Control:
 	return null
 
 
-
 #func _update_visibility_based_on_children():
 #	var to_be_vis := false
 #
@@ -73,3 +72,8 @@ func get_control_with_script(script : Reference) -> Control:
 #			break
 #
 #	return to_be_vis
+
+#
+
+
+

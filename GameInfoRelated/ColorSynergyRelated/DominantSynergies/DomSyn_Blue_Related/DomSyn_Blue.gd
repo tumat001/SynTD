@@ -123,30 +123,54 @@ const linked_mana_blast_descriptions : Array = [
 
 #
 
-var renew_empower_ability : BaseAbility
-var renew_empower_ability_button : AbilityButton
-const renew_empower_ability_cooldown : float = 60.0
-const renew_empower_ability_empower_static_cooldown : float = 0.25
+#var renew_empower_ability : BaseAbility
+#var renew_empower_ability_button : AbilityButton
+#const renew_empower_ability_cooldown : float = 60.0
+#const renew_empower_ability_empower_static_cooldown : float = 0.25
+#
+#const renew_empower_side_renew_icon : Texture = Renew_Pic
+#
+#const renew_empower_ability_constant_description : Array = [
+#	"This ability comes with two possible outcomes: Renew and Empower. These two outcomes share the same cooldown. Cooldown: %s" % (str(renew_empower_ability_cooldown) + " s"),
+#	"",
+#	"Renew: Removes remaining cooldowns of all other blue abilities. Renew is castable only when at least one blue ability is in cooldown.",
+#	"",
+#	"Empower: Greatly empowers the next blue ability that is casted. Empower is castable only when no blue ability is in cooldown.",
+#	"Re-casting empower cancels the effect instead, putting this ability at a %s cooldown." % (str(renew_empower_ability_empower_static_cooldown) + "s"),
+#	"",
+#]
+#
+#const renew_empower_ability_renew_active_description : Array = [
+#	"Current castable ability: Renew"
+#]
+#
+#const renew_empower_ability_empower_active_description : Array = [
+#	"Current castable ability: Empower"
+#]
 
-const renew_empower_side_renew_icon : Texture = Renew_Pic
+const renew_empower_shared_ability_cooldown : float = 3.0#60.0
+const cannot_cast_as_renew_or_empower_clause_id : int = -20
 
-const renew_empower_ability_constant_description : Array = [
-	"This ability comes with two possible outcomes: Renew and Empower. These two outcomes share the same cooldown. Cooldown: %s" % (str(renew_empower_ability_cooldown) + " s"),
+var renew_ability : BaseAbility
+const renew_ability_description : Array = [
+	"Removes remaining cooldowns of all other blue abilities. Renew is castable only when at least one blue ability is in cooldown.",
 	"",
-	"Renew: Removes remaining cooldowns of all other blue abilities. Renew is castable only when at least one blue ability is in cooldown.",
-	"",
-	"Empower: Greatly empowers the next blue ability that is casted. Empower is castable only when no blue ability is in cooldown.",
-	"Re-casting empower cancels the effect instead, putting this ability at a %s cooldown." % (str(renew_empower_ability_empower_static_cooldown) + "s"),
-	"",
+	"Does not affect Empower ability. Shares cooldown with Empower ability.",
+	"Cooldown: %s" % [str(renew_empower_shared_ability_cooldown) + "s"]
 ]
 
-const renew_empower_ability_renew_active_description : Array = [
-	"Current castable ability: Renew"
+
+const empower_ability_cancel_static_cooldown : float = 0.25
+var empower_ability : BaseAbility
+const empower_ability_description : Array = [
+	"Greatly empowers the next blue ability that is casted. Empower is castable only when no blue ability is in cooldown.",
+	"Re-casting cancels the effect instead, putting this ability at a %s cooldown." % (str(empower_ability_cancel_static_cooldown) + "s"),
+	"",
+	"Does not affect Renew ability. Shares cooldown with Renew ability.",
+	"Cooldown: %s" % [str(renew_empower_shared_ability_cooldown) + "s"]
 ]
 
-const renew_empower_ability_empower_active_description : Array = [
-	"Current castable ability: Empower"
-]
+#
 
 const renew_empower_ability_connected_ability_empowered_name_extension : String = " (Empowered)"
 
@@ -193,14 +217,26 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 			mana_blast_ability.set_clauses_to_usual_synergy_insufficient_based()
 	
 	
+#	if tier <= 1:
+#		if renew_empower_ability == null:
+#			_construct_renew_empower_ability()
+#		else:
+#			renew_empower_ability.set_clauses_to_usual_synergy_sufficient_based()
+#	else:
+#		if renew_empower_ability != null:
+#			renew_empower_ability.set_clauses_to_usual_synergy_insufficient_based()
+#
+	
 	if tier <= 1:
-		if renew_empower_ability == null:
-			_construct_renew_empower_ability()
+		if renew_ability == null:
+			_construct_renew_and_empower_abilities()
 		else:
-			renew_empower_ability.set_clauses_to_usual_synergy_sufficient_based()
+			renew_ability.set_clauses_to_usual_synergy_sufficient_based()
+			empower_ability.set_clauses_to_usual_synergy_sufficient_based()
 	else:
-		if renew_empower_ability != null:
-			renew_empower_ability.set_clauses_to_usual_synergy_insufficient_based()
+		if renew_ability != null:
+			renew_ability.set_clauses_to_usual_synergy_insufficient_based()
+			empower_ability.set_clauses_to_usual_synergy_insufficient_based()
 	
 	
 	# Ability Potency
@@ -479,23 +515,69 @@ func _on_buff_aoe_hit_tower(tower):
 
 #
 
-func _construct_renew_empower_ability():
-	renew_empower_ability = BaseAbility.new()
+#func _construct_renew_empower_ability():
+#	renew_empower_ability = BaseAbility.new()
+#
+#	renew_empower_ability.is_timebound = true
+#	renew_empower_ability.connect("ability_activated", self, "_renew_empower_ability_activated", [], CONNECT_PERSIST)
+#	renew_empower_ability.icon = Renew_Pic
+#
+#	renew_empower_ability.set_properties_to_usual_synergy_based()
+#	renew_empower_ability.synergy = self
+#
+#	renew_empower_ability.display_name = "Renew/Empower"
+#
+#	#
+#	_monitor_and_connect_ability(breeze_ability)
+#	_monitor_and_connect_ability(mana_blast_ability)
+#
+#	register_ability_to_manager(renew_empower_ability)
+#
+#	call_deferred("_check_if_blue_abilities_are_in_cooldown")
+
+func _construct_renew_and_empower_abilities():
+	renew_ability = BaseAbility.new()
 	
-	renew_empower_ability.is_timebound = true
-	renew_empower_ability.connect("ability_activated", self, "_renew_empower_ability_activated", [], CONNECT_PERSIST)
-	renew_empower_ability.icon = Renew_Pic
+	renew_ability.is_timebound = true
+	renew_ability.connect("ability_activated", self, "_cast_as_renew", [], CONNECT_PERSIST)
+	renew_ability.icon = Renew_Pic
 	
-	renew_empower_ability.set_properties_to_usual_synergy_based()
-	renew_empower_ability.synergy = self
+	renew_ability.descriptions = renew_ability_description
 	
-	renew_empower_ability.display_name = "Renew/Empower"
+	renew_ability.set_properties_to_usual_synergy_based()
+	renew_ability.synergy = self
+	
+	renew_ability.display_name = "Renew"
+	
+	renew_ability.set_properties_to_auto_castable()
+	renew_ability.auto_cast_func = "_cast_as_renew"
+	
 	
 	#
+	
+	empower_ability = BaseAbility.new()
+	
+	empower_ability.is_timebound = true
+	empower_ability.connect("ability_activated", self, "_cast_as_empower", [], CONNECT_PERSIST)
+	empower_ability.icon = Empower_Pic
+	
+	empower_ability.descriptions = empower_ability_description
+	
+	empower_ability.set_properties_to_usual_synergy_based()
+	empower_ability.synergy = self
+	
+	empower_ability.display_name = "Empower"
+	
+	empower_ability.set_properties_to_auto_castable()
+	empower_ability.auto_cast_func = "_cast_as_empower"
+	
+	#
+	
 	_monitor_and_connect_ability(breeze_ability)
 	_monitor_and_connect_ability(mana_blast_ability)
 	
-	register_ability_to_manager(renew_empower_ability)
+	register_ability_to_manager(renew_ability)
+	register_ability_to_manager(empower_ability)
 	
 	call_deferred("_check_if_blue_abilities_are_in_cooldown")
 
@@ -511,12 +593,17 @@ func _monitor_and_connect_ability(arg_ability : BaseAbility):
 func _monitored_ability_cd_started(max_time_cd, current_time_cd):
 	_check_if_blue_abilities_are_in_cooldown()
 
+#func _check_if_blue_abilities_are_in_cooldown():
+#	if _if_at_least_one_blue_abilities_is_in_cooldown():
+#		_show_renew_as_display()
+#	else:
+#		_show_empower_as_display()
+
 func _check_if_blue_abilities_are_in_cooldown():
 	if _if_at_least_one_blue_abilities_is_in_cooldown():
-		_show_renew_as_display()
+		_enable_renew_and_disable_empower()
 	else:
-		_show_empower_as_display()
-
+		_disable_renew_and_enable_empower()
 
 func _if_at_least_one_blue_abilities_is_in_cooldown() -> bool:
 	for ability in connected_blue_abilities:
@@ -527,30 +614,39 @@ func _if_at_least_one_blue_abilities_is_in_cooldown() -> bool:
 	return false
 
 
-func _show_empower_as_display():
-	renew_empower_ability.icon = Empower_Pic
-	
-	var descs : Array = renew_empower_ability_constant_description.duplicate()
-	for desc in renew_empower_ability_empower_active_description:
-		descs.append(desc)
-	renew_empower_ability.descriptions = descs
+#func _show_empower_as_display():
+#	renew_empower_ability.icon = Empower_Pic
+#
+#	var descs : Array = renew_empower_ability_constant_description.duplicate()
+#	for desc in renew_empower_ability_empower_active_description:
+#		descs.append(desc)
+#	renew_empower_ability.descriptions = descs
+#
+#
+#func _show_renew_as_display():
+#	renew_empower_ability.icon = renew_empower_side_renew_icon
+#
+#	var descs : Array = renew_empower_ability_constant_description.duplicate()
+#	for desc in renew_empower_ability_renew_active_description:
+#		descs.append(desc)
+#	renew_empower_ability.descriptions = descs
 
+func _enable_renew_and_disable_empower():
+	renew_ability.activation_conditional_clauses.remove_clause(cannot_cast_as_renew_or_empower_clause_id)
+	empower_ability.activation_conditional_clauses.attempt_insert_clause(cannot_cast_as_renew_or_empower_clause_id)
 
-func _show_renew_as_display():
-	renew_empower_ability.icon = renew_empower_side_renew_icon
-	
-	var descs : Array = renew_empower_ability_constant_description.duplicate()
-	for desc in renew_empower_ability_renew_active_description:
-		descs.append(desc)
-	renew_empower_ability.descriptions = descs
+func _disable_renew_and_enable_empower():
+	renew_ability.activation_conditional_clauses.attempt_insert_clause(cannot_cast_as_renew_or_empower_clause_id)
+	empower_ability.activation_conditional_clauses.remove_clause(cannot_cast_as_renew_or_empower_clause_id)
+
 
 #
 
-func _renew_empower_ability_activated():
-	if _if_at_least_one_blue_abilities_is_in_cooldown():
-		_cast_as_renew()
-	else:
-		_cast_as_empower()
+#func _renew_empower_ability_activated():
+#	if _if_at_least_one_blue_abilities_is_in_cooldown():
+#		_cast_as_renew()
+#	else:
+#		_cast_as_empower()
 
 #
 
@@ -558,15 +654,19 @@ func _cast_as_renew():
 	for ability in connected_blue_abilities:
 		ability.remove_all_time_cooldown()
 	
-	renew_empower_ability.start_time_cooldown(renew_empower_ability_cooldown)
-
+	#renew_empower_ability.start_time_cooldown(renew_empower_ability_cooldown)
+	renew_ability.start_time_cooldown(renew_empower_shared_ability_cooldown)
+	empower_ability.start_time_cooldown(renew_empower_shared_ability_cooldown)
+	
+	set_deferred("is_next_ability_empowered", false)
+	_display_normal_version_of_monitored_ability_descriptions()
 
 #
 
 func _cast_as_empower():
 	if !is_next_ability_empowered:
 		is_next_ability_empowered = true
-		renew_empower_ability.icon = Empower_Pic_Selected
+		empower_ability.icon = Empower_Pic_Selected
 		
 		_display_empowered_version_of_monitored_ability_descriptions()
 	else:
@@ -592,17 +692,32 @@ func _monitored_ability_casted():
 		_return_from_empowered(false)
 
 
+#func _return_from_empowered(is_recast : bool = false):
+#	if is_recast:
+#		renew_empower_ability.start_time_cooldown(renew_empower_ability_empower_static_cooldown)
+#		_show_empower_as_display()
+#
+#	else:
+#		renew_empower_ability.start_time_cooldown(renew_empower_ability_cooldown)
+#		_show_renew_as_display()
+#
+#	_display_normal_version_of_monitored_ability_descriptions()
+#
+#	set_deferred("is_next_ability_empowered", false)
+
 func _return_from_empowered(is_recast : bool = false):
 	if is_recast:
-		renew_empower_ability.start_time_cooldown(renew_empower_ability_empower_static_cooldown)
-		_show_empower_as_display()
+		empower_ability.start_time_cooldown(empower_ability_cancel_static_cooldown)
+		
 	else:
-		renew_empower_ability.start_time_cooldown(renew_empower_ability_cooldown)
-		_show_renew_as_display()
+		empower_ability.start_time_cooldown(renew_empower_shared_ability_cooldown)
+		renew_ability.start_time_cooldown(renew_empower_shared_ability_cooldown)
 	
 	_display_normal_version_of_monitored_ability_descriptions()
+	empower_ability.icon = Empower_Pic
 	
 	set_deferred("is_next_ability_empowered", false)
+
 
 
 func _display_normal_version_of_monitored_ability_descriptions():

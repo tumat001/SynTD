@@ -20,9 +20,9 @@ const expl_scale_tier_2 : float = 1.75
 const expl_scale_tier_3 : float = 1.25
 const expl_scale_tier_4 : float = 1.0
 
-const expl_unit_time_tier_1 : float = 0.5
-const expl_unit_time_tier_2 : float = 2.0
-const expl_unit_time_tier_3 : float = 5.0
+const expl_unit_time_tier_1 : float = 0.4
+const expl_unit_time_tier_2 : float = 1.5
+const expl_unit_time_tier_3 : float = 4.5
 const expl_unit_time_tier_4 : float = 10.0
 
 # When towers are overheating (100 heat)

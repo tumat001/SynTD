@@ -89,7 +89,8 @@ func _ready():
 	shock_range_module.set_current_targeting(Targeting.CLOSE)
 	
 	shock_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	shock_attack_module.base_damage = 2
+	shock_attack_module.base_damage_scale = shock_base_damage_ratio
+	shock_attack_module.base_damage = 2 / shock_attack_module.base_damage_scale
 	shock_attack_module.base_damage_type = DamageType.ELEMENTAL
 	shock_attack_module.base_attack_speed = 0
 	shock_attack_module.base_attack_wind_up = 0
@@ -97,8 +98,8 @@ func _ready():
 	shock_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	shock_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.SHOCKER_SHOCK_BALL_MAIN_DAMAGE
 	
-	shock_attack_module.on_hit_damage_scale = 0.5
-	shock_attack_module.on_hit_effect_scale = 0.5
+	shock_attack_module.on_hit_damage_scale = shock_base_damage_ratio
+	shock_attack_module.on_hit_effect_scale = shock_base_damage_ratio
 	
 	shock_attack_module.benefits_from_bonus_attack_speed = false
 	

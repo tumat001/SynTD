@@ -167,6 +167,10 @@ func _ready():
 	#
 	connect("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_enemy_7", [], CONNECT_PERSIST)
 	
+	in_field_emblem_fire.use_parent_material = false
+	in_field_emblem_explosive.use_parent_material = false
+	in_field_emblem_toughness_pierce.use_parent_material = false
+	
 	_post_inherit_ready()
 
 

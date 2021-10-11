@@ -696,10 +696,14 @@ func _get_enemies_found_by_range_module(arg_num_of_targets : int):
 #
 
 func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of_targets : int = number_of_unique_targets, attack_count : int = 1):
-	var success = on_command_attack_enemies(arg_enemies, num_of_targets)
+	var success = false
+	
+	if !_is_bursting:
+		success = on_command_attack_enemies(arg_enemies, num_of_targets)
+	
 	queued_attack_count += attack_count
 	
-	if arg_enemies.size() < 0:
+	if arg_enemies.size() <= 0:
 		queued_attack_count = 0
 		return
 	
@@ -722,11 +726,16 @@ func _connect_attack_enemies_when_ready(arg_enemies, num_of_targets):
 #
 
 func on_command_attack_enemies_in_range_and_attack_when_ready(num_of_targets : int = number_of_unique_targets, attack_count : int = 1):
-	var enemies = _get_enemies_found_by_range_module(num_of_targets)
-	var success = on_command_attack_enemies(enemies, num_of_targets)
+	var success = false
+	var enemies : Array
+	
+	if !_is_bursting:
+		enemies = _get_enemies_found_by_range_module(num_of_targets)
+		success = on_command_attack_enemies(enemies, num_of_targets)
+	
 	queued_attack_count += attack_count
 	
-	if enemies.size() < 0:
+	if enemies.size() <= 0:
 		queued_attack_count = 0
 		return
 	
@@ -770,12 +779,21 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 	else:
 		enemies = arg_enemies
 	
+	#
 	
-	while enemies.has(null):
-		enemies.erase(null)
+	var to_delete : Array = []
+	for enemy in enemies:
+		if enemy == null or enemy.is_queued_for_deletion():
+			to_delete.append(enemy)
+	
+	for enemy in to_delete:
+		enemies.erase(enemy)
+	
+	#
 	
 	if enemies.size() == 0 and !_is_attacking:
 		return false
+	
 	
 	#while enemies.has(null):
 	#	enemies.erase(null)
@@ -896,7 +914,7 @@ func _attack_enemies(enemies : Array):
 	
 	if attack_sprite_show_in_attack:
 		for enemy in enemies:
-			if attack_sprite_scene != null:
+			if attack_sprite_scene != null and enemy != null:
 				var attack_sprite = attack_sprite_scene.instance()
 				emit_signal("before_attack_sprite_is_shown", attack_sprite)
 				

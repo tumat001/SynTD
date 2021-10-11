@@ -29,8 +29,9 @@ const Transpose_Sprite_Scene = preload("res://TowerRelated/Color_Blue/Transpose/
 const transpose_base_cooldown : float = 45.0
 const transpose_base_ability_delay : float = 1.5
 
-const transpose_attk_speed_duration : float = 5.0
+const transpose_buff_duration : float = 5.0
 const transpose_base_attk_speed_amount : float = 50.0
+const transpose_base_ability_potency_amount : float = 0.25
 
 const transpose_is_in_delay_timeline_clause : int = -10
 
@@ -39,6 +40,7 @@ var transpose_ability_activation_clauses : ConditionalClauses
 
 var transpose_attk_speed_modi : PercentModifier
 var transpose_attk_speed_effect : TowerAttributesEffect
+var transpose_ability_potency_effect : TowerAttributesEffect
 
 var transpose_delay_timer : Timer
 
@@ -112,8 +114,16 @@ func _construct_effect():
 	
 	transpose_attk_speed_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, transpose_attk_speed_modi, StoreOfTowerEffectsUUID.TRANSPOSE_ATTK_SPEED)
 	transpose_attk_speed_effect.is_timebound = true
-	transpose_attk_speed_effect.time_in_seconds = transpose_attk_speed_duration
+	transpose_attk_speed_effect.time_in_seconds = transpose_buff_duration
 	transpose_attk_speed_effect.status_bar_icon = Transpose_AttkSpeed_StatusBarIcon
+	
+	#
+	var ap_modi = FlatModifier.new(StoreOfTowerEffectsUUID.TRANSPOSE_ABILITY_POTENCY_BUFF)
+	ap_modi.flat_modifier = transpose_base_ability_potency_amount
+	
+	transpose_ability_potency_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY, ap_modi, StoreOfTowerEffectsUUID.TRANSPOSE_ABILITY_POTENCY_BUFF)
+	transpose_ability_potency_effect.is_timebound = true
+	transpose_ability_potency_effect.time_in_seconds = transpose_buff_duration
 	
 
 #
@@ -130,7 +140,7 @@ func _construct_and_connect_ability():
 	
 	transpose_ability.descriptions = [
 		"Select a tower to swap places with. Swapping takes 1.5 seconds to complete.",
-		"Both the tower and Transporter gain 50% bonus attack speed for 5 seconds after swapping.",
+		"Both the tower and Transporter gain 50% bonus attack speed and 0.25 ability potency for 5 seconds after swapping.",
 		"Ability potency increases the bonus attack speed and decreases swapping delay.",
 		"Cooldown: 45 s",
 		"",
@@ -200,6 +210,9 @@ func _transpose_with_tower(tower):
 		
 		_give_tower_transpose_attk_speed(tower)
 		_give_tower_transpose_attk_speed(self)
+		
+		_give_tower_transpose_ability_potency(tower)
+		_give_tower_transpose_ability_potency(self)
 	
 	transpose_ability_activation_clauses.remove_clause(transpose_is_in_delay_timeline_clause)
 
@@ -212,6 +225,9 @@ func _can_transpose_with_tower(tower) -> bool:
 func _give_tower_transpose_attk_speed(tower):
 	var scaled_effect = transpose_attk_speed_effect._get_copy_scaled_by(last_calculated_final_ability_potency)
 	tower.add_tower_effect(scaled_effect)
+
+func _give_tower_transpose_ability_potency(tower):
+	tower.add_tower_effect(transpose_ability_potency_effect._get_copy_scaled_by(1))
 
 #
 

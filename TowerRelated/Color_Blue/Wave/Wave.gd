@@ -314,12 +314,20 @@ func _ability_activated_w():
 
 func _add_bullet_to_tree(bullet):
 	get_tree().get_root().add_child(bullet)
-	bullet.connect("tree_exiting" , self, "_on_column_death", [bullet], CONNECT_ONESHOT)
-
+	#bullet.connect("tree_exiting" , self, "_on_column_death", [bullet], CONNECT_ONESHOT)
+	bullet.connect("on_zero_pierce", self, "_on_column_death")
+	bullet.connect("on_current_life_distance_expire", self, "_on_column_death", [bullet])
 
 # explosion trigger
 
 func _on_column_death(bullet):
+	if bullet.is_connected("on_zero_pierce", self, "_on_column_death"):
+		bullet.disconnect("on_zero_pierce", self, "_on_column_death")
+	
+	if bullet.is_connected("on_current_life_distance_expire", self, "_on_column_death"):
+		bullet.disconnect("on_current_life_distance_expire", self, "_on_column_death")
+	
+	
 	var bullet_position = bullet.global_position
 	
 	var explosion = explosion_attack_module.construct_aoe(bullet_position, bullet_position)

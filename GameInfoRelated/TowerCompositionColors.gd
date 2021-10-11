@@ -61,14 +61,14 @@ func _init():
 		"10+ stacks) Tantrum: Rapidly shoot (6 + 1/2 of total stacks) red bolts to random enemies in range. Bolts deal physical damage.",
 		"",
 		"Green Detonation: Gain a single use effect shield for a duration.",
-		"10+ stacks) Pulse: Towers caught in the pulse have their next (3 + 1/4 of total stacks) attacks apply a slow for 5 seconds. Number of stacks inceases size of Pulse and the slow's effectiveness and duration.",
+		"10+ stacks) Pulse: Towers caught in the pulse have their next (3 + 1/5 of total stacks) attacks apply a slow for 5 seconds. Number of stacks inceases size of Pulse and the slow's effectiveness and duration.",
 		"",
 	],
 	[CompliSyn_RedGreen.new()],
 	[
-		"(Red: 0.4 dmg per stack, 2.5 damage per bolt.) (Green: 0.4 seconds per stack. 40% slow minimum.)",
-		"(Red: 0.3 dmg per stack, 2.0 damage per bolt.) (Green: 0.3 seconds per stack. 30% slow minimum.)",
-		"(Red: 0.2 dmg per stack, 1.5 damage per bolt.) (Green: 0.2 seconds per stack. 20% slow minimum.)",
+		"(Red: 0.4 dmg per stack, 3.5 damage per bolt.) (Green: 0.4 seconds per stack. 40% slow minimum.)",
+		"(Red: 0.3 dmg per stack, 3.0 damage per bolt.) (Green: 0.3 seconds per stack. 30% slow minimum.)",
+		"(Red: 0.2 dmg per stack, 2.5 damage per bolt.) (Green: 0.2 seconds per stack. 20% slow minimum.)",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -104,9 +104,9 @@ func _init():
 	],
 	[CompleSyn_OrangeBlue.new()],
 	[
-		"Explosion per 0.5 seconds. Explosions are 100% larger.",
-		"Explosion per 2.0 seconds. Explosions are 75% larger.",
-		"Explosion per 5.0 seconds. Explosions are 25% larger.",
+		"Explosion per 0.4 seconds. Explosions are 100% larger.",
+		"Explosion per 1.5 seconds. Explosions are 75% larger.",
+		"Explosion per 4.5 seconds. Explosions are 25% larger.",
 		"Explosion per 10.0 seconds."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -140,8 +140,8 @@ func _init():
 	],
 	[AnaSyn_OrangeYR.new()],
 	[
-		"Up to 200% attack speed",
-		"Up to 90% attack speed",
+		"Up to 150% attack speed",
+		"Up to 95% attack speed",
 		"Up to 40% attack speed",
 		"Up to 15% attack speed",
 	],

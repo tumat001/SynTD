@@ -283,6 +283,8 @@ func _ready():
 	
 	tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_tower_placed_in_map", [], CONNECT_PERSIST)
 	
+	orb_hat_sprite.use_parent_material = false
+	
 	_post_inherit_ready()
 
 func _post_inherit_ready():

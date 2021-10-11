@@ -40,10 +40,8 @@ enum Phase {
 const percent_armor_ignore : float = 40.0
 
 const beta_bonus_pierce : int = 3
-const alpha_bonus_dmg_amount : float = 2.0
+const alpha_empowered_base_damage_ratio : float = 2.0
 const alpha_bonus_dmg_type : int = DamageType.PHYSICAL
-
-var alpha_on_hit_damage : OnHitDamage
 
 const attacks_before_cycle : int = 5
 var current_attack_index_in_cycle : int = 0
@@ -53,8 +51,8 @@ var nucleus_original_attk_module : BulletAttackModule
 
 
 var gamma_ability : BaseAbility
-var gamma_ability_flat_damage_amount : float = 1.0
-var gamma_ability_percent_base_dmg_amount : float = 0.75
+var gamma_ability_flat_damage_amount : float = 2.0
+var gamma_ability_percent_base_dmg_amount : float = 0.5
 var gamma_ability_duration : float = 8.0
 var gamma_ability_damage_repeat_count : int = 16
 var gamma_ability_base_cooldown : float = 50.0
@@ -189,7 +187,6 @@ func _ready():
 	
 	connect("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_enemy_n", [], CONNECT_PERSIST)
 	
-	_construct_bonus_damage_for_alpha()
 	_construct_and_connect_ability()
 	
 	_gamma_duration_timer = Timer.new()
@@ -230,21 +227,13 @@ func _before_bullet_is_shot_n(bullet : BaseBullet, module):
 
 func _on_main_dmg_instance_constructed_n(damage_instance, module):
 	if current_phase == Phase.ALPHA:
-		damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.NUCLEUS_ALPHA_BONUS_ON_HIT] = alpha_on_hit_damage
+		damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE].damage_as_modifier.flat_modifier *= alpha_empowered_base_damage_ratio
 	elif current_phase == Phase.BETA:
 		pass
 
 
 func _on_main_attack_finished_n(module):
 	_increase_step_in_cycle(1)
-
-#
-
-func _construct_bonus_damage_for_alpha():
-	var alpha_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.NUCLEUS_ALPHA_BONUS_ON_HIT)
-	alpha_modi.flat_modifier = alpha_bonus_dmg_amount
-	
-	alpha_on_hit_damage = OnHitDamage.new(StoreOfTowerEffectsUUID.NUCLEUS_ALPHA_BONUS_ON_HIT, alpha_modi, alpha_bonus_dmg_type)
 
 #
 

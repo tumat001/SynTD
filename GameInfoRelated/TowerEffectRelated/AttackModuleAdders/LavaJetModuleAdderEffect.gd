@@ -30,7 +30,7 @@ const AttackModule_Icon = preload("res://TowerRelated/Color_Orange/LavaJet/Asset
 
 
 const health_percent_dmg : float = 20.0
-const percent_dmg_max_limit : float = 20.0 # max damage on enemies with health above 120
+const percent_dmg_max_limit : float = 30.0 # max damage on enemies with health above 120
 
 var lava_jet_beam_am : WithBeamInstantDamageAttackModule
 const num_of_attacks_before_beam : int = 5
@@ -41,7 +41,7 @@ var _curr_num_of_attacks : int = 0
 
 func _init().(StoreOfTowerEffectsUUID.LAVA_JET_BEAM):
 	effect_icon = Ingredient_pic
-	description = "Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals 20% of the enemy's max health damage as elemental damage, up to 20."
+	description = "Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals 20% of the enemy's max health damage as elemental damage, up to 30."
 
 
 func _make_modifications_to_tower(tower):

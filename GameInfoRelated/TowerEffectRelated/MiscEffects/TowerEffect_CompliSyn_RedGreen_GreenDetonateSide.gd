@@ -46,7 +46,7 @@ var slow_duration_scale_inc_per_stack : float
 const pulse_min_radius : float = 15.0
 
 const aoe_pulse_modulate := Color(1, 1, 1, 0)
-const particle_pulse_modulate := Color(1, 1, 1, 0.8)
+const particle_pulse_modulate := Color(1, 1, 1, 0.5)
 var green_pulse_aoe_module : TD_AOEAttackModule
 var pulse_trigger_amount : int
 
@@ -135,7 +135,7 @@ func _construct_green_effect_shield():
 func _undo_modifications_to_tower(tower):
 	if tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_enemy"):
 		tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_enemy")
-		tower.connect("on_effect_removed", self, "_tower_removed_effect")
+		tower.disconnect("on_effect_removed", self, "_tower_removed_effect")
 		
 		if green_pulse_aoe_module != null:
 			green_pulse_aoe_module.queue_free()
@@ -201,17 +201,18 @@ func _construct_and_place_pulse_aoe(final_radius : float, stack_amount : int):
 # Slow related
 
 func _on_pulse_aoe_on_tower_hit(tower, stack_amount):
-	var slow_count = _get_attack_amount_from_stack_amount(stack_amount)
-	var slow_amount = _get_slow_amount_from_stack_amount(stack_amount)
-	var slow_duration = _get_slow_duration_from_stack_amount(stack_amount)
-	
-	var cloned_effect : TowerOnHitEffectAdderEffect = slow_on_hit_effect._shallow_copy()
-	cloned_effect.enemy_base_effect.attribute_as_modifier.percent_amount = slow_amount
-	cloned_effect.enemy_base_effect.time_in_seconds = slow_duration
-	
-	cloned_effect.count = slow_count
-	
-	tower.add_tower_effect(cloned_effect)
+	if tower != null and tower.is_current_placable_in_map():
+		var slow_count = _get_attack_amount_from_stack_amount(stack_amount)
+		var slow_amount = _get_slow_amount_from_stack_amount(stack_amount)
+		var slow_duration = _get_slow_duration_from_stack_amount(stack_amount)
+		
+		var cloned_effect : TowerOnHitEffectAdderEffect = slow_on_hit_effect._shallow_copy()
+		cloned_effect.enemy_base_effect.attribute_as_modifier.percent_amount = slow_amount
+		cloned_effect.enemy_base_effect.time_in_seconds = slow_duration
+		
+		cloned_effect.count = slow_count
+		
+		tower.add_tower_effect(cloned_effect)
 
 
 func _get_attack_amount_from_stack_amount(stack_amount : int) -> int:

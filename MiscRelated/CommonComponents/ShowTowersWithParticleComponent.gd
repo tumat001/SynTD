@@ -129,16 +129,17 @@ func _construct_particle_indicator():
 	return attk_sprite
 
 
-func destroy_indicators_from_towers(arg_towers = _tower_particle_map.keys()):
+func destroy_indicators_from_towers(arg_towers = _tower_particle_map.keys().duplicate()):
 	for tower in arg_towers:
 		if tower != null and tower.is_connected("tree_exiting", self, "_tower_target_queue_freed"):
 			tower.disconnect("tree_exiting", self, "_tower_target_queue_freed")
 			tower.disconnect("tower_not_in_active_map", self, "_tower_target_benched")
 		
-		call_deferred("_destroy_particle_associated_with_tower", tower)
+		call_deferred("_destroy_particle_associated_with_tower", tower, false)
 	
 	if _tower_particle_map.size() == 0:
 		_is_showing_particles = false
+
 
 #
 
@@ -149,7 +150,7 @@ func _tower_target_benched(tower):
 	_destroy_particle_associated_with_tower(tower)
 
 
-func _destroy_particle_associated_with_tower(tower):
+func _destroy_particle_associated_with_tower(tower, update_state : bool = true):
 	if _tower_particle_map.has(tower):
 		var particle = _tower_particle_map[tower]
 		if particle != null:
@@ -158,7 +159,7 @@ func _destroy_particle_associated_with_tower(tower):
 	_tower_particle_map.erase(tower)
 	
 	
-	if _is_showing_particles:
+	if _is_showing_particles and update_state:
 		call_deferred("_update_particle_state")
 
 

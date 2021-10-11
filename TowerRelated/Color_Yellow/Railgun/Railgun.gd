@@ -64,6 +64,7 @@ func _on_main_attack_module_enemy_hit_r(enemy, damage_register_id, damage_instan
 func _punch_hole_at_enemy(enemy):
 	if enemy != null:
 		enemy.pierce_consumed_per_hit /= 2
+		print(enemy.pierce_consumed_per_hit)
 
 
 # Energy module
@@ -89,6 +90,9 @@ func _module_turned_on(_first_time_per_round : bool):
 	railgun_attack_module.calculate_final_pierce()
 	
 	is_energy_module_on = true
+	
+	if !is_connected("on_main_attack_module_enemy_hit", self, "_on_main_attack_module_enemy_hit_r"):
+		connect("on_main_attack_module_enemy_hit", self, "_on_main_attack_module_enemy_hit_r", [], CONNECT_PERSIST)
 
 
 func _module_turned_off():
@@ -100,3 +104,6 @@ func _module_turned_off():
 	railgun_attack_module.calculate_final_pierce()
 	
 	is_energy_module_on = false
+	
+	if is_connected("on_main_attack_module_enemy_hit", self, "_on_main_attack_module_enemy_hit_r"):
+		disconnect("on_main_attack_module_enemy_hit", self, "_on_main_attack_module_enemy_hit_r")

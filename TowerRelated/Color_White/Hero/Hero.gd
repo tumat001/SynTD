@@ -72,7 +72,7 @@ const hero_base_health : float = 25.0
 const extra_comp_syn_slot_amount_at_max_natural_level : int = 1
 const hero_extra_ingredient_limit : int = 4
 
-const hero_max_nat_level_bonus_base_damage_amount : float = 2.0
+const hero_max_nat_level_bonus_base_damage_amount : float = 2.25
 const hero_max_nat_level_bonus_attk_speed_amount : float = 50.0
 const hero_max_nat_level_bonus_ability_potency : float = 0.5
 
@@ -102,9 +102,10 @@ const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
 const attks_needed_for_light_explosion : int = 35
 const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3.25]
 const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.35, 1.0]
+const light_explosion_pierce : int = 3
 
-const judgement_dmg_ratio_in_levels : Array = [1, 1, 2, 3]
-const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 2, 2.5, 6]
+const judgement_dmg_ratio_in_levels : Array = [0.5, 1, 2, 3.5]
+const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 1.5, 2, 6]
 var judgement_bonus_on_hit_dmg_dmg_type : int = DamageType.PHYSICAL
 
 const judgement_bonus_dmg_ratio : float = 1.20
@@ -399,7 +400,7 @@ func _construct_and_add_light_explosion_module():
 	
 	lightexplosion_attack_module.aoe_sprite_frames = sprite_frames
 	lightexplosion_attack_module.sprite_frames_only_play_once = true
-	lightexplosion_attack_module.pierce = 3
+	lightexplosion_attack_module.pierce = light_explosion_pierce
 	lightexplosion_attack_module.duration = 0.3
 	lightexplosion_attack_module.damage_repeat_count = 1
 	
@@ -922,7 +923,7 @@ func _get_light_explosion_ability_descs() -> Array:
 	return [
 		"",
 		"After %s main attacks in a round, every main attack that hits an enemy causes an explosion." % attks_needed_for_light_explosion,
-		"The explosion deals elemental damage equal to %s of the damage of the main attack." % (str(current_light_explosion_dmg_ratio * 100) + "%"),
+		"The explosion deals elemental damage equal to %s of the damage of the main attack to %s enemies." % [(str(current_light_explosion_dmg_ratio * 100) + "%"), str(light_explosion_pierce)],
 		"The explosion does not apply on hit effects."
 	]
 
@@ -980,7 +981,7 @@ func get_light_waves_upgrade_descs() -> Array:
 				descs.append("")
 				descs.append("New: Light Explosion")
 				descs.append("After %s main attacks in a round, every main attack that hits an enemy causes an explosion." % attks_needed_for_light_explosion)
-				descs.append("The explosion deals elemental damage equal to %s of the damage of the main attack." % (str(light_explosion_dmg_ratio_in_levels[2] * 100) + "%"))
+				descs.append("The explosion deals elemental damage equal to %s of the damage of the main attack to %s enemies." % [(str(light_explosion_dmg_ratio_in_levels[2] * 100) + "%"), str(light_explosion_pierce)])
 				
 			elif ability_light_waves_level + 1 == 4:
 				descs.append("light explosion damage ratio: %s -> %s" % [str(current_light_explosion_dmg_ratio * 100) + "%", str(light_explosion_dmg_ratio_in_levels[3] * 100) + "%"])

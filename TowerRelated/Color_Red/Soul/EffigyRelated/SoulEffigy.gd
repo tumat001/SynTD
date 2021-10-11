@@ -23,13 +23,16 @@ func copy_enemy_stats_and_location(arg_enemy, arg_offset_distance_inc : float, c
 	copy_enemy_location_and_offset(arg_enemy)
 	respect_stage_round_health_scale = false
 	
-	current_health *= curr_health_scale
+	#current_health *= curr_health_scale
+	_set_current_health_to(current_health * curr_health_scale)
 	
 	_offset_distance_inc = arg_offset_distance_inc
 	
 	
 	base_movement_speed = 0
 	base_player_damage = 0
+	
+	base_resistance = -25
 	
 	effigied_enemy = arg_enemy
 	effigied_enemy.connect("tree_exiting", self, "_effigied_enemy_tree_exiting")

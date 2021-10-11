@@ -233,14 +233,14 @@ func _on_BuySellLevelRollPanel_reroll():
 #			Towers.RE,
 #			Towers.TESLA,
 #			Towers.PING,
-#			Towers.BURGEON,
+#			Towers.PESTILENCE,
 #		])
 #	else:
 #		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.AMALGAMATOR,
-#			Towers.SIMPLEX,
-#			Towers.MINI_TESLA,
-#			Towers.REAPER,
+#			Towers.ORB,
+#			Towers.TRANSPORTER,
+#			Towers.NUCLEUS,
+#			Towers.STRIKER,
 #			Towers.ADEPT,
 #		])
 #	even = !even
@@ -319,5 +319,16 @@ func _sell_hovered_tower():
 	if tower != null and !tower.is_being_dragged:
 		tower.sell_tower()
 
+#
+
 func _esc_with_wholescreen_gui_pressed():
+	_hide_current_control_from_whole_screen_gui()
+
+func _on_WholeScreenGUI_gui_input(event):
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == BUTTON_LEFT:
+			_hide_current_control_from_whole_screen_gui()
+
+func _hide_current_control_from_whole_screen_gui():
 	whole_screen_gui.hide_control(whole_screen_gui.current_showing_control)
+

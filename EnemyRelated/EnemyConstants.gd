@@ -51,7 +51,7 @@ func _init():
 	#for faction_id in EnemyFactions.values():
 	#	faction_id_pool.append(faction_id)
 	
-	#faction_id_pool.append(EnemyFactions.FAITHFUL)
+	faction_id_pool.append(EnemyFactions.FAITHFUL)
 	faction_id_pool.append(EnemyFactions.EXPERT)
 
 
@@ -95,10 +95,11 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# EXPERT FACTION
 	elif enemy_id == Enemies.EXPERIENCED:
 		info = EnemyTypeInformation.new(Enemies.EXPERIENCED, EnemyFactions.EXPERT)
-		info.base_health = 35
+		info.base_health = 34.5
 		info.base_movement_speed = 40
-		info.base_resistance = 25
-		info.base_toughness = 3
+		#info.base_resistance = 25
+		info.base_toughness = 9#3
+		info.base_armor = 6
 		
 	elif enemy_id == Enemies.FIEND:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
@@ -135,8 +136,9 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info.base_health = 100
 		info.base_movement_speed = 40
 		info.base_effect_vulnerability = 0.2
-		info.base_resistance = 25
-		info.base_toughness = 2
+		#info.base_resistance = 25
+		info.base_toughness = 8
+		info.base_armor = 6
 		info.enemy_type = info.EnemyType.ELITE
 		
 		
@@ -167,8 +169,10 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.CROSS_BEARER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 50
+		info.base_health = 46
 		info.base_movement_speed = 34
+		info.base_armor = 3
+		info.base_toughness = 3
 		
 	elif enemy_id == Enemies.DVARAPALA:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)

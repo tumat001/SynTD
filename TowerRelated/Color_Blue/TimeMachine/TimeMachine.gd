@@ -34,7 +34,7 @@ var is_energy_module_on : bool
 
 
 var time_portal_attack_module : AOEAttackModule
-const time_portal_duration : float = 6.0
+const time_portal_duration : float = 8.0
 const time_portal_rewind_scale : float = 2.0
 
 const rewind_effectiveness_on_boss_with_energy : float = 0.33
@@ -213,7 +213,7 @@ func _enemy_shifted_by_main_attack(enemy, enemy_curr_position):
 	if is_energy_module_on and enemy != null:
 		var time_portal = time_portal_attack_module.construct_aoe(enemy_curr_position, enemy_curr_position)
 		time_portal.enemies_to_ignore.append(enemy)
-		time_portal.rotation_deg_per_sec = 360 / time_portal_duration
+		#time_portal.rotation_deg_per_sec = 360 / time_portal_duration
 		time_portal.connect("before_enemy_hit_aoe", self, "_time_portal_hit_enemy", [time_portal])
 		time_portal.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
 		

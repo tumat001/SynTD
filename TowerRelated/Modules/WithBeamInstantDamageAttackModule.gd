@@ -129,6 +129,11 @@ func _get_available_beam_instance() -> BeamAesthetic:
 		available_beam_instance.set_sprite_frames(beam_sprite_frames)
 	
 	available_beam_instance.position = global_position
+	
+	available_beam_instance.is_from_tower_attack_module = true
+	available_beam_instance.attack_module_source = self
+	available_beam_instance.is_blockable = (base_attack_wind_up != 0)
+	
 	get_tree().get_root().add_child(available_beam_instance)
 	
 	connect("kill_all_spawned_beams", available_beam_instance, "queue_free", [], CONNECT_ONESHOT)

@@ -8,9 +8,9 @@ const red_detonation_damage_per_stack_tier_1 : float = 0.4
 const red_detonation_damage_per_stack_tier_2 : float = 0.3
 const red_detonation_damage_per_stack_tier_3 : float = 0.2
 
-const red_bolt_damage_tier_1 : float = 2.5
-const red_bolt_damage_tier_2 : float = 2.0
-const red_bolt_damage_tier_3 : float = 1.5
+const red_bolt_damage_tier_1 : float = 3.5
+const red_bolt_damage_tier_2 : float = 3.0
+const red_bolt_damage_tier_3 : float = 2.5
 
 const red_bolt_base_count : int = 6
 const red_bolt_count_stack_ratio : float = 0.5
@@ -22,13 +22,13 @@ const green_detonation_effect_shield_duration_per_stack_tier_1 : float = 0.4
 const green_detonation_effect_shield_duration_per_stack_tier_2 : float = 0.3
 const green_detonation_effect_shield_duration_per_stack_tier_3 : float = 0.2
 
-const green_base_slow_tier_1 : float = -50.0
-const green_base_slow_tier_2 : float = -40.0
-const green_base_slow_tier_3 : float = -30.0
-const green_slow_scale_inc_per_stack : float = 0.1
+const green_base_slow_tier_1 : float = -40.0
+const green_base_slow_tier_2 : float = -30.0
+const green_base_slow_tier_3 : float = -20.0
+const green_slow_scale_inc_per_stack : float = 0.075
 
 const green_slow_base_count : int = 3
-const green_slow_count_stack_ratio : float = 0.25
+const green_slow_count_stack_ratio : float = 0.20
 
 const green_slow_base_duration : float = 5.0
 const green_slow_duration_scale_inc_per_stack : float = 5.0
