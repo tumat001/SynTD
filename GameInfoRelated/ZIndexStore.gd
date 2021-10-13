@@ -1,6 +1,7 @@
 extends Node
 
 enum {
+	MAP_ENVIRONMENT = -3000,
 	
 	TOWER_PLACABLES = -1000,
 	

@@ -1,14 +1,26 @@
 extends Node
 
+
 const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.gd")
 
-var all_in_map_placables : Array = []
 
-# Called when the node enters the scene tree for the first time.
+var all_in_map_placables : Array = []
+var all_enemy_paths : Array = []
+
+onready var _in_map_placables = $InMapPlacables
+onready var _enemy_paths = $EnemyPaths
+onready var _environment = $Environment
+
+
 func _ready():
-	for placables in get_children():
+	_environment.z_index = ZIndexStore.MAP_ENVIRONMENT
+	
+	for placables in _in_map_placables.get_children():
 		if placables is InMapAreaPlacable:
 			all_in_map_placables.append(placables)
+	
+	for path in _enemy_paths.get_children():
+		all_enemy_paths.append(path)
 
 
 # glow related

@@ -39,6 +39,8 @@ const GreenStack_Pic_02 = preload("res://GameInfoRelated/ColorSynergyRelated/Com
 const RedGreenTantrum_AttackModule_Icon = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_RedGreen/Assets/AMAssets/RedGreenTantrum_AttackModule_Icon.png")
 
 
+var stack_per_attack_against_normal_enemies : int
+
 var damage_per_stack : float
 var damage_per_bolt : float
 
@@ -201,6 +203,11 @@ func _on_main_attack_hit_enemy(enemy, damage_register_id, damage_instance, modul
 	
 	if !enemy.is_connected("effect_added", self, "_effect_added_to_enemy"):
 		enemy.connect("effect_added", self, "_effect_added_to_enemy")
+	
+	if enemy.is_enemy_type_normal():
+		green_stack_effect.num_of_stacks_per_apply = stack_per_attack_against_normal_enemies
+	else:
+		green_stack_effect.num_of_stacks_per_apply = 1
 	
 	damage_instance.on_hit_effects[green_stack_effect_id] = green_stack_effect
 

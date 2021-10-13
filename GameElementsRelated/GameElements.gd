@@ -2,7 +2,6 @@ extends Node
 
 const BuySellLevelRollPanel = preload("res://GameHUDRelated/BuySellPanel/BuySellLevelRollPanel.gd")
 const Towers = preload("res://GameInfoRelated/Towers.gd")
-const InMapPlacablesManager = preload("res://GameElementsRelated/InMapPlacablesManager.gd")
 #const SynergyManager = preload("res://GameElementsRelated/SynergyManager.gd")
 const InnerBottomPanel = preload("res://GameElementsRelated/InnerBottomPanel.gd")
 const RightSidePanel = preload("res://GameHUDRelated/RightSidePanel/RightSidePanel.gd")
@@ -25,10 +24,10 @@ const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
 const GeneralStatsPanel = preload("res://GameHUDRelated/StatsPanel/GeneralStatsPanel.gd")
 const TowerEmptySlotNotifPanel = preload("res://GameHUDRelated/NotificationPanel/TowerEmptySlotNotifPanel/TowerEmptySlotNotifPanel.gd")
 const RoundDamageStatsPanel = preload("res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/RoundDamageStatsPanel.gd")
+const MapManager = preload("res://GameElementsRelated/MapManager.gd")
 
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
-var in_map_placables_manager : InMapPlacablesManager
 var synergy_manager
 var inner_bottom_panel : InnerBottomPanel
 var right_side_panel : RightSidePanel
@@ -55,13 +54,13 @@ var general_stats_panel : GeneralStatsPanel
 var tower_empty_slot_notif_panel : TowerEmptySlotNotifPanel
 var left_panel
 var round_damage_stats_panel : RoundDamageStatsPanel
+var map_manager : MapManager
 
 onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	panel_buy_sell_level_roll = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel
-	in_map_placables_manager = $MapManager/InMapPlacablesManager
 	synergy_manager = $SynergyManager
 	inner_bottom_panel = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel
 	right_side_panel = $RightSidePanel
@@ -80,6 +79,7 @@ func _ready():
 	level_manager = $LevelManager
 	general_stats_panel = $BottomPanel/HBoxContainer/VBoxContainer/GeneralStatsPanel
 	left_panel = $LeftsidePanel
+	map_manager = $MapManager
 	
 	selection_notif_panel = $NotificationNode/SelectionNotifPanel
 	tower_empty_slot_notif_panel = $NotificationNode/TowerEmptySlotNotifPanel
@@ -89,6 +89,9 @@ func _ready():
 	
 	round_status_panel = right_side_panel.round_status_panel
 	round_info_panel = round_status_panel.round_info_panel
+	
+	# map manager
+	
 	
 	# tower manager
 	tower_manager.right_side_panel = right_side_panel
@@ -100,7 +103,7 @@ func _ready():
 	tower_manager.stage_round_manager = stage_round_manager
 	
 	tower_inventory_bench.tower_manager = tower_manager
-	tower_manager.in_map_placables_manager = in_map_placables_manager
+	tower_manager.map_manager = map_manager
 	
 	tower_manager.tower_inventory_bench = tower_inventory_bench
 	tower_manager.inner_bottom_panel = inner_bottom_panel
@@ -111,6 +114,7 @@ func _ready():
 	tower_manager.level_manager = level_manager
 	tower_manager.left_panel = left_panel
 	tower_manager.relic_manager = relic_manager
+	
 	
 	# syn manager
 	synergy_manager.tower_manager = tower_manager
@@ -137,7 +141,7 @@ func _ready():
 	health_manager.round_info_panel = round_info_panel
 	
 	# Enemy manager
-	enemy_manager.set_spawn_paths([$EnemyPath])
+	enemy_manager.set_spawn_paths(map_manager.base_map.all_enemy_paths)
 	enemy_manager.connect("no_enemies_left", round_status_panel, "_update_round_ended")
 	enemy_manager.health_manager = health_manager
 	enemy_manager.game_elements = self
@@ -233,15 +237,15 @@ func _on_BuySellLevelRollPanel_reroll():
 #			Towers.RE,
 #			Towers.TESLA,
 #			Towers.PING,
-#			Towers.PESTILENCE,
+#			Towers.ADEPT,
 #		])
 #	else:
 #		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.ORB,
-#			Towers.TRANSPORTER,
-#			Towers.NUCLEUS,
+#			Towers.BLOSSOM,
 #			Towers.STRIKER,
-#			Towers.ADEPT,
+#			Towers.REAPER,
+#			Towers.SHACKLED,
+#			Towers.BREWD,
 #		])
 #	even = !even
 

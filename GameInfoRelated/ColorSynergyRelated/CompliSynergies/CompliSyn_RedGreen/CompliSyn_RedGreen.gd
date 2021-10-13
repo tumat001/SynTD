@@ -4,13 +4,15 @@ const TowerEffect_CompliSyn_RedGreen_RedDetonateSide = preload("res://GameInfoRe
 const TowerEffect_CompliSyn_RedGreen_GreenDetonateSide = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_CompliSyn_RedGreen_GreenDetonateSide.gd")
 
 
+const stack_per_attack_against_normal_enemies : int = 2
+
 const red_detonation_damage_per_stack_tier_1 : float = 0.4
 const red_detonation_damage_per_stack_tier_2 : float = 0.3
 const red_detonation_damage_per_stack_tier_3 : float = 0.2
 
-const red_bolt_damage_tier_1 : float = 3.5
-const red_bolt_damage_tier_2 : float = 3.0
-const red_bolt_damage_tier_3 : float = 2.5
+const red_bolt_damage_tier_1 : float = 6.0
+const red_bolt_damage_tier_2 : float = 4.5
+const red_bolt_damage_tier_3 : float = 3.5
 
 const red_bolt_base_count : int = 6
 const red_bolt_count_stack_ratio : float = 0.5
@@ -18,9 +20,13 @@ const red_bolt_count_stack_ratio : float = 0.5
 const red_tantrum_trigger_amount : int = 10
 
 
-const green_detonation_effect_shield_duration_per_stack_tier_1 : float = 0.4
-const green_detonation_effect_shield_duration_per_stack_tier_2 : float = 0.3
-const green_detonation_effect_shield_duration_per_stack_tier_3 : float = 0.2
+const green_detonation_effect_shield_duration_per_stack_tier_1 : float = 0.5
+const green_detonation_effect_shield_duration_per_stack_tier_2 : float = 0.4
+const green_detonation_effect_shield_duration_per_stack_tier_3 : float = 0.3
+
+const green_detonation_heal_per_stack_tier_1 : float = 0.5
+const green_detonation_heal_per_stack_tier_2 : float = 0.4
+const green_detonation_heal_per_stack_tier_3 : float = 0.3
 
 const green_base_slow_tier_1 : float = -40.0
 const green_base_slow_tier_2 : float = -30.0
@@ -85,6 +91,8 @@ func _attempt_add_effect_to_tower(tower : AbstractTower):
 	if !tower._all_uuid_tower_buffs_map.has(StoreOfTowerEffectsUUID.RED_GREEN_RED_DETONATE_SIDE_EFFECT_GIVER):
 		var red_deto_effect = TowerEffect_CompliSyn_RedGreen_RedDetonateSide.new(0, 0, red_bolt_base_count, red_bolt_count_stack_ratio, red_tantrum_trigger_amount, green_pulse_trigger_amount)
 		
+		red_deto_effect.stack_per_attack_against_normal_enemies = stack_per_attack_against_normal_enemies
+		
 		if curr_tier == 1:
 			red_deto_effect.damage_per_stack = red_detonation_damage_per_stack_tier_1
 			red_deto_effect.damage_per_bolt = red_bolt_damage_tier_1
@@ -100,6 +108,8 @@ func _attempt_add_effect_to_tower(tower : AbstractTower):
 	if !tower._all_uuid_tower_buffs_map.has(StoreOfTowerEffectsUUID.RED_GREEN_GREEN_DETONATE_SIDE_EFFECT_GIVER):
 		var green_deto_effect = TowerEffect_CompliSyn_RedGreen_GreenDetonateSide.new()
 		
+		green_deto_effect.stack_per_attack_against_normal_enemies = stack_per_attack_against_normal_enemies
+		
 		green_deto_effect.slow_amount_scale_inc_per_stack = green_slow_scale_inc_per_stack
 		green_deto_effect.slow_attack_base_count = green_slow_base_count
 		green_deto_effect.slow_attack_count_inc_per_stack_ratio = green_slow_count_stack_ratio
@@ -114,12 +124,15 @@ func _attempt_add_effect_to_tower(tower : AbstractTower):
 		if curr_tier == 1:
 			green_deto_effect.effect_shield_duration_per_stack = green_detonation_effect_shield_duration_per_stack_tier_1
 			green_deto_effect.base_slow_amount = green_base_slow_tier_1
+			green_deto_effect.heal_amount_per_stack = green_detonation_heal_per_stack_tier_1
 		elif curr_tier == 2:
 			green_deto_effect.effect_shield_duration_per_stack = green_detonation_effect_shield_duration_per_stack_tier_2
 			green_deto_effect.base_slow_amount = green_base_slow_tier_2
+			green_deto_effect.heal_amount_per_stack = green_detonation_heal_per_stack_tier_2
 		elif curr_tier == 3:
 			green_deto_effect.effect_shield_duration_per_stack = green_detonation_effect_shield_duration_per_stack_tier_3
 			green_deto_effect.base_slow_amount = green_base_slow_tier_3
+			green_deto_effect.heal_amount_per_stack = green_detonation_heal_per_stack_tier_3
 		
 		tower.add_tower_effect(green_deto_effect)
 

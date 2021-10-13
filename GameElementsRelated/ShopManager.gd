@@ -54,6 +54,16 @@ var tier_tower_map : Dictionary = {
 	6 : []
 }
 
+# if the tier has at least 1 tower
+var tier_has_tower_map : Dictionary = {
+	1 : false,
+	2 : false,
+	3 : false,
+	4 : false,
+	5 : false,
+	6 : false,
+}
+
 
 #
 
@@ -105,6 +115,9 @@ func _ready():
 		if !blacklisted_towers_to_inventory.has(tower_id):
 			_add_tower_to_inventory(tower_id, Towers.TowerTiersMap[tower_id])
 			_register_tower_to_tower_tier_map(tower_id, Towers.TowerTiersMap[tower_id])
+	
+	_update_tier_has_tower_map()
+	print(tier_has_tower_map)
 
 
 func _add_tower_to_inventory(tower_id : int, tower_tier : int):
@@ -170,13 +183,15 @@ func _determine_tower_id_to_be_rolled(level_of_roll : int) -> int:
 				break
 	
 	if tower_id_to_roll != -1:
-		current_tower_stock_inventory[tower_id_to_roll] -= 1
+		_remove_stock_of_tower_id(tower_id_to_roll, 1)
 	
 	return tower_id_to_roll
 
 
 func _determine_tier_to_be_rolled(level_of_roll : int) -> int:
 	var tier_probabilities : Array = get_shop_roll_chances_at_level(level_of_roll)
+	tier_probabilities = _get_effective_tier_probabilities(tier_probabilities)
+	print(tier_probabilities)
 	
 	var decided_tier_weight_rand : int = tier_rng.randi_range(1, 100)
 	
@@ -194,6 +209,36 @@ func _determine_tier_to_be_rolled(level_of_roll : int) -> int:
 
 func get_shop_roll_chances_at_level(current_level : int = level_manager.current_level):
 	return base_level_tier_roll_probabilities[current_level]
+
+func _get_effective_tier_probabilities(base_probabilities : Array):
+	var final_probabilities : Array = []
+	
+	var carry_over_prob : float
+	for i in range(0, base_probabilities.size()):
+		var final_prob : float = 0
+		
+		if !_if_tower_in_tier_exists(i + 1):
+			carry_over_prob += base_probabilities[i]
+		else:
+			final_prob = base_probabilities[i] + carry_over_prob
+		
+		final_probabilities.append(final_prob)
+	
+	if carry_over_prob > 0:
+		for i in range(base_probabilities.size() - 2, -1, -1):
+			if !_if_tower_in_tier_exists(i + 1):
+				continue
+			else:
+				final_probabilities[i] += carry_over_prob
+				break
+	
+	return final_probabilities
+
+
+func _if_tower_in_tier_exists(tier : int) -> bool:
+	return tier_has_tower_map[tier];
+
+
 
 func _remove_tower_ids_with_no_available_inventory_from_array(arg_tower_ids : Array):
 	for tower_id in arg_tower_ids:
@@ -225,6 +270,7 @@ func _get_total_inventory_count_of_towers(arg_tower_id_count_map : Dictionary) -
 func _add_stock_to_tower_id(tower_id : int, amount : int):
 	if !blacklisted_towers_to_inventory.has(tower_id) and current_tower_stock_inventory.has(tower_id):
 		current_tower_stock_inventory[tower_id] += amount
+		_update_tier_has_tower_map_tower_id_affected(tower_id, true)
 
 
 func _on_tower_being_sold(sellback, tower):
@@ -242,5 +288,33 @@ func _on_tower_being_absorbed(tower):
 		_add_stock_to_tower_id(ids, 1)
 
 
+func _remove_stock_of_tower_id(tower_id : int, amount : int):
+	current_tower_stock_inventory[tower_id] -= amount
+	_update_tier_has_tower_map_tower_id_affected(tower_id, false)
+
 # 
+
+func _update_tier_has_tower_map_tower_id_affected(tower_id : int, is_add : bool):
+	_update_tier_has_tower_map([_get_tier_of_tower_id(tower_id)], is_add)
+
+func _get_tier_of_tower_id(tower_id) -> int:
+	return Towers.TowerTiersMap[tower_id]
+
+
+func _update_tier_has_tower_map(tiers : Array = tier_has_tower_map.keys(), is_add : bool = false):
+	if is_add:
+		for tier in tiers:
+			tier_has_tower_map[tier] = true
+		
+	else:
+		for tier in tiers:
+			var tier_has_stock : bool = false
+			
+			for tower_id in Towers.TowerTiersMap.keys():
+				var stock = current_tower_stock_inventory[tower_id]
+				if stock > 0:
+					tier_has_stock = true
+					break
+			
+			tier_has_tower_map[tier] = tier_has_stock
 

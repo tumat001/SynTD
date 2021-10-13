@@ -1,7 +1,7 @@
 extends Node
 
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
-const InMapPlacablesManager = preload("res://GameElementsRelated/InMapPlacablesManager.gd")
+const MapManager = preload("res://GameElementsRelated/MapManager.gd")
 const RightSidePanel = preload("res://GameHUDRelated/RightSidePanel/RightSidePanel.gd")
 const TowerStatsPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerStatsPanel/TowerStatsPanel.gd")
 const ActiveIngredientsPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/ActiveIngredientsPanel/ActiveIngredientsPanel.gd")
@@ -68,7 +68,7 @@ const tower_limit_per_relic : int = 1
 #
 
 var tower_inventory_bench
-var in_map_placables_manager : InMapPlacablesManager
+var map_manager : MapManager
 var gold_manager : GoldManager
 
 var is_in_ingredient_mode : bool = false
@@ -246,9 +246,9 @@ func _tower_being_dragged(tower_dragged : AbstractTower):
 	tower_inventory_bench.make_all_slots_glow()
 	
 	if can_place_tower_based_on_limit_and_curr_placement(tower_being_dragged):
-		in_map_placables_manager.make_all_placables_glow()
+		map_manager.make_all_placables_glow()
 	else:
-		in_map_placables_manager.make_all_placables_with_towers_glow()
+		map_manager.make_all_placables_with_towers_glow()
 	
 	inner_bottom_panel.sell_panel.tower = tower_dragged
 	inner_bottom_panel.make_sell_panel_visible()
@@ -262,7 +262,7 @@ func _tower_being_dragged(tower_dragged : AbstractTower):
 func _tower_dropped_from_dragged(tower_released : AbstractTower):
 	tower_being_dragged = null
 	tower_inventory_bench.make_all_slots_not_glow()
-	in_map_placables_manager.make_all_placables_not_glow()
+	map_manager.make_all_placables_not_glow()
 	
 	#inner_bottom_panel.sell_panel.tower = null
 	inner_bottom_panel.make_sell_panel_invisible()
@@ -524,10 +524,10 @@ func _tower_selected(tower):
 # Glowing of towers on syn info hover
 
 func _glow_placables_of_towers_with_color_of_syn(syn):
-	in_map_placables_manager.make_all_placables_with_tower_colors_glow(syn.colors_required)
+	map_manager.make_all_placables_with_tower_colors_glow(syn.colors_required)
 
 func _unglow_all_placables(syn):
-	in_map_placables_manager.make_all_placables_not_glow()
+	map_manager.make_all_placables_not_glow()
 
 
 # Tower limit related

@@ -24,8 +24,11 @@ var priority_targets_effects : Dictionary = {}
 
 var displaying_range : bool = false
 var can_display_range : bool = true
+const circle_range_color : Color = Color(0.2, 0.2, 0.2, 0.15)
+
 var can_display_circle_arc : bool = false
-var circle_arc_color : Color = Color(0.6, 0.6, 0.6, 0.3)
+const circle_arc_color : Color = Color(0.6, 0.6, 0.6, 0.3)
+
 
 var enemies_in_range : Array = []
 var _non_unique_enemies_in_range : Array = []
@@ -175,9 +178,9 @@ func _draw():
 		var final_range = last_calculated_final_range
 		
 		if can_display_range:
-			var color : Color = Color.gray
-			color.a = 0.1
-			draw_circle(Vector2(0, 0), final_range, color)
+#			var color : Color = Color.gray
+#			color.a = 0.1
+			draw_circle(Vector2(0, 0), final_range, circle_range_color)
 		
 		if can_display_circle_arc:
 			draw_circle_arc(Vector2(0, 0), final_range, 0, 360, circle_arc_color)
@@ -368,6 +371,13 @@ func remove_priority_target_within_range(target):
 func remove_priority_target_regardless_of_range(target):
 	priority_enemies_regardless_of_range.erase(target)
 
+#
+
+func clear_all_target_effects():
+	var effects : Array = priority_targets_effects.values()
+	
+	for effect in effects:
+		remove_priority_target_effect(effect)
 
 
 # Other range module interaction

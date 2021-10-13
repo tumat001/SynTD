@@ -2323,6 +2323,7 @@ func _set_health(val : float):
 	_emit_current_health_changed()
 
 
+# heal arg can be float, or modi
 func heal_by_amount(heal, revive_tower_if_dead : bool = false):
 	if !is_dead_for_the_round or revive_tower_if_dead:
 		var amount : float = _get_amount_from_arg(heal)

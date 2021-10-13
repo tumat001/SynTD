@@ -31,6 +31,8 @@ const RedStack_01 = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSyn
 const RedStack_02 = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_RedGreen/Assets/RedStack/RedStack_03.png")
 
 
+var stack_per_attack_against_normal_enemies : int
+
 var effect_shield_duration_per_stack : float
 
 var base_slow_amount : float
@@ -54,6 +56,9 @@ var pulse_base_size : float
 var pulse_size_inc_per_stack : float
 
 var green_effect_shield_effect : TowerEffectShieldEffect
+
+
+var heal_amount_per_stack : float
 
 #
 
@@ -151,6 +156,12 @@ func _on_main_attack_hit_enemy(enemy, damage_register_id, damage_instance, modul
 	
 	if !enemy.is_connected("effect_added", self, "_effect_added_to_enemy"):
 		enemy.connect("effect_added", self, "_effect_added_to_enemy")
+	
+	if enemy.is_enemy_type_normal():
+		red_stack_effect.num_of_stacks_per_apply = stack_per_attack_against_normal_enemies
+	else:
+		red_stack_effect.num_of_stacks_per_apply = 1
+	
 	damage_instance.on_hit_effects[red_stack_effect_id] = red_stack_effect
 
 
@@ -213,6 +224,11 @@ func _on_pulse_aoe_on_tower_hit(tower, stack_amount):
 		cloned_effect.count = slow_count
 		
 		tower.add_tower_effect(cloned_effect)
+		
+		#
+		
+		var heal_amount = _get_heal_amount_from_stack_amount(stack_amount)
+		tower.heal_by_amount(heal_amount)
 
 
 func _get_attack_amount_from_stack_amount(stack_amount : int) -> int:
@@ -227,6 +243,9 @@ func _get_slow_duration_from_stack_amount(stack_amount : int) -> float:
 	var final_amount = stack_amount - pulse_trigger_amount
 	return slow_base_duration * (1 + (slow_duration_scale_inc_per_stack * final_amount))
 
+
+func _get_heal_amount_from_stack_amount(stack_amount : int) -> float:
+	return heal_amount_per_stack * stack_amount
 
 #
 

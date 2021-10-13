@@ -21,7 +21,6 @@ _global_script_class_icons={
 [application]
 
 config/name="Roguelike Tower Defence"
-run/main_scene="res://Maps/TestMap/TestMap.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -42,6 +41,7 @@ StoreOfPactUUID="*res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/Do
 StoreOfFonts="*res://GameHUDRelated/StoreOfFonts.gd"
 Towers="*res://GameInfoRelated/Towers.gd"
 EnemyConstants="*res://EnemyRelated/EnemyConstants.gd"
+StoreOfMaps="*res://MapsRelated/StoreOfMaps.gd"
 
 [debug]
 

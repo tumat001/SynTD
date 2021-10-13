@@ -1094,6 +1094,8 @@ func on_round_end():
 	reset_attack_timers()
 	
 	queued_attack_count = 0
+	
+	range_module.clear_all_target_effects()
 
 
 # Damage report related
