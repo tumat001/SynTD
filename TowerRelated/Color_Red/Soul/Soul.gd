@@ -174,6 +174,9 @@ func _on_main_attack_enemy_hit_s(enemy, damage_register_id, damage_instance, mod
 
 
 func _create_effigy_of_enemy(enemy):
+	var cd = _get_cd_to_use(base_effigy_ability_cooldown)
+	effigy_ability.on_ability_before_cast_start(cd)
+	
 	_current_soul_effigy = SoulEffigy_Scene.instance()
 	
 	_current_soul_effigy.enemy_manager = game_elements.enemy_manager
@@ -198,7 +201,8 @@ func _create_effigy_of_enemy(enemy):
 	#
 	
 	effigy_activation_clauses.attempt_insert_clause(effigy_exists_clause)
-
+	
+	effigy_ability.on_ability_after_cast_ended(cd)
 
 
 #

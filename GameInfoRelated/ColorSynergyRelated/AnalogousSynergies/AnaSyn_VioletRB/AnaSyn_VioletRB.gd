@@ -4,11 +4,11 @@ extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifying
 const AnaSyn_VioletRB_VoidGiverEffect = preload("res://GameInfoRelated/EnemyEffectRelated/MiscEffects/SynergySourced/AnaSyn_VioletRB_VoidGiverEffect.gd")
 
 
-const tier_1_player_dec_damage_amount : float = -75.0
-const tier_2_player_dec_damage_amount : float = -50.0
+
+const tier_1_ability_void_stun_duration : float = 2.0
 const tier_3_player_dec_damage_amount : float = -25.0
 
-const health_trigger_threshold : float = 0.4
+const health_trigger_threshold : float = 0.8
 
 var game_elements
 var curr_tier : int
@@ -40,15 +40,26 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 
 
 func _construct_void_effect():
-	void_effect = AnaSyn_VioletRB_VoidGiverEffect.new(health_trigger_threshold, tier_3_player_dec_damage_amount)
+	void_effect = AnaSyn_VioletRB_VoidGiverEffect.new()
 
 func _configure_void_effect_based_on_tier():
+	void_effect.health_trigger_threshold = health_trigger_threshold
+	
+	void_effect.damage_percent_decrease_amount = tier_3_player_dec_damage_amount
+	void_effect.ability_void_stun_duration = tier_1_ability_void_stun_duration
+	
 	if curr_tier == 1:
-		void_effect.damage_percent_decrease_amount = tier_1_player_dec_damage_amount
+		void_effect.if_give_ability_void_effect = true
+		void_effect.if_give_pride_void_effect = true
+		void_effect.if_give_damage_dec_effect = true
 	elif curr_tier == 2:
-		void_effect.damage_percent_decrease_amount = tier_2_player_dec_damage_amount
+		void_effect.if_give_ability_void_effect = false
+		void_effect.if_give_pride_void_effect = true
+		void_effect.if_give_damage_dec_effect = true
 	elif curr_tier == 3:
-		void_effect.damage_percent_decrease_amount = tier_3_player_dec_damage_amount
+		void_effect.if_give_ability_void_effect = false
+		void_effect.if_give_pride_void_effect = false
+		void_effect.if_give_damage_dec_effect = true
 
 #
 

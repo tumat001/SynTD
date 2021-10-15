@@ -62,7 +62,7 @@ var extinguish_attack_module : WithBeamInstantDamageAttackModule
 
 var explosion_attack_module : AOEAttackModule
 var burst_missing_health_ratio : float = 0.4
-var burst_missing_health_limit : float = 300
+var burst_missing_health_limit : float = 200
 
 var burning_enemies_group_id = "RoyalFlameBurnGroupId" #unused thus far
 
@@ -255,7 +255,7 @@ func _construct_and_connect_ability():
 	steam_burst_ability.tower = self
 	
 	steam_burst_ability.descriptions = [
-		"Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to a limit.",
+		"Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to 200.",
 		"The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
 		"Cooldown: 25 s"
 	]
@@ -283,8 +283,6 @@ func _final_damage_changed():
 # Ability activated related
 
 func _royal_flame_ability_activated():
-	steam_burst_ability.start_time_cooldown(_get_cd_to_use(base_ability_cooldown))
-	
 	var bucket : Array = []
 	var all_enemies = game_elements.enemy_manager.get_all_targetable_enemies()
 	var targets_sorted_close : Array = Targeting.enemies_to_target(all_enemies, Targeting.CLOSE, all_enemies.size(), extinguish_range_module.global_position)
@@ -295,8 +293,17 @@ func _royal_flame_ability_activated():
 			if bucket.size() >= 3:
 				break
 	
-	extinguish_attack_module._attack_enemies(bucket)
-
+	
+	if bucket.size() > 0:
+		var cd = _get_cd_to_use(base_ability_cooldown)
+		steam_burst_ability.on_ability_before_cast_start(cd)
+		
+		extinguish_attack_module._attack_enemies(bucket)
+		steam_burst_ability.start_time_cooldown(cd)
+		
+		steam_burst_ability.on_ability_after_cast_ended(cd)
+	else:
+		steam_burst_ability.start_time_cooldown(_get_cd_to_use(0.5))
 
 func _extinguish_beam_created(beam, enemy):
 	beam.connect("time_visible_is_over", self, "_extinguish_on_enemy_beam_hit", [enemy], CONNECT_ONESHOT)

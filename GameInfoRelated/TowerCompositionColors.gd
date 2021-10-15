@@ -58,10 +58,10 @@ func _init():
 		"Applying a Technique while a different colored Technique exists on an enemy erases all applied Technique stacks, and triggers Detonation effects of the pre-existing Technique.",
 		"",
 		"Red Detonation: Deal additional physical damage.",
-		"10+ stacks) Tantrum: Rapidly shoot (6 + 1/2 of total stacks) red bolts to random enemies in range. Bolts deal physical damage.",
+		"10+ stacks) Tantrum: Rapidly shoot (5 + 1/2 of total stacks) red bolts to random enemies in range. Bolts deal physical damage.",
 		"",
 		"Green Detonation: Gain a single use effect shield for a duration.",
-		"10+ stacks) Pulse: Towers caught in the pulse receive healing, and have their next (3 + 1/5 of total stacks) attacks apply a slow for 5 seconds. Number of stacks inceases healing, size of Pulse, and the slow's effectiveness and duration.",
+		"10+ stacks) Pulse: Towers caught in the pulse receive healing, and have their next (3 + 1/5 of total stacks) attacks apply a slow for 8 seconds. Number of stacks inceases healing, size of Pulse, and the slow's effectiveness.",
 		"",
 	],
 	[CompliSyn_RedGreen.new()],
@@ -207,17 +207,22 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
 	[
-		"Enemies that reach below 40% of their max health become Voided.",
-		"Voided enemies deal less damage to the player. Void cannot be removed by any means.",
+		"Enemies that reach below 80% of their max health become Voided. Voided enemies gain Void effects depending on the tier.",
+		"",
+		"Ability Void: Enemies are stunned for 2 seconds after casting an ability.",
+		"Pride Void: Elite type enemies become Normal type instead.",
+		"Strength Void: Enemies deal 25% less damage to the player.",
+		"",
+		"Void effects cannot be removed by any means.",
 		""
 	],
 	[AnaSyn_VioletRB.new()],
 	[
-		"75% less player damage",
-		"50% less player damage",
-		"25% less player damage"
+		"Ability Void",
+		"Pride Void",
+		"Strength Void",
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
 	
 	

@@ -32,7 +32,7 @@ func copy_enemy_stats_and_location(arg_enemy, arg_offset_distance_inc : float, c
 	base_movement_speed = 0
 	base_player_damage = 0
 	
-	base_resistance -= 25
+	base_armor -= 5
 	
 	effigied_enemy = arg_enemy
 	effigied_enemy.connect("tree_exiting", self, "_effigied_enemy_tree_exiting")

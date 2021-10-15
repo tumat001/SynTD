@@ -91,14 +91,14 @@ func _get_overriden_description() -> String:
 
 
 func _generate_flat_description(descriptor : String) -> String:
-	var semi_final_desc =  "+" + attribute_as_modifier.get_description() + " " + descriptor
+	var semi_final_desc =  "" + attribute_as_modifier.get_description() + " " + descriptor
 	
 	if is_timebound:
 		var append_plural : String = "s"
 		if time_in_seconds == 1:
 			append_plural = ""
 		
-		semi_final_desc += "for %s second%s" % [time_in_seconds, append_plural]
+		semi_final_desc += " for %s second%s" % [time_in_seconds, append_plural]
 	
 	semi_final_desc += " on hit."
 	return semi_final_desc

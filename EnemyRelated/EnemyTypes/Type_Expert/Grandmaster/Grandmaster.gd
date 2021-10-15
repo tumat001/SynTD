@@ -23,6 +23,9 @@ const _shield_ratio : float = 75.0
 var shield_effect : EnemyShieldEffect
 
 
+var grandmaster_ability : BaseAbility
+
+
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.GRANDMASTER))
 
@@ -37,6 +40,8 @@ func _ready():
 	_construct_speed_effect_d()
 	_construct_invis_effect_g()
 	_construct_shield_effect()
+	
+	_construct_and_connect_ability()
 
 func _construct_speed_effect_d():
 	speed_bonus_modi = FlatModifier.new(StoreOfEnemyEffectsUUID.GRANDMASTER_SPEED_BOOST)
@@ -47,6 +52,13 @@ func _construct_speed_effect_d():
 	speed_bonus_effect.is_timebound = true
 	speed_bonus_effect.time_in_seconds = _boost_duration
 	speed_bonus_effect.is_from_enemy = true
+
+func _construct_and_connect_ability():
+	grandmaster_ability = BaseAbility.new()
+	
+	grandmaster_ability.is_timebound = false
+	
+	register_ability(grandmaster_ability)
 
 
 #
@@ -64,16 +76,20 @@ func _on_health_threshold_02_reached(curr_health):
 
 func _perform_dash():
 	if !_is_dashing:
-		connect("effect_added", self, "_speed_effect_added")
-		_add_effect(shield_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
+		grandmaster_ability.on_ability_before_cast_start(grandmaster_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 		
-		var effect = _add_effect(speed_bonus_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
+		connect("effect_added", self, "_speed_effect_added")
+		_add_effect(shield_effect._get_copy_scaled_by(grandmaster_ability.get_potency_to_use(last_calculated_final_ability_potency)))
+		
+		var effect = _add_effect(speed_bonus_effect._get_copy_scaled_by(grandmaster_ability.get_potency_to_use(last_calculated_final_ability_potency)))
 		
 		if effect != null:
 			connect("effect_removed", self, "_on_speed_effect_removed")
 			_is_dashing = true
 		else:
 			disconnect("effect_added", self, "_speed_effect_added")
+		
+		grandmaster_ability.on_ability_after_cast_ended(grandmaster_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 
 
 func _process(delta):
@@ -104,7 +120,6 @@ func _construct_invis_effect_g():
 	invis_effect.is_from_enemy = true
 
 
-
 func _on_health_invis_threshold_reached(curr_health):
 	if curr_health / _last_calculated_max_health <= _invis_health_ratio_threshold:
 		disconnect("on_current_health_changed", self, "_on_health_invis_threshold_reached")
@@ -112,14 +127,18 @@ func _on_health_invis_threshold_reached(curr_health):
 			_become_invisible()
 
 func _become_invisible():
+	grandmaster_ability.on_ability_before_cast_start(grandmaster_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+	
 	connect("effect_removed", self, "_on_invis_effect_removed")
 	
-	var effect = _add_effect(invis_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
+	var effect = _add_effect(invis_effect._get_copy_scaled_by(grandmaster_ability.get_potency_to_use(last_calculated_final_ability_potency)))
 	
 	if effect != null:
 		_is_invis = true
 	else:
 		disconnect("effect_removed", self, "_on_invis_effect_removed")
+	
+	grandmaster_ability.on_ability_after_cast_ended(grandmaster_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 
 
 func _on_invis_effect_removed(effect_removed, me):

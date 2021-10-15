@@ -76,7 +76,7 @@ var _current_regards_empowered_attks : int = 0
 
 const regards_ability_cooldown : float = 60.0
 const regards_ability_energy_module_cooldown : float = 20.0
-const regards_stun_duration : float = 3.0
+const regards_stun_duration : float = 4.0
 const regards_height_y_accel : float = 60.0
 const regards_damage_amount : float = 12.0
 
@@ -353,7 +353,7 @@ func _construct_ability():
 	
 	regards_ability.descriptions = [
 		"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
-		"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 3 seconds, and dealing 12 physical damage.",
+		"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 4 seconds, and dealing 12 physical damage.",
 		"The farthest tower with range from Prominence also casts Regards using Prominence's ability potency. Enemies can only be affected once.",
 		"Prominece also gains 3 attacks with its sword, with each attack exploding, dealing 5 + 300% of its bonus base damage as elemental damage.",
 		"Cooldown: %s s" % [str(regards_ability_cooldown)],
@@ -410,12 +410,17 @@ func _sword_beam_attk_module_hit_enemy(enemy, damage_register_id, damage_instanc
 
 
 func _regards_ability_activated():
+	var cd_to_use : float
 	if !is_energy_module_on:
-		regards_ability.start_time_cooldown(_get_cd_to_use(regards_ability_cooldown))
+		cd_to_use = _get_cd_to_use(regards_ability_cooldown)
 	else:
-		regards_ability.start_round_cooldown(_get_cd_to_use(regards_ability_energy_module_cooldown))
+		cd_to_use = _get_cd_to_use(regards_ability_energy_module_cooldown)
+	
+	regards_ability.on_ability_before_cast_start(cd_to_use)
+	regards_ability.start_time_cooldown(cd_to_use)
 	
 	_sword_gain_height()
+	regards_ability.on_ability_after_cast_ended(cd_to_use)
 
 
 func _sword_gain_height():

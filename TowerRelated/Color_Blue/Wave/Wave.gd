@@ -296,6 +296,9 @@ func _ability_activated_w():
 			curr_target = targets[0]
 	
 	if curr_target != null:
+		var cd = _get_cd_to_use(base_ability_cooldown)
+		tidal_wave_ability.on_ability_before_cast_start(cd)
+		
 		for col_i in current_column_count:
 			var bullet = ability_attack_module.construct_bullet(curr_target.global_position)
 			
@@ -309,7 +312,8 @@ func _ability_activated_w():
 		
 		_apply_debuff_stack()
 		
-		tidal_wave_ability.start_time_cooldown(_get_cd_to_use(base_ability_cooldown))
+		tidal_wave_ability.start_time_cooldown(cd)
+		tidal_wave_ability.on_ability_after_cast_ended(cd)
 
 
 func _add_bullet_to_tree(bullet):

@@ -13,7 +13,7 @@ const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_1 : [100, 0, 0, 0, 0, 0],
 	LevelManager.LEVEL_2 : [90, 10, 0, 0, 0, 0],
 	LevelManager.LEVEL_3 : [85, 15, 0, 0, 0, 0],
-	LevelManager.LEVEL_4 : [55, 41, 4, 0, 0, 0],
+	LevelManager.LEVEL_4 : [55, 42, 3, 0, 0, 0],
 	LevelManager.LEVEL_5 : [40, 40, 20, 0, 0, 0],
 	LevelManager.LEVEL_6 : [23, 35, 40, 2, 0, 0],
 	LevelManager.LEVEL_7 : [15, 30, 45, 9, 1, 0],
@@ -117,7 +117,6 @@ func _ready():
 			_register_tower_to_tower_tier_map(tower_id, Towers.TowerTiersMap[tower_id])
 	
 	_update_tier_has_tower_map()
-	print(tier_has_tower_map)
 
 
 func _add_tower_to_inventory(tower_id : int, tower_tier : int):
@@ -191,7 +190,6 @@ func _determine_tower_id_to_be_rolled(level_of_roll : int) -> int:
 func _determine_tier_to_be_rolled(level_of_roll : int) -> int:
 	var tier_probabilities : Array = get_shop_roll_chances_at_level(level_of_roll)
 	tier_probabilities = _get_effective_tier_probabilities(tier_probabilities)
-	print(tier_probabilities)
 	
 	var decided_tier_weight_rand : int = tier_rng.randi_range(1, 100)
 	

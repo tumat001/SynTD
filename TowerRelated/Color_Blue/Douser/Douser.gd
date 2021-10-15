@@ -44,6 +44,8 @@ var base_damage_buff_effect : TowerAttributesEffect
 
 var douser_buff_tower_indicator_shower : ShowTowersWithParticleComponent
 
+var douser_buff_ability : BaseAbility
+
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.DOUSER)
@@ -125,10 +127,11 @@ func _ready():
 	connect("on_main_attack_finished", self, "_on_main_attack_finished_d", [], CONNECT_PERSIST)
 	connect("on_round_end", self, "_on_round_end_d", [], CONNECT_PERSIST)
 	connect("final_range_changed", self, "_on_range_changed_d", [], CONNECT_PERSIST)
-	connect("final_ability_potency_changed", self, "_on_ap_changed_d", [], CONNECT_PERSIST)
+	#connect("final_ability_potency_changed", self, "_on_ap_changed_d", [], CONNECT_PERSIST)
 	connect("final_ability_cd_changed", self, "on_acd_changed_d", [], CONNECT_PERSIST)
 	
 	_construct_tower_indicator_shower()
+	_construct_and_connect_ability()
 	
 	_post_inherit_ready()
 
@@ -137,8 +140,16 @@ func _post_inherit_ready():
 	
 	_construct_effect()
 	
-	_on_ap_changed_d()
+	#_on_ap_changed_d()
 	_on_acd_changed_d()
+
+
+func _construct_and_connect_ability():
+	douser_buff_ability = BaseAbility.new()
+	
+	douser_buff_ability.is_timebound = false
+	
+	register_ability_to_manager(douser_buff_ability, false)
 
 
 #
@@ -164,8 +175,8 @@ func _construct_effect():
 	
 	base_damage_buff_effect.status_bar_icon = Douser_BuffIcon
 
-func _on_ap_changed_d():
-	base_damage_buff_mod.flat_modifier = base_douser_base_damage_buff * last_calculated_final_ability_potency
+#func _on_ap_changed_d():
+#	base_damage_buff_mod.flat_modifier = base_douser_base_damage_buff * last_calculated_final_ability_potency
 
 func _on_acd_changed_d():
 	current_attack_count_for_buff = int(ceil(float(base_attack_count_for_buff) * (1 - last_calculated_final_percent_ability_cdr)))
@@ -195,6 +206,8 @@ func _attempt_shoot_buffing_bullet():
 	var tower_to_target = _find_closest_unbuffed_tower()
 	
 	if tower_to_target != null:
+		douser_buff_ability.on_ability_before_cast_start(douser_buff_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+		
 		var bullet := _construct_buffing_bullet(tower_to_target.global_position)
 		bullet.connect("hit_a_tower", self, "_bullet_hit_tower")
 		
@@ -211,6 +224,8 @@ func _attempt_shoot_buffing_bullet():
 		get_tree().get_root().add_child(bullet)
 		
 		current_attack_count = 0
+		
+		douser_buff_ability.on_ability_after_cast_ended(douser_buff_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 
 
 func _find_closest_unbuffed_tower() -> Node:
@@ -254,4 +269,7 @@ func _get_angle(destination_pos : Vector2):
 # Bullet hit
 
 func _bullet_hit_tower(bullet, tower):
-	tower.add_tower_effect(base_damage_buff_effect._shallow_duplicate())
+	var buff_effect = base_damage_buff_effect._get_copy_scaled_by(douser_buff_ability.get_potency_to_use(last_calculated_final_ability_potency))
+	
+	tower.add_tower_effect(buff_effect)
+

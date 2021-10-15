@@ -1,7 +1,7 @@
 extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd"
 
 const _stack_amount_trigger : int = 2
-const _dmg_scale : float = 1.20
+const _dmg_scale : float = 1.15
 
 
 func _init().(StoreOfTowerEffectsUUID.BLACK_ATTACK_DAMAGE_BUFF):

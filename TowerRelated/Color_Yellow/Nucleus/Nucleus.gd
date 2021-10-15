@@ -278,7 +278,12 @@ func _on_range_module_enemy_exited_n(enemy, module, arg_range_module):
 func _gamma_ability_activated():
 	var target = _get_single_targetable_enemy()
 	if target != null:
-		_start_gamma_mode(target)
+		var cd = _get_cd_to_use(gamma_ability_base_cooldown)
+		gamma_ability.on_ability_before_cast_start(cd)
+		
+		_start_gamma_mode(target, cd)
+		
+		gamma_ability.on_ability_after_cast_ended(cd)
 
 func _get_single_targetable_enemy():
 #	var curr_enemies = range_module._current_enemies
@@ -292,7 +297,7 @@ func _get_single_targetable_enemy():
 	
 	return null
 
-func _start_gamma_mode(arg_enemy):
+func _start_gamma_mode(arg_enemy, cd_to_use):
 	_is_in_gamma_mode = true
 	_attk_module_disabled_by_gamma = main_attack_module
 	if _attk_module_disabled_by_gamma != null:
@@ -313,7 +318,7 @@ func _start_gamma_mode(arg_enemy):
 	_gamma_duration_timer.connect("timeout", self, "_gamma_duration_timer_timeout", [], CONNECT_ONESHOT)
 	_gamma_duration_timer.start(gamma_ability_duration)
 	
-	gamma_ability.start_time_cooldown(_get_cd_to_use(gamma_ability_base_cooldown))
+	gamma_ability.start_time_cooldown(cd_to_use)
 
 
 func _gamma_duration_timer_timeout():

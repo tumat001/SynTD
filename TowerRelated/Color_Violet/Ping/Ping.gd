@@ -70,8 +70,8 @@ var shot_attack_module : WithBeamInstantDamageAttackModule
 const empowered_base_damage : float = 10.0
 const normal_base_damage : float = 5.0
 
-const empowered_on_hit_damage_scale : float = 5.0
-const normal_on_hit_damage_scale : float = 2.5
+const empowered_on_hit_damage_scale : float = 4.0
+const normal_on_hit_damage_scale : float = 2.0
 
 const original_empowered_num_of_targets_limit : int = 1
 var empowered_num_of_targets_limit : int = original_empowered_num_of_targets_limit

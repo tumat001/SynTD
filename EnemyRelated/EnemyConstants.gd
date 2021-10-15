@@ -181,6 +181,8 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info.base_armor = 18
 		info.base_toughness = 18
 		
+		info.enemy_type = info.EnemyType.ELITE
+		
 	elif enemy_id == Enemies.PROVIDENCE:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
 		info.base_health = 65

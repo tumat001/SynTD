@@ -11,6 +11,9 @@ var speed_bonus_modi : FlatModifier
 var speed_bonus_effect : EnemyAttributesEffect
 var _is_dashing : bool = false
 
+var dash_ability : BaseAbility
+
+
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.CHARGE))
 
@@ -20,6 +23,7 @@ func _ready():
 	connect("on_current_health_changed", self, "_on_health_threshold_02_reached")
 	
 	_construct_effect_d()
+	_construct_and_connect_ability()
 
 func _construct_effect_d():
 	speed_bonus_modi = FlatModifier.new(StoreOfEnemyEffectsUUID.CHARGE_SPEED_BOOST)
@@ -31,6 +35,12 @@ func _construct_effect_d():
 	speed_bonus_effect.time_in_seconds = _boost_duration
 	speed_bonus_effect.is_from_enemy = true
 
+func _construct_and_connect_ability():
+	dash_ability = BaseAbility.new()
+	
+	dash_ability.is_timebound = false
+	
+	register_ability(dash_ability)
 
 #
 
@@ -47,6 +57,8 @@ func _on_health_threshold_02_reached(curr_health):
 
 func _perform_dash():
 	if !_is_dashing:
+		dash_ability.on_ability_before_cast_start(dash_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+		
 		connect("effect_added", self, "_speed_effect_added")
 		
 		var effect = _add_effect(speed_bonus_effect._get_copy_scaled_by(last_calculated_final_ability_potency))
@@ -56,7 +68,8 @@ func _perform_dash():
 			_is_dashing = true
 		else:
 			disconnect("effect_added", self, "_speed_effect_added")
-
+		
+		dash_ability.on_ability_after_cast_ended(dash_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 
 func _process(delta):
 	if _is_dashing:

@@ -176,12 +176,15 @@ func _ability_prompt_cancelled():
 
 func _start_transpose_timer_to_tower(tower):
 	if _can_transpose_with_tower(tower):
+		var cd = _get_cd_to_use(transpose_base_cooldown)
+		transpose_ability.on_ability_before_cast_start(cd)
+		
 		var final_delay = transpose_base_ability_delay
 		var final_ap_to_use = transpose_ability.get_potency_to_use(last_calculated_final_ability_potency)
 		if final_ap_to_use != 0:
 			final_delay /= final_ap_to_use
 		
-		transpose_delay_timer.connect("timeout", self, "_transpose_delay_timer_expired", [tower], CONNECT_ONESHOT)
+		transpose_delay_timer.connect("timeout", self, "_transpose_delay_timer_expired", [tower, cd], CONNECT_ONESHOT)
 		
 		transpose_delay_timer.start(final_delay)
 		
@@ -198,21 +201,23 @@ func _on_round_end_t():
 
 #
 
-func _transpose_delay_timer_expired(tower):
+func _transpose_delay_timer_expired(tower, cooldown):
 	if is_round_started:
-		_transpose_with_tower(tower)
+		_transpose_with_tower(tower, cooldown)
 
-func _transpose_with_tower(tower):
+func _transpose_with_tower(tower, cooldown):
 	if _can_transpose_with_tower(tower):
 		transfer_to_placable(tower.current_placable, false, false, true, true)
 		
-		transpose_ability.start_time_cooldown(_get_cd_to_use(transpose_base_cooldown))
+		transpose_ability.start_time_cooldown(cooldown)
 		
 		_give_tower_transpose_attk_speed(tower)
 		_give_tower_transpose_attk_speed(self)
 		
 		_give_tower_transpose_ability_potency(tower)
 		_give_tower_transpose_ability_potency(self)
+		
+		transpose_ability.on_ability_after_cast_ended(cooldown)
 	
 	transpose_ability_activation_clauses.remove_clause(transpose_is_in_delay_timeline_clause)
 

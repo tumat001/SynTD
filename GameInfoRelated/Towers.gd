@@ -629,8 +629,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
 			"",
-			"Shots deal 5 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 250% efficiency.",
-			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 500% effective instead.",
+			"Shots deal 5 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 200% efficiency.",
+			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 400% effective instead.",
 			"Ability potency increases the amount of marks per ring."
 		]
 		
@@ -1179,7 +1179,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Royal Flame's attacks burn enemies for 25% of its base damage every 0.5 seconds for 10 seconds.",
 			"",
-			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to 300.",
+			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to 200.",
 			"Ability potency increases health ratio as damage dealt, but not damage limit.",
 			"Cooldown: 25 s"
 			# THIS SAME PASSAGE is placed in royal flame's
@@ -1409,7 +1409,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 4
-		info.base_attk_speed = 0.385
+		info.base_attk_speed = 0.365
 		info.base_pierce = 1
 		info.base_range = 135
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1894,7 +1894,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var effect_vul_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.ING_HEXTRIBUTE_EFFECT_VUL)
-		effect_vul_modi.percent_amount = 25
+		effect_vul_modi.percent_amount = 50
 		effect_vul_modi.percent_based_on = PercentType.BASE
 		var hextribute_effect_vul_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_EFFECT_VULNERABILITY, effect_vul_modi, StoreOfEnemyEffectsUUID.ING_HEXTRIBUTE_EFFECT_VUL)
 		hextribute_effect_vul_effect.is_timebound = true
@@ -2071,7 +2071,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Main attacks on hit causes Soul to attempt to cast Effigize.",
 			"Effigize: Spawns an Effigy of the enemy. Only one Effigy can be maintained by Soul at a time.",
 			"Effigy gains max health equal to 50% of the enemy hit's current health. This is increased by Soul's ability potency.",
-			"Effigy inherits the enemy's stats, and takes 25% increased damage.",
+			"Effigy inherits the enemy's stats, and has 5 less armor.",
 			"All damage and on hit effects taken by the Effigy is shared to the enemy associated with the Effigy. This does not trigger on hit events, and does not share execute damage.",
 			"Cooldown: 1 s. Cooldown starts when the Effigy is destroyed.",
 			"",
@@ -2080,20 +2080,35 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"If the associated enemy dies while the Effigy is standing, the Effigy explodes, dealing 50% of its current health as elemental damage to 5 enemies.",
 		]
 		
-		var dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SOUL)
-		dmg_modifier.percent_amount = 2
-		dmg_modifier.percent_based_on = PercentType.CURRENT
-		dmg_modifier.ignore_flat_limits = false
-		dmg_modifier.flat_maximum = 3
-		dmg_modifier.flat_minimum = 0
+		var res_modifier = FlatModifier.new(StoreOfEnemyEffectsUUID.ING_SOUL)
+		res_modifier.flat_modifier = -4
 		
-		var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_SOUL, dmg_modifier, DamageType.ELEMENTAL)
+		var enemy_res_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_ARMOR, res_modifier, StoreOfEnemyEffectsUUID.ING_SOUL)
+		enemy_res_effect.is_from_enemy = false
+		enemy_res_effect.time_in_seconds = 10
+		enemy_res_effect.is_timebound = true
 		
-		var dmg_effect = TowerOnHitDamageAdderEffect.new(on_hit_dmg, StoreOfTowerEffectsUUID.ING_SOUL)
-		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, dmg_effect)
+		var tower_effect = TowerOnHitEffectAdderEffect.new(enemy_res_effect, StoreOfTowerEffectsUUID.ING_SOUL)
+		var ing_effect = IngredientEffect.new(tower_id, tower_effect)
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "+ on hit"
+		info.ingredient_effect_simple_description = "- armor"
+		
+#		var dmg_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SOUL)
+#		dmg_modifier.percent_amount = 2
+#		dmg_modifier.percent_based_on = PercentType.CURRENT
+#		dmg_modifier.ignore_flat_limits = false
+#		dmg_modifier.flat_maximum = 3
+#		dmg_modifier.flat_minimum = 0
+#
+#		var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_SOUL, dmg_modifier, DamageType.ELEMENTAL)
+#
+#		var dmg_effect = TowerOnHitDamageAdderEffect.new(on_hit_dmg, StoreOfTowerEffectsUUID.ING_SOUL)
+#		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, dmg_effect)
+#
+#		info.ingredient_effect = ing_effect
+#		info.ingredient_effect_simple_description = "+ on hit"
+#
 		
 		
 	elif tower_id == PROMINENCE:
@@ -2116,7 +2131,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Globule's attacks are considered to be Prominence's main attacks.",
 			"",
 			"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
-			"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 3 seconds, and dealing 12 physical damage.",
+			"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 4 seconds, and dealing 12 physical damage.",
 			"The farthest tower with range from Prominence also casts Regards using Prominence's ability potency. Enemies can only be affected once.",
 			"Prominece also gains 3 attacks with its sword, with each attack exploding, dealing 5 + 300% of its bonus base damage as elemental damage.",
 			"Cooldown: 60 s",
@@ -2374,20 +2389,20 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.333
+		info.base_attk_speed = 0.34
 		info.base_pierce = 0
-		info.base_range = 175
+		info.base_range = 185
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
 			"Burgeon's attacks reduce enemy healing by 40% for 8 seconds.",
 			"",
-			"Burgeon launches seeds that land to the ground. Upon landing, seeds explode when an enemy is nearby only after arming themselves for 2 seconds.",
-			"Seed explosions deal 4 elemental damage to 4 enemies, and benefit from base damage and on hit damage buffs at 50% efficiency. Also applies on hit effects.",
+			"Burgeon launches seeds that land to the ground. Upon landing, seeds explode when an enemy is nearby only after arming themselves for 1.25 seconds.",
+			"Seed explosions deal 5 elemental damage to 4 enemies, and benefit from base damage and on hit damage buffs at 75% efficiency. Also applies on hit effects.",
 			"",
 			"Burgeon automatically attempts to cast Proliferate.",
-			"Proliferate: Launches a seed at a tower in its range, prioritizing towers with enemies in their range. The seed grows to a mini burgeon. Mini burgeons attach to the tower, and borrows its range.", 
+			"Proliferate: Launches a seed at a tower in its range, prioritizing towers with enemies in their range. The seed grows to a mini burgeon. Mini burgeons attach to the tower, and borrows their range.", 
 			"Mini burgeons attack just like Burgeons, and have the same stats. Mini burgeons benefit from Burgeon's effects. Each Mini burgeon lasts for 30 seconds, and die when Burgeon dies.",
 			"Cooldown: 20 s.",
 			"",

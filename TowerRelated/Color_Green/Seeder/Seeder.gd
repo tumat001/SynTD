@@ -195,9 +195,13 @@ func _can_cast_implant_updated(value):
 
 func _on_main_post_mitigated_dmg_dealt(damage_instance_report, killed, enemy, damage_register_id, module):
 	if !killed and implant_ability_is_ready:
+		var cd = _get_cd_to_use(base_implant_cooldown)
+		implant_ability.on_ability_before_cast_start(cd)
+		
 		exploding_seed_am.call_deferred("_attack_enemies", [enemy])
 		
-		implant_ability.start_time_cooldown(_get_cd_to_use(base_implant_cooldown))
+		implant_ability.start_time_cooldown(cd)
+		implant_ability.on_ability_after_cast_ended(cd)
 
 
 # seed explosion related

@@ -1095,7 +1095,8 @@ func on_round_end():
 	
 	queued_attack_count = 0
 	
-	range_module.clear_all_target_effects()
+	if range_module != null:
+		range_module.clear_all_target_effects()
 
 
 # Damage report related

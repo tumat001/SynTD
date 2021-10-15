@@ -37,12 +37,12 @@ const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/
 const heal_reduc_amount : float = -40.0
 const heal_reduc_duration : float = 8.0
 
-const air_attack_arm_time : float = 2.0
+const air_attack_arm_time : float = 1.25
 const sensor_modulate : Color = Color(1, 1, 1, 0)
 const aoe_modulate : Color = Color(1, 1, 1, 0.7)
 
-const air_attack_base_dmg : float = 4.0
-const air_attack_damage_scale : float = 0.5
+const air_attack_base_dmg : float = 5.0
+const air_attack_damage_scale : float = 0.75
 
 var air_proj_attack_module : ArcingBulletAttackModule
 var explosion_attack_module : AOEAttackModule
@@ -324,8 +324,13 @@ func _cast_proliferate():
 	var candidate_tower = _find_candidate_tower()
 	
 	if candidate_tower != null:
+		var cd = _get_cd_to_use(proliferate_base_cooldown)
+		proliferate_ability.on_ability_before_cast_start(cd)
+		
 		_fire_proliferate_seed_at_tower(candidate_tower)
-		proliferate_ability.start_time_cooldown(_get_cd_to_use(proliferate_base_cooldown))
+		proliferate_ability.start_time_cooldown(cd)
+		proliferate_ability.on_ability_after_cast_ended(cd)
+		
 	else:
 		proliferate_ability.start_time_cooldown(3) #refresh
 
@@ -431,7 +436,7 @@ func _construct_mini_burgeon_attack_module(seed_position : Vector2, landed_tower
 #
 
 func _process(delta):
-	if is_round_started and is_current_placable_in_map():
+	if is_round_started:
 		for mini_burgeon in mini_burgeon_time_map:
 			mini_burgeon_time_map[mini_burgeon] -= delta
 			

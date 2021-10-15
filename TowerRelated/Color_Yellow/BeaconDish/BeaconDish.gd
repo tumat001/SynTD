@@ -37,6 +37,7 @@ var range_modifier : FlatModifier
 
 var bd_attack_module : AbstractAttackModule
 
+var buff_aura_ability : BaseAbility
 
 # ratios
 
@@ -102,6 +103,8 @@ func _ready():
 	_construct_on_hit_and_modifiers()
 	_construct_effects()
 	
+	_construct_and_connect_ability()
+	
 	_post_inherit_ready()
 
 
@@ -127,6 +130,15 @@ func _construct_effects():
 	range_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_modifier, StoreOfTowerEffectsUUID.BEACON_RANGE)
 	range_effect.is_timebound = true
 	range_effect.time_in_seconds = effect_duration
+
+
+func _construct_and_connect_ability():
+	buff_aura_ability = BaseAbility.new()
+	
+	buff_aura_ability.is_timebound = false
+	
+	register_ability_to_manager(buff_aura_ability, false)
+
 
 # Round start related
 
@@ -168,8 +180,10 @@ func _process(delta):
 		
 		if _current_refresh_cooldown <= 0:
 			if current_placable is InMapAreaPlacable and !last_calculated_disabled_from_attacking:
-				_current_refresh_cooldown += _get_cd_to_use(refresh_cooldown)
+				var cd = _get_cd_to_use(refresh_cooldown)
+				_current_refresh_cooldown += cd
 				
+				buff_aura_ability.on_ability_before_cast_start(cd)
 				#_update_elemental_on_hit_effect()
 				#_update_flat_attk_speed_effect()
 				#_update_flat_range_effect()
@@ -178,6 +192,7 @@ func _process(delta):
 				_show_signal_particle()
 				
 				_decrease_count_of_countbounded(bd_attack_module)
+				buff_aura_ability.on_ability_after_cast_ended(cd)
 
 
 func _give_buffs_to_active_towers_in_range():

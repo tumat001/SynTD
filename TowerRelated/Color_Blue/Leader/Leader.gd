@@ -329,6 +329,9 @@ func _remove_all_tower_members():
 # Ability: coordinated attack
 
 func _cast_use_coordinated_attack():
+	var cd = _get_cd_to_use(coordinated_attack_cooldown)
+	coordinated_attack_ability.on_ability_before_cast_start(cd)
+	
 	_atomic_marked_enemy = marked_enemy
 	
 	for tower in tower_members_beam_map:
@@ -353,8 +356,10 @@ func _cast_use_coordinated_attack():
 		_atomic_marked_enemy._add_effect(stun_effect)
 		_construct_and_show_particle_at_pos(_atomic_marked_enemy.global_position)
 	
-	var cd = _get_cd_to_use(coordinated_attack_cooldown)
+	
 	coordinated_attack_ability.start_time_cooldown(cd)
+	coordinated_attack_ability.on_ability_after_cast_ended(cd)
+
 
 func _construct_and_show_particle_at_pos(pos : Vector2):
 	var particle = LeaderCommandAttack_ParticleScene.instance()

@@ -24,10 +24,10 @@ var priority_targets_effects : Dictionary = {}
 
 var displaying_range : bool = false
 var can_display_range : bool = true
-const circle_range_color : Color = Color(0.2, 0.2, 0.2, 0.15)
+const circle_range_color : Color = Color(0.2, 0.2, 0.2, 0.125)
 
 var can_display_circle_arc : bool = false
-const circle_arc_color : Color = Color(0.6, 0.6, 0.6, 0.3)
+const circle_arc_color : Color = Color(0.15, 0.15, 0.15, 0.3)
 
 
 var enemies_in_range : Array = []

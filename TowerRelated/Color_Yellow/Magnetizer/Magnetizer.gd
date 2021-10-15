@@ -48,6 +48,8 @@ onready var tower_base_sprite : Sprite = $TowerBase/KnockUpLayer/TowerBaseSprite
 
 var is_energy_module_on : bool = false
 
+var magnetize_ability : BaseAbility
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -138,7 +140,18 @@ func _ready():
 	
 	add_attack_module(beam_attack_module)
 	
+	
+	_construct_and_connect_ability()
+	
 	_post_inherit_ready()
+
+
+func _construct_and_connect_ability():
+	magnetize_ability = BaseAbility.new()
+	
+	magnetize_ability.is_timebound = false
+	
+	register_ability_to_manager(magnetize_ability, false)
 
 
 # Magnet related
@@ -224,6 +237,8 @@ func _attempt_form_beam():
 	#
 	
 	if _can_form_beam():
+		magnetize_ability.on_ability_before_cast_start(magnetize_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+		
 		for blue_magnet in activated_blue_magnets:
 			if blue_magnet != null:
 				for red_magnet in activated_red_magnets:
@@ -236,6 +251,7 @@ func _attempt_form_beam():
 				blue_magnet.used_in_beam_formation()
 			#activated_blue_magnets.erase(blue_magnet)
 		
+		magnetize_ability.on_ability_after_cast_ended(magnetize_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 		#activated_blue_magnets.clear()
 		#activated_red_magnets.clear()
 

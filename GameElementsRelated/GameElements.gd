@@ -237,7 +237,7 @@ func _on_BuySellLevelRollPanel_reroll():
 #			Towers.RE,
 #			Towers.TESLA,
 #			Towers.PING,
-#			Towers.ADEPT,
+#			Towers.SOUL,
 #		])
 #	else:
 #		panel_buy_sell_level_roll.update_new_rolled_towers([

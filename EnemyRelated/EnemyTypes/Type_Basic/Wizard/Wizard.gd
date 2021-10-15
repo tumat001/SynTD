@@ -63,13 +63,18 @@ func _explosion_ability_activated():
 		var valid_targets = Targeting.enemies_to_target(targets, _targeting_for_explosion, 1, global_position)
 		
 		if valid_targets.size() > 0:
-			_summon_beam_to_target(valid_targets[0])
+			explosion_ability.on_ability_before_cast_start(_explosion_cooldown)
+			
+			_summon_beam_to_target(valid_targets[0], explosion_ability.get_potency_to_use(last_calculated_final_ability_potency))
 			explosion_ability.start_time_cooldown(_explosion_cooldown)
+			
+			explosion_ability.on_ability_after_cast_ended(_explosion_cooldown)
 
-func _summon_beam_to_target(target):
+
+func _summon_beam_to_target(target, final_potency : float):
 	if target != null:
 		var beam = Wizard_Beam_Scene.instance()
-		beam.connect("time_visible_is_over", self, "_summon_explosion_to_target", [target], CONNECT_ONESHOT)
+		beam.connect("time_visible_is_over", self, "_summon_explosion_to_target", [target, final_potency], CONNECT_ONESHOT)
 		
 		beam.time_visible = 0.3
 		beam.frames.set_animation_speed("default", 8 / 0.3)
@@ -81,9 +86,9 @@ func _summon_beam_to_target(target):
 		beam.update_destination_position(target.global_position)
 
 
-func _summon_explosion_to_target(target):
+func _summon_explosion_to_target(target, final_potency : float):
 	if target != null:
-		target.take_damage(explosion_ability.get_potency_to_use(last_calculated_final_ability_potency) * _explosion_dmg)
+		target.take_damage(final_potency * _explosion_dmg)
 		_create_and_show_expl_particle(target.global_position)
 
 

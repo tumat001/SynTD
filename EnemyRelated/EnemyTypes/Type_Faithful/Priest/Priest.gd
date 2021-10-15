@@ -50,13 +50,19 @@ func _invul_ready_for_activation_updated(is_ready):
 
 func _give_invul_to_diety():
 	if deity != null:
+		invul_ability.on_ability_before_cast_start(invul_cooldown)
+		
 		var copy_of_effect = invul_effect._get_copy_scaled_by(invul_ability.get_potency_to_use(last_calculated_final_ability_potency))
 		deity._add_effect(copy_of_effect)
 		
 		no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.CUSTOM_CLAUSE_01)
 		movement_timer.start(invul_no_movement_duration)
-	
-	invul_ability.start_time_cooldown(invul_cooldown)
+		
+		invul_ability.start_time_cooldown(invul_cooldown)
+		
+		invul_ability.on_ability_after_cast_ended(invul_cooldown)
+	else:
+		invul_ability.start_time_cooldown(2) # refresh
 
 
 func _movement_timer_timeout():

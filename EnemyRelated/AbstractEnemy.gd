@@ -69,6 +69,10 @@ signal cancel_all_lockons() # on death, reviving, etc
 
 signal final_ability_potency_changed(new_potency)
 
+signal on_ability_before_cast_start(cooldown, ability)
+signal on_ability_after_cast_end(cooldown, ability)
+
+
 
 # SHARED IN EnemyTypeInformation. Changes here must be
 # reflected in that class as well.
@@ -1659,6 +1663,17 @@ func get_enemy_parent():
 func register_ability(ability : BaseAbility):
 	ability.activation_conditional_clauses.attempt_insert_clause(no_action_from_self_clauses)
 	all_abilities.append(ability)
+	
+	if !ability.is_connected("on_ability_before_cast_start", self, "_on_ability_before_cast_started"):
+		ability.connect("on_ability_before_cast_start", self, "_on_ability_before_cast_started", [ability])
+		ability.connect("on_ability_after_cast_end", self, "_on_ability_after_cast_ended", [ability])
+
+
+func _on_ability_before_cast_started(cooldown, ability):
+	emit_signal("on_ability_before_cast_start", cooldown, ability)
+
+func _on_ability_after_cast_ended(cooldown, ability):
+	emit_signal("on_ability_after_cast_end", cooldown, ability)
 
 
 # ability potency related
@@ -2008,3 +2023,9 @@ func is_enemy_type_boss() -> bool:
 func is_enemy_type_boss_or_elite() -> bool:
 	return enemy_type == EnemyType.BOSS or enemy_type == EnemyType.ELITE
 
+func is_enemy_type_elite() -> bool:
+	return enemy_type == EnemyType.ELITE
+
+
+func set_enemy_type(new_type : int):
+	enemy_type = new_type

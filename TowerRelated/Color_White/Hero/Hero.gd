@@ -636,6 +636,8 @@ func _on_tower_hide_range():
 
 
 func _cast_VOL():
+	VOL_ability.on_ability_before_cast_start(VOL_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+	
 	var counter : int = 0
 	for tower in _get_vol_target_towers():
 		var effect : Hero_VOLEffect = VOL_effect._shallow_duplicate()
@@ -650,7 +652,8 @@ func _cast_VOL():
 		var particle = VOL_BlessSprite.instance()
 		particle.position = tower.global_position
 		get_tree().get_root().call_deferred("add_child", particle)
-
+	
+	VOL_ability.on_ability_after_cast_ended(VOL_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 
 func _get_vol_target_towers():
 	if VOL_range_module != null:

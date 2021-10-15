@@ -74,7 +74,6 @@ const repel_mov_speed_deceleration : float = 65.0
 const repel_descriptions : Array = [
 	"Throws a potion that creates a blast at impact.",
 	"The blast knocks enemies away from its center. The blast also stuns enemies hit for %s seconds." % [str(repel_stun_duration)],
-	"The enemy hit directly by the potion is always knocked forward.",
 	"",
 	"\"Enemies tend to be separated with this potion.\""
 ]
@@ -484,7 +483,11 @@ func _can_cast_potion_throw_updated(value):
 
 
 func _potion_thrown_by_potion_attk_module(attack_speed_delay, enemies_or_poses):
-	potion_throw_ability.start_time_cooldown(_get_cd_to_use(potion_throw_cooldown))
+	var cd = _get_cd_to_use(potion_throw_cooldown)
+	
+	potion_throw_ability.on_ability_before_cast_start(cd)
+	potion_throw_ability.start_time_cooldown(cd)
+	potion_throw_ability.on_ability_after_cast_ended(cd)
 
 
 func _potion_thrown_hit_enemy(enemy, damage_register_id, damage_instance, module):

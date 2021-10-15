@@ -1,7 +1,5 @@
 extends "res://TowerRelated/AbstractTower.gd"
 
-
-
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
@@ -309,11 +307,15 @@ func _on_any_post_mitigated_dmg_dealt_s(damage_instance_report, killed, enemy, d
 
 func _attempt_cast_chains():
 	if (_current_post_mitigated_dmg_total >= chains_post_mitigated_dmg_needed or _current_attk_count >= chains_attk_count_needed) and chains_ability_is_ready:
+		var cd = _get_cd_to_use(chains_base_ability_cooldown)
+		chains_ability.on_ability_before_cast_start(cd)
+		
 		_cast_chains_ability()
 		
 		_current_attk_count = 0
 		_current_post_mitigated_dmg_total = 0
-		chains_ability.start_time_cooldown(_get_cd_to_use(chains_base_ability_cooldown))
+		chains_ability.start_time_cooldown(cd)
+		chains_ability.on_ability_after_cast_ended(cd)
 
 
 func _cast_chains_ability():

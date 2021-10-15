@@ -14,7 +14,7 @@ const red_bolt_damage_tier_1 : float = 6.0
 const red_bolt_damage_tier_2 : float = 4.5
 const red_bolt_damage_tier_3 : float = 3.5
 
-const red_bolt_base_count : int = 6
+const red_bolt_base_count : int = 5
 const red_bolt_count_stack_ratio : float = 0.5
 
 const red_tantrum_trigger_amount : int = 10
@@ -36,8 +36,8 @@ const green_slow_scale_inc_per_stack : float = 0.075
 const green_slow_base_count : int = 3
 const green_slow_count_stack_ratio : float = 0.20
 
-const green_slow_base_duration : float = 5.0
-const green_slow_duration_scale_inc_per_stack : float = 5.0
+const green_slow_base_duration : float = 8.0
+const green_slow_duration_scale_inc_per_stack : float = 0.0#5.0
 
 const green_pulse_trigger_amount : int = 10
 const green_pulse_base_size : float = 20.0

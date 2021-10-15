@@ -26,6 +26,11 @@ signal final_ability_potency_changed()
 signal final_ability_cdr_changed()
 
 
+# NOT Automated. Emitted by caster
+signal on_ability_before_cast_start(cooldown)
+signal on_ability_after_cast_end(cooldown)
+
+
 enum ActivationClauses {
 	ROUND_INTERMISSION_STATE = 1000,
 	ROUND_ONGOING_STATE = 1001,
@@ -53,6 +58,9 @@ enum ShouldBeDisplayingClauses {
 enum AutoCastableClauses {
 	CANNOT_BE_AUTOCASTED = 1004,
 }
+
+const ON_ABILITY_CAST_NO_COOLDOWN : float = -1.0
+const ABILITY_MINIMUM_COOLDOWN : float = 0.1
 
 
 var is_timebound : bool = false
@@ -129,6 +137,7 @@ func _init():
 	_calculate_final_flat_ability_cdr()
 	_calculate_final_percent_ability_cdr()
 
+
 # Activation related
 
 func activate_ability(forced : bool = false):
@@ -167,8 +176,8 @@ func _get_cd_to_use(cd_of_source : float) -> float:
 	final_cd *= (100 - last_calculated_final_percent_ability_cdr) / 100
 	final_cd -= last_calculated_final_flat_ability_cdr
 	
-	if final_cd < 0.25:
-		final_cd = 0.25
+	if final_cd < ABILITY_MINIMUM_COOLDOWN:
+		final_cd = ABILITY_MINIMUM_COOLDOWN
 	
 	return final_cd
 
@@ -402,6 +411,16 @@ func set_clauses_to_usual_synergy_sufficient_based():
 	should_be_displaying_clauses.remove_clause(ShouldBeDisplayingClauses.SYNERGY_LEVEL_INSUFFICIENT)
 	activation_conditional_clauses.remove_clause(ActivationClauses.SYNERGY_LEVEL_INSUFFICIENT)
 	counter_decrease_clauses.remove_clause(CounterDecreaseClauses.SYNERGY_LEVEL_INSUFFICIENT)
+
+
+#
+
+
+func on_ability_before_cast_start(cooldown : float):
+	emit_signal("on_ability_before_cast_start", cooldown)
+
+func on_ability_after_cast_ended(cooldown : float):
+	emit_signal("on_ability_after_cast_end", cooldown)
 
 
 

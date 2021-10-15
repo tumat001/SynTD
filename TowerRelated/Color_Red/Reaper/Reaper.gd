@@ -189,15 +189,21 @@ func _on_post_miti_dmg_dealt_r(damage_instance_report, killed, enemy, damage_reg
 
 
 func _cast_slash_ability():
-	call_deferred("_slash_at_enemy")
-	slash_ability.start_time_cooldown(slash_static_cooldown)
+	var cd = _get_cd_to_use(slash_static_cooldown)
+	slash_ability.on_ability_before_cast_start(cd)
+	
+	var ap_to_use : float = slash_ability.get_potency_to_use(last_calculated_final_ability_potency)
+	call_deferred("_slash_at_enemy", ap_to_use)
+	slash_ability.start_time_cooldown(cd)
 	
 	_current_slash_queue_count -= 1
 	if _current_slash_queue_count <= 0:
 		slash_ability_activation_clause.attempt_insert_clause(no_enemies_killed_clause)
 		_current_slash_queue_count = 0
+	
+	slash_ability.on_ability_after_cast_ended(cd)
 
-func _slash_at_enemy():
+func _slash_at_enemy(potency_to_use : float):
 	var enemies = main_attack_module.range_module.get_targets(1, Targeting.CLOSE)
 	
 	if enemies.size() != 0:
@@ -211,7 +217,7 @@ func _slash_at_enemy():
 		else:
 			final_modi = main_attack_module.last_calculated_final_damage * slash_subsequent_damage_ratio
 		
-		final_modi *= slash_ability.get_potency_to_use(last_calculated_final_ability_potency)
+		final_modi *= potency_to_use
 		main_on_hit_dmg.damage_as_modifier.flat_modifier = final_modi
 		
 		

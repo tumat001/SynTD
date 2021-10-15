@@ -30,6 +30,8 @@ var campfire_base_damage : float
 const initial_cooldown_after_ability_cast : float = 1.0
 var initial_cd_timer : Timer
 
+var rage_ability : BaseAbility
+
 #
 
 onready var flame_anim_sprite = $TowerBase/KnockUpLayer/BaseSprites
@@ -91,8 +93,9 @@ func _ready():
 	_construct_effects()
 	_construct_timer()
 	
+	_construct_and_connect_ability()
+	
 	_post_inherit_ready()
-
 
 
 func _construct_on_hit_and_modifiers():
@@ -113,6 +116,14 @@ func _construct_timer():
 	
 	add_child(initial_cd_timer)
 
+
+func _construct_and_connect_ability():
+	rage_ability = BaseAbility.new()
+	
+	rage_ability.is_timebound = false
+	
+	register_ability_to_manager(rage_ability, false)
+
 # Giving effects and trigger
 
 func _enemy_damage_taken(damage_report, is_lethal, enemy):
@@ -121,11 +132,15 @@ func _enemy_damage_taken(damage_report, is_lethal, enemy):
 		
 		if _current_rage >= last_calculated_rage_threshold:
 			if heat_module == null or !last_calculated_disabled_from_attacking:
+				var cd = _get_cd_to_use(initial_cooldown_after_ability_cast)
+				rage_ability.on_ability_before_cast_start(cd)
+				
 				_update_physical_on_hit_effect()
-				_give_buffs_to_towers()
+				_give_buffs_to_towers(cd)
 				_construct_particle()
-			
-			_current_rage = 0
+				rage_ability.on_ability_after_cast_ended(cd)
+				
+				_current_rage = 0
 
 
 func _update_physical_on_hit_effect():
@@ -134,12 +149,12 @@ func _update_physical_on_hit_effect():
 		physical_on_hit_effect.on_hit_damage = physical_on_hit.duplicate()
 
 
-func _give_buffs_to_towers():
+func _give_buffs_to_towers(cooldown):
 	_campfire_attack_equivalent()
 	for tower in tower_detecting_range_module.get_all_in_map_towers_in_range():
 		tower.add_tower_effect(physical_on_hit_effect._shallow_duplicate())
 	
-	initial_cd_timer.start(initial_cooldown_after_ability_cast)
+	initial_cd_timer.start(cooldown)
 
 
 func _construct_particle():

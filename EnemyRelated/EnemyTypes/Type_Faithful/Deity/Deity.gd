@@ -444,8 +444,10 @@ func _on_rotation_ability_ready_updated(is_ready):
 		var ability := _get_next_ready_ability()
 		
 		if ability != null:
-			call(ability.auto_cast_func)
-			rotation_ability.start_time_cooldown(current_ability_rotation_cooldown_amount)
+			var cd = current_ability_rotation_cooldown_amount
+			
+			call(ability.auto_cast_func, cd)
+			rotation_ability.start_time_cooldown(cd)
 		else:
 			rotation_ability.start_time_cooldown(1)
 
@@ -480,12 +482,16 @@ func _cycle_to_next_ability_id(curr_ability_id : int):
 
 #
 
-func _cast_taunt_ability():
+func _cast_taunt_ability(cooldown_amount : float):
+	taunt_ability.on_ability_before_cast_start(cooldown_amount)
+	
 	for tower in tower_detecting_range_module.get_all_in_map_and_active_towers_in_range():
 		if tower != null and tower.range_module != null and tower.range_module.is_an_enemy_in_range():
 			tower.add_tower_effect(tower_target_priority_effect)
 	
 	_construct_taunt_particle()
+	
+	taunt_ability.on_ability_after_cast_ended(cooldown_amount)
 
 func _construct_taunt_particle():
 	var particle = Taunt_CircleParticle.instance()
@@ -503,23 +509,30 @@ func _on_curr_health_changed_d(curr_health):
 
 #
 
-func _cast_grant_revive_ability():
+func _cast_grant_revive_ability(cooldown_amount : float):
+	grant_revive_ability.on_ability_before_cast_start(cooldown_amount)
+	
 	var enemies = range_module.get_targets_without_affecting_self_current_targets(int(revive_target_count * last_calculated_final_ability_potency) + 1)
 	
 	for enemy in enemies:
 		if enemy != self:
 			enemy._add_effect(revive_effect)
-
+	
+	grant_revive_ability.on_ability_after_cast_ended(cooldown_amount)
 
 
 #
 
-func _cast_knock_up_ability():
+func _cast_knock_up_ability(cooldown_amount : float):
+	knock_up_towers_ability.on_ability_before_cast_start(cooldown_amount)
+	
 	for tower in tower_detecting_range_module.get_all_in_map_and_active_towers_in_range():
 		if tower != null:
 			tower.add_tower_effect(knock_up_effect)
 	
 	_construct_knock_up_particle()
+	
+	knock_up_towers_ability.on_ability_after_cast_ended(cooldown_amount)
 
 func _construct_knock_up_particle():
 	var particle = KnockUp_CircleParticle.instance()

@@ -7,11 +7,11 @@ const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRe
 
 const path_name = "Quick Root"
 const path_descs = [
-	"All Green tower's main attacks deal bonus 1.75 elemental damage on hit."
+	"All Green tower's main attacks deal bonus 1 elemental damage on hit."
 ]
 const path_small_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/QuickRoot_Icon.png")
 
-const dmg_amount : float = 1.75
+const dmg_amount : float = 1.0
 const dmg_type : int = DamageType.ELEMENTAL
 
 var game_elements

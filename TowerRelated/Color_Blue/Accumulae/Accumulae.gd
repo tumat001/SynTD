@@ -368,10 +368,13 @@ func _attempt_cast_salvo_ability():
 
 
 func _enter_in_salvo_mode():
+	salvo_ability.on_ability_before_cast_start(_get_cd_to_use(base_salvo_cooldown))
+	
 	is_in_salvo = true
 	_attk_module_disabled_by_salvo_clause = main_attack_module
 	if _attk_module_disabled_by_salvo_clause != null:
 		_attk_module_disabled_by_salvo_clause.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.ACCUMULAE_DISABLE)
+
 
 func _exit_in_salvo_mode():
 	is_in_salvo = false
@@ -400,8 +403,10 @@ func _fire_single_burst_from_salvo():
 	set_curr_siphon_stacks(current_siphon_stacks - 1)
 	if is_in_salvo and current_siphon_stacks <= 0:
 		_exit_in_salvo_mode()
-		salvo_ability.start_time_cooldown(_get_cd_to_use(base_salvo_cooldown))
-
+		
+		var cd = _get_cd_to_use(base_salvo_cooldown)
+		salvo_ability.start_time_cooldown(cd)
+		salvo_ability.on_ability_after_cast_ended(cd)
 
 
 #

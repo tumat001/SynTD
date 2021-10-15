@@ -165,17 +165,24 @@ func _on_main_post_mitigated_dmg_dealt_t(damage_instance_report, killed, enemy, 
 			if enemy.is_enemy_type_boss():
 				shift_scale = rewind_effectiveness_on_boss_with_energy
 			
+			var cd = _get_cd_to_use(base_rewind_cooldown)
+			rewind_ability.on_ability_before_cast_start(cd)
+			
 			_shift_enemy_position_t(enemy, shift_scale)
-			rewind_ability.start_time_cooldown(_get_cd_to_use(base_rewind_cooldown))
+			rewind_ability.start_time_cooldown(cd)
 			enemy._add_effect(time_dust_effect._get_copy_scaled_by(1))
 			
 			_enemy_shifted_by_main_attack(enemy, enemy.global_position)
+			
+			rewind_ability.on_ability_after_cast_ended(cd)
+
 
 func _time_dust_stack_consumed():
 	if is_energy_module_on:
 		ability_manager._decrease_time_cooldown_of_all_abilities(time_dust_energy_module_cd_time_decrease)
 	else:
 		rewind_ability.time_decreased(time_dust_cd_time_decrease)
+
 
 
 func _shift_enemy_position_t(enemy, shift_scale : float = 1):
@@ -196,7 +203,7 @@ func set_energy_module(module):
 			"Consuming a stack of Time Dust instead reduces all abilities’s cooldown by %s seconds." % [str(time_dust_energy_module_cd_time_decrease)],
 			"Boss enemies are now affected by teleportation at %s effectiveness." % [str(rewind_effectiveness_on_boss_with_energy * 100) + "%"],
 			"",
-			"A time portal is opened beneath the teleported enemy for %s seconds. Enemies that enter the time portal for the first time are teleported backwards at %s effectiveness." % [str(time_portal_duration), str(time_portal_rewind_scale * 100) + "%"],
+			"A time portal is opened beneath the rewinded enemy for %s seconds. Enemies that enter the time portal for the first time are teleported backwards at %s effectiveness." % [str(time_portal_duration), str(time_portal_rewind_scale * 100) + "%"],
 		]
 
 
