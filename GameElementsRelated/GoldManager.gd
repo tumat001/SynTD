@@ -16,6 +16,7 @@ enum DecreaseGoldSource {
 	TOWER_USE,
 	LEVEL_UP,
 	SHOP_ROLL,
+	SYNERGY,
 	
 }
 

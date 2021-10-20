@@ -59,7 +59,7 @@ func _ready():
 	attack_module.position.y -= 15
 	
 	var bullet_shape = CircleShape2D.new()
-	bullet_shape.radius = 3
+	bullet_shape.radius = 4
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene
@@ -103,7 +103,7 @@ func _construct_and_add_piercing_attk_module():
 	attack_module.benefits_from_bonus_pierce = true
 	
 	var bullet_shape = RectangleShape2D.new()
-	bullet_shape.extents = Vector2(6, 3)
+	bullet_shape.extents = Vector2(7, 5)
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene

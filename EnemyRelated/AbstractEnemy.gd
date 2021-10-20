@@ -109,7 +109,7 @@ var enemy_id : int
 var base_health : float = 1
 var _flat_base_health_id_effect_map : Dictionary = {}
 var _percent_base_health_id_effect_map : Dictionary = {}
-var current_health : float = 1
+var current_health : float = -1
 var _last_calculated_max_health : float
 
 
@@ -188,6 +188,7 @@ var last_calculated_has_effect_shield_against_enemies : bool
 
 
 var distance_to_exit : float
+var unit_distance_to_exit : float
 var current_path_length : float
 var current_path # EnemyPath
 
@@ -373,7 +374,8 @@ func _post_inherit_ready():
 	
 	
 	#
-	current_health = _last_calculated_max_health
+	if current_health < 0:
+		current_health = _last_calculated_max_health
 	
 	
 	# All this for scaling of the bar purposes,
@@ -434,6 +436,7 @@ func _physics_process(delta):
 		var distance_traveled = delta * _last_calculated_final_movement_speed
 		offset += distance_traveled
 		distance_to_exit -= distance_traveled
+		unit_distance_to_exit -= distance_traveled / current_path_length
 	
 	if unit_offset == 1 and exits_when_at_map_end:
 		var exit_prevented : bool = false
@@ -1633,9 +1636,11 @@ func shift_offset(shift : float):
 	
 	offset += final_shift
 	distance_to_exit -= final_shift
+	unit_distance_to_exit -= final_shift / current_path_length
 	
 	if distance_to_exit > current_path_length:
 		distance_to_exit = current_path_length
+		unit_distance_to_exit = 1
 
 func shift_unit_offset(unit_shift : float):
 	var final_unit_shift = unit_shift
@@ -1645,8 +1650,11 @@ func shift_unit_offset(unit_shift : float):
 	unit_offset += final_unit_shift
 	
 	distance_to_exit -= final_unit_shift * current_path_length
+	unit_distance_to_exit -= unit_shift
+	
 	if distance_to_exit > current_path_length:
 		distance_to_exit = current_path_length
+		unit_distance_to_exit = 1
 
 # Coll
 
@@ -1939,9 +1947,11 @@ func _phy_process_forced_positional_movement(delta):
 			if _current_forced_positional_movement_effect.snap_to_offset_at_end:
 				offset = current_path.curve.get_closest_offset(global_position)
 				distance_to_exit = current_path_length - offset
+				unit_distance_to_exit = distance_to_exit / current_path_length
 				
 				if distance_to_exit > current_path_length:
 					distance_to_exit = current_path_length
+					unit_distance_to_exit = 1
 			
 			remove_current_forced_positional_movement_effect()
 
@@ -2004,6 +2014,7 @@ func copy_enemy_location_and_offset(arg_enemy):
 		position = arg_enemy.global_position
 	
 	distance_to_exit = arg_enemy.distance_to_exit
+	unit_distance_to_exit = arg_enemy.unit_distance_to_exit
 
 #
 

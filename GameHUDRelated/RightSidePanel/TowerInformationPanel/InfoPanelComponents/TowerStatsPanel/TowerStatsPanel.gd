@@ -21,6 +21,7 @@ onready var attack_speed_label : Label = $VBoxContainer/BodyMarginer/VBoxContain
 onready var range_label : Label = $VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/RangePanel/RangeLabel
 onready var on_hit_multiplier_label : Label = $VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/OnHitMultiplierPanel/OnHitMultiplierLabel
 onready var damage_type_label : Label = $VBoxContainer/BodyMarginer/VBoxContainer/MarginContainer/DamageTypePanel/DamageTypeLabel
+onready var ability_potency_label : Label = $VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/AbilityPotencyPanel/AbilityPotencyLabel
 
 const color_equal_stat = Color(1, 1, 1, 1)
 const color_higher_stat = Color("#fffdc008")
@@ -57,10 +58,12 @@ func _update_base_stat_display():
 	range_label.text = str(tower.main_attack_module.range_module.base_range_radius)
 	on_hit_multiplier_label.text = "x" + str(tower.main_attack_module.on_hit_damage_scale)
 	damage_type_label.text = DamageType.get_name_of_damage_type(tower.main_attack_module.base_damage_type)
+	ability_potency_label.text = str(tower.base_ability_potency)
 	
 	base_damage_label.set("custom_colors/font_color", color_equal_stat)
 	attack_speed_label.set("custom_colors/font_color", color_equal_stat)
 	range_label.set("custom_colors/font_color", color_equal_stat)
+	ability_potency_label.set("custom_colors/font_color", color_equal_stat)
 
 
 # Total
@@ -84,6 +87,7 @@ func _update_final_stat_display():
 	# Dmg Type
 	damage_type_label.text = DamageType.get_name_of_damage_type(tower.main_attack_module.base_damage_type)
 	
+	update_ability_potency()
 
 
 func update_final_base_damage():
@@ -120,6 +124,16 @@ func update_final_range():
 			
 			range_label.text = str(final_range)
 			range_label.set("custom_colors/font_color", _get_color_for_stat(base_range, final_range))
+
+
+func update_ability_potency():
+	if showing_stat == Stat.FINAL:
+		if tower != null:
+			var base_ap = tower.base_ability_potency
+			var final_ap = tower.last_calculated_final_ability_potency
+			
+			ability_potency_label.text = str(final_ap)
+			ability_potency_label.set("custom_colors/font_color", _get_color_for_stat(base_ap, final_ap))
 
 
 

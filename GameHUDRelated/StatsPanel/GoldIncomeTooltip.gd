@@ -56,11 +56,13 @@ func _append_name_and_value_to_income_descs(income_name : String, income_amount 
 	var gold_amount : int = 0
 	
 	if income_id == GoldManager.GoldIncomeIds.WIN_STREAK:
-		income_name_descs.descriptions.append(income_name + " (if won)")
+		#income_name_descs.descriptions.append(income_name + " (if won)")
+		income_name_descs.descriptions.append(income_name)
 		gold_amount = gold_manager.get_gold_amount_from_next_win_streak()
 		income_values_descs.descriptions.append(str(gold_amount))
 	elif income_id == GoldManager.GoldIncomeIds.LOSE_STREAK:
-		income_name_descs.descriptions.append(income_name + " (if lost)")
+		#income_name_descs.descriptions.append(income_name + " (if lost)")
+		income_name_descs.descriptions.append(income_name)
 		gold_amount = gold_manager.get_gold_amount_from_next_lose_streak()
 		income_values_descs.descriptions.append(str(gold_amount))
 	else:

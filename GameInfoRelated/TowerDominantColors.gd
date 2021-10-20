@@ -123,7 +123,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
 	
-	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [8, 5, 3],
+	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [8, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
 	[
@@ -179,7 +179,7 @@ func _init():
 	[
 		"10+ stacks: All attacks deal 10% of the enemy's missing health as elemental damage on hit, up to 7.",
 		"7+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. This can only be triggered every 0.1 seconds. The beam deals 1.5 physical damage, and benefits from base damage and on hit damage buffs at 30% efficiency. Also applies on hit effects.",
-		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 60% bonus attack speed for 6 attacks for 8 seconds. This effect has a 3 second cooldown.",
+		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 40% bonus attack speed for 6 attacks for 8 seconds. This effect has a 3 second cooldown.",
 		"2+ stacks: All attack's damage is increased by 15%."
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW

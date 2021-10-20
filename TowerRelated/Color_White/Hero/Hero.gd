@@ -72,7 +72,7 @@ const hero_base_health : float = 25.0
 const extra_comp_syn_slot_amount_at_max_natural_level : int = 1
 const hero_extra_ingredient_limit : int = 4
 
-const hero_max_nat_level_bonus_base_damage_amount : float = 2.25
+const hero_max_nat_level_bonus_base_damage_amount : float = 2.5
 const hero_max_nat_level_bonus_attk_speed_amount : float = 50.0
 const hero_max_nat_level_bonus_ability_potency : float = 0.5
 
@@ -82,7 +82,7 @@ const xp_per_kill : float = 2.0
 const xp_scale_if_not_white_dom_color : float = 0.7
 const max_hero_level : int = 6 # max hero natural level
 
-const xp_needed_per_level : Array = [130, 725, 2000, 3700, 3700, 3700]
+const xp_needed_per_level : Array = [130, 725, 1950, 3600, 3700, 3700]
 const gold_needed_per_level : Array = [2, 5, 7, 9, 9, 9]
 
 const xp_about_descriptions = [
@@ -100,9 +100,9 @@ const xp_about_descriptions = [
 const main_attack_proj_speed : float = 500.0
 const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
 const attks_needed_for_light_explosion : int = 35
-const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3.25]
-const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.35, 1.0]
-const light_explosion_pierce : int = 3
+const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3.5]
+const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.4, 1.0]
+const light_explosion_pierce : int = 8
 
 const judgement_dmg_ratio_in_levels : Array = [0.5, 1, 2, 3.5]
 const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 1.5, 2, 6]

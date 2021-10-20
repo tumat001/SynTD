@@ -24,7 +24,8 @@ func copy_enemy_stats_and_location(arg_enemy, arg_offset_distance_inc : float, c
 	respect_stage_round_health_scale = false
 	
 	#current_health *= curr_health_scale
-	_set_current_health_to(current_health * curr_health_scale)
+	
+	_set_current_health_to(arg_enemy.current_health * curr_health_scale)
 	
 	_offset_distance_inc = arg_offset_distance_inc
 	
@@ -32,7 +33,8 @@ func copy_enemy_stats_and_location(arg_enemy, arg_offset_distance_inc : float, c
 	base_movement_speed = 0
 	base_player_damage = 0
 	
-	base_armor -= 5
+	#base_armor -= 5
+	#calculate_final_armor()
 	
 	effigied_enemy = arg_enemy
 	effigied_enemy.connect("tree_exiting", self, "_effigied_enemy_tree_exiting")
@@ -63,6 +65,10 @@ func _effigied_enemy_tree_exiting():
 
 func _effigy_before_dmg_instance_is_processed(damage_instance, me):
 	if effigied_enemy != null:
+		var copy = damage_instance.get_copy_scaled_by(1)
+		for on_hit_dmg in copy.on_hit_damages.values():
+			on_hit_dmg.damage_type = DamageType.PURE
+		
 		effigied_enemy.hit_by_damage_instance(damage_instance, 0, false)
 
 

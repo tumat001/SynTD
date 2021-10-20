@@ -98,7 +98,7 @@ func _ready():
 	slash_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	
 	slash_attack_module.benefits_from_bonus_explosion_scale = false
-	slash_attack_module.benefits_from_bonus_base_damage = false
+	slash_attack_module.benefits_from_bonus_base_damage = false #this is intended to be false
 	slash_attack_module.benefits_from_bonus_attack_speed = false
 	slash_attack_module.benefits_from_bonus_on_hit_damage = false
 	slash_attack_module.benefits_from_bonus_on_hit_effect = false

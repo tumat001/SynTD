@@ -27,12 +27,15 @@ const proj_speed_level_2 : float = 400.0
 const proj_speed_level_3 : float = 500.0
 const proj_speed_level_4 : float = 650.0
 
-const original_max_on_hit_damage : float = 34.0
+const original_max_on_hit_damage : float = 25.0
+const original_max_percent_on_hit_damage : float = 25.0
+
 const original_max_energy : float = 100.0
 const original_base_energy_recharge_per_sec : float = 20.0
 
 
 var max_on_hit_damage : float = original_max_on_hit_damage
+var max_percent_enemy_health_on_hit_damage_amount : float = original_max_percent_on_hit_damage
 var max_energy : float = original_max_energy
 var base_energy_recharge_per_sec : float = original_base_energy_recharge_per_sec
 var _last_calculated_recharge_rate : float = 20.0
@@ -45,7 +48,9 @@ var _current_chargebar_06 : Texture = ChargeBar_6
 
 
 var bonus_on_hit_damage : OnHitDamage
+var bonus_percent_on_hit_damage : OnHitDamage
 var bonus_damage_as_modifier : FlatModifier
+var bonus_percent_damage_as_modifier : PercentModifier
 
 onready var charge_bar_sprite : Sprite = $TowerBase/KnockUpLayer/ChargeBarSprite
 
@@ -100,6 +105,10 @@ func _ready():
 func _construct_bonus_on_hit_and_modifier():
 	bonus_damage_as_modifier = FlatModifier.new(StoreOfTowerEffectsUUID.CHARGE_BONUS_ON_HIT)
 	bonus_on_hit_damage = OnHitDamage.new(StoreOfTowerEffectsUUID.CHARGE_BONUS_ON_HIT, bonus_damage_as_modifier, DamageType.PHYSICAL)
+	
+	bonus_percent_damage_as_modifier = PercentModifier.new(StoreOfTowerEffectsUUID.CHARGE_BONUS_PERCENT_ON_HIT)
+	bonus_percent_damage_as_modifier.percent_based_on = PercentType.MAX
+	bonus_percent_on_hit_damage = OnHitDamage.new(StoreOfTowerEffectsUUID.CHARGE_BONUS_PERCENT_ON_HIT, bonus_percent_damage_as_modifier, DamageType.PHYSICAL)
 
 
 # Module adding/removing
@@ -200,7 +209,9 @@ func _get_proj_speed_to_use(level_of_charge) -> float:
 func _update_on_hit_damage_to_use():
 	bonus_damage_as_modifier.flat_modifier = (_current_energy / max_energy) * max_on_hit_damage
 	bonus_on_hit_damage.damage_as_modifier = bonus_damage_as_modifier
-
+	
+	bonus_percent_damage_as_modifier.percent_amount = (_current_energy / max_energy) * max_percent_enemy_health_on_hit_damage_amount
+	bonus_percent_on_hit_damage.damage_as_modifier = bonus_percent_damage_as_modifier
 
 
 # Bullet modification
@@ -218,6 +229,7 @@ func _modify_bullet_before_shooting(bullet : BaseBullet):
 	
 	_update_on_hit_damage_to_use()
 	bullet.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.CHARGE_BONUS_ON_HIT] = bonus_on_hit_damage
+	bullet.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.CHARGE_BONUS_PERCENT_ON_HIT] = bonus_percent_on_hit_damage
 	
 	_current_energy = 0
 
@@ -230,12 +242,12 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Max on hit damage increased to 135, and becomes pure damage instead. Also recharges faster."
+			"Max flat on hit damage is increased to 130. Charge's flat portion of its passive becomes pure damage instead. Also recharges faster."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	max_on_hit_damage = 135.0
+	max_on_hit_damage = 130.0
 	base_energy_recharge_per_sec = 50.0
 	_current_chargebar_06 = ChargeBar_6_Special
 	
@@ -243,6 +255,7 @@ func _module_turned_on(_first_time_per_round : bool):
 		charge_bar_sprite.texture = _current_chargebar_06
 	
 	bonus_on_hit_damage.damage_type = DamageType.PURE
+	#bonus_percent_on_hit_damage.damage_type = DamageType.PURE
 	
 	_calculate_recharge_per_sec()
 
@@ -256,5 +269,6 @@ func _module_turned_off():
 		charge_bar_sprite.texture = _current_chargebar_06
 	
 	bonus_on_hit_damage.damage_type = DamageType.PHYSICAL
+	#bonus_percent_on_hit_damage.damage_type = DamageType.PHYSICAL
 	
 	_calculate_recharge_per_sec()

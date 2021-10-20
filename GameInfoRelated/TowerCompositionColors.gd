@@ -41,6 +41,7 @@ const AnaSyn_YellowGO = preload("res://GameInfoRelated/ColorSynergyRelated/Analo
 const AnaSyn_GreenBY = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_GreenBY/AnaSyn_GreenBY.gd")
 
 const TriaSyn_RYB = preload("res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_RYB/TriaSyn_RYB.gd")
+const TriaSyn_OGV = preload("res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_OGV/TriaSyn_OGV.gd")
 
 var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
 
@@ -242,8 +243,8 @@ func _init():
 	],
 	[TriaSyn_RYB.new()],
 	[
-		"30% damage resistance, 14 enemies",
-		"50% damage resistance, 8 enemies",
+		"25% damage resistance, 16 enemies",
+		"50% damage resistance, 10 enemies",
 		"70% damage resistance, 6 enemies"
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -253,14 +254,21 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_OGV,
 	[
+		"Exposes the enemy player's soul every middle of the round, allowing towers to deal damage to it.",
+		"Killing the soul damages the enemy player. The damage amount is influenced by the synergy's tier, and how far the soul has travelled.",
 		"",
+		"You instantly win the game once the enemy player reaches 0 hp.",
+		"",
+		"Gain ability: Power Fund.",
+		"Power Fund: Spend 3 gold to give all towers bonus attack speed for 8 attacks for 5 seconds.",
+		"Cooldown: 1 round",
 		""
 	],
-	[],
+	[TriaSyn_OGV.new()],
 	[
-		"",
-		"",
-		""
+		"45% bonus attack speed. 30 max damage per round.",
+		"25% bonus attack speed. 20 max damage per round.",
+		"15% bonus attack speed. 15 max damage per round."
 	]
 	),
 	

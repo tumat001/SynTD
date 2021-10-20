@@ -1,0 +1,90 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://MiscRelated/ControlProgressBarRelated/ControlProgressBar.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_OGV/Assets/GUIRelated/HealthBar_Fill.png" type="Texture" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_OGV/Assets/GUIRelated/HealthTextBackground.png" type="Texture" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_OGV/Assets/GUIRelated/HealthBar_Background.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_OGV/GUIRelated/TriaSyn_OGV_Syn_Interactable.gd" type="Script" id=5]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=6]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_OGV/Assets/GUIRelated/Interactable_Frame_Left.png" type="Texture" id=7]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_OGV/Assets/GUIRelated/Interactable_Frame_Right.png" type="Texture" id=8]
+
+[sub_resource type="DynamicFont" id=1]
+size = 8
+font_data = ExtResource( 6 )
+
+[node name="TriaSyn_OGV_Syn_Interactable" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LeftBorder" type="TextureRect" parent="."]
+margin_right = 10.0
+margin_bottom = 40.0
+size_flags_horizontal = 2
+texture = ExtResource( 7 )
+
+[node name="RightBorder" type="TextureRect" parent="."]
+margin_left = 34.0
+margin_right = 44.0
+margin_bottom = 40.0
+size_flags_horizontal = 10
+texture = ExtResource( 8 )
+
+[node name="MainContent" type="MarginContainer" parent="."]
+margin_right = 44.0
+margin_bottom = 40.0
+size_flags_horizontal = 6
+custom_constants/margin_right = 1
+custom_constants/margin_top = 4
+custom_constants/margin_left = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContent"]
+margin_left = 1.0
+margin_top = 4.0
+margin_right = 43.0
+margin_bottom = 40.0
+size_flags_horizontal = 6
+custom_constants/separation = 0
+
+[node name="HealthTextPanel" type="MarginContainer" parent="MainContent/VBoxContainer"]
+margin_right = 42.0
+margin_bottom = 17.0
+size_flags_horizontal = 6
+
+[node name="Background" type="TextureRect" parent="MainContent/VBoxContainer/HealthTextPanel"]
+margin_right = 42.0
+margin_bottom = 17.0
+texture = ExtResource( 3 )
+
+[node name="TextPanel" type="MarginContainer" parent="MainContent/VBoxContainer/HealthTextPanel"]
+margin_right = 42.0
+margin_bottom = 17.0
+custom_constants/margin_right = 2
+custom_constants/margin_top = 1
+custom_constants/margin_left = 2
+
+[node name="HealthLabel" type="Label" parent="MainContent/VBoxContainer/HealthTextPanel/TextPanel"]
+margin_left = 2.0
+margin_top = 4.0
+margin_right = 40.0
+margin_bottom = 13.0
+custom_fonts/font = SubResource( 1 )
+
+[node name="HealthBarPanel" type="MarginContainer" parent="MainContent/VBoxContainer"]
+margin_left = 21.0
+margin_top = 17.0
+margin_right = 21.0
+margin_bottom = 17.0
+size_flags_horizontal = 6
+
+[node name="HealthBar" parent="MainContent/VBoxContainer/HealthBarPanel" instance=ExtResource( 1 )]
+margin_right = 0.0
+margin_bottom = 0.0
+bar_background_pic = ExtResource( 4 )
+fill_foreground_pic = ExtResource( 2 )
+fill_foreground_margin_top = 1.0
+fill_foreground_margin_left = 1.0

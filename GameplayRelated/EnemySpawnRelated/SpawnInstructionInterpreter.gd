@@ -12,10 +12,11 @@ var _current_time : float
 
 var _instructions_near_exe : Array
 var _instructions_far_from_exe : Array
-const _instruction_exe_time : float = 5.0
+const _instruction_exe_time : float = 5.0 #for segragation
 const _instruction_exe_time_allowance : float = -1.0
 var _instruction_current_exe_time : float
 
+var highest_timepos_of_instructions : float
 
 # Time related
 
@@ -40,16 +41,21 @@ func reset_time():
 
 # Returns the number of enemies (number of single ins)
 func set_instructions(inses : Array) -> int:
-	_instructions_far_from_exe = _get_interpreted_spawn_instructions(inses)
+	var _ins_and_highest_timepos = _get_interpreted_spawn_instructions(inses)
+	
+	_instructions_far_from_exe = _ins_and_highest_timepos[0]
 	var enemy_count : int = _instructions_far_from_exe.size()
 	
 	_instructions_near_exe = []
 	_segragate_instructions_to_near_or_far_from_exe()
 	
+	
+	highest_timepos_of_instructions = _ins_and_highest_timepos[1]
+	
 	return enemy_count
 
 func append_instructions(inses : Array) -> int:
-	var bucket = _get_interpreted_spawn_instructions(inses)
+	var bucket = _get_interpreted_spawn_instructions(inses)[0]
 	
 	for ins in bucket:
 		_instructions_far_from_exe.append(ins)
@@ -57,28 +63,37 @@ func append_instructions(inses : Array) -> int:
 	return bucket.size()
 
 
-# Turns all instructions found into a series of
-# SingleEnemySpawnInstructions
+# Gives an array with:
+# 1) All instructions found into a series of SingleEnemySpawnInstructions.
+# 2) The timepos of the last instruction
 func _get_interpreted_spawn_instructions(inses : Array) -> Array:
 	var bucket : Array = []
+	var highest_timepos : float = 0
 	
 	for ins in inses:
 		if ins is SingleEnemySpawnInstruction:
 			bucket.append(ins)
+			if ins.local_timepos > highest_timepos:
+				highest_timepos = ins.local_timepos
 			
 		elif ins is ChainSpawnInstruction:
 			var timepos = ins.local_timepos
 			for inner_ins in _get_interpreted_spawn_instructions(ins.instructions):
 				inner_ins.local_timepos += timepos
 				bucket.append(inner_ins)
+				
+				if inner_ins.local_timepos > highest_timepos:
+					highest_timepos = inner_ins.local_timepos
 			
 		elif ins is MultipleEnemySpawnInstruction or ins is LinearEnemySpawnInstruction:
 			for single_ins in ins._get_spawn_instructions():
 				bucket.append(single_ins)
+				if single_ins.local_timepos > highest_timepos:
+					highest_timepos = single_ins.local_timepos
 		
 		
 	
-	return bucket
+	return [bucket, highest_timepos]
 
 
 func _segragate_instructions_to_near_or_far_from_exe():

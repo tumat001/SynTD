@@ -719,6 +719,7 @@ func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of
 		else:
 			_connect_attack_enemies_when_ready(arg_enemies, num_of_targets)
 
+
 func _connect_attack_enemies_when_ready(arg_enemies, num_of_targets):
 	if !is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
 		connect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready", [arg_enemies, num_of_targets, 0])

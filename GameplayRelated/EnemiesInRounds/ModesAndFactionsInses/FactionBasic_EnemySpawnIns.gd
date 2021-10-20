@@ -59,6 +59,7 @@ func is_transition_time_in_stageround(uuid : String) -> bool:
 func _get_instructions_for_0_1():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BASIC),
+		#MultipleEnemySpawnInstruction.new(0, 6, 1, EnemyConstants.Enemies.CHARGE)
 	]
 
 func _get_instructions_for_0_2():

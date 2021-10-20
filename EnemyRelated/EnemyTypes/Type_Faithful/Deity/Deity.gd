@@ -63,9 +63,9 @@ var _first_time_sacrificer_went_to_range : bool = false
 #
 
 var _time_stunlocked : float
-const _base_time_stunlock_for_buff : float = 5.0
-const _base_time_stunlock_expire_per_sec : float = 1.5
-const _base_effect_immunity_duration : float = 2.0
+const _base_time_stunlock_for_buff : float = 4.0
+const _base_time_stunlock_expire_per_sec : float = 1.25
+const _base_effect_immunity_duration : float = 2.5
 
 var _self_effect_shield : EnemyEffectShieldEffect
 

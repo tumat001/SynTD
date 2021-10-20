@@ -26,6 +26,8 @@ const LavaJet_Beam09 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_
 const LavaJet_AttackModule_Icon = preload("res://TowerRelated/Color_Orange/LavaJet/Assets/LavaJet_AttackModule_Icon.png")
 
 
+const toughness_pierce_amount : float = 5.0
+
 const health_percent_dmg : float = 25.0
 
 const percent_dmg_max_limit : float = 40.0
@@ -144,6 +146,24 @@ func _ready():
 	_add_on_hit_damage_adder_effect(effect, [beam_attack_module])
 	
 	_post_inherit_ready()
+
+#
+
+func _post_inherit_ready():
+	._post_inherit_ready()
+	
+	_construct_and_add_toughness_pierce_effect()
+
+
+func _construct_and_add_toughness_pierce_effect():
+	var pierce_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.LAVA_JET_TOUGHNESS_PIERCE)
+	pierce_modi.flat_modifier = toughness_pierce_amount
+	
+	var effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_TOUGHNESS_PIERCE, pierce_modi, StoreOfTowerEffectsUUID.LAVA_JET_TOUGHNESS_PIERCE)
+	
+	add_tower_effect(effect)
+
+#
 
 
 func _on_attack_of_lavajet_bullet(attk_spd_delay, enemies : Array, module):

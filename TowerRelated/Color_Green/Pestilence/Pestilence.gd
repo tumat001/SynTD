@@ -57,7 +57,7 @@ const TowerDetectingRangeModule_Scene = preload("res://EnemyRelated/TowerInterac
 var enemy_noxious_effect : EnemyStackEffect
 
 const sky_attack_y_shift : float = -100.0
-const sky_attack_toxin_stack_threshold : int = 8
+const sky_attack_toxin_stack_threshold : int = 10
 const base_sky_attack_delay : float = 0.15
 var current_sky_attack_delay : float = base_sky_attack_delay
 

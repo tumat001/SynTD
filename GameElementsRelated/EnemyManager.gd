@@ -22,6 +22,8 @@ signal enemy_spawned(enemy)
 signal enemy_escaped(enemy)
 signal first_enemy_escaped(enemy, first_damage)
 
+signal round_time_passed(delta, current_timepos)
+
 var health_manager : HealthManager
 var game_elements
 
@@ -45,6 +47,11 @@ var _enemy_first_damage_applied : bool
 var enemy_first_damage : float
 
 var enemy_count_in_round : int
+var current_enemy_spawned_from_ins_count : int
+
+var highest_enemy_spawn_timepos_in_round : float
+var current_spawn_timepos_in_round : float
+
 
 #
 
@@ -61,8 +68,11 @@ func _ready():
 func set_interpreter(interpreter : SpawnInstructionInterpreter):
 	spawn_instruction_interpreter = interpreter
 	spawn_instruction_interpreter.connect("no_enemies_to_spawn_left", self,"_interpreter_done_spawning", [], CONNECT_PERSIST)
-	spawn_instruction_interpreter.connect("spawn_enemy", self, "spawn_enemy", [], CONNECT_PERSIST)
+	spawn_instruction_interpreter.connect("spawn_enemy", self, "_signal_spawn_enemy_from_interpreter", [], CONNECT_PERSIST)
 
+
+func _signal_spawn_enemy_from_interpreter(enemy_id : int):
+	spawn_enemy(enemy_id, _pick_path_based_on_current_index(), true)
 
 func set_spawn_paths(paths : Array):
 	spawn_paths = []
@@ -77,12 +87,13 @@ func set_instructions_of_interpreter(inses : Array):
 	_is_interpreter_done_spawning = false
 	var count = spawn_instruction_interpreter.set_instructions(inses)
 	enemy_count_in_round = count
+	highest_enemy_spawn_timepos_in_round = spawn_instruction_interpreter.highest_timepos_of_instructions
 
 func append_instructions_to_interpreter(inses : Array):
 	_is_interpreter_done_spawning = false
 	var count = spawn_instruction_interpreter.set_instructions(inses)
 	enemy_count_in_round += count
-
+	highest_enemy_spawn_timepos_in_round = spawn_instruction_interpreter.highest_timepos_of_instructions
 
 # Spawning related
 
@@ -98,6 +109,10 @@ func end_run():
 	
 	_is_running = false
 	_enemy_first_damage_applied = false
+	
+	current_enemy_spawned_from_ins_count = 0
+	current_spawn_timepos_in_round = 0
+	highest_enemy_spawn_timepos_in_round = 0
 
 func reset_path_index():
 	_spawn_path_index_to_take = 0
@@ -113,15 +128,17 @@ func kill_all_enemies():
 func _process(delta):
 	if _is_running and !_spawning_paused:
 		spawn_instruction_interpreter.time_passed(delta)
+		
+		current_spawn_timepos_in_round = spawn_instruction_interpreter._current_time
+		emit_signal("round_time_passed", delta, current_spawn_timepos_in_round)
 
 
-
-func spawn_enemy(enemy_id : int, arg_path : EnemyPath = null):
+func spawn_enemy(enemy_id : int, arg_path : EnemyPath = _pick_path_based_on_current_index(), is_from_ins_interpreter : bool = false):
 	var enemy_instance : AbstractEnemy = EnemyConstants.get_enemy_scene(enemy_id).instance()
-	spawn_enemy_instance(enemy_instance, arg_path)
+	spawn_enemy_instance(enemy_instance, arg_path, is_from_ins_interpreter)
 
 
-func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = null):
+func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _pick_path_based_on_current_index(), is_from_ins_interpreter : bool = false):
 	# Enemy set properties
 	
 	emit_signal("before_enemy_stats_are_set", enemy_instance)
@@ -140,8 +157,9 @@ func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = null):
 	
 	# Path related
 	var path : EnemyPath = arg_path
-	if path == null:
-		path = _pick_path_and_switch_index_to_next()
+	if is_from_ins_interpreter:
+		_switch_path_index_to_next() #to alternate between lanes
+		current_enemy_spawned_from_ins_count += 1
 	
 	emit_signal("before_enemy_spawned", enemy_instance)
 	path.add_child(enemy_instance)
@@ -149,17 +167,21 @@ func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = null):
 	emit_signal("enemy_spawned", enemy_instance)
 
 
+func _pick_path_based_on_current_index() -> EnemyPath:
+	return spawn_paths[_spawn_path_index_to_take]
 
-
-func _pick_path_and_switch_index_to_next() -> EnemyPath:
-	var path = spawn_paths[_spawn_path_index_to_take]
-	
+func _switch_path_index_to_next():
 	_spawn_path_index_to_take += 1
 	if _spawn_path_index_to_take >= spawn_paths.size():
 		_spawn_path_index_to_take = 0
-	
-	return path
 
+
+#func _pick_path_and_switch_index_to_next() -> EnemyPath:
+#	var path = _pick_path_based_on_current_index()
+#
+#	_switch_path_index_to_next()
+#
+#	return path
 
 # Round over detectors
 

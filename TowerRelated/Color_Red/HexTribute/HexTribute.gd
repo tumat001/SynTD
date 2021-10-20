@@ -122,6 +122,7 @@ func _construct_effects():
 	effect_vul_modi.percent_amount = hex_effect_vulnerability_ratio
 	effect_vul_modi.percent_based_on = PercentType.BASE
 	hextribute_effect_vul_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_EFFECT_VULNERABILITY, effect_vul_modi, StoreOfEnemyEffectsUUID.HEXTRIBUTE_EFFECT_VULNERABLE)
+	hextribute_effect_vul_effect.respect_scale = false
 
 func _construct_others():
 	hex_attk_sprite_frames = SpriteFrames.new()

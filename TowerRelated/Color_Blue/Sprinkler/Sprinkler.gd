@@ -41,7 +41,7 @@ func _ready():
 	attack_module.base_proj_inaccuracy = 20
 	
 	var bullet_shape = RectangleShape2D.new()
-	bullet_shape.extents = Vector2(4, 3)
+	bullet_shape.extents = Vector2(6, 5)
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene

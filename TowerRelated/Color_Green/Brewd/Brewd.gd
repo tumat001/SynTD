@@ -170,7 +170,7 @@ func _ready():
 	attack_module.position.y -= attk_source_y_pos_shift
 	
 	var bullet_shape = CircleShape2D.new()
-	bullet_shape.radius = 6
+	bullet_shape.radius = 4
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene

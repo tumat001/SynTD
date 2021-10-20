@@ -128,7 +128,7 @@ enum {
 	STRIKER = 204,
 	HEXTRIBUTE = 205,
 	TRANSMUTATOR = 206,
-	SOUL = 207,
+	SOUL = 207, # NOT INCLUDED IN POOL
 	PROBE = 208,
 	WYVERN = 209, # NOT INCLUDED IN POOL
 	
@@ -234,7 +234,7 @@ const TowerTiersMap : Dictionary = {
 	DOUSER : 3,
 	WAVE : 3,
 	SEEDER : 3,
-	SOUL : 3,
+	#SOUL : 3,
 	#BERRY_BUSH : 3,
 	PROBE : 3,
 	BREWD : 3,
@@ -277,8 +277,8 @@ const tier_base_dmg_map : Dictionary = {
 	3 : 1.25,
 	
 	4 : 2.25,
-	5 : 3,
-	6 : 3.5,
+	5 : 2.75,
+	6 : 3.25,
 }
 
 const tier_attk_speed_map : Dictionary = {
@@ -286,9 +286,9 @@ const tier_attk_speed_map : Dictionary = {
 	2 : 23,
 	3 : 30,
 	
-	4 : 50,
-	5 : 60,
-	6 : 70,
+	4 : 45,
+	5 : 55,
+	6 : 65,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
@@ -297,8 +297,8 @@ const tier_on_hit_dmg_map : Dictionary = {
 	3 : 1.25,
 	
 	4 : 2.5,
-	5 : 3.25,
-	6 : 3.75,
+	5 : 3.0,
+	6 : 3.5,
 }
 
 # Do not use this when instancing new tower class. Only use
@@ -476,10 +476,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = simplex_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 0.45
-		info.base_attk_speed = 6
+		info.base_damage = 0.54
+		info.base_attk_speed = 5
 		info.base_pierce = 0
-		info.base_range = 110
+		info.base_range = 105
 		info.base_damage_type = DamageType.PURE
 		info.on_hit_multiplier = 0.2
 		
@@ -631,7 +631,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Shots deal 5 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 200% efficiency.",
 			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 400% effective instead.",
-			"Ability potency increases the amount of marks per ring."
+			"Ability potency increases the amount of marks per ring (0.5 ap -> +1 mark)."
 		]
 		
 		
@@ -762,7 +762,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"When idle, Charge accumulates energy. Charge's energy is set to 50% when the round starts.",
 			"Upon attacking, Charge expends all energy to deal bonus physical on hit damage based on expended energy.",
-			"Max physical on hit damage: 34",
+			"Max flat physical on hit damage portion: 25",
+			"Max percent enemy health physical on hit damage portion: 25%",
 			"",
 			"Increasing this tower's total attack speed compared to its base attack speed increases the rate of energy accumulation."
 		]
@@ -897,13 +898,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.45
-		info.base_attk_speed = 0.88
+		info.base_attk_speed = 0.9
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
+			"Lava Jet's attacks ignore 5 toughness.",
+			"",
 			"On its 5th main attack, Lava Jet releases a beam of lava that deals 25% of the enemy's max health as elemental damage, up to 40."
 		]
 		
@@ -1384,7 +1387,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Orb gains new attacks at 1.25, 1.50, and 2.00 total ability potency.",
 			"",
-			"While placed in the map, Orb absorbs all other Orbs placed in the map, gaining permanent 0.25 ability potency that stacks. Orb also applies this effect when absorbing another Orb's ingredient effect.",
+			"Orb absorbs all other Orbs placed in the map, gaining permanent 0.25 ability potency that stacks. Orb also applies this effect when absorbing another Orb's ingredient effect.",
 			"",
 			"\"Where does the power reside? The wizard, or the orb?\""
 		]
@@ -1661,15 +1664,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0.1
 		
 		info.tower_descriptions = [
-			"Pestilence permanently poisons enemies it hits. The poison deals 2 elemental damage per second.",
-			"Pestilence's attacks also apply one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply. Enemies become permanently Noxious upon gaining 8 Toxin stacks.",
+			"Pestilence permanently poisons enemies on hit. The poison deals 2 elemental damage per second.",
+			"Pestilence's attacks also apply one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply. Enemies become permanently Noxious upon gaining 10 Toxin stacks.",
 			"",
 			"Pestilence's main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
 			"Each explosion deals 3 elemental damage.",
 			"Explosions apply a stack of Toxin. Explosions benefit from base damage buffs, on hit damages and effects at 33% efficiency.",
 			"",
 			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25% for the round.",
-			"For each tower affected, Pestilence gains 35% attack speed for the round."
+			"For each tower affected, Pestilence gains 35% bonus attack speed for the round."
 		]
 		
 		# Ingredient related
@@ -1693,7 +1696,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = reaper_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 4.75
+		info.base_damage = 4.5
 		info.base_attk_speed = 0.68
 		info.base_pierce = 1
 		info.base_range = 130
@@ -1703,8 +1706,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Reaper's attacks deal additional 6% of the enemy's missing health as elemental damage, up to 8 health.",
 			"",
-			"Killing an enemy grants Reaper a stack of Death. Reaper attempts to cast Slash while having Death stacks.",
-			"Slash: Reaper consumes a Death stack to slash the area of the closest enemy, dealing 300% of Reaper's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
+			"Killing an enemy grants Reaper 1 stack of Death. Reaper attempts to cast Slash while having Death stacks.",
+			"Slash: Reaper consumes 1 Death stack to slash the area of the closest enemy, dealing 300% of Reaper's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
 			"Casting Slash reduces the damage of subsequent slashes by 50% for 0.5 seconds. This does not stack.",
 			"Cooldown: 0.2 s."
 		]
@@ -1899,6 +1902,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var hextribute_effect_vul_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_EFFECT_VULNERABILITY, effect_vul_modi, StoreOfEnemyEffectsUUID.ING_HEXTRIBUTE_EFFECT_VUL)
 		hextribute_effect_vul_effect.is_timebound = true
 		hextribute_effect_vul_effect.time_in_seconds = 10
+		hextribute_effect_vul_effect.respect_scale = false
 		
 		var on_hit_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(hextribute_effect_vul_effect, StoreOfTowerEffectsUUID.ING_HEXTRIBUTE)
 		
@@ -1951,7 +1955,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
 			"Levels are gained by spending EXP and gold. Only 6 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
-			"Upon reaching level 6, Hero increases the limit of activatable composite synergies by 1. Hero also gains 2.25 bonus base damage, 50% bonus attack speed, and 0.5 ability potency.",
+			"Upon reaching level 6, Hero increases the limit of activatable composite synergies by 1. Hero also gains 2.5 bonus base damage, 50% bonus attack speed, and 0.5 ability potency.",
 			"",
 			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
@@ -2119,7 +2123,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = prominence_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3.5
+		info.base_damage = 3
 		info.base_attk_speed = 0.6
 		info.base_pierce = 1
 		info.base_range = 120
@@ -2127,11 +2131,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Prominence attacks through its Globules. Prominence possesses 4 Globules, which attack indenpendently. Globules benefit from all buffs, and inherit Prominence's stats.",
+			"Prominence attacks through its Globules. Prominence possesses 4 Globules, which attack independently. Globules benefit from all buffs, and inherit Prominence's stats.",
 			"Globule's attacks are considered to be Prominence's main attacks.",
 			"",
 			"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
-			"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 4 seconds, and dealing 12 physical damage.",
+			"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 3 seconds, and dealing 12 physical damage.",
 			"The farthest tower with range from Prominence also casts Regards using Prominence's ability potency. Enemies can only be affected once.",
 			"Prominece also gains 3 attacks with its sword, with each attack exploding, dealing 5 + 300% of its bonus base damage as elemental damage.",
 			"Cooldown: 60 s",
@@ -2205,7 +2209,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Accumulae gains 1 Siphon stack per application of drain.",
 			"",
 			"Upon reaching 15 Siphon stacks, Accumulae casts Salvo.",
-			"Salvo: Fires a Spell Burst at a random enemy's location every 0.2 seconds regardless of range, consuming a Siphon stack in the process. This repeats until all Siphon stacks are consumed.",
+			"Salvo: Fire a Spell Burst at a random enemy's location every 0.2 seconds regardless of range, consuming a Siphon stack in the process. This repeats until all Siphon stacks are consumed.",
 			"Cooldown: 1.5 s",
 			"",
 			"Accumulae is unable to execute its main attack during Salvo.",
@@ -2319,9 +2323,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Shackled's main attacks explode upon hitting an enemy, dealing 1 elemental damage to 3 enemies.",
 			"",
-			"After 14 attacks or dealing 50 post-mitigated damage, Shackled attempts to cast Chains.",
+			"After 18 attacks or dealing 60 post-mitigated damage, Shackled attempts to cast Chains.",
 			"Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and stunning them for 0.5 seconds. Targeting affects which enemies are pulled.",
-			"Cooldown: 13 s",
+			"Cooldown: 14 s",
 			"",
 			"After 3 rounds of being active, Shackled is able to pull 2 more enemies per cast."
 		]

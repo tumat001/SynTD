@@ -15,6 +15,7 @@ func add_child(node : Node, legible_unique_name : bool = false):
 	
 	if node is AbstractEnemy:
 		node.distance_to_exit = path_length - node.offset
+		node.unit_distance_to_exit = 1
 		node.current_path_length = path_length
 		node.current_path = self
 		
