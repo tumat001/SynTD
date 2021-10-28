@@ -70,7 +70,7 @@ func _undo_modifications_to_tower(tower):
 
 func _construct_beam_am():
 	black_beam_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	black_beam_attack_module.base_damage_scale = 0.3
+	black_beam_attack_module.base_damage_scale = 0.25
 	black_beam_attack_module.base_damage = _beam_base_damage / black_beam_attack_module.base_damage_scale
 	black_beam_attack_module.base_damage_type = DamageType.PHYSICAL
 	black_beam_attack_module.base_attack_speed = 0
@@ -78,7 +78,7 @@ func _construct_beam_am():
 	black_beam_attack_module.is_main_attack = false
 	black_beam_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	black_beam_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	black_beam_attack_module.on_hit_damage_scale = 0.3
+	black_beam_attack_module.on_hit_damage_scale = 0.25
 	
 	black_beam_attack_module.commit_to_targets_of_windup = true
 	black_beam_attack_module.fill_empty_windup_target_slots = false

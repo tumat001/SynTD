@@ -30,7 +30,7 @@ const AttackModule_Icon = preload("res://TowerRelated/Color_Orange/LavaJet/Asset
 
 
 const health_percent_dmg : float = 20.0
-const percent_dmg_max_limit : float = 30.0 # max damage on enemies with health above 120
+const percent_dmg_max_limit : float = 30.0
 
 var lava_jet_beam_am : WithBeamInstantDamageAttackModule
 const num_of_attacks_before_beam : int = 5
@@ -48,8 +48,8 @@ func _make_modifications_to_tower(tower):
 	_construct_lava_jet_module()
 	
 	tower.add_attack_module(lava_jet_beam_am)
-	tower.connect("on_main_attack", self, "_on_main_tower_attack")
-	tower.connect("on_round_end", self, "_on_round_end")
+	tower.connect("on_main_attack", self, "_on_main_tower_attack", [], CONNECT_PERSIST)
+	tower.connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
 
 
 func _construct_lava_jet_module():

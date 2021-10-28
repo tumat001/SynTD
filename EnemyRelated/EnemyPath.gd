@@ -5,7 +5,17 @@ const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 signal on_enemy_death(enemy)
 signal on_enemy_reached_end(enemy)
 
+enum MarkerIds {
+	SKIRMISHER_CLONE_OF_BASE_PATH = 1,
+	SKIRMISHER_BASE_PATH_ALREADY_CLONED = 2,
+}
+
+
+
 var path_length : float
+
+var marker_id_to_value_map : Dictionary = {}
+
 
 func _ready():
 	path_length = curve.get_baked_length()
@@ -28,3 +38,29 @@ func _emit_enemy_on_death(enemy):
 
 func _emit_enemy_reached_end(enemy):
 	emit_signal("on_enemy_reached_end", enemy)
+
+
+
+#
+
+func get_copy_of_path(reversed : bool):
+	var copy = self.duplicate()
+	
+	copy.curve = curve.duplicate()
+	copy.curve.clear_points()
+	
+	
+	var pos_index = -1
+	if reversed:
+		pos_index = 0
+	
+	for point in curve.get_baked_points():
+		copy.curve.add_point(point, Vector2(0, 0), Vector2(0, 0), pos_index)
+	
+	#
+	
+	copy.marker_id_to_value_map = marker_id_to_value_map.duplicate(true)
+	
+	return copy
+
+

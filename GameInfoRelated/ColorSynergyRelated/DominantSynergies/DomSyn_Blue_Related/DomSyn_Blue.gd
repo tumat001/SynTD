@@ -148,7 +148,7 @@ const linked_mana_blast_descriptions : Array = [
 #	"Current castable ability: Empower"
 #]
 
-const renew_empower_shared_ability_cooldown : float = 3.0#60.0
+const renew_empower_shared_ability_cooldown : float = 60.0
 const cannot_cast_as_renew_or_empower_clause_id : int = -20
 
 var renew_ability : BaseAbility

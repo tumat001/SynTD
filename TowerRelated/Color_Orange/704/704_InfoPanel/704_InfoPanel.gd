@@ -170,7 +170,7 @@ func _on_EmblemButtonToughnessPierce_emblem_button_right_pressed():
 			"Lvl 1: Toughness pierce = 2",
 			"Lvl 2: Toughness pierce = 4",
 			"Lvl 3: Toughness pierce = 6. Burn damage now benefits from this.",
-			"Lvl 4: Toughness pierce = 10. Burn damage and explosion now benefits from this.",
+			"Lvl 4: Toughness pierce = 8. Burn damage and explosion now benefits from this.",
 		]
 		
 		get_tree().get_root().add_child(tower_tooltip)

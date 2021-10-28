@@ -74,7 +74,7 @@ func _ready():
 	# PROJ EXPLOSION AOE
 	
 	explosion_attack_module = AOEAttackModule_Scene.instance()
-	explosion_attack_module.base_damage = 2.75
+	explosion_attack_module.base_damage = 3.25
 	explosion_attack_module.base_damage_type = DamageType.PHYSICAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0

@@ -193,7 +193,7 @@ func _ready():
 	
 	beam_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
 	beam_attack_module.base_damage_scale = 0.5
-	beam_attack_module.base_damage = 1.2 / beam_attack_module.base_damage_scale
+	beam_attack_module.base_damage = 1.5 / beam_attack_module.base_damage_scale
 	beam_attack_module.base_damage_type = DamageType.ELEMENTAL
 	beam_attack_module.base_attack_speed = 6
 	beam_attack_module.base_attack_wind_up = 0
@@ -234,7 +234,7 @@ func _ready():
 	
 	sub_attack_module = BulletAttackModule_Scene.instance()
 	sub_attack_module.base_damage_scale = 0.5
-	sub_attack_module.base_damage = 1.5 / sub_attack_module.base_damage_scale
+	sub_attack_module.base_damage = 1.75 / sub_attack_module.base_damage_scale
 	sub_attack_module.base_damage_type = DamageType.ELEMENTAL
 	sub_attack_module.base_attack_speed = 9#0
 	sub_attack_module.base_attack_wind_up = 0
@@ -255,9 +255,9 @@ func _ready():
 	sub_attack_module.commit_to_targets_of_windup = true
 	sub_attack_module.fill_empty_windup_target_slots = true
 	
-	#sub_attack_module.burst_amount = 3
-	#sub_attack_module.burst_attack_speed = 9
-	#sub_attack_module.has_burst = true
+	sub_attack_module.burst_amount = 3
+	sub_attack_module.burst_attack_speed = 9
+	sub_attack_module.has_burst = true
 	
 	var sub_bullet_shape = CircleShape2D.new()
 	sub_bullet_shape.radius = 3
@@ -396,9 +396,10 @@ func _main_attack_on_hit(enemy, damage_register_id, damage_instance, module):
 	if sub_attack_active:
 		if !sub_attack_module.is_connected("before_bullet_is_shot", self, "_sub_attack_bullet_shot"):
 			sub_attack_module.connect("before_bullet_is_shot", self, "_sub_attack_bullet_shot", [enemy])
-			sub_attack_module.connect("in_attack_end", self, "_sub_attack_finished_shots", [], CONNECT_ONESHOT)
-		sub_attack_module.on_command_attack_enemies_and_attack_when_ready([enemy], 1, 3)
-
+			sub_attack_module.connect("in_attack_end", self, "_sub_attack_finished_shots")
+		#sub_attack_module.on_command_attack_enemies_and_attack_when_ready([enemy], 1, 1)
+		
+		sub_attack_module.on_command_attack_enemies_in_range_and_attack_when_ready(1, 1)
 
 func _sub_attack_bullet_shot(bullet, enemy):
 	if enemy != null:
@@ -407,10 +408,11 @@ func _sub_attack_bullet_shot(bullet, enemy):
 		if bullet.life_distance < distance:
 			bullet.life_distance = distance + 50
 
+
 func _sub_attack_finished_shots():
 	if sub_attack_module.is_connected("before_bullet_is_shot", self, "_sub_attack_bullet_shot"):
 		sub_attack_module.disconnect("before_bullet_is_shot", self, "_sub_attack_bullet_shot")
-
+		sub_attack_module.disconnect("in_attack_end", self, "_sub_attack_finished_shots")
 
 func _sub_attack_hit_enemy(enemy, damage_register_id, damage_instance, module):
 	damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)

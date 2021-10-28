@@ -26,7 +26,7 @@ const LavaJet_Beam09 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_
 const LavaJet_AttackModule_Icon = preload("res://TowerRelated/Color_Orange/LavaJet/Assets/LavaJet_AttackModule_Icon.png")
 
 
-const toughness_pierce_amount : float = 5.0
+const toughness_pierce_amount : float = 3.0
 
 const health_percent_dmg : float = 25.0
 

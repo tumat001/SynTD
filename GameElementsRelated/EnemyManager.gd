@@ -17,6 +17,7 @@ signal no_enemies_left
 
 signal before_enemy_stats_are_set(enemy)
 signal before_enemy_spawned(enemy)
+signal before_enemy_is_added_to_path(enemy, path)
 signal enemy_spawned(enemy)
 
 signal enemy_escaped(enemy)
@@ -24,12 +25,22 @@ signal first_enemy_escaped(enemy, first_damage)
 
 signal round_time_passed(delta, current_timepos)
 
+enum PathToSpawnPattern {
+	NO_CHANGE = 0,
+	SWITCH_PER_SPAWN = 1,
+	SWITCH_PER_ROUND_END = 2,
+}
+
+
 var health_manager : HealthManager
+var stage_round_manager setget set_stage_round_manager
+var map_manager setget set_map_manager
 var game_elements
 
 var spawn_instruction_interpreter : SpawnInstructionInterpreter setget set_interpreter
-var spawn_paths : Array setget set_spawn_paths
+var spawn_paths : Array = [] setget set_spawn_paths
 var _spawn_path_index_to_take = 0
+var current_path_to_spawn_pattern : int = PathToSpawnPattern.NO_CHANGE
 
 var _spawning_paused : bool = false
 var _spawn_pause_timer : Timer
@@ -46,12 +57,29 @@ var enemy_health_multiplier : float
 var _enemy_first_damage_applied : bool
 var enemy_first_damage : float
 
+#
+
 var enemy_count_in_round : int
 var current_enemy_spawned_from_ins_count : int
 
 var highest_enemy_spawn_timepos_in_round : float
 var current_spawn_timepos_in_round : float
 
+
+#
+
+func set_stage_round_manager(arg_manager):
+	stage_round_manager = arg_manager
+	
+	stage_round_manager.connect("round_ended_game_start_aware", self, "_on_round_end", [], CONNECT_PERSIST)
+
+func set_map_manager(arg_manager):
+	map_manager = arg_manager
+	
+	if map_manager.base_map != null:
+		#map_manager.base_map.connect("on_all_enemy_paths_changed", self, "_on_base_map_paths_changed", [], CONNECT_PERSIST)
+		map_manager.base_map.connect("on_enemy_path_added", self, "_on_base_map_path_added", [], CONNECT_PERSIST)
+		map_manager.base_map.connect("on_enemy_path_removed", self, "_on_base_map_path_removed", [], CONNECT_PERSIST)
 
 #
 
@@ -71,16 +99,40 @@ func set_interpreter(interpreter : SpawnInstructionInterpreter):
 	spawn_instruction_interpreter.connect("spawn_enemy", self, "_signal_spawn_enemy_from_interpreter", [], CONNECT_PERSIST)
 
 
-func _signal_spawn_enemy_from_interpreter(enemy_id : int):
-	spawn_enemy(enemy_id, _pick_path_based_on_current_index(), true)
+func _signal_spawn_enemy_from_interpreter(enemy_id : int, ins_enemy_metadata_map):
+	spawn_enemy(enemy_id, _get_path_based_on_current_index(), true, ins_enemy_metadata_map)
 
 func set_spawn_paths(paths : Array):
-	spawn_paths = []
+	remove_all_spawn_paths()
 	
 	for path in paths:
-		path.connect("on_enemy_death", self, "_on_enemy_death", [], CONNECT_PERSIST)
-		path.connect("on_enemy_reached_end", self, "_enemy_reached_end", [], CONNECT_PERSIST)
+		add_spawn_path(path)
+
+func add_spawn_path(path):
+	if !spawn_paths.has(path):
+		if !path.is_connected("on_enemy_death", self, "_on_enemy_death"):
+			path.connect("on_enemy_death", self, "_on_enemy_death", [], CONNECT_PERSIST)
+			path.connect("on_enemy_reached_end", self, "_enemy_reached_end", [], CONNECT_PERSIST)
+		
 		spawn_paths.append(path)
+
+
+func remove_all_spawn_paths():
+	var to_remove : Array = []
+	
+	for path in spawn_paths:
+		to_remove.append(path)
+	
+	for path in to_remove:
+		remove_spawn_path(path)
+
+func remove_spawn_path(path):
+	if spawn_paths.has(path):
+		if path.is_connected("on_enemy_death", self, "_on_enemy_death"):
+			path.disconnect("on_enemy_death", self, "_on_enemy_death")
+			path.disconnect("on_enemy_reached_end", self, "_enemy_reached_end")
+		
+		spawn_paths.erase(path)
 
 
 func set_instructions_of_interpreter(inses : Array):
@@ -133,14 +185,15 @@ func _process(delta):
 		emit_signal("round_time_passed", delta, current_spawn_timepos_in_round)
 
 
-func spawn_enemy(enemy_id : int, arg_path : EnemyPath = _pick_path_based_on_current_index(), is_from_ins_interpreter : bool = false):
+func spawn_enemy(enemy_id : int, arg_path : EnemyPath = _get_path_based_on_current_index(), is_from_ins_interpreter : bool = false, ins_enemy_metadata_map = null):
 	var enemy_instance : AbstractEnemy = EnemyConstants.get_enemy_scene(enemy_id).instance()
-	spawn_enemy_instance(enemy_instance, arg_path, is_from_ins_interpreter)
+	spawn_enemy_instance(enemy_instance, arg_path, is_from_ins_interpreter, ins_enemy_metadata_map)
 
 
-func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _pick_path_based_on_current_index(), is_from_ins_interpreter : bool = false):
-	# Enemy set properties
+func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _get_path_based_on_current_index(), is_from_ins_interpreter : bool = false, ins_enemy_metadata_map = null):
+	enemy_instance.enemy_spawn_metadata_from_ins = ins_enemy_metadata_map
 	
+	# Enemy set stats
 	emit_signal("before_enemy_stats_are_set", enemy_instance)
 	
 	if enemy_instance.respect_stage_round_health_scale:
@@ -158,30 +211,22 @@ func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _pick_path_base
 	# Path related
 	var path : EnemyPath = arg_path
 	if is_from_ins_interpreter:
-		_switch_path_index_to_next() #to alternate between lanes
+		if current_path_to_spawn_pattern == PathToSpawnPattern.SWITCH_PER_SPAWN:
+			_switch_path_index_to_next() #to alternate between lanes per spawn
 		current_enemy_spawned_from_ins_count += 1
 	
 	emit_signal("before_enemy_spawned", enemy_instance)
-	path.add_child(enemy_instance)
+	
+	emit_signal("before_enemy_is_added_to_path", enemy_instance, path)
+	if enemy_instance.get_parent() == null:
+		path.add_child(enemy_instance)
 	
 	emit_signal("enemy_spawned", enemy_instance)
 
 
-func _pick_path_based_on_current_index() -> EnemyPath:
+func _get_path_based_on_current_index() -> EnemyPath:
 	return spawn_paths[_spawn_path_index_to_take]
 
-func _switch_path_index_to_next():
-	_spawn_path_index_to_take += 1
-	if _spawn_path_index_to_take >= spawn_paths.size():
-		_spawn_path_index_to_take = 0
-
-
-#func _pick_path_and_switch_index_to_next() -> EnemyPath:
-#	var path = _pick_path_based_on_current_index()
-#
-#	_switch_path_index_to_next()
-#
-#	return path
 
 # Round over detectors
 
@@ -271,3 +316,35 @@ func unpause_spawning():
 
 func _pause_timer_timeout():
 	unpause_spawning()
+
+
+# Spawn path related
+
+func _switch_path_index_to_next():
+	_spawn_path_index_to_take += 1
+	if _spawn_path_index_to_take >= spawn_paths.size():
+		_spawn_path_index_to_take = 0
+
+
+func _on_round_end(stage_round, is_game_start):
+	if !is_game_start:
+		if current_path_to_spawn_pattern == PathToSpawnPattern.SWITCH_PER_ROUND_END:
+			_switch_path_index_to_next()
+
+
+#func _on_base_map_paths_changed(new_all_paths):
+#	set_spawn_paths(new_all_paths)
+#
+#	if spawn_paths.size() > _spawn_path_index_to_take + 1:
+#		_spawn_path_index_to_take = 0
+
+func _on_base_map_path_added(new_path):
+	add_spawn_path(new_path)
+
+func _on_base_map_path_removed(removed_path):
+	remove_spawn_path(removed_path)
+
+
+func get_spawn_path_to_take_index() -> int:
+	return _spawn_path_index_to_take
+

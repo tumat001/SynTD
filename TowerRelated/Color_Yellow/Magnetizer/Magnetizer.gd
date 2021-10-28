@@ -35,6 +35,8 @@ const BasePic_Red = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetiz
 const use_count_energy_module_on : int = 3
 const use_count_energy_module_off : int = 1
 
+const beam_position_offset_from_ball : float = 13.0 # increase to make beam go more beyond the ball
+
 const beam_modulate : Color = Color(1, 1, 1, 0.7)
 
 var magnet_attack_module : BulletAttackModule
@@ -100,7 +102,7 @@ func _ready():
 	# Stretched AOE 
 	
 	beam_attack_module = AOEAttackModule_Scene.instance()
-	beam_attack_module.base_damage = 7
+	beam_attack_module.base_damage = 9
 	beam_attack_module.base_damage_type = DamageType.ELEMENTAL
 	beam_attack_module.base_attack_speed = 0
 	beam_attack_module.base_attack_wind_up = 0
@@ -122,7 +124,7 @@ func _ready():
 	sprite_frames.add_frame("default", MagnetizerBeam_Pic08)
 	sprite_frames.add_frame("default", MagnetizerBeam_Pic09)
 	sprite_frames.add_frame("default", MagnetizerBeam_Pic10)
-	
+	#sprite_frames.set_animation_speed("default", 10 / 0.15)
 	
 	beam_attack_module.base_aoe_scene = BaseAOE_Scene
 	beam_attack_module.aoe_sprite_frames = sprite_frames
@@ -259,12 +261,19 @@ func _can_form_beam() -> bool:
 	return activated_blue_magnets.size() >= 1 and activated_red_magnets.size() >= 1
 
 func _form_beam_between_points(origin_pos : Vector2, destination_pos : Vector2):
-	var aoe = beam_attack_module.construct_aoe(origin_pos, destination_pos)
+	var shifted_origin_pos = _get_extended_position_away_from_position(origin_pos, destination_pos)
+	var shifted_dest_pos = _get_extended_position_away_from_position(destination_pos, origin_pos)
+	
+	var aoe = beam_attack_module.construct_aoe(shifted_origin_pos, shifted_dest_pos)
 	
 	aoe.modulate = Color(1, 1, 1, 0.7)
 	aoe.damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)
+	aoe.scale.y *= 1.4
 	
 	get_tree().get_root().add_child(aoe)
+
+func _get_extended_position_away_from_position(var base_pos : Vector2, var pos_to_expand_away_from : Vector2):
+	return base_pos.move_toward(pos_to_expand_away_from, -beam_position_offset_from_ball)
 
 
 # energy module rel

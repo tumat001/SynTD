@@ -47,6 +47,9 @@ signal tower_selection_mode_ended()
 signal tower_to_benefit_from_synergy_buff(tower)
 signal tower_to_remove_from_synergy_buff(tower)
 
+signal tower_changed_colors(tower)
+
+signal tower_added(tower)
 signal tower_in_queue_free(tower)
 signal tower_being_sold(sellback_gold, tower)
 signal tower_being_absorbed_as_ingredient(tower)
@@ -158,14 +161,14 @@ func _tower_in_queue_free(tower):
 func _tower_active_in_map(tower : AbstractTower):
 	_register_tower_to_color_grouping_tags(tower)
 	emit_signal("tower_to_benefit_from_synergy_buff", tower)
-	#call_deferred("emit_signal", "tower_to_benefit_from_synergy_buff", tower)
+	
 	call_deferred("calculate_current_tower_limit_taken")
 
 # Called after potentially updating synergy
 func _tower_inactivated_from_map(tower : AbstractTower):
 	_remove_tower_from_color_grouping_tags(tower)
 	emit_signal("tower_to_remove_from_synergy_buff", tower)
-	#call_deferred("emit_signal", "tower_to_remove_from_synergy_buff", tower)
+	
 	call_deferred("calculate_current_tower_limit_taken")
 
 
@@ -197,7 +200,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("tower_give_gold", self, "_tower_generate_gold", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_being_absorbed_as_ingredient", self, "_emit_tower_being_absorbed_as_ingredient", [], CONNECT_PERSIST)
 	
-	tower_instance.connect("tower_colors_changed", self, "_register_tower_to_color_grouping_tags", [tower_instance], CONNECT_PERSIST)
+	tower_instance.connect("tower_colors_changed", self, "_tower_changed_colors", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("tower_active_in_map", self, "_tower_active_in_map", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("tower_not_in_active_map", self, "_tower_inactivated_from_map", [tower_instance], CONNECT_PERSIST)
 	
@@ -219,9 +222,18 @@ func add_tower(tower_instance : AbstractTower):
 	
 	for lim_id in _tower_ing_cap_amount_map:
 		tower_instance.set_ingredient_limit_modifier(lim_id, _tower_ing_cap_amount_map[lim_id])
-
+	
+	emit_signal("tower_added", tower_instance)
 
 # Color and grouping related
+
+func _tower_changed_colors(tower : AbstractTower):
+	_register_tower_to_color_grouping_tags(tower)
+	
+	if tower.is_current_placable_in_map():
+		_tower_active_in_map(tower)
+	
+	emit_signal("tower_changed_colors", tower)
 
 func _register_tower_to_color_grouping_tags(tower : AbstractTower, force : bool = false):
 	if tower.is_contributing_to_synergy or force:
@@ -355,6 +367,7 @@ func _show_tower_info_panel(tower : AbstractTower):
 		tower.connect("energy_module_attached", self, "_update_energy_module_display")
 		tower.connect("energy_module_detached", self ,"_update_energy_module_display")
 		tower.connect("heat_module_should_be_displayed_changed", self, "_update_heat_module_should_display_display")
+		tower.connect("final_ability_potency_changed", self, "_update_final_ability_potency_in_info")
 
 func _update_final_range_in_info():
 	tower_stats_panel.update_final_range()
@@ -364,6 +377,10 @@ func _update_final_attack_speed_in_info():
 
 func _update_final_base_damage_in_info():
 	tower_stats_panel.update_final_base_damage()
+
+func _update_final_ability_potency_in_info():
+	tower_stats_panel.update_ability_potency()
+
 
 func _update_ingredients_absorbed_in_info():
 	active_ing_panel.update_display()
@@ -396,6 +413,7 @@ func _show_round_panel():
 		tower_being_shown_in_info.disconnect("energy_module_attached", self, "_update_energy_module_display")
 		tower_being_shown_in_info.disconnect("energy_module_detached", self ,"_update_energy_module_display")
 		tower_being_shown_in_info.disconnect("heat_module_should_be_displayed_changed", self, "_update_heat_module_should_display_display")
+		tower_being_shown_in_info.disconnect("final_ability_potency_changed", self, "_update_final_ability_potency_in_info")
 		
 		tower_being_shown_in_info = null
 
@@ -424,6 +442,15 @@ func get_all_towers() -> Array:
 	var bucket : Array = []
 	for child in get_children():
 		if child.is_in_group(TOWER_GROUP_ID):
+			bucket.append(child)
+	
+	return bucket
+
+
+func get_all_towers_except_in_queue_free() -> Array:
+	var bucket : Array = []
+	for child in get_children():
+		if child.is_in_group(TOWER_GROUP_ID) and !child.is_queued_for_deletion():
 			bucket.append(child)
 	
 	return bucket

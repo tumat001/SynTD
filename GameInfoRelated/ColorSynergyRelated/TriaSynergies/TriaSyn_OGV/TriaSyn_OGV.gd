@@ -23,6 +23,8 @@ signal enemy_player_health_changed(max_val, new_curr_health_val)
 
 const enemy_soul_spawn_at_timepos_in_round_percent : float = 0.7
 
+const min_unit_distance_for_full_damage_points = 0.75
+
 const enemy_player_max_health : float = 100.0
 var enemy_player_current_health : float = enemy_player_max_health
 
@@ -32,9 +34,9 @@ const tier_3_max_damage_per_round : float = 15.0
 
 #
 
-const tier_1_power_fund_attack_speed_amount : float = 45.0
-const tier_2_power_fund_attack_speed_amount : float = 25.0
-const tier_3_power_fund_attack_speed_amount : float = 15.0
+const tier_1_power_fund_attack_speed_amount : float = 70.0
+const tier_2_power_fund_attack_speed_amount : float = 50.0
+const tier_3_power_fund_attack_speed_amount : float = 30.0
 
 const power_fund_gold_cost : int = 3
 const power_fund_duration : float = 5.0
@@ -259,10 +261,10 @@ func _on_enemy_soul_killed_no_more_revives(damage_instance_report, soul):
 	_damage_enemy_player(_get_damage_multiplier_based_on_unit_distance(soul.unit_distance_to_exit) * current_max_damage_per_round)
 
 func _get_damage_multiplier_based_on_unit_distance(unit_distance : float) -> float:
-	if unit_distance >= 0.90:
+	if unit_distance >= min_unit_distance_for_full_damage_points:
 		return 1.0
 	else:
-		return (unit_distance + 0.1)
+		return (unit_distance + (1 - min_unit_distance_for_full_damage_points))
 
 
 func _damage_enemy_player(damage_amount):

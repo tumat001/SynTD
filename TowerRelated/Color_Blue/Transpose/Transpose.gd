@@ -29,7 +29,7 @@ const Transpose_Sprite_Scene = preload("res://TowerRelated/Color_Blue/Transpose/
 const transpose_base_cooldown : float = 45.0
 const transpose_base_ability_delay : float = 1.5
 
-const transpose_buff_duration : float = 5.0
+const transpose_buff_duration : float = 6.0
 const transpose_base_attk_speed_amount : float = 50.0
 const transpose_base_ability_potency_amount : float = 0.25
 

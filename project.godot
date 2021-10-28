@@ -42,6 +42,7 @@ StoreOfFonts="*res://GameHUDRelated/StoreOfFonts.gd"
 Towers="*res://GameInfoRelated/Towers.gd"
 EnemyConstants="*res://EnemyRelated/EnemyConstants.gd"
 StoreOfMaps="*res://MapsRelated/StoreOfMaps.gd"
+StoreOfEnemyMetadataIdsFromIns="*res://EnemyRelated/StoreOfEnemyMetadataIdsFromIns.gd"
 
 [debug]
 

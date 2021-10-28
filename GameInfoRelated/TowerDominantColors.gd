@@ -67,14 +67,14 @@ func _init():
 	[DomSyn_Orange.new()],
 	[
 		"6000% effectiveness", # reachable only by green tier 1
-		"450% effectiveness",
-		"250% effectiveness",
+		"500% effectiveness",
+		"300% effectiveness",
 		"100% effectiveness",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [10, 8, 6, 4],
+	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [10, 8, 5, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[
@@ -103,7 +103,7 @@ func _init():
 	}
 	),
 	
-	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [12, 8, 6, 3],
+	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [12, 8, 5, 3],
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_green,
 	[
@@ -123,7 +123,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
 	
-	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [8, 6, 3],
+	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [8, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
 	[
@@ -144,10 +144,11 @@ func _init():
 	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	[
-		"Violet towers can absorb more ingredients. This effect applies only when the limit of total and Violet towers in the map is satisfied.",
-		"",
+		"Violet towers can absorb more ingredients.",
 		"Violet towers can absorb ingredients regardless of color after being in the map for 1 round.",
 		"",
+		"These effects apply only when the limit of total and Violet towers in the map is satisfied.",
+		""
 	],
 	[DomSyn_Violet.new()],
 	[
@@ -166,11 +167,11 @@ func _init():
 		"Hero relies on the color White to channel its powers.",
 	]),
 	
-	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [11, 8, 6, 3],
+	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [11, 8, 6, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_black,
 	[
-		"Black tower's attacks give a stack of Corruption to enemies on hit. Black towers with base damages 5.5 or higher will apply 5 stacks instead.",
+		"Black tower's attacks give a stack of Corruption to enemies on hit. Black towers with base damages 5.5 or higher will apply 3 stacks instead.",
 		"Corruption stacks last for 15 seconds. Re-applications refresh all stacks.",
 		"Black towers that hit enemies with a certain number of stacks cause effects.",
 		"",
@@ -178,9 +179,9 @@ func _init():
 	[DomSyn_Black.new()],
 	[
 		"10+ stacks: All attacks deal 10% of the enemy's missing health as elemental damage on hit, up to 7.",
-		"7+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. This can only be triggered every 0.1 seconds. The beam deals 1.5 physical damage, and benefits from base damage and on hit damage buffs at 30% efficiency. Also applies on hit effects.",
-		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 40% bonus attack speed for 6 attacks for 8 seconds. This effect has a 3 second cooldown.",
-		"2+ stacks: All attack's damage is increased by 15%."
+		"7+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. This can only be triggered every 0.1 seconds. The beam deals 1.5 physical damage, and benefits from base damage and on hit damage buffs at 25% efficiency. Also applies on hit effects.",
+		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 30% bonus attack speed for 6 attacks for 5 seconds. This effect has a 3 second cooldown.",
+		"2+ stacks: All attack's damage is increased by 10%."
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	)

@@ -13,11 +13,11 @@ const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_1 : [100, 0, 0, 0, 0, 0],
 	LevelManager.LEVEL_2 : [90, 10, 0, 0, 0, 0],
 	LevelManager.LEVEL_3 : [85, 15, 0, 0, 0, 0],
-	LevelManager.LEVEL_4 : [55, 42, 3, 0, 0, 0],
+	LevelManager.LEVEL_4 : [55, 43, 2, 0, 0, 0],
 	LevelManager.LEVEL_5 : [40, 40, 20, 0, 0, 0],
 	LevelManager.LEVEL_6 : [23, 35, 40, 2, 0, 0],
 	LevelManager.LEVEL_7 : [15, 30, 45, 9, 1, 0],
-	LevelManager.LEVEL_8 : [10, 20, 35, 30, 5, 0],
+	LevelManager.LEVEL_8 : [10, 20, 33, 30, 7, 0],
 	LevelManager.LEVEL_9 : [5, 15, 20, 35, 25, 0],
 	LevelManager.LEVEL_10 : [5, 10, 10, 25, 25, 25],
 }

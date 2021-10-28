@@ -28,11 +28,11 @@ const TowerDetectingRangeModule_Scene = preload("res://EnemyRelated/TowerInterac
 const BaseTowerDetectingBullet_Scene = preload("res://EnemyRelated/TowerInteractingRelated/Spawnables/BaseTowerDetectingBullet.tscn")
 
 
-const base_douser_base_damage_buff : float = 0.75
+const base_douser_base_damage_buff : float = 1.0
 const base_douser_base_time : float = 10.0
 const base_douser_base_count : int = 4
 
-const base_attack_count_for_buff : int = 4
+const base_attack_count_for_buff : int = 5
 var current_attack_count_for_buff : int = base_attack_count_for_buff
 var current_attack_count : int = 0
 
@@ -128,7 +128,7 @@ func _ready():
 	connect("on_round_end", self, "_on_round_end_d", [], CONNECT_PERSIST)
 	connect("final_range_changed", self, "_on_range_changed_d", [], CONNECT_PERSIST)
 	#connect("final_ability_potency_changed", self, "_on_ap_changed_d", [], CONNECT_PERSIST)
-	connect("final_ability_cd_changed", self, "on_acd_changed_d", [], CONNECT_PERSIST)
+	connect("final_ability_cd_changed", self, "_on_acd_changed_d", [], CONNECT_PERSIST)
 	
 	_construct_tower_indicator_shower()
 	_construct_and_connect_ability()
@@ -148,6 +148,7 @@ func _construct_and_connect_ability():
 	douser_buff_ability = BaseAbility.new()
 	
 	douser_buff_ability.is_timebound = false
+	douser_buff_ability.connect("final_ability_cdr_changed", self, "_on_acd_of_ability_changed", [], CONNECT_PERSIST)
 	
 	register_ability_to_manager(douser_buff_ability, false)
 
@@ -179,7 +180,11 @@ func _construct_effect():
 #	base_damage_buff_mod.flat_modifier = base_douser_base_damage_buff * last_calculated_final_ability_potency
 
 func _on_acd_changed_d():
-	current_attack_count_for_buff = int(ceil(float(base_attack_count_for_buff) * (1 - last_calculated_final_percent_ability_cdr)))
+	current_attack_count_for_buff = int(round(float(base_attack_count_for_buff) * ((100 - last_calculated_final_percent_ability_cdr) / 100)))
+	current_attack_count_for_buff = int(round(float(current_attack_count_for_buff) * ((100 - douser_buff_ability.last_calculated_final_percent_ability_cdr) / 100)))
+
+func _on_acd_of_ability_changed():
+	_on_acd_changed_d()
 
 
 # Attack Count related

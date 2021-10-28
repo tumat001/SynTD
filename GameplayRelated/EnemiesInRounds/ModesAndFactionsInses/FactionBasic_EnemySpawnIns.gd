@@ -9,11 +9,7 @@ func get_instructions_for_stageround(uuid : String):
 		return _get_instructions_for_0_2()
 	elif uuid == "03":
 		return _get_instructions_for_0_3()
-	elif uuid == "04":
-		return _get_instructions_for_0_4()
-	elif uuid == "05":
 		
-		return _get_instructions_for_0_5()
 	elif uuid == "11":
 		return _get_instructions_for_1_1()
 	elif uuid == "12":
@@ -22,8 +18,6 @@ func get_instructions_for_stageround(uuid : String):
 		return _get_instructions_for_1_3()
 	elif uuid == "14":
 		return _get_instructions_for_1_4()
-	elif uuid == "15":
-		return _get_instructions_for_1_5()
 		
 	elif uuid == "21":
 		return _get_instructions_for_2_1()
@@ -33,8 +27,6 @@ func get_instructions_for_stageround(uuid : String):
 		return _get_instructions_for_2_3()
 	elif uuid == "24":
 		return _get_instructions_for_2_4()
-	elif uuid == "25":
-		return _get_instructions_for_2_5()
 		
 	elif uuid == "31":
 		return _get_instructions_for_3_1()
@@ -44,15 +36,13 @@ func get_instructions_for_stageround(uuid : String):
 		return _get_instructions_for_3_3()
 	elif uuid == "34":
 		return _get_instructions_for_3_4()
-	elif uuid == "35":
-		return _get_instructions_for_3_5()
 	
 	return null
 
 
 func is_transition_time_in_stageround(uuid : String) -> bool:
-	return uuid == "41"
-	#return uuid == "01"
+	#return uuid == "41"
+	return uuid == "01"
 
 
 
@@ -73,23 +63,6 @@ func _get_instructions_for_0_3():
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BASIC),
 		SingleEnemySpawnInstruction.new(3, EnemyConstants.Enemies.BASIC),
 		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.BASIC),
-	]
-
-func _get_instructions_for_0_4():
-	return [
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BASIC),
-		SingleEnemySpawnInstruction.new(2, EnemyConstants.Enemies.BASIC),
-		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.BASIC),
-		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.BASIC),
-	]
-
-func _get_instructions_for_0_5():
-	return [
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BASIC),
-		SingleEnemySpawnInstruction.new(2.5, EnemyConstants.Enemies.BASIC),
-		SingleEnemySpawnInstruction.new(3.5, EnemyConstants.Enemies.BASIC),
-		SingleEnemySpawnInstruction.new(4.0, EnemyConstants.Enemies.BASIC),
-		SingleEnemySpawnInstruction.new(4.5, EnemyConstants.Enemies.PAIN),
 	]
 
 
@@ -122,12 +95,6 @@ func _get_instructions_for_1_2():
 
 func _get_instructions_for_1_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 18, 1.65, EnemyConstants.Enemies.BASIC),
-	]
-
-
-func _get_instructions_for_1_4():
-	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.DASH),
 		MultipleEnemySpawnInstruction.new(2, 16, 1.6, EnemyConstants.Enemies.BASIC),
 		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.HEALER),
@@ -136,7 +103,7 @@ func _get_instructions_for_1_4():
 	]
 
 
-func _get_instructions_for_1_5():
+func _get_instructions_for_1_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 14, 2.7, EnemyConstants.Enemies.BASIC),
 		MultipleEnemySpawnInstruction.new(2, 4, 0.6, EnemyConstants.Enemies.BASIC),
@@ -161,21 +128,14 @@ func _get_instructions_for_2_1():
 
 func _get_instructions_for_2_2():
 	return [
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BRUTE),
-		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.BRUTE),
-		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.HEALER),
-	]
-
-func _get_instructions_for_2_3():
-	return [
 		MultipleEnemySpawnInstruction.new(0, 17, 2.2, EnemyConstants.Enemies.BASIC),
 		MultipleEnemySpawnInstruction.new(5, 4, 7.5, EnemyConstants.Enemies.HEALER),
-		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.DASH),
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.BRUTE),
 		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.DASH),
 		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.DASH),
 	]
 
-func _get_instructions_for_2_4():
+func _get_instructions_for_2_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 3, 15, EnemyConstants.Enemies.BRUTE),
 		MultipleEnemySpawnInstruction.new(1, 2, 0.5, EnemyConstants.Enemies.HEALER),
@@ -183,7 +143,7 @@ func _get_instructions_for_2_4():
 		MultipleEnemySpawnInstruction.new(32, 4, 0.5, EnemyConstants.Enemies.HEALER),
 	]
 
-func _get_instructions_for_2_5():
+func _get_instructions_for_2_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 19, 1.8, EnemyConstants.Enemies.BASIC),
 		MultipleEnemySpawnInstruction.new(5, 3, 0.5, EnemyConstants.Enemies.DASH),
@@ -200,19 +160,14 @@ func _get_instructions_for_3_1():
 		MultipleEnemySpawnInstruction.new(10, 2, 8, EnemyConstants.Enemies.HEALER),
 	]
 
-func _get_instructions_for_3_2():
-	return [
-		MultipleEnemySpawnInstruction.new(0, 5, 8, EnemyConstants.Enemies.BRUTE),
-		MultipleEnemySpawnInstruction.new(15, 5, 0.2, EnemyConstants.Enemies.BASIC),
-	]
 
-func _get_instructions_for_3_3():
+func _get_instructions_for_3_2():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 18, 2.45, EnemyConstants.Enemies.BASIC),
 		MultipleEnemySpawnInstruction.new(0.15, 18, 2.45, EnemyConstants.Enemies.PAIN),
 	]
 
-func _get_instructions_for_3_4():
+func _get_instructions_for_3_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 15, 3, EnemyConstants.Enemies.DASH),
 		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.BRUTE),
@@ -221,7 +176,7 @@ func _get_instructions_for_3_4():
 		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.HEALER),
 	]
 
-func _get_instructions_for_3_5():
+func _get_instructions_for_3_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 24, 2, EnemyConstants.Enemies.BASIC),
 		MultipleEnemySpawnInstruction.new(0, 6, 6, EnemyConstants.Enemies.WIZARD),

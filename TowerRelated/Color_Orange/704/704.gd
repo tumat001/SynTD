@@ -372,7 +372,7 @@ func set_emblem_toughness_pierce_level(level : int):
 	elif level == 3:
 		toughness_pierce_bonus = 6
 	elif level == 4:
-		toughness_pierce_bonus = 10
+		toughness_pierce_bonus = 8
 	
 	sky_attack_module.base_toughness_pierce = toughness_pierce_bonus
 	sky_attack_module.calculate_final_toughness_pierce()

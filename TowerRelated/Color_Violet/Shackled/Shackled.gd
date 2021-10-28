@@ -324,7 +324,8 @@ func _cast_chains_ability():
 	if range_module != null:
 		chains_targeting = range_module.get_current_targeting_option()
 	
-	chains_attack_module.on_command_attack_enemies_and_attack_when_ready(_get_enemies_to_target(chains_targeting))
+	var enemies = _get_enemies_to_target(chains_targeting)
+	chains_attack_module.on_command_attack_enemies_and_attack_when_ready(enemies, enemies.size(), 1, false)
 
 
 func _get_enemies_to_target(arg_targeting : int) -> Array:

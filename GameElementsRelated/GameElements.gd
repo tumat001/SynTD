@@ -141,7 +141,9 @@ func _ready():
 	health_manager.round_info_panel = round_info_panel
 	
 	# Enemy manager
-	enemy_manager.set_spawn_paths(map_manager.base_map.all_enemy_paths)
+	enemy_manager.stage_round_manager = stage_round_manager
+	enemy_manager.map_manager = map_manager
+	enemy_manager.set_spawn_paths(map_manager.base_map.get_all_enemy_paths())
 	enemy_manager.connect("no_enemies_left", round_status_panel, "_update_round_ended")
 	enemy_manager.health_manager = health_manager
 	enemy_manager.game_elements = self
@@ -210,13 +212,13 @@ func _ready():
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round(true)
-	gold_manager.increase_gold_by(2, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	gold_manager.increase_gold_by(3, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.starting_health = 150
 	health_manager.set_health(150)
 	
 	
-	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_9
+	#gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	#level_manager.current_level = LevelManager.LEVEL_9
 	
 	#relic_manager.increase_relic_count_by(5, RelicManager.IncreaseRelicSource.ROUND)
 
@@ -230,24 +232,24 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHAOS,
-			Towers.RE,
-			Towers.TESLA,
-			Towers.PING,
-			Towers.ORB,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.ACCUMULAE,
-			Towers.GRAND,
-			Towers.WAVE,
-			Towers.SPRINKLER,
-			Towers.TRANSMUTATOR,
-		])
-	even = !even
+	shop_manager.roll_towers_in_shop_with_cost()
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.CHAOS,
+#			Towers.RE,
+#			Towers.TESLA,
+#			Towers.PING,
+#			Towers.PROMINENCE,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.AMALGAMATOR,
+#			Towers.SIMPLEX,
+#			Towers.TRANSPORTER,
+#			Towers.DOUSER,
+#			Towers.PESTILENCE,
+#		])
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):

@@ -167,8 +167,8 @@ func _ready():
 	crater_attack_module.aoe_sprite_frames = crater_sprite_frames
 	crater_attack_module.sprite_frames_only_play_once = false
 	crater_attack_module.pierce = -1
-	crater_attack_module.duration = 6
-	crater_attack_module.damage_repeat_count = 8
+	crater_attack_module.duration = 7
+	crater_attack_module.damage_repeat_count = 14
 	
 	crater_attack_module.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
 	crater_attack_module.base_aoe_scene = BaseAOE_Scene

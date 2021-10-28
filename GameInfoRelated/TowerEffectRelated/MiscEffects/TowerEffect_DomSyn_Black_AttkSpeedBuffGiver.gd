@@ -8,8 +8,8 @@ const BuffParticle_StatusBarIcon = preload("res://GameInfoRelated/ColorSynergyRe
 const Black_BuffParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/BuffParticle/Black_BuffParticle.tscn")
 
 const _stack_amount_trigger : int = 5
-const _attk_speed_buff_amount : float = 40.0
-const _attk_speed_buff_duration : float = 8.0
+const _attk_speed_buff_amount : float = 30.0
+const _attk_speed_buff_duration : float = 5.0
 const _attk_speed_buff_count : int = 6
 const _buff_cooldown : float = 3.0
 

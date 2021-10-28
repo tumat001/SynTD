@@ -3,8 +3,8 @@ extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd"
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerAttributesEffect.gd")
 
-const armor_pierce_amount : float = 6.0
-const toughness_pierce_amount : float = 6.0
+const armor_pierce_amount : float = 5.0
+const toughness_pierce_amount : float = 5.0
 
 var affected_range_module
 var armor_pierce_effect : TowerAttributesEffect
@@ -13,7 +13,7 @@ var toughness_pierce_effect : TowerAttributesEffect
 
 func _init().(StoreOfTowerEffectsUUID.ING_LEADER):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Leader.png")
-	description = "Tower gains all targeting options, and receives 6 armor and toughness pierce."
+	description = "Tower gains all targeting options, and receives 5 armor and toughness pierce."
 
 
 func _make_modifications_to_tower(tower):

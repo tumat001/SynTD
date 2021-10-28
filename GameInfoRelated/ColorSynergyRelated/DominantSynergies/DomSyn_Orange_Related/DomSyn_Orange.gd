@@ -11,14 +11,14 @@ signal on_base_multiplier_changed(scale)
 
 
 const tier_1_heat_effect_scale : float = 60.0
-const tier_2_heat_effect_scale : float = 4.5
-const tier_3_heat_effect_scale : float = 2.5
+const tier_2_heat_effect_scale : float = 5.0
+const tier_3_heat_effect_scale : float = 3.0
 const tier_4_heat_effect_scale : float = 1.0
 
 const inc_heat_amount_from_ability : int = 20
-const inc_heat_amount_round_cooldown : int = 3
+const inc_heat_amount_round_cooldown : int = 2
 
-const dec_heat_amount_round_cooldown : int = 4
+const dec_heat_amount_round_cooldown : int = 3
 
 var current_heat_effect_scale : float
 

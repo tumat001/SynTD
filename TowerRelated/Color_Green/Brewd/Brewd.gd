@@ -66,7 +66,7 @@ const attk_source_y_pos_shift : float = 12.0
 # REPEL
 const repel_knockup_accel : float = 40.0
 const repel_knockup_time : float = 0.8
-const repel_stun_duration : float = 1.5
+const repel_stun_duration : float = 2.25
 
 const repel_mov_speed : float = 80.0
 const repel_mov_speed_deceleration : float = 65.0
@@ -88,7 +88,7 @@ var repel_forced_path_mov_effect : EnemyForcedPathOffsetMovementEffect
 # IMPLOSION
 const implosion_knockup_accel : float = 20.0
 const implosion_knockup_time : float = 0.4
-const implosion_stun_duration : float = 1.25
+const implosion_stun_duration : float = 1.75
 
 const implosion_base_mov_speed : float = 50.0
 const implosion_base_mov_speed_deceleration : float = 40.0
@@ -109,7 +109,7 @@ var implosion_forced_path_mov_template_effect : EnemyForcedPathOffsetMovementEff
 # SHUFFLE
 const shuffle_knockup_accel : float = 35.0
 const shuffle_knockup_time : float = 0.75
-const shuffle_stun_duration : float = 1.25
+const shuffle_stun_duration : float = 2.0
 
 const shuffle_base_mov_speed : float = 120.0
 const shuffle_base_mov_speed_deceleration : float = 60.0
@@ -252,7 +252,8 @@ func _construct_repel_attk_module_and_relateds():
 	repel_knockup_effect.custom_stun_duration = repel_stun_duration
 	
 	repel_forced_path_mov_effect = EnemyForcedPathOffsetMovementEffect.new(repel_mov_speed, repel_mov_speed_deceleration, StoreOfEnemyEffectsUUID.BREWD_REPEL_FORCED_PATH_MOV)
-	
+	repel_forced_path_mov_effect.is_timebound = true
+	repel_forced_path_mov_effect.time_in_seconds = repel_stun_duration
 
 
 func _before_repel_explosion_hit_enemy(enemy, explosion):
@@ -325,6 +326,8 @@ func _construct_implosion_attk_module_and_relateds():
 	implosion_knockup_effect.custom_stun_duration = implosion_stun_duration
 	
 	implosion_forced_path_mov_template_effect = EnemyForcedPathOffsetMovementEffect.new(implosion_base_mov_speed, implosion_base_mov_speed_deceleration, StoreOfEnemyEffectsUUID.BREWD_IMPLOSION_FORCED_PATH_MOV)
+	implosion_forced_path_mov_template_effect.is_timebound = true
+	implosion_forced_path_mov_template_effect.time_in_seconds = implosion_stun_duration
 
 
 func _before_implosion_explosion_hit_enemy(enemy, explosion):
@@ -404,6 +407,8 @@ func _construct_shuffle_attk_module_and_relateds():
 	shuffle_knockup_effect.custom_stun_duration = shuffle_stun_duration
 	
 	shuffle_forced_path_mov_template_effect = EnemyForcedPathOffsetMovementEffect.new(shuffle_base_mov_speed, shuffle_base_mov_speed_deceleration, StoreOfEnemyEffectsUUID.BREWD_SHUFFLE_FORCED_PATH_MOV)
+	shuffle_forced_path_mov_template_effect.is_timebound = true
+	shuffle_forced_path_mov_template_effect.time_in_seconds = shuffle_stun_duration
 
 func _before_shuffle_explosion_hit_enemy(enemy, explosion):
 	if enemy != null and explosion != null and enemy.current_path != null:

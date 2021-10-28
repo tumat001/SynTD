@@ -399,7 +399,7 @@ func add_after_regards_empowered_attack_count(amount : int):
 
 func _sword_beam_attk_module_hit_enemy(enemy, damage_register_id, damage_instance, module):
 	var explosion = sword_explosion_attk_module.construct_aoe(enemy.global_position, enemy.global_position)
-	explosion.scale *= 2
+	explosion.scale *= 2.5
 	explosion.modulate.a = 0.7
 	
 	get_tree().get_root().add_child(explosion)

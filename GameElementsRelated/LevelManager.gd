@@ -33,13 +33,13 @@ enum Currency {
 
 const base_level_up_costs : Dictionary = {
 	LEVEL_1 : [2, Currency.GOLD],
-	LEVEL_2 : [4, Currency.GOLD],
-	LEVEL_3 : [8, Currency.GOLD],
+	LEVEL_2 : [2, Currency.GOLD],
+	LEVEL_3 : [6, Currency.GOLD],
 	LEVEL_4 : [18, Currency.GOLD],
-	LEVEL_5 : [32, Currency.GOLD],
-	LEVEL_6 : [44, Currency.GOLD],
-	LEVEL_7 : [64, Currency.GOLD],
-	LEVEL_8 : [80, Currency.GOLD],
+	LEVEL_5 : [32, Currency.GOLD], #32
+	LEVEL_6 : [42, Currency.GOLD], #44
+	LEVEL_7 : [58, Currency.GOLD], #64
+	LEVEL_8 : [78, Currency.GOLD], #80
 	LEVEL_9 : [1, Currency.RELIC],
 	LEVEL_10 : [0, Currency.GOLD],
 }

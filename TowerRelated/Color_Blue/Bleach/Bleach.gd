@@ -17,7 +17,7 @@ const Bleach_EmpoweredProj03 = preload("res://TowerRelated/Color_Blue/Bleach/Ble
 
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 
-const toughness_remove_amount : float = -10.0
+const toughness_remove_amount : float = -6.0
 const toughness_debuff_duration : float = 8.0
 
 var cycle : int = 0

@@ -274,31 +274,31 @@ const TowerTiersMap : Dictionary = {
 const tier_base_dmg_map : Dictionary = {
 	1 : 0.4,
 	2 : 0.75,
-	3 : 1.25,
+	3 : 1.5,
 	
-	4 : 2.25,
-	5 : 2.75,
-	6 : 3.25,
+	4 : 2.5, #2.25
+	5 : 3.0,
+	6 : 3.5,
 }
 
 const tier_attk_speed_map : Dictionary = {
 	1 : 12,
-	2 : 23,
-	3 : 30,
+	2 : 25, #23
+	3 : 35, #30
 	
-	4 : 45,
-	5 : 55,
-	6 : 65,
+	4 : 50, #45
+	5 : 60,
+	6 : 70,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
 	1 : 0.4,
-	2 : 0.75,
-	3 : 1.25,
+	2 : 1.0,
+	3 : 1.75,
 	
-	4 : 2.5,
-	5 : 3.0,
-	6 : 3.5,
+	4 : 2.75, #2.5
+	5 : 3.25,
+	6 : 3.75,
 }
 
 # Do not use this when instancing new tower class. Only use
@@ -476,8 +476,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = simplex_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 0.54
-		info.base_attk_speed = 5
+		info.base_damage = 0.48
+		info.base_attk_speed = 5.5
 		info.base_pierce = 0
 		info.base_range = 105
 		info.base_damage_type = DamageType.PURE
@@ -497,8 +497,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = railgun_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 4
-		info.base_attk_speed = 0.25
+		info.base_damage = 5
+		info.base_attk_speed = 0.3
 		info.base_pierce = 5
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
@@ -527,10 +527,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = re_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 4
-		info.base_attk_speed = 0.5
+		info.base_damage = 5
+		info.base_attk_speed = 0.55
 		info.base_pierce = 0
-		info.base_range = 120
+		info.base_range = 155
 		info.base_damage_type = DamageType.PURE
 		info.on_hit_multiplier = 1
 		
@@ -617,7 +617,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 1
-		info.base_attk_speed = 0.35
+		info.base_attk_speed = 0.38
 		info.base_pierce = 1
 		info.base_range = 165
 		info.base_damage_type = DamageType.PHYSICAL
@@ -650,8 +650,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = coin_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1.65
-		info.base_attk_speed = 0.45
+		info.base_damage = 2
+		info.base_attk_speed = 0.5
 		info.base_pierce = 2
 		info.base_range = 95
 		info.base_damage_type = DamageType.PHYSICAL
@@ -788,7 +788,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.575
+		info.base_attk_speed = 0.585
 		info.base_pierce = 1
 		info.base_range = 155
 		info.base_damage_type = DamageType.PHYSICAL
@@ -801,7 +801,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"When there is at least one blue and one red magnet that has hit an enemy or is on the ground, Magnetizer casts Magnetize.",
 			"",
 			"Magnetize: Calls upon all of this tower's non traveling magnets to form a beam between their opposite types, consuming them in the process.",
-			"The beam deals 7 elemental damage. The beam benefits from base damage buffs, on hit damages and effects. Damage scales with ability potency."
+			"The beam deals 9 elemental damage. The beam benefits from base damage buffs, on hit damages and effects. Damage scales with ability potency."
 		]
 		
 		
@@ -897,15 +897,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = lava_jet_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.45
-		info.base_attk_speed = 0.9
+		info.base_damage = 2.75
+		info.base_attk_speed = 1.12
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Lava Jet's attacks ignore 5 toughness.",
+			"Lava Jet's attacks ignore 3 toughness.",
 			"",
 			"On its 5th main attack, Lava Jet releases a beam of lava that deals 25% of the enemy's max health as elemental damage, up to 40."
 		]
@@ -964,7 +964,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.1
+		info.base_attk_speed = 0.12
 		info.base_pierce = 0
 		info.base_range = 240
 		info.base_damage_type = DamageType.PHYSICAL
@@ -973,7 +973,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Launches a molten boulder at the target's location.",
 			"The boulder explodes upon reaching the location, dealing 6 physical base damage. The explosion applies on hit effects, and applies on hit damages at 500% efficiency.",
-			"The explosion also leaves behind scorched earth that lasts for 6 seconds, which slows by 30% and deals 1 elemental damage per 0.75 seconds to enemies while inside it. This does not apply on hit damages and effects.",
+			"The explosion also leaves behind scorched earth that lasts for 7 seconds, which slows by 30% and deals 1 elemental damage per 0.5 seconds to enemies while inside it. This does not apply on hit damages and effects.",
 			"Both the explosion and scorched earth benefit from base damage buffs."
 		]
 		
@@ -997,8 +997,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = _704_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.75
-		info.base_attk_speed = 0.775
+		info.base_damage = 2.85
+		info.base_attk_speed = 0.785
 		info.base_pierce = 0
 		info.base_range = 135
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -1026,15 +1026,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = flameburst_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.40
-		info.base_attk_speed = 0.745
+		info.base_damage = 2.50
+		info.base_attk_speed = 0.830
 		info.base_pierce = 1
 		info.base_range = 115
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Flameburst's main attack causes enemies to spew out 4 flamelets around itself.",
+			"Flameburst's main attack causes enemies to spew out 4 flamelets around themselves.",
 			"Each flamelet deal 1 elemental damage.",
 			"Bonus range gained increases the range of the flamelets."
 		]
@@ -1209,12 +1209,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = ieu_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3
-		info.base_attk_speed = 1
+		info.base_damage = 3.5
+		info.base_attk_speed = 1.25
 		info.base_pierce = 0
 		info.base_range = 125
 		info.base_damage_type = DamageType.ELEMENTAL
-		info.on_hit_multiplier = 1.25
+		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
 			"IE=U discards the ingredient effect of Entropy and Enthalphy when they are absorbed. Instead, a temporary buff that lasts for 5 rounds is received.",
@@ -1285,8 +1285,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = spike_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1.65
-		info.base_attk_speed = 0.75
+		info.base_damage = 1.85
+		info.base_attk_speed = 0.765
 		info.base_pierce = 0
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1313,7 +1313,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 12
-		info.base_attk_speed = 0.2
+		info.base_attk_speed = 0.24
 		info.base_pierce = 0
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1321,7 +1321,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Impale shoots up a spike that stabs an enemy, stunning them for 2.2 seconds.",
-			"When the stun expires, Impale retracts the spike, dealing damage again. The retract damage deals 100% extra damage when the enemy has less than 75% of their max health.",
+			"When the stun expires, Impale retracts the spike, dealing damage again. The retract damage deals 200% extra damage when the enemy has less than 75% of their max health.",
+			"Elite type enemies take additional 100% extra damage from the rectact damage.",
+			"",
+			"\"Big spike for small enemies\""
 		]
 		
 		var imp_dmg_effect = ImpaleBonusDamageEffect.new()
@@ -1457,10 +1460,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Every after 4th main attack, Douser casts Buffing Waters.",
+			"Every after 5th main attack, Douser casts Buffing Waters.",
 			"",
 			"Buffing Waters: Douser shoots a water ball at the closest tower.",
-			"Towers hit by Buffing Waters gain 0.75 bonus base damage for the next 4 benefiting attacks within 10 seconds.",
+			"Towers hit by Buffing Waters gain 1 bonus base damage for the next 4 benefiting attacks within 10 seconds.",
 			"Douser also benefits from its own Buffing Water's buff.",
 			"Douser does not target towers that currently have the buff, and unprioritizes towers that have no means of attacking. Douser also does not target other Dousers, but can affect them if hit.",
 			"",
@@ -1527,14 +1530,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.9
+		info.base_attk_speed = 0.88
 		info.base_pierce = 1
 		info.base_range = 125
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Every 3rd attack, Bleach's main attack removes 10 toughness from enemies hit for 8 seconds. Does not stack."
+			"Every 3rd attack, Bleach's main attack removes 6 toughness from enemies hit for 8 seconds. Does not stack."
 		]
 		
 		
@@ -1586,7 +1589,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = seeder_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.25
+		info.base_damage = 2.15
 		info.base_attk_speed = 0.86
 		info.base_pierce = 1
 		info.base_range = 132
@@ -1624,7 +1627,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.425
+		info.base_attk_speed = 0.475
 		info.base_pierce = 0
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1632,7 +1635,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Shoots an exploding fruit.",
-			"The explosion deals 2.75 physical damage to 3 enemies. The explosion benefits from base damage buffs, on hit damages and effects."
+			"The explosion deals 3.25 physical damage to 3 enemies. The explosion benefits from base damage buffs, on hit damages and effects."
 		]
 		
 		
@@ -1696,7 +1699,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = reaper_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 4.5
+		info.base_damage = 4.75
 		info.base_attk_speed = 0.68
 		info.base_pierce = 1
 		info.base_range = 130
@@ -1750,8 +1753,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 0
 		info.base_attk_speed = 0.5
 		info.base_pierce = 1
-		info.base_range = 115
-		info.base_damage_type = DamageType.PHYSICAL
+		info.base_range = 145
+		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
@@ -1782,7 +1785,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 3
-		info.base_attk_speed = 1.2
+		info.base_attk_speed = 1.26
 		info.base_pierce = 1
 		info.base_range = 145
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1790,9 +1793,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Adept's attacks gain bonus effects based on its current target's distance from itself on hit.",
-			"Beyond 85% of range: Adept's main attack deals 35% more damage, and slows enemies hit by 20% for 1 second.",
+			"Beyond 85% of range: Adept's main attack deals 75% more damage, and slows enemies hit by 30% for 0.75 seconds.",
 			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack.",
-			"The secondary attack deals 2 physical damage and applies on hit effects.",
+			"The secondary attack deals 2.25 physical damage and applies on hit effects. The secondary attack cannot trigger another secondary attack.",
 			"",
 			"After 3 rounds of being active, Adept gains Far and Close targeting options."
 		]
@@ -1813,7 +1816,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = rebound_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.75
+		info.base_damage = 3.2
 		info.base_attk_speed = 0.48
 		info.base_pierce = 2
 		info.base_range = 115
@@ -1889,10 +1892,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"6 hex: Enemies's toughness is reduced by 25%.",
 			"8 hex: Enemies become 75% more vulnerable to effects.",
 			"20 hex: Executes normal enemies.",
-			"60 hex: Executes elite enemies.",
+			"80 hex: Executes elite enemies.",
 			"",
 			"HexTribute applies 4 hexes per attack for the rest of the round upon infusing 10 hexes to an enemy for the first time.",
-			
 		]
 		
 		
@@ -1959,7 +1961,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
-			"The Hero can absorb any ingredient color. Hero can also absorb 4 more ingredients.",
+			"The Hero can absorb any ingredient color. Hero can also absorb 1 additional ingredient per level up, up to 4.",
 		]
 		
 		
@@ -1972,16 +1974,19 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = amalgamator_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3
-		info.base_attk_speed = 0.93
+		info.base_damage = 3.25
+		info.base_attk_speed = 0.95
 		info.base_pierce = 1
-		info.base_range = 140
+		info.base_range = 145
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
 			"Every end of round, Amalgamator selects a random non-black tower in the map to apply Amalgamate.",
-			"Amalgamate: Sets a tower's color to black, erasing all previous colors."
+			"Amalgamate: Sets a tower's color to black, erasing all previous colors.",
+			"",
+			"Ability: Amalgam. Randomly selects 2 non-black towers to apply Amalgamate to. Amalgamator explodes afterwards, destroying itself in the process.",
+			"Amalgam prioritizes towers in the map, followed by benched towers.",
 		]
 		
 		
@@ -2131,7 +2136,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Prominence attacks through its Globules. Prominence possesses 4 Globules, which attack independently. Globules benefit from all buffs, and inherit Prominence's stats.",
+			"Prominence attacks through its Globules. Prominence possesses 4 Globules which attack independently. Globules benefit from all buffs and inherit Prominence's stats.",
 			"Globule's attacks are considered to be Prominence's main attacks.",
 			"",
 			"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
@@ -2170,7 +2175,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Attacks two enemies at the same time with its beams. This is counted as executing one main attack.",
 			"",
 			"Ability: Transpose. Select a tower to swap places with. Swapping takes 1.5 seconds to complete.",
-			"Both the tower and Transporter gain 50% bonus attack speed and 0.25 ability potency for 5 seconds after swapping.",
+			"Both the tower and Transporter gain 50% bonus attack speed and 0.25 ability potency for 6 seconds after swapping.",
 			"Ability potency increases the bonus attack speed and decreases swapping delay.",
 			"Cooldown: 45 s"
 		]
@@ -2239,7 +2244,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.765
+		info.base_attk_speed = 0.79
 		info.base_pierce = 1
 		info.base_range = 122
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -2367,7 +2372,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Beta: Nucleus's main attacks pierce through 3 enemies.",
 			"",
 			"Ability: Gamma. Fires a constant beam towards its current target for 8 seconds. Nucleus rotates the beam towards its current target.",
-			"Gamma deals 2 + 50% of Nucleus's bonus base damage as elemental damage every 0.5 seconds.",
+			"Gamma deals 2.5 + 40% of Nucleus's bonus base damage as elemental damage every 0.5 seconds.",
 			"Cooldown: 50 s",
 			"Ability potency increases damage dealt by Gamma."
 		]

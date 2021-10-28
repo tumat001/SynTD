@@ -26,7 +26,7 @@ const hex_for_toughness_reduction : int = 6
 const hex_for_effect_vulnerablility : int = 8
 const hex_for_hex_per_attk_buff : int = 10
 const hex_for_exeucte_normal : int = 20
-const hex_for_execute_elite : int = 60
+const hex_for_execute_elite : int = 80
 
 const hex_bonus_damage_amount : float = 1.5
 const hex_armor_reduction_ratio : float = 25.0

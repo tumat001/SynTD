@@ -150,3 +150,19 @@ func queue_free():
 	
 	.queue_free()
 
+#
+
+func set_parent_tower(arg_parent_tower):
+	if parent_tower != null:
+		parent_tower.disconnect("global_position_changed", self, "_on_tower_global_pos_changed")
+	
+	.set_parent_tower(arg_parent_tower)
+	
+	arg_parent_tower.connect("global_position_changed", self, "_on_tower_global_pos_changed", [], CONNECT_PERSIST)
+
+
+func _on_tower_global_pos_changed(old_pos, new_pos):
+	for beam in beam_to_enemy_map.keys():
+		beam.global_position = global_position
+
+

@@ -1,8 +1,8 @@
 extends MarginContainer
 
-onready var multiple_tower_damage_stats_container = $MarginContainer/VBoxContainer/MarginContainer/MultipleTowerRoundDamageStatsPanel
-onready var single_tower_detailed_damage_stats_panel = $MarginContainer/VBoxContainer/MarginContainer/SingleTowerDetailedRDSP
-onready var stats_container_container = $MarginContainer/VBoxContainer/MarginContainer
+onready var multiple_tower_damage_stats_container = $MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/MultipleTowerRoundDamageStatsPanel
+onready var single_tower_detailed_damage_stats_panel = $MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/SingleTowerDetailedRDSP
+onready var stats_container_container = $MarginContainer/VBoxContainer/ScrollContainer/MarginContainer
 
 func set_tower_manager(arg_manager):
 	multiple_tower_damage_stats_container.tower_manager = arg_manager

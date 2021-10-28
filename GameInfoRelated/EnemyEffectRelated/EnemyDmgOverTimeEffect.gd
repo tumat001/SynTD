@@ -118,6 +118,8 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 func _reapply(copy):
 	time_in_seconds = copy.time_in_seconds
 	damage_instance = copy.damage_instance
+	
+	effect_source_ref = copy.effect_source_ref
 
 #
 

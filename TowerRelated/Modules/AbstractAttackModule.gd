@@ -56,7 +56,7 @@ enum Disabled_ClauseId {
 
 
 var module_id : int
-var parent_tower
+var parent_tower setget set_parent_tower
 
 var is_main_attack : bool = false # OBSELETE
 
@@ -192,6 +192,9 @@ var is_displayed_in_tracker : bool = true
 const image_size := Vector2(18, 18) # size of texture is 18x18
 
 #
+
+func set_parent_tower(arg_parent_tower):
+	parent_tower = arg_parent_tower
 
 # Can be commanded related
 
@@ -695,20 +698,27 @@ func _get_enemies_found_by_range_module(arg_num_of_targets : int):
 
 #
 
-func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of_targets : int = number_of_unique_targets, attack_count : int = 1):
+func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of_targets : int = number_of_unique_targets, attack_count : int = 1, default_to_enemies_in_range : bool = false):
 	var success = false
 	
-	if !_is_bursting:
-		success = on_command_attack_enemies(arg_enemies, num_of_targets)
+	#if !_is_bursting:
+	success = on_command_attack_enemies(arg_enemies, num_of_targets)
 	
 	queued_attack_count += attack_count
 	
 	if arg_enemies.size() <= 0:
-		queued_attack_count = 0
+		#queued_attack_count = 0
+		
+		if is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
+			disconnect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready")
+		
+		if default_to_enemies_in_range:
+			on_command_attack_enemies_in_range_and_attack_when_ready(num_of_targets, 0)
+		#queued_attack_count = 0
 		return
 	
 	if !success:
-		_connect_attack_enemies_when_ready(arg_enemies, num_of_targets)
+		_connect_attack_enemies_when_ready(arg_enemies, num_of_targets, default_to_enemies_in_range)
 	else:
 		queued_attack_count -= 1
 		
@@ -717,12 +727,12 @@ func on_command_attack_enemies_and_attack_when_ready(arg_enemies : Array, num_of
 			if is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
 				disconnect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready")
 		else:
-			_connect_attack_enemies_when_ready(arg_enemies, num_of_targets)
+			_connect_attack_enemies_when_ready(arg_enemies, num_of_targets, default_to_enemies_in_range)
 
 
-func _connect_attack_enemies_when_ready(arg_enemies, num_of_targets):
+func _connect_attack_enemies_when_ready(arg_enemies, num_of_targets, default_to_enemies_in_range):
 	if !is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
-		connect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready", [arg_enemies, num_of_targets, 0])
+		connect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready", [arg_enemies, num_of_targets, 0, default_to_enemies_in_range])
 
 #
 
@@ -730,14 +740,17 @@ func on_command_attack_enemies_in_range_and_attack_when_ready(num_of_targets : i
 	var success = false
 	var enemies : Array
 	
-	if !_is_bursting:
-		enemies = _get_enemies_found_by_range_module(num_of_targets)
-		success = on_command_attack_enemies(enemies, num_of_targets)
+	#if !_is_bursting:
+	enemies = _get_enemies_found_by_range_module(num_of_targets)
+	success = on_command_attack_enemies(enemies, num_of_targets)
 	
 	queued_attack_count += attack_count
 	
 	if enemies.size() <= 0:
 		queued_attack_count = 0
+		
+		if is_connected("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready"):
+			disconnect("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready")
 		return
 	
 	if !success:
@@ -1095,6 +1108,12 @@ func on_round_end():
 	reset_attack_timers()
 	
 	queued_attack_count = 0
+	
+	if is_connected("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready"):
+		disconnect("ready_to_attack", self, "on_command_attack_enemies_and_attack_when_ready")
+	if is_connected("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready"):
+		disconnect("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready")
+	
 	
 	if range_module != null:
 		range_module.clear_all_target_effects()

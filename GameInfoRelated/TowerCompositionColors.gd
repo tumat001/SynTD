@@ -141,10 +141,10 @@ func _init():
 	],
 	[AnaSyn_OrangeYR.new()],
 	[
-		"Up to 150% attack speed",
-		"Up to 95% attack speed",
-		"Up to 40% attack speed",
-		"Up to 15% attack speed",
+		"Up to 170% attack speed",
+		"Up to 90% attack speed",
+		"Up to 50% attack speed",
+		"Up to 20% attack speed",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -180,7 +180,7 @@ func _init():
 	[AnaSyn_GreenBY.new()],
 	[
 		"+0.35 on hit, up to 7.0",
-		"+0.18 on hit, up to 3.6",
+		"+0.17 on hit, up to 3.4",
 		"+0.07 on hit, up to 1.4",
 		"+0.03 on hit, up to 0.6"
 	],
@@ -192,14 +192,17 @@ func _init():
 	syn_compo_ana_blueVG,
 	[
 		"Most abilities's cooldowns are reduced.",
+		"",
+		"Right before a tower casts an ability, the tower gains stacking ability potency for the round. AP gained scales on its cooldown.",
+		"Abilities's cooldown that are not time based instead gain 0.05 ap per cast.",
 		""
 	],
 	[AnaSyn_BlueVG.new()],
 	[
-		"80% reduction",
-		"50% reduction",
-		"25% reduction",
-		"15% reduction"
+		"80% reduction. +0.25 ap per 15 seconds of cooldown.",
+		"60% reduction. +0.25 ap per 20 seconds of cooldown.",
+		"40% reduction. +0.25 ap per 30 seconds of cooldown.",
+		"20% reduction. +0.25 ap per 40 seconds of cooldown."
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -208,19 +211,19 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
 	[
-		"Enemies that reach below 80% of their max health become Voided. Voided enemies gain Void effects depending on the tier.",
+		"Enemies that reach below 85% of their max health become Voided. Voided enemies gain Void effects depending on the tier.",
 		"",
-		"Ability Void: Enemies are stunned for 2 seconds after casting an ability.",
 		"Pride Void: Elite type enemies become Normal type instead.",
-		"Strength Void: Enemies deal 25% less damage to the player.",
+		"Ability Void: Enemies are stunned for 3 seconds after casting an ability.",
+		"Strength Void: Enemies deal 50% less damage to the player.",
 		"",
 		"Void effects cannot be removed by any means.",
 		""
 	],
 	[AnaSyn_VioletRB.new()],
 	[
-		"Ability Void",
 		"Pride Void",
+		"Ability Void",
 		"Strength Void",
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
@@ -256,6 +259,7 @@ func _init():
 	[
 		"Exposes the enemy player's soul every middle of the round, allowing towers to deal damage to it.",
 		"Killing the soul damages the enemy player. The damage amount is influenced by the synergy's tier, and how far the soul has travelled.",
+		"Killing the soul before travelling 75% of its path awards the full damage amount.",
 		"",
 		"You instantly win the game once the enemy player reaches 0 hp.",
 		"",
@@ -266,9 +270,9 @@ func _init():
 	],
 	[TriaSyn_OGV.new()],
 	[
-		"45% bonus attack speed. 30 max damage per round.",
-		"25% bonus attack speed. 20 max damage per round.",
-		"15% bonus attack speed. 15 max damage per round."
+		"70% bonus attack speed. 30 max damage per round.",
+		"50% bonus attack speed. 20 max damage per round.",
+		"30% bonus attack speed. 15 max damage per round."
 	]
 	),
 	

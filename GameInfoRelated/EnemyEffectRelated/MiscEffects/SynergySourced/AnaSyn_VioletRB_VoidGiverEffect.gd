@@ -79,7 +79,7 @@ func _undo_modifications_to_enemy(enemy):
 #
 
 func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
-	var copy = get_script().new(health_trigger_threshold, damage_percent_decrease_amount)
+	var copy = get_script().new()
 	_configure_copy_to_match_self(copy)
 	
 	return copy

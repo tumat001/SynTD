@@ -39,6 +39,7 @@ func _make_modifications_to_tower(tower):
 	if armor_pierce_effect == null:
 		_construct_effects()
 	
+	
 	_connect_all_signals_to_tower()
 
 

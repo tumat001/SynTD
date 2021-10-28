@@ -5,10 +5,10 @@ const AnaSyn_VioletRB_VoidGiverEffect = preload("res://GameInfoRelated/EnemyEffe
 
 
 
-const tier_1_ability_void_stun_duration : float = 2.0
-const tier_3_player_dec_damage_amount : float = -25.0
+const tier_2_ability_void_stun_duration : float = 3.0
+const tier_3_player_dec_damage_amount : float = -50.0
 
-const health_trigger_threshold : float = 0.8
+const health_trigger_threshold : float = 0.85
 
 var game_elements
 var curr_tier : int
@@ -46,15 +46,15 @@ func _configure_void_effect_based_on_tier():
 	void_effect.health_trigger_threshold = health_trigger_threshold
 	
 	void_effect.damage_percent_decrease_amount = tier_3_player_dec_damage_amount
-	void_effect.ability_void_stun_duration = tier_1_ability_void_stun_duration
+	void_effect.ability_void_stun_duration = tier_2_ability_void_stun_duration
 	
 	if curr_tier == 1:
 		void_effect.if_give_ability_void_effect = true
 		void_effect.if_give_pride_void_effect = true
 		void_effect.if_give_damage_dec_effect = true
 	elif curr_tier == 2:
-		void_effect.if_give_ability_void_effect = false
-		void_effect.if_give_pride_void_effect = true
+		void_effect.if_give_ability_void_effect = true
+		void_effect.if_give_pride_void_effect = false
 		void_effect.if_give_damage_dec_effect = true
 	elif curr_tier == 3:
 		void_effect.if_give_ability_void_effect = false

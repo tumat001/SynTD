@@ -1,11 +1,16 @@
 extends Node
 
-
 const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.gd")
+const EnemyPath = preload("res://EnemyRelated/EnemyPath.gd")
+
+
+signal on_enemy_path_added(enemy_path)
+signal on_enemy_path_removed(enemy_path)
+signal on_all_enemy_paths_changed(new_all_paths)
 
 
 var all_in_map_placables : Array = []
-var all_enemy_paths : Array = []
+var _all_enemy_paths : Array = []
 
 onready var _in_map_placables = $InMapPlacables
 onready var _enemy_paths = $EnemyPaths
@@ -20,7 +25,30 @@ func _ready():
 			all_in_map_placables.append(placables)
 	
 	for path in _enemy_paths.get_children():
-		all_enemy_paths.append(path)
+		_all_enemy_paths.append(path)
+
+
+# path related
+
+func add_enemy_path(path : EnemyPath):
+	if path != null:
+		_all_enemy_paths.append(path)
+		emit_signal("on_enemy_path_added", path)
+		emit_signal("on_all_enemy_paths_changed", get_all_enemy_paths())
+		
+		add_child(path)
+
+func remove_enemy_path(path : EnemyPath):
+	if path != null:
+		_all_enemy_paths.erase(path)
+		emit_signal("on_enemy_path_removed", path)
+		emit_signal("on_all_enemy_paths_changed", get_all_enemy_paths())
+		
+		remove_child(path)
+
+
+func get_all_enemy_paths():
+	return _all_enemy_paths.duplicate(false)
 
 
 # glow related

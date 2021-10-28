@@ -106,6 +106,8 @@ enum UntargetabilityClauses {
 var enemy_type : int = EnemyType.NORMAL
 var enemy_id : int
 
+var enemy_spawn_metadata_from_ins # normally a dictionary
+
 var base_health : float = 1
 var _flat_base_health_id_effect_map : Dictionary = {}
 var _percent_base_health_id_effect_map : Dictionary = {}
@@ -242,7 +244,7 @@ onready var knock_up_layer = $SpriteLayer/KnockUpLayer
 # internals
 
 var _self_size : Vector2
-var _is_yielding_for_lifebar : bool
+var _is_yielding_for_lifebar : bool = true
 var _is_queued_freed_during_yielding : bool
 
 # Effects map
@@ -316,7 +318,6 @@ func is_untargetable_only_from_invisibility():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_self_size = get_current_anim_size()
-	_is_yielding_for_lifebar = true
 	
 	var scale_of_layer : float = _get_scale_for_layer_lifebar()
 	layer_infobar.scale = Vector2(scale_of_layer, scale_of_layer)
@@ -573,12 +574,15 @@ func execute_self_by(source_id : int, attack_module_source = null):
 	if attack_module_source != null:
 		connect("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt", [attack_module_source.damage_register_id], CONNECT_ONESHOT)
 	
-	_take_unmitigated_damages([[current_health, DamageType.PURE, source_id]], null)
+	_take_unmitigated_damages([[current_health + current_shield, DamageType.PURE, source_id]], null)
 
 # The only function that should handle taking
 # damage and health deduction. Also where
 # death is handled
 func _take_unmitigated_damages(damages_and_types : Array, dmg_instance):
+	if _is_yielding_for_lifebar:
+		return
+	
 	var was_invul : bool = last_calculated_is_invulnerable
 	if last_calculated_is_invulnerable:
 		for damage_and_type in damages_and_types:
@@ -902,9 +906,9 @@ func _calculate_multiplier_from_total_armor(armor_pierce : float, percent_self_a
 	var total_armor = _last_calculated_final_armor - reduc_from_percent
 	total_armor = total_armor - armor_pierce
 	if total_armor >= 0:
-		return 20 / (20 + total_armor)
+		return 10 / (10 + total_armor)
 	else:
-		return 2 - (30 / (30 - total_armor))
+		return 2 - (15 / (15 - total_armor))
 
 func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percent_self_toughness_pierce : float):
 	var reduc_from_percent = (percent_self_toughness_pierce * _last_calculated_final_toughness / 100)
@@ -914,9 +918,9 @@ func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percen
 	var total_toughness = _last_calculated_final_toughness - reduc_from_percent
 	total_toughness = total_toughness - toughness_pierce
 	if total_toughness >= 0:
-		return 20 / (20 + total_toughness)
+		return 10 / (10 + total_toughness)
 	else:
-		return 2 - (30 / (30 - total_toughness))
+		return 2 - (15 / (15 - total_toughness))
 
 func _calculate_multiplier_from_total_resistance(resistance_pierce : float, percent_self_resistance_pierce : float):
 	var reduc_from_percent = (percent_self_resistance_pierce * _last_calculated_final_resistance / 100)
@@ -1216,7 +1220,9 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 			_dmg_over_time_id_effects_map[to_use_effect.effect_uuid] = to_use_effect
 			to_use_effect.connect_to_enemy(self)
 		else:
-			_dmg_over_time_id_effects_map[to_use_effect.effect_uuid]._reapply(to_use_effect)
+			var dmg_effect = _dmg_over_time_id_effects_map[to_use_effect.effect_uuid]
+			dmg_effect._reapply(to_use_effect)
+			
 		
 	elif to_use_effect is EnemyAttributesEffect:
 		if to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_MOV_SPEED:

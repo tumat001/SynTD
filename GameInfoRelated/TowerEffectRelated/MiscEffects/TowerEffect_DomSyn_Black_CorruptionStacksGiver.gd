@@ -4,7 +4,7 @@ const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/Enemy
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
 
 const _dmg_threshold_for_increase : float = 5.5
-const _increased_stack_amount : int = 5
+const _increased_stack_amount : int = 3
 const _base_stack_amount : int = 1
 
 const _corruption_time_in_seconds : float = 15.0

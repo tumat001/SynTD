@@ -20,9 +20,9 @@ var rotation_deg_per_sec : float = 0
 
 var enemies_to_ignore : Array = []
 
-var aoe_texture : Texture
-var aoe_sprite_frames : SpriteFrames
-var sprite_frames_play_only_once : bool = true
+var aoe_texture : Texture setget set_texture_as_sf
+var aoe_sprite_frames : SpriteFrames setget set_aoe_sprite_frames
+var sprite_frames_play_only_once : bool = true setget set_sprite_frames_play_only_once
 
 var aoe_default_coll_shape : int = BaseAOEDefaultShapes.CIRCLE
 var shift_x : bool = false
@@ -133,6 +133,7 @@ func _process(delta):
 		queue_free()
 
 
+
 func _physics_process(delta):
 	rotation_degrees += rotation_deg_per_sec * delta
 
@@ -154,15 +155,23 @@ func _set_texture_as_sprite():
 	var sprite_frames : SpriteFrames = SpriteFrames.new()
 	sprite_frames.add_frame("default", aoe_texture)
 	
-	anim_sprite.frames = sprite_frames
+	if anim_sprite != null:
+		anim_sprite.frames = sprite_frames
+		anim_sprite.playing = true
 
 func _set_sprite_frames():
-	anim_sprite.frames = aoe_sprite_frames
-	anim_sprite.playing = true
+	if anim_sprite != null:
+		anim_sprite.frames = aoe_sprite_frames
+		anim_sprite.playing = true
 	
-	if sprite_frames_play_only_once:
-		anim_sprite.frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(aoe_sprite_frames.get_frame_count("default")))
-		aoe_sprite_frames.set_animation_loop("default", false)
+	_update_aoe_sprite_frames_speed()
+	
+#	if sprite_frames_play_only_once:
+#		pass
+#		#anim_sprite.frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(aoe_sprite_frames.get_frame_count("default")))
+#		#aoe_sprite_frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(aoe_sprite_frames.get_frame_count("default")))
+#		#aoe_sprite_frames.set_animation_loop("default", false)
+
 
 func _animated_sprite_has_animation() -> bool:
 	return anim_sprite.frames != null
@@ -170,6 +179,29 @@ func _animated_sprite_has_animation() -> bool:
 func _calculate_fps_of_sprite_frames(frame_count : int) -> int:
 	return int(ceil(frame_count / duration))
 
+
+#
+
+func set_aoe_sprite_frames(sf):
+	aoe_sprite_frames = sf
+	
+	_set_sprite_frames()
+
+func set_texture_as_sf(texture):
+	aoe_texture = texture
+	
+	_set_texture_as_sprite()
+
+func set_sprite_frames_play_only_once(val):
+	sprite_frames_play_only_once = val
+	
+	if aoe_sprite_frames != null:
+		_update_aoe_sprite_frames_speed()
+
+func _update_aoe_sprite_frames_speed():
+	if sprite_frames_play_only_once:
+		aoe_sprite_frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(aoe_sprite_frames.get_frame_count("default")))
+	aoe_sprite_frames.set_animation_loop("default", !sprite_frames_play_only_once)
 
 
 # Shape Related

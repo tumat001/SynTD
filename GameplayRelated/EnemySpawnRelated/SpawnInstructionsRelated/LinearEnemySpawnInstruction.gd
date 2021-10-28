@@ -13,7 +13,7 @@ var lowest_time_amount : float
 
 
 func _init(arg_local_timepos : float, arg_num_of_enemies : int, arg_time_per_enemy : float, arg_time_reduction_scale_per_enemy : float, arg_enemy_id : int,
-		 arg_lowest_time_amount : float = 0.05).(arg_local_timepos):
+		 arg_lowest_time_amount : float = 0.05, arg_enemy_metadata_map = null).(arg_local_timepos, arg_enemy_metadata_map):
 	enemy_id = arg_enemy_id
 	num_of_enemies = arg_num_of_enemies
 	seconds_per_enemy = arg_time_per_enemy
@@ -27,7 +27,7 @@ func _get_spawn_instructions():
 	var curr_time_space_scale : float = 1
 	
 	for i in num_of_enemies:
-		bucket.append(SingleEnemySpawnInstruction.new(curr_time_frame, enemy_id))
+		bucket.append(SingleEnemySpawnInstruction.new(curr_time_frame, enemy_id, enemy_metadata_map))
 		var frame_inc = (seconds_per_enemy * curr_time_space_scale)
 		if frame_inc < lowest_time_amount:
 			frame_inc = lowest_time_amount

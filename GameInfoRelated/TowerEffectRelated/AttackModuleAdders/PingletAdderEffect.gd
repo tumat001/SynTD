@@ -28,7 +28,7 @@ var shot_attack_module : WithBeamInstantDamageAttackModule
 
 func _init().(StoreOfTowerEffectsUUID.ING_PING):
 	effect_icon = Ingredient_pic
-	description = "Pinglet: Summons a Pinglet beside your tower. Has 120 range, 4 physical base damage and 0.8 attack speed. Applies on hit effects. Benefits from base damage and on hit damage buffs at 10% efficiency."
+	description = "Pinglet: Summons a Pinglet beside your tower. Has 120 range, 4 physical base damage and 0.8 attack speed. Applies on hit effects. Benefits from base damage and on hit damage buffs at 25% efficiency."
 
 
 func _construct_pinglet():
@@ -39,7 +39,8 @@ func _construct_pinglet():
 	shot_range_module.benefits_from_bonus_range = false
 	
 	shot_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	shot_attack_module.base_damage_scale = 0.1
+	shot_attack_module.base_damage_scale = 0.25
+	shot_attack_module.on_hit_damage_scale = 0.25
 	shot_attack_module.base_damage = 4 / shot_attack_module.base_damage_scale
 	shot_attack_module.base_damage_type = DamageType.PHYSICAL
 	shot_attack_module.base_attack_speed = 0.8
@@ -49,7 +50,7 @@ func _construct_pinglet():
 	shot_attack_module.position.y -= 10
 	shot_attack_module.position.x += 20
 	shot_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	shot_attack_module.on_hit_damage_scale = 0.1
+	
 	
 	
 	var beam_sprite_frame : SpriteFrames = SpriteFrames.new()

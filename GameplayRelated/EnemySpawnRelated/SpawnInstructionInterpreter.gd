@@ -5,7 +5,7 @@ const ChainSpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/S
 const MultipleEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/MultipleEnemySpawnInstruction.gd")
 const LinearEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/LinearEnemySpawnInstruction.gd")
 
-signal spawn_enemy(enemy_id)
+signal spawn_enemy(enemy_id, ins_enemy_metadata_map)
 signal no_enemies_to_spawn_left
 
 var _current_time : float
@@ -116,7 +116,7 @@ func _signal_enemy_id_ins_below_timepos(timepos : float):
 	for ins in _instructions_near_exe:
 		if ins.local_timepos <= timepos:
 			#call_deferred("emit_signal", "spawn_enemy", ins.enemy_id)
-			emit_signal("spawn_enemy", ins.enemy_id)
+			emit_signal("spawn_enemy", ins.enemy_id, ins.enemy_metadata_map)
 			_instructions_near_exe.erase(ins)
 	
 	

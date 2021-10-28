@@ -51,8 +51,8 @@ var nucleus_original_attk_module : BulletAttackModule
 
 
 var gamma_ability : BaseAbility
-var gamma_ability_flat_damage_amount : float = 2.0
-var gamma_ability_percent_base_dmg_amount : float = 0.5
+var gamma_ability_flat_damage_amount : float = 2.5
+var gamma_ability_percent_base_dmg_amount : float = 0.4
 var gamma_ability_duration : float = 8.0
 var gamma_ability_damage_repeat_count : int = 16
 var gamma_ability_base_cooldown : float = 50.0
@@ -152,7 +152,8 @@ func _ready():
 	gamma_sprite_frames.add_frame("default", Nucleus_Gamma_Pic06)
 	gamma_sprite_frames.add_frame("default", Nucleus_Gamma_Pic07)
 	gamma_sprite_frames.add_frame("default", Nucleus_Gamma_Pic08)
-	gamma_sprite_frames.set_animation_speed("default", 16)
+	gamma_sprite_frames.set_animation_speed("default", 8 / 0.4)
+	
 	
 	gamma_attack_module.aoe_sprite_frames = gamma_sprite_frames
 	gamma_attack_module.sprite_frames_only_play_once = false

@@ -34,7 +34,7 @@ const NO_ABILITY_CASTED_YET : int = -1
 const faithful_interaction_range_amount : float = 200.0
 const tower_interaction_range_amount : float = 160.0
 
-const base_armor_toughness_amount_per_faithful : float = 2.0
+const base_armor_toughness_amount_per_faithful : float = 1.0
 const base_health_regen_per_sec_per_sacrificer : float = 5.0
 const base_ap_per_seer : float = 0.5
 const base_health_gain_from_cross_marker : float = 20.0
@@ -63,9 +63,9 @@ var _first_time_sacrificer_went_to_range : bool = false
 #
 
 var _time_stunlocked : float
-const _base_time_stunlock_for_buff : float = 4.0
+const _base_time_stunlock_for_buff : float = 3.0
 const _base_time_stunlock_expire_per_sec : float = 1.25
-const _base_effect_immunity_duration : float = 2.5
+const _base_effect_immunity_duration : float = 5.0
 
 var _self_effect_shield : EnemyEffectShieldEffect
 

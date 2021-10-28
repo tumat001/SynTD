@@ -118,6 +118,10 @@ signal on_round_start
 
 signal register_ability(ability, add_to_panel)
 
+signal on_tower_ability_before_cast_start(cooldown, ability)
+signal on_tower_ability_after_cast_end(cooldown, ability)
+
+
 signal global_position_changed(old_pos, new_pos)
 
 signal on_effect_added(effect)
@@ -270,6 +274,9 @@ var last_calculated_is_stunned : bool
 var effect_shield_effect_map : Dictionary = {}
 var last_calculated_has_effect_shield_against_towers : bool
 var last_calculated_has_effect_shield_against_enemies : bool
+
+
+# Modulate
 
 
 
@@ -658,6 +665,13 @@ func _emit_on_any_range_module_current_enemy_exited(enemy, module, range_module)
 
 func _emit_on_any_range_module_current_enemies_acquired(module, range_module):
 	emit_signal("on_any_range_module_current_enemies_acquired" , module, range_module)
+
+
+func _emit_on_tower_ability_before_cast_start(cooldown, ability):
+	emit_signal("on_tower_ability_before_cast_start", cooldown, ability)
+
+func _emit_on_tower_ability_after_cast_end(cooldown, ability):
+	emit_signal("on_tower_ability_after_cast_end", cooldown, ability)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -1652,8 +1666,8 @@ func _can_accept_ingredient_color(tower_selected) -> bool:
 		if _tower_colors.has(color):
 			return true
 	
-	if _tower_colors.has(TowerColors.BLACK):
-		return true
+	#if _tower_colors.has(TowerColors.BLACK):
+	#	return true
 	
 	var final_verdict : bool = false
 	for effect in _ingredient_acceptability_color_effects.values():
@@ -1799,21 +1813,29 @@ func remove_ingredient_compatibility_color_effect(effect_uuid : int):
 func add_color_to_tower(color : int):
 	#if !_tower_colors.has(color):
 	_tower_colors.append(color)
-	call_deferred("emit_signal", "update_active_synergy")
-	call_deferred("emit_signal", "tower_colors_changed")
+	
+	#call_deferred("emit_signal", "update_active_synergy")
+	#call_deferred("emit_signal", "tower_colors_changed")
 	_update_ingredient_compatible_colors()
+	
+	emit_signal("tower_colors_changed")
+	emit_signal("update_active_synergy")
 
 func remove_color_from_tower(color : int):
 	#if _tower_colors.has(color):
 	_tower_colors.erase(color)
+	
+	# original order of things: update then colors changed
 	call_deferred("emit_signal", "update_active_synergy")
 	call_deferred("emit_signal", "tower_colors_changed")
 	_update_ingredient_compatible_colors()
 
-func remove_all_colors_from_tower():
+func remove_all_colors_from_tower(emit_change_signals : bool = true):
 	_tower_colors.clear()
-	call_deferred("emit_signal", "update_active_synergy")
-	call_deferred("emit_signal", "tower_colors_changed")
+	
+	if emit_change_signals:
+		call_deferred("emit_signal", "tower_colors_changed")
+		call_deferred("emit_signal", "update_active_synergy")
 	_update_ingredient_compatible_colors()
 
 
@@ -1821,6 +1843,9 @@ func remove_all_colors_from_tower():
 
 func register_ability_to_manager(ability : BaseAbility, add_to_panel : bool = true):
 	emit_signal("register_ability", ability, add_to_panel)
+	
+	ability.connect("on_ability_before_cast_start", self, "_emit_on_tower_ability_before_cast_start", [ability], CONNECT_PERSIST)
+	ability.connect("on_ability_after_cast_end", self, "_emit_on_tower_ability_after_cast_end", [ability], CONNECT_PERSIST)
 
 
 func _get_cd_to_use(base_cd : float) -> float:

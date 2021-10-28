@@ -9,9 +9,11 @@ const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const bonus_damage_percent_threshold : float = 0.75
 const bonus_damage_new_scale : float = 1.30
 
+const bonus_damage_new_scale_against_normal_typed : float = 1.50
+
 func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Impale.png")
-	description = "All of the tower's attacks deal 30% more damage to enemies below 75% health."
+	description = "All of the tower's attacks deal 30% more damage to enemies below 75% health. The damage bonus is increased to 50% against Normal typed enemies."
 
 
 func _make_modifications_to_tower(tower):
@@ -24,8 +26,10 @@ func _on_enemy_hit_s(enemy, damage_register_id, damage_instance, module):
 		var ratio_health = enemy.current_health / enemy._last_calculated_max_health
 		
 		if ratio_health < bonus_damage_percent_threshold:
-			#damage_instance.on_hit_damages = damage_instance.get_copy_damage_only_scaled_by(bonus_damage_new_scale).on_hit_damages
-			damage_instance.scale_only_damage_by(bonus_damage_new_scale)
+			if enemy.is_enemy_type_normal():
+				damage_instance.scale_only_damage_by(bonus_damage_new_scale_against_normal_typed)
+			else:
+				damage_instance.scale_only_damage_by(bonus_damage_new_scale)
 
 
 func _undo_modifications_to_tower(tower):

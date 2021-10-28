@@ -73,12 +73,13 @@ func construct_aoe(arg_origin_pos : Vector2, arg_enemy_pos : Vector2) -> BaseAOE
 	
 	base_aoe.aoe_default_coll_shape = aoe_default_coll_shape
 	
+	base_aoe.sprite_frames_play_only_once = sprite_frames_only_play_once
+	
 	if aoe_sprite_frames != null:
 		base_aoe.aoe_sprite_frames = aoe_sprite_frames
 	elif aoe_texture != null:
 		base_aoe.aoe_texture = aoe_texture
 	
-	base_aoe.sprite_frames_play_only_once = sprite_frames_only_play_once
 	base_aoe.shift_x = shift_x
 	
 	base_aoe.add_to_group(aoe_group_tag)

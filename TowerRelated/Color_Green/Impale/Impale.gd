@@ -17,7 +17,8 @@ const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyS
 
 
 var impale_attack_module : InstantDamageAttackModule
-const bonus_damage_scale : float = 2.0
+const bonus_damage_scale : float = 3.0
+const bonus_damage_scale_on_normal_enemies : float = 2.0
 
 const bonus_damage_percent_threshold : float = 0.75
 
@@ -89,6 +90,9 @@ func _on_impale_rectract(enemy):
 		
 		if _check_if_within_threshold(enemy):
 			dmg_instance.scale_only_damage_by(bonus_damage_scale)
+		
+		if enemy.is_enemy_type_normal():
+			dmg_instance.scale_only_damage_by(bonus_damage_scale_on_normal_enemies)
 		
 		enemy.hit_by_instant_damage(dmg_instance, impale_retract_damage_dmg_reg_id, impale_attack_module)
 

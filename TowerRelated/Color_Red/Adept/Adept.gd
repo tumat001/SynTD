@@ -55,7 +55,7 @@ const mini_dmg_reg_id : int = Towers.ADEPT
 
 
 var slow_effect : EnemyAttributesEffect
-const base_beyond_range_bonus_damage_ratio : float = 1.35
+const base_beyond_range_bonus_damage_ratio : float = 1.75
 var main_shot_sprite_frames : SpriteFrames
 
 const rounds_before_learn : int = 3
@@ -88,7 +88,7 @@ func _ready():
 	mini_shot_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
 	mini_shot_attack_module.on_hit_damage_scale = 0.15
 	mini_shot_attack_module.base_damage_scale = 0.15
-	mini_shot_attack_module.base_damage = 2 / mini_shot_attack_module.base_damage_scale
+	mini_shot_attack_module.base_damage = 2.25 / mini_shot_attack_module.base_damage_scale
 	mini_shot_attack_module.base_damage_type = DamageType.PHYSICAL
 	mini_shot_attack_module.base_attack_speed = 0
 	mini_shot_attack_module.base_attack_wind_up = 1 / 0.1
@@ -193,12 +193,12 @@ func _calculate_range_thresholds():
 
 func _construct_effects():
 	var slow_modifier : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ADEPT_SLOW)
-	slow_modifier.percent_amount = -20
+	slow_modifier.percent_amount = -30
 	slow_modifier.percent_based_on = PercentType.BASE
 	
 	slow_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED, slow_modifier, StoreOfEnemyEffectsUUID.ADEPT_SLOW)
 	slow_effect.is_timebound = true
-	slow_effect.time_in_seconds = 1
+	slow_effect.time_in_seconds = 0.75
 
 func _construct_hit_marker():
 	if main_shot_sprite_frames == null:
