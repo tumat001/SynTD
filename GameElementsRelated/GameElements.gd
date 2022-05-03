@@ -25,7 +25,8 @@ const GeneralStatsPanel = preload("res://GameHUDRelated/StatsPanel/GeneralStatsP
 const TowerEmptySlotNotifPanel = preload("res://GameHUDRelated/NotificationPanel/TowerEmptySlotNotifPanel/TowerEmptySlotNotifPanel.gd")
 const RoundDamageStatsPanel = preload("res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/RoundDamageStatsPanel.gd")
 const MapManager = preload("res://GameElementsRelated/MapManager.gd")
-
+const CombinationManager = preload("res://GameElementsRelated/CombinationManager.gd")
+const CombinationTopPanel = preload("res://GameHUDRelated/CombinationRelatedPanels/CombinationTopPanel/CombinationTopPanel.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var synergy_manager
@@ -44,6 +45,8 @@ var screen_effect_manager : ScreenEffectsManager
 var relic_manager : RelicManager
 var shop_manager : ShopManager
 var level_manager : LevelManager
+var combination_manager : CombinationManager
+var combination_top_panel : CombinationTopPanel
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
@@ -55,6 +58,7 @@ var tower_empty_slot_notif_panel : TowerEmptySlotNotifPanel
 var left_panel
 var round_damage_stats_panel : RoundDamageStatsPanel
 var map_manager : MapManager
+
 
 onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
 
@@ -80,6 +84,8 @@ func _ready():
 	general_stats_panel = $BottomPanel/HBoxContainer/VBoxContainer/GeneralStatsPanel
 	left_panel = $LeftsidePanel
 	map_manager = $MapManager
+	combination_manager = $CombinationManager
+	combination_top_panel = $CombinationTopPanel
 	
 	selection_notif_panel = $NotificationNode/SelectionNotifPanel
 	tower_empty_slot_notif_panel = $NotificationNode/TowerEmptySlotNotifPanel
@@ -197,6 +203,7 @@ func _ready():
 	panel_buy_sell_level_roll.shop_manager = shop_manager
 	panel_buy_sell_level_roll.tower_manager = tower_manager
 	panel_buy_sell_level_roll.tower_inventory_bench = tower_inventory_bench
+	panel_buy_sell_level_roll.combination_manager = combination_manager
 	
 	# tower empty slot notif panel
 	tower_empty_slot_notif_panel.tower_manager = tower_manager
@@ -208,17 +215,22 @@ func _ready():
 	round_damage_stats_panel.set_tower_manager(tower_manager)
 	round_damage_stats_panel.set_stage_round_manager(stage_round_manager)
 	
+	# combination manager
+	combination_manager.tower_manager = tower_manager
+	combination_manager.combination_top_panel = combination_top_panel
+	
 	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round(true)
+	
 	gold_manager.increase_gold_by(3, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.starting_health = 150
 	health_manager.set_health(150)
 	
 	
-	#gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	#level_manager.current_level = LevelManager.LEVEL_9
+	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	level_manager.current_level = LevelManager.LEVEL_9
 	
 	#relic_manager.increase_relic_count_by(5, RelicManager.IncreaseRelicSource.ROUND)
 
@@ -232,24 +244,24 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	shop_manager.roll_towers_in_shop_with_cost()
-#	if !even:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.CHAOS,
-#			Towers.RE,
-#			Towers.TESLA,
-#			Towers.PING,
-#			Towers.PROMINENCE,
-#		])
-#	else:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.AMALGAMATOR,
-#			Towers.SIMPLEX,
-#			Towers.TRANSPORTER,
-#			Towers.DOUSER,
-#			Towers.PESTILENCE,
-#		])
-#	even = !even
+	#shop_manager.roll_towers_in_shop_with_cost()
+	if !even:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.CHAOS,
+			Towers.RE,
+			Towers.TESLA,
+			Towers.PING,
+			Towers.PROMINENCE,
+		])
+	else:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.SPRINKLER,
+			Towers.SHOCKER,
+			Towers.BEACON_DISH,
+			Towers.SIMPLEX,
+			Towers.STRIKER,
+		])
+	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -307,7 +319,11 @@ func _unhandled_key_input(event):
 				targeting_panel.cycle_targeting_left()
 			elif event.is_action("game_tower_targeting_right"):
 				targeting_panel.cycle_targeting_right()
-			
+				
+				
+			elif event.is_action("game_combine_combinables"):
+				combination_manager.on_combination_activated()
+				
 			
 		else: # if there is wholescreen gui
 			if event.scancode == KEY_ESCAPE:

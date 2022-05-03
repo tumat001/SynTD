@@ -95,7 +95,7 @@ func _on_StarsIcon_pressed_mouse_event(event):
 		attack_tooltip.descriptions = [
 			"Main attacks on hit causes Orb to follow up the attack with 3 stars.",
 			"",
-			"Each star deals 1.75 elemental damage. Stars benefit from base damage buffs and on hit damages at 50% efficiency, and scale with ability potency. Does not benefit from on hit effects.",
+			"Each star deals 1.5 elemental damage. Stars benefit from base damage buffs and on hit damages at 50% efficiency, and scale with ability potency. Does not benefit from on hit effects.",
 		]
 		
 		get_tree().get_root().add_child(attack_tooltip)

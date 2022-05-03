@@ -12,12 +12,12 @@ signal can_roll_changed(can_roll)
 const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_1 : [100, 0, 0, 0, 0, 0],
 	LevelManager.LEVEL_2 : [90, 10, 0, 0, 0, 0],
-	LevelManager.LEVEL_3 : [85, 15, 0, 0, 0, 0],
+	LevelManager.LEVEL_3 : [80, 20, 0, 0, 0, 0],
 	LevelManager.LEVEL_4 : [55, 43, 2, 0, 0, 0],
-	LevelManager.LEVEL_5 : [40, 40, 20, 0, 0, 0],
-	LevelManager.LEVEL_6 : [23, 35, 40, 2, 0, 0],
+	LevelManager.LEVEL_5 : [45, 35, 20, 0, 0, 0],
+	LevelManager.LEVEL_6 : [23, 40, 35, 2, 0, 0],
 	LevelManager.LEVEL_7 : [15, 30, 45, 9, 1, 0],
-	LevelManager.LEVEL_8 : [10, 20, 33, 30, 7, 0],
+	LevelManager.LEVEL_8 : [15, 20, 30, 33, 2, 0],
 	LevelManager.LEVEL_9 : [5, 15, 20, 35, 25, 0],
 	LevelManager.LEVEL_10 : [5, 10, 10, 25, 25, 25],
 }
@@ -25,12 +25,12 @@ const base_level_tier_roll_probabilities : Dictionary = {
 #
 
 const base_tower_tier_stock : Dictionary = {
-	1 : 16,
-	2 : 15,
-	3 : 14,
+	1 : 20,
+	2 : 18,
+	3 : 16,
 	4 : 10,
-	5 : 7,
-	6 : 2
+	5 : 8,
+	6 : 4 # Originally 2, but is made to 4 for combination
 }
 
 # When a tower should have a different initial stock amount

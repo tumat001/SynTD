@@ -12,7 +12,6 @@ const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.ts
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
 
 
-
 const SoulEffigy = preload("res://TowerRelated/Color_Red/Soul/EffigyRelated/SoulEffigy.gd")
 const SoulEffigy_Scene = preload("res://TowerRelated/Color_Red/Soul/EffigyRelated/SoulEffigy.tscn")
 
@@ -59,6 +58,8 @@ func _ready():
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
 	tower_type_info = info
+	
+	_initialize_stats_from_tower_info(info)
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range

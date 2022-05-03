@@ -13,10 +13,18 @@ const tier04_crown = preload("res://GameHUDRelated/BuySellPanel/Tier04_Crown.png
 const tier05_crown = preload("res://GameHUDRelated/BuySellPanel/Tier05_Crown.png")
 const tier06_crown = preload("res://GameHUDRelated/BuySellPanel/Tier06_Crown.png")
 
+
 signal tower_bought(tower_type_id, tower_cost)
 
 const can_buy_modulate : Color = Color(1, 1, 1, 1)
 const cannot_buy_modulate : Color = Color(0.4, 0.4, 0.4, 1)
+
+const shine_sparkle_rotation_speed_per_sec : int = 560
+const shine_sparkle_fade_per_sec : float = 1.25
+const shine_sparkle_y_initial_speed : int = -50 # updwards
+const shine_sparkle_y_accel_per_sec : int = 30
+const shine_max_duration : float = 0.8
+
 
 var tower_information : TowerTypeInformation
 var disabled : bool = false
@@ -24,6 +32,9 @@ var current_tooltip : TowerTooltip
 
 var current_gold : int
 var tower_inventory_bench setget set_tower_inventory_bench
+
+var is_playing_shine_sparkle : bool = false
+var shine_current_duration : float
 
 onready var ingredient_icon_rect = $MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/IngredientIcon
 onready var tower_name_label = $MarginContainer/VBoxContainer/MarginerLower/Lower/TowerNameLabel
@@ -38,6 +49,11 @@ onready var tower_image_rect = $MarginContainer/VBoxContainer/MarginerUpper/Uppe
 onready var tier_crown_rect = $MarginContainer/VBoxContainer/TierCrownPanel/TierCrown
 
 onready var buy_card = $BuyCard
+
+onready var shine_texture_rect = $MarginContainer/ShineContainer/ShinePic
+
+
+#
 
 func _ready():
 	update_display()
@@ -165,6 +181,7 @@ func _tower_added_in_bench_slot(tower, bench_slot):
 func _tower_removed_from_bench_slot(tower, bench_slot):
 	_update_can_buy_card()
 
+
 # Can buy tower
 
 func _update_can_buy_card():
@@ -175,3 +192,15 @@ func _update_can_buy_card():
 
 func can_buy_card():
 	return _can_afford() and !tower_inventory_bench.is_bench_full()
+
+
+# Tower combination related
+
+func play_shine_sparkle_on_card():
+	shine_current_duration = shine_max_duration
+	is_playing_shine_sparkle = true
+
+
+func _process(delta):
+	pass
+

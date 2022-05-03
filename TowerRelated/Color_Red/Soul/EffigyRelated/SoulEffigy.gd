@@ -4,7 +4,6 @@ signal effigied_enemy_queue_freeing(enemy)
 signal effigied_enemy_killed(enemy)
 
 var effigied_enemy
-var enemy_manager
 
 var _offset_distance_inc : float
 

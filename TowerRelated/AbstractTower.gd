@@ -33,6 +33,8 @@ const TowerStunEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerS
 const TowerKnockUpEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerKnockUpEffect.gd")
 const TowerEffectShieldEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerEffectShieldEffect.gd")
 
+const CombinationEffect = preload("res://GameInfoRelated/CombinationRelated/CombinationEffect.gd")
+
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
 const AOEAttackModule = preload("res://TowerRelated/Modules/AOEAttackModule.gd")
@@ -212,6 +214,7 @@ var _all_uuid_tower_buffs_map : Dictionary = {}
 
 var ingredients_absorbed : Dictionary = {} # Map of tower_id (ingredient source) to ingredient_effect
 var ingredient_of_self : IngredientEffect
+var originally_has_ingredient : bool # used by combination manager
 var ingredient_compatible_colors : Array = []
 
 var _ingredient_id_limit_modifier_map : Dictionary
@@ -274,6 +277,12 @@ var last_calculated_is_stunned : bool
 var effect_shield_effect_map : Dictionary = {}
 var last_calculated_has_effect_shield_against_towers : bool
 var last_calculated_has_effect_shield_against_enemies : bool
+
+
+# Combination Related
+
+var all_combinations_id_to_effect_id_map : Dictionary = {}
+
 
 
 # Modulate
@@ -356,6 +365,10 @@ onready var cannot_apply_pic = $DoesNotApplyPic
 
 
 # Initialization -------------------------- #
+
+
+func _initialize_stats_from_tower_info(arg_tower_info):
+	originally_has_ingredient = (arg_tower_info.ingredient_effect != null)
 
 func _init():
 	untargetability_clauses = ConditionalClauses.new()
@@ -1649,8 +1662,10 @@ func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected
 	if ingredient_effect != null:
 		if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.ignore_ingredient_limit:
 			return false
-	
-	if ingredient_effect != null:
+		
+		if all_combinations_id_to_effect_id_map.has(ingredient_effect.tower_id):
+			return false
+		
 		if ingredients_absorbed.has(ingredient_effect.tower_id):
 			return false
 		
@@ -2184,6 +2199,29 @@ func _calculate_sellback_of_ingredients() -> int:
 
 func set_tower_sprite_modulate(color : Color):
 	$TowerBase.modulate = color
+
+
+
+# Combination related
+
+func add_combination_effect(combi_effect : CombinationEffect):
+	if !all_combinations_id_to_effect_id_map.has(combi_effect.combination_id):
+		
+		all_combinations_id_to_effect_id_map[combi_effect.combination_id] = combi_effect.ingredient_effect.tower_base_effect.effect_uuid
+		
+		if (has_tower_effect_uuid_in_buff_map(combi_effect.ingredient_effect.tower_id)):
+			remove_ingredient(combi_effect.ingredient_effect)
+		
+		add_tower_effect(combi_effect.ingredient_effect.tower_base_effect, all_attack_modules, true, true, combi_effect.ingredient_effect)
+
+
+func remove_combination_effect(combi_effect : CombinationEffect):
+	if all_combinations_id_to_effect_id_map.has(combi_effect.combination_id):
+		
+		var effect_id_of_combi : int = all_combinations_id_to_effect_id_map[combi_effect.combination_id]
+		all_combinations_id_to_effect_id_map.erase(combi_effect.combination_id)
+		
+		remove_tower_effect(combi_effect.ingredient_effect.tower_base_effect)
 
 
 # Disabled from attacking clauses

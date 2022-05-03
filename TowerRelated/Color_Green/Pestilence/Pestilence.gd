@@ -91,6 +91,8 @@ func _ready():
 	ingredient_of_self = info.ingredient_effect
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	tower_detecting_range_module = TowerDetectingRangeModule_Scene.instance()
 	tower_detecting_range_module.detection_range = info.base_range
 	tower_detecting_range_module.can_display_range = false

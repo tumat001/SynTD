@@ -44,6 +44,7 @@ func _ready():
 	_base_gold_cost = info.tower_cost
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range

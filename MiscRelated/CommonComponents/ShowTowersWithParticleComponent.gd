@@ -22,6 +22,17 @@ var _tower_particle_map : Dictionary = {}
 
 var _is_showing_particles : bool = false
 
+var destroy_particles_on_tower_source_on_bench : bool = true
+var update_state_when_destroying_particles : bool = true
+
+var destroy_particles_on_tower_target_on_bench : bool = true
+
+#
+
+func get_towers_with_particle_indicators():
+	return _tower_particle_map.keys().duplicate()
+
+
 #
 
 func set_tower_particle_indicator_as_texture(arg_texture : Texture):
@@ -35,6 +46,7 @@ func set_tower_particle_indicator_to_usual_properties():
 
 #
 
+# arg_source is a tower
 func set_source_and_provider_func_name(arg_source, arg_tower_provider_func_name : String):
 	_source_tower_provider_func_name = arg_tower_provider_func_name
 	
@@ -75,7 +87,7 @@ func _on_tower_being_dragged(tower_self):
 
 
 func _update_particle_state():
-	if _source.is_showing_ranges and !_source.is_being_dragged and _source.is_current_placable_in_map():
+	if _source != null and (!(_source is AbstractTower) or (_source is AbstractTower and _source.is_showing_ranges and !_source.is_being_dragged and _source.is_current_placable_in_map())):
 		if _source.has_method(_source_tower_provider_func_name):
 			show_indicators_to_towers(_source.call(_source_tower_provider_func_name))
 	else:
@@ -89,12 +101,13 @@ func _tower_source_queue_freed():
 	destroy_indicators_from_towers()
 
 func _tower_source_benched():
-	destroy_indicators_from_towers()
+	if destroy_particles_on_tower_source_on_bench:
+		destroy_indicators_from_towers()
 
 
 #
 
-func show_indicators_to_towers(arg_towers):
+func show_indicators_to_towers(arg_towers, remove_tower_indicators_from_prev_existing : bool = true):
 	_is_showing_particles = true
 	
 	if typeof(arg_towers) != TYPE_ARRAY:
@@ -114,7 +127,7 @@ func show_indicators_to_towers(arg_towers):
 					tower.connect("tree_exiting", self, "_tower_target_queue_freed", [tower], CONNECT_PERSIST)
 					tower.connect("tower_not_in_active_map", self, "_tower_target_benched", [tower], CONNECT_PERSIST)
 				
-			else:
+			elif remove_tower_indicators_from_prev_existing:
 				towers_not_in_new_arg.append(tower)
 	
 	
@@ -147,7 +160,8 @@ func _tower_target_queue_freed(tower):
 	_destroy_particle_associated_with_tower(tower)
 
 func _tower_target_benched(tower):
-	_destroy_particle_associated_with_tower(tower)
+	if destroy_particles_on_tower_target_on_bench:
+		_destroy_particle_associated_with_tower(tower)
 
 
 func _destroy_particle_associated_with_tower(tower, update_state : bool = true):
@@ -159,7 +173,7 @@ func _destroy_particle_associated_with_tower(tower, update_state : bool = true):
 	_tower_particle_map.erase(tower)
 	
 	
-	if _is_showing_particles and update_state:
+	if _is_showing_particles and update_state and update_state_when_destroying_particles:
 		call_deferred("_update_particle_state")
 
 

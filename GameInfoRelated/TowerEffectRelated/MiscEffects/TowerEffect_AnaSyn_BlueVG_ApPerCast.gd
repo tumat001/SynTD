@@ -46,8 +46,9 @@ func _undo_modifications_to_tower(tower):
 		tower.disconnect("on_tower_ability_before_cast_start", self, "_on_tower_ability_casted")
 		tower.disconnect("on_round_end", self, "_on_round_end")
 	
-	if tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLUE_VG_STACKING_AP_EFFECT):
-		tower.remove_tower_effect(ap_effect)
+	var effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.BLUE_VG_STACKING_AP_EFFECT)
+	if effect != null:
+		tower.remove_tower_effect(effect)
 
 #
 

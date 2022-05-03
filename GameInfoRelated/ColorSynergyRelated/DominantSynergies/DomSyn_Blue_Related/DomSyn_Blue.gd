@@ -108,7 +108,7 @@ const mana_blast_ability_descriptions = [
 
 #
 
-const empowered_mana_blast_ap_buff_amount : float = 3.0
+const empowered_mana_blast_ap_buff_amount : float = 2.25
 
 const empowered_mana_blast_extra_descriptions = [
 	"",

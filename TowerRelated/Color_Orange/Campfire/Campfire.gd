@@ -48,6 +48,8 @@ func _ready():
 	_base_gold_cost = info.tower_cost
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	campfire_base_damage = info.base_damage
 	
 	tower_detecting_range_module = TowerDetectingRangeModule_Scene.instance()

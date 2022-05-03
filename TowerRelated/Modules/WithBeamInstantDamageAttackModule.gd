@@ -158,7 +158,8 @@ func set_parent_tower(arg_parent_tower):
 	
 	.set_parent_tower(arg_parent_tower)
 	
-	arg_parent_tower.connect("global_position_changed", self, "_on_tower_global_pos_changed", [], CONNECT_PERSIST)
+	if arg_parent_tower != null:
+		arg_parent_tower.connect("global_position_changed", self, "_on_tower_global_pos_changed", [], CONNECT_PERSIST)
 
 
 func _on_tower_global_pos_changed(old_pos, new_pos):

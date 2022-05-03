@@ -62,6 +62,8 @@ func _ready():
 	_base_gold_cost = info.tower_cost
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	
 	tower_detecting_range_module = TowerDetectingRangeModule_Scene.instance()
 	tower_detecting_range_module.can_display_range = false

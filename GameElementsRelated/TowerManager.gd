@@ -437,7 +437,7 @@ func _round_ended(_stageround):
 	_is_round_on_going = false
 
 
-# Towers in map related
+# Towers related
 func get_all_towers() -> Array:
 	var bucket : Array = []
 	for child in get_children():
@@ -447,11 +447,28 @@ func get_all_towers() -> Array:
 	return bucket
 
 
+func get_all_ids_of_towers() -> Array:
+	var bucket : Array = []
+	for child in get_children():
+		if child.is_in_group(TOWER_GROUP_ID):
+			bucket.append(child.tower_id)
+	
+	return bucket
+
+
 func get_all_towers_except_in_queue_free() -> Array:
 	var bucket : Array = []
 	for child in get_children():
 		if child.is_in_group(TOWER_GROUP_ID) and !child.is_queued_for_deletion():
 			bucket.append(child)
+	
+	return bucket
+
+func get_all_ids_of_towers_except_in_queue_free() -> Array:
+	var bucket : Array = []
+	for child in get_children():
+		if child.is_in_group(TOWER_GROUP_ID) and !child.is_queued_for_deletion():
+			bucket.append(child.tower_id)
 	
 	return bucket
 

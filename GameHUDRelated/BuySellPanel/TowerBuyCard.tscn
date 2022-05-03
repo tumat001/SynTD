@@ -1,9 +1,10 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://GameHUDRelated/BuySellPanel/TowerBuyCard.gd" type="Script" id=1]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/BuyAndInfoTowerBackground.png" type="Texture" id=2]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/CombineInfoSymbol.png" type="Texture" id=3]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/GraySymbol.png" type="Texture" id=4]
+[ext_resource path="res://GameHUDRelated/BuySellPanel/CombinationMetadataOnCards/ShineSparkle/ShineSparkle.png" type="Texture" id=5]
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=6]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/Tier02_Crown.png" type="Texture" id=7]
 
@@ -243,4 +244,19 @@ size_flags_vertical = 7
 custom_fonts/font = SubResource( 3 )
 custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 align = 2
+
+[node name="ShineContainer" type="MarginContainer" parent="MarginContainer"]
+margin_left = 40.0
+margin_top = 22.0
+margin_right = 64.0
+margin_bottom = 46.0
+mouse_filter = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+
+[node name="ShinePic" type="TextureRect" parent="MarginContainer/ShineContainer"]
+margin_right = 24.0
+margin_bottom = 24.0
+mouse_filter = 2
+texture = ExtResource( 5 )
 [connection signal="gui_input" from="BuyCard" to="." method="_on_BuyCard_gui_input"]

@@ -45,6 +45,8 @@ func _ready():
 	_base_gold_cost = info.tower_cost
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	# Orb's range module
 	var orb_range_module = RangeModule_Scene.instance()
 	orb_range_module.base_range_radius = info.base_range

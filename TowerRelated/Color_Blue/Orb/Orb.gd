@@ -83,6 +83,8 @@ func _ready():
 	_base_gold_cost = info.tower_cost
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
@@ -234,7 +236,7 @@ func _ready():
 	
 	sub_attack_module = BulletAttackModule_Scene.instance()
 	sub_attack_module.base_damage_scale = 0.5
-	sub_attack_module.base_damage = 1.75 / sub_attack_module.base_damage_scale
+	sub_attack_module.base_damage = 1.5 / sub_attack_module.base_damage_scale
 	sub_attack_module.base_damage_type = DamageType.ELEMENTAL
 	sub_attack_module.base_attack_speed = 9#0
 	sub_attack_module.base_attack_wind_up = 0

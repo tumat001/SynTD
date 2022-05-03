@@ -31,6 +31,7 @@ func _get_instructions_for_0_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 2, 2, EnemyConstants.Enemies.BASIC, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(1, 2, 2, EnemyConstants.Enemies.BASIC, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(1.5, 2, 2, EnemyConstants.Enemies.DASH),
 	]
 
 func _get_instructions_for_0_2():

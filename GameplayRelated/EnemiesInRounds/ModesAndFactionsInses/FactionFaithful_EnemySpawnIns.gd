@@ -195,7 +195,7 @@ func _get_instructions_for_6_4():
 func _get_instructions_for_7_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 20, 3, EnemyConstants.Enemies.BELIEVER),
-		MultipleEnemySpawnInstruction.new(0, 2, 1.5, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(0, 1, 1.5, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(20, 2, 1.5, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(40, 3, 1.5, EnemyConstants.Enemies.DVARAPALA)
 	]
@@ -220,7 +220,7 @@ func _get_instructions_for_7_3():
 func _get_instructions_for_7_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 12, 3, EnemyConstants.Enemies.BELIEVER),
-		MultipleEnemySpawnInstruction.new(7.5, 5, 5, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(7.5, 3, 9, EnemyConstants.Enemies.DVARAPALA),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.PROVIDENCE),
 		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.PROVIDENCE),
 	]
@@ -267,10 +267,10 @@ func _get_instructions_for_8_4():
 func _get_instructions_for_9_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 14, 4, EnemyConstants.Enemies.BELIEVER),
-		MultipleEnemySpawnInstruction.new(1, 9, 4, EnemyConstants.Enemies.PRIEST),
-		MultipleEnemySpawnInstruction.new(2, 9, 4, EnemyConstants.Enemies.SACRIFICER),
-		MultipleEnemySpawnInstruction.new(3, 4, 8, EnemyConstants.Enemies.SEER),
-		MultipleEnemySpawnInstruction.new(11, 4, 0.5, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(1, 12, 4, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(2, 12, 4, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(3, 5, 8, EnemyConstants.Enemies.SEER),
+		MultipleEnemySpawnInstruction.new(13, 6, 0.5, EnemyConstants.Enemies.PRIEST),
 		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.DVARAPALA)
 	]
 

@@ -93,7 +93,7 @@ text = "Energy modules allow you to spend energy. Modules do not disappear or ex
 
 Turning on an energy module takes one (1) energy, and activates its tower effect. Modules cannot be turned off during a round. Modules refund energy when turned off during a round intermission.
 
-Hover over the pink wand to view the effect."
+Hover over the yellow wand to view the effect."
 autowrap = true
 
 [node name="BottomBorder" type="TextureRect" parent="VBoxContainer" index="3"]

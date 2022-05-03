@@ -61,6 +61,8 @@ func _ready():
 	_base_gold_cost = info.tower_cost
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	#
 	_construct_effects()
 	_construct_beam_connection_component()

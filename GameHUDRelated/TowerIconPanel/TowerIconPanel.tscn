@@ -1,10 +1,12 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://GameHUDRelated/TowerIconPanel/TowerIconPanel.gd" type="Script" id=1]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButton.tscn" type="PackedScene" id=2]
 
 [node name="TowerIconPanel" type="MarginContainer"]
 margin_right = 40.0
 margin_bottom = 40.0
+mouse_filter = 2
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -13,7 +15,7 @@ __meta__ = {
 [node name="TowerIcon" type="TextureRect" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
+mouse_filter = 2
 
-[node name="TowerBorder" type="TextureRect" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
+[node name="TowerBorderPicButton" parent="." instance=ExtResource( 2 )]
+[connection signal="pressed_mouse_event" from="TowerBorderPicButton" to="." method="_on_TowerBorderPicButton_pressed_mouse_event"]

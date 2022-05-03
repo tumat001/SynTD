@@ -19,7 +19,8 @@ func _ready():
 	if _tower != null:
 		tower_icon_panel.tower_type_info = _tower.tower_type_info
 	
-	
+	tower_icon_panel.set_button_interactable(false)
+
 
 #
 
@@ -34,6 +35,7 @@ func set_tower(arg_tower : AbstractTower):
 		
 		if tower_icon_panel != null:
 			tower_icon_panel.tower_type_info = _tower.tower_type_info
+
 
 
 #

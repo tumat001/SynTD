@@ -45,6 +45,9 @@ enum Enemies {
 	DVARAPALA = 306,
 	PROVIDENCE = 307,
 	
+	# SKIRMISHERS (400)
+	COSMIC = 400,
+	
 	
 	# OTHERS (10000)
 	TRIASYN_OGV_SOUL
@@ -59,9 +62,9 @@ func _init():
 	#	faction_id_pool.append(faction_id)
 	
 	
-	#faction_id_pool.append(EnemyFactions.EXPERT)
-	#faction_id_pool.append(EnemyFactions.FAITHFUL)
-	faction_id_pool.append(EnemyFactions.SKIRMISHERS)
+	faction_id_pool.append(EnemyFactions.EXPERT)
+	faction_id_pool.append(EnemyFactions.FAITHFUL)
+	#faction_id_pool.append(EnemyFactions.SKIRMISHERS)
 
 
 static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
@@ -75,7 +78,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.BRUTE:
 		info = EnemyTypeInformation.new(Enemies.BRUTE, EnemyFactions.BASIC)
-		info.base_health = 144
+		info.base_health = 130
 		info.base_movement_speed = 25
 		info.enemy_type = info.EnemyType.ELITE
 		
@@ -104,7 +107,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# EXPERT FACTION
 	elif enemy_id == Enemies.EXPERIENCED:
 		info = EnemyTypeInformation.new(Enemies.EXPERIENCED, EnemyFactions.EXPERT)
-		info.base_health = 34.5
+		info.base_health = 34
 		info.base_movement_speed = 40
 		#info.base_resistance = 25
 		info.base_toughness = 4.5
@@ -120,18 +123,18 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.CHARGE:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 55
+		info.base_health = 53
 		info.base_movement_speed = 36
 		
 	elif enemy_id == Enemies.ENCHANTRESS:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 30
+		info.base_health = 28
 		info.base_movement_speed = 30
 		info.base_toughness = 1
 		
 	elif enemy_id == Enemies.MAGUS:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 36
+		info.base_health = 29
 		info.base_movement_speed = 29
 		
 	elif enemy_id == Enemies.ASSASSIN:
@@ -142,12 +145,12 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.GRANDMASTER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 98
+		info.base_health = 100
 		info.base_movement_speed = 40
 		info.base_effect_vulnerability = 0.2
 		#info.base_resistance = 25
-		info.base_toughness = 4
-		info.base_armor = 3
+		info.base_toughness = 3
+		info.base_armor = 2
 		info.enemy_type = info.EnemyType.ELITE
 		
 		
@@ -163,18 +166,19 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.PRIEST:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 37
+		info.base_health = 40
 		info.base_movement_speed = 25
 		
 	elif enemy_id == Enemies.SACRIFICER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 34
+		info.base_health = 36
 		info.base_movement_speed = 23
 		
 	elif enemy_id == Enemies.SEER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 40
+		info.base_health = 41
 		info.base_movement_speed = 25
+		info.base_toughness = 2
 		
 	elif enemy_id == Enemies.CROSS_BEARER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
@@ -193,11 +197,21 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.PROVIDENCE:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 84
+		info.base_health = 88
 		info.base_movement_speed = 29
 		info.base_armor = 5
 		info.base_toughness = 5
 		info.enemy_type = info.EnemyType.ELITE
+		
+		
+	# SKIRMISHER
+	elif enemy_id == Enemies.COSMIC:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 54
+		info.base_movement_speed = 23
+		info.enemy_type = info.EnemyType.NORMAL
+		
+		
 		
 		
 	# OTHERS
@@ -263,7 +277,9 @@ static func get_enemy_scene(enemy_id : int):
 	elif enemy_id == Enemies.PROVIDENCE:
 		return load("res://EnemyRelated/EnemyTypes/Type_Faithful/Providence/Providence.tscn")
 		
-		
+	# SKIRMISHERS FACTION
+	elif enemy_id == Enemies.COSMIC:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Cosmic/Cosmic.tscn")
 		
 		
 	# OTHERS

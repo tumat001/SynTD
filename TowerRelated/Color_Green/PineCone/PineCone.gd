@@ -32,6 +32,8 @@ func _ready():
 	_base_gold_cost = info.tower_cost
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
@@ -51,7 +53,7 @@ func _ready():
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.position.y -= 6
 	
-	attack_module.benefits_from_bonus_pierce = false
+	attack_module.benefits_from_bonus_pierce = true
 	
 	var bullet_shape = RectangleShape2D.new()
 	bullet_shape.extents = Vector2(8, 5)

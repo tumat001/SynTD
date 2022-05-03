@@ -62,6 +62,7 @@ func set_game_mode(mode : int):
 		stagerounds = ModeNormal_StageRounds.new()
 		spawn_ins_of_faction_mode = FactionBasic_EnemySpawnIns.new()
 
+
 #
 
 func _set_round_status_panel(panel : RoundStatusPanel):

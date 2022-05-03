@@ -272,9 +272,9 @@ const TowerTiersMap : Dictionary = {
 }
 
 const tier_base_dmg_map : Dictionary = {
-	1 : 0.4,
-	2 : 0.75,
-	3 : 1.5,
+	1 : 0.5,
+	2 : 1.0,
+	3 : 1.75,
 	
 	4 : 2.5, #2.25
 	5 : 3.0,
@@ -282,19 +282,19 @@ const tier_base_dmg_map : Dictionary = {
 }
 
 const tier_attk_speed_map : Dictionary = {
-	1 : 12,
+	1 : 15,
 	2 : 25, #23
 	3 : 35, #30
 	
-	4 : 50, #45
+	4 : 45, #45
 	5 : 60,
 	6 : 70,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
-	1 : 0.4,
-	2 : 1.0,
-	3 : 1.75,
+	1 : 0.75,
+	2 : 1.25,
+	3 : 2,
 	
 	4 : 2.75, #2.5
 	5 : 3.25,
@@ -1172,15 +1172,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = royal_flame_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 4
-		info.base_attk_speed = 1.05
+		info.base_damage = 3.5
+		info.base_attk_speed = 0.98
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Royal Flame's attacks burn enemies for 25% of its base damage every 0.5 seconds for 10 seconds.",
+			"Royal Flame's attacks burn enemies for 25% of its total base damage every 0.5 seconds for 10 seconds.",
 			"",
 			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to 200.",
 			"Ability potency increases health ratio as damage dealt, but not damage limit.",
@@ -1784,8 +1784,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = adept_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 3
-		info.base_attk_speed = 1.26
+		info.base_damage = 2.75
+		info.base_attk_speed = 1.23
 		info.base_pierce = 1
 		info.base_range = 145
 		info.base_damage_type = DamageType.PHYSICAL
@@ -1937,6 +1937,16 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ability potency increases maximum health percent reduction and limits."
 		]
 		
+		var base_health_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_TRANSMUTATOR)
+		base_health_mod.percent_amount = 100
+		base_health_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_HEALTH , base_health_mod, StoreOfTowerEffectsUUID.ING_TRANSMUTATOR)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ health"
+		
 		
 		
 	elif tower_id == HERO:
@@ -1957,7 +1967,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
 			"Levels are gained by spending EXP and gold. Only 6 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
-			"Upon reaching level 6, Hero increases the limit of activatable composite synergies by 1. Hero also gains 2.5 bonus base damage, 50% bonus attack speed, and 0.5 ability potency.",
+			"Upon reaching level 6, Hero increases the limit of activatable composite synergies by 1. Hero also gains 1.5 bonus base damage, 40% bonus attack speed, and 0.5 ability potency.",
 			"",
 			"Hero's skills are in effect only when White is the active dominant color.",
 			"",
@@ -2038,7 +2048,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = pinecone_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.5
+		info.base_damage = 2.65
 		info.base_attk_speed = 0.6
 		info.base_pierce = 1
 		info.base_range = 100
@@ -2046,7 +2056,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Shoots a cone that fragments into 3 pieces upon hitting an enemy.",
+			"Shoots a pinecone that fragments into 3 pieces upon hitting an enemy.",
 			"Each fragment deals 1 physical damage.",
 		]
 		
@@ -2202,7 +2212,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = accumulae_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 2.75
+		info.base_damage = 2.5
 		info.base_attk_speed = 1.12
 		info.base_pierce = 1
 		info.base_range = 125
@@ -2211,10 +2221,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Main attacks drain 0.35 ability potency from enemies hit for 7 seconds. This does not stack.",
-			"Accumulae gains 1 Siphon stack per application of drain.",
+			"Accumulae gains 1 Siphon stack per drain application.",
 			"",
 			"Upon reaching 15 Siphon stacks, Accumulae casts Salvo.",
-			"Salvo: Fire a Spell Burst at a random enemy's location every 0.2 seconds regardless of range, consuming a Siphon stack in the process. This repeats until all Siphon stacks are consumed.",
+			"Salvo: Fire a Spell Burst at a random enemy's location every 0.2 seconds, consuming a Siphon stack in the process. This repeats until all Siphon stacks are consumed.",
 			"Cooldown: 1.5 s",
 			"",
 			"Accumulae is unable to execute its main attack during Salvo.",

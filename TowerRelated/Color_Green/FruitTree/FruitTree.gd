@@ -19,6 +19,8 @@ func _ready():
 	_base_gold_cost = info.tower_cost
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	fruit_cost = Towers.get_tower_info(Towers.FRUIT_TREE_FRUIT).tower_cost
 	
 	connect("on_round_end", self, "_ftree_on_round_end", [], CONNECT_PERSIST)

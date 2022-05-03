@@ -2,6 +2,9 @@ extends MarginContainer
 
 const TowerIconPanel = preload("res://GameHUDRelated/TowerIconPanel/TowerIconPanel.gd")
 const TowerIconPanel_Scene = preload("res://GameHUDRelated/TowerIconPanel/TowerIconPanel.tscn")
+const TowerTooltip = preload("res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltip.gd")
+const TowerTooltipScene = preload("res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltip.tscn")
+
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
@@ -18,6 +21,7 @@ onready var color_name_label = $HBoxContainer/ColorInfoPanel/VBoxContainer/Margi
 
 onready var tower_icons_container = $HBoxContainer/TowerIconsPanel/TowerIconsContainer
 
+var current_tooltip : TowerTooltip
 
 func update_display():
 	if is_inside_tree():
@@ -49,6 +53,8 @@ func _update_tower_icons_display():
 				break
 		
 		tower_icons_container.add_child(icon_panel)
+		
+		icon_panel.set_button_interactable(true)
 
 
 
@@ -56,5 +62,29 @@ func _construct_tower_icon_panel(tower_type_info) -> TowerIconPanel:
 	var tower_icon_panel : TowerIconPanel = TowerIconPanel_Scene.instance()
 	tower_icon_panel.tower_type_info = tower_type_info
 	
+	tower_icon_panel.connect("on_mouse_hovered", self, "on_tower_icon_mouse_entered", [tower_type_info, tower_icon_panel], CONNECT_PERSIST)
+	tower_icon_panel.connect("on_mouse_hover_exited", self, "on_tower_icon_mouse_exited", [tower_icon_panel], CONNECT_PERSIST)
+	
 	return tower_icon_panel
+
+#
+
+
+func on_tower_icon_mouse_entered(tower_type_info, combi_icon):
+	_free_old_and_create_tooltip_for_tower(tower_type_info, combi_icon)
+
+func _free_old_and_create_tooltip_for_tower(tower_type_info, combi_icon):
+	if current_tooltip != null:
+		current_tooltip.queue_free()
+	
+	current_tooltip = TowerTooltipScene.instance()
+	current_tooltip.tower_info = tower_type_info
+	current_tooltip.tooltip_owner = combi_icon
+	
+	get_tree().get_root().add_child(current_tooltip)
+
+func on_tower_icon_mouse_exited(combi_icon):
+	if current_tooltip != null:
+		current_tooltip.queue_free()
+		current_tooltip = null
 

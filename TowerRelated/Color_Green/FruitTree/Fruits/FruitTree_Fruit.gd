@@ -37,6 +37,8 @@ func _ready():
 	#ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
 	
+	_initialize_stats_from_tower_info(info)
+	
 	_set_fruit_properties()
 	
 	_post_inherit_ready()

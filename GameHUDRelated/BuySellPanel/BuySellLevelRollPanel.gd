@@ -41,6 +41,7 @@ var relic_manager : RelicManager setget set_relic_manager
 var level_manager setget set_level_manager
 var shop_manager setget set_shop_manager
 var tower_manager setget set_tower_manager
+var combination_manager setget set_combination_manager
 
 var tower_inventory_bench setget set_tower_inventory_bench
 
@@ -83,6 +84,12 @@ func set_tower_inventory_bench(arg_bench):
 	for slot in all_buy_slots:
 		slot.tower_inventory_bench = tower_inventory_bench
 
+func set_combination_manager(arg_manager):
+	combination_manager = arg_manager
+	
+	
+
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -109,7 +116,18 @@ func update_new_rolled_towers(tower_ids_to_roll_to : Array):
 	buy_slot_04.roll_buy_card_to_tower_id(tower_ids_to_roll_to[3])
 	buy_slot_05.roll_buy_card_to_tower_id(tower_ids_to_roll_to[4])
 	
+	var tower_card_combination_metadata : Dictionary = combination_manager.get_tower_buy_cards_metadata(tower_ids_to_roll_to) 
+	
+	
+	
 	_update_tower_cards_buyability_based_on_gold(gold_manager.current_gold)
+
+
+
+
+
+#
+
 
 func get_all_unbought_tower_ids() -> Array:
 	var ids : Array = []
@@ -119,6 +137,7 @@ func get_all_unbought_tower_ids() -> Array:
 			ids.append(slot.current_child.tower_information.tower_type_id)
 	
 	return ids
+
 
 #
 

@@ -119,6 +119,8 @@ func _ready():
 	ingredient_of_self = info.ingredient_effect
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	
 	# Globules
 	var top_left_globule = _construct_globule_attk_module(info)

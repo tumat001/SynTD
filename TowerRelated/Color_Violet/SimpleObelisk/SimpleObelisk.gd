@@ -43,6 +43,8 @@ func _ready():
 	ingredient_of_self = info.ingredient_effect
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	original_base_range = info.base_range
 	original_base_pierce = info.base_pierce
 	

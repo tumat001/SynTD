@@ -5,12 +5,12 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 const bonus_damage_percent_threshold : float = 0.5
-const bonus_damage : float = 0.75
+const bonus_damage : float = 0.85
 var bonus_on_hit : OnHitDamage
 
 func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Spike.png")
-	description = "All of the tower's attacks deal additional 0.75 physical damage on hit to enemies below 50% health."
+	description = "All of the tower's attacks deal additional 0.85 physical damage on hit to enemies below 50% health."
 
 
 func _make_modifications_to_tower(tower):

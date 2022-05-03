@@ -231,6 +231,11 @@ var _current_forced_positional_movement_effect : EnemyForcedPositionalMovementEf
 
 #
 
+var game_elements
+var enemy_manager
+
+#
+
 onready var statusbar : BaseControlStatusBar = $Layer/EnemyInfoBar/VBoxContainer/EnemyStatusBar
 onready var lifebar = $Layer/EnemyInfoBar/VBoxContainer/LifeBar
 onready var infobar = $Layer/EnemyInfoBar

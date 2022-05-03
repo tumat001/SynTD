@@ -207,6 +207,8 @@ func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _get_path_based
 	if enemy_instance.blocks_from_round_ending:
 		enemy_instance.add_to_group(ENEMY_BLOCKING_NEXT_ROUND_ADVANCE_TAG)
 	
+	enemy_instance.game_elements = game_elements
+	enemy_instance.enemy_manager = self
 	
 	# Path related
 	var path : EnemyPath = arg_path

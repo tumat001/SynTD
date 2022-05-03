@@ -51,6 +51,9 @@ const Hero_VOLRobe04Pic = preload("res://TowerRelated/Color_White/Hero/HeroWeapo
 
 const Hero_VOL_StatusBarIcon = preload("res://TowerRelated/Color_White/Hero/Hero_OtherAssets/VOL_StatusBarIcon.png")
 
+const Hero_LevelUp_StatusBarIcon = preload("res://TowerRelated/Color_White/Hero/Hero_OtherAssets/Hero_LevelUp_StatusBarIcon.png")
+
+
 signal current_xp_changed(gained_amount, curr_xp)
 signal xp_needed_for_next_level_changed(new_req)
 signal max_level_reached()
@@ -75,8 +78,8 @@ const hero_max_extra_ingredient_limit : int = 4
 const hero_extra_ing_limit_per_level_up : int = 1
 var hero_current_extra_ingredient_limit : int
 
-const hero_max_nat_level_bonus_base_damage_amount : float = 2.5
-const hero_max_nat_level_bonus_attk_speed_amount : float = 50.0
+const hero_max_nat_level_bonus_base_damage_amount : float = 1.5
+const hero_max_nat_level_bonus_attk_speed_amount : float = 40.0
 const hero_max_nat_level_bonus_ability_potency : float = 0.5
 
 const xp_ratio_per_damage : float = 1.0
@@ -85,8 +88,8 @@ const xp_per_kill : float = 2.0
 const xp_scale_if_not_white_dom_color : float = 0.7
 const max_hero_level : int = 6 # max hero natural level
 
-const xp_needed_per_level : Array = [130, 525, 1550, 3200, 3400, 3700]#[130, 725, 1950, 3600, 3700, 3700]
-const gold_needed_per_level : Array = [2, 4, 7, 9, 9, 10] #[2, 4, 7, 9, 9, 9]
+const xp_needed_per_level : Array = [130, 525, 1550, 2900, 3300, 3500]
+const gold_needed_per_level : Array = [2, 4, 7, 9, 9, 10]
 
 const xp_about_descriptions = [
 	"Hero gains EXP from damaging enemies, killing enemies, and casting Voice of Light.",
@@ -197,6 +200,8 @@ func _ready():
 	ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
 	tower_type_info = info
+	
+	_initialize_stats_from_tower_info(info)
 	
 	base_health = hero_base_health
 	
@@ -786,6 +791,7 @@ func _increase_exp(amount):
 				notify_xp_cap_of_level_reached = true
 				_show_level_up_cosmetic_effects()
 				emit_signal("notify_xp_cap_of_level_reached")
+				status_bar.add_status_icon(StoreOfTowerEffectsUUID.HERO_LEVEL_UP_STATUS_BAR_ICON_INDEX, Hero_LevelUp_StatusBarIcon)
 
 
 func _increase_spendables(amount):
@@ -817,6 +823,7 @@ func _attempt_spend_gold_and_xp_for_level_up():
 		_attempt_increase_extra_ingredient_amount(hero_extra_ing_limit_per_level_up)
 		
 		notify_xp_cap_of_level_reached = false
+		status_bar.remove_status_icon(StoreOfTowerEffectsUUID.HERO_LEVEL_UP_STATUS_BAR_ICON_INDEX)
 		emit_signal("notify_xp_cap_of_level_reached")
 		
 		emit_signal("hero_level_changed", current_hero_effective_level)

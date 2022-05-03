@@ -38,6 +38,8 @@ func _ready():
 	ingredient_of_self = info.ingredient_effect
 	tower_type_info = info
 	
+	_initialize_stats_from_tower_info(info)
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
