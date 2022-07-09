@@ -80,7 +80,7 @@ func _init():
 	[
 		"ENERGIZE: Creates an Energy Battery with 1 energy if one is not present. All yellow towers gain an energy module.",
 		"",
-		"Energy Battery allows storage of energy.",
+		"Energy Battery stores energy, up to a limit. Energy can be gained by reaching certain synergy levels.",
 		"Energy Modules allow a tower to absorb 1 energy to gain special effects.",
 		"",
 		"Energy Battery and attached Modules (and Module's effects) persist even when the synergy is lost. The Energy Module of a tower persists even when the tower is benched.",
@@ -128,7 +128,7 @@ func _init():
 	syn_dom_blue,
 	[
 		"Gain access to Blue Abilities.",
-		"Additionally, all Blue towers gain bonus ability potency.",
+		"Additionally, all Blue towers gain ability potency.",
 		""
 	],
 	[DomSyn_Blue.new()],

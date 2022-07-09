@@ -24,6 +24,13 @@ const Brewd_InfoPanel = preload("res://TowerRelated/Color_Green/Brewd/Panels/Bre
 const Brewd_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/Brewd/Panels/Brewd_InfoPanel.tscn")
 const BeaconDish_EffectPanel = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish_Panel/BeaconDish_EffectPanel.gd")
 const BeaconDish_EffectPanel_Scene = preload("res://TowerRelated/Color_Yellow/BeaconDish/BeaconDish_Panel/BeaconDish_EffectPanel.tscn")
+const SePropager_InfoPanel = preload("res://TowerRelated/Color_Green/SePropager/GUI/SePropagerInfoPanel.gd")
+const SePropager_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/SePropager/GUI/SePropagerInfoPanel.tscn")
+const LAssaut_InfoPanel = preload("res://TowerRelated/Color_Green/L'Assaut/GUI/LAssaut_InfoPanel.gd")
+const LAssaut_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/L'Assaut/GUI/LAssaut_InfoPanel.tscn")
+const LaChasseur_InfoPanel = preload("res://TowerRelated/Color_Green/La_Chasseur/GUI/LaChasseur_InfoPanel.gd")
+const LaChasseur_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/La_Chasseur/GUI/LaChasseur_InfoPanel.tscn")
+
 
 
 var tower : AbstractTower
@@ -51,6 +58,9 @@ var hero_info_panel : Hero_InfoPanel
 var blossom_info_panel : Blossom_InfoPanel
 var brewd_info_panel : Brewd_InfoPanel
 var beacon_dish_effect_panel : BeaconDish_EffectPanel
+var se_propager_info_panel : SePropager_InfoPanel
+var lassaut_info_panel : LAssaut_InfoPanel
+var la_chasseur_info_panel : LaChasseur_InfoPanel
 
 
 func _ready():
@@ -282,6 +292,45 @@ func _update_tower_specific_info_panel():
 			beacon_dish_effect_panel.visible = false
 			beacon_dish_effect_panel.set_beacon_dish(null)
 	
+	
+	# Se Propager
+	if SePropager_InfoPanel.should_display_self_for(tower):
+		if se_propager_info_panel == null:
+			se_propager_info_panel = SePropager_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(se_propager_info_panel)
+		
+		se_propager_info_panel.visible = true
+		se_propager_info_panel.set_se_propager(tower)
+	else:
+		if se_propager_info_panel != null:
+			se_propager_info_panel.visible = false
+			se_propager_info_panel.set_se_propager(null)
+	
+	# L_Assaut
+	if LAssaut_InfoPanel.should_display_self_for(tower):
+		if lassaut_info_panel == null:
+			lassaut_info_panel = LAssaut_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(lassaut_info_panel)
+		
+		lassaut_info_panel.visible = true
+		lassaut_info_panel.set_lassaut(tower)
+	else:
+		if lassaut_info_panel != null:
+			lassaut_info_panel.visible = false
+			lassaut_info_panel.set_lassaut(null)
+	
+	# La_Chasseur
+	if LaChasseur_InfoPanel.should_display_self_for(tower):
+		if la_chasseur_info_panel == null:
+			la_chasseur_info_panel = LaChasseur_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(la_chasseur_info_panel)
+		
+		la_chasseur_info_panel.visible = true
+		la_chasseur_info_panel.set_la_chasseur(tower)
+	else:
+		if la_chasseur_info_panel != null:
+			la_chasseur_info_panel.visible = false
+			la_chasseur_info_panel.set_la_chasseur(null)
 	
 	
 	# KEEP THIS AT THE BOTTOM

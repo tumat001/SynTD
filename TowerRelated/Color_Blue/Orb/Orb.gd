@@ -51,13 +51,15 @@ const OrbBeam_AttackModule_Icon = preload("res://TowerRelated/Color_Blue/Orb/AMA
 signal current_level_changed()
 
 
-const ap_amount_per_orb_absorbed : float = 0.25
+const ap_amount_per_orb_absorbed : float = 0.50
 var ap_from_orbs_effect : TowerAttributesEffect
 var _original_gold_cost : int
 
-const ap_level04 : float = 2.0
-const ap_level03 : float = 1.5
-const ap_level02 : float = 1.25
+const ap_level04 : float = 2.5
+const ap_level03 : float = 2.0
+const ap_level02 : float = 1.5
+
+const tower_slots_taken : int = 2
 
 var current_level : int = 0
 var explosion_attack_module : AOEAttackModule
@@ -286,6 +288,10 @@ func _ready():
 	tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_tower_placed_in_map", [], CONNECT_PERSIST)
 	
 	orb_hat_sprite.use_parent_material = false
+	
+	tower_limit_slots_taken = tower_slots_taken
+	
+	#
 	
 	_post_inherit_ready()
 

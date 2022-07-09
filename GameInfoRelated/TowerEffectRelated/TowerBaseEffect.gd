@@ -17,6 +17,7 @@ enum EffectType {
 	KNOCK_UP,
 	
 	EFFECT_SHIELD,
+	INVULNERABILITY,
 	
 	_704_EMBLEM_POINTS,
 	

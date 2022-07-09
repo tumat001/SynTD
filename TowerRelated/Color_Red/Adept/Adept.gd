@@ -222,6 +222,12 @@ func _on_main_attack_hit_enemy_a(enemy, damage_register_id, damage_instance, am 
 			call_deferred("_attempt_do_secondary_attack_at_another_enemy")
 		elif distance > current_beyond_range_threshold:
 			_boost_beyond_attack(damage_instance, enemy.global_position)
+		
+		
+	elif damage_register_id == mini_dmg_reg_id and am == mini_shot_attack_module:
+		var damage_ratio = last_calculated_final_ability_potency
+		damage_instance.scale_only_damage_by(damage_ratio)
+
 
 # below
 func _attempt_do_secondary_attack_at_another_enemy():
@@ -231,7 +237,9 @@ func _attempt_do_secondary_attack_at_another_enemy():
 
 # above
 func _boost_beyond_attack(damage_instance, pos):
-	damage_instance.scale_only_damage_by(base_beyond_range_bonus_damage_ratio)
+	var damage_ratio = base_beyond_range_bonus_damage_ratio * last_calculated_final_ability_potency
+	
+	damage_instance.scale_only_damage_by(damage_ratio)
 	damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.ADEPT_SLOW] = slow_effect._get_copy_scaled_by(1)
 	
 	var atk_sprite : AttackSprite = AttackSprite_Scene.instance()

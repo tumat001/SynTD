@@ -483,6 +483,27 @@ func get_all_active_towers() -> Array:
 	
 	return bucket
 
+func get_all_active_towers_except_in_queue_free() -> Array:
+	var bucket : Array = []
+	
+	for color in _color_groups:
+		for tower in get_all_active_towers_with_color(color):
+			if !bucket.has(tower) and !tower.is_queued_for_deletion():
+				bucket.append(tower)
+	
+	return bucket
+
+func get_all_active_and_alive_towers_except_in_queue_free() -> Array:
+	var bucket : Array = []
+	
+	for color in _color_groups:
+		for tower in get_all_active_towers_with_color(color):
+			if !bucket.has(tower) and !tower.is_queued_for_deletion() and !tower.is_dead_for_the_round:
+				bucket.append(tower)
+	
+	return bucket
+
+#
 
 func get_all_active_towers_with_color(color) -> Array:
 	if color is int:

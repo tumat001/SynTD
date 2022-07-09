@@ -203,18 +203,18 @@ func update_range():
 	var final_range = calculate_final_range_radius()
 	call_deferred("emit_signal", "final_range_changed")
 	
-	#$RangeShape.shape.set_deferred("radius", final_range)
+	$RangeShape.shape.set_deferred("radius", final_range)
 	
-	#if is_connected("area_shape_entered", self, "_on_Range_area_shape_entered"):
-	#	disconnect("area_shape_entered", self, "_on_Range_area_shape_entered")
+	if is_connected("area_shape_entered", self, "_on_Range_area_shape_entered"):
+		disconnect("area_shape_entered", self, "_on_Range_area_shape_entered")
 	
-	#if is_connected("area_shape_exited", self, "_on_Range_area_shape_exited"):
-	#	disconnect("area_shape_exited", self, "_on_Range_area_shape_exited")
+	if is_connected("area_shape_exited", self, "_on_Range_area_shape_exited"):
+		disconnect("area_shape_exited", self, "_on_Range_area_shape_exited")
 	
-	$RangeShape.shape.radius = final_range
+	#$RangeShape.shape.radius = final_range
 	
-	#connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
-	#connect("area_shape_exited", self, "_on_Range_area_shape_exited", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
+	connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_DEFERRED | CONNECT_PERSIST)
+	connect("area_shape_exited", self, "_on_Range_area_shape_exited", [], CONNECT_DEFERRED | CONNECT_PERSIST)
 	
 	update()
 

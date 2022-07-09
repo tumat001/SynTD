@@ -45,15 +45,36 @@ func insert_tower(tower_id : int, arg_bench_slot = _find_empty_slot()):
 	var bench_slot = arg_bench_slot
 	
 	if bench_slot != null:
-		var tower_as_instance : AbstractTower = Towers.get_tower_scene(tower_id).instance()
-		
-		tower_as_instance.hovering_over_placable = bench_slot
-		emit_signal("before_tower_is_added", tower_as_instance)
-		tower_manager.add_tower(tower_as_instance)
+		create_tower_and_add_to_scene(tower_id, bench_slot)
 
 
 func insert_tower_from_last(tower_id : int):
 	insert_tower(tower_id, _find_empty_slot_from_last())
+
+
+#
+
+func create_tower_and_add_to_scene(tower_id : int, arg_bench_slot) -> AbstractTower:
+	var tower_as_instance := create_tower(tower_id, arg_bench_slot)
+	
+	add_tower_to_scene(tower_as_instance)
+	
+	return tower_as_instance
+
+
+func create_tower(tower_id : int, arg_bench_slot) -> AbstractTower:
+	var tower_as_instance : AbstractTower = Towers.get_tower_scene(tower_id).instance()
+	
+	tower_as_instance.hovering_over_placable = arg_bench_slot
+	
+	return tower_as_instance
+
+func add_tower_to_scene(arg_tower_instance):
+	emit_signal("before_tower_is_added", arg_tower_instance)
+	tower_manager.add_tower(arg_tower_instance)
+
+
+#
 
 
 # Returns null if no empty slot

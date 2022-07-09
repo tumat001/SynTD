@@ -18,7 +18,7 @@ const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_6 : [23, 40, 35, 2, 0, 0],
 	LevelManager.LEVEL_7 : [15, 30, 45, 9, 1, 0],
 	LevelManager.LEVEL_8 : [15, 20, 30, 33, 2, 0],
-	LevelManager.LEVEL_9 : [5, 15, 20, 35, 25, 0],
+	LevelManager.LEVEL_9 : [10, 15, 20, 35, 20, 0],
 	LevelManager.LEVEL_10 : [5, 10, 10, 25, 25, 25],
 }
 
@@ -40,10 +40,23 @@ const tower_stock_amount_exceptions : Dictionary = {
 
 # When a tower should not appear in shop nor replenish stock (by selling)
 const blacklisted_towers_to_inventory : Array = [
-	Towers.FRUIT_TREE_FRUIT
+	Towers.FRUIT_TREE_FRUIT,
+	
+	Towers.LES_SEMIS
 ]
 
+const towers_not_initially_in_inventory : Array = [
+	Towers.FRUIT_TREE_FRUIT,
+	
+	Towers.SE_PROPAGER,
+	Towers.L_ASSAUT,
+	Towers.LA_CHASSEUR,
+	Towers.LA_NATURE,
+	
+	Towers.LES_SEMIS
+]
 
+# tower id to amount map
 var current_tower_stock_inventory : Dictionary = {}
 var tier_tower_map : Dictionary = {
 	1 : [],
@@ -112,7 +125,7 @@ func set_cost_per_roll(new_cost):
 
 func _ready():
 	for tower_id in Towers.TowerTiersMap.keys():
-		if !blacklisted_towers_to_inventory.has(tower_id):
+		if !towers_not_initially_in_inventory.has(tower_id):
 			_add_tower_to_inventory(tower_id, Towers.TowerTiersMap[tower_id])
 			_register_tower_to_tower_tier_map(tower_id, Towers.TowerTiersMap[tower_id])
 	

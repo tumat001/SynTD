@@ -34,7 +34,7 @@ const CompleSyn_OrangeBlue = preload("res://GameInfoRelated/ColorSynergyRelated/
 const CompliSyn_RedGreen = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_RedGreen/CompliSyn_RedGreen.gd")
 
 const AnaSyn_BlueVG = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_BlueVG/AnaSyn_BlueVG.gd")
-const AnaSyn_VioletRB = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB/AnaSyn_VioletRB.gd")
+const AnaSyn_VioletRB = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/AnaSyn_VioletRB_V2.gd")
 const AnaSyn_OrangeYR = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/AnaSyn_OrangeYR.gd")
 const AnaSyn_RedOV = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV/AnaSyn_RedOV.gd")
 const AnaSyn_YellowGO = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_YellowGO/AnaSyn_YellowGO.gd")
@@ -135,8 +135,8 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_orangeYR,
 	[
-		"All towers gain attack speed after attacking, which stacks up to a limit. Bonuses received per attack inversely scales with tower's attack speed.",
-		"It takes 15 seconds worth of attacks to reach the limit.",
+		"Main attacks cause towers to gain attack speed, which stacks up to a limit. Bonuses received per attack inversely scales with tower's attack speed.",
+		"15 seconds worth of attacks are required to reach the limit.",
 		""
 	],
 	[AnaSyn_OrangeYR.new()],
@@ -191,10 +191,10 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_blueVG,
 	[
-		"Most abilities's cooldowns are reduced.",
+		"All abilities's cooldowns are reduced.",
 		"",
 		"Right before a tower casts an ability, the tower gains stacking ability potency for the round. AP gained scales on its cooldown.",
-		"Abilities's cooldown that are not time based instead gain 0.05 ap per cast.",
+		"Towers with abilities whose cooldowns are not time-based are granted 0.05 ap per cast.",
 		""
 	],
 	[AnaSyn_BlueVG.new()],
@@ -207,28 +207,46 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"VioletRB" : ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2],
-	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+#	"VioletRB" : ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2],
+#	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+#	syn_compo_ana_violetRB,
+#	[
+#		"Enemies that reach below 85% of their max health become Voided. Voided enemies gain Void effects depending on the tier.",
+#		"",
+#		"Pride Void: Elite type enemies become Normal type instead.",
+#		"Ability Void: Enemies are stunned for 3 seconds after casting an ability.",
+#		"Strength Void: Enemies deal 50% less damage to the player.",
+#		"",
+#		"Void effects cannot be removed by any means.",
+#		""
+#	],
+#	[AnaSyn_VioletRB.new()],
+#	[
+#		"Pride Void",
+#		"Ability Void",
+#		"Strength Void",
+#	],
+#	ColorSynergy.HighlightDeterminer.ALL_BELOW
+#	),
+	
+	"VioletRB" : ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
 	[
-		"Enemies that reach below 85% of their max health become Voided. Voided enemies gain Void effects depending on the tier.",
-		"",
-		"Pride Void: Elite type enemies become Normal type instead.",
-		"Ability Void: Enemies are stunned for 3 seconds after casting an ability.",
-		"Strength Void: Enemies deal 50% less damage to the player.",
-		"",
-		"Void effects cannot be removed by any means.",
+		"Main attacks cause towers to lose 2.5% of their max health.",
+		"Upon dying, towers split a percent of their base damage and ability potency to all other towers.",
+		"The last standing tower becomes invulenrable and immune to enemy effects, and gains 50% projectile speed for the rest of the round.",
 		""
 	],
 	[AnaSyn_VioletRB.new()],
 	[
-		"Pride Void",
-		"Ability Void",
-		"Strength Void",
+		"100% of base damage, 25% of ability potency",
+		"80% of base damage, 20% of ability potency",
+		"60% of base damage, 15% of ability potency",
+		"40% of base damage, 10% of ability potency"
 	],
-	ColorSynergy.HighlightDeterminer.ALL_BELOW
+	ColorSynergy.HighlightDeterminer.SINGLE
 	),
-	
 	
 	#Tria
 	"RYB" : ColorSynergy.new("RYB", [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2],

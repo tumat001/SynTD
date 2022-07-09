@@ -1,0 +1,60 @@
+[gd_scene load_steps=34 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/SizeAdaptingAttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAuraParticle.gd" type="Script" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage1/InvulAura_Stage1_4.png" type="Texture" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage1/InvulAura_Stage1_6.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage1/InvulAura_Stage1_8.png" type="Texture" id=5]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage1/InvulAura_Stage1_9.png" type="Texture" id=6]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage1/InvulAura_Stage1_3.png" type="Texture" id=7]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage1/InvulAura_Stage1_2.png" type="Texture" id=8]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage1/InvulAura_Stage1_1.png" type="Texture" id=9]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage1/InvulAura_Stage1_10.png" type="Texture" id=10]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage1/InvulAura_Stage1_5.png" type="Texture" id=11]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage1/InvulAura_Stage1_7.png" type="Texture" id=12]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage2/InvulAura_Stage2_1.png" type="Texture" id=13]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage2/InvulAura_Stage2_2.png" type="Texture" id=14]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage2/InvulAura_Stage2_3.png" type="Texture" id=15]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage2/InvulAura_Stage2_4.png" type="Texture" id=16]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage2/InvulAura_Stage2_5.png" type="Texture" id=17]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage2/InvulAura_Stage2_6.png" type="Texture" id=18]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage2/InvulAura_Stage2_7.png" type="Texture" id=19]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage3/InvulAura_Stage3_5.png" type="Texture" id=20]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage3/InvulAura_Stage3_4.png" type="Texture" id=21]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage3/InvulAura_Stage3_9.png" type="Texture" id=22]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage3/InvulAura_Stage3_1.png" type="Texture" id=23]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage2/InvulAura_Stage2_9.png" type="Texture" id=24]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage3/InvulAura_Stage3_8.png" type="Texture" id=25]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage3/InvulAura_Stage3_6.png" type="Texture" id=26]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage3/InvulAura_Stage3_3.png" type="Texture" id=27]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage3/InvulAura_Stage3_7.png" type="Texture" id=28]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage2/InvulAura_Stage2_8.png" type="Texture" id=29]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage3/InvulAura_Stage3_10.png" type="Texture" id=30]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage3/InvulAura_Stage3_2.png" type="Texture" id=31]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/Assets/InvulAura/InvulAura_Stage2/InvulAura_Stage2_10.png" type="Texture" id=32]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 9 ), ExtResource( 8 ), ExtResource( 7 ), ExtResource( 3 ), ExtResource( 11 ), ExtResource( 4 ), ExtResource( 12 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 10 ) ],
+"loop": true,
+"name": "Stage1",
+"speed": 30.0
+}, {
+"frames": [ ExtResource( 23 ), ExtResource( 31 ), ExtResource( 27 ), ExtResource( 21 ), ExtResource( 20 ), ExtResource( 26 ), ExtResource( 28 ), ExtResource( 25 ), ExtResource( 22 ), ExtResource( 30 ) ],
+"loop": true,
+"name": "Stage3",
+"speed": 30.0
+}, {
+"frames": [ ExtResource( 13 ), ExtResource( 14 ), ExtResource( 15 ), ExtResource( 16 ), ExtResource( 17 ), ExtResource( 18 ), ExtResource( 19 ), ExtResource( 29 ), ExtResource( 24 ), ExtResource( 32 ) ],
+"loop": true,
+"name": "Stage2",
+"speed": 30.0
+} ]
+
+[node name="InvulAuraParticle" instance=ExtResource( 1 )]
+frames = SubResource( 1 )
+animation = "Stage3"
+frame = 4
+script = ExtResource( 2 )
+has_lifetime = false
+adapt_ratio = 1.1

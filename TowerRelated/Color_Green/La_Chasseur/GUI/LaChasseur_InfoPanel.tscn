@@ -1,0 +1,65 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseTowerSpecificInfoPanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=2]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseTowerSpecificInfoPanel_BodyBackground.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Green/La_Chasseur/GUI/LaChasseur_InfoPanel.gd" type="Script" id=4]
+[ext_resource path="res://TowerRelated/Color_Green/La_Chasseur/Assets/GUI/OnHitImage_Icon.png" type="Texture" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 12
+font_data = ExtResource( 2 )
+
+[node name="LaChasseur_InfoPanel" instance=ExtResource( 1 )]
+size_flags_horizontal = 6
+script = ExtResource( 4 )
+
+[node name="VBoxContainer" parent="." index="0"]
+margin_bottom = 47.0
+
+[node name="MarginContainer" parent="VBoxContainer/HeaderMarginer/MarginContainer" index="1"]
+margin_left = 13.0
+margin_right = 37.0
+
+[node name="Label" parent="VBoxContainer/HeaderMarginer/MarginContainer/MarginContainer" index="0"]
+margin_right = 24.0
+text = "On Hit"
+
+[node name="BodyMarginer" parent="VBoxContainer" index="2"]
+margin_bottom = 46.0
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/BodyMarginer" index="0"]
+margin_right = 110.0
+margin_bottom = 32.0
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="ContentMarginer" type="MarginContainer" parent="VBoxContainer/BodyMarginer" index="1"]
+margin_right = 110.0
+margin_bottom = 32.0
+custom_constants/margin_top = 5
+custom_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BodyMarginer/ContentMarginer" index="0"]
+margin_left = 31.0
+margin_top = 5.0
+margin_right = 78.0
+margin_bottom = 27.0
+size_flags_horizontal = 6
+
+[node name="OnHitIcon" type="TextureRect" parent="VBoxContainer/BodyMarginer/ContentMarginer/HBoxContainer" index="0"]
+margin_right = 22.0
+margin_bottom = 22.0
+texture = ExtResource( 5 )
+
+[node name="OnHitLabel" type="Label" parent="VBoxContainer/BodyMarginer/ContentMarginer/HBoxContainer" index="1"]
+margin_left = 26.0
+margin_top = 4.0
+margin_right = 47.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 1 )
+text = "xxx"
+
+[node name="BottomBorder" parent="VBoxContainer" index="3"]
+margin_top = 46.0
+margin_bottom = 47.0

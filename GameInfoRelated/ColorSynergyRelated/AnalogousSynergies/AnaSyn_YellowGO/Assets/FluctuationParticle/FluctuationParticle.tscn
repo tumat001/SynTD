@@ -21,7 +21,7 @@ animations = [ {
 
 [node name="FluctuationParticle" instance=ExtResource( 1 )]
 frames = SubResource( 1 )
-frame = 5
+frame = 3
 script = ExtResource( 10 )
 has_lifetime = false
 adapt_ratio = 1.2

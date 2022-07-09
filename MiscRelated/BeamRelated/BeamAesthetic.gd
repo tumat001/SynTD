@@ -25,6 +25,9 @@ var curr_destination_pos : Vector2
 var distance_x_from_destination_pos : float
 var distance_y_from_destination_pos : float
 
+
+var modulate_a_subtract_per_sec : float = 0
+
 #
 
 func _init():
@@ -48,6 +51,8 @@ func _process(delta):
 			_current_time_visible += delta
 		
 		_update_curr_beam_travel_pos()
+	
+	modulate.a -= modulate_a_subtract_per_sec * delta
 
 
 # blocking and beam pos related

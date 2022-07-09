@@ -27,6 +27,7 @@ func show_towers_with_colors(tower_colors : Array):
 
 func _construct_color_to_tower_panel(tower_color : int) -> ColorToTowerPanel:
 	var panel = ColorToTowerPanel_Scene.instance()
+	panel.shop_manager = tower_manager.game_elements.shop_manager
 	panel.active_towers = tower_manager.get_all_active_towers()
 	panel.tower_color = tower_color
 	

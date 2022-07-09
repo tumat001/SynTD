@@ -80,7 +80,7 @@ func _on_StickyIcon_pressed_mouse_event(event):
 		get_tree().get_root().add_child(attack_tooltip)
 		
 		attack_tooltip.header_left_text = "Cosmic Bomb"
-		attack_tooltip.header_right_text = "Needs 1.25 ap"
+		attack_tooltip.header_right_text = "Needs 1.5 ap"
 		attack_tooltip.update_display()
 		
 	else:
@@ -101,7 +101,7 @@ func _on_StarsIcon_pressed_mouse_event(event):
 		get_tree().get_root().add_child(attack_tooltip)
 		
 		attack_tooltip.header_left_text = "Stars"
-		attack_tooltip.header_right_text = "Needs 1.50 ap"
+		attack_tooltip.header_right_text = "Needs 2.0 ap"
 		attack_tooltip.update_display()
 		
 	else:
@@ -122,7 +122,7 @@ func _on_RayIcon_pressed_mouse_event(event):
 		get_tree().get_root().add_child(attack_tooltip)
 		
 		attack_tooltip.header_left_text = "Cosmic Ray"
-		attack_tooltip.header_right_text = "Needs 2.00 ap"
+		attack_tooltip.header_right_text = "Needs 2.5 ap"
 		attack_tooltip.update_display()
 		
 	else:

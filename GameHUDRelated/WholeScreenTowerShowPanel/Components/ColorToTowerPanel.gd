@@ -14,7 +14,7 @@ const tower_in_map_color := Color(1.2, 1.2, 1.2, 1)
 
 var tower_color : int
 var active_towers : Array
-
+var shop_manager
 
 onready var color_icon_trect = $HBoxContainer/ColorInfoPanel/VBoxContainer/ColorIcon
 onready var color_name_label = $HBoxContainer/ColorInfoPanel/VBoxContainer/MarginContainer/ColorName
@@ -22,6 +22,8 @@ onready var color_name_label = $HBoxContainer/ColorInfoPanel/VBoxContainer/Margi
 onready var tower_icons_container = $HBoxContainer/TowerIconsPanel/TowerIconsContainer
 
 var current_tooltip : TowerTooltip
+
+#
 
 func update_display():
 	if is_inside_tree():
@@ -43,18 +45,19 @@ func _update_tower_icons_display():
 	var tower_ids_with_specified_color : Array = Towers.tower_color_to_tower_id_map[tower_color]
 	
 	for tower_id in tower_ids_with_specified_color:
-		var type_info = Towers.tower_id_info_type_singleton_map[tower_id]
-		
-		var icon_panel = _construct_tower_icon_panel(type_info)
-		icon_panel.modulate = tower_not_in_map_color
-		for tower in active_towers:
-			if tower.tower_id == type_info.tower_type_id:
-				icon_panel.modulate = tower_in_map_color
-				break
-		
-		tower_icons_container.add_child(icon_panel)
-		
-		icon_panel.set_button_interactable(true)
+		if shop_manager.current_tower_stock_inventory.has(tower_id):
+			var type_info = Towers.tower_id_info_type_singleton_map[tower_id]
+			
+			var icon_panel = _construct_tower_icon_panel(type_info)
+			icon_panel.modulate = tower_not_in_map_color
+			for tower in active_towers:
+				if tower.tower_id == type_info.tower_type_id:
+					icon_panel.modulate = tower_in_map_color
+					break
+			
+			tower_icons_container.add_child(icon_panel)
+			
+			icon_panel.set_button_interactable(true)
 
 
 

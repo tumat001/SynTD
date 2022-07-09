@@ -32,6 +32,7 @@ const TowerPriorityTargetEffect = preload("res://GameInfoRelated/TowerEffectRela
 const TowerStunEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerStunEffect.gd")
 const TowerKnockUpEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerKnockUpEffect.gd")
 const TowerEffectShieldEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerEffectShieldEffect.gd")
+const TowerInvulnerabilityEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerInvulnerabilityEffect.gd")
 
 const CombinationEffect = preload("res://GameInfoRelated/CombinationRelated/CombinationEffect.gd")
 
@@ -65,8 +66,8 @@ signal tower_being_absorbed_as_ingredient(tower_self)
 
 signal tower_selected_in_selection_mode(tower_self)
 
-# tower benched
-signal tower_not_in_active_map
+#
+signal tower_not_in_active_map # tower benched
 signal tower_active_in_map
 
 signal attack_module_added(attack_module)
@@ -82,6 +83,8 @@ signal targeting_changed
 signal targeting_options_modified
 signal final_ability_potency_changed
 signal final_ability_cd_changed
+
+signal on_sellback_value_changed(new_value)
 
 signal on_max_health_changed(new_max)
 signal on_current_health_changed(new_curr)
@@ -128,6 +131,7 @@ signal global_position_changed(old_pos, new_pos)
 
 signal on_effect_added(effect)
 signal on_effect_removed(effect)
+signal before_effect_is_removed(effect)
 
 #
 
@@ -165,6 +169,10 @@ enum DisabledFromAttackingSourceClauses {
 	
 	IS_STUNNED = 10,
 	
+	#
+	
+	L_ASSAUT_PURSUE_ACTIVE = 1000
+	
 }
 
 enum UntargetabilityClauses {
@@ -172,13 +180,17 @@ enum UntargetabilityClauses {
 	TOWER_NO_HEALTH = 1,
 	IS_INVISIBLE = 2,
 	
+	#
+	
+	L_ASSAUT_PURSUE_ACTIVE = 1000
+	
 }
 
 ###
 
 var hovering_over_placable : BaseAreaTowerPlacable
 var current_placable : BaseAreaTowerPlacable
-var is_contributing_to_synergy : bool
+var is_contributing_to_synergy : bool # if is in map or not
 
 var is_being_dragged : bool = false
 var is_in_ingredient_mode : bool = false
@@ -227,11 +239,16 @@ var _ingredient_acceptability_color_effects : Dictionary = {}
 
 var _tower_colors : Array = []
 
+# Synergy related
+
+var can_contribute_to_synergy_color_count : bool = true # tower can still gain benefits of synergy, but does not contribute to syngergy progress
+
 # Gold related
 
-var _base_gold_cost : int
+var _base_gold_cost : int setget set_base_gold_cost
 var _ingredients_tower_id_base_gold_costs_map : Dictionary = {}
 var _is_full_sellback : bool = false
+var last_calculated_sellback_value : int
 
 # Round related
 
@@ -268,6 +285,12 @@ var _flat_enemy_effect_vulnerability_id_effect_map : Dictionary = {}
 var _percent_enemy_effect_vulnerability_id_effect_map : Dictionary = {}
 var last_calculated_enemy_final_effect_vulnerability : float
 
+# Invul related
+var invulnerability_id_effect_map : Dictionary = {}
+var last_calculated_is_invulnerable : bool = false
+const invulnerable_sprite_layer_self_modulate : Color = Color(1.5, 1.5, 1, 1)
+const normal_sprite_layer_self_modulate : Color = Color(1, 1, 1, 1)
+
 
 # Other effects
 
@@ -282,7 +305,6 @@ var last_calculated_has_effect_shield_against_enemies : bool
 # Combination Related
 
 var all_combinations_id_to_effect_id_map : Dictionary = {}
-
 
 
 # Modulate
@@ -536,6 +558,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		# update
 		_emit_final_base_damage_changed()
 		_emit_final_attack_speed_changed()
+		
 	
 	if benefit_from_existing_tower_buffs:
 		for tower_effect in _all_uuid_tower_buffs_map.values():
@@ -891,6 +914,10 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		if include_non_module_effects:
 			_add_effect_shield_effect(tower_base_effect)
 		
+	elif tower_base_effect is TowerInvulnerabilityEffect:
+		if include_non_module_effects:
+			_add_invulnerability_effect(tower_base_effect)
+		
 		
 	elif tower_base_effect is TowerResetEffects:
 		if include_non_module_effects:
@@ -907,6 +934,8 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 
 
 func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, erase_from_buff_map : bool = true, include_non_module_effects : bool = true):
+	emit_signal("before_effect_is_removed", tower_base_effect)
+	
 	if include_non_module_effects and erase_from_buff_map:
 		_all_uuid_tower_buffs_map.erase(tower_base_effect.effect_uuid)
 	
@@ -1013,6 +1042,10 @@ func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : A
 	elif tower_base_effect is TowerEffectShieldEffect:
 		if include_non_module_effects:
 			_remove_effect_shield_effect(tower_base_effect)
+		
+	elif tower_base_effect is TowerInvulnerabilityEffect:
+		if include_non_module_effects:
+			_remove_invulnerability_effect(tower_base_effect)
 		
 	
 	emit_signal("on_effect_removed", tower_base_effect)
@@ -1287,6 +1320,8 @@ func _remove_attack_module_from_effect(module_effect : BaseTowerAttackModuleAdde
 
 func _set_full_sellback(full_sellback : bool):
 	_is_full_sellback = full_sellback
+	
+	_calculate_sellback_value()
 
 
 func _add_armor_pierce_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
@@ -1615,7 +1650,7 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 		add_tower_effect(ingredient_effect.tower_base_effect, all_attack_modules, true, true, ingredient_effect)
 		
 		_emit_ingredients_absorbed_changed()
-
+		_calculate_sellback_value()
 
 func remove_ingredient(ingredient_effect : IngredientEffect, refund_gold : bool = false):
 	if ingredient_effect != null:
@@ -1630,8 +1665,9 @@ func remove_ingredient(ingredient_effect : IngredientEffect, refund_gold : bool 
 		
 		_ingredients_tower_id_base_gold_costs_map.erase(ingredient_effect.tower_id)
 		ingredients_absorbed.erase(ingredient_effect.tower_id)
+		
 		_emit_ingredients_absorbed_changed()
-
+		_calculate_sellback_value()
 
 
 func clear_ingredients():
@@ -1641,7 +1677,8 @@ func clear_ingredients():
 	ingredients_absorbed.clear()
 	_emit_ingredients_absorbed_changed()
 	_ingredients_tower_id_base_gold_costs_map.clear()
-
+	
+	_calculate_sellback_value()
 
 func _clear_ingredients_by_effect_reset():
 	for ingredient_tower_id in ingredients_absorbed.keys():
@@ -1650,12 +1687,16 @@ func _clear_ingredients_by_effect_reset():
 	ingredients_absorbed.clear()
 	emit_signal("tower_give_gold", _calculate_sellback_of_ingredients(), GoldManager.IncreaseGoldSource.TOWER_EFFECT_RESET)
 	_ingredients_tower_id_base_gold_costs_map.clear()
+	
+	_calculate_sellback_value()
 
 
 func _remove_latest_ingredient_by_effect():
 	if ingredients_absorbed.size() != 0:
 		var latest_effect = ingredients_absorbed.values()[ingredients_absorbed.size() - 1]
 		remove_ingredient(latest_effect, true)
+		
+		_calculate_sellback_value()
 
 
 func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
@@ -1875,6 +1916,21 @@ func _get_cd_to_use(base_cd : float) -> float:
 	return final_cd
 
 
+# Recalculation
+
+func recalculate_final_base_damage():
+	for module in all_attack_modules:
+		module.calculate_final_base_damage()
+		
+		if module == main_attack_module:
+			_emit_final_base_damage_changed()
+
+# Base Damage related
+
+func get_last_calculated_base_damage_of_main_attk_module() -> float:
+	return main_attack_module.last_calculated_final_damage
+
+
 # Ability calculation related
 
 func _calculate_final_ability_potency():
@@ -1966,6 +2022,51 @@ func _calculate_enemy_effect_vulnerability() -> float:
 	
 	last_calculated_enemy_final_effect_vulnerability = final_enemy_effect_vul
 	return final_enemy_effect_vul
+
+
+
+# Invulnerability related
+
+func _add_invulnerability_effect(effect : TowerInvulnerabilityEffect):
+	invulnerability_id_effect_map[effect.effect_uuid] = effect
+	calculate_invulnerability_status()
+
+func _remove_invulnerability_effect(effect : TowerInvulnerabilityEffect):
+	invulnerability_id_effect_map.erase(effect.effect_uuid)
+	calculate_invulnerability_status()
+
+func _remove_count_from_single_invulnerability_effect(arg_count_reduction : int = 1):
+	var count_reduc_remaining : int = arg_count_reduction
+	var effects_to_remove : Array = []
+	
+	for effect in invulnerability_id_effect_map.values():
+		if effect.is_countbound:
+			var original_count = effect.count
+			
+			effect.count -= count_reduc_remaining
+			count_reduc_remaining -= original_count
+			
+			if effect.count <= 0:
+				count_reduc_remaining -= effect.count
+				effects_to_remove.append(effect)
+			
+			if count_reduc_remaining < 0:
+				break
+	
+	for effect in effects_to_remove:
+		remove_tower_effect(effect)
+
+
+func calculate_invulnerability_status():
+	last_calculated_is_invulnerable = invulnerability_id_effect_map.size() > 0
+	
+	
+#	if last_calculated_is_invulnerable:
+#		sprite_layer.modulate = invulnerable_sprite_layer_self_modulate
+#	else:
+#		sprite_layer.modulate = normal_sprite_layer_self_modulate
+#
+
 
 
 # Inputs related
@@ -2171,8 +2272,15 @@ func _give_self_ingredient_buff_to(absorber):
 
 # Gold Sellback related
 
+func set_base_gold_cost(arg_val):
+	_base_gold_cost = arg_val
+	
+	_calculate_sellback_value()
+
+
 func sell_tower():
-	call_deferred("emit_signal", "tower_being_sold", _calculate_sellback_value())
+	#call_deferred("emit_signal", "tower_being_sold", _calculate_sellback_value())
+	call_deferred("emit_signal", "tower_being_sold", last_calculated_sellback_value)
 	queue_free()
 
 
@@ -2180,6 +2288,9 @@ func _calculate_sellback_value() -> int:
 	var sellback = _base_gold_cost
 	
 	sellback += _calculate_sellback_of_ingredients()
+	
+	last_calculated_sellback_value = sellback
+	call_deferred("emit_signal", "on_sellback_value_changed", last_calculated_sellback_value)
 	
 	return sellback
 
@@ -2209,7 +2320,7 @@ func add_combination_effect(combi_effect : CombinationEffect):
 		
 		all_combinations_id_to_effect_id_map[combi_effect.combination_id] = combi_effect.ingredient_effect.tower_base_effect.effect_uuid
 		
-		if (has_tower_effect_uuid_in_buff_map(combi_effect.ingredient_effect.tower_id)):
+		if (has_tower_effect_uuid_in_buff_map(combi_effect.ingredient_effect.tower_base_effect.effect_uuid)):
 			remove_ingredient(combi_effect.ingredient_effect)
 		
 		add_tower_effect(combi_effect.ingredient_effect.tower_base_effect, all_attack_modules, true, true, combi_effect.ingredient_effect)
@@ -2334,6 +2445,10 @@ func _calculate_max_health() -> float:
 
 func take_damage(damage_mod):
 	var amount : float = _get_amount_from_arg(damage_mod)
+	
+	if last_calculated_is_invulnerable:
+		_remove_count_from_single_invulnerability_effect()
+		amount = 0
 	
 	if amount > 0:
 		_set_health(current_health - amount)

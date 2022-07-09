@@ -165,7 +165,7 @@ func _get_towers_with_tower_combination_amount_met(arg_combination_amount : int 
 			if (tower_id_map.has(tower.tower_id)):
 				tower_id_map[tower.tower_id] += 1
 				
-				if tower_id_map[tower.tower_id] >= combination_amount:
+				if tower_id_map[tower.tower_id] >= arg_combination_amount:
 					
 					var i_counter : int = 0
 					for i_tower in all_towers:
@@ -173,7 +173,7 @@ func _get_towers_with_tower_combination_amount_met(arg_combination_amount : int 
 							i_counter += 1
 							to_combine_towers.append(i_tower)
 							
-						if (i_counter >= combination_amount):
+						if (i_counter >= arg_combination_amount):
 							break
 					
 					break
@@ -217,12 +217,13 @@ func _get_towers_towards_progress(arg_tower_id_arr_from_cards) -> Array:
 	for tower_id in arg_tower_id_arr_from_cards:
 		var has_progress = current_tower_ids.has(tower_id) and !all_combination_id_to_effect_map.keys().has(tower_id)
 		
-		tower_ids_towards_progress.append(tower_id)
+		if (has_progress):
+			tower_ids_towards_progress.append(tower_id)
 	
 	return tower_ids_towards_progress
 
 
-# presence of tower id indicates true
+# presence of certain amount of towers indicates true
 func _get_towers_immediately_ready_to_combine(arg_tower_id_arr_from_cards : Array) -> Array:
 	var tower_ids_ready_to_combine : Array = []
 	
@@ -238,7 +239,8 @@ func _get_towers_immediately_ready_to_combine(arg_tower_id_arr_from_cards : Arra
 				is_one_off = true
 				break
 		
-		tower_ids_ready_to_combine.append(tower_id_card)
+		if (is_one_off):
+			tower_ids_ready_to_combine.append(tower_id_card)
 	
 	return tower_ids_ready_to_combine
 

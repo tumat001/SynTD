@@ -89,6 +89,10 @@ const blossom_image = preload("res://TowerRelated/Color_Green/Blossom/Blossom_Om
 const pinecone_image = preload("res://TowerRelated/Color_Green/PineCone/PineCone_E.png")
 const brewd_image = preload("res://TowerRelated/Color_Green/Brewd/Brewd_E.png")
 const burgeon_image = preload("res://TowerRelated/Color_Green/Burgeon/Burgeon_Omni.png")
+const se_propager_image = preload("res://TowerRelated/Color_Green/SePropager/Assets/Animations/SePropager_Idle.png")
+const les_semis_image = preload("res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/Animations/LesSemis_E.png")
+const l_assaut_image = preload("res://TowerRelated/Color_Green/L'Assaut/Assets/ImageIn_TowerCard.png")
+const la_chasseur_image = preload("res://TowerRelated/Color_Green/La_Chasseur/Assets/Anim/LaChasseur_Omni.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -169,6 +173,14 @@ enum {
 	BREWD = 509,
 	BURGEON = 510,
 	
+	# GREEN SPECIAL (550)
+	SE_PROPAGER = 550,
+	L_ASSAUT = 551,
+	LA_CHASSEUR = 552,
+	LA_NATURE = 553,
+	
+	LES_SEMIS = 560,
+	
 	# BLUE (600)
 	SPRINKLER = 600,
 	LEADER = 601,
@@ -240,6 +252,8 @@ const TowerTiersMap : Dictionary = {
 	BREWD : 3,
 	SHACKLED : 3,
 	AMALGAMATOR : 3,
+	SE_PROPAGER : 3,
+	LES_SEMIS : 3,
 	
 	RE : 4,
 	PING : 4,
@@ -252,6 +266,7 @@ const TowerTiersMap : Dictionary = {
 	ADEPT : 4,
 	LEADER : 4,
 	FRUIT_TREE : 4,
+	L_ASSAUT : 4,
 	
 	VOLCANO : 5,
 	LAVA_JET : 5,
@@ -261,6 +276,7 @@ const TowerTiersMap : Dictionary = {
 	ORB : 5,
 	BURGEON : 5,
 	#WYVERN : 5,
+	LA_CHASSEUR : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
@@ -269,6 +285,7 @@ const TowerTiersMap : Dictionary = {
 	PROMINENCE : 6,
 	ACCUMULAE : 6,
 	HEXTRIBUTE : 6,
+	#LA_NATURE : 6,
 }
 
 const tier_base_dmg_map : Dictionary = {
@@ -381,10 +398,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = sprinkler_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1
+		info.base_damage = 1.25
 		info.base_attk_speed = 1.5
 		info.base_pierce = 1
-		info.base_range = 120
+		info.base_range = 105
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -485,6 +502,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Directs a constant pure energy beam at a single target.",
+			"",
 			"\"First Iteration\""
 		]
 		
@@ -587,7 +605,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 1.5
 		info.base_attk_speed = 1.5
 		info.base_pierce = 1
-		info.base_range = 135
+		info.base_range = 130
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 0
 		
@@ -630,7 +648,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
 			"",
 			"Shots deal 5 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 200% efficiency.",
-			"If only 1 enemy is marked, the shot is empowered, dealing 10 base damage, and on hit damages become 400% effective instead.",
+			"If only 1 enemy is marked, the shot is empowered, dealing 10 damage, and on hit damages become 400% effective instead.",
 			"Ability potency increases the amount of marks per ring (0.5 ap -> +1 mark)."
 		]
 		
@@ -683,7 +701,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 1.5
 		info.base_attk_speed = 0.6
 		info.base_pierce = 0
-		info.base_range = 145
+		info.base_range = 150
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
 		
@@ -828,7 +846,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 2.1
 		info.base_attk_speed = 0.375
 		info.base_pierce = 1
-		info.base_range = 115
+		info.base_range = 110
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -900,7 +918,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 2.75
 		info.base_attk_speed = 1.12
 		info.base_pierce = 1
-		info.base_range = 125
+		info.base_range = 120
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -972,9 +990,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Launches a molten boulder at the target's location.",
-			"The boulder explodes upon reaching the location, dealing 6 physical base damage. The explosion applies on hit effects, and applies on hit damages at 500% efficiency.",
+			"The boulder explodes upon reaching the location, dealing 6 physical damage. The explosion applies on hit effects, and applies on hit damages at 500% efficiency.",
 			"The explosion also leaves behind scorched earth that lasts for 7 seconds, which slows by 30% and deals 1 elemental damage per 0.5 seconds to enemies while inside it. This does not apply on hit damages and effects.",
-			"Both the explosion and scorched earth benefit from base damage buffs."
+			"Both the explosion and scorched earth benefit from bonus base damage."
 		]
 		
 		var expl_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_VOLCANO)
@@ -1000,7 +1018,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 2.85
 		info.base_attk_speed = 0.785
 		info.base_pierce = 0
-		info.base_range = 135
+		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -1312,7 +1330,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = impale_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 12
+		info.base_damage = 10
 		info.base_attk_speed = 0.24
 		info.base_pierce = 0
 		info.base_range = 115
@@ -1322,7 +1340,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Impale shoots up a spike that stabs an enemy, stunning them for 2.2 seconds.",
 			"When the stun expires, Impale retracts the spike, dealing damage again. The retract damage deals 200% extra damage when the enemy has less than 75% of their max health.",
-			"Elite type enemies take additional 100% extra damage from the rectact damage.",
+			"Normal type enemies take additional 100% extra damage from the rectact damage.",
 			"",
 			"\"Big spike for small enemies\""
 		]
@@ -1381,23 +1399,25 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.75
-		info.base_attk_speed = 0.86 #0.875
+		info.base_attk_speed = 0.875
 		info.base_pierce = 1
-		info.base_range = 130
+		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Orb gains new attacks at 1.25, 1.50, and 2.00 total ability potency.",
+			"Orb takes 2 tower slots.",
 			"",
-			"Orb absorbs all other Orbs placed in the map, gaining permanent 0.25 ability potency that stacks. Orb also applies this effect when absorbing another Orb's ingredient effect.",
+			"Orb gains new attacks at 1.5, 2.0, and 2.5 total ability potency.",
+			"",
+			"Orb absorbs all other Orbs placed in the map, gaining permanent 0.5 ability potency that stacks. This effect also applies when absorbing another Orb's ingredient effect.",
 			"",
 			"\"Where does the power reside? The wizard, or the orb?\""
 		]
 		
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ORB)
-		base_ap_attr_mod.flat_modifier = 0.25
+		base_ap_attr_mod.flat_modifier = 0.5
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_ORB)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -1434,7 +1454,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_GRAND)
-		base_ap_attr_mod.flat_modifier = 0.25
+		base_ap_attr_mod.flat_modifier = 0.5
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_GRAND)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -1455,7 +1475,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 2.25
 		info.base_attk_speed = 0.82
 		info.base_pierce = 0
-		info.base_range = 130
+		info.base_range = 115
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -1702,7 +1722,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 4.75
 		info.base_attk_speed = 0.68
 		info.base_pierce = 1
-		info.base_range = 130
+		info.base_range = 115
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -1710,7 +1730,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Reaper's attacks deal additional 6% of the enemy's missing health as elemental damage, up to 8 health.",
 			"",
 			"Killing an enemy grants Reaper 1 stack of Death. Reaper attempts to cast Slash while having Death stacks.",
-			"Slash: Reaper consumes 1 Death stack to slash the area of the closest enemy, dealing 300% of Reaper's base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
+			"Slash: Reaper consumes 1 Death stack to slash the area of the closest enemy, dealing 300% of Reaper's total base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
 			"Casting Slash reduces the damage of subsequent slashes by 50% for 0.5 seconds. This does not stack.",
 			"Cooldown: 0.2 s."
 		]
@@ -1797,7 +1817,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack.",
 			"The secondary attack deals 2.25 physical damage and applies on hit effects. The secondary attack cannot trigger another secondary attack.",
 			"",
-			"After 3 rounds of being active, Adept gains Far and Close targeting options."
+			"After 3 rounds of being active, Adept gains Far and Close targeting options.",
+			"",
+			"Adept's bonus damage (from attacking at 85% of range), and secondary attack's damage scale with ability potency."
 		]
 		
 		var tower_base_effect : AdeptModuleAdderEffect = AdeptModuleAdderEffect.new()
@@ -1819,7 +1841,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 3.2
 		info.base_attk_speed = 0.48
 		info.base_pierce = 2
-		info.base_range = 115
+		info.base_range = 120
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -1850,7 +1872,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 2.35
 		info.base_attk_speed = 0.81
 		info.base_pierce = 1
-		info.base_range = 125
+		info.base_range = 135
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -2235,7 +2257,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ACCUMULAE)
-		base_ap_attr_mod.flat_modifier = 0.50
+		base_ap_attr_mod.flat_modifier = 1.0
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_ACCUMULAE)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -2254,9 +2276,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.79
+		info.base_attk_speed = 0.82#0.79
 		info.base_pierce = 1
-		info.base_range = 122
+		info.base_range = 112
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -2422,7 +2444,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Burgeon automatically attempts to cast Proliferate.",
 			"Proliferate: Launches a seed at a tower in its range, prioritizing towers with enemies in their range. The seed grows to a mini burgeon. Mini burgeons attach to the tower, and borrows their range.", 
-			"Mini burgeons attack just like Burgeons, and have the same stats. Mini burgeons benefit from Burgeon's effects. Each Mini burgeon lasts for 30 seconds, and die when Burgeon dies.",
+			"Mini burgeons attack just like Burgeons, and have the same stats. Mini burgeons benefit from its creator's effects. Each Mini burgeon lasts for 30 seconds, and die when its creator dies.",
 			"Cooldown: 20 s.",
 			"",
 			"Ability potency increases mini burgeon's lifespan."
@@ -2439,6 +2461,111 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ on hit"
 		
+		
+	elif tower_id == SE_PROPAGER:
+		info = TowerTypeInformation.new("Se Propager", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.GREEN)
+		info.tower_image_in_buy_card = se_propager_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 3
+		info.base_attk_speed = 0.75
+		info.base_pierce = 0
+		info.base_range = 95
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		#Les semis description also uses this. Change les semis desc when changing this
+		info.tower_descriptions = [
+			"Ability: Production. Se Propager automatically attempts to plant a Les Semis in an unoccupied in-range tower slot every 25 seconds.",
+			"",
+			"Les Semis: a tower that inherits 50% of its parents base damage.",
+			"Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by 2.",
+			"Les Semis gains 0.75 base damage per 1 gold it is worth selling for.",
+			"Les Semis does not contribute to the color synergy, but benefits from it. Does not take a tower slot.",
+			"",
+			"Se Propager can be commanded to sell all current Golden Les Semis, and to automatically sell Les Semis that have turned Golden."
+		]
+		
+		
+	elif tower_id == LES_SEMIS:
+		info = TowerTypeInformation.new("Les Semis", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.GREEN)
+		info.tower_image_in_buy_card = les_semis_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0.7
+		info.base_pierce = 0
+		info.base_range = 115
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		#Se Propager description also uses this. Change se prop desc if changing this
+		info.tower_descriptions = [
+			"Inherits 50% of its parents base damage upon creation.",
+			"Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by 2.",
+			"Les Semis gains 0.75 base damage per 1 gold it is worth selling for.",
+			"Les Semis does not contribute to the color synergy, but benefits from it. Does not take a tower slot.",
+		]
+		
+		
+		
+	elif tower_id == L_ASSAUT:
+		info = TowerTypeInformation.new("L' Assaut", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.GREEN)
+		info.tower_image_in_buy_card = l_assaut_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 2.25
+		info.base_attk_speed = 0.875
+		info.base_pierce = 0
+		info.base_range = 110
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		
+		info.tower_descriptions = [
+			"Gain 10% bonus damage per win, up to 50%. This is lost upon losing.",
+			"Gain a stack of resurgence per loss. Upon winning, consume all stacks to heal for 2* the stack amount.",
+			"",
+			"When this tower's current target exits its range, cast Pursuit.",
+			"Pursuit: L' Assaut attempts to relocate itself to be able to attack the escapee. L' Assaut then gains 150% attack speed and 25 range for 1 second.",
+			"Bonus stats gained from Pursuit scales with ability potency.",
+			#"L' Assaut's auto attack timer is reset upon fading in from Pursuit.",
+			"",
+			"At the end of the round, this tower attempts to return to its original location.",
+		]
+		
+		
+	elif tower_id == LA_CHASSEUR:
+		info = TowerTypeInformation.new("La Chasseur", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.GREEN)
+		info.tower_image_in_buy_card = la_chasseur_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 5
+		info.base_attk_speed = 0.5
+		info.base_pierce = 0
+		info.base_range = 135
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		
+		info.tower_descriptions = [
+			"Hunt Down is automatically casted twice; once when half of all enemies have been spawned, and once when all enemies have been spawned.",
+			"Ability: Hunt Down. Rapidly fire 4 shots at its current target, each dealing 500% total base damage. Shots apply on hit damages and effects.",
+			"If the last shot kills an enemy, La Chasseur permanently gains stacking 2 on hit physical damage. Also, gain 3 gold.",
+			"Hunt Down's damage scales with ability potency."
+		]
 		
 		
 #	elif tower_id == WYVERN:
@@ -2596,4 +2723,11 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Yellow/Nucleus/Nucleus.tscn")
 	elif tower_id == BURGEON:
 		return load("res://TowerRelated/Color_Green/Burgeon/Burgeon.tscn")
-
+	elif tower_id == SE_PROPAGER:
+		return load("res://TowerRelated/Color_Green/SePropager/SePropager.tscn")
+	elif tower_id == LES_SEMIS:
+		return load("res://TowerRelated/Color_Green/SePropager_LesSemis/LesSemis.tscn")
+	elif tower_id == L_ASSAUT:
+		return load("res://TowerRelated/Color_Green/L'Assaut/L'Assaut.tscn")
+	elif tower_id == LA_CHASSEUR:
+		return load("res://TowerRelated/Color_Green/La_Chasseur/LaChasseur.tscn")

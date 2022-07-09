@@ -21,9 +21,12 @@ const cannot_buy_modulate : Color = Color(0.4, 0.4, 0.4, 1)
 
 const shine_sparkle_rotation_speed_per_sec : int = 560
 const shine_sparkle_fade_per_sec : float = 1.25
-const shine_sparkle_y_initial_speed : int = -50 # updwards
-const shine_sparkle_y_accel_per_sec : int = 30
-const shine_max_duration : float = 0.8
+const shine_sparkle_y_initial_speed : int = -75 # updwards
+const shine_sparkle_y_accel_per_sec : int = 150
+const shine_max_duration : float = 0.5
+
+
+var shine_current_y_vel : float = 0
 
 
 var tower_information : TowerTypeInformation
@@ -57,6 +60,9 @@ onready var shine_texture_rect = $MarginContainer/ShineContainer/ShinePic
 
 func _ready():
 	update_display()
+	
+	shine_texture_rect.rect_pivot_offset.x = shine_texture_rect.rect_size.x / 2
+	shine_texture_rect.rect_pivot_offset.y = shine_texture_rect.rect_size.y / 2
 
 func update_display():
 	tower_name_label.text = tower_information.tower_name
@@ -198,9 +204,32 @@ func can_buy_card():
 
 func play_shine_sparkle_on_card():
 	shine_current_duration = shine_max_duration
+	
+	shine_texture_rect.visible = true
 	is_playing_shine_sparkle = true
+	
+	shine_current_y_vel = shine_sparkle_y_initial_speed
+	shine_texture_rect.rect_rotation = 0
+	shine_texture_rect.modulate = Color(1, 1, 1, 1)
+	
 
 
 func _process(delta):
-	pass
+	if (is_playing_shine_sparkle):
+		shine_current_duration -= delta
+		
+		shine_current_y_vel += shine_sparkle_y_accel_per_sec * delta
+		shine_texture_rect.rect_position.y += shine_current_y_vel * delta
+		
+		shine_texture_rect.rect_rotation += shine_sparkle_rotation_speed_per_sec * delta
+		
+		var fade_amount = delta * shine_sparkle_fade_per_sec
+		shine_texture_rect.modulate.a -= fade_amount
+	
+	if (shine_current_duration <= 0):
+		hide_shine_sparkle_on_card()
 
+
+func hide_shine_sparkle_on_card():
+	is_playing_shine_sparkle = false
+	shine_texture_rect.visible = false

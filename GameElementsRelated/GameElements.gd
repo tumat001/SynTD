@@ -231,6 +231,7 @@ func _ready():
 	
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	level_manager.current_level = LevelManager.LEVEL_9
+	#level_manager.current_level = LevelManager.LEVEL_3
 	
 	#relic_manager.increase_relic_count_by(5, RelicManager.IncreaseRelicSource.ROUND)
 
@@ -251,15 +252,15 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.RE,
 			Towers.TESLA,
 			Towers.PING,
-			Towers.PROMINENCE,
+			Towers.REAPER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.SPRINKLER,
-			Towers.SHOCKER,
-			Towers.BEACON_DISH,
-			Towers.SIMPLEX,
-			Towers.STRIKER,
+			Towers.SPIKE,
+			Towers.IMPALE,
+			Towers.LA_CHASSEUR,
+			Towers.SUNFLOWER,
+			Towers._704,
 		])
 	even = !even
 
@@ -296,6 +297,8 @@ func _unhandled_key_input(event):
 			elif event.is_action_pressed("game_tower_sell"):
 				_sell_hovered_tower()
 				
+			elif event.is_action_pressed("game_shop_refresh"):
+				_on_BuySellLevelRollPanel_reroll()
 				
 			elif event.is_action("game_ability_01"):
 				round_status_panel.ability_panel.activate_ability_at_index(0)

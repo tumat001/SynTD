@@ -4,6 +4,7 @@ const TowerBuyCard = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCard.gd"
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const RelicManager = preload("res://GameElementsRelated/RelicManager.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
+const CombinationManager = preload("res://GameElementsRelated/CombinationManager.gd")
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
@@ -41,7 +42,7 @@ var relic_manager : RelicManager setget set_relic_manager
 var level_manager setget set_level_manager
 var shop_manager setget set_shop_manager
 var tower_manager setget set_tower_manager
-var combination_manager setget set_combination_manager
+var combination_manager : CombinationManager setget set_combination_manager
 
 var tower_inventory_bench setget set_tower_inventory_bench
 
@@ -118,6 +119,16 @@ func update_new_rolled_towers(tower_ids_to_roll_to : Array):
 	
 	var tower_card_combination_metadata : Dictionary = combination_manager.get_tower_buy_cards_metadata(tower_ids_to_roll_to) 
 	
+	var buy_slot_pos : int = 0
+	for tower_id in tower_card_combination_metadata.keys():
+		var metadata = tower_card_combination_metadata[tower_id]
+		if (metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE):
+			
+			var tower_card = all_buy_slots[buy_slot_pos].current_child
+			if tower_card != null:
+				tower_card.call_deferred("play_shine_sparkle_on_card")
+		
+		buy_slot_pos += 1
 	
 	
 	_update_tower_cards_buyability_based_on_gold(gold_manager.current_gold)

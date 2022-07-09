@@ -143,8 +143,9 @@ func _get_list_of_distinct_towers(towers: Array) -> Array:
 func _convert_towers_to_colors(towers: Array) -> Array:
 	var all_colors : Array = []
 	for tower in towers:
-		for color in tower._tower_colors:
-			all_colors.append(color)
+		if tower.can_contribute_to_synergy_color_count:
+			for color in tower._tower_colors:
+				all_colors.append(color)
 	
 	return all_colors
 
