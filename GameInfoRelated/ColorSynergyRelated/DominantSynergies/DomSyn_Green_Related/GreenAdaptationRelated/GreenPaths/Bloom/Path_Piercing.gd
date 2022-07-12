@@ -1,5 +1,10 @@
 extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GreenAdaptationRelated/BaseGreenPath.gd"
 
+#NOTE: REMOVED from the pool of selection, which means that
+#the code for this is not updated to the standards used by the
+#other paths. This will not work properly.
+
+
 const TowerPathEffect_PierceGiverEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/OtherGreenEffects/TowerPathEffect_PierceGiverEffect.gd")
 
 const path_name = "Shots of Piercing"

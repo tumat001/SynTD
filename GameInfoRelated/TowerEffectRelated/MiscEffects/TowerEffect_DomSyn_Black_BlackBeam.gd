@@ -21,8 +21,6 @@ const BlackBeam_Pic09 = preload("res://GameInfoRelated/ColorSynergyRelated/Domin
 const Black_AttackModule_Icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/AMAssets/Black_AttackModule_Icon.png")
 
 
-const _stack_amount_trigger : int = 10
-
 const _beam_cooldown : float = 0.1
 const _beam_base_damage : float = 1.5
 
@@ -109,11 +107,7 @@ func _construct_beam_am():
 
 
 func _on_main_attk_module_enemy_hit(enemy, damage_register_id, damage_instance, module):
-	if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.BLACK_CORRUPTION_STACK):
-		var effect = enemy._stack_id_effects_map[StoreOfEnemyEffectsUUID.BLACK_CORRUPTION_STACK]
-		
-		if effect._current_stack >= _stack_amount_trigger:
-			call_deferred("_attempt_command_am_to_attack")
+	call_deferred("_attempt_command_am_to_attack")
 
 func _attempt_command_am_to_attack():
 	if own_timer.time_left <= 0:

@@ -154,14 +154,12 @@ func add_tower_to_inventory(tower_id : int, tower_tier : int):
 	if !tier_tower_map.has(tower_id):
 		tier_tower_map[tower_tier].append(tower_id)
 
-func remove_tower_to_from_inventory(tower_id : int):
+func remove_tower_from_inventory(tower_id : int):
 	if current_tower_stock_inventory.has(tower_id):
 		current_tower_stock_inventory.erase(tower_id)
 	
 	if tier_tower_map.has(tower_id):
-		tier_tower_map.erase(tower_id)
-
-
+		tier_tower_map[Towers.TowerTiersMap[tower_id]].erase(tower_id)
 
 # on round end
 

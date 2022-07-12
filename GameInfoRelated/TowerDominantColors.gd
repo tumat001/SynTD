@@ -171,18 +171,34 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_black,
 	[
-		"Black tower's attacks give a stack of Corruption to enemies on hit. Black towers with base damages 5.5 or higher will apply 3 stacks instead.",
-		"Corruption stacks last for 15 seconds. Re-applications refresh all stacks.",
-		"Black towers that hit enemies with a certain number of stacks cause effects.",
-		"",
+		"Black towers gain bonus stats and effects."
 	],
 	[DomSyn_Black.new()],
 	[
-		"10+ stacks: All attacks deal 10% of the enemy's missing health as elemental damage on hit, up to 7.",
-		"7+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. This can only be triggered every 0.1 seconds. The beam deals 1.5 physical damage, and benefits from base damage and on hit damage buffs at 25% efficiency. Also applies on hit effects.",
-		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 30% bonus attack speed for 6 attacks for 5 seconds. This effect has a 3 second cooldown.",
-		"2+ stacks: All attack's damage is increased by 10%."
+		"The chosen dark path is upgraded.",
+		"Choose one of the four dark paths to take.",
+		"Main attacks on hit causes the attacking tower to give a random black tower 20% bonus attack speed for 6 attacks for 5 seconds. This effect has a 3 second cooldown.",
+		"Damage is increased by 10%."
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	)
+	
+#	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [11, 8, 6, 2],
+#	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+#	syn_dom_black,
+#	[
+#		"Black tower's attacks give a stack of Corruption to enemies on hit. Black towers with base damages 5.5 or higher will apply 3 stacks instead.",
+#		"Corruption stacks last for 15 seconds. Re-applications refresh all stacks.",
+#		"Black towers that hit enemies with a certain number of stacks cause effects.",
+#		"",
+#	],
+#	[DomSyn_Black.new()],
+#	[
+#		"10+ stacks: All attacks deal 10% of the enemy's missing health as elemental damage on hit, up to 7.",
+#		"7+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. This can only be triggered every 0.1 seconds. The beam deals 1.5 physical damage, and benefits from base damage and on hit damage buffs at 25% efficiency. Also applies on hit effects.",
+#		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 30% bonus attack speed for 6 attacks for 5 seconds. This effect has a 3 second cooldown.",
+#		"2+ stacks: All attack's damage is increased by 10%."
+#	],
+#	ColorSynergy.HighlightDeterminer.ALL_BELOW
+#	)
 }

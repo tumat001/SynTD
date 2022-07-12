@@ -60,10 +60,12 @@ func _init(arg_tier_to_activate : int, arg_limit : int, arg_name : String,
 func _activation_clauses_clause_inserted(arg_clause):
 	last_calculated_layer_can_be_activated = green_layer_activation_clauses.is_passed
 	_update_available_path_state(_current_tier_of_green)
+	emit_signal("on_tier_of_syn_changed", _current_tier_of_green)
 
 func _activation_clauses_clause_removed(arg_clause):
 	last_calculated_layer_can_be_activated = green_layer_activation_clauses.is_passed
 	_update_available_path_state(_current_tier_of_green)
+	emit_signal("on_tier_of_syn_changed", _current_tier_of_green)
 
 #
 

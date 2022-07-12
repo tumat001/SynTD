@@ -2,6 +2,9 @@ extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Gree
 
 const TowerPathEffect_Overcome = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/OtherGreenEffects/TowerPathEffect_Overcome.gd")
 
+
+const green_tier_requirement_inclusive : int = 2
+
 const path_name = "Overcome"
 const path_descs = [
 	"All green towers change their attack’s damage type based on the enemy’s armor and toughness, and its own pierce values.",
@@ -23,15 +26,16 @@ func _apply_path_tier_to_game_elements(tier : int, arg_game_elements : GameEleme
 		game_elements = arg_game_elements
 	#
 	
-	if !game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_path"):
-		game_elements.tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_path", [], CONNECT_PERSIST)
-		game_elements.tower_manager.connect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_path", [], CONNECT_PERSIST)
-	
-	var all_towers = game_elements.tower_manager.get_all_active_towers()
-	for tower in all_towers:
-		_tower_to_benefit_from_path(tower)
-	
-	._apply_path_tier_to_game_elements(tier, arg_game_elements)
+	if tier <= green_tier_requirement_inclusive:
+		if !game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_path"):
+			game_elements.tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_path", [], CONNECT_PERSIST)
+			game_elements.tower_manager.connect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_path", [], CONNECT_PERSIST)
+		
+		var all_towers = game_elements.tower_manager.get_all_active_towers()
+		for tower in all_towers:
+			_tower_to_benefit_from_path(tower)
+		
+		._apply_path_tier_to_game_elements(tier, arg_game_elements)
 
 
 func _remove_path_from_game_elements(tier : int, arg_game_elements : GameElements):

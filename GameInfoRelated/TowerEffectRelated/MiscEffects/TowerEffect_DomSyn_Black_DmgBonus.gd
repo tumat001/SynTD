@@ -19,10 +19,6 @@ func _undo_modifications_to_tower(tower):
 
 
 func _attempt_buff_dmg_instance_base_dmg(enemy, damage_register_id, damage_instance, module):
-	if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.BLACK_CORRUPTION_STACK):
-		var effect = enemy._stack_id_effects_map[StoreOfEnemyEffectsUUID.BLACK_CORRUPTION_STACK]
-		
-		if effect._current_stack >= _stack_amount_trigger:
-			damage_instance.scale_only_damage_by(_dmg_scale)
+	damage_instance.scale_only_damage_by(_dmg_scale)
 
 

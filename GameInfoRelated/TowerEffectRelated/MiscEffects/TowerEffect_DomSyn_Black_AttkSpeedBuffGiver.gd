@@ -7,8 +7,7 @@ const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const BuffParticle_StatusBarIcon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/BuffParticle/BuffParticle_StatusBarIcon.png")
 const Black_BuffParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/BuffParticle/Black_BuffParticle.tscn")
 
-const _stack_amount_trigger : int = 5
-const _attk_speed_buff_amount : float = 30.0
+const _attk_speed_buff_amount : float = 20.0
 const _attk_speed_buff_duration : float = 5.0
 const _attk_speed_buff_count : int = 6
 const _buff_cooldown : float = 3.0
@@ -60,11 +59,7 @@ func _undo_modifications_to_tower(tower):
 #
 
 func _main_attk_hit_enemy(enemy, damage_register_id, damage_instance, module):
-	if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.BLACK_CORRUPTION_STACK):
-		var effect = enemy._stack_id_effects_map[StoreOfEnemyEffectsUUID.BLACK_CORRUPTION_STACK]
-		
-		if effect._current_stack >= _stack_amount_trigger:
-			_attempt_buff_random_tower()
+	_attempt_buff_random_tower()
 
 func _attempt_buff_random_tower():
 	if own_timer.time_left <= 0:
