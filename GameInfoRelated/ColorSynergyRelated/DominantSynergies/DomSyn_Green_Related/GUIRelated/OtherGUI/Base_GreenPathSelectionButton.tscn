@@ -10,4 +10,19 @@ texture_normal = ExtResource( 1 )
 texture_hover = ExtResource( 2 )
 script = ExtResource( 4 )
 about_button_index_trigger = -1001
+
+[node name="PathIconContainer" type="MarginContainer" parent="." index="0"]
+margin_left = 4.01356
+margin_top = 4.23629
+margin_right = 48.0136
+margin_bottom = 48.2363
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PathIcon" type="TextureRect" parent="PathIconContainer" index="0"]
+margin_right = 44.0
+margin_bottom = 44.0
+mouse_filter = 2
 [connection signal="pressed_mouse_event" from="." to="." method="_on_Base_GreenPathSelectionButton_pressed_mouse_event"]

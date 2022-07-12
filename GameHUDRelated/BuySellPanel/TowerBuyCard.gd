@@ -65,61 +65,62 @@ func _ready():
 	shine_texture_rect.rect_pivot_offset.y = shine_texture_rect.rect_size.y / 2
 
 func update_display():
-	tower_name_label.text = tower_information.tower_name
-	tower_cost_label.text = str(tower_information.tower_cost)
-	
-	# Color related
-	var color01
-	var color02
-	
-	if tower_information.colors.size() > 0:
-		color01 = tower_information.colors[0]
-	if tower_information.colors.size() > 1:
-		color02 = tower_information.colors[1]
-	
-	if color01 != null:
-		color_icon_01.texture = TowerColors.get_color_symbol_on_card(color01)
-		color_label_01.text = TowerColors.get_color_name_on_card(color01)
-	else:
-		color_icon_01.self_modulate.a = 0
-		color_label_01.self_modulate.a = 0
-	
-	if color02 != null:
-		color_icon_02.texture = TowerColors.get_color_symbol_on_card(color02)
-		color_label_02.text = TowerColors.get_color_name_on_card(color02)
-	else:
-		color_icon_02.self_modulate.a = 0
-		color_label_02.self_modulate.a = 0
-	
-	# Ingredient Related
-	if tower_information.ingredient_effect != null:
-		ingredient_icon_rect.texture = tower_information.ingredient_effect.tower_base_effect.effect_icon
-	else:
-		ingredient_icon_rect.self_modulate.a = 0
-	
-	# TowerImageRelated
-	if tower_information.tower_image_in_buy_card != null:
-		tower_image_rect.texture = tower_information.tower_image_in_buy_card
-		tower_image_rect.visible = true
-	else:
-		tower_image_rect.visible = false
-	
-	# Tier Crown Related
-	if tower_information.tower_tier == 1:
-		tier_crown_rect.texture = tier01_crown
-	elif tower_information.tower_tier == 2:
-		tier_crown_rect.texture = tier02_crown
-	elif tower_information.tower_tier == 3:
-		tier_crown_rect.texture = tier03_crown
-	elif tower_information.tower_tier == 4:
-		tier_crown_rect.texture = tier04_crown
-	elif tower_information.tower_tier == 5:
-		tier_crown_rect.texture = tier05_crown
-	elif tower_information.tower_tier == 6:
-		tier_crown_rect.texture = tier06_crown
-	
-	#
-	_update_can_buy_card()
+	if tower_information != null:
+		tower_name_label.text = tower_information.tower_name
+		tower_cost_label.text = str(tower_information.tower_cost)
+		
+		# Color related
+		var color01
+		var color02
+		
+		if tower_information.colors.size() > 0:
+			color01 = tower_information.colors[0]
+		if tower_information.colors.size() > 1:
+			color02 = tower_information.colors[1]
+		
+		if color01 != null:
+			color_icon_01.texture = TowerColors.get_color_symbol_on_card(color01)
+			color_label_01.text = TowerColors.get_color_name_on_card(color01)
+		else:
+			color_icon_01.self_modulate.a = 0
+			color_label_01.self_modulate.a = 0
+		
+		if color02 != null:
+			color_icon_02.texture = TowerColors.get_color_symbol_on_card(color02)
+			color_label_02.text = TowerColors.get_color_name_on_card(color02)
+		else:
+			color_icon_02.self_modulate.a = 0
+			color_label_02.self_modulate.a = 0
+		
+		# Ingredient Related
+		if tower_information.ingredient_effect != null:
+			ingredient_icon_rect.texture = tower_information.ingredient_effect.tower_base_effect.effect_icon
+		else:
+			ingredient_icon_rect.self_modulate.a = 0
+		
+		# TowerImageRelated
+		if tower_information.tower_image_in_buy_card != null:
+			tower_image_rect.texture = tower_information.tower_image_in_buy_card
+			tower_image_rect.visible = true
+		else:
+			tower_image_rect.visible = false
+		
+		# Tier Crown Related
+		if tower_information.tower_tier == 1:
+			tier_crown_rect.texture = tier01_crown
+		elif tower_information.tower_tier == 2:
+			tier_crown_rect.texture = tier02_crown
+		elif tower_information.tower_tier == 3:
+			tier_crown_rect.texture = tier03_crown
+		elif tower_information.tower_tier == 4:
+			tier_crown_rect.texture = tier04_crown
+		elif tower_information.tower_tier == 5:
+			tier_crown_rect.texture = tier05_crown
+		elif tower_information.tower_tier == 6:
+			tier_crown_rect.texture = tier06_crown
+		
+		#
+		_update_can_buy_card()
 
 
 func create_energy_display(energy_array : Array) -> String:

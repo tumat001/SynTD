@@ -16,8 +16,8 @@ const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_4 : [55, 43, 2, 0, 0, 0],
 	LevelManager.LEVEL_5 : [45, 35, 20, 0, 0, 0],
 	LevelManager.LEVEL_6 : [23, 40, 35, 2, 0, 0],
-	LevelManager.LEVEL_7 : [15, 30, 45, 9, 1, 0],
-	LevelManager.LEVEL_8 : [15, 20, 30, 33, 2, 0],
+	LevelManager.LEVEL_7 : [17, 30, 45, 7, 1, 0],
+	LevelManager.LEVEL_8 : [15, 20, 33, 30, 2, 0],
 	LevelManager.LEVEL_9 : [10, 15, 20, 35, 20, 0],
 	LevelManager.LEVEL_10 : [5, 10, 10, 25, 25, 25],
 }
@@ -93,6 +93,19 @@ var roll_towers_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.ROLL_TOWERS)
 var current_cost_per_roll : int = 2 setget set_cost_per_roll
 
 
+#
+
+enum TowersPerShopModifiers {
+	BASE_AMOUNT = 0,
+	
+	SYN_GREEN__HORTICULTURIST = 1
+}
+
+var _flat_towers_per_shop_id_to_amount_map : Dictionary = {}
+var last_calculated_towers_per_shop : float
+const max_towers_per_shop : int = 6
+
+
 # setters
 
 func set_stage_round_manager(arg_manager):
@@ -126,26 +139,62 @@ func set_cost_per_roll(new_cost):
 func _ready():
 	for tower_id in Towers.TowerTiersMap.keys():
 		if !towers_not_initially_in_inventory.has(tower_id):
-			_add_tower_to_inventory(tower_id, Towers.TowerTiersMap[tower_id])
-			_register_tower_to_tower_tier_map(tower_id, Towers.TowerTiersMap[tower_id])
+			add_tower_to_inventory(tower_id, Towers.TowerTiersMap[tower_id])
 	
 	_update_tier_has_tower_map()
 
 
-func _add_tower_to_inventory(tower_id : int, tower_tier : int):
-	if tower_stock_amount_exceptions.has(tower_id):
-		current_tower_stock_inventory[tower_id] = tower_stock_amount_exceptions[tower_id]
-	else:
-		current_tower_stock_inventory[tower_id] = base_tower_tier_stock[tower_tier]
+func add_tower_to_inventory(tower_id : int, tower_tier : int):
+	if !current_tower_stock_inventory.has(tower_id):
+		if tower_stock_amount_exceptions.has(tower_id):
+			current_tower_stock_inventory[tower_id] = tower_stock_amount_exceptions[tower_id]
+		else:
+			current_tower_stock_inventory[tower_id] = base_tower_tier_stock[tower_tier]
+	
+	if !tier_tower_map.has(tower_id):
+		tier_tower_map[tower_tier].append(tower_id)
 
-func _register_tower_to_tower_tier_map(tower_id : int, tower_tier : int):
-	tier_tower_map[tower_tier].append(tower_id)
+func remove_tower_to_from_inventory(tower_id : int):
+	if current_tower_stock_inventory.has(tower_id):
+		current_tower_stock_inventory.erase(tower_id)
+	
+	if tier_tower_map.has(tower_id):
+		tier_tower_map.erase(tower_id)
+
 
 
 # on round end
 
 func _on_round_end_game_start_aware(curr_stageround, is_game_start):
 	call_deferred("roll_towers_in_shop")
+
+
+# towers per refresh
+
+func add_towers_per_refresh_amount_modifier(id : int, amount : int):
+	_flat_towers_per_shop_id_to_amount_map[id] = amount
+	
+	_set_final_towers_per_refresh(_calculate_final_towers_per_refresh())
+
+func remove_towers_per_refresh_amount_modifier(id : int):
+	_flat_towers_per_shop_id_to_amount_map.erase(id)
+	
+	_set_final_towers_per_refresh(_calculate_final_towers_per_refresh())
+
+
+func _calculate_final_towers_per_refresh() -> int:
+	var amount = 0
+	
+	for x in _flat_towers_per_shop_id_to_amount_map.values():
+		amount += x
+	
+	if amount > max_towers_per_shop:
+		amount = max_towers_per_shop
+	
+	return amount
+
+func _set_final_towers_per_refresh(arg_new_val : int):
+	last_calculated_towers_per_shop = arg_new_val
 
 
 # roll related
@@ -168,7 +217,7 @@ func roll_towers_in_shop(level_of_roll : int = level_manager.current_level):
 		_add_stock_to_tower_id(tower_id, 1)
 	
 	var tower_ids : Array = []
-	for i in 5:
+	for i in last_calculated_towers_per_shop:
 		tower_ids.append(_determine_tower_id_to_be_rolled(level_of_roll))
 	
 	buy_sell_level_roll_panel.update_new_rolled_towers(tower_ids)

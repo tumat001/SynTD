@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Green/LaNature/La_Nature.gd" type="Script" id=2]
+[ext_resource path="res://TowerRelated/Color_Green/LaNature/Assets/Anim/LaNature_Omni.png" type="Texture" id=3]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 16.6562, 7.58032 )
+
+[node name="La_Nature" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="TowerBase" parent="." index="0"]
+position = Vector2( 0, -1 )
+
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
+frames = SubResource( 1 )
+
+[node name="CollisionShape" parent="." index="1"]
+shape = SubResource( 2 )

@@ -28,6 +28,7 @@ const MapManager = preload("res://GameElementsRelated/MapManager.gd")
 const CombinationManager = preload("res://GameElementsRelated/CombinationManager.gd")
 const CombinationTopPanel = preload("res://GameHUDRelated/CombinationRelatedPanels/CombinationTopPanel/CombinationTopPanel.gd")
 
+
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var synergy_manager
 var inner_bottom_panel : InnerBottomPanel
@@ -47,6 +48,7 @@ var shop_manager : ShopManager
 var level_manager : LevelManager
 var combination_manager : CombinationManager
 var combination_top_panel : CombinationTopPanel
+var shared_passive_manager
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
@@ -86,6 +88,7 @@ func _ready():
 	map_manager = $MapManager
 	combination_manager = $CombinationManager
 	combination_top_panel = $CombinationTopPanel
+	shared_passive_manager = $SharedPassiveManager
 	
 	selection_notif_panel = $NotificationNode/SelectionNotifPanel
 	tower_empty_slot_notif_panel = $NotificationNode/TowerEmptySlotNotifPanel
@@ -181,6 +184,9 @@ func _ready():
 	shop_manager.tower_manager = tower_manager
 	shop_manager.gold_manager = gold_manager
 	
+	shop_manager.add_towers_per_refresh_amount_modifier(ShopManager.TowersPerShopModifiers.BASE_AMOUNT, 5)
+	
+	
 	# Level manager
 	level_manager.game_elements = self
 	level_manager.stage_round_manager = stage_round_manager
@@ -219,6 +225,8 @@ func _ready():
 	combination_manager.tower_manager = tower_manager
 	combination_manager.combination_top_panel = combination_top_panel
 	
+	# shared passive manager
+	shared_passive_manager.game_elements = self
 	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
@@ -230,10 +238,10 @@ func _ready():
 	
 	
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_9
+	level_manager.current_level = LevelManager.LEVEL_7
 	#level_manager.current_level = LevelManager.LEVEL_3
 	
-	#relic_manager.increase_relic_count_by(5, RelicManager.IncreaseRelicSource.ROUND)
+	relic_manager.increase_relic_count_by(1, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -250,17 +258,18 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.RE,
-			Towers.TESLA,
-			Towers.PING,
-			Towers.REAPER,
+			Towers.PESTILENCE,
+			Towers.BREWD,
+			Towers.SEEDER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.SPIKE,
 			Towers.IMPALE,
-			Towers.LA_CHASSEUR,
+			Towers.PINECONE,
 			Towers.SUNFLOWER,
-			Towers._704,
+			Towers.FRUIT_TREE,
+			Towers.BURGEON
 		])
 	even = !even
 

@@ -195,7 +195,7 @@ text = "0"
 
 [node name="BuySlotContainer" type="HBoxContainer" parent="HBoxContainer"]
 margin_left = 122.0
-margin_right = 642.0
+margin_right = 746.0
 margin_bottom = 80.0
 mouse_filter = 2
 custom_constants/separation = 0
@@ -224,7 +224,12 @@ margin_left = 416.0
 margin_right = 520.0
 margin_bottom = 80.0
 
-[node name="RelicBuyEtcPanel" parent="HBoxContainer" instance=ExtResource( 8 )]
+[node name="BuySlot06" parent="HBoxContainer/BuySlotContainer" instance=ExtResource( 6 )]
+margin_left = 520.0
+margin_right = 624.0
+margin_bottom = 80.0
+
+[node name="RelicBuyEtcPanel" parent="." instance=ExtResource( 8 )]
 margin_left = 647.0
 margin_right = 751.0
 size_flags_horizontal = 10
@@ -235,3 +240,4 @@ size_flags_horizontal = 10
 [connection signal="tower_bought" from="HBoxContainer/BuySlotContainer/BuySlot03" to="." method="_on_tower_bought"]
 [connection signal="tower_bought" from="HBoxContainer/BuySlotContainer/BuySlot04" to="." method="_on_tower_bought"]
 [connection signal="tower_bought" from="HBoxContainer/BuySlotContainer/BuySlot05" to="." method="_on_tower_bought"]
+[connection signal="tower_bought" from="HBoxContainer/BuySlotContainer/BuySlot06" to="." method="_on_tower_bought"]

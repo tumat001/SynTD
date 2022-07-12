@@ -1,4 +1,4 @@
-
+extends Reference
 
 enum EffectType {
 	ATTRIBUTES,

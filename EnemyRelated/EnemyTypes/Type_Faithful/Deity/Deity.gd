@@ -108,6 +108,7 @@ const knock_up_stun_duration : float = 2.5
 const knock_up_y_accel_amount : float = 40.0
 var knock_up_effect : TowerKnockUpEffect
 
+const knock_up_flat_damage_to_towers : float = 2.0
 
 #
 
@@ -529,6 +530,7 @@ func _cast_knock_up_ability(cooldown_amount : float):
 	for tower in tower_detecting_range_module.get_all_in_map_and_active_towers_in_range():
 		if tower != null:
 			tower.add_tower_effect(knock_up_effect)
+			tower.take_damage(knock_up_flat_damage_to_towers)
 	
 	_construct_knock_up_particle()
 	

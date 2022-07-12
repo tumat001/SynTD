@@ -93,6 +93,7 @@ const se_propager_image = preload("res://TowerRelated/Color_Green/SePropager/Ass
 const les_semis_image = preload("res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/Animations/LesSemis_E.png")
 const l_assaut_image = preload("res://TowerRelated/Color_Green/L'Assaut/Assets/ImageIn_TowerCard.png")
 const la_chasseur_image = preload("res://TowerRelated/Color_Green/La_Chasseur/Assets/Anim/LaChasseur_Omni.png")
+const la_nature_image = preload("res://TowerRelated/Color_Green/LaNature/Assets/Anim/LaNature_Omni.png")
 
 # BLUE
 const sprinkler_image = preload("res://TowerRelated/Color_Blue/Sprinkler/Sprinkler_E.png")
@@ -120,6 +121,8 @@ const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
 const amalgamator_image = preload("res://TowerRelated/Color_Black/Amalgamator/Amalgamator_Omni.png")
 
 enum {
+	NONE = 0,
+	
 	# GRAY (100)
 	MONO = 100,
 	SIMPLEX = 101,
@@ -285,7 +288,7 @@ const TowerTiersMap : Dictionary = {
 	PROMINENCE : 6,
 	ACCUMULAE : 6,
 	HEXTRIBUTE : 6,
-	#LA_NATURE : 6,
+	LA_NATURE : 6,
 }
 
 const tier_base_dmg_map : Dictionary = {
@@ -1376,7 +1379,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Projectiles gain extra range to be able to reach the marked target.",
 			"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
 			"The marked enemy is also stunned for 2.75 seconds.",
-			"Leader's attacks against the marked enemy on hit decreases the cooldown of Coordinated Attack by 1 second.",
+			"Leader's main attacks against the marked enemy on hit decreases the cooldown of Coordinated Attack by 1 second.",
 			"Cooldown: 13 s"
 			# THIS SAME PASSAGE is placed in leader's
 			# ability tooltip. If this is changed, then
@@ -2242,7 +2245,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Main attacks drain 0.35 ability potency from enemies hit for 7 seconds. This does not stack.",
+			"Main attacks remove 0.35 ability potency from enemies hit for 7 seconds. This does not stack.",
 			"Accumulae gains 1 Siphon stack per drain application.",
 			"",
 			"Upon reaching 15 Siphon stacks, Accumulae casts Salvo.",
@@ -2568,6 +2571,29 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
+	elif tower_id == LA_NATURE:
+		info = TowerTypeInformation.new("La Nature", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.GREEN)
+		info.tower_image_in_buy_card = la_nature_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0
+		info.base_pierce = 0
+		info.base_range = 0
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0
+		
+		
+		info.tower_descriptions = [
+			"Does not attack.",
+			"On behalf of nature, La Nature grants access to two abilities: Solar Spirit and Torrential Tempest.",
+			"",
+			"\"Great wonders of nature\""
+		]
+		
 #	elif tower_id == WYVERN:
 #		info = TowerTypeInformation.new("Wyvern", tower_id)
 #		info.tower_tier = TowerTiersMap[tower_id]
@@ -2731,3 +2757,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/L'Assaut/L'Assaut.tscn")
 	elif tower_id == LA_CHASSEUR:
 		return load("res://TowerRelated/Color_Green/La_Chasseur/LaChasseur.tscn")
+	elif tower_id == LA_NATURE:
+		return load("res://TowerRelated/Color_Green/LaNature/La_Nature.tscn")

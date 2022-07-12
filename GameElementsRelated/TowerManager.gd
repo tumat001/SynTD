@@ -54,6 +54,9 @@ signal tower_in_queue_free(tower)
 signal tower_being_sold(sellback_gold, tower)
 signal tower_being_absorbed_as_ingredient(tower)
 
+signal tower_lost_all_health(tower)
+signal tower_current_health_changed(tower, new_val)
+
 signal tower_being_dragged(tower)
 signal tower_dropped_from_dragged(tower)
 
@@ -204,6 +207,10 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("tower_active_in_map", self, "_tower_active_in_map", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("tower_not_in_active_map", self, "_tower_inactivated_from_map", [tower_instance], CONNECT_PERSIST)
 	
+	tower_instance.connect("on_tower_no_health", self, "_emit_tower_lost_all_health", [tower_instance], CONNECT_PERSIST)
+	tower_instance.connect("on_current_health_changed", self, "_emit_tower_current_health_changed", [tower_instance], CONNECT_PERSIST)
+	
+	
 	connect("ingredient_mode_turned_into", tower_instance, "_set_is_in_ingredient_mode", [], CONNECT_PERSIST)
 	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient", [], CONNECT_PERSIST)
 	connect("hide_ingredient_acceptability", tower_instance, "hide_acceptability_with_ingredient", [], CONNECT_PERSIST)
@@ -314,6 +321,15 @@ func _emit_tower_being_absorbed_as_ingredient(tower):
 
 func _register_ability_from_tower(ability, add_to_panel : bool = true):
 	ability_manager.add_ability(ability, add_to_panel)
+
+
+# Health related
+
+func _emit_tower_lost_all_health(tower):
+	emit_signal("tower_lost_all_health", tower)
+
+func _emit_tower_current_health_changed(new_val, tower):
+	emit_signal("tower_current_health_changed", tower, new_val)
 
 
 # Synergy Related

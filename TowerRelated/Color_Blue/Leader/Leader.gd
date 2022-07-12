@@ -202,7 +202,7 @@ func _construct_abilities():
 		"Projectiles gain extra range to be able to reach the marked target.",
 		"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
 		"The marked enemy is also stunned for %s seconds." % str(base_stun_duration),
-		"Attacking a marked enemy decreases the cooldown of Coordinated Attack by %s second." % [str(attacked_marked_enemy_cd_reduction)],
+		"Leader's main attacks against the marked enemy on hit decreases the cooldown of Coordinated Attack by %s second." % [str(attacked_marked_enemy_cd_reduction)],
 		"Cooldown: %s s" % str(coordinated_attack_cooldown)
 	]
 	coordinated_attack_ability.display_name = "Coordinated Attack"

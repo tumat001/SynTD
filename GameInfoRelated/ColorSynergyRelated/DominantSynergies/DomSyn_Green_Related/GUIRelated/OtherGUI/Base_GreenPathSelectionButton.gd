@@ -5,6 +5,9 @@ const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_R
 const BaseGreenPath = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GreenAdaptationRelated/BaseGreenPath.gd")
 const BaseGreenLayer = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GreenAdaptationRelated/BaseGreenLayer.gd")
 
+
+onready var path_icon = $PathIconContainer/PathIcon
+
 var _green_path : BaseGreenPath
 var _green_layer : BaseGreenLayer
 
@@ -16,6 +19,10 @@ func set_green_path_and_layer(arg_path : BaseGreenPath, arg_layer: BaseGreenLaye
 	
 	_green_layer.connect("on_available_green_paths_changed", self, "_on_available_green_paths_changed", [], CONNECT_PERSIST)
 	_on_available_green_paths_changed(_green_layer.available_green_paths)
+	
+	if path_icon != null:
+		path_icon.texture = _green_path.green_path_icon
+
 
 #
 

@@ -38,6 +38,9 @@ enum ActivationClauses {
 	TOWER_IN_BENCH = 1002,
 	SYNERGY_INACTIVE = 1003,
 	SYNERGY_LEVEL_INSUFFICIENT = 1004,
+	
+	
+	PASSIVE_BEHAVIOR__LA_NATURE__NO_ALIVE_LA_NATURES = 2001
 }
 
 enum CounterDecreaseClauses {
@@ -53,6 +56,8 @@ enum ShouldBeDisplayingClauses {
 	TOWER_IN_BENCH = 1002,
 	SYNERGY_INACTIVE = 1003,
 	SYNERGY_LEVEL_INSUFFICIENT = 1004,
+	
+	PASSIVE_BEHAVIOR__LA_NATURE__NO_ACTIVE_LA_NATURES = 2000
 }
 
 enum AutoCastableClauses {
@@ -78,6 +83,8 @@ var auto_castable_clauses : ConditionalClauses
 
 var icon : Texture setget set_icon
 
+var descriptions_source_func_name : String setget set_descriptions_source_func_name
+var descriptions_source setget set_descriptions_source
 var descriptions : Array = [] setget set_descriptions
 var display_name : String setget set_display_name
 
@@ -158,9 +165,13 @@ func is_time_ready_or_round_ready() -> bool:
 
 # Setting of cooldown
 
-func start_time_cooldown(arg_cooldown : float):
+func start_time_cooldown(arg_cooldown : float, ignore_self_cd : bool = false):
 	if is_timebound:
-		var cooldown = _get_cd_to_use(arg_cooldown)
+		var cooldown = 0
+		if !ignore_self_cd:
+			cooldown = _get_cd_to_use(arg_cooldown)
+		else:
+			cooldown = arg_cooldown
 		
 		_time_max_cooldown = cooldown
 		_time_current_cooldown = cooldown
@@ -262,6 +273,13 @@ func set_descriptions(arg_desc : Array):
 		descriptions.append(des)
 		
 	call_deferred("emit_signal", "descriptions_changed", arg_desc)
+
+func set_descriptions_source_func_name(arg_func_name : String):
+	descriptions_source_func_name = arg_func_name
+
+func set_descriptions_source(arg_source):
+	descriptions_source = arg_source
+
 
 func set_display_name(arg_name : String):
 	display_name = arg_name

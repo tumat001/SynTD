@@ -210,11 +210,12 @@ func _gold_changed(new_amount : int):
 
 func _power_fund_ability_activated():
 	power_fund_ability.on_ability_before_cast_start(power_fund_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+	var final_ap_scale : float = power_fund_ability.get_potency_to_use(1)
 	
 	var towers = game_elements.tower_manager.get_all_active_towers()
 	for tower in towers:
 		if tower != null and !tower.is_queued_for_deletion():
-			tower.add_tower_effect(power_fund_effect._get_copy_scaled_by(1))
+			tower.add_tower_effect(power_fund_effect._get_copy_scaled_by(final_ap_scale))
 	
 	gold_manager.decrease_gold_by(power_fund_gold_cost, GoldManager.DecreaseGoldSource.SYNERGY)
 	

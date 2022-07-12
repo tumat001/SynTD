@@ -217,7 +217,11 @@ func _construct_tooltip():
 
 func _update_tooltip():
 	if ability_tooltip != null:
-		ability_tooltip.descriptions = ability.descriptions
+		if ability.descriptions_source == null:
+			ability_tooltip.descriptions = ability.descriptions
+		else:
+			ability_tooltip.descriptions = ability.descriptions_source.call(ability.descriptions_source_func_name)
+		
 		ability_tooltip.header_left_text = ability.display_name
 		
 		if hotkey_num != -1:

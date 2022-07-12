@@ -21,13 +21,14 @@ func roll_buy_card_to_tower_id(tower_id : int):
 		if current_child != null:
 			current_child.queue_free()
 		
-		var buy_card_scene = TowerBuyCardScene.instance()
-		buy_card_scene.tower_information = tower_info
-		buy_card_scene.tower_inventory_bench = tower_inventory_bench
-		
-		add_child(buy_card_scene)
-		current_child = buy_card_scene
-		current_child.connect("tower_bought", self, "_on_tower_bought")
+		if tower_info != null:
+			var buy_card_scene = TowerBuyCardScene.instance()
+			buy_card_scene.tower_information = tower_info
+			buy_card_scene.tower_inventory_bench = tower_inventory_bench
+			
+			add_child(buy_card_scene)
+			current_child = buy_card_scene
+			current_child.connect("tower_bought", self, "_on_tower_bought")
 
 
 func _on_tower_bought(tower_type_info : TowerTypeInformation):

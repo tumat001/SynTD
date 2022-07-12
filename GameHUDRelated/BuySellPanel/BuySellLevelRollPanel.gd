@@ -25,6 +25,7 @@ onready var buy_slot_02 = $HBoxContainer/BuySlotContainer/BuySlot02
 onready var buy_slot_03 = $HBoxContainer/BuySlotContainer/BuySlot03
 onready var buy_slot_04 = $HBoxContainer/BuySlotContainer/BuySlot04
 onready var buy_slot_05 = $HBoxContainer/BuySlotContainer/BuySlot05
+onready var buy_slot_06 = $HBoxContainer/BuySlotContainer/BuySlot06
 
 onready var level_up_cost_label = $HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer2/LevelUpCostLabel
 onready var reroll_cost_label = $HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer/MarginContainer2/RerollCostLabel
@@ -35,7 +36,7 @@ onready var level_up_button = $HBoxContainer/LevelRerollContainer/HBoxContainer/
 onready var reroll_button = $HBoxContainer/LevelRerollContainer/RerollPanel/RerollButton
 onready var level_up_panel = $HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel
 onready var reroll_panel = $HBoxContainer/LevelRerollContainer/RerollPanel
-onready var relic_buy_etc_panel = $HBoxContainer/RelicBuyEtcPanel
+onready var relic_buy_etc_panel = $RelicBuyEtcPanel
 
 var gold_manager : GoldManager
 var relic_manager : RelicManager setget set_relic_manager
@@ -99,6 +100,7 @@ func _ready():
 	all_buy_slots.append(buy_slot_03)
 	all_buy_slots.append(buy_slot_04)
 	all_buy_slots.append(buy_slot_05)
+	all_buy_slots.append(buy_slot_06)
 	
 	for slot in all_buy_slots:
 		slot.tower_inventory_bench = tower_inventory_bench
@@ -111,11 +113,13 @@ func _on_RerollButton_pressed():
 
 # Assuming that the array received is 5 in length
 func update_new_rolled_towers(tower_ids_to_roll_to : Array):
-	buy_slot_01.roll_buy_card_to_tower_id(tower_ids_to_roll_to[0])
-	buy_slot_02.roll_buy_card_to_tower_id(tower_ids_to_roll_to[1])
-	buy_slot_03.roll_buy_card_to_tower_id(tower_ids_to_roll_to[2])
-	buy_slot_04.roll_buy_card_to_tower_id(tower_ids_to_roll_to[3])
-	buy_slot_05.roll_buy_card_to_tower_id(tower_ids_to_roll_to[4])
+	for i in all_buy_slots.size():
+		if tower_ids_to_roll_to.size() > i:
+			all_buy_slots[i].roll_buy_card_to_tower_id(tower_ids_to_roll_to[i])
+			all_buy_slots[i].visible = true
+		else:
+			all_buy_slots[i].roll_buy_card_to_tower_id(Towers.NONE)
+			all_buy_slots[i].visible = false
 	
 	var tower_card_combination_metadata : Dictionary = combination_manager.get_tower_buy_cards_metadata(tower_ids_to_roll_to) 
 	
@@ -195,6 +199,7 @@ func _on_tower_bought(tower_type_info : TowerTypeInformation):
 	emit_signal("tower_bought", tower_type_info.tower_type_id)
 
 
+
 # Gold updating related
 
 func _update_tower_cards_buyability_based_on_gold(current_gold : int):
@@ -238,4 +243,3 @@ func _on_current_level_changed(curr_level : int):
 	else:
 		reroll_panel.visible = true
 		level_up_panel.visible = true
-	
