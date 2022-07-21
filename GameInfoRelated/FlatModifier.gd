@@ -1,6 +1,16 @@
 extends "res://GameInfoRelated/Modifier.gd"
 
-var flat_modifier : float
+signal on_values_changed()
+
+var flat_modifier : float setget _set_flat_modifier
+
+#
+
+func _set_flat_modifier(arg_val):
+	flat_modifier = arg_val
+	emit_signal("on_values_changed")
+
+#
 
 func _init(arg_internal_id : int).(arg_internal_id):
 	flat_modifier = 0

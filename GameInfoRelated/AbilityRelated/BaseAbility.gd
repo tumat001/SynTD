@@ -230,6 +230,17 @@ func remove_all_time_cooldown():
 			emit_updated_is_ready_for_activation(0)
 
 
+func time_decreased_by_percent(arg_percent : float, percent_type : int):
+	var amount : float = 0
+	
+	if percent_type == PercentType.BASE or percent_type == PercentType.MAX:
+		amount = _time_max_cooldown * arg_percent / 100
+	elif percent_type == PercentType.CURRENT:
+		amount = _time_current_cooldown * arg_percent / 100
+	elif percent_type == PercentType.MISSING:
+		amount = (_time_max_cooldown - _time_current_cooldown) * arg_percent / 100
+	
+	time_decreased(amount)
 
 # round related
 

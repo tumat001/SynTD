@@ -19,6 +19,7 @@ var base_damage : float
 var base_damage_type : int
 var base_attk_speed : float
 var base_range : float
+var base_ability_potency : float = 1
 var base_pierce : float
 var on_hit_multiplier : float = 1
 

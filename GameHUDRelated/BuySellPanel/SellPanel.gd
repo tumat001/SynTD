@@ -43,4 +43,5 @@ func _sell_tower():
 	if tower != null:
 		tower.sell_tower()
 	
-	_is_mouse_inside = false
+	#_is_mouse_inside = false
+	_on_SellPanel_mouse_exited()

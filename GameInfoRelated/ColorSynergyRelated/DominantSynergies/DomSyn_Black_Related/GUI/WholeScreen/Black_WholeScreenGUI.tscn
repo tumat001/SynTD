@@ -1,0 +1,39 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/GUI/WholeScreen/Black_WholeScreenGUI.gd" type="Script" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/GUI/DescriptionPanel/Black_DescriptionPanel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/GUI/PathSelectionPanel/Black_PathSelectionPanel.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/GUI/SelectedPathPanel/Black_SelectedPathPanel.tscn" type="PackedScene" id=4]
+
+[node name="Black_WholeScreenGUI" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 0, 400 )
+size_flags_horizontal = 6
+custom_constants/margin_top = 75
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_top = 75.0
+margin_right = 350.0
+margin_bottom = 420.0
+custom_constants/separation = 0
+
+[node name="Black_PathSelectionPanel" parent="VBoxContainer" instance=ExtResource( 3 )]
+margin_right = 350.0
+margin_bottom = 64.0
+
+[node name="Black_SelectedPathPanel" parent="VBoxContainer" instance=ExtResource( 4 )]
+margin_left = 138.0
+margin_top = 64.0
+margin_right = 212.0
+margin_bottom = 165.0
+size_flags_horizontal = 6
+
+[node name="Black_DescriptionPanel" parent="VBoxContainer" instance=ExtResource( 2 )]
+margin_top = 165.0
+margin_right = 350.0
+margin_bottom = 345.0

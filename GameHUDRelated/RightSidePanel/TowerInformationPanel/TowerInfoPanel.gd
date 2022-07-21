@@ -124,7 +124,8 @@ func _create_extra_info_panel():
 	extra_info_panel.tower = tower
 	
 	var topleft_pos = get_global_rect().position
-	var pos_of_info_panel = Vector2(topleft_pos.x - 150, topleft_pos.y)
+	var size_x_of_extra_info_panel = extra_info_panel.rect_size.x
+	var pos_of_info_panel = Vector2(topleft_pos.x - size_x_of_extra_info_panel, topleft_pos.y)
 	
 	extra_info_panel.rect_global_position = pos_of_info_panel
 	get_tree().get_root().add_child(extra_info_panel)

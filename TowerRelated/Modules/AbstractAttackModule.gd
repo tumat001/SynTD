@@ -8,6 +8,8 @@ const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const RangeModule = preload("res://TowerRelated/Modules/RangeModule.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
+const DamageType = preload("res://GameInfoRelated/DamageType.gd")
+
 
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
@@ -77,6 +79,7 @@ var benefits_from_bonus_toughness_pierce : bool = true
 var benefits_from_bonus_resistance_pierce : bool = true
 
 var benefits_from_ingredient_effect : bool = true
+var benefits_from_any_effect : bool = true
 
 var base_attack_speed : float = 1
 var base_attack_wind_up : float = 0
@@ -179,6 +182,18 @@ var _last_calculated_attack_wind_up : float
 var _last_calculated_burst_pause : float
 var _last_calculated_attack_speed_as_delay : float
 
+
+# Note: these vars are not used calculations for actual
+# damage, but for
+# tooltip purposes (text fragment interpretation)
+#
+# ALSO ignores on_hit_damage_scale
+var last_calculated_total_flat_on_hit_damage : float
+var last_calculated_flat_elemental_on_hit_damage : float
+var last_calculated_flat_physical_on_hit_damage : float
+var last_calculated_flat_pure_on_hit_damage : float
+var damage_type_of_all_on_hits : int # set to -1 if not all have same damage type
+var all_on_hits_have_same_damage_type : bool
 
 # Damage tracker
 
@@ -283,6 +298,8 @@ func _ready():
 	calculate_final_armor_pierce()
 	calculate_final_toughness_pierce()
 	calculate_final_resistance_pierce()
+	
+	_update_last_calculated_on_hit_damages()
 
 
 func _set_range_module(new_module):
@@ -1064,6 +1081,54 @@ func _get_all_scaled_on_hit_damages() -> Dictionary:
 		scaled_on_hit_damages[extra_on_hit_uuid] = extras[extra_on_hit_uuid]
 	
 	return scaled_on_hit_damages
+
+
+# On hit damage as stats
+
+func _update_last_calculated_on_hit_damages():
+	var _last_calc_phy : float = 0
+	var _last_calc_ele : float = 0
+	var _last_calc_pure : float = 0
+	var _damage_type_of_all_on_hits : int = -1
+	
+	for on_hit_key_as_effect in on_hit_damage_adder_effects.keys():
+		var tower_effect = on_hit_damage_adder_effects[on_hit_key_as_effect]
+		var on_hit_dmg : OnHitDamage = tower_effect.on_hit_damage
+		
+		if on_hit_dmg.damage_as_modifier is FlatModifier:
+			if on_hit_dmg.damage_type == DamageType.PHYSICAL:
+				_last_calc_phy += on_hit_dmg.damage_as_modifier.flat_modifier
+			elif on_hit_dmg.damage_type == DamageType.ELEMENTAL:
+				_last_calc_ele += on_hit_dmg.damage_as_modifier.flat_modifier
+			elif on_hit_dmg.damage_type == DamageType.PURE:
+				_last_calc_pure += on_hit_dmg.damage_as_modifier.flat_modifier
+			
+			_damage_type_of_all_on_hits = on_hit_dmg.damage_type
+	
+	last_calculated_flat_physical_on_hit_damage = _last_calc_phy
+	last_calculated_flat_elemental_on_hit_damage = _last_calc_ele
+	last_calculated_flat_pure_on_hit_damage = _last_calc_pure
+	last_calculated_total_flat_on_hit_damage = _last_calc_ele + _last_calc_phy + _last_calc_pure
+	
+	all_on_hits_have_same_damage_type = is_equal_approx(last_calculated_total_flat_on_hit_damage, last_calculated_flat_elemental_on_hit_damage) or is_equal_approx(last_calculated_total_flat_on_hit_damage, last_calculated_flat_physical_on_hit_damage) or is_equal_approx(last_calculated_total_flat_on_hit_damage, last_calculated_flat_pure_on_hit_damage)
+	if all_on_hits_have_same_damage_type:
+		damage_type_of_all_on_hits = _damage_type_of_all_on_hits
+	else:
+		damage_type_of_all_on_hits = -1
+
+func _listen_for_values_change_on_on_hit_dmg_effect(arg_effect):
+	if arg_effect.on_hit_damage.damage_as_modifier is FlatModifier:
+		if !arg_effect.is_connected("on_value_of_on_hit_damage_modified", self, "_on_value_of_on_hit_dmg_changed"):
+			arg_effect.connect("on_value_of_on_hit_damage_modified", self, "_on_value_of_on_hit_dmg_changed", [], CONNECT_PERSIST)
+
+
+func _on_value_of_on_hit_dmg_changed():
+	_update_last_calculated_on_hit_damages()
+
+func _unlisten_for_values_change_on_on_hit_dmg_effect(arg_effect):
+	if arg_effect.is_connected("on_value_of_on_hit_damage_modified", self, "_on_value_of_on_hit_dmg_changed"):
+		arg_effect.disconnect("on_value_of_on_hit_damage_modified", self, "_on_value_of_on_hit_dmg_changed")
+
 
 
 # On Hit Effects / EnemyBaseEffect

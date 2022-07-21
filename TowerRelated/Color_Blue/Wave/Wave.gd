@@ -193,9 +193,9 @@ func _post_inherit_ready():
 	_construct_effects()
 	
 	add_tower_effect(wave_dmg_effect)
-	# force add
-	ability_attack_module.on_hit_damage_adder_effects[wave_dmg_effect.effect_uuid] = wave_dmg_effect
-	
+#	# force add
+#	ability_attack_module.on_hit_damage_adder_effects[wave_dmg_effect.effect_uuid] = wave_dmg_effect
+#
 	
 	_construct_and_connect_ability()
 	
@@ -213,7 +213,7 @@ func _construct_effects():
 	var on_hit_dmg : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.WAVE_ON_HIT_DMG, wave_dmg_modifier, DamageType.ELEMENTAL)
 	
 	wave_dmg_effect = TowerOnHitDamageAdderEffect.new(on_hit_dmg, StoreOfTowerEffectsUUID.WAVE_ON_HIT_DMG)
-
+	wave_dmg_effect.force_apply = true
 
 # cd and ap related
 

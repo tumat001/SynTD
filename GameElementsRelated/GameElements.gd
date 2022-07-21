@@ -61,6 +61,8 @@ var left_panel
 var round_damage_stats_panel : RoundDamageStatsPanel
 var map_manager : MapManager
 
+onready var top_left_coord_of_map = $TopLeft
+onready var bottom_right_coord_of_map = $BottomRight
 
 onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
 
@@ -258,15 +260,16 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.RE,
-			Towers.PESTILENCE,
-			Towers.BREWD,
+			Towers.BLOSSOM,
+			Towers.CANNON,
+			Towers.LEADER,
 			Towers.SEEDER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.SPIKE,
+			Towers.AMALGAMATOR,
+			Towers.MAGNETIZER,
 			Towers.IMPALE,
-			Towers.PINECONE,
 			Towers.SUNFLOWER,
 			Towers.FRUIT_TREE,
 			Towers.BURGEON
@@ -366,3 +369,11 @@ func _on_WholeScreenGUI_gui_input(event):
 func _hide_current_control_from_whole_screen_gui():
 	whole_screen_gui.hide_control(whole_screen_gui.current_showing_control)
 
+
+#
+
+func get_middle_coordinates_of_playable_map() -> Vector2:
+	return Vector2(_get_average(top_left_coord_of_map.global_position.x, bottom_right_coord_of_map.global_position.x), _get_average(top_left_coord_of_map.global_position.y, bottom_right_coord_of_map.global_position.y))
+
+func _get_average(arg_x : float, arg_y : float) -> float:
+	return (arg_x + arg_y) / 2

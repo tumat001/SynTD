@@ -39,6 +39,9 @@ var is_countbound : bool
 var count : int
 var count_reduced_by_main_attack_only : bool
 
+var is_roundbound : bool = false
+var round_count : int
+
 var status_bar_icon : Texture
 
 var force_apply : bool = false
@@ -83,3 +86,6 @@ func _configure_copy_to_match_self(copy):
 	copy.ignore_effect_shield_effect = ignore_effect_shield_effect
 	
 	copy.should_map_in_all_effects_map = should_map_in_all_effects_map
+	
+	copy.is_roundbound = is_roundbound
+	copy.round_count = round_count

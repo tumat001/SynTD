@@ -2,11 +2,23 @@ extends "res://GameInfoRelated/Modifier.gd"
 
 var PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
-var percent_amount : float
+signal on_values_changed()
+
+var percent_amount : float setget _set_percent_amount
 var flat_minimum : float
 var flat_maximum : float
 var ignore_flat_limits
 var percent_based_on
+
+#
+
+func _set_percent_amount(arg_val):
+	percent_amount = arg_val
+	emit_signal("on_values_changed")
+	
+
+
+#
 
 func _init(arg_internal_id : int).(arg_internal_id):
 	percent_amount = 100

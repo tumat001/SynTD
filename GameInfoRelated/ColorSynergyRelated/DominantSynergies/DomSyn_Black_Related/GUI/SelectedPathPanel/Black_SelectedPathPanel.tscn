@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/GUIAssets/Choice_Disarray_Icon.png" type="Texture" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/GUI/SelectedPathPanel/Black_SelectedPathPanel.gd" type="Script" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/GUIAssets/Choice_Border_Selected.png" type="Texture" id=3]
+
+[node name="Black_SelectedPathPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FancyBorderPic" type="TextureRect" parent="."]
+margin_right = 74.0
+margin_bottom = 101.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+
+[node name="Control" type="Control" parent="."]
+margin_right = 74.0
+margin_bottom = 101.0
+mouse_filter = 2
+
+[node name="PathIcon" type="TextureRect" parent="Control"]
+margin_left = 11.0
+margin_top = 11.0
+margin_right = 63.0
+margin_bottom = 63.0
+rect_min_size = Vector2( 52, 52 )
+mouse_filter = 2
+texture = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}

@@ -19,6 +19,7 @@ func update_display():
 	
 	if tower != null:
 		tooltip_body.descriptions = Towers.get_tower_info(tower.tower_id).tower_descriptions
+		tooltip_body.tower_for_text_fragment_interpreter = tower
 	else:
 		tooltip_body.descriptions = [""]
 	

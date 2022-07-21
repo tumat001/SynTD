@@ -67,7 +67,7 @@ func set_current_value(value : float):
 	if fill_foreground != null:
 		var ratio = current_value / max_value
 		
-		if yield_before_update:
+		if yield_before_update: #and is_instance_valid(self):
 			yield(get_tree(), "idle_frame")
 		
 		if !allow_overflow and ratio > 1:

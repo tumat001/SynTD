@@ -34,11 +34,13 @@ margin_bottom = 39.0
 size_flags_horizontal = 3
 custom_constants/margin_top = 1
 
-[node name="Label" type="Label" parent="ColumnContainer/MarginContainer"]
+[node name="Label" type="RichTextLabel" parent="ColumnContainer/MarginContainer"]
 margin_top = 15.0
 margin_right = 37.0
-margin_bottom = 24.0
+margin_bottom = 25.0
 size_flags_horizontal = 3
-custom_fonts/font = SubResource( 1 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-autowrap = true
+size_flags_vertical = 4
+custom_fonts/normal_font = SubResource( 1 )
+bbcode_enabled = true
+fit_content_height = true
+scroll_active = false

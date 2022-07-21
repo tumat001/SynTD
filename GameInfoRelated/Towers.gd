@@ -36,6 +36,9 @@ const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyDmgOverTimeEffect.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 
 # GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
@@ -1336,7 +1339,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 10
 		info.base_attk_speed = 0.24
 		info.base_pierce = 0
-		info.base_range = 115
+		info.base_range = 105
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -1654,11 +1657,27 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 0
 		info.base_range = 125
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0
+		info.on_hit_multiplier = 1
+		
+		
+		var interpreter = TextFragmentInterpreter.new()
+		interpreter.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter.display_body = true
+		
+		var ins = []
+		ins.append(NumericalTextFragment.new(3.25, false, DamageType.PHYSICAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1, DamageType.PHYSICAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1)) # stat basis does not matter here
+		
+		
+		interpreter.array_of_instructions = ins
 		
 		info.tower_descriptions = [
 			"Shoots an exploding fruit.",
-			"The explosion deals 3.25 physical damage to 3 enemies. The explosion benefits from base damage buffs, on hit damages and effects."
+			#"The explosion deals 3.25 physical damage to 3 enemies. The explosion benefits from base damage buffs, on hit damages and effects."
+			["The explosion deals |0| to 3 enemies. The explosion applies on hit effects.", [interpreter]]
 		]
 		
 		

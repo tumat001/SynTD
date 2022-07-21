@@ -205,12 +205,22 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 
 
 static func filter_untargetable_enemies(enemies, include_invis_enemies : bool = false) -> Array:
+	var delete_bucket : Array = []
+	
 	for enemy in enemies:
+		if enemy.is_queued_for_deletion():
+			delete_bucket.append(enemy)
+			continue
+		
 		if enemy.last_calculated_is_untargetable:
 			if include_invis_enemies and enemy.is_untargetable_only_from_invisibility():
 				continue
 			else:
-				enemies.erase(enemy)
+				delete_bucket.append(enemy)
+				#enemies.erase(enemy)
+	
+	for ent in delete_bucket:
+		enemies.erase(ent)
 	
 	return enemies
 

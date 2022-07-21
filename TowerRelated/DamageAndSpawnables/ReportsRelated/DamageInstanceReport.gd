@@ -9,7 +9,7 @@ var all_effective_on_hit_damages : Dictionary
 
 var dmg_instance_ref : WeakRef
 
-
+# non-overkill post mitigated damage
 func get_total_effective_damage(dmg_types_to_include : Array = all_damage_types) -> float:
 	var total : float = 0
 	
@@ -19,6 +19,7 @@ func get_total_effective_damage(dmg_types_to_include : Array = all_damage_types)
 	
 	return total
 
+# includes overkilling post mitigated damage
 func get_total_post_mitigated_damage(dmg_types_to_include : Array = all_damage_types) -> float:
 	var total : float = 0
 	

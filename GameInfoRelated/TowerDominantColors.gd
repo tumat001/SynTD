@@ -167,7 +167,7 @@ func _init():
 		"Hero relies on the color White to channel its powers.",
 	]),
 	
-	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [11, 8, 6, 2],
+	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [4, 3, 2, 1],#[11, 8, 6, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_black,
 	[

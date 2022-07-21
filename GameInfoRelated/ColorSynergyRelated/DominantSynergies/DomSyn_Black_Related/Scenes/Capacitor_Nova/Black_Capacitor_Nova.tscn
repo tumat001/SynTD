@@ -1,0 +1,32 @@
+[gd_scene load_steps=18 format=2]
+
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_01.png" type="Texture" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_02.png" type="Texture" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_03.png" type="Texture" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_11.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_12.png" type="Texture" id=5]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_04.png" type="Texture" id=6]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_06.png" type="Texture" id=7]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_05.png" type="Texture" id=8]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_07.png" type="Texture" id=9]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_08.png" type="Texture" id=10]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_09.png" type="Texture" id=11]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_10.png" type="Texture" id=12]
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/ExpandingAttackSprite.tscn" type="PackedScene" id=13]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_14.png" type="Texture" id=14]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_15.png" type="Texture" id=15]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_13.png" type="Texture" id=16]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 1 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 6 ), ExtResource( 8 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 12 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 16 ), ExtResource( 14 ), ExtResource( 15 ) ],
+"loop": true,
+"name": "default",
+"speed": 35.0
+} ]
+
+[node name="Black_Capacitor_Nova" instance=ExtResource( 13 )]
+frames = SubResource( 1 )
+frame = 3
+lifetime = 3.0
+scale_of_scale = 0.25

@@ -16,7 +16,7 @@ const _y_shift_of_particle : float = -12.0
 
 
 var own_timer : Timer
-var all_black_towers : Array # reference shared
+var all_black_towers : Array # reference shared from dom syn black
 var attk_speed_effect : TowerAttributesEffect
 
 func _init().(StoreOfTowerEffectsUUID.BLACK_ATTACK_SPEED_BUFF_GIVER):

@@ -309,8 +309,9 @@ func remove_faction_passive(passive):
 func pause_spawning(arg_duration : float = -1):
 	_spawning_paused = true
 	
-	if arg_duration > 0:
+	if arg_duration > 0 and _spawn_pause_timer.time_left < arg_duration:
 		_spawn_pause_timer.start(arg_duration)
+
 
 func unpause_spawning():
 	_spawning_paused = false

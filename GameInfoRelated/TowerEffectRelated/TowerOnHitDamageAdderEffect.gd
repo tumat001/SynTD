@@ -10,7 +10,11 @@ const img_on_hit_elemental = preload("res://GameHUDRelated/RightSidePanel/TowerI
 const img_on_hit_pure = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_OnHitPure.png")
 
 
-var on_hit_damage : OnHitDamage
+signal on_value_of_on_hit_damage_modified()
+
+
+
+var on_hit_damage : OnHitDamage setget _set_on_hit_damage
 
 func _init(arg_on_hit_damage : OnHitDamage, 
 		arg_effect_uuid : int).(EffectType.ON_HIT_DAMAGE,
@@ -22,6 +26,26 @@ func _init(arg_on_hit_damage : OnHitDamage,
 	
 	on_hit_damage.internal_id = arg_effect_uuid
 	on_hit_damage.damage_as_modifier.internal_id = arg_effect_uuid
+	
+	on_hit_damage.connect("on_damage_as_modifier_values_changed", self, "_on_on_hit_dmg_vals_changed", [], CONNECT_PERSIST)
+
+#
+
+func _set_on_hit_damage(arg_new_ohd):
+	if on_hit_damage != null:
+		on_hit_damage.disconnect("on_damage_as_modifier_values_changed", self, "_on_on_hit_dmg_vals_changed")
+	
+	on_hit_damage = arg_new_ohd
+	
+	if on_hit_damage != null:
+		on_hit_damage.connect("on_damage_as_modifier_values_changed", self, "_on_on_hit_dmg_vals_changed", [], CONNECT_PERSIST)
+	
+
+#
+
+func _on_on_hit_dmg_vals_changed():
+	emit_signal("on_value_of_on_hit_damage_modified")
+
 
 # Descriptions related
 
@@ -35,7 +59,9 @@ func _get_description() -> String:
 		return ("+" + modifier_desc + " " + type_name + " on hit damage")
 	elif modifier is PercentModifier:
 		var first_part : String = modifier_desc[0]
-		var second_part : String = modifier_desc[1]
+		var second_part : String 
+		if modifier_desc.size() > 1:
+			second_part = modifier_desc[1]
 		
 		var part1 = (first_part + " enemy health as " + type_name + " damage on hit,")
 		if second_part != null:

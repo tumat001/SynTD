@@ -45,6 +45,7 @@ func update_display():
 		$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.clear_descriptions_in_array()
 		for desc in tower_info.tower_descriptions:
 			$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.descriptions.append(desc)
+			$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.use_color_for_dark_background = false
 		$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.update_display()
 		
 		_update_on_hit_multiplier()
@@ -58,6 +59,7 @@ func _update_ingredients():
 		var desc = TooltipWithImageIndicatorDescription_Scene.instance()
 		desc.description = tower_info.ingredient_effect.description
 		desc.img_indicator = tower_info.ingredient_effect.tower_base_effect.effect_icon
+		desc._use_color_for_dark_background = false
 		
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.append(desc)
 	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.update_display()

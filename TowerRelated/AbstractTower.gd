@@ -326,6 +326,8 @@ var tower_limit_slots_taken : int = 1
 
 var last_calculated_has_commandable_attack_modules : bool
 
+var all_tower_abiltiies : Array
+
 # tracker
 
 var old_global_position : Vector2
@@ -391,6 +393,7 @@ onready var cannot_apply_pic = $DoesNotApplyPic
 
 func _initialize_stats_from_tower_info(arg_tower_info):
 	originally_has_ingredient = (arg_tower_info.ingredient_effect != null)
+	base_ability_potency = arg_tower_info.base_ability_potency
 
 func _init():
 	untargetability_clauses = ConditionalClauses.new()
@@ -758,7 +761,7 @@ func _on_round_end():
 		if module.range_module != null:
 			module.range_module.clear_all_detected_enemies()
 	
-	_remove_all_timebound_and_countbound_effects()
+	_remove_all_timebound_and_countbound_and_roundbound_effects()
 	
 	emit_signal("on_round_end")
 
@@ -786,7 +789,17 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 	if tower_base_effect.is_from_enemy:
 		# right now, only TowerAttrEffect is supported by this
 		tower_base_effect = tower_base_effect._get_copy_scaled_by(last_calculated_enemy_final_effect_vulnerability)
+	#
 	
+	var modules_to_remove_from_target : Array = []
+	for module in target_modules:
+		if (!module.benefits_from_ingredient_effect and tower_base_effect.is_ingredient_effect) or !module.benefits_from_any_effect:
+			modules_to_remove_from_target.append(module)
+	
+	for module in modules_to_remove_from_target:
+		target_modules.erase(module)
+	
+	#
 	
 	if tower_base_effect.is_from_enemy:
 		if last_calculated_has_effect_shield_against_enemies:
@@ -1123,14 +1136,22 @@ func _add_on_hit_damage_adder_effect(on_hit_adder : TowerOnHitDamageAdderEffect,
 			
 			if on_hit_adder.is_countbound:
 				module._all_countbound_effects[on_hit_adder.effect_uuid] = on_hit_adder
-
+			
+			module._listen_for_values_change_on_on_hit_dmg_effect(on_hit_adder)
+			module._update_last_calculated_on_hit_damages()
 
 func _remove_on_hit_damage_adder_effect(on_hit_adder_uuid : int, target_modules : Array):
 	for module in target_modules:
-		module.on_hit_damage_adder_effects.erase(on_hit_adder_uuid)
 		
-		if module._all_countbound_effects.has(on_hit_adder_uuid):
-			module._all_countbound_effects.erase(on_hit_adder_uuid)
+		if module.on_hit_damage_adder_effects.has(on_hit_adder_uuid):
+			var on_hit_adder = module.on_hit_damage_adder_effects[on_hit_adder_uuid]
+			module.on_hit_damage_adder_effects.erase(on_hit_adder_uuid)
+			
+			if module._all_countbound_effects.has(on_hit_adder_uuid):
+				module._all_countbound_effects.erase(on_hit_adder_uuid)
+			
+			module._unlisten_for_values_change_on_on_hit_dmg_effect(on_hit_adder)
+			module._update_last_calculated_on_hit_damages()
 
 
 func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
@@ -1629,17 +1650,23 @@ func _decrease_count_of_countbounded(module : AbstractAttackModule):
 func _remove_all_countbound_effects():
 	for effect_uuid in _all_uuid_tower_buffs_map.keys():
 		var effect : TowerBaseEffect = _all_uuid_tower_buffs_map[effect_uuid]
-		
+
 		if effect.is_countbound:
 			remove_tower_effect(effect)
 
 
-func _remove_all_timebound_and_countbound_effects():
+func _remove_all_timebound_and_countbound_and_roundbound_effects():
 	for effect_uuid in _all_uuid_tower_buffs_map.keys():
 		var effect : TowerBaseEffect = _all_uuid_tower_buffs_map[effect_uuid]
 		
 		if effect.is_countbound or effect.is_timebound:
 			remove_tower_effect(effect)
+		elif effect.is_roundbound:
+			effect.round_count -= 1
+			if effect.round_count <= 0:
+				remove_tower_effect(effect)
+
+
 
 # Ingredient Related
 
@@ -1898,6 +1925,9 @@ func remove_all_colors_from_tower(emit_change_signals : bool = true):
 # Abiliy reg and cdr related
 
 func register_ability_to_manager(ability : BaseAbility, add_to_panel : bool = true):
+	if all_tower_abiltiies != null:
+		all_tower_abiltiies.append(ability)
+	
 	emit_signal("register_ability", ability, add_to_panel)
 	
 	ability.connect("on_ability_before_cast_start", self, "_emit_on_tower_ability_before_cast_start", [ability], CONNECT_PERSIST)
@@ -1925,10 +1955,113 @@ func recalculate_final_base_damage():
 		if module == main_attack_module:
 			_emit_final_base_damage_changed()
 
-# Base Damage related
+# Stats related (Changes to any of these func names must
+# be done to the func names in TowerStatsTextFragment class
 
 func get_last_calculated_base_damage_of_main_attk_module() -> float:
-	return main_attack_module.last_calculated_final_damage
+	if main_attack_module != null:
+		return main_attack_module.last_calculated_final_damage
+	else:
+		return 0.0
+
+func get_base_base_damage_of_main_attk_module() -> float:
+	if main_attack_module != null:
+		return main_attack_module.base_damage
+	else:
+		return 0.0
+
+func get_bonus_base_damage_of_main_attk_module() -> float:
+	if main_attack_module != null:
+		return main_attack_module.last_calculated_final_damage - main_attack_module.base_damage
+	else:
+		return 0.0
+
+
+func get_last_calculated_attack_speed_of_main_attk_module() -> float:
+	if main_attack_module != null:
+		return main_attack_module.last_calculated_final_attk_speed
+	else:
+		return 0.0
+
+func get_base_attack_speed_of_main_attk_module() -> float:
+	if main_attack_module != null:
+		return main_attack_module.base_attack_speed
+	else:
+		return 0.0
+
+func get_bonus_attack_speed_of_main_attk_module() -> float:
+	if main_attack_module != null:
+		return main_attack_module.last_calculated_final_attk_speed - main_attack_module.base_attack_speed
+	else:
+		return 0.0
+
+
+func get_last_calculated_range_of_main_attk_module() -> float:
+	if main_attack_module != null:
+		return main_attack_module.range_module.last_calculated_final_range
+	else:
+		return 0.0
+
+func get_base_range_of_main_attk_module() -> float:
+	if main_attack_module != null:
+		return main_attack_module.range_module.base_range_radius
+	else:
+		return 0.0
+
+func get_bonus_range_of_main_attk_module() -> float:
+	if main_attack_module != null:
+		return main_attack_module.range_module.last_calculated_final_range - main_attack_module.range_module.base_range_radius
+	else:
+		return 0.0
+
+
+func get_last_calculated_ability_potency() -> float:
+	return last_calculated_final_ability_potency
+
+func get_base_ability_potency() -> float:
+	return base_ability_potency
+
+func get_bonus_ability_potency() -> float:
+	return last_calculated_final_ability_potency - base_ability_potency
+
+
+func get_last_calculated_total_flat_on_hit_damages() -> float:
+	if main_attack_module != null:
+		return main_attack_module.last_calculated_total_flat_on_hit_damage
+	else:
+		return 0.0
+
+func get_last_calculated_flat_elemental_on_hit_damages() -> float:
+	if main_attack_module != null:
+		return main_attack_module.last_calculated_flat_elemental_on_hit_damage
+	else:
+		return 0.0
+
+func get_last_calculated_flat_physical_on_hit_damages() -> float:
+	if main_attack_module != null:
+		return main_attack_module.last_calculated_flat_physical_on_hit_damage
+	else:
+		return 0.0
+
+func get_last_calculated_flat_pure_on_hit_damages() -> float:
+	if main_attack_module != null:
+		return main_attack_module.last_calculated_flat_pure_on_hit_damage
+	else:
+		return 0.0
+
+
+
+func get_all_on_hits_have_same_damage_type() -> bool:
+	if main_attack_module != null:
+		return main_attack_module.all_on_hits_have_same_damage_type
+	else:
+		return false
+
+func get_damage_type_of_all_on_hits() -> int:
+	if main_attack_module != null:
+		return main_attack_module.damage_type_of_all_on_hits
+	else:
+		return -1
 
 
 # Ability calculation related
