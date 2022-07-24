@@ -13,6 +13,8 @@ const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/Enemy
 const ExpandingAttackSprite = preload("res://MiscRelated/AttackSpriteRelated/ExpandingAttackSprite.gd")
 const ExpandingAttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/ExpandingAttackSprite.tscn")
 
+const ExecuteParticle_Scene = preload("res://TowerRelated/Color_Red/HexTribute/ExecuteParticle/Hextribute_ExecuteParticle.tscn")
+
 const Hex_Attk01 = preload("res://TowerRelated/Color_Red/HexTribute/HexTribute_Attks/HexTributeAttk_01.png")
 const Hex_Attk02 = preload("res://TowerRelated/Color_Red/HexTribute/HexTribute_Attks/HexTributeAttk_02.png")
 const Hex_Attk03 = preload("res://TowerRelated/Color_Red/HexTribute/HexTribute_Attks/HexTributeAttk_03.png")
@@ -49,6 +51,7 @@ onready var hextribute_crest : Sprite = $TowerBase/KnockUpLayer/Crest
 
 
 var original_attack_module
+var execute_attack_module : InstantDamageAttackModule
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -88,6 +91,28 @@ func _ready():
 	original_attack_module = attack_module
 	
 	hextribute_crest.use_parent_material = false
+	
+	#
+	
+	execute_attack_module = InstantDamageAttackModule_Scene.instance()
+	execute_attack_module.base_damage = 0
+	execute_attack_module.base_damage_type = info.base_damage_type
+	execute_attack_module.base_attack_speed = info.base_attk_speed
+	execute_attack_module.base_attack_wind_up = 0
+	execute_attack_module.is_main_attack = false
+	execute_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	execute_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	execute_attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	
+	#execute_attack_module.benefits_from_any_effect = false
+	execute_attack_module.can_be_commanded_by_tower = false
+	
+	execute_attack_module.set_image_as_tracker_image(preload("res://TowerRelated/Color_Red/HexTribute/ExecuteParticle/Assets/Hextribute_ExecuteParticle_08.png"))
+	
+	
+	add_attack_module(execute_attack_module)
+	
+	
 	
 	_post_inherit_ready()
 
@@ -205,12 +230,22 @@ func _create_attk_sprite(pos, stack_amount):
 
 
 func _attempt_execute_elite_enemy(enemy):
-	if enemy != null:
-		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE, original_attack_module)
+	if enemy != null and !enemy.is_queued_for_deletion():
+		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE, execute_attack_module)
+		_executed_enemy_by_hexes(enemy)
+		
+		
 
 func _attempt_execute_normal_enemy(enemy):
-	if enemy != null:
-		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE, original_attack_module)
+	if enemy != null and !enemy.is_queued_for_deletion():
+		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE, execute_attack_module)
+		_executed_enemy_by_hexes(enemy)
+
+func _executed_enemy_by_hexes(arg_enemy):
+	var particle = ExecuteParticle_Scene.instance()
+	particle.global_position = arg_enemy.global_position
+	
+	get_tree().get_root().add_child(particle)
 
 
 

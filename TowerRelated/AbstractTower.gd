@@ -393,7 +393,10 @@ onready var cannot_apply_pic = $DoesNotApplyPic
 
 func _initialize_stats_from_tower_info(arg_tower_info):
 	originally_has_ingredient = (arg_tower_info.ingredient_effect != null)
+	
 	base_ability_potency = arg_tower_info.base_ability_potency
+	base_percent_ability_cdr = arg_tower_info.base_percent_cdr
+
 
 func _init():
 	untargetability_clauses = ConditionalClauses.new()
@@ -2023,6 +2026,37 @@ func get_base_ability_potency() -> float:
 
 func get_bonus_ability_potency() -> float:
 	return last_calculated_final_ability_potency - base_ability_potency
+
+
+func get_last_calculated_percent_cdr() -> float:
+	return last_calculated_final_percent_ability_cdr
+
+func get_base_percent_cdr() -> float:
+	return base_percent_ability_cdr
+
+func get_bonus_percent_cdr() -> float:
+	return last_calculated_final_percent_ability_cdr - base_percent_ability_cdr
+
+
+func get_last_calculated_bullet_pierce() -> float:
+	if main_attack_module != null and main_attack_module is BulletAttackModule:
+		return main_attack_module.last_calculated_final_pierce
+	else:
+		return 0.0
+
+func get_base_bullet_pierce() -> float:
+	if main_attack_module != null and main_attack_module is BulletAttackModule:
+		return main_attack_module.base_pierce
+	else:
+		return 0.0
+
+func get_bonus_bullet_pierce() -> float:
+	if main_attack_module != null and main_attack_module is BulletAttackModule:
+		return main_attack_module.last_calculated_final_pierce - main_attack_module.base_pierce
+	else:
+		return 0.0
+
+
 
 
 func get_last_calculated_total_flat_on_hit_damages() -> float:

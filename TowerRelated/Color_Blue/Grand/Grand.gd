@@ -116,7 +116,7 @@ func _final_ap_changed():
 	var final_pierce_bonus : int = 0
 	var extra_ap : float = last_calculated_final_ability_potency - 1
 	if extra_ap > 0:
-		final_pierce_bonus = (extra_ap * 4) * bonus_pierce_per_025_ap
+		final_pierce_bonus = round((extra_ap * 4) * bonus_pierce_per_025_ap)
 	
 	pierce_mod.flat_modifier = final_pierce_bonus
 	

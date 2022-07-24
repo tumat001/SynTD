@@ -329,7 +329,7 @@ func _on_final_ap_changed_p():
 
 func _set_mark_amount_amount(arg_pierce : int):
 	base_mark_count_limit = arg_pierce
-	current_mark_count_limit = int(round(arg_pierce + ((last_calculated_final_ability_potency - 1) * 2)))
+	current_mark_count_limit = int(round(arg_pierce + ((last_calculated_final_ability_potency - base_ability_potency) * 2)))
 	
 	seek_attack_module.pierce = current_mark_count_limit
 

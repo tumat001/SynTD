@@ -76,9 +76,9 @@ func _construct_modules():
 	
 	# Orb related
 	var orb_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	orb_attack_module.base_damage = 1.5
+	orb_attack_module.base_damage = 1.25
 	orb_attack_module.base_damage_type = DamageType.PHYSICAL
-	orb_attack_module.base_attack_speed = 1.5
+	orb_attack_module.base_attack_speed = 1.25
 	orb_attack_module.base_attack_wind_up = 0
 	orb_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	orb_attack_module.is_main_attack = true
@@ -87,11 +87,11 @@ func _construct_modules():
 	orb_attack_module.base_proj_life_distance = 135
 	orb_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	orb_attack_module.position.y -= 22
-	orb_attack_module.on_hit_damage_scale = 0
-	orb_attack_module.benefits_from_bonus_attack_speed = false
+	orb_attack_module.on_hit_damage_scale = 1
+	orb_attack_module.benefits_from_bonus_attack_speed = true
 	orb_attack_module.benefits_from_bonus_base_damage = true
-	orb_attack_module.benefits_from_bonus_on_hit_damage = false
-	orb_attack_module.benefits_from_bonus_on_hit_effect = false
+	orb_attack_module.benefits_from_bonus_on_hit_damage = true
+	orb_attack_module.benefits_from_bonus_on_hit_effect = true
 	orb_attack_module.benefits_from_bonus_pierce = true
 	
 	var bullet_shape = CircleShape2D.new()
@@ -122,7 +122,7 @@ func _construct_modules():
 	dia_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	var diamond_attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	diamond_attack_module.base_damage_scale = 0.75
+	diamond_attack_module.base_damage_scale = 0.5
 	diamond_attack_module.base_damage = 2 / diamond_attack_module.base_damage_scale
 	diamond_attack_module.base_damage_type = DamageType.PHYSICAL
 	diamond_attack_module.base_attack_speed = 0.85
@@ -135,7 +135,7 @@ func _construct_modules():
 	diamond_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	diamond_attack_module.position.y -= 22
 	diamond_attack_module.on_hit_damage_scale = 2
-	diamond_attack_module.on_hit_effect_scale = 2
+	diamond_attack_module.on_hit_effect_scale = 1
 	diamond_attack_module.benefits_from_bonus_attack_speed = false
 	diamond_attack_module.benefits_from_bonus_base_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_damage = true
@@ -170,8 +170,8 @@ func _construct_modules():
 	bolt_range_module.set_current_targeting(Targeting.RANDOM)
 	
 	var bolt_attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
-	bolt_attack_module.base_damage_scale = 0.75
-	bolt_attack_module.base_damage = 1.25 / bolt_attack_module.base_damage_scale
+	bolt_attack_module.base_damage_scale = 1.25
+	bolt_attack_module.base_damage = 1 / bolt_attack_module.base_damage_scale
 	bolt_attack_module.base_damage_type = DamageType.ELEMENTAL
 	bolt_attack_module.base_attack_speed = 1.3
 	bolt_attack_module.base_attack_wind_up = 0

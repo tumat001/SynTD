@@ -243,7 +243,7 @@ func _ready():
 	level_manager.current_level = LevelManager.LEVEL_7
 	#level_manager.current_level = LevelManager.LEVEL_3
 	
-	relic_manager.increase_relic_count_by(1, RelicManager.IncreaseRelicSource.ROUND)
+	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -258,21 +258,21 @@ func _on_BuySellLevelRollPanel_reroll():
 	#shop_manager.roll_towers_in_shop_with_cost()
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHAOS,
-			Towers.RE,
-			Towers.BLOSSOM,
-			Towers.CANNON,
+			Towers.WAVE,
 			Towers.LEADER,
-			Towers.SEEDER,
+			Towers.TRANSPORTER,
+			Towers.REAPER,
+			Towers.SHOCKER,
+			Towers.ADEPT,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.AMALGAMATOR,
-			Towers.MAGNETIZER,
-			Towers.IMPALE,
-			Towers.SUNFLOWER,
-			Towers.FRUIT_TREE,
-			Towers.BURGEON
+			Towers.ACCUMULAE,
+			Towers.CHAOS,
+			Towers.HEXTRIBUTE,
+			Towers.PESTILENCE,
+			Towers.BREWD,
+			Towers.TIME_MACHINE
 		])
 	even = !even
 

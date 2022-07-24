@@ -66,10 +66,12 @@ var is_showing_member_connections : bool = false
 const base_stun_duration : float = 2.75
 var stun_effect : EnemyStunEffect
 
+var _tower_info : TowerTypeInformation
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.LEADER)
+	_tower_info = info
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
@@ -197,14 +199,15 @@ func _construct_abilities():
 	
 	coordinated_attack_ability.tower = self
 	
-	coordinated_attack_ability.descriptions = [
-		"Orders all members to attack the marked enemy once, regardless of range.",
-		"Projectiles gain extra range to be able to reach the marked target.",
-		"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
-		"The marked enemy is also stunned for %s seconds." % str(base_stun_duration),
-		"Leader's main attacks against the marked enemy on hit decreases the cooldown of Coordinated Attack by %s second." % [str(attacked_marked_enemy_cd_reduction)],
-		"Cooldown: %s s" % str(coordinated_attack_cooldown)
-	]
+	coordinated_attack_ability.descriptions = _tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION]
+#	coordinated_attack_ability.descriptions = [
+#		"Orders all members to attack the marked enemy once, regardless of range.",
+#		"Projectiles gain extra range to be able to reach the marked target.",
+#		"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
+#		"The marked enemy is also stunned for %s seconds." % str(base_stun_duration),
+#		"Leader's main attacks against the marked enemy on hit decreases the cooldown of Coordinated Attack by %s second." % [str(attacked_marked_enemy_cd_reduction)],
+#		"Cooldown: %s s" % str(coordinated_attack_cooldown)
+#	]
 	coordinated_attack_ability.display_name = "Coordinated Attack"
 	
 	coordinated_attack_ability.set_properties_to_auto_castable()

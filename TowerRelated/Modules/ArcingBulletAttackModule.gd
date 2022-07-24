@@ -15,3 +15,9 @@ func _adjust_bullet_physics_settings(bullet : BaseBullet, arg_enemy_pos : Vector
 		bullet.final_location = arg_enemy_pos
 		bullet.collide_with_any = collide_with_any
 		bullet.rotation_per_second = bullet_rotation_per_second
+
+func construct_damage_instance():
+	if !collide_with_any:
+		return null
+	else:
+		return .construct_damage_instance()

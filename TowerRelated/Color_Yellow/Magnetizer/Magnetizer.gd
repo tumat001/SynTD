@@ -86,7 +86,7 @@ func _ready():
 	magnet_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	magnet_attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
-	magnet_attack_module.benefits_from_bonus_on_hit_damage = false
+	magnet_attack_module.benefits_from_bonus_on_hit_damage = true
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 7

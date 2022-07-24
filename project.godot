@@ -44,7 +44,6 @@ EnemyConstants="*res://EnemyRelated/EnemyConstants.gd"
 StoreOfMaps="*res://MapsRelated/StoreOfMaps.gd"
 StoreOfEnemyMetadataIdsFromIns="*res://EnemyRelated/StoreOfEnemyMetadataIdsFromIns.gd"
 StoreOfSharedPassiveUuid="*res://GameInfoRelated/SharedTowerPassiveRelated/StoreOfSharedPassiveUUID.gd"
-TowerStatsToTextInterpreter="*res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd"
 
 [debug]
 

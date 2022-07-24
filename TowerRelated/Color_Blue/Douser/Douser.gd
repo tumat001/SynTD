@@ -119,6 +119,7 @@ func _ready():
 	buffing_attack_module.position.y -= 16
 	
 	buffing_attack_module.can_be_commanded_by_tower = false
+	buffing_attack_module.benefits_from_bonus_pierce = false
 	
 	buffing_attack_module.is_displayed_in_tracker = false
 	

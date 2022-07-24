@@ -21,6 +21,8 @@ onready var left_label : Label = $VBoxContainer/HeaderMarginer/LabelMarginer/Lef
 onready var middle_label : Label = $VBoxContainer/HeaderMarginer/LabelMarginer/MiddleLabel
 onready var right_label : Label = $VBoxContainer/HeaderMarginer/LabelMarginer/RightLabel
 
+var tower_associated_with_ability
+
 
 func update_display():
 	rect_min_size.y = 0
@@ -30,6 +32,7 @@ func update_display():
 	
 	tooltip_body.default_font_color = body_color
 	tooltip_body.descriptions = desc_to_use
+	tooltip_body.tower_for_text_fragment_interpreter = tower_associated_with_ability 
 	tooltip_body.update_display()
 	
 	_set_label_properties(left_label, header_left_text, header_left_color)

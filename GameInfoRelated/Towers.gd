@@ -39,6 +39,7 @@ const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated
 const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 
 # GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
@@ -309,7 +310,7 @@ const tier_attk_speed_map : Dictionary = {
 	2 : 25, #23
 	3 : 35, #30
 	
-	4 : 45, #45
+	4 : 45,
 	5 : 60,
 	6 : 70,
 }
@@ -508,6 +509,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Directs a constant pure energy beam at a single target.",
+			"The energy beam's on hit damages are only 20% effective.",
 			"",
 			"\"First Iteration\""
 		]
@@ -528,8 +530,22 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
+		# INS START
+		
+		var interpreter_for_pierce = TextFragmentInterpreter.new()
+		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_pierce.display_body = true
+		interpreter_for_pierce.header_description = "enemies"
+		
+		var ins_for_pierce = []
+		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_pierce.array_of_instructions = ins_for_pierce
+		
+		# INS END
+		
 		info.tower_descriptions = [
-			"Shoots a dart that pierces through 5 enemies."
+			["Shoots a dart that pierces through |0|.", [interpreter_for_pierce]]
 		]
 		
 		# Ingredient related
@@ -608,21 +624,69 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = chaos_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 1.5
-		info.base_attk_speed = 1.5
+		info.base_damage = 1.25
+		info.base_attk_speed = 1.25
 		info.base_pierce = 1
 		info.base_range = 130
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0
+		info.on_hit_multiplier = 1
+		
+		# INS START
+		
+		var interpreter_for_dia = TextFragmentInterpreter.new()
+		interpreter_for_dia.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_dia.display_body = true
+		
+		var ins_for_dia = []
+		ins_for_dia.append(NumericalTextFragment.new(2, false, DamageType.PHYSICAL))
+		ins_for_dia.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_dia.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.5, DamageType.PHYSICAL))
+		ins_for_dia.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_dia.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 2)) # stat basis does not matter here
+		
+		interpreter_for_dia.array_of_instructions = ins_for_dia
+		
+		#
+		
+		var interpreter_for_bolt = TextFragmentInterpreter.new()
+		interpreter_for_bolt.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_bolt.display_body = true
+		
+		var ins_for_bolt = []
+		ins_for_bolt.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
+		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1.25, DamageType.ELEMENTAL))
+		
+		interpreter_for_bolt.array_of_instructions = ins_for_bolt
+		
+		#
+		
+		var interpreter_for_sword = TextFragmentInterpreter.new()
+		interpreter_for_sword.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_sword.display_body = true
+		
+		var ins_for_sword = []
+		ins_for_sword.append(NumericalTextFragment.new(20, false, DamageType.PHYSICAL))
+		ins_for_sword.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_sword.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 15, DamageType.PHYSICAL))
+		
+		interpreter_for_sword.array_of_instructions = ins_for_sword
+		
+		
+		# INS END
 		
 		info.tower_descriptions = [
-			"Has many attacks. Shoots orbs, diamonds, and bolts. Stats shown are for the orbs.",
-			"Only the orbs are affected by targeting options. The orbs are considered to be CHAOS's main attack.",
-			"Only the diamonds benefit from on hit damages and effects, and are applied with 200% efficiency.",
-			"Only the bolts benefit from attack speed buffs.",
-			"All benefit from range and base damage buffs. Diamonds and bolts benefit from base damage buffs at 75% efficiency.",
-			"Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target. The sword deals 20 + 1500% of CHAOS's bonus base damage as physical damage."
+			"Has many attacks. Shoots orbs, diamonds, and bolts at different rates. Stats shown are for the orbs.",
+			"Only the orbs can be controlled by targeting options. The orbs are considered to be CHAOS's main attack.",
+			"",
+			"Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target.",
+			"",
+			["Diamond damage: |0|. Applies on hit effects.", [interpreter_for_dia]],
+			["Bolt damage: |0|. Does not apply on hit effects.", [interpreter_for_bolt]],
+			["Sword damage: |0|. Does not apply on hit effects.", [interpreter_for_sword]]
 		]
+		
+		#
 		
 		var tower_base_effect : TowerChaosTakeoverEffect = TowerChaosTakeoverEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(CHAOS, tower_base_effect)
@@ -647,15 +711,62 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 0
 		
+		# INS START
+		
+		var interpreter_for_mark_count = TextFragmentInterpreter.new()
+		interpreter_for_mark_count.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_mark_count.display_body = true
+		interpreter_for_mark_count.header_description = "enemies"
+		interpreter_for_mark_count.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.ROUND
+		
+		var ins_for_mark_count = []
+		ins_for_mark_count.append(NumericalTextFragment.new(4, false, -1))
+		ins_for_mark_count.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_mark_count.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.BONUS, 2.0, -1))
+		
+		interpreter_for_mark_count.array_of_instructions = ins_for_mark_count
+		
+		#
+		
+		var interpreter_for_normal_shot = TextFragmentInterpreter.new()
+		interpreter_for_normal_shot.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_normal_shot.display_body = true
+		
+		var ins_for_normal_shot = []
+		ins_for_normal_shot.append(NumericalTextFragment.new(5, false, DamageType.PHYSICAL))
+		ins_for_normal_shot.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_normal_shot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1.0, DamageType.PHYSICAL))
+		ins_for_normal_shot.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_normal_shot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 2.0))
+		
+		interpreter_for_normal_shot.array_of_instructions = ins_for_normal_shot
+		
+		#
+		
+		var interpreter_for_emp_shot = TextFragmentInterpreter.new()
+		interpreter_for_emp_shot.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_emp_shot.display_body = true
+		
+		var ins_for_emp_shot = []
+		ins_for_emp_shot.append(NumericalTextFragment.new(10, false, DamageType.PHYSICAL))
+		ins_for_emp_shot.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_emp_shot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1.0, DamageType.PHYSICAL))
+		ins_for_emp_shot.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_emp_shot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 4.0))
+		
+		interpreter_for_emp_shot.array_of_instructions = ins_for_emp_shot
+		
+		
+		# INS END
+		
 		info.tower_descriptions = [
 			"Stats shown are for the arrow.",
-			"Shoots an arrow that releases a ring. The ring marks up to 4 unmarked enemies.",
+			["Shoots an arrow that releases a ring. The ring marks up to |0|.", [interpreter_for_mark_count]],
 			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
 			"",
-			"Shots deal 5 physical damage, benefit from base damage bonuses and on hit effects. Benefits from on hit damages at 200% efficiency.",
-			"If only 1 enemy is marked, the shot is empowered, dealing 10 damage, and on hit damages become 400% effective instead.",
-			"Ability potency increases the amount of marks per ring (0.5 ap -> +1 mark)."
+			["Shots deal |0|. Applies on hit effects.", [interpreter_for_normal_shot]],
+			["If only 1 enemy is marked, the shot instead deals |0| instead.", [interpreter_for_emp_shot]],
 		]
 		
 		
@@ -681,8 +792,22 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
+		# INS START
+		
+		var interpreter_for_pierce = TextFragmentInterpreter.new()
+		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_pierce.display_body = true
+		interpreter_for_pierce.header_description = "enemies"
+		
+		var ins_for_pierce = []
+		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_pierce.array_of_instructions = ins_for_pierce
+		
+		# INS END
+		
 		info.tower_descriptions = [
-			"Shoots coins at enemies. Coins can hit up to 2 enemies.",
+			["Shoots coins at enemies. Coins can hit up to |0|.", [interpreter_for_pierce]],
 			"When the coin hits an enemy, it turns to its left.",
 			"When a coin kills 2 enemies, it grants 1 gold to the player. This effect can be triggered by a coin any amount of times.",
 			"The tower has a 1/50 chance of shooting a gold coin, and when it does, the tower grants 1 gold to the player.",
@@ -711,16 +836,87 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
 		
+		# INS START
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(5, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		#
+		
+		var interpreter_for_ele_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_ele_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_ele_on_hit.display_body = true
+		
+		var ins_for_ele_on_hit = []
+		ins_for_ele_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL))
+		ins_for_ele_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.2))
+		ins_for_ele_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_ele_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_ele_on_hit.array_of_instructions = ins_for_ele_on_hit
+		
+		#
+		
+		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+		interpreter_for_attk_speed.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_attk_speed.display_body = true
+		
+		var ins_for_attk_speed = []
+		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "", 0, true))
+		ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, TowerStatTextFragment.STAT_BASIS.TOTAL, 25, -1, true))
+		ins_for_attk_speed.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+		
+		#
+		
+		var interpreter_for_range = TextFragmentInterpreter.new()
+		interpreter_for_range.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_range.display_body = true
+		
+		var ins_for_range = []
+		ins_for_range.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE))
+		ins_for_range.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.RANGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.1))
+		ins_for_range.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_range.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_range.array_of_instructions = ins_for_range
+		
+		
+		# INS END
+		
 		info.tower_descriptions = [
-			"Does not attack, but instead casts an aura that buffs towers in range every 5 seconds for 7 seconds.",
-			"Grants 20% of its total base damage as an elemental on hit damage buff.",
-			"Grants 25% x 100 of its total attack speed as percent attack speed (of receiving tower).",
-			"Grants 10% of its total range as bonus range.",
-			"These bonuses are increased by ability potency.",
+			["Does not attack, but instead casts an aura that buffs towers in range every |0| for 4 seconds.", [interpreter_for_cooldown]],
+			["Grants |0| as an elemental on hit damage buff.", [interpreter_for_ele_on_hit]],
+			["Grants |0| as percent attack speed buff.", [interpreter_for_attk_speed]],
+			["Grants |0| as bonus range.", [interpreter_for_range]],
 			"Note: Does not grant these buffs to another Beacon-Dish. Also overrides any existing Beacon-Dish buffs a tower may have.",
 			"",
 			"\"Is it a beacon, or a dish?\""
 		]
+		
+#		info.tower_descriptions = [
+#			"Does not attack, but instead casts an aura that buffs towers in range every 5 seconds for 4 seconds.",
+#			"Grants 20% of its total base damage as an elemental on hit damage buff.",
+#			"Grants 25% x 100 of its total attack speed as percent attack speed (of receiving tower).",
+#			"Grants 10% of its total range as bonus range.",
+#			"These bonuses are increased by ability potency.",
+#			"Note: Does not grant these buffs to another Beacon-Dish. Also overrides any existing Beacon-Dish buffs a tower may have.",
+#			"",
+#			"\"Is it a beacon, or a dish?\""
+#		]
 		
 		var range_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_BEACON_DISH)
 		range_attr_mod.flat_modifier = 45
@@ -783,11 +979,35 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
+		# INS START
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", 25))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		#
+		
+		var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_perc_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_perc_on_hit.display_body = false
+		
+		var ins_for_perc_on_hit = []
+		ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", 25, true))
+		
+		interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
+		
+		
+		# INS END
+		
 		info.tower_descriptions = [
 			"When idle, Charge accumulates energy. Charge's energy is set to 50% when the round starts.",
 			"Upon attacking, Charge expends all energy to deal bonus physical on hit damage based on expended energy.",
-			"Max flat physical on hit damage portion: 25",
-			"Max percent enemy health physical on hit damage portion: 25%",
+			["Max flat physical on hit damage portion: |0|", [interpreter_for_flat_on_hit]],
+			["Max percent enemy health physical on hit damage portion: |0|", [interpreter_for_perc_on_hit]],
 			"",
 			"Increasing this tower's total attack speed compared to its base attack speed increases the rate of energy accumulation."
 		]
@@ -816,16 +1036,43 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 1
 		info.base_range = 155
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0
+		info.on_hit_multiplier = 1
+		
+		# ins start
+		
+		var interpreter = TextFragmentInterpreter.new()
+		interpreter.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter.display_body = true
+		
+		var outer_ins = []
+		var ins = []
+		ins.append(NumericalTextFragment.new(9, false, DamageType.ELEMENTAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1, DamageType.ELEMENTAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1)) # stat basis does not matter here
+		
+		outer_ins.append(ins)
+		
+		outer_ins.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		outer_ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter.array_of_instructions = outer_ins
+		
+		
+		# ins end
 		
 		info.tower_descriptions = [
 			"Stats shown are for the magnets.",
-			"When shooting, Magnetizer alternates between blue magnet and red magnet. Magnetizer cycles to the next targeting option after shooting a magnet.",
+			"When shooting, Magnetizer alternates between blue magnet and red magnet. Magnetizer switches to the next targeting option after shooting a magnet.",
 			"Magnets stick to the first enemy they hit. When the enemy they are stuck to dies, they drop on the ground.",
 			"When there is at least one blue and one red magnet that has hit an enemy or is on the ground, Magnetizer casts Magnetize.",
 			"",
 			"Magnetize: Calls upon all of this tower's non traveling magnets to form a beam between their opposite types, consuming them in the process.",
-			"The beam deals 9 elemental damage. The beam benefits from base damage buffs, on hit damages and effects. Damage scales with ability potency."
+			#"The beam deals 9 elemental damage. The beam benefits from base damage buffs, on hit damages and effects. Damage scales with ability potency.",
+			["The beam deals |0|. Applies on hit effects", [interpreter]],
+			
 		]
 		
 		
@@ -889,12 +1136,27 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		# ins start
+		
+		var interpreter_for_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_on_hit.display_body = false
+		
+		var ins_for_on_hit = []
+		ins_for_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 0.5))
+		
+		interpreter_for_on_hit.array_of_instructions = ins_for_on_hit
+		
+		
+		# ins end
+		
 		info.tower_descriptions = [
 			"Heats up its shots, causing them to burn enemies hit.",
-			"Burns enemies for 0.5 elemental damage per second for 5 seconds."
+			["Burns enemies for |0| per second for 5 seconds.", [interpreter_for_on_hit]]
 		]
 		
-		# Ingredient related TODO REPLACE THIS
+		
+		# Ingredient related
 		var burn_dmg : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_EMBER)
 		burn_dmg.flat_modifier = 0.5
 		
@@ -928,10 +1190,25 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
+		# ins start
+		
+		var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_perc_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_perc_on_hit.display_body = false
+		
+		var ins_for_perc_on_hit = []
+		ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "max health damage", 25, true))
+		
+		interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
+		
+		
+		# ins end
+		
 		info.tower_descriptions = [
 			"Lava Jet's attacks ignore 3 toughness.",
 			"",
-			"On its 5th main attack, Lava Jet releases a beam of lava that deals 25% of the enemy's max health as elemental damage, up to 40."
+			#"On its 5th main attack, Lava Jet releases a beam of lava that deals 25% of the enemy's max health as elemental damage, up to 40."
+			["On its 5th main attack, Lava Jet releases a beam of lava that deals |0|, up to 40.", [interpreter_for_perc_on_hit]]
 		]
 		
 		var tower_effect = LavaJetModuleAdderEffect.new()
@@ -956,16 +1233,69 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 0
 		
+		# ins start
+		
+		var interpreter_for_rage = TextFragmentInterpreter.new()
+		interpreter_for_rage.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_rage.display_body = true
+		interpreter_for_rage.header_description = "Rage"
+		
+		var outer_ins_for_rage = []
+		var ins_for_rage = []
+		ins_for_rage.append(NumericalTextFragment.new(50, false))
+		ins_for_rage.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_rage.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		outer_ins_for_rage.append(ins_for_rage)
+		
+		outer_ins_for_rage.append(TextFragmentInterpreter.STAT_OPERATION.DIVIDE)
+		outer_ins_for_rage.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_rage.array_of_instructions = outer_ins_for_rage
+		
+		#
+		
+		var interpreter_for_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_on_hit.display_body = true
+		interpreter_for_on_hit.header_description = "on hit damage"
+		
+		var ins_for_on_hit = []
+		ins_for_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL))
+		ins_for_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_on_hit.array_of_instructions = ins_for_on_hit
+		
+		
+		#
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(1, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		# ins end
+		
+		
 		info.tower_descriptions = [
 			"Campfire gains Rage equivalent to the post-mitigated damage taken by enemies within its range.",
-			"Upon reaching 50 Rage, Campfire consumes all Rage to cast Heat Pact.",
+			["Upon reaching |0|, Campfire consumes all Rage to cast Heat Pact.", [interpreter_for_rage]],
 			"",
-			"Heat Pact: The next (benefiting) shot of a tower deals bonus physical on hit damage equal to Campfire's total damage.",
+			["Heat Pact: The next attack of a tower deals bonus |0|.", [interpreter_for_on_hit]],
 			"",
 			"Campfire does not gain Rage from the damage its buff has dealt.",
-			"Campfire cannot gain Rage for 1 second after casting Heat Pact.",
-			"The Rage threshold to cast Heat Pact is decreased by increasing Campfire's attack speed or ability cdr."
+			["Campfire cannot gain Rage for |0| after casting Heat Pact.", [interpreter_for_cooldown]],
 		]
+		
 		
 		
 		# Ingredient related
@@ -992,13 +1322,43 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 0
 		info.base_range = 240
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0
+		info.on_hit_multiplier = 1
+		
+		# INS START
+		
+		var interpreter_for_boulder = TextFragmentInterpreter.new()
+		interpreter_for_boulder.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_boulder.display_body = true
+		
+		var ins_for_boulder = []
+		ins_for_boulder.append(NumericalTextFragment.new(6, false, DamageType.PHYSICAL))
+		ins_for_boulder.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_boulder.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1, DamageType.PHYSICAL))
+		ins_for_boulder.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_boulder.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 5)) # stat basis does not matter here
+		
+		interpreter_for_boulder.array_of_instructions = ins_for_boulder
+		
+		#
+		
+		var interpreter_for_crater = TextFragmentInterpreter.new()
+		interpreter_for_crater.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_crater.display_body = true
+		
+		var ins_for_crater = []
+		ins_for_crater.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
+		ins_for_crater.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_crater.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1, DamageType.ELEMENTAL))
+		
+		interpreter_for_crater.array_of_instructions = ins_for_crater
+		
+		
+		# INS END
 		
 		info.tower_descriptions = [
 			"Launches a molten boulder at the target's location.",
-			"The boulder explodes upon reaching the location, dealing 6 physical damage. The explosion applies on hit effects, and applies on hit damages at 500% efficiency.",
-			"The explosion also leaves behind scorched earth that lasts for 7 seconds, which slows by 30% and deals 1 elemental damage per 0.5 seconds to enemies while inside it. This does not apply on hit damages and effects.",
-			"Both the explosion and scorched earth benefit from bonus base damage."
+			["The boulder explodes upon reaching the location, dealing |0|. Applies on hit effects.", [interpreter_for_boulder]],
+			["The explosion also leaves behind scorched earth that lasts for 7 seconds, which slows by 30% and deals |0| per 0.5 seconds to enemies while inside it. Does not apply on hit effects.", [interpreter_for_crater]],
 		]
 		
 		var expl_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_VOLCANO)
@@ -1057,9 +1417,35 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		
+		# INS START
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", 1))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		#
+		
+		var interpreter_for_pierce = TextFragmentInterpreter.new()
+		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_pierce.display_body = true
+		interpreter_for_pierce.header_description = "pierce"
+		
+		var ins_for_pierce = []
+		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_pierce.array_of_instructions = ins_for_pierce
+		
+		
+		#
+		
 		info.tower_descriptions = [
 			"Flameburst's main attack causes enemies to spew out 4 flamelets around themselves.",
-			"Each flamelet deal 1 elemental damage.",
+			["Each flamelet deals |0|, and has |1|.", [interpreter_for_flat_on_hit, interpreter_for_pierce]],
 			"Bonus range gained increases the range of the flamelets."
 		]
 		
@@ -1135,9 +1521,37 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		# ins start
+		
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "on hit damage", 1.25))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		#
+		
+		var interpreter_for_bonus_dmg_ratio = TextFragmentInterpreter.new()
+		interpreter_for_bonus_dmg_ratio.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_bonus_dmg_ratio.display_body = true
+		interpreter_for_bonus_dmg_ratio.header_description = "on hit damage"
+		
+		var ins_for_bonus_dmg_ratio = []
+		ins_for_bonus_dmg_ratio.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL))
+		ins_for_bonus_dmg_ratio.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.RANGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.01875))
+		
+		interpreter_for_bonus_dmg_ratio.array_of_instructions = ins_for_bonus_dmg_ratio
+		
+		
+		# ins end
+		
 		info.tower_descriptions = [
-			"Enthalphy gains bonus elemental on hit damage based on the ratio of its total range to its base range. For every 40 bonus range, Enthalphy gains 0.75 damage.",
-			"Enthalphy also deals bonus 1.25 elemental on hit damage for its next three attacks after killing an enemy.",
+			#"Enthalphy gains bonus 0.75 damage for every 40 range.",
+			["Enthalphy gains bonus |0|.", [interpreter_for_bonus_dmg_ratio]],
+			["Enthalphy also gains bonus |0| for its next three attacks after killing an enemy.", [interpreter_for_flat_on_hit]],
 			"",
 			"\"H. 1) Increase reach of system. 2) Increase will of system.\""
 		]
@@ -1168,9 +1582,35 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		# ins 
+		
+		var interpreter_for_first = TextFragmentInterpreter.new()
+		interpreter_for_first.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_first.display_body = false
+		
+		var ins_for_first = []
+		ins_for_first.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 30, true))
+		
+		interpreter_for_first.array_of_instructions = ins_for_first
+		
+		#
+		
+		var interpreter_for_second = TextFragmentInterpreter.new()
+		interpreter_for_second.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_second.display_body = false
+		
+		var ins_for_second = []
+		ins_for_second.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 30, true))
+		
+		interpreter_for_second.array_of_instructions = ins_for_second
+		
+		
+		# ins 
+		
+		
 		info.tower_descriptions = [
-			"Entropy gains 30% bonus attack speed for its first 130 attacks.",
-			"Entropy also gains 30% bonus attack speed for its first 230 attacks.",
+			["Entropy gains |0| for its first 130 attacks.", [interpreter_for_first]],
+			["Entropy also gains |0| for its first 230 attacks.", [interpreter_for_second]],
 			"",
 			"\"S. The inevitable end of all systems.\""
 		]
@@ -1203,16 +1643,62 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
-		info.tower_descriptions = [
-			"Royal Flame's attacks burn enemies for 25% of its total base damage every 0.5 seconds for 10 seconds.",
-			"",
-			"Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to 200.",
-			"Ability potency increases health ratio as damage dealt, but not damage limit.",
-			"Cooldown: 25 s"
-			# THIS SAME PASSAGE is placed in royal flame's
-			# ability tooltip. If this is changed, then
-			# change the ability tooltip.
+		# ins
+		
+		var interpreter_for_burn = TextFragmentInterpreter.new()
+		interpreter_for_burn.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_burn.display_body = true
+		
+		var ins_for_burn = []
+		ins_for_burn.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25, DamageType.ELEMENTAL))
+		
+		interpreter_for_burn.array_of_instructions = ins_for_burn
+		
+		#
+		
+		var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_perc_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_perc_on_hit.display_body = true
+		interpreter_for_perc_on_hit.header_description = "of the burned enemy's missing health as damage"
+		
+		var ins_for_perc_on_hit = []
+		ins_for_perc_on_hit.append(NumericalTextFragment.new(40, true, DamageType.ELEMENTAL))
+		ins_for_perc_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_perc_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1, true))
+		
+		interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
+		
+		#
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(25, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		
+		# ins
+		
+		var ability_descs = [
+			["Ability: Steam Burst. Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals |0|, up to 150.", [interpreter_for_perc_on_hit]],
+			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
+		
+		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION] = ability_descs
+		
+		info.tower_descriptions = [
+			["Royal Flame's attacks burn enemies for |0| every 0.5 seconds for 10 seconds.", [interpreter_for_burn]],
+			"",
+		]
+		for desc in ability_descs:
+			info.tower_descriptions.append(desc)
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ROYAL_FLAME)
@@ -1240,13 +1726,68 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		# ins start
+		
+		var interpreter_for_entropy_first = TextFragmentInterpreter.new()
+		interpreter_for_entropy_first.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_entropy_first.display_body = false
+		
+		var ins_for_entropy_first = []
+		ins_for_entropy_first.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 60, true))
+		
+		interpreter_for_entropy_first.array_of_instructions = ins_for_entropy_first
+		
+		#
+		
+		var interpreter_for_entropy_second = TextFragmentInterpreter.new()
+		interpreter_for_entropy_second.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_entropy_second.display_body = false
+		
+		var ins_for_entropy_second = []
+		ins_for_entropy_second.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 20, true))
+		
+		interpreter_for_entropy_second.array_of_instructions = ins_for_entropy_second
+		
+		#
+		
+		var interpreter_for_enthalphy_first = TextFragmentInterpreter.new()
+		interpreter_for_enthalphy_first.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_enthalphy_first.display_body = false
+		
+		var ins_for_enthalphy_first = []
+		ins_for_enthalphy_first.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE, -1, "range", 125, false))
+		
+		interpreter_for_enthalphy_first.array_of_instructions = ins_for_enthalphy_first
+		
+		#
+		
+		var interpreter_for_enthalphy_second = TextFragmentInterpreter.new()
+		interpreter_for_enthalphy_second.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_enthalphy_second.display_body = false
+		
+		var ins_for_enthalphy_second = []
+		ins_for_enthalphy_second.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE, -1, "range", 45, false))
+		
+		interpreter_for_enthalphy_second.array_of_instructions = ins_for_enthalphy_second
+		
+		
+		# ins end
+		
 		info.tower_descriptions = [
 			"IE=U discards the ingredient effect of Entropy and Enthalphy when they are absorbed. Instead, a temporary buff that lasts for 5 rounds is received.",
-			"Absorbing Entropy gives 60% bonus attack speed for the first, and 20% for the subsequent.",
-			"Absorbing Enthalphy gives 125 bonus range for the first, and 45 for the subsequent.",
+			["Absorbing Entropy gives |0| for the first, and |1| for the subsequent.", [interpreter_for_entropy_first, interpreter_for_entropy_second]],
+			["Absorbing Enthalphy gives |0| for the first, and |1| for the subsequent.", [interpreter_for_enthalphy_first, interpreter_for_enthalphy_second]],
 			"",
 			"\"Feed the system.\""
 		]
+		
+#		info.tower_descriptions = [
+#			"IE=U discards the ingredient effect of Entropy and Enthalphy when they are absorbed. Instead, a temporary buff that lasts for 5 rounds is received.",
+#			"Absorbing Entropy gives 60% bonus attack speed for the first, and 20% for the subsequent.",
+#			"Absorbing Enthalphy gives 125 bonus range for the first, and 45 for the subsequent.",
+#			"",
+#			"\"Feed the system.\""
+#		]
 		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_IEU)
@@ -1273,12 +1814,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 0
 		info.base_range = 0
 		info.base_damage_type = DamageType.ELEMENTAL
-		info.on_hit_multiplier = 0
+		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
 			"Does not attack, but instead gives a fruit at the end of every 3rd round of being in the map.",
 			"Fruits appear in the tower bench, and will be converted into gold when no space is available.",
-			"Fruits do not attack, but have an ingredient effect. Fruits can be given to any tower disregarding tower color.",
+			"Fruits do not attack, but have an ingredient effect. Fruits can be given to any tower regardless of tower color.",
 		]
 		
 		
@@ -1316,8 +1857,22 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
+		# ins start
+		
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "extra physical damage", 2))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		
+		# ins end
+		
 		info.tower_descriptions = [
-			"Spike's main attack deals 2 extra physical damage to enemies below 50% health."
+			["Spike's main attack deals |0| to enemies below 50% health.", [interpreter_for_flat_on_hit]]
 		]
 		
 		
@@ -1343,10 +1898,35 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
+		#
+		
+		var interpreter_for_retract_bonus_dmg_on_threshold = TextFragmentInterpreter.new()
+		interpreter_for_retract_bonus_dmg_on_threshold.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_retract_bonus_dmg_on_threshold.display_body = true
+		
+		var ins_for_retract_bonus_dmg_on_threshold = []
+		ins_for_retract_bonus_dmg_on_threshold.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 200, true))
+		
+		interpreter_for_retract_bonus_dmg_on_threshold.array_of_instructions = ins_for_retract_bonus_dmg_on_threshold
+		
+		#
+		
+		var interpreter_for_retract_on_normals = TextFragmentInterpreter.new()
+		interpreter_for_retract_on_normals.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_retract_on_normals.display_body = true
+		
+		var ins_for_retract_bonus_on_normals = []
+		ins_for_retract_bonus_on_normals.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 100, true))
+		
+		interpreter_for_retract_on_normals.array_of_instructions = ins_for_retract_bonus_on_normals
+		
+		
+		#
+		
 		info.tower_descriptions = [
 			"Impale shoots up a spike that stabs an enemy, stunning them for 2.2 seconds.",
-			"When the stun expires, Impale retracts the spike, dealing damage again. The retract damage deals 200% extra damage when the enemy has less than 75% of their max health.",
-			"Normal type enemies take additional 100% extra damage from the rectact damage.",
+			["When the stun expires, Impale retracts the spike, dealing damage again. The retract damage deals |0| when the enemy has less than 75% of their max health.", [interpreter_for_retract_bonus_dmg_on_threshold]],
+			["Normal type enemies take additional |0| from the rectact damage.", [interpreter_for_retract_on_normals]],
 			"",
 			"\"Big spike for small enemies\""
 		]
@@ -1374,20 +1954,60 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		# INS START
+		
+		var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
+		interpreter_for_bonus_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_bonus_dmg.display_body = true
+		interpreter_for_bonus_dmg.header_description = "more damage"
+		
+		var ins_for_bonus_damage = []
+		ins_for_bonus_damage.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", 0.0, true))
+		ins_for_bonus_damage.append(NumericalTextFragment.new(100, true, -1, "", false, TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP))
+		ins_for_bonus_damage.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_bonus_damage.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_damage
+		
+		#
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(13, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		# INS END
+		
+		var ability_descs = [
+			"Ability: Coordinated Attack. Orders all members to attack the marked enemy once, regardless of range.",
+			"Projectiles gain extra range to be able to reach the marked target.",
+			#"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
+			["Member's damage in Coordinated Attack deal |0|.", [interpreter_for_bonus_dmg]],
+			"The marked enemy is also stunned for 2.75 seconds.",
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+		]
+		
+		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION] = ability_descs
+		
 		info.tower_descriptions = [
 			"Leader's main attack marks the target enemy. Only one enemy can be marked at a time.",
 			"Leader also manages members. Leader can have up to 5 members. Leader cannot have itself or another Leader as its member.",
-			"",
-			"Ability: Coordinated Attack. Orders all members to attack the marked enemy once, regardless of range.",
-			"Projectiles gain extra range to be able to reach the marked target.",
-			"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
-			"The marked enemy is also stunned for 2.75 seconds.",
 			"Leader's main attacks against the marked enemy on hit decreases the cooldown of Coordinated Attack by 1 second.",
-			"Cooldown: 13 s"
-			# THIS SAME PASSAGE is placed in leader's
-			# ability tooltip. If this is changed, then
-			# change the ability tooltip.
+			"",
 		]
+		
+		for desc in ability_descs:
+			info.tower_descriptions.append(desc)
+		
 		
 		var targ_effect = LeaderTargetingTowerEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, targ_effect)
@@ -1411,12 +2031,26 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		# INS START
+		
+		var interpreter_for_ap = TextFragmentInterpreter.new()
+		interpreter_for_ap.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_ap.display_body = false
+		
+		var ins_for_ap = []
+		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.5, false))
+		
+		interpreter_for_ap.array_of_instructions = ins_for_ap
+		
+		
+		# INS END
+		
 		info.tower_descriptions = [
 			"Orb takes 2 tower slots.",
 			"",
 			"Orb gains new attacks at 1.5, 2.0, and 2.5 total ability potency.",
 			"",
-			"Orb absorbs all other Orbs placed in the map, gaining permanent 0.5 ability potency that stacks. This effect also applies when absorbing another Orb's ingredient effect.",
+			["Orb absorbs all other Orbs placed in the map, gaining permanent |0| that stacks. This effect also applies when absorbing another Orb's ingredient effect.", [interpreter_for_ap]],
 			"",
 			"\"Where does the power reside? The wizard, or the orb?\""
 		]
@@ -1447,17 +2081,46 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+#		info.tower_descriptions = [
+#			"Grand gains projectile speed at 1.25, 1.50, and 2.00 total ability potency.",
+#			"Grand also gains 1 bonus pierce per 0.25 bonus ability potency.",
+#			"",
+#			"Grand's main attack damage scales with its total ability potency.",
+#			"",
+#			"When Grand's orb attack reaches its max distance, the bullet redirects to the farthest enemy from Grand.",
+#			"",
+#			"\"Where does the power reside? The (hand of a) wizard, or the orb?\""
+#		]
+		
+		#
+		
+		var interpreter_for_pierce = TextFragmentInterpreter.new()
+		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_pierce.display_body = true
+		interpreter_for_pierce.header_description = "bonus pierce"
+		interpreter_for_pierce.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.ROUND
+		
+		var ins_for_pierce = []
+		ins_for_pierce.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.PIERCE, -1))
+		ins_for_pierce.append(NumericalTextFragment.new(4, false, -1))
+		ins_for_pierce.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.BONUS, 1))
+		
+		
+		interpreter_for_pierce.array_of_instructions = ins_for_pierce
+		
+		#
+		
 		info.tower_descriptions = [
 			"Grand gains projectile speed at 1.25, 1.50, and 2.00 total ability potency.",
-			"Grand also gains 1 bonus pierce per 0.25 bonus ability potency.",
+			["Grand also gains |0|.", [interpreter_for_pierce]],
 			"",
-			"Grand's main attack damage scales with its total ability potency.",
+			"Ability potenct scales Grand's main attack damage.",
 			"",
 			"When Grand's orb attack reaches its max distance, the bullet redirects to the farthest enemy from Grand.",
 			"",
 			"\"Where does the power reside? The (hand of a) wizard, or the orb?\""
 		]
-		
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_GRAND)
 		base_ap_attr_mod.flat_modifier = 0.5
@@ -1485,16 +2148,76 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		
+		# INS START
+		
+		var interpreter_for_attk_count = TextFragmentInterpreter.new()
+		interpreter_for_attk_count.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_attk_count.display_body = true
+		interpreter_for_attk_count.header_description = "main attacks"
+		interpreter_for_attk_count.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.ROUND
+		
+		var ins_for_attk_count = []
+		ins_for_attk_count.append(NumericalTextFragment.new(5, false))
+		ins_for_attk_count.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_attk_count.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_attk_count.array_of_instructions = ins_for_attk_count
+		
+		
+		
+		#
+		
+#		var interpreter_for_pierce = TextFragmentInterpreter.new()
+#		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_pierce.display_body = true
+#		interpreter_for_pierce.header_description = "towers"
+#
+#		var ins_for_pierce = []
+#		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+#
+#		interpreter_for_pierce.array_of_instructions = ins_for_pierce
+#
+		#
+		
+		var interpreter_for_buff = TextFragmentInterpreter.new()
+		interpreter_for_buff.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_buff.display_body = true
+		interpreter_for_buff.header_description = "bonus base damage"
+		
+		var ins_for_buff = []
+		ins_for_buff.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE))
+		ins_for_buff.append(NumericalTextFragment.new(1, false, -1, "", false, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE))
+		ins_for_buff.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_buff.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_buff.array_of_instructions = ins_for_buff
+		
+		
+		
+		# INS END
+		
 		info.tower_descriptions = [
-			"Every after 5th main attack, Douser casts Buffing Waters.",
+			["Douser casts Buffing Waters after every |0|.", [interpreter_for_attk_count]],
 			"",
-			"Buffing Waters: Douser shoots a water ball at the closest tower.",
-			"Towers hit by Buffing Waters gain 1 bonus base damage for the next 4 benefiting attacks within 10 seconds.",
+			"Buffing Waters: Douser shoots a water ball at the closest tower",
+			["Towers hit by Buffing Waters gain |0| for the next 4 benefiting attacks within 10 seconds.", [interpreter_for_buff]],
 			"Douser also benefits from its own Buffing Water's buff.",
 			"Douser does not target towers that currently have the buff, and unprioritizes towers that have no means of attacking. Douser also does not target other Dousers, but can affect them if hit.",
-			"",
-			"Buffing Waters's projectile benefits from bonus pierce. Ability cdr reduces the needed attacks to trigger this ability."
 		]
+		
+#		info.tower_descriptions = [
+#			"Douser casts Buffing Waters after every 5th main attacks.",
+#			"",
+#			["Buffing Waters: Douser shoots a water ball at the closest tower, hitting up to |0|.", [interpreter_for_pierce]],
+#			"Towers hit by Buffing Waters gain 1 bonus base damage for the next 4 benefiting attacks within 10 seconds.",
+#			"Douser also benefits from its own Buffing Water's buff.",
+#			"Douser does not target towers that currently have the buff, and unprioritizes towers that have no means of attacking. Douser also does not target other Dousers, but can affect them if hit.",
+#			"",
+#			"Buffing Waters's projectile benefits from bonus pierce. Ability cdr reduces the needed attacks to trigger this ability."
+#		]
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_DOUSER)
@@ -1522,18 +2245,105 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		# INS START
+		
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "on hit damage", 2))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		#
+		
+		var interpreter_for_wave_count = TextFragmentInterpreter.new()
+		interpreter_for_wave_count.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_wave_count.display_body = true
+		interpreter_for_wave_count.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.CEIL
+		interpreter_for_wave_count.header_description = "columns of water"
+		
+		var ins_for_wave_count = []
+		ins_for_wave_count.append(NumericalTextFragment.new(8, false))
+		ins_for_wave_count.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_wave_count.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_wave_count.array_of_instructions = ins_for_wave_count
+		
+		#
+		
+		var interpreter_for_explosion_dmg = TextFragmentInterpreter.new()
+		interpreter_for_explosion_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_explosion_dmg.display_body = false
+		
+		var ins_for_explosion_dmg = []
+		ins_for_explosion_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 0.75))
+		
+		interpreter_for_explosion_dmg.array_of_instructions = ins_for_explosion_dmg
+		
+		#
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(6, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		#
+		
+		var interpreter_for_debuff_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_debuff_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_debuff_cooldown.display_body = true
+		interpreter_for_debuff_cooldown.header_description = "s"
+		
+		var ins_for_debuff_cooldown = []
+		ins_for_debuff_cooldown.append(NumericalTextFragment.new(30, false))
+		ins_for_debuff_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_debuff_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_debuff_cooldown.array_of_instructions = ins_for_debuff_cooldown
+		
+		
+		# INS END 
+		
+		var ability_desc = [
+			["Ability: Tidal Wave. Wave sprays |0| in a cone facing its current target.", [interpreter_for_wave_count]],
+			"Each column deals 1 + twice of Wave's passive on hit damage as elemental damage to all enemies hit.",
+			["Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals |0| to 2 enemies.", [interpreter_for_explosion_dmg]],
+			["Activating Tidal Wave reduces the passive on hit damage by 0.5 for |0|. This effect stacks, but does not refresh other stacks.", [interpreter_for_debuff_cooldown]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+		]
+		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION] = ability_desc
+		
 		info.tower_descriptions = [
 			"Wave attacks in bursts of 2.",
-			"Passive: Wave gains 2 elemental on hit damage.",
+			["Passive: Wave gains |0|.", [interpreter_for_flat_on_hit]],
 			"",
-			"Ability: Tidal Wave. Wave sprays 8 columns of water in a cone facing its current target.",
-			"Each column deals 1 + twice of Wave's passive on hit damage as elemental damage to all enemies hit.",
-			"Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals 0.75 elemental damage to 2 enemies.",
-			"Activating Tidal Wave reduces the passive on hit damage by 0.5 for 30 seconds. This effect stacks, but does not refresh other stacks.",
-			"Cooldown: 6 s",
-			"",
-			"Additional info is present in this ability's tooltip."
 		]
+		
+		for desc in ability_desc:
+			info.tower_descriptions.append(desc)
+		
+#		info.tower_descriptions = [
+#			"Wave attacks in bursts of 2.",
+#			["Passive: Wave gains |0|.", [interpreter_for_flat_on_hit]],
+#			"",
+#			"Ability: Tidal Wave. Wave sprays 8 columns of water in a cone facing its current target.",
+#			"Each column deals 1 + twice of Wave's passive on hit damage as elemental damage to all enemies hit.",
+#			"Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals 0.75 elemental damage to 2 enemies.",
+#			"Activating Tidal Wave reduces the passive on hit damage by 0.5 for 30 seconds. This effect stacks, but does not refresh other stacks.",
+#			"Cooldown: 6 s",
+#			"",
+#			"Additional info is present in this ability's tooltip."
+#		]
 		
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_WAVE)
@@ -1590,10 +2400,28 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		#
+		
+		var interpreter_for_debuff_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_debuff_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_debuff_cooldown.display_body = true
+		interpreter_for_debuff_cooldown.header_description = "s"
+		
+		var ins_for_debuff_cooldown = []
+		ins_for_debuff_cooldown.append(NumericalTextFragment.new(15, false))
+		ins_for_debuff_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_debuff_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_debuff_cooldown.array_of_instructions = ins_for_debuff_cooldown
+		
+		
+		
+		#
+		
 		info.tower_descriptions = [
 			"Automatically attempts to cast Rewind at its target.",
 			"Rewind: After a brief delay, Time machine teleports its non-boss target a few paces backwards.",
-			"Cooldown: 15 s",
+			["Cooldown: |0|", [interpreter_for_debuff_cooldown]],
 			"",
 			"Rewind also applies 3 stacks of Time Dust onto an enemy for 10 seconds. Time Machine’s main attacks onto an enemy consume a stack of Time Dust, reducing Rewind’s cooldown by 2 seconds."
 		]
@@ -1622,15 +2450,89 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
+		# INS START
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(10, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		#
+		
+		var interpreter_for_bonus_dmg_per_stack = TextFragmentInterpreter.new()
+		interpreter_for_bonus_dmg_per_stack.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_bonus_dmg_per_stack.display_body = true
+		
+		var ins_for_retract_bonus_dmg_per_stack = []
+		ins_for_retract_bonus_dmg_per_stack.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 25, true))
+		
+		interpreter_for_bonus_dmg_per_stack.array_of_instructions = ins_for_retract_bonus_dmg_per_stack
+		
+		#
+		
+		var interpreter_for_bonus_dmg_total = TextFragmentInterpreter.new()
+		interpreter_for_bonus_dmg_total.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_bonus_dmg_total.display_body = true
+		
+		var ins_for_retract_bonus_dmg_total = []
+		ins_for_retract_bonus_dmg_total.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 100, true))
+		
+		interpreter_for_bonus_dmg_total.array_of_instructions = ins_for_retract_bonus_dmg_total
+		
+		
+		#
+		
+		
+		var interpreter = TextFragmentInterpreter.new()
+		interpreter.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter.display_body = true
+		
+		var outer_ins = []
+		var ins = []
+		ins.append(NumericalTextFragment.new(8, false, DamageType.PHYSICAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 4, DamageType.PHYSICAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 2)) # stat basis does not matter here
+		
+		outer_ins.append(ins)
+		
+		outer_ins.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		outer_ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter.array_of_instructions = outer_ins
+		
+		
+		# INS END
+		
 		info.tower_descriptions = [
 			"Automatically attempts to casts Seed Bomb when hitting an enemy with its main attack.",
 			"Seed Bomb: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed to gain a stack of Fragile.",
-			"After 6 seconds or reaching 4 stacks of Fragile, the seed bomb explodes, hitting up to 5 enemies. The explosion's damage scales with its Fragile stacks.",
-			"Cooldown: 10 s",
+			"After 6 seconds or reaching 4 stacks of Fragile, the seed bomb explodes, hitting up to 5 enemies. Fragile stacks increase the explosions's damage.",
+			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
-			"Each Fragile stack allows the explosion to deal 25% more damage (totalling up to 200%).",
-			"Seed Bomb's explosion deals 10 physical damage. The explosion benefits from base damage buffs at 400% efficiency, and benefits from on hit damages and effects at 200% efficiency.",
+			["Each Fragile stack allows the explosion to deal |0| (up to |1|).", [interpreter_for_bonus_dmg_per_stack, interpreter_for_bonus_dmg_total]],
+			["Seed Bomb's explosion deals |0|. Applies on hit effects.", [interpreter]],
 		]
+		
+		
+#		info.tower_descriptions = [
+#			"Automatically attempts to casts Seed Bomb when hitting an enemy with its main attack.",
+#			"Seed Bomb: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed to gain a stack of Fragile.",
+#			"After 6 seconds or reaching 4 stacks of Fragile, the seed bomb explodes, hitting up to 5 enemies. The explosion's damage scales with its Fragile stacks.",
+#			"Cooldown: 10 s",
+#			"",
+#			"Each Fragile stack allows the explosion to deal 25% more damage (up to 100% more damage).",
+#			"Seed Bomb's explosion deals 10 physical damage. The explosion benefits from base damage buffs at 400% efficiency, and benefits from on hit damages at 200% efficiency. Applies on hit effects.",
+#		]
 		
 		
 		# Ingredient related
@@ -1671,7 +2573,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1)) # stat basis does not matter here
 		
-		
 		interpreter.array_of_instructions = ins
 		
 		info.tower_descriptions = [
@@ -1702,23 +2603,85 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 2
-		info.base_attk_speed = 1.275
+		info.base_attk_speed = 1.05
 		info.base_pierce = 0
 		info.base_range = 145
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0.1
 		
+		#
+		
+		var interpreter_for_dmg_per_sec = TextFragmentInterpreter.new()
+		interpreter_for_dmg_per_sec.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_dmg_per_sec.display_body = true
+		
+		var ins_for_dmg_per_sec = []
+		ins_for_dmg_per_sec.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", 2))
+		
+		interpreter_for_dmg_per_sec.array_of_instructions = ins_for_dmg_per_sec
+		
+		#
+		
+		var interpreter_on_expl_dmg = TextFragmentInterpreter.new()
+		interpreter_on_expl_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_on_expl_dmg.display_body = true
+		
+		var ins_for_expl_dmg = []
+		ins_for_expl_dmg.append(NumericalTextFragment.new(3, false, DamageType.ELEMENTAL))
+		ins_for_expl_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_expl_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.35, DamageType.ELEMENTAL))
+		ins_for_expl_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_expl_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.35)) # stat basis does not matter here
+		
+		interpreter_on_expl_dmg.array_of_instructions = ins_for_expl_dmg
+		
+		#
+		
+		var interpreter_for_attk_speed_debuff = TextFragmentInterpreter.new()
+		interpreter_for_attk_speed_debuff.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_attk_speed_debuff.display_body = false
+		
+		var ins_for_attk_speed_debuff = []
+		ins_for_attk_speed_debuff.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "", 25, true))
+		
+		interpreter_for_attk_speed_debuff.array_of_instructions = ins_for_attk_speed_debuff
+		
+		#
+		
+		var interpreter_for_attk_speed_buff = TextFragmentInterpreter.new()
+		interpreter_for_attk_speed_buff.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_attk_speed_buff.display_body = false
+		
+		var ins_for_attk_speed_buff = []
+		ins_for_attk_speed_buff.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "", 35, true))
+		
+		interpreter_for_attk_speed_buff.array_of_instructions = ins_for_attk_speed_buff
+		
+		
+		#
+		
 		info.tower_descriptions = [
-			"Pestilence permanently poisons enemies on hit. The poison deals 2 elemental damage per second.",
+			["Pestilence permanently poisons enemies on hit. The poison deals |0| per second.", [interpreter_for_dmg_per_sec]],
 			"Pestilence's attacks also apply one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply. Enemies become permanently Noxious upon gaining 10 Toxin stacks.",
 			"",
 			"Pestilence's main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
-			"Each explosion deals 3 elemental damage.",
-			"Explosions apply a stack of Toxin. Explosions benefit from base damage buffs, on hit damages and effects at 33% efficiency.",
+			["Each explosion deals |0|. Applies on hit effects.", [interpreter_on_expl_dmg]],
 			"",
-			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25% for the round.",
-			"For each tower affected, Pestilence gains 35% bonus attack speed for the round."
+			["At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by |0| for the round.", [interpreter_for_attk_speed_debuff]],
+			["For each tower affected, Pestilence gains |0| for the round.", [interpreter_for_attk_speed_buff]]
 		]
+		
+#		info.tower_descriptions = [
+#			["Pestilence permanently poisons enemies on hit. The poison deals |0| per second.", [interpreter_for_dmg_per_sec]],
+#			"Pestilence's attacks also apply one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply. Enemies become permanently Noxious upon gaining 10 Toxin stacks.",
+#			"",
+#			"Pestilence's main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
+#			"Each explosion deals 3 elemental damage.",
+#			"Explosions apply a stack of Toxin. Explosions benefit from base damage buffs, on hit damages at 33% efficiency. Applies on hit effects.",
+#			"",
+#			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25% for the round.",
+#			"For each tower affected, Pestilence gains 35% bonus attack speed for the round."
+#		]
 		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_PESTILENCE)
@@ -1748,14 +2711,65 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		# ins start
+		
+		var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_perc_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_perc_on_hit.display_body = false
+		
+		var ins_for_perc_on_hit = []
+		ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "missing health as damage", 6, true))
+		
+		interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
+		
+		#
+		
+		var interpreter_for_slash = TextFragmentInterpreter.new()
+		interpreter_for_slash.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_slash.display_body = true
+		
+		var ins_for_slash = []
+		ins_for_slash.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 3, DamageType.PHYSICAL))
+		ins_for_slash.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_slash.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_slash.array_of_instructions = ins_for_slash
+		
+		#
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(0.2, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		# ins end
+		
 		info.tower_descriptions = [
-			"Reaper's attacks deal additional 6% of the enemy's missing health as elemental damage, up to 8 health.",
+			["Reaper's attacks deal additional |0|, up to 8 health.", [interpreter_for_perc_on_hit]],
 			"",
 			"Killing an enemy grants Reaper 1 stack of Death. Reaper attempts to cast Slash while having Death stacks.",
-			"Slash: Reaper consumes 1 Death stack to slash the area of the closest enemy, dealing 300% of Reaper's total base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
+			["Ability: Slash. Reaper consumes 1 Death stack to slash the area of the closest enemy, dealing |0| to each enemy hit. Does not apply on hit effects.", [interpreter_for_slash]],
 			"Casting Slash reduces the damage of subsequent slashes by 50% for 0.5 seconds. This does not stack.",
-			"Cooldown: 0.2 s."
+			["Cooldown: |0|.", [interpreter_for_cooldown]]
 		]
+		
+		
+#		info.tower_descriptions = [
+#			["Reaper's attacks deal additional 6% of the enemy's missing health as elemental damage, up to 8 health.", [interpreter_for_perc_on_hit]],
+#			"",
+#			"Killing an enemy grants Reaper 1 stack of Death. Reaper attempts to cast Slash while having Death stacks.",
+#			"Slash: Reaper consumes 1 Death stack to slash the area of the closest enemy, dealing 300% of Reaper's total base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
+#			"Casting Slash reduces the damage of subsequent slashes by 50% for 0.5 seconds. This does not stack.",
+#			"Cooldown: 0.2 s."
+#		]
 		
 		
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_REAPER)
@@ -1797,15 +2811,53 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 1
 		info.base_range = 145
 		info.base_damage_type = DamageType.ELEMENTAL
-		info.on_hit_multiplier = 0
+		info.on_hit_multiplier = 1
+		
+		# Ins start
+		
+		var interpreter_for_range = TextFragmentInterpreter.new()
+		interpreter_for_range.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_range.display_body = false
+		
+		var ins_for_range = []
+		ins_for_range.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE, -1, "range", 100, false))
+		
+		interpreter_for_range.array_of_instructions = ins_for_range
+		
+		#
+		
+		var interpreter_for_bolt = TextFragmentInterpreter.new()
+		interpreter_for_bolt.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_bolt.display_body = true
+		interpreter_for_bolt.header_description = "elemental damage"
+		
+		var ins_for_bolt = []
+		ins_for_bolt.append(NumericalTextFragment.new(2, false, DamageType.ELEMENTAL))
+		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.5, DamageType.ELEMENTAL))
+		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.5)) # stat basis does not matter here
+		
+		interpreter_for_bolt.array_of_instructions = ins_for_bolt
+		
+		
+		# ins end
 		
 		info.tower_descriptions = [
 			"Shocker possesses one shocker ball, which is shot when an enemy is in range. The shocker ball sticks to the first enemy it hits.",
 			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack. This event does not occur when the triggering attack is from another shocker ball.",
 			"The ball returns to Shocker when the enemy dies, exits the map, when the ball fails to stick to a target, or when the enemy is not hit after 5 seconds.",
 			"",
-			"Shocker ball has 100 range. Its bolts deal 2 elemental damage. Bolts benefit from base damage buffs, on hit damages and effects at 50% efficiency.",
+			["Shocker ball has |0|. Its bolts deal |1|. Applies on hit effects.", [interpreter_for_range, interpreter_for_bolt]],
 		]
+		
+#		info.tower_descriptions = [
+#			"Shocker possesses one shocker ball, which is shot when an enemy is in range. The shocker ball sticks to the first enemy it hits.",
+#			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack. This event does not occur when the triggering attack is from another shocker ball.",
+#			"The ball returns to Shocker when the enemy dies, exits the map, when the ball fails to stick to a target, or when the enemy is not hit after 5 seconds.",
+#			"",
+#			"Shocker ball has 100 range. Its bolts deal 2 elemental damage. Bolts benefit from base damage buffs and on hit damages at 50% efficiency. Applies on hit effects.",
+#		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SHOCKER)
 		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
@@ -1833,16 +2885,59 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
+		# INS START
+		
+		var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
+		interpreter_for_bonus_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_bonus_dmg.display_body = true
+		interpreter_for_bonus_dmg.header_description = "more damage"
+		
+		var ins_for_bonus_dmg = []
+		ins_for_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1))
+		ins_for_bonus_dmg.append(NumericalTextFragment.new(75, true, -1, "", false, TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP))
+		ins_for_bonus_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_bonus_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
+		
+		#
+		
+		var interpreter_for_snd_attk_dmg = TextFragmentInterpreter.new()
+		interpreter_for_snd_attk_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_snd_attk_dmg.display_body = true
+		interpreter_for_snd_attk_dmg.header_description = "physical damage"
+		
+		var ins_for_snd_attk_dmg = []
+		ins_for_snd_attk_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, ""))
+		ins_for_snd_attk_dmg.append(NumericalTextFragment.new(2.25, false, DamageType.PHYSICAL, "", false, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE))
+		ins_for_snd_attk_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_snd_attk_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_snd_attk_dmg.array_of_instructions = ins_for_snd_attk_dmg
+		
+		
+		# INS END
+		
+		
 		info.tower_descriptions = [
 			"Adept's attacks gain bonus effects based on its current target's distance from itself on hit.",
-			"Beyond 85% of range: Adept's main attack deals 75% more damage, and slows enemies hit by 30% for 0.75 seconds.",
-			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack.",
-			"The secondary attack deals 2.25 physical damage and applies on hit effects. The secondary attack cannot trigger another secondary attack.",
+			["Beyond 85% of range: Adept's main attack deals |0|, and slows enemies hit by 30% for 0.75 seconds.", [interpreter_for_bonus_dmg]],
+			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack, but cannot trigger from itself.",
+			["The secondary attack deals |0| and applies on hit effects. ", [interpreter_for_snd_attk_dmg]],
 			"",
 			"After 3 rounds of being active, Adept gains Far and Close targeting options.",
-			"",
-			"Adept's bonus damage (from attacking at 85% of range), and secondary attack's damage scale with ability potency."
 		]
+		
+#		info.tower_descriptions = [
+#			"Adept's attacks gain bonus effects based on its current target's distance from itself on hit.",
+#			"Beyond 85% of range: Adept's main attack deals 75% more damage, and slows enemies hit by 30% for 0.75 seconds.",
+#			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack.",
+#			"The secondary attack deals 2.25 physical damage and applies on hit effects. The secondary attack cannot trigger another secondary attack.",
+#			"",
+#			"After 3 rounds of being active, Adept gains Far and Close targeting options.",
+#			"",
+#			"Adept's bonus damage (from attacking at 85% of range), and secondary attack's damage scale with ability potency."
+#		]
 		
 		var tower_base_effect : AdeptModuleAdderEffect = AdeptModuleAdderEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_base_effect)
@@ -1869,7 +2964,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Rebound shoots discs that slow down upon hitting its first enemy.",
-			"Upon reaching its max distance, the disc travels back to Rebound, refreshing its pierce and dealing damage to enemies in the path again."
+			"Upon reaching its max distance, the disc travels back to Rebound, refreshing its pierce and dealing damage to enemies in its path again."
 		]
 		
 		var base_pierce_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_REBOUND)
@@ -1898,9 +2993,34 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
+		# INS START
+		
+		var interpreter_for_3rd_attk = TextFragmentInterpreter.new()
+		interpreter_for_3rd_attk.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_3rd_attk.display_body = false
+		
+		var ins_for_3rd_attk = []
+		ins_for_3rd_attk.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "physical damage on hit", 1))
+		
+		interpreter_for_3rd_attk.array_of_instructions = ins_for_3rd_attk
+		
+		#
+		
+		var interpreter_for_9th_attk = TextFragmentInterpreter.new()
+		interpreter_for_9th_attk.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_9th_attk.display_body = false
+		
+		var ins_for_9th_attk = []
+		ins_for_9th_attk.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "physical damage on hit", 2.5))
+		
+		interpreter_for_9th_attk.array_of_instructions = ins_for_9th_attk
+		
+		
+		# INS END
+		
 		info.tower_descriptions = [
-			"Every 3rd main attack deals extra 1 physical damage on hit.",
-			"Every 9th main attack deals extra 2.5 physical damage on hit instead."
+			["Every 3rd main attack deals extra |0|.", [interpreter_for_3rd_attk]],
+			["Every 9th main attack instead deals extra |0|.", [interpreter_for_9th_attk]]
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_STRIKER)
@@ -1923,15 +3043,28 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
 		info.base_damage = 3
-		info.base_attk_speed = 1.65
+		info.base_attk_speed = 1.25
 		info.base_pierce = 1
 		info.base_range = 155
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		#
+		
+		var interpreter_for_flat_dmg = TextFragmentInterpreter.new()
+		interpreter_for_flat_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_dmg.display_body = false
+		
+		var ins_for_flat_dmg = []
+		ins_for_flat_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 1.5))
+		
+		interpreter_for_flat_dmg.array_of_instructions = ins_for_flat_dmg
+		
+		#
+		
 		info.tower_descriptions = [
 			"Each attack that applies on hit effects is infused with a Hex. Enemies gain Curses as effects after reaching a certain number of Hexes. Hexes and Curses last indefinitely.",
-			"2 hex: Enemies take extra 1.5 elemental damage from HexTribute's attacks.",
+			["2 hex: Enemies take extra |0| from HexTribute's attacks.", [interpreter_for_flat_dmg]],
 			"4 hex: Enemies's armor is reduced by 25%.",
 			"6 hex: Enemies's toughness is reduced by 25%.",
 			"8 hex: Enemies become 75% more vulnerable to effects.",
@@ -2225,14 +3358,79 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		# INTERPRETERS
+		
+		var interpreter_for_delay = TextFragmentInterpreter.new()
+		interpreter_for_delay.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_delay.display_body = true
+		interpreter_for_delay.header_description = "seconds"
+		
+		var ins_for_delay = []
+		ins_for_delay.append(NumericalTextFragment.new(1.5, false))
+		ins_for_delay.append(TextFragmentInterpreter.STAT_OPERATION.DIVIDE)
+		ins_for_delay.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_delay.array_of_instructions = ins_for_delay
+		
+		#
+		
+		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+		interpreter_for_attk_speed.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_attk_speed.display_body = true
+		interpreter_for_attk_speed.header_description = "attack speed"
+		
+		var ins_for_attk_speed = []
+		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1))
+		
+		ins_for_attk_speed.append(NumericalTextFragment.new(50, true))
+		ins_for_attk_speed.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+		
+		#
+		
+		var interpreter_for_ap = TextFragmentInterpreter.new()
+		interpreter_for_ap.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_ap.display_body = false
+		
+		var ins_for_ap = []
+		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.25, false))
+		
+		interpreter_for_ap.array_of_instructions = ins_for_ap
+		
+		
+		#
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(45, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		# INTERPRETERS END
+		
+		var ability_descs = [
+			["Ability: Transpose. Select a tower to swap places with. Swapping takes |0| to complete.", [interpreter_for_delay]],
+			["Both the tower and Transporter gain |0| and |1| for 6 seconds after swapping.", [interpreter_for_attk_speed, interpreter_for_ap]],
+			["Cooldown: |0|", [interpreter_for_cooldown]]
+		]
+		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION] = ability_descs
+		
 		info.tower_descriptions = [
 			"Attacks two enemies at the same time with its beams. This is counted as executing one main attack.",
 			"",
-			"Ability: Transpose. Select a tower to swap places with. Swapping takes 1.5 seconds to complete.",
-			"Both the tower and Transporter gain 50% bonus attack speed and 0.25 ability potency for 6 seconds after swapping.",
-			"Ability potency increases the bonus attack speed and decreases swapping delay.",
-			"Cooldown: 45 s"
 		]
+		for desc in ability_descs:
+			info.tower_descriptions.append(desc)
+		
+		
+		
 		
 		
 		# Ingredient related

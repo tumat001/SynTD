@@ -100,7 +100,7 @@ func _ready():
 	shock_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.SHOCKER_SHOCK_BALL_MAIN_DAMAGE
 	
 	shock_attack_module.on_hit_damage_scale = shock_base_damage_ratio
-	shock_attack_module.on_hit_effect_scale = shock_base_damage_ratio
+	shock_attack_module.on_hit_effect_scale = 1
 	
 	shock_attack_module.benefits_from_bonus_attack_speed = false
 	

@@ -55,10 +55,12 @@ var tidal_wave_ability : BaseAbility
 var tidal_ability_activation_clause : ConditionalClauses
 
 var explosion_attack_module : AOEAttackModule
+var _tower_info : TowerTypeInformation
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.WAVE)
+	_tower_info = info
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
@@ -266,17 +268,20 @@ func _construct_and_connect_ability():
 	tidal_wave_ability.set_properties_to_usual_tower_based()
 	tidal_wave_ability.tower = self
 	
-	tidal_wave_ability.descriptions = [
-		"Wave sprays 8 columns of water in a cone facing its current target.",
-		"Each column deals 1 + twice of Wave's passive on hit damage as elemental damage to all enemies hit.",
-		"Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals 0.75 elemental damage to 2 enemies.",
-		"Activating Tidal Wave reduces the passive on hit damage by 0.5 for 30 seconds. This effect stacks, but does not refresh other stacks.",
-		"Cooldown : 6 s",
-		"",
-		"Tidal wave's columns and explosions do not benefit from bonus base damage, on hit damages and on hit effects.",
-		"Ability cdr also reduces the duration of stack's on hit damage debuff.",
-		"Ability potency increases the number of columns, but does not increase the damage of the columns and explosions."
-	]
+	tidal_wave_ability.descriptions = _tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION]
+	
+#	tidal_wave_ability.descriptions = [
+#		"Wave sprays 8 columns of water in a cone facing its current target.",
+#		"Each column deals 1 + twice of Wave's passive on hit damage as elemental damage to all enemies hit.",
+#		"Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals 0.75 elemental damage to 2 enemies.",
+#		"Activating Tidal Wave reduces the passive on hit damage by 0.5 for 30 seconds. This effect stacks, but does not refresh other stacks.",
+#		"Cooldown : 6 s",
+#		"",
+#		"Tidal wave's columns and explosions do not benefit from bonus base damage, on hit damages and on hit effects.",
+#		"Ability cdr also reduces the duration of stack's on hit damage debuff.",
+#		"Ability potency increases the number of columns, but does not increase the damage of the columns and explosions."
+#	]
+	
 	tidal_wave_ability.display_name = "Tidal Wave"
 	
 	tidal_wave_ability.activation_conditional_clauses.attempt_insert_clause(no_enemy_in_range_clause)

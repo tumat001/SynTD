@@ -160,7 +160,7 @@ const capacitor_lightning_ongoing_cooldown_percent_type : int = PercentType.CURR
 const capacitor_lightning_ongoing_cd_reduction : float = 1.0
 
 const capacitor_lightning_enemy_damage_percent : float = 75.0
-const capacitor_lightning_enemy_damage_max_amount : float = 150.0
+const capacitor_lightning_enemy_damage_max_amount : float = 250.0
 const capacitor_lightning_enemy_explosion_pierce : int = 5
 
 const capacitor_lightning_delay_from_sky_to_ground : float = 0.1

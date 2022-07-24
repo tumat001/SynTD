@@ -62,13 +62,15 @@ var extinguish_attack_module : WithBeamInstantDamageAttackModule
 
 var explosion_attack_module : AOEAttackModule
 var burst_missing_health_ratio : float = 0.4
-var burst_missing_health_limit : float = 200
+var burst_missing_health_limit : float = 150
 
 var burning_enemies_group_id = "RoyalFlameBurnGroupId" #unused thus far
+var tower_info : TowerTypeInformation
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.ROYAL_FLAME)
+	tower_info = info
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
@@ -256,11 +258,13 @@ func _construct_and_connect_ability():
 	steam_burst_ability.set_properties_to_usual_tower_based()
 	steam_burst_ability.tower = self
 	
-	steam_burst_ability.descriptions = [
-		"Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to 200.",
-		"The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
-		"Cooldown: 25 s"
-	]
+	steam_burst_ability.descriptions = tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION]
+	
+#	steam_burst_ability.descriptions = [
+#		"Extinguishes the 3 closest enemies burned by Royal Flame. Extinguishing enemies creates a steam explosion that deals 40% of the extinguished enemy's missing health as elemental damage, up to 200.",
+#		"The explosion benefits only from explosion size buffs, damage mitigation pierce buffs, and ability related buffs.",
+#		"Cooldown: 25 s"
+#	]
 	steam_burst_ability.display_name = "Steam Burst"
 	
 	register_ability_to_manager(steam_burst_ability)

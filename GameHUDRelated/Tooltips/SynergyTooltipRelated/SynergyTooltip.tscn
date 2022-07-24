@@ -26,8 +26,8 @@ size = 8
 font_data = ExtResource( 7 )
 
 [node name="SynergyTooltip" type="MarginContainer"]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_right = 217.0
+margin_bottom = 107.0
 mouse_filter = 2
 script = ExtResource( 2 )
 __meta__ = {
@@ -35,38 +35,43 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_right = 187.0
+margin_right = 217.0
 margin_bottom = 107.0
 mouse_filter = 2
 custom_constants/separation = 0
 alignment = 1
 
 [node name="TooltipTopSprite" type="TextureRect" parent="VBoxContainer"]
-margin_right = 187.0
+margin_right = 217.0
 margin_bottom = 9.0
 mouse_filter = 2
 texture = ExtResource( 3 )
+stretch_mode = 1
 
 [node name="MainContentContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_left = 6.0
 margin_top = 9.0
-margin_right = 181.0
+margin_right = 217.0
 margin_bottom = 98.0
 mouse_filter = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
 size_flags_vertical = 3
+custom_constants/margin_right = 7
+custom_constants/margin_left = 7
 
 [node name="TooltipBodySprite" type="TextureRect" parent="VBoxContainer/MainContentContainer"]
-margin_right = 175.0
+margin_left = 7.0
+margin_right = 210.0
 margin_bottom = 89.0
 mouse_filter = 2
+size_flags_vertical = 3
 texture = ExtResource( 4 )
 stretch_mode = 1
 
 [node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer"]
-margin_right = 175.0
+margin_left = 7.0
+margin_right = 210.0
 margin_bottom = 89.0
-size_flags_vertical = 7
+size_flags_vertical = 3
 custom_constants/margin_right = 3
 custom_constants/margin_top = 3
 custom_constants/margin_left = 3
@@ -75,13 +80,13 @@ custom_constants/margin_bottom = 3
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer"]
 margin_left = 3.0
 margin_top = 3.0
-margin_right = 172.0
+margin_right = 200.0
 margin_bottom = 86.0
 mouse_filter = 2
 custom_constants/separation = 3
 
 [node name="SynNameIconNumberContainer" type="HBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer"]
-margin_right = 169.0
+margin_right = 197.0
 margin_bottom = 14.0
 custom_constants/separation = 3
 
@@ -92,7 +97,7 @@ texture = ExtResource( 6 )
 
 [node name="Marginer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer"]
 margin_left = 17.0
-margin_right = 169.0
+margin_right = 197.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
 custom_constants/margin_right = 2
@@ -101,7 +106,7 @@ custom_constants/margin_bottom = -1
 
 [node name="SynName" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer"]
 margin_top = 3.0
-margin_right = 150.0
+margin_right = 178.0
 margin_bottom = 12.0
 custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
@@ -109,9 +114,9 @@ text = "Sample"
 valign = 1
 
 [node name="NumOfTowers" type="Label" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/Marginer"]
-margin_left = 143.0
+margin_left = 171.0
 margin_top = 1.0
-margin_right = 150.0
+margin_right = 178.0
 margin_bottom = 15.0
 grow_horizontal = 0
 size_flags_horizontal = 10
@@ -122,7 +127,7 @@ text = "N"
 
 [node name="SynTierAndProg" type="HBoxContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer"]
 margin_top = 17.0
-margin_right = 169.0
+margin_right = 197.0
 margin_bottom = 31.0
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg"]
@@ -165,18 +170,19 @@ text = "x >> y"
 
 [node name="DescContainer" type="MarginContainer" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer"]
 margin_top = 34.0
-margin_right = 169.0
+margin_right = 197.0
 margin_bottom = 37.0
 custom_constants/margin_top = 3
 
 [node name="TooltipBody" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer" instance=ExtResource( 9 )]
 margin_top = 3.0
-margin_right = 169.0
+margin_right = 197.0
 margin_bottom = 3.0
 
 [node name="TooltipBottomSprite" type="TextureRect" parent="VBoxContainer"]
 margin_top = 98.0
-margin_right = 187.0
+margin_right = 217.0
 margin_bottom = 107.0
 mouse_filter = 2
 texture = ExtResource( 5 )
+stretch_mode = 1

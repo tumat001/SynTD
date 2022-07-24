@@ -144,7 +144,7 @@ func _ready():
 	# explosion
 	
 	explosion_attack_module = AOEAttackModule_Scene.instance()
-	explosion_attack_module.base_damage_scale = 1.0 / 3.0
+	explosion_attack_module.base_damage_scale = 0.35
 	explosion_attack_module.base_damage = 3 / explosion_attack_module.base_damage_scale
 	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
@@ -153,8 +153,8 @@ func _ready():
 	explosion_attack_module.is_main_attack = false
 	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	
-	explosion_attack_module.on_hit_damage_scale = 1.0 / 3.0
-	explosion_attack_module.on_hit_effect_scale = 1.0 / 3.0
+	explosion_attack_module.on_hit_damage_scale = 0.35
+	explosion_attack_module.on_hit_effect_scale = 1.0
 	
 	explosion_attack_module.benefits_from_bonus_explosion_scale = true
 	explosion_attack_module.benefits_from_bonus_base_damage = true

@@ -1,18 +1,6 @@
 extends "res://MiscRelated/TextInterpreterRelated/TextFragments/AbstractTextFragment.gd"
 
 
-enum STAT_TYPE {
-	BASE_DAMAGE,
-	
-	ON_HIT_DAMAGE,
-	
-	ATTACK_SPEED,
-	
-	RANGE,
-	
-	ABILITY_POTENCY
-}
-
 
 # Does not apply to on hit damage
 enum STAT_BASIS {
@@ -23,36 +11,16 @@ enum STAT_BASIS {
 
 #
 
-const type_to_for_light_color_map : Dictionary = {
-	STAT_TYPE.BASE_DAMAGE : "#F72302",
-	STAT_TYPE.ATTACK_SPEED : "#D6AC00",
-	STAT_TYPE.RANGE : "#01931B",
-	STAT_TYPE.ABILITY_POTENCY : "#024FB1",
-	STAT_TYPE.ON_HIT_DAMAGE : "#6F6F6F"
-}
-
-const type_to_for_dark_color_map : Dictionary = {
-	STAT_TYPE.BASE_DAMAGE : "#FD6453",
-	STAT_TYPE.ATTACK_SPEED : "#E8BA00",
-	STAT_TYPE.RANGE : "#01931B",
-	STAT_TYPE.ABILITY_POTENCY : "#024FB1",
-	STAT_TYPE.ON_HIT_DAMAGE : "#B8B8B8"
-}
-
-
-const type_to_name_map : Dictionary = {
-	STAT_TYPE.BASE_DAMAGE : "base damage",
-	STAT_TYPE.ATTACK_SPEED : "attack speed",
-	STAT_TYPE.RANGE : "range",
-	STAT_TYPE.ABILITY_POTENCY : "ability potency",
-}
 
 const type_to_stat__total__get_method_of_tower_map : Dictionary = {
 	STAT_TYPE.BASE_DAMAGE : "get_last_calculated_base_damage_of_main_attk_module",
 	STAT_TYPE.ATTACK_SPEED : "get_last_calculated_attack_speed_of_main_attk_module",
 	STAT_TYPE.RANGE : "get_last_calculated_range_of_main_attk_module",
 	STAT_TYPE.ABILITY_POTENCY : "get_last_calculated_ability_potency",
-	STAT_TYPE.ON_HIT_DAMAGE : "get_last_calculated_total_flat_on_hit_damages"
+	STAT_TYPE.ON_HIT_DAMAGE : "get_last_calculated_total_flat_on_hit_damages",
+	STAT_TYPE.PERCENT_COOLDOWN_REDUCTION : "get_last_calculated_percent_cdr",
+	STAT_TYPE.PIERCE : "get_last_calculated_bullet_pierce",
+	
 }
 
 const type_to_stat__base__get_method_of_tower_map : Dictionary = {
@@ -60,7 +28,10 @@ const type_to_stat__base__get_method_of_tower_map : Dictionary = {
 	STAT_TYPE.ATTACK_SPEED : "get_base_attack_speed_of_main_attk_module",
 	STAT_TYPE.RANGE : "get_base_range_of_main_attk_module",
 	STAT_TYPE.ABILITY_POTENCY : "get_base_ability_potency",
-	STAT_TYPE.ON_HIT_DAMAGE : "get_last_calculated_total_flat_on_hit_damages"
+	STAT_TYPE.ON_HIT_DAMAGE : "get_last_calculated_total_flat_on_hit_damages",
+	STAT_TYPE.PERCENT_COOLDOWN_REDUCTION : "get_base_percent_cdr",
+	STAT_TYPE.PIERCE : "get_base_bullet_pierce",
+	
 }
 
 const type_to_stat__bonus__get_method_of_tower_map : Dictionary = {
@@ -68,7 +39,10 @@ const type_to_stat__bonus__get_method_of_tower_map : Dictionary = {
 	STAT_TYPE.ATTACK_SPEED : "get_bonus_attack_speed_of_main_attk_module",
 	STAT_TYPE.RANGE : "get_bonus_range_of_main_attk_module",
 	STAT_TYPE.ABILITY_POTENCY : "get_bonus_ability_potency",
-	STAT_TYPE.ON_HIT_DAMAGE : "get_last_calculated_total_flat_on_hit_damages"
+	STAT_TYPE.ON_HIT_DAMAGE : "get_last_calculated_total_flat_on_hit_damages",
+	STAT_TYPE.PERCENT_COOLDOWN_REDUCTION : "get_bonus_percent_cdr",
+	STAT_TYPE.PIERCE : "get_bonus_bullet_pierce",
+	
 }
 
 
@@ -77,17 +51,11 @@ const type_to_stat__all__property_of_tower_info_map : Dictionary = {
 	STAT_TYPE.ATTACK_SPEED : "base_attk_speed",
 	STAT_TYPE.RANGE : "base_range",
 	STAT_TYPE.ABILITY_POTENCY : "base_ability_potency",
-}
-
-
-const type_to_img_map : Dictionary = {
-	STAT_TYPE.BASE_DAMAGE : "res://GameInfoRelated/TowerStatsIcons/StatIcon_BaseDamage.png",
-	STAT_TYPE.ATTACK_SPEED : "res://GameInfoRelated/TowerStatsIcons/StatIcon_BaseAtkSpeed.png",
-	STAT_TYPE.RANGE : "res://GameInfoRelated/TowerStatsIcons/StatIcon_BaseRange.png",
-	STAT_TYPE.ABILITY_POTENCY : "res://GameInfoRelated/TowerStatsIcons/StatIcon_BaseAbilityPotency.png",
-	STAT_TYPE.ON_HIT_DAMAGE : "res://GameInfoRelated/TowerStatsIcons/StatIcon_OnHitMultiplier.png",
+	STAT_TYPE.PERCENT_COOLDOWN_REDUCTION : "base_percent_cdr",
+	STAT_TYPE.PIERCE : "base_pierce"
 	
 }
+
 
 const basis_to_name_map : Dictionary = {
 	STAT_BASIS.BASE : "base",
@@ -122,6 +90,7 @@ func _init(arg_tower,
 	_damage_type = arg_damage_type
 	_is_percent = arg_is_percent
 	
+	
 	update_damage_type_based_on_args()
 
 func update_damage_type_based_on_args():
@@ -149,8 +118,11 @@ func _get_as_numerical_value() -> float:
 			val = _tower.call(type_to_stat__bonus__get_method_of_tower_map[_stat_type])
 		
 	elif _tower_info != null:
-		if type_to_stat__all__property_of_tower_info_map.has(_stat_type):
-			val = _tower_info.get(type_to_stat__all__property_of_tower_info_map[_stat_type])
+		if _stat_basis != STAT_BASIS.BONUS:
+			if type_to_stat__all__property_of_tower_info_map.has(_stat_type):
+				val = _tower_info.get(type_to_stat__all__property_of_tower_info_map[_stat_type])
+		else:
+			val = 0.0
 	
 	return val * _scale
 
@@ -162,16 +134,29 @@ func _get_as_text() -> String:
 	base_string += "[img=<%s>]%s[/img] " % [width_img_val_placeholder, type_to_img_map[_stat_type]]
 	
 	if _stat_type != STAT_TYPE.ON_HIT_DAMAGE:
-		base_string += "%s %s " % [basis_to_name_map[_stat_basis], type_to_name_map[_stat_type]]
+		base_string += "%s %s" % [basis_to_name_map[_stat_basis], type_to_name_map[_stat_type]]
 	
 	if _damage_type != -1:
 		base_string += "[img=<%s>]%s[/img]" % [width_img_val_placeholder, dmg_type_to_img_map[_damage_type]] 
 	
-	return "[color=%s]%s[/color]" % [_get_type_color_map_to_use()[_stat_type], base_string]
+	return "[color=%s]%s[/color]" % [_get_type_color_map_to_use(_stat_type, _damage_type), base_string]
+
+#
+#func _get_type_color_map_to_use() -> Dictionary:
+#	if _stat_type != STAT_TYPE.ON_HIT_DAMAGE:
+#		if color_mode == ColorMode.FOR_DARK_BACKGROUND:
+#			return type_to_for_dark_color_map[_stat_type]
+#		else:
+#			return type_to_for_light_color_map[_stat_type]
+#	else:
+#		if color_mode == ColorMode.FOR_DARK_BACKGROUND:
+#			return dmg_type_to_for_dark_color_map[_damage_type]
+#		else:
+#			return dmg_type_to_for_light_color_map[_damage_type]
+#
+##	if color_mode == ColorMode.FOR_DARK_BACKGROUND:
+##		return type_to_for_dark_color_map
+##	else:
+##		return type_to_for_light_color_map
 
 
-func _get_type_color_map_to_use() -> Dictionary:
-	if color_mode == ColorMode.FOR_DARK_BACKGROUND:
-		return type_to_for_dark_color_map
-	else:
-		return type_to_for_light_color_map

@@ -2,7 +2,11 @@ extends "res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseT
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.tscn")
-
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const DamageType = preload("res://GameInfoRelated/DamageType.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 
 const not_active_modulate : Color = Color(0.3, 0.3, 0.3, 1)
 const active_modulate : Color = Color(1, 1, 1, 1)
@@ -69,17 +73,57 @@ func _construct_tower_tooltip(button_owner : BaseButton):
 func _on_StickyIcon_pressed_mouse_event(event):
 	if attack_tooltip == null:
 		_construct_tower_tooltip(sticky_icon)
+#		attack_tooltip.descriptions = [
+#			"Orb throws a cosmic bomb every 2.5 seconds that latches onto the first enemy it hits. The bomb explodes after 2 seconds, or when the enemy dies.",
+#			"Attack speed increases the rate at which cosmic bomb is thrown.",
+#			"",
+#			"The explosion deals 6 elemental damage, and affects up to 3 enemies. The damage scales with Orb's ability potency.",
+#			"The explosion benefits from base damage and on hit damage bufs. Does not benefit from on hit effects."
+#		]
+		
+		var interpreter_for_bomb = TextFragmentInterpreter.new()
+		interpreter_for_bomb.tower_to_use_for_tower_stat_fragments = orb_tower
+		interpreter_for_bomb.display_body = true
+		
+		var outer_ins_for_bomb = []
+		var inner_ins_for_bomb = []
+		inner_ins_for_bomb.append(NumericalTextFragment.new(6, false, DamageType.ELEMENTAL))
+		inner_ins_for_bomb.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1, DamageType.ELEMENTAL))
+		inner_ins_for_bomb.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1)) # stat basis does not matter here
+		
+		outer_ins_for_bomb.append(inner_ins_for_bomb)
+		
+		outer_ins_for_bomb.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		outer_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_bomb.array_of_instructions = outer_ins_for_bomb
+		
 		attack_tooltip.descriptions = [
 			"Orb throws a cosmic bomb every 2.5 seconds that latches onto the first enemy it hits. The bomb explodes after 2 seconds, or when the enemy dies.",
 			"Attack speed increases the rate at which cosmic bomb is thrown.",
 			"",
-			"The explosion deals 6 elemental damage, and affects up to 3 enemies. The damage scales with Orb's ability potency.",
-			"The explosion benefits from base damage and on hit damage bufs. Does not benefit from on hit effects."
+			["The explosion deals |0|, and hits up to 3 enemies. Does not apply on hit effects.", [interpreter_for_bomb]],
 		]
 		
 		get_tree().get_root().add_child(attack_tooltip)
 		
 		attack_tooltip.header_left_text = "Cosmic Bomb"
+		
+		#
+		
+		var interpreter_for_ap = TextFragmentInterpreter.new()
+		interpreter_for_ap.tower_to_use_for_tower_stat_fragments = orb_tower
+		interpreter_for_ap.display_body = false
+		
+		var ins_for_ap = []
+		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.25, false))
+		
+		interpreter_for_ap.array_of_instructions = ins_for_ap
+		
+		
 		attack_tooltip.header_right_text = "Needs 1.5 ap"
 		attack_tooltip.update_display()
 		
@@ -92,10 +136,38 @@ func _on_StickyIcon_pressed_mouse_event(event):
 func _on_StarsIcon_pressed_mouse_event(event):
 	if attack_tooltip == null:
 		_construct_tower_tooltip(star_icon)
+#		attack_tooltip.descriptions = [
+#			"Main attacks on hit causes Orb to follow up the attack with 3 stars.",
+#			"",
+#			"Each star deals 1.5 elemental damage. Stars benefit from base damage buffs and on hit damages at 50% efficiency, and scale with ability potency. Does not benefit from on hit effects.",
+#		]
+		
+		
+		var interpreter_for_sub_ab = TextFragmentInterpreter.new()
+		interpreter_for_sub_ab.tower_to_use_for_tower_stat_fragments = orb_tower
+		interpreter_for_sub_ab.display_body = true
+		
+		var outer_ins_for_sub_ab = []
+		var inner_ins_for_bomb = []
+		inner_ins_for_bomb.append(NumericalTextFragment.new(1.5, false, DamageType.ELEMENTAL))
+		inner_ins_for_bomb.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.5, DamageType.ELEMENTAL))
+		inner_ins_for_bomb.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.5)) # stat basis does not matter here
+		
+		outer_ins_for_sub_ab.append(inner_ins_for_bomb)
+		
+		outer_ins_for_sub_ab.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		outer_ins_for_sub_ab.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_sub_ab.array_of_instructions = outer_ins_for_sub_ab
+		
+		
 		attack_tooltip.descriptions = [
 			"Main attacks on hit causes Orb to follow up the attack with 3 stars.",
 			"",
-			"Each star deals 1.5 elemental damage. Stars benefit from base damage buffs and on hit damages at 50% efficiency, and scale with ability potency. Does not benefit from on hit effects.",
+			["Each star deals |0|. Does not apply on hit effects.", [interpreter_for_sub_ab]],
 		]
 		
 		get_tree().get_root().add_child(attack_tooltip)
@@ -113,10 +185,54 @@ func _on_StarsIcon_pressed_mouse_event(event):
 func _on_RayIcon_pressed_mouse_event(event):
 	if attack_tooltip == null:
 		_construct_tower_tooltip(ray_icon)
+#		attack_tooltip.descriptions = [
+#			"Orb channels a constant cosmic ray at its target.",
+#			"",
+#			"The ray deals 1.5 elemental damage 6 times per second. Benefits from bonus attack speed. Benefits from base damage buffs at 50% effectiveness. The damage scales with Orb's ability potency. Does not benefit from on hit damages and effects."
+#		]
+		
+		#
+		
+		var interpreter_for_sub_ab = TextFragmentInterpreter.new()
+		interpreter_for_sub_ab.tower_to_use_for_tower_stat_fragments = orb_tower
+		interpreter_for_sub_ab.display_body = true
+		
+		var outer_ins_for_sub_ab = []
+		var inner_ins_for_bomb = []
+		inner_ins_for_bomb.append(NumericalTextFragment.new(1.5, false, DamageType.ELEMENTAL))
+		inner_ins_for_bomb.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.5, DamageType.ELEMENTAL))
+		
+		outer_ins_for_sub_ab.append(inner_ins_for_bomb)
+		
+		outer_ins_for_sub_ab.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		outer_ins_for_sub_ab.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_sub_ab.array_of_instructions = outer_ins_for_sub_ab
+		
+		#
+		
+#		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+#		interpreter_for_attk_speed.tower_to_use_for_tower_stat_fragments = orb_tower
+#		interpreter_for_attk_speed.display_body = true
+#		interpreter_for_attk_speed.header_description = "times per second"
+#
+#		var ins_for_attk_speed = []
+#		ins_for_attk_speed.append(OutcomeTextFragment.new(-1, -1))
+#		ins_for_attk_speed.append(NumericalTextFragment.new(6, false))
+#		ins_for_attk_speed.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+#		ins_for_attk_speed.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, TowerStatTextFragment.STAT_BASIS.BONUS, 1))
+#
+#		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+#
+		
+		#
+		
 		attack_tooltip.descriptions = [
 			"Orb channels a constant cosmic ray at its target.",
 			"",
-			"The ray deals 1.5 elemental damage 6 times per second. Benefits from bonus attack speed. Benefits from base damage buffs at 50% effectiveness. The damage scales with Orb's ability potency. Does not benefit from on hit damages and effects."
+			["The ray deals |0| 6 times per second. Benefits from bonus attack speed. Does not apply on hit effects.", [interpreter_for_sub_ab]]
 		]
 		
 		get_tree().get_root().add_child(attack_tooltip)

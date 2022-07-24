@@ -93,8 +93,8 @@ func _construct_on_hit_damage():
 # range related
 
 func _on_main_range_changed():
-	var range_diff : float = main_attack_module.range_module.last_calculated_final_range - main_attack_module.range_module.base_range_radius
-	var bonus_dmg = range_diff * range_bonus_damage_ratio
+	var bonus_range : float = main_attack_module.range_module.last_calculated_final_range - main_attack_module.range_module.base_range_radius
+	var bonus_dmg = bonus_range * range_bonus_damage_ratio
 	
 	range_based_modifier.flat_modifier = bonus_dmg
 

@@ -25,7 +25,7 @@ const beacon_dish_panel_about_descriptions : Array = [
 var tower_detecting_range_module : TowerDetectingRangeModule
 var refresh_cooldown : float = 5.0
 var _current_refresh_cooldown : float = 0
-var effect_duration : float = 7.0
+var effect_duration : float = 4.0
 
 var elemental_on_hit_effect : TowerOnHitDamageAdderEffect
 var attack_speed_effect : TowerAttributesEffect

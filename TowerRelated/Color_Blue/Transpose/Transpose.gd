@@ -43,9 +43,11 @@ var transpose_attk_speed_effect : TowerAttributesEffect
 var transpose_ability_potency_effect : TowerAttributesEffect
 
 var transpose_delay_timer : Timer
+var tower_info
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.TRANSPORTER)
+	tower_info = info
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
@@ -140,14 +142,14 @@ func _construct_and_connect_ability():
 	transpose_ability.set_properties_to_usual_tower_based()
 	transpose_ability.tower = self
 	
-	transpose_ability.descriptions = [
-		"Select a tower to swap places with. Swapping takes 1.5 seconds to complete.",
-		"Both the tower and Transporter gain 50% bonus attack speed and 0.25 ability potency for 5 seconds after swapping.",
-		"Ability potency increases the bonus attack speed and decreases swapping delay.",
-		"Cooldown: 45 s",
+	transpose_ability.descriptions = tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION]
+	var extra_descs = [
 		"",
 		"\"To avoid nesting of spacetime, Transporter cannot Transpose a Transporter.\""
 	]
+	for desc in extra_descs:
+		transpose_ability.descriptions.append(desc)
+	
 	transpose_ability.display_name = "Transpose"
 	
 	transpose_ability_activation_clauses = transpose_ability.activation_conditional_clauses

@@ -227,7 +227,9 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 		bullet.set_shape(bullet_shape)
 	
 	var damage_instance : DamageInstance = construct_damage_instance()
-	emit_signal("on_damage_instance_constructed", damage_instance, self)
+	if damage_instance != null:
+		emit_signal("on_damage_instance_constructed", damage_instance, self)
+	
 	bullet.damage_instance = damage_instance
 	
 	bullet.pierce = last_calculated_final_pierce

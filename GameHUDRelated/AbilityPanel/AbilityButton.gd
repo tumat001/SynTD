@@ -211,6 +211,7 @@ func _ability_button_autocast_pressed():
 func _construct_tooltip():
 	ability_tooltip = AbilityTooltip_Scene.instance()
 	ability_tooltip.tooltip_owner = ability_button
+	ability_tooltip.tower_associated_with_ability = ability.tower
 	
 	get_tree().get_root().add_child(ability_tooltip)
 

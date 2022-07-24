@@ -1,5 +1,10 @@
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
 
+enum Metadata {
+	ABILITY_DESCRIPTION = 0
+}
+
+
 var tower_name : String
 var tower_type_id : int
 var tower_cost : int
@@ -23,7 +28,14 @@ var base_ability_potency : float = 1
 var base_pierce : float
 var on_hit_multiplier : float = 1
 
+var base_percent_cdr : float = 0
+
+var metadata_id_to_data_map : Dictionary
+
+
+
 func _init(arg_tower_name : String, arg_tower_type_id : int):
 	tower_name = arg_tower_name
 	tower_type_id = arg_tower_type_id
 	tower_cost = 0
+
