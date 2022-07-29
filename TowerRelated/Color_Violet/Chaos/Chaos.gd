@@ -118,7 +118,7 @@ func _ready():
 	diamond_attack_module.on_hit_damage_scale = 2
 	diamond_attack_module.on_hit_effect_scale = 1
 	
-	diamond_attack_module.benefits_from_bonus_attack_speed = false
+	diamond_attack_module.benefits_from_bonus_attack_speed = true
 	diamond_attack_module.benefits_from_bonus_base_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_damage = true
 	diamond_attack_module.benefits_from_bonus_on_hit_effect = true

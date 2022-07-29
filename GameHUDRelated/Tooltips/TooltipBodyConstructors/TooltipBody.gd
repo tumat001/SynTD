@@ -56,7 +56,6 @@ func update_display():
 		elif desc is Array: # Arr with [<string>, [TextFragmentInterpreters]]
 			desc_instance = TooltipPlainTextDescriptionScene.instance()
 			desc_instance.description = desc[0]
-			
 			desc_instance._text_fragment_interpreters = desc[1]
 			desc_instance._use_color_for_dark_background = use_color_for_dark_background
 			
@@ -83,6 +82,7 @@ func update_display():
 		
 		if desc_instance._tower_info == null:
 			desc_instance._tower_info = tower_info_for_text_fragment_interpreter
+		
 		
 		$RowContainer.add_child(desc_instance)
 		index += 1

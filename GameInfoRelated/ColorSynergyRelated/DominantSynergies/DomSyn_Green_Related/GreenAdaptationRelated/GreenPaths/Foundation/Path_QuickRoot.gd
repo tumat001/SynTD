@@ -5,9 +5,15 @@ const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitDamageAdderEffect.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 const path_name = "Quick Root"
 const path_descs = [
-	"All Green tower's main attacks deal bonus 1 elemental damage on hit."
+	
 ]
 const path_small_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/QuickRoot_Icon.png")
 
@@ -20,7 +26,22 @@ var on_hit_damage_effect : TowerOnHitDamageAdderEffect
 #
 
 func _init().(path_name, path_descs, path_small_icon):
-	pass
+	
+	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+	interpreter_for_flat_on_hit.display_body = false
+	
+	var ins_for_flat_on_hit = []
+	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental on hit damage", dmg_amount))
+	
+	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+	
+	
+	var temp_path_descs = [
+		["All Green tower's main attacks deal bonus |0|.", [interpreter_for_flat_on_hit]]
+	]
+	for desc in temp_path_descs:
+		path_descs.append(desc)
+	
 
 #
 

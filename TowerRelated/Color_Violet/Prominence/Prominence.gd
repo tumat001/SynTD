@@ -99,6 +99,8 @@ var range_module_has_enemy_in_range_map : Dictionary = {}
 
 var regards_candidate_tower_indicator_shower : ShowTowersWithParticleComponent
 
+var _tower_info : TowerTypeInformation
+
 #
 
 var is_energy_module_on : bool = false
@@ -110,6 +112,7 @@ onready var prominence_sword_sprite = $TowerBase/KnockUpLayer/ProminenceSword
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.PROMINENCE)
+	_tower_info = info
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
@@ -353,15 +356,20 @@ func _construct_ability():
 	regards_ability.set_properties_to_auto_castable()
 	regards_ability.auto_cast_func = "_regards_ability_activated"
 	
-	regards_ability.descriptions = [
-		"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
-		"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 3 seconds, and dealing 12 physical damage.",
-		"The farthest tower with range from Prominence also casts Regards using Prominence's ability potency. Enemies can only be affected once.",
-		"Prominece also gains 3 attacks with its sword, with each attack exploding, dealing 5 + 300% of its bonus base damage as elemental damage.",
-		"Cooldown: %s s" % [str(regards_ability_cooldown)],
-		"",
-		"Regards' stun duration scales with ability potency."
-	]
+	
+	var ability_desc = _tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION]
+	regards_ability.descriptions = ability_desc
+	
+#	regards_ability.descriptions = [
+#		"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
+#		"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 3 seconds, and dealing 12 physical damage.",
+#		"The farthest tower with range from Prominence also casts Regards using Prominence's ability potency. Enemies can only be affected once.",
+#		"Prominece also gains 3 attacks with its sword, with each attack exploding, dealing 5 + 300% of its bonus base damage as elemental damage.",
+#		"Cooldown: %s s" % [str(regards_ability_cooldown)],
+#		"",
+#		"Regards' stun duration scales with ability potency."
+#	]
+	
 	regards_ability.display_name = "Regards"
 	
 	regards_activation_conditional_clauses = regards_ability.activation_conditional_clauses

@@ -3,12 +3,17 @@ extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Gree
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const TowerPathEffect_HasteGiverEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/OtherGreenEffects/TowerPathEffect_HasteGiverEffect.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
 
 const green_tier_requirement_inclusive : int = 3
 
 const path_name = "Shots of Haste"
 const path_descs = [
-	"For each green tower: After dealing 40 damage or attacking 12 times, gain 40% bonus attack speed."
+	
 ]
 const path_small_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/YellowFlower_Icon.png")
 
@@ -23,7 +28,22 @@ var game_elements
 #
 
 func _init().(path_name, path_descs, path_small_icon):
-	pass
+	
+	var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+	interpreter_for_attk_speed.display_body = false
+	
+	var ins_for_attk_speed = []
+	ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", attk_speed_amount, true))
+	
+	interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+	
+	
+	var temp_path_desc = [
+		["For each green tower: After dealing 40 damage or attacking 12 times, gain |0|.", [interpreter_for_attk_speed]]
+	]
+	for desc in temp_path_desc:
+		path_descs.append(desc)
+	
 
 #
 

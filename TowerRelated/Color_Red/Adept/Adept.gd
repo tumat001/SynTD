@@ -55,7 +55,7 @@ const mini_dmg_reg_id : int = Towers.ADEPT
 
 
 var slow_effect : EnemyAttributesEffect
-const base_beyond_range_bonus_damage_ratio : float = 1.75
+const base_beyond_range_bonus_damage_ratio : float = 1.5
 var main_shot_sprite_frames : SpriteFrames
 
 const rounds_before_learn : int = 3

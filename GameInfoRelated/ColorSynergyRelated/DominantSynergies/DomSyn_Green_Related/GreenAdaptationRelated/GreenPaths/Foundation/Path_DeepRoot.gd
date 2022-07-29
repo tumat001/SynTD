@@ -2,10 +2,16 @@ extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Gree
 
 const TowerDamageInstanceBoostEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerDamageInstanceScaleBoostEffect.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
+
 const path_name = "Deep Root"
 const path_descs = [
-	"All Green tower's attacks deal 10% more damage.",
-	"This bonus is increased by another 20% for each higher tier attained."
+	
 ]
 const path_small_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/DeepRoot_Icon.png")
 
@@ -21,7 +27,34 @@ var dmg_instance_boost_effect : TowerDamageInstanceBoostEffect
 #
 
 func _init().(path_name, path_descs, path_small_icon):
-	pass
+	var interpreter_for_bonus_dmg_base = TextFragmentInterpreter.new()
+	interpreter_for_bonus_dmg_base.display_body = false
+	
+	var ins_for_bonus_dmg_base = []
+	ins_for_bonus_dmg_base.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 10, true))
+	
+	interpreter_for_bonus_dmg_base.array_of_instructions = ins_for_bonus_dmg_base
+	
+	
+	var interpreter_for_bonus_dmg_per_stack = TextFragmentInterpreter.new()
+	interpreter_for_bonus_dmg_per_stack.display_body = false
+	
+	var ins_for_bonus_dmg_per_stack = []
+	ins_for_bonus_dmg_per_stack.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", 20, true))
+	
+	interpreter_for_bonus_dmg_per_stack.array_of_instructions = ins_for_bonus_dmg_per_stack
+	
+	
+	#
+	
+	var temp_path_descs = [
+		["All Green tower's attacks deal |0|.", [interpreter_for_bonus_dmg_base]],
+		["This bonus is increased by another |0| for each higher tier attained.", [interpreter_for_bonus_dmg_per_stack]]
+	]
+	for desc in temp_path_descs:
+		path_descs.append(desc)
+	
+	
 
 #
 

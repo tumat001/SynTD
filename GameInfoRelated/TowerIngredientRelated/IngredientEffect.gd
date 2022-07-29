@@ -4,7 +4,7 @@ const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerB
 
 var tower_base_effect : TowerBaseEffect
 var tower_id : int
-var description : String
+var description # string or array (for TextFragmentInterpreter purposes)
 var ignore_ingredient_limit : bool = false
 var discard_after_absorb : bool = false
 

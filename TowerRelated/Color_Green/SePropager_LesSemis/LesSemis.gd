@@ -80,7 +80,8 @@ func _ready():
 	
 	#
 	
-	can_contribute_to_synergy_color_count = false
+	#can_contribute_to_synergy_color_count = false
+	set_contribute_to_synergy_color_count(false)
 	tower_limit_slots_taken = 0
 	
 	connect("on_any_post_mitigation_damage_dealt", self, "_on_any_post_miti_dmg_dealt", [], CONNECT_PERSIST)

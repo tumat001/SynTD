@@ -7,6 +7,12 @@ const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 const LavaJet_Bullet_Pic = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJetBullet.png")
 
 const LavaJet_Beam01 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_Beam/LavaJetBeam_01.png")
@@ -41,7 +47,21 @@ var _curr_num_of_attacks : int = 0
 
 func _init().(StoreOfTowerEffectsUUID.LAVA_JET_BEAM):
 	effect_icon = Ingredient_pic
-	description = "Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals 20% of the enemy's max health damage as elemental damage, up to 30."
+	#
+	
+	var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
+	interpreter_for_perc_on_hit.display_body = false
+	
+	var ins_for_perc_on_hit = []
+	ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "max health damage", health_percent_dmg, true))
+	
+	interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
+	
+	
+	#
+	
+	description = ["Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals |0|, up to 30.", [interpreter_for_perc_on_hit]]
+	#description = "Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals 20% of the enemy's max health damage as elemental damage, up to 30."
 
 
 func _make_modifications_to_tower(tower):

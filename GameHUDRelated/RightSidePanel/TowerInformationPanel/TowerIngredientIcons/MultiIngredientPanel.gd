@@ -11,6 +11,8 @@ var _single_ingredient_list : VBoxContainer
 
 export(bool) var collapsed_value_by_default : bool = false
 
+var tower_to_use_for_interpreter
+
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
@@ -50,6 +52,7 @@ func _set_ingredient_of_single_panels():
 			var panel : SingleIngredientPanel = _single_ingredient_panels[i]
 			panel.modulate = Color(1, 1, 1, 1)
 		
+		_single_ingredient_panels[i].tower_to_use_for_interpreter = tower_to_use_for_interpreter
 		_single_ingredient_panels[i].update_display()
 
 

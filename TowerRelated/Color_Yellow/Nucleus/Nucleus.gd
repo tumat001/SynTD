@@ -76,6 +76,8 @@ var _gamma_duration_timer : Timer
 
 const _base_gamma_length : float = 350.0
 
+var _tower_info : TowerTypeInformation
+
 #
 
 var _is_energy_module_on : bool = false
@@ -84,6 +86,7 @@ const _base_gamma_length_energy_module_on : float = _base_gamma_length * 2
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.NUCLEUS)
+	_tower_info = info
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
@@ -250,12 +253,14 @@ func _construct_and_connect_ability():
 	gamma_ability.set_properties_to_usual_tower_based()
 	gamma_ability.tower = self
 	
-	gamma_ability.descriptions = [
-		"Ability: Gamma. Fires a constant beam towards its current target for %s seconds." % [str(gamma_ability_duration)],
-		"Gamma deals %s + %s of Nucleus's bonus base damage as elemental damage every %s seconds." % [str(gamma_ability_flat_damage_amount), str(gamma_ability_percent_base_dmg_amount * 100) + "%", str(gamma_ability_duration / gamma_ability_damage_repeat_count)],
-		"Cooldown: %s s" % [str(gamma_ability_base_cooldown)],
-		"Ability potency increases damage dealt by Gamma. Nucleus rotates the beam towards its current target.",
-	]
+	gamma_ability.descriptions = _tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION]
+	
+#	gamma_ability.descriptions = [
+#		"Ability: Gamma. Fires a constant beam towards its current target for %s seconds." % [str(gamma_ability_duration)],
+#		"Gamma deals %s + %s of Nucleus's bonus base damage as elemental damage every %s seconds." % [str(gamma_ability_flat_damage_amount), str(gamma_ability_percent_base_dmg_amount * 100) + "%", str(gamma_ability_duration / gamma_ability_damage_repeat_count)],
+#		"Cooldown: %s s" % [str(gamma_ability_base_cooldown)],
+#		"Ability potency increases damage dealt by Gamma. Nucleus rotates the beam towards its current target.",
+#	]
 	gamma_ability.display_name = "Gamma"
 	
 	gamma_ability_activation_clauses = gamma_ability.activation_conditional_clauses

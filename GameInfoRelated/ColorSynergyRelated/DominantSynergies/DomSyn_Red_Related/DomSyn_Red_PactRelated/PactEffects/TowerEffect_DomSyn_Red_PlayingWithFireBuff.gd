@@ -13,9 +13,11 @@ var attk_speed_modifier : PercentModifier
 var tower_affected
 
 var health_manager
+var pact_parent
 
-func _init(arg_health_manager).(StoreOfTowerEffectsUUID.RED_PACT_PLAYING_WITH_FIRE_BUFF_GIVER):
+func _init(arg_health_manager, arg_pact_parent).(StoreOfTowerEffectsUUID.RED_PACT_PLAYING_WITH_FIRE_BUFF_GIVER):
 	health_manager = arg_health_manager
+	pact_parent = arg_pact_parent
 
 
 func _make_modifications_to_tower(tower):
@@ -45,9 +47,7 @@ func _health_changed(curr_health):
 	_update_effect_modi()
 
 func _update_effect_modi():
-	var attk_speed_bonus = base_max_attk_speed_amount * (1 - (health_manager.current_health / health_manager.starting_health))
-	if attk_speed_bonus < 0:
-		attk_speed_bonus = 0
+	var attk_speed_bonus = _calculate_attk_speed_bonus()
 	attk_speed_modifier.percent_amount = attk_speed_bonus
 	
 	for module in tower_affected.all_attack_modules:
@@ -57,6 +57,9 @@ func _update_effect_modi():
 		if tower_affected.main_attack_module == module:
 			tower_affected._emit_final_attack_speed_changed()
 
+
+func _calculate_attk_speed_bonus():
+	return pact_parent._calculate_attk_speed_bonus()
 
 #
 

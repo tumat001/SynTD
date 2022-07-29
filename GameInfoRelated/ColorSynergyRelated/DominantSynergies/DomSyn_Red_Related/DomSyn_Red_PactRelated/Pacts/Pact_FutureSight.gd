@@ -3,7 +3,7 @@ extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_
 var new_tier : int
 var red_syn
 
-func _init(arg_tier : int).(StoreOfPactUUID.FUTURE_SIGHT, "Future Sight", arg_tier):
+func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.FUTURE_SIGHT, "Future Sight", arg_tier):
 	
 	if tier == 0:
 		new_tier = 0
@@ -16,7 +16,7 @@ func _init(arg_tier : int).(StoreOfPactUUID.FUTURE_SIGHT, "Future Sight", arg_ti
 	
 	
 	good_descriptions = [
-		"When this pact is discarded, a new unsworn tier %s pact will be created." % new_tier
+		"When this pact is unsworn, a new unsworn tier %s pact will be created." % new_tier
 	]
 	
 	bad_descriptions = [
@@ -31,6 +31,15 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 
 
 func _remove_pact_from_game_elements(arg_game_elements : GameElements):
+	._remove_pact_from_game_elements(arg_game_elements)
+
+
+func pact_unsworn():
+	.pact_unsworn()
+	
+	_generate_random_higher_pact()
+
+func _generate_random_higher_pact():
 	var pact
 	
 	if new_tier == 0:
@@ -45,4 +54,8 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 	if pact != null:
 		red_syn.red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 	
-	._remove_pact_from_game_elements(arg_game_elements)
+
+#########
+
+func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
+	return arg_tier_to_be_offered != 0

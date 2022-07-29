@@ -9,6 +9,7 @@
 margin_right = 40.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 0, 400 )
+mouse_filter = 2
 size_flags_horizontal = 6
 custom_constants/margin_top = 75
 script = ExtResource( 1 )
@@ -20,6 +21,7 @@ __meta__ = {
 margin_top = 75.0
 margin_right = 350.0
 margin_bottom = 420.0
+mouse_filter = 2
 custom_constants/separation = 0
 
 [node name="Black_PathSelectionPanel" parent="VBoxContainer" instance=ExtResource( 3 )]

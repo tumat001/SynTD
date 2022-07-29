@@ -28,6 +28,7 @@ func _init(arg_indicator : String = "", arg_description : String = ""):
 	description = arg_description
 	indicator = arg_indicator
 
+
 func _ready():
 	$ColumnContainer/Indicator.text = indicator
 	
@@ -54,24 +55,4 @@ func get_info_from_self_class(self_class):
 #
 
 func _get_bbc_modified_description(arg_desc : String) -> String:
-	var index = 0
-	
-	for interpreter in _text_fragment_interpreters:
-		interpreter.use_color_for_dark_background = _use_color_for_dark_background
-		
-		if interpreter.tower_to_use_for_tower_stat_fragments == null:
-			interpreter.tower_to_use_for_tower_stat_fragments = _tower
-		
-		if interpreter.tower_info_to_use_for_tower_stat_fragments == null:
-			interpreter.tower_info_to_use_for_tower_stat_fragments = _tower_info
-		
-		
-		var interpreted_text = interpreter.interpret_array_of_instructions_to_final_text()
-		arg_desc = arg_desc.replace("|%s|" % str(index), interpreted_text)
-		
-		index += 1
-	
-	arg_desc = arg_desc.replace(AbstractTextFragment.width_img_val_placeholder, str(font_size / 2))
-	
-	
-	return "[color=#%s]%s[/color]" % [color.to_html(false), arg_desc]
+	return TextFragmentInterpreter.get_bbc_modified_description_as_string(arg_desc, _text_fragment_interpreters, _tower, _tower_info, font_size, color, _use_color_for_dark_background)

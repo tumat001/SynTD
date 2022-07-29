@@ -6,6 +6,12 @@ const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 const ScreenTintEffect = preload("res://MiscRelated/ScreenEffectsRelated/ScreenTintEffect.gd")
 
 const SolarSpirit_NoDebuff_AbilityIcon = preload("res://TowerRelated/Color_Green/LaNature/Assets/Ability/SolarSpirit_NoDebuff_AbilityIcon.png")
@@ -383,15 +389,48 @@ func _get_current_self_damage_from_solar_spirit():
 		return amount
 
 func _get_solar_spirit_descriptions() -> Array:
+	# ins start
+	var interpreter_for_base_attk_speed = TextFragmentInterpreter.new()
+	interpreter_for_base_attk_speed.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_base_attk_speed.display_body = false
+	
+	var ins_for_base_attk_speed = []
+	ins_for_base_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", solar_spirit_base_attk_speed_percent, true))
+	
+	interpreter_for_base_attk_speed.array_of_instructions = ins_for_base_attk_speed
+	
+	#
+	var interpreter_for_attk_speed_per_stack = TextFragmentInterpreter.new()
+	interpreter_for_attk_speed_per_stack.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_attk_speed_per_stack.display_body = false
+	
+	var ins_for_attk_speed_per_stack = []
+	ins_for_attk_speed_per_stack.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "", solar_spirit_bonus_attk_speed_per_use, true))
+	
+	interpreter_for_attk_speed_per_stack.array_of_instructions = ins_for_attk_speed_per_stack
+	
+	#
+	var interpreter_for_curr_attk_speed = TextFragmentInterpreter.new()
+	interpreter_for_curr_attk_speed.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_curr_attk_speed.display_body = false
+	
+	var ins_for_curr_attk_speed = []
+	ins_for_curr_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", _get_current_attack_speed_from_solar_spirit(), true))
+	
+	interpreter_for_curr_attk_speed.array_of_instructions = ins_for_curr_attk_speed
+	
+	
+	# ins end
+	
 	return [
-		"Imbue the solar spirit onto all towers, giving them %s%% attack speed for %s seconds." % [str(solar_spirit_base_attk_speed_percent), str(solar_spirit_attk_speed_buff_duration)],
-		"Each consecutive use of Solar Spirit increases the attack speed buff by %s" % [str(solar_spirit_bonus_attk_speed_per_use)],
+		["Imbue the solar spirit onto all towers, giving them |0| for %s seconds." % [str(solar_spirit_attk_speed_buff_duration)], [interpreter_for_base_attk_speed]],
+		["Each consecutive use of Solar Spirit increases the attack speed buff by |0|.", [interpreter_for_attk_speed_per_stack]],
 		"After the 3rd consecutive use, damage all towers by %s%% of their max health, increasing by %s per use, up to %s%%." % [str(solar_spirit_base_self_damage_percent), str(solar_spirit_bonus_self_damage_per_use), str(solar_spirit_self_damage_max)],
 		"",
 		"Shares cooldown with Torrential Tempest. Cooldown: %s s" % [str(ability_base_cooldowns)],
 		"",
 		"Number of consecutive use: %s" % [str(current_solar_spirit_consecutive_uses)],
-		"Current attack speed buff: %s%%" % [str(_get_current_attack_speed_from_solar_spirit())],
+		["Current attack speed buff: |0|", [interpreter_for_curr_attk_speed]],
 		"Current self damage: %s%%" % [str(_get_current_self_damage_from_solar_spirit())]
 	]
 

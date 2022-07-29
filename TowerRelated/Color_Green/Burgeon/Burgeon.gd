@@ -95,8 +95,8 @@ func _ready():
 	proj_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	proj_attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
-	proj_attack_module.benefits_from_bonus_base_damage = false
-	proj_attack_module.benefits_from_bonus_on_hit_damage = false
+	proj_attack_module.benefits_from_bonus_base_damage = true
+	proj_attack_module.benefits_from_bonus_on_hit_damage = true
 	proj_attack_module.benefits_from_bonus_on_hit_effect = false
 	
 	proj_attack_module.position.y -= 20

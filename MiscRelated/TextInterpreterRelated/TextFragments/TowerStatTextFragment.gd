@@ -74,6 +74,7 @@ var _damage_type
 var _is_percent
 
 
+# UPDATE DEEP COPY IF ARGS HAS CHANGED
 func _init(arg_tower, 
 		arg_tower_info, 
 		arg_stat_type : int, 
@@ -159,4 +160,21 @@ func _get_as_text() -> String:
 ##	else:
 ##		return type_to_for_light_color_map
 
+#
+
+func get_deep_copy():
+	var copy = get_script().new(_tower, _tower_info)
+	
+	._configure_copy_to_match_self(copy)
+	
+	copy._tower = _tower
+	copy._tower_info = _tower_info
+	copy._stat_type = _stat_type
+	copy._stat_basis = _stat_basis
+	copy._scale = _scale
+	copy._damage_type = _damage_type
+	
+	copy._is_percent = _is_percent
+	
+	return copy
 

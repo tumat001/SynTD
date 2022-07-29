@@ -6,6 +6,7 @@ const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 
 
+signal on_effective_shop_odds_level_changed(new_level)
 signal on_cost_per_roll_changed(new_cost)
 signal can_roll_changed(can_roll)
 
@@ -20,6 +21,10 @@ const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_8 : [15, 20, 33, 30, 2, 0],
 	LevelManager.LEVEL_9 : [10, 15, 20, 35, 20, 0],
 	LevelManager.LEVEL_10 : [5, 10, 10, 25, 25, 25],
+	
+	# Reachable by red syn
+	LevelManager.LEVEL_11 : [3, 5, 5, 20, 35, 32], 
+	LevelManager.LEVEL_12 : [0, 0, 5, 15, 40, 40],
 }
 
 #
@@ -30,7 +35,7 @@ const base_tower_tier_stock : Dictionary = {
 	3 : 16,
 	4 : 10,
 	5 : 8,
-	6 : 4 # Originally 2, but is made to 4 for combination
+	6 : 2 # 2 for exclusivity, 4 for combination. Decide what's best
 }
 
 # When a tower should have a different initial stock amount
@@ -98,12 +103,22 @@ var current_cost_per_roll : int = 2 setget set_cost_per_roll
 enum TowersPerShopModifiers {
 	BASE_AMOUNT = 0,
 	
-	SYN_GREEN__HORTICULTURIST = 1
+	SYN_GREEN__HORTICULTURIST = 1,
+	SYN_RED__PRESTIGE = 2,
 }
 
+enum ShopLevelOddsModifiers {
+	SYN_RED__PRESTIGE = 1,
+}
+
+
 var _flat_towers_per_shop_id_to_amount_map : Dictionary = {}
-var last_calculated_towers_per_shop : float
+var last_calculated_towers_per_shop : int
 const max_towers_per_shop : int = 6
+
+var _flat_shop_level_odd_modi_id_to_modi_map : Dictionary = {}
+var last_calculated_shop_level_odd_modi : int
+var last_calculated_effective_shop_level_odds : int
 
 
 # setters
@@ -115,6 +130,8 @@ func set_stage_round_manager(arg_manager):
 
 func set_level_manager(arg_manager):
 	level_manager = arg_manager
+	
+	level_manager.connect("on_current_level_changed", self, "_on_current_player_level_changed", [], CONNECT_PERSIST)
 
 func set_tower_manager(arg_manager):
 	tower_manager = arg_manager
@@ -142,6 +159,8 @@ func _ready():
 			add_tower_to_inventory(tower_id, Towers.TowerTiersMap[tower_id])
 	
 	_update_tier_has_tower_map()
+	
+	_update_last_calculated_effective_shop_level(true)
 
 
 func add_tower_to_inventory(tower_id : int, tower_tier : int):
@@ -173,7 +192,7 @@ func add_towers_per_refresh_amount_modifier(id : int, amount : int):
 	_flat_towers_per_shop_id_to_amount_map[id] = amount
 	
 	_set_final_towers_per_refresh(_calculate_final_towers_per_refresh())
-
+	
 func remove_towers_per_refresh_amount_modifier(id : int):
 	_flat_towers_per_shop_id_to_amount_map.erase(id)
 	
@@ -195,13 +214,63 @@ func _set_final_towers_per_refresh(arg_new_val : int):
 	last_calculated_towers_per_shop = arg_new_val
 
 
+# shop odds related
+
+func add_shop_level_odds_modi(id : int, amount : int):
+	_flat_shop_level_odd_modi_id_to_modi_map[id] = amount
+	
+	_set_shop_level_odds_modifier(_calculate_shop_level_odds_modifier())
+	
+	_update_last_calculated_effective_shop_level()
+	emit_signal("on_effective_shop_odds_level_changed", last_calculated_effective_shop_level_odds)
+
+
+func remove_shop_level_odds_modi_id(id : int):
+	_flat_shop_level_odd_modi_id_to_modi_map.erase(id)
+	
+	_set_shop_level_odds_modifier(_calculate_shop_level_odds_modifier())
+	
+	_update_last_calculated_effective_shop_level()
+	emit_signal("on_effective_shop_odds_level_changed", last_calculated_effective_shop_level_odds)
+
+
+func _calculate_shop_level_odds_modifier() -> int:
+	var amount = 0
+	
+	for x in _flat_shop_level_odd_modi_id_to_modi_map.values():
+		amount += x
+	
+	return amount
+
+func _set_shop_level_odds_modifier(amount : int):
+	last_calculated_shop_level_odd_modi = amount
+
+
+
+func _on_current_player_level_changed(arg_new_level):
+	_update_last_calculated_effective_shop_level(true)
+
+func _update_last_calculated_effective_shop_level(_emit_change_signal : bool = false):
+	last_calculated_effective_shop_level_odds = _calculate_last_calculated_effective_shop_level()
+	if _emit_change_signal:
+		emit_signal("on_effective_shop_odds_level_changed", last_calculated_effective_shop_level_odds)
+
+func _calculate_last_calculated_effective_shop_level() -> int:
+	var level = 1
+	
+	if level_manager != null:
+		level = level_manager.current_level
+	
+	return level + last_calculated_shop_level_odd_modi
+
+
 # roll related
 
 func _emit_can_roll_changed(_new_val):
 	emit_signal("can_roll_changed", if_can_roll())
 
 
-func roll_towers_in_shop_with_cost(level_of_roll : int = level_manager.current_level, arg_cost : int = current_cost_per_roll):
+func roll_towers_in_shop_with_cost(level_of_roll : int = last_calculated_effective_shop_level_odds, arg_cost : int = current_cost_per_roll):
 	if if_can_roll():
 		roll_towers_in_shop(level_of_roll)
 		gold_manager.decrease_gold_by(arg_cost, GoldManager.DecreaseGoldSource.SHOP_ROLL)
@@ -210,7 +279,7 @@ func if_can_roll() -> bool:
 	return gold_manager.current_gold >= current_cost_per_roll 
 
 
-func roll_towers_in_shop(level_of_roll : int = level_manager.current_level):
+func roll_towers_in_shop(level_of_roll : int = last_calculated_effective_shop_level_odds):
 	for tower_id in buy_sell_level_roll_panel.get_all_unbought_tower_ids():
 		_add_stock_to_tower_id(tower_id, 1)
 	
@@ -265,7 +334,7 @@ func _determine_tier_to_be_rolled(level_of_roll : int) -> int:
 	# should not reach here
 	return -1
 
-func get_shop_roll_chances_at_level(current_level : int = level_manager.current_level):
+func get_shop_roll_chances_at_level(current_level : int = last_calculated_effective_shop_level_odds):
 	return base_level_tier_roll_probabilities[current_level]
 
 func _get_effective_tier_probabilities(base_probabilities : Array):

@@ -66,6 +66,9 @@ signal tower_current_limit_taken_changed(curr_slots_taken)
 signal tower_ing_cap_set(cap_id, cap_amount)
 signal tower_ing_cap_removed(cap_id)
 
+signal tower_sellback_value_changed(arg_new_val, arg_tower)
+
+
 const base_ing_limit_of_tower : int = 1
 
 const ing_cap_per_relic : int = 1
@@ -174,6 +177,10 @@ func _tower_inactivated_from_map(tower : AbstractTower):
 	
 	call_deferred("calculate_current_tower_limit_taken")
 
+func _tower_can_contribute_to_synergy_color_count_changed(arg_val, arg_tower):
+	_update_active_synergy()
+
+
 
 # Adding tower as child of this to monitor it
 func add_tower(tower_instance : AbstractTower):
@@ -210,6 +217,9 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("on_tower_no_health", self, "_emit_tower_lost_all_health", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("on_current_health_changed", self, "_emit_tower_current_health_changed", [tower_instance], CONNECT_PERSIST)
 	
+	tower_instance.connect("on_sellback_value_changed", self, "_emit_tower_sellback_value_changed", [tower_instance], CONNECT_PERSIST)
+	
+	tower_instance.connect("on_is_contributing_to_synergy_color_count_changed", self, "_tower_can_contribute_to_synergy_color_count_changed", [tower_instance], CONNECT_PERSIST)
 	
 	connect("ingredient_mode_turned_into", tower_instance, "_set_is_in_ingredient_mode", [], CONNECT_PERSIST)
 	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient", [], CONNECT_PERSIST)
@@ -243,7 +253,8 @@ func _tower_changed_colors(tower : AbstractTower):
 	emit_signal("tower_changed_colors", tower)
 
 func _register_tower_to_color_grouping_tags(tower : AbstractTower, force : bool = false):
-	if tower.is_contributing_to_synergy or force:
+	#if tower.is_contributing_to_synergy or force:
+	if tower.last_calculated_is_contributing_to_synergy or force:
 		_remove_tower_from_color_grouping_tags(tower)
 		
 		for color in tower._tower_colors:
@@ -332,6 +343,11 @@ func _emit_tower_current_health_changed(new_val, tower):
 	emit_signal("tower_current_health_changed", tower, new_val)
 
 
+# Other emit related
+
+func _emit_tower_sellback_value_changed(arg_new_val, arg_tower):
+	emit_signal("tower_sellback_value_changed", arg_new_val, arg_tower)
+
 # Synergy Related
 
 func _update_active_synergy():
@@ -341,7 +357,7 @@ func _update_active_synergy():
 func _get_all_synergy_contributing_towers() -> Array:
 	var bucket : Array = []
 	for tower in get_children():
-		if tower is AbstractTower and tower.is_contributing_to_synergy:
+		if tower is AbstractTower and tower.last_calculated_is_contributing_to_synergy:
 			bucket.append(tower)
 	
 	return bucket

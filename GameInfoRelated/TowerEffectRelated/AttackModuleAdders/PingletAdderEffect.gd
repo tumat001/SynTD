@@ -6,6 +6,12 @@ const WithBeamInstantDamageAttackModule_Scene = preload("res://TowerRelated/Modu
 const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 const PingShot01_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Shot_01.png")
@@ -28,7 +34,36 @@ var shot_attack_module : WithBeamInstantDamageAttackModule
 
 func _init().(StoreOfTowerEffectsUUID.ING_PING):
 	effect_icon = Ingredient_pic
-	description = "Pinglet: Summons a Pinglet beside your tower. Has 120 range, 4 physical base damage and 0.8 attack speed. Applies on hit effects. Benefits from base damage and on hit damage buffs at 25% efficiency."
+	#
+	
+	var interpreter_for_dmg = TextFragmentInterpreter.new()
+	interpreter_for_dmg.display_body = true
+	interpreter_for_dmg.display_header = true
+	
+	var ins_for_dmg = []
+	ins_for_dmg.append(NumericalTextFragment.new(3, false, DamageType.PHYSICAL))
+	ins_for_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	ins_for_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.25, DamageType.PHYSICAL))
+	ins_for_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	ins_for_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25)) # stat basis does not matter here
+	
+	interpreter_for_dmg.array_of_instructions = ins_for_dmg
+	
+	#
+	
+	var interpreter_for_range = TextFragmentInterpreter.new()
+	interpreter_for_range.display_body = false
+	
+	var ins_for_range = []
+	ins_for_range.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE, -1, "range", 120, false))
+	
+	interpreter_for_range.array_of_instructions = ins_for_range
+	
+	#
+	
+	
+	description = ["Pinglet: Summons a Pinglet beside your tower that attacks on its own. Has |0|. Its shots deal |1|. Applies on hit effects. Benefits from bonus attack speed.", [interpreter_for_range, interpreter_for_dmg]]
+	#description = "Pinglet: Summons a Pinglet beside your tower. Has 120 range, 4 physical base damage and 0.8 attack speed. Applies on hit effects. Benefits from base damage and on hit damage buffs at 25% efficiency."
 
 
 func _construct_pinglet():
@@ -41,7 +76,7 @@ func _construct_pinglet():
 	shot_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
 	shot_attack_module.base_damage_scale = 0.25
 	shot_attack_module.on_hit_damage_scale = 0.25
-	shot_attack_module.base_damage = 4 / shot_attack_module.base_damage_scale
+	shot_attack_module.base_damage = 3 / shot_attack_module.base_damage_scale
 	shot_attack_module.base_damage_type = DamageType.PHYSICAL
 	shot_attack_module.base_attack_speed = 0.8
 	shot_attack_module.base_attack_wind_up = 1.0 / 0.15
@@ -50,7 +85,6 @@ func _construct_pinglet():
 	shot_attack_module.position.y -= 10
 	shot_attack_module.position.x += 20
 	shot_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	
 	
 	
 	var beam_sprite_frame : SpriteFrames = SpriteFrames.new()

@@ -16,6 +16,9 @@ const AbstractGameElementsModifyingSynergyEffect = preload("res://GameInfoRelate
 
 enum DontAllowSameTotalsContionalClauseIds {
 	GREEN_PATH_BLESSING = 10
+	
+	SYN_RED__DOMINANCE_SUPPLEMENT = 11
+	SYN_RED__COMPLEMENTARY_SUPPLEMENT = 12
 }
 
 signal synergies_updated()
@@ -133,19 +136,19 @@ func _get_list_of_distinct_towers(towers: Array) -> Array:
 	var tower_bucket : Array = []
 	var id_bucket : Array = []
 	for tower in towers:
-		var id = tower.tower_id
-		if !id_bucket.has(id):
-			id_bucket.append(id)
-			tower_bucket.append(tower)
+		if tower.can_contribute_to_synergy_color_count:
+			var id = tower.tower_id
+			if !id_bucket.has(id):
+				id_bucket.append(id)
+				tower_bucket.append(tower)
 	
 	return tower_bucket
 
 func _convert_towers_to_colors(towers: Array) -> Array:
 	var all_colors : Array = []
 	for tower in towers:
-		if tower.can_contribute_to_synergy_color_count:
-			for color in tower._tower_colors:
-				all_colors.append(color)
+		for color in tower._tower_colors:
+			all_colors.append(color)
 	
 	return all_colors
 

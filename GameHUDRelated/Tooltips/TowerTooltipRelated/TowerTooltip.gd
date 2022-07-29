@@ -56,12 +56,20 @@ func _update_ingredients():
 	if tower_info.ingredient_effect == null:
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions = ["(Cannot be used as an ingredient."]
 	else:
-		var desc = TooltipWithImageIndicatorDescription_Scene.instance()
-		desc.description = tower_info.ingredient_effect.description
-		desc.img_indicator = tower_info.ingredient_effect.tower_base_effect.effect_icon
-		desc._use_color_for_dark_background = false
+		var ing_desc = tower_info.ingredient_effect.description
 		
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.append(desc)
+		var desc_instance = TooltipWithImageIndicatorDescription_Scene.instance()
+		
+		if ing_desc is Array:
+			desc_instance.description = ing_desc[0]
+			desc_instance._text_fragment_interpreters = ing_desc[1]
+		elif ing_desc is String:
+			desc_instance.description = tower_info.ingredient_effect.description
+		
+		desc_instance.img_indicator = tower_info.ingredient_effect.tower_base_effect.effect_icon
+		desc_instance._use_color_for_dark_background = false
+		
+		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.append(desc_instance)
 	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.update_display()
 	
 

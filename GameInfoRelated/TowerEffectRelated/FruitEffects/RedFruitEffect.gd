@@ -7,12 +7,28 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
 
 var burn_effect : TowerOnHitEffectAdderEffect
 
 func _init().(StoreOfTowerEffectsUUID.ING_RED_FRUIT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_RedFruit.png")
-	description = "Attacks on hit burn enemies for 20 elemental damage over 10 seconds."
+	
+	# ins
+	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+	interpreter_for_flat_on_hit.display_body = false
+	
+	var ins_for_flat_on_hit = []
+	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 20))
+	
+	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+	# ins
+	
+	description = ["Attacks on hit burn enemies for |0| over 10 seconds.", [interpreter_for_flat_on_hit]]
 
 
 func _construct_burn_effect():

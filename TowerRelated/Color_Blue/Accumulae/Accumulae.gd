@@ -56,7 +56,7 @@ signal current_siphon_stacks_changed()
 
 const base_siphon_stacks_to_cast_salvo : int = 12
 const base_delay_per_burst_in_salvo : float = 0.2
-const base_salvo_cooldown : float = 1.5
+const base_salvo_cooldown : float = 5.0
 
 const enemy_siphon_effect_duration : float = 7.0
 const base_enemy_ap_reduction_of_siphon : float = -0.35

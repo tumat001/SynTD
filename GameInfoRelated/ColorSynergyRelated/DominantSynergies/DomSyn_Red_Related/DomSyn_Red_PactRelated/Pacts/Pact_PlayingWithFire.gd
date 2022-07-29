@@ -1,34 +1,49 @@
 extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Red_BasePact.gd"
 
-const TowerEffect_DomSyn_Red_PlayingWithFireBuff = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_DomSyn_Red_PlayingWithFireBuff.gd")
+const TowerEffect_DomSyn_Red_PlayingWithFireBuff = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactEffects/TowerEffect_DomSyn_Red_PlayingWithFireBuff.gd")
 
 var attk_speed_gain_val
 var damage_gain_val
 
-func _init(arg_tier : int).(StoreOfPactUUID.PLAYING_WITH_FIRE, "Playing With Fire", arg_tier):
+var initial_good_desc_size : int
+
+const health_threshold_before_offerable : float = 80.0
+
+func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.PLAYING_WITH_FIRE, "Playing With Fire", arg_tier):
 	var possible_speed_gain_values : Array
 	var possible_damage_gain_values : Array
 	
 	if tier == 0:
-		possible_speed_gain_values = [160, 170, 180]
-		possible_damage_gain_values = [31, 33, 35]
+		possible_speed_gain_values = [100, 110, 120]
+		possible_damage_gain_values = [20, 25, 30]
 	elif tier == 1:
-		possible_speed_gain_values = [80, 90, 100]
-		possible_damage_gain_values = [4, 5, 6]
+		possible_speed_gain_values = [60, 70, 80]
+		possible_damage_gain_values = [6, 7, 8]
 	elif tier == 2:
-		possible_speed_gain_values = [60, 65, 70]
-		possible_damage_gain_values = [2, 2, 3]
+		possible_speed_gain_values = [35, 40, 45]
+		possible_damage_gain_values = [3, 3, 4]
 	elif tier == 3:
-		possible_speed_gain_values = [40, 45, 50]
-		possible_damage_gain_values = [1, 1, 1]
+		possible_speed_gain_values = [15, 20, 25]
+		possible_damage_gain_values = [1, 2, 3]
 	
 	var index_rng = pact_mag_rng.randi_range(0, 2)
 	attk_speed_gain_val = possible_speed_gain_values[index_rng]
 	damage_gain_val = possible_damage_gain_values[index_rng]
 	
+	# INS START
+	var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+	interpreter_for_attk_speed.display_body = false
+	
+	var ins_for_attk_speed = []
+	ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", attk_speed_gain_val, true))
+	
+	interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+	
+	# INS END
 	good_descriptions = [
-		"Towers gain from 0 to %s attack speed, based on current player health." % attk_speed_gain_val
+		["Towers gain from 0 to |0|, based on current player health.", [interpreter_for_attk_speed]]
 	]
+	initial_good_desc_size = good_descriptions.size()
 	
 	bad_descriptions = [
 		"The first enemy escape per round deals extra %s player damage." % damage_gain_val
@@ -45,7 +60,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 		game_elements.tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy", [], CONNECT_PERSIST)
 		game_elements.tower_manager.connect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy", [], CONNECT_PERSIST)
 	
-	var towers = game_elements.tower_manager.get_all_active_towers()
+	var towers = game_elements.tower_manager.get_all_active_towers_except_in_queue_free()
 	for tower in towers:
 		_tower_to_benefit_from_synergy(tower)
 
@@ -55,6 +70,8 @@ func _first_enemy_escaped(enemy, first_damage):
 
 
 func _remove_pact_from_game_elements(arg_game_elements : GameElements):
+	._remove_pact_from_game_elements(arg_game_elements)
+	
 	if game_elements.enemy_manager.is_connected("first_enemy_escaped" , self, "_first_enemy_escaped"):
 		game_elements.enemy_manager.disconnect("first_enemy_escaped", self, "_first_enemy_escaped")
 		game_elements.tower_manager.disconnect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy")
@@ -73,7 +90,7 @@ func _tower_to_benefit_from_synergy(tower : AbstractTower):
 
 func _attempt_add_effect_to_tower(tower : AbstractTower):
 	if !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.RED_PACT_PLAYING_WITH_FIRE_BUFF_GIVER):
-		var effect = TowerEffect_DomSyn_Red_PlayingWithFireBuff.new(game_elements.health_manager)
+		var effect = TowerEffect_DomSyn_Red_PlayingWithFireBuff.new(game_elements.health_manager, self)
 		
 		effect.base_max_attk_speed_amount = attk_speed_gain_val
 		
@@ -90,3 +107,44 @@ func _remove_effect_from_tower(tower : AbstractTower):
 	if effect != null:
 		tower.remove_tower_effect(effect)
 
+#
+
+func _first_time_initialize():
+	if !game_elements.health_manager.is_connected("current_health_changed", self, "_on_player_health_changed"):
+		game_elements.health_manager.connect("current_health_changed", self, "_on_player_health_changed", [], CONNECT_PERSIST)
+	
+	_on_player_health_changed(game_elements.health_manager.current_health)
+
+
+func _on_player_health_changed(curr_health):
+	var attk_speed_bonus = _calculate_attk_speed_bonus()
+	
+	if good_descriptions.size() > initial_good_desc_size:
+		good_descriptions.remove(initial_good_desc_size)
+	
+	
+	# INS START
+	var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+	interpreter_for_attk_speed.display_body = false
+	
+	var ins_for_attk_speed = []
+	ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "", attk_speed_bonus, true))
+	
+	interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+	# INS END
+	
+	good_descriptions.append(["Current attack speed bonus: |0|", [interpreter_for_attk_speed]])
+	emit_signal("on_description_changed")
+
+func _calculate_attk_speed_bonus():
+	var attk_speed_bonus = attk_speed_gain_val * (1 - (game_elements.health_manager.current_health / game_elements.health_manager.starting_health))
+	if attk_speed_bonus < 0:
+		attk_speed_bonus = 0
+	
+	return attk_speed_bonus
+
+
+#########
+
+func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
+	return arg_game_elements.health_manager.current_health <= health_threshold_before_offerable

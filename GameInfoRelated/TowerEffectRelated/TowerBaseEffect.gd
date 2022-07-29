@@ -29,7 +29,7 @@ enum EffectType {
 
 var effect_uuid: int
 var effect_type : int
-var description : String
+var description # String or array (for TextFragmentInterpreter purposes)
 var effect_icon : Texture
 
 var is_timebound : bool

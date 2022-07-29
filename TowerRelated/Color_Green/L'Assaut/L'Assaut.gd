@@ -79,7 +79,7 @@ var initial_placable_at_round_start : InMapAreaPlacable
 
 const pursue_attack_speed_percent_amount : float = 150.0
 const pursue_range_flat_amount : float = 25.0
-const pursue_buff_duration : float = 1.0
+const pursue_buff_duration : float = 1.5
 
 var pursue_attack_speed_effect : TowerAttributesEffect
 var pursue_range_effect : TowerAttributesEffect

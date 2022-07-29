@@ -159,5 +159,5 @@ func _grant_self_attk_speed():
 			if targets.size() > 0:
 				piercing_attk_module.on_command_attack_enemies_and_attack_when_ready(targets)
 	
-	add_tower_effect(attk_speed_effect._shallow_duplicate())
-
+	#add_tower_effect(attk_speed_effect._shallow_duplicate())
+	add_tower_effect(attk_speed_effect._get_copy_scaled_by(last_calculated_final_ability_potency))

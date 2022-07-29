@@ -18,6 +18,12 @@ const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitDamageAdderEffect.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 const AOEAttackModule = preload("res://TowerRelated/Modules/AOEAttackModule.gd")
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
@@ -91,25 +97,26 @@ const disarray_beam_applies_on_hit_effects_tier_1 : bool = true
 
 const disarray_name : String = "Disarray"
 const disarray_descriptions_tier_2_simple : Array = [
-	"Main attacks on hit cause a black beam to hit a random enemy in range.",
-	"The beam deals %s physical damage, and benefits base damage and on hit damage buffs at %s%% efficiency." % [str(disarray_beam_base_damage_tier_2), str(disarray_beam_bonus_base_dmg_scale * 100)],
-	"This can be triggered only once every %s seconds." % [str(disarray_beam_cooldown)]
+	
 ]
 
 
-const disarray_fireball_base_damage : float = 5.0
+const disarray_fireball_base_damage : float = 3.0
 const disarray_fireball_pierce : int = 4
 const disarray_fireball_proj_speed : float = 150.0
 
-const disarray_fireball_bonus_base_dmg_scale : float = 1.0
-const disarray_fireball_bonus_on_hit_dmg_scale : float = 1.0
+const disarray_fireball_bonus_base_dmg_scale : float = 0.5
+const disarray_fireball_bonus_on_hit_dmg_scale : float = 0.5
 
 const disarray_fireball_black_beam_count_for_summon : int = 10
 
 const disarray_descriptions_tier_1_simple : Array = [
-	"Black beams now apply on hit effects.",
-	"Every %sth black beam is replaced by a fireball, dealing %s damage to %s enemies. Benefits from base damage and on hit damage buffs." % [str(disarray_fireball_black_beam_count_for_summon), str(disarray_fireball_base_damage), str(disarray_fireball_pierce)]
+	
 ]
+#const disarray_descriptions_tier_1_simple : Array = [
+#	"Black beams now apply on hit effects.",
+#	"Every %sth black beam is replaced by a fireball, dealing %s damage to %s enemies. Benefits from base damage and on hit damage buffs." % [str(disarray_fireball_black_beam_count_for_summon), str(disarray_fireball_base_damage), str(disarray_fireball_pierce)]
+#]
 
 var disarray_path : BaseBlackPath
 
@@ -145,9 +152,12 @@ var _capacitor_current_cast_count_in_round : int
 
 const capacitor_name : String = "Capacitor"
 const capacitor_descriptions_tier_2_simple : Array = [
-	"After %s abilities are casted, summon a nova that explodes after %s seconds, stunning all enemies for %s seconds, and preventing new enemies from spawning for %s seconds. All tower abilities's ongoing cooldowns are reduced by %s%%" % [str(capacitor_ability_cast_count_requirement), str(capacitor_nova_ramp_up_time), str(capacitor_nova_stun_time), str(capacitor_nova_stop_enemy_spawn_time), str(capacitor_ongoing_cooldown_percent_reduction_tier_2 * 100)],
-	"For the next %s seconds, towers gain %s ability potency and %s%% cooldown reduction." % [str(capacitor_buff_duration_tier_2), str(capacitor_ap_buff_amount_tier_2), str(capacitor_cdr_buff_amount_tier_2)]
+	
 ]
+#const capacitor_descriptions_tier_2_simple : Array = [
+#	"After %s abilities are casted, summon a nova that explodes after %s seconds, stunning all enemies for %s seconds, and preventing new enemies from spawning for %s seconds. All tower abilities's ongoing cooldowns are reduced by %s%%" % [str(capacitor_ability_cast_count_requirement), str(capacitor_nova_ramp_up_time), str(capacitor_nova_stun_time), str(capacitor_nova_stop_enemy_spawn_time), str(capacitor_ongoing_cooldown_percent_reduction_tier_2 * 100)],
+#	"For the next %s seconds, towers gain %s ability potency and %s%% cooldown reduction." % [str(capacitor_buff_duration_tier_2), str(capacitor_ap_buff_amount_tier_2), str(capacitor_cdr_buff_amount_tier_2)]
+#]
 
 
 const capacitor_lightning_delay_after_nova : float = capacitor_nova_stun_time
@@ -177,10 +187,9 @@ var _capacitor_delay_for_next_lightning : float
 var _capacitor_lightning_explosion_attack_module : AOEAttackModule
 
 const capacitor_descriptions_tier_1_simple : Array = [
-	"%s seconds after the nova detonation, %s lightning strikes are summoned, hitting either a tower or enemy at random." % [str(capacitor_lightning_delay_after_nova), str(capacitor_lightning_count_tier_1)],
-	"If a tower is hit: gain %s additional ability potency, and reducing %s%% of its ongoing ability cooldowns." % [str(capacitor_lightning_tower_ap_amount), str(capacitor_lightning_ongoing_cd_reduction * 100)],
-	"If an enemy is hit: create an explosion that deals %s%% of their max health as elemental damage, up to %s. Hits up to %s enemies." % [str(capacitor_lightning_enemy_damage_percent), str(capacitor_lightning_enemy_damage_max_amount), str(capacitor_lightning_enemy_explosion_pierce)]
+	
 ]
+
 
 var capacitor_path : BaseBlackPath
 
@@ -203,10 +212,14 @@ const overflow_overkill_can_summon_overkill_explosion_tier_1 : bool = true
 
 const overflow_name : String = "Overflow"
 const overflow_descriptions_tier_2_simple : Array = [
-	"After %s seconds of not dealing damage, the next damage instance deals +%s%% more damage, increasing by %s%% every second, up to %s%%." % [str(overflow_idle_time_for_scale_to_start), str(overflow_damage_scale_base_amount * 100), str(overflow_damage_scale_per_second * 100), str(overflow_total_max_damage_scale * 100)],
-	"Killing an enemy creates an explosion that deals %s%% of the overkill damage. The explosion hits up to %s enemies" % [str(overflow_overkill_damage_ratio_tier_2 * 100), str(overflow_overkill_explosion_pierce)],
-	"The overkill explosion does not trigger from an overkill explosion."
+	
 ]
+
+#const overflow_descriptions_tier_2_simple : Array = [
+#	"After %s seconds of not dealing damage, the next damage instance deals +%s%% more damage, increasing by %s%% every second, up to %s%%." % [str(overflow_idle_time_for_scale_to_start), str(overflow_damage_scale_base_amount * 100), str(overflow_damage_scale_per_second * 100), str(overflow_total_max_damage_scale * 100)],
+#	"Killing an enemy creates an explosion that deals %s%% of the overkill damage. The explosion hits up to %s enemies" % [str(overflow_overkill_damage_ratio_tier_2 * 100), str(overflow_overkill_explosion_pierce)],
+#	"The overkill explosion does not trigger from an overkill explosion."
+#]
 
 const overflow_descriptions_tier_1_simple : Array = [
 	"Overkill explosions now instead deal %s%% of the overkill damage" % [str(overflow_overkill_damage_ratio_tier_1 * 100)],
@@ -217,6 +230,162 @@ var overflow_path : BaseBlackPath
 
 ####
 
+func _init():
+	_initialize_descriptions()
+
+
+func _initialize_descriptions():
+	
+	var interpreter_for_disarray_tier_2 = TextFragmentInterpreter.new()
+	interpreter_for_disarray_tier_2.display_body = true
+	interpreter_for_disarray_tier_2.display_header = false
+	
+	var ins_for_disarray_tier_2 = []
+	ins_for_disarray_tier_2.append(NumericalTextFragment.new(disarray_beam_base_damage_tier_2, false, DamageType.PHYSICAL))
+	ins_for_disarray_tier_2.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	ins_for_disarray_tier_2.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, disarray_beam_bonus_base_dmg_scale, DamageType.PHYSICAL, true))
+	ins_for_disarray_tier_2.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	ins_for_disarray_tier_2.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, disarray_beam_bonus_on_hit_dmg_scale, -1, true)) # stat basis does not matter here
+	
+	interpreter_for_disarray_tier_2.array_of_instructions = ins_for_disarray_tier_2
+	
+	
+	var temp_disarray_tier_2_desc = [
+		"Main attacks on hit cause a black beam to hit a random enemy in range.",
+		["The beam deals |0|.", [interpreter_for_disarray_tier_2]],
+		"This can be triggered only once every %s seconds." % [str(disarray_beam_cooldown)]
+	]
+	for desc in temp_disarray_tier_2_desc:
+		disarray_descriptions_tier_2_simple.append(desc)
+	
+	######
+	
+	
+	var interpreter_for_disarray_tier_1_fireball_dmg = TextFragmentInterpreter.new()
+	interpreter_for_disarray_tier_1_fireball_dmg.display_body = true
+	interpreter_for_disarray_tier_1_fireball_dmg.display_header = false
+	
+	var ins_for_disarray_tier_1_fireball_dmg = []
+	ins_for_disarray_tier_1_fireball_dmg.append(NumericalTextFragment.new(disarray_fireball_base_damage, false, DamageType.PHYSICAL))
+	ins_for_disarray_tier_1_fireball_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	ins_for_disarray_tier_1_fireball_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, disarray_fireball_bonus_base_dmg_scale, DamageType.PHYSICAL, true))
+	ins_for_disarray_tier_1_fireball_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	ins_for_disarray_tier_1_fireball_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, disarray_fireball_bonus_on_hit_dmg_scale, -1, true)) # stat basis does not matter here
+	
+	interpreter_for_disarray_tier_1_fireball_dmg.array_of_instructions = ins_for_disarray_tier_1_fireball_dmg
+	
+	
+	var temp_disarray_tier_1_desc = [
+		"Black beams now apply on hit effects.",
+		["Every %sth black beam is replaced by a fireball, dealing |0| to %s enemies." % [str(disarray_fireball_black_beam_count_for_summon), str(disarray_fireball_pierce)], [interpreter_for_disarray_tier_1_fireball_dmg]]
+	]
+	for desc in temp_disarray_tier_1_desc:
+		disarray_descriptions_tier_1_simple.append(desc)
+	
+	
+	########
+	
+	
+	var interpreter_for_capacitor_tier_2_ap = TextFragmentInterpreter.new()
+	interpreter_for_capacitor_tier_2_ap.display_body = false
+	
+	var ins_for_capacitor_tier_2_ap = []
+	ins_for_capacitor_tier_2_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", capacitor_ap_buff_amount_tier_2, false))
+	
+	interpreter_for_capacitor_tier_2_ap.array_of_instructions = ins_for_capacitor_tier_2_ap
+	
+	#
+	
+	var interpreter_for_capacitor_tier_2_cdr = TextFragmentInterpreter.new()
+	interpreter_for_capacitor_tier_2_cdr.display_body = false
+	
+	var ins_for_capacitor_tier_2_cdr = []
+	ins_for_capacitor_tier_2_cdr.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, -1, "cooldown reduction", capacitor_cdr_buff_amount_tier_2, true))
+	
+	interpreter_for_capacitor_tier_2_cdr.array_of_instructions = ins_for_capacitor_tier_2_cdr
+	
+	
+	var temp_capacitor_tier_2_desc = [
+		"After %s abilities are casted, summon a nova that explodes after %s seconds, stunning all enemies for %s seconds, and preventing new enemies from spawning for %s seconds. All tower abilities's ongoing cooldowns are reduced by %s%%." % [str(capacitor_ability_cast_count_requirement), str(capacitor_nova_ramp_up_time), str(capacitor_nova_stun_time), str(capacitor_nova_stop_enemy_spawn_time), str(capacitor_ongoing_cooldown_percent_reduction_tier_2 * 100)],
+		["For the next %s seconds, towers gain |0| and |1|." % [str(capacitor_buff_duration_tier_2)], [interpreter_for_capacitor_tier_2_ap, interpreter_for_capacitor_tier_2_cdr]]
+	]
+	for desc in temp_capacitor_tier_2_desc:
+		capacitor_descriptions_tier_2_simple.append(desc)
+	
+	#
+	
+	var interpreter_for_capacitor_tier_1_ap_from_lightning = TextFragmentInterpreter.new()
+	interpreter_for_capacitor_tier_1_ap_from_lightning.display_body = false
+	
+	var ins_for_capacitor_tier_1_ap_from_lightning = []
+	ins_for_capacitor_tier_1_ap_from_lightning.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "additional ability potency", capacitor_lightning_tower_ap_amount, false))
+	
+	interpreter_for_capacitor_tier_1_ap_from_lightning.array_of_instructions = ins_for_capacitor_tier_1_ap_from_lightning
+	
+	
+	var interpreter_for_capacitor_tier_1_dmg_from_lightning = TextFragmentInterpreter.new()
+	interpreter_for_capacitor_tier_1_dmg_from_lightning.display_body = false
+	
+	var ins_for_capacitor_tier_1_dmg_from_lightning = []
+	ins_for_capacitor_tier_1_dmg_from_lightning.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "of their max health as elemental damage", capacitor_lightning_enemy_damage_percent, true))
+	
+	interpreter_for_capacitor_tier_1_dmg_from_lightning.array_of_instructions = ins_for_capacitor_tier_1_dmg_from_lightning
+	
+	
+	var temp_capacitor_tier_1_desc = [
+		"%s seconds after the nova detonation, %s lightning strikes are summoned, hitting either a tower or enemy at random." % [str(capacitor_lightning_delay_after_nova), str(capacitor_lightning_count_tier_1)],
+		["If a tower is hit: gain |0|, and reducing %s%% of its ongoing ability cooldowns." % [str(capacitor_lightning_ongoing_cd_reduction * 100)], [interpreter_for_capacitor_tier_1_ap_from_lightning]],
+		["If an enemy is hit: create an explosion that deals |0|, up to %s. Hits up to %s enemies." % [str(capacitor_lightning_enemy_damage_max_amount), str(capacitor_lightning_enemy_explosion_pierce)], [interpreter_for_capacitor_tier_1_dmg_from_lightning]]
+	]
+	for desc in temp_capacitor_tier_1_desc:
+		capacitor_descriptions_tier_1_simple.append(desc)
+	
+	
+	###########
+	
+	var interpreter_for_overflow_tier_2_base_dmg_amp = TextFragmentInterpreter.new()
+	interpreter_for_overflow_tier_2_base_dmg_amp.display_body = false
+	interpreter_for_overflow_tier_2_base_dmg_amp.display_header = true
+	
+	var ins_for_overflow_tier_2_base_dmg_amp = []
+	ins_for_overflow_tier_2_base_dmg_amp.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", overflow_damage_scale_base_amount * 100, true))
+	
+	interpreter_for_overflow_tier_2_base_dmg_amp.array_of_instructions = ins_for_overflow_tier_2_base_dmg_amp
+	
+	
+	var interpreter_for_overflow_tier_2_dmg_amp_per_sec = TextFragmentInterpreter.new()
+	interpreter_for_overflow_tier_2_dmg_amp_per_sec.display_body = false
+	interpreter_for_overflow_tier_2_dmg_amp_per_sec.display_header = true
+	
+	var ins_for_overflow_tier_2_dmg_amp_per_sec = []
+	ins_for_overflow_tier_2_dmg_amp_per_sec.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", overflow_damage_scale_per_second * 100, true))
+	
+	interpreter_for_overflow_tier_2_dmg_amp_per_sec.array_of_instructions = ins_for_overflow_tier_2_dmg_amp_per_sec
+	
+	
+	var interpreter_for_overflow_tier_2_dmg_amp_max = TextFragmentInterpreter.new()
+	interpreter_for_overflow_tier_2_dmg_amp_max.display_body = false
+	interpreter_for_overflow_tier_2_dmg_amp_max.display_header = true
+	
+	var ins_for_overflow_tier_2_dmg_amp_max = []
+	ins_for_overflow_tier_2_dmg_amp_max.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", overflow_total_max_damage_scale * 100, true))
+	
+	interpreter_for_overflow_tier_2_dmg_amp_max.array_of_instructions = ins_for_overflow_tier_2_dmg_amp_max
+	
+	
+	
+	var temp_overflow_tier_2_desc = [
+		["After %s seconds of not dealing damage, the next damage instance deals |0|, increasing by |1| every second, up to |2|." % [str(overflow_idle_time_for_scale_to_start)], [interpreter_for_overflow_tier_2_base_dmg_amp, interpreter_for_overflow_tier_2_dmg_amp_per_sec, interpreter_for_overflow_tier_2_dmg_amp_max]],
+		"Killing an enemy creates an explosion that deals %s%% of the overkill damage. The explosion hits up to %s enemies." % [str(overflow_overkill_damage_ratio_tier_2 * 100), str(overflow_overkill_explosion_pierce)],
+		"Overkill explosions cannot trigger from an overkill explosion."
+	]
+	for desc in temp_overflow_tier_2_desc:
+		overflow_descriptions_tier_2_simple.append(desc)
+	
+	
+
+
+###
 
 func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	if game_elements == null:
@@ -884,7 +1053,8 @@ func _clean_up_capacitor_states():
 		_queued_for_lightning = false
 		
 		_capacitor_current_cast_count_in_round = 0
-		black_syn_icon.set_nova_counter(capacitor_ability_cast_count_requirement - _capacitor_current_cast_count_in_round)
+		if black_syn_icon != null:
+			black_syn_icon.set_nova_counter(capacitor_ability_cast_count_requirement - _capacitor_current_cast_count_in_round)
 		
 		_capacitor_current_lightning_count_to_summon = 0
 		_capacitor_delay_for_next_lightning = 0

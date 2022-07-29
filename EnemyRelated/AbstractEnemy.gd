@@ -1037,6 +1037,8 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 			if generic_bullet.attack_module_source != null:
 				if !is_connected("on_hit", generic_bullet.attack_module_source, "on_enemy_hit"):
 					connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
+				
+				if !is_connected("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt"):
 					connect("on_post_mitigated_damage_taken", generic_bullet.attack_module_source, "on_post_mitigation_damage_dealt", [generic_bullet.damage_register_id], CONNECT_ONESHOT)
 			
 			hit_by_damage_instance(generic_bullet.damage_instance, generic_bullet.damage_register_id, true, generic_bullet.attack_module_source)

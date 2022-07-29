@@ -27,9 +27,9 @@ const type_to_for_light_color_map : Dictionary = {
 	STAT_TYPE.BASE_DAMAGE : "#F72302",
 	STAT_TYPE.ATTACK_SPEED : "#B07D00",
 	STAT_TYPE.RANGE : "#01730B",
-	STAT_TYPE.ABILITY_POTENCY : "#225FA1",
+	STAT_TYPE.ABILITY_POTENCY : "#023F81",
 	STAT_TYPE.ON_HIT_DAMAGE : "#6F6F6F",
-	STAT_TYPE.PERCENT_COOLDOWN_REDUCTION : "#02ACAA",
+	STAT_TYPE.PERCENT_COOLDOWN_REDUCTION : "#026C6A",
 	STAT_TYPE.PIERCE : "#B61691",
 	
 	STAT_TYPE.DAMAGE_SCALE_AMP : "#C00205"
@@ -157,4 +157,11 @@ func _get_type_color_map_to_use(arg_stat_type, arg_damage_type) -> Dictionary:
 			return dmg_type_to_for_dark_color_map[arg_damage_type]
 		else:
 			return dmg_type_to_for_light_color_map[arg_damage_type]
+
+#
+
+func _configure_copy_to_match_self(arg_copy):
+	arg_copy.has_numerical_value = has_numerical_value
+	arg_copy.color_mode = color_mode
+
 

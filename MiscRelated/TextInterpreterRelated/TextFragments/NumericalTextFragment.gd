@@ -53,4 +53,20 @@ func _get_as_text() -> String:
 			return "[color=%s]%s[/color]" % [_get_type_color_map_to_use(_stat_type, _damage_type), base_string]
 
 
+#
+
+func get_deep_copy():
+	var copy = get_script().new(_num_val, _is_percent)
+	
+	._configure_copy_to_match_self(copy)
+	
+	copy._num_val = _num_val
+	copy._damage_type = _damage_type
+	copy._text_desc = _text_desc
+	copy._has_space_between_num_and_text = _has_space_between_num_and_text
+	copy._is_percent = _is_percent
+	
+	copy._stat_type = _stat_type
+	
+	return copy
 

@@ -17,7 +17,7 @@ var loss_val
 const gain_duration : float = 15.0
 
 
-func _init(arg_tier : int).(StoreOfPactUUID.SECOND_IMPRESSION, "Second Impression", arg_tier):
+func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.SECOND_IMPRESSION, "Second Impression", arg_tier):
 	var possible_gain_values : Array
 	var possible_loss_values : Array
 	
@@ -39,7 +39,7 @@ func _init(arg_tier : int).(StoreOfPactUUID.SECOND_IMPRESSION, "Second Impressio
 	loss_val = possible_loss_values[index_rng]
 	
 	good_descriptions = [
-		"Enemies lose %s armor and toughness after losing the buff." % -loss_val
+		"Enemies lose %s armor and toughness after %s seconds." % [str(-loss_val), str(gain_duration)]
 	]
 	
 	bad_descriptions = [
@@ -100,3 +100,9 @@ func _enemy_lost_effect(effect, enemy):
 func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 	if game_elements.enemy_manager.is_connected("enemy_spawned", self, "_enemy_spawned"):
 		game_elements.enemy_manager.disconnect("enemy_spawned", self, "_enemy_spawned")
+
+
+########
+
+func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
+	return true

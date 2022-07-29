@@ -4,7 +4,6 @@ const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
-const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 
 const bleed_duration : float = 15.0
@@ -14,20 +13,29 @@ var enemy_bleed_per_second
 
 var enemy_bleed_effect : EnemyDmgOverTimeEffect
 
-func _init(arg_tier : int).(StoreOfPactUUID.TIGER_SOUL, "Tiger Soul", arg_tier):
+var tier_to_player_dmg_per_round_map : Dictionary = {
+	0 : 4,
+	1 : 3,
+	2 : 2,
+	3 : 1
+}
+const round_multiplier_forgiveness_for_offerable : int = 6
+
+func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.TIGER_SOUL, "Tiger Soul", arg_tier):
 	
 	if tier == 0:
-		player_damage_per_round = 2
+		#player_damage_per_round = 4
 		enemy_bleed_per_second = 4 #60
 	elif tier == 1:
-		player_damage_per_round = 1.5
+		#player_damage_per_round = 3
 		enemy_bleed_per_second = 2 #30
 	elif tier == 2:
-		player_damage_per_round = 1
+		#player_damage_per_round = 2
 		enemy_bleed_per_second = 1.25 #18.75
 	elif tier == 3:
-		player_damage_per_round = 0.5
+		#player_damage_per_round = 1
 		enemy_bleed_per_second = 0.5 #7.5
+	player_damage_per_round = tier_to_player_dmg_per_round_map[tier]
 	
 	
 	good_descriptions = [
@@ -85,3 +93,13 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 		game_elements.enemy_manager.disconnect("enemy_spawned", self, "_on_enemy_spawned")
 		game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end")
 		
+
+
+#
+
+func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
+	var player_dmg_per_round = tier_to_player_dmg_per_round_map[arg_tier_to_be_offered]
+	
+	return (player_dmg_per_round * round_multiplier_forgiveness_for_offerable) > arg_game_elements.health_manager.current_health
+
+

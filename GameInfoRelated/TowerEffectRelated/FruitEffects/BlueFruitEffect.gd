@@ -19,12 +19,29 @@ const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 var explosion_attack_module : AOEAttackModule
 var tree
 
 func _init().(StoreOfTowerEffectsUUID.ING_BLUE_FRUIT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_BlueFruit.png")
-	description = "Tower's main attacks create an icy explosion that deals 0.5 elemental damage and slows 4 enemies by 25% for 2 seconds."
+	
+	# ins
+	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+	interpreter_for_flat_on_hit.display_body = false
+	
+	var ins_for_flat_on_hit = []
+	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", 0.5))
+	
+	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+	# ins
+	
+	description = ["Tower's main attacks create an icy explosion that deals |0| and slows 4 enemies by 25% for 2 seconds.", [interpreter_for_flat_on_hit]]
 
 
 # make mod

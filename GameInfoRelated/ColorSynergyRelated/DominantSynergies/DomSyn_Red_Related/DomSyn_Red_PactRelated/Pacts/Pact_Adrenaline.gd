@@ -11,7 +11,7 @@ const initial_window_duration : float = 5.0
 const speed_increase_duration : float = 5.0
 var speed_percent_increase : float
 
-const debuff_duration : float = 15.0
+const debuff_duration : float = 20.0
 var speed_percent_decrease : float
 const toughness_flat_decrease : float = 5.0
 
@@ -20,7 +20,7 @@ var toughness_loss_effect : EnemyAttributesEffect
 var speed_decrease_effect : EnemyAttributesEffect
 var adrenaline_initial_marker_effect : EnemyStackEffect
 
-func _init(arg_tier : int).(StoreOfPactUUID.ADRENALINE, "Adrenaline", arg_tier):
+func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.ADRENALINE, "Adrenaline", arg_tier):
 	var possible_speed_gain_values : Array
 	var possible_speed_loss_values : Array
 	
@@ -121,5 +121,13 @@ func _enemy_lost_speed_inc_effect(effect, enemy):
 #
 
 func _remove_pact_from_game_elements(arg_game_elements : GameElements):
+	._remove_pact_from_game_elements(arg_game_elements)
+	
 	if game_elements.enemy_manager.is_connected("enemy_spawned", self, "_enemy_spawned"):
 		game_elements.enemy_manager.disconnect("enemy_spawned", self, "_enemy_spawned")
+
+
+##########
+
+func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
+	return true

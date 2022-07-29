@@ -21,6 +21,12 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const AbilityButton = preload("res://GameHUDRelated/AbilityPanel/AbilityButton.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerAttributesEffect.gd")
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
 const AOEAttackModule = preload("res://TowerRelated/Modules/AOEAttackModule.gd")
@@ -63,11 +69,9 @@ var breeze_second_slow_effect : EnemyAttributesEffect
 
 const base_breeze_damage : float = 4.0
 
-const breeze_ability_descriptions = [
-	"Slows all enemies by 50% for 3 seconds, then slows by 15% for 6 seconds. Also deals 4 elemental damage.",
-	"Cooldown: %s s" % [str(base_breeze_ability_cooldown)],
-	"",
-	"Ability potency increases the slow percentage and the damage."
+# Assigned at construct breeze ability func
+const breeze_ability_descriptions : Array = [
+	
 ]
 
 
@@ -99,21 +103,20 @@ var mana_blast_buff_tower_effect : TowerAttributesEffect
 const mana_blast_ap_buff_amount : float = 0.75
 const mana_blast_buff_duration : float = 15.0
 
-const mana_blast_ability_descriptions = [
-	"Summon a mark at the cursor's location. After a brief delay, the mark releases a mana blast.",
-	"The blast deals %s elemental damage to enemies inside." % str(mana_blast_base_damage),
-	"Towers caught in the blast gain %s ability potency for %s seconds." % [str(mana_blast_ap_buff_amount), str(mana_blast_buff_duration)],
-	"Cooldown: %s s" % str(mana_blast_ability_cooldown)
-]
+# Assigned at construct mana blast ability func
+const mana_blast_ability_descriptions = []
+
 
 #
 
 const empowered_mana_blast_ap_buff_amount : float = 2.25
 
-const empowered_mana_blast_extra_descriptions = [
-	"",
-	"Empowered: Towers caught in the mana blast recieve %s instead." % (str(empowered_mana_blast_ap_buff_amount) + " ability potency"),
-]
+# Assigned at construct mana blast ability func
+const empowered_mana_blast_extra_descriptions = []
+#const empowered_mana_blast_extra_descriptions = [
+#	"",
+#	"Empowered: Towers caught in the mana blast recieve %s instead." % (str(empowered_mana_blast_ap_buff_amount) + " ability potency"),
+#]
 
 const linked_mana_blast_descriptions : Array = [
 	mana_blast_ability_descriptions,
@@ -287,6 +290,26 @@ func _construct_breeze_relateds():
 	breeze_ability.set_properties_to_usual_synergy_based()
 	breeze_ability.synergy = self
 	
+	# INS START
+	var interpreter_for_breeze_dmg = TextFragmentInterpreter.new()
+	interpreter_for_breeze_dmg.display_body = false
+	
+	var ins_for_breeze_dmg = []
+	ins_for_breeze_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", base_breeze_damage))
+	
+	interpreter_for_breeze_dmg.array_of_instructions = ins_for_breeze_dmg
+	
+	
+	# INS END
+	var temp_breeze_ability_desc = [
+		["Slows all enemies by %s%% for %s seconds, then slows by %s%% for %s seconds. Also deals |0|." % [str(-base_breeze_first_slow_amount), str(base_breeze_first_slow_duration), str(-base_breeze_second_slow_amount), str(base_breeze_second_slow_duration - base_breeze_first_slow_duration)], [interpreter_for_breeze_dmg]],
+		"Cooldown: %s s" % [str(base_breeze_ability_cooldown)],
+		#"",
+		#"Ability potency increases the slow percentage and the damage."
+	]
+	for desc in temp_breeze_ability_desc:
+		breeze_ability_descriptions.append(desc)
+	
 	breeze_ability.descriptions = breeze_ability_descriptions
 	breeze_ability.display_name = "Breeze"
 	
@@ -371,6 +394,37 @@ func _construct_mana_blast_relateds():
 	mana_blast_ability.set_properties_to_usual_synergy_based()
 	mana_blast_ability.synergy = self
 	
+	# ins start
+	var interpreter_for_mana_blast_dmg = TextFragmentInterpreter.new()
+	interpreter_for_mana_blast_dmg.display_body = false
+	
+	var ins_for_mana_blast_dmg = []
+	ins_for_mana_blast_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", mana_blast_base_damage))
+	
+	interpreter_for_mana_blast_dmg.array_of_instructions = ins_for_mana_blast_dmg
+	
+	
+	var interpreter_for_mana_blast_ap = TextFragmentInterpreter.new()
+	interpreter_for_mana_blast_ap.display_body = false
+	
+	var ins_for_mana_blast_ap = []
+	ins_for_mana_blast_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", mana_blast_ap_buff_amount))
+	
+	interpreter_for_mana_blast_ap.array_of_instructions = ins_for_mana_blast_ap
+	
+	
+	
+	# ins end
+	
+	var temp_mana_blast_desc = [
+		"Summon a mark at the cursor's location. After a brief delay, the mark releases a mana blast.",
+		["The blast deals |0| to enemies inside.", [interpreter_for_mana_blast_dmg]],
+		["Towers caught in the blast gain |0| for %s seconds." % [str(mana_blast_buff_duration)], [interpreter_for_mana_blast_ap]],
+		"Cooldown: %s s" % str(mana_blast_ability_cooldown)
+	]
+	for desc in temp_mana_blast_desc:
+		mana_blast_ability_descriptions.append(desc)
+	
 	mana_blast_ability.descriptions = mana_blast_ability_descriptions
 	mana_blast_ability.display_name = "Mana Blast"
 	
@@ -450,6 +504,24 @@ func _construct_mana_blast_relateds():
 	mana_blast_buff_tower_effect.status_bar_icon = ManaBurst_StatusBarIcon
 	
 	# descs
+	
+	# INS START
+	var interpreter_for_mana_blast_ap_emp = TextFragmentInterpreter.new()
+	interpreter_for_mana_blast_ap_emp.display_body = false
+	
+	var ins_for_mana_blast_ap_emp = []
+	ins_for_mana_blast_ap_emp.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", empowered_mana_blast_ap_buff_amount))
+	
+	interpreter_for_mana_blast_ap_emp.array_of_instructions = ins_for_mana_blast_ap_emp
+	
+	
+	# INS END
+	var temp_mana_blast_emp_desc = [
+		"",
+		["Empowered: Towers caught in the mana blast recieve |0| instead.", [interpreter_for_mana_blast_ap_emp]],
+	]
+	for desc in temp_mana_blast_emp_desc:
+		empowered_mana_blast_extra_descriptions.append(desc)
 	
 	blue_abilities_descriptions_map[mana_blast_ability] = [
 		mana_blast_ability_descriptions,

@@ -112,8 +112,9 @@ func _on_main_attack_hit_enemy_t(enemy, damage_register_id, damage_instance, mod
 	damage_instance.on_hit_damages.clear()
 	
 	if health_ratio == 1:
-		var copy_of_max_health_reduc = enemy_max_health_reduc_effect._get_copy_scaled_by(1)
+		var copy_of_max_health_reduc : EnemyAttributesEffect  = enemy_max_health_reduc_effect._get_copy_scaled_by(1)
 		copy_of_max_health_reduc.attribute_as_modifier.percent_amount = base_max_health_reduc_percent * last_calculated_final_ability_potency
+		copy_of_max_health_reduc.attribute_as_modifier.flat_maximum = max_max_health_reduc_amount * last_calculated_final_ability_potency 
 		
 		damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.TRANSMUTATOR_MAX_HEALTH_REDUCTION_EFFECT] = copy_of_max_health_reduc
 		

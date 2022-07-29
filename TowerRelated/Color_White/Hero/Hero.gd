@@ -21,6 +21,10 @@ const CommonAttackSpriteTemplater = preload("res://MiscRelated/AttackSpriteRelat
 
 const ShowTowersWithParticleComponent = preload("res://MiscRelated/CommonComponents/ShowTowersWithParticleComponent.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 
 const HeroAttk_NormalPic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_Normal.png")
 const HeroAttk_LightWavePic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_LightWave.png")
@@ -124,7 +128,7 @@ const VOL_range_in_levels : Array = [70, 105, 160, 250]
 const VOL_dmg_ratio_buff_in_levels : Array = [1.3, 1.4, 1.5, 2.0]
 const VOL_buff_attack_count_in_levels : Array = [3, 3, 4, 12]
 const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 8, 16]
-const VOL_hero_on_hit_effect_scale : Array = [1.1, 1.2, 1.3, 1.5]
+#const VOL_hero_on_hit_effect_scale : Array = [1.1, 1.2, 1.3, 1.5]
 
 var white_dom_active : bool
 
@@ -254,7 +258,7 @@ func _ready():
 	volrobe_sprite.visible = false
 	max_nat_level_wings_sprite.visible = false
 	
-	current_hero_on_hit_effect_scale = 1
+	#current_hero_on_hit_effect_scale = 1
 	
 	_construct_vol_tower_indicator_shower()
 	
@@ -316,8 +320,8 @@ func _on_main_attack_hit_h(enemy, damage_register_id, damage_instance, module):
 		if ability_light_waves_level >= 3 and current_attack_count_in_round >= attks_needed_for_light_explosion:
 			call_deferred("_summon_light_explosion_to_enemy", enemy, damage_instance.get_copy_damage_only_scaled_by(current_light_explosion_dmg_ratio))
 		
-		if ability_VOL_level > 0:
-			damage_instance.scale_only_on_hit_effect_by(current_hero_on_hit_effect_scale)
+		#if ability_VOL_level > 0:
+		#	damage_instance.scale_only_on_hit_effect_by(current_hero_on_hit_effect_scale)
 
 
 func _on_any_attack_hit_h(enemy, damage_register_id, damage_instance, module):
@@ -709,7 +713,7 @@ func set_vol_level(new_level):
 		volrobe_sprite.texture = Hero_VOLRobe01Pic
 		volrobe_sprite.visible = true
 		
-		current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[0]
+		#current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[0]
 		
 	elif ability_VOL_level == 2:
 		VOL_effect.count = VOL_buff_attack_count_in_levels[1]
@@ -721,7 +725,7 @@ func set_vol_level(new_level):
 		volrobe_sprite.texture = Hero_VOLRobe02Pic
 		volrobe_sprite.visible = true
 		
-		current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[1]
+		#current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[1]
 		
 	elif ability_VOL_level == 3:
 		VOL_effect.count = VOL_buff_attack_count_in_levels[2]
@@ -733,7 +737,7 @@ func set_vol_level(new_level):
 		volrobe_sprite.texture = Hero_VOLRobe03Pic
 		volrobe_sprite.visible = true
 		
-		current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[2]
+		#current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[2]
 		
 	elif ability_VOL_level == 4:
 		VOL_effect.count = VOL_buff_attack_count_in_levels[3]
@@ -745,7 +749,7 @@ func set_vol_level(new_level):
 		volrobe_sprite.texture = Hero_VOLRobe04Pic
 		volrobe_sprite.visible = true
 		
-		current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[3]
+		#current_hero_on_hit_effect_scale = VOL_hero_on_hit_effect_scale[3]
 		
 	else:
 		VOL_effect.count = 1
@@ -756,7 +760,7 @@ func set_vol_level(new_level):
 		
 		volrobe_sprite.visible = false
 		
-		current_hero_on_hit_effect_scale = 1
+		#current_hero_on_hit_effect_scale = 1
 	
 	current_vol_count = VOL_effect.count
 	current_vol_damage_scale = VOL_effect.damage_scale
@@ -928,11 +932,27 @@ func get_light_waves_ability_descriptions() -> Array:
 		elif current_attks_needed_for_light_wave == 1:
 			every_attk_desc = ""
 		
+		
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_to_use_for_tower_stat_fragments = self
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", current_light_wave_base_damage))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		
 		var descs = [
 			"Every %s main attack is followed by a light wave." % every_attk_desc,
-			"Light waves deal %s elemental damage, and have 3 pierce" % current_light_wave_base_damage,
-			"Light waves do not benefit from base damage buffs, on hit damages and effects.",
+			["Light waves deal |0|, and have 3 pierce", [interpreter_for_flat_on_hit]],
 		]
+		
+#		var descs = [
+#			"Every %s main attack is followed by a light wave." % every_attk_desc,
+#			"Light waves deal %s elemental damage, and have 3 pierce" % current_light_wave_base_damage,
+#			"Light waves do not benefit from base damage buffs, on hit damages and effects.",
+#		]
 		
 		if ability_light_waves_level >= 3:
 			for exp_desc in _get_light_explosion_ability_descs():
@@ -945,22 +965,73 @@ func get_light_waves_ability_descriptions() -> Array:
 		]
 
 func _get_light_explosion_ability_descs() -> Array:
+	
+	var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
+	interpreter_for_perc_on_hit.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_perc_on_hit.display_body = false
+	interpreter_for_perc_on_hit.header_description = "of the damage of the main attack"
+	
+	var ins_for_perc_on_hit = []
+	ins_for_perc_on_hit.append(NumericalTextFragment.new((current_light_explosion_dmg_ratio * 100), true, -1))
+	
+	interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
+	
 	return [
 		"",
 		"After %s main attacks in a round, every main attack that hits an enemy causes an explosion." % attks_needed_for_light_explosion,
-		"The explosion deals elemental damage equal to %s of the damage of the main attack to %s enemies." % [(str(current_light_explosion_dmg_ratio * 100) + "%"), str(light_explosion_pierce)],
+		["The explosion deals |0| to %s enemies." % [str(light_explosion_pierce)], [interpreter_for_perc_on_hit]],
 		"The explosion does not apply on hit effects."
 	]
+	
+#	return [
+#		"",
+#		"After %s main attacks in a round, every main attack that hits an enemy causes an explosion." % attks_needed_for_light_explosion,
+#		"The explosion deals elemental damage equal to %s of the damage of the main attack to %s enemies." % [(str(current_light_explosion_dmg_ratio * 100) + "%"), str(light_explosion_pierce)],
+#		"The explosion does not apply on hit effects."
+#	]
 
 
 func get_judgement_ability_descs() -> Array:
 	if ability_judgement_level != 0:
+		
+		var interpreter_for_judgement_damage = TextFragmentInterpreter.new()
+		interpreter_for_judgement_damage.tower_to_use_for_tower_stat_fragments = self
+		interpreter_for_judgement_damage.display_body = true
+		
+		var ins_for_judgement_dmg = []
+		ins_for_judgement_dmg.append(NumericalTextFragment.new(current_judgement_bonus_on_hit_amount, false, DamageType.PHYSICAL))
+		ins_for_judgement_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_judgement_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, current_judgement_dmg_ratio, DamageType.PHYSICAL))
+		
+		interpreter_for_judgement_damage.array_of_instructions = ins_for_judgement_dmg
+		
+		#
+		
+		var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
+		interpreter_for_bonus_dmg.tower_to_use_for_tower_stat_fragments = self
+		interpreter_for_bonus_dmg.display_body = false
+		interpreter_for_bonus_dmg.header_description = "more damage"
+		
+		var ins_for_bonus_dmg = []
+		ins_for_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", (judgement_bonus_dmg_ratio - 1) * 100, true))
+		interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
+		
+		
+		#
+		
 		return [
 			"Every attack that applies on hit effects applies a Judge stack to enemies hit.",
-			"At %s Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage, and dealing bonus %s physical damage." % [str(judgement_stack_trigger), (str(current_judgement_dmg_ratio * 100) + "%"), str(current_judgement_bonus_on_hit_amount)],
-			"Judgement is enhanced to deal %s more damage when the enemy has less than %s health." % [(str((judgement_bonus_dmg_ratio - 1) * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
+			["At %s Judge stacks, Judgement is brought to the enemy, dealing |0|" % [str(judgement_stack_trigger)], [interpreter_for_judgement_damage]],
+			["Judgement is enhanced to deal |0| when the enemy has less than %s health." % [(str(judgement_bonus_dmg_threshold_trigger * 100) + "%")], [interpreter_for_bonus_dmg]],
 			"Judgement does not apply on hit effects."
 		]
+		
+#		return [
+#			"Every attack that applies on hit effects applies a Judge stack to enemies hit.",
+#			"At %s Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage, and dealing bonus %s physical damage." % [str(judgement_stack_trigger), (str(current_judgement_dmg_ratio * 100) + "%"), str(current_judgement_bonus_on_hit_amount)],
+#			"Judgement is enhanced to deal %s more damage when the enemy has less than %s health." % [(str((judgement_bonus_dmg_ratio - 1) * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
+#			"Judgement does not apply on hit effects."
+#		]
 	else:
 		return [
 			"Locked."
@@ -969,19 +1040,36 @@ func get_judgement_ability_descs() -> Array:
 
 func get_vol_ability_descs() -> Array:
 	if ability_VOL_level != 0:
+		
+		var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
+		interpreter_for_bonus_dmg.tower_to_use_for_tower_stat_fragments = self
+		interpreter_for_bonus_dmg.display_body = false
+		interpreter_for_bonus_dmg.header_description = ""
+		
+		var ins_for_bonus_dmg = []
+		ins_for_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", (current_vol_damage_scale - 1) * 100, true))
+		interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
+		
+		
 		var descs = [
 			"Every %s attack is accompanied by Hero casting Voice of Light." % (str(current_attks_needed_for_vol) + "th"),
 			"Voice of Light buffs %s towers in range, prioritizing the closest towers, and ignoring towers that cannot attack." % current_towers_affected_by_vol,
-			"Voice of Light buffs tower's outgoing damage %s times by %s" % [current_vol_count, (str((current_vol_damage_scale * 100) - 100) + "%.")],
+			["Voice of Light buffs tower's outgoing damage %s times by |0|" % [current_vol_count], [interpreter_for_bonus_dmg]],
 		]
+		
+#		var descs = [
+#			"Every %s attack is accompanied by Hero casting Voice of Light." % (str(current_attks_needed_for_vol) + "th"),
+#			"Voice of Light buffs %s towers in range, prioritizing the closest towers, and ignoring towers that cannot attack." % current_towers_affected_by_vol,
+#			"Voice of Light buffs tower's outgoing damage %s times by %s" % [current_vol_count, (str((current_vol_damage_scale * 100) - 100) + "%.")],
+#		]
 		
 		descs.append("")
 		if current_hero_natural_level < max_hero_level:
 			descs.append("Each tower affected by Voice of Light gives Hero additional %s EXP." % current_xp_per_tower_affected_by_vol)
 		descs.append("Hero does not benefit from Voice of Light.")
 		
-		descs.append("")
-		descs.append("Hero's attacks also apply on hit effects at %s efficiency" % (str(current_hero_on_hit_effect_scale * 100) + "%"))
+		#descs.append("")
+		#descs.append("Hero's attacks also apply on hit effects at %s efficiency" % (str(current_hero_on_hit_effect_scale * 100) + "%"))
 		
 		return descs
 	else:
@@ -997,26 +1085,73 @@ func get_light_waves_upgrade_descs() -> Array:
 	
 	if can_level_up_light_waves():
 		if ability_light_waves_level != 0:
+			
+			var interpreter_for_flat_on_hit_curr = TextFragmentInterpreter.new()
+			interpreter_for_flat_on_hit_curr.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_flat_on_hit_curr.display_body = false
+			
+			var ins_for_flat_on_hit_curr = []
+			ins_for_flat_on_hit_curr.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "", current_light_wave_base_damage))
+			
+			interpreter_for_flat_on_hit_curr.array_of_instructions = ins_for_flat_on_hit_curr
+			
+			#
+			
+			var interpreter_for_flat_on_hit_next = TextFragmentInterpreter.new()
+			interpreter_for_flat_on_hit_next.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_flat_on_hit_next.display_body = false
+			
+			var ins_for_flat_on_hit_next = []
+			ins_for_flat_on_hit_next.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "", light_wave_base_damage_in_levels[ability_light_waves_level]))
+			
+			interpreter_for_flat_on_hit_next.array_of_instructions = ins_for_flat_on_hit_next
+			
+			#
+			
 			descs = [
 				"Attacks per lightwave: %s -> %s" % [current_attks_needed_for_light_wave, attks_needed_for_light_wave_in_levels[ability_light_waves_level]],
-				"lightwave base damage: %s -> %s" % [current_light_wave_base_damage, light_wave_base_damage_in_levels[ability_light_waves_level]],
+				["lightwave base damage: |0| -> |1|", [interpreter_for_flat_on_hit_curr, interpreter_for_flat_on_hit_next]],
 			]
 			
 			if ability_light_waves_level + 1 == 3:
 				descs.append("")
 				descs.append("New: Light Explosion")
 				descs.append("After %s main attacks in a round, every main attack that hits an enemy causes an explosion." % attks_needed_for_light_explosion)
-				descs.append("The explosion deals elemental damage equal to %s of the damage of the main attack to %s enemies." % [(str(light_explosion_dmg_ratio_in_levels[2] * 100) + "%"), str(light_explosion_pierce)])
+				
+				#
+				var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
+				interpreter_for_perc_on_hit.tower_to_use_for_tower_stat_fragments = self
+				interpreter_for_perc_on_hit.display_body = false
+				interpreter_for_perc_on_hit.header_description = "of the damage of the main attack"
+				
+				var ins_for_perc_on_hit = []
+				ins_for_perc_on_hit.append(NumericalTextFragment.new(light_explosion_dmg_ratio_in_levels[2] * 100, true, -1))
+				
+				interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
+				#
+				
+				descs.append(["The explosion deals |0| to %s enemies." % [str(light_explosion_pierce)], [interpreter_for_perc_on_hit]])
+				#descs.append("The explosion deals elemental damage equal to %s of the damage of the main attack to %s enemies." % [(str(light_explosion_dmg_ratio_in_levels[2] * 100) + "%"), str(light_explosion_pierce)])
 				
 			elif ability_light_waves_level + 1 == 4:
 				descs.append("light explosion damage ratio: %s -> %s" % [str(current_light_explosion_dmg_ratio * 100) + "%", str(light_explosion_dmg_ratio_in_levels[3] * 100) + "%"])
 			
 			
 		else:
+			
+			var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+			interpreter_for_flat_on_hit.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_flat_on_hit.display_body = false
+			
+			var ins_for_flat_on_hit = []
+			ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", light_wave_base_damage_in_levels[0]))
+			
+			interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+			
+			
 			descs = [
 				"Every %s main attack is followed by a light wave." % (str(attks_needed_for_light_wave_in_levels[0]) + "rd"),
-				"Light waves deal %s elemental damage, and have 3 pierce." % light_wave_base_damage_in_levels[0],
-				"Light waves do not benefit from base damage buffs, on hit damages and effects.",
+				["Light waves deal |0|, and have 3 pierce.", [interpreter_for_flat_on_hit]],
 			]
 	
 	return descs
@@ -1027,18 +1162,102 @@ func get_judgement_upgrade_descs():
 	
 	if can_level_up_judgement():
 		if ability_judgement_level != 0:
+			
+			var interpreter_for_damage_ratio_curr = TextFragmentInterpreter.new()
+			interpreter_for_damage_ratio_curr.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_damage_ratio_curr.display_body = true
+			
+			var ins_for_judgement_dmg_ratio_curr = []
+			ins_for_judgement_dmg_ratio_curr.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, -1, "", current_judgement_dmg_ratio * 100, true))
+			
+			interpreter_for_damage_ratio_curr.array_of_instructions = ins_for_judgement_dmg_ratio_curr
+			
+			#
+			
+			var interpreter_for_damage_ratio_next = TextFragmentInterpreter.new()
+			interpreter_for_damage_ratio_next.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_damage_ratio_next.display_body = true
+			
+			var ins_for_judgement_dmg_ratio_next = []
+			ins_for_judgement_dmg_ratio_next.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, -1, "", judgement_dmg_ratio_in_levels[ability_judgement_level] * 100, true))
+			
+			interpreter_for_damage_ratio_next.array_of_instructions = ins_for_judgement_dmg_ratio_next
+			
+			#
+			
+			var interpreter_for_flat_dmg_curr = TextFragmentInterpreter.new()
+			interpreter_for_flat_dmg_curr.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_flat_dmg_curr.display_body = true
+			
+			var ins_for_judgement_flat_dmg_curr = []
+			ins_for_judgement_flat_dmg_curr.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", current_judgement_bonus_on_hit_amount, false))
+			
+			interpreter_for_flat_dmg_curr.array_of_instructions = ins_for_judgement_flat_dmg_curr
+			
+			#
+			
+			var interpreter_for_flat_dmg_next = TextFragmentInterpreter.new()
+			interpreter_for_flat_dmg_next.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_flat_dmg_next.display_body = true
+			
+			var ins_for_judgement_flat_dmg_next = []
+			ins_for_judgement_flat_dmg_next.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", judgement_bonus_on_hit_dmg_in_levels[ability_judgement_level], false))
+			
+			interpreter_for_flat_dmg_next.array_of_instructions = ins_for_judgement_flat_dmg_next
+			
+			
+			#
+			
 			descs = [
-				"Base damage ratio: %s -> %s" % [(str(current_judgement_dmg_ratio * 100) + "%"), (str(judgement_dmg_ratio_in_levels[ability_judgement_level] * 100) + "%")],
-				"Bonus on hit dmg: %s -> %s" % [str(current_judgement_bonus_on_hit_amount), str(judgement_bonus_on_hit_dmg_in_levels[ability_judgement_level])]
+				["Base damage ratio: |0| -> |1|", [interpreter_for_damage_ratio_curr, interpreter_for_damage_ratio_next]],
+				["Bonus on hit dmg: |0| -> |1|", [interpreter_for_flat_dmg_curr, interpreter_for_flat_dmg_next]],
 			]
 			
+#			descs = [
+#				"Base damage ratio: %s -> %s" % [(str(current_judgement_dmg_ratio * 100) + "%"), (str(judgement_dmg_ratio_in_levels[ability_judgement_level] * 100) + "%")],
+#				"Bonus on hit dmg: %s -> %s" % [str(current_judgement_bonus_on_hit_amount), str(judgement_bonus_on_hit_dmg_in_levels[ability_judgement_level])],
+#			]
+			
 		else:
+			
+			var interpreter_for_judgement_damage = TextFragmentInterpreter.new()
+			interpreter_for_judgement_damage.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_judgement_damage.display_body = true
+			
+			var ins_for_judgement_dmg = []
+			ins_for_judgement_dmg.append(NumericalTextFragment.new(judgement_bonus_on_hit_dmg_in_levels[0], false, DamageType.PHYSICAL))
+			ins_for_judgement_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+			ins_for_judgement_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, judgement_dmg_ratio_in_levels[0], DamageType.PHYSICAL))
+			
+			interpreter_for_judgement_damage.array_of_instructions = ins_for_judgement_dmg
+			
+			#
+			
+			var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
+			interpreter_for_bonus_dmg.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_bonus_dmg.display_body = false
+			interpreter_for_bonus_dmg.header_description = "more damage"
+			
+			var ins_for_bonus_dmg = []
+			ins_for_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", (judgement_bonus_dmg_ratio - 1) * 100, true))
+			interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
+			
+			
+			#
+			
 			descs = [
 				"Every attack that applies on hit effects applies a Judge stack to enemies hit.",
-				"At %s Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage, and dealing bonus %s physical damage" % [str(judgement_stack_trigger), (str(judgement_dmg_ratio_in_levels[0] * 100) + "%"), str(judgement_bonus_on_hit_dmg_in_levels[0])],
-				"Judgement is enhanced to deal %s more damage when the enemy has less than %s health." % [(str((judgement_bonus_dmg_ratio - 1) * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
+				["At %s Judge stacks, Judgement is brought to the enemy, dealing |0|" % [str(judgement_stack_trigger)], [interpreter_for_judgement_damage]],
+				["Judgement is enhanced to deal |0| when the enemy has less than %s health." % [(str(judgement_bonus_dmg_threshold_trigger * 100) + "%")], [interpreter_for_bonus_dmg]],
 				"Judgement does not apply on hit effects."
-			]
+				]
+			
+#			descs = [
+#				"Every attack that applies on hit effects applies a Judge stack to enemies hit.",
+#				"At %s Judge stacks, Judgement is brought to the enemy, dealing %s of this tower's base damage as physical damage, and dealing bonus %s physical damage" % [str(judgement_stack_trigger), (str(judgement_dmg_ratio_in_levels[0] * 100) + "%"), str(judgement_bonus_on_hit_dmg_in_levels[0])],
+#				"Judgement is enhanced to deal %s more damage when the enemy has less than %s health." % [(str((judgement_bonus_dmg_ratio - 1) * 100) + "%"), (str(judgement_bonus_dmg_threshold_trigger * 100) + "%")],
+#				"Judgement does not apply on hit effects."
+#			]
 	
 	return descs
 
@@ -1048,26 +1267,79 @@ func get_vol_upgrade_descs():
 	
 	if can_level_up_VOL():
 		if ability_VOL_level != 0:
+			
+			#
+			
+			var interpreter_for_bonus_dmg_curr = TextFragmentInterpreter.new()
+			interpreter_for_bonus_dmg_curr.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_bonus_dmg_curr.display_body = false
+			interpreter_for_bonus_dmg_curr.header_description = ""
+			
+			var ins_for_bonus_dmg_curr = []
+			ins_for_bonus_dmg_curr.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", (current_vol_damage_scale - 1) * 100, true))
+			interpreter_for_bonus_dmg_curr.array_of_instructions = ins_for_bonus_dmg_curr
+			
+			#
+			
+			var interpreter_for_bonus_dmg_next = TextFragmentInterpreter.new()
+			interpreter_for_bonus_dmg_next.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_bonus_dmg_next.display_body = false
+			interpreter_for_bonus_dmg_next.header_description = ""
+			
+			var ins_for_bonus_dmg_next = []
+			ins_for_bonus_dmg_next.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", (VOL_dmg_ratio_buff_in_levels[ability_VOL_level] - 1) * 100, true))
+			interpreter_for_bonus_dmg_next.array_of_instructions = ins_for_bonus_dmg_next
+			
+			
+			#
+			
 			descs = [
-				"Damage ratio buff: %s -> %s" % [(str(current_vol_damage_scale * 100) + "%"), (str(VOL_dmg_ratio_buff_in_levels[ability_VOL_level] * 100) + "%")],
+				["Damage ratio buff: |0| -> |1|", [interpreter_for_bonus_dmg_curr, interpreter_for_bonus_dmg_next]],
 				"Number of attacks buffed: %s -> %s" % [current_vol_count, VOL_buff_attack_count_in_levels[ability_VOL_level]],
 				"Number of towers affected: %s -> %s" % [current_towers_affected_by_vol, VOL_towers_affected_in_levels[ability_VOL_level]],
 				"Buff range: %s -> %s" % [VOL_range_module.detection_range, VOL_range_in_levels[ability_VOL_level]],
-				"On hit effect efficiency: %s -> %s" % [(str(current_hero_on_hit_effect_scale * 100) + "%"), (str(VOL_hero_on_hit_effect_scale[ability_VOL_level] * 100) + "%")]
 			]
 			
+#			descs = [
+#				"Damage ratio buff: %s -> %s" % [(str(current_vol_damage_scale * 100) + "%"), (str(VOL_dmg_ratio_buff_in_levels[ability_VOL_level] * 100) + "%")],
+#				"Number of attacks buffed: %s -> %s" % [current_vol_count, VOL_buff_attack_count_in_levels[ability_VOL_level]],
+#				"Number of towers affected: %s -> %s" % [current_towers_affected_by_vol, VOL_towers_affected_in_levels[ability_VOL_level]],
+#				"Buff range: %s -> %s" % [VOL_range_module.detection_range, VOL_range_in_levels[ability_VOL_level]],
+#				#"On hit effect efficiency: %s -> %s" % [(str(current_hero_on_hit_effect_scale * 100) + "%"), (str(VOL_hero_on_hit_effect_scale[ability_VOL_level] * 100) + "%")]
+#			]
+			
 		else:
+			
+			var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
+			interpreter_for_bonus_dmg.tower_to_use_for_tower_stat_fragments = self
+			interpreter_for_bonus_dmg.display_body = false
+			interpreter_for_bonus_dmg.header_description = ""
+			
+			var ins_for_bonus_dmg = []
+			ins_for_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", (VOL_dmg_ratio_buff_in_levels[0] - 1) * 100, true))
+			interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
+			
+			
 			descs = [
 				"Every %s attack is accompanied by Hero casting Voice of Light." % (str(current_attks_needed_for_vol) + "th"),
 				"Voice of Light buffs %s towers in range, prioritizing closer towers, and ignoring towers that cannot attack." % VOL_towers_affected_in_levels[0],
-				"Voice of Light buffs tower's outgoing damage %s times by %s" % [VOL_buff_attack_count_in_levels[0] , str((VOL_dmg_ratio_buff_in_levels[0] * 100) - 100) + "%."],
+				["Voice of Light buffs tower's outgoing damage %s times by |0|" % [VOL_buff_attack_count_in_levels[0]], [interpreter_for_bonus_dmg]],
 				"",
 				"Each tower affected by Voice of Light gives Hero additional %s EXP." % VOL_xp_gain_per_tower_affected_in_levels[0],
 				"Hero does not benefit from this ability.",
-				"",
-				"Hero's attacks also apply on hit effects at %s efficiency" % (str(VOL_hero_on_hit_effect_scale[0] * 100) + "%"),
-				
 			]
+			
+#			descs = [
+#				"Every %s attack is accompanied by Hero casting Voice of Light." % (str(current_attks_needed_for_vol) + "th"),
+#				"Voice of Light buffs %s towers in range, prioritizing closer towers, and ignoring towers that cannot attack." % VOL_towers_affected_in_levels[0],
+#				"Voice of Light buffs tower's outgoing damage %s times by %s" % [VOL_buff_attack_count_in_levels[0] , str((VOL_dmg_ratio_buff_in_levels[0] * 100) - 100) + "%."],
+#				"",
+#				"Each tower affected by Voice of Light gives Hero additional %s EXP." % VOL_xp_gain_per_tower_affected_in_levels[0],
+#				"Hero does not benefit from this ability.",
+#				"",
+#				#"Hero's attacks also apply on hit effects at %s efficiency" % (str(VOL_hero_on_hit_effect_scale[0] * 100) + "%"),
+#
+#			]
 	
 	return descs
 

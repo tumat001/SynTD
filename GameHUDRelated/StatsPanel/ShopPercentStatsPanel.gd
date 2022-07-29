@@ -29,16 +29,27 @@ func _ready():
 
 func set_shop_manager(arg_manager : ShopManager):
 	shop_manager = arg_manager
+	
+	shop_manager.connect("on_effective_shop_odds_level_changed", self, "_on_effective_shop_level_odds_changed", [], CONNECT_PERSIST)
+	_on_effective_shop_level_odds_changed(shop_manager.last_calculated_effective_shop_level_odds)
 
 func set_level_manager(arg_manager : LevelManager):
 	level_manager = arg_manager
 	
-	level_manager.connect("on_current_level_changed", self, "_on_level_changed", [], CONNECT_PERSIST)
-	_on_level_changed(level_manager.current_level)
+	#level_manager.connect("on_current_level_changed", self, "_on_level_changed", [], CONNECT_PERSIST)
+	#_on_level_changed(level_manager.current_level)
 
 #
 
-func _on_level_changed(_new_level):
+#func _on_level_changed(_new_level):
+#	if shop_manager != null:
+#		var probabilities : Array = shop_manager.get_shop_roll_chances_at_level()
+#
+#		for i in 6:
+#			labels_in_tier_order[i].text = (str(probabilities[i]) + "%")
+
+
+func _on_effective_shop_level_odds_changed(new_lvl_odds):
 	if shop_manager != null:
 		var probabilities : Array = shop_manager.get_shop_roll_chances_at_level()
 		

@@ -178,6 +178,12 @@ func _ready():
 	left_panel.whole_screen_gui = whole_screen_gui
 	left_panel.tower_manager = tower_manager
 	
+	# Level manager
+	level_manager.game_elements = self
+	level_manager.stage_round_manager = stage_round_manager
+	level_manager.gold_manager = gold_manager
+	level_manager.relic_manager = relic_manager
+	
 	# Shop manager
 	shop_manager.game_elements = self
 	shop_manager.stage_round_manager = stage_round_manager
@@ -188,12 +194,6 @@ func _ready():
 	
 	shop_manager.add_towers_per_refresh_amount_modifier(ShopManager.TowersPerShopModifiers.BASE_AMOUNT, 5)
 	
-	
-	# Level manager
-	level_manager.game_elements = self
-	level_manager.stage_round_manager = stage_round_manager
-	level_manager.gold_manager = gold_manager
-	level_manager.relic_manager = relic_manager
 	
 	# Gold relic stats panel
 	general_stats_panel.game_elements = self
@@ -258,28 +258,28 @@ func _on_BuySellLevelRollPanel_reroll():
 	#shop_manager.roll_towers_in_shop_with_cost()
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.WAVE,
-			Towers.LEADER,
+			Towers.PING,
+			Towers.SE_PROPAGER,
 			Towers.TRANSPORTER,
-			Towers.REAPER,
-			Towers.SHOCKER,
-			Towers.ADEPT,
+			Towers.BURGEON,
+			Towers.SUNFLOWER,
+			Towers.SPIKE,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.ACCUMULAE,
-			Towers.CHAOS,
-			Towers.HEXTRIBUTE,
-			Towers.PESTILENCE,
-			Towers.BREWD,
-			Towers.TIME_MACHINE
+			Towers.ADEPT,
+			Towers.REAPER,
+			Towers.REBOUND,
+			Towers.STRIKER,
+			Towers.TRANSMUTATOR
 		])
 	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
 	if !tower_inventory_bench.is_bench_full():
-		tower_inventory_bench.insert_tower(tower_id)
+		tower_inventory_bench.insert_tower(tower_id, tower_inventory_bench._find_empty_slot(), true)
 
 
 # Inputs related

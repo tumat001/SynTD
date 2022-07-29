@@ -23,7 +23,7 @@ signal enemy_player_health_changed(max_val, new_curr_health_val)
 
 const enemy_soul_spawn_at_timepos_in_round_percent : float = 0.7
 
-const min_unit_distance_for_full_damage_points = 0.75
+const min_unit_distance_for_full_damage_points = 0.50
 
 const enemy_player_max_health : float = 100.0
 var enemy_player_current_health : float = enemy_player_max_health

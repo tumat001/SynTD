@@ -2,7 +2,7 @@ extends MarginContainer
 
 const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd")
 const TowerBaseEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerBaseEffect.gd")
-
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
 
 #const collapsed_label_lines_amount : int = 2
 const collapsed_label_character_limit : int = 32
@@ -15,6 +15,13 @@ var collapsed : bool setget set_collapsed
 
 onready var ingredient_label = $HBoxContainer/Marginer/IngredientLabel
 onready var ingredient_icon = $HBoxContainer/IngredientIcon
+
+#
+
+var tower_to_use_for_interpreter
+var use_color_for_dark_background : bool = true
+var font_size : int = 10
+var common_text_color : Color = Color(1, 1, 1, 1)
 
 #
 
@@ -34,18 +41,34 @@ func update_display():
 func _update_panel(arg_tower_base_effect):
 	ingredient_icon.texture = arg_tower_base_effect.effect_icon
 	
-	var desc_to_use : String
+	var desc_to_use
+	var use_bbcode : bool
+	
 	if use_dynamic_description:
 		desc_to_use = arg_tower_base_effect._get_description()
 	else:
-		desc_to_use = arg_tower_base_effect.description
+		var effect_desc = arg_tower_base_effect.description 
+		if effect_desc is String:
+			desc_to_use = effect_desc
+			ingredient_label.bbcode_enabled = false
+		else:
+			desc_to_use = TextFragmentInterpreter.get_bbc_modified_description_as_string(effect_desc[0], effect_desc[1], tower_to_use_for_interpreter, null, font_size, common_text_color, use_color_for_dark_background)
+			ingredient_label.bbcode_enabled = true
+		
+		use_bbcode = ingredient_label.bbcode_enabled
 	
 	if collapsed:
 		if desc_to_use.length() > collapsed_label_character_limit:
 			desc_to_use = desc_to_use.substr(0, collapsed_label_character_limit)
 			desc_to_use += " ..."
 	
-	ingredient_label.text = desc_to_use
+	if ingredient_label.bbcode_enabled:
+		ingredient_label.bbcode_text = desc_to_use
+	else:
+		ingredient_label.text = desc_to_use
+
+#
+
 
 
 # collapse related

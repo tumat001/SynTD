@@ -24,29 +24,38 @@ var player_execute_ratio : float
 
 var soul_execute_sf : SpriteFrames
 
+var health_forgiveness_flat_meter_for_offerable : float = 10.0
+const tier_to_player_exec_ratio : Dictionary = {
+	0 : 0.25,
+	1 : 0.2,
+	2 : 0.15,
+	3 : 0.1
+}
 
-func _init(arg_tier : int).(StoreOfPactUUID.DRAGON_SOUL, "Dragon Soul", arg_tier):
+
+func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL, "Dragon Soul", arg_tier):
 	
 	if tier == 0:
 		enemy_execute_ratio = 0.35
-		player_execute_ratio = 0.25 
+		#player_execute_ratio = 0.25 
 	elif tier == 1:
 		enemy_execute_ratio = 0.25
-		player_execute_ratio = 0.2 
+		#player_execute_ratio = 0.2 
 	elif tier == 2:
 		enemy_execute_ratio = 0.20
-		player_execute_ratio = 0.15 
+		#player_execute_ratio = 0.15 
 	elif tier == 3:
 		enemy_execute_ratio = 0.1
-		player_execute_ratio = 0.1 
+		#player_execute_ratio = 0.1 
 	
+	player_execute_ratio = tier_to_player_exec_ratio[tier]
 	
 	good_descriptions = [
-		"The Dragon marks enemies upon spawning. The dragon executes marked enemies below %s health post-damage." % (str((enemy_execute_ratio * 100)) + "%")
+		"The Dragon marks enemies upon spawning. The Dragon executes marked enemies below %s health post-damage." % (str((enemy_execute_ratio * 100)) + "%")
 	]
 	
 	bad_descriptions = [
-		"The Dragon executes you if you are below %s health." % (str(player_execute_ratio * 100) + "%")
+		"The Dragon executes you if you are below %s health" % [(str(player_execute_ratio * 100) + "%")]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_DragonSoul_Icon.png")
@@ -64,6 +73,13 @@ func _init(arg_tier : int).(StoreOfPactUUID.DRAGON_SOUL, "Dragon Soul", arg_tier
 	soul_execute_sf.add_frame("default", DragonSoulAttk_Pic10)
 	soul_execute_sf.set_animation_loop("default", false)
 	
+
+#
+
+func _first_time_initialize():
+	bad_descriptions[0] += " (%s health)" % [str(player_execute_ratio * game_elements.health_manager.starting_health)]
+
+#
 
 func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	._apply_pact_to_game_elements(arg_game_elements)
@@ -116,3 +132,14 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 	if game_elements.enemy_manager.is_connected("enemy_spawned", self, "_on_enemy_spawned"):
 		game_elements.enemy_manager.disconnect("enemy_spawned", self, "_on_enemy_spawned")
 		game_elements.health_manager.disconnect("current_health_changed", self, "_on_player_health_changed")
+
+
+######
+
+func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
+	var health_exec_threshold = tier_to_player_exec_ratio[arg_tier_to_be_offered] * arg_game_elements.health_manager.starting_health
+	var curr_health = arg_game_elements.health_manager.current_health
+	
+	return (curr_health + health_forgiveness_flat_meter_for_offerable) > health_exec_threshold
+
+

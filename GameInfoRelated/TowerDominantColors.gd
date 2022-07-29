@@ -3,6 +3,13 @@ extends Node
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const ColorSynergy = preload("res://GameInfoRelated/ColorSynergy.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+const DamageType = preload("res://GameInfoRelated/DamageType.gd")
+
+
 const tier_bronze_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Bronze.png")
 const tier_silver_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Silver.png")
 const tier_gold_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Gold.png")
@@ -35,19 +42,103 @@ var synergies : Dictionary
 func _init():
 	inst_domsyn_yellow_energybattery = DomSyn_Yellow_EnergyBattery.new()
 	
+	#
+	
+	var interpreter_for_blue_ap_tier_1 = TextFragmentInterpreter.new()
+	interpreter_for_blue_ap_tier_1.display_body = false
+	
+	var ins_for_blue_ap_tier_1 = []
+	ins_for_blue_ap_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.25, false))
+	
+	interpreter_for_blue_ap_tier_1.array_of_instructions = ins_for_blue_ap_tier_1
+	
+	
+	var interpreter_for_blue_ap_tier_2 : TextFragmentInterpreter = interpreter_for_blue_ap_tier_1.get_deep_copy()
+	interpreter_for_blue_ap_tier_2.array_of_instructions[0].num_val = 0.25
+	
+	var interpreter_for_blue_ap_tier_3 : TextFragmentInterpreter = interpreter_for_blue_ap_tier_1.get_deep_copy()
+	interpreter_for_blue_ap_tier_3.array_of_instructions[0].num_val = 0.25
+	
+	
+	
+	var blue_syn = ColorSynergy.new("Blue", [TowerColors.BLUE], [8, 5, 3],
+	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	syn_dom_blue,
+	[
+		"Gain access to Blue Abilities.",
+		"Additionally, all Blue towers gain ability potency.",
+		""
+	],
+	[DomSyn_Blue.new()],
+	[
+		["Renew & Empower : Multi purpose abilities. +|0|.", [interpreter_for_blue_ap_tier_1]],
+		["Mana Blast: Big AOE damage, and AOE ability potency buff. +|0|.", [interpreter_for_blue_ap_tier_2]],
+		["Sea Breeze : Slow and minor damage to all enemies. +|0|.", [interpreter_for_blue_ap_tier_3]]
+	],
+	ColorSynergy.HighlightDeterminer.ALL_BELOW
+	)
+	
+	
+	
+	
+	var interpreter_for_black_attk_speed_give = TextFragmentInterpreter.new()
+	interpreter_for_black_attk_speed_give.display_body = false
+	
+	var ins_for_black_attk_speed_give = []
+	ins_for_black_attk_speed_give.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 20, true))
+	
+	interpreter_for_black_attk_speed_give.array_of_instructions = ins_for_black_attk_speed_give
+	
+	
+	var interpreter_for_black_bonus_dmg = TextFragmentInterpreter.new()
+	interpreter_for_black_bonus_dmg.display_body = false
+	
+	var ins_for_black_bonus_dmg = []
+	ins_for_black_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", 10, true))
+	
+	interpreter_for_black_bonus_dmg.array_of_instructions = ins_for_black_bonus_dmg
+	
+	
+	var black_syn = ColorSynergy.new("Black", [TowerColors.BLACK], [11, 8, 6, 2],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	syn_dom_black,
+	[
+		"Black towers gain bonus stats and effects."
+	],
+	[DomSyn_Black.new()],
+	[
+		"The chosen dark path is upgraded.",
+		"Choose one of the four dark paths to take.",
+		["Main attacks on hit causes the attacking tower to give a random black tower |0| for 6 attacks for 5 seconds. This effect has a 3 second cooldown.", [interpreter_for_black_attk_speed_give]],
+		["Damage is increased by |0|.", [interpreter_for_black_bonus_dmg]]
+	],
+	ColorSynergy.HighlightDeterminer.ALL_BELOW
+	)
+	
+	
+	#
+	
+	
+	# ------------------------------------------------------
+	
 	synergies = {
-	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [9, 6, 3],
+	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [3, 2, 1],#[9, 6, 3], #TODO TEMP TEST CHANGES
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
 	[
 		"Opens the Pact shop, which shows a list of up to three unsworn pacts. At the end of each round, a new unsworn pact is added.",
-		"The Pact shop also allows the swearing of a Pact, during which the Pact's buffs and debuffs take effect. Only up to 3 pacts can be sworn at a time. Attempting to swear another pact will remove the oldest sworn pact.",
+		"Swearing a Pact activates its buffs and debuffs. Up to 3 pacts can be sworn at a time. Swearing a pact at the limit will remove the oldest sworn pact along with its effects unless stated otherwise.",
+		"Synergy level requirements must be met for a pact to take effect.",
 		"",
 		"Synergy level affects the quality and types of unsworn pacts that appear in the shop.",
-		"",
-		"Not having the Red synergy active while having sworn pacts will cause you to take 10 damage at the end of each round. Also, no new unsworn pacts will be added."
 	],
-	[DomSyn_Red.new()]
+	[DomSyn_Red.new()],
+	[
+		"Advanced Shop",
+		"Intermediate Shop",
+		"Basic shop"
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
 	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [12, 9, 6, 3],
@@ -123,22 +214,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
 	
-	"Blue" : ColorSynergy.new("Blue", [TowerColors.BLUE], [8, 5, 3],
-	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_dom_blue,
-	[
-		"Gain access to Blue Abilities.",
-		"Additionally, all Blue towers gain ability potency.",
-		""
-	],
-	[DomSyn_Blue.new()],
-	[
-		"Renew & Empower : Multi purpose abilities. +0.25 Ability Potency.",
-		"Mana Blast: Big AOE damage, and AOE Ability Potency buff. +0.25 Ability Potency.",
-		"Sea Breeze : Slow and minor damage to all enemies. +0.25 Ability Potency."
-	],
-	ColorSynergy.HighlightDeterminer.ALL_BELOW
-	),
+	"Blue" : blue_syn,
 	
 	"Violet" : ColorSynergy.new("Violet", [TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
@@ -164,24 +240,10 @@ func _init():
 	[tier_dia_pic],
 	syn_dom_white,
 	[
-		"Hero relies on the color White to channel its powers.",
+		"White towers rely on the White synergy to channel their powers.",
 	]),
 	
-	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [4, 3, 2, 1],#[11, 8, 6, 2],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_dom_black,
-	[
-		"Black towers gain bonus stats and effects."
-	],
-	[DomSyn_Black.new()],
-	[
-		"The chosen dark path is upgraded.",
-		"Choose one of the four dark paths to take.",
-		"Main attacks on hit causes the attacking tower to give a random black tower 20% bonus attack speed for 6 attacks for 5 seconds. This effect has a 3 second cooldown.",
-		"Damage is increased by 10%."
-	],
-	ColorSynergy.HighlightDeterminer.ALL_BELOW
-	)
+	"Black" : black_syn,
 	
 #	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [11, 8, 6, 2],
 #	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],

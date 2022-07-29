@@ -89,7 +89,7 @@ var chains_ability : BaseAbility
 var chains_ability_is_ready : bool = false
 
 var chains_pos_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SHACKLED_PULL_POSITION)
-const chains_upper_pos_limit : float = 30.0 # adjust higher for more random positions
+const chains_upper_pos_limit : float = 25.0 # adjust higher for more random positions
 
 
 func _ready():

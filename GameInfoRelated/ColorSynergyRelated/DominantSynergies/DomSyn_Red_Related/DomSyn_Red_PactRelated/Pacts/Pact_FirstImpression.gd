@@ -17,7 +17,7 @@ var loss_val
 const loss_duration : float = 15.0
 
 
-func _init(arg_tier : int).(StoreOfPactUUID.FIRST_IMPRESSION, "First Impression", arg_tier):
+func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.FIRST_IMPRESSION, "First Impression", arg_tier):
 	var possible_gain_values : Array
 	var possible_loss_values : Array
 	
@@ -43,7 +43,7 @@ func _init(arg_tier : int).(StoreOfPactUUID.FIRST_IMPRESSION, "First Impression"
 	]
 	
 	bad_descriptions = [
-		"Enemies gain %s armor and toughness after the debuff is lost." % gain_val
+		"Enemies gain %s armor and toughness after %s seconds." % [str(gain_val), str(loss_duration)]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_FirstImpression_Icon.png")
@@ -99,6 +99,12 @@ func _enemy_lost_effect(effect, enemy):
 
 
 func _remove_pact_from_game_elements(arg_game_elements : GameElements):
+	._remove_pact_from_game_elements(arg_game_elements)
+	
 	if game_elements.enemy_manager.is_connected("enemy_spawned", self, "_enemy_spawned"):
 		game_elements.enemy_manager.disconnect("enemy_spawned", self, "_enemy_spawned")
 
+########
+
+func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
+	return true

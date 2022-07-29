@@ -69,6 +69,7 @@ signal tower_selected_in_selection_mode(tower_self)
 #
 signal tower_not_in_active_map # tower benched
 signal tower_active_in_map
+#signal tower_can_contribute_to_synergy_changed(is_contributing_to_synergy_val)
 
 signal attack_module_added(attack_module)
 signal attack_module_removed(attack_module)
@@ -135,6 +136,10 @@ signal before_effect_is_removed(effect)
 
 #
 
+signal on_is_contributing_to_synergy_color_count_changed(new_val)
+
+#
+
 signal on_per_round_total_damage_changed(per_round_total_dmg)
 
 #
@@ -173,6 +178,8 @@ enum DisabledFromAttackingSourceClauses {
 	
 	L_ASSAUT_PURSUE_ACTIVE = 1000
 	
+	DOM_SYN__RED__DOMINANCE_SUPPLEMENT = 1001
+	DOM_SYN__RED__COMPLEMENTARY_SUPPLEMENT = 1002
 }
 
 enum UntargetabilityClauses {
@@ -186,11 +193,18 @@ enum UntargetabilityClauses {
 	
 }
 
+enum ContributingToSynergyClauses {
+	NOT_IN_MAP = 1,
+	IN_QUEUE_FREE = 2,
+	
+	DOM_SYN__RED__DOMINANCE_SUPPLEMENT = 1000,
+	DOM_SYN__RED__COMPLEMENTARY_SUPPLEMENT = 1001,
+}
+
 ###
 
 var hovering_over_placable : BaseAreaTowerPlacable
 var current_placable : BaseAreaTowerPlacable
-var is_contributing_to_synergy : bool # if is in map or not
 
 var is_being_dragged : bool = false
 var is_in_ingredient_mode : bool = false
@@ -199,6 +213,12 @@ var is_being_hovered_by_mouse : bool = false
 var _is_in_select_tower_prompt : bool = false
 
 var is_showing_ranges : bool
+
+var contributing_to_synergy_clauses : ConditionalClauses
+var last_calculated_is_contributing_to_synergy : bool
+
+#var is_contributing_to_synergy : bool # if is in map or not #TODO REMOVE THIS
+
 
 #####
 
@@ -241,7 +261,7 @@ var _tower_colors : Array = []
 
 # Synergy related
 
-var can_contribute_to_synergy_color_count : bool = true # tower can still gain benefits of synergy, but does not contribute to syngergy progress
+var can_contribute_to_synergy_color_count : bool = true setget set_contribute_to_synergy_color_count# tower can still gain benefits of synergy, but does not contribute to syngergy progress
 
 # Gold related
 
@@ -249,6 +269,10 @@ var _base_gold_cost : int setget set_base_gold_cost
 var _ingredients_tower_id_base_gold_costs_map : Dictionary = {}
 var _is_full_sellback : bool = false
 var last_calculated_sellback_value : int
+
+# Is bought or summoned/others
+
+var is_tower_bought : bool # true if the tower is bought from the shop. false if summoned, etc.
 
 # Round related
 
@@ -406,7 +430,14 @@ func _init():
 	disabled_from_attacking_clauses = ConditionalClauses.new()
 	disabled_from_attacking_clauses.connect("clause_inserted", self, "_disabled_from_attacking_clause_added_or_removed", [], CONNECT_PERSIST)
 	disabled_from_attacking_clauses.connect("clause_removed", self, "_disabled_from_attacking_clause_added_or_removed", [], CONNECT_PERSIST)
-
+	
+	contributing_to_synergy_clauses = ConditionalClauses.new()
+	contributing_to_synergy_clauses.connect("clause_inserted", self, "_contributing_to_synergy_clause_added_or_removed", [], CONNECT_PERSIST)
+	contributing_to_synergy_clauses.connect("clause_removed", self, "_contributing_to_synergy_clause_added_or_removed", [], CONNECT_PERSIST)
+	
+	_update_last_calculated_contributing_to_synergy()
+	_update_last_calculated_disabled_from_attacking()
+	_update_untargetability_state()
 
 func _ready():
 	$IngredientDeclinePic.visible = false
@@ -455,6 +486,8 @@ func _post_inherit_ready():
 	connect("on_any_post_mitigation_damage_dealt", self, "_on_tower_any_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
 	
 	#initialize_atlas_texture()
+	
+	_calculate_sellback_value()
 
 
 func get_current_anim_size() -> Vector2:
@@ -2390,22 +2423,27 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 			set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_IN_BENCH)
 			
 			_disable_modules(AbstractAttackModule.Disabled_ClauseId.IS_IN_DRAG)
-			is_contributing_to_synergy = false
+			#is_contributing_to_synergy = false
+			
+			contributing_to_synergy_clauses.attempt_insert_clause(ContributingToSynergyClauses.NOT_IN_MAP)
+			#emit_signal("tower_not_in_active_map")
 			
 			# Update Synergy
 			if should_update_active_synergy:
 				emit_signal("update_active_synergy")
-			emit_signal("tower_not_in_active_map")
+			
 		elif current_placable is InMapAreaPlacable:
 			erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_IN_BENCH)
 			
 			_enable_modules(AbstractAttackModule.Disabled_ClauseId.IS_IN_DRAG)
-			is_contributing_to_synergy = true
+			#is_contributing_to_synergy = true
+			
+			contributing_to_synergy_clauses.remove_clause(ContributingToSynergyClauses.NOT_IN_MAP)
+			#emit_signal("tower_active_in_map")
 			
 			# Update Synergy
 			if should_update_active_synergy:
 				emit_signal("update_active_synergy")
-			emit_signal("tower_active_in_map")
 
 
 func _on_PlacableDetector_area_entered(area):
@@ -2535,6 +2573,25 @@ func _update_untargetability_state():
 func is_untargetable_only_from_invisibility():
 	return untargetability_clauses.has_clause(UntargetabilityClauses.IS_INVISIBLE) and untargetability_clauses._clauses.size() == 1
 
+# Contributing to synergy Clauses
+
+func add_contributing_to_synergy_clause(id : int):
+	contributing_to_synergy_clauses.attempt_insert_clause(id)
+
+func erase_contributing_to_synergy_clause(id : int):
+	contributing_to_synergy_clauses.remove_clause(id)
+
+
+func _contributing_to_synergy_clause_added_or_removed(id):
+	_update_last_calculated_contributing_to_synergy()
+
+func _update_last_calculated_contributing_to_synergy():
+	last_calculated_is_contributing_to_synergy = contributing_to_synergy_clauses.is_passed
+	#emit_signal("tower_can_contribute_to_synergy_changed", last_calculated_is_contributing_to_synergy)
+	if last_calculated_is_contributing_to_synergy:
+		emit_signal("tower_active_in_map")
+	else:
+		emit_signal("tower_not_in_active_map")
 
 # Tracking of towers related
 
@@ -2549,7 +2606,8 @@ func _on_ClickableArea_mouse_exited():
 
 
 func queue_free():
-	is_contributing_to_synergy = false
+	#is_contributing_to_synergy = false
+	contributing_to_synergy_clauses.attempt_insert_clause(ContributingToSynergyClauses.IN_QUEUE_FREE)
 	current_placable.tower_occupying = null
 	
 	# ORDER CHANGED FROM bottom to top (see commented code)
@@ -2580,7 +2638,15 @@ func _phy_knock_up_process(delta):
 			_knock_up_current_acceleration = 0
 			_knock_up_current_acceleration_deceleration = 0
 			knock_up_layer.position.y = 0
+
+
+# Synergy related
+
+func set_contribute_to_synergy_color_count(arg_val):
+	can_contribute_to_synergy_color_count = arg_val
 	
+	emit_signal("on_is_contributing_to_synergy_color_count_changed", arg_val)
+	#emit_signal()
 
 # Detecting tower interacting stuffs
 

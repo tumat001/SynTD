@@ -1,8 +1,15 @@
 extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerAttackModuleAdderEffect.gd"
 
+
 const WithBeamInstantDamageAttackModule = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.gd")
 const WithBeamInstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.tscn")
 const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
+
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
 
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
@@ -25,29 +32,52 @@ var own_timer : Timer
 
 func _init().(StoreOfTowerEffectsUUID.ING_ADEPT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Adeptling.png")
-	description = "Adeptling: Summons an adeptling beside your tower. Adeptling attacks a different target when its tower hits its main attack. This can trigger only once every 0.1 seconds. Its shots deal 1.5 physical damage and apply on hit effects. Benefits from base damage and on hit damage buffs at 40% efficiency."
-
+	
+	# INS START
+	
+	var interpreter = TextFragmentInterpreter.new()
+	interpreter.display_body = true
+	interpreter.display_header = true
+	
+	var ins = []
+	ins.append(NumericalTextFragment.new(1.75, false, DamageType.PHYSICAL))
+	#ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	#ins.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.4, DamageType.PHYSICAL))
+	#ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	#ins.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.4)) # stat basis does not matter here
+	
+	interpreter.array_of_instructions = ins
+	
+	
+	# INS END
+	
+	description = ["Adeptling: Summons an adeptling beside your tower. Main attacks cause Adeptling to attack a different target, with a cooldown of 0.1 seconds. Its shots deal |0| and apply on hit effects.", [interpreter]]
+	#description = ["Adeptling: Summons an adeptling beside your tower. Adeptling attacks a different target when its tower hits its main attack. Its shots deal |0| and apply on hit effects.", [interpreter]]
+	
 
 func _make_modifications_to_tower(tower):
 	if adeptling_am == null:
 		_construct_attack_module()
 		tower.add_attack_module(adeptling_am)
 	
-	if !tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy"):
-		tower.connect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy", [], CONNECT_PERSIST)
+	#if !tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy"):
+	#	tower.connect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy", [], CONNECT_PERSIST)
+	
+	if !tower.is_connected("on_main_attack", self, "_on_tower_main_attack"):
+		tower.connect("on_main_attack", self, "_on_tower_main_attack", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 	
 	if own_timer == null:
 		own_timer = Timer.new()
 		own_timer.one_shot = true
 		own_timer.wait_time = 0.1
 		tower.get_tree().get_root().add_child(own_timer)
-	
+
 
 
 func _construct_attack_module():
 	adeptling_am = WithBeamInstantDamageAttackModule_Scene.instance()
 	adeptling_am.base_damage_scale = 0.40
-	adeptling_am.base_damage = 1.5 / adeptling_am.base_damage_scale
+	adeptling_am.base_damage = 1.75 / adeptling_am.base_damage_scale
 	adeptling_am.base_damage_type = DamageType.PHYSICAL
 	adeptling_am.base_attack_speed = 0
 	adeptling_am.base_attack_wind_up = 1 / 0.15
@@ -60,8 +90,8 @@ func _construct_attack_module():
 	adeptling_am.on_hit_effect_scale = 1
 	
 	adeptling_am.benefits_from_bonus_on_hit_effect = true
-	#adeptling_am.benefits_from_bonus_base_damage = false
-	#adeptling_am.benefits_from_bonus_on_hit_damage = false
+	adeptling_am.benefits_from_bonus_base_damage = false
+	adeptling_am.benefits_from_bonus_on_hit_damage = false
 	
 	adeptling_am.commit_to_targets_of_windup = true
 	adeptling_am.fill_empty_windup_target_slots = false
@@ -91,13 +121,23 @@ func _construct_attack_module():
 	sprite.texture = Adeptling_Pic
 	adeptling_am.add_child(sprite)
 
+#
 
-func _on_tower_main_attack_hit_enemy(enemy, damage_register_id, damage_instance, am):
+#func _on_tower_main_attack_hit_enemy(enemy, damage_register_id, damage_instance, am):
+#	if am != null and am.range_module != null:
+#		var enemies = am.range_module.get_targets_without_affecting_self_current_targets(2)
+#
+#		if enemies.size() == 2:
+#			call_deferred("_attempt_command_am_to_attack", enemies[1])
+
+func _on_tower_main_attack(attk_speed_delay, arg_enemies, am):
 	if am != null and am.range_module != null:
 		var enemies = am.range_module.get_targets_without_affecting_self_current_targets(2)
 		
 		if enemies.size() == 2:
 			call_deferred("_attempt_command_am_to_attack", enemies[1])
+
+
 
 
 func _attempt_command_am_to_attack(enemy):
@@ -117,8 +157,12 @@ func _undo_modifications_to_tower(tower):
 		adeptling_am.queue_free()
 		adeptling_am = null
 	
-	if tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy"):
-		tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy")
+	#if tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy"):
+	#	tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy")
+	
+	if tower.is_connected("on_main_attack", self, "_on_tower_main_attack"):
+		tower.disconnect("on_main_attack", self, "_on_tower_main_attack")
+	
 	
 	if own_timer != null:
 		own_timer.queue_free()

@@ -18,6 +18,7 @@ func _ready():
 
 func update_display():
 	
+	multi_ingredient_panel.tower_to_use_for_interpreter = tower
 	update_limit_count_label_only()
 	
 	var ing_effects : Array = []

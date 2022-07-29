@@ -23,7 +23,11 @@ enum {
 	LEVEL_7 = 7,
 	LEVEL_8 = 8,
 	LEVEL_9 = 9,
-	LEVEL_10 = 10
+	LEVEL_10 = 10,
+	
+	# Reachable by red syn (not the level itself tho, used by shop manager)
+	LEVEL_11 = 11,
+	LEVEL_12 = 12,
 }
 
 enum Currency {
@@ -36,22 +40,35 @@ const base_level_up_costs : Dictionary = {
 	LEVEL_2 : [2, Currency.GOLD],
 	LEVEL_3 : [6, Currency.GOLD],
 	LEVEL_4 : [18, Currency.GOLD],
-	LEVEL_5 : [32, Currency.GOLD], #32
-	LEVEL_6 : [42, Currency.GOLD], #44
-	LEVEL_7 : [62, Currency.GOLD], #64
-	LEVEL_8 : [84, Currency.GOLD], #80
+	LEVEL_5 : [32, Currency.GOLD],
+	LEVEL_6 : [42, Currency.GOLD],
+	LEVEL_7 : [62, Currency.GOLD],
+	LEVEL_8 : [84, Currency.GOLD],
 	LEVEL_9 : [1, Currency.RELIC],
 	LEVEL_10 : [0, Currency.GOLD],
 }
 
-const base_level_up_gold_cost_reduction_per_round : int = 2
 const before_max_level : int = LEVEL_9
 const max_level : int = LEVEL_10
 
+var current_level : int setget set_current_level
+
+#
+
+#enum LevelUpCostModifiers {
+#	NATURAL_PROGRESSION = 0, # per round, reduce level cost by x
+#
+#	SYN_RED__JEWELED_SWORD = 1,
+#	SYN_RED__JEWELED_STAFF = 2,
+#}
+#
+#var level_to_cost_modifier_map : Dictionary = {}
+
+
+const base_level_up_gold_cost_reduction_per_round : int = 2 #Natural progression
+
 var current_level_up_cost : int = 0 setget set_level_up_cost
 var current_level_up_currency : int
-
-var current_level : int setget set_current_level
 
 
 #
@@ -160,6 +177,13 @@ func _gold_amount_changed(gold_amount):
 func _relic_count_changed(relic_amount):
 	emit_signal("on_can_level_up_changed", can_level_up())
 
+
+# used by some red syns
+func get_level_after_current():
+	if !is_in_max_level():
+		return current_level + 1
+	else:
+		return max_level
 
 # miscs
 

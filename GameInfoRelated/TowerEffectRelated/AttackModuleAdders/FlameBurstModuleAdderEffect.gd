@@ -5,6 +5,12 @@ const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttac
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
 const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 const BurstProj_01 = preload("res://TowerRelated/Color_Orange/FlameBurst/FlameBurst_Proj/FlameBurst_Proj01.png")
@@ -36,13 +42,25 @@ var tree
 
 func _init().(StoreOfTowerEffectsUUID.ING_FLAMEBURST):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_FlameburtBurst.png")
-	description = "This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals 0.75 elemental damage. Does not benefit from pierce."
+	
+	# ins
+	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+	interpreter_for_flat_on_hit.display_body = false
+	
+	var ins_for_flat_on_hit = []
+	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", 1))
+	
+	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+	# ins
+	
+	description = ["This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals |0|. Does not benefit from pierce.", [interpreter_for_flat_on_hit]]
+	#description = "This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals 1 elemental damage. Does not benefit from pierce."
 
 
 func _construct_burst_module():
 	burst_attack_module = BulletAttackModule_Scene.instance()
 	#burst_attack_module.base_damage_scale = 1
-	burst_attack_module.base_damage = 0.75 #/ burst_attack_module.base_damage_scale
+	burst_attack_module.base_damage = 1 #/ burst_attack_module.base_damage_scale
 	burst_attack_module.base_damage_type = DamageType.ELEMENTAL
 	burst_attack_module.base_attack_speed = 0
 	burst_attack_module.base_attack_wind_up = 0

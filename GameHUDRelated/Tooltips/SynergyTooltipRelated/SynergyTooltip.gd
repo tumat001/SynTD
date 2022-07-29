@@ -9,8 +9,12 @@ const TooltipWithImageIndicatorDescription = preload("res://GameHUDRelated/Toolt
 const TooltipWithImageIndicatorDescriptionScene = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithImageIndicatorDescription.tscn")
 
 
-const highlighted_color : Color = Color(0, 0, 0, 1)
-const not_highlighted_color : Color = Color(0.3, 0.3, 0.3, 1)
+#const highlighted_color : Color = Color(0, 0, 0, 1)
+#const not_highlighted_color : Color = Color(0.3, 0.3, 0.3, 1)
+
+const text_color : Color = Color(0, 0, 0, 1)
+const highlighted_modulate : Color = Color(1, 1, 1, 1)
+const not_highlighted_modulate : Color = Color(1, 1, 1, 0.65)
 
 var result : ColorSynergyCheckResults
 
@@ -26,6 +30,8 @@ onready var tooltip_body = $VBoxContainer/MainContentContainer/Marginer/VBoxCont
 
 func _ready():
 	tooltip_body.override_color_of_descs = false
+	tooltip_body.use_color_for_dark_background = false
+	
 	update_display()
 
 func update_display():
@@ -44,6 +50,7 @@ func update_display():
 		var final_descs : Array = []
 		for desc in synergy.synergy_descriptions:
 			final_descs.append(desc)
+		
 		for desc in _construct_tooltips_descs_for_curr_effects(synergy):
 			final_descs.append(desc)
 		
@@ -110,14 +117,27 @@ func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy) -> Array
 	
 	for desc_i in synergy.synergy_effects_descriptions.size():
 		var text_desc = TooltipWithTextIndicatorDescriptionScene.instance()
-		text_desc.description = synergy.synergy_effects_descriptions[desc_i]
+		
+		var provided_desc = synergy.synergy_effects_descriptions[desc_i]
+		if provided_desc is Array:
+			text_desc.description = provided_desc[0]
+			text_desc._text_fragment_interpreters = provided_desc[1]
+			text_desc.uses_bbcode = true
+		else:
+			text_desc.description = provided_desc
+		
+		
 		#text_desc.indicator = _convert_number_to_roman_numeral(desc_i + 1) + ")"
 		text_desc.indicator = str(result.synergy.number_of_towers_in_tier[desc_i]) + ")"
 		
+		text_desc.color = text_color
 		if synergy.current_highlighted_index_effects_descriptions.has(desc_i):
-			text_desc.color = highlighted_color
+			#text_desc.color = highlighted_color
+			text_desc.modulate = highlighted_modulate
 		else:
-			text_desc.color = not_highlighted_color
+			#text_desc.color = not_highlighted_color
+			text_desc.modulate = not_highlighted_modulate
+			
 		
 		descs.append(text_desc)
 	

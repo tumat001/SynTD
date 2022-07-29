@@ -10,6 +10,7 @@ const MONO_SCENE = preload("res://TowerRelated/Color_Gray/Mono/Mono.tscn")
 
 
 signal before_tower_is_added(tower)
+signal before_tower_is_added__is_tower_bought_aware(tower, is_tower_bought)
 
 signal tower_entered_bench_slot(tower, bench_slot)
 signal tower_removed_from_bench_slot(tower, bench_slot)
@@ -41,11 +42,11 @@ func _ready():
 		bench_slot.z_index = ZIndexStore.TOWER_BENCH_PLACABLES
 
 
-func insert_tower(tower_id : int, arg_bench_slot = _find_empty_slot()):
+func insert_tower(tower_id : int, arg_bench_slot = _find_empty_slot(), is_tower_bought : bool = false):
 	var bench_slot = arg_bench_slot
 	
 	if bench_slot != null:
-		create_tower_and_add_to_scene(tower_id, bench_slot)
+		create_tower_and_add_to_scene(tower_id, bench_slot, is_tower_bought)
 
 
 func insert_tower_from_last(tower_id : int):
@@ -54,10 +55,10 @@ func insert_tower_from_last(tower_id : int):
 
 #
 
-func create_tower_and_add_to_scene(tower_id : int, arg_bench_slot) -> AbstractTower:
+func create_tower_and_add_to_scene(tower_id : int, arg_bench_slot, is_tower_bought : bool = false) -> AbstractTower:
 	var tower_as_instance := create_tower(tower_id, arg_bench_slot)
 	
-	add_tower_to_scene(tower_as_instance)
+	add_tower_to_scene(tower_as_instance, is_tower_bought)
 	
 	return tower_as_instance
 
@@ -69,8 +70,11 @@ func create_tower(tower_id : int, arg_bench_slot) -> AbstractTower:
 	
 	return tower_as_instance
 
-func add_tower_to_scene(arg_tower_instance):
+func add_tower_to_scene(arg_tower_instance, is_tower_bought : bool = false):
+	arg_tower_instance.is_tower_bought = is_tower_bought
+	
 	emit_signal("before_tower_is_added", arg_tower_instance)
+	emit_signal("before_tower_is_added__is_tower_bought_aware", arg_tower_instance, is_tower_bought)
 	tower_manager.add_tower(arg_tower_instance)
 
 

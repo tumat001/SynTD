@@ -97,7 +97,7 @@ func _undo_modifications_to_tower(tower):
 		tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_main_attk_module_enemy_hit__no_fireball")
 	
 	if tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_main_attk_module_enemy_hit__with_fireball"):
-		tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_main_attk_module_enemy_hit__with_fireball", [], CONNECT_PERSIST)
+		tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_main_attk_module_enemy_hit__with_fireball")
 	
 	
 	if tower.is_connected("on_round_end", self, "_on_round_end"):
