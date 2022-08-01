@@ -286,6 +286,7 @@ static func get_bbc_modified_description_as_string(arg_desc : String, arg_text_f
 	var index = 0
 	
 	for interpreter in arg_text_fragment_interpreters:
+		# if you see "invalid set index 'use_color...'... on base array, with value type 'bool', then you've inserted an array of ins instead of the interpreter.
 		interpreter.use_color_for_dark_background = arg_use_color_for_dark_background
 		
 		if interpreter.tower_to_use_for_tower_stat_fragments == null:

@@ -17,7 +17,10 @@ const CombinationIndicator_Pic06 = preload("res://GameInfoRelated/CombinationRel
 const CombinationIndicator_Pic07 = preload("res://GameInfoRelated/CombinationRelated/Assets/CombinationIndicator/CombinationIndicator_07.png")
 const CombinationIndicator_Pic08 = preload("res://GameInfoRelated/CombinationRelated/Assets/CombinationIndicator/CombinationIndicator_08.png")
 
-const combination_amount : int = 4 # amount of copies needed for combination
+const base_combination_amount : int = 4 # amount of copies needed for combination
+var _flat_combination_amount_modifier_map : Dictionary
+var last_calculated_combination_amount : int
+
 const combination_indicator_fps : int = 25
 
 const tiers_affected_per_combo_tier : Dictionary = {
@@ -106,6 +109,17 @@ func set_tower_manager(arg_tower_manager):
 
 func set_combination_top_panel(arg_combi_top_panel):
 	combination_top_panel = arg_combi_top_panel
+
+
+# combi amount
+
+func add_combination_amount_modi(id : int, amount : int):
+	_flat_combination_amount_modifier_map[id] = amount
+
+func remove_combination_amount_modi(id : int):
+	if _flat_combination_amount_modifier_map.has(id):
+		_flat_combination_amount_modifier_map.erase(id)
+
 
 
 

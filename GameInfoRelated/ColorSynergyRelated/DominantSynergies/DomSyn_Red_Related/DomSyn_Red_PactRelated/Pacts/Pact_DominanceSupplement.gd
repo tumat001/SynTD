@@ -50,7 +50,15 @@ func pact_sworn():
 	game_elements.synergy_manager.dont_allow_same_total_conditonal_clause.attempt_insert_clause(game_elements.synergy_manager.DontAllowSameTotalsContionalClauseIds.SYN_RED__DOMINANCE_SUPPLEMENT)
 	
 	game_elements.tower_manager.connect("tower_added", self, "_on_tower_added", [], CONNECT_PERSIST)
-
+	
+	var dom_syn_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_EXTRA_DOMINANCE_SLOTS)
+	dom_syn_modi.flat_modifier = _additional_dom_syn_activatable
+	game_elements.synergy_manager.add_dominant_syn_limit_modi(dom_syn_modi)
+	
+	var comple_syn_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_LESS_COMPLEMENTARY_SLOTS)
+	comple_syn_modi.flat_modifier = _less_comple_syn_activatable
+	game_elements.synergy_manager.add_composite_syn_limit_modi(comple_syn_modi)
+	
 
 func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	._apply_pact_to_game_elements(arg_game_elements)
@@ -61,13 +69,6 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	
 	#
 	
-	var dom_syn_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_EXTRA_DOMINANCE_SLOTS)
-	dom_syn_modi.flat_modifier = _additional_dom_syn_activatable
-	game_elements.synergy_manager.add_dominant_syn_limit_modi(dom_syn_modi)
-	
-	var comple_syn_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_LESS_COMPLEMENTARY_SLOTS)
-	comple_syn_modi.flat_modifier = _less_comple_syn_activatable
-	game_elements.synergy_manager.add_composite_syn_limit_modi(comple_syn_modi)
 	
 
 func _on_tower_added(arg_tower):
@@ -106,10 +107,12 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 			tower.contributing_to_synergy_clauses.attempt_insert_clause(tower.ContributingToSynergyClauses.DOM_SYN__RED__DOMINANCE_SUPPLEMENT)
 	
 	#
-	game_elements.synergy_manager.remove_dominant_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_EXTRA_DOMINANCE_SLOTS)
-	game_elements.synergy_manager.remove_composite_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_LESS_COMPLEMENTARY_SLOTS)
 	
 	if _is_unsworn:
+		
+		game_elements.synergy_manager.remove_dominant_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_EXTRA_DOMINANCE_SLOTS)
+		game_elements.synergy_manager.remove_composite_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_LESS_COMPLEMENTARY_SLOTS)
+		
 		game_elements.synergy_manager.dont_allow_same_total_conditonal_clause.remove_clause(game_elements.synergy_manager.DontAllowSameTotalsContionalClauseIds.SYN_RED__DOMINANCE_SUPPLEMENT)
 
 func pact_unsworn():

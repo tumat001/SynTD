@@ -13,6 +13,9 @@ signal showing_range()
 signal hiding_range()
 
 
+signal on_tower_entered_range_while_in_map_or_entered_map_while_in_range(tower)
+signal on_tower_exited_range_or_exited_map_while_in_range(tower)
+
 var _all_towers_in_range : Array = []
 
 var _make_towers_glow : bool = false
@@ -87,7 +90,11 @@ func _on_TowerDetectingRangeModule_area_entered(area):
 				area.connect("tower_not_in_active_map", self, "_emit_tower_in_range_placed_not_in_map", [area], CONNECT_PERSIST)
 			
 			call_deferred("emit_signal", "on_tower_entered", area)
-
+			
+			####
+			
+			if area.is_current_placable_in_map():
+				emit_signal("on_tower_entered_range_while_in_map_or_entered_map_while_in_range" , area)
 
 func _on_TowerDetectingRangeModule_area_exited(area):
 	if area is AbstractTower:
@@ -102,6 +109,10 @@ func _on_TowerDetectingRangeModule_area_exited(area):
 			area.disconnect("tower_not_in_active_map", self, "_emit_tower_in_range_placed_not_in_map")
 		
 		call_deferred("emit_signal", "on_tower_exited", area)
+		
+		####
+		
+		emit_signal("on_tower_exited_range_or_exited_map_while_in_range", area)
 
 
 func get_all_towers_in_range() -> Array:
@@ -130,9 +141,13 @@ func get_all_in_map_and_active_towers_in_range() -> Array:
 
 func _emit_tower_in_range_placed_in_map(tower):
 	emit_signal("on_tower_in_range_entered_map", tower)
+	
+	if tower.is_current_placable_in_map():
+		emit_signal("on_tower_entered_range_while_in_map_or_entered_map_while_in_range", tower)
 
 func _emit_tower_in_range_placed_not_in_map(tower):
 	emit_signal("on_tower_in_range_exited_map", tower)
+	emit_signal("on_tower_exited_range_or_exited_map_while_in_range", tower)
 
 # Glow related
 

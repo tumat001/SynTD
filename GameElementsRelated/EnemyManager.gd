@@ -185,10 +185,10 @@ func _process(delta):
 		emit_signal("round_time_passed", delta, current_spawn_timepos_in_round)
 
 
-func spawn_enemy(enemy_id : int, arg_path : EnemyPath = _get_path_based_on_current_index(), is_from_ins_interpreter : bool = false, ins_enemy_metadata_map = null):
+func spawn_enemy(enemy_id : int, arg_path : EnemyPath = _get_path_based_on_current_index(), is_from_ins_interpreter : bool = false, ins_enemy_metadata_map = null) -> AbstractEnemy:
 	var enemy_instance : AbstractEnemy = EnemyConstants.get_enemy_scene(enemy_id).instance()
 	spawn_enemy_instance(enemy_instance, arg_path, is_from_ins_interpreter, ins_enemy_metadata_map)
-
+	return enemy_instance
 
 func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _get_path_based_on_current_index(), is_from_ins_interpreter : bool = false, ins_enemy_metadata_map = null):
 	enemy_instance.enemy_spawn_metadata_from_ins = ins_enemy_metadata_map

@@ -22,6 +22,7 @@ enum Mode {
 
 
 signal stage_round_changed(stage_num, round_num)
+signal before_round_starts(current_stageround)
 signal round_started(current_stageround) # incomming round
 
 signal before_round_ends(current_stageround) # new incomming round
@@ -82,6 +83,8 @@ func _set_enemy_manager(manager : EnemyManager):
 
 func start_round():
 	round_started = true
+	
+	emit_signal("before_round_starts", current_stageround)
 	
 	_before_round_start()
 	_at_round_start()

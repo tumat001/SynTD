@@ -544,6 +544,7 @@ func get_all_active_towers_with_color(color) -> Array:
 	var bucket : Array = []
 	for child in get_children():
 		if child.is_in_group(color):
+			#if child.is_in_group(color) and child.is_current_placable_in_map():
 			bucket.append(child)
 	
 	return bucket

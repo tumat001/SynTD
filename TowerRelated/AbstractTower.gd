@@ -1798,6 +1798,10 @@ func _can_accept_ingredient_color(tower_selected) -> bool:
 	
 	return final_verdict
 
+func get_amount_of_ingredients_absorbed() -> int:
+	return ingredients_absorbed.size()
+
+
 
 func show_acceptability_with_ingredient(ingredient_effect : IngredientEffect, tower_selected):
 	if tower_selected != self:
@@ -1990,6 +1994,15 @@ func recalculate_final_base_damage():
 		
 		if module == main_attack_module:
 			_emit_final_base_damage_changed()
+
+func recalculate_range():
+	var updated_range_modules : Array = []
+	
+	for module in all_attack_modules:
+		if module.range_module != null and !updated_range_modules.has(module.range_module):
+			module.range_module.update_range()
+			updated_range_modules.append(module.range_module)
+
 
 # Stats related (Changes to any of these func names must
 # be done to the func names in TowerStatsTextFragment class

@@ -1489,6 +1489,16 @@ func _clear_effects_from_clear_effect():
 			_remove_effect(effect)
 
 
+func has_effect_uuid(arg_uuid : int) -> bool:
+	return _all_effects_map.has(arg_uuid)
+
+
+func get_effect_with_uuid(arg_uuid : int) -> EnemyBaseEffect:
+	if has_effect_uuid(arg_uuid):
+		return _all_effects_map[arg_uuid]
+	
+	return null
+
 
 # Timebounded related
 

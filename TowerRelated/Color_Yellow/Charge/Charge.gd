@@ -28,7 +28,7 @@ const proj_speed_level_3 : float = 500.0
 const proj_speed_level_4 : float = 650.0
 
 const original_max_on_hit_damage : float = 25.0
-const original_max_percent_on_hit_damage : float = 25.0
+const original_max_percent_on_hit_damage : float = 20.0
 
 const original_max_energy : float = 100.0
 const original_base_energy_recharge_per_sec : float = 20.0
@@ -209,10 +209,10 @@ func _get_proj_speed_to_use(level_of_charge) -> float:
 		return proj_speed_level_4
 
 func _update_on_hit_damage_to_use():
-	bonus_damage_as_modifier.flat_modifier = (_current_energy / max_energy) * max_on_hit_damage
+	bonus_damage_as_modifier.flat_modifier = (_current_energy / max_energy) * max_on_hit_damage * last_calculated_final_ability_potency
 	bonus_on_hit_damage.damage_as_modifier = bonus_damage_as_modifier
 	
-	bonus_percent_damage_as_modifier.percent_amount = (_current_energy / max_energy) * max_percent_enemy_health_on_hit_damage_amount
+	bonus_percent_damage_as_modifier.percent_amount = (_current_energy / max_energy) * max_percent_enemy_health_on_hit_damage_amount * last_calculated_final_ability_potency
 	bonus_percent_on_hit_damage.damage_as_modifier = bonus_percent_damage_as_modifier
 
 

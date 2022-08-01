@@ -4,13 +4,29 @@ const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 const bonus_damage_percent_threshold : float = 0.5
 const bonus_damage : float = 0.85
 var bonus_on_hit : OnHitDamage
 
 func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Spike.png")
-	description = "All of the tower's attacks deal additional 0.85 physical damage on hit to enemies below 50% health."
+	
+	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+	interpreter_for_flat_on_hit.display_body = false
+	
+	var ins_for_flat_on_hit = []
+	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "additional physical damage", bonus_damage))
+	
+	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+	
+	
+	description = ["All of the tower's attacks deal |0| to enemies below 50% health.", [interpreter_for_flat_on_hit]]
 
 
 func _make_modifications_to_tower(tower):

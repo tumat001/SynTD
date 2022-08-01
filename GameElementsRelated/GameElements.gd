@@ -262,7 +262,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.SE_PROPAGER,
 			Towers.TRANSPORTER,
 			Towers.BURGEON,
-			Towers.SUNFLOWER,
+			Towers.FLAMEBURST,
 			Towers.SPIKE,
 		])
 	else:
@@ -270,7 +270,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.ACCUMULAE,
 			Towers.ADEPT,
 			Towers.REAPER,
-			Towers.REBOUND,
+			Towers.RE,
 			Towers.STRIKER,
 			Towers.TRANSMUTATOR
 		])

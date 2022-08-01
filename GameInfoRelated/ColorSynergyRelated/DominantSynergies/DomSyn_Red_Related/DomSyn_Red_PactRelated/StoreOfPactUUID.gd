@@ -16,6 +16,12 @@ const Pact_JeweledBlade = preload("res://GameInfoRelated/ColorSynergyRelated/Dom
 const Pact_JeweledStaff = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_JeweledStaff.gd")
 const Pact_DominanceSupplement = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_DominanceSupplement.gd")
 const Pact_ComplementarySupplement = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_ComplementarySupplement.gd")
+const Pact_PersonalSpace = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_PersonalSpace.gd")
+const Pact_SoloVictor = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_SoloVictor.gd")
+const Pact_TrioVictor = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_TrioVictor.gd")
+const Pact_Retribution = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_Retribution.gd")
+const Pact_AbilityProvisions = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_AbilityProvisions.gd")
+const Pact_OraclesEye = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_OraclesEye.gd")
 
 enum PactUUIDs {
 	FIRST_IMPRESSION = 100,
@@ -32,6 +38,12 @@ enum PactUUIDs {
 	JEWELED_STAFF = 110,
 	DOMINANCE_SUPPLEMENT = 111,
 	COMPLEMENTARY_SUPPLEMENT = 112,
+	PERSONAL_SPACE = 113,
+	SOLO_VICTOR = 114,
+	TRIO_VICTOR = 115,
+	RETRIBUTION = 116,
+	ABILITY_PROVISIONS = 117,
+	ORACLES_EYE = 118,
 }
 
 
@@ -76,5 +88,23 @@ func construct_pact(pact_uuid : int, tier : int) -> Red_BasePact:
 		
 	elif pact_uuid == PactUUIDs.COMPLEMENTARY_SUPPLEMENT:
 		pact = Pact_ComplementarySupplement.new(tier)
+		
+	elif pact_uuid == PactUUIDs.PERSONAL_SPACE:
+		pact = Pact_PersonalSpace.new(tier)
+		
+	elif pact_uuid == PactUUIDs.SOLO_VICTOR:
+		pact = Pact_SoloVictor.new(tier)
+		
+	elif pact_uuid == PactUUIDs.TRIO_VICTOR:
+		pact = Pact_TrioVictor.new(tier)
+		
+	elif pact_uuid == PactUUIDs.RETRIBUTION:
+		pact = Pact_Retribution.new(tier)
+		
+	elif pact_uuid == PactUUIDs.ABILITY_PROVISIONS:
+		pact = Pact_AbilityProvisions.new(tier)
+		
+	elif pact_uuid == PactUUIDs.ORACLES_EYE:
+		pact = Pact_OraclesEye.new(tier)
 	
 	return pact

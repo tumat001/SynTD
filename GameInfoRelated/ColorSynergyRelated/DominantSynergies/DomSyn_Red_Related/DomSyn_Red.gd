@@ -89,6 +89,12 @@ func _initialize_tier_3_pacts():
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.JEWELED_BLADE)
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.JEWELED_STAFF)
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DOMINANCE_SUPPLEMENT)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PERSONAL_SPACE)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.SOLO_VICTOR)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TRIO_VICTOR)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RETRIBUTION)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORACLES_EYE)
 
 func _initialize_tier_2_pacts():
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.FIRST_IMPRESSION)
@@ -99,6 +105,12 @@ func _initialize_tier_2_pacts():
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.JEWELED_BLADE)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.JEWELED_STAFF)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DOMINANCE_SUPPLEMENT)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PERSONAL_SPACE)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.SOLO_VICTOR)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TRIO_VICTOR)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RETRIBUTION)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORACLES_EYE)
 	
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
@@ -114,6 +126,12 @@ func _initialize_tier_1_pacts():
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.JEWELED_BLADE)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.JEWELED_STAFF)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DOMINANCE_SUPPLEMENT)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PERSONAL_SPACE)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.SOLO_VICTOR)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TRIO_VICTOR)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RETRIBUTION)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORACLES_EYE)
 	
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
@@ -131,6 +149,12 @@ func _initialize_tier_0_pacts():
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.JEWELED_BLADE)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.JEWELED_STAFF)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DOMINANCE_SUPPLEMENT)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PERSONAL_SPACE)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.SOLO_VICTOR)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TRIO_VICTOR)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RETRIBUTION)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORACLES_EYE)
 	
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
@@ -162,30 +186,33 @@ func _generate_random_untaken_tier_0_pact() -> Red_BasePact:
 
 # code for deciding what pact to offer
 func _generate_random_untaken_pact_from_source(source : Array, tier) -> Red_BasePact:
-	var copy = source.duplicate()
-	for pact_uuid in red_pact_whole_panel.unsworn_pact_list.get_all_pact_uuids():
-		copy.erase(pact_uuid)
-	for pact_uuid in red_pact_whole_panel.sworn_pact_list.get_all_pact_uuids():
-		copy.erase(pact_uuid)
+	if red_pact_whole_panel != null and red_pact_whole_panel.unsworn_pact_list != null:
+		var copy = source.duplicate()
+		for pact_uuid in red_pact_whole_panel.unsworn_pact_list.get_all_pact_uuids():
+			copy.erase(pact_uuid)
+		for pact_uuid in red_pact_whole_panel.sworn_pact_list.get_all_pact_uuids():
+			copy.erase(pact_uuid)
+		
+		#
+		
+		var bucket_to_remove : Array = []
+		for pact_uuid in copy:
+			var pact_singleton : Red_BasePact = pact_uuid_to_pact_map_singleton[pact_uuid]
+			if !pact_singleton.is_pact_offerable(game_elements, self, tier):
+				bucket_to_remove.append(pact_uuid)
+		
+		for pact_uuid in bucket_to_remove:
+			copy.erase(pact_uuid)
+		
+		#
+		
+		if copy.size() > 0:
+			var pact_uuid : int = copy[pact_decider_rng.randi_range(0, copy.size() - 1)]
+			return _generate_pact_with_tier(pact_uuid, tier)
+		else:
+			return null
 	
-	#
-	
-	var bucket_to_remove : Array = []
-	for pact_uuid in copy:
-		var pact_singleton : Red_BasePact = pact_uuid_to_pact_map_singleton[pact_uuid]
-		if !pact_singleton.is_pact_offerable(game_elements, self, tier):
-			bucket_to_remove.append(pact_uuid)
-	
-	for pact_uuid in bucket_to_remove:
-		copy.erase(pact_uuid)
-	
-	#
-	
-	if copy.size() > 0:
-		var pact_uuid : int = copy[pact_decider_rng.randi_range(0, copy.size() - 1)]
-		return _generate_pact_with_tier(pact_uuid, tier)
-	else:
-		return null
+	return null
 
 # code for constructing the pact itself
 func _generate_pact_with_tier(pact_uuid : int, tier : int) -> Red_BasePact:
@@ -272,5 +299,5 @@ func _initialize_red_pact_whole_panel():
 			red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 	
 	# for debugging only
-	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.COMPLEMENTARY_SUPPLEMENT, 1))
+	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.ORACLES_EYE, 2))
 

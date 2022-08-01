@@ -37,7 +37,10 @@ const hex_effect_vulnerability_ratio : float = 75.0
 
 
 const base_hex_per_attack : int = 1
-const empowered_hex_per_attack : int = 4
+const base_empowered_hex_per_attack : int = 4
+const extra_hex_per_attack_per_ability_pot_interval : int = 1
+const extra_hex_ability_pot_interval : float = 0.5
+
 var current_hex_per_attack : int = base_hex_per_attack
 
 var hextribute_hex_stack_effect : TowerOnHitEffectAdderEffect
@@ -184,7 +187,7 @@ func _on_any_attack_hit_enemy_h(enemy, damage_register_id, damage_instance, modu
 				damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.HEXTRIBUTE_EFFECT_VULNERABLE] = hextribute_effect_vul_effect
 				
 			if stack_amount >= hex_for_hex_per_attk_buff - 1:
-				current_hex_per_attack = empowered_hex_per_attack
+				current_hex_per_attack = _get_empowered_hex_per_attack_amount()
 				hextribute_crest.visible = true
 				_update_stack_amount_of_hex_effect()
 			
@@ -196,6 +199,10 @@ func _on_any_attack_hit_enemy_h(enemy, damage_register_id, damage_instance, modu
 		
 		call_deferred("_create_attk_sprite", enemy.global_position, stack_amount)
 
+func _get_empowered_hex_per_attack_amount() -> int:
+	var extra_hex = floor(get_bonus_ability_potency() / extra_hex_ability_pot_interval) * extra_hex_per_attack_per_ability_pot_interval
+	
+	return base_empowered_hex_per_attack + extra_hex
 
 func _create_attk_sprite(pos, stack_amount):
 	var attk_sprite : ExpandingAttackSprite = ExpandingAttackSprite_Scene.instance()

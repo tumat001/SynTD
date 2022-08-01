@@ -17,19 +17,19 @@ func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.A_CHALLENGE, "A Challenge"
 	health_gain_mod.percent_based_on = PercentType.BASE
 	
 	if tier == 0:
-		health_gain_mod.percent_amount = 30
+		health_gain_mod.percent_amount = 10
 		health_gain_mod.flat_maximum = 50
 		gold_gain_val = 5
 	elif tier == 1:
-		health_gain_mod.percent_amount = 20
+		health_gain_mod.percent_amount = 8
 		health_gain_mod.flat_maximum = 25
 		gold_gain_val = 3
 	elif tier == 2:
-		health_gain_mod.percent_amount = 15
+		health_gain_mod.percent_amount = 6
 		health_gain_mod.flat_maximum = 10
 		gold_gain_val = 2
 	elif tier == 3:
-		health_gain_mod.percent_amount = 10
+		health_gain_mod.percent_amount = 4
 		health_gain_mod.flat_maximum = 4
 		gold_gain_val = 1
 	

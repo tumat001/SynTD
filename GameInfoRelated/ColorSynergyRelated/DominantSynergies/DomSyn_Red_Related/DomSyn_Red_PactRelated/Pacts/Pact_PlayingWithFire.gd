@@ -7,7 +7,8 @@ var damage_gain_val
 
 var initial_good_desc_size : int
 
-const health_threshold_before_offerable : float = 80.0
+const health_max_threshold_before_offerable : float = 80.0
+const health_min_threshold_before_offerable : float = 30.0
 
 func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.PLAYING_WITH_FIRE, "Playing With Fire", arg_tier):
 	var possible_speed_gain_values : Array
@@ -23,7 +24,7 @@ func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.PLAYING_WITH_FIRE, "Playin
 		possible_speed_gain_values = [35, 40, 45]
 		possible_damage_gain_values = [3, 3, 4]
 	elif tier == 3:
-		possible_speed_gain_values = [15, 20, 25]
+		possible_speed_gain_values = [20, 25, 30]
 		possible_damage_gain_values = [1, 2, 3]
 	
 	var index_rng = pact_mag_rng.randi_range(0, 2)
@@ -147,4 +148,4 @@ func _calculate_attk_speed_bonus():
 #########
 
 func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
-	return arg_game_elements.health_manager.current_health <= health_threshold_before_offerable
+	return arg_game_elements.health_manager.current_health <= health_max_threshold_before_offerable and arg_game_elements.health_manager.current_health >= health_min_threshold_before_offerable

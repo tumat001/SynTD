@@ -61,7 +61,7 @@ position = Vector2( 493.403, 309.889 )
 position = Vector2( 422.045, 318.685 )
 
 [node name="InMapAreaPlacable14" parent="InMapPlacables" index="13" instance=ExtResource( 1 )]
-position = Vector2( 334.465, 103.045 )
+position = Vector2( 342.706, 113.533 )
 
 [node name="InMapAreaPlacable15" parent="InMapPlacables" index="14" instance=ExtResource( 1 )]
 position = Vector2( 219.921, 103.52 )
@@ -79,7 +79,7 @@ position = Vector2( 683.094, 215.614 )
 position = Vector2( 666.716, 279.24 )
 
 [node name="InMapAreaPlacable20" parent="InMapPlacables" index="19" instance=ExtResource( 1 )]
-position = Vector2( 233.933, 32.9253 )
+position = Vector2( 312.594, 63.6406 )
 
 [node name="InMapAreaPlacable21" parent="InMapPlacables" index="20" instance=ExtResource( 1 )]
 position = Vector2( 678.93, 66.6372 )

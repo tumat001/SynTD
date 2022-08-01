@@ -982,10 +982,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# INS START
 		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
 		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_flat_on_hit.display_body = false
+		interpreter_for_flat_on_hit.display_body = true
 		
 		var ins_for_flat_on_hit = []
-		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", 25))
+		#ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", 25))
+		ins_for_flat_on_hit.append(NumericalTextFragment.new(25, false, DamageType.PHYSICAL))
+		ins_for_flat_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_flat_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
 		
 		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 		
@@ -993,10 +997,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
 		interpreter_for_perc_on_hit.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_perc_on_hit.display_body = false
+		interpreter_for_perc_on_hit.display_body = true
 		
 		var ins_for_perc_on_hit = []
-		ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", 25, true))
+		#ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", 25, true))
+		ins_for_perc_on_hit.append(NumericalTextFragment.new(20, true, DamageType.PHYSICAL))
+		ins_for_perc_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_perc_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1, -1, true))
+		
 		
 		interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
 		
@@ -1436,10 +1444,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_pierce.header_description = "pierce"
 		
 		var ins_for_pierce = []
-		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		ins_for_pierce.append(NumericalTextFragment.new(1, false, -1))
+		ins_for_pierce.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.BONUS, 1.0, -1))
 		
 		interpreter_for_pierce.array_of_instructions = ins_for_pierce
-		
 		
 		#
 		
@@ -3062,6 +3071,22 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		#
 		
+		var interpreter_for_hex_count = TextFragmentInterpreter.new()
+		interpreter_for_hex_count.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_hex_count.display_body = true
+		interpreter_for_hex_count.header_description = "hexes"
+		interpreter_for_hex_count.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.FLOOR
+		
+		var ins_for_hex_count = []
+		ins_for_hex_count.append(NumericalTextFragment.new(4, false, -1))
+		ins_for_hex_count.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_hex_count.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.BONUS, 2.0, -1))
+		
+		interpreter_for_hex_count.array_of_instructions = ins_for_hex_count
+		
+		
+		#
+		
 		info.tower_descriptions = [
 			"Each attack that applies on hit effects is infused with a Hex. Enemies gain Curses as effects after reaching a certain number of Hexes. Hexes and Curses last indefinitely.",
 			["2 hex: Enemies take extra |0| from HexTribute's attacks.", [interpreter_for_flat_dmg]],
@@ -3071,7 +3096,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"20 hex: Executes normal enemies.",
 			"80 hex: Executes elite enemies.",
 			"",
-			"HexTribute applies 4 hexes per attack for the rest of the round upon infusing 10 hexes to an enemy for the first time.",
+			["HexTribute applies |0| per attack for the rest of the round upon infusing 10 hexes to an enemy for the first time.", [interpreter_for_hex_count]],
 		]
 		
 		

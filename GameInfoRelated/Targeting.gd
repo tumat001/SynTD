@@ -85,6 +85,9 @@ static func _find_random_distinct_enemies(enemies : Array, count : int):
 static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int, pos : Vector2,
 		 include_invis_enemies : bool = false, targeting_parameters : TargetingParameters = null):
 	
+	if num_of_enemies == -1:
+		num_of_enemies = arg_enemies.size()
+	
 	var enemies : Array = []
 	var priority_enemies_in_range : Array
 	var priority_enemies_regardless_of_range : Array
