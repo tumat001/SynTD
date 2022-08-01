@@ -22,6 +22,7 @@ const Pact_TrioVictor = preload("res://GameInfoRelated/ColorSynergyRelated/Domin
 const Pact_Retribution = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_Retribution.gd")
 const Pact_AbilityProvisions = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_AbilityProvisions.gd")
 const Pact_OraclesEye = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_OraclesEye.gd")
+const Pact_CombinationExpertise = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_CombinationExpertise.gd")
 
 enum PactUUIDs {
 	FIRST_IMPRESSION = 100,
@@ -44,6 +45,9 @@ enum PactUUIDs {
 	RETRIBUTION = 116,
 	ABILITY_PROVISIONS = 117,
 	ORACLES_EYE = 118,
+	
+	COMBINATION_EXPERTISE = 119,
+	
 }
 
 
@@ -106,5 +110,8 @@ func construct_pact(pact_uuid : int, tier : int) -> Red_BasePact:
 		
 	elif pact_uuid == PactUUIDs.ORACLES_EYE:
 		pact = Pact_OraclesEye.new(tier)
+		
+	elif pact_uuid == PactUUIDs.COMBINATION_EXPERTISE:
+		pact = Pact_CombinationExpertise.new(tier)
 	
 	return pact

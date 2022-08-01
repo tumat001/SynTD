@@ -11,5 +11,11 @@ enum {
 	
 	ING_VIOLET_FRUIT = 200,
 	
-	HERO = 1000
+	
+	HERO = 1000,
+	
+	#
+	
+	DOMSYN_RED__COMBINATION_EXPERTISE = 10000,
+	
 }

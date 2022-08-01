@@ -821,7 +821,10 @@ func _on_round_start():
 
 # Recieving buffs/debuff related
 
-func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, register_to_buff_map : bool = true, include_non_module_effects : bool = true, ing_effect : IngredientEffect = null):
+func add_tower_effect(tower_base_effect : TowerBaseEffect, 
+		target_modules : Array = all_attack_modules, register_to_buff_map : bool = true, 
+		include_non_module_effects : bool = true, ing_effect : IngredientEffect = null):
+	
 	if tower_base_effect.is_from_enemy:
 		# right now, only TowerAttrEffect is supported by this
 		tower_base_effect = tower_base_effect._get_copy_scaled_by(last_calculated_enemy_final_effect_vulnerability)
@@ -982,7 +985,9 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Arra
 		remove_tower_effect(ing_effect.tower_base_effect)
 
 
-func remove_tower_effect(tower_base_effect : TowerBaseEffect, target_modules : Array = all_attack_modules, erase_from_buff_map : bool = true, include_non_module_effects : bool = true):
+func remove_tower_effect(tower_base_effect : TowerBaseEffect, 
+		target_modules : Array = all_attack_modules, erase_from_buff_map : bool = true, include_non_module_effects : bool = true):
+			
 	emit_signal("before_effect_is_removed", tower_base_effect)
 	
 	if include_non_module_effects and erase_from_buff_map:
@@ -2542,15 +2547,19 @@ func add_combination_effect(combi_effect : CombinationEffect):
 			remove_ingredient(combi_effect.ingredient_effect)
 		
 		add_tower_effect(combi_effect.ingredient_effect.tower_base_effect, all_attack_modules, true, true, combi_effect.ingredient_effect)
+		#add_tower_effect(combi_effect.ingredient_effect.tower_base_effect, all_attack_modules, true, true, null)
 
 
-func remove_combination_effect(combi_effect : CombinationEffect):
-	if all_combinations_id_to_effect_id_map.has(combi_effect.combination_id):
+func remove_combination_effect_id(combi_effect_id : int):
+	if all_combinations_id_to_effect_id_map.has(combi_effect_id):
 		
-		var effect_id_of_combi : int = all_combinations_id_to_effect_id_map[combi_effect.combination_id]
-		all_combinations_id_to_effect_id_map.erase(combi_effect.combination_id)
+		var effect_id : int = all_combinations_id_to_effect_id_map[combi_effect_id]
+		all_combinations_id_to_effect_id_map.erase(combi_effect_id)
 		
-		remove_tower_effect(combi_effect.ingredient_effect.tower_base_effect)
+		var effect = get_tower_effect(effect_id)
+		if effect != null:
+			remove_tower_effect(effect)
+		
 
 
 # Disabled from attacking clauses

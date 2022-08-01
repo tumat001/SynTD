@@ -17,20 +17,49 @@ const CombinationIndicator_Pic06 = preload("res://GameInfoRelated/CombinationRel
 const CombinationIndicator_Pic07 = preload("res://GameInfoRelated/CombinationRelated/Assets/CombinationIndicator/CombinationIndicator_07.png")
 const CombinationIndicator_Pic08 = preload("res://GameInfoRelated/CombinationRelated/Assets/CombinationIndicator/CombinationIndicator_08.png")
 
+
+signal on_combination_amount_needed_changed(new_val)
+signal on_tiers_affected_changed()
+
+enum AmountForCombinationModifiers {
+	DOMSYN_RED__COMBINATION_EFFICIENCY = 1
+}
+
 const base_combination_amount : int = 4 # amount of copies needed for combination
-var _flat_combination_amount_modifier_map : Dictionary
+var _flat_combination_amount_modifier_map : Dictionary = {}
 var last_calculated_combination_amount : int
 
 const combination_indicator_fps : int = 25
 
-const tiers_affected_per_combo_tier : Dictionary = {
-	1 : [1, 2],
-	2 : [1, 2, 3],
-	3 : [1, 2, 3, 4],
-	4 : [1, 2, 3, 4, 5],
-	5 : [1, 2, 3, 4, 5, 6],
-	6 : [1, 2, 3, 4, 5, 6]
+#
+
+enum TierLevelAffectedModifiers {
+	DOMSYN_RED__COMBINATION_EXPERT = 1
 }
+
+const base_tier_level_affected_amount : int = 1  # ex:(at val = 2), tier 1 combo can affect tiers 1, 2 and 3.
+var _flat_tier_level_affected_modifier_map : Dictionary = {}
+var tiers_affected_per_combo_tier : Dictionary = {
+	1 : [],
+	2 : [],
+	3 : [],
+	4 : [],
+	5 : [],
+	6 : []
+}
+const highest_tower_tier : int = 6
+
+#const tiers_affected_per_combo_tier : Dictionary = {
+#	1 : [1, 2],
+#	2 : [1, 2, 3],
+#	3 : [1, 2, 3, 4],
+#	4 : [1, 2, 3, 4, 5],
+#	5 : [1, 2, 3, 4, 5, 6],
+#	6 : [1, 2, 3, 4, 5, 6]
+#}
+
+
+#
 
 const blacklisted_tower_ids_from_combining : Array = [
 	Towers.TIME_MACHINE,
@@ -52,7 +81,6 @@ enum TowerBuyCardMetadata {
 #
 
 
-#
 
 var tower_manager : TowerManager setget set_tower_manager
 
@@ -74,6 +102,9 @@ var all_combination_id_to_effect_map : Dictionary
 
 func _ready():
 	_construct_tower_indicator_shower()
+	
+	_update_combination_amount(false)
+	_update_tier_affected_by_combi()
 
 func _construct_tower_indicator_shower():
 	combination_indicator_shower = ShowTowersWithParticleComponent.new()
@@ -110,23 +141,73 @@ func set_tower_manager(arg_tower_manager):
 func set_combination_top_panel(arg_combi_top_panel):
 	combination_top_panel = arg_combi_top_panel
 
+# tier affected
+
+func set_tier_affected_amount_modi(id : int, amount : int):
+	_flat_tier_level_affected_modifier_map[id] = amount
+	_update_tier_affected_by_combi()
+
+func remove_tier_affected_amount_modi(id : int):
+	if _flat_tier_level_affected_modifier_map.has(id):
+		_flat_tier_level_affected_modifier_map.erase(id)
+		_update_tier_affected_by_combi()
+
+func _update_tier_affected_by_combi():
+	var tier_affected_amount : int = base_tier_level_affected_amount
+	
+	for val in _flat_tier_level_affected_modifier_map.values():
+		tier_affected_amount += val
+	
+	for tier in tiers_affected_per_combo_tier.keys():
+		var affected_tiers : Array = tiers_affected_per_combo_tier[tier]
+		affected_tiers.clear()
+		
+		var highest_tier_to_affect = tier + tier_affected_amount
+		for i in (highest_tier_to_affect + 1):
+			if i == 0:
+				continue
+			
+			affected_tiers.append(i)
+			
+			if i == highest_tower_tier:
+				break
+	
+	emit_signal("on_tiers_affected_changed")
+	
+	_update_combination_effects_of_towers_based_on_current()
+	#call_deferred("_update_combination_effects_of_towers_based_on_current")
+
 
 # combi amount
 
-func add_combination_amount_modi(id : int, amount : int):
+func set_combination_amount_modi(id : int, amount : int):
 	_flat_combination_amount_modifier_map[id] = amount
+	_update_combination_amount()
 
 func remove_combination_amount_modi(id : int):
 	if _flat_combination_amount_modifier_map.has(id):
 		_flat_combination_amount_modifier_map.erase(id)
+		_update_combination_amount()
 
-
-
+func _update_combination_amount(arg_emit_signal : bool = true):
+	var amount : int = base_combination_amount
+	
+	for val in _flat_combination_amount_modifier_map.values():
+		amount += val
+	
+	if amount < 0:
+		amount = 0
+	last_calculated_combination_amount = amount
+	
+	if arg_emit_signal:
+		emit_signal("on_combination_amount_needed_changed", last_calculated_combination_amount)
+	
+	call_deferred("_update_applicable_combinations_on_towers")
 
 # signals
 
 func _on_tower_added(tower_added):
-	call_deferred("_update_combination_particle_show")
+	call_deferred("_update_applicable_combinations_on_towers")
 	
 	for combi_effect in all_combination_id_to_effect_map.values():
 		_attempt_apply_all_combination_effects_to_tower(tower_added)
@@ -134,10 +215,11 @@ func _on_tower_added(tower_added):
 
 # destroyed, in queued free
 func _on_tower_in_queue_free(tower_destroyed):
-	call_deferred("_update_combination_particle_show")
+	call_deferred("_update_applicable_combinations_on_towers")
 	
 
-func _update_combination_particle_show():
+
+func _update_applicable_combinations_on_towers():
 	var towers_combination_candidates : Array = _get_towers_with_tower_combination_amount_met()
 	current_combination_candidates = towers_combination_candidates
 	
@@ -166,7 +248,7 @@ func _if_previous_candidates_are_equal_to_new_candidates(prev_candidates : Array
 
 #
 
-func _get_towers_with_tower_combination_amount_met(arg_combination_amount : int = combination_amount) -> Array:
+func _get_towers_with_tower_combination_amount_met(arg_combination_amount : int = last_calculated_combination_amount) -> Array:
 	var all_towers : Array = tower_manager.get_all_towers()
 	
 	#var all_tower_ids : Array = tower_manager.get_all_ids_of_towers()
@@ -202,7 +284,7 @@ func _get_towers_with_tower_combination_amount_met(arg_combination_amount : int 
 
 # Card Metadata related
 
-func get_tower_buy_cards_metadata(arg_tower_id_arr_from_cards, arg_combination_amount : int = combination_amount) -> Dictionary:
+func get_tower_buy_cards_metadata(arg_tower_id_arr_from_cards, arg_combination_amount : int = last_calculated_combination_amount) -> Dictionary:
 	var to_combine_tower_ids_to_metadata : Dictionary = {}
 	
 	var towers_towards_progress_map : Array = _get_towers_towards_progress(arg_tower_id_arr_from_cards)
@@ -241,7 +323,7 @@ func _get_towers_towards_progress(arg_tower_id_arr_from_cards) -> Array:
 func _get_towers_immediately_ready_to_combine(arg_tower_id_arr_from_cards : Array) -> Array:
 	var tower_ids_ready_to_combine : Array = []
 	
-	var towers_one_off_from_combining = _get_towers_with_tower_combination_amount_met(combination_amount - 1)
+	var towers_one_off_from_combining = _get_towers_with_tower_combination_amount_met(last_calculated_combination_amount - 1)
 	
 	for tower_id_card in arg_tower_id_arr_from_cards:
 		var is_one_off : bool = false
@@ -276,9 +358,10 @@ func on_combination_activated():
 func _construct_combination_effect_from_tower(arg_tower_id : int) -> CombinationEffect:
 	var tower_type_info_of_tower = Towers.get_tower_info(arg_tower_id)
 	
-	var combi_effect = CombinationEffect.new(tower_type_info_of_tower.tower_type_id, tower_type_info_of_tower.ingredient_effect, tower_type_info_of_tower)
+	var combi_effect := CombinationEffect.new(tower_type_info_of_tower.tower_type_id, tower_type_info_of_tower.ingredient_effect, tower_type_info_of_tower)
 	
-	combi_effect.applicable_to_tower_tiers = tiers_affected_per_combo_tier[tower_type_info_of_tower.tower_tier]
+	#combi_effect.applicable_to_tower_tiers = tiers_affected_per_combo_tier[tower_type_info_of_tower.tower_tier]
+	combi_effect.tier_of_source_tower = tower_type_info_of_tower.tower_tier
 	
 	return combi_effect
 
@@ -290,6 +373,8 @@ func _destroy_current_candidates():
 	current_combination_candidates.clear()
 
 
+#
+
 func _apply_combination_effect_to_appropriate_towers(arg_combi_effect : CombinationEffect):
 	for tower in tower_manager.get_all_towers_except_in_queue_free():
 		_attempt_apply_all_combination_effects_to_tower(tower)
@@ -300,15 +385,55 @@ func _attempt_apply_all_combination_effects_to_tower(arg_tower):
 		var arg_tower_tier : int = arg_tower.tower_type_info.tower_tier
 		
 		for combi_effect in all_combination_id_to_effect_map.values():
-			if combi_effect.applicable_to_tower_tiers.has(arg_tower_tier):
-				
-				var new_combi_effect = _construct_combination_effect_from_tower(combi_effect.combination_id)
-				arg_tower.add_combination_effect(new_combi_effect)
-				
+			#if combi_effect.applicable_to_tower_tiers.has(arg_tower_tier):
+			if _if_combination_effect_can_apply_to_tier(combi_effect, arg_tower_tier):
+				_apply_combination_effect_id_to_tower(combi_effect.combination_id, arg_tower)
+
+
+func _apply_combination_effect_id_to_tower(combi_id : int, arg_tower):
+	var new_combi_effect = _construct_combination_effect_from_tower(combi_id)
+	arg_tower.add_combination_effect(new_combi_effect)
+
+
+
+
+func _if_combination_effect_can_apply_to_tier(arg_combi_effect, arg_tower_tier : int) -> bool:
+	return tiers_affected_per_combo_tier[arg_combi_effect.tier_of_source_tower].has(arg_tower_tier)
 
 
 func _put_combination_in_hud_display(arg_combi_effect : CombinationEffect):
 	combination_top_panel.add_combination_effect(arg_combi_effect)
+
+
+#func _remove_combination_effect_from_towers(arg_combi_effect: CombinationEffect):
+#	for tower in tower_manager.get_all_towers_except_in_queue_free():
+#		tower.remove_combination_effect(arg_combi_effect)
+#
+#func _remove_combination_effect_id_from_towers(arg_combi_id : int):
+#	for tower in tower_manager.get_all_towers_except_in_queue_free():
+#		tower.remove_combination_effect_id(arg_combi_id)
+
+
+#
+
+func _update_combination_effects_of_towers_based_on_current():
+	for combi_id in all_combination_id_to_effect_map.keys():
+		var combi_effect : CombinationEffect = all_combination_id_to_effect_map[combi_id]
+		
+		for tower in tower_manager.get_all_towers_except_in_queue_free():
+			if _if_combination_effect_can_apply_to_tier(combi_effect, tower.tower_type_info.tower_tier):
+				_apply_combination_effect_id_to_tower(combi_effect.combination_id, tower)
+			else:
+				_remove_combination_effect_id_from_tower(combi_effect.combination_id, tower)
+			
+			if tower.tower_type_info.tower_type_id == Towers.TRANSPORTER:
+				print(tiers_affected_per_combo_tier)
+				print(str(_if_combination_effect_can_apply_to_tier(combi_effect, tower.tower_type_info.tower_tier)))
+
+
+func _remove_combination_effect_id_from_tower(combi_id : int, arg_tower):
+	arg_tower.remove_combination_effect_id(combi_id)
+
 
 
 # ----- 

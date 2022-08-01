@@ -7,7 +7,9 @@ var combination_id : int  # same as id of source tower
 var ingredient_effect : IngredientEffect
 var tower_type_info
 
-var applicable_to_tower_tiers : Array  # the tiers that can be affected by the effect
+#var applicable_to_tower_tiers : Array  # the tiers that can be affected by the effect
+
+var tier_of_source_tower : int
 
 func _init(arg_combination_id : int,
 		arg_ing_effect : IngredientEffect,

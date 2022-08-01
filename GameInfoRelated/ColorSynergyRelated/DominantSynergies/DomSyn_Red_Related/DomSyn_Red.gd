@@ -115,7 +115,7 @@ func _initialize_tier_2_pacts():
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PRESTIGE)
-	
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE)
 
 func _initialize_tier_1_pacts():
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.FIRST_IMPRESSION)
@@ -136,6 +136,7 @@ func _initialize_tier_1_pacts():
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PRESTIGE)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE)
 	
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMPLEMENTARY_SUPPLEMENT)
 	
@@ -159,6 +160,7 @@ func _initialize_tier_0_pacts():
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
 	#tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PRESTIGE)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE)
 	
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMPLEMENTARY_SUPPLEMENT)
 
@@ -299,5 +301,5 @@ func _initialize_red_pact_whole_panel():
 			red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 	
 	# for debugging only
-	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.ORACLES_EYE, 2))
+	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE, 2))
 

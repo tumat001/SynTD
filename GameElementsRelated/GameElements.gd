@@ -263,7 +263,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.TRANSPORTER,
 			Towers.BURGEON,
 			Towers.FLAMEBURST,
-			Towers.SPIKE,
+			Towers.NUCLEUS,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
