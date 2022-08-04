@@ -14,7 +14,10 @@ var _is_mouse_inside : bool
 
 func update_display():
 	if tower != null:
-		sell_label.text = "Sell for " + str(tower._calculate_sellback_value())
+		if tower.last_calculated_can_be_sold:
+			sell_label.text = "Sell for " + str(tower._calculate_sellback_value())
+		else:
+			sell_label.text = "Tower cannot be sold"
 	
 	if _is_mouse_inside:
 		sell_panel_background.texture = pic_sell_panel_highlighted

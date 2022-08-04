@@ -20,7 +20,7 @@ var toughness_loss_effect : EnemyAttributesEffect
 var speed_decrease_effect : EnemyAttributesEffect
 var adrenaline_initial_marker_effect : EnemyStackEffect
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.ADRENALINE, "Adrenaline", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.ADRENALINE, "Adrenaline", arg_tier, arg_tier_for_activation):
 	var possible_speed_gain_values : Array
 	var possible_speed_loss_values : Array
 	

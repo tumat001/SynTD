@@ -11,7 +11,8 @@ var gold_gain_val
 const gold_amount_limit_for_offerable : int = 40
 
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.A_CHALLENGE, "A Challenge", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.A_CHALLENGE, "A Challenge", arg_tier, arg_tier_for_activation):
+	
 	health_gain_mod = PercentModifier.new(StoreOfEnemyEffectsUUID.RED_PACT_A_CHALLENGE_ENEMY_BONUS_HEALTH)
 	health_gain_mod.ignore_flat_limits = false
 	health_gain_mod.percent_based_on = PercentType.BASE

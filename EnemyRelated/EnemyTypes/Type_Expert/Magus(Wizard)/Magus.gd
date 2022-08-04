@@ -91,7 +91,7 @@ func _summon_beam_to_target(target, final_potency : float):
 
 func _summon_explosion_to_target(target, final_potency):
 	if target != null:
-		target.take_damage(final_potency * _explosion_dmg)
+		target.take_damage(final_potency * _explosion_dmg, self)
 		_create_and_show_expl_particle(target.global_position)
 
 

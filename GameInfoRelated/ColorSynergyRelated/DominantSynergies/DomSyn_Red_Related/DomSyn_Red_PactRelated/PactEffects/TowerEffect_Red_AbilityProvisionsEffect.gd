@@ -67,7 +67,7 @@ func _construct_effects():
 	expl_attr_mod.percent_amount = attk_speed_reduc_amount
 	expl_attr_mod.percent_based_on = PercentType.BASE
 	
-	_attk_speed_reduc_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_EXPLOSION_SCALE, expl_attr_mod, StoreOfTowerEffectsUUID.RED_PACT_ABILITY_PROVISIONS_ATTK_SPEED_EFFECT)
+	_attk_speed_reduc_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, expl_attr_mod, StoreOfTowerEffectsUUID.RED_PACT_ABILITY_PROVISIONS_ATTK_SPEED_EFFECT)
 	
 	#
 	

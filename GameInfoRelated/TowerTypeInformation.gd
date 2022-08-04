@@ -2,6 +2,7 @@ const IngredientEffect = preload("res://GameInfoRelated/TowerIngredientRelated/I
 
 enum Metadata {
 	ABILITY_DESCRIPTION = 0
+	ABILITY_SIMPLE_DESCRIPTION = 1
 }
 
 
@@ -19,6 +20,7 @@ var tower_image_in_buy_card : Texture
 var tower_atlased_image : AtlasTexture
 
 var tower_descriptions : Array = []
+var tower_simple_descriptions : Array
 
 var base_damage : float
 var base_damage_type : int
@@ -39,3 +41,6 @@ func _init(arg_tower_name : String, arg_tower_type_id : int):
 	tower_type_id = arg_tower_type_id
 	tower_cost = 0
 
+
+func has_simple_description() -> bool:
+	return tower_simple_descriptions != null and tower_simple_descriptions.size() != 0

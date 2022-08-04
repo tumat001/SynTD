@@ -83,13 +83,23 @@ var auto_castable_clauses : ConditionalClauses
 
 var icon : Texture setget set_icon
 
+#
+
 var descriptions_source_func_name : String setget set_descriptions_source_func_name
 var descriptions_source setget set_descriptions_source
 var descriptions : Array = [] setget set_descriptions
+
+var simple_descriptions_source_func_name : String setget set_simple_descriptions_source_func_name
+var simple_descriptions_source setget set_simple_descriptions_source
+var simple_descriptions : Array = [] setget set_simple_descriptions
+
+#
+
 var display_name : String setget set_display_name
 
 var tower : Node setget set_tower
 var synergy setget set_synergy
+var red_pact setget set_red_pact
 
 var should_be_displaying : bool setget, _get_should_be_displaying
 
@@ -292,6 +302,26 @@ func set_descriptions_source(arg_source):
 	descriptions_source = arg_source
 
 
+
+func set_simple_descriptions(arg_desc : Array):
+	simple_descriptions.clear()
+	for des in arg_desc:
+		simple_descriptions.append(des)
+	
+	call_deferred("emit_signal", "descriptions_changed", arg_desc)
+
+func set_simple_descriptions_source_func_name(arg_func_name : String):
+	simple_descriptions_source_func_name = arg_func_name
+
+func set_simple_descriptions_source(arg_source):
+	simple_descriptions_source = arg_source
+
+
+func has_simple_descriptions():
+	return (simple_descriptions != null and simple_descriptions.size() != 0) or simple_descriptions_source != null
+
+#
+
 func set_display_name(arg_name : String):
 	display_name = arg_name
 	call_deferred("emit_signal", "display_name_changed", arg_name)
@@ -325,12 +355,18 @@ func set_tower(arg_tower : Node):
 				round_ended()
 
 
-
 func set_synergy(arg_synergy):
 	synergy = arg_synergy
 	
 	synergy.connect("synergy_applied", self, "_synergy_active", [], CONNECT_PERSIST)
 	synergy.connect("synergy_removed", self, "_synergy_removed", [], CONNECT_PERSIST)
+
+
+func set_red_pact(arg_pact):
+	red_pact = arg_pact
+	
+	red_pact.connect("on_activation_requirements_met", self, "_red_pact_activation_requirements_met", [], CONNECT_PERSIST)
+	red_pact.connect("on_activation_requirements_unmet", self, "_red_pact_activation_requirements_unmet", [], CONNECT_PERSIST)
 
 
 # getters
@@ -363,6 +399,20 @@ func _synergy_removed(tier):
 	activation_conditional_clauses.attempt_insert_clause(ActivationClauses.SYNERGY_INACTIVE)
 	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.SYNERGY_INACTIVE)
 	should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.SYNERGY_INACTIVE)
+
+#
+
+func _red_pact_activation_requirements_met(tier):
+	activation_conditional_clauses.remove_clause(ActivationClauses.SYNERGY_INACTIVE)
+	counter_decrease_clauses.remove_clause(CounterDecreaseClauses.SYNERGY_INACTIVE)
+	should_be_displaying_clauses.remove_clause(ShouldBeDisplayingClauses.SYNERGY_INACTIVE)
+
+
+func _red_pact_activation_requirements_unmet(tier):
+	activation_conditional_clauses.attempt_insert_clause(ActivationClauses.SYNERGY_INACTIVE)
+	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.SYNERGY_INACTIVE)
+	should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.SYNERGY_INACTIVE)
+
 
 
 # Autocast stuffs

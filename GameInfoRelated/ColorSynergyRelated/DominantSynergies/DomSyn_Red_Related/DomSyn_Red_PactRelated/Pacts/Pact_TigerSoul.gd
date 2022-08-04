@@ -21,7 +21,7 @@ var tier_to_player_dmg_per_round_map : Dictionary = {
 }
 const round_multiplier_forgiveness_for_offerable : int = 6
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.TIGER_SOUL, "Tiger Soul", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.TIGER_SOUL, "Tiger Soul", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
 		#player_damage_per_round = 4

@@ -6,22 +6,22 @@ var _ability_potency_amount : float
 
 var _attk_speed_reduc_percent : float
 
-const no_ingredient_towers_ratio_for_offerable : float = 0.5
+const no_ingredient_towers_ratio_for_offerable_inclusive : float = 0.5
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS, "Ability Provisions", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS, "Ability Provisions", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
 		_ability_potency_amount = 2.0
-		_attk_speed_reduc_percent = 10
+		_attk_speed_reduc_percent = -10
 	elif tier == 1:
 		_ability_potency_amount = 1.5
-		_attk_speed_reduc_percent = 8
+		_attk_speed_reduc_percent = -8
 	elif tier == 2:
-		_ability_potency_amount = 1.0
-		_attk_speed_reduc_percent = 6
+		_ability_potency_amount = 0.75
+		_attk_speed_reduc_percent = -6
 	elif tier == 3:
-		_ability_potency_amount = 0.5
-		_attk_speed_reduc_percent = 4
+		_ability_potency_amount = 0.25
+		_attk_speed_reduc_percent = -4
 	
 	#
 	var interpreter_for_ap = TextFragmentInterpreter.new()
@@ -37,7 +37,7 @@ func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS, "Abili
 	interpreter_for_attk_speed.display_body = false
 	
 	var ins_for_attk_speed = []
-	ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", _attk_speed_reduc_percent, true))
+	ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", -_attk_speed_reduc_percent, true))
 	
 	interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
 	
@@ -117,5 +117,6 @@ func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_ti
 		if tower.get_amount_of_ingredients_absorbed() == 0:
 			ingless_towers += 1
 	
-	return (ingless_towers / all_active_towers.size()) > no_ingredient_towers_ratio_for_offerable
-
+	var is_offerable = (ingless_towers / all_active_towers.size()) >= no_ingredient_towers_ratio_for_offerable_inclusive
+	
+	return is_offerable

@@ -423,7 +423,7 @@ func _special_case_tower_effect_added(effect : TowerBaseEffect):
 		available_points += 4
 
 func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
-	if ingredient_effect != null and ingredient_effect.tower_id == Towers._704:
+	if ingredient_effect != null and ingredient_effect.tower_id == Towers._704 and tower_selected.last_calculated_can_be_used_as_ingredient:
 		return true
 	
 	return ._can_accept_ingredient(ingredient_effect, tower_selected)

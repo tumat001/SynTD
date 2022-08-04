@@ -95,6 +95,16 @@ func _initialize_tier_3_pacts():
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RETRIBUTION)
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS)
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORACLES_EYE)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EFFICIENCY)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_CATALOG)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HOLOGRAPHIC_TOWERS)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.CLOSE_COMBAT)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.CLOSE_CONTROL)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RANGE_PROVISIONS)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
+	
 
 func _initialize_tier_2_pacts():
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.FIRST_IMPRESSION)
@@ -111,11 +121,21 @@ func _initialize_tier_2_pacts():
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RETRIBUTION)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORACLES_EYE)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EFFICIENCY)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_CATALOG)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HOLOGRAPHIC_TOWERS)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.CLOSE_COMBAT)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.CLOSE_CONTROL)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RANGE_PROVISIONS)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
 	
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PRESTIGE)
-	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.BLOOD_TO_GOLD)
+	
 
 func _initialize_tier_1_pacts():
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.FIRST_IMPRESSION)
@@ -132,11 +152,20 @@ func _initialize_tier_1_pacts():
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RETRIBUTION)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORACLES_EYE)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EFFICIENCY)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_CATALOG)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HOLOGRAPHIC_TOWERS)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.CLOSE_COMBAT)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.CLOSE_CONTROL)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RANGE_PROVISIONS)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
 	
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PRESTIGE)
-	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.BLOOD_TO_GOLD)
 	
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMPLEMENTARY_SUPPLEMENT)
 	
@@ -156,38 +185,47 @@ func _initialize_tier_0_pacts():
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RETRIBUTION)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORACLES_EYE)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EFFICIENCY)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_CATALOG)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HOLOGRAPHIC_TOWERS)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.CLOSE_COMBAT)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.CLOSE_CONTROL)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RANGE_PROVISIONS)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
 	
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
 	#tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PRESTIGE)
-	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.BLOOD_TO_GOLD)
 	
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMPLEMENTARY_SUPPLEMENT)
 
 func _initialize_pact_singletons():
 	for uuid in StoreOfPactUUID.PactUUIDs:
 		#var pact = _generate_pact_with_tier(uuid, 0)
-		var pact = StoreOfPactUUID.construct_pact(StoreOfPactUUID.PactUUIDs[uuid], 0)
+		var pact = StoreOfPactUUID.construct_pact(StoreOfPactUUID.PactUUIDs[uuid], 0, 0)
 		pact_uuid_to_pact_map_singleton[StoreOfPactUUID.PactUUIDs[uuid]] = pact
 
 
 
 #
-func _generate_random_untaken_tier_3_pact() -> Red_BasePact:
-	return _generate_random_untaken_pact_from_source(tier_3_pacts_uuids, 3)
+func _generate_random_untaken_tier_3_pact(arg_tier_for_activation : int = 3) -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_3_pacts_uuids, 3, arg_tier_for_activation)
 
-func _generate_random_untaken_tier_2_pact() -> Red_BasePact:
-	return _generate_random_untaken_pact_from_source(tier_2_pacts_uuids, 2)
+func _generate_random_untaken_tier_2_pact(arg_tier_for_activation : int = 2) -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_2_pacts_uuids, 2, arg_tier_for_activation)
 
-func _generate_random_untaken_tier_1_pact() -> Red_BasePact:
-	return _generate_random_untaken_pact_from_source(tier_1_pacts_uuids, 1)
+func _generate_random_untaken_tier_1_pact(arg_tier_for_activation : int = 1) -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_1_pacts_uuids, 1, arg_tier_for_activation)
 
-func _generate_random_untaken_tier_0_pact() -> Red_BasePact:
-	return _generate_random_untaken_pact_from_source(tier_0_pacts_uuids, 0)
+func _generate_random_untaken_tier_0_pact(arg_tier_for_activation : int = 0) -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_0_pacts_uuids, 0, arg_tier_for_activation)
 
 
 # code for deciding what pact to offer
-func _generate_random_untaken_pact_from_source(source : Array, tier) -> Red_BasePact:
+func _generate_random_untaken_pact_from_source(source : Array, tier : int, tier_for_activation : int) -> Red_BasePact:
 	if red_pact_whole_panel != null and red_pact_whole_panel.unsworn_pact_list != null:
 		var copy = source.duplicate()
 		for pact_uuid in red_pact_whole_panel.unsworn_pact_list.get_all_pact_uuids():
@@ -210,15 +248,15 @@ func _generate_random_untaken_pact_from_source(source : Array, tier) -> Red_Base
 		
 		if copy.size() > 0:
 			var pact_uuid : int = copy[pact_decider_rng.randi_range(0, copy.size() - 1)]
-			return _generate_pact_with_tier(pact_uuid, tier)
+			return _generate_pact_with_tier(pact_uuid, tier, tier_for_activation)
 		else:
 			return null
 	
 	return null
 
 # code for constructing the pact itself
-func _generate_pact_with_tier(pact_uuid : int, tier : int) -> Red_BasePact:
-	var pact = StoreOfPactUUID.construct_pact(pact_uuid, tier)
+func _generate_pact_with_tier(pact_uuid : int, tier : int, tier_for_activation : int) -> Red_BasePact:
+	var pact = StoreOfPactUUID.construct_pact(pact_uuid, tier, tier_for_activation)
 	
 	if pact_uuid == StoreOfPactUUID.PactUUIDs.FUTURE_SIGHT:
 		pact.red_syn = self
@@ -270,6 +308,10 @@ func _on_sworn_pact_card_removed(pact):
 	pact.pact_unsworn()
 	#pact._remove_pact_from_game_elements(game_elements)
 
+#
+
+func remove_pact_from_sworn_list(pact):
+	red_pact_whole_panel.sworn_pact_list.remove_pact(pact)
 
 #
 
@@ -301,5 +343,5 @@ func _initialize_red_pact_whole_panel():
 			red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 	
 	# for debugging only
-	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE, 2))
-
+	#red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.FUTURE_SIGHT, 3, 3))
+	#red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS, 3. 3))

@@ -120,6 +120,7 @@ signal on_any_range_module_current_enemies_acquired(module, range_module)
 
 
 signal on_round_end
+signal on_round_end__before_any_round_end_reverts() # used to check if tower had this effect (before being cleared), and if the tower is dead before the round ending (look at round end func to see what gets reverted)
 signal on_round_start
 
 signal register_ability(ability, add_to_panel)
@@ -133,6 +134,8 @@ signal global_position_changed(old_pos, new_pos)
 signal on_effect_added(effect)
 signal on_effect_removed(effect)
 signal before_effect_is_removed(effect)
+
+signal on_taken_damage_from_enemy(arg_enemy, arg_dmg_amount)
 
 #
 
@@ -180,6 +183,8 @@ enum DisabledFromAttackingSourceClauses {
 	
 	DOM_SYN__RED__DOMINANCE_SUPPLEMENT = 1001
 	DOM_SYN__RED__COMPLEMENTARY_SUPPLEMENT = 1002
+	DOM_SYN__RED__HOLOGRAPHIC_TOWERS = 1003
+	DOM_SYN__RED__HEALING_SYMBOLS = 1004
 }
 
 enum UntargetabilityClauses {
@@ -217,8 +222,6 @@ var is_showing_ranges : bool
 var contributing_to_synergy_clauses : ConditionalClauses
 var last_calculated_is_contributing_to_synergy : bool
 
-#var is_contributing_to_synergy : bool # if is in map or not #TODO REMOVE THIS
-
 
 #####
 
@@ -255,6 +258,23 @@ var last_calculated_ingredient_limit : int
 var _ingredient_compatible_color_effects : Dictionary = {}
 var _ingredient_acceptability_color_effects : Dictionary = {}
 
+
+enum CanAbsorbIngredientClauses {
+	CAN_NOT_ABSORB_INGREDIENT_GENERIC_TAG = 0,
+	
+	
+}
+var can_absorb_ingredient_conditonal_clauses : ConditionalClauses
+var last_calculated_can_absorb_ingredient : bool
+
+
+enum CanBeUsedAsIngredientClauses {
+	DOM_SYN_RED__HOLOGRAPHIC_TOWERS = 1
+}
+var can_be_used_as_ingredient_conditonal_clauses : ConditionalClauses
+var last_calculated_can_be_used_as_ingredient : bool
+
+
 # Color related
 
 var _tower_colors : Array = []
@@ -269,6 +289,19 @@ var _base_gold_cost : int setget set_base_gold_cost
 var _ingredients_tower_id_base_gold_costs_map : Dictionary = {}
 var _is_full_sellback : bool = false
 var last_calculated_sellback_value : int
+
+# Sell related
+
+enum CanBeSoldClauses {
+	IS_NOT_SELLABLE_GENERIC_TAG = 0, # used for anything that does not need to be checked for.
+	
+	DOM_SYN_RED__PACT_HOLOGRAPHIC_TOWERS = 1,
+	
+}
+
+var can_be_sold_conditonal_clauses : ConditionalClauses
+var last_calculated_can_be_sold : bool
+
 
 # Is bought or summoned/others
 
@@ -435,9 +468,24 @@ func _init():
 	contributing_to_synergy_clauses.connect("clause_inserted", self, "_contributing_to_synergy_clause_added_or_removed", [], CONNECT_PERSIST)
 	contributing_to_synergy_clauses.connect("clause_removed", self, "_contributing_to_synergy_clause_added_or_removed", [], CONNECT_PERSIST)
 	
+	can_be_sold_conditonal_clauses = ConditionalClauses.new()
+	can_be_sold_conditonal_clauses.connect("clause_inserted", self, "_on_sell_clause_added_or_removed", [], CONNECT_PERSIST)
+	can_be_sold_conditonal_clauses.connect("clause_removed", self, "_on_sell_clause_added_or_removed", [], CONNECT_PERSIST)
+	
+	can_absorb_ingredient_conditonal_clauses = ConditionalClauses.new()
+	can_absorb_ingredient_conditonal_clauses.connect("clause_inserted", self, "_on_can_absorb_ing_clause_added_or_removed", [], CONNECT_PERSIST)
+	can_absorb_ingredient_conditonal_clauses.connect("clause_removed", self, "_on_can_absorb_ing_clause_added_or_removed", [], CONNECT_PERSIST)
+	
+	can_be_used_as_ingredient_conditonal_clauses = ConditionalClauses.new()
+	can_be_used_as_ingredient_conditonal_clauses.connect("clause_inserted", self, "_on_can_be_used_as_ing_clause_added_or_removed", [], CONNECT_PERSIST)
+	can_be_used_as_ingredient_conditonal_clauses.connect("clause_removed", self, "_on_can_be_used_as_ing_clause_added_or_removed", [], CONNECT_PERSIST)
+	
 	_update_last_calculated_contributing_to_synergy()
 	_update_last_calculated_disabled_from_attacking()
 	_update_untargetability_state()
+	_update_last_calculated_can_be_sold()
+	_update_last_calculated_can_absorb_ing()
+	_update_last_calculated_can_be_used_as_ing()
 
 func _ready():
 	$IngredientDeclinePic.visible = false
@@ -789,6 +837,8 @@ func _set_round_started(arg_is_round_started : bool):
 
 
 func _on_round_end():
+	emit_signal("on_round_end__before_any_round_end_reverts")
+	
 	_set_health(last_calculated_max_health)
 	
 	for module in all_attack_modules:
@@ -1767,8 +1817,25 @@ func _remove_latest_ingredient_by_effect():
 		_calculate_sellback_value()
 
 
+
+# can absorb ing
+
+func _on_can_absorb_ing_clause_added_or_removed(arg_clause_id):
+	_update_last_calculated_can_absorb_ing()
+
+func _update_last_calculated_can_absorb_ing():
+	last_calculated_can_absorb_ingredient = can_absorb_ingredient_conditonal_clauses.is_passed
+
+
 func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
 	if ingredient_effect != null:
+		if !last_calculated_can_absorb_ingredient:
+			return false
+		
+		if !tower_selected.last_calculated_can_be_used_as_ingredient:
+			return false
+		
+		
 		if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.ignore_ingredient_limit:
 			return false
 		
@@ -1825,6 +1892,15 @@ func remove_ingredient_color_acceptability_effect(effect_uuid : int):
 	_ingredient_acceptability_color_effects.erase(effect_uuid)
 
 
+# can be used as ing
+
+func _on_can_be_used_as_ing_clause_added_or_removed(arg_clause_id):
+	_update_last_calculated_can_be_used_as_ing()
+
+func _update_last_calculated_can_be_used_as_ing():
+	last_calculated_can_be_used_as_ingredient = can_be_used_as_ingredient_conditonal_clauses.is_passed
+
+
 
 # Ingredient limit related
 
@@ -1849,6 +1925,9 @@ func _calculate_final_ingredient_limit() -> int:
 	
 	for limit_modifier in _ingredient_id_limit_modifier_map.values():
 		final_limit += limit_modifier
+	
+	if final_limit < 0:
+		final_limit = 0
 	
 	return final_limit
 
@@ -2493,19 +2572,27 @@ func _give_self_ingredient_buff_to(absorber):
 	queue_free()
 
 
-# Gold Sellback related
+# Sell related
+
+func _on_sell_clause_added_or_removed(arg_clause_id):
+	_update_last_calculated_can_be_sold()
+
+func _update_last_calculated_can_be_sold():
+	last_calculated_can_be_sold = can_be_sold_conditonal_clauses.is_passed
+
+
+
+func sell_tower():
+	if last_calculated_can_be_sold:
+		call_deferred("emit_signal", "tower_being_sold", last_calculated_sellback_value)
+		queue_free()
+
+
 
 func set_base_gold_cost(arg_val):
 	_base_gold_cost = arg_val
 	
 	_calculate_sellback_value()
-
-
-func sell_tower():
-	#call_deferred("emit_signal", "tower_being_sold", _calculate_sellback_value())
-	call_deferred("emit_signal", "tower_being_sold", last_calculated_sellback_value)
-	queue_free()
-
 
 func _calculate_sellback_value() -> int:
 	var sellback = _base_gold_cost
@@ -2698,7 +2785,7 @@ func _calculate_max_health() -> float:
 	return max_health
 
 
-func take_damage(damage_mod):
+func take_damage(damage_mod, enemy_source = null):
 	var amount : float = _get_amount_from_arg(damage_mod)
 	
 	if last_calculated_is_invulnerable:
@@ -2707,6 +2794,9 @@ func take_damage(damage_mod):
 	
 	if amount > 0:
 		_set_health(current_health - amount)
+	
+	if enemy_source != null and amount > 0:
+		emit_signal("on_taken_damage_from_enemy", enemy_source, amount)
 
 func _get_amount_from_arg(val):
 	var amount : float = 0
@@ -2779,6 +2869,10 @@ func _heal_by_omnivamp_stat(dmg_type_damage_map : Dictionary):
 		
 		heal_by_amount(final_heal)
 
+# health queries
+
+func has_full_health() -> bool:
+	return is_equal_approx(last_calculated_max_health, current_health)
 
 # Effect shield related
 

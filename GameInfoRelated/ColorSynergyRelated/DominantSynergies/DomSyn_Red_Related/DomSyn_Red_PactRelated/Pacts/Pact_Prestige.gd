@@ -6,7 +6,7 @@ var shop_level_odds_modi : int = 0
 
 const gold_requirement_for_offerable : int = 10
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.PRESTIGE, "Prestige", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.PRESTIGE, "Prestige", arg_tier, arg_tier_for_activation):
 	
 	
 	if tier == 0:

@@ -17,7 +17,7 @@ var loss_val
 const gain_duration : float = 15.0
 
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.SECOND_IMPRESSION, "Second Impression", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.SECOND_IMPRESSION, "Second Impression", arg_tier, arg_tier_for_activation):
 	var possible_gain_values : Array
 	var possible_loss_values : Array
 	

@@ -10,19 +10,19 @@ var _initial_enemy_damage_resistance_percent_amount : float
 
 var _enemy_dmg_resist_effect : EnemyAttributesEffect
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.RETRIBUTION, "Retribution", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.RETRIBUTION, "Retribution", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
-		_bonus_damage_scale = 6.0
+		_bonus_damage_scale = 9.0
 		_initial_enemy_damage_resistance_percent_amount = 6
 	elif tier == 1:
-		_bonus_damage_scale = 4.0
+		_bonus_damage_scale = 7.0
 		_initial_enemy_damage_resistance_percent_amount = 5
 	elif tier == 2:
-		_bonus_damage_scale = 2.75
+		_bonus_damage_scale = 5.0
 		_initial_enemy_damage_resistance_percent_amount = 4
 	elif tier == 3:
-		_bonus_damage_scale = 2.0
+		_bonus_damage_scale = 3.0
 		_initial_enemy_damage_resistance_percent_amount = 3
 	
 	
@@ -37,7 +37,7 @@ func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.RETRIBUTION, "Retribution"
 	
 	# INS END
 	good_descriptions = [
-		["A tower's first main attack against enemies that have exited its range then entered again deal |0| more damage (retribution).", [interpreter_for_bonus_dmg]]
+		["A tower's first main attack against enemies that have exited its range then entered again deal |0| (retribution).", [interpreter_for_bonus_dmg]]
 	]
 	
 	bad_descriptions = [

@@ -10,7 +10,7 @@ var _initial_good_desc_size : int
 
 const tower_limit_for_offerable_inclusive : int = 8
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.PERSONAL_SPACE, "Personal Space", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.PERSONAL_SPACE, "Personal Space", arg_tier, arg_tier_for_activation):
 	
 	var possible_speed_gain_values : Array
 	var possible_range_values : Array

@@ -33,7 +33,7 @@ const tier_to_player_exec_ratio : Dictionary = {
 }
 
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL, "Dragon Soul", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL, "Dragon Soul", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
 		enemy_execute_ratio = 0.35

@@ -4,9 +4,9 @@ extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_
 var tier_affected_amount : int
 var less_ingredient_amount : int
 
-const combinations_required_for_offerable : int = 4
+const combinations_required_for_offerable_inclusive : int = 4
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE, "Combination Expertise", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE, "Combination Expertise", arg_tier, arg_tier_for_activation):
 	if tier == 0:
 		tier_affected_amount = 2
 		less_ingredient_amount = -2
@@ -20,7 +20,8 @@ func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.COMBINATION_EXPERTISE, "Co
 		less_ingredient_amount = -1
 		
 	elif tier == 3:
-		pass
+		tier_affected_amount = 1
+		less_ingredient_amount = -2
 	
 	good_descriptions = [
 		"Combination effects can affect +%s tiers above." % str(tier_affected_amount)
@@ -74,4 +75,8 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 func _tower_to_remove_from_synergy(arg_tower):
 	arg_tower.remove_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.DOMSYN_RED__COMBINATION_EXPERTISE)
 
+#####
+
+func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
+	return arg_game_elements.combination_manager.all_combination_id_to_effect_map.size() >= combinations_required_for_offerable_inclusive
 

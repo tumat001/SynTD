@@ -12,7 +12,7 @@ var _is_unsworn : bool = false
 
 
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.COMPLEMENTARY_SUPPLEMENT, "Complementary Supplement", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.COMPLEMENTARY_SUPPLEMENT, "Complementary Supplement", arg_tier, arg_tier_for_activation):
 	if tier == 0:
 		_additional_comple_syn_activatable = 2
 		_curr_number_of_towers_that_cant_attack = 2

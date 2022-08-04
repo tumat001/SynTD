@@ -1,0 +1,26 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/CastHealParticle/OnCastHealParticle_01.png" type="Texture" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/CastHealParticle/OnCastHealParticle_06.png" type="Texture" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/CastHealParticle/OnCastHealParticle_08.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/CastHealParticle/OnCastHealParticle_07.png" type="Texture" id=5]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/CastHealParticle/OnCastHealParticle_04.png" type="Texture" id=6]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/CastHealParticle/OnCastHealParticle_02.png" type="Texture" id=7]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/CastHealParticle/OnCastHealParticle_05.png" type="Texture" id=8]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/CastHealParticle/OnCastHealParticle_03.png" type="Texture" id=9]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 7 ), ExtResource( 9 ), ExtResource( 6 ), ExtResource( 8 ), ExtResource( 3 ), ExtResource( 5 ), ExtResource( 4 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="OnCastHealParticle" instance=ExtResource( 1 )]
+frames = SubResource( 1 )
+frame = 5
+lifetime = 0.6
+frames_based_on_lifetime = true
+transparency_per_sec = 1.0

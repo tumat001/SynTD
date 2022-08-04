@@ -27,7 +27,7 @@ const RoundDamageStatsPanel = preload("res://GameHUDRelated/RightSidePanel/Round
 const MapManager = preload("res://GameElementsRelated/MapManager.gd")
 const CombinationManager = preload("res://GameElementsRelated/CombinationManager.gd")
 const CombinationTopPanel = preload("res://GameHUDRelated/CombinationRelatedPanels/CombinationTopPanel/CombinationTopPanel.gd")
-
+const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var synergy_manager
@@ -49,6 +49,7 @@ var level_manager : LevelManager
 var combination_manager : CombinationManager
 var combination_top_panel : CombinationTopPanel
 var shared_passive_manager
+var game_settings_manager : GameSettingsManager
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
@@ -91,6 +92,7 @@ func _ready():
 	combination_manager = $CombinationManager
 	combination_top_panel = $CombinationTopPanel
 	shared_passive_manager = $SharedPassiveManager
+	game_settings_manager = $GameSettingsManager
 	
 	selection_notif_panel = $NotificationNode/SelectionNotifPanel
 	tower_empty_slot_notif_panel = $NotificationNode/TowerEmptySlotNotifPanel
@@ -99,6 +101,7 @@ func _ready():
 	tower_info_panel = right_side_panel.tower_info_panel
 	
 	round_status_panel = right_side_panel.round_status_panel
+	round_status_panel.game_settings_manager = game_settings_manager
 	round_info_panel = round_status_panel.round_info_panel
 	
 	# map manager
@@ -212,6 +215,7 @@ func _ready():
 	panel_buy_sell_level_roll.tower_manager = tower_manager
 	panel_buy_sell_level_roll.tower_inventory_bench = tower_inventory_bench
 	panel_buy_sell_level_roll.combination_manager = combination_manager
+	panel_buy_sell_level_roll.game_settings_manager = game_settings_manager
 	
 	# tower empty slot notif panel
 	tower_empty_slot_notif_panel.tower_manager = tower_manager
@@ -239,6 +243,7 @@ func _ready():
 	health_manager.set_health(150)
 	
 	
+	# FOR TESTING
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	level_manager.current_level = LevelManager.LEVEL_7
 	#level_manager.current_level = LevelManager.LEVEL_3
@@ -256,13 +261,14 @@ var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
 	#shop_manager.roll_towers_in_shop_with_cost()
+	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.PING,
-			Towers.SE_PROPAGER,
-			Towers.TRANSPORTER,
-			Towers.BURGEON,
-			Towers.FLAMEBURST,
+			Towers.BEACON_DISH,
+			Towers.LEADER,
+			Towers.CHAOS,
+			Towers.PING,
 			Towers.NUCLEUS,
 		])
 	else:
@@ -339,6 +345,8 @@ func _unhandled_key_input(event):
 			elif event.is_action("game_combine_combinables"):
 				combination_manager.on_combination_activated()
 				
+			elif event.is_action("game_description_mode_toggle"):
+				game_settings_manager.toggle_descriptions_mode()
 			
 		else: # if there is wholescreen gui
 			if event.scancode == KEY_ESCAPE:

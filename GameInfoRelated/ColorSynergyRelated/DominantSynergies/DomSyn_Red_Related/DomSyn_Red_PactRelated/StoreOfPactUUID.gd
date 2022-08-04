@@ -23,6 +23,15 @@ const Pact_Retribution = preload("res://GameInfoRelated/ColorSynergyRelated/Domi
 const Pact_AbilityProvisions = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_AbilityProvisions.gd")
 const Pact_OraclesEye = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_OraclesEye.gd")
 const Pact_CombinationExpertise = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_CombinationExpertise.gd")
+const Pact_CombinationEfficiency = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_CombinationEfficiency.gd")
+const Pact_CombinationCatalog = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_CombinationCatalog.gd")
+const Pact_HolographicTowers = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_HolographicTowers.gd")
+const Pact_CloseCombat = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_CloseCombat.gd")
+const Pact_CloseControl = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_CloseControl.gd")
+const Pact_RangeProvisions = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_RangeProvisions.gd")
+const Pact_HealingSymbols = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_HealingSymbol.gd")
+const Pact_DreamsReach = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_DreamsReach.gd")
+const Pact_BloodToGold = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_BloodToGold.gd")
 
 enum PactUUIDs {
 	FIRST_IMPRESSION = 100,
@@ -47,71 +56,110 @@ enum PactUUIDs {
 	ORACLES_EYE = 118,
 	
 	COMBINATION_EXPERTISE = 119,
-	
+	COMBINATION_EFFICIENCY = 120,
+	COMBINATION_CATALOG = 121,
+	HOLOGRAPHIC_TOWERS = 122,
+	CLOSE_COMBAT = 123,
+	CLOSE_CONTROL = 124,
+	RANGE_PROVISIONS = 125,
+	HEALING_SYMBOLS = 126,
+	DREAMS_REACH = 127,
+	BLOOD_TO_GOLD = 128,
 }
 
 
-func construct_pact(pact_uuid : int, tier : int) -> Red_BasePact:
+func construct_pact(pact_uuid : int, tier : int,
+		arg_tier_for_activation : int) -> Red_BasePact:
+	
 	var pact
 	
 	if pact_uuid == PactUUIDs.FIRST_IMPRESSION:
-		pact = Pact_FirstImpression.new(tier)
+		pact = Pact_FirstImpression.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.SECOND_IMPRESSION:
-		pact = Pact_SecondImpression.new(tier)
+		pact = Pact_SecondImpression.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.PLAYING_WITH_FIRE:
-		pact = Pact_PlayingWithFire.new(tier)
+		pact = Pact_PlayingWithFire.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.A_CHALLENGE:
-		pact = Pact_AChallenge.new(tier)
+		pact = Pact_AChallenge.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.FUTURE_SIGHT:
-		pact = Pact_FutureSight.new(tier)
+		pact = Pact_FutureSight.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.DRAGON_SOUL:
-		pact = Pact_DragonSoul.new(tier)
+		pact = Pact_DragonSoul.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.TIGER_SOUL:
-		pact = Pact_TigerSoul.new(tier)
+		pact = Pact_TigerSoul.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.ADRENALINE:
-		pact = Pact_Adrenaline.new(tier)
+		pact = Pact_Adrenaline.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.PRESTIGE:
-		pact = Pact_Prestige.new(tier)
+		pact = Pact_Prestige.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.JEWELED_BLADE:
-		pact = Pact_JeweledBlade.new(tier)
+		pact = Pact_JeweledBlade.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.JEWELED_STAFF:
-		pact = Pact_JeweledStaff.new(tier)
+		pact = Pact_JeweledStaff.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.DOMINANCE_SUPPLEMENT:
-		pact = Pact_DominanceSupplement.new(tier)
+		pact = Pact_DominanceSupplement.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.COMPLEMENTARY_SUPPLEMENT:
-		pact = Pact_ComplementarySupplement.new(tier)
+		pact = Pact_ComplementarySupplement.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.PERSONAL_SPACE:
-		pact = Pact_PersonalSpace.new(tier)
+		pact = Pact_PersonalSpace.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.SOLO_VICTOR:
-		pact = Pact_SoloVictor.new(tier)
+		pact = Pact_SoloVictor.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.TRIO_VICTOR:
-		pact = Pact_TrioVictor.new(tier)
+		pact = Pact_TrioVictor.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.RETRIBUTION:
-		pact = Pact_Retribution.new(tier)
+		pact = Pact_Retribution.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.ABILITY_PROVISIONS:
-		pact = Pact_AbilityProvisions.new(tier)
+		pact = Pact_AbilityProvisions.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.ORACLES_EYE:
-		pact = Pact_OraclesEye.new(tier)
+		pact = Pact_OraclesEye.new(tier, arg_tier_for_activation)
 		
 	elif pact_uuid == PactUUIDs.COMBINATION_EXPERTISE:
-		pact = Pact_CombinationExpertise.new(tier)
+		pact = Pact_CombinationExpertise.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.COMBINATION_EFFICIENCY:
+		pact = Pact_CombinationEfficiency.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.COMBINATION_CATALOG:
+		pact = Pact_CombinationCatalog.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.HOLOGRAPHIC_TOWERS:
+		pact = Pact_HolographicTowers.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.CLOSE_COMBAT:
+		pact = Pact_CloseCombat.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.CLOSE_CONTROL:
+		pact = Pact_CloseControl.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.RANGE_PROVISIONS:
+		pact = Pact_RangeProvisions.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.HEALING_SYMBOLS:
+		pact = Pact_HealingSymbols.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.DREAMS_REACH:
+		pact = Pact_DreamsReach.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.BLOOD_TO_GOLD:
+		pact = Pact_BloodToGold.new(tier, arg_tier_for_activation)
+		
+	
 	
 	return pact

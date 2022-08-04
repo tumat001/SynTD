@@ -16,6 +16,7 @@ var black_buff_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var shackled_pull_position_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var faithful_mov_speed_delay_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var black_capacitor_nova_lightning_tower_or_enemy_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var random_tower_decider_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -38,6 +39,7 @@ enum RNGSource {
 	
 	ROLL_TOWERS = 2000,
 	TIER = 2001,
+	RANDOM_TOWER_DECIDER = 2002, # ex: gain 2 tier 5 towers.
 	
 	BLACK_BUFF = 3000,
 	BLACK_CAPACITOR_NOVA_LIGHTNING_TOWER_OR_ENEMY_RNG = 3001,
@@ -82,5 +84,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return faithful_mov_speed_delay_rng
 	elif rng_source == RNGSource.BLACK_CAPACITOR_NOVA_LIGHTNING_TOWER_OR_ENEMY_RNG:
 		return black_capacitor_nova_lightning_tower_or_enemy_rng
+	elif rng_source == RNGSource.RANDOM_TOWER_DECIDER:
+		return random_tower_decider_rng
 	
 	return null

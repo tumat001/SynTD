@@ -13,13 +13,13 @@ var _is_unsworn : bool = false
 
 
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.DOMINANCE_SUPPLEMENT, "Dominance Supplement", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.DOMINANCE_SUPPLEMENT, "Dominance Supplement", arg_tier, arg_tier_for_activation):
 	if tier == 0:
 		_additional_dom_syn_activatable = 2
-		_curr_number_of_towers_that_cant_attack = 4
+		_curr_number_of_towers_that_cant_attack = 5
 	elif tier == 1:
 		_additional_dom_syn_activatable = 2
-		_curr_number_of_towers_that_cant_attack = 3
+		_curr_number_of_towers_that_cant_attack = 4
 	elif tier == 2:
 		_additional_dom_syn_activatable = 1
 		_curr_number_of_towers_that_cant_attack = 2

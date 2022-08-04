@@ -496,7 +496,7 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
 	[
-		"Main attacks cause towers to lose 2.5% of their max health.",
+		"Main attacks cause towers to lose 5% of their max health.",
 		"Upon dying, towers equally split a percent of their total base damage and total ability potency to all other towers.",
 		"The last standing tower becomes invulenrable and immune to enemy effects, and gains 50% projectile speed for the rest of the round.",
 		""

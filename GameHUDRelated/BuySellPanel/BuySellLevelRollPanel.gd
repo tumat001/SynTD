@@ -44,6 +44,7 @@ var level_manager setget set_level_manager
 var shop_manager setget set_shop_manager
 var tower_manager setget set_tower_manager
 var combination_manager : CombinationManager setget set_combination_manager
+var game_settings_manager setget set_game_settings_manager
 
 var tower_inventory_bench setget set_tower_inventory_bench
 
@@ -91,6 +92,12 @@ func set_combination_manager(arg_manager):
 	
 	
 
+func set_game_settings_manager(arg_manager):
+	game_settings_manager = arg_manager
+	
+	for slot in all_buy_slots:
+		slot.game_settings_manager = game_settings_manager
+
 
 
 # Called when the node enters the scene tree for the first time.
@@ -104,7 +111,7 @@ func _ready():
 	
 	for slot in all_buy_slots:
 		slot.tower_inventory_bench = tower_inventory_bench
-
+		slot.game_settings_manager = game_settings_manager
 
 
 

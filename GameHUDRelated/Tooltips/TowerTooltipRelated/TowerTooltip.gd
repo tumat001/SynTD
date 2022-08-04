@@ -4,11 +4,16 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
+const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
 
 const TooltipWithImageIndicatorDescription = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithImageIndicatorDescription.gd")
 const TooltipWithImageIndicatorDescription_Scene = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithImageIndicatorDescription.tscn")
 
 var tower_info : TowerTypeInformation
+var game_settings_manager : GameSettingsManager
+
+onready var tower_descriptions_tooltip = $RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -42,11 +47,17 @@ func update_display():
 					$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.descriptions = ["No effect"]
 		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.update_display()
 		
-		$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.clear_descriptions_in_array()
-		for desc in tower_info.tower_descriptions:
-			$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.descriptions.append(desc)
-			$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.use_color_for_dark_background = false
-		$RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody.update_display()
+		
+		# descriptions
+		tower_descriptions_tooltip.clear_descriptions_in_array()
+		var descriptions_to_use : Array = GameSettingsManager.get_descriptions_to_use_based_on_tower_type_info(tower_info, game_settings_manager)
+		
+		for desc in descriptions_to_use:
+			tower_descriptions_tooltip.descriptions.append(desc)
+			tower_descriptions_tooltip.use_color_for_dark_background = false
+
+		tower_descriptions_tooltip.update_display()
+		
 		
 		_update_on_hit_multiplier()
 

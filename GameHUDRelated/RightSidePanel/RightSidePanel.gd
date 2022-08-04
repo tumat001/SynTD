@@ -13,11 +13,22 @@ enum Panels {
 
 var panel_showing : int
 var current_tower_showing : AbstractTower
+var game_settings_manager setget set_game_settings_manager
 
 onready var tower_info_panel : TowerInfoPanel = $TowerInfoPanel
 onready var round_status_panel : RoundStatusPanel = $RoundStatusPanel
 onready var round_damage_stats_panel : RoundDamageStatsPanel = $RoundDamageStatsPanel
 
+
+
+#
+
+func set_game_settings_manager(arg_manager):
+	game_settings_manager = arg_manager
+	
+	round_status_panel.game_settings_manager = arg_manager
+
+#
 
 func _ready():
 	show_round_panel()

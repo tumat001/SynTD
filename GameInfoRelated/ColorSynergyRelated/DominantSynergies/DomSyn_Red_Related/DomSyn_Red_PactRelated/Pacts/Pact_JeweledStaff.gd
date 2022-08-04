@@ -16,7 +16,7 @@ var _current_additional_gold_cost_for_level_amount : int
 
 const player_worth_for_offerable : int = 60
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.JEWELED_STAFF, "Jeweled Staff", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.JEWELED_STAFF, "Jeweled Staff", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
 		total_worth_per_100_to_ap_ratio = 7

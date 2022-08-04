@@ -22,7 +22,7 @@ onready var middle_label : Label = $VBoxContainer/HeaderMarginer/LabelMarginer/M
 onready var right_label : Label = $VBoxContainer/HeaderMarginer/LabelMarginer/RightLabel
 
 var tower_associated_with_ability
-
+var game_settings_manager
 
 func update_display():
 	rect_min_size.y = 0

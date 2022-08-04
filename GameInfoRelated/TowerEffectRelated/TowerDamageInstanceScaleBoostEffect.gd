@@ -23,8 +23,10 @@ var _dmg_instance_boost_type : int
 
 var _dmg_instance_boost_func_name_to_use : String
 
-func _init(arg_dmg_instance_types_to_boost : int, arg_boost_type : int, 
-		arg_boost_amount : int, arg_uuid : int).(arg_uuid):
+func _init(arg_dmg_instance_types_to_boost : int, 
+		arg_boost_type : int, 
+		arg_boost_amount : int, 
+		arg_uuid : int).(arg_uuid):
 	
 	_dmg_instance_types_to_boost = arg_dmg_instance_types_to_boost
 	_dmg_instance_boost_type = arg_boost_type

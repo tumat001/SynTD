@@ -25,7 +25,7 @@ const base_amount_of_victors : int = 3
 const tower_amount_for_offerable_inclusive = 4
 
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.TRIO_VICTOR, "Trio Victor", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.TRIO_VICTOR, "Trio Victor", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
 		_base_damage_buff_amount = 3.0

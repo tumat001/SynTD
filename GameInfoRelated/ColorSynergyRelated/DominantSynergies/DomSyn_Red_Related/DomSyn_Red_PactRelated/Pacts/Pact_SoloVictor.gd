@@ -20,7 +20,7 @@ var _current_victor_tower : AbstractTower
 const tower_amount_for_offerable_inclusive = 4
 
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.SOLO_VICTOR, "Solo Victor", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.SOLO_VICTOR, "Solo Victor", arg_tier, arg_tier_for_activation):
 	var possible_base_dmg_values : Array
 	var possible_speed_gain_values : Array
 	var possible_range_values : Array

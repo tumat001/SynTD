@@ -3,7 +3,7 @@ extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_
 var new_tier : int
 var red_syn
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.FUTURE_SIGHT, "Future Sight", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.FUTURE_SIGHT, "Future Sight", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
 		new_tier = 0
@@ -43,13 +43,13 @@ func _generate_random_higher_pact():
 	var pact
 	
 	if new_tier == 0:
-		pact = red_syn._generate_random_untaken_tier_0_pact()
+		pact = red_syn._generate_random_untaken_tier_0_pact(1)
 	elif new_tier == 1:
-		pact = red_syn._generate_random_untaken_tier_1_pact()
+		pact = red_syn._generate_random_untaken_tier_1_pact(2)
 	elif new_tier == 2:
-		pact = red_syn._generate_random_untaken_tier_2_pact()
+		pact = red_syn._generate_random_untaken_tier_2_pact(3)
 	elif new_tier == 3:
-		pact = red_syn._generate_random_untaken_tier_3_pact()
+		pact = red_syn._generate_random_untaken_tier_3_pact(3)
 	
 	if pact != null:
 		red_syn.red_pact_whole_panel.unsworn_pact_list.add_pact(pact)

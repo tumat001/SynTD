@@ -6,7 +6,7 @@ const AbilityButton = preload("res://GameHUDRelated/AbilityPanel/AbilityButton.g
 const AbilityButtonScene = preload("res://GameHUDRelated/AbilityPanel/AbilityButton.tscn")
 
 onready var ability_container : Control = $ScrollContainer/AbilityContainer
-
+var game_settings_manager
 
 func add_ability(ability : BaseAbility):
 	if !has_ability(ability):
@@ -16,6 +16,7 @@ func add_ability(ability : BaseAbility):
 		ability_button.ability = ability
 		ability_button._ability_panel = self
 		ability_button.is_drag_and_droppable = true
+		ability_button.game_settings_manager = game_settings_manager
 		
 		ability_button.connect("visibility_changed", self, "_ability_button_visibility_changed", [], CONNECT_PERSIST)
 		ability_button.connect("button_destroying_self", self, "_ability_button_destroying_self", [], CONNECT_PERSIST)
@@ -28,6 +29,15 @@ func has_ability(ability : BaseAbility):
 			return true
 	
 	return false
+
+
+#func remove_ability(ability : BaseAbility):
+#	if has_ability(ability):
+#		var ability_button = get_ability_button_with_ability(ability)
+#		ability_button.destroy_self()
+#
+#		_update_all_buttons_hotkey_num()
+
 
 
 #
@@ -60,6 +70,16 @@ func get_ability_button_with_hotkey(hotkey : int) -> AbilityButton:
 			return button
 	
 	return null
+
+func get_ability_button_with_ability(ability : BaseAbility) -> AbilityButton:
+	var ability_buttons : Array = ability_container.get_children()
+	
+	for button in ability_buttons:
+		if button.ability == ability:
+			return button
+	
+	return null
+
 
 #
 

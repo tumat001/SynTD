@@ -9,7 +9,7 @@ signal tower_bought(tower_id)
 
 var current_child
 var tower_inventory_bench
-
+var game_settings_manager
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -25,6 +25,7 @@ func roll_buy_card_to_tower_id(tower_id : int):
 			var buy_card_scene = TowerBuyCardScene.instance()
 			buy_card_scene.tower_information = tower_info
 			buy_card_scene.tower_inventory_bench = tower_inventory_bench
+			buy_card_scene.game_settings_manager = game_settings_manager
 			
 			add_child(buy_card_scene)
 			current_child = buy_card_scene

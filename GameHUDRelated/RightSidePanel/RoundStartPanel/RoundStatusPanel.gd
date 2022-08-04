@@ -19,6 +19,16 @@ onready var ability_panel : AbilityPanel = $VBoxContainer/AbilityPanel
 var round_started : bool
 var round_fast_forwarded : bool
 
+var game_settings_manager setget set_game_settings_manager
+
+
+#
+
+func set_game_settings_manager(arg_manager):
+	game_settings_manager = arg_manager
+	ability_panel.game_settings_manager = arg_manager
+
+#
 
 
 func _update_round_started():

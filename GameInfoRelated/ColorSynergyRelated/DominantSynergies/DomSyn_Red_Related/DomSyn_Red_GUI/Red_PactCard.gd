@@ -100,5 +100,6 @@ func _convert_number_to_roman_numeral(number : int) -> String:
 func _on_AdvancedButton_pressed_mouse_event(event):
 	if event is InputEventMouseButton:
 		if event.is_pressed() and event.button_index == BUTTON_LEFT:
-			emit_signal("pact_card_pressed", base_pact)
+			if base_pact._if_pact_can_be_sworn():
+				emit_signal("pact_card_pressed", base_pact)
 

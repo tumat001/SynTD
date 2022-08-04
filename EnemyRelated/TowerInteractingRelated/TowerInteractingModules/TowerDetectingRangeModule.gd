@@ -26,6 +26,10 @@ var displaying_range : bool
 
 var can_display_circle_arc : bool = false
 var circle_arc_color : Color = Color(1, 1, 1, 1)
+var circle_range_color : Color = Color(0.75, 0.75, 0.75, 0.1)
+
+const range_module_default_circle_range_color : Color = Color(0.2, 0.2, 0.2, 0.125)
+
 
 onready var coll_shape = $CollShape
 
@@ -56,9 +60,7 @@ func hide_range():
 func _draw():
 	if displaying_range:
 		if can_display_range:
-			var color : Color = Color.gray
-			color.a = 0.1
-			draw_circle(Vector2(0, 0), detection_range, color)
+			draw_circle(Vector2(0, 0), detection_range, circle_range_color)
 		
 		if can_display_circle_arc:
 			draw_circle_arc(Vector2(0, 0), detection_range, 0, 360, circle_arc_color)

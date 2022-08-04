@@ -42,15 +42,16 @@ func _ready():
 		bench_slot.z_index = ZIndexStore.TOWER_BENCH_PLACABLES
 
 
-func insert_tower(tower_id : int, arg_bench_slot = _find_empty_slot(), is_tower_bought : bool = false):
+func insert_tower(tower_id : int, arg_bench_slot = _find_empty_slot(), is_tower_bought : bool = false) -> AbstractTower:
 	var bench_slot = arg_bench_slot
 	
 	if bench_slot != null:
-		create_tower_and_add_to_scene(tower_id, bench_slot, is_tower_bought)
+		return create_tower_and_add_to_scene(tower_id, bench_slot, is_tower_bought)
+	else:
+		return null
 
-
-func insert_tower_from_last(tower_id : int):
-	insert_tower(tower_id, _find_empty_slot_from_last())
+func insert_tower_from_last(tower_id : int, is_tower_bought : bool = false) -> AbstractTower:
+	return insert_tower(tower_id, _find_empty_slot_from_last(), is_tower_bought)
 
 
 #
@@ -79,6 +80,15 @@ func add_tower_to_scene(arg_tower_instance, is_tower_bought : bool = false):
 
 
 #
+
+func _find_number_of_empty_slots() -> int:
+	var amount : int = 0
+	
+	for bench_slot in all_bench_slots:
+		if bench_slot.tower_occupying == null:
+			amount += 1
+	
+	return amount
 
 
 # Returns null if no empty slot
@@ -115,6 +125,9 @@ func make_all_slots_not_glow():
 func _on_occupancy_in_bench_slot_changed(tower, bench_slot):
 	if tower != null:
 		emit_signal("tower_entered_bench_slot", tower, bench_slot)
+	else:
+		emit_signal("tower_removed_from_bench_slot", tower, bench_slot)
 
 func _on_tower_left_bench_slot(tower, bench_slot):
-	emit_signal("tower_removed_from_bench_slot", tower, bench_slot)
+	#emit_signal("tower_removed_from_bench_slot", tower, bench_slot)
+	pass

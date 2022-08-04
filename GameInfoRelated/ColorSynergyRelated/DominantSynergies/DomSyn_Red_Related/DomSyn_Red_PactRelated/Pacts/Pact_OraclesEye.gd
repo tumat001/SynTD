@@ -20,7 +20,7 @@ var _time_pos_to_spawn_shadows : Array = []
 
 #
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.ORACLES_EYE, "Oracle's Eye", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.ORACLES_EYE, "Oracle's Eye", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
 		_base_downtime_for_range_gain = 1.0

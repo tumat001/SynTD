@@ -530,7 +530,7 @@ func _cast_knock_up_ability(cooldown_amount : float):
 	for tower in tower_detecting_range_module.get_all_in_map_and_active_towers_in_range():
 		if tower != null:
 			tower.add_tower_effect(knock_up_effect)
-			tower.take_damage(knock_up_flat_damage_to_towers)
+			tower.take_damage(knock_up_flat_damage_to_towers, self)
 	
 	_construct_knock_up_particle()
 	

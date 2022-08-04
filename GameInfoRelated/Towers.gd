@@ -124,6 +124,8 @@ const shackled_image = preload("res://TowerRelated/Color_Violet/Shackled/Shackle
 const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
 const amalgamator_image = preload("res://TowerRelated/Color_Black/Amalgamator/Amalgamator_Omni.png")
 
+const healing_symbol_image = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/HealingSymbols_Omni_Charged.png")
+
 enum {
 	NONE = 0,
 	
@@ -211,15 +213,19 @@ enum {
 	
 	# OTHERS (900)
 	HERO = 900, # WHITE
-	AMALGAMATOR = 901 # BLACK
+	AMALGAMATOR = 901, # BLACK
 	
 	
 	# MISC (2000)
 	FRUIT_TREE_FRUIT = 2000, #THIS VALUE IS HARDCODED IN AbstractTower's can_accept_ingredient..
+	
+	HEALING_SYMBOL = 2001,
 }
 
 # Can be used as official list of all towers
 const TowerTiersMap : Dictionary = {
+	HEALING_SYMBOL : 1,
+	
 	MONO : 1,
 	SPRINKLER : 1,
 	SIMPLEX : 1,
@@ -676,7 +682,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# INS END
 		
 		info.tower_descriptions = [
-			"Has many attacks. Shoots orbs, diamonds, and bolts at different rates. Stats shown are for the orbs.",
+			"Has many attacks. Shoots orbs, diamonds, and bolts at different rates",
 			"Only the orbs can be controlled by targeting options. The orbs are considered to be CHAOS's main attack.",
 			"",
 			"Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target.",
@@ -684,6 +690,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Diamond damage: |0|. Applies on hit effects.", [interpreter_for_dia]],
 			["Bolt damage: |0|. Does not apply on hit effects.", [interpreter_for_bolt]],
 			["Sword damage: |0|. Does not apply on hit effects.", [interpreter_for_sword]]
+		]
+		
+		info.tower_simple_descriptions = [
+			info.tower_descriptions[0],
+			["Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target, dealing |0|.", [interpreter_for_sword]],
 		]
 		
 		#
@@ -760,7 +771,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# INS END
 		
 		info.tower_descriptions = [
-			"Stats shown are for the arrow.",
+			#"Stats shown are for the arrow.",
 			["Shoots an arrow that releases a ring. The ring marks up to |0|.", [interpreter_for_mark_count]],
 			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
@@ -768,6 +779,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Shots deal |0|. Applies on hit effects.", [interpreter_for_normal_shot]],
 			["If only 1 enemy is marked, the shot instead deals |0|.", [interpreter_for_emp_shot]],
 		]
+		
+		info.tower_simple_descriptions = [
+			["Shoots an arrow that marks up to |0|.", [interpreter_for_mark_count]],
+			["Ping shoots all marked enemies, dealing |0| to each enemy.", [interpreter_for_normal_shot]],
+			["If only 1 enemy is marked, the shot instead deals |0|.", [interpreter_for_emp_shot]],
+		]
+		
 		
 		
 		var tower_base_effect : PingletAdderEffect = PingletAdderEffect.new()
@@ -811,6 +829,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"When the coin hits an enemy, it turns to its left.",
 			"When a coin kills 2 enemies, it grants 1 gold to the player. This effect can be triggered by a coin any amount of times.",
 			"The tower has a 1/50 chance of shooting a gold coin, and when it does, the tower grants 1 gold to the player.",
+			#"The tower has a 1/50 chance of granting 1 gold to the player.",
+		]
+		
+		info.tower_simple_descriptions = [
+			["Shoots coins at enemies. Coins can hit up to |0|.", [interpreter_for_pierce]],
+			"When a coin kills 2 enemies, it grants 1 gold to the player.",
+			"The tower has a 1/50 chance of granting 1 gold to the player when attacking.",
 		]
 		
 		var tower_base_effect : TowerFullSellbackEffect = TowerFullSellbackEffect.new(COIN)
@@ -907,6 +932,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"\"Is it a beacon, or a dish?\""
 		]
 		
+		info.tower_simple_descriptions = [
+			"Gives buffs to nearby towers.",
+			["Grants |0| as an elemental on hit damage buff.", [interpreter_for_ele_on_hit]],
+			["Grants |0| as percent attack speed buff.", [interpreter_for_attk_speed]],
+			["Grants |0| as bonus range.", [interpreter_for_range]],
+		]
+		
 #		info.tower_descriptions = [
 #			"Does not attack, but instead casts an aura that buffs towers in range every 5 seconds for 4 seconds.",
 #			"Grants 20% of its total base damage as an elemental on hit damage buff.",
@@ -948,13 +980,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 2 seconds."
 		]
 		
-		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(1.25, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
+		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(1, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
 		var enemy_effect : EnemyStackEffect = EnemyStackEffect.new(enemy_final_effect, 1, 5, StoreOfEnemyEffectsUUID.ING_MINI_TESLA_STACK)
 		enemy_effect.is_timebound = true
 		enemy_effect.time_in_seconds = 3
 		
 		var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.ING_MINI_TESLA)
-		tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 1.25 seconds."
+		tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 1 second."
 		tower_effect.effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Static.png")
 		
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
@@ -1020,6 +1052,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Increasing this tower's total attack speed compared to its base attack speed increases the rate of energy accumulation."
 		]
 		
+		info.tower_simple_descriptions = [
+			"When idle, Charge accumulates energy. Upon attacking, Charge expends all energy to deal bonus physical on hit damage based on expended energy.",
+			["Max flat physical on hit damage portion: |0|", [interpreter_for_flat_on_hit]],
+			["Max percent enemy health physical on hit damage portion: |0|", [interpreter_for_perc_on_hit]],
+		]
+		
+		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_CHARGE)
 		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
 		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_CHARGE, attr_mod, DamageType.PHYSICAL)
@@ -1072,7 +1111,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# ins end
 		
 		info.tower_descriptions = [
-			"Stats shown are for the magnets.",
 			"When shooting, Magnetizer alternates between blue magnet and red magnet. Magnetizer switches to the next targeting option after shooting a magnet.",
 			"Magnets stick to the first enemy they hit. When the enemy they are stuck to dies, they drop on the ground.",
 			"When there is at least one blue and one red magnet that has hit an enemy or is on the ground, Magnetizer casts Magnetize.",
@@ -1081,6 +1119,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			#"The beam deals 9 elemental damage. The beam benefits from base damage buffs, on hit damages and effects. Damage scales with ability potency.",
 			["The beam deals |0|. Applies on hit effects", [interpreter]],
 			
+		]
+		
+		info.tower_simple_descriptions = [
+			"When shooting, Magnetizer alterates between blue magnet and red magnet",
+			"Beams form between blue and red magnets.",
+			["The beam deals |0|. Applies on hit effects", [interpreter]],
 		]
 		
 		
@@ -1304,7 +1348,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Campfire cannot gain Rage for |0| after casting Heat Pact.", [interpreter_for_cooldown]],
 		]
 		
-		
+		info.tower_descriptions = [
+			"Campfire gains Rage when enemies take damage in its range.",
+			"Upon reaching enough Rage, Campfire consumes all Rage to cast Heat Pact.",
+			"",
+			["Heat Pact: The next attack of a tower deals bonus |0|.", [interpreter_for_on_hit]],
+		]
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_CAMPFIRE)
@@ -1369,6 +1418,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["The explosion also leaves behind scorched earth that lasts for 7 seconds, which slows by 30% and deals |0| per 0.5 seconds to enemies while inside it. Does not apply on hit effects.", [interpreter_for_crater]],
 		]
 		
+		info.tower_simple_descriptions = [
+			"Launches a molten boulder at the target's location.",
+			["The boulder explodes upon reaching the location, dealing |0|.", [interpreter_for_boulder]],
+			["The explosion also leaves behind scorched earth that lasts for 7 seconds, which slows by 30% and deals |0| per 0.5 seconds to enemies while inside it.", [interpreter_for_crater]],
+		]
+		
 		var expl_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_VOLCANO)
 		expl_attr_mod.percent_amount = 100
 		expl_attr_mod.percent_based_on = PercentType.BASE
@@ -1401,6 +1456,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"704's emblems can be upgraded with points, and each can be upgraded up to 4 times. 704 starts with 4 points.",
 			"",
 			"\"704 is an open furnace with [redacted] origins.\""
+		]
+		
+		info.tower_simple_descriptions = [
+			"704 possesses 3 emblems, and each can be upgraded to give bonus effects.",
+			"704's emblems can be upgraded with points, and each can be upgraded up to 4 times. 704 starts with 4 points.",
 		]
 		
 		var effect := _704_EmblemPointsEffect.new()
@@ -1456,6 +1516,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Flameburst's main attack causes enemies to spew out 4 flamelets around themselves.",
 			["Each flamelet deals |0|, and has |1|.", [interpreter_for_flat_on_hit, interpreter_for_pierce]],
 			"Bonus range gained increases the range of the flamelets."
+		]
+		
+		info.tower_simple_descriptions = [
+			"Flameburst's main attack causes enemies to spew out 4 flamelets around themselves.",
+			["Each flamelet deals |0|, and has |1|.", [interpreter_for_flat_on_hit, interpreter_for_pierce]],
 		]
 		
 		var effect := FlameBurstModuleAdderEffect.new()
@@ -1558,11 +1623,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# ins end
 		
 		info.tower_descriptions = [
-			#"Enthalphy gains bonus 0.75 damage for every 40 range.",
 			["Enthalphy gains bonus |0|.", [interpreter_for_bonus_dmg_ratio]],
 			["Enthalphy also gains bonus |0| for its next three attacks after killing an enemy.", [interpreter_for_flat_on_hit]],
 			"",
 			"\"H. 1) Increase reach of system. 2) Increase will of system.\""
+		]
+		
+		info.tower_simple_descriptions = [
+			["Enthalphy gains bonus |0|.", [interpreter_for_bonus_dmg_ratio]],
+			["Enthalphy also gains bonus |0| for its next three attacks after killing an enemy.", [interpreter_for_flat_on_hit]],
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ENTHALPHY)
@@ -1622,6 +1691,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Entropy also gains |0| for its first 230 attacks.", [interpreter_for_second]],
 			"",
 			"\"S. The inevitable end of all systems.\""
+		]
+		
+		info.tower_simple_descriptions = [
+			["Entropy gains |0| for its first 130 attacks.", [interpreter_for_first]],
+			["Entropy also gains |0| for its first 230 attacks.", [interpreter_for_second]],
 		]
 		
 		# Ingredient related
@@ -1790,13 +1864,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"\"Feed the system.\""
 		]
 		
-#		info.tower_descriptions = [
-#			"IE=U discards the ingredient effect of Entropy and Enthalphy when they are absorbed. Instead, a temporary buff that lasts for 5 rounds is received.",
-#			"Absorbing Entropy gives 60% bonus attack speed for the first, and 20% for the subsequent.",
-#			"Absorbing Enthalphy gives 125 bonus range for the first, and 45 for the subsequent.",
-#			"",
-#			"\"Feed the system.\""
-#		]
+		info.tower_simple_descriptions = [
+			"IE=U discards the ingredient effect of Entropy and Enthalphy when they are absorbed. Instead, a temporary buff that lasts for 5 rounds is received.",
+			["Absorbing Entropy gives |0| for the first, and |1| for the subsequent.", [interpreter_for_entropy_first, interpreter_for_entropy_second]],
+			["Absorbing Enthalphy gives |0| for the first, and |1| for the subsequent.", [interpreter_for_enthalphy_first, interpreter_for_enthalphy_second]],
+		]
 		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_IEU)
@@ -1825,9 +1897,17 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		
 		info.tower_descriptions = [
-			"Does not attack, but instead gives a fruit at the end of every 3rd round of being in the map.",
+			"Does not attack",
+			"Gives a fruit at the end of every 3rd round of being in the map.",
+			"Fruits do not attack, but have an ingredient effect. Fruits can be given to any tower regardless of tower color.",
+			"",
 			"Fruits appear in the tower bench, and will be converted into gold when no space is available.",
+		]
+		
+		info.tower_simple_descriptions = [
+			"Gives a fruit at the end of every 3rd round of being in the map.",
 			"Fruits do not attack, but have an ingredient effect. Fruits can be given to any tower regardless of tower color.",
 		]
 		
@@ -1940,6 +2020,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"\"Big spike for small enemies\""
 		]
 		
+		info.tower_simple_descriptions = [
+			"Impale shoots up a spike that stabs an enemy, stunning them for 2.2 seconds.",
+			["When the stun expires, Impale retracts the spike, dealing damage again. The retract damage deals |0| when the enemy has less than 75% of their max health.", [interpreter_for_retract_bonus_dmg_on_threshold]],
+			["Normal type enemies take additional |0| from the rectact damage.", [interpreter_for_retract_on_normals]],
+		]
+		
 		var imp_dmg_effect = ImpaleBonusDamageEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, imp_dmg_effect)
 		
@@ -1999,7 +2085,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ability_descs = [
 			"Ability: Coordinated Attack. Orders all members to attack the marked enemy once, regardless of range.",
 			"Projectiles gain extra range to be able to reach the marked target.",
-			#"Member's damage in Coordinated Attack scales with Leader's total ability potency.",
 			["Member's damage in Coordinated Attack deal |0|.", [interpreter_for_bonus_dmg]],
 			"The marked enemy is also stunned for 2.75 seconds.",
 			["Cooldown: |0|", [interpreter_for_cooldown]],
@@ -2017,6 +2102,26 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		for desc in ability_descs:
 			info.tower_descriptions.append(desc)
 		
+		########
+		
+		var simple_ability_descs = [
+			"Ability: Coordinated Attack. Orders all members to attack the marked enemy once, regardless of range.",
+			["Member's damage in Coordinated Attack deal |0|.", [interpreter_for_bonus_dmg]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+		]
+		
+		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_SIMPLE_DESCRIPTION] = simple_ability_descs
+		
+		info.tower_simple_descriptions = [
+			"Leader's main attack marks the target enemy.",
+			"Leader also manages members. Leader can have up to 5 members.",
+			"",
+		]
+		
+		for desc in simple_ability_descs:
+			info.tower_simple_descriptions.append(desc)
+		
+		#
 		
 		var targ_effect = LeaderTargetingTowerEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, targ_effect)
@@ -2857,7 +2962,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack. This event does not occur when the triggering attack is from another shocker ball.",
 			"The ball returns to Shocker when the enemy dies, exits the map, when the ball fails to stick to a target, or when the enemy is not hit after 5 seconds.",
 			"",
-			["Shocker ball has |0|. Its bolts deal |1|. Applies on hit effects.", [interpreter_for_range, interpreter_for_bolt]],
+			["Shocker ball has |0|. Its bolts deal |1|.", [interpreter_for_range, interpreter_for_bolt]],
 		]
 		
 #		info.tower_descriptions = [
@@ -4243,7 +4348,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 3
 		info.base_attk_speed = 0.75
 		info.base_pierce = 0
-		info.base_range = 95
+		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -4280,7 +4385,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ability: Production. Se Propager automatically attempts to plant a Les Semis in an unoccupied in-range tower slot.",
 			["Cooldown : |0|.", [interpreter_for_cooldown]],
 			"",
-			"Les Semis: a tower that inherits 50% of its parents base damage on creation.",
+			"Les Semis: a tower that inherits 100% of its parents base damage on creation.",
 			"Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by 2.",
 			["Les Semis gains |0| per 1 gold it is worth selling for.", [interpreter_for_base_dmg]],
 			"Les Semis does not contribute to the color synergy, but benefits from it. Does not take a tower slot.",
@@ -4297,8 +4402,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_image_in_buy_card = les_semis_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
 		
-		info.base_damage = 0
-		info.base_attk_speed = 0.7
+		info.base_damage = 0 #set by parent
+		info.base_attk_speed = 0.75
 		info.base_pierce = 0
 		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
@@ -4320,7 +4425,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		#Se Propager description also uses this. Change se prop desc if changing this
 		info.tower_descriptions = [
-			"Inherits 50% of its parents base damage upon creation.",
+			"Inherits 100% of its parents base damage upon creation.",
 			"Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by 2.",
 			["Les Semis gains |0| per 1 gold it is worth selling for.", [interpreter_for_base_dmg]],
 			"Les Semis does not contribute to the color synergy, but benefits from it. Does not take a tower slot.",
@@ -4491,6 +4596,28 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"La nature's stats do not affect these abilties.",
 			"",
 			"\"Great wonders of nature\""
+		]
+		
+		
+	elif tower_id == HEALING_SYMBOL:
+		info = TowerTypeInformation.new("Healing Symbol", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.tower_image_in_buy_card = healing_symbol_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0
+		info.base_pierce = 0
+		info.base_range = 135
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 0
+		
+		
+		info.tower_descriptions = [
+			"Does not attack.",
+			"Every 5 seconds, Healing Symbol heals every tower in range by 20%, increased to 40% for the tower that has dealt the most damage (in range).",
+			"On round end: If Healing Symbol is alive and has not healed a damaged tower, it heals the player by 1."
 		]
 		
 		
@@ -4666,3 +4793,8 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/La_Chasseur/LaChasseur.tscn")
 	elif tower_id == LA_NATURE:
 		return load("res://TowerRelated/Color_Green/LaNature/La_Nature.tscn")
+	elif tower_id == HEALING_SYMBOL:
+		return load("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/HealingSymbol.tscn")
+
+
+

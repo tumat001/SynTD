@@ -16,7 +16,7 @@ var _current_additional_gold_cost_for_level_amount : int
 
 const player_worth_for_offerable : int = 60
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.JEWELED_BLADE, "Jeweled Blade", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.JEWELED_BLADE, "Jeweled Blade", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
 		total_worth_per_100_to_base_dmg_ratio = 8
@@ -57,6 +57,7 @@ func _first_time_initialize():
 	game_elements.gold_manager.connect("current_gold_changed", self, "_on_player_current_gold_changed", [], CONNECT_PERSIST)
 	
 	game_elements.level_manager.connect("on_current_level_changed", self, "_on_player_level_changed", [], CONNECT_PERSIST)
+
 
 # SIGNALS RELATED
 

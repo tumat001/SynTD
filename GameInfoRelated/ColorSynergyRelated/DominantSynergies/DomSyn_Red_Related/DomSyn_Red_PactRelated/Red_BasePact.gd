@@ -26,6 +26,7 @@ var good_descriptions : Array
 var bad_descriptions : Array
 
 var tier : int
+var tier_needed_for_activation : int # most of the time, same as tier, but Future Sight can change this.
 
 var is_sworn : bool
 var is_effects_active_in_game_elements : bool
@@ -33,9 +34,11 @@ var is_activation_requirements_met : bool
 
 var pact_mag_rng : RandomNumberGenerator
 
-func _init(arg_uuid : int, arg_name : String, arg_tier : int):
+func _init(arg_uuid : int, arg_name : String, arg_tier : int,
+		arg_tier_needed_for_activation : int):
 	pact_uuid = arg_uuid
 	tier = arg_tier
+	tier_needed_for_activation = arg_tier_needed_for_activation
 	pact_name = arg_name
 	
 	pact_mag_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.DOMSYN_RED_PACT_MAGNITUDE)
@@ -71,11 +74,16 @@ func _check_requirement_status_and_do_appropriate_action():
 
 
 func if_tier_requirement_is_met() -> bool:
-	return red_dom_syn.curr_tier <= tier and red_dom_syn.curr_tier != red_dom_syn.TIER_INACTIVE
+	return red_dom_syn.curr_tier <= tier_needed_for_activation and red_dom_syn.curr_tier != red_dom_syn.TIER_INACTIVE
 
 func _if_other_requirements_are_met() -> bool:
 	return true
 
+
+#
+
+func _if_pact_can_be_sworn() -> bool:
+	return true
 
 #
 

@@ -39,6 +39,8 @@ var tower_inventory_bench setget set_tower_inventory_bench
 var is_playing_shine_sparkle : bool = false
 var shine_current_duration : float
 
+var game_settings_manager
+
 onready var ingredient_icon_rect = $MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/IngredientIcon
 onready var tower_name_label = $MarginContainer/VBoxContainer/MarginerLower/Lower/TowerNameLabel
 onready var tower_cost_label = $MarginContainer/VBoxContainer/MarginerLower/Lower/TowerCostLabel
@@ -157,6 +159,7 @@ func _free_old_and_create_tooltip_for_tower():
 		current_tooltip = TowerTooltipScene.instance()
 		current_tooltip.tower_info = tower_information
 		current_tooltip.tooltip_owner = buy_card
+		current_tooltip.game_settings_manager = game_settings_manager
 		
 		get_tree().get_root().add_child(current_tooltip)
 

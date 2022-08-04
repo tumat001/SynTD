@@ -4,10 +4,15 @@ const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd
 const AbilityTooltip = preload("res://GameHUDRelated/AbilityPanel/AbilityTooltip/AbilityTooltip.gd")
 const AbilityTooltip_Scene = preload("res://GameHUDRelated/AbilityPanel/AbilityTooltip/AbilityTooltip.tscn")
 
+const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
+
 const NO_HOTKEY_NUM : int = -1
 
 
 signal button_destroying_self()
+
+
+var game_settings_manager : GameSettingsManager
 
 var ability : BaseAbility setget set_ability
 
@@ -218,10 +223,16 @@ func _construct_tooltip():
 
 func _update_tooltip():
 	if ability_tooltip != null:
-		if ability.descriptions_source == null:
-			ability_tooltip.descriptions = ability.descriptions
-		else:
-			ability_tooltip.descriptions = ability.descriptions_source.call(ability.descriptions_source_func_name)
+		if game_settings_manager.descriptions_mode == GameSettingsManager.DescriptionsMode.COMPLEX or !ability.has_simple_descriptions():
+			if ability.descriptions_source == null:
+				ability_tooltip.descriptions = ability.descriptions
+			else:
+				ability_tooltip.descriptions = ability.descriptions_source.call(ability.descriptions_source_func_name)
+		elif game_settings_manager.descriptions_mode == GameSettingsManager.DescriptionsMode.SIMPLE:
+			if ability.simple_descriptions_source == null:
+				ability_tooltip.descriptions = ability.simple_descriptions
+			else:
+				ability_tooltip.descriptions = ability.simple_descriptions_source.call(ability.simple_descriptions_source_func_name)
 		
 		ability_tooltip.header_left_text = ability.display_name
 		

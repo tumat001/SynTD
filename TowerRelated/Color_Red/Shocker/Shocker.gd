@@ -102,6 +102,7 @@ func _ready():
 	shock_attack_module.on_hit_damage_scale = shock_base_damage_ratio
 	shock_attack_module.on_hit_effect_scale = 1
 	
+	shock_attack_module.benefits_from_bonus_on_hit_effect = false
 	shock_attack_module.benefits_from_bonus_attack_speed = false
 	
 	var beam_sprite_frame : SpriteFrames = SpriteFrames.new()

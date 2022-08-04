@@ -17,7 +17,7 @@ const CombinationIndicator_Pic06 = preload("res://GameInfoRelated/CombinationRel
 const CombinationIndicator_Pic07 = preload("res://GameInfoRelated/CombinationRelated/Assets/CombinationIndicator/CombinationIndicator_07.png")
 const CombinationIndicator_Pic08 = preload("res://GameInfoRelated/CombinationRelated/Assets/CombinationIndicator/CombinationIndicator_08.png")
 
-
+signal on_combination_effect_added(arg_new_effect_id)
 signal on_combination_amount_needed_changed(new_val)
 signal on_tiers_affected_changed()
 
@@ -353,6 +353,7 @@ func on_combination_activated():
 		
 		_put_combination_in_hud_display(combi_effect)
 		
+		emit_signal("on_combination_effect_added", combi_effect.combination_id)
 
 
 func _construct_combination_effect_from_tower(arg_tower_id : int) -> CombinationEffect:

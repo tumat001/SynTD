@@ -47,7 +47,8 @@ const tower_stock_amount_exceptions : Dictionary = {
 const blacklisted_towers_to_inventory : Array = [
 	Towers.FRUIT_TREE_FRUIT,
 	
-	Towers.LES_SEMIS
+	Towers.LES_SEMIS,
+	Towers.HEALING_SYMBOL,
 ]
 
 const towers_not_initially_in_inventory : Array = [
@@ -58,7 +59,8 @@ const towers_not_initially_in_inventory : Array = [
 	Towers.LA_CHASSEUR,
 	Towers.LA_NATURE,
 	
-	Towers.LES_SEMIS
+	Towers.LES_SEMIS,
+	Towers.HEALING_SYMBOL,
 ]
 
 # tower id to amount map
@@ -285,17 +287,20 @@ func roll_towers_in_shop(level_of_roll : int = last_calculated_effective_shop_le
 	
 	var tower_ids : Array = []
 	for i in last_calculated_towers_per_shop:
-		tower_ids.append(_determine_tower_id_to_be_rolled(level_of_roll))
+		tower_ids.append(_determine_tower_id_to_be_rolled_from_level_of_roll(level_of_roll))
 	
 	buy_sell_level_roll_panel.update_new_rolled_towers(tower_ids)
 
 
-func _determine_tower_id_to_be_rolled(level_of_roll : int) -> int:
+func _determine_tower_id_to_be_rolled_from_level_of_roll(level_of_roll : int) -> int:
 	var tier = _determine_tier_to_be_rolled(level_of_roll)
+	return _determine_tower_id_to_be_rolled_from_tier(tier)
+
+func _determine_tower_id_to_be_rolled_from_tier(arg_tier : int):
 	var tower_id_to_roll : int = -1
 	
-	if tier != -1:
-		var tower_ids_in_tier : Array = tier_tower_map[tier]
+	if arg_tier != -1:
+		var tower_ids_in_tier : Array = tier_tower_map[arg_tier].duplicate()
 		_remove_tower_ids_with_no_available_inventory_from_array(tower_ids_in_tier)
 		
 		var tower_id_count_map : Dictionary = _get_tower_id_inventory_count_map(tower_ids_in_tier)
@@ -391,6 +396,22 @@ func _get_total_inventory_count_of_towers(arg_tower_id_count_map : Dictionary) -
 	
 	return total
 
+# get random tower related
+
+func create_random_tower_at_bench(arg_tier : int, arg_is_tower_bought : bool = false): # returns the created tower
+	var rand_tower_id = _get_random_tower_id_with_stock_in_shop(arg_tier)
+	return game_elements.tower_inventory_bench.insert_tower_from_last(rand_tower_id, arg_is_tower_bought)
+
+func _get_random_tower_id_with_stock_in_shop(arg_tier : int):
+	return _determine_tower_id_to_be_rolled_from_tier(arg_tier)
+#	var tower_ids_in_tier : Array = tier_tower_map[arg_tier].duplicate()
+#	_remove_tower_ids_with_no_available_inventory_from_array(tower_ids_in_tier)
+#
+#	var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TOWER_DECIDER)
+#	var rng_i = rng.randi_range(0, tower_ids_in_tier.size() - 1)
+#
+#	return tower_ids_in_tier[rng_i]
+
 
 # tower stock related
 
@@ -438,10 +459,11 @@ func _update_tier_has_tower_map(tiers : Array = tier_has_tower_map.keys(), is_ad
 			var tier_has_stock : bool = false
 			
 			for tower_id in Towers.TowerTiersMap.keys():
-				var stock = current_tower_stock_inventory[tower_id]
-				if stock > 0:
-					tier_has_stock = true
-					break
+				if current_tower_stock_inventory.has(tower_id):
+					var stock = current_tower_stock_inventory[tower_id]
+					if stock > 0:
+						tier_has_stock = true
+						break
 			
 			tier_has_tower_map[tier] = tier_has_stock
 

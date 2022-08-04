@@ -39,11 +39,20 @@ func add_ability(ability : BaseAbility, add_ability_to_panel : bool = true):
 			ability_panel.add_ability(ability)
 
 
+# Use base ability's destroy_self func
 #func remove_ability(ability : BaseAbility):
 #	if is_connected("time_decreased", ability, "time_decreased"):
 #		disconnect("time_decreased", ability, "time_decreased")
 #		disconnect("round_ended", ability, "round_ended")
 #		disconnect("round_started", ability, "round_started")
+#		disconnect("add_ability_effect", ability, "add_ability_effect_from_manager")
+#		disconnect("remove_ability_effect", ability, "remove_ability_effect_from_manager")
+#
+#		for effect in all_effects.values():
+#			ability.remove_ability_effect(effect)
+#
+#		ability_panel.remove_ability(ability)
+
 
 
 # setters

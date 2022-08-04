@@ -10,7 +10,7 @@ var initial_good_desc_size : int
 const health_max_threshold_before_offerable : float = 80.0
 const health_min_threshold_before_offerable : float = 30.0
 
-func _init(arg_tier : int).(StoreOfPactUUID.PactUUIDs.PLAYING_WITH_FIRE, "Playing With Fire", arg_tier):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.PLAYING_WITH_FIRE, "Playing With Fire", arg_tier, arg_tier_for_activation):
 	var possible_speed_gain_values : Array
 	var possible_damage_gain_values : Array
 	
