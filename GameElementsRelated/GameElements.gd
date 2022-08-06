@@ -28,6 +28,8 @@ const MapManager = preload("res://GameElementsRelated/MapManager.gd")
 const CombinationManager = preload("res://GameElementsRelated/CombinationManager.gd")
 const CombinationTopPanel = preload("res://GameHUDRelated/CombinationRelatedPanels/CombinationTopPanel/CombinationTopPanel.gd")
 const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
+const GenericNotifPanel = preload("res://GameHUDRelated/NotificationPanel/GenericPanel/GenericNotifPanel.gd")
+
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var synergy_manager
@@ -49,7 +51,7 @@ var level_manager : LevelManager
 var combination_manager : CombinationManager
 var combination_top_panel : CombinationTopPanel
 var shared_passive_manager
-var game_settings_manager : GameSettingsManager
+
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
@@ -61,6 +63,8 @@ var tower_empty_slot_notif_panel : TowerEmptySlotNotifPanel
 var left_panel
 var round_damage_stats_panel : RoundDamageStatsPanel
 var map_manager : MapManager
+var game_settings_manager : GameSettingsManager
+var generic_notif_panel : GenericNotifPanel
 
 onready var top_left_coord_of_map = $TopLeft
 onready var bottom_right_coord_of_map = $BottomRight
@@ -93,12 +97,14 @@ func _ready():
 	combination_top_panel = $CombinationTopPanel
 	shared_passive_manager = $SharedPassiveManager
 	game_settings_manager = $GameSettingsManager
+	generic_notif_panel = $NotificationNode/GenericNotifPanel
 	
 	selection_notif_panel = $NotificationNode/SelectionNotifPanel
 	tower_empty_slot_notif_panel = $NotificationNode/TowerEmptySlotNotifPanel
 	
 	targeting_panel = right_side_panel.tower_info_panel.targeting_panel
 	tower_info_panel = right_side_panel.tower_info_panel
+	tower_info_panel.game_settings_manager = game_settings_manager
 	
 	round_status_panel = right_side_panel.round_status_panel
 	round_status_panel.game_settings_manager = game_settings_manager
@@ -173,6 +179,9 @@ func _ready():
 	# Selection Notif panel
 	selection_notif_panel.visible = false
 	
+	# Generic Notif Panel
+	generic_notif_panel.visible = false
+	
 	# Whole screen GUI
 	whole_screen_gui.game_elements = self
 	whole_screen_gui.screen_effect_manager = screen_effect_manager
@@ -180,6 +189,7 @@ func _ready():
 	# Leftside panel
 	left_panel.whole_screen_gui = whole_screen_gui
 	left_panel.tower_manager = tower_manager
+	left_panel.game_settings_manager = game_settings_manager
 	
 	# Level manager
 	level_manager.game_elements = self
@@ -234,6 +244,10 @@ func _ready():
 	# shared passive manager
 	shared_passive_manager.game_elements = self
 	
+	# combination top panel
+	combination_top_panel.whole_screen_gui = whole_screen_gui
+	combination_top_panel.combination_manager = combination_manager
+	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round(true)
@@ -245,9 +259,9 @@ func _ready():
 	
 	# FOR TESTING
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_7
+	level_manager.current_level = LevelManager.LEVEL_1
 	#level_manager.current_level = LevelManager.LEVEL_3
-	
+
 	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
@@ -264,18 +278,18 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.PING,
-			Towers.BEACON_DISH,
-			Towers.LEADER,
+			Towers.PROMINENCE,
+			Towers.WAVE,
+			Towers.GRAND,
+			Towers.ORB,
+			Towers.VOLCANO,
 			Towers.CHAOS,
-			Towers.PING,
-			Towers.NUCLEUS,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.ACCUMULAE,
-			Towers.ADEPT,
-			Towers.REAPER,
+			Towers.ROYAL_FLAME,
+			Towers.LAVA_JET,
+			Towers.SCATTER,
 			Towers.RE,
 			Towers.STRIKER,
 			Towers.TRANSMUTATOR

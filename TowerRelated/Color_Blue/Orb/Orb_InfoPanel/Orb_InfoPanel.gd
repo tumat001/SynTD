@@ -8,12 +8,15 @@ const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 
+const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
+
 const not_active_modulate : Color = Color(0.3, 0.3, 0.3, 1)
 const active_modulate : Color = Color(1, 1, 1, 1)
 
 
 var orb_tower setget set_orb_tower
 var attack_tooltip
+var game_settings_manager : GameSettingsManager
 
 onready var sticky_icon = $VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer/StickyIcon
 onready var star_icon = $VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer/StarsIcon
@@ -101,12 +104,20 @@ func _on_StickyIcon_pressed_mouse_event(event):
 		
 		interpreter_for_bomb.array_of_instructions = outer_ins_for_bomb
 		
-		attack_tooltip.descriptions = [
-			"Orb throws a cosmic bomb every 2.5 seconds that latches onto the first enemy it hits. The bomb explodes after 2 seconds, or when the enemy dies.",
-			"Attack speed increases the rate at which cosmic bomb is thrown.",
-			"",
-			["The explosion deals |0|, and hits up to 3 enemies. Does not apply on hit effects.", [interpreter_for_bomb]],
-		]
+		if game_settings_manager.descriptions_mode == GameSettingsManager.DescriptionsMode.COMPLEX:
+			attack_tooltip.descriptions = [
+				"Orb throws a cosmic bomb every 2.5 seconds that latches onto the first enemy it hits. The bomb explodes after 2 seconds, or when the enemy dies.",
+				"Attack speed increases the rate at which cosmic bomb is thrown.",
+				"",
+				["The explosion deals |0|, and hits up to 3 enemies. Does not apply on hit effects.", [interpreter_for_bomb]],
+			]
+		elif game_settings_manager.descriptions_mode == GameSettingsManager.DescriptionsMode.SIMPLE:
+			attack_tooltip.descriptions = [
+				"Orb throws a cosmic bomb every 2.5 seconds that latches onto the first enemy it hits.",
+				"Attack speed increases the rate at which cosmic bomb is thrown.",
+				"",
+				["The explosion deals |0|, and hits up to 3 enemies.", [interpreter_for_bomb]],
+			]
 		
 		get_tree().get_root().add_child(attack_tooltip)
 		
@@ -232,7 +243,8 @@ func _on_RayIcon_pressed_mouse_event(event):
 		attack_tooltip.descriptions = [
 			"Orb channels a constant cosmic ray at its target.",
 			"",
-			["The ray deals |0| 6 times per second. Benefits from bonus attack speed. Does not apply on hit effects.", [interpreter_for_sub_ab]]
+			["The ray deals |0| 6 times per second. Benefits from bonus attack speed.", [interpreter_for_sub_ab]]
+			#Does not apply on hit effects.
 		]
 		
 		get_tree().get_root().add_child(attack_tooltip)

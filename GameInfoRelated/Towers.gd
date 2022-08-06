@@ -2165,8 +2165,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Orb gains new attacks at 1.5, 2.0, and 2.5 total ability potency.",
 			"",
 			["Orb absorbs all other Orbs placed in the map, gaining permanent |0| that stacks. This effect also applies when absorbing another Orb's ingredient effect.", [interpreter_for_ap]],
-			"",
-			"\"Where does the power reside? The wizard, or the orb?\""
 		]
 		
 		
@@ -2229,11 +2227,17 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Grand gains projectile speed at 1.25, 1.50, and 2.00 total ability potency.",
 			["Grand also gains |0|.", [interpreter_for_pierce]],
 			"",
-			"Ability potenct scales Grand's main attack damage.",
+			"Ability potency scales Grand's main attack damage.",
 			"",
 			"When Grand's orb attack reaches its max distance, the bullet redirects to the farthest enemy from Grand.",
+		]
+		
+		info.tower_simple_descriptions = [
+			["Grand gains |0|.", [interpreter_for_pierce]],
 			"",
-			"\"Where does the power reside? The (hand of a) wizard, or the orb?\""
+			"Ability potency scales Grand's main attack damage.",
+			"",
+			"When Grand's orb attack reaches its max distance, the bullet redirects to the farthest enemy from Grand.",
 		]
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_GRAND)
@@ -2283,18 +2287,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		#
 		
-#		var interpreter_for_pierce = TextFragmentInterpreter.new()
-#		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
-#		interpreter_for_pierce.display_body = true
-#		interpreter_for_pierce.header_description = "towers"
-#
-#		var ins_for_pierce = []
-#		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
-#
-#		interpreter_for_pierce.array_of_instructions = ins_for_pierce
-#
-		#
-		
 		var interpreter_for_buff = TextFragmentInterpreter.new()
 		interpreter_for_buff.tower_info_to_use_for_tower_stat_fragments = info
 		interpreter_for_buff.display_body = true
@@ -2322,16 +2314,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Douser does not target towers that currently have the buff, and unprioritizes towers that have no means of attacking. Douser also does not target other Dousers, but can affect them if hit.",
 		]
 		
-#		info.tower_descriptions = [
-#			"Douser casts Buffing Waters after every 5th main attacks.",
-#			"",
-#			["Buffing Waters: Douser shoots a water ball at the closest tower, hitting up to |0|.", [interpreter_for_pierce]],
-#			"Towers hit by Buffing Waters gain 1 bonus base damage for the next 4 benefiting attacks within 10 seconds.",
-#			"Douser also benefits from its own Buffing Water's buff.",
-#			"Douser does not target towers that currently have the buff, and unprioritizes towers that have no means of attacking. Douser also does not target other Dousers, but can affect them if hit.",
-#			"",
-#			"Buffing Waters's projectile benefits from bonus pierce. Ability cdr reduces the needed attacks to trigger this ability."
-#		]
+		info.tower_simple_descriptions = [
+			["Douser casts Buffing Waters after every |0|.", [interpreter_for_attk_count]],
+			"",
+			"Buffing Waters: Douser shoots a water ball at the closest tower",
+			["Towers hit by Buffing Waters gain |0| for the next 4 benefiting attacks within 10 seconds, including itself.", [interpreter_for_buff]],
+		]
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_DOUSER)
@@ -2446,19 +2434,26 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		for desc in ability_desc:
 			info.tower_descriptions.append(desc)
 		
-#		info.tower_descriptions = [
-#			"Wave attacks in bursts of 2.",
-#			["Passive: Wave gains |0|.", [interpreter_for_flat_on_hit]],
-#			"",
-#			"Ability: Tidal Wave. Wave sprays 8 columns of water in a cone facing its current target.",
-#			"Each column deals 1 + twice of Wave's passive on hit damage as elemental damage to all enemies hit.",
-#			"Each column explodes when reaching its max distance, or when hitting 2 enemies. Each explosion deals 0.75 elemental damage to 2 enemies.",
-#			"Activating Tidal Wave reduces the passive on hit damage by 0.5 for 30 seconds. This effect stacks, but does not refresh other stacks.",
-#			"Cooldown: 6 s",
-#			"",
-#			"Additional info is present in this ability's tooltip."
-#		]
+		###
 		
+		var simple_ability_desc = [
+			["Ability: Tidal Wave. Wave sprays |0| in a cone facing its current target, dealing damage based on its passive on hit damage.", [interpreter_for_wave_count]],
+			["Activating Tidal Wave reduces the passive on hit damage by 0.5 for |0|.", [interpreter_for_debuff_cooldown]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+		]
+		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_SIMPLE_DESCRIPTION] = simple_ability_desc
+		
+		info.tower_simple_descriptions = [
+			"Wave attacks in bursts of 2.",
+			["Passive: Wave gains |0|.", [interpreter_for_flat_on_hit]],
+			"",
+		]
+		
+		for desc in simple_ability_desc:
+			info.tower_simple_descriptions.append(desc)
+		
+		
+		#
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_WAVE)
 		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
@@ -2533,13 +2528,18 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		#
 		
 		info.tower_descriptions = [
-			"Automatically attempts to cast Rewind at its target.",
-			"Rewind: After a brief delay, Time machine teleports its non-boss target a few paces backwards.",
+			"Automatically attempts to cast Rewind at its target upon main attacking.",
+			"Rewind: Time machine teleports its non-boss target a few paces backwards.",
 			["Cooldown: |0|", [interpreter_for_debuff_cooldown]],
 			"",
 			"Rewind also applies 3 stacks of Time Dust onto an enemy for 10 seconds. Time Machine’s main attacks onto an enemy consume a stack of Time Dust, reducing Rewind’s cooldown by 2 seconds."
 		]
 		
+		info.tower_simple_descriptions = [
+			"Auto casts Rewind upon main attacking.",
+			"Rewind: Time machine teleports its non-boss target a few paces backwards. Attacking a rewinded target reduces this ability's cooldown by 2 seconds, up to 3 times.",
+			["Cooldown: |0|", [interpreter_for_debuff_cooldown]],
+		]
 		
 		var effect = TimeMachineEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, effect)
@@ -2582,7 +2582,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var interpreter_for_bonus_dmg_per_stack = TextFragmentInterpreter.new()
 		interpreter_for_bonus_dmg_per_stack.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_bonus_dmg_per_stack.display_body = true
+		interpreter_for_bonus_dmg_per_stack.display_body = false
 		
 		var ins_for_retract_bonus_dmg_per_stack = []
 		ins_for_retract_bonus_dmg_per_stack.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 25, true))
@@ -2593,7 +2593,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var interpreter_for_bonus_dmg_total = TextFragmentInterpreter.new()
 		interpreter_for_bonus_dmg_total.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_bonus_dmg_total.display_body = true
+		interpreter_for_bonus_dmg_total.display_body = false
 		
 		var ins_for_retract_bonus_dmg_total = []
 		ins_for_retract_bonus_dmg_total.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 100, true))
@@ -2630,24 +2630,21 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Automatically attempts to casts Seed Bomb when hitting an enemy with its main attack.",
 			"Seed Bomb: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed to gain a stack of Fragile.",
-			"After 6 seconds or reaching 4 stacks of Fragile, the seed bomb explodes, hitting up to 5 enemies. Fragile stacks increase the explosions's damage.",
+			"After 6 seconds or reaching 4 stacks of Fragile, the seed bomb explodes, hitting up to 5 enemies.",
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
 			["Each Fragile stack allows the explosion to deal |0| (up to |1|).", [interpreter_for_bonus_dmg_per_stack, interpreter_for_bonus_dmg_total]],
 			["Seed Bomb's explosion deals |0|. Applies on hit effects.", [interpreter]],
 		]
 		
-		
-#		info.tower_descriptions = [
-#			"Automatically attempts to casts Seed Bomb when hitting an enemy with its main attack.",
-#			"Seed Bomb: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed to gain a stack of Fragile.",
-#			"After 6 seconds or reaching 4 stacks of Fragile, the seed bomb explodes, hitting up to 5 enemies. The explosion's damage scales with its Fragile stacks.",
-#			"Cooldown: 10 s",
-#			"",
-#			"Each Fragile stack allows the explosion to deal 25% more damage (up to 100% more damage).",
-#			"Seed Bomb's explosion deals 10 physical damage. The explosion benefits from base damage buffs at 400% efficiency, and benefits from on hit damages at 200% efficiency. Applies on hit effects.",
-#		]
-		
+		info.tower_simple_descriptions = [
+			"Autocasts Seed Bomb on hitting a main attack.",
+			"Seed Bomb: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed to gain a stack of Fragile.",
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+			"",
+			["Each Fragile stack allows the explosion to deal |0| (up to |1|).", [interpreter_for_bonus_dmg_per_stack, interpreter_for_bonus_dmg_total]],
+			["Seed Bomb's explosion deals |0|.", [interpreter]],
+		]
 		
 		# Ingredient related
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SEEDER)
@@ -2776,26 +2773,25 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			["Pestilence permanently poisons enemies on hit. The poison deals |0| per second.", [interpreter_for_dmg_per_sec]],
-			"Pestilence's attacks also apply one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply. Enemies become permanently Noxious upon gaining 10 Toxin stacks.",
+			"Attacks also apply one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply. Enemies become permanently Noxious upon gaining 10 Toxin stacks.",
 			"",
-			"Pestilence's main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
+			"Main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
 			["Each explosion deals |0|. Applies on hit effects.", [interpreter_on_expl_dmg]],
 			"",
 			["At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by |0| for the round.", [interpreter_for_attk_speed_debuff]],
 			["For each tower affected, Pestilence gains |0| for the round.", [interpreter_for_attk_speed_buff]]
 		]
 		
-#		info.tower_descriptions = [
-#			["Pestilence permanently poisons enemies on hit. The poison deals |0| per second.", [interpreter_for_dmg_per_sec]],
-#			"Pestilence's attacks also apply one stack of Toxin to enemies hit. Toxin lasts for 8 seconds that refresh per apply. Enemies become permanently Noxious upon gaining 10 Toxin stacks.",
-#			"",
-#			"Pestilence's main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
-#			"Each explosion deals 3 elemental damage.",
-#			"Explosions apply a stack of Toxin. Explosions benefit from base damage buffs, on hit damages at 33% efficiency. Applies on hit effects.",
-#			"",
-#			"At the start of the round or when placed in the map, Pestilence reduces the attack speed of all towers in range by 25% for the round.",
-#			"For each tower affected, Pestilence gains 35% bonus attack speed for the round."
-#		]
+		info.tower_simple_descriptions = [
+			"Attacks apply one stack of Toxin for 8 seconds. Enemies become Noxious upon gaining 10 Toxin stacks.",
+			"",
+			"Main attacks against Noxious enemies causes 6 exploding poison darts to rain around the target enemy's location.",
+			["Each explosion deals |0|. Applies on hit effects.", [interpreter_on_expl_dmg]],
+			"",
+			["Pestilence reduces the attack speed of all towers in range by |0|.", [interpreter_for_attk_speed_debuff]],
+			["For each tower affected, Pestilence gains |0|.", [interpreter_for_attk_speed_buff]]
+		]
+		
 		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_PESTILENCE)
@@ -2875,16 +2871,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Cooldown: |0|.", [interpreter_for_cooldown]]
 		]
 		
-		
-#		info.tower_descriptions = [
-#			["Reaper's attacks deal additional 6% of the enemy's missing health as elemental damage, up to 8 health.", [interpreter_for_perc_on_hit]],
-#			"",
-#			"Killing an enemy grants Reaper 1 stack of Death. Reaper attempts to cast Slash while having Death stacks.",
-#			"Slash: Reaper consumes 1 Death stack to slash the area of the closest enemy, dealing 300% of Reaper's total base damage as physical damage to each enemy hit. Does not apply on hit damages and effects.",
-#			"Casting Slash reduces the damage of subsequent slashes by 50% for 0.5 seconds. This does not stack.",
-#			"Cooldown: 0.2 s."
-#		]
-		
+		info.tower_simple_descriptions = [
+			["Reaper's attacks deal additional |0|, up to 8.", [interpreter_for_perc_on_hit]],
+			"",
+			"Reaper casts Slash upon killing an enemy.",
+			["Ability: Slash. Slashes the area of the closest enemy, dealing |0| to each enemy hit.", [interpreter_for_slash]],
+			"Subsequent slashes within 0.5 seconds deal only 50%.",
+			["Cooldown: |0|.", [interpreter_for_cooldown]]
+		]
 		
 		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_REAPER)
 		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
@@ -2958,12 +2952,20 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# ins end
 		
 		info.tower_descriptions = [
-			"Shocker possesses one shocker ball, which is shot when an enemy is in range. The shocker ball sticks to the first enemy it hits.",
+			"Shocker possesses one shocker ball as its main attack, which sticks to the first enemy it hits.",
 			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack. This event does not occur when the triggering attack is from another shocker ball.",
 			"The ball returns to Shocker when the enemy dies, exits the map, when the ball fails to stick to a target, or when the enemy is not hit after 5 seconds.",
 			"",
 			["Shocker ball has |0|. Its bolts deal |1|.", [interpreter_for_range, interpreter_for_bolt]],
 		]
+		
+		info.tower_simple_descriptions = [
+			"Shocker possesses one shocker ball which sticks to the first enemy it hits.",
+			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack.",
+			"",
+			["Shocker ball has |0|. Its bolts deal |1|.", [interpreter_for_range, interpreter_for_bolt]],
+		]
+		
 		
 #		info.tower_descriptions = [
 #			"Shocker possesses one shocker ball, which is shot when an enemy is in range. The shocker ball sticks to the first enemy it hits.",
@@ -3034,24 +3036,21 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		info.tower_descriptions = [
-			"Adept's attacks gain bonus effects based on its current target's distance from itself on hit.",
-			["Beyond 85% of range: Adept's main attack deals |0|, and slows enemies hit by 30% for 0.75 seconds.", [interpreter_for_bonus_dmg]],
-			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack, but cannot trigger from itself.",
+			"Adept's main attacks gain bonus effects based on its current target's distance from itself on hit.",
+			["Beyond 85% of range: Deal |0|, and slow enemies hit by 30% for 0.75 seconds.", [interpreter_for_bonus_dmg]],
+			"Below 35% of range: Fire a secondary attack which seeks another target. This is also considered to be Adept's main attack, but cannot trigger from itself.",
 			["The secondary attack deals |0| and applies on hit effects. ", [interpreter_for_snd_attk_dmg]],
 			"",
-			"After 3 rounds of being active, Adept gains Far and Close targeting options.",
+			"After 3 rounds of being in the map, Adept gains Far and Close targeting options.",
 		]
 		
-#		info.tower_descriptions = [
-#			"Adept's attacks gain bonus effects based on its current target's distance from itself on hit.",
-#			"Beyond 85% of range: Adept's main attack deals 75% more damage, and slows enemies hit by 30% for 0.75 seconds.",
-#			"Below 35% of range: Adept's main attack causes a secondary attack to fire. The secondary attack seeks another target. This is also considered to be Adept's main attack.",
-#			"The secondary attack deals 2.25 physical damage and applies on hit effects. The secondary attack cannot trigger another secondary attack.",
-#			"",
-#			"After 3 rounds of being active, Adept gains Far and Close targeting options.",
-#			"",
-#			"Adept's bonus damage (from attacking at 85% of range), and secondary attack's damage scale with ability potency."
-#		]
+		info.tower_simple_descriptions = [
+			"Adept's main attacks change based on its current target's distance from itself on hit.",
+			["Beyond 85% of range: Deal |0|, and slow enemies hit by 30% for 0.75 seconds.", [interpreter_for_bonus_dmg]],
+			["Below 35% of range: Fire a secondary attack that deals |0| and applies on hit effects. This is also considered to be a main attack.", [interpreter_for_snd_attk_dmg]],
+			"",
+			"After 3 rounds, Adept gains Far and Close targeting options.",
+		]
 		
 		var tower_base_effect : AdeptModuleAdderEffect = AdeptModuleAdderEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_base_effect)
@@ -3193,7 +3192,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		#
 		
 		info.tower_descriptions = [
-			"Each attack that applies on hit effects is infused with a Hex. Enemies gain Curses as effects after reaching a certain number of Hexes. Hexes and Curses last indefinitely.",
+			"Attacks that apply on hit effects is infused with a Hex. Enemies gain Curses as effects after reaching a certain number of Hexes. Hexes and Curses last indefinitely.",
 			["2 hex: Enemies take extra |0| from HexTribute's attacks.", [interpreter_for_flat_dmg]],
 			"4 hex: Enemies's armor is reduced by 25%.",
 			"6 hex: Enemies's toughness is reduced by 25%.",
@@ -3204,6 +3203,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["HexTribute applies |0| per attack for the rest of the round upon infusing 10 hexes to an enemy for the first time.", [interpreter_for_hex_count]],
 		]
 		
+		info.tower_simple_descriptions = [
+			"Attacks apply 1 Hex. Enemies gain Curses as effects after reaching a certain number of Hexes.",
+			"20 hex: Executes normal enemies.",
+			"80 hex: Executes elite enemies.",
+			"",
+			["HexTribute applies |0| per attack for the rest of the round upon infusing 10 hexes to an enemy for the first time.", [interpreter_for_hex_count]],
+			"",
+			"(To view other effects at different hexes, toggle descriptions to descriptive mode)",
+		]
 		
 		var effect_vul_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.ING_HEXTRIBUTE_EFFECT_VUL)
 		effect_vul_modi.percent_amount = 50
@@ -3278,12 +3286,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["If the enemy has full health, the enemy’s maximum health is reduced by |0|, with a minimum of 5 health, and a maximum of |1|. This effect does not stack.", [interpreter_for_max_health_reduc_percent, interpreter_for_max_health_reduc_max_flat]],
 		]
 		
-#		info.tower_descriptions = [
-#			"Main attacks cause different effects based on the enemy’s current health",
-#			"If the enemy has missing health, the enemy is slowed by 35% for 1.5 seconds.",
-#			"If the enemy has full health, the enemy’s maximum health is reduced by 12.5% (with a minimum of 5 health, and a maximum of 25 health). This effect does not stack.",
-#			"Ability potency increases maximum health percent reduction and limits."
-#		]
 		
 		var base_health_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_TRANSMUTATOR)
 		base_health_mod.percent_amount = 100
@@ -3350,7 +3352,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# ins end
 		
 		info.tower_descriptions = [
-			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
+			"The Hero gains EXP by dealing damage and killing enemies.", # a lie, but a not so harmful lie.
 			"Levels are gained by spending EXP and gold. Only 6 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
 			["Upon reaching level 6, Hero increases the limit of activatable composite synergies by 1. Hero also gains |0|, |1|, and |2|.", [interpreter_for_base_dmg, interpreter_for_attk_speed, interpreter_for_ap]],
 			"",
@@ -3359,17 +3361,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"The Hero can absorb any ingredient color. Hero can also absorb 1 additional ingredient per level up, up to 4.",
 		]
 		
-		
-#		info.tower_descriptions = [
-#			"The Hero grows stronger by accumulating EXP. EXP is gained by various methods.",
-#			"Levels are gained by spending EXP and gold. Only 6 levels can be gained this way. Levels are used to unlock and upgrade the Hero's skills.",
-#			"Upon reaching level 6, Hero increases the limit of activatable composite synergies by 1. Hero also gains 1.5 bonus base damage, 40% bonus attack speed, and 0.5 ability potency.",
-#			"",
-#			"Hero's skills are in effect only when White is the active dominant color.",
-#			"",
-#			"The Hero can absorb any ingredient color. Hero can also absorb 1 additional ingredient per level up, up to 4.",
-#		]
-		
+		info.tower_simple_descriptions = [
+			"The Hero gains EXP by dealing damage and killing enemies.", # a lie, but a not so harmful lie.
+			"Levels are gained by spending EXP and gold. Levels are used to unlock and upgrade the Hero's skills.",
+			["At level 6, Hero gains |0|, |1|, and |2|.", [interpreter_for_base_dmg, interpreter_for_attk_speed, interpreter_for_ap]],
+			"",
+			"Hero's skills are in effect only when White is the active dominant color.",
+			"",
+			"The Hero can absorb any ingredient color. Hero can also absorb 1 additional ingredient per level up, up to 4.",
+		]
 		
 		
 	elif tower_id == AMALGAMATOR:
@@ -3388,7 +3388,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Every end of round, Amalgamator selects a random non-black tower in the map to apply Amalgamate.",
+			"On round end: Amalgamator selects a random non-black tower in the map to apply Amalgamate.",
 			"Amalgamate: Sets a tower's color to black, erasing all previous colors.",
 			"",
 			"Ability: Amalgam. Randomly selects 2 non-black towers to apply Amalgamate to. Amalgamator explodes afterwards, destroying itself in the process.",
@@ -3451,17 +3451,16 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Blossom can only have one Partner. Blossom cannot pair with another Blossom. Blossom cannot pair with a tower that's already paired with another Blossom."
 		]
 		
-#		info.tower_descriptions = [
-#			"Blossom can assign a tower as its Partner.",
-#			"The Partner receives these bonus effects while Blossom is alive:",
-#			"+ 20% total attack speed, up to 2 attack speed.",
-#			"+ 20% total base damage, up to 4 base damage.",
-#			"+ 50% resistance against enemy effects.",
-#			"+ 2% healing from all post mitigated damage dealt.",
-#			"+ Instant Revive effect. If the Partner reaches 0 health, Blossom sacrifices itself for the rest of the round to revive its Partner to full health.",
-#			"",
-#			"Blossom can only have one Partner. Blossom cannot pair with another Blossom. Blossom cannot pair with a tower that's already paired with another Blossom."
-#		]
+		
+		info.tower_simple_descriptions = [
+			"Blossom can assign a tower as its Partner.",
+			"The Partner receives these bonus effects while Blossom is alive:",
+			["+ |0|, up to 2 attack speed.", [interpreter_for_attk_speed]],
+			["+ |0|, up to 4 base damage.", [interpreter_for_base_dmg]],
+			"+ 50% resistance against enemy effects.",
+			"+ 2% healing from all damage dealt.",
+			"+ Instant Revive effect. Blossom sacrifices itself for the rest of the round to revive its Partner to full health.",
+		]
 		
 		
 		var base_health_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_BLOSSOM)
@@ -3665,26 +3664,30 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Globule's attacks are considered to be Prominence's main attacks.",
 			"",
 			"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
-			
 		]
 		
 		for desc in ability_desc:
 			info.tower_descriptions.append(desc)
 		
+		####
 		
+		var simple_ability_desc = [
+			["Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for |0|, and dealing |1|.", [interpreter_for_stun_duration, interpreter_for_smash_damage]],
+			"The farthest tower from Prominence also casts Regards.",
+			["Prominece also gains 3 attacks with its sword, with each attack exploding, dealing |0| to enemies hit.", [interpreter_for_sword_dmg]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+		]
+		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_SIMPLE_DESCRIPTION] = simple_ability_desc
 		
-#		info.tower_descriptions = [
-#			"Prominence attacks through its Globules. Prominence possesses 4 Globules which attack independently. Globules benefit from all buffs and inherit Prominence's stats.",
-#			"Globule's attacks are considered to be Prominence's main attacks.",
-#			"",
-#			"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
-#			"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 3 seconds, and dealing 12 physical damage.",
-#			"The farthest tower with range from Prominence also casts Regards using Prominence's ability potency. Enemies can only be affected once.",
-#			"Prominece also gains 3 attacks with its sword, with each attack exploding, dealing 5 + 300% of its bonus base damage as elemental damage.",
-#			"Cooldown: 60 s",
-#			"",
-#			"Regards' stun duration scales with ability potency."
-#		]
+		info.tower_simple_descriptions = [
+			"Prominence possesses 4 Globules which serve as its main attacks.",
+			"",
+			"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
+		]
+		
+		for desc in simple_ability_desc:
+			info.tower_simple_descriptions.append(desc)
+		
 		
 		var effect = Ing_ProminenceEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, effect)
@@ -3780,7 +3783,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		for desc in ability_descs:
 			info.tower_descriptions.append(desc)
 		
+		##
 		
+		info.tower_simple_descriptions = [
+			"Attacks two enemies at the same time with its beams.",
+			"",
+		]
+		
+		for desc in ability_descs:
+			info.tower_simple_descriptions.append(desc)
 		
 		
 		
@@ -3857,30 +3868,26 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		#
 		
 		info.tower_descriptions = [
-			"Main attacks remove 0.35 ability potency from enemies hit for 7 seconds. This does not stack.",
-			"Accumulae gains 1 Siphon stack per drain application.",
+			"Main attacks mark and remove 0.35 ability potency from enemies hit for 7 seconds. This does not stack.",
+			"Accumulae gains 1 Siphon stack when marking enemies.",
 			"",
-			"Upon reaching 15 Siphon stacks, Accumulae casts Salvo.",
-			["Salvo: Fire a Spell Burst at a random enemy's location every |0|, consuming a Siphon stack in the process. This repeats until all Siphon stacks are consumed.", [interpreter_for_burst_delay]],
+			"Upon reaching 15 Siphon stacks, Accumulae casts Salvo, consuming all siphon stacks.",
+			["Salvo: Fire a Spell Burst at a random enemy's location every |0| for 15 times.", [interpreter_for_burst_delay]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
 			"Accumulae is unable to execute its main attack during Salvo.",
-			["Each Spell Burst explodes upon reaching the target location, dealing |0| to 4 enemies. Applies on hit effects.", [interpreter_for_salvo_dmg]],
+			["Each Spell Burst deals |0| to 4 enemies. Applies on hit effects.", [interpreter_for_salvo_dmg]],
 		]
 		
-#		info.tower_descriptions = [
-#			"Main attacks remove 0.35 ability potency from enemies hit for 7 seconds. This does not stack.",
-#			"Accumulae gains 1 Siphon stack per drain application.",
-#			"",
-#			"Upon reaching 15 Siphon stacks, Accumulae casts Salvo.",
-#			"Salvo: Fire a Spell Burst at a random enemy's location every 0.2 seconds, consuming a Siphon stack in the process. This repeats until all Siphon stacks are consumed.",
-#			"Cooldown: 1.5 s",
-#			"",
-#			"Accumulae is unable to execute its main attack during Salvo.",
-#			"Each Spell Burst explodes upon reaching the target location, dealing 7 elemental damage to 4 enemies.",
-#			"Spell burst explosions apply on hit effects.",
-#			"Ability cdr also reduces delay per burst in salvo."
-#		]
+		info.tower_simple_descriptions = [
+			"Main attacks mark enemies. Accumulae gains 1 Siphon stack when marking enemies.",
+			"",
+			"Upon reaching 15 Siphon stacks, Accumulae casts Salvo.",
+			["Salvo: Fire a Spell Burst at a random enemy's location every |0| for 15 times.", [interpreter_for_burst_delay]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+			
+			["Each Spell Burst deals |0| to 4 enemies. Applies on hit effects.", [interpreter_for_salvo_dmg]],
+		]
 		
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ACCUMULAE)
@@ -3962,14 +3969,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["The bullet deals |0|, and pierces through |1|.", [interpreter_for_flat_on_hit, interpreter_for_pierce]]
 		]
 		
-#		info.tower_descriptions = [
-#			"Probe's attacks that apply on hit effects apply a stack of Research.",
-#			"Probe's main attacks at enemies with 3 Research stacks triggers Searched.",
-#			"Searched: Probe gains 50% attack speed for 5 seconds, consuming all stacks in the process. Does not stack.",
-#			"",
-#			"Triggering Searched while Searched is still active causes a piercing bullet to be shot.",
-#			"The bullet deals 3 physical damage, and pierces through 4 enemies."
-#		]
+		info.tower_simple_descriptions = [
+			"Probe's 4th attack against an enemy triggers Searched.",
+			["Searched: Probe gains |0| for 5 seconds.", [interpreter_for_attk_speed]],
+			"",
+			"Triggering Searched while Searched is still active causes a piercing bullet to be shot.",
+			["The bullet deals |0|, and pierces through |1|.", [interpreter_for_flat_on_hit, interpreter_for_pierce]]
+		]
 		
 		
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_PROBE)
@@ -4089,18 +4095,18 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and stunning them for 0.5 seconds. Targeting affects which enemies are pulled.",
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
-			"After 3 rounds of being active, Shackled is able to pull 2 more enemies per cast."
+			"After 3 rounds of being in the map, Shackled is able to pull 2 more enemies per cast."
 		]
 		
-#		info.tower_descriptions = [
-#			"Shackled's main attacks explode upon hitting an enemy, dealing 1 elemental damage to 3 enemies.",
-#			"",
-#			"After 18 attacks or dealing 60 post-mitigated damage, Shackled attempts to cast Chains.",
-#			"Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and stunning them for 0.5 seconds. Targeting affects which enemies are pulled.",
-#			"Cooldown: 14 s",
-#			"",
-#			"After 3 rounds of being active, Shackled is able to pull 2 more enemies per cast."
-#		]
+		info.tower_simple_descriptions = [
+			["Shackled's main attacks explode upon hitting an enemy, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]],
+			"",
+			"After 18 main attacks or dealing 60 damage, Shackled casts Chains.",
+			"Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and stunning them for 0.5 seconds. Targeting affects which enemies are pulled.",
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+			"",
+			"After 3 rounds of being in the map, Shackled is able to pull 2 more enemies per cast."
+		]
 		
 		
 		# Ingredient related
@@ -4149,7 +4155,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
 		interpreter_for_bonus_dmg.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_bonus_dmg.display_body = true
+		interpreter_for_bonus_dmg.display_body = false
 		
 		var ins_for_retract_bonus_dmg = []
 		ins_for_retract_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", 100, true))
@@ -4204,27 +4210,34 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Nucleus's main attacks ignore 40% of the enemy's armor.",
 			"",
-			"Nucleus shuffles to Alpha and Beta phases every 5 attacks. Nucleus always starts at Alpha Phase.",
-			["Alpha: Nucleus's main attacks's base damage is increased by |0|.", [interpreter_for_bonus_dmg]],
-			["Beta: Nucleus's main attacks pierce through |0|.", [interpreter_for_pierce]],
+			"Nucleus shuffles phases every 5 main attacks. Nucleus always starts at Alpha Phase.",
+			["Alpha Phase: Nucleus's main attacks's base damage is increased by |0|.", [interpreter_for_bonus_dmg]],
+			["Beta Phase: Nucleus's main attacks pierce through |0|.", [interpreter_for_pierce]],
 			"",
 		]
 		
 		for desc in ability_desc:
 			info.tower_descriptions.append(desc)
 		
-#		info.tower_descriptions = [
-#			"Nucleus's main attacks ignore 40% of the enemy's armor.",
-#			"",
-#			"Nucleus shuffles to Alpha and Beta phases every 5 attacks. Nucleus always starts at Alpha Phase.",
-#			"Alpha: Nucleus's main attacks's base damage is increased by 100%.",
-#			"Beta: Nucleus's main attacks pierce through 3 more enemies.",
-#			"",
-#			"Ability: Gamma. Fires a constant beam towards its current target for 8 seconds. Nucleus rotates the beam towards its current target.",
-#			"Gamma deals 2.5 + 40% of Nucleus's bonus base damage as elemental damage every 0.5 seconds.",
-#			"Cooldown: 50 s",
-#			"Ability potency increases damage dealt by Gamma."
-#		]
+		####
+		
+		var simple_ability_desc = [
+			"Ability: Gamma. Fires a constant beam towards its current target for 8 seconds.",
+			["Gamma deals |0| every 0.5 seconds.", [interpreter_for_gamma_dmg]],
+			"Cooldown: 50 s",
+		]
+		
+		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_SIMPLE_DESCRIPTION] = simple_ability_desc
+		
+		info.tower_simple_descriptions = [
+			"Nucleus shuffles phases every 5 main attacks.",
+			["Alpha Phase: Nucleus's main attacks's base damage is increased by |0|.", [interpreter_for_bonus_dmg]],
+			["Beta Phase: Nucleus's main attacks pierce through |0|.", [interpreter_for_pierce]],
+			"",
+		]
+		
+		for desc in simple_ability_desc:
+			info.tower_simple_descriptions.append(desc)
 		
 		
 		# Ingredient related
@@ -4307,23 +4320,19 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Burgeon automatically attempts to cast Proliferate.",
 			"Proliferate: Launches a seed at a tower in its range, prioritizing towers with enemies in their range. The seed grows to a mini burgeon. Mini burgeons attach to the tower, and borrows their range.", 
-			["Mini burgeons attack just like Burgeons, and have the same stats. Mini burgeons benefit from its creator's effects. Each Mini burgeon lasts for |0|, and die when its creator dies.", [interpreter_for_lifespan]],
+			["Mini burgeons attack just like its parent, and have the same stats. Mini burgeons benefit from its creator's effects. Each Mini burgeon lasts for |0|, and die when its creator dies.", [interpreter_for_lifespan]],
 			["Cooldown: |0|.", [interpreter_for_cooldown]],
 		]
 		
-#		info.tower_descriptions = [
-#			"Burgeon's attacks reduce enemy healing by 40% for 8 seconds.",
-#			"",
-#			"Burgeon launches seeds that land to the ground. Upon landing, seeds explode when an enemy is nearby only after arming themselves for 1.25 seconds.",
-#			"Seed explosions deal 5 elemental damage to 4 enemies, and benefit from base damage and on hit damage buffs at 75% efficiency. Also applies on hit effects.",
-#			"",
-#			"Burgeon automatically attempts to cast Proliferate.",
-#			"Proliferate: Launches a seed at a tower in its range, prioritizing towers with enemies in their range. The seed grows to a mini burgeon. Mini burgeons attach to the tower, and borrows their range.", 
-#			"Mini burgeons attack just like Burgeons, and have the same stats. Mini burgeons benefit from its creator's effects. Each Mini burgeon lasts for 30 seconds, and die when its creator dies.",
-#			"Cooldown: 20 s.",
-#			"",
-#			"Ability potency increases mini burgeon's lifespan."
-#		]
+		info.tower_simple_descriptions = [
+			"Burgeon launches seeds that land to the ground, exploding when an enemy is nearby.",
+			["Seed explosions deal |0| to 4 enemies. Applies on hit effects.", [interpreter_for_seed_dmg]],
+			"",
+			"Burgeon auto casts Proliferate.",
+			"Proliferate: Launches a seed at a tower in its range. The seed grows to a mini burgeon.", 
+			["Mini burgeons attack just like its parent, and share the same stats and effects (except range). Each Mini burgeon lasts for |0|.", [interpreter_for_lifespan]],
+			["Cooldown: |0|.", [interpreter_for_cooldown]],
+		]
 		
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_BURGEON)
@@ -4393,6 +4402,17 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Se Propager can be commanded to sell all current Golden Les Semis, and to automatically sell Les Semis that have turned Golden."
 		]
 		
+		info.tower_simple_descriptions = [
+			"Ability: Production. Se Propager plants a Les Semis in an unoccupied in-range tower slot.",
+			["Cooldown : |0|.", [interpreter_for_cooldown]],
+			"",
+			"Les Semis: a tower that inherits 100% of its parents base damage on creation.",
+			"Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by 2.",
+			["Les Semis gains |0| per 1 gold it is worth selling for.", [interpreter_for_base_dmg]],
+			"Does not take a tower slot.",
+		]
+		
+		
 		
 	elif tower_id == LES_SEMIS:
 		info = TowerTypeInformation.new("Les Semis", tower_id)
@@ -4431,6 +4451,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Les Semis does not contribute to the color synergy, but benefits from it. Does not take a tower slot.",
 		]
 		
+		info.tower_simple_descriptions = [
+			"Inherits 100% of its parents base damage on creation.",
+			"Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by 2.",
+			["Les Semis gains |0| per 1 gold it is worth selling for.", [interpreter_for_base_dmg]],
+			"Does not take a tower slot.",
+		]
 		
 		
 	elif tower_id == L_ASSAUT:
@@ -4510,10 +4536,21 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Gain a stack of resurgence per loss. Upon winning, consume all stacks to heal for 2* the stack amount.",
 			"",
 			"When this tower's current target exits its range, cast Pursuit.",
-			["Pursuit: L' Assaut attempts to relocate itself to be able to attack the escapee. L' Assaut then gains |0| and |1| for 1.5 seconds.", [interpreter_for_attk_speed, interpreter_for_range]],
-			#"L' Assaut's auto attack timer is reset upon fading in from Pursuit.",
+			["Pursuit: L' Assaut attempts to relocate itself within range of the escapee. L' Assaut then gains |0| and |1| for 1.5 seconds.", [interpreter_for_attk_speed, interpreter_for_range]],
+			"L' Assaut's auto attack timer is reset upon fading in from Pursuit.",
 			"",
 			"At the end of the round, this tower attempts to return to its original location.",
+		]
+		
+		
+		info.tower_simple_descriptions = [
+			["Gain |0| per win, up to |1|. This is lost upon losing.", [interpreter_for_retract_bonus_dmg_per_stack, interpreter_for_retract_bonus_dmg_max]],
+			"On win: heal for 2 times the lose streak.",
+			"",
+			"When this tower's current target exits its range, cast Pursuit.",
+			["Pursuit: L' Assaut relocates itself within range of the escapee. L' Assaut then gains |0| and |1| for 1.5 seconds.", [interpreter_for_attk_speed, interpreter_for_range]],
+			"",
+			"At the end of the round, this tower returns to its original location.",
 		]
 		
 		
@@ -4617,9 +4654,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Does not attack.",
 			"Every 5 seconds, Healing Symbol heals every tower in range by 20%, increased to 40% for the tower that has dealt the most damage (in range).",
+			"Does not heal itself and other Healing Symbols.",
 			"On round end: If Healing Symbol is alive and has not healed a damaged tower, it heals the player by 1."
 		]
 		
+		info.tower_simple_descriptions = [
+			"Does not attack.",
+			"Every 5 seconds, Healing Symbol heals every tower in range by 20%, increased to 40% for the tower that has dealt the most damage (in range).",
+			"On round end: If Healing Symbol is alive and has not healed a damaged tower, it heals the player by 1."
+		]
 		
 #	elif tower_id == WYVERN:
 #		info = TowerTypeInformation.new("Wyvern", tower_id)

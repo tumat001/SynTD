@@ -5,7 +5,10 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 const DescriptionPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/ExtraInfoPanelComponents/DescriptionPanel/DescriptionPanel.gd")
 
+const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
+
 var tower : AbstractTower
+var game_settings_manager : GameSettingsManager
 
 onready var description_panel : DescriptionPanel = $VBoxContainer/Body/ContentMarginer/VBoxContainer/DescriptionPanel
 onready var self_ing_panel = $VBoxContainer/Body/ContentMarginer/VBoxContainer/SelfIngredientPanel
@@ -29,6 +32,7 @@ func _update_display():
 	rect_size.y = 0
 	
 	description_panel.tower = tower
+	description_panel.game_settings_manager = game_settings_manager
 	description_panel.update_display()
 	
 	# Colors panel

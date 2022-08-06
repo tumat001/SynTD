@@ -28,7 +28,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		_tower_max_health_reduc_percent = -20
 	
 	good_descriptions = [
-		"Gain %s healing symbol(s) (tower). Heals towers in range, and heals you if no towers are healed." % [str(_healing_symbol_count)]
+		"Gain %s healing symbol(s) (tower). Heals towers in range, and heals you if no towers are healed. Does not take tower slots." % [str(_healing_symbol_count)]
 	]
 	
 	bad_descriptions = [

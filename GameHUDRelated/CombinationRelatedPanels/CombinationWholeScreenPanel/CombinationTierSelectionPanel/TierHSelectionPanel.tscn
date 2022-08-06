@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://GameHUDRelated/CombinationRelatedPanels/CombinationWholeScreenPanel/CombinationTierSelectionPanel/TierSelectionPanel.gd" type="Script" id=1]
+
+[node name="TierSelectionPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BoxContainer" type="HBoxContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+custom_constants/separation = 5

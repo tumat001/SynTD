@@ -60,6 +60,22 @@ static func get_descriptions_to_use_based_on_ability(arg_ability,
 				return arg_ability.tower_simple_descriptions
 			else:
 				return arg_ability.tower_descriptions
+
+static func get_descriptions_to_use_based_on_color_synergy(arg_color_synergy,
+		arg_game_settings_manager_from_source) -> Array:
 	
+	if arg_game_settings_manager_from_source == null:
+		return arg_color_synergy.synergy_descriptions
+	else:
+		if arg_game_settings_manager_from_source.descriptions_mode == DescriptionsMode.COMPLEX:
+			return arg_color_synergy.synergy_descriptions
+		else:
+			if arg_color_synergy.has_simple_description():
+				return arg_color_synergy.synergy_simple_descriptions
+			else:
+				return arg_color_synergy.synergy_descriptions
+
+
+
 ##############
 

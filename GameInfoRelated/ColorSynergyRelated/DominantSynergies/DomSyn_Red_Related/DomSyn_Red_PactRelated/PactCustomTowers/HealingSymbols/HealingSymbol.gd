@@ -81,6 +81,8 @@ func _ready():
 	
 	#
 	
+	tower_limit_slots_taken = 0
+	
 	_post_inherit_ready()
 
 #

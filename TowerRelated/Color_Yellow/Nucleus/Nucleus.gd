@@ -254,6 +254,7 @@ func _construct_and_connect_ability():
 	gamma_ability.tower = self
 	
 	gamma_ability.descriptions = _tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION]
+	gamma_ability.simple_descriptions = _tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_SIMPLE_DESCRIPTION]
 	
 #	gamma_ability.descriptions = [
 #		"Ability: Gamma. Fires a constant beam towards its current target for %s seconds." % [str(gamma_ability_duration)],

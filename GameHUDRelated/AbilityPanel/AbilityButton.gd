@@ -223,7 +223,7 @@ func _construct_tooltip():
 
 func _update_tooltip():
 	if ability_tooltip != null:
-		if game_settings_manager.descriptions_mode == GameSettingsManager.DescriptionsMode.COMPLEX or !ability.has_simple_descriptions():
+		if game_settings_manager == null or game_settings_manager.descriptions_mode == GameSettingsManager.DescriptionsMode.COMPLEX or !ability.has_simple_descriptions():
 			if ability.descriptions_source == null:
 				ability_tooltip.descriptions = ability.descriptions
 			else:

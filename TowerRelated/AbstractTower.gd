@@ -56,6 +56,8 @@ const BaseTowerDetectingBullet = preload("res://EnemyRelated/TowerInteractingRel
 
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self)
+signal on_attempt_drop_tower_on_placable(tower_self, arg_placable, arg_move_success) # 3rd arg is if there is enough tower slots to put the tower
+
 signal tower_toggle_show_info
 signal on_tower_toggle_showing_range(is_showing_ranges)
 signal tower_in_queue_free
@@ -106,6 +108,10 @@ signal on_any_attack_module_enemy_hit(enemy, damage_register_id, damage_instance
 
 signal on_any_bullet_attack_module_before_bullet_is_shot(bullet, attack_module)
 signal on_main_bullet_attack_module_before_bullet_is_shot(bullet, attack_module)
+
+signal on_any_bullet_attack_module_after_bullet_is_shot(bullet, attack_module)
+signal on_main_bullet_attack_module_after_bullet_is_shot(bullet, attack_module)
+
 
 signal on_any_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module)
 signal on_main_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module)
@@ -590,6 +596,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		
 		if attack_module is BulletAttackModule:
 			attack_module.connect("before_bullet_is_shot", self, "_emit_on_any_bullet_attack_module_before_bullet_is_shot", [attack_module], CONNECT_PERSIST)
+			attack_module.connect("after_bullet_is_shot", self, "_emit_on_any_bullet_attack_module_after_bullet_is_shot", [attack_module], CONNECT_PERSIST)
 	
 	if attack_module.get_parent() == null:
 		add_child(attack_module)
@@ -627,6 +634,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			
 			if main_attack_module is BulletAttackModule:
 				main_attack_module.connect("before_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_before_bullet_is_shot", [attack_module], CONNECT_PERSIST)
+				main_attack_module.connect("after_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_after_bullet_is_shot", [attack_module], CONNECT_PERSIST)
 		
 		if range_module == null and main_attack_module.range_module != null:
 			range_module = main_attack_module.range_module
@@ -668,6 +676,7 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		
 		if attack_module_to_remove is BulletAttackModule:
 			attack_module_to_remove.disconnect("before_bullet_is_shot", self, "_emit_on_any_bullet_attack_module_before_bullet_is_shot")
+			attack_module_to_remove.disconnect("after_bullet_is_shot", self, "_emit_on_any_bullet_attack_module_after_bullet_is_shot")
 	
 	# main
 	if attack_module_to_remove.is_connected("in_attack_end", self, "_emit_on_main_attack_finished"):
@@ -679,7 +688,7 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		
 		if attack_module_to_remove is BulletAttackModule:
 			attack_module_to_remove.disconnect("before_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_before_bullet_is_shot")
-	
+			attack_module_to_remove.disconnect("after_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_after_bullet_is_shot")
 	
 	
 	for tower_effect in _all_uuid_tower_buffs_map.values():
@@ -768,6 +777,14 @@ func _emit_on_any_bullet_attack_module_before_bullet_is_shot(bullet, module):
 
 func _emit_on_main_bullet_attack_module_before_bullet_is_shot(bullet, module):
 	emit_signal("on_main_bullet_attack_module_before_bullet_is_shot", bullet, module)
+
+
+func _emit_on_any_bullet_attack_module_after_bullet_is_shot(bullet, module):
+	emit_signal("on_any_bullet_attack_module_after_bullet_is_shot", bullet, module)
+
+func _emit_on_main_bullet_attack_module_after_bullet_is_shot(bullet, module):
+	emit_signal("on_main_bullet_attack_module_after_bullet_is_shot", bullet, module)
+
 
 
 func _emit_on_any_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module):
@@ -2462,7 +2479,12 @@ func _start_drag():
 func _end_drag():
 	z_index = ZIndexStore.TOWERS
 	if !is_queued_for_deletion():
-		transfer_to_placable(hovering_over_placable, false, !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self))
+		var cannot_drop_to_placable = !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self)
+		var intent_placable = hovering_over_placable
+		var move_success = transfer_to_placable(hovering_over_placable, false, cannot_drop_to_placable)
+		
+		emit_signal("on_attempt_drop_tower_on_placable", self, intent_placable, move_success)
+	
 	erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
 	emit_signal("tower_dropped_from_dragged", self)
 
@@ -2484,11 +2506,14 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 	# ing related and swapping
 	if new_area_placable != null and new_area_placable.tower_occupying != null:
 		if !is_in_ingredient_mode or ignore_ing_mode:
-			if (!(is_round_started and new_area_placable is InMapAreaPlacable) or ignore_is_round_started):
+			# swapping related
+			if (!(is_round_started and new_area_placable is InMapAreaPlacable) or ignore_is_round_started) and tower_manager.if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(self, new_area_placable.tower_occupying):
+				
 				new_area_placable.tower_occupying.transfer_to_placable(current_placable, true, false, true, ignore_ing_mode)
 				transferred_tower = true
 			else:
 				new_area_placable = null # return tower to original location
+			
 		else:
 			var target_tower = new_area_placable.tower_occupying
 			
@@ -2541,7 +2566,8 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 			# Update Synergy
 			if should_update_active_synergy:
 				emit_signal("update_active_synergy")
-
+	
+	return new_area_placable != null
 
 func _on_PlacableDetector_area_entered(area):
 	if area is BaseAreaTowerPlacable:

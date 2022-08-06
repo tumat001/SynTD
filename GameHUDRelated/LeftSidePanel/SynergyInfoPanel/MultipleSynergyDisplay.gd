@@ -10,6 +10,7 @@ signal on_single_syn_displayer_pressed(input_mouse_event, syn_check_result)
 
 var synergy_results : Array = []
 var single_synergy_displayers : Array = []
+var game_settings_manager
 
 
 # Called when the node enters the scene tree for the first time.
@@ -22,6 +23,7 @@ func update_display():
 	for synergy_result in synergy_results:
 		var single_displayer = SingleDisplayer_Scene.instance()
 		single_displayer.result = synergy_result
+		single_displayer.game_settings_manager = game_settings_manager
 		
 		single_displayer.connect("on_single_syn_tooltip_displayed", self, "_on_single_syn_displayer_tooltip_shown", [], CONNECT_PERSIST)
 		single_displayer.connect("on_single_syn_tooltip_hidden", self, "_on_single_syn_displayer_tooltip_hidden", [], CONNECT_PERSIST)

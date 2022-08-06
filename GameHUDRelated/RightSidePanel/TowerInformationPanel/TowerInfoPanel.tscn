@@ -69,12 +69,12 @@ texture = ExtResource( 7 )
 [node name="TowerStatsPanel" parent="VBoxContainer" instance=ExtResource( 9 )]
 margin_top = 137.0
 margin_right = 120.0
-margin_bottom = 193.0
+margin_bottom = 205.0
 custom_constants/margin_top = 8
 
 [node name="ActiveIngredientsPanel" parent="VBoxContainer" instance=ExtResource( 2 )]
 margin_left = 10.0
-margin_top = 193.0
+margin_top = 205.0
 margin_right = 110.0
 margin_bottom = 424.0
 size_flags_horizontal = 4

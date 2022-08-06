@@ -47,8 +47,12 @@ func _ready():
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
-	attack_module.base_proj_inaccuracy = 30
+	attack_module.base_proj_inaccuracy = 40#30
 	attack_module.position.y -= 7
+	
+	attack_module.burst_amount = 3
+	attack_module.burst_attack_speed = 50
+	attack_module.has_burst = true
 	
 	var bullet_shape = RectangleShape2D.new()
 	bullet_shape.extents = Vector2(7, 4)
@@ -57,8 +61,8 @@ func _ready():
 	attack_module.bullet_scene = BaseBullet_Scene
 	attack_module.set_texture_as_sprite_frame(Scatter_Fragment01)
 	
-	attack_module.connect("in_attack", self, "_scatter_attack_module_in_attack")
-	attack_module.connect("before_bullet_is_shot", self, "_modify_bullet")
+	#attack_module.connect("in_attack", self, "_scatter_attack_module_in_attack", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+	attack_module.connect("before_bullet_is_shot", self, "_modify_bullet", [], CONNECT_PERSIST)
 	scatter_attack_module = attack_module
 	
 	add_attack_module(attack_module)
@@ -80,14 +84,16 @@ func _modify_bullet(bullet : BaseBullet):
 	elif rand_num == 4:
 		bullet.set_texture_as_sprite_frames(Scatter_Fragment04)
 
+#
+#func _scatter_attack_module_in_attack(atk_speed_delay, enemies):
+#	for i in 2:
+#		if enemies.size() > 0:
+#			var enemy = enemies[0]
+#
+#			var bullet = scatter_attack_module.construct_bullet(enemy.global_position)
+#
+#			get_tree().get_root().call_deferred("add_child", bullet)
 
-func _scatter_attack_module_in_attack(atk_speed_delay, enemies):
-	for i in 2:
-		if enemies.size() > 0:
-			var enemy = enemies[0]
-			
-			var bullet = scatter_attack_module.construct_bullet(enemy.global_position)
-			get_tree().get_root().call_deferred("add_child", bullet)
 
 
 # Heat Module

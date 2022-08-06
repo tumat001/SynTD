@@ -357,18 +357,8 @@ func _construct_ability():
 	regards_ability.auto_cast_func = "_regards_ability_activated"
 	
 	
-	var ability_desc = _tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION]
-	regards_ability.descriptions = ability_desc
-	
-#	regards_ability.descriptions = [
-#		"When at least 2 Globules have enemies in their range, Prominence can cast Regards.",
-#		"Regards: After a delay, Prominence smashes the ground, knocking up and stunning nearby enemies for 3 seconds, and dealing 12 physical damage.",
-#		"The farthest tower with range from Prominence also casts Regards using Prominence's ability potency. Enemies can only be affected once.",
-#		"Prominece also gains 3 attacks with its sword, with each attack exploding, dealing 5 + 300% of its bonus base damage as elemental damage.",
-#		"Cooldown: %s s" % [str(regards_ability_cooldown)],
-#		"",
-#		"Regards' stun duration scales with ability potency."
-#	]
+	regards_ability.descriptions = _tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION]
+	regards_ability.simple_descriptions = _tower_info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_SIMPLE_DESCRIPTION]
 	
 	regards_ability.display_name = "Regards"
 	

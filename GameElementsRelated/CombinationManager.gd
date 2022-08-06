@@ -21,6 +21,9 @@ signal on_combination_effect_added(arg_new_effect_id)
 signal on_combination_amount_needed_changed(new_val)
 signal on_tiers_affected_changed()
 
+
+var _is_doing_combination : bool
+
 enum AmountForCombinationModifiers {
 	DOMSYN_RED__COMBINATION_EFFICIENCY = 1
 }
@@ -39,6 +42,7 @@ enum TierLevelAffectedModifiers {
 
 const base_tier_level_affected_amount : int = 1  # ex:(at val = 2), tier 1 combo can affect tiers 1, 2 and 3.
 var _flat_tier_level_affected_modifier_map : Dictionary = {}
+var last_calculated_tier_level_affected_amount : int
 var tiers_affected_per_combo_tier : Dictionary = {
 	1 : [],
 	2 : [],
@@ -94,7 +98,7 @@ var current_combination_candidates : Array
 
 #
 
-# combi/tower id -> combi effect (Array)
+# combi/tower id -> combi effect (Array) # DONT GIVE THE EFFECT IN THIS MAP TO THE TOWERS, it is meant to be a singleton.
 var all_combination_id_to_effect_map : Dictionary
 
 
@@ -158,6 +162,8 @@ func _update_tier_affected_by_combi():
 	for val in _flat_tier_level_affected_modifier_map.values():
 		tier_affected_amount += val
 	
+	last_calculated_tier_level_affected_amount = tier_affected_amount
+	
 	for tier in tiers_affected_per_combo_tier.keys():
 		var affected_tiers : Array = tiers_affected_per_combo_tier[tier]
 		affected_tiers.clear()
@@ -215,8 +221,9 @@ func _on_tower_added(tower_added):
 
 # destroyed, in queued free
 func _on_tower_in_queue_free(tower_destroyed):
-	call_deferred("_update_applicable_combinations_on_towers")
-	
+	if !_is_doing_combination:
+		call_deferred("_update_applicable_combinations_on_towers")
+
 
 
 func _update_applicable_combinations_on_towers():
@@ -226,6 +233,7 @@ func _update_applicable_combinations_on_towers():
 	if (towers_combination_candidates.size() > 0):
 		if !_if_previous_candidates_are_equal_to_new_candidates(combination_indicator_shower.get_towers_with_particle_indicators(), towers_combination_candidates):
 			combination_indicator_shower.destroy_indicators_from_towers()
+			
 		
 		combination_indicator_shower.show_indicators_to_towers(towers_combination_candidates, false)
 	else:
@@ -249,7 +257,7 @@ func _if_previous_candidates_are_equal_to_new_candidates(prev_candidates : Array
 #
 
 func _get_towers_with_tower_combination_amount_met(arg_combination_amount : int = last_calculated_combination_amount) -> Array:
-	var all_towers : Array = tower_manager.get_all_towers()
+	var all_towers : Array = tower_manager.get_all_towers_except_in_queue_free()
 	
 	#var all_tower_ids : Array = tower_manager.get_all_ids_of_towers()
 	
@@ -345,6 +353,8 @@ func _get_towers_immediately_ready_to_combine(arg_tower_id_arr_from_cards : Arra
 
 func on_combination_activated():
 	if current_combination_candidates.size() > 0:
+		_is_doing_combination = true
+		
 		var combi_effect = _construct_combination_effect_from_tower(current_combination_candidates[0].tower_id)
 		all_combination_id_to_effect_map[combi_effect.combination_id] = combi_effect
 		
@@ -354,6 +364,13 @@ func on_combination_activated():
 		_put_combination_in_hud_display(combi_effect)
 		
 		emit_signal("on_combination_effect_added", combi_effect.combination_id)
+		
+		_is_doing_combination = false
+		
+		
+		#
+		call_deferred("_update_applicable_combinations_on_towers")
+
 
 
 func _construct_combination_effect_from_tower(arg_tower_id : int) -> CombinationEffect:
@@ -369,7 +386,8 @@ func _construct_combination_effect_from_tower(arg_tower_id : int) -> Combination
 
 func _destroy_current_candidates():
 	for tower in current_combination_candidates:
-		tower.queue_free()
+		if tower != null:
+			tower.queue_free()
 	
 	current_combination_candidates.clear()
 
@@ -405,6 +423,21 @@ func _if_combination_effect_can_apply_to_tier(arg_combi_effect, arg_tower_tier :
 func _put_combination_in_hud_display(arg_combi_effect : CombinationEffect):
 	combination_top_panel.add_combination_effect(arg_combi_effect)
 
+
+# returns an array with 2 arrays: [[applicable], [not applicable]]
+func get_all_combination_effects_applicable_and_not_to_tier(arg_tier) -> Array:
+	var bucket : Array = [[], []]
+	
+	for combi_effect in all_combination_id_to_effect_map.values():
+		if _if_combination_effect_can_apply_to_tier(combi_effect, arg_tier):
+			bucket[0].append(combi_effect)
+		else:
+			bucket[1].append(combi_effect)
+	
+	return bucket
+
+
+#
 
 #func _remove_combination_effect_from_towers(arg_combi_effect: CombinationEffect):
 #	for tower in tower_manager.get_all_towers_except_in_queue_free():

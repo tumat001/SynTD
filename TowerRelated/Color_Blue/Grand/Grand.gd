@@ -7,6 +7,8 @@ const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttac
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
 
+const MultipleTrailsForNodeComponent = preload("res://MiscRelated/TrailRelated/MultipleTrailsForNodeComponent.gd")
+
 const GrandProj01 = preload("res://TowerRelated/Color_Blue/Grand/Grand_Attacks/Grand_Attack_01.png")
 const GrandProj02 = preload("res://TowerRelated/Color_Blue/Grand/Grand_Attacks/Grand_Attack_02.png")
 const GrandProj03 = preload("res://TowerRelated/Color_Blue/Grand/Grand_Attacks/Grand_Attack_03.png")
@@ -30,6 +32,21 @@ var current_level : int = 0
 #var grand_pspeed_effect : TowerAttributesEffect
 var pspeed_mod : FlatModifier
 var pierce_mod : FlatModifier
+
+
+const ap_needed_for_show_trail : float = 1.5
+var _current_should_show_trail : bool
+
+const trail_color : Color = Color(0.4, 0.5, 1, 1)
+const trail_transparency : float = 0.75
+const base_trail_length : int = 10
+var _current_trail_length : int = base_trail_length
+
+const base_trail_width : int = 3
+var _current_trail_width : int = base_trail_width
+
+var multiple_trail_component : MultipleTrailsForNodeComponent
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -83,6 +100,14 @@ func _ready():
 	
 	connect("final_ability_potency_changed", self, "_final_ap_changed", [], CONNECT_PERSIST)
 	connect("on_main_attack_module_damage_instance_constructed", self, "_main_damage_instance_constructed", [], CONNECT_PERSIST)
+	
+	
+	multiple_trail_component = MultipleTrailsForNodeComponent.new()
+	multiple_trail_component.node_to_host_trails = self
+	multiple_trail_component.trail_type_id = StoreOfTrailType.BASIC_TRAIL
+	multiple_trail_component.connect("on_trail_before_attached_to_node", self, "_trail_before_attached_to_node", [], CONNECT_PERSIST)
+	
+	attack_module.connect("after_bullet_is_shot", self, "_grand_after_bullet_shot", [], CONNECT_PERSIST)
 	
 	_post_inherit_ready()
 
@@ -145,6 +170,13 @@ func _final_ap_changed():
 		if am is BulletAttackModule:
 			am.calculate_final_pierce()
 			am.calculate_final_proj_speed()
+	
+	#
+	
+	_current_should_show_trail = ap_needed_for_show_trail <= last_calculated_final_ability_potency
+	_current_trail_length = base_trail_length * last_calculated_final_ability_potency
+	_current_trail_width = base_trail_width * last_calculated_final_ability_potency
+	
 
 
 func _calculate_new_level_from_change() -> int:
@@ -189,4 +221,16 @@ func _grand_bullet_curr_distance_expired(bullet):
 			bullet.trigger_on_death_events()
 	else:
 		bullet.trigger_on_death_events()
+
+###
+
+func _grand_after_bullet_shot(arg_bullet):
+	if _current_should_show_trail:
+		multiple_trail_component.create_trail_for_node(arg_bullet)
+
+func _trail_before_attached_to_node(arg_trail, node):
+	arg_trail.max_trail_length = _current_trail_length
+	arg_trail.trail_color = trail_color
+	arg_trail.width = _current_trail_width
+	arg_trail.modulate.a = trail_transparency
 

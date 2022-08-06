@@ -106,8 +106,7 @@ static func interpret_arr_to_final_text(arg_arr : Array, arg_header_desc : Strin
 		else:
 			if portions[3]: # if outcome text fragment is not the only ins
 				return "%s (%s)" % [portions[1], portions[2]]
-			else: 
-				# outcome text fragment is the only ins
+			else: # outcome text fragment is the only ins 
 				if portions[2].length() > 0: # is there is base string
 					return "%s %s" % [portions[1], portions[2]]
 				else:

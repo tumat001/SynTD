@@ -16,6 +16,8 @@ const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
 const RelicManager = preload("res://GameElementsRelated/RelicManager.gd")
 
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
+const AttemptCountTrigger = preload("res://MiscRelated/AttemptCountTriggerRelated/AttemptCountTrigger.gd")
+const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.gd")
 
 enum StoreOfTowerLimitIncId {
 	NATURAL_LEVEL = 10,
@@ -115,9 +117,15 @@ var current_tower_limit_taken : int
 
 var _tower_ing_cap_amount_map : Dictionary = {}
 
-#
 
+# NOTIF for player desc
 
+const level_up_to_place_more_towers_content_desc : String = "Level up to place more towers."
+const level_up_to_place_more__count_for_trigger : int = 3
+
+var attempt_count_trigger_for_level_up_to_place_more : AttemptCountTrigger
+
+const tower_takes_more_than_1_slot_content_desc : String = "%s takes %s tower slots."
 
 
 # setters
@@ -143,6 +151,12 @@ func _ready():
 	
 	for color in TowerColors.get_all_colors():
 		_color_groups.append(str(color))
+	
+	
+	attempt_count_trigger_for_level_up_to_place_more = AttemptCountTrigger.new(self)
+	attempt_count_trigger_for_level_up_to_place_more.count_for_trigger = level_up_to_place_more__count_for_trigger
+	attempt_count_trigger_for_level_up_to_place_more.connect("on_reached_trigger_count", self, "_attempt_place_tower_but_not_enought_slot_limit_count_reached", [], CONNECT_PERSIST)
+	attempt_count_trigger_for_level_up_to_place_more.count_for_trigger = 2
 
 
 # Generic things that can branch out to other resp.
@@ -203,6 +217,8 @@ func add_tower(tower_instance : AbstractTower):
 	
 	tower_instance.connect("tower_being_dragged", self, "_tower_being_dragged", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_dropped_from_dragged", self, "_tower_dropped_from_dragged", [], CONNECT_PERSIST)
+	tower_instance.connect("on_attempt_drop_tower_on_placable", self, "_on_attempt_drop_tower_on_placable", [], CONNECT_PERSIST)
+	
 	tower_instance.connect("tower_toggle_show_info", self, "_tower_toggle_show_info", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_in_queue_free", self, "_tower_in_queue_free", [], CONNECT_PERSIST)
 	tower_instance.connect("update_active_synergy", self, "_update_active_synergy", [], CONNECT_PERSIST)
@@ -697,3 +713,45 @@ func attempt_spend_relic_for_tower_lim_increase():
 			set_tower_limit_id_amount(StoreOfTowerLimitIncId.RELIC, tower_limit_per_relic)
 		
 		relic_manager.decrease_relic_count_by(1, RelicManager.DecreaseRelicSource.TOWER_CAP_INCREASE)
+
+
+#
+
+func if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(arg_tower_to_place, arg_tower_to_swap_with):
+	if arg_tower_to_place.is_current_placable_in_map() and arg_tower_to_swap_with.is_current_placable_in_map():
+		return true
+	else:
+		var tower_in_bench 
+		var tower_in_map
+		
+		if arg_tower_to_place.is_current_placable_in_map():
+			tower_in_map = arg_tower_to_place
+			tower_in_bench = arg_tower_to_swap_with
+		else:
+			tower_in_map = arg_tower_to_swap_with
+			tower_in_bench = arg_tower_to_place
+		
+		var excess_available_tower_slots = last_calculated_tower_limit - current_tower_limit_taken
+		var tower_slots_of_tower_in_bench = tower_in_bench.tower_limit_slots_taken
+		var tower_slots_of_tower_in_map = tower_in_map.tower_limit_slots_taken
+		
+		return (tower_slots_of_tower_in_bench - tower_slots_of_tower_in_map) <= excess_available_tower_slots
+
+
+
+func _on_attempt_drop_tower_on_placable(arg_tower, arg_placable, arg_move_success):
+	if !game_elements.stage_round_manager.round_started:
+		if !arg_move_success and arg_placable != null and arg_placable is InMapAreaPlacable:
+			if arg_tower.tower_limit_slots_taken == 1:
+				attempt_count_trigger_for_level_up_to_place_more.add_attempt_to_trigger()
+			elif arg_tower.tower_limit_slots_taken > 1:
+				_attempt_place_tower_with_more_than_1_slot_limit_take(arg_tower, arg_tower.tower_limit_slots_taken)
+
+
+func _attempt_place_tower_but_not_enought_slot_limit_count_reached():
+	game_elements.generic_notif_panel.push_notification(level_up_to_place_more_towers_content_desc)
+
+func _attempt_place_tower_with_more_than_1_slot_limit_take(arg_tower, arg_tower_slot_count):
+	var final_desc = tower_takes_more_than_1_slot_content_desc % [arg_tower.tower_type_info.tower_name, str(arg_tower_slot_count)]
+	game_elements.generic_notif_panel.push_notification(final_desc)
+

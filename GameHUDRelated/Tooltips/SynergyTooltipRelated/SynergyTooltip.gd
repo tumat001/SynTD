@@ -2,6 +2,7 @@ extends "res://GameHUDRelated/Tooltips/BaseTooltip.gd"
 
 const ColorSynergyCheckResults = preload("res://GameInfoRelated/ColorSynergyCheckResults.gd")
 const ColorSynergy = preload("res://GameInfoRelated/ColorSynergy.gd")
+const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
 
 const TooltipWithTextIndicatorDescription = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithTextIndicatorDescription.gd")
 const TooltipWithTextIndicatorDescriptionScene = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithTextIndicatorDescription.tscn")
@@ -16,6 +17,7 @@ const text_color : Color = Color(0, 0, 0, 1)
 const highlighted_modulate : Color = Color(1, 1, 1, 1)
 const not_highlighted_modulate : Color = Color(1, 1, 1, 0.65)
 
+var game_settings_manager : GameSettingsManager
 var result : ColorSynergyCheckResults
 
 onready var syn_icon_texture_rect = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynNameIconNumberContainer/SynIcon
@@ -48,7 +50,11 @@ func update_display():
 		
 		
 		var final_descs : Array = []
-		for desc in synergy.synergy_descriptions:
+		
+#		for desc in synergy.synergy_descriptions:
+#			final_descs.append(desc)
+		
+		for desc in GameSettingsManager.get_descriptions_to_use_based_on_color_synergy(synergy, game_settings_manager):
 			final_descs.append(desc)
 		
 		for desc in _construct_tooltips_descs_for_curr_effects(synergy):

@@ -16,6 +16,7 @@ var active_synergies_res : Array = []
 var non_active_dominant_synergies_res : Array = []
 var non_active_composite_synergies_res : Array = []
 
+var game_settings_manager setget set_game_settings_manager
 var whole_screen_gui : WholeScreenGUI
 var tower_manager
 
@@ -29,12 +30,18 @@ onready var active_and_nonactive_syn_displayer = $VBoxContainer/ScrollContainer/
 onready var scroll_container = $VBoxContainer/ScrollContainer
 
 
+func set_game_settings_manager(arg_manager):
+	game_settings_manager = arg_manager
+	
+	if is_inside_tree():
+		active_and_nonactive_syn_displayer.game_settings_manager = game_settings_manager
+
 func _ready():
 	active_and_nonactive_syn_displayer.connect("on_single_syn_tooltip_shown", self, "_on_single_syn_displayer_tooltip_shown", [], CONNECT_PERSIST)
 	active_and_nonactive_syn_displayer.connect("on_single_syn_tooltip_hidden", self, "_on_single_syn_displayer_tooltip_hidden", [], CONNECT_PERSIST)
 	active_and_nonactive_syn_displayer.connect("on_single_syn_displayer_pressed", self, "_on_single_syn_displayer_pressed", [], CONNECT_PERSIST)
 	
-	
+	active_and_nonactive_syn_displayer.game_settings_manager = game_settings_manager
 	
 	update_synergy_displayers()
 

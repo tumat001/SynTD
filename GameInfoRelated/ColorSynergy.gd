@@ -26,6 +26,7 @@ var number_of_towers_in_tier : Array = []
 var tier_pic_per_tier : Array = []
 var synergy_name : String
 var synergy_descriptions : Array = []
+var synergy_simple_descriptions : Array = []
 var synergy_picture
 
 var synergy_effects : Array
@@ -58,7 +59,8 @@ func _init(arg_synergy_name : String,
 		arg_synergy_effects = [],
 		arg_synergy_effects_descriptions = [],
 		arg_highlight_determiner : int = HighlightDeterminer.SINGLE,
-		arg_custom_highlight_instructions = {}):
+		arg_custom_highlight_instructions = {},
+		arg_synergy_simple_descriptions = []):
 	
 	colors_required = arg_colors_required
 	number_of_towers_in_tier = arg_number_of_towers_in_tier
@@ -70,7 +72,7 @@ func _init(arg_synergy_name : String,
 	synergy_effects_descriptions = arg_synergy_effects_descriptions
 	highlight_determiner = arg_highlight_determiner
 	custom_highlight_instructions = arg_custom_highlight_instructions
-
+	synergy_simple_descriptions = arg_synergy_simple_descriptions
 
 # A quick eliminator of non-candidates
 func quick_incomplete_check_if_requirements_met(colors_active : Array) -> bool:
@@ -230,4 +232,9 @@ func _update_current_highlighted_index_eff_as_all_below():
 	for i in current_tier - 1:
 		current_highlighted_index_effects_descriptions.erase(i)
 
+
+###
+
+func has_simple_description() -> bool:
+	return synergy_simple_descriptions != null and synergy_simple_descriptions.size() != 0
 

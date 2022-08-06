@@ -5,6 +5,8 @@ const TowerIconPanel_Scene = preload("res://GameHUDRelated/TowerIconPanel/TowerI
 const TowerTooltip = preload("res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltip.gd")
 const TowerTooltipScene = preload("res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltip.tscn")
 
+const CombinationWholeScreenPanel = preload("res://GameHUDRelated/CombinationRelatedPanels/CombinationWholeScreenPanel/CombinationWholeScreenPanel.gd")
+const CombinationWholeScreenPanel_Scene = preload("res://GameHUDRelated/CombinationRelatedPanels/CombinationWholeScreenPanel/CombinationWholeScreenPanel.tscn")
 
 const CombinationEffect = preload("res://GameInfoRelated/CombinationRelated/CombinationEffect.gd")
 
@@ -13,6 +15,10 @@ onready var combination_more_details_button = $HBoxContainer/MiddleFill/MainCont
 onready var combination_icons_hbox = $HBoxContainer/MiddleFill/MainContainer/HBoxContainer/ComboTowerIconsPanel
 
 var current_tooltip : TowerTooltip
+var combination_whole_screen_panel : CombinationWholeScreenPanel
+
+var combination_manager
+var whole_screen_gui
 
 var per_tier_index_position : Dictionary = {
 	1 : 0,
@@ -71,4 +77,22 @@ func on_tower_icon_mouse_exited(combi_icon):
 	if current_tooltip != null:
 		current_tooltip.queue_free()
 		current_tooltip = null
+
+###
+
+
+
+
+func _on_CombinationMoreDetailsButton_pressed_mouse_event(event : InputEventMouseButton):
+	if event.button_index == BUTTON_LEFT:
+		_bring_up_combination_whole_screen_gui()
+		
+
+func _bring_up_combination_whole_screen_gui():
+	if combination_whole_screen_panel == null:
+		combination_whole_screen_panel = CombinationWholeScreenPanel_Scene.instance()
+		combination_whole_screen_panel.combination_manager = combination_manager
+	
+	whole_screen_gui.show_control(combination_whole_screen_panel)
+
 

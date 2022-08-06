@@ -1,5 +1,7 @@
 extends MarginContainer
 
+const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
+
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 const ExtraInfoPanel = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/ExtraInfoPanelComponents/ExtraInfoPanel.gd")
 const ExtraInfoPanel_Scene = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/ExtraInfoPanelComponents/ExtraInfoPanel.tscn")
@@ -32,7 +34,7 @@ const LaChasseur_InfoPanel = preload("res://TowerRelated/Color_Green/La_Chasseur
 const LaChasseur_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/La_Chasseur/GUI/LaChasseur_InfoPanel.tscn")
 
 
-
+var game_settings_manager : GameSettingsManager
 var tower : AbstractTower
 
 onready var active_ing_panel = $VBoxContainer/ActiveIngredientsPanel
@@ -69,7 +71,6 @@ func _ready():
 
 
 func update_display():
-	
 	# Tower name and pic display related
 	tower_name_and_pic_panel.tower = tower
 	tower_name_and_pic_panel.update_display()
@@ -122,6 +123,7 @@ func _create_extra_info_panel():
 	extra_info_panel = ExtraInfoPanel_Scene.instance()
 	
 	extra_info_panel.tower = tower
+	extra_info_panel.game_settings_manager = game_settings_manager
 	
 	var topleft_pos = get_global_rect().position
 	var size_x_of_extra_info_panel = extra_info_panel.rect_size.x
@@ -214,6 +216,7 @@ func _update_tower_specific_info_panel():
 	if Orb_InfoPanel.should_display_self_for(tower):
 		if orb_info_panel == null:
 			orb_info_panel = Orb_InfoPanel_Scene.instance()
+			orb_info_panel.game_settings_manager = game_settings_manager
 			tower_specific_slot.add_child(orb_info_panel)
 		
 		orb_info_panel.visible = true

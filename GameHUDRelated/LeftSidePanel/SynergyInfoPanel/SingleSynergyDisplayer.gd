@@ -14,6 +14,7 @@ signal on_single_syn_displayer_pressed(input_mouse_event, syn_check_result)
 
 var result : ColorSynergyCheckResults
 var current_tooltip : SynergyTooltip
+var game_settings_manager
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -78,6 +79,7 @@ func _on_SingleSynergyDisplayer_mouse_entered():
 	current_tooltip = tooltip
 	current_tooltip.result = result
 	current_tooltip.tooltip_owner = self
+	current_tooltip.game_settings_manager = game_settings_manager
 	
 	emit_signal("on_single_syn_tooltip_displayed", result.synergy)
 	

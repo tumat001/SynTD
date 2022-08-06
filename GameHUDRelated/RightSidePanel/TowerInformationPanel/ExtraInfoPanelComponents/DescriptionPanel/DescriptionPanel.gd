@@ -4,10 +4,14 @@ const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 const TooltipBody = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipBody.gd")
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
+const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
+
 
 # In extra info
 
 var tower : AbstractTower
+var game_settings_manager : GameSettingsManager
+
 
 onready var tooltip_body : TooltipBody = $VBoxContainer/BodyMarginer/TooltipBody
 
@@ -18,7 +22,9 @@ func _ready():
 func update_display():
 	
 	if tower != null:
-		tooltip_body.descriptions = Towers.get_tower_info(tower.tower_id).tower_descriptions
+		var tower_type_info =  Towers.get_tower_info(tower.tower_id)
+		
+		tooltip_body.descriptions = GameSettingsManager.get_descriptions_to_use_based_on_tower_type_info(tower_type_info, game_settings_manager)
 		tooltip_body.tower_for_text_fragment_interpreter = tower
 	else:
 		tooltip_body.descriptions = [""]

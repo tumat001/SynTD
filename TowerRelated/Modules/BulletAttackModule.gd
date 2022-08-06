@@ -4,6 +4,7 @@ const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd
 
 
 signal before_bullet_is_shot(bullet)
+signal after_bullet_is_shot(bullet) # after bullet is added to scene
 signal kill_all_spawned_bullets()
 
 var bullet_scene : PackedScene
@@ -216,7 +217,7 @@ func _attack_at_position(arg_pos : Vector2):
 	emit_signal("before_bullet_is_shot", bullet)
 	#get_tree().get_root().add_child(bullet)
 	get_tree().get_root().call_deferred("add_child", bullet)
-
+	emit_signal("after_bullet_is_shot", bullet)
 
 func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	var bullet : BaseBullet = bullet_scene.instance()

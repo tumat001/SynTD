@@ -97,3 +97,4 @@ margin_right = 2.0
 margin_bottom = 30.0
 mouse_filter = 2
 texture = ExtResource( 1 )
+[connection signal="pressed_mouse_event" from="HBoxContainer/MiddleFill/MainContainer/HBoxContainer/CombinationMoreDetailsButton" to="." method="_on_CombinationMoreDetailsButton_pressed_mouse_event"]

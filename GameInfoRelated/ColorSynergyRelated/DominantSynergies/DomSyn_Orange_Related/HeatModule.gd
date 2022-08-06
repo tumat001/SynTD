@@ -8,6 +8,8 @@ const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
 const EnemyBaseEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd")
 
+const MultipleTrailsForNodeComponent = preload("res://MiscRelated/TrailRelated/MultipleTrailsForNodeComponent.gd")
+
 
 signal should_be_shown_in_info_panel_changed
 signal current_heat_changed
@@ -46,6 +48,23 @@ var has_attacked_in_round : bool
 # Syn stuffs
 var should_be_shown_in_info_panel : bool setget set_should_be_shown_in_info_panel
 var overheat_effects : Array
+
+# trail related
+
+var multiple_trails_component : MultipleTrailsForNodeComponent
+
+const heat_needed_for_show_trail : int = 25
+var _current_should_show_trail : bool
+
+const trail_color : Color = Color(0.8, 0.35, 0, 0.75)
+
+const base_trail_length : int = 5
+const trail_length_multiplier_per_100_heat : int = 1
+var _current_trail_length : int = base_trail_length
+
+const base_trail_width : int = 3
+const trail_width_multiplier_per_100_heat : int = 1
+var _current_trail_width : int = base_trail_width
 
 
 func _init():
@@ -127,7 +146,11 @@ func set_current_heat(arg_current_heat : int):
 	call_deferred("emit_signal", "current_heat_changed")
 	_calculate_final_effect_multiplier()
 	update_current_heat_effect()
-
+	
+	
+	_current_should_show_trail = current_heat >= heat_needed_for_show_trail
+	_current_trail_length = base_trail_length + (base_trail_length * trail_length_multiplier_per_100_heat * (current_heat / 100.0))
+	_current_trail_width = base_trail_width + (base_trail_width * trail_width_multiplier_per_100_heat * (current_heat / 100.0))
 
 func set_base_heat_effect(arg_heat_effect : TowerBaseEffect):
 	base_heat_effect = arg_heat_effect
@@ -155,6 +178,7 @@ func set_tower(arg_tower : AbstractTower):
 		
 		if tower.is_connected("on_main_attack_finished", self, "_on_tower_attack_finished"):
 			tower.disconnect("on_main_attack_finished", self, "_on_tower_attack_finished")
+			tower.disconnect("on_main_bullet_attack_module_after_bullet_is_shot", self, "_tower_after_bullet_shot")
 	
 	tower = arg_tower
 	
@@ -164,6 +188,11 @@ func set_tower(arg_tower : AbstractTower):
 		
 		if !tower.is_connected("on_main_attack_finished", self, "_on_tower_attack_finished"):
 			tower.connect("on_main_attack_finished", self, "_on_tower_attack_finished", [], CONNECT_PERSIST)
+			tower.connect("on_main_bullet_attack_module_after_bullet_is_shot", self, "_tower_after_bullet_shot", [], CONNECT_PERSIST)
+		
+		if multiple_trails_component == null:
+			_construct_multiple_trails_component(tower)
+		multiple_trails_component.node_to_host_trails = arg_tower
 
 
 func set_should_be_shown_in_info_panel(value : bool):
@@ -177,6 +206,15 @@ func set_heat_per_attack(arg_heat_per_attack : int):
 	heat_per_attack = arg_heat_per_attack
 	call_deferred("emit_signal", "heat_per_attack_changed")
 
+
+# trail
+
+func _construct_multiple_trails_component(arg_tower):
+	multiple_trails_component = MultipleTrailsForNodeComponent.new()
+	
+	multiple_trails_component.trail_type_id = StoreOfTrailType.BASIC_TRAIL
+	multiple_trails_component.connect("on_trail_before_attached_to_node", self, "_trail_before_attached_to_node", [], CONNECT_PERSIST)
+	
 
 # Tower related
 
@@ -275,3 +313,18 @@ func get_max_effect():
 		s_copy.enemy_base_effect = effect_copy
 	
 	return s_copy
+
+
+## TRAIL related
+
+func _tower_after_bullet_shot(arg_bullet, module):
+	if _current_should_show_trail:
+		multiple_trails_component.create_trail_for_node(arg_bullet)
+
+
+func _trail_before_attached_to_node(arg_trail, node):
+	arg_trail.max_trail_length = _current_trail_length
+	arg_trail.trail_color = trail_color
+	arg_trail.width = _current_trail_width
+	#arg_trail.modulate.a = trail_transparency
+	
