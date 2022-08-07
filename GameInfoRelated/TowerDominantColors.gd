@@ -122,7 +122,7 @@ func _init():
 	# ------------------------------------------------------
 	
 	synergies = {
-	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [3, 2, 1], #todo#[9, 6, 3],
+	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
 	[

@@ -226,7 +226,7 @@ enum {
 const TowerTiersMap : Dictionary = {
 	HEALING_SYMBOL : 1,
 	
-	MONO : 1,
+	#MONO : 1,
 	SPRINKLER : 1,
 	SIMPLEX : 1,
 	MINI_TESLA : 1,
