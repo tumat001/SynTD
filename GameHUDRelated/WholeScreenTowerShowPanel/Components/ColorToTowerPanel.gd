@@ -5,7 +5,6 @@ const TowerIconPanel_Scene = preload("res://GameHUDRelated/TowerIconPanel/TowerI
 const TowerTooltip = preload("res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltip.gd")
 const TowerTooltipScene = preload("res://GameHUDRelated/Tooltips/TowerTooltipRelated/TowerTooltip.tscn")
 
-
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 
@@ -15,6 +14,7 @@ const tower_in_map_color := Color(1.2, 1.2, 1.2, 1)
 var tower_color : int
 var active_towers : Array
 var shop_manager
+var game_settings_manager
 
 onready var color_icon_trect = $HBoxContainer/ColorInfoPanel/VBoxContainer/ColorIcon
 onready var color_name_label = $HBoxContainer/ColorInfoPanel/VBoxContainer/MarginContainer/ColorName
@@ -83,6 +83,7 @@ func _free_old_and_create_tooltip_for_tower(tower_type_info, combi_icon):
 	current_tooltip = TowerTooltipScene.instance()
 	current_tooltip.tower_info = tower_type_info
 	current_tooltip.tooltip_owner = combi_icon
+	current_tooltip.game_settings_manager = game_settings_manager
 	
 	get_tree().get_root().add_child(current_tooltip)
 

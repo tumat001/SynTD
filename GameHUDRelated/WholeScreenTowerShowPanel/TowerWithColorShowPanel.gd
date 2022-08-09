@@ -5,6 +5,7 @@ const ColorToTowerPanel_Scene = preload("res://GameHUDRelated/WholeScreenTowerSh
 
 
 var tower_manager
+var game_settings_manager
 
 onready var color_to_tower_panel_container = $MarginContainer/VBoxContainer/ColorToTowerPanelContainer
 
@@ -30,5 +31,6 @@ func _construct_color_to_tower_panel(tower_color : int) -> ColorToTowerPanel:
 	panel.shop_manager = tower_manager.game_elements.shop_manager
 	panel.active_towers = tower_manager.get_all_active_towers()
 	panel.tower_color = tower_color
+	panel.game_settings_manager = game_settings_manager
 	
 	return panel

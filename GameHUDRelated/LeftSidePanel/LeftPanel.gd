@@ -73,6 +73,7 @@ func _on_single_syn_displayer_pressed(event, syn_check_result):
 		if panel == null:
 			_tower_with_color_show_panel = TowerWithColorShowPanel_Scene.instance()
 			_tower_with_color_show_panel.tower_manager = tower_manager
+			_tower_with_color_show_panel.game_settings_manager = game_settings_manager
 		
 		whole_screen_gui.show_control(_tower_with_color_show_panel)
 		_tower_with_color_show_panel.show_towers_with_colors(syn_check_result.synergy.colors_required)

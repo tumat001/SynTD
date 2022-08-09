@@ -45,6 +45,7 @@ func add_combination_effect(arg_combi_effect : CombinationEffect):
 	
 	tower_icon_scene.connect("on_mouse_hovered", self, "on_tower_icon_mouse_entered", [arg_combi_effect.tower_type_info, tower_icon_scene], CONNECT_PERSIST)
 	tower_icon_scene.connect("on_mouse_hover_exited", self, "on_tower_icon_mouse_exited", [tower_icon_scene], CONNECT_PERSIST)
+	tower_icon_scene.size_flags_vertical = SIZE_EXPAND | SIZE_SHRINK_CENTER
 	#combination_icons_hbox.connect("mouse_exited", self, "on_tower_icon_mouse_exited", [], CONNECT_PERSIST)
 	
 	shift_index_based_on_inserted_combi_effect(tower_tier)

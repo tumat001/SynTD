@@ -391,7 +391,18 @@ static func _get_default_center_for_atlas(tower_sprite) -> Vector2:
 	return Vector2(highlight_sprite_size.x / 4, 0)
 
 static func _get_default_region_size_for_atlas(tower_sprite) -> Vector2:
-	return Vector2(18, 18)
+	var max_width = tower_sprite.get_size().x
+	var max_height = tower_sprite.get_size().y
+	
+	var width_to_use = 27
+	if width_to_use > max_width:
+		width_to_use = max_width
+	
+	var length_to_use = 27
+	if length_to_use > max_height:
+		length_to_use = max_height
+	
+	return Vector2(width_to_use, length_to_use)
 
 
 
