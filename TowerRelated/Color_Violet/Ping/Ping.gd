@@ -90,10 +90,15 @@ func _ready():
 	
 	_initialize_stats_from_tower_info(info)
 	
+	
+	var attack_module_y_shift : float = 25.0
+	var eye_attk_module_y_shift : float = 42.0
+	var info_bar_y_shift : float = 40.0
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 16
+	range_module.position.y += attack_module_y_shift
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -106,7 +111,7 @@ func _ready():
 	attack_module.base_proj_speed = 245
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
-	attack_module.position.y -= 16
+	attack_module.position.y -= attack_module_y_shift
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	var bullet_shape = RectangleShape2D.new()
@@ -178,7 +183,7 @@ func _ready():
 	shot_attack_module.base_attack_wind_up = 0
 	shot_attack_module.is_main_attack = false
 	shot_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	shot_attack_module.position.y -= 30
+	shot_attack_module.position.y -= eye_attk_module_y_shift
 	shot_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	shot_attack_module.on_hit_damage_scale = normal_on_hit_damage_scale
 	
@@ -215,7 +220,7 @@ func _ready():
 	
 	#
 	
-	info_bar_layer.position.y -= 25
+	info_bar_layer.position.y -= info_bar_y_shift
 	
 	connect("final_ability_potency_changed", self, "_on_final_ap_changed_p", [], CONNECT_PERSIST)
 	

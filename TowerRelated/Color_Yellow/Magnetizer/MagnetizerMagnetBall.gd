@@ -18,7 +18,7 @@ var eligible_for_beam_formation : bool = false
 var type : int
 
 
-onready var bullet_sprite = $BulletSprite
+#onready var bullet_sprite = $BulletSprite
 
 var beam_formation_triggered : bool = false
 var lifetime_after_beam_formation : float

@@ -311,7 +311,7 @@ func _init():
 	[
 		"Brings about a Fluctuation, which buffs a tower for 3 seconds. Fluctuation then seeks another tower to buff.",
 		"Cycle: Fluctuation goes to the first tower that attacks. Afterwards, Fluctuation loops to the highest base damage tower, then to the highest attack speed tower, then to the tower that has dealt the most damage in the round.",
-		"Fluctuation cannot re-target to the same tower. Fluctuation will avoid towers that cannot attack, or with no enemies in its range. When no viable towers are found, the Cycle is reset.",
+		"Fluctuation cannot re-target to the same tower. Fluctuation will avoid towers that cannot attack, or with no enemies in its range. When no viable tower is found, the Cycle is reset.",
 		"",
 		"A Fluctuated tower gains buffs.",
 		""

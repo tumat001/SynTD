@@ -86,7 +86,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 23
+	range_module.position.y += 28
 	
 	var attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -95,7 +95,7 @@ func _ready():
 	attack_module.base_attack_wind_up = 5
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
-	attack_module.position.y -= 23
+	attack_module.position.y -= 28
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	

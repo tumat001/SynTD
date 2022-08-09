@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 11.9164, 14.2652 )
+extents = Vector2( 14.253, 20.2625 )
 
 [node name="FruitTree" instance=ExtResource( 1 )]
 script = ExtResource( 2 )

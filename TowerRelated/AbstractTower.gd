@@ -251,6 +251,15 @@ var last_calculated_is_untargetable : bool = false
 var _all_uuid_tower_buffs_map : Dictionary = {}
 
 
+# Mov to placable related
+
+enum CanBePlacedInMapClauses {
+	GENERIC_CANNOT_BE_PLACED_IN_MAP = 0
+}
+var can_be_placed_in_map_conditional_clause : ConditionalClauses
+var last_calculated_can_be_placed_in_map : bool
+
+
 # Ingredient related
 
 var ingredients_absorbed : Dictionary = {} # Map of tower_id (ingredient source) to ingredient_effect
@@ -373,7 +382,6 @@ var all_combinations_id_to_effect_id_map : Dictionary = {}
 # Modulate
 
 
-
 # Other stats
 
 var base_health : float = 10
@@ -486,12 +494,17 @@ func _init():
 	can_be_used_as_ingredient_conditonal_clauses.connect("clause_inserted", self, "_on_can_be_used_as_ing_clause_added_or_removed", [], CONNECT_PERSIST)
 	can_be_used_as_ingredient_conditonal_clauses.connect("clause_removed", self, "_on_can_be_used_as_ing_clause_added_or_removed", [], CONNECT_PERSIST)
 	
+	can_be_placed_in_map_conditional_clause = ConditionalClauses.new()
+	can_be_placed_in_map_conditional_clause.connect("clause_inserted", self, "_on_can_move_to_in_map_clause_added_or_removed", [], CONNECT_PERSIST)
+	can_be_placed_in_map_conditional_clause.connect("clause_removed", self, "_on_can_move_to_in_map_clause_added_or_removed", [], CONNECT_PERSIST)
+	
 	_update_last_calculated_contributing_to_synergy()
 	_update_last_calculated_disabled_from_attacking()
 	_update_untargetability_state()
 	_update_last_calculated_can_be_sold()
 	_update_last_calculated_can_absorb_ing()
 	_update_last_calculated_can_be_used_as_ing()
+	_update_last_calculated_can_be_placed_in_map()
 
 func _ready():
 	$IngredientDeclinePic.visible = false
@@ -2490,6 +2503,11 @@ func _end_drag():
 
 
 func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_update : bool = false, always_snap_back_to_orignal_pos : bool = false, ignore_is_round_started : bool = false, ignore_ing_mode : bool = false):
+	if !last_calculated_can_be_placed_in_map and new_area_placable is InMapAreaPlacable:
+		if !is_in_ingredient_mode or ignore_ing_mode:
+			new_area_placable = null
+	
+	
 	var should_update_active_synergy : bool
 	if new_area_placable != null and !do_not_update:
 		if (current_placable != null and current_placable.get_placable_type_name() != new_area_placable.get_placable_type_name()):
@@ -2582,6 +2600,14 @@ func _on_PlacableDetector_area_exited(area):
 		if hovering_over_placable == area:
 			hovering_over_placable = null
 
+
+# Mov to in map related
+
+func _on_can_move_to_in_map_clause_added_or_removed(arg_clause_id):
+	_update_last_calculated_can_be_placed_in_map()
+
+func _update_last_calculated_can_be_placed_in_map():
+	last_calculated_can_be_placed_in_map = can_be_placed_in_map_conditional_clause.is_passed
 
 # Ingredient drag and drop related
 

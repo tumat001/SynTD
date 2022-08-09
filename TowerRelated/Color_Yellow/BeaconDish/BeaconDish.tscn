@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 11.2677, 10.4874 )
+extents = Vector2( 10.2655, 16.5953 )
 
 [node name="BeaconDish" instance=ExtResource( 1 )]
 script = ExtResource( 3 )

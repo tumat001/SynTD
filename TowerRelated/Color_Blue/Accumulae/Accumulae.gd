@@ -68,7 +68,7 @@ const base_spell_burst_damage : float = 7.0
 # clause for attk module
 const lob_attk_module_not_yet_casted_clause : int = -10
 
-const attack_position_source_y_shift : float = 19.0
+const attack_position_source_y_shift : float = 23.0
 
 
 var enemy_siphon_ap_effect : EnemyAttributesEffect

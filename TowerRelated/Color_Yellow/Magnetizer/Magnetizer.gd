@@ -69,9 +69,12 @@ func _ready():
 	
 	# Magnet related
 	
+	var attack_module_y_shift : float = 7.0
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += attack_module_y_shift
 	
 	magnet_attack_module = BulletAttackModule_Scene.instance()
 	magnet_attack_module.base_damage = info.base_damage
@@ -85,6 +88,7 @@ func _ready():
 	magnet_attack_module.base_proj_life_distance = info.base_range
 	magnet_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	magnet_attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	magnet_attack_module.position.y -= attack_module_y_shift
 	
 	magnet_attack_module.benefits_from_bonus_on_hit_damage = true
 	
@@ -271,6 +275,7 @@ func _form_beam_between_points(origin_pos : Vector2, destination_pos : Vector2):
 	aoe.modulate = Color(1, 1, 1, 0.7)
 	aoe.damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)
 	aoe.scale.y *= 1.4
+	aoe.scale.x *= 1.25
 	
 	get_tree().get_root().add_child(aoe)
 

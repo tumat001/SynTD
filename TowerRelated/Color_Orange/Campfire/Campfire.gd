@@ -36,6 +36,7 @@ var rage_ability : BaseAbility
 
 onready var flame_anim_sprite = $TowerBase/KnockUpLayer/BaseSprites
 const base_frame_rate : int = 5
+const original_flame_y_pos : float = -13.0
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.CAMPFIRE)
@@ -193,7 +194,7 @@ func _match_fire_size_to_base_dmg(total_base_dmg):
 	var sprite_height : float = flame_anim_sprite.frames.get_frame("default", 0).get_size().y
 	var height_change = ((flame_anim_sprite.scale.y * sprite_height) - sprite_height) / 2
 	
-	flame_anim_sprite.position.y = -10 # original height
+	flame_anim_sprite.position.y = original_flame_y_pos # original height
 	flame_anim_sprite.position.y -= height_change
 
 

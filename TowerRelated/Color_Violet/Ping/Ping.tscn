@@ -28,11 +28,11 @@ frames = SubResource( 1 )
 offset = Vector2( -0.5, 0 )
 
 [node name="TopHalf" type="Sprite" parent="TowerBase/KnockUpLayer" index="1"]
-position = Vector2( 0, -16 )
+position = Vector2( -0.5, -24 )
 texture = ExtResource( 4 )
 
 [node name="PingEye" type="Sprite" parent="TowerBase/KnockUpLayer" index="2"]
-position = Vector2( 0, -29 )
+position = Vector2( -0.5, -42 )
 texture = ExtResource( 5 )
 
 [node name="CollisionShape" parent="." index="1"]

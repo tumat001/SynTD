@@ -53,7 +53,7 @@ func _init().(StoreOfTowerEffectsUUID.ING_FLAMEBURST):
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 	# ins
 	
-	description = ["This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals |0|. Does not benefit from pierce.", [interpreter_for_flat_on_hit]]
+	description = ["This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals |0|. Benefits from bonus pierce.", [interpreter_for_flat_on_hit]]
 	#description = "This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals 1 elemental damage. Does not benefit from pierce."
 
 
@@ -68,7 +68,7 @@ func _construct_burst_module():
 	burst_attack_module.is_main_attack = false
 	burst_attack_module.base_pierce = 1
 	burst_attack_module.base_proj_speed = 200
-	burst_attack_module.base_proj_life_distance = 50
+	burst_attack_module.base_proj_life_distance = 100
 	burst_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	#burst_attack_module.on_hit_damage_scale = 1
 	
@@ -76,7 +76,7 @@ func _construct_burst_module():
 	burst_attack_module.benefits_from_bonus_on_hit_effect = false
 	burst_attack_module.benefits_from_bonus_base_damage = false
 	burst_attack_module.benefits_from_bonus_attack_speed = false
-	burst_attack_module.benefits_from_bonus_pierce = false
+	burst_attack_module.benefits_from_bonus_pierce = true
 	
 	var burst_bullet_shape = RectangleShape2D.new()
 	burst_bullet_shape.extents = Vector2(5, 3)

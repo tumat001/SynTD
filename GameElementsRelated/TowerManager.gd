@@ -101,7 +101,7 @@ var synergy_manager
 var stage_round_manager
 var ability_manager : AbilityManager
 var input_prompt_manager : InputPromptManager setget set_input_prompt_manager
-var game_elements
+var game_elements setget set_game_elements
 
 var _color_groups : Array
 const TOWER_GROUP_ID : String = "All_Towers"
@@ -130,6 +130,15 @@ const tower_takes_more_than_1_slot_content_desc : String = "%s takes %s tower sl
 
 # setters
 
+func set_game_elements(arg_elements):
+	game_elements = arg_elements
+	
+	attempt_count_trigger_for_level_up_to_place_more = AttemptCountTrigger.new(game_elements)
+	attempt_count_trigger_for_level_up_to_place_more.count_for_trigger = level_up_to_place_more__count_for_trigger
+	attempt_count_trigger_for_level_up_to_place_more.connect("on_reached_trigger_count", self, "_attempt_place_tower_but_not_enought_slot_limit_count_reached", [], CONNECT_PERSIST)
+	attempt_count_trigger_for_level_up_to_place_more.count_for_trigger = 2
+
+
 func set_level_manager(arg_manager : LevelManager):
 	level_manager = arg_manager
 	
@@ -153,11 +162,6 @@ func _ready():
 		_color_groups.append(str(color))
 	
 	
-	attempt_count_trigger_for_level_up_to_place_more = AttemptCountTrigger.new(self)
-	attempt_count_trigger_for_level_up_to_place_more.count_for_trigger = level_up_to_place_more__count_for_trigger
-	attempt_count_trigger_for_level_up_to_place_more.connect("on_reached_trigger_count", self, "_attempt_place_tower_but_not_enought_slot_limit_count_reached", [], CONNECT_PERSIST)
-	attempt_count_trigger_for_level_up_to_place_more.count_for_trigger = 2
-
 
 # Generic things that can branch out to other resp.
 
@@ -740,8 +744,8 @@ func if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(arg_tower_to
 
 
 func _on_attempt_drop_tower_on_placable(arg_tower, arg_placable, arg_move_success):
-	if !game_elements.stage_round_manager.round_started:
-		if !arg_move_success and arg_placable != null and arg_placable is InMapAreaPlacable:
+	if !game_elements.stage_round_manager.round_started and !is_in_ingredient_mode:
+		if !arg_move_success and arg_placable != null and arg_placable is InMapAreaPlacable and arg_tower.last_calculated_can_be_placed_in_map:
 			if arg_tower.tower_limit_slots_taken == 1:
 				attempt_count_trigger_for_level_up_to_place_more.add_attempt_to_trigger()
 			elif arg_tower.tower_limit_slots_taken > 1:

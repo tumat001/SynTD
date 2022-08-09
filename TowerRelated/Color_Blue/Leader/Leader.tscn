@@ -13,17 +13,17 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 15.8248, 11.2302 )
+extents = Vector2( 13.9482, 23.6956 )
 
 [node name="Leader" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
 
 [node name="TowerBase" parent="." index="0"]
-position = Vector2( 0, -10 )
+position = Vector2( 0.5, -10 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
 
 [node name="CollisionShape" parent="." index="1"]
-position = Vector2( 0, -6 )
+position = Vector2( 0, -10 )
 shape = SubResource( 2 )

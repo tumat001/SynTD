@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 9, 14.5 )
+extents = Vector2( 13.7491, 19.5009 )
 
 [node name="Reaper" instance=ExtResource( 1 )]
 script = ExtResource( 3 )

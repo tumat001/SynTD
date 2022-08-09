@@ -13,10 +13,13 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 7.15044, 7.09566 )
+extents = Vector2( 7.13455, 9.7941 )
 
 [node name="Sprinkler" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+
+[node name="TowerBase" parent="." index="0"]
+position = Vector2( 0, -1 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )

@@ -27,6 +27,8 @@ var stack_effect : EnemyStackEffect
 var stack_amount_with_energy_module : int = 3
 var stack_amount_without_energy_module : int = 5
 
+const stun_duration : float = 3.0
+
 
 const attack_speed_stack_base_amount : float = 15.0
 var stacking_attack_speed_effect : TowerAttributesEffect
@@ -49,7 +51,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 13
+	range_module.position.y += 16
 	
 	attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -58,7 +60,7 @@ func _ready():
 	attack_module.base_attack_wind_up = 0
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
-	attack_module.position.y -= 13
+	attack_module.position.y -= 16
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
@@ -86,7 +88,7 @@ func _post_inherit_ready():
 	var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(2, StoreOfEnemyEffectsUUID.MINI_TESLA_STUN)
 	var enemy_effect : EnemyStackEffect = EnemyStackEffect.new(enemy_final_effect, 1, stack_amount_without_energy_module, StoreOfEnemyEffectsUUID.MINI_TESLA_STACK)
 	enemy_effect.is_timebound = true
-	enemy_effect.time_in_seconds = 3
+	enemy_effect.time_in_seconds = stun_duration
 	
 	var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.MINI_TESLA_STACKING_STUN)
 	

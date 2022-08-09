@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 6.98257, 10.2658 )
+extents = Vector2( 11.7646, 15.9094 )
 
 [node name="Grand" instance=ExtResource( 1 )]
 script = ExtResource( 2 )

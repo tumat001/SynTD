@@ -33,13 +33,18 @@ var destroy_self_after_zero_life_distance : bool = true
 var coll_source_layer : int = CollidableSourceAndDest.Source.FROM_TOWER
 var coll_destination_mask : int = CollidableSourceAndDest.Destination.TO_ENEMY
 
+var is_animated_sprite_playing : bool
+
+
+onready var bullet_sprite = $BulletSprite
 
 func _ready():
 	current_life_distance = life_distance
 	
 	CollidableSourceAndDest.set_coll_layer_source(self, coll_source_layer)
 	CollidableSourceAndDest.set_coll_mask_destination(self, coll_destination_mask)
-
+	
+	bullet_sprite.playing = is_animated_sprite_playing
 
 func _process(delta):
 	rotation_degrees += rotation_per_second * delta

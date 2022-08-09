@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 15.75, 10.5 )
+extents = Vector2( 14.18, 16.7548 )
 
 [node name="Volcano" instance=ExtResource( 1 )]
 script = ExtResource( 3 )

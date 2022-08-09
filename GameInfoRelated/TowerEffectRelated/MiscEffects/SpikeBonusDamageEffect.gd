@@ -11,7 +11,7 @@ const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/Te
 
 
 const bonus_damage_percent_threshold : float = 0.5
-const bonus_damage : float = 0.85
+const bonus_damage : float = 1.0
 var bonus_on_hit : OnHitDamage
 
 func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):

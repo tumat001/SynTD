@@ -61,7 +61,7 @@ enum PotionTypes {
 }
 
 
-const attk_source_y_pos_shift : float = 12.0
+const attk_source_y_pos_shift : float = 15.0
 
 # REPEL
 const repel_knockup_accel : float = 40.0

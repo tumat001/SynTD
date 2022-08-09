@@ -72,9 +72,12 @@ func _ready():
 	
 	_initialize_stats_from_tower_info(info)
 	
+	var y_shift_of_modules : float = 8
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += y_shift_of_modules
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -88,6 +91,7 @@ func _ready():
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	attack_module.position.y -= y_shift_of_modules
 	
 	attack_module.burst_amount = 2
 	attack_module.burst_attack_speed = 8
@@ -116,6 +120,7 @@ func _ready():
 	ability_attack_module.base_proj_speed = 625
 	ability_attack_module.base_proj_life_distance = info.base_range
 	ability_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	ability_attack_module.position.y -= y_shift_of_modules
 	
 	ability_attack_module.benefits_from_bonus_base_damage = false
 	ability_attack_module.benefits_from_bonus_on_hit_effect = false

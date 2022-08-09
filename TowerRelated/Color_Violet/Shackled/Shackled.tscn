@@ -14,7 +14,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 7.36737, 12.5686 )
+extents = Vector2( 9.48898, 18.7359 )
 
 [node name="Shackled" instance=ExtResource( 1 )]
 script = ExtResource( 4 )

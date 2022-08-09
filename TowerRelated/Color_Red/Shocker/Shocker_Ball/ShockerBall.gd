@@ -11,8 +11,6 @@ var base_time_before_queue_free : float
 var _current_time_before_queue_free : float
 
 
-onready var bullet_sprite = $BulletSprite
-
 func _ready():
 	pass
 

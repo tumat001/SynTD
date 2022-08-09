@@ -22,6 +22,8 @@ const ChargeBar_5 = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Ba
 const ChargeBar_6 = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Bar06.png")
 const ChargeBar_6_Special = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Bar06_WithEnergy.png")
 
+const MaxChargeParticle_Scene = preload("res://TowerRelated/Color_Yellow/Charge/MaxChargeParticle/MaxChargeParticle.tscn")
+
 const proj_speed_level_1 : float = 300.0
 const proj_speed_level_2 : float = 400.0
 const proj_speed_level_3 : float = 500.0
@@ -71,9 +73,12 @@ func _ready():
 	
 	_construct_bonus_on_hit_and_modifier()
 	
+	var attack_module_y_shift : float = 7.0
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += attack_module_y_shift
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -87,9 +92,10 @@ func _ready():
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	attack_module.position.y -= attack_module_y_shift
 	
 	var bullet_shape = RectangleShape2D.new()
-	bullet_shape.extents = Vector2(9, 5)
+	bullet_shape.extents = Vector2(14, 8)
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene
@@ -234,7 +240,17 @@ func _modify_bullet_before_shooting(bullet : BaseBullet):
 	bullet.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.CHARGE_BONUS_PERCENT_ON_HIT] = bonus_percent_on_hit_damage
 	
 	_current_energy = 0
+	
+	if level_of_charge == 4: # 4 is max
+		bullet.connect("hit_an_enemy", self, "_on_bullet_hit_enemy")
 
+
+func _on_bullet_hit_enemy(arg_bullet, arg_enemy):
+	var max_charge_particle = MaxChargeParticle_Scene.instance()
+	max_charge_particle.position = arg_enemy.global_position
+	max_charge_particle.scale *= 1.5
+	
+	get_tree().get_root().add_child(max_charge_particle)
 
 
 # Module related

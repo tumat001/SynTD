@@ -16,7 +16,9 @@ var colors : Array = []
 var ingredient_effect : IngredientEffect
 var ingredient_effect_simple_description : String = ""
 
-var tower_image_in_buy_card : Texture
+var base_tower_image : Texture setget set_base_tower_image
+
+var tower_image_in_buy_card : AtlasTexture
 var tower_atlased_image : AtlasTexture
 
 var tower_descriptions : Array = []
@@ -42,5 +44,53 @@ func _init(arg_tower_name : String, arg_tower_type_id : int):
 	tower_cost = 0
 
 
+###
+
 func has_simple_description() -> bool:
 	return tower_simple_descriptions != null and tower_simple_descriptions.size() != 0
+
+
+###
+
+func set_base_tower_image(arg_image):
+	base_tower_image = arg_image
+	
+	tower_image_in_buy_card = _generate_tower_image_for_buy_card_atlas_texture(base_tower_image)
+
+
+
+static func _generate_tower_image_for_buy_card_atlas_texture(tower_sprite) -> AtlasTexture:
+	var tower_image_icon_atlas_texture := AtlasTexture.new()
+	
+	tower_image_icon_atlas_texture.atlas = tower_sprite
+	tower_image_icon_atlas_texture.region = _get_atlas_region(tower_sprite)
+	
+	return tower_image_icon_atlas_texture
+
+
+static func _get_atlas_region(tower_sprite) -> Rect2:
+	var center = _get_default_center_for_atlas(tower_sprite)
+	var size = _get_default_region_size_for_atlas(tower_sprite)
+	
+	#return Rect2(0, 0, size.x, size.y)
+	return Rect2(center.x, center.y, size.x, size.y)
+
+static func _get_default_center_for_atlas(tower_sprite) -> Vector2:
+	var highlight_sprite_size = tower_sprite.get_size()
+	
+	return Vector2(0, 0)
+
+static func _get_default_region_size_for_atlas(tower_sprite) -> Vector2:
+	var max_width = tower_sprite.get_size().x
+	var max_height = tower_sprite.get_size().y
+	
+	var width_to_use = 38
+	if width_to_use > max_width:
+		width_to_use = max_width
+	
+	var length_to_use = 38
+	if length_to_use > max_height:
+		length_to_use = max_height
+	
+	return Vector2(width_to_use, length_to_use)
+

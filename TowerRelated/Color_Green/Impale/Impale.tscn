@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 8.16477, 15.1492 )
+extents = Vector2( 11.3298, 20.9511 )
 
 [node name="Impale" instance=ExtResource( 1 )]
 script = ExtResource( 2 )

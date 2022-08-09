@@ -80,7 +80,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 10
+	range_module.position.y += 14
 	
 	main_shot_range_module = range_module
 	
@@ -96,7 +96,7 @@ func _ready():
 	mini_shot_attack_module.base_attack_wind_up = 1 / 0.1
 	mini_shot_attack_module.is_main_attack = true
 	mini_shot_attack_module.module_id = StoreOfAttackModuleID.MAIN
-	mini_shot_attack_module.position.y -= 10
+	mini_shot_attack_module.position.y -= 14
 	mini_shot_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	
 	mini_shot_attack_module.on_hit_effect_scale = 1
@@ -141,7 +141,7 @@ func _ready():
 	attack_module.base_attack_wind_up = 1 / 0.15 
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
-	attack_module.position.y -= 10
+	attack_module.position.y -= 14
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	

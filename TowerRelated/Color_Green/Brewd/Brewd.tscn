@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 7.92476, 14.0045 )
+extents = Vector2( 11.19, 19.245 )
 
 [node name="Brewd" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
@@ -25,5 +25,5 @@ position = Vector2( 0, -7 )
 frames = SubResource( 1 )
 
 [node name="CollisionShape" parent="." index="1"]
-position = Vector2( 0, -7.5 )
+position = Vector2( 0, -6 )
 shape = SubResource( 2 )

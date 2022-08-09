@@ -52,10 +52,12 @@ func _ready():
 	
 	_initialize_stats_from_tower_info(info)
 	
+	var attack_module_y_shift : float = 13.0
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 10
+	range_module.position.y += attack_module_y_shift
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -68,7 +70,7 @@ func _ready():
 	attack_module.base_proj_speed = 400
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
-	attack_module.position.y -= 10
+	attack_module.position.y -= attack_module_y_shift
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	var bullet_shape = CircleShape2D.new()
@@ -91,7 +93,7 @@ func _ready():
 	beam_attack_module.base_attack_wind_up = 0
 	beam_attack_module.is_main_attack = false
 	beam_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	beam_attack_module.position.y -= 10
+	beam_attack_module.position.y -= attack_module_y_shift
 	beam_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	beam_attack_module.on_hit_damage_scale = 1
 	

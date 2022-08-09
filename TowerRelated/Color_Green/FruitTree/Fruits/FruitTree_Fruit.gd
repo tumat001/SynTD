@@ -37,6 +37,9 @@ func _ready():
 	#ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
 	
+	can_be_placed_in_map_conditional_clause.attempt_insert_clause(CanBePlacedInMapClauses.GENERIC_CANNOT_BE_PLACED_IN_MAP)
+	tower_limit_slots_taken = 0
+	
 	_initialize_stats_from_tower_info(info)
 	
 	_set_fruit_properties()

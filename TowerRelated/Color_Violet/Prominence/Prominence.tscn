@@ -26,7 +26,7 @@ position = Vector2( 0, -10 )
 frames = SubResource( 1 )
 
 [node name="ProminenceSword" type="Sprite" parent="TowerBase/KnockUpLayer" index="1"]
-position = Vector2( 0, 3 )
+position = Vector2( 0, 4 )
 texture = ExtResource( 4 )
 
 [node name="CollisionShape" parent="." index="1"]

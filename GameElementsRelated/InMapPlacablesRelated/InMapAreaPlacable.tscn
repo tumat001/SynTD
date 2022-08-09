@@ -5,7 +5,7 @@
 [ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.gd" type="Script" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 17.8592, 11.4623 )
+extents = Vector2( 28, 20 )
 
 [node name="InMapAreaPlacable" instance=ExtResource( 1 )]
 script = ExtResource( 3 )

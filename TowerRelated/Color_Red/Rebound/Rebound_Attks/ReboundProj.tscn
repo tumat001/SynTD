@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 1.83268, 1.95531 )
+extents = Vector2( 3.5, 3.5 )
 
 [node name="ReboundProj" instance=ExtResource( 1 )]
 scale = Vector2( 2, 2 )

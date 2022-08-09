@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 7.25165, 11.1742 )
+extents = Vector2( 9.14333, 15.9959 )
 
 [node name="PineCone" instance=ExtResource( 1 )]
 script = ExtResource( 3 )

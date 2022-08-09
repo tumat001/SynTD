@@ -18,7 +18,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 8.05902, 10.7252 )
+extents = Vector2( 9.05918, 14.6343 )
 
 [node name="Enthalphy" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
@@ -30,8 +30,8 @@ position = Vector2( 0, -5 )
 texture = ExtResource( 4 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="1"]
+position = Vector2( 0, -1 )
 frames = SubResource( 1 )
-frame = 3
 playing = true
 
 [node name="CollisionShape" parent="." index="1"]

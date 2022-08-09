@@ -29,7 +29,7 @@ signal on_auto_sell_value_changed(new_val)
 var proliferate_ability : BaseAbility
 var _is_proliferate_ability_ready : bool
 const proliferate_base_cooldown : float = 25.0
-const proliferate_initial_cooldown : float = 12.5
+const proliferate_initial_cooldown : float = 2.0#12.5
 
 var proliferate_seed_attack_module : ArcingBulletAttackModule
 var all_owned_les_semis : Array = []
@@ -63,10 +63,13 @@ func _ready():
 	
 	_initialize_stats_from_tower_info(info)
 	
+	var attack_module_y_shift : float = 9
+	
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 6
+	range_module.position.y += attack_module_y_shift
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -80,7 +83,7 @@ func _ready():
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
-	attack_module.position.y -= 8
+	attack_module.position.y -= attack_module_y_shift
 	
 	attack_module.benefits_from_bonus_pierce = true
 	
@@ -116,7 +119,7 @@ func _ready():
 	proliferate_seed_attack_module.benefits_from_bonus_on_hit_damage = false
 	proliferate_seed_attack_module.benefits_from_bonus_on_hit_effect = false
 	
-	proliferate_seed_attack_module.position.y -= 8
+	proliferate_seed_attack_module.position.y -= attack_module_y_shift
 	#var bullet_shape = CircleShape2D.new()
 	#bullet_shape.radius = 3
 	

@@ -98,10 +98,12 @@ func _ready():
 	
 	_initialize_stats_from_tower_info(info)
 	
+	var attack_module_y_shift : float = 12
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 12
+	range_module.position.y += attack_module_y_shift
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -115,7 +117,7 @@ func _ready():
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
-	attack_module.position.y -= 12
+	attack_module.position.y -= attack_module_y_shift
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 4
@@ -139,7 +141,7 @@ func _ready():
 	gamma_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	gamma_attack_module.is_main_attack = false
 	gamma_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	gamma_attack_module.position.y -= 12
+	gamma_attack_module.position.y -= attack_module_y_shift
 	gamma_attack_module.position.x += 0.5
 	
 	gamma_attack_module.benefits_from_bonus_explosion_scale = true

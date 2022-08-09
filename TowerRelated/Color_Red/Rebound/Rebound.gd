@@ -7,6 +7,12 @@ const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttac
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const ReboundProj_Scene = preload("res://TowerRelated/Color_Red/Rebound/Rebound_Attks/ReboundProj.tscn")
 
+const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
+
+const stun_duration : float = 1.0
+var rebound_stun_effect : EnemyStunEffect
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.REBOUND)
@@ -40,6 +46,30 @@ func _ready():
 	
 	attack_module.bullet_scene = ReboundProj_Scene
 	
+	attack_module.connect("before_bullet_is_shot", self, "_on_bullet_constructed", [], CONNECT_PERSIST)
+	
 	add_attack_module(attack_module)
 	
+	
+	_construct_effects()
+	
 	_post_inherit_ready()
+
+#
+
+func _construct_effects():
+	rebound_stun_effect = EnemyStunEffect.new(stun_duration, StoreOfEnemyEffectsUUID.REBOUND_RETURN_STUN_EFFECT)
+	
+
+
+#
+
+func _on_bullet_constructed(arg_bullet):
+	arg_bullet.connect("on_returning", self, "_on_bullet_returning", [arg_bullet], CONNECT_ONESHOT)
+
+
+func _on_bullet_returning(arg_bullet):
+	arg_bullet.damage_instance.on_hit_effects[rebound_stun_effect.effect_uuid] = rebound_stun_effect
+
+
+

@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 9.86742, 11.7525 )
+extents = Vector2( 11.8697, 18.7604 )
 
 [node name="RoyalFlame" instance=ExtResource( 1 )]
 script = ExtResource( 3 )

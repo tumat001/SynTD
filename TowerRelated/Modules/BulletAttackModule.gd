@@ -37,6 +37,7 @@ var last_calculated_final_proj_inaccuracy : float
 var absolute_z_index_of_bullet : int = ZIndexStore.PARTICLE_EFFECTS
 
 var bullet_rotation_per_second : float = 0
+var bullet_play_animation : bool = false
 
 var kill_bullets_at_end_of_round : bool = true
 
@@ -224,6 +225,8 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	
 	if bullet_sprite_frames != null:
 		bullet.set_sprite_frames(bullet_sprite_frames)
+		
+		bullet.is_animated_sprite_playing = bullet_play_animation
 	if bullet_shape != null:
 		bullet.set_shape(bullet_shape)
 	

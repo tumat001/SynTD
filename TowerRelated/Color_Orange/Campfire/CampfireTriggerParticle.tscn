@@ -16,4 +16,4 @@ scale = Vector2( 1, 0.5 )
 frames = SubResource( 1 )
 lifetime = 0.3
 scale_trigger_lifetime_threshold = 0.3
-scale_of_scale = 1.6
+scale_of_scale = 4.6

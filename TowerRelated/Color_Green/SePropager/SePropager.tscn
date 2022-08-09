@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 7.99915, 14.7509 )
+extents = Vector2( 9.49915, 19.5009 )
 
 [node name="SePropager" instance=ExtResource( 1 )]
 script = ExtResource( 3 )

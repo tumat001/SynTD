@@ -87,9 +87,12 @@ func _ready():
 	
 	_initialize_stats_from_tower_info(info)
 	
+	var y_shift_of_modules : float = 0
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += y_shift_of_modules
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -103,6 +106,7 @@ func _ready():
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	attack_module.position.y += y_shift_of_modules
 	
 	var bullet_shape = RectangleShape2D.new()
 	bullet_shape.extents = Vector2(8, 5)
@@ -128,6 +132,7 @@ func _ready():
 	sticky_attack_module.base_proj_life_distance = info.base_range
 	sticky_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	sticky_attack_module.on_hit_damage_scale = 0
+	sticky_attack_module.position.y += y_shift_of_modules
 	
 	sticky_attack_module.base_damage_scale = 0
 	sticky_attack_module.benefits_from_bonus_base_damage = false
@@ -206,6 +211,7 @@ func _ready():
 	beam_attack_module.position.y -= 1
 	beam_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	#beam_attack_module.on_hit_damage_scale = 0.5
+	beam_attack_module.position.y += y_shift_of_modules
 	
 	beam_attack_module.benefits_from_bonus_on_hit_damage = false
 	beam_attack_module.benefits_from_bonus_on_hit_effect = false
@@ -249,6 +255,7 @@ func _ready():
 	sub_attack_module.base_proj_life_distance = info.base_range
 	sub_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	sub_attack_module.on_hit_damage_scale = 0.5
+	sub_attack_module.position.y += y_shift_of_modules
 	
 	sub_attack_module.benefits_from_bonus_base_damage = true
 	sub_attack_module.benefits_from_bonus_on_hit_damage = true
@@ -264,7 +271,7 @@ func _ready():
 	sub_attack_module.has_burst = true
 	
 	var sub_bullet_shape = CircleShape2D.new()
-	sub_bullet_shape.radius = 3
+	sub_bullet_shape.radius = 7
 	
 	sub_attack_module.bullet_shape = sub_bullet_shape
 	sub_attack_module.bullet_scene = BaseBullet_Scene

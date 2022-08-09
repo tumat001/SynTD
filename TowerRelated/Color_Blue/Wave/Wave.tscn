@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 9.52617, 8.97902 )
+extents = Vector2( 14.5144, 10.6275 )
 
 [node name="Wave" instance=ExtResource( 1 )]
 script = ExtResource( 2 )

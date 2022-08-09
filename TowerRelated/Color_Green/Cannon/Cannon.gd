@@ -40,7 +40,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 4
+	range_module.position.y += 7
 	
 	var proj_attack_module : ArcingBulletAttackModule = ArcingBulletAttackModule_Scene.instance()
 	proj_attack_module.base_damage = info.base_damage
@@ -58,7 +58,7 @@ func _ready():
 	proj_attack_module.benefits_from_bonus_on_hit_damage = true
 	proj_attack_module.benefits_from_bonus_on_hit_effect = false
 	
-	proj_attack_module.position.y -= 4
+	proj_attack_module.position.y -= 7
 	
 	proj_attack_module.bullet_scene = ArcingBaseBullet_Scene
 	proj_attack_module.set_texture_as_sprite_frame(Cannon_Proj_Pic)

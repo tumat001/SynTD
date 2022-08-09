@@ -12,7 +12,7 @@ const StrikerProj_Normal_Pic = preload("res://TowerRelated/Color_Red/Striker/Str
 const StrikerProj_Super_Pic = preload("res://TowerRelated/Color_Red/Striker/Striker_Attks/StrikerProj_SuperEmp.png")
 
 
-const super_bonus_dmg : float = 2.0
+const super_bonus_dmg : float = 2.5
 const empowered_bonus_dmg : float = 1.0
 
 const super_streak : int = 9
@@ -37,9 +37,12 @@ func _ready():
 	
 	_initialize_stats_from_tower_info(info)
 	
+	var attack_module_y_shift : float = 6.0
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += attack_module_y_shift
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -49,10 +52,11 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 500
+	attack_module.base_proj_speed = 480
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	attack_module.position.y -= attack_module_y_shift
 	
 	var bullet_shape = RectangleShape2D.new()
 	bullet_shape.extents = Vector2(6, 3)
@@ -94,6 +98,7 @@ func _on_main_dmg_instance_constructed_s(damage_instance, module):
 		damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.STRIKER_BONUS_DMG] = super_on_hit
 	elif current_attk_streak % empowered_streak == 0:
 		damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.STRIKER_BONUS_DMG] = empowered_on_hit
+
 
 func _before_arrow_is_shot(bullet):
 	var to_use_texture : Texture

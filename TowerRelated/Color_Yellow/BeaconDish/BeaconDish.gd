@@ -206,7 +206,8 @@ func _give_buffs_to_active_towers_in_range():
 
 func _show_signal_particle():
 	var particle = BeaconDishSignalParticle.instance()
-	particle.position.y -= 14
+	particle.position.y -= 19
+	particle.position.x += 0.5
 	add_child(particle)
 
 

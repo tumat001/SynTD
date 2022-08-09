@@ -116,6 +116,7 @@ func _ready():
 	sp.add_frame("default", RoyalFlame_Proj05)
 	sp.add_frame("default", RoyalFlame_Proj06)
 	attack_module.bullet_sprite_frames = sp
+	attack_module.bullet_play_animation = true
 	
 	connect("final_base_damage_changed", self, "_final_damage_changed", [], CONNECT_PERSIST)
 	

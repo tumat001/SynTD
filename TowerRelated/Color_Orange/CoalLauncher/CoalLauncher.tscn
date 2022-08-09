@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 10.2964, 8.47741 )
+extents = Vector2( 11.4991, 12.3759 )
 
 [node name="CoalLauncher" instance=ExtResource( 1 )]
 script = ExtResource( 2 )

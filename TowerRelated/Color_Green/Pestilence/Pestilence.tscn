@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 8.85413, 14.091 )
+extents = Vector2( 10.6255, 21.9054 )
 
 [node name="Pestilence" instance=ExtResource( 2 )]
 script = ExtResource( 3 )

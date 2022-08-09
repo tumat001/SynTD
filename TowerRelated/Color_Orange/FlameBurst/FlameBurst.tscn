@@ -13,13 +13,13 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 5.68668, 11.0513 )
+extents = Vector2( 7.05322, 15.9738 )
 
 [node name="FlameBurst" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 
 [node name="TowerBase" parent="." index="0"]
-position = Vector2( 0, -8 )
+position = Vector2( 0, -10 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )

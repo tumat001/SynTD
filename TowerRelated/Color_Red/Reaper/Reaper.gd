@@ -54,8 +54,8 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 13
-	range_module.position.x -= 6
+	range_module.position.y += 15
+	range_module.position.x -= 8
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -70,11 +70,11 @@ func _ready():
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.base_proj_inaccuracy = 5
-	attack_module.position.y -= 13
-	attack_module.position.x += 6
+	attack_module.position.y -= 15
+	attack_module.position.x += 8
 	
 	var bullet_shape = CircleShape2D.new()
-	bullet_shape.radius = 5
+	bullet_shape.radius = 6
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene
@@ -85,6 +85,7 @@ func _ready():
 	normal_attk_sprite.add_frame("default", Reaper_NormalAttk_Pic03)
 	normal_attk_sprite.add_frame("default", Reaper_NormalAttk_Pic04)
 	attack_module.bullet_sprite_frames = normal_attk_sprite
+	attack_module.bullet_play_animation = true
 	
 	add_attack_module(attack_module)
 	

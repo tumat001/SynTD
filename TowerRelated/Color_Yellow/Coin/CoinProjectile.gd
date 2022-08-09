@@ -12,7 +12,6 @@ var ratio_coin_bronze : int
 var ratio_coin_silver : int
 var ratio_coin_gold : int
 
-onready var bullet_sprite = $BulletSprite
 
 func _ready():
 	var coin_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.COIN)

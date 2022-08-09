@@ -58,7 +58,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 20
+	range_module.position.y += 24
 	
 	var proj_attack_module : ArcingBulletAttackModule = ArcingBulletAttackModule_Scene.instance()
 	proj_attack_module.base_damage = info.base_damage
@@ -74,7 +74,7 @@ func _ready():
 	proj_attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	
-	proj_attack_module.position.y -= 20
+	proj_attack_module.position.y -= 24
 	#var bullet_shape = CircleShape2D.new()
 	#bullet_shape.radius = 3
 	
@@ -102,6 +102,7 @@ func _ready():
 	explosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	explosion_attack_module.is_main_attack = false
 	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	explosion_attack_module.base_explosion_scale = 1.25
 	
 	explosion_attack_module.benefits_from_bonus_explosion_scale = true
 	explosion_attack_module.benefits_from_bonus_base_damage = true
@@ -149,6 +150,7 @@ func _ready():
 	crater_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	crater_attack_module.is_main_attack = false
 	crater_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	crater_attack_module.base_explosion_scale = 1.25
 	
 	crater_attack_module.benefits_from_bonus_explosion_scale = true
 	crater_attack_module.benefits_from_bonus_base_damage = true

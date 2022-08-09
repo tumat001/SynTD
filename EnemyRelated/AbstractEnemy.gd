@@ -400,6 +400,7 @@ func _post_inherit_ready():
 	infobar.visible = true
 	lifebar.update_first_time()
 	
+	
 	_is_yielding_for_lifebar = false
 	
 	#

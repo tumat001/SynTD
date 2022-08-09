@@ -57,6 +57,9 @@ const Hero_VOL_StatusBarIcon = preload("res://TowerRelated/Color_White/Hero/Hero
 
 const Hero_LevelUp_StatusBarIcon = preload("res://TowerRelated/Color_White/Hero/Hero_OtherAssets/Hero_LevelUp_StatusBarIcon.png")
 
+const LightWave_AttackModuleIcon = preload("res://TowerRelated/Color_White/Hero/AttackModuleAssets/LightWave_AttackModuleIcon.png")
+const Judgement_AttackModuleIcon = preload("res://TowerRelated/Color_White/Hero/AttackModuleAssets/Judgement_AttackModuleIcon.png")
+
 
 signal current_xp_changed(gained_amount, curr_xp)
 signal xp_needed_for_next_level_changed(new_req)
@@ -373,7 +376,7 @@ func _construct_and_add_light_waves_attack_module():
 	
 	
 	var bullet_shape = RectangleShape2D.new()
-	bullet_shape.extents = Vector2(4, 15)
+	bullet_shape.extents = Vector2(6, 18)
 	
 	lightwave_attack_module.bullet_shape = bullet_shape
 	lightwave_attack_module.bullet_scene = BaseBullet_Scene
@@ -381,7 +384,7 @@ func _construct_and_add_light_waves_attack_module():
 	
 	lightwave_attack_module.can_be_commanded_by_tower = false
 	
-	lightwave_attack_module.set_image_as_tracker_image(HeroAttk_LightWavePic)
+	lightwave_attack_module.set_image_as_tracker_image(LightWave_AttackModuleIcon)
 	
 	add_attack_module(lightwave_attack_module)
 
@@ -512,7 +515,7 @@ func _construct_and_add_judgement_attack_module():
 	
 	judgement_attack_module.can_be_commanded_by_tower = false
 	
-	judgement_attack_module.set_image_as_tracker_image(Hero_Judgement03Pic)
+	judgement_attack_module.set_image_as_tracker_image(Judgement_AttackModuleIcon)
 	
 	add_attack_module(judgement_attack_module)
 	

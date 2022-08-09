@@ -40,7 +40,7 @@ func _init().(StoreOfTowerEffectsUUID.ING_ADEPT):
 	interpreter.display_header = true
 	
 	var ins = []
-	ins.append(NumericalTextFragment.new(1.75, false, DamageType.PHYSICAL))
+	ins.append(NumericalTextFragment.new(2, false, DamageType.PHYSICAL))
 	#ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 	#ins.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.4, DamageType.PHYSICAL))
 	#ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
@@ -77,14 +77,14 @@ func _make_modifications_to_tower(tower):
 func _construct_attack_module():
 	adeptling_am = WithBeamInstantDamageAttackModule_Scene.instance()
 	adeptling_am.base_damage_scale = 0.40
-	adeptling_am.base_damage = 1.75 / adeptling_am.base_damage_scale
+	adeptling_am.base_damage = 2 / adeptling_am.base_damage_scale
 	adeptling_am.base_damage_type = DamageType.PHYSICAL
 	adeptling_am.base_attack_speed = 0
 	adeptling_am.base_attack_wind_up = 1 / 0.15
 	adeptling_am.is_main_attack = false
 	adeptling_am.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	adeptling_am.position.y -= 10
-	adeptling_am.position.x -= 20
+	adeptling_am.position.y -= 14
+	adeptling_am.position.x -= 24
 	adeptling_am.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	adeptling_am.on_hit_damage_scale = 0.40
 	adeptling_am.on_hit_effect_scale = 1

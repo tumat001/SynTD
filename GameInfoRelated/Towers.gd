@@ -304,17 +304,25 @@ const TowerTiersMap : Dictionary = {
 const tier_base_dmg_map : Dictionary = {
 	1 : 0.5,
 	2 : 1.0,
-	3 : 1.75,
+	3 : 1.5,
 	
-	4 : 2.5, #2.25
-	5 : 3.0,
-	6 : 3.5,
+	4 : 2.25,
+	5 : 2.75,
+	6 : 3.25,
+	
+#	1 : 0.5,
+#	2 : 1.0,
+#	3 : 1.75,
+#
+#	4 : 2.5,
+#	5 : 3.0,
+#	6 : 3.5,
 }
 
 const tier_attk_speed_map : Dictionary = {
 	1 : 15,
-	2 : 25, #23
-	3 : 35, #30
+	2 : 25,
+	3 : 35,
 	
 	4 : 45,
 	5 : 60,
@@ -324,11 +332,19 @@ const tier_attk_speed_map : Dictionary = {
 const tier_on_hit_dmg_map : Dictionary = {
 	1 : 0.75,
 	2 : 1.25,
-	3 : 2,
+	3 : 1.75,
 	
-	4 : 2.75, #2.5
-	5 : 3.25,
-	6 : 3.75,
+	4 : 2.5,
+	5 : 3.0,
+	6 : 3.5,
+	
+#	1 : 0.75,
+#	2 : 1.25,
+#	3 : 2,
+#
+#	4 : 2.75,
+#	5 : 3.25,
+#	6 : 3.75,
 }
 
 # Do not use this when instancing new tower class. Only use
@@ -377,6 +393,13 @@ static func _get_default_center_for_atlas(tower_sprite) -> Vector2:
 static func _get_default_region_size_for_atlas(tower_sprite) -> Vector2:
 	return Vector2(18, 18)
 
+
+
+########
+
+
+
+
 #
 
 static func get_tower_info(tower_id : int) -> TowerTypeInformation :
@@ -387,8 +410,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[MONO]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GRAY)
-		info.tower_image_in_buy_card = mono_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = mono_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3.5
 		info.base_attk_speed = 0.75
@@ -408,8 +431,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[SPRINKLER]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_image_in_buy_card = sprinkler_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = sprinkler_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 1.25
 		info.base_attk_speed = 1.5
@@ -439,8 +462,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[BERRY_BUSH]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = berrybush_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = berrybush_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0
@@ -471,8 +494,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_image_in_buy_card = simpleobelisk_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = simpleobelisk_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 6
 		info.base_attk_speed = 0.475
@@ -503,8 +526,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[SIMPLEX]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GRAY)
-		info.tower_image_in_buy_card = simplex_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = simplex_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0.48
 		info.base_attk_speed = 5.5
@@ -526,8 +549,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[RAILGUN]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_image_in_buy_card = railgun_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = railgun_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 5
 		info.base_attk_speed = 0.3
@@ -570,8 +593,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[RE]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
-		info.tower_image_in_buy_card = re_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = re_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 5
 		info.base_attk_speed = 0.55
@@ -598,11 +621,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_image_in_buy_card = telsa_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = telsa_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 4
-		info.base_attk_speed = 1.5
+		info.base_attk_speed = 1.25
 		info.base_pierce = 0
 		info.base_range = 150
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -627,8 +650,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[CHAOS]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
-		info.tower_image_in_buy_card = chaos_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = chaos_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 1.25
 		info.base_attk_speed = 1.25
@@ -646,7 +669,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_dia = []
 		ins_for_dia.append(NumericalTextFragment.new(2, false, DamageType.PHYSICAL))
 		ins_for_dia.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_dia.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.5, DamageType.PHYSICAL))
+		ins_for_dia.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.1, DamageType.PHYSICAL))
 		ins_for_dia.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins_for_dia.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 2)) # stat basis does not matter here
 		
@@ -661,7 +684,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_bolt = []
 		ins_for_bolt.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1.25, DamageType.ELEMENTAL))
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.75, DamageType.ELEMENTAL))
 		
 		interpreter_for_bolt.array_of_instructions = ins_for_bolt
 		
@@ -712,8 +735,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
 		info.colors.append(TowerColors.BLUE)
-		info.tower_image_in_buy_card = ping_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = ping_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 1
 		info.base_attk_speed = 0.38
@@ -800,8 +823,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[COIN]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_image_in_buy_card = coin_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = coin_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2
 		info.base_attk_speed = 0.5
@@ -851,8 +874,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GRAY)
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_image_in_buy_card = beacon_dish_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = beacon_dish_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 1.5
 		info.base_attk_speed = 0.6
@@ -965,8 +988,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[MINI_TESLA]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_image_in_buy_card = mini_tesla_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = mini_tesla_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.5
 		info.base_attk_speed = 0.775
@@ -1001,8 +1024,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
 		info.colors.append(TowerColors.RED)
-		info.tower_image_in_buy_card = charge_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = charge_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3
 		info.base_attk_speed = 0.65
@@ -1075,8 +1098,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_image_in_buy_card = magnetizer_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = magnetizer_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0.585
@@ -1122,7 +1145,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			"When shooting, Magnetizer alterates between blue magnet and red magnet",
+			"When shooting, Magnetizer alterates between blue magnet and red magnet. Magnetizer switches to the next targeting option after shooting a magnet.",
 			"Beams form between blue and red magnets.",
 			["The beam deals |0|. Applies on hit effects", [interpreter]],
 		]
@@ -1145,8 +1168,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_image_in_buy_card = sunflower_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = sunflower_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.1
 		info.base_attk_speed = 0.375
@@ -1178,8 +1201,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_image_in_buy_card = ember_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = ember_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 1.35
 		info.base_attk_speed = 0.55
@@ -1232,8 +1255,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_image_in_buy_card = lava_jet_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = lava_jet_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.75
 		info.base_attk_speed = 1.12
@@ -1275,8 +1298,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_image_in_buy_card = campfire_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = campfire_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 4
 		info.base_attk_speed = 1
@@ -1371,8 +1394,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_image_in_buy_card = volcano_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = volcano_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0.12
@@ -1441,8 +1464,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_image_in_buy_card = _704_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = _704_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.85
 		info.base_attk_speed = 0.785
@@ -1475,8 +1498,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_image_in_buy_card = flameburst_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = flameburst_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.50
 		info.base_attk_speed = 0.830
@@ -1535,8 +1558,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_image_in_buy_card = scatter_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = scatter_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2
 		info.base_attk_speed = 0.39
@@ -1555,8 +1578,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_image_in_buy_card = coal_launcher_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = coal_launcher_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3
 		info.base_attk_speed = 0.55
@@ -1585,8 +1608,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_image_in_buy_card = enthalphy_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = enthalphy_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.4
 		info.base_attk_speed = 0.8
@@ -1650,8 +1673,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_image_in_buy_card = entropy_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = entropy_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.55
 		info.base_attk_speed = 0.645
@@ -1716,8 +1739,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
 		info.colors.append(TowerColors.BLUE)
-		info.tower_image_in_buy_card = royal_flame_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = royal_flame_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3.5
 		info.base_attk_speed = 0.98
@@ -1799,8 +1822,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
-		info.tower_image_in_buy_card = ieu_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = ieu_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3.5
 		info.base_attk_speed = 1.25
@@ -1887,8 +1910,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = fruit_tree_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = fruit_tree_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0
@@ -1916,8 +1939,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info = TowerTypeInformation.new("Fruit", tower_id)
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
-		info.tower_image_in_buy_card = fruit_tree_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = fruit_tree_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0
@@ -1927,7 +1950,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 0
 		
 		info.tower_descriptions = [
-			"Fruit from Fruit Tree."
+			"Fruit from Fruit Tree.",
+			"Cannot be placed in the map."
 		]
 		
 		
@@ -1936,8 +1960,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = spike_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = spike_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 1.85
 		info.base_attk_speed = 0.765
@@ -1977,8 +2001,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = impale_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = impale_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 10
 		info.base_attk_speed = 0.24
@@ -1991,7 +2015,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var interpreter_for_retract_bonus_dmg_on_threshold = TextFragmentInterpreter.new()
 		interpreter_for_retract_bonus_dmg_on_threshold.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_retract_bonus_dmg_on_threshold.display_body = true
+		interpreter_for_retract_bonus_dmg_on_threshold.display_body = false
 		
 		var ins_for_retract_bonus_dmg_on_threshold = []
 		ins_for_retract_bonus_dmg_on_threshold.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 200, true))
@@ -2002,7 +2026,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var interpreter_for_retract_on_normals = TextFragmentInterpreter.new()
 		interpreter_for_retract_on_normals.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_retract_on_normals.display_body = true
+		interpreter_for_retract_on_normals.display_body = false
 		
 		var ins_for_retract_bonus_on_normals = []
 		ins_for_retract_bonus_on_normals.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 100, true))
@@ -2039,8 +2063,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_image_in_buy_card = leader_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = leader_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.65
 		info.base_attk_speed = 1
@@ -2135,8 +2159,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_image_in_buy_card = orb_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = orb_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.75
 		info.base_attk_speed = 0.875
@@ -2183,8 +2207,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_image_in_buy_card = grand_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = grand_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 4
 		info.base_attk_speed = 0.365
@@ -2256,8 +2280,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_image_in_buy_card = douser_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = douser_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.25
 		info.base_attk_speed = 0.82
@@ -2337,8 +2361,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_image_in_buy_card = wave_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = wave_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 1
 		info.base_attk_speed = 0.40
@@ -2471,8 +2495,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_image_in_buy_card = bleach_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = bleach_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.5
 		info.base_attk_speed = 0.88
@@ -2499,8 +2523,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_image_in_buy_card = time_machine_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = time_machine_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.5
 		info.base_attk_speed = 0.75
@@ -2554,8 +2578,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = seeder_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = seeder_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.15
 		info.base_attk_speed = 0.86
@@ -2662,8 +2686,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = cannon_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = cannon_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0.475
@@ -2710,8 +2734,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_image_in_buy_card = pestilence_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = pestilence_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2
 		info.base_attk_speed = 1.05
@@ -2811,8 +2835,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_image_in_buy_card = reaper_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = reaper_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 4.75
 		info.base_attk_speed = 0.68
@@ -2911,8 +2935,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_image_in_buy_card = shocker_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = shocker_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0.5
@@ -2991,8 +3015,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_image_in_buy_card = adept_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = adept_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.5
 		info.base_attk_speed = 1.20
@@ -3065,10 +3089,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_image_in_buy_card = rebound_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = rebound_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 3.2
+		info.base_damage = 3
 		info.base_attk_speed = 0.48
 		info.base_pierce = 2
 		info.base_range = 120
@@ -3077,7 +3101,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Rebound shoots discs that slow down upon hitting its first enemy.",
-			"Upon reaching its max distance, the disc travels back to Rebound, refreshing its pierce and dealing damage to enemies in its path again."
+			"Upon reaching its max distance, the disc travels back to Rebound, refreshing its pierce, dealing damage, and stunning enemies hit for 1 second."
 		]
 		
 		var base_pierce_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_REBOUND)
@@ -3096,8 +3120,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_image_in_buy_card = striker_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = striker_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.35
 		info.base_attk_speed = 0.81
@@ -3152,8 +3176,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_image_in_buy_card = hextribute_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = hextribute_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3
 		info.base_attk_speed = 1.25
@@ -3192,7 +3216,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		#
 		
 		info.tower_descriptions = [
-			"Attacks that apply on hit effects is infused with a Hex. Enemies gain Curses as effects after reaching a certain number of Hexes. Hexes and Curses last indefinitely.",
+			"Attacks apply 1 Hex as an on hit effect. Enemies gain Curses as effects after reaching a certain number of Hexes. Hexes and Curses last indefinitely.",
 			["2 hex: Enemies take extra |0| from HexTribute's attacks.", [interpreter_for_flat_dmg]],
 			"4 hex: Enemies's armor is reduced by 25%.",
 			"6 hex: Enemies's toughness is reduced by 25%.",
@@ -3235,8 +3259,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_image_in_buy_card = transmutator_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = transmutator_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0.65
@@ -3304,8 +3328,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.WHITE)
-		info.tower_image_in_buy_card = hero_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = hero_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 1.3
 		info.base_attk_speed = 0.83
@@ -3377,8 +3401,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLACK)
-		info.tower_image_in_buy_card = amalgamator_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = amalgamator_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3.25
 		info.base_attk_speed = 0.95
@@ -3402,8 +3426,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
 		info.colors.append(TowerColors.RED)
-		info.tower_image_in_buy_card = blossom_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = blossom_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0
@@ -3479,8 +3503,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = pinecone_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = pinecone_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.65
 		info.base_attk_speed = 0.6
@@ -3524,8 +3548,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_image_in_buy_card = soul_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = soul_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3
 		info.base_attk_speed = 0.775
@@ -3583,8 +3607,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
-		info.tower_image_in_buy_card = prominence_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = prominence_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3
 		info.base_attk_speed = 0.6
@@ -3702,8 +3726,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		info.tower_image_in_buy_card = transpose_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = transpose_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 1.5
 		info.base_attk_speed = 0.8
@@ -3813,8 +3837,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_image_in_buy_card = accumulae_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = accumulae_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.0
 		info.base_attk_speed = 1.1
@@ -3906,8 +3930,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.tower_image_in_buy_card = probe_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = probe_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.5
 		info.base_attk_speed = 0.82#0.79
@@ -3995,8 +4019,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = brewd_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = brewd_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3
 		info.base_attk_speed = 0.685
@@ -4050,8 +4074,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
 		info.colors.append(TowerColors.GRAY)
-		info.tower_image_in_buy_card = shackled_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = shackled_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.35
 		info.base_attk_speed = 0.78
@@ -4127,8 +4151,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
-		info.tower_image_in_buy_card = nucleus_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = nucleus_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.75
 		info.base_attk_speed = 0.9
@@ -4256,8 +4280,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = burgeon_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = burgeon_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0.34
@@ -4351,8 +4375,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = se_propager_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = se_propager_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3
 		info.base_attk_speed = 0.75
@@ -4419,8 +4443,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = les_semis_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = les_semis_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0 #set by parent
 		info.base_attk_speed = 0.75
@@ -4464,8 +4488,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = l_assaut_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = l_assaut_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.25
 		info.base_attk_speed = 0.875
@@ -4478,7 +4502,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var interpreter_for_retract_bonus_dmg_per_stack = TextFragmentInterpreter.new()
 		interpreter_for_retract_bonus_dmg_per_stack.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_retract_bonus_dmg_per_stack.display_body = true
+		interpreter_for_retract_bonus_dmg_per_stack.display_body = false
 		
 		var ins_for_retract_bonus_dmg_per_stack = []
 		ins_for_retract_bonus_dmg_per_stack.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "bonus damage", 10, true))
@@ -4489,7 +4513,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var interpreter_for_retract_bonus_dmg_max = TextFragmentInterpreter.new()
 		interpreter_for_retract_bonus_dmg_max.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_retract_bonus_dmg_max.display_body = true
+		interpreter_for_retract_bonus_dmg_max.display_body = false
 		
 		var ins_for_retract_bonus_dmg_max = []
 		ins_for_retract_bonus_dmg_max.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", 50, true))
@@ -4559,8 +4583,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = la_chasseur_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = la_chasseur_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 5
 		info.base_attk_speed = 0.5
@@ -4615,8 +4639,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.GREEN)
-		info.tower_image_in_buy_card = la_nature_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = la_nature_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0
@@ -4640,8 +4664,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info = TowerTypeInformation.new("Healing Symbol", tower_id)
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
-		info.tower_image_in_buy_card = healing_symbol_image
-		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+		info.base_tower_image = healing_symbol_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 0
 		info.base_attk_speed = 0
@@ -4670,8 +4694,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 #		info.tower_cost = info.tower_tier
 #		info.colors.append(TowerColors.WHITE)
 #		info.colors.append(TowerColors.RED)
-#		info.tower_image_in_buy_card = wyvern_image
-#		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.tower_image_in_buy_card)
+#		info.base_tower_image = wyvern_image
+#		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 #
 #		info.base_damage = 12
 #		info.base_attk_speed = 0.35

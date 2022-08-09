@@ -319,7 +319,7 @@ func _construct_globule_attk_module(info) -> BulletAttackModule:
 	attack_module.use_self_range_module = true
 	
 	var bullet_shape = RectangleShape2D.new()
-	bullet_shape.extents = Vector2(4, 3)
+	bullet_shape.extents = Vector2(9, 6)
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene

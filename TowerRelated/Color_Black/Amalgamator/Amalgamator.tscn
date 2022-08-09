@@ -13,7 +13,7 @@ animations = [ {
 } ]
 
 [sub_resource type="RectangleShape2D" id=2]
-extents = Vector2( 12.7549, 11.1549 )
+extents = Vector2( 19.5476, 17.8177 )
 
 [node name="Amalgamator" instance=ExtResource( 2 )]
 script = ExtResource( 3 )

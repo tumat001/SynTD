@@ -75,6 +75,7 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.number_of_unique_targets = 2
+	attack_module.position.y += 3
 	
 	var beam_sprite_frame : SpriteFrames = SpriteFrames.new()
 	beam_sprite_frame.add_frame("default", Transpose_Beam01)

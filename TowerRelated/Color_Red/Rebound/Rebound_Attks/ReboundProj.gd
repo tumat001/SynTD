@@ -1,5 +1,8 @@
 extends "res://TowerRelated/DamageAndSpawnables/BaseBullet.gd"
 
+
+signal on_returning()
+
 var original_max_pierce : int
 var original_speed : float
 var original_life_dist : float
@@ -26,6 +29,7 @@ func reduce_damage_by_beyond_first_multiplier():
 func _on_zero_life_distance():
 	if !is_returning:
 		is_returning = true
+		emit_signal("on_returning")
 		speed = original_speed
 		pierce = original_max_pierce
 		current_life_distance = original_life_dist

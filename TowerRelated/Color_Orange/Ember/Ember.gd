@@ -31,9 +31,12 @@ func _ready():
 	
 	_initialize_stats_from_tower_info(info)
 	
+	var y_shift_of_attack_module : float = 3
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += y_shift_of_attack_module
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -47,9 +50,10 @@ func _ready():
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	attack_module.position.y -= y_shift_of_attack_module
 	
 	var bullet_shape = CircleShape2D.new()
-	bullet_shape.radius = 3
+	bullet_shape.radius = 5
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene
@@ -60,7 +64,10 @@ func _ready():
 	sp.add_frame("default", EmberProj_03)
 	sp.add_frame("default", EmberProj_04)
 	sp.add_frame("default", EmberProj_05)
+	
 	attack_module.bullet_sprite_frames = sp
+	attack_module.bullet_play_animation = true
+	
 	
 	add_attack_module(attack_module)
 	
