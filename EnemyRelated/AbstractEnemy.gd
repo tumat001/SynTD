@@ -98,10 +98,17 @@ enum NoActionClauses {
 }
 
 enum UntargetabilityClauses {
+	IS_READY_PREPPING = 0
+	
 	IS_REVIVING = 100,
 	IS_INVISIBLE = 101,
 }
 
+# ready prep related
+
+var is_ready_prepping : bool = true # becomes false when all is initialized (to prevent queue free and yield errors)
+
+#
 
 var enemy_type : int = EnemyType.NORMAL
 var enemy_id : int
@@ -278,6 +285,7 @@ func _init():
 	untargetable_clauses = ConditionalClauses.new()
 	untargetable_clauses.connect("clause_inserted", self, "_untargetability_clause_added")
 	untargetable_clauses.connect("clause_removed", self, "_untargetability_clause_removed")
+	untargetable_clauses.attempt_insert_clause(UntargetabilityClauses.IS_READY_PREPPING)
 
 
 func _stats_initialize(info):
@@ -360,9 +368,7 @@ func _post_inherit_ready():
 	calculate_effect_vulnerability()
 	calculate_percent_health_hit_scale()
 	calculate_current_shield()
-	calculate_invisibility_status()
 	calculate_final_ability_potency()
-	calculate_invulnerability_status()
 	calculate_final_has_effect_shield()
 	calculate_flat_heal_modifier_amount()
 	calculate_percent_heal_modifier_amount()
@@ -407,7 +413,17 @@ func _post_inherit_ready():
 	
 	if _is_queued_freed_during_yielding:
 		queue_free()
-
+	
+	
+	
+	# 
+	
+	yield(get_tree(), "idle_frame")
+	
+	is_ready_prepping = false
+	untargetable_clauses.remove_clause(UntargetabilityClauses.IS_READY_PREPPING)
+	
+	calculate_invulnerability_status()
 
 
 func get_current_anim_size() -> Vector2:
@@ -890,6 +906,8 @@ func calculate_percent_heal_modifier_amount() -> float:
 
 func calculate_invisibility_status() -> bool:
 	last_calculated_invisibility_status = invisibility_id_effect_map.size() != 0
+	
+	#
 	
 	if last_calculated_invisibility_status:
 		modulate.a = 0.4
@@ -1786,6 +1804,10 @@ func _remove_count_from_single_invulnerability_effect(arg_count_reduction : int 
 func calculate_invulnerability_status():
 	last_calculated_is_invulnerable = invulnerability_id_effect_map.size() > 0
 	
+	if is_ready_prepping:
+		last_calculated_is_invulnerable = true
+	
+	#
 	if last_calculated_is_invulnerable:
 		sprite_layer.modulate = invulnerable_sprite_layer_self_modulate
 	else:

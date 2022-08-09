@@ -20,8 +20,6 @@ var current_lifetime_s = max_lifetime_s
 const bullet_attach_shift = Vector2(0, -10)
 
 
-onready var bullet_sprite = $BulletSprite
-
 func _ready():
 	var sf := SpriteFrames.new()
 	sf.add_frame("default", Seeder_Stage01)

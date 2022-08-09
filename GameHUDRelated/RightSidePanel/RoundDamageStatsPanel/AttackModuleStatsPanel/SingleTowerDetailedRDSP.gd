@@ -72,6 +72,10 @@ func set_tower(arg_tower : AbstractTower):
 
 func _update_from_set():
 	tower_rdsp.in_round_total_dmg = tower.in_round_total_damage_dealt
+	tower_rdsp.in_round_phy_dmg = tower.in_round_physical_damage_dealt
+	tower_rdsp.in_round_ele_dmg = tower.in_round_elemental_damage_dealt
+	tower_rdsp.in_round_pure_dmg = tower.in_round_pure_damage_dealt
+	
 	_update_display_of_all_am_panels()
 
 
