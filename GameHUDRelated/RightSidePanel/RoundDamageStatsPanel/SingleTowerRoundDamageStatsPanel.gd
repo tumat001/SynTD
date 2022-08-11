@@ -66,7 +66,7 @@ func update_display(new_max_value : float, new_curr_value : float = in_round_tot
 	#damage_bar.current_value = new_curr_value
 	
 	damage_bar.max_value = new_max_value
-	damage_bar.set_total_damage_val(in_round_total_dmg)
+	damage_bar.set_total_damage_val(new_max_value)
 	damage_bar.set_physical_damage_val(in_round_phy_dmg)
 	damage_bar.set_elemental_damage_val(in_round_ele_dmg)
 	damage_bar.set_pure_damage_val(in_round_pure_dmg)

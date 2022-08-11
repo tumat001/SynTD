@@ -2,11 +2,25 @@ extends Node
 
 
 signal on_descriptions_mode_changed(arg_new_val)
+signal on_tower_drag_mode_changed(arg_new_val)
+signal on_tower_drag_mode_search_radius_changed(arg_new_val)
 
 
 enum DescriptionsMode {
-	COMPLEX = 0, #The default
+	COMPLEX = 0, # The default
 	SIMPLE = 1,
+}
+const descriptions_mode_to_explanation : Dictionary = {
+	DescriptionsMode.COMPLEX : [
+		"Tooltips display all information regarding the synergy or tower."
+	],
+	DescriptionsMode.SIMPLE : [
+		"Tooltips display few information. Some informations are omitted."
+	]
+}
+const descriptions_mode_to_name : Dictionary = {
+	DescriptionsMode.COMPLEX : "Descriptive",
+	DescriptionsMode.SIMPLE : "Simple"
 }
 
 var descriptions_mode : int setget set_descriptions_mode
@@ -14,8 +28,27 @@ var descriptions_mode : int setget set_descriptions_mode
 
 #
 
+enum TowerDragMode {
+	EXACT = 0, # The default
+	SNAP_TO_NEARBY_IN_MAP_PLACABLE = 1
+}
+const tower_drag_mode_to_explanation : Dictionary = {
+	TowerDragMode.EXACT : [
+		"Towers must be dropped inside tower slots to be placed there, otherwise the tower will return to its original location."
+	],
+	TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE : [
+		"When a tower is dropped to an empty location, it will search for a nearby tower slot to place itself."
+	],
+}
+var tower_drag_mode : int setget set_tower_drag_mode
+
+var tower_drag_mode_search_radius : float = 100 setget set_tower_drag_mode_search_radius
+
+#
+
 func _ready():
 	set_descriptions_mode(DescriptionsMode.COMPLEX)
+	set_tower_drag_mode(TowerDragMode.EXACT)
 
 ######### DESCRIPTIONS MODE
 
@@ -76,6 +109,15 @@ static func get_descriptions_to_use_based_on_color_synergy(arg_color_synergy,
 				return arg_color_synergy.synergy_descriptions
 
 
+######### TOWER DRAG MODE
 
-##############
+func set_tower_drag_mode(arg_mode):
+	tower_drag_mode = arg_mode
+	
+	emit_signal("on_tower_drag_mode_changed", tower_drag_mode)
+
+func set_tower_drag_mode_search_radius(arg_val):
+	tower_drag_mode_search_radius = arg_val
+	
+	emit_signal("on_tower_drag_mode_search_radius_changed", tower_drag_mode_search_radius)
 

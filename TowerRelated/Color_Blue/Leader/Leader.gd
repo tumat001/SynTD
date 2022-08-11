@@ -155,7 +155,8 @@ func _construct_abilities():
 	add_tower_as_member_ability.tower = self
 	
 	add_tower_as_member_ability.descriptions = [
-		"Add tower as a member of this Leader."
+		"Add tower as a member of this Leader.",
+		"If no tower is hovered by your mouse, a prompt is shown to select the member."
 	]
 	add_tower_as_member_ability.display_name = "Add Member"
 	
@@ -179,6 +180,8 @@ func _construct_abilities():
 	
 	remove_tower_as_member_ability.descriptions = [
 		"Remove tower as a member of this Leader.",
+		"If no tower is hovered by your mouse, a prompt is shown to select the member.",
+		"",
 		"Automatically removes the member if the member is benched.",
 	]
 	remove_tower_as_member_ability.display_name = "Remove Member"
@@ -216,16 +219,26 @@ func _construct_abilities():
 
 
 func _ability_prompt_add_member():
-	if input_prompt_manager.can_prompt():
-		input_prompt_manager.prompt_select_tower(self, "_ability_add_selected_member", "_ability_prompt_cancelled", "_can_add_tower_as_member")
+	var mouse_hovered_tower = tower_manager.get_tower_on_mouse_hover()
+	if mouse_hovered_tower != null:
+		_ability_add_selected_member(mouse_hovered_tower)
+		
 	else:
-		input_prompt_manager.cancel_selection()
+		if input_prompt_manager.can_prompt():
+			input_prompt_manager.prompt_select_tower(self, "_ability_add_selected_member", "_ability_prompt_cancelled", "_can_add_tower_as_member")
+		else:
+			input_prompt_manager.cancel_selection()
 
 func _ability_prompt_remove_member():
-	if input_prompt_manager.can_prompt():
-		input_prompt_manager.prompt_select_tower(self, "_ability_remove_selected_member", "_ability_prompt_cancelled", "_can_remove_member_tower")
+	var mouse_hovered_tower = tower_manager.get_tower_on_mouse_hover()
+	if mouse_hovered_tower != null:
+		_ability_remove_selected_member(mouse_hovered_tower)
+		
 	else:
-		input_prompt_manager.cancel_selection()
+		if input_prompt_manager.can_prompt():
+			input_prompt_manager.prompt_select_tower(self, "_ability_remove_selected_member", "_ability_prompt_cancelled", "_can_remove_member_tower")
+		else:
+			input_prompt_manager.cancel_selection()
 
 
 func _ability_prompt_cancelled():

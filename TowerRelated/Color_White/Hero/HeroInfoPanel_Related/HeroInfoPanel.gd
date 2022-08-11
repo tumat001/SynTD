@@ -15,6 +15,24 @@ var hero : Hero setget set_hero
 
 onready var show_hero_gui_button = $VBoxContainer/BodyMarginer/MarginContainer/ShowHeroGUI
 
+#
+
+
+# FOR INFO PANEL
+func LISTEN_TO_INFO_PANEL_SIGNALS(arg_info_panel):
+	arg_info_panel.connect("on_tower_panel_ability_01_activate", self, "_on_tower_panel_ability_01_pressed")
+	
+func UNLISTEN_TO_INFO_PANEL_SIGNALS(arg_info_panel):
+	arg_info_panel.disconnect("on_tower_panel_ability_01_activate", self, "_on_tower_panel_ability_01_pressed")
+	
+
+func _on_tower_panel_ability_01_pressed():
+	_show_whole_screen_gui()
+
+
+#
+
+#
 
 func set_hero(arg_hero : Hero):
 	if hero != null:
@@ -40,6 +58,7 @@ func _construct_about_tooltip() -> BaseTooltip:
 	var tooltip : BaseTowerSpecificTooltip = BaseTowerSpecificTooltip_Scene.instance()
 	tooltip.header_left_text = "Hero"
 	tooltip.descriptions = hero.get_self_description_in_info_panel()
+	tooltip.header_right_text = "Hotkey: %s" % InputMap.get_action_list("game_tower_panel_ability_01")[0].as_text()
 	
 	return tooltip
 
@@ -53,12 +72,15 @@ static func should_display_self_for(tower) -> bool:
 
 func _on_ShowHeroGUI_pressed_mouse_event(event):
 	if event.button_index == BUTTON_LEFT:
-		var whole_screen_gui : WholeScreenGUI = hero.game_elements.whole_screen_gui
-		var hero_gui = whole_screen_gui.get_control_with_script(Hero_WholeScreenGUI)
-		if hero_gui == null:
-			hero_gui = Hero_WholeScreenGUI_Scene.instance()
-		
-		whole_screen_gui.show_control(hero_gui)
-		hero_gui.hero = hero
+		_show_whole_screen_gui()
 
+
+func _show_whole_screen_gui():
+	var whole_screen_gui : WholeScreenGUI = hero.game_elements.whole_screen_gui
+	var hero_gui = whole_screen_gui.get_control_with_script(Hero_WholeScreenGUI)
+	if hero_gui == null:
+		hero_gui = Hero_WholeScreenGUI_Scene.instance()
+	
+	whole_screen_gui.show_control(hero_gui)
+	hero_gui.hero = hero
 

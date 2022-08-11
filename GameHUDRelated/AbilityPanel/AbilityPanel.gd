@@ -66,7 +66,7 @@ func get_ability_button_with_hotkey(hotkey : int) -> AbilityButton:
 	var ability_buttons : Array = ability_container.get_children()
 	
 	for button in ability_buttons:
-		if button.hotkey_num == hotkey:
+		if button.hotkey == str(hotkey):
 			return button
 	
 	return null
@@ -102,10 +102,10 @@ func _update_all_buttons_hotkey_num():
 			not_displayed_buttons.append(button)
 	
 	for button in not_displayed_buttons:
-		button.hotkey_num = AbilityButton.NO_HOTKEY_NUM
+		button.hotkey = AbilityButton.NO_HOTKEY
 	
 	for i in displayed_buttons.size():
-		displayed_buttons[i].hotkey_num = i + 1
+		displayed_buttons[i].hotkey = str(i + 1)
 
 
 #
@@ -135,7 +135,7 @@ func swap_buttons_with_hotkeys(hotkey01 : int, hotkey02 : int):
 		ability_container.move_child(button_with_hotkey01, button_02_index)
 		ability_container.move_child(button_with_hotkey02, button_01_index)
 		
-		button_with_hotkey01.hotkey_num = hotkey02
-		button_with_hotkey02.hotkey_num = hotkey01
+		button_with_hotkey01.hotkey = str(hotkey02)
+		button_with_hotkey02.hotkey = str(hotkey01)
 		
 

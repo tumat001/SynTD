@@ -68,6 +68,7 @@ func create_tower(tower_id : int, arg_bench_slot) -> AbstractTower:
 	var tower_as_instance : AbstractTower = Towers.get_tower_scene(tower_id).instance()
 	
 	tower_as_instance.hovering_over_placable = arg_bench_slot
+	tower_as_instance.current_placable = arg_bench_slot
 	
 	return tower_as_instance
 

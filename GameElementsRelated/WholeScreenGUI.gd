@@ -38,11 +38,12 @@ func show_control(control : Control, make_background_dark : bool = true):
 		screen_effect_manager.add_screen_tint_effect(screen_effect)
 
 func hide_control(control : Control, update_vis : bool = true):
-	control.visible = false
-	screen_effect_manager.destroy_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
-	current_showing_control = null
-	
-	visible = false
+	if control != null:
+		control.visible = false
+		screen_effect_manager.destroy_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
+		current_showing_control = null
+		
+		visible = false
 
 
 func has_control(control : Control) -> bool:
@@ -61,17 +62,6 @@ func get_control_with_script(script : Reference) -> Control:
 			return child
 	
 	return null
-
-
-#func _update_visibility_based_on_children():
-#	var to_be_vis := false
-#
-#	for child in get_children():
-#		if child.visible == true:
-#			to_be_vis = true
-#			break
-#
-#	return to_be_vis
 
 #
 

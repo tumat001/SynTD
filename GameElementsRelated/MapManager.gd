@@ -72,7 +72,15 @@ func make_all_placables_not_hidden():
 
 #
 
-func get_all_placables_in_range(center_pos : Vector2, radius : float, placable_state : int = PlacableState.ANY, sort_order : int = SortOrder.CLOSEST):
+func get_all_placables_in_range_from_mouse(radius : float, 
+		placable_state : int = PlacableState.ANY, sort_order : int = SortOrder.CLOSEST) -> Array:
+	
+	var mouse_pos = get_viewport().get_mouse_position()
+	return get_all_placables_in_range(mouse_pos, radius, placable_state, sort_order)
+
+func get_all_placables_in_range(center_pos : Vector2, radius : float, 
+		placable_state : int = PlacableState.ANY, sort_order : int = SortOrder.CLOSEST) -> Array:
+	
 	var bucket := []
 	
 	var placable_to_distance_array := []

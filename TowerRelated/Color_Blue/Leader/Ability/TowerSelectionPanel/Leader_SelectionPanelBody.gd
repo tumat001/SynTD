@@ -12,6 +12,14 @@ onready var member_show_hide_button = $InnerMarginer/HBoxContainer/MemberShowHid
 var tower_leader : Leader setget set_tower_leader
 
 
+#
+
+func _ready():
+	add_tower_ability_button.hotkey = InputMap.get_action_list("game_tower_panel_ability_01")[0].as_text()
+	remove_tower_ability_button.hotkey = InputMap.get_action_list("game_tower_panel_ability_02")[0].as_text()
+
+#
+
 func set_tower_leader(arg_leader : Leader):
 	if tower_leader != null:
 		add_tower_ability_button.ability = null

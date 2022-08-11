@@ -14,6 +14,32 @@ onready var unassign_partner_button = $VBoxContainer/BodyMarginer/ContentMargine
 onready var show_partner_connection_button = $VBoxContainer/BodyMarginer/ContentMarginer/HBoxContainer/ShowConnectionButton
 
 
+# FOR INFO PANEL
+func LISTEN_TO_INFO_PANEL_SIGNALS(arg_info_panel):
+	arg_info_panel.connect("on_tower_panel_ability_01_activate", self, "_on_tower_panel_ability_01_pressed")
+	arg_info_panel.connect("on_tower_panel_ability_02_activate", self, "_on_tower_panel_ability_02_pressed")
+
+func UNLISTEN_TO_INFO_PANEL_SIGNALS(arg_info_panel):
+	arg_info_panel.disconnect("on_tower_panel_ability_01_activate", self, "_on_tower_panel_ability_01_pressed")
+	arg_info_panel.disconnect("on_tower_panel_ability_02_activate", self, "_on_tower_panel_ability_02_pressed")
+
+
+func _on_tower_panel_ability_01_pressed():
+	assign_partner_button.attempt_activate_ability()
+
+func _on_tower_panel_ability_02_pressed():
+	unassign_partner_button.attempt_activate_ability()
+
+#
+
+func _ready():
+	assign_partner_button.hotkey = InputMap.get_action_list("game_tower_panel_ability_01")[0].as_text()
+	unassign_partner_button.hotkey = InputMap.get_action_list("game_tower_panel_ability_02")[0].as_text()
+
+
+
+#
+
 func set_blossom(arg_blossom):
 	if blossom != null:
 		blossom.disconnect("showing_partner_connection_status_changed", self, "_blossom_showing_partner_changed")

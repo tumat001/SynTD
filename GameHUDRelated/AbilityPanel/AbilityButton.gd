@@ -6,8 +6,8 @@ const AbilityTooltip_Scene = preload("res://GameHUDRelated/AbilityPanel/AbilityT
 
 const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
 
-const NO_HOTKEY_NUM : int = -1
-
+#const NO_HOTKEY_NUM : int = -1
+const NO_HOTKEY : String = ""
 
 signal button_destroying_self()
 
@@ -24,7 +24,8 @@ onready var ability_button : TextureButton = $AbilityButtonPressable
 onready var auto_cast_frame : TextureRect = $AutocastFrame
 
 var ability_tooltip : AbilityTooltip
-var hotkey_num : int = NO_HOTKEY_NUM
+#var hotkey_num : int = NO_HOTKEY_NUM
+var hotkey : String = NO_HOTKEY
 
 var is_mouse_inside_button : bool = false
 
@@ -190,8 +191,12 @@ func _on_AbilityButtonPressable_released_mouse_event(event):
 
 
 func _ability_button_left_pressed():
+	attempt_activate_ability()
+
+func attempt_activate_ability():
 	if ability != null and ability.is_ready_for_activation():
 		ability.activate_ability()
+
 
 
 func _ability_button_right_pressed():
@@ -236,8 +241,8 @@ func _update_tooltip():
 		
 		ability_tooltip.header_left_text = ability.display_name
 		
-		if hotkey_num != -1:
-			ability_tooltip.header_right_text = "Hotkey: %s" % str(hotkey_num)
+		if hotkey != NO_HOTKEY:#-1:
+			ability_tooltip.header_right_text = "Hotkey: %s" % hotkey
 		
 		ability_tooltip.update_display()
 
@@ -255,7 +260,7 @@ func get_drag_data(position):
 		return null
 
 func _get_drag_data_of_self():
-	return DropData.new(hotkey_num)
+	return DropData.new(hotkey)
 
 func _get_drag_preview_of_self() -> TextureRect:
 	var icon_preview = TextureRect.new()
@@ -277,10 +282,10 @@ func _preview_exiting():
 
 
 class DropData:
-	var hotkey_num
+	var hotkey
 	
-	func _init(arg_hotkey_num):
-		hotkey_num = arg_hotkey_num
+	func _init(arg_hotkey):
+		hotkey = arg_hotkey
 
 
 func can_drop_data(position, data):
@@ -288,7 +293,7 @@ func can_drop_data(position, data):
 
 
 func drop_data(position, data):
-	_ability_panel.swap_buttons_with_hotkeys(hotkey_num, data.hotkey_num)
+	_ability_panel.swap_buttons_with_hotkeys(int(hotkey), int(data.hotkey))
 
 
 

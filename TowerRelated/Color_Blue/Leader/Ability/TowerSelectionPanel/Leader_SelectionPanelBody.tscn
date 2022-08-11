@@ -45,9 +45,7 @@ destroy_button_if_ability_lost = false
 margin_left = 39.0
 margin_right = 59.0
 margin_bottom = 12.0
-focus_mode = 0
 size_flags_vertical = 2
-enabled_focus_mode = 0
 texture_normal = ExtResource( 5 )
 
 [node name="TowerRemoveButton" parent="InnerMarginer/HBoxContainer" instance=ExtResource( 1 )]

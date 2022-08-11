@@ -29,7 +29,7 @@ const CombinationManager = preload("res://GameElementsRelated/CombinationManager
 const CombinationTopPanel = preload("res://GameHUDRelated/CombinationRelatedPanels/CombinationTopPanel/CombinationTopPanel.gd")
 const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
 const GenericNotifPanel = preload("res://GameHUDRelated/NotificationPanel/GenericPanel/GenericNotifPanel.gd")
-
+const PauseManager = preload("res://GameElementsRelated/PauseManager.gd")
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var synergy_manager
@@ -51,7 +51,7 @@ var level_manager : LevelManager
 var combination_manager : CombinationManager
 var combination_top_panel : CombinationTopPanel
 var shared_passive_manager
-
+onready var pause_manager : PauseManager = $PauseManager
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
@@ -248,6 +248,11 @@ func _ready():
 	combination_top_panel.whole_screen_gui = whole_screen_gui
 	combination_top_panel.combination_manager = combination_manager
 	
+	# pause manager
+	pause_manager.game_elements = self
+	pause_manager.screen_effect_manager = screen_effect_manager
+	
+	
 	#GAME START
 	stage_round_manager.set_game_mode_to_normal()
 	stage_round_manager.end_round(true)
@@ -278,10 +283,10 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.AMALGAMATOR,
+			Towers.HERO,
 			Towers.PROMINENCE,
 			Towers.ADEPT,
-			Towers.TESLA,
+			Towers.LEADER,
 			Towers.STRIKER,
 			Towers.SE_PROPAGER,
 		])
@@ -316,14 +321,14 @@ func _unhandled_input(event):
 
 func _unhandled_key_input(event):
 	if !event.echo and event.pressed:
-		if whole_screen_gui.current_showing_control == null:
+		if whole_screen_gui.current_showing_control == null and !pause_manager.has_any_visible_control():
 			if event.is_action_pressed("game_ingredient_toggle"):
 				tower_manager._toggle_ingredient_combine_mode()
 				
 			elif event.is_action_pressed("game_round_toggle"):
 				right_side_panel.round_status_panel._on_RoundStatusButton_pressed()
 				
-			elif event.scancode == KEY_ESCAPE:
+			elif event.is_action_pressed("ui_cancel"):
 				_esc_no_wholescreen_gui_pressed()
 				
 			elif event.is_action_pressed("game_tower_sell"):
@@ -361,6 +366,15 @@ func _unhandled_key_input(event):
 				
 			elif event.is_action("game_description_mode_toggle"):
 				game_settings_manager.toggle_descriptions_mode()
+				
+				
+			elif event.is_action("game_tower_panel_ability_01"):
+				tower_info_panel.activate_tower_panel_ability_01()
+				
+			elif event.is_action("game_tower_panel_ability_02"):
+				tower_info_panel.activate_tower_panel_ability_02()
+				
+				
 			
 		else: # if there is wholescreen gui
 			if event.scancode == KEY_ESCAPE:
@@ -372,6 +386,10 @@ func _unhandled_key_input(event):
 func _esc_no_wholescreen_gui_pressed():
 	if input_prompt_manager.is_in_selection_mode():
 		input_prompt_manager.cancel_selection()
+		
+	else:
+		pause_manager.pause_game__and_show_hub_pause_panel()
+		
 
 func _sell_hovered_tower():
 	var tower = tower_manager.get_tower_on_mouse_hover()

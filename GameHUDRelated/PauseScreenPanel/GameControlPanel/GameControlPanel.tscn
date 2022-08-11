@@ -1,0 +1,219 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://GameHUDRelated/PauseScreenPanel/GameControlPanel/GameControlPanel.gd" type="Script" id=2]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/InputKeySummary/InputKeySummary.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GameHUDRelated/PauseScreenPanel/MainPauseScreenPanel/Assets/MainPausePanel_SideBorder.png" type="Texture" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 20
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxEmpty" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=5]
+
+[sub_resource type="StyleBoxEmpty" id=6]
+
+[sub_resource type="Theme" id=7]
+VScrollBar/icons/decrement = null
+VScrollBar/icons/decrement_highlight = null
+VScrollBar/icons/increment = null
+VScrollBar/icons/increment_highlight = null
+VScrollBar/styles/grabber = SubResource( 2 )
+VScrollBar/styles/grabber_highlight = SubResource( 3 )
+VScrollBar/styles/grabber_pressed = SubResource( 4 )
+VScrollBar/styles/scroll = SubResource( 5 )
+VScrollBar/styles/scroll_focus = SubResource( 6 )
+
+[node name="GameControlPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 250, 0 )
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 400.0
+margin_bottom = 361.0
+custom_constants/separation = 40
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+margin_left = 156.0
+margin_right = 244.0
+margin_bottom = 21.0
+size_flags_horizontal = 6
+custom_fonts/font = SubResource( 1 )
+text = "Controls"
+
+[node name="ContentContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 61.0
+margin_right = 400.0
+margin_bottom = 361.0
+size_flags_horizontal = 6
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/ContentContainer"]
+margin_right = 400.0
+margin_bottom = 300.0
+rect_min_size = Vector2( 400, 300 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource( 7 )
+scroll_horizontal_enabled = false
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer"]
+margin_right = 400.0
+margin_bottom = 520.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_right = 400.0
+margin_bottom = 49.0
+custom_constants/separation = 12
+
+[node name="KeySum_AbsorbIngMode" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+margin_left = 3.0
+margin_right = 191.0
+
+[node name="KeySum_SellTower" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer" instance=ExtResource( 3 )]
+margin_left = 209.0
+margin_right = 397.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 57.0
+margin_right = 400.0
+margin_bottom = 106.0
+custom_constants/separation = 12
+
+[node name="KeySum_RoundToggle" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer2" instance=ExtResource( 3 )]
+margin_left = 3.0
+margin_right = 191.0
+
+[node name="KeySum_RefreshShop" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer2" instance=ExtResource( 3 )]
+margin_left = 209.0
+margin_right = 397.0
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 114.0
+margin_right = 400.0
+margin_bottom = 163.0
+custom_constants/separation = 12
+
+[node name="KeySum_ToggleTowerTargetingLeft" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer3" instance=ExtResource( 3 )]
+margin_left = 3.0
+margin_right = 191.0
+
+[node name="KeySum_ToggleTowerTargetingRight" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer3" instance=ExtResource( 3 )]
+margin_left = 209.0
+margin_right = 397.0
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 171.0
+margin_right = 400.0
+margin_bottom = 220.0
+custom_constants/separation = 12
+
+[node name="KeySum_CombineTowers" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer4" instance=ExtResource( 3 )]
+margin_left = 3.0
+margin_right = 191.0
+
+[node name="KeySum_ToggleDescriptionMode" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer4" instance=ExtResource( 3 )]
+margin_left = 209.0
+margin_right = 397.0
+
+[node name="Separator" type="MarginContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 228.0
+margin_right = 400.0
+margin_bottom = 235.0
+custom_constants/margin_right = 10
+custom_constants/margin_top = 2
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/Separator"]
+margin_left = 10.0
+margin_top = 2.0
+margin_right = 390.0
+margin_bottom = 5.0
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 243.0
+margin_right = 400.0
+margin_bottom = 292.0
+custom_constants/separation = 12
+
+[node name="KeySum_TowerAbility01" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer5" instance=ExtResource( 3 )]
+margin_left = 3.0
+margin_right = 191.0
+
+[node name="KeySum_TowerAbility02" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer5" instance=ExtResource( 3 )]
+margin_left = 209.0
+margin_right = 397.0
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 300.0
+margin_right = 400.0
+margin_bottom = 349.0
+custom_constants/separation = 12
+
+[node name="KeySum_TowerAbility03" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer6" instance=ExtResource( 3 )]
+margin_left = 3.0
+margin_right = 191.0
+
+[node name="KeySum_TowerAbility04" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer6" instance=ExtResource( 3 )]
+margin_left = 209.0
+margin_right = 397.0
+
+[node name="HBoxContainer7" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 357.0
+margin_right = 400.0
+margin_bottom = 406.0
+custom_constants/separation = 12
+
+[node name="KeySum_TowerAbility05" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer7" instance=ExtResource( 3 )]
+margin_left = 3.0
+margin_right = 191.0
+
+[node name="KeySum_TowerAbility06" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer7" instance=ExtResource( 3 )]
+margin_left = 209.0
+margin_right = 397.0
+
+[node name="HBoxContainer8" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 414.0
+margin_right = 400.0
+margin_bottom = 463.0
+custom_constants/separation = 12
+
+[node name="KeySum_TowerAbility07" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer8" instance=ExtResource( 3 )]
+margin_left = 3.0
+margin_right = 191.0
+
+[node name="KeySum_TowerAbility08" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer8" instance=ExtResource( 3 )]
+margin_left = 209.0
+margin_right = 397.0
+
+[node name="HBoxContainer9" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 471.0
+margin_right = 400.0
+margin_bottom = 520.0
+custom_constants/separation = 12
+
+[node name="KeySum_TowerPanelAbility01" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer9" instance=ExtResource( 3 )]
+margin_left = 3.0
+margin_right = 191.0
+
+[node name="KeySum_TowerPanelAbility02" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer9" instance=ExtResource( 3 )]
+margin_left = 209.0
+margin_right = 397.0

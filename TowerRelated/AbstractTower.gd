@@ -229,6 +229,7 @@ var contributing_to_synergy_clauses : ConditionalClauses
 var last_calculated_is_contributing_to_synergy : bool
 
 
+
 #####
 
 var collision_shape
@@ -433,6 +434,7 @@ var synergy_manager
 var game_elements
 
 
+
 # SYN RELATED ---------------------------- #
 # Yellow
 var energy_module setget set_energy_module
@@ -509,7 +511,7 @@ func _init():
 func _ready():
 	$IngredientDeclinePic.visible = false
 	cannot_apply_pic.visible = false
-	_end_drag()
+	_end_drag(true)
 	
 	connect("on_current_health_changed", life_bar, "set_current_health_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 	connect("on_max_health_changed", life_bar, "set_max_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
@@ -2489,17 +2491,38 @@ func _start_drag():
 	emit_signal("tower_being_dragged", self)
 
 
-func _end_drag():
+func _end_drag(arg_is_from_ready : bool = false):
 	z_index = ZIndexStore.TOWERS
 	if !is_queued_for_deletion():
 		var cannot_drop_to_placable = !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self)
-		var intent_placable = hovering_over_placable
-		var move_success = transfer_to_placable(hovering_over_placable, false, cannot_drop_to_placable)
+		#var intent_placable = hovering_over_placable
+		var intent_placable = _get_placable_to_use_for_move(arg_is_from_ready)
+		var move_success = transfer_to_placable(intent_placable, false, cannot_drop_to_placable)
 		
 		emit_signal("on_attempt_drop_tower_on_placable", self, intent_placable, move_success)
 	
 	erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
 	emit_signal("tower_dropped_from_dragged", self)
+
+
+func _get_placable_to_use_for_move(arg_is_from_ready : bool = false) -> BaseAreaTowerPlacable:
+	var drag_mode = game_elements.game_settings_manager.tower_drag_mode
+	
+	if arg_is_from_ready:
+		return hovering_over_placable
+	
+	if drag_mode == game_elements.game_settings_manager.TowerDragMode.EXACT:
+		return hovering_over_placable
+	elif drag_mode == game_elements.game_settings_manager.TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE:
+		if hovering_over_placable != null:
+			return hovering_over_placable
+		else:
+			var nearby_placables = game_elements.map_manager.get_all_placables_in_range_from_mouse(game_elements.game_settings_manager.tower_drag_mode_search_radius)
+			if nearby_placables.size() > 0:
+				return nearby_placables[0]
+	
+	return null
+
 
 
 func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_update : bool = false, always_snap_back_to_orignal_pos : bool = false, ignore_is_round_started : bool = false, ignore_ing_mode : bool = false):

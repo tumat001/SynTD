@@ -6,6 +6,24 @@ const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_R
 
 onready var leader_selection_panel_body : Leader_SelectionPanelBody = $VBoxContainer/BodyMarginer/Leader_SelectionPanelBody
 
+# FOR INFO PANEL
+func LISTEN_TO_INFO_PANEL_SIGNALS(arg_info_panel):
+	arg_info_panel.connect("on_tower_panel_ability_01_activate", self, "_on_tower_panel_ability_01_pressed")
+	arg_info_panel.connect("on_tower_panel_ability_02_activate", self, "_on_tower_panel_ability_02_pressed")
+
+func UNLISTEN_TO_INFO_PANEL_SIGNALS(arg_info_panel):
+	arg_info_panel.disconnect("on_tower_panel_ability_01_activate", self, "_on_tower_panel_ability_01_pressed")
+	arg_info_panel.disconnect("on_tower_panel_ability_02_activate", self, "_on_tower_panel_ability_02_pressed")
+
+
+func _on_tower_panel_ability_01_pressed():
+	leader_selection_panel_body.add_tower_ability_button.attempt_activate_ability()
+
+func _on_tower_panel_ability_02_pressed():
+	leader_selection_panel_body.remove_tower_ability_button.attempt_activate_ability()
+
+
+#
 
 func _construct_about_tooltip():
 	var a_tooltip = BaseTowerSpecificTooltip_Scene.instance()
@@ -23,3 +41,8 @@ func set_leader(leader):
 
 static func should_display_self_for(tower) -> bool:
 	return tower.tower_id == Towers.LEADER
+
+
+#
+
+

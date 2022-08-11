@@ -307,8 +307,9 @@ func _construct_abilities():
 	partner_assign_ability.tower = self
 	
 	partner_assign_ability.descriptions = [
-		"(Re)Assign a partner to Blossom.",
-		"This can be activated when Blossom has no partner or when the round is not ongoing."
+		"Assign a partner to Blossom.",
+		"If no tower is hovered by your mouse, a prompt is shown to select the member.",
+		"This cannot be used when the round is ongoing."
 	]
 	partner_assign_ability.display_name = "(Re)Assign Partner"
 	
@@ -333,7 +334,7 @@ func _construct_abilities():
 	
 	partner_unassign_ability.descriptions = [
 		"Unassigns current partner of Blossom",
-		"This can be activated when Blossom has a partner and when the round is not ongoing."
+		"This cannot be used when the round is ongoing."
 	]
 	partner_unassign_ability.display_name = "Unassign Partner"
 	
@@ -368,10 +369,15 @@ func _unassign_ability_activated():
 	unassign_current_partner()
 
 func _assign_ability_activated():
-	if input_prompt_manager.can_prompt():
-		input_prompt_manager.prompt_select_tower(self, "assign_new_tower_partner", "_assign_cancelled", "_can_assign_tower_as_partner")
+	var mouse_hovered_tower = tower_manager.get_tower_on_mouse_hover()
+	if mouse_hovered_tower != null:
+		assign_new_tower_partner(mouse_hovered_tower)
+		
 	else:
-		input_prompt_manager.cancel_selection()
+		if input_prompt_manager.can_prompt():
+			input_prompt_manager.prompt_select_tower(self, "assign_new_tower_partner", "_assign_cancelled", "_can_assign_tower_as_partner")
+		else:
+			input_prompt_manager.cancel_selection()
 
 func _assign_cancelled():
 	pass

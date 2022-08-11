@@ -34,6 +34,9 @@ const LaChasseur_InfoPanel = preload("res://TowerRelated/Color_Green/La_Chasseur
 const LaChasseur_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/La_Chasseur/GUI/LaChasseur_InfoPanel.tscn")
 
 
+signal on_tower_panel_ability_01_activate()
+signal on_tower_panel_ability_02_activate()
+
 var game_settings_manager : GameSettingsManager
 var tower : AbstractTower
 
@@ -63,6 +66,8 @@ var beacon_dish_effect_panel : BeaconDish_EffectPanel
 var se_propager_info_panel : SePropager_InfoPanel
 var lassaut_info_panel : LAssaut_InfoPanel
 var la_chasseur_info_panel : LaChasseur_InfoPanel
+
+var current_active_info_panel
 
 
 func _ready():
@@ -181,6 +186,13 @@ func update_display_of_heat_module_panel():
 # TOWER SPECIFIC INFO PANEL -----------------
 
 func _update_tower_specific_info_panel():
+	if current_active_info_panel != null:
+		if current_active_info_panel.has_method("UNLISTEN_TO_INFO_PANEL_SIGNALS"):
+			current_active_info_panel.call("UNLISTEN_TO_INFO_PANEL_SIGNALS", self)
+	
+	current_active_info_panel = null
+	
+	
 	# 704
 	if _704_InfoPanel.should_display_self_for(tower):
 		if _704_info_panel == null:
@@ -190,6 +202,7 @@ func _update_tower_specific_info_panel():
 		_704_info_panel.visible = true
 		_704_info_panel.tower_704 = tower
 		_704_info_panel.update_display()
+		current_active_info_panel = _704_info_panel
 		
 	else:
 		if _704_info_panel != null:
@@ -205,6 +218,7 @@ func _update_tower_specific_info_panel():
 		
 		leader_selection_panel.visible = true
 		leader_selection_panel.set_leader(tower)
+		current_active_info_panel = leader_selection_panel
 		
 	else:
 		if leader_selection_panel != null:
@@ -221,6 +235,7 @@ func _update_tower_specific_info_panel():
 		
 		orb_info_panel.visible = true
 		orb_info_panel.set_orb_tower(tower)
+		current_active_info_panel = orb_info_panel
 	else:
 		if orb_info_panel != null:
 			orb_info_panel.visible = false
@@ -235,6 +250,7 @@ func _update_tower_specific_info_panel():
 		
 		wave_info_panel.visible = true
 		wave_info_panel.set_wave_tower(tower)
+		current_active_info_panel = wave_info_panel
 	else:
 		if wave_info_panel != null:
 			wave_info_panel.visible = false
@@ -249,6 +265,7 @@ func _update_tower_specific_info_panel():
 		
 		hero_info_panel.visible = true
 		hero_info_panel.set_hero(tower)
+		current_active_info_panel = hero_info_panel
 	else:
 		if hero_info_panel != null:
 			hero_info_panel.visible = false
@@ -263,6 +280,7 @@ func _update_tower_specific_info_panel():
 		
 		blossom_info_panel.visible = true
 		blossom_info_panel.set_blossom(tower)
+		current_active_info_panel = blossom_info_panel
 	else:
 		if blossom_info_panel != null:
 			blossom_info_panel.visible = false
@@ -277,6 +295,7 @@ func _update_tower_specific_info_panel():
 		
 		brewd_info_panel.visible = true
 		brewd_info_panel.set_brewd_tower(tower)
+		current_active_info_panel = brewd_info_panel
 	else:
 		if brewd_info_panel != null:
 			brewd_info_panel.visible = false
@@ -291,6 +310,7 @@ func _update_tower_specific_info_panel():
 		
 		beacon_dish_effect_panel.visible = true
 		beacon_dish_effect_panel.set_beacon_dish(tower)
+		current_active_info_panel = beacon_dish_effect_panel
 	else:
 		if beacon_dish_effect_panel != null:
 			beacon_dish_effect_panel.visible = false
@@ -305,6 +325,7 @@ func _update_tower_specific_info_panel():
 		
 		se_propager_info_panel.visible = true
 		se_propager_info_panel.set_se_propager(tower)
+		current_active_info_panel = se_propager_info_panel
 	else:
 		if se_propager_info_panel != null:
 			se_propager_info_panel.visible = false
@@ -318,6 +339,7 @@ func _update_tower_specific_info_panel():
 		
 		lassaut_info_panel.visible = true
 		lassaut_info_panel.set_lassaut(tower)
+		current_active_info_panel = lassaut_info_panel
 	else:
 		if lassaut_info_panel != null:
 			lassaut_info_panel.visible = false
@@ -331,14 +353,29 @@ func _update_tower_specific_info_panel():
 		
 		la_chasseur_info_panel.visible = true
 		la_chasseur_info_panel.set_la_chasseur(tower)
+		current_active_info_panel = la_chasseur_info_panel
 	else:
 		if la_chasseur_info_panel != null:
 			la_chasseur_info_panel.visible = false
 			la_chasseur_info_panel.set_la_chasseur(null)
 	
 	
+	
 	# KEEP THIS AT THE BOTTOM
+	if current_active_info_panel != null:
+		if current_active_info_panel.has_method("LISTEN_TO_INFO_PANEL_SIGNALS"):
+			current_active_info_panel.call("LISTEN_TO_INFO_PANEL_SIGNALS", self)
+	
 	tower_specific_slot.update_visibility_based_on_children()
+
+#
+
+func activate_tower_panel_ability_01():
+	emit_signal("on_tower_panel_ability_01_activate")
+
+func activate_tower_panel_ability_02():
+	emit_signal("on_tower_panel_ability_02_activate")
+
 
 
 # queue free

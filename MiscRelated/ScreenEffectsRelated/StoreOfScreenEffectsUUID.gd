@@ -10,4 +10,6 @@ enum {
 	# MISC
 	
 	WHOLE_SCREEN_GUI = 10000
+	
+	PAUSE_GUI = 10001
 }

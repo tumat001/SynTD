@@ -9,13 +9,13 @@ var original_tier_not_apply_desc_text : String
 var combination_manager setget set_combination_manager
 
 
-onready var tower_amount_for_combi_desc_label = $VBoxContainer/TowerAmountForCombiDescLabel
-onready var tier_apply_desc_label = $VBoxContainer/TierApplyDescLabel
-onready var selected_tier_desc_label = $VBoxContainer/SelectedTierDescLabel
-onready var selected_tier_not_apply_desc_label = $VBoxContainer/SelectedTierDescNotApplyLevel
-onready var tier_selection_panel = $VBoxContainer/TierSelectionPanel
-onready var tower_icon_collection_panel_of_applied_effect = $VBoxContainer/TowerIconCollectionPanelForApplied
-onready var tower_icon_collection_panel_of_unapplied_effect = $VBoxContainer/TowerIconCollectionPanelForNotApplied
+onready var tower_amount_for_combi_desc_label = $ContentContainer/VBoxContainer/TowerAmountForCombiDescLabel
+onready var tier_apply_desc_label = $ContentContainer/VBoxContainer/TierApplyDescLabel
+onready var selected_tier_desc_label = $ContentContainer/VBoxContainer/SelectedTierDescLabel
+onready var selected_tier_not_apply_desc_label = $ContentContainer/VBoxContainer/SelectedTierDescNotApplyLevel
+onready var tier_selection_panel = $ContentContainer/VBoxContainer/TierSelectionPanel
+onready var tower_icon_collection_panel_of_applied_effect = $ContentContainer/VBoxContainer/TowerIconCollectionPanelForApplied
+onready var tower_icon_collection_panel_of_unapplied_effect = $ContentContainer/VBoxContainer/TowerIconCollectionPanelForNotApplied
 
 #
 

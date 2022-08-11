@@ -31,6 +31,9 @@ func _on_AdvancedButtonWithTooltip_mouse_entered():
 		_trigger_create_about_tooltip()
 
 
+
+
+
 func _trigger_create_about_tooltip():
 	if define_tooltip_construction_in_button:
 		if about_tooltip == null:

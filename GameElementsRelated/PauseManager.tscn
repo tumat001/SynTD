@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://GameElementsRelated/PauseManager.gd" type="Script" id=1]
+
+[node name="PauseManager" type="MarginContainer"]
+pause_mode = 2
+margin_right = 960.0
+margin_bottom = 540.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}

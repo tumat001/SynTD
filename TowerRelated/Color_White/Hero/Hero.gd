@@ -1385,7 +1385,7 @@ func get_self_description_in_info_panel() -> Array:
 	
 	return [
 		"Hero will save %s" % last_part,
-		"Click on the icon to view the hero's level and skills."
+		"Click on the hero icon below, or press %s, to view the hero's level and skills." % [str(InputMap.get_action_list("game_tower_panel_ability_01")[0].as_text())]
 	]
 
 #

@@ -1,0 +1,181 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWithTooltip.tscn" type="PackedScene" id=2]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/InputKeySummary/Assets/InputKeySummary_BodyFill_ForInputKey.png" type="Texture" id=3]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/InputKeySummary/Assets/InputKeySummary_SideBorder.png" type="Texture" id=4]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/InputKeySummary/Assets/InputKeySummary_BodyFill_ForTitle.png" type="Texture" id=5]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/InputKeySummary/InputKeySummary.gd" type="Script" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=2]
+font_data = ExtResource( 1 )
+
+[node name="InputKeySummary" type="MarginContainer"]
+margin_right = 188.0
+margin_bottom = 49.0
+mouse_filter = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 188.0
+margin_bottom = 49.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 0
+
+[node name="KeyNameContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_right = 138.0
+margin_bottom = 49.0
+rect_min_size = Vector2( 60, 30 )
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="BodyBackground" type="TextureRect" parent="HBoxContainer/KeyNameContainer"]
+margin_right = 138.0
+margin_bottom = 49.0
+mouse_filter = 2
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="LeftBorder" type="TextureRect" parent="HBoxContainer/KeyNameContainer"]
+margin_right = 3.0
+margin_bottom = 49.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="RightBorder" type="TextureRect" parent="HBoxContainer/KeyNameContainer"]
+margin_left = 135.0
+margin_right = 138.0
+margin_bottom = 49.0
+mouse_filter = 2
+size_flags_horizontal = 10
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="TopBorder" type="TextureRect" parent="HBoxContainer/KeyNameContainer"]
+margin_right = 138.0
+margin_bottom = 3.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="BottomBorder" type="TextureRect" parent="HBoxContainer/KeyNameContainer"]
+margin_top = 46.0
+margin_right = 138.0
+margin_bottom = 49.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="ContentContainer" type="MarginContainer" parent="HBoxContainer/KeyNameContainer"]
+margin_right = 138.0
+margin_bottom = 49.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 6
+custom_constants/margin_top = 6
+custom_constants/margin_left = 6
+custom_constants/margin_bottom = 6
+
+[node name="KeyNameLabel" type="Label" parent="HBoxContainer/KeyNameContainer/ContentContainer"]
+margin_left = 6.0
+margin_top = 6.0
+margin_right = 132.0
+margin_bottom = 43.0
+custom_fonts/font = SubResource( 1 )
+text = "Sample control
+text"
+align = 1
+valign = 1
+
+[node name="KeyCharContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 138.0
+margin_right = 188.0
+margin_bottom = 49.0
+rect_min_size = Vector2( 50, 30 )
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="BodyBackground" type="TextureRect" parent="HBoxContainer/KeyCharContainer"]
+margin_right = 50.0
+margin_bottom = 49.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="LeftBorder" type="TextureRect" parent="HBoxContainer/KeyCharContainer"]
+margin_right = 3.0
+margin_bottom = 49.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="RightBorder" type="TextureRect" parent="HBoxContainer/KeyCharContainer"]
+margin_left = 47.0
+margin_right = 50.0
+margin_bottom = 49.0
+mouse_filter = 2
+size_flags_horizontal = 10
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="TopBorder" type="TextureRect" parent="HBoxContainer/KeyCharContainer"]
+margin_right = 50.0
+margin_bottom = 3.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="BottomBorder" type="TextureRect" parent="HBoxContainer/KeyCharContainer"]
+margin_top = 46.0
+margin_right = 50.0
+margin_bottom = 49.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="ContentContainer" type="MarginContainer" parent="HBoxContainer/KeyCharContainer"]
+margin_right = 50.0
+margin_bottom = 49.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 6
+custom_constants/margin_top = 6
+custom_constants/margin_left = 6
+custom_constants/margin_bottom = 6
+
+[node name="KeyCharLabel" type="Label" parent="HBoxContainer/KeyCharContainer/ContentContainer"]
+margin_left = 6.0
+margin_top = 16.0
+margin_right = 44.0
+margin_bottom = 33.0
+custom_fonts/font = SubResource( 2 )
+text = "A"
+align = 1
+valign = 1
+
+[node name="AdvancedButtonWithTooltip" parent="." instance=ExtResource( 2 )]
+margin_right = 188.0
+margin_bottom = 49.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
