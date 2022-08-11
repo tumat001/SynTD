@@ -37,8 +37,12 @@ const tower_drag_mode_to_explanation : Dictionary = {
 		"Towers must be dropped inside tower slots to be placed there, otherwise the tower will return to its original location."
 	],
 	TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE : [
-		"When a tower is dropped to an empty location, it will search for a nearby tower slot to place itself."
+		"When a tower is dropped to an empty location, it will first search for a nearby tower slot to place itself."
 	],
+}
+const tower_drag_mode_to_name : Dictionary = {
+	TowerDragMode.EXACT : "Exact",
+	TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE : "Snap To Nearby"
 }
 var tower_drag_mode : int setget set_tower_drag_mode
 
