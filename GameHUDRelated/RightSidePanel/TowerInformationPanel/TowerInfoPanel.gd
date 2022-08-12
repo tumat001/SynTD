@@ -32,7 +32,8 @@ const LAssaut_InfoPanel = preload("res://TowerRelated/Color_Green/L'Assaut/GUI/L
 const LAssaut_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/L'Assaut/GUI/LAssaut_InfoPanel.tscn")
 const LaChasseur_InfoPanel = preload("res://TowerRelated/Color_Green/La_Chasseur/GUI/LaChasseur_InfoPanel.gd")
 const LaChasseur_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/La_Chasseur/GUI/LaChasseur_InfoPanel.tscn")
-
+const Tesla_InfoPanel = preload("res://TowerRelated/Color_Violet/Tesla/GUI/Tesla_InfoPanel.gd")
+const Tesla_InfoPanel_Scene = preload("res://TowerRelated/Color_Violet/Tesla/GUI/Tesla_InfoPanel.tscn")
 
 signal on_tower_panel_ability_01_activate()
 signal on_tower_panel_ability_02_activate()
@@ -66,6 +67,7 @@ var beacon_dish_effect_panel : BeaconDish_EffectPanel
 var se_propager_info_panel : SePropager_InfoPanel
 var lassaut_info_panel : LAssaut_InfoPanel
 var la_chasseur_info_panel : LaChasseur_InfoPanel
+var tesla_info_panel : Tesla_InfoPanel
 
 var current_active_info_panel
 
@@ -359,6 +361,19 @@ func _update_tower_specific_info_panel():
 			la_chasseur_info_panel.visible = false
 			la_chasseur_info_panel.set_la_chasseur(null)
 	
+	# Tesla
+	if Tesla_InfoPanel.should_display_self_for(tower):
+		if tesla_info_panel == null:
+			tesla_info_panel = Tesla_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(tesla_info_panel)
+		
+		tesla_info_panel.visible = true
+		tesla_info_panel.set_tesla(tower)
+		current_active_info_panel = tesla_info_panel
+	else:
+		if tesla_info_panel != null:
+			tesla_info_panel.visible = false
+			tesla_info_panel.set_tesla(null)
 	
 	
 	# KEEP THIS AT THE BOTTOM

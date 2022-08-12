@@ -1,0 +1,65 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseTowerSpecificInfoPanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameHUDRelated/AbilityPanel/AbilityButton.tscn" type="PackedScene" id=2]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseTowerSpecificInfoPanel_BodyBackground.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Violet/Tesla/GUI/Tesla_InfoPanel.gd" type="Script" id=4]
+
+[node name="Tesla_InfoPanel" instance=ExtResource( 1 )]
+size_flags_horizontal = 6
+script = ExtResource( 4 )
+
+[node name="VBoxContainer" parent="." index="0"]
+margin_bottom = 56.0
+
+[node name="MarginContainer" parent="VBoxContainer/HeaderMarginer/MarginContainer" index="1"]
+margin_left = 3.0
+margin_right = 47.0
+
+[node name="Label" parent="VBoxContainer/HeaderMarginer/MarginContainer/MarginContainer" index="0"]
+margin_right = 44.0
+text = "Tesla Orbit"
+
+[node name="BodyMarginer" parent="VBoxContainer" index="2"]
+margin_bottom = 55.0
+size_flags_horizontal = 6
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/BodyMarginer" index="0"]
+margin_right = 110.0
+margin_bottom = 41.0
+size_flags_horizontal = 6
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="ContentMargin" type="MarginContainer" parent="VBoxContainer/BodyMarginer" index="1"]
+margin_left = 8.0
+margin_right = 102.0
+margin_bottom = 41.0
+size_flags_horizontal = 6
+custom_constants/margin_right = 3
+custom_constants/margin_top = 3
+custom_constants/margin_left = 3
+custom_constants/margin_bottom = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/BodyMarginer/ContentMargin" index="0"]
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 91.0
+margin_bottom = 38.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BodyMarginer/ContentMargin/VBoxContainer" index="0"]
+margin_right = 88.0
+margin_bottom = 35.0
+custom_constants/separation = 18
+
+[node name="IncreaseOrbitRadiusButton" parent="VBoxContainer/BodyMarginer/ContentMargin/VBoxContainer/HBoxContainer" index="0" instance=ExtResource( 2 )]
+destroy_button_if_ability_lost = false
+
+[node name="DecreaseOrbitRadiusButton" parent="VBoxContainer/BodyMarginer/ContentMargin/VBoxContainer/HBoxContainer" index="1" instance=ExtResource( 2 )]
+margin_left = 53.0
+margin_right = 88.0
+destroy_button_if_ability_lost = false
+
+[node name="BottomBorder" parent="VBoxContainer" index="3"]
+margin_top = 55.0
+margin_bottom = 56.0

@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://TowerRelated/Color_Violet/Tesla/TeslaJoltPathFollow2D.gd" type="Script" id=1]
+
+[node name="TeslaJoltPathFollow2D" type="PathFollow2D"]
+rotate = false
+script = ExtResource( 1 )

@@ -3,7 +3,7 @@ extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd"
 
 func _init().(StoreOfTowerEffectsUUID.ING_YELLOW_FRUIT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_YellowFruit.png")
-	description = "The tower is worth 2 more gold per round when active in the map."
+	description = "The tower is worth 3 more gold per round when active in the map."
 
 
 
@@ -15,7 +15,7 @@ func _make_modifications_to_tower(tower):
 # increase gold value
 func _attempt_increase_base_gold_cost(tower):
 	if tower.is_current_placable_in_map():
-		tower._base_gold_cost += 2
+		tower._base_gold_cost += 3
 
 
 func _undo_modifications_to_tower(tower):

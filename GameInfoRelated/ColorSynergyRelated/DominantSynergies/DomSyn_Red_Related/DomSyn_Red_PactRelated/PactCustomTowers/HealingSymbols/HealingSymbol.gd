@@ -9,8 +9,8 @@ const OnCastHealParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRela
 const player_heal_amount : float = 1.0
 const heal_cooldown : float = 5.0
 
-const enhanced_heal_percent : float = 40.0
-const normal_heal_percent : float = 20.0
+const enhanced_heal_percent : float = 20.0
+const normal_heal_percent : float = 10.0
 
 
 const anim_heal_charge_sprite_index : int = 0
