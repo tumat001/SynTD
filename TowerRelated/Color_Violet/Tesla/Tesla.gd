@@ -277,6 +277,8 @@ func _construct_and_register_abilities():
 	orbit_increase_radius_ability.should_be_displaying_clauses.remove_clause(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 	orbit_increase_activation_condi_clause = orbit_increase_radius_ability.activation_conditional_clauses
 	
+	orbit_increase_activation_condi_clause.blacklisted_clauses.erase(BaseAbility.ActivationClauses.ROUND_ONGOING_STATE)
+	
 	orbit_increase_radius_ability.tower = self
 	
 	orbit_increase_radius_ability.descriptions = [
@@ -301,6 +303,8 @@ func _construct_and_register_abilities():
 	orbit_decrease_radius_ability.should_be_displaying_clauses.blacklisted_clauses.append(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 	orbit_decrease_radius_ability.should_be_displaying_clauses.remove_clause(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 	orbit_decrease_activation_condi_clause = orbit_decrease_radius_ability.activation_conditional_clauses
+	
+	orbit_decrease_activation_condi_clause.blacklisted_clauses.erase(BaseAbility.ActivationClauses.ROUND_ONGOING_STATE)
 	
 	orbit_decrease_radius_ability.tower = self
 	
@@ -479,7 +483,7 @@ func _get_point_pos_using_current_orbit_radius_and_index(arg_index) -> Vector2:
 
 
 func _update_orbit_radius_conditional_clauses():
-	if range_module.last_calculated_final_range <= current_orbit_radius:
+	if _get_final_range_of_self_for_orbit() <= current_orbit_radius:
 		orbit_increase_activation_condi_clause.attempt_insert_clause(ORBIT_CANNOT_INCREASE_CLAUSE)
 	else:
 		orbit_increase_activation_condi_clause.remove_clause(ORBIT_CANNOT_INCREASE_CLAUSE)
@@ -488,6 +492,12 @@ func _update_orbit_radius_conditional_clauses():
 		orbit_decrease_activation_condi_clause.attempt_insert_clause(ORBIT_CANNOT_DECREASE_CLAUSE)
 	else:
 		orbit_decrease_activation_condi_clause.remove_clause(ORBIT_CANNOT_DECREASE_CLAUSE)
+
+func _get_final_range_of_self_for_orbit() -> float:
+	if range_module != null:
+		return range_module.last_calculated_final_range
+	else:
+		return float(orbit_radius_minimum)
 
 
 #
@@ -531,7 +541,7 @@ func draw_circle_arc(center, radius, angle_from, angle_to, color):
 #
 
 func _on_final_range_changed_t():
-	var final_range = range_module.last_calculated_final_range
+	var final_range = _get_final_range_of_self_for_orbit()
 	
 	if final_range < current_orbit_radius:
 		_set_current_orbit_radius(final_range)
@@ -549,8 +559,9 @@ func _on_orbit_radius_decrease_activated():
 
 func _increase_orbit_by_amount(arg_val : float = orbit_incre_decre_amount_per_cast):
 	var tentative_val = current_orbit_radius + arg_val
-	if tentative_val > range_module.last_calculated_final_range:
-		tentative_val = range_module.last_calculated_final_range
+	var curr_range = _get_final_range_of_self_for_orbit()
+	if tentative_val > curr_range:
+		tentative_val = curr_range
 	
 	_set_current_orbit_radius(tentative_val)
 

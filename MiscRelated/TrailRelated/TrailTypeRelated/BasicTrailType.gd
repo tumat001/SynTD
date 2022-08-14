@@ -42,13 +42,14 @@ func set_trail_color(arg_color : Color):
 #
 
 func _process(delta):
-	if node_to_trail != null and node_to_trail.is_inside_tree():
-		var pos_of_point = node_to_trail.global_position
-		global_rotation = 0
-		
-		add_point(pos_of_point)
-		if get_point_count() > max_trail_length:
-			remove_point(0)
+	if node_to_trail != null:
+		if node_to_trail.is_inside_tree():
+			var pos_of_point = node_to_trail.global_position
+			global_rotation = 0
+			
+			add_point(pos_of_point)
+			if get_point_count() > max_trail_length:
+				remove_point(0)
 	else:
 		if get_point_count() > 0:
 			remove_point(0)

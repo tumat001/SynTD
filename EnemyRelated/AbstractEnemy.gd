@@ -58,6 +58,8 @@ signal on_max_health_changed(max_health)
 signal shield_broken(shield_id)
 signal all_shields_broken()
 
+signal on_invisibility_status_changed(arg_val)
+
 signal on_overheal(overheal_amount)
 
 signal effect_removed(effect, me)
@@ -72,6 +74,7 @@ signal final_ability_potency_changed(new_potency)
 signal on_ability_before_cast_start(cooldown, ability)
 signal on_ability_after_cast_end(cooldown, ability)
 
+signal on_finished_ready_prep() # is now targetable, not invulnerable
 
 
 # SHARED IN EnemyTypeInformation. Changes here must be
@@ -164,6 +167,7 @@ var flat_effect_vulnerability_id_effect_map : Dictionary = {}
 var percent_effect_vulnerability_id_effect_map : Dictionary = {}
 var last_calculated_final_effect_vulnerability : float = base_effect_vulnerability
 
+# how effective percent based damage is
 var base_percent_health_hit_scale : float = 1
 var flat_percent_health_hit_scale_id_effect_map : Dictionary = {}
 var percent_percent_health_hit_scale_id_effect_map : Dictionary = {}
@@ -424,6 +428,9 @@ func _post_inherit_ready():
 	untargetable_clauses.remove_clause(UntargetabilityClauses.IS_READY_PREPPING)
 	
 	calculate_invulnerability_status()
+	
+	#
+	emit_signal("on_finished_ready_prep")
 
 
 func get_current_anim_size() -> Vector2:
@@ -917,6 +924,7 @@ func calculate_invisibility_status() -> bool:
 		modulate.a = 1
 		untargetable_clauses.remove_clause(UntargetabilityClauses.IS_INVISIBLE)
 	
+	emit_signal("on_invisibility_status_changed", last_calculated_invisibility_status)
 	return last_calculated_invisibility_status
 
 

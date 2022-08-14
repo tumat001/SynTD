@@ -19,6 +19,7 @@ signal before_enemy_stats_are_set(enemy)
 signal before_enemy_spawned(enemy)
 signal before_enemy_is_added_to_path(enemy, path)
 signal enemy_spawned(enemy)
+signal on_enemy_spawned_and_finished_ready_prep(enemy)
 
 signal enemy_escaped(enemy)
 signal first_enemy_escaped(enemy, first_damage)
@@ -59,7 +60,7 @@ var enemy_first_damage : float
 
 #
 
-var enemy_count_in_round : int
+var enemy_count_in_round : int # from instruction
 var current_enemy_spawned_from_ins_count : int
 
 var highest_enemy_spawn_timepos_in_round : float
@@ -217,13 +218,19 @@ func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _get_path_based
 			_switch_path_index_to_next() #to alternate between lanes per spawn
 		current_enemy_spawned_from_ins_count += 1
 	
-	emit_signal("before_enemy_spawned", enemy_instance)
 	
+	enemy_instance.connect("on_finished_ready_prep", self, "_on_enemy_finished_ready_prep", [enemy_instance], CONNECT_ONESHOT)
+	
+	emit_signal("before_enemy_spawned", enemy_instance)
 	emit_signal("before_enemy_is_added_to_path", enemy_instance, path)
 	if enemy_instance.get_parent() == null:
 		path.add_child(enemy_instance)
 	
 	emit_signal("enemy_spawned", enemy_instance)
+
+
+func _on_enemy_finished_ready_prep(arg_enemy):
+	emit_signal("on_enemy_spawned_and_finished_ready_prep", arg_enemy)
 
 
 func _get_path_based_on_current_index() -> EnemyPath:
@@ -285,6 +292,10 @@ func get_all_targetable_and_invisible_enemies() -> Array:
 	return enemies
 
 
+func get_random_targetable_enemies(arg_num_of_enemies : int, arg_pos_of_reference : Vector2 = Vector2(0, 0), arg_include_invis : bool = false):
+	return Targeting.enemies_to_target(get_all_enemies(), Targeting.RANDOM, arg_num_of_enemies, arg_pos_of_reference, arg_include_invis)
+
+
 func get_path_of_enemy(arg_enemy) -> EnemyPath:
 	for path in spawn_paths:
 		if path.get_children().has(arg_enemy):
@@ -292,6 +303,14 @@ func get_path_of_enemy(arg_enemy) -> EnemyPath:
 	
 	return null
 
+
+# enemy count related
+
+func get_percent_of_enemies_spawned_to_total_from_ins():
+	if enemy_count_in_round != 0:
+		return float(current_enemy_spawned_from_ins_count) / enemy_count_in_round
+	else:
+		return 0.0
 
 # Faction passive related
 

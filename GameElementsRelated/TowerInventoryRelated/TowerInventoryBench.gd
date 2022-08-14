@@ -56,19 +56,19 @@ func insert_tower_from_last(tower_id : int, is_tower_bought : bool = false) -> A
 
 #
 
-func create_tower_and_add_to_scene(tower_id : int, arg_bench_slot, is_tower_bought : bool = false) -> AbstractTower:
-	var tower_as_instance := create_tower(tower_id, arg_bench_slot)
+func create_tower_and_add_to_scene(tower_id : int, arg_placable_slot, is_tower_bought : bool = false) -> AbstractTower:
+	var tower_as_instance := create_tower(tower_id, arg_placable_slot)
 	
 	add_tower_to_scene(tower_as_instance, is_tower_bought)
 	
 	return tower_as_instance
 
 
-func create_tower(tower_id : int, arg_bench_slot) -> AbstractTower:
+func create_tower(tower_id : int, arg_placable_slot) -> AbstractTower:
 	var tower_as_instance : AbstractTower = Towers.get_tower_scene(tower_id).instance()
 	
-	tower_as_instance.hovering_over_placable = arg_bench_slot
-	tower_as_instance.current_placable = arg_bench_slot
+	tower_as_instance.hovering_over_placable = arg_placable_slot
+	tower_as_instance.current_placable = arg_placable_slot
 	
 	return tower_as_instance
 

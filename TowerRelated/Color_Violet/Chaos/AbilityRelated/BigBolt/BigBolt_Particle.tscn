@@ -1,0 +1,30 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightning_07.png" type="Texture" id=2]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightning_08.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightning_09.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightning_10.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightning_02.png" type="Texture" id=6]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightning_05.png" type="Texture" id=7]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightning_06.png" type="Texture" id=8]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightning_01.png" type="Texture" id=9]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightning_03.png" type="Texture" id=10]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightning_04.png" type="Texture" id=11]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/AbilityRelated/BigBolt/BigBolt_Particle.gd" type="Script" id=12]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 9 ), ExtResource( 6 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="BigBoltParticle" instance=ExtResource( 1 )]
+frames = SubResource( 1 )
+frame = 8
+offset = Vector2( 0, -38 )
+script = ExtResource( 12 )
+lifetime = 0.25
+frames_based_on_lifetime = true

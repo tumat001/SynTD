@@ -33,6 +33,7 @@ func create_trail_for_node(arg_node):
 	emit_signal("on_trail_before_attached_to_node", trail, arg_node)
 	trail.set_node_to_trail(arg_node)
 	emit_signal("on_trail_after_attached_to_node", trail, arg_node)
+	
 
 #
 

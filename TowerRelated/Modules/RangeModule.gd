@@ -412,6 +412,7 @@ func get_current_targeting_option() -> int:
 #	_current_enemies[0] = Targeting.enemy_to_target(enemies_in_range, targeting)
 #	return _current_enemies[0]
 
+# Affects current target of tower! If this is not needed, use method below (you'll see the right one)
 func get_targets(num : int, targeting : int = get_current_targeting_option(), include_invis_enemies : bool = false) -> Array:
 	var targeting_params : Targeting.TargetingParameters
 	
@@ -456,3 +457,15 @@ func get_targets_without_affecting_self_current_targets(num : int, targeting : i
 
 func get_all_targets_without_affecting_self_current_targets(targeting : int = get_current_targeting_option(), include_invis_enemies : bool = false) -> Array:
 	return get_targets_without_affecting_self_current_targets(_current_enemies.size(), targeting, include_invis_enemies)
+
+
+#
+
+func is_enemy_in_range(arg_enemy) -> bool:
+	for target in enemies_in_range:
+		if target == arg_enemy:
+			return true
+	
+	return false
+
+

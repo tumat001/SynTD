@@ -19,6 +19,7 @@ var marker_id_to_value_map : Dictionary = {}
 
 func _ready():
 	path_length = curve.get_baked_length()
+	
 
 func add_child(node : Node, legible_unique_name : bool = false):
 	.add_child(node, legible_unique_name)

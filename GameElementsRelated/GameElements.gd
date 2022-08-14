@@ -285,16 +285,16 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.ACCUMULAE,
-			Towers.ADEPT,
+			Towers.TIME_MACHINE,
 			Towers.TESLA,
 			Towers.RE,
-			Towers.BEACON_DISH,
+			Towers.NIGHTWATCHER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.ROYAL_FLAME,
 			Towers.PESTILENCE,
-			Towers.TRANSPORTER,
+			Towers.SE_PROPAGER,
 			Towers.BLOSSOM,
 			Towers.STRIKER,
 			Towers.TRANSMUTATOR

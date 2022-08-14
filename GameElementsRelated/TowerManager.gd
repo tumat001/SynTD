@@ -105,6 +105,7 @@ var game_elements setget set_game_elements
 
 var _color_groups : Array
 const TOWER_GROUP_ID : String = "All_Towers"
+const TOWER_IN_MAP_GROUP_ID : String = "All_Towers_In_Map"
 
 var _is_round_on_going : bool
 
@@ -184,6 +185,9 @@ func _tower_in_queue_free(tower):
 # Called after potentially updating synergy
 func _tower_active_in_map(tower : AbstractTower):
 	_register_tower_to_color_grouping_tags(tower)
+	if !tower.is_in_group(TOWER_IN_MAP_GROUP_ID):
+		tower.add_to_group(TOWER_IN_MAP_GROUP_ID)
+	
 	emit_signal("tower_to_benefit_from_synergy_buff", tower)
 	
 	call_deferred("calculate_current_tower_limit_taken")
@@ -191,6 +195,9 @@ func _tower_active_in_map(tower : AbstractTower):
 # Called after potentially updating synergy
 func _tower_inactivated_from_map(tower : AbstractTower):
 	_remove_tower_from_color_grouping_tags(tower)
+	if tower.is_in_group(TOWER_IN_MAP_GROUP_ID):
+		tower.remove_from_group(TOWER_IN_MAP_GROUP_ID)
+	
 	emit_signal("tower_to_remove_from_synergy_buff", tower)
 	
 	call_deferred("calculate_current_tower_limit_taken")
@@ -259,6 +266,9 @@ func add_tower(tower_instance : AbstractTower):
 	
 	for lim_id in _tower_ing_cap_amount_map:
 		tower_instance.set_ingredient_limit_modifier(lim_id, _tower_ing_cap_amount_map[lim_id])
+	
+	# if something broke, then this might be the cause
+	tower_instance.transfer_to_placable(tower_instance.hovering_over_placable, false, !can_place_tower_based_on_limit_and_curr_placement(tower_instance))
 	
 	emit_signal("tower_added", tower_instance)
 
@@ -524,7 +534,7 @@ func get_all_ids_of_towers_except_in_queue_free() -> Array:
 	
 	return bucket
 
-
+# "Active" Towers meaning towers in map and contributing to synergy
 func get_all_active_towers() -> Array:
 	var bucket : Array = []
 	
@@ -569,6 +579,8 @@ func get_all_active_towers_with_color(color) -> Array:
 	
 	return bucket
 
+
+
 func get_all_active_towers_without_color(color) -> Array:
 	if color is int:
 		color = str(color)
@@ -607,6 +619,29 @@ func get_all_active_towers_without_colors(colors : Array) -> Array:
 				bucket.append(child)
 	
 	return bucket
+
+
+# All In map towers, not considering if they contribute to the synergy
+func get_all_in_map_towers() -> Array:
+	var bucket : Array = []
+	
+	for tower in get_all_towers():
+		if !bucket.has(tower) and tower.is_in_group(TOWER_IN_MAP_GROUP_ID):
+			bucket.append(tower)
+	
+	return bucket
+
+func get_all_in_map_towers_except_in_queue_free() -> Array:
+	var bucket : Array = []
+	
+	for tower in get_all_towers_except_in_queue_free():
+		if !bucket.has(tower) and tower.is_in_group(TOWER_IN_MAP_GROUP_ID):
+			bucket.append(tower)
+	
+	return bucket
+
+
+#
 
 
 # Tower prompt/selection related

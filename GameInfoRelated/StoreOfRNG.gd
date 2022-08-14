@@ -17,6 +17,9 @@ var shackled_pull_position_rng : RandomNumberGenerator = RandomNumberGenerator.n
 var faithful_mov_speed_delay_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var black_capacitor_nova_lightning_tower_or_enemy_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var random_tower_decider_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var chaos_events_to_play_rng : RandomNumberGenerator = RandomNumberGenerator.new()
+var chaos_events_rng_general_purpose := RandomNumberGenerator.new()
+
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -29,6 +32,8 @@ enum RNGSource {
 	FRUIT_TREE = 101,
 	PESTILENCE_SPREAD = 102,
 	SHACKLED_PULL_POSITION = 103,
+	CHAOS_EVENTS_TO_PLAY = 104,
+	CHAOS_EVENTS_GENERAL_PURPOSE = 105,
 	
 	INACCURACY = 1000,
 	
@@ -86,5 +91,9 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return black_capacitor_nova_lightning_tower_or_enemy_rng
 	elif rng_source == RNGSource.RANDOM_TOWER_DECIDER:
 		return random_tower_decider_rng
+	elif rng_source == RNGSource.CHAOS_EVENTS_TO_PLAY:
+		return chaos_events_to_play_rng
+	elif rng_source == RNGSource.CHAOS_EVENTS_GENERAL_PURPOSE:
+		return chaos_events_rng_general_purpose
 	
 	return null

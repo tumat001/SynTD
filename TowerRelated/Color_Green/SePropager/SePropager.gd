@@ -28,8 +28,8 @@ signal on_auto_sell_value_changed(new_val)
 
 var proliferate_ability : BaseAbility
 var _is_proliferate_ability_ready : bool
-const proliferate_base_cooldown : float = 25.0
-const proliferate_initial_cooldown : float = 12.5
+const proliferate_base_cooldown : float = 4.0#25.0
+const proliferate_initial_cooldown : float = 4.0#12.5
 
 var proliferate_seed_attack_module : ArcingBulletAttackModule
 var all_owned_les_semis : Array = []
@@ -225,7 +225,8 @@ func _create_les_semis_at_placable(placable):
 	game_elements.tower_inventory_bench.add_tower_to_scene(les_semis_instance)
 	
 	#
-	les_semis_instance.transfer_to_placable(hovering_over_placable, false, !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self))
+	# if the les semis does not appear in the damage recap charts, then re-enable this (if the one from the tower manager (add tower) is not there anymore
+	#les_semis_instance.transfer_to_placable(les_semis_instance.hovering_over_placable, false, !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self))
 
 #
 

@@ -109,7 +109,6 @@ var auto_cast_func : String
 
 var ignore_ability_effects_from_manager : bool = false
 
-
 # Ability Power related
 
 var base_ability_potency : float = 1
@@ -262,6 +261,7 @@ func round_ended():
 	
 	activation_conditional_clauses.remove_clause(ActivationClauses.ROUND_ONGOING_STATE, false)
 	activation_conditional_clauses.attempt_insert_clause(ActivationClauses.ROUND_INTERMISSION_STATE)
+	
 	counter_decrease_clauses.remove_clause(CounterDecreaseClauses.ROUND_ONGOING_STATE, false)
 	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.ROUND_INTERMISSION_STATE)
 
@@ -269,6 +269,7 @@ func round_ended():
 func round_started():
 	activation_conditional_clauses.attempt_insert_clause(ActivationClauses.ROUND_ONGOING_STATE, false)
 	activation_conditional_clauses.remove_clause(ActivationClauses.ROUND_INTERMISSION_STATE)
+	
 	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.ROUND_ONGOING_STATE, false)
 	counter_decrease_clauses.remove_clause(CounterDecreaseClauses.ROUND_INTERMISSION_STATE)
 
@@ -277,6 +278,7 @@ func round_started():
 
 func emit_updated_is_ready_for_activation(clause):
 	emit_signal("updated_is_ready_for_activation", is_ready_for_activation())
+
 
 func emit_updated_should_be_displayed(clause):
 	emit_signal("should_be_displaying_changed", should_be_displaying_clauses.is_passed)
@@ -386,6 +388,7 @@ func _tower_not_active_in_map():
 	activation_conditional_clauses.attempt_insert_clause(ActivationClauses.TOWER_IN_BENCH)
 	counter_decrease_clauses.attempt_insert_clause(CounterDecreaseClauses.TOWER_IN_BENCH)
 	should_be_displaying_clauses.attempt_insert_clause(ShouldBeDisplayingClauses.TOWER_IN_BENCH)
+
 
 
 # synergy related clauses

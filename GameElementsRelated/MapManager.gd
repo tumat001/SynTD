@@ -70,6 +70,19 @@ func make_all_placables_not_hidden():
 	base_map.make_all_placables_not_hidden()
 
 
+# Enemy Path Related
+
+
+func get_random_enemy_path(arg_paths_to_choose_from : Array = base_map._all_enemy_paths):
+	return base_map.get_random_enemy_path(arg_paths_to_choose_from)
+	
+
+
+func get_path_point_closest_to_point(arg_coord : Vector2, paths_to_inspect : Array = base_map._all_enemy_paths) -> Vector2:
+	return base_map.get_path_point_closest_to_point(arg_coord, paths_to_inspect)
+
+
+
 #
 
 func get_all_placables_in_range_from_mouse(radius : float, 

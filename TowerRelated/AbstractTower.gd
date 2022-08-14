@@ -207,6 +207,7 @@ enum UntargetabilityClauses {
 enum ContributingToSynergyClauses {
 	NOT_IN_MAP = 1,
 	IN_QUEUE_FREE = 2,
+	GENERIC_DOES_NOT_CONTRIBUTE = 3,
 	
 	DOM_SYN__RED__DOMINANCE_SUPPLEMENT = 1000,
 	DOM_SYN__RED__COMPLEMENTARY_SUPPLEMENT = 1001,
@@ -904,8 +905,10 @@ func _on_round_start():
 # Recieving buffs/debuff related
 
 func add_tower_effect(tower_base_effect : TowerBaseEffect, 
-		target_modules : Array = all_attack_modules, register_to_buff_map : bool = true, 
-		include_non_module_effects : bool = true, ing_effect : IngredientEffect = null):
+		target_modules : Array = all_attack_modules, 
+		register_to_buff_map : bool = true, 
+		include_non_module_effects : bool = true, 
+		ing_effect : IngredientEffect = null):
 	
 	if tower_base_effect.is_from_enemy:
 		# right now, only TowerAttrEffect is supported by this
@@ -1255,13 +1258,19 @@ func _remove_base_damage_effect(attr_effect_uuid : int, target_modules : Array):
 func _add_on_hit_damage_adder_effect(on_hit_adder : TowerOnHitDamageAdderEffect, target_modules : Array):
 	for module in target_modules:
 		if module.benefits_from_bonus_on_hit_damage or on_hit_adder.force_apply:
-			module.on_hit_damage_adder_effects[on_hit_adder.effect_uuid] = on_hit_adder
-			
-			if on_hit_adder.is_countbound:
-				module._all_countbound_effects[on_hit_adder.effect_uuid] = on_hit_adder
-			
-			module._listen_for_values_change_on_on_hit_dmg_effect(on_hit_adder)
-			module._update_last_calculated_on_hit_damages()
+			_force_add_on_hit_damage_adder_effect_to_module(on_hit_adder, module)
+
+
+func _force_add_on_hit_damage_adder_effect_to_module(on_hit_adder : TowerOnHitDamageAdderEffect, module):
+	module.on_hit_damage_adder_effects[on_hit_adder.effect_uuid] = on_hit_adder
+	
+	if on_hit_adder.is_countbound:
+		module._all_countbound_effects[on_hit_adder.effect_uuid] = on_hit_adder
+	
+	module._listen_for_values_change_on_on_hit_dmg_effect(on_hit_adder)
+	module._update_last_calculated_on_hit_damages()
+
+
 
 func _remove_on_hit_damage_adder_effect(on_hit_adder_uuid : int, target_modules : Array):
 	for module in target_modules:
@@ -1433,10 +1442,14 @@ func _remove_explosion_scale_effect(attr_effect_uuid : int, target_modules : Arr
 func _add_on_hit_effect_adder_effect(effect_adder : TowerOnHitEffectAdderEffect, target_modules : Array):
 	for module in target_modules:
 		if module.benefits_from_bonus_on_hit_effect or effect_adder.force_apply:
-			module.on_hit_effects[effect_adder.effect_uuid] = effect_adder
-			
-			if effect_adder.is_countbound:
-				module._all_countbound_effects[effect_adder.effect_uuid] = effect_adder
+			_force_add_on_hit_effect_adder_effect_to_module(effect_adder, module)
+
+func _force_add_on_hit_effect_adder_effect_to_module(effect_adder : TowerOnHitEffectAdderEffect, module):
+	module.on_hit_effects[effect_adder.effect_uuid] = effect_adder
+
+	if effect_adder.is_countbound:
+		module._all_countbound_effects[effect_adder.effect_uuid] = effect_adder
+
 
 
 func _remove_on_hit_effect_adder_effect(effect_adder_uuid : int, target_modules : Array):

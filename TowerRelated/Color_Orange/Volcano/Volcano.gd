@@ -184,7 +184,6 @@ func _ready():
 	add_attack_module(crater_attack_module)
 	
 	# add slow effect here
-	# also test if crater is dealing the right amount of damage
 	var slow_modifier : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.VOLCANO_SLOW)
 	slow_modifier.percent_amount = -30
 	slow_modifier.percent_based_on = PercentType.BASE

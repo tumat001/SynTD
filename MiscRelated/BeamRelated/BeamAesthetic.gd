@@ -2,7 +2,7 @@ extends AnimatedSprite
 
 const NO_INTERSECTION : float = -999.0
 
-signal time_visible_is_over
+signal time_visible_is_over()
 
 
 export(float) var time_visible : float
@@ -131,8 +131,9 @@ func play_only_once(value : bool):
 	frames.set_animation_loop("default", value)
 
 func set_frame_rate_based_on_lifetime():
-	frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(.get_frame_count("default")))
+	frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(get_sprite_frames().get_frame_count("default")))
 	frames.set_animation_loop("default", false)
+	
 
 func _calculate_fps_of_sprite_frames(frame_count : int) -> int:
 	return int(ceil(frame_count / time_visible))

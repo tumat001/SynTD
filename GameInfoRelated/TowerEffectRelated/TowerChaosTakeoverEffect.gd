@@ -32,6 +32,9 @@ const ChaosBase03_pic = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_03.
 const ChaosBase04_pic = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_04.png")
 const ChaosBase05_pic = preload("res://TowerRelated/Color_Violet/Chaos/Chaos_05.png")
 
+const MultipleTrailsForNodeComponent = preload("res://MiscRelated/TrailRelated/MultipleTrailsForNodeComponent.gd")
+
+
 
 var chaos_attack_modules : Array = []
 var replaced_attack_modules : Array
@@ -47,6 +50,8 @@ var damage_accumulated : float = 0
 var tower_taken_over
 
 var chaos_shadow_anim_sprite
+
+var trail_component_for_diamonds : MultipleTrailsForNodeComponent
 
 
 const CHAOS_TOWER_ID = 703
@@ -152,7 +157,8 @@ func _construct_modules():
 	diamond_attack_module.bullet_scene = BaseBullet_Scene
 	diamond_attack_module.set_texture_as_sprite_frame(ChaosDiamond_pic)
 	
-	diamond_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated")
+	diamond_attack_module.connect("on_post_mitigation_damage_dealt", self, "_add_damage_accumulated", [], CONNECT_PERSIST)
+	diamond_attack_module.connect("after_bullet_is_shot", self, "_after_diamond_is_shot", [], CONNECT_PERSIST)
 	
 	diamond_attack_module.set_image_as_tracker_image(ChaosDiamond_pic)
 	
@@ -210,7 +216,7 @@ func _construct_modules():
 	# Sword related
 	
 	sword_attack_module = InstantDamageAttackModule_Scene.instance()
-	sword_attack_module.base_damage_scale = 15
+	sword_attack_module.base_damage_scale = 10
 	sword_attack_module.base_damage = 20 / sword_attack_module.base_damage_scale
 	sword_attack_module.base_damage_type = DamageType.PHYSICAL
 	sword_attack_module.base_attack_speed = 0
@@ -225,46 +231,71 @@ func _construct_modules():
 	sword_attack_module.benefits_from_bonus_on_hit_damage = false
 	sword_attack_module.benefits_from_bonus_on_hit_effect = false
 	
-	sword_attack_module.connect("in_attack", self, "_show_attack_sprite_on_attack", [], CONNECT_PERSIST)
+	sword_attack_module.connect("on_enemy_hit", self, "_on_sword_attk_module_enemy_hit", [], CONNECT_PERSIST)
 	sword_attack_module.connect("on_enemy_hit", self, "_on_sword_hit_enemy", [], CONNECT_PERSIST)
 	
 	chaos_attack_modules.append(sword_attack_module)
 	sword_attack_module.can_be_commanded_by_tower = false
 	
 	sword_attack_module.set_image_as_tracker_image(preload("res://TowerRelated/Color_Violet/Chaos/AMAssets/ChaosSword_AttackModule_Icon.png"))
+	
+	#
+	
+	trail_component_for_diamonds = MultipleTrailsForNodeComponent.new()
+	trail_component_for_diamonds.node_to_host_trails = tower_taken_over
+	trail_component_for_diamonds.trail_type_id = StoreOfTrailType.BASIC_TRAIL
+	trail_component_for_diamonds.connect("on_trail_before_attached_to_node", self, "_trail_before_attached_to_diamond", [], CONNECT_PERSIST)
+	
+
+#
+
+func _after_diamond_is_shot(arg_diamond):
+	trail_component_for_diamonds.create_trail_for_node(arg_diamond)
+
+func _trail_before_attached_to_diamond(arg_trail, node):
+	arg_trail.max_trail_length = 10
+	arg_trail.trail_color = Color(109.0 / 255.0, 2 / 255.0, 217 / 255.0, 0.15)
+	arg_trail.width = 4
 
 
 # Takeover related
 
 func takeover(tower):
-	_construct_modules()
-	
-	tower_taken_over = tower
-	
-	replaced_main_attack_module = tower.main_attack_module
-	tower.main_attack_module = null
-	
-	replaced_range_module = tower.range_module
-	tower.range_module = sword_attack_module.range_module
-	
-	# ing related
-	replaced_self_ingredient = tower.ingredient_of_self
-	
-	var tower_base_effect = get_script().new()
-	var ing_effect = load("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd").new(CHAOS_TOWER_ID, tower_base_effect)
-	tower.ingredient_of_self = ing_effect
-	
-	tower.add_child(_construct_chaos_shadow())
-	
-	for module in tower.all_attack_modules:
-		_attempt_set_module_to_uncommandable_by_tower(module)
-	
-	for module in chaos_attack_modules:
-		tower.add_attack_module(module)
-	
-	if !tower.is_connected("attack_module_added", self, "_tower_added_attack_module"):
-		tower.connect("attack_module_added", self, "_tower_added_attack_module", [], CONNECT_PERSIST)
-		tower.connect("attack_module_removed", self, "_tower_removed_attack_module", [], CONNECT_PERSIST)
+	if tower.tower_id != CHAOS_TOWER_ID:
+		tower_taken_over = tower
+		
+		_construct_modules()
+		
+		replaced_main_attack_module = tower.main_attack_module
+		tower.main_attack_module = null
+		
+		replaced_range_module = tower.range_module
+		tower.range_module = sword_attack_module.range_module
+		
+		# ing related
+		replaced_self_ingredient = tower.ingredient_of_self
+		
+		var tower_base_effect = get_script().new()
+		var ing_effect = load("res://GameInfoRelated/TowerIngredientRelated/IngredientEffect.gd").new(CHAOS_TOWER_ID, tower_base_effect)
+		tower.ingredient_of_self = ing_effect
+		
+		tower.add_child(_construct_chaos_shadow())
+		
+		for module in tower.all_attack_modules:
+			_attempt_set_module_to_uncommandable_by_tower(module)
+		
+		for module in chaos_attack_modules:
+			tower.add_attack_module(module)
+		
+		if !tower.is_connected("attack_module_added", self, "_tower_added_attack_module"):
+			tower.connect("attack_module_added", self, "_tower_added_attack_module", [], CONNECT_PERSIST)
+			tower.connect("attack_module_removed", self, "_tower_removed_attack_module", [], CONNECT_PERSIST)
+		
+	else: # IF RECEIVING TOWER IS CHAOS
+		tower._received_chaos_ing()
+		
+
+
 
 func _attempt_set_module_to_uncommandable_by_tower(module):
 	if module.module_id == StoreOfAttackModuleID.MAIN or module.module_id == StoreOfAttackModuleID.PART_OF_SELF:
@@ -293,27 +324,33 @@ func _construct_chaos_shadow():
 #
 
 func untakeover(tower):
-	if tower.is_connected("attack_module_added", self, "_tower_added_attack_module"):
-		tower.disconnect("attack_module_added", self, "_tower_added_attack_module")
-		tower.disconnect("attack_module_removed", self, "_tower_removed_attack_module")
+	if tower.tower_id != CHAOS_TOWER_ID:
+		if tower.is_connected("attack_module_added", self, "_tower_added_attack_module"):
+			tower.disconnect("attack_module_added", self, "_tower_added_attack_module")
+			tower.disconnect("attack_module_removed", self, "_tower_removed_attack_module")
+		
+		
+		tower.range_module = replaced_range_module
+		tower.main_attack_module = replaced_main_attack_module
+		
+		tower.ingredient_of_self = replaced_self_ingredient
+		
+		if chaos_shadow_anim_sprite != null:
+			tower.remove_child(chaos_shadow_anim_sprite)
+			chaos_shadow_anim_sprite.queue_free()
+		
+		for module in replaced_attack_modules:
+			_attempt_set_attack_module_to_commandable_by_tower(module)
+		
+		for module in chaos_attack_modules:
+			if module != null:
+				tower.remove_attack_module(module)
+				module.queue_free()
+		
+		
+	else: # TOWER TO REMOVE FROM IS CHAOS
+		tower._removed_chaos_ing()
 
-	
-	tower.range_module = replaced_range_module
-	tower.main_attack_module = replaced_main_attack_module
-	
-	tower.ingredient_of_self = replaced_self_ingredient
-	
-	if chaos_shadow_anim_sprite != null:
-		tower.remove_child(chaos_shadow_anim_sprite)
-		chaos_shadow_anim_sprite.queue_free()
-	
-	for module in replaced_attack_modules:
-		_attempt_set_attack_module_to_commandable_by_tower(module)
-	
-	for module in chaos_attack_modules:
-		if module != null:
-			tower.remove_attack_module(module)
-			module.queue_free()
 
 func _attempt_set_attack_module_to_commandable_by_tower(module):
 	if module != null:
@@ -346,16 +383,12 @@ func _check_damage_accumulated():
 func _construct_attack_sprite_on_attack():
 	return ChaosSword.instance()
 
-
-func _show_attack_sprite_on_attack(_attk_speed_delay, enemies : Array):
-	for enemy in enemies:
-		if enemy != null:
-			var sword = _construct_attack_sprite_on_attack()
-			sword.global_position = enemies[0].global_position
-			sword.playing = true
-			
-			tower_taken_over.get_tree().get_root().add_child(sword)
-			break
+func _on_sword_attk_module_enemy_hit(enemy, damage_register_id, damage_instance, module):
+	if enemy != null:
+		var sword = _construct_attack_sprite_on_attack()
+		sword.global_position = enemy.global_position
+		tower_taken_over.get_tree().get_root().add_child(sword)
+		sword.playing = true
 
 #
 

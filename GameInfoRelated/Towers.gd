@@ -125,6 +125,7 @@ const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
 const amalgamator_image = preload("res://TowerRelated/Color_Black/Amalgamator/Amalgamator_Omni.png")
 
 const healing_symbol_image = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/HealingSymbols_Omni_Charged.png")
+const nightwatcher_image = preload("res://TowerRelated/Color_Violet/Chaos/AbilityAssets/NightWatcher/Chaos_NightWatcher.png")
 
 enum {
 	NONE = 0,
@@ -220,11 +221,13 @@ enum {
 	FRUIT_TREE_FRUIT = 2000, #THIS VALUE IS HARDCODED IN AbstractTower's can_accept_ingredient..
 	
 	HEALING_SYMBOL = 2001,
+	NIGHTWATCHER = 2002,
 }
 
 # Can be used as official list of all towers
 const TowerTiersMap : Dictionary = {
 	HEALING_SYMBOL : 1,
+	NIGHTWATCHER : 6,
 	
 	#MONO : 1,
 	SPRINKLER : 1,
@@ -692,7 +695,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
 			["Amps travel at |0| per second.", [interpreter_for_orbit_speed]],
-			"Gain abilities that can adjust the orbit radius."
+			"Gain abilities that can adjust the orbit radius during round intermissions."
 		]
 		
 		
@@ -766,7 +769,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_sword = []
 		ins_for_sword.append(NumericalTextFragment.new(20, false, DamageType.PHYSICAL))
 		ins_for_sword.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_sword.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 15, DamageType.PHYSICAL))
+		ins_for_sword.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 10, DamageType.PHYSICAL))
 		
 		interpreter_for_sword.array_of_instructions = ins_for_sword
 		
@@ -781,12 +784,16 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			["Diamond damage: |0|. Applies on hit effects.", [interpreter_for_dia]],
 			["Bolt damage: |0|. Does not apply on hit effects.", [interpreter_for_bolt]],
-			["Sword damage: |0|. Does not apply on hit effects.", [interpreter_for_sword]]
+			["Sword damage: |0|. Does not apply on hit effects.", [interpreter_for_sword]],
+			"",
+			"\"What happens when Chaos absorbs a Chaos?\""
 		]
 		
 		info.tower_simple_descriptions = [
 			info.tower_descriptions[0],
 			["Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target, dealing |0|.", [interpreter_for_sword]],
+			"",
+			"\"What happens when Chaos absorbs a Chaos?\""
 		]
 		
 		#
@@ -4745,6 +4752,42 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
+	elif tower_id == NIGHTWATCHER:
+		info = TowerTypeInformation.new("Night Watcher", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.base_tower_image = nightwatcher_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0
+		info.base_pierce = 0
+		info.base_range = 30
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		#todo
+		
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 4))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		
+		info.tower_descriptions = [
+			"Summons a lamp that monitors an area of the path nearest to Night Watcher.",
+			["Enemies that enter the area are stunned for 2 seconds, and Night Watcher creates an explosion at their position, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]]
+		]
+		
+		info.tower_simple_descriptions = [
+			"Summons a lamp that monitors an area of the path nearest to Night Watcher.",
+			["Enemies that enter the area are stunned for 2 seconds, and Night Watcher creates an explosion at their position, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]]
+		]
+		
 #	elif tower_id == WYVERN:
 #		info = TowerTypeInformation.new("Wyvern", tower_id)
 #		info.tower_tier = TowerTiersMap[tower_id]
@@ -4919,6 +4962,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Green/LaNature/La_Nature.tscn")
 	elif tower_id == HEALING_SYMBOL:
 		return load("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/HealingSymbol.tscn")
-
+	elif tower_id == NIGHTWATCHER:
+		return load("res://TowerRelated/Color_Violet/Chaos/AbilityRelated/NightWatcher/NightWatcher.tscn")
 
 

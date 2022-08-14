@@ -50,6 +50,30 @@ func remove_enemy_path(path : EnemyPath):
 func get_all_enemy_paths():
 	return _all_enemy_paths.duplicate(false)
 
+func get_random_enemy_path(arg_paths_to_choose_from : Array = _all_enemy_paths) -> EnemyPath:
+	var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TARGETING)
+	
+	var rng_i = rng.randi_range(0, arg_paths_to_choose_from.size() - 1)
+	
+	if arg_paths_to_choose_from.size() > 0:
+		return arg_paths_to_choose_from[rng_i]
+	else:
+		return null
+
+
+#
+
+func get_path_point_closest_to_point(arg_coord : Vector2, paths_to_inspect : Array = _all_enemy_paths) -> Vector2:
+	var nearest_points_per_path : Array = []
+	
+	for path_v in paths_to_inspect:
+		var path : EnemyPath = path_v
+		nearest_points_per_path.append(path.curve.get_closest_point(arg_coord))
+		
+	
+	return nearest_points_per_path.min()
+
+
 
 # glow related
 

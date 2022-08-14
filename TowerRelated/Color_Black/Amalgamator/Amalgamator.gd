@@ -228,6 +228,8 @@ func _construct_amalgam_ability():
 	amalgam_ability.activation_conditional_clauses.blacklisted_clauses.append(BaseAbility.ActivationClauses.TOWER_IN_BENCH)
 	amalgam_ability.activation_conditional_clauses.remove_clause(BaseAbility.ActivationClauses.TOWER_IN_BENCH)
 	
+	amalgam_ability.activation_conditional_clauses.blacklisted_clauses.append(disabled_from_attacking_clauses)
+	
 	amalgam_ability.counter_decrease_clauses.blacklisted_clauses.append(BaseAbility.CounterDecreaseClauses.ROUND_INTERMISSION_STATE)
 	amalgam_ability.counter_decrease_clauses.remove_clause(BaseAbility.CounterDecreaseClauses.ROUND_INTERMISSION_STATE)
 	amalgam_ability.counter_decrease_clauses.blacklisted_clauses.append(BaseAbility.CounterDecreaseClauses.TOWER_IN_BENCH)
@@ -235,6 +237,7 @@ func _construct_amalgam_ability():
 	
 	amalgam_ability.should_be_displaying_clauses.blacklisted_clauses.append(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 	amalgam_ability.should_be_displaying_clauses.remove_clause(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
+	
 	
 	amalgam_ability.tower = self
 	

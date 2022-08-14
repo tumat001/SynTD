@@ -64,7 +64,7 @@ func _on_round_start(curr_stageround):
 	
 	yield(get_tree(), "idle_frame")
 	
-	for active_tower in tower_manager.get_all_active_towers():
+	for active_tower in tower_manager.get_all_in_map_towers():
 		_attempt_create_single_stat_panel_for_tower(active_tower)
 	
 	update_timer.paused = false
