@@ -296,7 +296,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.PESTILENCE,
 			Towers.SE_PROPAGER,
 			Towers.BLOSSOM,
-			Towers.STRIKER,
+			Towers.GRAND,
 			Towers.TRANSMUTATOR
 		])
 	even = !even

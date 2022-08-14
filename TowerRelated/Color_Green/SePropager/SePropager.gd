@@ -28,8 +28,8 @@ signal on_auto_sell_value_changed(new_val)
 
 var proliferate_ability : BaseAbility
 var _is_proliferate_ability_ready : bool
-const proliferate_base_cooldown : float = 4.0#25.0
-const proliferate_initial_cooldown : float = 4.0#12.5
+const proliferate_base_cooldown : float = 25.0
+const proliferate_initial_cooldown : float = 12.5
 
 var proliferate_seed_attack_module : ArcingBulletAttackModule
 var all_owned_les_semis : Array = []

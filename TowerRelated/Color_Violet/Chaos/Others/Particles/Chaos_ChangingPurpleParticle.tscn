@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Violet/Chaos/Others/Particles/Chaos_ChangingPurpleParticle.gd" type="Script" id=2]
+
+[node name="Chaos_ChangingPurpleParticle" instance=ExtResource( 1 )]
+script = ExtResource( 2 )

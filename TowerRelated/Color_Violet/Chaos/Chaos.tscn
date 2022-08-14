@@ -27,8 +27,11 @@ position = Vector2( 0, -12 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
-frame = 4
+frame = 3
 playing = true
+
+[node name="PosForParticleSummon" type="Position2D" parent="TowerBase" index="1"]
+position = Vector2( 0, 35 )
 
 [node name="CollisionShape" parent="." index="1"]
 position = Vector2( 0, -9 )

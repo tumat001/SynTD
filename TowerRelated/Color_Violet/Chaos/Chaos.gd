@@ -61,11 +61,28 @@ const Chaos_VoidLakesPic_03 = preload("res://TowerRelated/Color_Violet/Chaos/Abi
 const Chaos_VoidLakesPic_04 = preload("res://TowerRelated/Color_Violet/Chaos/AbilityAssets/VoidLakes/Chaos_VoidLakes_04.png")
 const Chaos_VoidLakesPic_05 = preload("res://TowerRelated/Color_Violet/Chaos/AbilityAssets/VoidLakes/Chaos_VoidLakes_05.png")
 
+const Chaos_RainDrop_Scene = preload("res://TowerRelated/Color_Violet/Chaos/AbilityRelated/ExplosiveRain/ExplosiveRainDrop.tscn")
+
+const Chaos_RainExplosionPic_01 = preload("res://TowerRelated/Color_Violet/Chaos/AbilityAssets/ExplosiveRain/Chaos_RainExplosion_01.png")
+const Chaos_RainExplosionPic_02 = preload("res://TowerRelated/Color_Violet/Chaos/AbilityAssets/ExplosiveRain/Chaos_RainExplosion_02.png")
+const Chaos_RainExplosionPic_03 = preload("res://TowerRelated/Color_Violet/Chaos/AbilityAssets/ExplosiveRain/Chaos_RainExplosion_03.png")
+const Chaos_RainExplosionPic_04 = preload("res://TowerRelated/Color_Violet/Chaos/AbilityAssets/ExplosiveRain/Chaos_RainExplosion_04.png")
+const Chaos_RainExplosionPic_05 = preload("res://TowerRelated/Color_Violet/Chaos/AbilityAssets/ExplosiveRain/Chaos_RainExplosion_05.png")
+
 const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 
+const EnemyKnockUpEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyKnockUpEffect.gd")
+const EnemyForcedPathOffsetMovementEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyForcedPathOffsetMovementEffect.gd")
+
+const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
+const Chaos_SmallDarkPurpleParticle_Pic = preload("res://TowerRelated/Color_Violet/Chaos/Others/Assets/Absolute_DarkPurpleParticle_Pic.png")
+const Chaos_SmallRedPurpleParticle_Pic = preload("res://TowerRelated/Color_Violet/Chaos/Others/Assets/Absolute_RedPurpleParticle_Pic.png")
+const Chaos_BigLightPurpleParticle_Pic = preload("res://TowerRelated/Color_Violet/Chaos/Others/Assets/Absolute_BrightPurpleParticle_Pic.png")
+const Chaos_ChangingPurpleParticle = preload("res://TowerRelated/Color_Violet/Chaos/Others/Particles/Chaos_ChangingPurpleParticle.gd")
+const Chaos_ChangingPurpleParticle_Scene = preload("res://TowerRelated/Color_Violet/Chaos/Others/Particles/Chaos_ChangingPurpleParticle.tscn")
 
 
 enum CHAOS_EVENTS {
@@ -79,13 +96,13 @@ enum CHAOS_EVENTS {
 }
 
 const playable_chaos_events : Array = [
-#	CHAOS_EVENTS.ORB_MAELSTROM,
-#	CHAOS_EVENTS.DIAMOND_STORM,
-#	CHAOS_EVENTS.BIG_BOLT,
-#	CHAOS_EVENTS.SWORD_FIELD,
+	CHAOS_EVENTS.ORB_MAELSTROM,
+	CHAOS_EVENTS.DIAMOND_STORM,
+	CHAOS_EVENTS.BIG_BOLT,
+	CHAOS_EVENTS.SWORD_FIELD,
 	CHAOS_EVENTS.VOID_LAKES,
 	CHAOS_EVENTS.NIGHT_WATCHER,
-#	CHAOS_EVENTS.EXPLOSIVE_RAIN,
+	CHAOS_EVENTS.EXPLOSIVE_RAIN,
 ]
 
 
@@ -96,7 +113,7 @@ const chaos_event_to_func_name_map : Dictionary = {
 	CHAOS_EVENTS.SWORD_FIELD : "_play_sword_field_event",
 	CHAOS_EVENTS.VOID_LAKES : "_play_void_lakes_event",
 	CHAOS_EVENTS.NIGHT_WATCHER : "_play_night_watcher_event",
-	CHAOS_EVENTS.EXPLOSIVE_RAIN : "",
+	CHAOS_EVENTS.EXPLOSIVE_RAIN : "_play_explosive_rain_event",
 }
 
 const chaos_event_to_end_cast_func_name_map : Dictionary = {
@@ -106,7 +123,7 @@ const chaos_event_to_end_cast_func_name_map : Dictionary = {
 	CHAOS_EVENTS.SWORD_FIELD : "_end_sword_field_event",
 	CHAOS_EVENTS.VOID_LAKES : "_end_void_lakes_event",
 	CHAOS_EVENTS.NIGHT_WATCHER : "_end_night_watcher_event",
-	CHAOS_EVENTS.EXPLOSIVE_RAIN : "",
+	CHAOS_EVENTS.EXPLOSIVE_RAIN : "_end_explosive_rain_event",
 }
 
 #
@@ -125,7 +142,7 @@ var screen_effects_manager
 
 
 var absolute_chaos_ability : BaseAbility
-const absolute_chaos_base_cooldown : float = 1.0#120.0 #TODO
+const absolute_chaos_base_cooldown : float = 120.0
 const absolute_chaos_base_cast_count : int = 2
 
 var absolute_chaos_rng_for_events_to_play : RandomNumberGenerator
@@ -216,6 +233,55 @@ const night_watcher_explosion_flat_dmg : float = 4.0
 const night_watcher_explosion_pierce : int = 3
 
 const night_watcher_delay_for_next_cast : float = 2.0
+
+#
+
+const explosive_rain_flat_base_dmg : float = 2.0
+const explosive_rain_pierce : int = 3
+const explosive_rain_rain_count : int = 45
+
+const explosive_rain_min_range_from_target_spawn : float = 10.0
+const explosive_rain_max_range_from_target_spawn : float = 40.0
+
+const explosive_rain_delay_per_rain : float = 0.125
+
+var _current_explosive_rain_fired : int
+
+var explosive_rain_aoe_attk_module : AOEAttackModule
+
+
+var explosive_rain_knockup_effect : EnemyKnockUpEffect
+var explosive_rain_forced_path_mov_effect : EnemyForcedPathOffsetMovementEffect
+
+const explosive_rain_knockup_accel : float = 35.0
+const explosive_rain_knockup_time : float = 0.7
+const explosive_rain_stun_duration : float = 0.7
+
+const explosive_rain_mov_speed_for_enemy : float = 50.0
+const explosive_rain_mov_speed_deceleration_for_enemy : float = 65.0
+
+
+#
+
+var changing_purple_particle_attk_sprite_pool : AttackSpritePoolComponent
+var light_background_purple_particle_attk_sprite_pool : AttackSpritePoolComponent
+
+const particle_y_per_sec : float = -16.0
+const particle_lifetime : float = 4.0
+const particle_time_before_mov : float = 0.5
+const particle_create_particle_interval : float = 0.3#particle_time_before_mov
+
+const particle_modulate_a : float = 0.7
+const particle_z_index : int = ZIndexStore.PARTICLE_EFFECTS_BELOW_TOWERS
+
+var particle_center_particle_sprite_frames : SpriteFrames
+var particle_background_particle_sprite_frames : SpriteFrames
+
+var particle_create_timer : Timer
+
+#
+
+onready var pos_for_particle_summon = $TowerBase/PosForParticleSummon
 
 #
 
@@ -501,6 +567,15 @@ func _received_chaos_ing():
 	if big_bolt_instant_dmg_attack_module == null:
 		_construct_absolute_chaos_attack_modules()
 	
+	if particle_create_timer == null:
+		_initialize_particle_timer()
+	
+	if particle_background_particle_sprite_frames == null:
+		_initialize_particle_sprite_frames()
+		_initialize_particle_attk_sprite_pool()
+	
+	_start_particle_timer()
+	
 	#
 	
 	absolute_chaos_ability.activation_conditional_clauses.remove_clause(chaos_ing_not_active_clause)
@@ -508,6 +583,8 @@ func _received_chaos_ing():
 	absolute_chaos_ability.counter_decrease_clauses.remove_clause(chaos_ing_not_active_clause)
 
 func _removed_chaos_ing():
+	_end_particle_timer()
+	
 	if absolute_chaos_ability != null:
 		absolute_chaos_ability.activation_conditional_clauses.attempt_insert_clause(chaos_ing_not_active_clause)
 		absolute_chaos_ability.should_be_displaying_clauses.attempt_insert_clause(chaos_ing_not_active_clause)
@@ -525,7 +602,57 @@ func _initialize_general_purpose_timer():
 	general_purpose_timer = Timer.new()
 	general_purpose_timer.one_shot = true
 	
+	
 	add_child(general_purpose_timer)
+
+func _initialize_particle_timer():
+	particle_create_timer = Timer.new()
+	particle_create_timer.one_shot = false
+	
+	particle_create_timer.connect("timeout", self, "_on_particle_create_timer_timeout", [], CONNECT_PERSIST)
+	
+	add_child(particle_create_timer)
+
+func _initialize_particle_sprite_frames():
+	particle_center_particle_sprite_frames = SpriteFrames.new()
+	particle_center_particle_sprite_frames.set_animation_loop("default", false)
+	particle_center_particle_sprite_frames.set_animation_speed("default", 0)
+	particle_center_particle_sprite_frames.add_frame("default", Chaos_SmallDarkPurpleParticle_Pic)
+	particle_center_particle_sprite_frames.add_frame("default", Chaos_SmallRedPurpleParticle_Pic)
+	
+	#
+	
+	particle_background_particle_sprite_frames = SpriteFrames.new()
+	particle_background_particle_sprite_frames.set_animation_loop("default", false)
+	particle_background_particle_sprite_frames.set_animation_speed("default", 0)
+	# two of the same frames is intented
+	particle_background_particle_sprite_frames.add_frame("default", Chaos_BigLightPurpleParticle_Pic)
+	particle_background_particle_sprite_frames.add_frame("default", Chaos_BigLightPurpleParticle_Pic)
+
+func _initialize_particle_attk_sprite_pool():
+	changing_purple_particle_attk_sprite_pool = AttackSpritePoolComponent.new()
+	changing_purple_particle_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	changing_purple_particle_attk_sprite_pool.node_to_listen_for_queue_free = self
+	changing_purple_particle_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
+	changing_purple_particle_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_center_purple_particle"
+	changing_purple_particle_attk_sprite_pool.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_center_particle_properties_when_get_from_pool_after_add_child"
+	
+	light_background_purple_particle_attk_sprite_pool = AttackSpritePoolComponent.new()
+	light_background_purple_particle_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	light_background_purple_particle_attk_sprite_pool.node_to_listen_for_queue_free = self
+	light_background_purple_particle_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
+	light_background_purple_particle_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_background_purple_particle"
+	light_background_purple_particle_attk_sprite_pool.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_background_particle_properties_when_get_from_pool_after_add_child"
+	
+
+
+
+func _start_particle_timer():
+	particle_create_timer.start(particle_create_particle_interval)
+
+func _end_particle_timer():
+	particle_create_timer.stop()
+
 
 
 func _construct_absolute_chaos_attack_modules():
@@ -689,6 +816,58 @@ func _construct_absolute_chaos_attack_modules():
 	_force_add_on_hit_effect_adder_effect_to_module(void_lakes_slow_effect, void_lakes_aoe_attack_module)
 	
 	
+	##
+	
+	explosive_rain_aoe_attk_module = AOEAttackModule_Scene.instance()
+	explosive_rain_aoe_attk_module.base_damage = explosive_rain_flat_base_dmg
+	explosive_rain_aoe_attk_module.base_damage_type = DamageType.ELEMENTAL
+	explosive_rain_aoe_attk_module.base_attack_speed = 0
+	explosive_rain_aoe_attk_module.base_attack_wind_up = 0
+	explosive_rain_aoe_attk_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	explosive_rain_aoe_attk_module.is_main_attack = false
+	explosive_rain_aoe_attk_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	explosive_rain_aoe_attk_module.base_explosion_scale = 1.5
+	
+	explosive_rain_aoe_attk_module.benefits_from_bonus_explosion_scale = true
+	explosive_rain_aoe_attk_module.benefits_from_bonus_base_damage = false
+	explosive_rain_aoe_attk_module.benefits_from_bonus_attack_speed = false
+	explosive_rain_aoe_attk_module.benefits_from_bonus_on_hit_damage = false
+	explosive_rain_aoe_attk_module.benefits_from_bonus_on_hit_effect = false
+	
+	
+	var explosive_rain_sprite_frames = SpriteFrames.new()
+	explosive_rain_sprite_frames.add_frame("default", Chaos_RainExplosionPic_01)
+	explosive_rain_sprite_frames.add_frame("default", Chaos_RainExplosionPic_02)
+	explosive_rain_sprite_frames.add_frame("default", Chaos_RainExplosionPic_03)
+	explosive_rain_sprite_frames.add_frame("default", Chaos_RainExplosionPic_04)
+	explosive_rain_sprite_frames.add_frame("default", Chaos_RainExplosionPic_05)
+	
+	explosive_rain_aoe_attk_module.aoe_sprite_frames = explosive_rain_sprite_frames
+	explosive_rain_aoe_attk_module.sprite_frames_only_play_once = true
+	explosive_rain_aoe_attk_module.pierce = explosive_rain_pierce
+	explosive_rain_aoe_attk_module.duration = 0.35
+	explosive_rain_aoe_attk_module.damage_repeat_count = 1
+	
+	explosive_rain_aoe_attk_module.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
+	explosive_rain_aoe_attk_module.base_aoe_scene = BaseAOE_Scene
+	explosive_rain_aoe_attk_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ORIGIN
+	
+	explosive_rain_aoe_attk_module.can_be_commanded_by_tower = false
+	
+	explosive_rain_aoe_attk_module.set_image_as_tracker_image(Chaos_RainExplosionPic_03)
+	
+	add_attack_module(explosive_rain_aoe_attk_module)
+	
+	
+	explosive_rain_knockup_effect = EnemyKnockUpEffect.new(explosive_rain_knockup_time, explosive_rain_knockup_accel, StoreOfEnemyEffectsUUID.CHAOS_EXPLOSIVE_RAIN_KNOCK_UP_EFFECT)
+	explosive_rain_knockup_effect.custom_stun_duration = explosive_rain_stun_duration
+	
+	explosive_rain_forced_path_mov_effect = EnemyForcedPathOffsetMovementEffect.new(explosive_rain_mov_speed_for_enemy, explosive_rain_mov_speed_deceleration_for_enemy, StoreOfEnemyEffectsUUID.CHAOS_EXPLOSIVE_RAIN_FORCED_OFFSET_EFFECT)
+	explosive_rain_forced_path_mov_effect.is_timebound = true
+	explosive_rain_forced_path_mov_effect.time_in_seconds = explosive_rain_stun_duration
+
+	
+	##
 	
 
 
@@ -743,10 +922,10 @@ func _construct_absolute_chaos_ability():
 		["Bring about |0| out of the 7 chaotic events.", [interpreter_for_cast_count]],
 		"1) Orb Maelstrom.",
 		"2) Diamond Storm.",
-		"3) Big Bolt.", # Note: always make this the last one, if selected
+		"3) Big Bolt.",
 		"4) Sword Fields.",
-		"5) Void Lake.", # large aoe of massive slow
-		"6) Night Watcher.", # damage and stun enemies that enter the map, and those near the exit.
+		"5) Void Lakes.",
+		"6) Night Watchers.",
 		"7) Explosive Rain.", # rain (like pestilence) that minor knocks away enemies (similar to Brewd's yellow explosion potion).
 		"",
 		["Cooldown: |0|", [interpreter_for_cooldown]]
@@ -757,8 +936,8 @@ func _construct_absolute_chaos_ability():
 		"2) Diamond Storm.",
 		"3) Big Bolt.",
 		"4) Sword Fields.",
-		"5) Void Lake.",
-		"6) Night Watcher.",
+		"5) Void Lakes.",
+		"6) Night Watchers.",
 		"7) Explosive Rain.",
 		"",
 		["Cooldown: |0|", [interpreter_for_cooldown]]
@@ -1186,6 +1365,92 @@ func _end_night_watcher_event(arg_play_next : bool):
 	_current_event_id_playing = -1
 	_play_event_in_front_index_and_configure_current(arg_play_next)
 
+##
+
+func _play_explosive_rain_event():
+	_current_event_id_playing = CHAOS_EVENTS.EXPLOSIVE_RAIN
+	
+	general_purpose_timer.connect("timeout", self, "_general_purpose_timer_timeout__for_explosive_rain_delay")
+	
+	_summon_one_rain_drop_and_increase_fired_count()
+	general_purpose_timer.start(explosive_rain_delay_per_rain)
+
+
+func _general_purpose_timer_timeout__for_explosive_rain_delay():
+	if _current_explosive_rain_fired < explosive_rain_rain_count:
+		_summon_one_rain_drop_and_increase_fired_count()
+		general_purpose_timer.start(explosive_rain_delay_per_rain)
+	else:
+		_end_explosive_rain_event(true)
+
+
+
+func _summon_one_rain_drop_and_increase_fired_count():
+	var enemy = _get_enemy_to_target_using_range_module__default_to_other_enemies(diamond_attack_module.range_module)
+	var pos_to_target = global_position
+	if enemy != null:
+		pos_to_target = enemy.global_position
+	
+	var rain_drop = _create_rain_drop()
+	_set_rain_drop_position(rain_drop, pos_to_target)
+	rain_drop.connect("animation_finished", self, "_on_rain_drop_time_over", [rain_drop.position], CONNECT_ONESHOT)
+	
+	get_tree().get_root().call_deferred("add_child", rain_drop)
+	
+	_current_explosive_rain_fired += 1
+
+
+
+func _create_rain_drop():
+	var rain_drop = Chaos_RainDrop_Scene.instance()
+	
+	rain_drop.scale *= 2
+	rain_drop.offset.y -= rain_drop.get_sprite_size().y / 2.0
+	
+	return rain_drop
+
+
+func _set_rain_drop_position(arg_rain_drop, arg_enemy_pos):
+	var magnitude : int = absolute_chaos_rng_general_purpose.randi_range(explosive_rain_min_range_from_target_spawn, explosive_rain_max_range_from_target_spawn)
+	var rot : int = absolute_chaos_rng_general_purpose.randi_range(0, 359)
+	var vector_of_rand = Vector2(magnitude, 0).rotated(deg2rad(rot))
+	
+	arg_rain_drop.position = vector_of_rand + arg_enemy_pos
+
+
+func _on_rain_drop_time_over(arg_pos):
+	_summon_rain_explosion_at_pos(arg_pos)
+
+
+func _summon_rain_explosion_at_pos(arg_pos):
+	var rain_explosion = explosive_rain_aoe_attk_module.construct_aoe(arg_pos, arg_pos)
+	rain_explosion.connect("before_enemy_hit_aoe", self, "_before_explosive_rain_explosion_hit_enemy", [rain_explosion])
+	
+	get_tree().get_root().call_deferred("add_child", rain_explosion)
+
+
+func _before_explosive_rain_explosion_hit_enemy(enemy, explosion):
+	if enemy != null and explosion != null and enemy.current_path != null:
+		var knock_up_copy = explosive_rain_knockup_effect._get_copy_scaled_by(1)
+		var forced_mov_copy = explosive_rain_forced_path_mov_effect._get_copy_scaled_by(1)
+		
+		var explosion_nearest_offset_path = enemy.current_path.curve.get_closest_offset(explosion.global_position)
+		if explosion_nearest_offset_path >= enemy.offset:
+			forced_mov_copy.reverse_movements()
+		
+		enemy._add_effect(knock_up_copy)
+		enemy._add_effect(forced_mov_copy)
+
+
+
+func _end_explosive_rain_event(arg_play_next : bool):
+	_current_explosive_rain_fired = 0
+	
+	general_purpose_timer.disconnect("timeout", self, "_general_purpose_timer_timeout__for_explosive_rain_delay")
+	
+	_current_event_id_playing = -1
+	_play_event_in_front_index_and_configure_current(arg_play_next)
+
 
 
 ######
@@ -1199,3 +1464,56 @@ func _end_current_event(arg_play_next_event : bool):
 
 
 
+###
+
+
+func _on_particle_create_timer_timeout():
+	#light_background_purple_particle_attk_sprite_pool.get_or_create_attack_sprite_from_pool()
+	
+	for i in 3:
+		changing_purple_particle_attk_sprite_pool.get_or_create_attack_sprite_from_pool()
+	
+
+func _create_center_purple_particle():
+	var particle = Chaos_ChangingPurpleParticle_Scene.instance()
+	particle.frames = particle_center_particle_sprite_frames
+	
+	particle.particle_y_per_sec = particle_y_per_sec
+	particle.particle_lifetime = particle_lifetime
+	particle.particle_time_before_mov = particle_time_before_mov
+	
+	particle.particle_modulate_a = particle_modulate_a
+	particle.particle_z_index = particle_z_index
+	
+	return particle
+
+func _set_center_particle_properties_when_get_from_pool_after_add_child(arg_particle):
+	arg_particle.reset_states()
+	
+	arg_particle.global_position = pos_for_particle_summon.global_position
+	
+	var x_modi = non_essential_rng.randi_range(-22, 22)
+	arg_particle.global_position.x += x_modi
+
+
+
+func _create_background_purple_particle():
+	var particle = Chaos_ChangingPurpleParticle_Scene.instance()
+	particle.frames = particle_background_particle_sprite_frames
+	
+	particle.particle_y_per_sec = particle_y_per_sec
+	particle.particle_lifetime = particle_lifetime
+	particle.particle_time_before_mov = particle_time_before_mov
+	
+	particle.particle_modulate_a = particle_modulate_a
+	particle.particle_z_index = particle_z_index
+	
+	return particle
+
+func _set_background_particle_properties_when_get_from_pool_after_add_child(arg_particle):
+	arg_particle.reset_states()
+	
+	arg_particle.global_position = pos_for_particle_summon.global_position
+	
+	var x_modi = non_essential_rng.randi_range(-2, 2)
+	arg_particle.global_position.x += x_modi

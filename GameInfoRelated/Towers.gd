@@ -4779,13 +4779,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		info.tower_descriptions = [
-			"Summons a lamp that monitors an area of the path nearest to Night Watcher.",
-			["Enemies that enter the area are stunned for 2 seconds, and Night Watcher creates an explosion at their position, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]]
+			"Summons a lamp that monitors the area of the path nearest to Night Watcher.",
+			["Enemies that enter the area are stunned for 2 seconds. Night Watcher then creates an explosion at the enemy's position, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]]
 		]
 		
 		info.tower_simple_descriptions = [
-			"Summons a lamp that monitors an area of the path nearest to Night Watcher.",
-			["Enemies that enter the area are stunned for 2 seconds, and Night Watcher creates an explosion at their position, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]]
+			"Summons a lamp that monitors the area of the path nearest to Night Watcher.",
+			["Enemies that enter the area are stunned for 2 seconds. Night Watcher then creates an explosion at the enemy's position, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]]
 		]
 		
 #	elif tower_id == WYVERN:
