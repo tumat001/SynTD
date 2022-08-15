@@ -130,7 +130,6 @@ func on_buff_refreshed(arg_duration_of_refresh):
 
 func _on_buff_timer_timeout():
 	_is_buff_active = false
-	
 	_attached_tower.status_bar.remove_status_icon(effect_uuid)
 
 
@@ -149,6 +148,10 @@ func _undo_modifications_to_tower(tower):
 	if explosion_attk_module != null:
 		_attached_tower.remove_attack_module(explosion_attk_module)
 		explosion_attk_module.queue_free()
+	
+	
+	_is_buff_active = false
+	_attached_tower.status_bar.remove_status_icon(effect_uuid)
 	
 	
 	_attached_tower = null

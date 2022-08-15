@@ -4836,7 +4836,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			["Attacks apply Smolder to enemies hit, burning them for |0| every second, for 10 seconds.", [interpreter_for_flat_on_hit]],
 			"",
-			"Cast Efflux after 20 main attacks.",
+			"Cast Efflux after 16 main attacks.",
 			"Ability: Efflux. Ashen'd fires a firery wave to the largest line of enemies, applying on hit effects (and Smolder).",
 			["Towers that are hit by Efflux become empowered for 15 seconds; their main attacks that hit Smoldered enemies explode, dealing |0| as an explosion hitting up to 3 enemies.", [interpreter_for_ratio_dmg]]
 		]
@@ -4844,7 +4844,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			["Attacks apply Smolder to enemies hit, burning them for |0| every second, for 10 seconds.", [interpreter_for_flat_on_hit]],
 			"",
-			"Cast Efflux after 20 main attacks.",
+			"Cast Efflux after 16 main attacks.",
 			"Ability: Efflux. Ashen'd fires a firery wave to the largest line of enemies, applying on hit effects (and Smolder).",
 			["Towers that are hit by Efflux become empowered for 15 seconds; their main attacks that hit Smoldered enemies explode, dealing |0| as an explosion hitting up to 3 enemies.", [interpreter_for_ratio_dmg]]
 		]

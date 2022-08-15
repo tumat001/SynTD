@@ -33,7 +33,7 @@ var efflux_ability : BaseAbility
 var efflux_attk_module : BulletAttackModule
 
 const efflux_wave_life_distance_ratio_to_current_range : float = 2.0
-const efflux_main_attacks_count_required : int = 20
+const efflux_main_attacks_count_required : int = 16
 const efflux_tower_empower__base_duration : float = 15.0
 const efflux_tower_empower__explosion_dmg_ratio_to_main : float = 0.25
 const efflux_tower_empower__explosion_pierce : int = 3
@@ -206,7 +206,11 @@ func _attempt_cast_efflux():
 
 func _cast_efflux():
 	_current_main_attk_count = 0
+	
+	efflux_ability.on_ability_before_cast_start(BaseAbility.ON_ABILITY_CAST_NO_COOLDOWN)
 	_construct_and_add_efflux_wave()
+	
+	efflux_ability.on_ability_after_cast_ended(BaseAbility.ON_ABILITY_CAST_NO_COOLDOWN)
 
 
 #
@@ -259,7 +263,7 @@ func _on_efflux_wave_hit_tower(arg_wave, arg_tower):
 	var efflux_effect = arg_tower.get_tower_effect(StoreOfTowerEffectsUUID.ASHEND_EFFLUX_EXPLOSION_AM_GIVER)
 	if efflux_effect == null:
 		efflux_effect = Ashend_EffluxAttkModuleGiverEffect.new()
-		efflux_effect.explosion_dmg_ratio_from_main = efflux_tower_empower__explosion_dmg_ratio_to_main
+		
 		efflux_effect.explosion_pierce = efflux_tower_empower__explosion_pierce
 		
 		efflux_effect.is_roundbound = true
@@ -267,6 +271,7 @@ func _on_efflux_wave_hit_tower(arg_wave, arg_tower):
 		
 		arg_tower.add_tower_effect(efflux_effect)
 	
+	efflux_effect.explosion_dmg_ratio_from_main = efflux_tower_empower__explosion_dmg_ratio_to_main * efflux_ability.get_potency_to_use(last_calculated_final_ability_potency)
 	efflux_effect.on_buff_refreshed(efflux_tower_empower__base_duration)
 	
 
