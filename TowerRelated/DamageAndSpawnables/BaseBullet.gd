@@ -6,6 +6,8 @@ signal hit_an_enemy(me, enemy)
 signal on_zero_pierce(me)
 signal on_current_life_distance_expire()
 
+signal hit_a_tower(me, tower)
+
 
 var attack_module_source
 var damage_register_id : int
@@ -35,6 +37,13 @@ var coll_destination_mask : int = CollidableSourceAndDest.Destination.TO_ENEMY
 
 var is_animated_sprite_playing : bool
 
+#
+
+var can_hit_towers : bool = false setget set_can_hit_towers
+var reduce_pierce_if_hit_towers : bool = false
+
+
+#
 
 onready var bullet_sprite = $BulletSprite
 
@@ -136,5 +145,22 @@ func set_current_frame(frame : int):
 
 func set_shape(shape : Shape2D):
 	$CollisionShape2D.shape = shape
+
+
+#
+
+func hit_by_tower(arg_tower):
+	if arg_tower != null and !arg_tower.is_queued_for_deletion() and arg_tower.is_current_placable_in_map():
+		emit_signal("hit_a_tower", arg_tower)
+		
+		if reduce_pierce_if_hit_towers:
+			decrease_pierce(1)
+
+
+func set_can_hit_towers(arg_val):
+	can_hit_towers = arg_val
+	
+	set_collision_mask_bit(0, can_hit_towers)
+
 
 

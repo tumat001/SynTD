@@ -44,6 +44,7 @@ const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/Te
 # GRAY
 const mono_image = preload("res://TowerRelated/Color_Gray/Mono/Mono_E.png")
 const simplex_image = preload("res://TowerRelated/Color_Gray/Simplex/Simplex_Omni.png")
+const ashend_image = preload("res://TowerRelated/Color_Gray/Ashen'd/Ashend_Omni.png")
 
 # RED
 const reaper_image = preload("res://TowerRelated/Color_Red/Reaper/Reaper_Omni.png")
@@ -133,6 +134,7 @@ enum {
 	# GRAY (100)
 	MONO = 100,
 	SIMPLEX = 101,
+	ASHEND = 102,
 	
 	# RED (200)
 	REAPER = 200,
@@ -293,6 +295,7 @@ const TowerTiersMap : Dictionary = {
 	BURGEON : 5,
 	#WYVERN : 5,
 	LA_CHASSEUR : 5,
+	ASHEND : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
@@ -4766,7 +4769,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
-		#todo
 		
 		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
 		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
@@ -4787,6 +4789,66 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Summons a lamp that monitors the area of the path nearest to Night Watcher.",
 			["Enemies that enter the area are stunned for 2 seconds. Night Watcher then creates an explosion at the enemy's position, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]]
 		]
+		
+		
+	elif tower_id == ASHEND:
+		info = TowerTypeInformation.new("Ashen'd", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.GRAY)
+		info.base_tower_image = ashend_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.9
+		info.base_pierce = 1
+		info.base_range = 135
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 2))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		#
+		
+		var interpreter_for_ratio_dmg = TextFragmentInterpreter.new()
+		interpreter_for_ratio_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_ratio_dmg.display_body = true
+		interpreter_for_ratio_dmg.header_description = "of the attack's damage"
+		
+		var ins_for_ratio_dmg = []
+		ins_for_ratio_dmg.append(NumericalTextFragment.new(20, true))
+		ins_for_ratio_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_ratio_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_ratio_dmg.array_of_instructions = ins_for_ratio_dmg
+		
+		
+		#
+		
+		info.tower_descriptions = [
+			["Attacks apply Smolder to enemies hit, burning them for |0| every second, for 10 seconds.", [interpreter_for_flat_on_hit]],
+			"",
+			"Cast Efflux after 20 main attacks.",
+			"Ability: Efflux. Ashen'd fires a firery wave to the largest line of enemies, applying on hit effects (and Smolder).",
+			["Towers that are hit by Efflux become empowered for 15 seconds; their main attacks that hit Smoldered enemies explode, dealing |0| as an explosion hitting up to 3 enemies.", [interpreter_for_ratio_dmg]]
+		]
+		
+		info.tower_simple_descriptions = [
+			["Attacks apply Smolder to enemies hit, burning them for |0| every second, for 10 seconds.", [interpreter_for_flat_on_hit]],
+			"",
+			"Cast Efflux after 20 main attacks.",
+			"Ability: Efflux. Ashen'd fires a firery wave to the largest line of enemies, applying on hit effects (and Smolder).",
+			["Towers that are hit by Efflux become empowered for 15 seconds; their main attacks that hit Smoldered enemies explode, dealing |0| as an explosion hitting up to 3 enemies.", [interpreter_for_ratio_dmg]]
+		]
+		
 		
 #	elif tower_id == WYVERN:
 #		info = TowerTypeInformation.new("Wyvern", tower_id)
@@ -4964,5 +5026,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/HealingSymbol.tscn")
 	elif tower_id == NIGHTWATCHER:
 		return load("res://TowerRelated/Color_Violet/Chaos/AbilityRelated/NightWatcher/NightWatcher.tscn")
-
+	elif tower_id == ASHEND:
+		return load("res://TowerRelated/Color_Gray/Ashen'd/Ashend.tscn")
 

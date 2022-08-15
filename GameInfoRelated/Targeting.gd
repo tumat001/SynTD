@@ -8,7 +8,7 @@ enum {
 	FIRST = 0,
 	LAST = 1,
 	CLOSE = 2,
-	FAR = 3, #NOT MADE YET
+	FAR = 3,
 	
 	EXECUTE = 10,
 	HEALTHIEST = 11,
@@ -356,46 +356,234 @@ static func get_name_as_string(targeting : int) -> String:
 	return "Err Unnamed"
 
 
+############ -------------------------------------- #############
+
+class LineTargetParameters:
+	
+	var target_positions : Array
+	
+	var line_width : float
+	var line_width_reduction_forgiveness : float = 2
+	
+	var line_range : float
+	
+	var source_position : Vector2
+	
+	# an array with [min, max]
+	var _min_and_max_angle_blacklist : Array
+	var _min_and_max_angle_requirement : Array
+	
+	#
+	
+	var circle_slice_count : int = 120
+	
+	
+	#
+	
+	func get_line_width_with_forgiveness():
+		return line_width - line_width_reduction_forgiveness
+	
+	#
+	
+	func add_min_max_at_blacklist(arg_min_angle : float, arg_max_angle : float):
+		_add_min_max_at_arr(arg_min_angle, arg_max_angle, _min_and_max_angle_blacklist)
+	
+	func add_min_max_at_requirement(arg_min_angle : float, arg_max_angle : float):
+		_add_min_max_at_arr(arg_min_angle, arg_max_angle, _min_and_max_angle_requirement)
+	
+	
+	
+	func _add_min_max_at_arr(arg_min_angle : float, arg_max_angle : float, arg_arr):
+		var arr = []
+		arr.append(arg_min_angle)
+		if arg_min_angle > arg_max_angle:
+			arg_max_angle += 360
+		arr.append(arg_max_angle)
+		
+		arg_arr.append(arr)
+	
+	
+	#
+	
+	func if_angle_passes_all_conditions(arg_angle : float):
+		return if_angle_passes_blacklist(arg_angle) and if_angle_passes_requirement(arg_angle)
+	
+	
+	func if_angle_passes_blacklist(arg_angle : float):
+		return _if_angle_passes_min_max_arr(arg_angle, _min_and_max_angle_blacklist)
+	
+	func if_angle_passes_requirement(arg_angle : float):
+		return _if_angle_passes_min_max_arr(arg_angle, _min_and_max_angle_requirement)
+	
+	
+	
+	func _if_angle_passes_min_max_arr(arg_angle : float, arg_arr : Array):
+		for min_and_max in arg_arr:
+			if arg_angle > min_and_max[0] and arg_angle < min_and_max[1]:
+				return false
+		
+		return true
+
+#
+
+# returns an array [angle, hit count]. Returns an empty arr if no candidate was found
+static func get_deg_angle_and_enemy_hit_count__that_hits_most_enemies(arg_param : LineTargetParameters) -> Array:
+	var angles_to_consider : Array = _get_angles_of_circle_slice_that_passes_param_conditions(arg_param)
+	var candidate_angle : float
+	var candidate_angle_targets_hit : int = 0
+	var candidate_is_set : bool = false
+	var candidate_deviation : float
+	
+	for angle in angles_to_consider:
+		var targets_hit_and_ave_deviation = _get_target_hit_count_on_angle__and_average_deviation(arg_param, angle)
+		
+		if candidate_angle_targets_hit <= targets_hit_and_ave_deviation[0] and targets_hit_and_ave_deviation[0] != 0:
+			if (candidate_is_set and candidate_deviation > targets_hit_and_ave_deviation[1]) or !candidate_is_set or candidate_angle_targets_hit < targets_hit_and_ave_deviation[0]:
+				candidate_angle = angle
+				candidate_angle_targets_hit = targets_hit_and_ave_deviation[0]
+				candidate_deviation = targets_hit_and_ave_deviation[1]
+				
+				if !candidate_is_set:
+					candidate_is_set = true
+				
+	
+	
+#	print("cand angle: %s, true angle: %s, " % [candidate_angle, 360 + rad2deg(arg_param.source_position.angle_to_point(arg_param.target_positions[0]))])
+#	print("difference: %s" % [candidate_angle - (360 + rad2deg(arg_param.source_position.angle_to_point(arg_param.target_positions[0])))])
+#	print("-------------------")
+	
+	if candidate_is_set:
+		return [candidate_angle, candidate_angle_targets_hit]
+	else:
+		return []
+
+#
+
+static func _get_angles_of_circle_slice_that_passes_param_conditions(arg_param : LineTargetParameters):
+	var angles : Array = []
+	
+	for i in arg_param.circle_slice_count:
+		var angle = _get_angle_of_circle_slice_and_index(arg_param, i)
+		if arg_param.if_angle_passes_all_conditions(angle):
+			angles.append(angle)
+	
+	return angles
+
+static func _get_angle_of_circle_slice_and_index(arg_param : LineTargetParameters, arg_index_of_circle_slice : int) -> float:
+	return rad2deg(2 * PI * arg_index_of_circle_slice / arg_param.circle_slice_count)
 
 
 
-# OLD
+static func _get_target_hit_count_on_angle__and_average_deviation(arg_param : LineTargetParameters, arg_angle : float) -> Array:
+	var count : int = 0
+	var total_deviation : float = 0
+	
+	for target_pos in arg_param.target_positions:
+		var arr = _if_target_is_hit_by_line_with_width__and_get_difference_of_angle_to_target(target_pos, arg_param, arg_angle)
+		
+		if arr[0]:
+			count += 1
+			total_deviation += arr[1]
+	
+	var ave_deviation : float = 0
+	if count > 0:
+		ave_deviation = total_deviation / count
+	
+	return [count, ave_deviation]
 
-#static func enemy_to_target(enemies : Array, targeting : int) -> AbstractEnemy:
-#	if targeting == FIRST:
-#		return _find_first_enemy(enemies)
-#	elif targeting == LAST:
-#		return _find_last_enemy(enemies)
-#	elif targeting == RANDOM:
-#		pass
+
+static func _if_target_is_hit_by_line_with_width__and_get_difference_of_angle_to_target(arg_target_pos : Vector2, arg_param : LineTargetParameters, arg_angle : float) -> Array:
+	var source_pos = arg_param.source_position
+	var distance_to_target = arg_target_pos.distance_to(source_pos)
+	
+	# check distance
+	if distance_to_target > arg_param.line_range:
+		return [false, 0]
+	
+	
+	var line_width = arg_param.get_line_width_with_forgiveness()
+	
+	var line_width_as_vector = Vector2(line_width, 0).rotated(deg2rad(90 + arg_angle))
+	line_width_as_vector.x = abs(line_width_as_vector.x)
+	line_width_as_vector.y = abs(line_width_as_vector.y)
+	
+	var end_pos_01 = arg_target_pos + line_width_as_vector
+	var end_pos_02 = arg_target_pos - line_width_as_vector
+#	var angle_to_end_pos_01 = 360 + rad2deg(source_pos.angle_to_point(end_pos_01))
+#	var angle_to_end_pos_02 = 360 + rad2deg(source_pos.angle_to_point(end_pos_02))
+	var angle_to_end_pos_01 = rad2deg(source_pos.angle_to_point(end_pos_01))
+	var angle_to_end_pos_02 = rad2deg(source_pos.angle_to_point(end_pos_02))
+	
+	
+	var within_angle : bool = _is_angle_between_angles(arg_angle, angle_to_end_pos_01, angle_to_end_pos_02)
+	
+	#print("angle: %s, angle_end_pos_02 : %s, angle_end_pos_01 : %s, arg_target_pos : %s, within angle: %s, angle_to_enemy: %s" % [arg_angle, angle_to_end_pos_02, angle_to_end_pos_01, arg_target_pos, within_angle, rad2deg(source_pos.angle_to_point(arg_target_pos))])
+	#print("-------------")
+	
+	var angle_to_enemy_pos = rad2deg(source_pos.angle_to_point(arg_target_pos))
+	angle_to_enemy_pos = _convert_angle_to_1to360(angle_to_enemy_pos)
+	
+	return [within_angle, abs(angle_to_enemy_pos - arg_angle)]
+
+
+static func _is_angle_between_angles(arg_angle, arg_angle_01, arg_angle_02):
+	arg_angle = _convert_angle_to_1to360(arg_angle)
+	arg_angle_01 = _convert_angle_to_1to360(arg_angle_01)
+	arg_angle_02 = _convert_angle_to_1to360(arg_angle_02)
+	
+	#print("angle: %s, angle_end_pos_02 : %s, angle_end_pos_01 : %s" % [arg_angle, arg_angle_02, arg_angle_01])
+	
+	if arg_angle_01 < arg_angle_02:
+		return arg_angle_01 <= arg_angle and arg_angle <= arg_angle_02
+	else:
+		return arg_angle_01 <= arg_angle_01 or arg_angle <= arg_angle_02
+
+
+static func _convert_angle_to_1to360(arg_angle):
+	arg_angle = fmod(arg_angle, 360)
+	if arg_angle > 0:
+		return arg_angle
+	else:
+		return arg_angle + 360
+
+
+
+#	var smaller_angle
+#	var bigger_angle
+#	var dir    # 1 = clockwise, 2 = counter
 #
-#	return null
 #
-#static func _find_first_enemy(enemies : Array):
-#	var first_enemy : AbstractEnemy
+##	if arg_angle_01 < 0:
+##		arg_angle_01 += 360
+##
+##	if arg_angle_02 < 0:
+##		arg_angle_02 += 360
+##
+##	if arg_angle < 0:
+##		arg_angle += 360
 #
-#	for enemy in enemies:
-#		if first_enemy == null:
-#			first_enemy = enemy
-#		elif first_enemy.distance_to_exit > enemy.distance_to_exit:
-#			first_enemy = enemy
 #
-#	return first_enemy
+#	if arg_angle_01 > arg_angle_02:
+#		bigger_angle = arg_angle_01
+#		smaller_angle = arg_angle_02
+#		dir = 2
+#	else:
+#		bigger_angle = arg_angle_02
+#		smaller_angle = arg_angle_01
 #
-#static func _find_last_enemy(enemies : Array):
-#	var last_enemy : AbstractEnemy
+#		dir = 1
 #
-#	for enemy in enemies:
-#		if last_enemy == null:
-#			last_enemy = enemy
-#		elif last_enemy.distance_to_exit < enemy.distance_to_exit:
-#			last_enemy = enemy
 #
-#	return last_enemy
+##	if smaller_angle < 0:
+##		smaller_angle += 360
+##		bigger_angle += 360
 #
-#static func _find_random_enemy(enemies : Array):
+#	#return arg_angle >= smaller_angle and arg_angle <= bigger_angle
 #
-#	var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TARGETING)
-#	var random_index = rng.randi_range(0, enemies.size() - 1)
 #
-#	return enemies[random_index]
+#	if dir == 1:
+#		return arg_angle >= smaller_angle and arg_angle <= bigger_angle
+#
+#	else: #dir == 2
+#		return arg_angle <= smaller_angle and arg_angle >= bigger_angle
+#

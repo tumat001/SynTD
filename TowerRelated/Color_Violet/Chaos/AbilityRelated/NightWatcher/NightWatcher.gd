@@ -12,7 +12,6 @@ const BeamAesthetic = preload("res://MiscRelated/BeamRelated/BeamAesthetic.gd")
 
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
-const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
 
 

@@ -34,6 +34,8 @@ const TowerKnockUpEffect = preload("res://GameInfoRelated/TowerEffectRelated/Tow
 const TowerEffectShieldEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerEffectShieldEffect.gd")
 const TowerInvulnerabilityEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerInvulnerabilityEffect.gd")
 
+const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
+
 const CombinationEffect = preload("res://GameInfoRelated/CombinationRelated/CombinationEffect.gd")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
@@ -2845,6 +2847,7 @@ func set_contribute_to_synergy_color_count(arg_val):
 	emit_signal("on_is_contributing_to_synergy_color_count_changed", arg_val)
 	#emit_signal()
 
+
 # Detecting tower interacting stuffs
 
 func _on_AbstractTower_body_entered(body):
@@ -2852,6 +2855,10 @@ func _on_AbstractTower_body_entered(body):
 		if body is BaseTowerDetectingBullet:
 			body.hit_by_tower(self)
 			body.decrease_pierce(1)
+			
+		elif body is BaseBullet:
+			body.hit_by_tower(self)
+			
 
 
 # Health related

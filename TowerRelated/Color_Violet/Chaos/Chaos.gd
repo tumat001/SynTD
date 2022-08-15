@@ -35,7 +35,6 @@ const AbsoluteChaos_AbilityPic = preload("res://TowerRelated/Color_Violet/Chaos/
 
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
-const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
 
 const Chaos_BigBolt_ExplosionPic_01 = preload("res://TowerRelated/Color_Violet/Chaos/AbilityAssets/BigLightning/Chaos_BigLightningExplosion_01.png")

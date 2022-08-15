@@ -286,7 +286,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.ACCUMULAE,
 			Towers.TIME_MACHINE,
-			Towers.TESLA,
+			Towers.ASHEND,
 			Towers.RE,
 			Towers.NIGHTWATCHER,
 		])

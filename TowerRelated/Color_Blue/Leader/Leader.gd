@@ -11,7 +11,6 @@ const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite
 const AttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn")
 
 const ArcingBaseBullet = preload("res://TowerRelated/DamageAndSpawnables/ArcingBaseBullet.gd")
-const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 
 const LeaderBeam01 = preload("res://TowerRelated/Color_Blue/Leader/Leader_Beam/LeaderBeam01.png")
 const LeaderBeam02 = preload("res://TowerRelated/Color_Blue/Leader/Leader_Beam/LeaderBeam02.png")
