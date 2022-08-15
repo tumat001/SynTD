@@ -4812,7 +4812,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_flat_on_hit.display_body = false
 		
 		var ins_for_flat_on_hit = []
-		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 2))
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 1))
 		
 		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 		
@@ -4824,7 +4824,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_ratio_dmg.header_description = "of the attack's damage"
 		
 		var ins_for_ratio_dmg = []
-		ins_for_ratio_dmg.append(NumericalTextFragment.new(20, true))
+		ins_for_ratio_dmg.append(NumericalTextFragment.new(25, true))
 		ins_for_ratio_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 		ins_for_ratio_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		

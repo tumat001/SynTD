@@ -24,7 +24,7 @@ const EnemyDmgOverTimeEffect = preload("res://GameInfoRelated/EnemyEffectRelated
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
 
-const smolder_burn_dmg_per_instance : float = 2.0
+const smolder_burn_dmg_per_instance : float = 1.0
 const smolder_burn_dmg_tick_rate : float = 1.0
 const smolder_burn_dmg_duration : float = 10.0
 
@@ -33,9 +33,9 @@ var efflux_ability : BaseAbility
 var efflux_attk_module : BulletAttackModule
 
 const efflux_wave_life_distance_ratio_to_current_range : float = 2.0
-const efflux_main_attacks_count_required : int = 1#20
+const efflux_main_attacks_count_required : int = 20
 const efflux_tower_empower__base_duration : float = 15.0
-const efflux_tower_empower__explosion_dmg_ratio_to_main : float = 0.20
+const efflux_tower_empower__explosion_dmg_ratio_to_main : float = 0.25
 const efflux_tower_empower__explosion_pierce : int = 3
 
 const efflux_proj_size_scale : float = 2.0
@@ -115,7 +115,7 @@ func _ready():
 
 func _construct_and_add_efflux_attk_module(arg_y_shift_of_attack_module):
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
-	attack_module.base_damage = 4 #todo temp. true val is 0
+	attack_module.base_damage = 0
 	attack_module.base_damage_type = DamageType.ELEMENTAL
 	attack_module.base_attack_speed = 0
 	attack_module.base_attack_wind_up = 0
@@ -135,7 +135,7 @@ func _construct_and_add_efflux_attk_module(arg_y_shift_of_attack_module):
 	attack_module.benefits_from_bonus_pierce = false
 	
 	var bullet_shape = RectangleShape2D.new()
-	bullet_shape.extents = Vector2(efflux_proj_width / efflux_proj_size_scale, 5)
+	bullet_shape.extents = Vector2(5, efflux_proj_width / (efflux_proj_size_scale * 2))
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene
@@ -229,12 +229,7 @@ func _construct_and_add_efflux_wave():
 	#
 	var efflux_wave = efflux_attk_module.construct_bullet(target_pos)
 	
-#	print("--------")
-#	print("target_pos : %s" % [target_pos])
-#	print("enemy_pos : %s " % [targeting_line_params.target_positions[0]])
-#	print("cand angle : %s, true angle: %s, source_to_target angle: %s" % [deg_angle_and_hit_count_arr[0], rad2deg(efflux_attk_module.global_position.angle_to_point(targeting_line_params.target_positions[0])), rad2deg(efflux_attk_module.global_position.angle_to_point(target_pos))])
-#	print("---------------------------------------------------")
-#
+	
 	efflux_wave.can_hit_towers = true
 	efflux_wave.connect("hit_a_tower", self, "_on_efflux_wave_hit_tower")
 	efflux_wave.life_distance = life_distance_of_wave
@@ -242,6 +237,7 @@ func _construct_and_add_efflux_wave():
 	efflux_wave.scale *= efflux_proj_size_scale
 	
 	efflux_attk_module.set_up_bullet__add_child_and_emit_signals(efflux_wave)
+	
 
 
 func _get_poses_of_enemies(arg_enemies : Array) -> Array:
@@ -272,7 +268,7 @@ func _on_efflux_wave_hit_tower(arg_wave, arg_tower):
 		arg_tower.add_tower_effect(efflux_effect)
 	
 	efflux_effect.on_buff_refreshed(efflux_tower_empower__base_duration)
-
+	
 
 #
 

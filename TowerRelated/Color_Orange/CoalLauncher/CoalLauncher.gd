@@ -6,7 +6,6 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
-const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 
@@ -23,6 +22,7 @@ var burn_effect_ids_to_inc : Array = [
 	StoreOfEnemyEffectsUUID._704_FIRE_BURN,
 	StoreOfEnemyEffectsUUID.ROYAL_FLAME_BURN,
 	StoreOfEnemyEffectsUUID.ING_RED_FRUIT_BURN,
+	StoreOfEnemyEffectsUUID.ASHEND_BURN_EFFECT
 ]
 
 # Called when the node enters the scene tree for the first time.

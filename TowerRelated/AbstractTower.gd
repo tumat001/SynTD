@@ -2858,7 +2858,7 @@ func _on_AbstractTower_body_entered(body):
 			
 		elif body is BaseBullet:
 			body.hit_by_tower(self)
-			
+
 
 
 # Health related

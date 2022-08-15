@@ -36,6 +36,9 @@ func _init().(StoreOfTowerEffectsUUID.ASHEND_EFFLUX_EXPLOSION_AM_GIVER):
 func _make_modifications_to_tower(tower):
 	_attached_tower = tower
 	
+	if explosion_attk_module == null:
+		_construct_and_add_explosion_attack_module()
+	
 	if buff_duration_timer == null:
 		buff_duration_timer = Timer.new()
 		buff_duration_timer.one_shot = true
@@ -59,6 +62,7 @@ func _construct_and_add_explosion_attack_module():
 	explosion_attk_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	explosion_attk_module.is_main_attack = false
 	explosion_attk_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	explosion_attk_module.base_explosion_scale = 2.0
 	
 	explosion_attk_module.benefits_from_bonus_explosion_scale = true
 	explosion_attk_module.benefits_from_bonus_base_damage = false
@@ -93,7 +97,7 @@ func _construct_and_add_explosion_attack_module():
 
 
 func _on_tower_main_attack_hit_enemy(enemy, damage_register_id, damage_instance, module):
-	if _is_buff_active:
+	if _is_buff_active and enemy != null and enemy.has_effect_uuid(StoreOfEnemyEffectsUUID.ASHEND_BURN_EFFECT):
 		var dmg_instance_copy = damage_instance.get_copy_scaled_by(1)
 		dmg_instance_copy.scale_only_damage_by(explosion_dmg_ratio_from_main)
 		dmg_instance_copy.on_hit_effects.clear()

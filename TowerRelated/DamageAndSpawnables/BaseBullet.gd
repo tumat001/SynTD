@@ -54,6 +54,9 @@ func _ready():
 	CollidableSourceAndDest.set_coll_mask_destination(self, coll_destination_mask)
 	
 	bullet_sprite.playing = is_animated_sprite_playing
+	
+	set_can_hit_towers(can_hit_towers)
+
 
 func _process(delta):
 	rotation_degrees += rotation_per_second * delta
@@ -151,7 +154,7 @@ func set_shape(shape : Shape2D):
 
 func hit_by_tower(arg_tower):
 	if arg_tower != null and !arg_tower.is_queued_for_deletion() and arg_tower.is_current_placable_in_map():
-		emit_signal("hit_a_tower", arg_tower)
+		emit_signal("hit_a_tower", self, arg_tower)
 		
 		if reduce_pierce_if_hit_towers:
 			decrease_pierce(1)
