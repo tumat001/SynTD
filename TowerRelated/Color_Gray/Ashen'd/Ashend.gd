@@ -38,7 +38,7 @@ const efflux_tower_empower__base_duration : float = 15.0
 const efflux_tower_empower__explosion_dmg_ratio_to_main : float = 0.25
 const efflux_tower_empower__explosion_pierce : int = 3
 
-const efflux_proj_size_scale : float = 2.0
+const efflux_proj_size_scale : float = 2.5
 const efflux_proj_width : float = 30.0 * efflux_proj_size_scale
 
 var _current_main_attk_count : int
@@ -239,6 +239,7 @@ func _construct_and_add_efflux_wave():
 	efflux_wave.life_distance = life_distance_of_wave
 	efflux_wave.decrease_pierce = false
 	efflux_wave.scale *= efflux_proj_size_scale
+	efflux_wave.modulate.a = 0.7
 	
 	efflux_attk_module.set_up_bullet__add_child_and_emit_signals(efflux_wave)
 	

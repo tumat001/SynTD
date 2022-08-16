@@ -114,6 +114,9 @@ signal on_main_bullet_attack_module_before_bullet_is_shot(bullet, attack_module)
 signal on_any_bullet_attack_module_after_bullet_is_shot(bullet, attack_module)
 signal on_main_bullet_attack_module_after_bullet_is_shot(bullet, attack_module)
 
+signal on_any_bullet_attack_module_bullet_reached_zero_pierce(bullet, module)
+signal on_main_bullet_attack_module_bullet_reached_zero_pierce(bullet, module)
+
 
 signal on_any_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module)
 signal on_main_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module)
@@ -383,7 +386,16 @@ var last_calculated_has_effect_shield_against_enemies : bool
 var all_combinations_id_to_effect_id_map : Dictionary = {}
 
 
-# Modulate
+# Modulate related
+
+enum TowerModulateIds {
+	
+	
+	PROPEL_INVIS = 100
+}
+
+var all_id_to_tower_base_modulate : Dictionary = {}
+var last_calculated_tower_base_modulate : Color
 
 
 # Other stats
@@ -615,6 +627,8 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		if attack_module is BulletAttackModule:
 			attack_module.connect("before_bullet_is_shot", self, "_emit_on_any_bullet_attack_module_before_bullet_is_shot", [attack_module], CONNECT_PERSIST)
 			attack_module.connect("after_bullet_is_shot", self, "_emit_on_any_bullet_attack_module_after_bullet_is_shot", [attack_module], CONNECT_PERSIST)
+			attack_module.connect("bullet_on_zero_pierce", self, "_emit_on_any_bullet_attack_module_on_bullet_zero_pierce", [attack_module], CONNECT_PERSIST)
+	
 	
 	if attack_module.get_parent() == null:
 		add_child(attack_module)
@@ -653,6 +667,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			if main_attack_module is BulletAttackModule:
 				main_attack_module.connect("before_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_before_bullet_is_shot", [attack_module], CONNECT_PERSIST)
 				main_attack_module.connect("after_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_after_bullet_is_shot", [attack_module], CONNECT_PERSIST)
+				main_attack_module.connect("bullet_on_zero_pierce", self, "_emit_on_main_bullet_attack_module_on_bullet_zero_pierce", [attack_module], CONNECT_PERSIST)
 		
 		if range_module == null and main_attack_module.range_module != null:
 			range_module = main_attack_module.range_module
@@ -695,6 +710,7 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		if attack_module_to_remove is BulletAttackModule:
 			attack_module_to_remove.disconnect("before_bullet_is_shot", self, "_emit_on_any_bullet_attack_module_before_bullet_is_shot")
 			attack_module_to_remove.disconnect("after_bullet_is_shot", self, "_emit_on_any_bullet_attack_module_after_bullet_is_shot")
+			attack_module_to_remove.disconnect("bullet_on_zero_pierce", self, "_emit_on_any_bullet_attack_module_on_bullet_zero_pierce")
 	
 	# main
 	if attack_module_to_remove.is_connected("in_attack_end", self, "_emit_on_main_attack_finished"):
@@ -707,7 +723,7 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		if attack_module_to_remove is BulletAttackModule:
 			attack_module_to_remove.disconnect("before_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_before_bullet_is_shot")
 			attack_module_to_remove.disconnect("after_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_after_bullet_is_shot")
-	
+			attack_module_to_remove.disconnect("bullet_on_zero_pierce", self, "_emit_on_main_bullet_attack_module_on_bullet_zero_pierce")
 	
 	for tower_effect in _all_uuid_tower_buffs_map.values():
 		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
@@ -802,6 +818,13 @@ func _emit_on_any_bullet_attack_module_after_bullet_is_shot(bullet, module):
 
 func _emit_on_main_bullet_attack_module_after_bullet_is_shot(bullet, module):
 	emit_signal("on_main_bullet_attack_module_after_bullet_is_shot", bullet, module)
+
+
+func _emit_on_any_bullet_attack_module_on_bullet_zero_pierce(bullet, module):
+	emit_signal("on_any_bullet_attack_module_bullet_reached_zero_pierce", bullet, module)
+
+func _emit_on_main_bullet_attack_module_on_bullet_zero_pierce(bullet, module):
+	emit_signal("on_main_bullet_attack_module_bullet_reached_zero_pierce", bullet, module)
 
 
 
@@ -2708,8 +2731,50 @@ func _calculate_sellback_of_ingredients() -> int:
 
 # Modulate related
 
-func set_tower_sprite_modulate(color : Color):
-	$TowerBase.modulate = color
+#func set_tower_sprite_modulate(color : Color):
+#	$TowerBase.modulate = color
+
+#todo
+
+func set_tower_base_modulate(arg_id : int, arg_mod : Color):
+	all_id_to_tower_base_modulate[arg_id] = arg_mod
+	
+	_update_tower_base_current_modulate()
+
+func remove_tower_base_modulate(arg_id : int):
+	all_id_to_tower_base_modulate.erase(arg_id)
+	
+	_update_tower_base_current_modulate()
+
+
+func _update_tower_base_current_modulate():
+	_calculate_tower_base_modulate()
+	
+	tower_base.modulate = last_calculated_tower_base_modulate
+
+
+func _calculate_tower_base_modulate():
+	var lowest_mod_a : float = 1.0
+	var total_r : float
+	var total_g : float
+	var total_b : float
+	
+	for mod in all_id_to_tower_base_modulate.values():
+		if mod.a < lowest_mod_a:
+			lowest_mod_a = mod.a
+		
+		total_r += mod.r
+		total_g += mod.g
+		total_b += mod.b
+	
+	var total_mod_count : int = all_id_to_tower_base_modulate.size()
+	
+	if total_mod_count == 0:
+		last_calculated_tower_base_modulate = Color(1, 1, 1, 1)
+	else:
+		last_calculated_tower_base_modulate = Color(total_r / total_mod_count, total_g / total_mod_count, total_b / total_mod_count, lowest_mod_a)
+
+
 
 
 

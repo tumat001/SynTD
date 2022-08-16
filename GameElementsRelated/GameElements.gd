@@ -293,9 +293,9 @@ func _on_BuySellLevelRollPanel_reroll():
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.ROYAL_FLAME,
-			Towers.PESTILENCE,
-			Towers.SE_PROPAGER,
-			Towers.BLOSSOM,
+			Towers.BEACON_DISH,
+			Towers.PROPEL,
+			Towers.REBOUND,
 			Towers.GRAND,
 			Towers.TRANSMUTATOR
 		])

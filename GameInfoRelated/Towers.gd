@@ -71,6 +71,7 @@ const enthalphy_image = preload("res://TowerRelated/Color_Orange/Enthalphy/Entha
 const entropy_image = preload("res://TowerRelated/Color_Orange/Entropy/Entropy_WholeBody.png")
 const royal_flame_image = preload("res://TowerRelated/Color_Orange/RoyalFlame/RoyalFlame_E.png")
 const ieu_image = preload("res://TowerRelated/Color_Orange/IEU/IEU_Omni_01.png")
+const propel_image = preload("res://TowerRelated/Color_Orange/Propel/Propel_E.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -161,6 +162,7 @@ enum {
 	ENTROPY = 309,
 	ROYAL_FLAME = 310,
 	IEU = 311,
+	PROPEL = 312,
 	
 	# YELLOW (400)
 	RAILGUN = 400,
@@ -254,6 +256,7 @@ const TowerTiersMap : Dictionary = {
 	HERO : 2,
 	FRUIT_TREE_FRUIT : 2,
 	COIN : 2,
+	PROPEL : 2,
 	
 	#SIMPLE_OBELISK : 3,
 	BEACON_DISH : 3,
@@ -2078,7 +2081,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = impale_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 10
+		info.base_damage = 11
 		info.base_attk_speed = 0.24
 		info.base_pierce = 0
 		info.base_range = 105
@@ -4837,7 +4840,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Attacks apply Smolder to enemies hit, burning them for |0| every second, for 10 seconds.", [interpreter_for_flat_on_hit]],
 			"",
 			"Cast Efflux after 16 main attacks.",
-			"Ability: Efflux. Ashen'd fires a firery wave to the largest line of enemies, applying on hit effects (and Smolder).",
+			"Ability: Efflux. Ashen'd fires a firery wave to the largest line of enemies, applying on hit effects (and Smolder). The firery wave's life distance is equal to twice this tower's range.",
 			["Towers that are hit by Efflux become empowered for 15 seconds; their main attacks that hit Smoldered enemies explode, dealing |0| as an explosion hitting up to 3 enemies.", [interpreter_for_ratio_dmg]]
 		]
 		
@@ -4848,6 +4851,69 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ability: Efflux. Ashen'd fires a firery wave to the largest line of enemies, applying on hit effects (and Smolder).",
 			["Towers that are hit by Efflux become empowered for 15 seconds; their main attacks that hit Smoldered enemies explode, dealing |0| as an explosion hitting up to 3 enemies.", [interpreter_for_ratio_dmg]]
 		]
+		
+		
+	
+	elif tower_id == PROPEL:
+		info = TowerTypeInformation.new("Propel", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.ORANGE)
+		info.base_tower_image = propel_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 3
+		info.base_attk_speed = 0.35
+		info.base_pierce = 1
+		info.base_range = 135
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		#
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(16, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "physical damage", 3))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		
+		
+		var interpreter_for_flat_on_hit_for_ability = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit_for_ability.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit_for_ability.display_body = false
+		
+		var ins_for_flat_on_hit_for_ability = []
+		ins_for_flat_on_hit_for_ability.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "physical damage", 5))
+		
+		interpreter_for_flat_on_hit_for_ability.array_of_instructions = ins_for_flat_on_hit_for_ability
+		
+		
+		
+		info.tower_descriptions = [
+			["Main attacks's bullets explode upon losing all pierce, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]],
+			"",
+			"Automatically casts Plow:",
+			["Ability: Plow. Propel charges towards the (in range) tower slot with the most enemies between itself and its destination. Enemies hit are dealt |0| and are stunned for 2 seconds.", [interpreter_for_flat_on_hit_for_ability]],
+			["Cooldown: |0|", [interpreter_for_cooldown]]
+		]
+		
 		
 		
 #	elif tower_id == WYVERN:
@@ -5028,4 +5094,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Chaos/AbilityRelated/NightWatcher/NightWatcher.tscn")
 	elif tower_id == ASHEND:
 		return load("res://TowerRelated/Color_Gray/Ashen'd/Ashend.tscn")
-
+	elif tower_id == PROPEL:
+		return load("res://TowerRelated/Color_Orange/Propel/Propel.tscn")

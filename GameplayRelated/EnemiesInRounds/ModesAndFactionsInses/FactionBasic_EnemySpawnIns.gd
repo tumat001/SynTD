@@ -51,9 +51,9 @@ func _get_instructions_for_0_1():
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BASIC),
 		#SingleEnemySpawnInstruction.new(0.1, EnemyConstants.Enemies.BASIC),
 		
-		#MultipleEnemySpawnInstruction.new(5, 3, 0.1, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(5, 3, 0.1, EnemyConstants.Enemies.BASIC),
 		
-		#MultipleEnemySpawnInstruction.new(10, 4, 0.1, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(10, 4, 0.1, EnemyConstants.Enemies.BASIC),
 	]
 
 func _get_instructions_for_0_2():

@@ -6,6 +6,8 @@ const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd
 signal before_bullet_is_shot(bullet)
 signal after_bullet_is_shot(bullet) # after bullet is added to scene
 signal kill_all_spawned_bullets()
+signal bullet_on_zero_pierce(bullet)
+
 
 var bullet_scene : PackedScene
 var bullet_script : Reference
@@ -264,6 +266,8 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	
 	connect("kill_all_spawned_bullets", bullet, "queue_free", [], CONNECT_ONESHOT)
 	
+	bullet.connect("on_zero_pierce", self, "_on_bullet_reached_zero_pierce")
+	
 	return bullet
 
 
@@ -325,6 +329,11 @@ func set_texture_as_sprite_frame(texture : Texture, anim_name : String = "defaul
 	
 	bullet_sprite_frames = sprite_frames
 
+
+#
+
+func _on_bullet_reached_zero_pierce(arg_bullet):
+	emit_signal("bullet_on_zero_pierce", arg_bullet)
 
 #
 

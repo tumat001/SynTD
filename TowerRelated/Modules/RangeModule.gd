@@ -166,8 +166,12 @@ func set_current_targeting(targeting : int):
 
 # Range Related
 
-func set_range_shape(shape : CircleShape2D):
+func set_range_shape(shape):
 	$RangeShape.shape = shape
+
+func get_range_shape():
+	return $RangeShape.shape
+
 
 func toggle_show_range():
 	displaying_range = !displaying_range
@@ -268,6 +272,18 @@ func is_an_enemy_in_range() -> bool:
 		enemies_in_range.erase(removal)
 	
 	return enemies_in_range.size() > 0
+
+func get_enemy_in_range_count() -> int:
+	var to_remove = []
+	for target in enemies_in_range:
+		if target == null:
+			to_remove.append(target)
+	
+	for removal in to_remove:
+		enemies_in_range.erase(removal)
+	
+	return enemies_in_range.size()
+
 
 func is_a_targetable_enemy_in_range() -> bool:
 	var targetable_enemies : Array = get_targets_without_affecting_self_current_targets(1)
