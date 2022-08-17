@@ -72,6 +72,7 @@ const entropy_image = preload("res://TowerRelated/Color_Orange/Entropy/Entropy_W
 const royal_flame_image = preload("res://TowerRelated/Color_Orange/RoyalFlame/RoyalFlame_E.png")
 const ieu_image = preload("res://TowerRelated/Color_Orange/IEU/IEU_Omni_01.png")
 const propel_image = preload("res://TowerRelated/Color_Orange/Propel/Propel_E.png")
+const paroxysm_image = preload("res://TowerRelated/Color_Orange/Paroxysm/Paroxysm_E.png")
 
 # YELLOW
 const railgun_image = preload("res://TowerRelated/Color_Yellow/Railgun/Railgun_E.png")
@@ -158,11 +159,12 @@ enum {
 	FLAMEBURST = 305,
 	SCATTER = 306,
 	COAL_LAUNCHER = 307,
-	ENTHALPHY = 308,
+	ENTHALPHY = 308, # REMOVED FROM POOL
 	ENTROPY = 309,
 	ROYAL_FLAME = 310,
-	IEU = 311,
+	IEU = 311, # REMOVED FROM POOL
 	PROPEL = 312,
+	PAROXYSM = 313,
 	
 	# YELLOW (400)
 	RAILGUN = 400,
@@ -173,6 +175,7 @@ enum {
 	MAGNETIZER = 405,
 	SUNFLOWER = 406,
 	NUCLEUS = 407,
+	IOTA = 408,
 	
 	# GREEN (500)
 	BERRY_BUSH = 500,  # REMOVED FROM POOL
@@ -246,7 +249,7 @@ const TowerTiersMap : Dictionary = {
 	
 	RAILGUN : 2,
 	SCATTER : 2,
-	ENTHALPHY : 2,
+	#ENTHALPHY : 2,
 	ENTROPY : 2,
 	BLEACH : 2,
 	TIME_MACHINE : 2,
@@ -281,13 +284,14 @@ const TowerTiersMap : Dictionary = {
 	MAGNETIZER : 4,
 	SUNFLOWER : 4,
 	_704 : 4,
-	IEU : 4,
+	#IEU : 4,
 	IMPALE : 4,
 	REAPER : 4,
 	ADEPT : 4,
 	LEADER : 4,
 	FRUIT_TREE : 4,
 	L_ASSAUT : 4,
+	PAROXYSM : 4,
 	
 	VOLCANO : 5,
 	LAVA_JET : 5,
@@ -299,6 +303,7 @@ const TowerTiersMap : Dictionary = {
 	#WYVERN : 5,
 	LA_CHASSEUR : 5,
 	ASHEND : 5,
+	IOTA : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
@@ -4889,7 +4894,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_flat_on_hit.display_body = false
 		
 		var ins_for_flat_on_hit = []
-		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "physical damage", 3))
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "physical damage", 2))
 		
 		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 		
@@ -4905,15 +4910,118 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_flat_on_hit_for_ability.array_of_instructions = ins_for_flat_on_hit_for_ability
 		
 		
+		var interpreter_for_stun_duration = TextFragmentInterpreter.new()
+		interpreter_for_stun_duration.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_stun_duration.display_body = true
+		interpreter_for_stun_duration.header_description = "s"
+		
+		var ins_for_stun_duration = []
+		ins_for_stun_duration.append(NumericalTextFragment.new(2, false))
+		ins_for_stun_duration.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_stun_duration.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_stun_duration.array_of_instructions = ins_for_stun_duration
+		
 		
 		info.tower_descriptions = [
 			["Main attacks's bullets explode upon losing all pierce, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]],
 			"",
 			"Automatically casts Plow:",
-			["Ability: Plow. Propel charges towards the (in range) tower slot with the most enemies between itself and its destination. Enemies hit are dealt |0| and are stunned for 2 seconds.", [interpreter_for_flat_on_hit_for_ability]],
-			["Cooldown: |0|", [interpreter_for_cooldown]]
+			["Ability: Plow. Propel charges towards the (in range) tower slot with the most enemies between itself and its destination. Enemies hit are dealt |0| and are stunned for |1|.", [interpreter_for_flat_on_hit_for_ability, interpreter_for_stun_duration]],
+			["Cooldown: |0|.", [interpreter_for_cooldown]],
+			"On round end: Propel will return to its orignal tower slot."
 		]
 		
+		
+		info.tower_simple_descriptions = [
+			["Main attacks's bullets explode upon losing all pierce, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]],
+			"",
+			"Automatically casts Plow:",
+			["Ability: Plow. Propel charges towards the (in range) tower slot with the most enemies between itself and its destination. Enemies hit are dealt |0| and are stunned for |1|.", [interpreter_for_flat_on_hit_for_ability, interpreter_for_stun_duration]],
+			["Cooldown: |0|.", [interpreter_for_cooldown]]
+		]
+		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_PROPEL)
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_PROPEL, attr_mod, DamageType.PHYSICAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_PROPEL)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
+		
+		
+		
+	elif tower_id == PAROXYSM:
+		info = TowerTypeInformation.new("Paroxyxm", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.ORANGE)
+		info.base_tower_image = paroxysm_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 0#4 #todo
+		info.base_attk_speed = 0.6
+		info.base_pierce = 1
+		info.base_range = 140
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		#
+		
+		var interpreter_for_direct_rocket_dmg = TextFragmentInterpreter.new()
+		interpreter_for_direct_rocket_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_direct_rocket_dmg.display_body = true
+		
+		var outer_ins_for_direct_rocket_dmg = []
+		var ins_for_direct_rocket_dmg = []
+		ins_for_direct_rocket_dmg.append(NumericalTextFragment.new(15, false, DamageType.PHYSICAL))
+		ins_for_direct_rocket_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_direct_rocket_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 5, DamageType.PHYSICAL))
+		
+		outer_ins_for_direct_rocket_dmg.append(ins_for_direct_rocket_dmg)
+		
+		outer_ins_for_direct_rocket_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		outer_ins_for_direct_rocket_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		
+		interpreter_for_direct_rocket_dmg.array_of_instructions = outer_ins_for_direct_rocket_dmg
+		
+		#
+		
+		info.tower_descriptions = [
+			"Auto casts Outburst",
+			"Ability: Outburst. Paroxyxm chooses an attack based on its target.",
+			["If target has 100+ current health and is 100 range away from itself, fire a homing rocket that deals |0| to its intended target, and |1| to 3 enemies.", [interpreter_for_direct_rocket_dmg]],
+			["Othewise, spew out |0|, with each dealing |1| damage.", []],
+			["Cooldown: |0|.", []]
+		]
+		
+		
+		
+	elif tower_id == IOTA:
+		info = TowerTypeInformation.new("Iota", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.YELLOW)
+		#info.base_tower_image #= ashend_image
+		#info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 2.5
+		info.base_attk_speed = 0.85
+		info.base_pierce = 1
+		info.base_range = 115
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		
+		info.tower_descriptions = [
+			"Every x main attack leaves a Star near the target's location for 30 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.",
+			"",
+			"When all enemies have spawned, each idle Star focuses a beam at Iota's current target or the first enemy, dealing |0| per 0.5 seconds.",
+			"When only one enemy remains, all Stars crash to that enemy."
+		]
 		
 		
 #	elif tower_id == WYVERN:
@@ -5096,3 +5204,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Gray/Ashen'd/Ashend.tscn")
 	elif tower_id == PROPEL:
 		return load("res://TowerRelated/Color_Orange/Propel/Propel.tscn")
+	elif tower_id == PAROXYSM:
+		return load("res://TowerRelated/Color_Orange/Paroxysm/Paroxysm.tscn")

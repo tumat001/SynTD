@@ -284,11 +284,11 @@ func _on_BuySellLevelRollPanel_reroll():
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
-			Towers.ACCUMULAE,
-			Towers.TIME_MACHINE,
+			Towers.IMPALE,
+			Towers.PAROXYSM,
 			Towers.ASHEND,
 			Towers.RE,
-			Towers.NIGHTWATCHER,
+			Towers.L_ASSAUT,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
@@ -297,8 +297,9 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.PROPEL,
 			Towers.REBOUND,
 			Towers.GRAND,
-			Towers.TRANSMUTATOR
+			Towers.EMBER
 		])
+	
 	even = !even
 
 

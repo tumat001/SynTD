@@ -59,6 +59,7 @@ const BaseTowerDetectingBullet = preload("res://EnemyRelated/TowerInteractingRel
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self)
 signal on_attempt_drop_tower_on_placable(tower_self, arg_placable, arg_move_success) # 3rd arg is if there is enough tower slots to put the tower
+signal on_tower_transfered_to_placable(towrer_self, arg_placable)
 
 signal tower_toggle_show_info
 signal on_tower_toggle_showing_range(is_showing_ranges)
@@ -196,6 +197,8 @@ enum DisabledFromAttackingSourceClauses {
 	DOM_SYN__RED__COMPLEMENTARY_SUPPLEMENT = 1002
 	DOM_SYN__RED__HOLOGRAPHIC_TOWERS = 1003
 	DOM_SYN__RED__HEALING_SYMBOLS = 1004
+	
+	PROPEL_DURING_PLOW = 1005
 }
 
 enum UntargetabilityClauses {
@@ -206,6 +209,7 @@ enum UntargetabilityClauses {
 	#
 	
 	L_ASSAUT_PURSUE_ACTIVE = 1000
+	PROPEL_DURING_PLOW = 1001
 	
 }
 
@@ -2646,6 +2650,8 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 			if should_update_active_synergy:
 				emit_signal("update_active_synergy")
 	
+	emit_signal("on_tower_transfered_to_placable", self, current_placable)
+	
 	return new_area_placable != null
 
 func _on_PlacableDetector_area_entered(area):
@@ -2734,7 +2740,6 @@ func _calculate_sellback_of_ingredients() -> int:
 #func set_tower_sprite_modulate(color : Color):
 #	$TowerBase.modulate = color
 
-#todo
 
 func set_tower_base_modulate(arg_id : int, arg_mod : Color):
 	all_id_to_tower_base_modulate[arg_id] = arg_mod

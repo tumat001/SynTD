@@ -1058,7 +1058,8 @@ func calculate_final_movement_speed() -> float:
 # on hit damages and effects.
 func hit_by_bullet(generic_bullet : BaseBullet):
 	if !is_reviving:
-		if !generic_bullet.enemies_ignored.has(self):
+		#if !generic_bullet.enemies_ignored.has(self) and generic_bullet.can_hit_enemy(self):
+		if generic_bullet.can_hit_enemy(self):
 			generic_bullet.hit_by_enemy(self)
 			generic_bullet.decrease_pierce(pierce_consumed_per_hit)
 			if generic_bullet.attack_module_source != null:

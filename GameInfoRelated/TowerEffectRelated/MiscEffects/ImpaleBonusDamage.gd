@@ -14,9 +14,9 @@ const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/Te
 
 
 const bonus_damage_percent_threshold : float = 0.75
-const bonus_damage_new_scale : float = 1.30
 
-const bonus_damage_new_scale_against_normal_typed : float = 1.50
+const bonus_damage_new_scale : float = 1.30
+const bonus_damage_new_scale_against_normal_typed : float = 1.60
 
 func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Impale.png")

@@ -2,12 +2,13 @@ extends KinematicBody2D
 
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
+
 signal hit_an_enemy(me, enemy)
 signal on_zero_pierce(me)
 signal on_current_life_distance_expire()
 
 signal hit_a_tower(me, tower)
-
+signal before_mov_is_executed(me, arg_delta)
 
 var attack_module_source
 var damage_register_id : int
@@ -28,6 +29,7 @@ var beyond_first_hit_multiplier : float = 0.25#0.5
 var rotation_per_second : float = 0
 
 var enemies_ignored : Array = []
+var enemies_to_hit_only : Array = [] # ignore all except these
 
 var destroy_self_after_zero_pierce : bool = true
 var destroy_self_after_zero_life_distance : bool = true
@@ -68,6 +70,8 @@ func _physics_process(delta):
 	_move(delta)
 
 func _move(delta):
+	emit_signal("before_mov_is_executed", self, delta)
+	
 	if decrease_life_distance:
 		current_life_distance -= delta * speed
 	
@@ -84,6 +88,7 @@ func _move(delta):
 		vector_mov.x *= speed
 		vector_mov.y *= speed
 		move_and_collide(vector_mov)
+
 
 
 
@@ -165,5 +170,17 @@ func set_can_hit_towers(arg_val):
 	
 	set_collision_mask_bit(0, can_hit_towers)
 
+
+#
+
+func can_hit_enemy(arg_enemy):
+	return !enemies_ignored.has(arg_enemy) and (enemies_to_hit_only.size() == 0 or enemies_to_hit_only.has(arg_enemy) or _if_enemies_to_hit_only_has_only_nulls())
+
+func _if_enemies_to_hit_only_has_only_nulls():
+	for enemy in enemies_to_hit_only:
+		if enemy != null and !enemy.is_queued_for_deletion():
+			return false
+	
+	return true
 
 

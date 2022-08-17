@@ -300,15 +300,15 @@ func _start_pursue_fading(arg_new_placable):
 
 func _process(delta):
 	if current_pursue_state == PursueState.FADING:
-		tower_base.modulate.a -= delta / pursue_burrow_cast_time
+		modulate.a -= delta / pursue_burrow_cast_time
 		
-		if tower_base.modulate.a <= 0:
+		if modulate.a <= 0:
 			_start_pursue_appearing()
 		
 	elif current_pursue_state == PursueState.APPEARING:
-		tower_base.modulate.a += delta / pursue_surface_cast_time
+		modulate.a += delta / pursue_surface_cast_time
 		
-		if tower_base.modulate.a >= 1:
+		if modulate.a >= 1:
 			_pursue_ended()
 
 func _start_pursue_appearing():

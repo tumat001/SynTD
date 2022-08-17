@@ -58,7 +58,9 @@ const plow_mov_speed : float = 20.0
 const plow_mov_speed_deceleration : float = 65.0
 
 
-const main_proj_explosion_flat_dmg : float = 3.0
+#
+
+const main_proj_explosion_flat_dmg : float = 2.0
 const main_prok_explosion_pierce : int = 3
 var proj_aoe_attack_module : AOEAttackModule
 
@@ -67,7 +69,8 @@ var proj_aoe_attack_module : AOEAttackModule
 var is_plow_ability_ready : bool
 
 var line_range_module_to_in_map_placable_map : Dictionary = {}
-const line_range_module_width : float = 15.0
+const line_range_module_width : float = 10.0
+const plow_hitbox_extent_amount : float = 17.0
 
 var line_range_module_enemy_to_in_range_count_map : Dictionary = {}
 
@@ -184,9 +187,10 @@ func _ready():
 	
 	connect("on_main_bullet_attack_module_bullet_reached_zero_pierce", self, "_on_main_bullet_attk_reached_zero_pierce", [], CONNECT_PERSIST)
 	connect("final_range_changed", self, "_on_final_range_changed_p", [], CONNECT_PERSIST)
-	connect("tower_dropped_from_dragged", self, "_on_tower_dropped_from_dragged", [], CONNECT_PERSIST)
+	#connect("tower_dropped_from_dragged", self, "_on_tower_dropped_from_dragged", [], CONNECT_PERSIST)
 	connect("tree_exiting", self, "_on_tree_exiting", [], CONNECT_PERSIST)
 	
+	connect("on_tower_transfered_to_placable", self, "_on_tower_placable_changed", [], CONNECT_PERSIST)
 	connect("on_round_end", self, "_on_round_end_p", [], CONNECT_PERSIST)
 	connect("on_round_start", self, "_on_round_start_p", [], CONNECT_PERSIST)
 	
@@ -215,7 +219,7 @@ func _construct_and_add_plow_attk_module():
 	plow_attack_module.benefits_from_bonus_pierce = false
 	
 	var bullet_shape = RectangleShape2D.new()
-	bullet_shape.extents = Vector2(line_range_module_width, line_range_module_width)
+	bullet_shape.extents = Vector2(plow_hitbox_extent_amount, plow_hitbox_extent_amount)
 	
 	plow_attack_module.bullet_shape = bullet_shape
 	plow_attack_module.bullet_scene = BaseBullet_Scene
@@ -277,14 +281,19 @@ func _on_final_range_changed_p():
 	if is_current_placable_in_map():
 		_update_line_range_modules_state()
 
-func _on_tower_dropped_from_dragged(arg_self):
+#func _on_tower_dropped_from_dragged(arg_self):
+#	if is_current_placable_in_map():
+#		_update_line_range_modules_state()
+#
+#		if is_round_started and _original_placable_at_round_start == null:
+#			_original_placable_at_round_start = current_placable
+
+func _on_tower_placable_changed(arg_tower, arg_placable):
 	if is_current_placable_in_map():
 		_update_line_range_modules_state()
 		
 		if is_round_started and _original_placable_at_round_start == null:
 			_original_placable_at_round_start = current_placable
-	
-
 
 
 func _update_line_range_modules_state():
@@ -389,6 +398,8 @@ func _get_placable_with_most_enemies_in_between():
 
 func _cast_plow_ability(arg_placable):
 	plow_ability.activation_conditional_clauses.attempt_insert_clause(plow_is_during_cast_clause_id)
+	disabled_from_attacking_clauses.attempt_insert_clause(DisabledFromAttackingSourceClauses.PROPEL_DURING_PLOW)
+	untargetability_clauses.attempt_insert_clause(UntargetabilityClauses.PROPEL_DURING_PLOW)
 	
 	var cd = _get_cd_to_use(plow_base_cooldown)
 	plow_ability.on_ability_before_cast_start(cd)
@@ -417,12 +428,11 @@ func _on_plow_bullet_tree_exiting(arg_placable):
 		_transfer_to_placable_with_default_params(arg_placable)
 	
 	plow_ability.activation_conditional_clauses.remove_clause(plow_is_during_cast_clause_id)
-	
+	disabled_from_attacking_clauses.remove_clause(DisabledFromAttackingSourceClauses.PROPEL_DURING_PLOW)
+	untargetability_clauses.remove_clause(UntargetabilityClauses.PROPEL_DURING_PLOW)
 	
 	remove_tower_base_modulate(TowerModulateIds.PROPEL_INVIS)
-	
-	if is_current_placable_in_map():
-		_update_line_range_modules_state()
+
 
 
 func _transfer_to_placable_with_default_params(arg_placable):
@@ -452,4 +462,24 @@ func _on_round_start_p():
 		_original_placable_at_round_start = current_placable
 
 
+#
+
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 3
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	attr_mod.flat_modifier = 0.35
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	_calculate_final_ability_potency()
 
