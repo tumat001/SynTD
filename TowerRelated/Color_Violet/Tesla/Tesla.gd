@@ -19,7 +19,6 @@ const Tesla_Hit_Particle = preload("res://TowerRelated/Color_Violet/Tesla/TeslaH
 
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
-const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
 
 const Jolt_Particle_Pic_01 = preload("res://TowerRelated/Color_Violet/Tesla/OtherAssets/Tesla_Jolt_01.png")

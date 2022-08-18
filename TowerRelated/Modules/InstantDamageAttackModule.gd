@@ -1,5 +1,7 @@
 extends "res://TowerRelated/Modules/AbstractAttackModule.gd"
 
+
+
 func _attack_enemy(enemy : AbstractEnemy):
 	if enemy != null:
 		var damage_instance : DamageInstance = construct_damage_instance()

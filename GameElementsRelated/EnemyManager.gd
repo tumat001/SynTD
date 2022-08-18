@@ -13,7 +13,7 @@ const ENEMY_GROUP_TAG : String = "Enemies"
 const ENEMY_BLOCKING_NEXT_ROUND_ADVANCE_TAG : String = "EnemiesBlockingNextRoundAdvanceTag"
 
 
-signal no_enemies_left
+signal no_enemies_left()
 
 signal before_enemy_stats_are_set(enemy)
 signal before_enemy_spawned(enemy)
@@ -25,6 +25,10 @@ signal enemy_escaped(enemy)
 signal first_enemy_escaped(enemy, first_damage)
 
 signal round_time_passed(delta, current_timepos)
+
+signal number_of_enemies_remaining_changed(arg_val)
+signal on_enemy_queue_freed(arg_enemy)
+
 
 enum PathToSpawnPattern {
 	NO_CHANGE = 0,
@@ -66,7 +70,6 @@ var current_enemy_spawned_from_ins_count : int
 var highest_enemy_spawn_timepos_in_round : float
 var current_spawn_timepos_in_round : float
 
-
 #
 
 func set_stage_round_manager(arg_manager):
@@ -91,6 +94,13 @@ func _ready():
 	_spawn_pause_timer.one_shot = true
 	_spawn_pause_timer.connect("timeout", self, "_pause_timer_timeout", [], CONNECT_PERSIST)
 	add_child(_spawn_pause_timer)
+	
+	#
+	
+	connect("enemy_spawned", self, "_on_enemy_spawned", [], CONNECT_PERSIST)
+	connect("on_enemy_queue_freed", self, "_on_enemy_queue_freed", [], CONNECT_PERSIST)
+	
+	#
 
 # Setting related
 
@@ -245,6 +255,8 @@ func _interpreter_done_spawning():
 	_check_if_no_enemies_left()
 
 func _on_enemy_death(enemy : AbstractEnemy):
+	emit_signal("on_enemy_queue_freed", enemy)
+	
 	if _is_interpreter_done_spawning and enemy.blocks_from_round_ending:
 		_check_if_no_enemies_left()
 
@@ -275,7 +287,14 @@ func _enemy_reached_end(enemy : AbstractEnemy):
 # Enemy Queries
 
 func get_all_enemies() -> Array:
-	return get_tree().get_nodes_in_group(ENEMY_GROUP_TAG)
+	var enemies = get_tree().get_nodes_in_group(ENEMY_GROUP_TAG)
+	var bucket = []
+	
+	for enemy in enemies:
+		if enemy != null and !enemy.is_queued_for_deletion():
+			bucket.append(enemy)
+	
+	return bucket
 
 func get_all_targetable_enemies() -> Array:
 	var enemies = get_all_enemies()
@@ -369,4 +388,28 @@ func _on_base_map_path_removed(removed_path):
 
 func get_spawn_path_to_take_index() -> int:
 	return _spawn_path_index_to_take
+
+
+## enemy count
+
+func get_current_enemy_count_in_map():
+	return get_all_enemies().size()
+
+# a count of enemies that are not spawned, and those that are still alive
+func get_number_of_enemies_remaining():
+	var not_spawned_enemies = enemy_count_in_round - current_enemy_spawned_from_ins_count
+	var curr_enemy_count = get_current_enemy_count_in_map()
+	
+	return not_spawned_enemies + curr_enemy_count
+
+
+func _on_enemy_queue_freed(arg_enemy):
+	_emit_number_of_enemies_remaining()
+
+func _on_enemy_spawned(arg_enemy):
+	_emit_number_of_enemies_remaining()
+
+func _emit_number_of_enemies_remaining():
+	emit_signal("number_of_enemies_remaining_changed", get_number_of_enemies_remaining())
+
 

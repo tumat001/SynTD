@@ -17,14 +17,21 @@ var damage_instance : DamageInstance
 var pierce : float
 var direction_as_relative_location : Vector2
 var speed
+var speed_inc_per_sec : float = 0
+var speed_max : float = 10000
+
 var life_distance
 var decrease_life_distance : bool = true
 var decrease_pierce : bool = true
-
 var current_life_distance
+
+var life_duration : float = 1.0
+var decrease_life_duration : bool = false
+var current_life_duration : float
 
 var _first_hit : bool = true
 var beyond_first_hit_multiplier : float = 0.25#0.5
+var apply_damage_instance_on_hit : bool = true # if false, does not apply dmg instance to enemy, and _first_hit does not become false
 
 var rotation_per_second : float = 0
 
@@ -48,15 +55,16 @@ var reduce_pierce_if_hit_towers : bool = false
 #
 
 onready var bullet_sprite = $BulletSprite
+onready var coll_shape = $CollisionShape2D
 
 func _ready():
 	current_life_distance = life_distance
+	current_life_duration = life_duration
 	
 	CollidableSourceAndDest.set_coll_layer_source(self, coll_source_layer)
 	CollidableSourceAndDest.set_coll_mask_destination(self, coll_destination_mask)
 	
 	bullet_sprite.playing = is_animated_sprite_playing
-	
 	set_can_hit_towers(can_hit_towers)
 
 
@@ -88,7 +96,19 @@ func _move(delta):
 		vector_mov.x *= speed
 		vector_mov.y *= speed
 		move_and_collide(vector_mov)
-
+	
+	speed += speed_inc_per_sec * delta
+	if speed < 0:
+		speed = 0
+	
+	if speed > speed_max:
+		speed = speed_max
+	
+	if decrease_life_duration:
+		current_life_duration -= delta
+	
+	if current_life_duration < 0:
+		trigger_on_death_events()
 
 
 

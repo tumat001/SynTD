@@ -83,6 +83,7 @@ const charge_image = preload("res://TowerRelated/Color_Yellow/Charge/Charge_E.pn
 const magnetizer_image = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_WholeBody.png")
 const sunflower_image = preload("res://TowerRelated/Color_Yellow/Sunflower/Sunflower_Idle.png")
 const nucleus_image = preload("res://TowerRelated/Color_Yellow/Nucleus/Nucleus_Omni.png")
+const iota_image = preload("res://TowerRelated/Color_Yellow/Iota/Iota_WholeTowerImage.png")
 
 # GREEN
 const berrybush_image = preload("res://TowerRelated/Color_Green/BerryBush/BerryBush_Omni.png")
@@ -1556,7 +1557,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.85
-		info.base_attk_speed = 0.785
+		info.base_attk_speed = 0.765
 		info.base_pierce = 0
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -4954,14 +4955,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 	elif tower_id == PAROXYSM:
-		info = TowerTypeInformation.new("Paroxyxm", tower_id)
+		info = TowerTypeInformation.new("Paroxysm", tower_id)
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.ORANGE)
 		info.base_tower_image = paroxysm_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 0#4 #todo
+		info.base_damage = 4
 		info.base_attk_speed = 0.6
 		info.base_pierce = 1
 		info.base_range = 140
@@ -4985,18 +4986,81 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		outer_ins_for_direct_rocket_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 		outer_ins_for_direct_rocket_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
-		
 		interpreter_for_direct_rocket_dmg.array_of_instructions = outer_ins_for_direct_rocket_dmg
+		#
+		
+		var interpreter_for_rocket_dmg_splash = TextFragmentInterpreter.new()
+		interpreter_for_rocket_dmg_splash.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_rocket_dmg_splash.display_body = false
+		
+		var ins_for_rocket_dmg_splash = []
+		ins_for_rocket_dmg_splash.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "damage", 4))
+		
+		interpreter_for_rocket_dmg_splash.array_of_instructions = ins_for_rocket_dmg_splash
+		#
+		
+		var interpreter_for_spew_count = TextFragmentInterpreter.new()
+		interpreter_for_spew_count.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_spew_count.display_body = true
+		interpreter_for_spew_count.header_description = "hot fragments"
+		interpreter_for_spew_count.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.CEIL
+		
+		var ins_for_spew_count = []
+		ins_for_spew_count.append(NumericalTextFragment.new(14, false, -1))
+		ins_for_spew_count.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_spew_count.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_spew_count.array_of_instructions = ins_for_spew_count
+		
+		#
+		
+		var interpreter_for_spew_dmg = TextFragmentInterpreter.new()
+		interpreter_for_spew_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_spew_dmg.display_body = true
+		
+		var ins_for_spew_dmg = []
+		ins_for_spew_dmg.append(NumericalTextFragment.new(1.5, false, DamageType.ELEMENTAL))
+		ins_for_spew_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_spew_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.5)) # stat basis does not matter here
+		
+		interpreter_for_spew_dmg.array_of_instructions = ins_for_spew_dmg
+		
+		#
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(28, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
 		
 		#
 		
 		info.tower_descriptions = [
-			"Auto casts Outburst",
+			"Auto casts Outburst.",
 			"Ability: Outburst. Paroxyxm chooses an attack based on its target.",
-			["If target has 100+ current health and is 100 range away from itself, fire a homing rocket that deals |0| to its intended target, and |1| to 3 enemies.", [interpreter_for_direct_rocket_dmg]],
-			["Othewise, spew out |0|, with each dealing |1| damage.", []],
-			["Cooldown: |0|.", []]
+			["If target has 100+ current health and is 100 range away from itself, fire a homing rocket that deals |0| to its intended target, and explodes to deal |1| to 3 enemies.", [interpreter_for_direct_rocket_dmg, interpreter_for_rocket_dmg_splash]],
+			["Othewise, spew out |0|, with each dealing |1| damage.", [interpreter_for_spew_count, interpreter_for_spew_dmg]],
+			["Cooldown: |0|.", [interpreter_for_cooldown]]
 		]
+		
+		
+		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_PAROXYSM)
+		base_ap_attr_mod.flat_modifier = 0.5
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_PAROXYSM)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ ap"
+		
+		
 		
 		
 		
@@ -5005,8 +5069,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.YELLOW)
-		#info.base_tower_image #= ashend_image
-		#info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		info.base_tower_image = iota_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.5
 		info.base_attk_speed = 0.85
@@ -5015,13 +5079,42 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
+		#
+		
+		var interpreter_for_crash_dmg = TextFragmentInterpreter.new()
+		interpreter_for_crash_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_crash_dmg.display_body = true
+		
+		var ins_for_crash_dmg = []
+		ins_for_crash_dmg.append(NumericalTextFragment.new(2.5, false, DamageType.PHYSICAL))
+		ins_for_crash_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_crash_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25)) # stat basis does not matter here
+		
+		interpreter_for_crash_dmg.array_of_instructions = ins_for_crash_dmg
+		
+		
+		var interpreter_for_beam_dmg = TextFragmentInterpreter.new()
+		interpreter_for_beam_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_beam_dmg.display_body = true
+		
+		var ins_for_beam_dmg = []
+		ins_for_beam_dmg.append(NumericalTextFragment.new(0.25, false, DamageType.ELEMENTAL))
+		ins_for_beam_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_beam_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.05, DamageType.ELEMENTAL))
+		
+		interpreter_for_beam_dmg.array_of_instructions = ins_for_beam_dmg
+		
+		#
 		
 		info.tower_descriptions = [
-			"Every x main attack leaves a Star near the target's location for 30 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.",
+			["Every 8th main attack leaves a Star near the target's location for 30 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.", [interpreter_for_crash_dmg]],
 			"",
-			"When all enemies have spawned, each idle Star focuses a beam at Iota's current target or the first enemy, dealing |0| per 0.5 seconds.",
-			"When only one enemy remains, all Stars crash to that enemy."
+			["When all enemies have spawned, each idle Star focuses a beam at Iota's current target or the first enemy, dealing |0| per 0.25 seconds.", [interpreter_for_beam_dmg]],
+			"When only one enemy remains, all Stars crash to that enemy.",
+			"",
+			"Targeting affects which enemies are targeted by the Stars."
 		]
+		
 		
 		
 #	elif tower_id == WYVERN:
@@ -5206,3 +5299,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/Propel/Propel.tscn")
 	elif tower_id == PAROXYSM:
 		return load("res://TowerRelated/Color_Orange/Paroxysm/Paroxysm.tscn")
+	elif tower_id == IOTA:
+		return load("res://TowerRelated/Color_Yellow/Iota/Iota.tscn")

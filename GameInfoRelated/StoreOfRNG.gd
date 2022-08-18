@@ -19,7 +19,7 @@ var black_capacitor_nova_lightning_tower_or_enemy_rng : RandomNumberGenerator = 
 var random_tower_decider_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var chaos_events_to_play_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var chaos_events_rng_general_purpose := RandomNumberGenerator.new()
-
+var iota_star_positioning_rng := RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -34,6 +34,7 @@ enum RNGSource {
 	SHACKLED_PULL_POSITION = 103,
 	CHAOS_EVENTS_TO_PLAY = 104,
 	CHAOS_EVENTS_GENERAL_PURPOSE = 105,
+	IOTA_STAR_POSITIONING = 106,
 	
 	INACCURACY = 1000,
 	
@@ -95,5 +96,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return chaos_events_to_play_rng
 	elif rng_source == RNGSource.CHAOS_EVENTS_GENERAL_PURPOSE:
 		return chaos_events_rng_general_purpose
+	elif rng_source == RNGSource.IOTA_STAR_POSITIONING:
+		return iota_star_positioning_rng
 	
 	return null

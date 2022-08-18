@@ -90,7 +90,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.HEALER:
 		info = EnemyTypeInformation.new(Enemies.HEALER, EnemyFactions.BASIC)
-		info.base_health = 36
+		info.base_health = 1#36
 		info.base_movement_speed = 30
 		
 	elif enemy_id == Enemies.WIZARD:

@@ -1,0 +1,55 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Yellow/Iota/Iota.gd" type="Script" id=2]
+[ext_resource path="res://TowerRelated/Color_Yellow/Iota/Iota_Tube_LeftRight_Yellow.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Yellow/Iota/Iota_Tube_Middle_Yellow.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_Yellow/Iota/Iota_Core_Yellow.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_Yellow/Iota/Iota_Base.png" type="Texture" id=6]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 10.7491, 21.7509 )
+
+[node name="Iota" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="TowerBase" parent="." index="0"]
+position = Vector2( 0, -7 )
+
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
+frames = SubResource( 1 )
+
+[node name="CoreSprite" type="Sprite" parent="TowerBase/KnockUpLayer" index="1"]
+position = Vector2( 0, -33 )
+texture = ExtResource( 5 )
+
+[node name="MiddleTube" type="Sprite" parent="TowerBase/KnockUpLayer" index="2"]
+position = Vector2( 0, -13 )
+texture = ExtResource( 4 )
+
+[node name="LeftTube" type="Sprite" parent="TowerBase/KnockUpLayer" index="3"]
+position = Vector2( -13, -20 )
+texture = ExtResource( 3 )
+
+[node name="RightTube" type="Sprite" parent="TowerBase/KnockUpLayer" index="4"]
+position = Vector2( 13, -20 )
+texture = ExtResource( 3 )
+flip_h = true
+
+[node name="CollisionShape" parent="." index="1"]
+position = Vector2( 0, -14 )
+shape = SubResource( 2 )
+
+[node name="IngredientDeclinePic" parent="." index="4"]
+visible = false
+
+[node name="DoesNotApplyPic" parent="." index="5"]
+visible = false

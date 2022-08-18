@@ -472,11 +472,11 @@ func set_heat_module(module):
 	.set_heat_module(module)
 
 func _construct_heat_effect():
-	var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	attr_mod.flat_modifier = 0.35
+	var base_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_attr_mod.percent_amount = 12
+	base_attr_mod.percent_based_on = PercentType.BASE
 	
-	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_ABILITY_CDR , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
 
 func _heat_module_current_heat_effect_changed():
 	._heat_module_current_heat_effect_changed()

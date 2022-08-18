@@ -1,0 +1,21 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Yellow/Iota/Attks/Stars/Iota_Stars_Orange.png" type="Texture" id=2]
+[ext_resource path="res://TowerRelated/Color_Yellow/Iota/Attks/Stars/Iota_Stars_Blue.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Yellow/Iota/Attks/Stars/Iota_Stars_Yellow.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_Yellow/Iota/Attks/Stars/Iota_Star.gd" type="Script" id=5]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 4 ), ExtResource( 2 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Iota_Star" instance=ExtResource( 1 )]
+script = ExtResource( 5 )
+
+[node name="BulletSprite" parent="." index="0"]
+frames = SubResource( 1 )

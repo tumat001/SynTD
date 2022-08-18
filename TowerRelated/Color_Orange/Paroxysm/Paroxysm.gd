@@ -31,12 +31,12 @@ const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModul
 #
 
 var outburst_ability : BaseAbility
-const outburst_base_cooldown : float = 2.5 #25.0 #todo
+const outburst_base_cooldown : float = 28.0
 var outburst_ability_is_ready : bool = false
 var is_an_enemy_in_range : bool = false
 
 
-
+#
 const enemy_min_flat_health_needed_for_big_missle_cast : float = 100.0
 const enemy_min_distance_needed_for_big_missle_cast : float = 100.0
 
@@ -48,6 +48,17 @@ const big_missle__small_aoe__flat_dmg : float = 4.0
 const big_missle__small_aoe__pierce : int = 3
 
 var bullet_homing_component_pool : BulletHomingComponentPool
+#
+
+var spew_attack_module : BulletAttackModule
+const spew_disabled_from_attacking_custom_clause : int = -10
+
+const spew_base_count : int = 14
+const spew_on_hit_dmg_scale : float = 0.5
+const spew_flat_dmg_amount : float = 1.5
+
+var _current_spew_count : int
+var non_essential_rng : RandomNumberGenerator
 
 #
 
@@ -64,10 +75,13 @@ func _ready():
 	
 	_initialize_stats_from_tower_info(info)
 	
+	
+	var attack_module_y_shift : float = 16.0
+	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 10
+	range_module.position.y += attack_module_y_shift
 	
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
@@ -81,7 +95,7 @@ func _ready():
 	attack_module.base_proj_speed = 350
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
-	attack_module.position.y -= 10
+	attack_module.position.y -= attack_module_y_shift
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
 	
@@ -97,12 +111,14 @@ func _ready():
 	
 	#
 	
-	_construct_and_add_big_missle_attk_module()
+	_construct_and_add_big_missle_attk_module(attack_module_y_shift)
+	_construct_and_add_spew_attack_module()
 	
 	_construct_and_register_ability()
 	
 	connect("on_range_module_enemy_entered", self, "_on_enemy_entered_range_p", [], CONNECT_PERSIST)
 	connect("on_range_module_enemy_exited", self, "_on_enemy_exited_range_p", [], CONNECT_PERSIST)
+	connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
 	
 	#
 	
@@ -110,9 +126,9 @@ func _ready():
 
 
 
-func _construct_and_add_big_missle_attk_module():
+func _construct_and_add_big_missle_attk_module(attack_module_y_shift):
 	big_missle_bullet_attk_module = BulletAttackModule_Scene.instance()
-	big_missle_bullet_attk_module.base_damage_scale = 5
+	big_missle_bullet_attk_module.base_damage_scale = big_missle__direct_hit__base_damage_ratio
 	big_missle_bullet_attk_module.base_damage = 15 / big_missle_bullet_attk_module.base_damage_scale 
 	big_missle_bullet_attk_module.base_damage_type = DamageType.PHYSICAL
 	big_missle_bullet_attk_module.base_attack_speed = 0
@@ -120,10 +136,11 @@ func _construct_and_add_big_missle_attk_module():
 	big_missle_bullet_attk_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	big_missle_bullet_attk_module.is_main_attack = false
 	big_missle_bullet_attk_module.base_pierce = 1
-	big_missle_bullet_attk_module.base_proj_speed = 100 #580 #todo
+	big_missle_bullet_attk_module.base_proj_speed = 120
 	#big_missle_bullet_attk_module.base_proj_life_distance = info.base_range
 	big_missle_bullet_attk_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	big_missle_bullet_attk_module.on_hit_damage_scale = 1
+	big_missle_bullet_attk_module.position.y -= attack_module_y_shift
 	
 	big_missle_bullet_attk_module.benefits_from_bonus_attack_speed = false
 	big_missle_bullet_attk_module.benefits_from_bonus_base_damage = true
@@ -132,7 +149,7 @@ func _construct_and_add_big_missle_attk_module():
 	big_missle_bullet_attk_module.benefits_from_bonus_pierce = false
 	
 	var bullet_shape = RectangleShape2D.new()
-	bullet_shape.extents = Vector2(20, 10)
+	bullet_shape.extents = Vector2(16, 8)
 	
 	big_missle_bullet_attk_module.bullet_shape = bullet_shape
 	big_missle_bullet_attk_module.bullet_scene = BaseBullet_Scene
@@ -148,7 +165,6 @@ func _construct_and_add_big_missle_attk_module():
 	
 	bullet_homing_component_pool = BulletHomingComponentPool.new()
 	bullet_homing_component_pool.node_to_parent = get_tree().get_root()
-	#bullet_homing_component_pool.node_to_listen_for_queue_free = self
 	bullet_homing_component_pool.source_of_create_resource = self
 	bullet_homing_component_pool.func_name_for_create_resource = "_create_bullet_homing_component"
 	
@@ -163,7 +179,7 @@ func _construct_and_add_big_missle_attk_module():
 	big_missle_small_explosion_attk_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	big_missle_small_explosion_attk_module.is_main_attack = false
 	big_missle_small_explosion_attk_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	big_missle_small_explosion_attk_module.base_explosion_scale = 1.5
+	big_missle_small_explosion_attk_module.base_explosion_scale = 2.25
 	
 	big_missle_small_explosion_attk_module.benefits_from_bonus_explosion_scale = true
 	big_missle_small_explosion_attk_module.benefits_from_bonus_base_damage = false
@@ -197,7 +213,47 @@ func _construct_and_add_big_missle_attk_module():
 	add_attack_module(big_missle_small_explosion_attk_module)
 	
 
-
+func _construct_and_add_spew_attack_module():
+	spew_attack_module = BulletAttackModule_Scene.instance()
+	spew_attack_module.base_damage_scale = 1
+	spew_attack_module.base_damage = spew_flat_dmg_amount / spew_attack_module.base_damage_scale 
+	spew_attack_module.base_damage_type = DamageType.ELEMENTAL
+	spew_attack_module.base_attack_speed = 10
+	spew_attack_module.base_attack_wind_up = 0
+	spew_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	spew_attack_module.is_main_attack = false
+	spew_attack_module.base_pierce = 1
+	spew_attack_module.base_proj_speed = 250
+	#spew_attack_module.base_proj_life_distance = info.base_range
+	spew_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	spew_attack_module.on_hit_damage_scale = spew_on_hit_dmg_scale
+	spew_attack_module.position.y -= 10
+	
+	spew_attack_module.base_proj_inaccuracy = 25
+	
+	spew_attack_module.benefits_from_bonus_attack_speed = false
+	spew_attack_module.benefits_from_bonus_base_damage = false
+	spew_attack_module.benefits_from_bonus_on_hit_damage = true
+	spew_attack_module.benefits_from_bonus_on_hit_effect = false
+	spew_attack_module.benefits_from_bonus_pierce = false
+	
+	var bullet_shape = RectangleShape2D.new()
+	bullet_shape.extents = Vector2(5, 5)
+	
+	spew_attack_module.bullet_shape = bullet_shape
+	spew_attack_module.bullet_scene = BaseBullet_Scene
+	
+	spew_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(spew_disabled_from_attacking_custom_clause)
+	
+	spew_attack_module.set_image_as_tracker_image(Outburst_SpewOrangePic)
+	
+	
+	spew_attack_module.connect("before_bullet_is_shot", self, "_on_spew_attk_module_before_bullet_is_shot", [], CONNECT_PERSIST)
+	
+	add_attack_module(spew_attack_module)
+	
+	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
+	
 
 
 #
@@ -221,7 +277,7 @@ func _construct_and_register_ability():
 	
 	outburst_ability.connect("updated_is_ready_for_activation", self, "_can_cast_outburst_updated", [], CONNECT_PERSIST)
 	register_ability_to_manager(outburst_ability, false)
-	
+
 
 func _can_cast_outburst_updated(is_ready):
 	outburst_ability_is_ready = is_ready
@@ -260,7 +316,7 @@ func _call_right_ability_type_based_on_curr_target(arg_curr_target, arg_potency_
 	if _passes_big_missle_conditions(arg_curr_target):
 		_fire_big_rocket_at_target(arg_curr_target, arg_potency_to_use)
 	else:
-		_fire_big_rocket_at_target(arg_curr_target, arg_potency_to_use) # Todo temp
+		_start_spew()
 
 func _passes_big_missle_conditions(arg_curr_target):
 	return arg_curr_target.current_health >= enemy_min_flat_health_needed_for_big_missle_cast and global_position.distance_to(arg_curr_target.global_position) >= enemy_min_distance_needed_for_big_missle_cast
@@ -271,6 +327,7 @@ func _fire_big_rocket_at_target(arg_enemy, arg_potency_to_use : float):
 	rocket.enemies_to_hit_only.append(arg_enemy)
 	rocket.damage_instance.scale_only_damage_by(arg_potency_to_use)
 	rocket.decrease_life_distance = false
+	rocket.speed_inc_per_sec = 80
 	
 	var bullet_homing_component : BulletHomingComponent = bullet_homing_component_pool.get_or_create_resource_from_pool()
 	bullet_homing_component.bullet = rocket
@@ -318,3 +375,74 @@ func _on_rocket_hit_enemy(arg_bullet, arg_enemy):
 	
 	get_tree().get_root().call_deferred("add_child", aoe)
 
+######
+
+func _start_spew():
+	var spew_count = ceil(spew_base_count * outburst_ability.get_potency_to_use(last_calculated_final_ability_potency))
+	
+	_set_current_spew_count(spew_base_count)
+
+
+
+func _decrement_spew_count():
+	_set_current_spew_count(_current_spew_count - 1)
+
+func _set_current_spew_count(arg_count):
+	_current_spew_count = arg_count
+	
+	if _current_spew_count <= 0:
+		_current_spew_count = 0
+		spew_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(spew_disabled_from_attacking_custom_clause)
+	else:
+		spew_attack_module.can_be_commanded_by_tower_other_clauses.remove_clause(spew_disabled_from_attacking_custom_clause)
+
+
+func _on_spew_attk_module_before_bullet_is_shot(arg_bullet):
+	_decrement_spew_count()
+	
+	arg_bullet.speed_inc_per_sec = -240
+	arg_bullet.decrease_life_duration = true
+	arg_bullet.current_life_duration = 4.0
+	arg_bullet.decrease_pierce = false
+	arg_bullet.modulate.a = 0.6
+	
+	arg_bullet.connect("tree_entered", self, "_on_bullet_tree_entered", [arg_bullet], CONNECT_ONESHOT)
+	arg_bullet.visible = false
+
+
+func _on_bullet_tree_entered(arg_bullet):
+	#arg_bullet.bullet_sprite.frames.set_frame("default", 0, _get_texture_to_use__random())
+	arg_bullet.set_texture_as_sprite_frames(_get_texture_to_use__random())
+	arg_bullet.visible = true
+
+
+func _get_texture_to_use__random():
+	var rng_i = non_essential_rng.randi_range(0, 1)
+	if rng_i == 0:
+		return Outburst_SpewOrangePic
+	else:
+		return Outburst_SpewYellowPic
+
+
+func _on_round_end():
+	_set_current_spew_count(0)
+
+
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 2
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	attr_mod.flat_modifier = 0.5
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	_calculate_final_ability_potency()

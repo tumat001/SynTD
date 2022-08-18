@@ -85,7 +85,7 @@ signal final_range_changed
 signal ingredients_absorbed_changed
 signal ingredients_limit_changed(new_limit)
 signal tower_colors_changed
-signal targeting_changed
+signal targeting_changed # by main module's range module
 signal targeting_options_modified
 signal final_ability_potency_changed
 signal final_ability_cd_changed

@@ -26,6 +26,7 @@ func set_target_node_to_home_to(arg_node):
 			target_node_to_home_to.connect("tree_exiting", self, "_on_target_node_tree_exiting")
 
 func _on_target_node_tree_exiting():
+	target_node_to_home_to = null
 	emit_signal("on_target_tree_exiting")
 
 
@@ -65,8 +66,6 @@ func get_relative_normalized_direction_for_homing(
 		arg_target_pos : Vector2,
 		arg_bullet_pos : Vector2, 
 		arg_curr_relative_norm_dir : Vector2, delta : float):
-	
-	#var max_deg_angle_amount = max_deg_angle_turn_amount_per_sec * delta
 	
 	var angle_for_alignment = arg_bullet_pos.angle_to_point(arg_target_pos)
 	var curr_angle = arg_curr_relative_norm_dir.angle()
