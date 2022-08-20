@@ -4,21 +4,18 @@ const RoundStatusPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStart
 
 const BaseMode_StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/BaseMode_StageRounds.gd")
 const StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/StageRound.gd")
-const ModeNormal_StageRounds = preload("res://GameplayRelated/StagesAndRoundsRelated/ModeNormal_StageRounds.gd")
+
+#const ModeNormal_StageRounds = preload("res://GameplayRelated/StagesAndRoundsRelated/ModeNormal_StageRounds.gd")
+#const FactionBasic_EnemySpawnIns = preload("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionBasic_EnemySpawnIns.gd")
+
 
 const BaseMode_EnemySpawnIns = preload("res://GameplayRelated/EnemiesInRounds/BaseMode_EnemySpawnIns.gd")
-
-const FactionBasic_EnemySpawnIns = preload("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionBasic_EnemySpawnIns.gd")
 
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
 
 const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
 
-
-enum Mode {
-	NORMAL,
-}
 
 
 signal stage_round_changed(stage_num, round_num)
@@ -33,7 +30,10 @@ signal life_lost_from_enemy_first_time_in_round(enemy)
 signal life_lost_from_enemy(enemy)
 
 
+const gold_gain_on_win : int = 1
+
 var round_status_panel : RoundStatusPanel setget _set_round_status_panel
+var game_mode : int
 var stagerounds : BaseMode_StageRound
 var current_stageround_index : int = -1
 var current_stageround : StageRound
@@ -56,13 +56,15 @@ var current_lose_streak : int
 
 
 func set_game_mode_to_normal():
-	set_game_mode(Mode.NORMAL)
+	set_game_mode(StoreOfGameMode.Mode.STANDARD_NORMAL)
 
 func set_game_mode(mode : int):
-	if mode == Mode.NORMAL:
-		stagerounds = ModeNormal_StageRounds.new()
-		spawn_ins_of_faction_mode = FactionBasic_EnemySpawnIns.new()
-
+	game_mode = mode
+	
+	if mode == StoreOfGameMode.Mode.STANDARD_NORMAL:
+		stagerounds = StoreOfGameMode.get_stage_rounds_of_mode_from_id(mode).new() #ModeNormal_StageRounds.new()
+		_replace_current_spawn_ins_to_second_half(stagerounds.get_first_half_faction())
+		#spawn_ins_of_faction_mode = StoreOfGameMode.get_spawn_ins_of_faction__based_on_mode(stagerounds.get_first_half_faction(), mode)
 
 #
 
@@ -141,7 +143,11 @@ func end_round(from_game_start : bool = false):
 		gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.WIN_STREAK)
 	
 	if !from_game_start:
-		gold_manager.increase_gold_by(gold_manager.get_total_income_for_the_round(), GoldManager.IncreaseGoldSource.END_OF_ROUND)
+		var gold = gold_manager.get_total_income_for_the_round()
+		if !current_round_lost:
+			gold += gold_gain_on_win
+		
+		gold_manager.increase_gold_by(gold, GoldManager.IncreaseGoldSource.END_OF_ROUND)
 	
 	
 	# spawn inses related
@@ -198,9 +204,12 @@ func set_current_round_to_lost():
 # Enemy faction spawn ins related
 
 func _replace_current_spawn_ins_to_second_half(new_faction_id : int):
-	if new_faction_id == EnemyConstants.EnemyFactions.EXPERT:
-		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionExpert_EnemySpawnIns.gd").new()
-	elif new_faction_id == EnemyConstants.EnemyFactions.FAITHFUL:
-		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionFaithful_EnemySpawnIns.gd").new()
-	elif new_faction_id == EnemyConstants.EnemyFactions.SKIRMISHERS:
-		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionSkirmisher_EnemySpawnIns.gd").new()
+	spawn_ins_of_faction_mode = StoreOfGameMode.get_spawn_ins_of_faction__based_on_mode(new_faction_id, game_mode)
+#	if new_faction_id == EnemyConstants.EnemyFactions.EXPERT:
+#		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionExpert_EnemySpawnIns.gd").new()
+#	elif new_faction_id == EnemyConstants.EnemyFactions.FAITHFUL:
+#		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionFaithful_EnemySpawnIns.gd").new()
+#	elif new_faction_id == EnemyConstants.EnemyFactions.SKIRMISHERS:
+#		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionSkirmisher_EnemySpawnIns.gd").new()
+
+

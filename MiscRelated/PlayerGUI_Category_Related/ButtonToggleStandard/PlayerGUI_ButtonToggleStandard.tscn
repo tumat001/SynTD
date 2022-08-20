@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/ButtonStandard/PlayerGUI_ButtonStandard.tscn" type="PackedScene" id=1]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/ButtonToggleStandard/PlayerGUI_ButtonToggleStandard.gd" type="Script" id=2]
+
+[node name="PlayerGUI_ButtonToggleStandard" instance=ExtResource( 1 )]
+script = ExtResource( 2 )

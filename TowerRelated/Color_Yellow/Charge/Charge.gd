@@ -6,7 +6,6 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
-const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 
 const ChargeBullet_Level1 = preload("res://TowerRelated/Color_Yellow/Charge/Charge_Bullet_Level1.png")
 const ChargeBullet_Level2 = preload("res://TowerRelated/Color_Yellow/Charge/Charge_Bullet_Level2.png")

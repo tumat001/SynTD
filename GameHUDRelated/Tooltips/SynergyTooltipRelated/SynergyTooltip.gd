@@ -125,25 +125,26 @@ func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy) -> Array
 		var text_desc = TooltipWithTextIndicatorDescriptionScene.instance()
 		
 		var provided_desc = synergy.synergy_effects_descriptions[desc_i]
+		
 		if provided_desc is Array:
 			text_desc.description = provided_desc[0]
 			text_desc._text_fragment_interpreters = provided_desc[1]
 			text_desc.uses_bbcode = true
+			
 		else:
 			text_desc.description = provided_desc
 		
 		
 		#text_desc.indicator = _convert_number_to_roman_numeral(desc_i + 1) + ")"
-		text_desc.indicator = str(result.synergy.number_of_towers_in_tier[desc_i]) + ")"
+		#text_desc.indicator = str(result.synergy.number_of_towers_in_tier[desc_i]) + ")"
+		text_desc.indicator = str(result.synergy.number_of_towers_in_tier[(result.synergy.number_of_towers_in_tier.size() - 1) - desc_i]) + ")"
 		
 		text_desc.color = text_color
 		if synergy.current_highlighted_index_effects_descriptions.has(desc_i):
-			#text_desc.color = highlighted_color
 			text_desc.modulate = highlighted_modulate
 		else:
-			#text_desc.color = not_highlighted_color
 			text_desc.modulate = not_highlighted_modulate
-			
+		
 		
 		descs.append(text_desc)
 	

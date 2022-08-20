@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/ModeSelectionPanel/ModeSelectionPanel.gd" type="Script" id=1]
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/Assets/WhiteLine_7x7.png" type="Texture" id=2]
+
+[node name="ModeSelectionPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BodyBackground" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="LeftBorder" type="TextureRect" parent="."]
+margin_right = 7.0
+margin_bottom = 40.0
+size_flags_horizontal = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="RightBorder" type="TextureRect" parent="."]
+margin_left = 33.0
+margin_right = 40.0
+margin_bottom = 40.0
+size_flags_horizontal = 10
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="TopBorder" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 7.0
+size_flags_vertical = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="BottomBorder" type="TextureRect" parent="."]
+margin_top = 33.0
+margin_right = 40.0
+margin_bottom = 40.0
+size_flags_vertical = 10
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="ContentContainer" type="MarginContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="ButtonContainer" type="HBoxContainer" parent="ContentContainer"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 30.0
+margin_bottom = 30.0

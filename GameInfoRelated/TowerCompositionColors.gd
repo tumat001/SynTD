@@ -50,11 +50,11 @@ const AnaSyn_GreenBY = preload("res://GameInfoRelated/ColorSynergyRelated/Analog
 const TriaSyn_RYB = preload("res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_RYB/TriaSyn_RYB.gd")
 const TriaSyn_OGV = preload("res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_OGV/TriaSyn_OGV.gd")
 
-var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
+#var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
 
 
 func _init():
-	inst_complesyn_yelvio_energymodule = CompleSyn_YelVio_EnergyModule.new(TowerDominantColors.inst_domsyn_yellow_energybattery)
+	#inst_complesyn_yelvio_energymodule = CompleSyn_YelVio_EnergyModule.new(TowerDominantColors.inst_domsyn_yellow_energybattery)
 	
 	# 
 	
@@ -112,14 +112,23 @@ func _init():
 		"10+ stacks) Pulse: Towers caught in the pulse receive healing, and have their next (3 + 1/5 of total stacks) attacks apply a slow for 8 seconds. Number of stacks inceases healing, size of Pulse, and the slow's effectiveness.",
 		"",
 	],
-	[CompliSyn_RedGreen.new()],
+	[CompliSyn_RedGreen],
 	[
-		#6 damage per bolt
-		["(Red: |0| per stack, |1| per bolt.) (Green: 0.5 seconds per stack. 40% slow minimum.)", [interpreter_for_redgreen_dmg_per_stack_gold, interpreter_for_redgreen_dmg_per_bolt_gold]],
-		["(Red: |0| per stack, |1| per bolt.) (Green: 0.4 seconds per stack. 30% slow minimum.)", [interpreter_for_redgreen_dmg_per_stack_silver, interpreter_for_redgreen_dmg_per_bolt_silver]],
 		["(Red: |0| per stack, |1| per bolt.) (Green: 0.3 seconds per stack. 20% slow minimum.)", [interpreter_for_redgreen_dmg_per_stack_bronze, interpreter_for_redgreen_dmg_per_bolt_bronze]],
+		["(Red: |0| per stack, |1| per bolt.) (Green: 0.4 seconds per stack. 30% slow minimum.)", [interpreter_for_redgreen_dmg_per_stack_silver, interpreter_for_redgreen_dmg_per_bolt_silver]],
+		["(Red: |0| per stack, |1| per bolt.) (Green: 0.5 seconds per stack. 40% slow minimum.)", [interpreter_for_redgreen_dmg_per_stack_gold, interpreter_for_redgreen_dmg_per_bolt_gold]],
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[
+		"Main attacks apply a stack of \"Red\" or \"Green\" based on the tower's color. Breaking the single color streak triggers effects.",
+		"If Red streak is broken: Deal additional damage.",
+		"If at 10+ stacks: shoot (5 + 1/2 of total stakcs) red bolt to random enemies in range.",
+		"",
+		"If Green streak is broken: Block the next enemy effect for a duration.",
+		"If at 10+ stacks: heal nearby towers, and slow enemies hit. Stacks increase the heal, the slow, and the number of attacks that apply the slow.",
+		""
+	]
 	)
 	
 	# 
@@ -171,12 +180,13 @@ func _init():
 		["Towers with heat modules with 100 heat gain 50% cooldown reduction for the explosion, and explosions deal |0|.", [interpreter_for_orangeblue_explosion_dmg_increase]],
 		""
 	],
-	[CompleSyn_OrangeBlue.new()],
+	[CompleSyn_OrangeBlue],
 	[
-		"Explosion per 0.4 seconds. Explosions are 100% larger.",
-		"Explosion per 1.5 seconds. Explosions are 75% larger.",
+		
+		"Explosion per 10.0 seconds.",
 		"Explosion per 4.5 seconds. Explosions are 25% larger.",
-		"Explosion per 10.0 seconds."
+		"Explosion per 1.5 seconds. Explosions are 75% larger.",
+		"Explosion per 0.4 seconds. Explosions are 100% larger.",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	)
@@ -208,18 +218,22 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_orangeYR,
 	[
-		"Main attacks cause towers to gain attack speed, which stacks up to a limit. Bonuses received per attack inversely scales with tower's attack speed.",
+		"Main attacks cause towers to gain attack speed, up to a limit.",
 		"15 seconds worth of attacks are required to reach the limit.",
 		""
 	],
-	[AnaSyn_OrangeYR.new()],
+	[AnaSyn_OrangeYR],
 	[
-		["Up to |0|", [interpreter_for_orangeYR_attk_speed_tier_1]],
-		["Up to |0|", [interpreter_for_orangeYR_attk_speed_tier_2]],
-		["Up to |0|", [interpreter_for_orangeYR_attk_speed_tier_3]],
-		["Up to |0|", [interpreter_for_orangeYR_attk_speed_tier_4]],
+		["Up to |0|.", [interpreter_for_orangeYR_attk_speed_tier_4]],
+		["Up to |0|.", [interpreter_for_orangeYR_attk_speed_tier_3]],
+		["Up to |0|.", [interpreter_for_orangeYR_attk_speed_tier_2]],
+		["Up to |0|.", [interpreter_for_orangeYR_attk_speed_tier_1]],
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[
+		"Main attacks cause towers to gain attack speed, up to a limit."
+	]
 	)
 	
 	#
@@ -309,21 +323,28 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_yellowGO,
 	[
-		"Brings about a Fluctuation, which buffs a tower for 3 seconds. Fluctuation then seeks another tower to buff.",
+		"Fluctuation: buff a tower for 3 seconds before buffing another tower.",
 		"Cycle: Fluctuation goes to the first tower that attacks. Afterwards, Fluctuation loops to the highest base damage tower, then to the highest attack speed tower, then to the tower that has dealt the most damage in the round.",
 		"Fluctuation cannot re-target to the same tower. Fluctuation will avoid towers that cannot attack, or with no enemies in its range. When no viable tower is found, the Cycle is reset.",
 		"",
 		"A Fluctuated tower gains buffs.",
 		""
 	],
-	[AnaSyn_YellowGO.new()],
+	[AnaSyn_YellowGO],
 	[
-		["+|0|, +|1|, +|2|, +|3|.", [interpreter_for_yelloGO_ele_on_hit_tier_1, interpreter_for_yelloGO_base_dmg_tier_1, interpreter_for_yelloGO_attk_speed_tier_1, interpreter_for_yelloGO_range_tier_1]],
-		["+|0|, +|1|, +|2|, +|3|", [interpreter_for_yelloGO_ele_on_hit_tier_2, interpreter_for_yelloGO_base_dmg_tier_2, interpreter_for_yelloGO_attk_speed_tier_2, interpreter_for_yelloGO_range_tier_2]],
+		["+|0|, +|1|, +|2|, +|3|.", [interpreter_for_yelloGO_ele_on_hit_tier_4, interpreter_for_yelloGO_base_dmg_tier_4, interpreter_for_yelloGO_attk_speed_tier_4, interpreter_for_yelloGO_range_tier_4]],
 		["+|0|, +|1|, +|2|, +|3|.", [interpreter_for_yelloGO_ele_on_hit_tier_3, interpreter_for_yelloGO_base_dmg_tier_3, interpreter_for_yelloGO_attk_speed_tier_3, interpreter_for_yelloGO_range_tier_3]],
-		["+|0|, +|1|, +|2|, +|3|.", [interpreter_for_yelloGO_ele_on_hit_tier_4, interpreter_for_yelloGO_base_dmg_tier_4, interpreter_for_yelloGO_attk_speed_tier_4, interpreter_for_yelloGO_range_tier_4]]
+		["+|0|, +|1|, +|2|, +|3|.", [interpreter_for_yelloGO_ele_on_hit_tier_2, interpreter_for_yelloGO_base_dmg_tier_2, interpreter_for_yelloGO_attk_speed_tier_2, interpreter_for_yelloGO_range_tier_2]],
+		["+|0|, +|1|, +|2|, +|3|.", [interpreter_for_yelloGO_ele_on_hit_tier_1, interpreter_for_yelloGO_base_dmg_tier_1, interpreter_for_yelloGO_attk_speed_tier_1, interpreter_for_yelloGO_range_tier_1]],
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[
+		"Buff a tower for 3 seconds before buffing another tower.",
+		"The highest base damage tower, attack speed tower, and the tower that dealt the most damage in the round are prioritized by the buff.",
+		"Towers with no enemies in their range are ignored.",
+		""
+	]
 	)
 	
 	#
@@ -376,12 +397,12 @@ func _init():
 		"Towers gain bonus elemental damage on hit per main attack, up to a limit. The bonus can be granted only once per second.",
 		""
 	],
-	[AnaSyn_GreenBY.new()],
+	[AnaSyn_GreenBY],
 	[
-		["+|0|, up to |1|", [interpreter_for_greenBY_ele_on_hit_per_stack_tier_1, interpreter_for_greenBY_ele_on_hit_max_tier_1]],
-		["+|0|, up to |1|", [interpreter_for_greenBY_ele_on_hit_per_stack_tier_2, interpreter_for_greenBY_ele_on_hit_max_tier_2]],
-		["+|0|, up to |1|", [interpreter_for_greenBY_ele_on_hit_per_stack_tier_3, interpreter_for_greenBY_ele_on_hit_max_tier_3]],
-		["+|0|, up to |1|", [interpreter_for_greenBY_ele_on_hit_per_stack_tier_4, interpreter_for_greenBY_ele_on_hit_max_tier_4]]
+		["+|0|, up to |1|.", [interpreter_for_greenBY_ele_on_hit_per_stack_tier_4, interpreter_for_greenBY_ele_on_hit_max_tier_4]],
+		["+|0|, up to |1|.", [interpreter_for_greenBY_ele_on_hit_per_stack_tier_3, interpreter_for_greenBY_ele_on_hit_max_tier_3]],
+		["+|0|, up to |1|.", [interpreter_for_greenBY_ele_on_hit_per_stack_tier_2, interpreter_for_greenBY_ele_on_hit_max_tier_2]],
+		["+|0|, up to |1|.", [interpreter_for_greenBY_ele_on_hit_per_stack_tier_1, interpreter_for_greenBY_ele_on_hit_max_tier_1]],
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	)
@@ -439,12 +460,13 @@ func _init():
 		["Towers with abilities whose cooldowns are not time-based are granted |0| per cast instead.", [interpreter_for_blueVG_ap_for_no_cd]],
 		""
 	],
-	[AnaSyn_BlueVG.new()],
+	[AnaSyn_BlueVG],
 	[
-		["|0|. +|1| per 15 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_1, interpreter_for_blueVG_ap_per_cast_ratio]],
-		["|0|. +|1| per 20 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_2, interpreter_for_blueVG_ap_per_cast_ratio]],
+		["|0|. +|1| per 40 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_4, interpreter_for_blueVG_ap_per_cast_ratio]],
 		["|0|. +|1| per 30 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_3, interpreter_for_blueVG_ap_per_cast_ratio]],
-		["|0|. +|1| per 40 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_4, interpreter_for_blueVG_ap_per_cast_ratio]]
+		["|0|. +|1| per 20 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_2, interpreter_for_blueVG_ap_per_cast_ratio]],
+		["|0|. +|1| per 15 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_1, interpreter_for_blueVG_ap_per_cast_ratio]],
+		
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	)
@@ -501,12 +523,12 @@ func _init():
 		"The last standing tower becomes invulenrable and immune to enemy effects, and gains 50% projectile speed for the rest of the round.",
 		""
 	],
-	[AnaSyn_VioletRB.new()],
+	[AnaSyn_VioletRB],
 	[
-		["|0|, |1|", [interpreter_for_violetRB_base_dmg_ratio_tier_1, interpreter_for_violetRB_ap_ratio_tier_1]],
-		["|0|, |1|", [interpreter_for_violetRB_base_dmg_ratio_tier_2, interpreter_for_violetRB_ap_ratio_tier_2]],
-		["|0|, |1|", [interpreter_for_violetRB_base_dmg_ratio_tier_3, interpreter_for_violetRB_ap_ratio_tier_3]],
-		["|0|, |1|", [interpreter_for_violetRB_base_dmg_ratio_tier_4, interpreter_for_violetRB_ap_ratio_tier_4]]
+		["|0|, |1|.", [interpreter_for_violetRB_base_dmg_ratio_tier_4, interpreter_for_violetRB_ap_ratio_tier_4]],
+		["|0|, |1|.", [interpreter_for_violetRB_base_dmg_ratio_tier_3, interpreter_for_violetRB_ap_ratio_tier_3]],
+		["|0|, |1|.", [interpreter_for_violetRB_base_dmg_ratio_tier_2, interpreter_for_violetRB_ap_ratio_tier_2]],
+		["|0|, |1|.", [interpreter_for_violetRB_base_dmg_ratio_tier_1, interpreter_for_violetRB_ap_ratio_tier_1]],
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	)
@@ -545,11 +567,11 @@ func _init():
 		"Cooldown: 1 round",
 		""
 	],
-	[TriaSyn_OGV.new()],
+	[TriaSyn_OGV],
 	[
-		["|0|. 30 max damage per round.", [interpreter_for_ogv_attk_speed_tier_1]],
+		["|0|. 15 max damage per round.", [interpreter_for_ogv_attk_speed_tier_3]],
 		["|0|. 20 max damage per round.", [interpreter_for_ogv_attk_speed_tier_2]],
-		["|0|. 15 max damage per round.", [interpreter_for_ogv_attk_speed_tier_3]]
+		["|0|. 30 max damage per round.", [interpreter_for_ogv_attk_speed_tier_1]],
 	]
 	)
 	
@@ -560,22 +582,24 @@ func _init():
 	# Comple
 	"RedGreen" : red_green_syn,
 	
-	"YellowViolet" : ColorSynergy.new("YellowViolet", [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
-	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
-	syn_compo_compli_yellowviolet,
-	[
-		"Gain bonuses depending on this synergy's tier.",
-		""
-	],
-	[inst_complesyn_yelvio_energymodule, CompleSyn_YelVio_YellowIng.new()],
-	[
-		"Gain 1 energy after a round when that round is won.",
-		"Gain 2 energy after a round when that round is lost.",
-		"Yellow towers can absorb 1 more ingredient.",
-		"Violet towers can now gain an Energy Module from the Yellow Synergy.",
-	],
-	ColorSynergy.HighlightDeterminer.ALL_BELOW
-	),
+	
+	
+#	"YellowViolet" : ColorSynergy.new("YellowViolet", [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
+#	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
+#	syn_compo_compli_yellowviolet,
+#	[
+#		"Gain bonuses depending on this synergy's tier.",
+#		""
+#	],
+#	[CompleSyn_YelVio_YellowIng.new()],
+#	[
+#		"Violet towers can now gain an Energy Module from the Yellow Synergy.",
+#		"Yellow towers can absorb 1 more ingredient.",
+#		"Gain 2 energy after a round when that round is lost.",
+#		"Gain 1 energy after a round when that round is won.",
+#	],
+#	ColorSynergy.HighlightDeterminer.ALL_BELOW
+#	),
 	
 	"OrangeBlue" : orange_blue_syn,
 	
@@ -588,11 +612,11 @@ func _init():
 		"All towers gain armor pierce and toughness pierce. These bonuses are doubled for the round after killing 4 enemies or dealing 140 post-mitigated damage.",
 		""
 	],
-	[AnaSyn_RedOV.new()],
+	[AnaSyn_RedOV],
 	[
-		"+14 armor and toughness pierce.",
+		"+4 armor and toughness pierce.",
 		"+8 armor and toughness pierce.",
-		"+4 armor and toughness pierce."
+		"+14 armor and toughness pierce.",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -618,7 +642,7 @@ func _init():
 #		"Void effects cannot be removed by any means.",
 #		""
 #	],
-#	[AnaSyn_VioletRB.new()],
+#	[AnaSyn_VioletRB],
 #	[
 #		"Pride Void",
 #		"Ability Void",
@@ -643,11 +667,11 @@ func _init():
 		"\"Just when they thought it was all over...\"",
 		""
 	],
-	[TriaSyn_RYB.new()],
+	[TriaSyn_RYB],
 	[
-		"25% damage resistance, 16 enemies",
-		"50% damage resistance, 10 enemies",
-		"70% damage resistance, 6 enemies"
+		"70% damage resistance, 6 enemies.",
+		"50% damage resistance, 10 enemies.",
+		"25% damage resistance, 16 enemies.",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -670,3 +694,12 @@ func _init():
 }
 
 var synergies : Dictionary
+
+#
+
+
+func reset_synergies_instances():
+	for syn in synergies.values():
+		syn.reset_synergy_effects_instances()
+
+

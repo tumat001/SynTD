@@ -5,7 +5,6 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
-const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 
 const BulletProj_Pic = preload("res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/LesSemis_Proj.png")
 

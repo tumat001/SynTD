@@ -10,6 +10,7 @@ const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 
+const Effect_Icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_FlameburtBurst.png")
 
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
@@ -41,7 +42,7 @@ var _curr_direction_index : int = 0
 var tree
 
 func _init().(StoreOfTowerEffectsUUID.ING_FLAMEBURST):
-	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_FlameburtBurst.png")
+	effect_icon = Effect_Icon
 	
 	# ins
 	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()

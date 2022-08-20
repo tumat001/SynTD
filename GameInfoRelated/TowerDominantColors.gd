@@ -35,13 +35,9 @@ const DomSyn_Red = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSy
 const DomSyn_Black = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/DomSyn_Black.gd")
 const DomSyn_Green = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/DomSyn_Green.gd")
 
-var inst_domsyn_yellow_energybattery : DomSyn_Yellow_EnergyBattery
-
 var synergies : Dictionary
 
 func _init():
-	inst_domsyn_yellow_energybattery = DomSyn_Yellow_EnergyBattery.new()
-	
 	#
 	
 	var interpreter_for_blue_ap_tier_1 = TextFragmentInterpreter.new()
@@ -69,11 +65,11 @@ func _init():
 		"Additionally, all Blue towers gain ability potency.",
 		""
 	],
-	[DomSyn_Blue.new()],
+	[DomSyn_Blue],
 	[
-		["Renew & Empower : Multi purpose abilities. +|0|.", [interpreter_for_blue_ap_tier_1]],
+		["Sea Breeze : Slow and minor damage to all enemies. +|0|.", [interpreter_for_blue_ap_tier_3]],
 		["Mana Blast: Big AOE damage, and AOE ability potency buff. +|0|.", [interpreter_for_blue_ap_tier_2]],
-		["Sea Breeze : Slow and minor damage to all enemies. +|0|.", [interpreter_for_blue_ap_tier_3]]
+		["Renew & Empower : Multi purpose abilities. +|0|.", [interpreter_for_blue_ap_tier_1]],
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	)
@@ -105,12 +101,12 @@ func _init():
 	[
 		"Black towers gain bonus stats and effects."
 	],
-	[DomSyn_Black.new()],
+	[DomSyn_Black],
 	[
-		"The chosen dark path is upgraded.",
-		"Choose one of the four dark paths to take.",
+		["Damage is increased by |0|.", [interpreter_for_black_bonus_dmg]],
 		["Main attacks on hit causes the attacking tower to give a random black tower |0| for 6 attacks for 5 seconds. This effect has a 3 second cooldown.", [interpreter_for_black_attk_speed_give]],
-		["Damage is increased by |0|.", [interpreter_for_black_bonus_dmg]]
+		"Choose one of the four dark paths to take.",
+		"The chosen dark path is upgraded.",
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	)
@@ -132,16 +128,16 @@ func _init():
 		"",
 		"Synergy level affects the quality and types of unsworn pacts that appear in the shop.",
 	],
-	[DomSyn_Red.new()],
+	[DomSyn_Red],
 	[
-		"Advanced Shop",
+		"Basic shop",
 		"Intermediate Shop",
-		"Basic shop"
+		"Advanced Shop",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [12, 9, 6, 3],
+	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [4, 3, 2, 1],#[12, 9, 6, 3], #todo
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
 	[
@@ -155,17 +151,17 @@ func _init():
 		"Synergy level increases the effectiveness of the effect.",
 		"",
 	],
-	[DomSyn_Orange.new()],
+	[DomSyn_Orange],
 	[
-		"6000% effectiveness", # reachable only by green tier 1
-		"500% effectiveness",
-		"300% effectiveness",
-		"100% effectiveness",
+		"100% effectiveness.",
+		"300% effectiveness.",
+		"500% effectiveness.",
+		"6000% effectiveness.", # reachable only by green tier 1
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [10, 8, 5, 3],
+	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [4, 3, 2, 1], #[10, 8, 5, 3], #todo
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[
@@ -177,19 +173,19 @@ func _init():
 		"Energy Battery and attached Modules (and Module's effects) persist even when the synergy is lost.",
 		"",
 	],
-	[DomSyn_Yellow_GoldIncome.new(), inst_domsyn_yellow_energybattery],
+	[DomSyn_Yellow_GoldIncome, DomSyn_Yellow_EnergyBattery],
 	[
-		"Activates ENERGIZE. Battery has 9 energy capacity. Gain 3 energy per turn.",
-		"Activates ENERGIZE. Battery has 6 energy capacity. Gain 2 energy per turn.",
+		"+1 gold per round.",
 		"Activates ENERGIZE. Battery has 4 energy capacity. Gain 1 energy per turn.",
-		"+1 gold per round."
+		"Activates ENERGIZE. Battery has 6 energy capacity. Gain 2 energy per turn.",
+		"Activates ENERGIZE. Battery has 9 energy capacity. Gain 3 energy per turn.",
 	],
 	ColorSynergy.HighlightDeterminer.CUSTOM,
 	{
-		1: [3, 0],
-		2: [3, 1],
-		3: [3, 2],
-		4: [3],
+		1: [0, 3],
+		2: [0, 2],
+		3: [0, 1],
+		4: [0],
 		0: [],
 	}
 	),
@@ -204,12 +200,12 @@ func _init():
 		"Adaptations are active only when their tier requirement is met, unless otherwise stated.",
 		""
 	],
-	[DomSyn_Green.new()],
+	[DomSyn_Green],
 	[
-		"Adapt: Beyond", # reachable only by fruit tree
-		"Adapt: Triumph",
-		"Adapt: Bloom",
-		"Adapt: Foundation"
+		"Adapt: Foundation.",
+		"Adapt: Bloom.",
+		"Adapt: Triumph.",
+		"Adapt: Beyond.", # reachable only by fruit tree
 	],
 	ColorSynergy.HighlightDeterminer.ALL_BELOW
 	),
@@ -226,12 +222,12 @@ func _init():
 		"These effects apply only when the limit of total and Violet towers in the map is satisfied.",
 		""
 	],
-	[DomSyn_Violet.new()],
+	[DomSyn_Violet],
 	[
-		"+2 ingredients. 14 total tower limit, 6 violet tower limit",
-		"+3 ingredients. 9 total tower limit, 4 violet tower limit",
-		"+5 ingredients. 6 total tower limit, 3 violet tower limit",
 		"+50 ingredients. 3 total tower limit, 2 violet tower limit.",
+		"+5 ingredients. 6 total tower limit, 3 violet tower limit.",
+		"+3 ingredients. 9 total tower limit, 4 violet tower limit.",
+		"+2 ingredients. 14 total tower limit, 6 violet tower limit.",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
@@ -245,22 +241,11 @@ func _init():
 	
 	"Black" : black_syn,
 	
-#	"Black" : ColorSynergy.new("Black", [TowerColors.BLACK], [11, 8, 6, 2],
-#	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-#	syn_dom_black,
-#	[
-#		"Black tower's attacks give a stack of Corruption to enemies on hit. Black towers with base damages 5.5 or higher will apply 3 stacks instead.",
-#		"Corruption stacks last for 15 seconds. Re-applications refresh all stacks.",
-#		"Black towers that hit enemies with a certain number of stacks cause effects.",
-#		"",
-#	],
-#	[DomSyn_Black.new()],
-#	[
-#		"10+ stacks: All attacks deal 10% of the enemy's missing health as elemental damage on hit, up to 7.",
-#		"7+ stacks: Main attacks on hit cause a black beam to hit a random enemy in range. This can only be triggered every 0.1 seconds. The beam deals 1.5 physical damage, and benefits from base damage and on hit damage buffs at 25% efficiency. Also applies on hit effects.",
-#		"5+ stacks: Main attacks on hit causes the attacking tower to give a random black tower 30% bonus attack speed for 6 attacks for 5 seconds. This effect has a 3 second cooldown.",
-#		"2+ stacks: All attack's damage is increased by 10%."
-#	],
-#	ColorSynergy.HighlightDeterminer.ALL_BELOW
-#	)
 }
+
+
+func reset_synergies_instances():
+	for syn in synergies.values():
+		syn.reset_synergy_effects_instances()
+
+

@@ -20,13 +20,21 @@ enum PlacableState {
 
 #
 
-var chosen_map_id : int
+var chosen_map_id : int setget set_chosen_map_id
 
 var base_map : BaseMap
 
 #
 
 func _ready():
+	pass
+
+#
+
+
+func set_chosen_map_id(arg_id):
+	chosen_map_id = arg_id
+	
 	_assign_map_from_store_of_maps()
 	
 	for child in get_children():
@@ -34,7 +42,6 @@ func _ready():
 			base_map = child
 			break
 
-#
 
 func _assign_map_from_store_of_maps():
 	var chosen_map = StoreOfMaps.get_map_from_map_id(chosen_map_id).instance()

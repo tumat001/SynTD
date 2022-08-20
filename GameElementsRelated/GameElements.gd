@@ -71,8 +71,21 @@ onready var bottom_right_coord_of_map = $BottomRight
 
 onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
 
-# Called when the node enters the scene tree for the first time.
+# Vars to be set by outside of game elements
+
+var game_mode_id : int
+var map_id : int
+
+
+#
+
 func _ready():
+	#
+	
+	game_mode_id = CommsForBetweenScenes.game_mode_id
+	map_id = CommsForBetweenScenes.map_id
+	
+	#
 	panel_buy_sell_level_roll = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel
 	synergy_manager = $SynergyManager
 	inner_bottom_panel = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel
@@ -101,6 +114,12 @@ func _ready():
 	
 	selection_notif_panel = $NotificationNode/SelectionNotifPanel
 	tower_empty_slot_notif_panel = $NotificationNode/TowerEmptySlotNotifPanel
+	
+	#
+	
+	map_manager.set_chosen_map_id(map_id)
+	
+	#
 	
 	targeting_panel = right_side_panel.tower_info_panel.targeting_panel
 	tower_info_panel = right_side_panel.tower_info_panel
@@ -254,7 +273,7 @@ func _ready():
 	
 	
 	#GAME START
-	stage_round_manager.set_game_mode_to_normal()
+	stage_round_manager.set_game_mode(game_mode_id)
 	stage_round_manager.end_round(true)
 	
 	gold_manager.increase_gold_by(3, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
@@ -262,11 +281,11 @@ func _ready():
 	health_manager.set_health(150)
 	
 	
-	# FOR TESTING
+	# FOR TESTING ------------------------------------
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	level_manager.current_level = LevelManager.LEVEL_7
 	#level_manager.current_level = LevelManager.LEVEL_3
-
+	
 	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
@@ -285,17 +304,17 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.ROYAL_FLAME,
-			Towers.PAROXYSM,
-			Towers.ASHEND,
-			Towers.IOTA,
+			Towers.BURGEON,
+			Towers.ROYAL_FLAME,
+			Towers.ACCUMULAE,
 			Towers.LA_CHASSEUR,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.ROYAL_FLAME,
-			Towers.ENTROPY,
-			Towers.PROPEL,
-			Towers.REBOUND,
+			Towers.BEACON_DISH,
+			Towers.MAGNETIZER,
+			Towers.CHARGE,
+			Towers.MINI_TESLA,
 			Towers.GRAND,
 			Towers.EMBER
 		])

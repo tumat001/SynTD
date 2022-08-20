@@ -114,6 +114,10 @@ func _unpause_game():
 	
 	set_process_unhandled_key_input(false)
 
+func unpause_game__accessed_for_scene_change():
+	_unpause_game()
+
+
 
 #######
 
@@ -149,7 +153,6 @@ func hide_or_remove_latest_from_pause_tree__and_unpause_if_empty():
 			hide_control(node)
 		else:
 			remove_control(node)
-	
 
 
 #

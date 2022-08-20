@@ -1557,7 +1557,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.85
-		info.base_attk_speed = 0.765
+		info.base_attk_speed = 0.785
 		info.base_pierce = 0
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -4678,9 +4678,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var outer_ins = []
 		var ins = []
-		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 5, DamageType.PHYSICAL))
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 10, DamageType.PHYSICAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1)) # stat basis does not matter here
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 2.5)) # stat basis does not matter here
 		
 		outer_ins.append(ins)
 		
@@ -4697,7 +4697,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_flat_on_hit.display_body = false
 		
 		var ins_for_flat_on_hit = []
-		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "on hit physical damage", 2))
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "on hit physical damage", 3))
 		
 		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 		
@@ -5063,7 +5063,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		
-		
 	elif tower_id == IOTA:
 		info = TowerTypeInformation.new("Iota", tower_id)
 		info.tower_tier = TowerTiersMap[tower_id]
@@ -5086,9 +5085,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_crash_dmg.display_body = true
 		
 		var ins_for_crash_dmg = []
-		ins_for_crash_dmg.append(NumericalTextFragment.new(2.5, false, DamageType.PHYSICAL))
+		ins_for_crash_dmg.append(NumericalTextFragment.new(2.0, false, DamageType.PHYSICAL))
 		ins_for_crash_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_crash_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25)) # stat basis does not matter here
+		ins_for_crash_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0)) # stat basis does not matter here
 		
 		interpreter_for_crash_dmg.array_of_instructions = ins_for_crash_dmg
 		
@@ -5107,13 +5106,32 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		#
 		
 		info.tower_descriptions = [
-			["Every 8th main attack leaves a Star near the target's location for 30 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.", [interpreter_for_crash_dmg]],
+			["Every 8th main attack leaves a Star near the target's location for 20 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.", [interpreter_for_crash_dmg]],
 			"",
-			["When all enemies have spawned, each idle Star focuses a beam at Iota's current target or the first enemy, dealing |0| per 0.25 seconds.", [interpreter_for_beam_dmg]],
+			["When all enemies have spawned, all idle Stars focus a beam at a target, dealing |0| per 0.25 seconds.", [interpreter_for_beam_dmg]],
 			"When only one enemy remains, all Stars crash to that enemy.",
 			"",
 			"Targeting affects which enemies are targeted by the Stars."
 		]
+		
+		info.tower_simple_descriptions = [
+			["Every 8th main attack leaves a Star near the target's location for 20 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.", [interpreter_for_crash_dmg]],
+			"",
+			["When all enemies have spawned, all idle Stars focus a beam at a target, dealing |0| per 0.25 seconds.", [interpreter_for_beam_dmg]],
+			"When only one enemy remains, all Stars crash to that enemy.",
+		]
+		
+		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_IOTA)
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_IOTA)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
 		
 		
 		

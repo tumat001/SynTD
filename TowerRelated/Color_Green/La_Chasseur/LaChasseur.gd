@@ -21,9 +21,10 @@ const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic
 
 signal on_hit_bonus_changed()
 
-const bonus_on_hit_damage_per_kill : float = 2.0
+const bonus_on_hit_damage_per_kill : float = 3.0
 const on_hit_damage_type : int = DamageType.PHYSICAL
-const shot_total_base_damage_ratio : float = 5.0
+const shot_base_damage_ratio : float = 10.0
+const shot_on_hit_dmg_ratio : float = 2.5
 
 const gold_gained_per_kill : int = 3
 
@@ -100,7 +101,8 @@ func _ready():
 	#
 	
 	shot_attack_module = InstantDamageAttackModule_Scene.instance()
-	shot_attack_module.base_damage = 0
+	shot_attack_module.base_damage_scale = shot_base_damage_ratio
+	shot_attack_module.base_damage = info.base_damage
 	shot_attack_module.base_damage_type = DamageType.PHYSICAL
 	shot_attack_module.base_attack_speed = 4
 	shot_attack_module.base_attack_wind_up = 0
@@ -109,7 +111,7 @@ func _ready():
 	shot_attack_module.position.y -= 20
 	shot_attack_module.position.x += 17
 	shot_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	
+	shot_attack_module.on_hit_damage_scale = shot_on_hit_dmg_ratio
 	
 	shot_attack_module.connect("on_post_mitigation_damage_dealt", self, "_check_if_shot_killed_enemy", [], CONNECT_PERSIST)
 	shot_attack_module.connect("on_enemy_hit", self, "_on_enemy_hit_by_shot", [], CONNECT_PERSIST)
@@ -306,7 +308,8 @@ func _on_enemy_hit_by_shot(arg_enemy, damage_register_id, damage_instance, attk_
 	
 
 func _on_damage_instance_constructed_by_shot_attk_module(arg_damage_instance, attk_module):
-	arg_damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE].damage_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * shot_total_base_damage_ratio * hunt_down_ability.get_potency_to_use(last_calculated_final_ability_potency)
+	#arg_damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE].damage_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * shot_total_base_damage_ratio * hunt_down_ability.get_potency_to_use(last_calculated_final_ability_potency)
+	arg_damage_instance.scale_only_damage_by(hunt_down_ability.get_potency_to_use(last_calculated_final_ability_potency))
 	
 #	arg_damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE].damage_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage
 #	var scale_of_base_dmg = shot_total_base_damage_ratio * hunt_down_ability.get_potency_to_use(last_calculated_final_ability_potency)

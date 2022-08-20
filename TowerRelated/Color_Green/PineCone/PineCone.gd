@@ -6,7 +6,6 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
-const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 
 const Pinecone_Proj = preload("res://TowerRelated/Color_Green/PineCone/Attks/PineCone_MainProj.png")
 const Pinecone_SmallProj = preload("res://TowerRelated/Color_Green/PineCone/Attks/PineCone_SmallerProj.png")

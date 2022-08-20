@@ -393,7 +393,7 @@ var all_combinations_id_to_effect_id_map : Dictionary = {}
 # Modulate related
 
 enum TowerModulateIds {
-	
+	TOWER_DETECTING_RANGE_MODULE = 10
 	
 	PROPEL_INVIS = 100
 }

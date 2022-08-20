@@ -1,0 +1,54 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://SingletonForCommsRelated/BetweenScenesRelated/WholeLoadingScreen.gd" type="Script" id=1]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/PlayerGUI_ProgressBar/PlayerGUI_ProgressBar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=3]
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/Assets/WhiteLine_7x7.png" type="Texture" id=4]
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/Assets/GrayLine_7x7.png" type="Texture" id=5]
+
+[sub_resource type="DynamicFont" id=1]
+size = 30
+font_data = ExtResource( 3 )
+
+[node name="WholeLoadingScreen" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+rect_min_size = Vector2( 960, 540 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 960.0
+margin_bottom = 540.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 330.0
+margin_top = 232.0
+margin_right = 630.0
+margin_bottom = 307.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+custom_constants/separation = 8
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+margin_left = 90.0
+margin_right = 209.0
+margin_bottom = 31.0
+size_flags_horizontal = 6
+custom_fonts/font = SubResource( 1 )
+text = "Loading"
+
+[node name="ProgressBar" parent="VBoxContainer" instance=ExtResource( 2 )]
+margin_top = 39.0
+margin_right = 300.0
+margin_bottom = 75.0
+rect_min_size = Vector2( 300, 36 )
+size_flags_horizontal = 6
+size_flags_vertical = 6
+fill_foreground_pic = ExtResource( 4 )

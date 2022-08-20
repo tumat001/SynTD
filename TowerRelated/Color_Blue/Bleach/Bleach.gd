@@ -5,7 +5,6 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
-const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 
 const Bleach_NormalProj01 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/Bleach_Bullet01.png")
 const Bleach_NormalProj02 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/Bleach_Bullet02.png")

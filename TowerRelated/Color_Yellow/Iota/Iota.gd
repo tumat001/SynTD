@@ -52,13 +52,13 @@ signal on_current_target_for_stars_changed()
 signal all_stars_crash_to_target()
 signal all_stars_beam_to_target(arg_target)
 
-const star_base_lifetime : float = 30.0
+const star_base_lifetime : float = 20.0
 const star_beam_flat_dmg_amount : float = 0.25
 const star_beam_base_dmg_scale : float = 0.05
 const star_beam_attack_speed : float = 4.0 # 4 times per sec (just like attack speed)
 
-const star_crash_flat_dmg_amount : float = 2.5
-const star_crash_on_hit_dmg_scale : float = 0.25
+const star_crash_flat_dmg_amount : float = 2.0
+const star_crash_on_hit_dmg_scale : float = 1.0
 
 const main_attacks_for_star_summon : int = 8
 var _current_main_attack_count : int
@@ -68,7 +68,8 @@ var star_bullet_attack_module : BulletAttackModule
 var star_positioning_rng : RandomNumberGenerator
 
 var star_homing_component_pool : BulletHomingComponentPool
-const star_home_max_deg_turn_per_sec : float = 200.0
+const star_home_max_deg_turn_per_sec__for_effect : float = 200.0
+const star_home_max_deg_turn_per_sec__for_crashing : float = 350.0
 
 
 var star_beam_attack_module : InstantDamageAttackModule
@@ -76,6 +77,10 @@ const not_at_beam_state_can_be_commanded_clause : int = -10
 
 var current_star_target
 var current_star_at_beam_state_count
+
+
+var is_energy_module_on : bool = false
+var star_pierce_count_on_energy : int = 5
 
 #
 
@@ -150,6 +155,9 @@ func _ready():
 	connect("on_round_end", self, "_on_round_end_i", [], CONNECT_PERSIST)
 	connect("targeting_changed", self, "_on_range_module_current_targeting_changed", [], CONNECT_PERSIST)
 	game_elements.enemy_manager.connect("enemy_spawned", self, "_on_enemy_spawned", [], CONNECT_PERSIST)
+	
+	
+	info_bar_layer.position.y -= 31
 	
 	#
 	
@@ -236,7 +244,6 @@ func _construct_and_add_star_beam_attack_module():
 
 func _create_star_homing_component():
 	var star_homing_component = BulletHomingComponent.new()
-	star_homing_component.max_deg_angle_turn_amount_per_sec = star_home_max_deg_turn_per_sec
 	
 	return star_homing_component
 
@@ -274,9 +281,13 @@ func _shoot_star_towards_enemy(arg_enemy):
 	
 	star.iota_tower = self
 	
+	if is_energy_module_on:
+		star.pierce = star_pierce_count_on_energy
+	
 	var bullet_homing_component : BulletHomingComponent = star_homing_component_pool.get_or_create_resource_from_pool()
 	bullet_homing_component.bullet = star
 	bullet_homing_component.target_node_to_home_to = arg_enemy
+	bullet_homing_component.max_deg_angle_turn_amount_per_sec = star_home_max_deg_turn_per_sec__for_effect
 	
 	star.connect("hit_an_enemy", self, "_on_star_hit_enemy", [bullet_homing_component], CONNECT_ONESHOT)
 	star.connect("on_request_configure_self_for_crash", self, "_configure_crashing_star")
@@ -355,17 +366,17 @@ func _on_star_tree_exiting(arg_component : BulletHomingComponent):
 
 func _configure_crashing_star(arg_star : Iota_StarBullet):
 	if !arg_star.has_homing_component_attached:
-		
 		var target = get_current_star_target()
 		
 		if target != null and !target.is_queued_for_deletion():
 			arg_star.speed_inc_per_sec = 150
-			arg_star.speed_max = 500
-			arg_star.speed = 2
+			arg_star.speed_max = 350
+			arg_star.speed += 2
 			
 			var star_homing_component = star_homing_component_pool.get_or_create_resource_from_pool()
 			star_homing_component.bullet = arg_star
 			star_homing_component.target_node_to_home_to = target
+			star_homing_component.max_deg_angle_turn_amount_per_sec = star_home_max_deg_turn_per_sec__for_crashing
 			
 			if !star_homing_component.is_connected("on_target_tree_exiting", self, "_on_enemy_targeted_by_homing_crashing_star_tree_exiting"):
 				star_homing_component.connect("on_target_tree_exiting", self, "_on_enemy_targeted_by_homing_crashing_star_tree_exiting", [arg_star, star_homing_component])
@@ -494,6 +505,20 @@ func set_iota_state(arg_state):
 func _check_enemies_spawned_ratio_from_ins():
 	var ratio = game_elements.enemy_manager.get_percent_of_enemies_spawned_to_total_from_ins()
 	
+	if current_iota_state == IotaState.Normal:
+		if ratio > 0.75:
+			middle_tube_sprite.texture = MiddleTube_Blue_Pic
+			left_tube_sprite.texture = LeftRightTube_Blue_Pic
+			right_tube_sprite.texture = LeftRightTube_Blue_Pic
+		elif ratio > 0.5:
+			middle_tube_sprite.texture = MiddleTube_Yellow_Pic
+			left_tube_sprite.texture = LeftRightTube_Blue_Pic
+			right_tube_sprite.texture = LeftRightTube_Blue_Pic
+		elif ratio > 0.25:
+			middle_tube_sprite.texture = MiddleTube_Yellow_Pic
+			left_tube_sprite.texture = LeftRightTube_Blue_Pic
+			right_tube_sprite.texture = LeftRightTube_Yellow_Pic
+	
 	if is_equal_approx(ratio, 1.0):
 		if current_iota_state != IotaState.AllCrash:
 			set_iota_state(IotaState.Beam)
@@ -527,6 +552,26 @@ func _star_beam_attk_module_ready_to_attack(arg_target):
 func _on_star_beam_damage_instance_constructed(arg_dmg_instance, arg_module):
 	if current_star_at_beam_state_count > 0:
 		arg_dmg_instance.scale_only_damage_by(current_star_at_beam_state_count)
+
+
+#
+
+
+func set_energy_module(module):
+	.set_energy_module(module)
+	
+	if module != null:
+		module.module_effect_descriptions = [
+			"Crashing stars can now hit its target up to 5 times."
+		]
+
+
+func _module_turned_on(_first_time_per_round : bool):
+	is_energy_module_on = true
+
+
+func _module_turned_off():
+	is_energy_module_on = false
 
 
 

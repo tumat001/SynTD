@@ -1,0 +1,88 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/MapSummaryPanel/MapSummaryPanel.gd" type="Script" id=1]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=2]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/ButtonStandard/PlayerGUI_ButtonStandard.tscn" type="PackedScene" id=3]
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/Assets/WhiteLine_7x7.png" type="Texture" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+font_data = ExtResource( 2 )
+
+[node name="MapSummaryPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BodyBackground" type="TextureRect" parent="."]
+margin_right = 131.0
+margin_bottom = 126.0
+
+[node name="LeftBorder" type="TextureRect" parent="."]
+margin_right = 7.0
+margin_bottom = 126.0
+size_flags_horizontal = 2
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="RightBorder" type="TextureRect" parent="."]
+margin_left = 124.0
+margin_right = 131.0
+margin_bottom = 126.0
+size_flags_horizontal = 10
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="TopBorder" type="TextureRect" parent="."]
+margin_right = 131.0
+margin_bottom = 7.0
+size_flags_vertical = 2
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="BottomBorder" type="TextureRect" parent="."]
+margin_top = 119.0
+margin_right = 131.0
+margin_bottom = 126.0
+size_flags_vertical = 10
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="Container" type="MarginContainer" parent="."]
+margin_right = 131.0
+margin_bottom = 126.0
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 121.0
+margin_bottom = 116.0
+
+[node name="MapNameLabel" type="Label" parent="Container/VBoxContainer"]
+margin_right = 111.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 1 )
+text = "Map:"
+
+[node name="DifficultyLabel" type="Label" parent="Container/VBoxContainer"]
+margin_top = 21.0
+margin_right = 111.0
+margin_bottom = 38.0
+custom_fonts/font = SubResource( 1 )
+text = "Difficulty:"
+
+[node name="PlayButton" parent="Container/VBoxContainer" instance=ExtResource( 3 )]
+margin_top = 42.0
+margin_right = 111.0
+margin_bottom = 106.0
+size_flags_horizontal = 6
+size_flags_vertical = 10
+custom_constants/margin_top = 15
+text_for_label = "Play"
+[connection signal="on_button_released_with_button_left" from="Container/VBoxContainer/PlayButton" to="." method="_on_PlayButton_on_button_released_with_button_left"]

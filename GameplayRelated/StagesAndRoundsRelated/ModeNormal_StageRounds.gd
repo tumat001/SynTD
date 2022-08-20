@@ -1,7 +1,7 @@
 extends "res://GameplayRelated/StagesAndRoundsRelated/BaseMode_StageRounds.gd"
 
-#const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
 
+var first_half_faction : int setget ,get_first_half_faction
 var second_half_faction : int setget ,get_second_half_faction
 
 func _init():
@@ -62,17 +62,30 @@ func _init():
 # second half faction
 
 func _decide_second_half_faction():
-	var factions = EnemyConstants.faction_id_pool.duplicate(true) #EnemyConstants.EnemyFactions.values().duplicate(false)
-	factions.erase(EnemyConstants.EnemyFactions.BASIC)
+	var second_half_factions = EnemyConstants.second_half_faction_id_pool.duplicate(true)
 	
 	var faction_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SECOND_HALF_FACTION)
-	var rand_num = faction_rng.randi_range(0, factions.size() - 1)
+	var rand_num = faction_rng.randi_range(0, second_half_factions.size() - 1)
 	
-	second_half_faction = factions[rand_num]
+	second_half_faction = second_half_factions[rand_num]
 
 
 func get_second_half_faction() -> int:
 	return second_half_faction
+
+
+# first half factin
+
+func _decide_first_half_faction():
+	var first_half_factions = EnemyConstants.first_half_faction_id_pool.duplicate(true)
+	
+	var faction_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SECOND_HALF_FACTION)
+	var rand_num = faction_rng.randi_range(0, first_half_factions.size() - 1)
+	
+	first_half_faction = first_half_factions[rand_num]
+
+func get_first_half_faction() -> int:
+	return first_half_faction
 
 
 # stagerounds

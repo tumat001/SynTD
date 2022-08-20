@@ -1,0 +1,64 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/PlayerGUI_ProgressBar/PlayerGUI_ProgressBar.gd" type="Script" id=1]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/PlayerGUI_ProgressBar/Assets/WhiteLine_11x11.png" type="Texture" id=2]
+
+[node name="PlayerGUI_ProgressBar" type="MarginContainer"]
+margin_right = 35.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BodyBackground" type="TextureRect" parent="."]
+margin_right = 35.0
+margin_bottom = 40.0
+
+[node name="LeftBorder" type="TextureRect" parent="."]
+margin_right = 11.0
+margin_bottom = 40.0
+size_flags_horizontal = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="RightBorder" type="TextureRect" parent="."]
+margin_left = 24.0
+margin_right = 35.0
+margin_bottom = 40.0
+size_flags_horizontal = 10
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="TopBorder" type="TextureRect" parent="."]
+margin_right = 35.0
+margin_bottom = 11.0
+size_flags_vertical = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="BottomBorder" type="TextureRect" parent="."]
+margin_top = 29.0
+margin_right = 35.0
+margin_bottom = 40.0
+size_flags_vertical = 10
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 35.0
+margin_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 11
+custom_constants/margin_top = 11
+custom_constants/margin_left = 11
+custom_constants/margin_bottom = 11
+
+[node name="FillForeground" type="TextureRect" parent="MarginContainer"]
+margin_left = 11.0
+margin_top = 11.0
+margin_right = 24.0
+margin_bottom = 29.0
+size_flags_vertical = 3
+stretch_mode = 2

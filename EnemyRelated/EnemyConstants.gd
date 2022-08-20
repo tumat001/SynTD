@@ -55,16 +55,19 @@ enum Enemies {
 	
 }
 
-var faction_id_pool : Array
+
+var first_half_faction_id_pool : Array
+var second_half_faction_id_pool : Array
 
 
 func _init():
 	#for faction_id in EnemyFactions.values():
 	#	faction_id_pool.append(faction_id)
 	
+	first_half_faction_id_pool.append(EnemyFactions.BASIC)
 	
-	faction_id_pool.append(EnemyFactions.EXPERT)
-	faction_id_pool.append(EnemyFactions.FAITHFUL)
+	second_half_faction_id_pool.append(EnemyFactions.EXPERT)
+	second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
 	#faction_id_pool.append(EnemyFactions.SKIRMISHERS)
 
 
@@ -85,12 +88,12 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.DASH:
 		info = EnemyTypeInformation.new(Enemies.DASH, EnemyFactions.BASIC)
-		info.base_health = 38
+		info.base_health = 40 #38
 		info.base_movement_speed = 34
 		
 	elif enemy_id == Enemies.HEALER:
 		info = EnemyTypeInformation.new(Enemies.HEALER, EnemyFactions.BASIC)
-		info.base_health = 1#36
+		info.base_health = 38 #36
 		info.base_movement_speed = 30
 		
 	elif enemy_id == Enemies.WIZARD:

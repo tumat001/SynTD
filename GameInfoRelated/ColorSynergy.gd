@@ -30,6 +30,7 @@ var synergy_simple_descriptions : Array = []
 var synergy_picture
 
 var synergy_effects : Array
+var synergy_effects_gd_script : Array
 var synergy_effects_descriptions : Array = []
 
 var highlight_determiner : int
@@ -56,7 +57,7 @@ func _init(arg_synergy_name : String,
 		arg_tier_pic_per_tier : Array,
 		arg_synergy_picture,
 		arg_synergy_descriptions : Array,
-		arg_synergy_effects = [],
+		arg_synergy_effects_gd_script = [],
 		arg_synergy_effects_descriptions = [],
 		arg_highlight_determiner : int = HighlightDeterminer.SINGLE,
 		arg_custom_highlight_instructions = {},
@@ -68,11 +69,27 @@ func _init(arg_synergy_name : String,
 	synergy_picture = arg_synergy_picture
 	tier_pic_per_tier = arg_tier_pic_per_tier
 	synergy_descriptions = arg_synergy_descriptions
-	synergy_effects = arg_synergy_effects
+	
+	#synergy_effects = arg_synergy_effects
+	synergy_effects_gd_script = arg_synergy_effects_gd_script
+	
 	synergy_effects_descriptions = arg_synergy_effects_descriptions
 	highlight_determiner = arg_highlight_determiner
 	custom_highlight_instructions = arg_custom_highlight_instructions
 	synergy_simple_descriptions = arg_synergy_simple_descriptions
+	
+	#reset_synergy_effects_instances()
+
+
+#
+
+func reset_synergy_effects_instances():
+	synergy_effects.clear()
+	
+	for script in synergy_effects_gd_script:
+		synergy_effects.append(script.new())
+
+
 
 # A quick eliminator of non-candidates
 func quick_incomplete_check_if_requirements_met(colors_active : Array) -> bool:

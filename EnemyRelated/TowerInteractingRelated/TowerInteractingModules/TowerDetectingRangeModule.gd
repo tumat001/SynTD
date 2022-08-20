@@ -160,7 +160,7 @@ func glow_all_towers_in_range():
 
 func _apply_glow_to_tower(tower : AbstractTower):
 	if tower.current_placable is InMapAreaPlacable or tower.is_being_dragged:
-		tower.set_tower_sprite_modulate(Color(1.5, 1.5, 1.5, 1))
+		tower.set_tower_base_modulate(AbstractTower.TowerModulateIds.TOWER_DETECTING_RANGE_MODULE, Color(1.5, 1.5, 1.5, 1))
 
 
 
@@ -170,7 +170,7 @@ func unglow_all_towers_in_range():
 		_unapply_glow_to_tower(tower)
 
 func _unapply_glow_to_tower(tower : AbstractTower):
-	tower.set_tower_sprite_modulate(Color(1, 1, 1, 1))
+	tower.remove_tower_base_modulate(AbstractTower.TowerModulateIds.TOWER_DETECTING_RANGE_MODULE)
 
 
 #
