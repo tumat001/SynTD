@@ -128,6 +128,7 @@ var attempt_count_trigger_for_level_up_to_place_more : AttemptCountTrigger
 
 const tower_takes_more_than_1_slot_content_desc : String = "%s takes %s tower slots."
 
+var can_show_player_desc_of_level_required : bool = true
 
 # setters
 
@@ -779,12 +780,13 @@ func if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(arg_tower_to
 
 
 func _on_attempt_drop_tower_on_placable(arg_tower, arg_placable, arg_move_success):
-	if !game_elements.stage_round_manager.round_started and !is_in_ingredient_mode:
-		if !arg_move_success and arg_placable != null and arg_placable is InMapAreaPlacable and arg_tower.last_calculated_can_be_placed_in_map:
-			if arg_tower.tower_limit_slots_taken == 1:
-				attempt_count_trigger_for_level_up_to_place_more.add_attempt_to_trigger()
-			elif arg_tower.tower_limit_slots_taken > 1:
-				_attempt_place_tower_with_more_than_1_slot_limit_take(arg_tower, arg_tower.tower_limit_slots_taken)
+	if can_show_player_desc_of_level_required:
+		if !game_elements.stage_round_manager.round_started and !is_in_ingredient_mode:
+			if !arg_move_success and arg_placable != null and arg_placable is InMapAreaPlacable and arg_tower.last_calculated_can_be_placed_in_map:
+				if arg_tower.tower_limit_slots_taken == 1:
+					attempt_count_trigger_for_level_up_to_place_more.add_attempt_to_trigger()
+				elif arg_tower.tower_limit_slots_taken > 1:
+					_attempt_place_tower_with_more_than_1_slot_limit_take(arg_tower, arg_tower.tower_limit_slots_taken)
 
 
 func _attempt_place_tower_but_not_enought_slot_limit_count_reached():

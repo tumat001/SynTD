@@ -206,6 +206,10 @@ var unit_distance_to_exit : float
 var current_path_length : float
 var current_path # EnemyPath
 
+var _position_at_previous_frame : Vector2
+var current_rad_angle_of_movement : float # compares previous pos to curr pos
+
+
 var no_movement_from_self_clauses : ConditionalClauses
 var last_calculated_no_movement_from_self : bool = false
 
@@ -458,10 +462,10 @@ func _process(delta):
 		ability.time_decreased(delta)
 	
 	_decrease_time_of_current_revive_effect(delta)
-
-
-
-func _physics_process(delta):
+	
+	
+	## All below used to be in phy process. Reverse if needed
+	
 	_phy_process_knock_up(delta)
 	_phy_process_forced_offset_movement(delta)
 	_phy_process_forced_positional_movement(delta)
@@ -489,7 +493,16 @@ func _physics_process(delta):
 		
 		if !exit_prevented:
 			call_deferred("emit_signal", "reached_end_of_path", self)
+	
+	#
+	
+	current_rad_angle_of_movement = _position_at_previous_frame.angle_to_point(global_position)
+	_position_at_previous_frame = global_position
 
+
+
+#func _physics_process(delta):
+#	pass
 
 
 # Health related functions. Different from the norm
@@ -1951,16 +1964,6 @@ func _phy_process_knock_up(delta):
 			_knock_up_current_acceleration = 0
 			_knock_up_current_acceleration_deceleration = 0
 			knock_up_layer.position.y = 0
-	
-	
-#	if _knock_up_current_acceleration != 0:
-#		anim_sprite.offset.y -= _knock_up_current_acceleration * delta
-#		_knock_up_current_acceleration -= _knock_up_current_acceleration_deceleration * delta
-#
-#		if anim_sprite.offset.y >= 0:
-#			_knock_up_current_acceleration = 0
-#			_knock_up_current_acceleration_deceleration = 0
-#			anim_sprite.offset.y = 0
 
 
 

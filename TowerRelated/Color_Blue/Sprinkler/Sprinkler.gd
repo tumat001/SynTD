@@ -6,7 +6,6 @@ const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttac
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
 
-#TODO CHANGE PIC EVENTUALLY
 const SprinklerBullet_pic = preload("res://TowerRelated/Color_Blue/Sprinkler/Attks/Sprinkler_Proj.png")
 
 

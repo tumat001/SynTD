@@ -137,7 +137,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [4, 3, 2, 1],#[12, 9, 6, 3], #todo
+	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [12, 9, 6, 3],
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
 	[
@@ -161,7 +161,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [4, 3, 2, 1], #[10, 8, 5, 3], #todo
+	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [10, 8, 5, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[

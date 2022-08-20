@@ -7,6 +7,7 @@ var _content_text : String
 onready var _header_label = $VBoxContainer/BodyMarginer/ContentContainer/VBoxContainer/HeaderLabel
 onready var _content_label = $VBoxContainer/BodyMarginer/ContentContainer/VBoxContainer/ContentLabel
 
+const INFINITE_DURATION = -1
 const default_notif_duration : float = 5.0
 var _push_notif_timer : Timer
 
@@ -20,7 +21,8 @@ func push_notification(arg_content_text : String, arg_header_text : String = "",
 	if arg_ignore_game_speed:
 		arg_duration *= Engine.time_scale
 	
-	_push_notif_timer.start(arg_duration)
+	if arg_duration != INFINITE_DURATION:
+		_push_notif_timer.start(arg_duration)
 
 
 func _on_push_notif_timer_expired():

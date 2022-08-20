@@ -238,16 +238,19 @@ func _update_current_highlighted_index_syn_effects_desc():
 func _update_current_highlighted_index_eff_as_single():
 	current_highlighted_index_effects_descriptions.clear()
 	
-	current_highlighted_index_effects_descriptions.append(current_tier - 1)
+	var index = number_of_towers_in_tier.size() - current_tier
+	current_highlighted_index_effects_descriptions.append(index)
+	#current_highlighted_index_effects_descriptions.append(current_tier - 1)
 
 func _update_current_highlighted_index_eff_as_all_below():
 	current_highlighted_index_effects_descriptions.clear()
 	
-	for i in number_of_towers_in_tier.size():
+	for i in (number_of_towers_in_tier.size() - current_tier) + 1:
 		current_highlighted_index_effects_descriptions.append(i)
 	
-	for i in current_tier - 1:
-		current_highlighted_index_effects_descriptions.erase(i)
+	
+#	for i in current_tier - 1:
+#		current_highlighted_index_effects_descriptions.erase(i)
 
 
 ###

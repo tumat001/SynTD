@@ -96,17 +96,14 @@ func update_progress():
 
 
 func set_new_scene(scene_resource):
-	whole_loading_screen.hide_loading_screen()
-	
 	var current_scene = scene_resource.instance()
 	get_node("/root").add_child(current_scene)
-
+	
+	whole_loading_screen.hide_loading_screen()
 
 #######
 
 func goto_game_elements(arg_scene_to_remove : Node):
-	TowerCompositionColors.reset_synergies_instances()
-	TowerDominantColors.reset_synergies_instances()
 	goto_scene("res://GameElementsRelated/GameElements.tscn", arg_scene_to_remove)
 
 func goto_starting_screen(arg_scene_to_remove : Node):

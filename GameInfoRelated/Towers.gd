@@ -210,6 +210,7 @@ enum {
 	TIME_MACHINE = 607,
 	TRANSPORTER = 608,
 	ACCUMULAE = 609,
+	VACUUM = 610,
 	
 	# VIOLET (700)
 	SIMPLE_OBELISK = 700, # REMOVED FROM POOL
@@ -261,6 +262,7 @@ const TowerTiersMap : Dictionary = {
 	FRUIT_TREE_FRUIT : 2,
 	COIN : 2,
 	PROPEL : 2,
+	VACUUM : 2,
 	
 	#SIMPLE_OBELISK : 3,
 	BEACON_DISH : 3,
@@ -361,6 +363,17 @@ const tier_on_hit_dmg_map : Dictionary = {
 #	5 : 3.25,
 #	6 : 3.75,
 }
+
+const tier_flat_range_map : Dictionary = {
+	1 : 25,
+	2 : 35,
+	3 : 45,
+	4 : 55,
+	5 : 65,
+	6 : 75,
+}
+
+
 
 # Do not use this when instancing new tower class. Only use
 # for getting details about tower.
@@ -1062,7 +1075,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 #		]
 		
 		var range_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_BEACON_DISH)
-		range_attr_mod.flat_modifier = 45
+		range_attr_mod.flat_modifier = tier_flat_range_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_BEACON_DISH)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -1660,6 +1673,18 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Shoots 3 heated iron fragments at enemies."
 		]
+		
+		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SCATTER)
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_SCATTER, attr_mod, DamageType.PHYSICAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_SCATTER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
+		
 		
 		
 	elif tower_id == COAL_LAUNCHER:
@@ -4129,7 +4154,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Brewd can brew multiple types of potions that have different effects.",
 			"",
-			"Brewd automatically attempts to cast Concoct.",
+			"Auto casts Concoct.",
 			"Ability: Concoct: Throws the selected potion type at its current target.",
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
@@ -4213,11 +4238,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		# Ingredient related
-		var range_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SHACKLED)
-		range_attr_mod.percent_amount = 35
-		range_attr_mod.percent_based_on = PercentType.BASE
+		var range_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SHACKLED)
+		range_attr_mod.flat_modifier = tier_flat_range_map[info.tower_tier]
 		
-		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_SHACKLED)
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_SHACKLED)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
 		
 		info.ingredient_effect = ing_effect
@@ -4421,7 +4445,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Burgeon launches seeds that land to the ground. After arming themselves for 1.25 seconds, seeds explode on enemy contact.",
 			["Seed explosions deal |0| to 4 enemies. Applies on hit effects.", [interpreter_for_seed_dmg]],
 			"",
-			"Burgeon automatically attempts to cast Proliferate.",
+			"Burgeon auto casts Proliferate.",
 			"Ability: Proliferate: Launch a seed at a tower in its range, prioritizing towers with enemies in their range. The seed grows to a mini burgeon. Mini burgeons attach to the tower, and borrows their range.", 
 			["Mini burgeons attack just like its creator, and have the same stats and effects. Each Mini burgeon lasts for |0|, and die when its creator dies.", [interpreter_for_lifespan]],
 			["Cooldown: |0|.", [interpreter_for_cooldown]],
@@ -4868,7 +4892,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = propel_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 3
+		info.base_damage = 1.5
 		info.base_attk_speed = 0.35
 		info.base_pierce = 1
 		info.base_range = 135
@@ -4927,7 +4951,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			["Main attacks's bullets explode upon losing all pierce, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]],
 			"",
-			"Automatically casts Plow:",
+			"Auto casts Plow:",
 			["Ability: Plow. Propel charges towards the (in range) tower slot with the most enemies between itself and its destination. Enemies hit are dealt |0| and are stunned for |1|.", [interpreter_for_flat_on_hit_for_ability, interpreter_for_stun_duration]],
 			["Cooldown: |0|.", [interpreter_for_cooldown]],
 			"On round end: Propel will return to its orignal tower slot."
@@ -4937,7 +4961,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			["Main attacks's bullets explode upon losing all pierce, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]],
 			"",
-			"Automatically casts Plow:",
+			"Auto casts Plow:",
 			["Ability: Plow. Propel charges towards the (in range) tower slot with the most enemies between itself and its destination. Enemies hit are dealt |0| and are stunned for |1|.", [interpreter_for_flat_on_hit_for_ability, interpreter_for_stun_duration]],
 			["Cooldown: |0|.", [interpreter_for_cooldown]]
 		]
@@ -5133,6 +5157,69 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ attk spd"
 		
+		
+	elif tower_id == VACUUM:
+		info = TowerTypeInformation.new("Vacuum", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.BLUE)
+		#info.base_tower_image =
+		#info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.7
+		info.base_pierce = 1
+		info.base_range = 105
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		#
+		
+		var interpreter_for_suck_duration = TextFragmentInterpreter.new()
+		interpreter_for_suck_duration.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_suck_duration.display_body = true
+		interpreter_for_suck_duration.header_description = "seconds"
+		interpreter_for_suck_duration.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.ROUND
+		
+		var ins_for_suck_duration = []
+		ins_for_suck_duration.append(NumericalTextFragment.new(3, false, -1))
+		ins_for_suck_duration.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_suck_duration.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_suck_duration.array_of_instructions = ins_for_suck_duration
+		
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(32, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		#
+		
+		info.tower_simple_descriptions = [
+			"Auto casts \"Suck\".",
+			"Ability: Suck. Enemies in range that are facing away from Vacuum are slowed by 70%.",
+			["After |0| release a shockwave that stuns enemies in range for 1.5 seconds.", [interpreter_for_suck_duration]],
+			["Cooldown: |0|", [interpreter_for_cooldown]]
+		]
+		
+		
+		# Ingredient related
+		var range_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_VACUUM)
+		range_attr_mod.flat_modifier = tier_flat_range_map[info.tower_tier]
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_VACUUM)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ range"
 		
 		
 #	elif tower_id == WYVERN:

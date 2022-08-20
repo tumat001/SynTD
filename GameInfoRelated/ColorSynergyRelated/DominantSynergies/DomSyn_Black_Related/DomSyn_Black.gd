@@ -86,11 +86,11 @@ var black_syn_icon : Black_SynInteractable_Icon
 
 const disarray_beam_cooldown : float = 0.1
 
-const disarray_beam_base_damage_tier_2 : float = 1.5
-const disarray_beam_base_damage_tier_1 : float = 1.5
+const disarray_beam_base_damage_tier_2 : float = 1.0
+const disarray_beam_base_damage_tier_1 : float = 1.0
 
-const disarray_beam_bonus_base_dmg_scale : float = 0.25
-const disarray_beam_bonus_on_hit_dmg_scale : float = 0.25
+const disarray_beam_bonus_base_dmg_scale : float = 0.1
+const disarray_beam_bonus_on_hit_dmg_scale : float = 0.1
 
 const disarray_beam_applies_on_hit_effects_tier_2 : bool = false
 const disarray_beam_applies_on_hit_effects_tier_1 : bool = true
@@ -101,12 +101,12 @@ const disarray_descriptions_tier_2_simple : Array = [
 ]
 
 
-const disarray_fireball_base_damage : float = 3.0
+const disarray_fireball_base_damage : float = 2.0
 const disarray_fireball_pierce : int = 4
 const disarray_fireball_proj_speed : float = 150.0
 
-const disarray_fireball_bonus_base_dmg_scale : float = 0.5
-const disarray_fireball_bonus_on_hit_dmg_scale : float = 0.5
+const disarray_fireball_bonus_base_dmg_scale : float = 0.4
+const disarray_fireball_bonus_on_hit_dmg_scale : float = 0.4
 
 const disarray_fireball_black_beam_count_for_summon : int = 10
 

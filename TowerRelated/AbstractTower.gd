@@ -3119,32 +3119,6 @@ func _on_tower_any_post_mitigation_damage_dealt(damage_instance_report, _killed,
 	
 	emit_signal("on_per_round_total_damage_changed", in_round_total_damage_dealt)
 
-#
-
-
-#func initialize_atlas_texture():
-#	if tower_image_icon_atlas_texture == null:
-#		tower_image_icon_atlas_texture = AtlasTexture.new()
-#
-#	tower_image_icon_atlas_texture.atlas = tower_highlight_sprite
-#	tower_image_icon_atlas_texture.region = _get_atlas_region()
-#
-#
-#func _get_atlas_region() -> Rect2:
-#	var center = _get_default_center_for_atlas()
-#	var size = _get_default_region_size_for_atlas()
-#
-#	#return Rect2(0, 0, size.x, size.y)
-#	return Rect2(center.x, center.y, size.x, size.y)
-#
-#func _get_default_center_for_atlas() -> Vector2:
-#	var highlight_sprite_size = tower_highlight_sprite.get_size()
-#
-#	return Vector2(highlight_sprite_size.x / 4, 0)
-#
-#func _get_default_region_size_for_atlas() -> Vector2:
-#	return Vector2(18, 18)
-
 
 # Tower Infobar related
 
@@ -3152,6 +3126,13 @@ func add_infobar_control(control : Control, index = info_bar_vbox_container.get_
 	info_bar_vbox_container.add_child(control)
 	
 	info_bar_vbox_container.move_child(control, index)
+
+
+# Direcion related
+
+func is_enemy_facing_self(arg_enemy, arg_angle_deviation : float = 180.0):
+	var dot_prod = global_position.dot(arg_enemy.global_position)
+	return dot_prod < (arg_angle_deviation / 180)
 
 
 

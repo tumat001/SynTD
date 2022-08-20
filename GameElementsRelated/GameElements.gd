@@ -31,6 +31,13 @@ const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManag
 const GenericNotifPanel = preload("res://GameHUDRelated/NotificationPanel/GenericPanel/GenericNotifPanel.gd")
 const PauseManager = preload("res://GameElementsRelated/PauseManager.gd")
 
+signal before_main_init()
+signal before_game_start()
+
+signal unhandled_input(arg_input, any_action_taken_by_game_elements)
+signal unhandled_key_input(arg_input, any_action_taken_by_game_elements)
+
+
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var synergy_manager
 var inner_bottom_panel : InnerBottomPanel
@@ -52,6 +59,7 @@ var combination_manager : CombinationManager
 var combination_top_panel : CombinationTopPanel
 var shared_passive_manager
 onready var pause_manager : PauseManager = $PauseManager
+onready var game_modifiers_manager = $GameModifiersManager
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
@@ -75,17 +83,27 @@ onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel
 
 var game_mode_id : int
 var map_id : int
-
+var game_modi_ids : Array
 
 #
 
 func _ready():
 	#
+	game_modifiers_manager.game_elements = self
 	
 	game_mode_id = CommsForBetweenScenes.game_mode_id
 	map_id = CommsForBetweenScenes.map_id
 	
+	TowerCompositionColors.reset_synergies_instances()
+	TowerDominantColors.reset_synergies_instances()
+	
+	
+	game_modifiers_manager.add_game_modi_ids(game_modi_ids)
+	game_modifiers_manager.add_game_modi_ids__from_game_mode_id(game_mode_id)
+	
 	#
+	emit_signal("before_main_init")
+	#####
 	panel_buy_sell_level_roll = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel
 	synergy_manager = $SynergyManager
 	inner_bottom_panel = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel
@@ -281,6 +299,9 @@ func _ready():
 	health_manager.set_health(150)
 	
 	
+	emit_signal("before_game_start")
+	
+	
 	# FOR TESTING ------------------------------------
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	level_manager.current_level = LevelManager.LEVEL_7
@@ -302,11 +323,11 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHAOS,
+			Towers.PING,
 			Towers.ROYAL_FLAME,
-			Towers.BURGEON,
-			Towers.ROYAL_FLAME,
-			Towers.ACCUMULAE,
+			Towers.ENTROPY,
+			Towers.PESTILENCE,
+			Towers.TESLA,
 			Towers.LA_CHASSEUR,
 		])
 	else:
@@ -333,73 +354,101 @@ func _on_ColorWheelSprite_pressed():
 	tower_manager._toggle_ingredient_combine_mode()
 
 func _unhandled_input(event):
+	var any_action_taken : bool = false
+	
 	if event is InputEventMouseButton:
 		if event.pressed and (event.button_index == BUTTON_RIGHT or event.button_index == BUTTON_LEFT):
 			if right_side_panel.panel_showing != right_side_panel.Panels.ROUND:
 				tower_manager._show_round_panel()
+				any_action_taken = true
+	
+	emit_signal("unhandled_input", event, any_action_taken)
 
 
 func _unhandled_key_input(event):
+	var any_action_taken : bool = false
+	
 	if !event.echo and event.pressed:
 		if whole_screen_gui.current_showing_control == null and !pause_manager.has_any_visible_control():
 			if event.is_action_pressed("game_ingredient_toggle"):
 				tower_manager._toggle_ingredient_combine_mode()
+				any_action_taken = true
 				
 			elif event.is_action_pressed("game_round_toggle"):
 				right_side_panel.round_status_panel._on_RoundStatusButton_pressed()
+				any_action_taken = true
 				
 			elif event.is_action_pressed("ui_cancel"):
 				_esc_no_wholescreen_gui_pressed()
+				any_action_taken = true
 				
 			elif event.is_action_pressed("game_tower_sell"):
 				_sell_hovered_tower()
+				any_action_taken = true
 				
 			elif event.is_action_pressed("game_shop_refresh"):
 				_on_BuySellLevelRollPanel_reroll()
+				any_action_taken = true
 				
 			elif event.is_action("game_ability_01"):
 				round_status_panel.ability_panel.activate_ability_at_index(0)
+				any_action_taken = true
 			elif event.is_action("game_ability_02"):
 				round_status_panel.ability_panel.activate_ability_at_index(1)
+				any_action_taken = true
 			elif event.is_action("game_ability_03"):
 				round_status_panel.ability_panel.activate_ability_at_index(2)
+				any_action_taken = true
 			elif event.is_action("game_ability_04"):
 				round_status_panel.ability_panel.activate_ability_at_index(3)
+				any_action_taken = true
 			elif event.is_action("game_ability_05"):
 				round_status_panel.ability_panel.activate_ability_at_index(4)
+				any_action_taken = true
 			elif event.is_action("game_ability_06"):
 				round_status_panel.ability_panel.activate_ability_at_index(5)
+				any_action_taken = true
 			elif event.is_action("game_ability_07"):
 				round_status_panel.ability_panel.activate_ability_at_index(6)
+				any_action_taken = true
 			elif event.is_action("game_ability_08"):
 				round_status_panel.ability_panel.activate_ability_at_index(7)
+				any_action_taken = true
 				
 				
 			elif event.is_action("game_tower_targeting_left"):
 				targeting_panel.cycle_targeting_left()
+				any_action_taken = true
 			elif event.is_action("game_tower_targeting_right"):
 				targeting_panel.cycle_targeting_right()
+				any_action_taken = true
 				
 				
 			elif event.is_action("game_combine_combinables"):
 				combination_manager.on_combination_activated()
+				any_action_taken = true
 				
 			elif event.is_action("game_description_mode_toggle"):
 				game_settings_manager.toggle_descriptions_mode()
+				any_action_taken = true
 				
 				
 			elif event.is_action("game_tower_panel_ability_01"):
 				tower_info_panel.activate_tower_panel_ability_01()
+				any_action_taken = true
 				
 			elif event.is_action("game_tower_panel_ability_02"):
 				tower_info_panel.activate_tower_panel_ability_02()
+				any_action_taken = true
 				
 				
 			
 		else: # if there is wholescreen gui
 			if event.scancode == KEY_ESCAPE:
 				_esc_with_wholescreen_gui_pressed()
-
+				any_action_taken = true
+	
+	emit_signal("unhandled_key_input", event, any_action_taken)
 
 #
 
@@ -437,3 +486,4 @@ func get_middle_coordinates_of_playable_map() -> Vector2:
 
 func _get_average(arg_x : float, arg_y : float) -> float:
 	return (arg_x + arg_y) / 2
+

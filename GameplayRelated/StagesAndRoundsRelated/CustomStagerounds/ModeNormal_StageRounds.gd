@@ -56,6 +56,7 @@ func _init():
 		_get_stageround_9_4(),
 	]
 	
+	_decide_first_half_faction()
 	_decide_second_half_faction()
 
 

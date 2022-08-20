@@ -21,6 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Roguelike Tower Defence"
+run/main_scene="res://PreGameHUDRelated/PreGameScreen.tscn"
 config/icon="res://icon.png"
 
 [autoload]
@@ -47,6 +48,7 @@ StoreOfSharedPassiveUuid="*res://GameInfoRelated/SharedTowerPassiveRelated/Store
 StoreOfTrailType="*res://MiscRelated/TrailRelated/StoreOfTrailType.gd"
 StoreOfGameMode="*res://GameplayRelated/GameModeRelated/StoreOfGameMode.gd"
 CommsForBetweenScenes="*res://SingletonForCommsRelated/CommsForBetweenScenes.gd"
+StoreOfGameModifiers="*res://GameplayRelated/GameModifiersRelated/StoreOfGameModifiers.gd"
 
 [debug]
 
