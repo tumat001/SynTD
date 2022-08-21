@@ -169,7 +169,7 @@ var _current_orb_maelstrom_orbs_fired : int
 var _current_orb_maelstrom_poses_to_fire : Array
 
 ##
-const diamond_storm_diamond_count : int = 15
+const diamond_storm_diamond_count : int = 18
 var diamond_attack_module : BulletAttackModule
 
 const diamond_storm_min_range_from_target_spawn : float = 30.0
@@ -178,7 +178,7 @@ const diamond_storm_max_range_from_target_spawn : float = 130.0
 const diamond_storm_min_rotation_per_sec : float = 100.0
 const diamond_storm_max_rotation_per_sec : float = 700.0
 
-const diamond_storm_delay_per_diamond : float = 0.1
+const diamond_storm_delay_per_diamond : float = 0.15
 const diamond_storm_diamond_idle_time : float = 1.25
 
 var _current_diamond_storm_diamonds_fired : int
@@ -1516,3 +1516,4 @@ func _set_background_particle_properties_when_get_from_pool_after_add_child(arg_
 	
 	var x_modi = non_essential_rng.randi_range(-2, 2)
 	arg_particle.global_position.x += x_modi
+

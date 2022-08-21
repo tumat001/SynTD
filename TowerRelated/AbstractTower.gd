@@ -3130,9 +3130,106 @@ func add_infobar_control(control : Control, index = info_bar_vbox_container.get_
 
 # Direcion related
 
-func is_enemy_facing_self(arg_enemy, arg_angle_deviation : float = 180.0):
-	var dot_prod = global_position.dot(arg_enemy.global_position)
-	return dot_prod < (arg_angle_deviation / 180)
+func is_enemy_facing_self(arg_enemy, arg_half_fov_angle : float = 90.0): # fov values range from 0 to 180, 180 always returns true.
+	var angle = rad2deg(_get_rotation_to_meet_angle_fov(arg_enemy.global_position, global_position, arg_enemy.current_rad_angle_of_movement, deg2rad(180)))
+	
+	print(angle)
+	print("----------")
+	
+	if angle > 0:
+		return angle <= arg_half_fov_angle
+	else:
+		return angle <= -arg_half_fov_angle
+
+
+func _get_rotation_to_meet_angle_fov(arg_bullet_pos, arg_enemy_pos, arg_current_angle, arg_max_rot_per_sec) -> float:
+	var angle_to_enemy = arg_bullet_pos.angle_to_point(arg_enemy_pos)
+	
+	var steer_angle : float = 0
+	
+	angle_to_enemy = _conv_angle_to_positive_val(angle_to_enemy)
+	arg_current_angle = _conv_angle_to_positive_val(arg_current_angle)
+	
+	
+	var rotation_per_sec = arg_max_rot_per_sec
+	
+	if angle_to_enemy > arg_current_angle:
+		if abs(arg_current_angle - angle_to_enemy) > PI:
+			steer_angle = rotation_per_sec * 1
+		else:
+			steer_angle = rotation_per_sec * -1
+		
+	elif angle_to_enemy <= arg_current_angle:
+		
+		if abs(arg_current_angle - angle_to_enemy) > PI:
+			steer_angle = rotation_per_sec * -1
+		else:
+			steer_angle = rotation_per_sec * 1
+		
+	
+	print(angle_to_enemy - arg_current_angle)
+	
+	if steer_angle > abs(angle_to_enemy - arg_current_angle):
+		steer_angle = abs(angle_to_enemy - arg_current_angle)
+		
+	elif steer_angle > -abs(angle_to_enemy - arg_current_angle):
+		steer_angle = PI - abs(angle_to_enemy - arg_current_angle)
+		
+	elif steer_angle < -abs(angle_to_enemy - arg_current_angle):
+		steer_angle = abs(angle_to_enemy - arg_current_angle) - PI
+		
+	
+	return steer_angle
+
+#func is_enemy_facing_self(arg_enemy, arg_angle_deviation : float = 90.0):
+#	var angle = rad2deg(_get_shortest_angle_to_point(arg_enemy.global_position, arg_enemy)) 
+#
+#	print(angle)
+#	print("----------")
+#
+#	return angle <= arg_angle_deviation
+
+#func _get_shortest_angle_to_point(arg_enemy_pos, arg_enemy) -> float:
+#	var angle_of_enemy_to_self = arg_enemy_pos.angle_to_point(global_position)
+#
+#	angle_of_enemy_to_self = _conv_angle_to_positive_val(angle_of_enemy_to_self)
+#	var curr_angle_of_enemy = _conv_angle_to_positive_val(arg_enemy.current_rad_angle_of_movement)
+#
+#	if angle_of_enemy_to_self > curr_angle_of_enemy:
+#		var diff = angle_of_enemy_to_self - curr_angle_of_enemy
+#
+#		if abs(curr_angle_of_enemy - angle_of_enemy_to_self) >= PI:
+#			#steer_angle = delta * rotation_per_sec * 1
+#			#return abs(PI - abs(curr_angle_of_enemy - angle_of_enemy_to_self))
+#			return abs(curr_angle_of_enemy - angle_of_enemy_to_self)
+#		else:
+#			#steer_angle = delta * rotation_per_sec * -1
+#			return abs(curr_angle_of_enemy - angle_of_enemy_to_self)
+#			#return abs(PI - abs(curr_angle_of_enemy - angle_of_enemy_to_self))
+#
+#	elif angle_of_enemy_to_self <= curr_angle_of_enemy:
+#		var diff = curr_angle_of_enemy - angle_of_enemy_to_self
+#
+#		if abs(curr_angle_of_enemy - angle_of_enemy_to_self) >= PI:
+#			#steer_angle = delta * rotation_per_sec * -1
+#			return abs(PI - abs(curr_angle_of_enemy - angle_of_enemy_to_self))
+#		else:
+#			#steer_angle = delta * rotation_per_sec * 1
+#			return abs(curr_angle_of_enemy - angle_of_enemy_to_self)
+#
+#	else:
+#		return PI * 2
+#
+
+
+func _conv_angle_to_positive_val(arg_angle):
+	if arg_angle < 0:
+		return (2*PI) + arg_angle
+	else:
+		if arg_angle < 2 * PI:
+			return arg_angle
+		else:
+			return arg_angle - (2 * PI)
 
 
 

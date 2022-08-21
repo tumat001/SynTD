@@ -285,6 +285,16 @@ func get_enemy_in_range_count() -> int:
 	return enemies_in_range.size()
 
 
+func get_enemies_in_range__not_affecting_curr_enemies_in_range() -> Array:
+	var bucket = []
+	for target in enemies_in_range:
+		if target != null and !target.is_queued_for_deletion():
+			bucket.append(target)
+	
+	return bucket
+
+
+
 func is_a_targetable_enemy_in_range() -> bool:
 	var targetable_enemies : Array = get_targets_without_affecting_self_current_targets(1)
 

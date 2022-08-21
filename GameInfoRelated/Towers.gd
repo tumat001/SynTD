@@ -114,6 +114,7 @@ const bleach_image = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_E.png"
 const time_machine_image = preload("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine_Omni.png")
 const transpose_image = preload("res://TowerRelated/Color_Blue/Transpose/Transpose_Omni01.png")
 const accumulae_image = preload("res://TowerRelated/Color_Blue/Accumulae/Accumulae_Omni.png")
+const vacuum_image = preload("res://TowerRelated/Color_Blue/Vacuum/Vacuum_Omni.png")
 
 # VIOLET
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
@@ -5163,8 +5164,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.BLUE)
-		#info.base_tower_image =
-		#info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		info.base_tower_image = vacuum_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2
 		info.base_attk_speed = 0.7
@@ -5195,7 +5196,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_cooldown.header_description = "s"
 		
 		var ins_for_cooldown = []
-		ins_for_cooldown.append(NumericalTextFragment.new(32, false))
+		ins_for_cooldown.append(NumericalTextFragment.new(18, false))
 		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
 		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
@@ -5204,9 +5205,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		#
 		
 		info.tower_simple_descriptions = [
-			"Auto casts \"Suck\".",
+			"Auto casts \"Suck\" when enemies are in range.",
 			"Ability: Suck. Enemies in range that are facing away from Vacuum are slowed by 70%.",
-			["After |0| release a shockwave that stuns enemies in range for 1.5 seconds.", [interpreter_for_suck_duration]],
+			["After |0| release a shockwave that stuns enemies in range for 1 second.", [interpreter_for_suck_duration]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
 		
@@ -5406,3 +5407,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/Paroxysm/Paroxysm.tscn")
 	elif tower_id == IOTA:
 		return load("res://TowerRelated/Color_Yellow/Iota/Iota.tscn")
+	elif tower_id == VACUUM:
+		return load("res://TowerRelated/Color_Blue/Vacuum/Vacuum.tscn")

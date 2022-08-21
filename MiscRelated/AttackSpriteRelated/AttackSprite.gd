@@ -23,6 +23,8 @@ export(float) var transparency_per_sec : float = 0
 
 export(bool) var stop_process_at_invisible : bool = false
 
+var texture_to_use : Texture
+
 
 func _init():
 	z_index = ZIndexStore.PARTICLE_EFFECTS
@@ -34,6 +36,10 @@ func _ready():
 	
 	if reset_frame_to_start:
 		frame = 0
+	
+	if texture_to_use != null and frames == null:
+		frames = SpriteFrames.new()
+		frames.add_frame("default", texture_to_use)
 	
 	connect("visibility_changed", self, "_on_visiblity_changed")
 

@@ -74,18 +74,7 @@ func get_relative_normalized_direction_for_homing(
 	
 	var angle = _get_rotation_for_steer(arg_bullet_pos, arg_target_pos, curr_angle, deg2rad(max_deg_angle_turn_amount_per_sec), delta)
 	return arg_curr_relative_norm_dir.rotated(angle)
-	
-	
-	
-#	 # NOTE: Working, but cannot seem to work with max steer/deg per sec
-#	
-#	
-#	angle_for_alignment = rad2deg(angle_for_alignment)
-#	curr_angle = rad2deg(curr_angle)
-#	
-#	var angle_magnitude = angle_for_alignment - curr_angle #* delta
-#
-#	return arg_curr_relative_norm_dir.rotated(deg2rad(180 + angle_magnitude))
+
 
 
 static func _convert_angle_to_1to360(arg_angle):

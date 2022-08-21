@@ -5,3 +5,4 @@
 
 [node name="Chaos_ChangingPurpleParticle" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+queue_free_at_end_of_lifetime = false

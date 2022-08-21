@@ -497,6 +497,7 @@ func _process(delta):
 	#
 	
 	current_rad_angle_of_movement = _position_at_previous_frame.angle_to_point(global_position)
+	
 	_position_at_previous_frame = global_position
 
 
