@@ -3199,6 +3199,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Upon reaching its max distance, the disc travels back to Rebound, refreshing its pierce, dealing damage, and stunning enemies hit for 1 second."
 		]
 		
+		info.tower_simple_descriptions = [
+			"Rebound shoots discs that travel back to itself, stunning enemies hit for 1 second."
+		]
+		
 		var base_pierce_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_REBOUND)
 		base_pierce_attr_mod.flat_modifier = 1
 		

@@ -51,7 +51,7 @@ var tower_drag_mode_search_radius : float = 100 setget set_tower_drag_mode_searc
 #
 
 func _ready():
-	set_descriptions_mode(DescriptionsMode.COMPLEX)
+	set_descriptions_mode(DescriptionsMode.SIMPLE)
 	set_tower_drag_mode(TowerDragMode.EXACT)
 
 ######### DESCRIPTIONS MODE

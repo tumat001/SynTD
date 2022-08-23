@@ -35,6 +35,7 @@ const TowerEffectShieldEffect = preload("res://GameInfoRelated/TowerEffectRelate
 const TowerInvulnerabilityEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerInvulnerabilityEffect.gd")
 
 const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
+const BaseTowerDetectingBullet = preload("res://EnemyRelated/TowerInteractingRelated/Spawnables/BaseTowerDetectingBullet.gd")
 
 const CombinationEffect = preload("res://GameInfoRelated/CombinationRelated/CombinationEffect.gd")
 
@@ -48,12 +49,8 @@ const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalC
 
 const ingredient_decline_pic = preload("res://GameHUDRelated/BottomPanel/IngredientMode_CannotCombine.png")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
-
 const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
-
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
-
-const BaseTowerDetectingBullet = preload("res://EnemyRelated/TowerInteractingRelated/Spawnables/BaseTowerDetectingBullet.gd")
 
 
 signal tower_being_dragged(tower_self)
@@ -323,6 +320,7 @@ enum CanBeSoldClauses {
 	
 	DOM_SYN_RED__PACT_HOLOGRAPHIC_TOWERS = 1,
 	
+	TUTORIAL_DISABLED_CLAUSE = 10000
 }
 
 var can_be_sold_conditonal_clauses : ConditionalClauses
@@ -401,6 +399,13 @@ enum TowerModulateIds {
 var all_id_to_tower_base_modulate : Dictionary = {}
 var last_calculated_tower_base_modulate : Color
 
+# Clickalbe related
+
+enum TowerDraggableClauseIds{
+	TUTORIAL_DISABLED = 1000
+}
+var tower_is_draggable_clauses : ConditionalClauses
+var last_calculated_tower_is_draggable : bool
 
 # Other stats
 
@@ -519,6 +524,10 @@ func _init():
 	can_be_placed_in_map_conditional_clause.connect("clause_inserted", self, "_on_can_move_to_in_map_clause_added_or_removed", [], CONNECT_PERSIST)
 	can_be_placed_in_map_conditional_clause.connect("clause_removed", self, "_on_can_move_to_in_map_clause_added_or_removed", [], CONNECT_PERSIST)
 	
+	tower_is_draggable_clauses = ConditionalClauses.new()
+	tower_is_draggable_clauses.connect("clause_inserted", self, "_on_tower_is_draggable_clause_ins_or_rem", [], CONNECT_PERSIST)
+	tower_is_draggable_clauses.connect("clause_removed", self, "_on_tower_is_draggable_clause_ins_or_rem", [], CONNECT_PERSIST)
+	
 	_update_last_calculated_contributing_to_synergy()
 	_update_last_calculated_disabled_from_attacking()
 	_update_untargetability_state()
@@ -526,6 +535,7 @@ func _init():
 	_update_last_calculated_can_absorb_ing()
 	_update_last_calculated_can_be_used_as_ing()
 	_update_last_calculated_can_be_placed_in_map()
+	_update_last_calculate_tower_is_draggable()
 
 func _ready():
 	$IngredientDeclinePic.visible = false
@@ -2450,7 +2460,7 @@ func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 			if _is_in_select_tower_prompt:
 				_self_is_selected_in_selection_mode()
 				
-			elif !(is_round_started and current_placable is InMapAreaPlacable):
+			elif !(is_round_started and current_placable is InMapAreaPlacable) and last_calculated_tower_is_draggable:
 				_start_drag()
 		elif !event.pressed and event.button_index == BUTTON_LEFT:
 			if is_being_dragged:
@@ -2545,7 +2555,7 @@ func _end_drag(arg_is_from_ready : bool = false):
 	
 	erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
 	emit_signal("tower_dropped_from_dragged", self)
-
+	
 
 func _get_placable_to_use_for_move(arg_is_from_ready : bool = false) -> BaseAreaTowerPlacable:
 	var drag_mode = game_elements.game_settings_manager.tower_drag_mode
@@ -2675,6 +2685,16 @@ func _on_can_move_to_in_map_clause_added_or_removed(arg_clause_id):
 
 func _update_last_calculated_can_be_placed_in_map():
 	last_calculated_can_be_placed_in_map = can_be_placed_in_map_conditional_clause.is_passed
+
+#
+
+func _on_tower_is_draggable_clause_ins_or_rem(arg_clause_id):
+	_update_last_calculate_tower_is_draggable()
+
+func _update_last_calculate_tower_is_draggable():
+	last_calculated_tower_is_draggable = tower_is_draggable_clauses.is_passed
+
+
 
 # Ingredient drag and drop related
 
@@ -3133,9 +3153,6 @@ func add_infobar_control(control : Control, index = info_bar_vbox_container.get_
 func is_enemy_facing_self(arg_enemy, arg_half_fov_angle : float = 90.0): # fov values range from 0 to 180, 180 always returns true.
 	var angle = rad2deg(_get_rotation_to_meet_angle_fov(arg_enemy.global_position, global_position, arg_enemy.current_rad_angle_of_movement, deg2rad(180)))
 	
-	print(angle)
-	print("----------")
-	
 	if angle > 0:
 		return angle <= arg_half_fov_angle
 	else:
@@ -3166,8 +3183,6 @@ func _get_rotation_to_meet_angle_fov(arg_bullet_pos, arg_enemy_pos, arg_current_
 		else:
 			steer_angle = rotation_per_sec * 1
 		
-	
-	print(angle_to_enemy - arg_current_angle)
 	
 	if steer_angle > abs(angle_to_enemy - arg_current_angle):
 		steer_angle = abs(angle_to_enemy - arg_current_angle)

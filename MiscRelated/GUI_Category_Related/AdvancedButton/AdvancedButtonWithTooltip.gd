@@ -3,6 +3,7 @@ extends "res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButton.gd
 const BaseTooltip = preload("res://GameHUDRelated/Tooltips/BaseTooltip.gd")
 
 signal about_tooltip_construction_requested()
+signal on_mouse_entered()
 
 const MOUSE_HOVER = -1001
 
@@ -29,6 +30,8 @@ func _on_AdvancedButton_gui_input(event):
 func _on_AdvancedButtonWithTooltip_mouse_entered():
 	if about_button_index_trigger == MOUSE_HOVER:
 		_trigger_create_about_tooltip()
+	
+	emit_signal("on_mouse_entered")
 
 
 

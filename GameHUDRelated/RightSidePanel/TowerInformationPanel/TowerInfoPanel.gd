@@ -35,6 +35,7 @@ const LaChasseur_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/La_Ch
 const Tesla_InfoPanel = preload("res://TowerRelated/Color_Violet/Tesla/GUI/Tesla_InfoPanel.gd")
 const Tesla_InfoPanel_Scene = preload("res://TowerRelated/Color_Violet/Tesla/GUI/Tesla_InfoPanel.tscn")
 
+signal on_extra_info_panel_shown(arg_info_panel, arg_tower)
 signal on_tower_panel_ability_01_activate()
 signal on_tower_panel_ability_02_activate()
 
@@ -50,6 +51,8 @@ onready var tower_stats_panel = $VBoxContainer/TowerStatsPanel
 onready var energy_module_extra_slot = $VBoxContainer/EnergyModuleExtraSlot
 onready var heat_module_extra_slot = $VBoxContainer/HeatModuleExtraSlot
 onready var tower_specific_slot = $VBoxContainer/TowerSpecificSlot
+
+
 
 var extra_info_panel : ExtraInfoPanel
 
@@ -139,6 +142,8 @@ func _create_extra_info_panel():
 	extra_info_panel.rect_global_position = pos_of_info_panel
 	get_tree().get_root().add_child(extra_info_panel)
 	extra_info_panel._update_display()
+	
+	emit_signal("on_extra_info_panel_shown", extra_info_panel, tower)
 
 
 func _destroy_extra_info_panel():

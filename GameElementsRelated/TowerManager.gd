@@ -14,6 +14,7 @@ const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
 const InputPromptManager = preload("res://GameElementsRelated/InputPromptManager.gd")
 const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
 const RelicManager = preload("res://GameElementsRelated/RelicManager.gd")
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const AttemptCountTrigger = preload("res://MiscRelated/AttemptCountTriggerRelated/AttemptCountTrigger.gd")
@@ -70,6 +71,7 @@ signal tower_ing_cap_removed(cap_id)
 
 signal tower_sellback_value_changed(arg_new_val, arg_tower)
 
+signal tower_info_panel_shown(arg_tower_associated)
 
 const base_ing_limit_of_tower : int = 1
 
@@ -118,6 +120,21 @@ var current_tower_limit_taken : int
 
 var _tower_ing_cap_amount_map : Dictionary = {}
 
+#
+
+enum CanToggleToIngredientModeClauses {
+	TUTORIAL_DISABLE = 1000
+}
+var can_toggle_to_ingredient_mode_clauses : ConditionalClauses
+var last_calculated_can_toggle_to_ing_mode : bool
+
+
+enum CanTowersSwapPositionsClauses {
+	TUTORIAL_DISABLE = 1000
+}
+var can_towers_swap_positions_clauses : ConditionalClauses
+var last_calculated_can_towers_swap_position : bool
+
 
 # NOTIF for player desc
 
@@ -156,6 +173,16 @@ func set_left_panel(arg_panel):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	can_toggle_to_ingredient_mode_clauses = ConditionalClauses.new()
+	can_toggle_to_ingredient_mode_clauses.connect("clause_inserted", self, "_on_can_toggle_to_ing_mode_clause_ins_or_rem", [], CONNECT_PERSIST)
+	can_toggle_to_ingredient_mode_clauses.connect("clause_removed", self, "_on_can_toggle_to_ing_mode_clause_ins_or_rem", [], CONNECT_PERSIST)
+	_update_last_calc_can_toggle_to_ing_mode()
+	
+	can_towers_swap_positions_clauses = ConditionalClauses.new()
+	can_towers_swap_positions_clauses.connect("clause_inserted", self, "_on_can_towers_swap_positions_clause_ins_or_rem", [], CONNECT_PERSIST)
+	can_towers_swap_positions_clauses.connect("clause_removed", self, "_on_can_towers_swap_positions_clause_ins_or_rem", [], CONNECT_PERSIST)
+	_update_can_towers_swap_positions_clauses()
+	
 	calculate_tower_limit()
 	set_ing_cap_changer(StoreOfIngredientLimitModifierID.LEVEL, base_ing_limit_of_tower)
 	
@@ -341,19 +368,21 @@ func can_place_tower_based_on_limit_and_curr_placement(tower : AbstractTower) ->
 # Ingredient drag related
 
 func _toggle_ingredient_combine_mode():
-	is_in_ingredient_mode = !is_in_ingredient_mode
-	
-	emit_signal("ingredient_mode_turned_into", is_in_ingredient_mode)
-	
-	if is_in_ingredient_mode:
-		if tower_being_dragged != null:
-			emit_signal("show_ingredient_acceptability", tower_being_dragged.ingredient_of_self, tower_being_dragged)
+	if last_calculated_can_toggle_to_ing_mode:
+		is_in_ingredient_mode = !is_in_ingredient_mode
 		
+		emit_signal("ingredient_mode_turned_into", is_in_ingredient_mode)
 		
-		inner_bottom_panel.show_only_ingredient_notification_mode()
-	else:
-		emit_signal("hide_ingredient_acceptability")
-		inner_bottom_panel.show_only_buy_sell_panel()
+		if is_in_ingredient_mode:
+			if tower_being_dragged != null:
+				emit_signal("show_ingredient_acceptability", tower_being_dragged.ingredient_of_self, tower_being_dragged)
+			
+			
+			inner_bottom_panel.show_only_ingredient_notification_mode()
+		else:
+			emit_signal("hide_ingredient_acceptability")
+			inner_bottom_panel.show_only_buy_sell_panel()
+
 
 func _emit_tower_being_absorbed_as_ingredient(tower):
 	emit_signal("tower_being_absorbed_as_ingredient", tower)
@@ -431,6 +460,8 @@ func _show_tower_info_panel(tower : AbstractTower):
 		tower.connect("energy_module_detached", self ,"_update_energy_module_display")
 		tower.connect("heat_module_should_be_displayed_changed", self, "_update_heat_module_should_display_display")
 		tower.connect("final_ability_potency_changed", self, "_update_final_ability_potency_in_info")
+	
+	emit_signal("tower_info_panel_shown", tower)
 
 func _update_final_range_in_info():
 	tower_stats_panel.update_final_range()
@@ -758,6 +789,9 @@ func attempt_spend_relic_for_tower_lim_increase():
 #
 
 func if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(arg_tower_to_place, arg_tower_to_swap_with):
+	if !last_calculated_can_towers_swap_position:
+		return false
+	
 	if arg_tower_to_place.is_current_placable_in_map() and arg_tower_to_swap_with.is_current_placable_in_map():
 		return true
 	else:
@@ -796,3 +830,18 @@ func _attempt_place_tower_with_more_than_1_slot_limit_take(arg_tower, arg_tower_
 	var final_desc = tower_takes_more_than_1_slot_content_desc % [arg_tower.tower_type_info.tower_name, str(arg_tower_slot_count)]
 	game_elements.generic_notif_panel.push_notification(final_desc)
 
+
+#### clauses
+
+func _on_can_toggle_to_ing_mode_clause_ins_or_rem(arg_clause):
+	_update_last_calc_can_toggle_to_ing_mode()
+
+func _update_last_calc_can_toggle_to_ing_mode():
+	last_calculated_can_toggle_to_ing_mode = can_toggle_to_ingredient_mode_clauses.is_passed
+
+
+func _on_can_towers_swap_positions_clause_ins_or_rem(arg_clause):
+	_update_can_towers_swap_positions_clauses()
+
+func _update_can_towers_swap_positions_clauses():
+	last_calculated_can_towers_swap_position = can_towers_swap_positions_clauses.is_passed

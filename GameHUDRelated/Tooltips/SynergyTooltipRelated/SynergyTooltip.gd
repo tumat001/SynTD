@@ -48,7 +48,11 @@ func update_display():
 		syn_tier_texture_rect.texture = result.tier_pic
 		
 		#syn_tier_label.text = _convert_number_to_roman_numeral(result.synergy_tier)
-		syn_tier_label.text = result.synergy_tier
+		
+		if synergy.current_tier != 0:
+			syn_tier_label.text = str(synergy.number_of_towers_in_tier[synergy.current_tier - 1])
+		else:
+			syn_tier_label.text = ""
 		
 		var final_descs : Array = []
 		

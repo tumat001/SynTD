@@ -114,3 +114,10 @@ func make_all_placables_hidden():
 func make_all_placables_not_hidden():
 	for placables in all_in_map_placables:
 		placables.set_hidden(false)
+
+#
+
+func get_placable_with_node_name(arg_name):
+	return _in_map_placables.get_node(arg_name)
+
+

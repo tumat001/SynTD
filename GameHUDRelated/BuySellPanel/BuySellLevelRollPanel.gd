@@ -5,6 +5,7 @@ const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const RelicManager = preload("res://GameElementsRelated/RelicManager.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
 const CombinationManager = preload("res://GameElementsRelated/CombinationManager.gd")
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
@@ -12,6 +13,8 @@ signal level_up
 signal level_down
 signal reroll
 signal tower_bought(tower_id)
+signal viewing_tower_description_tooltip(tower_id, arg_buy_slot)
+signal can_refresh_shop_changed(arg_val)
 
 const gold_cost_color : Color = Color(253.0/255.0, 192.0/255.0, 8.0/255.0, 1)
 const relic_cost_color : Color = Color(30.0/255.0, 217.0/255.0, 2.0/255.0, 1)
@@ -47,6 +50,40 @@ var combination_manager : CombinationManager setget set_combination_manager
 var game_settings_manager setget set_game_settings_manager
 
 var tower_inventory_bench setget set_tower_inventory_bench
+
+#
+
+enum BuySlotDisabledClauses {
+	
+	TUTORIAL_DISABLE = 1000
+}
+var buy_slot_01_disabled_clauses : ConditionalClauses
+var last_calculated_buy_slot_01_disabled : bool
+
+var buy_slot_02_disabled_clauses : ConditionalClauses
+var last_calculated_buy_slot_02_disabled : bool
+
+var buy_slot_03_disabled_clauses : ConditionalClauses
+var last_calculated_buy_slot_03_disabled : bool
+
+var buy_slot_04_disabled_clauses : ConditionalClauses
+var last_calculated_buy_slot_04_disabled : bool
+
+var buy_slot_05_disabled_clauses : ConditionalClauses
+var last_calculated_buy_slot_05_disabled : bool
+
+var buy_slot_06_disabled_clauses : ConditionalClauses
+var last_calculated_buy_slot_06_disabled : bool
+
+var buy_slot_to_last_calc_property_name_map : Dictionary
+var buy_slot_to_disabled_clauses : Dictionary
+
+
+enum CanRefreshShopClauses {
+	TUTORIAL_DISABLE = 1000
+}
+var can_refresh_shop_clauses : ConditionalClauses
+var last_calculated_can_refresh_shop : bool
 
 #
 
@@ -102,6 +139,36 @@ func set_game_settings_manager(arg_manager):
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	buy_slot_01_disabled_clauses = ConditionalClauses.new()
+	buy_slot_01_disabled_clauses.connect("clause_inserted", self, "_on_buy_slot_01_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	buy_slot_01_disabled_clauses.connect("clause_removed", self, "_on_buy_slot_01_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	
+	buy_slot_02_disabled_clauses = ConditionalClauses.new()
+	buy_slot_02_disabled_clauses.connect("clause_inserted", self, "_on_buy_slot_02_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	buy_slot_02_disabled_clauses.connect("clause_removed", self, "_on_buy_slot_02_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	
+	buy_slot_03_disabled_clauses = ConditionalClauses.new()
+	buy_slot_03_disabled_clauses.connect("clause_inserted", self, "_on_buy_slot_03_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	buy_slot_03_disabled_clauses.connect("clause_removed", self, "_on_buy_slot_03_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	
+	buy_slot_04_disabled_clauses = ConditionalClauses.new()
+	buy_slot_04_disabled_clauses.connect("clause_inserted", self, "_on_buy_slot_04_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	buy_slot_04_disabled_clauses.connect("clause_removed", self, "_on_buy_slot_04_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	
+	buy_slot_05_disabled_clauses = ConditionalClauses.new()
+	buy_slot_05_disabled_clauses.connect("clause_inserted", self, "_on_buy_slot_05_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	buy_slot_05_disabled_clauses.connect("clause_removed", self, "_on_buy_slot_05_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	
+	buy_slot_06_disabled_clauses = ConditionalClauses.new()
+	buy_slot_06_disabled_clauses.connect("clause_inserted", self, "_on_buy_slot_06_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	buy_slot_06_disabled_clauses.connect("clause_removed", self, "_on_buy_slot_06_disabled_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	
+	can_refresh_shop_clauses = ConditionalClauses.new()
+	can_refresh_shop_clauses.connect("clause_inserted", self, "_on_can_refresh_shop_clauses_inserted_or_removed", [], CONNECT_PERSIST)
+	can_refresh_shop_clauses.connect("clause_removed", self, "_on_can_refresh_shop_clauses_inserted_or_removed", [], CONNECT_PERSIST)
+	
+	
+	#
 	all_buy_slots.append(buy_slot_01)
 	all_buy_slots.append(buy_slot_02)
 	all_buy_slots.append(buy_slot_03)
@@ -109,14 +176,32 @@ func _ready():
 	all_buy_slots.append(buy_slot_05)
 	all_buy_slots.append(buy_slot_06)
 	
+	buy_slot_to_disabled_clauses[buy_slot_01] = buy_slot_01_disabled_clauses
+	buy_slot_to_disabled_clauses[buy_slot_02] = buy_slot_02_disabled_clauses
+	buy_slot_to_disabled_clauses[buy_slot_03] = buy_slot_03_disabled_clauses
+	buy_slot_to_disabled_clauses[buy_slot_04] = buy_slot_04_disabled_clauses
+	buy_slot_to_disabled_clauses[buy_slot_05] = buy_slot_05_disabled_clauses
+	buy_slot_to_disabled_clauses[buy_slot_06] = buy_slot_06_disabled_clauses
+	
+	buy_slot_to_last_calc_property_name_map[buy_slot_01] = "last_calculated_buy_slot_01_disabled"
+	buy_slot_to_last_calc_property_name_map[buy_slot_02] = "last_calculated_buy_slot_02_disabled"
+	buy_slot_to_last_calc_property_name_map[buy_slot_03] = "last_calculated_buy_slot_03_disabled"
+	buy_slot_to_last_calc_property_name_map[buy_slot_04] = "last_calculated_buy_slot_04_disabled"
+	buy_slot_to_last_calc_property_name_map[buy_slot_05] = "last_calculated_buy_slot_05_disabled"
+	buy_slot_to_last_calc_property_name_map[buy_slot_06] = "last_calculated_buy_slot_06_disabled"
+	
 	for slot in all_buy_slots:
 		slot.tower_inventory_bench = tower_inventory_bench
 		slot.game_settings_manager = game_settings_manager
-
+	
+	
+	_update_last_calculated_can_refresh_shop()
+	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
 
 
 func _on_RerollButton_pressed():
 	emit_signal("reroll")
+
 
 # Assuming that the array received is 5 in length
 func update_new_rolled_towers(tower_ids_to_roll_to : Array):
@@ -142,10 +227,7 @@ func update_new_rolled_towers(tower_ids_to_roll_to : Array):
 		buy_slot_pos += 1
 	
 	
-	_update_tower_cards_buyability_based_on_gold(gold_manager.current_gold)
-
-
-
+	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
 
 
 #
@@ -201,20 +283,25 @@ func _on_LevelUpButton_pressed():
 	emit_signal("level_up")
 
 
+# connected via inspector node
 func _on_tower_bought(tower_type_info : TowerTypeInformation):
 	gold_manager.decrease_gold_by(tower_type_info.tower_cost, GoldManager.DecreaseGoldSource.TOWER_BUY)
 	emit_signal("tower_bought", tower_type_info.tower_type_id)
 
+func _on_viewing_tower_description_tooltip(tower_type_info : TowerTypeInformation, arg_buy_slot):
+	emit_signal("viewing_tower_description_tooltip", tower_type_info.tower_type_id, arg_buy_slot)
 
 
 # Gold updating related
 
-func _update_tower_cards_buyability_based_on_gold(current_gold : int):
+func _update_tower_cards_buyability_based_on_gold_and_clauses(current_gold : int):
 	for buy_slot in all_buy_slots:
 		var tower_card = buy_slot.current_child
+		var clause_prop_name = buy_slot_to_last_calc_property_name_map[buy_slot]
 		
 		if tower_card != null and tower_card is TowerBuyCard:
 			tower_card.current_gold = current_gold
+			tower_card.can_buy__set_from_clauses = get(clause_prop_name)
 			tower_card._update_can_buy_card()
 
 #
@@ -250,3 +337,57 @@ func _on_current_level_changed(curr_level : int):
 	else:
 		reroll_panel.visible = true
 		level_up_panel.visible = true
+
+####
+
+func _on_buy_slot_01_disabled_clauses_ins_or_rem(arg_clause):
+	last_calculated_buy_slot_01_disabled = buy_slot_01_disabled_clauses.is_passed
+	
+	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
+
+func _on_buy_slot_02_disabled_clauses_ins_or_rem(arg_clause):
+	last_calculated_buy_slot_02_disabled = buy_slot_02_disabled_clauses.is_passed
+	
+	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
+
+func _on_buy_slot_03_disabled_clauses_ins_or_rem(arg_clause):
+	last_calculated_buy_slot_03_disabled = buy_slot_03_disabled_clauses.is_passed
+	
+	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
+
+func _on_buy_slot_04_disabled_clauses_ins_or_rem(arg_clause):
+	last_calculated_buy_slot_04_disabled = buy_slot_04_disabled_clauses.is_passed
+	
+	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
+
+func _on_buy_slot_05_disabled_clauses_ins_or_rem(arg_clause):
+	last_calculated_buy_slot_05_disabled = buy_slot_05_disabled_clauses.is_passed
+	
+	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
+
+func _on_buy_slot_06_disabled_clauses_ins_or_rem(arg_clause):
+	last_calculated_buy_slot_06_disabled = buy_slot_06_disabled_clauses.is_passed
+	
+	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
+
+#
+
+func remove_tower_card_from_all_buy_slots():
+	for buy_slot in all_buy_slots:
+		buy_slot.kill_current_tower_buy_card()
+
+func remove_tower_card_from_buy_slot(arg_buy_slot_index : int):
+	var buy_slot = all_buy_slots[arg_buy_slot_index]
+	buy_slot.kill_current_tower_buy_card()
+
+#
+
+func _on_can_refresh_shop_clauses_inserted_or_removed(arg_clause):
+	_update_last_calculated_can_refresh_shop()
+
+func _update_last_calculated_can_refresh_shop():
+	last_calculated_can_refresh_shop = can_refresh_shop_clauses.is_passed
+	reroll_button.visible = last_calculated_can_refresh_shop
+	
+	emit_signal("can_refresh_shop_changed", last_calculated_can_refresh_shop)
+

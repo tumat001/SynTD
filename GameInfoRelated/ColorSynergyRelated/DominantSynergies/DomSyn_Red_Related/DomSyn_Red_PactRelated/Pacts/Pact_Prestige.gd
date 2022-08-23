@@ -12,7 +12,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	if tier == 0:
 		pass
 	elif tier == 1:
-		tower_per_shop_reduction = 1
+		tower_per_shop_reduction = 2
 		shop_level_odds_modi = 1
 	elif tier == 2:
 		tower_per_shop_reduction = 3

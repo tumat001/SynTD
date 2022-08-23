@@ -14,6 +14,7 @@ const tier05_crown = preload("res://GameHUDRelated/BuySellPanel/Tier05_Crown.png
 const tier06_crown = preload("res://GameHUDRelated/BuySellPanel/Tier06_Crown.png")
 
 
+signal viewing_tower_description_tooltip(tower_type_id)
 signal tower_bought(tower_type_id, tower_cost)
 
 const can_buy_modulate : Color = Color(1, 1, 1, 1)
@@ -35,6 +36,7 @@ var current_tooltip : TowerTooltip
 
 var current_gold : int
 var tower_inventory_bench setget set_tower_inventory_bench
+var can_buy__set_from_clauses : bool
 
 var is_playing_shine_sparkle : bool = false
 var shine_current_duration : float
@@ -141,7 +143,7 @@ func _on_BuyCard_gui_input(event):
 					current_tooltip.queue_free()
 
 func _on_BuyCard_pressed():
-	if !disabled and can_buy_card():
+	if !disabled and can_buy_card() and !is_queued_for_deletion():
 		disabled = true
 		emit_signal("tower_bought", tower_information)
 		
@@ -162,6 +164,8 @@ func _free_old_and_create_tooltip_for_tower():
 		current_tooltip.game_settings_manager = game_settings_manager
 		
 		get_tree().get_root().add_child(current_tooltip)
+	
+	emit_signal("viewing_tower_description_tooltip", tower_information)
 
 #func _on_BuyCard_mouse_exited():
 #	kill_current_tooltip()
@@ -201,7 +205,7 @@ func _update_can_buy_card():
 		modulate = cannot_buy_modulate
 
 func can_buy_card():
-	return _can_afford() and !tower_inventory_bench.is_bench_full()
+	return _can_afford() and !tower_inventory_bench.is_bench_full() and can_buy__set_from_clauses
 
 
 # Tower combination related

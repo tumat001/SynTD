@@ -127,6 +127,7 @@ func _init():
 		"Synergy level requirements must be met for a pact to take effect.",
 		"",
 		"Synergy level affects the quality and types of unsworn pacts that appear in the shop.",
+		"",
 	],
 	[DomSyn_Red],
 	[
@@ -134,14 +135,20 @@ func _init():
 		"Intermediate Shop",
 		"Advanced Shop",
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[
+		"Opens the Pact shop, which shows a list of up to three unsworn pacts.",
+		"Swearing a pact activates its buffs and debuffs. Up to 3 pacts can be sworn at a time.",
+		"",
+	]
 	),
 	
 	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [12, 9, 6, 3],
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
 	[
-		"Orange towers gain Heat Modules. Heat Modules gain heat per main attack of a tower. The heat gained per attack depends on the tower.",
+		"Orange towers gain Heat Modules. Main attacks increase the heat of Heat Modules by an amount (depends on tower).",
 		"Heat Modules give an effect, which scale depending on the current heat. A maximum of 74 heat can be gained per round. Not attacking in a round reduces the current heat by 50.",
 		#"Upon reaching 100 heat, the tower becomes Overheated. At the end of the round, Overheated towers undergo Cooling, where they are unable to attack for the round. Cooling towers lose all heat at the end of the round.",
 		"Towers that reach 100 heat lose all heat by the end of the round.",
@@ -158,14 +165,20 @@ func _init():
 		"500% effectiveness.",
 		"6000% effectiveness.", # reachable only by green tier 1
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[
+		"Orange tower's main attacks increases its heat. Orange towers gain bonus stats that increase in power the more heat they have.",
+		"Towers that reach max heat lose all heat by the end of the round.",
+		""
+	]
 	),
 	
 	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [10, 8, 5, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[
-		"ENERGIZE: Creates an Energy Battery with 1 energy.",
+		"ENERGIZE: Create an Energy Battery with 1 energy.",
 		"Energy Battery stores energy, up to a limit. Energy is gained per end of round.",
 		"",
 		"All yellow towers gain an Energy Module. Energy Modules allow a tower to consume 1 energy to gain special effects.",
@@ -187,14 +200,19 @@ func _init():
 		3: [0, 1],
 		4: [0],
 		0: [],
-	}
+	},
+	[
+		"ENERGIZE: Create an Energy Battery with 1 energy.",
+		"Yellow towers can consume an energy to gain special effects.",
+		""
+	]
 	),
 	
 	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [12, 8, 5, 3],
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_green,
 	[
-		"Gain access to Adaptations, which grant various effects.",
+		"Gain access to Adaptations, which grant various effects for Green towers.",
 		"New Adaptations are available per tier. Only one Adaptation can be selected per tier.",
 		"",
 		"Adaptations are active only when their tier requirement is met, unless otherwise stated.",
@@ -207,7 +225,13 @@ func _init():
 		"Adapt: Triumph.",
 		"Adapt: Beyond.", # reachable only by fruit tree
 	],
-	ColorSynergy.HighlightDeterminer.ALL_BELOW
+	ColorSynergy.HighlightDeterminer.ALL_BELOW,
+	{},
+	[
+		"Gain access to Adaptations, which grant various effects for Green towers.",
+		"New Adaptations are available per tier. Only one Adaptation can be selected per tier.",
+		"",
+	]
 	),
 	
 	"Blue" : blue_syn,

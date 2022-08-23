@@ -2,6 +2,7 @@ extends Node
 
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const RelicManager = preload("res://GameElementsRelated/RelicManager.gd")
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const gold_currency_icon = preload("res://GameHUDRelated/BuySellPanel/GoldPic.png")
 const relic_currency_icon = preload("res://GameHUDRelated/BuySellPanel/RelicPic.png")
@@ -78,6 +79,14 @@ var stage_round_manager setget set_stage_round_manager
 var gold_manager : GoldManager setget set_gold_manager
 var relic_manager : RelicManager setget set_relic_manager
 
+# clauses
+
+enum CanLevelUpClauses {
+	TUTORIAL_DISABLE = 1000
+}
+var can_level_up_clauses : ConditionalClauses
+var last_calculated_can_level_up : bool
+
 
 # setters
 
@@ -100,6 +109,11 @@ func set_relic_manager(arg_manager : RelicManager):
 #
 
 func _ready():
+	can_level_up_clauses = ConditionalClauses.new()
+	can_level_up_clauses.connect("clause_inserted", self, "_on_can_level_up_cond_clause_inserted_or_removed", [], CONNECT_PERSIST)
+	can_level_up_clauses.connect("clause_removed", self, "_on_can_level_up_cond_clause_inserted_or_removed", [], CONNECT_PERSIST)
+	
+	#
 	set_current_level(LEVEL_1)
 
 
@@ -139,15 +153,15 @@ func is_in_max_level() -> bool:
 	return current_level == max_level
 
 
-func can_level_up() -> bool:
-	if !is_in_max_level():
-		if current_level_up_currency == Currency.GOLD:
-			return gold_manager.current_gold >= current_level_up_cost
-		else: # RELIC
-			return relic_manager.current_relic_count >= current_level_up_cost
+func can_level_up():
+	if can_level_up_clauses.is_passed:
+		if !is_in_max_level():
+			if current_level_up_currency == Currency.GOLD:
+				return gold_manager.current_gold >= current_level_up_cost
+			else: # RELIC
+				return relic_manager.current_relic_count >= current_level_up_cost
 	
 	return false
-
 
 func level_up_with_spend_currency():
 	if can_level_up():
@@ -172,10 +186,12 @@ func set_current_level(new_level):
 
 
 func _gold_amount_changed(gold_amount):
-	emit_signal("on_can_level_up_changed", can_level_up())
+	#emit_signal("on_can_level_up_changed", can_level_up())
+	_update_if_can_level_up()
 
 func _relic_count_changed(relic_amount):
-	emit_signal("on_can_level_up_changed", can_level_up())
+	#emit_signal("on_can_level_up_changed", can_level_up())
+	_update_if_can_level_up()
 
 
 # used by some red syns
@@ -194,4 +210,24 @@ func get_currency_icon(currency : int) -> Texture:
 		return relic_currency_icon
 	
 	return null
+
+###
+
+func _on_can_level_up_cond_clause_inserted_or_removed(arg_clause):
+	_update_if_can_level_up()
+
+
+func _update_if_can_level_up():
+	last_calculated_can_level_up = can_level_up()
+	emit_signal("on_can_level_up_changed", last_calculated_can_level_up)
+
+
+#func can_level_up() -> bool:
+#	if !is_in_max_level():
+#		if current_level_up_currency == Currency.GOLD:
+#			return gold_manager.current_gold >= current_level_up_cost
+#		else: # RELIC
+#			return relic_manager.current_relic_count >= current_level_up_cost
+#
+#	return false
 

@@ -188,7 +188,13 @@ func _init():
 		"Explosion per 1.5 seconds. Explosions are 75% larger.",
 		"Explosion per 0.4 seconds. Explosions are 100% larger.",
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[
+		"Main attacks on hit cause an explosion every few seconds.",
+		["Explosions deal |0| to 3 enemies.", [interpreter_for_orangeblue_explosion_dmg]],
+		"",
+	]
 	)
 	
 	#
@@ -232,7 +238,8 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE,
 	{},
 	[
-		"Main attacks cause towers to gain attack speed, up to a limit."
+		"Main attacks cause towers to gain attack speed, up to a limit.",
+		"",
 	]
 	)
 	
@@ -658,7 +665,7 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_RYB,
 	[
-		"The first few enemies that reach the end of the track for the first time are instead brought back to the start of the track, preventing life loss. This counter resets every round.",
+		"Every round: the first few enemies that reach the end of the track for the first time are instead brought back to the start of the track, preventing life loss.",
 		"Enemies brought back heal for 40% of their missing health and receive damage resistance. The damage resistance cannot be removed by any means.",
 		"Elite and Boss enemies count as 2 enemies for this effect.",
 		"",
@@ -673,7 +680,16 @@ func _init():
 		"50% damage resistance, 10 enemies.",
 		"25% damage resistance, 16 enemies.",
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[
+		"Every round: the first few enemies that reach the end of the track for the first time are instead brought back to the start of the track, preventing life loss.",
+		"Enemies brought back heal for 40% of their missing health and receive damage resistance.",
+		"Elite and Boss enemies count as 2 enemies for this effect.",
+		"",
+		"Triggering this effect counts as a round loss.",
+		"",
+	]
 	),
 	
 	"OGV" : ogv_syn,

@@ -22,7 +22,13 @@ func _ready():
 
 func update_display():
 	$HBoxContainer/TierIconPanel/TierIcon.texture = result.tier_pic
-	$HBoxContainer/TierIconPanel/SpecialMarginer/TierNumberLabel.text = _convert_number_to_roman_numeral(result.synergy_tier)
+	#$HBoxContainer/TierIconPanel/SpecialMarginer/TierNumberLabel.text = _convert_number_to_roman_numeral(result.synergy_tier)
+	
+	if result.synergy_tier != 0:
+		$HBoxContainer/TierIconPanel/SpecialMarginer/TierNumberLabel.text = str(result.synergy.number_of_towers_in_tier[result.synergy_tier - 1])
+	else:
+		$HBoxContainer/TierIconPanel/SpecialMarginer/TierNumberLabel.text = ""
+	
 	$HBoxContainer/SynergyIconPanel/SynergyIcon.texture = result.synergy.synergy_picture
 	$HBoxContainer/SynergyInfoLabelPanel/SynergyInfoLabel.text = _generate_synergy_info_to_display()
 

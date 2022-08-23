@@ -18,4 +18,8 @@ enum {
 	
 	DOMSYN_RED__COMBINATION_EXPERTISE = 10000,
 	
+	#
+	
+	TUTORIAL = 100000,
+	
 }

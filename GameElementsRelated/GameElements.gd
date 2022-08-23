@@ -30,6 +30,7 @@ const CombinationTopPanel = preload("res://GameHUDRelated/CombinationRelatedPane
 const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
 const GenericNotifPanel = preload("res://GameHUDRelated/NotificationPanel/GenericPanel/GenericNotifPanel.gd")
 const PauseManager = preload("res://GameElementsRelated/PauseManager.gd")
+const SellPanel = preload("res://GameHUDRelated/BuySellPanel/SellPanel.gd")
 
 signal before_main_init()
 signal before_game_start()
@@ -73,6 +74,7 @@ var round_damage_stats_panel : RoundDamageStatsPanel
 var map_manager : MapManager
 var game_settings_manager : GameSettingsManager
 var generic_notif_panel : GenericNotifPanel
+onready var sell_panel : SellPanel = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/SellPanel
 
 onready var top_left_coord_of_map = $TopLeft
 onready var bottom_right_coord_of_map = $BottomRight
@@ -326,7 +328,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHAOS,
 			Towers.ROYAL_FLAME,
 			Towers.NUCLEUS,
-			Towers.VACUUM,
+			Towers.REBOUND,
 			Towers.TESLA,
 			Towers.LA_CHASSEUR,
 		])
@@ -369,7 +371,7 @@ func _unhandled_key_input(event):
 	var any_action_taken : bool = false
 	
 	if !event.echo and event.pressed:
-		if whole_screen_gui.current_showing_control == null and !pause_manager.has_any_visible_control():
+		if if_allow_key_inputs_due_to_conditions(): #put conditions here, as tutorials use this as well
 			if event.is_action_pressed("game_ingredient_toggle"):
 				tower_manager._toggle_ingredient_combine_mode()
 				any_action_taken = true
@@ -450,6 +452,11 @@ func _unhandled_key_input(event):
 	
 	emit_signal("unhandled_key_input", event, any_action_taken)
 
+func if_allow_key_inputs_due_to_conditions():
+	return whole_screen_gui.current_showing_control == null and !pause_manager.has_any_visible_control()
+
+
+
 #
 
 func _esc_no_wholescreen_gui_pressed():
@@ -479,7 +486,10 @@ func _hide_current_control_from_whole_screen_gui():
 	whole_screen_gui.hide_control(whole_screen_gui.current_showing_control)
 
 
-#
+
+
+
+####
 
 func get_middle_coordinates_of_playable_map() -> Vector2:
 	return Vector2(_get_average(top_left_coord_of_map.global_position.x, bottom_right_coord_of_map.global_position.x), _get_average(top_left_coord_of_map.global_position.y, bottom_right_coord_of_map.global_position.y))

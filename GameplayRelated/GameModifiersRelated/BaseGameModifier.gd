@@ -14,6 +14,9 @@ var modifier_icon : Texture
 var can_be_viewed_by_player : bool
 var breakpoint_activation : int
 
+var game_elements : GameElements
+
+
 func _init(arg_id : int, arg_breakpoint_activation : int, 
 		arg_modi_name : String):
 	modifier_id = arg_id
@@ -24,9 +27,11 @@ func _init(arg_id : int, arg_breakpoint_activation : int,
 ##
 
 func _apply_game_modifier_to_elements(arg_elements : GameElements):
-	pass
+	game_elements = arg_elements
+	
 
 
 func _unapply_game_modifier_from_elements(arg_elements : GameElements):
-	pass
+	game_elements = arg_elements
+	
 

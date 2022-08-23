@@ -22,7 +22,13 @@ var round_fast_forwarded : bool
 var game_settings_manager setget set_game_settings_manager
 
 
+var can_start_round : bool = true setget set_can_start_round
+
 #
+
+func _ready():
+	set_can_start_round(can_start_round)
+
 
 func set_game_settings_manager(arg_manager):
 	game_settings_manager = arg_manager
@@ -59,11 +65,21 @@ func _update_normal_speed():
 	Engine.time_scale = 1.0
 
 
-func _on_RoundStatusButton_pressed():
+func _on_RoundStatusButton_pressed(): # used by game elements when space is pressed (or whatever control is used for round advance)
 	if !round_started:
-		_update_round_started()
+		if can_start_round:
+			_update_round_started()
 	else:
 		if round_fast_forwarded:
 			_update_normal_speed()
 		else:
 			_update_fast_forwarded()
+
+#
+
+func set_can_start_round(arg_val : bool):
+	can_start_round = arg_val
+	
+	round_status_button.visible = can_start_round
+
+

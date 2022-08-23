@@ -30,14 +30,14 @@ onready var center_pos_2d_for_suck_particles = $TowerBase/CenterOfSuck
 
 const slow_duration_per_apply : float = 0.6
 const slow_apply_delay : float = 0.5 # wait for x sec before applying another slow
-const base_suck_duration : float = 30.0#3.0 #todo
-const suck_slow_percent_amount : float = -70.0 #todo
+const base_suck_duration : float = 3.0
+const suck_slow_percent_amount : float = -70.0
 var suck_slow_effect : EnemyAttributesEffect
 
 var suck_ability : BaseAbility
 var is_suck_ability_ready : bool
 var _current_duration_before_suck_end_and_shockwave_start : float
-const base_suck_cooldown : float = 1.0 #18.0 #todo
+const base_suck_cooldown : float = 18.0
 const is_sucking_clause : int = -10
 const no_enemies_in_range_clause : int = -11
 

@@ -12,7 +12,7 @@ enum Stat {
 }
 
 var tower : AbstractTower
-var showing_stat : int = Stat.BASE
+var showing_stat : int = Stat.FINAL
 
 onready var base_stat_button : TextureButton = $VBoxContainer/HBoxContainer/BaseContainer/BaseStatButton
 onready var total_stat_button : TextureButton = $VBoxContainer/HBoxContainer/TotalContainer/TotalStatButton

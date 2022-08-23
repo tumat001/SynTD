@@ -4,11 +4,12 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const BuySellLevelRollPanel = preload("res://GameHUDRelated/BuySellPanel/BuySellLevelRollPanel.gd")
 const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
-
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 signal on_effective_shop_odds_level_changed(new_level)
 signal on_cost_per_roll_changed(new_cost)
 signal can_roll_changed(can_roll)
+signal shop_rolled_with_towers(arg_tower_ids)
 
 const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_1 : [100, 0, 0, 0, 0, 0],
@@ -110,6 +111,8 @@ enum TowersPerShopModifiers {
 	
 	SYN_GREEN__HORTICULTURIST = 1,
 	SYN_RED__PRESTIGE = 2,
+	
+	TUTORIAL = 1000,
 }
 
 enum ShopLevelOddsModifiers {
@@ -124,6 +127,14 @@ const max_towers_per_shop : int = 6
 var _flat_shop_level_odd_modi_id_to_modi_map : Dictionary = {}
 var last_calculated_shop_level_odd_modi : int
 var last_calculated_effective_shop_level_odds : int
+
+# clauses
+
+enum CanRefreshShopClauses {
+	TUTORIAL_DISABLE = 1000
+}
+var can_refresh_shop_clauses : ConditionalClauses
+var last_calculated_can_refresh_shop : bool
 
 
 # setters
@@ -159,6 +170,11 @@ func set_cost_per_roll(new_cost):
 #
 
 func _ready():
+	can_refresh_shop_clauses = ConditionalClauses.new()
+	can_refresh_shop_clauses.connect("clause_inserted", self, "_on_can_refresh_shop_clauses_inserted_or_removed", [], CONNECT_PERSIST)
+	can_refresh_shop_clauses.connect("clause_removed", self, "_on_can_refresh_shop_clauses_inserted_or_removed", [], CONNECT_PERSIST)
+	
+	#
 	for tower_id in Towers.TowerTiersMap.keys():
 		if !towers_not_initially_in_inventory.has(tower_id):
 			add_tower_to_inventory(tower_id, Towers.TowerTiersMap[tower_id])
@@ -166,6 +182,7 @@ func _ready():
 	_update_tier_has_tower_map()
 	
 	_update_last_calculated_effective_shop_level(true)
+	_update_last_calculated_can_refresh_shop()
 
 
 func add_tower_to_inventory(tower_id : int, tower_tier : int):
@@ -272,17 +289,21 @@ func _calculate_last_calculated_effective_shop_level() -> int:
 # roll related
 
 func _emit_can_roll_changed(_new_val):
-	emit_signal("can_roll_changed", if_can_roll())
+	#emit_signal("can_roll_changed", if_can_roll())
+	_update_last_calculated_can_refresh_shop()
 
 
 func roll_towers_in_shop_with_cost(level_of_roll : int = last_calculated_effective_shop_level_odds, arg_cost : int = current_cost_per_roll):
 	if if_can_roll():
 		roll_towers_in_shop(level_of_roll)
 		gold_manager.decrease_gold_by(arg_cost, GoldManager.DecreaseGoldSource.SHOP_ROLL)
+		
 
 func if_can_roll() -> bool:
-	return gold_manager.current_gold >= current_cost_per_roll 
-
+	if can_refresh_shop_clauses.is_passed:
+		return gold_manager.current_gold >= current_cost_per_roll 
+	
+	return false
 
 func roll_towers_in_shop(level_of_roll : int = last_calculated_effective_shop_level_odds):
 	for tower_id in buy_sell_level_roll_panel.get_all_unbought_tower_ids():
@@ -292,7 +313,11 @@ func roll_towers_in_shop(level_of_roll : int = last_calculated_effective_shop_le
 	for i in last_calculated_towers_per_shop:
 		tower_ids.append(_determine_tower_id_to_be_rolled_from_level_of_roll(level_of_roll))
 	
-	buy_sell_level_roll_panel.update_new_rolled_towers(tower_ids)
+	roll_towers_in_shop__specific_ids(tower_ids)
+
+func roll_towers_in_shop__specific_ids(arg_tower_ids):
+	buy_sell_level_roll_panel.update_new_rolled_towers(arg_tower_ids)
+	emit_signal("shop_rolled_with_towers", arg_tower_ids)
 
 
 func _determine_tower_id_to_be_rolled_from_level_of_roll(level_of_roll : int) -> int:
@@ -469,4 +494,15 @@ func _update_tier_has_tower_map(tiers : Array = tier_has_tower_map.keys(), is_ad
 						break
 			
 			tier_has_tower_map[tier] = tier_has_stock
+
+##
+
+func _on_can_refresh_shop_clauses_inserted_or_removed(arg_clause):
+	_update_last_calculated_can_refresh_shop()
+
+func _update_last_calculated_can_refresh_shop():
+	last_calculated_can_refresh_shop = if_can_roll()
+	
+	emit_signal("can_roll_changed", last_calculated_can_refresh_shop)
+
 

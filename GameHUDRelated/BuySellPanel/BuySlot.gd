@@ -6,6 +6,7 @@ const Towers = preload("res://GameInfoRelated/Towers.gd")
 const TowerBuyCard = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCard.gd")
 
 signal tower_bought(tower_id)
+signal viewing_tower_description_tooltip(tower_type_id, arg_self)
 
 var current_child
 var tower_inventory_bench
@@ -30,11 +31,30 @@ func roll_buy_card_to_tower_id(tower_id : int):
 			add_child(buy_card_scene)
 			current_child = buy_card_scene
 			current_child.connect("tower_bought", self, "_on_tower_bought")
-
+			current_child.connect("viewing_tower_description_tooltip", self, "_on_viewing_tower_description_tooltip")
 
 func _on_tower_bought(tower_type_info : TowerTypeInformation):
 	emit_signal("tower_bought", tower_type_info)
 
+func _on_viewing_tower_description_tooltip(tower_type_info : TowerTypeInformation):
+	emit_signal("viewing_tower_description_tooltip", tower_type_info, self)
+
+
+
 func kill_tooltip_of_tower_card():
 	if current_child is TowerBuyCard:
 		current_child.kill_current_tooltip()
+
+
+func kill_current_tower_buy_card():
+	if current_child != null and current_child is TowerBuyCard and !current_child.is_queued_for_deletion():
+		current_child.queue_free()
+
+#
+
+func get_current_tower_buy_card():
+	if current_child is TowerBuyCard and !current_child.is_queued_for_deletion():
+		return current_child
+	
+	return null
+
