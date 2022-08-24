@@ -35,6 +35,29 @@ const DomSyn_Red = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSy
 const DomSyn_Black = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/DomSyn_Black.gd")
 const DomSyn_Green = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/DomSyn_Green.gd")
 
+enum SynergyId {
+	BLUE = 100,
+	BLACK = 101,
+	RED = 102,
+	ORANGE = 103,
+	YELLOW = 104,
+	GREEN = 105,
+	WHITE = 106,
+	VIOLET = 107
+}
+
+const synergy_id_to_syn_name_dictionary := {
+	SynergyId.BLUE : "Blue",
+	SynergyId.BLACK : "Black",
+	SynergyId.RED : "Red",
+	SynergyId.ORANGE : "Orange",
+	SynergyId.YELLOW : "Yellow",
+	SynergyId.GREEN : "Green",
+	SynergyId.WHITE : "White",
+	SynergyId.VIOLET : "Violet",
+}
+
+
 var synergies : Dictionary
 
 func _init():
@@ -57,7 +80,7 @@ func _init():
 	
 	
 	
-	var blue_syn = ColorSynergy.new("Blue", [TowerColors.BLUE], [8, 5, 3],
+	var blue_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.BLUE], [TowerColors.BLUE], [8, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
 	[
@@ -95,7 +118,7 @@ func _init():
 	interpreter_for_black_bonus_dmg.array_of_instructions = ins_for_black_bonus_dmg
 	
 	
-	var black_syn = ColorSynergy.new("Black", [TowerColors.BLACK], [11, 8, 6, 2],
+	var black_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.BLACK], [TowerColors.BLACK], [11, 8, 6, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_black,
 	[
@@ -118,7 +141,7 @@ func _init():
 	# ------------------------------------------------------
 	
 	synergies = {
-	"Red" : ColorSynergy.new("Red", [TowerColors.RED], [9, 6, 3],
+	synergy_id_to_syn_name_dictionary[SynergyId.RED] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.RED], [TowerColors.RED], [9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
 	[
@@ -144,7 +167,7 @@ func _init():
 	]
 	),
 	
-	"Orange" : ColorSynergy.new("Orange", [TowerColors.ORANGE], [12, 9, 6, 3],
+	synergy_id_to_syn_name_dictionary[SynergyId.ORANGE] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.ORANGE], [TowerColors.ORANGE], [12, 9, 6, 3],
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
 	[
@@ -174,7 +197,7 @@ func _init():
 	]
 	),
 	
-	"Yellow" : ColorSynergy.new("Yellow", [TowerColors.YELLOW], [10, 8, 5, 3],
+	synergy_id_to_syn_name_dictionary[SynergyId.YELLOW] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.YELLOW], [TowerColors.YELLOW], [10, 8, 5, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[
@@ -208,7 +231,7 @@ func _init():
 	]
 	),
 	
-	"Green" : ColorSynergy.new("Green", [TowerColors.GREEN], [12, 8, 5, 3],
+	synergy_id_to_syn_name_dictionary[SynergyId.GREEN] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.GREEN], [TowerColors.GREEN], [12, 8, 5, 3],
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_green,
 	[
@@ -234,9 +257,9 @@ func _init():
 	]
 	),
 	
-	"Blue" : blue_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId.BLUE] : blue_syn,
 	
-	"Violet" : ColorSynergy.new("Violet", [TowerColors.VIOLET], [5, 4, 3, 2],
+	synergy_id_to_syn_name_dictionary[SynergyId.VIOLET] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.VIOLET], [TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	[
@@ -256,14 +279,14 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"White" : ColorSynergy.new("White", [TowerColors.WHITE], [1],
+	synergy_id_to_syn_name_dictionary[SynergyId.WHITE] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.WHITE], [TowerColors.WHITE], [1],
 	[tier_dia_pic],
 	syn_dom_white,
 	[
 		"White towers rely on the White synergy to channel their powers.",
 	]),
 	
-	"Black" : black_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId.BLACK] : black_syn,
 	
 }
 

@@ -52,6 +52,34 @@ const TriaSyn_OGV = preload("res://GameInfoRelated/ColorSynergyRelated/TriaSyner
 
 #var inst_complesyn_yelvio_energymodule : CompleSyn_YelVio_EnergyModule
 
+enum SynergyId {
+	RedGreen = 1,
+	OrangeBlue = 2,
+	#YellowViolet = 3,
+	OrangeYR = 4,
+	YellowGO = 5,
+	GreenBY = 6,
+	BlueVG = 7,
+	VioletRB = 8,
+	RYB = 9
+	OGV = 10,
+	RedOV = 11,
+}
+
+const synergy_id_to_syn_name_dictionary := {
+	SynergyId.RedGreen : "RedGreen",
+	SynergyId.OrangeBlue : "OrangeBlue",
+	#SynergyId.YellowViolet : "YellowViolet",
+	SynergyId.OrangeYR : "OrangeYR",
+	SynergyId.YellowGO : "YellowGO",
+	SynergyId.GreenBY : "GreenBY",
+	SynergyId.BlueVG : "BlueVG",
+	SynergyId.VioletRB : "VioletRB",
+	SynergyId.RYB : "RYB",
+	SynergyId.OGV : "OGV",
+	SynergyId.RedOV : "RedOV",
+}
+
 
 func _init():
 	#inst_complesyn_yelvio_energymodule = CompleSyn_YelVio_EnergyModule.new(TowerDominantColors.inst_domsyn_yellow_energybattery)
@@ -98,7 +126,7 @@ func _init():
 	
 	#
 	
-	var red_green_syn = ColorSynergy.new("RedGreen", [TowerColors.RED, TowerColors.GREEN], [5, 4, 3],
+	var red_green_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.RedGreen], [TowerColors.RED, TowerColors.GREEN], [5, 4, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_compo_compli_redgreen,
 	[
@@ -136,6 +164,7 @@ func _init():
 	var interpreter_for_orangeblue_explosion_dmg = TextFragmentInterpreter.new()
 	interpreter_for_orangeblue_explosion_dmg.display_body = true
 	interpreter_for_orangeblue_explosion_dmg.use_color_for_dark_background = false
+	interpreter_for_orangeblue_explosion_dmg.display_header = false
 	
 	var outer_ins_for_orange_blue_explosion_dmg = []
 	var ins_for_orange_blue_explosion_dmg = []
@@ -169,7 +198,7 @@ func _init():
 	
 	#
 	
-	var orange_blue_syn = ColorSynergy.new("OrangeBlue", [TowerColors.ORANGE, TowerColors.BLUE], [5, 4, 3, 2],
+	var orange_blue_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.OrangeBlue], [TowerColors.ORANGE, TowerColors.BLUE], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_compli_orangeblue,
 	[
@@ -220,7 +249,7 @@ func _init():
 	
 	
 	
-	var orange_yr_syn = ColorSynergy.new("OrangeYR", [TowerColors.ORANGE, TowerColors.YELLOW, TowerColors.RED], [4, 3, 2, 1],
+	var orange_yr_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.OrangeYR], [TowerColors.ORANGE, TowerColors.YELLOW, TowerColors.RED], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_orangeYR,
 	[
@@ -326,7 +355,7 @@ func _init():
 	
 	
 	
-	var yellow_go_syn = ColorSynergy.new("YellowGO", [TowerColors.YELLOW, TowerColors.GREEN, TowerColors.ORANGE], [4, 3, 2, 1],
+	var yellow_go_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.YellowGO], [TowerColors.YELLOW, TowerColors.GREEN, TowerColors.ORANGE], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_yellowGO,
 	[
@@ -397,7 +426,7 @@ func _init():
 	
 	
 	
-	var green_by_syn = ColorSynergy.new("GreenBY", [TowerColors.GREEN, TowerColors.BLUE, TowerColors.YELLOW], [4, 3, 2, 1],
+	var green_by_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.GreenBY], [TowerColors.GREEN, TowerColors.BLUE, TowerColors.YELLOW], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_greenBY,
 	[
@@ -457,7 +486,7 @@ func _init():
 	
 	
 	
-	var blue_vg_syn = ColorSynergy.new("BlueVG", [TowerColors.BLUE, TowerColors.VIOLET, TowerColors.GREEN], [4, 3, 2, 1],
+	var blue_vg_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.BlueVG], [TowerColors.BLUE, TowerColors.VIOLET, TowerColors.GREEN], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_blueVG,
 	[
@@ -521,7 +550,7 @@ func _init():
 	
 	
 	
-	var violet_rb_syn = ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
+	var violet_rb_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.VioletRB], [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
 	[
@@ -559,7 +588,7 @@ func _init():
 	
 	
 	
-	var ogv_syn = ColorSynergy.new("OGV", [TowerColors.ORANGE, TowerColors.GREEN, TowerColors.VIOLET], [3, 2, 1], #[4, 3, 2],
+	var ogv_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.OGV], [TowerColors.ORANGE, TowerColors.GREEN, TowerColors.VIOLET], [3, 2, 1], #[4, 3, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_OGV,
 	[
@@ -587,7 +616,7 @@ func _init():
 	
 	synergies = {
 	# Comple
-	"RedGreen" : red_green_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId.RedGreen] : red_green_syn,
 	
 	
 	
@@ -608,11 +637,11 @@ func _init():
 #	ColorSynergy.HighlightDeterminer.ALL_BELOW
 #	),
 	
-	"OrangeBlue" : orange_blue_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId.OrangeBlue] : orange_blue_syn,
 	
 	
 	# Ana
-	"RedOV" : ColorSynergy.new("RedOV", [TowerColors.RED, TowerColors.ORANGE, TowerColors.VIOLET], [3, 2, 1],
+	synergy_id_to_syn_name_dictionary[SynergyId.RedOV] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.RedOV], [TowerColors.RED, TowerColors.ORANGE, TowerColors.VIOLET], [3, 2, 1],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_redOV,
 	[
@@ -628,13 +657,13 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),
 	
-	"OrangeYR" : orange_yr_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId.OrangeYR] : orange_yr_syn,
 	
-	"YellowGO" : yellow_go_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId.YellowGO] : yellow_go_syn,
 	
-	"GreenBY" : green_by_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId.GreenBY] : green_by_syn,
 	
-	"BlueVG" : blue_vg_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId.BlueVG] : blue_vg_syn,
 	
 #	"VioletRB" : ColorSynergy.new("VioletRB", [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2],
 #	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
@@ -658,10 +687,10 @@ func _init():
 #	ColorSynergy.HighlightDeterminer.ALL_BELOW
 #	),
 	
-	"VioletRB" : violet_rb_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId.VioletRB] : violet_rb_syn,
 	
 	#Tria
-	"RYB" : ColorSynergy.new("RYB", [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2],
+	synergy_id_to_syn_name_dictionary[SynergyId.RYB] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.RYB], [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_RYB,
 	[
@@ -692,7 +721,7 @@ func _init():
 	]
 	),
 	
-	"OGV" : ogv_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId.OGV] : ogv_syn,
 	
 	
 	# Special

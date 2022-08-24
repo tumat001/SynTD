@@ -35,7 +35,7 @@ func _get_custom_shop_towers():
 
 func _apply_game_modifier_to_elements(arg_elements : GameElements):
 	transcript_to_progress_mode = {
-		"Welcome to Random Tower Defense! Press Enter to continue." : ProgressMode.CONTINUE,
+		"Welcome to Random Tower Defense! Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
 		"In a tower defense game, you place towers to defeat the enemies." : ProgressMode.CONTINUE,
 		"Left click this \"tower card\" to buy the displayed tower." : ProgressMode.ACTION_FROM_PLAYER,
 		"When you buy towers, they appear in your bench.\nBenched towers do not attack; you need to place them in the map." : ProgressMode.CONTINUE,
@@ -49,8 +49,8 @@ func _apply_game_modifier_to_elements(arg_elements : GameElements):
 		"Now lets practice what we just learned. Buy a tower and place it in the map." : ProgressMode.ACTION_FROM_PLAYER,
 		"Nice! You're getting the hang of it." : ProgressMode.CONTINUE,
 		"The number of towers you can place in the map is equal to your level. Since you are level 2, you can place 2 towers." : ProgressMode.CONTINUE,
-		"Let's start the round. (Press %s. or click this button)." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
-		"While the round is started, you can fast forward the game by pressing %s.\nPressing it again resets the game speed (same for the round button)." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.WAIT_FOR_EVENT, #wait for round to end
+		"Let's start the round. (Press %s, or click this button)." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
+		"While the round is started, you can fast forward the game by pressing %s." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.WAIT_FOR_EVENT, #wait for round to end
 		
 		#14 #Right click spike
 		"To view a tower's description and stats, just right click a tower.\nPlease right click this tower." : ProgressMode.ACTION_FROM_PLAYER,

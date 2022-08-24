@@ -84,3 +84,20 @@ func _on_single_syn_displayer_tooltip_hidden(syn):
 
 func _on_single_syn_displayer_pressed(event, syn_check_result):
 	emit_signal("on_single_syn_displayer_pressed", event, syn_check_result)
+
+#
+
+func get_single_syn_displayer_with_synergy_name(arg_syn_name : String):
+	var syn_disp_01 = active_synergies_disp.get_single_syn_displayer_with_synergy_name(arg_syn_name)
+	if syn_disp_01 != null:
+		return syn_disp_01
+	
+	var syn_disp_02 = non_active_compo_syn_disp.get_single_syn_displayer_with_synergy_name(arg_syn_name)
+	if syn_disp_02 != null:
+		return syn_disp_02
+	
+	var syn_disp_03 = non_active_dominant_syn_disp.get_single_syn_displayer_with_synergy_name(arg_syn_name)
+	if syn_disp_03 != null:
+		return syn_disp_03
+	
+	return null

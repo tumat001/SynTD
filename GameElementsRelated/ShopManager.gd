@@ -507,6 +507,13 @@ func _update_tier_has_tower_map(tiers : Array = tier_has_tower_map.keys(), is_ad
 			
 			tier_has_tower_map[tier] = tier_has_stock
 
+#
+
+func get_tower_tier_odds_at_player_level(arg_tower_tier, arg_player_level) -> float:
+	var roll_prob = base_level_tier_roll_probabilities[arg_player_level]
+	return roll_prob[arg_tower_tier - 1]
+
+
 ##
 
 func _on_can_refresh_shop_clauses_inserted_or_removed(arg_clause):

@@ -7,6 +7,7 @@ const Tutorial_WhiteCircle_Particle_Scene = preload("res://GameplayRelated/GameM
 
 
 signal on_current_transcript_index_changed(arg_index, arg_message)
+signal at_end_of_transcript()
 
 enum ProgressMode {
 	CONTINUE = 0,
@@ -18,8 +19,11 @@ enum ProgressMode {
 var current_transcript_index : int = -1
 var current_custom_towers_at_shop_index : int = -1
 
+var exit_scene_if_at_end_of_transcript : bool = true
+
 var _towers_bought_for_multiple_listen : Array = []
 var _towers_placed_in_map_for_multiple_listen : Array = []
+var _towers_placed_in_bench_for_multiple_listen : Array = []
 
 #
 
@@ -76,10 +80,16 @@ func advance_to_next_transcript_message():
 	current_transcript_index += 1
 	
 	if _get_transcript().size() <= current_transcript_index:
-		CommsForBetweenScenes.goto_starting_screen(game_elements)
+		if exit_scene_if_at_end_of_transcript:
+			CommsForBetweenScenes.goto_starting_screen(game_elements)
+		else:
+			game_elements.disconnect("unhandled_input", self, "_game_elements_unhandled_input")
+			game_elements.disconnect("unhandled_key_input", self, "_game_elements_unhandled_key_input")
+			emit_signal("at_end_of_transcript")
 	else:
 		_show_transcript_msg_at_index(current_transcript_index)
 		emit_signal("on_current_transcript_index_changed", current_transcript_index, _get_text_transcript_at_current_index())
+
 
 func _show_transcript_msg_at_index(arg_index):
 	game_elements.generic_notif_panel.push_notification(_get_text_transcript_at_current_index(), "", game_elements.GenericNotifPanel.INFINITE_DURATION)
@@ -215,6 +225,10 @@ func listen_for_towers_with_ids__bought__then_call_func(arg_tower_ids : Array, a
 
 func _on_tower_added__multiple_needed(arg_tower_instance, arg_expected_tower_ids, arg_func_name, arg_func_source):
 	var tower_id = arg_tower_instance.tower_id
+	
+	set_tower_is_sellable(arg_tower_instance, false)
+	set_tower_is_draggable(arg_tower_instance, false)
+	
 	if arg_expected_tower_ids.has(tower_id):
 		arg_expected_tower_ids.erase(tower_id)
 		_towers_bought_for_multiple_listen.append(arg_tower_instance)
@@ -224,6 +238,7 @@ func _on_tower_added__multiple_needed(arg_tower_instance, arg_expected_tower_ids
 		arg_func_source.call(arg_func_name, _towers_bought_for_multiple_listen.duplicate())
 		_towers_bought_for_multiple_listen.clear()
 
+
 # expects a method that accepts an array (of tower instances)
 func listen_for_towers_with_ids__placed_in_map__then_call_func(arg_tower_ids : Array, arg_func_name : String, arg_func_source):
 	_towers_placed_in_map_for_multiple_listen.clear()
@@ -232,6 +247,7 @@ func listen_for_towers_with_ids__placed_in_map__then_call_func(arg_tower_ids : A
 
 func _on_tower_must_be_placed_in_map(arg_tower):
 	set_tower_is_sellable(arg_tower, false)
+	#set_tower_is_draggable(arg_tower, false)
 
 func _on_tower_dropped_from_drag__multiple_needed(arg_tower_instance, arg_expected_tower_ids : Array, arg_func_name, arg_func_source):
 	var tower_id = arg_tower_instance.tower_id
@@ -247,7 +263,7 @@ func _on_tower_dropped_from_drag__multiple_needed(arg_tower_instance, arg_expect
 		game_elements.tower_manager.disconnect("tower_dropped_from_dragged", self, "_on_tower_dropped_from_drag__multiple_needed")
 		game_elements.tower_manager.disconnect("tower_added", self, "_on_tower_must_be_placed_in_map")
 		arg_func_source.call(arg_func_name, _towers_placed_in_map_for_multiple_listen.duplicate())
-		_towers_placed_in_map_for_multiple_listen
+		_towers_placed_in_map_for_multiple_listen.clear()
 
 
 func _if_tower_arr_matches_tower_id_arr(arg_tower_arr : Array, arg_tower_id_arr : Array):
@@ -339,6 +355,30 @@ func _on_tower_being_sold(arg_sellback_gold, arg_tower_sold, arg_expected_id, ar
 		game_elements.tower_manager.disconnect("tower_being_sold", self, "_on_tower_being_sold")
 		arg_func_source.call(arg_func_name, arg_sellback_gold, arg_expected_id)
 
+
+# expects a method that accepts an array (of tower instances)
+func listen_for_towers_with_ids__placed_in_bench__then_call_func(arg_tower_ids : Array, arg_func_name : String, arg_func_source):
+	_towers_placed_in_bench_for_multiple_listen.clear()
+	game_elements.tower_manager.connect("tower_dropped_from_dragged", self, "_on_tower_dropped_from_drag__to_place_in_bench_multiple_needed", [arg_tower_ids, arg_func_name, arg_func_source])
+
+
+func _on_tower_dropped_from_drag__to_place_in_bench_multiple_needed(arg_tower_instance, arg_expected_tower_ids : Array, arg_func_name, arg_func_source):
+	var tower_id = arg_tower_instance.tower_id
+	var is_not_placable_in_map = !arg_tower_instance.is_current_placable_in_map()
+	
+	if arg_expected_tower_ids.has(tower_id):
+		if is_not_placable_in_map and !_towers_placed_in_bench_for_multiple_listen.has(arg_tower_instance):
+			_towers_placed_in_bench_for_multiple_listen.append(arg_tower_instance)
+		elif !is_not_placable_in_map and _towers_placed_in_bench_for_multiple_listen.has(arg_tower_instance):
+			_towers_placed_in_bench_for_multiple_listen.erase(arg_tower_instance)
+	
+	if _if_tower_arr_matches_tower_id_arr(_towers_placed_in_bench_for_multiple_listen, arg_expected_tower_ids):
+		game_elements.tower_manager.disconnect("tower_dropped_from_dragged", self, "_on_tower_dropped_from_drag__to_place_in_bench_multiple_needed")
+		arg_func_source.call(arg_func_name, _towers_placed_in_bench_for_multiple_listen.duplicate())
+		_towers_placed_in_bench_for_multiple_listen.clear()
+
+
+
 ########
 
 # Get nodes related
@@ -361,6 +401,12 @@ func get_level_up_button_from_shop_panel():
 
 func get_reroll_button_from_shop_panel():
 	return game_elements.panel_buy_sell_level_roll.reroll_panel
+
+func get_shop_odds_panel():
+	return game_elements.general_stats_panel.shop_percentage_stat_panel
+
+func get_single_syn_displayer_with_synergy_name__from_left_panel(arg_syn_name):
+	return game_elements.left_panel.get_single_syn_displayer_with_synergy_name(arg_syn_name)
 
 # INDICATORS
 
@@ -398,6 +444,12 @@ func display_white_circle_at_node(arg_node, arg_queue_free_at_index : int):
 	game_elements.get_tree().get_root().add_child(circle)
 	
 	return circle
+
+
+# get values related
+
+func get_tower_tier_odds_at_player_level(arg_tower_tier, arg_player):
+	return game_elements.shop_manager.get_tower_tier_odds_at_player_level(arg_tower_tier, arg_player)
 
 
 #### Map related

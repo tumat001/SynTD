@@ -99,9 +99,11 @@ func _ready():
 	
 	game_mode_id = CommsForBetweenScenes.game_mode_id
 	map_id = CommsForBetweenScenes.map_id
+	
 	# TEST HERE
-	game_mode_id = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_01
+	game_mode_id = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_02
 	#
+	
 	var game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
 	game_modi_ids = game_mode_type_info.game_modi_ids.duplicate()
 	
@@ -398,7 +400,8 @@ func _unhandled_key_input(event):
 				any_action_taken = true
 				
 			elif event.is_action_pressed("game_shop_refresh"):
-				_on_BuySellLevelRollPanel_reroll()
+				#_on_BuySellLevelRollPanel_reroll()
+				panel_buy_sell_level_roll._on_RerollButton_pressed()
 				any_action_taken = true
 				
 			elif event.is_action("game_ability_01"):

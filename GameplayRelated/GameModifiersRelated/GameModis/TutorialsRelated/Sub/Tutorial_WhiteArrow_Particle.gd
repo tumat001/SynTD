@@ -11,6 +11,9 @@ var _texture_size_x
 
 var _increase_mod_y_per_sec : float = 1.5
 
+var y_offset : float = 0.0
+var x_offset : float = 0.0
+
 #
 
 func set_is_vertical(arg_val):
@@ -71,6 +74,9 @@ func _process(delta):
 			else:
 				new_position.x += _get_adapting_to_anim_size().x
 			
+			new_position.y += y_offset
+			new_position.x += x_offset
+			
 		elif node_to_point_at.get("rect_global_position"):
 			new_position = node_to_point_at.rect_global_position
 			new_position -= _get_adapting_to_anim_size() / 2
@@ -79,6 +85,9 @@ func _process(delta):
 				new_position.y += _get_adapting_to_anim_size().y
 			else:
 				new_position.x += _get_adapting_to_anim_size().x
+			
+			new_position.y += y_offset
+			new_position.x += x_offset
 		
 		if is_vertical:
 			if new_position.y + _texture_size_y + 20 > get_viewport().get_visible_rect().size.y:

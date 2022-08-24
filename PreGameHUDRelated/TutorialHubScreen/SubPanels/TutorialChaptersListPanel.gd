@@ -7,6 +7,7 @@ const ButtonGroup_Custom = preload("res://MiscRelated/PlayerGUI_Category_Related
 signal on_tutorial_toggled(arg_descs, arg_mode_id)
 
 onready var tutorial_chapter01_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter01
+onready var tutorial_chapter02_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter02
 
 var tutorial_button_to_tutorial_descriptions_map : Dictionary = {}
 var tutorial_button_to_tutorial_game_mode_id : Dictionary = {}
@@ -21,6 +22,9 @@ func _ready():
 	
 	tutorial_chapter01_button.configure_self_with_button_group(tutorial_button_group)
 	tutorial_chapter01_button.connect("toggle_mode_changed", self, "_on_tutorial_button_toggle_mode_changed", [tutorial_chapter01_button])
+	
+	tutorial_chapter02_button.configure_self_with_button_group(tutorial_button_group)
+	tutorial_chapter02_button.connect("toggle_mode_changed", self, "_on_tutorial_button_toggle_mode_changed", [tutorial_chapter02_button])
 	
 
 func _initialize_descriptions():
@@ -51,21 +55,36 @@ func _initialize_descriptions():
 		"You can sell a tower by pressing %s while hovering on the tower you want to sell. You can also drag the tower to the bottom panel (where the shop is)." % InputMap.get_action_list("game_shop_refresh")[0],
 		"",
 	]
-	
+	var desc_for_tutorial_chapter_02 = [
+		"(Playthrough available for this chapter! Click at the button below.)",
+		"",
+		"What to expect here: Tower tiers, How to activate synergies.",
+		"-----------",
+		"",
+		"There are 6 tower tiers. The higher tiers are in general more powerful than the lower tiers. Higher player levels allow you to get higher tier towers.",
+		"",
+		"Towers have tower color(s). Towers contribute to their color synergy(ies) if placed in the map. Different synergies have different number requirements. For example, the Orange synergy needs 3 towers to activate. Additionally, more orange towers can allow the orange synergy to be even stronger.",
+		"There are two types of synergies: Dominant and Composite/Group. Dominant synergies are composed of one color. Composite synergies are composed of many colors. There can only be one dominant synergy, and only one composite synergy. Attempting to have more than one cancels one or both of them out (depending on the number of towers contributing to the synergy.).",
+		"",
+	]
 	
 	tutorial_button_to_tutorial_descriptions_map[tutorial_chapter01_button] = desc_for_tutorial_chapter_01
 	tutorial_button_to_tutorial_game_mode_id[tutorial_chapter01_button] = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_01
-
+	
+	tutorial_button_to_tutorial_descriptions_map[tutorial_chapter02_button] = desc_for_tutorial_chapter_02
+	tutorial_button_to_tutorial_game_mode_id[tutorial_chapter02_button] = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_02
+	
 
 #
 
 func _on_tutorial_button_toggle_mode_changed(arg_val, arg_button):
-	var descs = tutorial_button_to_tutorial_descriptions_map[arg_button]
-	var mode_id = -1
-	if tutorial_button_to_tutorial_game_mode_id.has(arg_button):
-		mode_id = tutorial_button_to_tutorial_game_mode_id[arg_button]
-	
-	emit_signal("on_tutorial_toggled", descs, mode_id)
+	if arg_val:
+		var descs = tutorial_button_to_tutorial_descriptions_map[arg_button]
+		var mode_id = -1
+		if tutorial_button_to_tutorial_game_mode_id.has(arg_button):
+			mode_id = tutorial_button_to_tutorial_game_mode_id[arg_button]
+		
+		emit_signal("on_tutorial_toggled", descs, mode_id)
 
 
 

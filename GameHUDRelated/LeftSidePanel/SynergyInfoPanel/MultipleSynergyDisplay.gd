@@ -32,10 +32,12 @@ func update_display():
 		$VBoxContainer.add_child(single_displayer)
 		single_synergy_displayers.append(single_displayer)
 
+
 func _kill_all_previous_displayers():
 	for displayer in single_synergy_displayers:
 		if displayer != null:
 			displayer.queue_free()
+			# do not erase displayer from the single_synergy_displayers
 
 
 #
@@ -48,3 +50,15 @@ func _on_single_syn_displayer_tooltip_hidden(syn):
 
 func _on_single_syn_displayer_pressed(event, syn_check_result):
 	emit_signal("on_single_syn_displayer_pressed", event, syn_check_result)
+
+#
+
+func get_single_syn_displayer_with_synergy_name(arg_syn_name : String):
+	for single_syn in single_synergy_displayers:
+		if single_syn != null and arg_syn_name == single_syn.get_synergy_name():
+			return single_syn
+	
+	return null
+
+
+

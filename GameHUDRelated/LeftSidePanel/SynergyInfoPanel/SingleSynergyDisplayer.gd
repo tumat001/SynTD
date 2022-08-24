@@ -106,3 +106,8 @@ func _on_SingleSynergyDisplayer_mouse_exited():
 func _on_SingleSynergyDisplayer_gui_input(event):
 	if event is InputEventMouseButton:
 		emit_signal("on_single_syn_displayer_pressed", event, result)
+
+#
+
+func get_synergy_name() -> String:
+	return result.synergy.synergy_name

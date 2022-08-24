@@ -32,10 +32,25 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 		info.mode_name = "Normal"
 		return info
 		
-	if arg_id == Mode.TUTORIAL_CHAPTER_01:
+		
+	elif arg_id == Mode.TUTORIAL_CHAPTER_01:
 		
 		info.mode_name = "Tutorial Chapter 01"
 		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_01]
+		
+		return info
+		
+	elif arg_id == Mode.TUTORIAL_CHAPTER_02:
+		
+		info.mode_name = "Tutorial Chapter 02"
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_02]
+		
+		return info
+		
+	elif arg_id == Mode.TUTORIAL_CHAPTER_03:
+		
+		info.mode_name = "Tutorial Chapter 03"
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_03]
 		
 		return info
 		
@@ -55,7 +70,7 @@ static func get_stage_rounds_of_mode_from_id(arg_id):
 		
 		return ModeNormal_StageRounds
 		
-	if arg_id == Mode.TUTORIAL_CHAPTER_01:
+	elif arg_id == Mode.TUTORIAL_CHAPTER_01 or arg_id == Mode.TUTORIAL_CHAPTER_02 or arg_id == Mode.TUTORIAL_CHAPTER_03:
 		
 		return ModeNormal_StageRounds
 		

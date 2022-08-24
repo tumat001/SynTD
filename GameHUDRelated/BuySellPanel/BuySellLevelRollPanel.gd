@@ -202,7 +202,8 @@ func _ready():
 
 
 func _on_RerollButton_pressed():
-	emit_signal("reroll")
+	if last_calculated_can_refresh_shop:
+		emit_signal("reroll")
 
 
 # Assuming that the array received is 5 in length

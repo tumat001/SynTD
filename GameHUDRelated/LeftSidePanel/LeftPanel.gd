@@ -78,4 +78,8 @@ func _on_single_syn_displayer_pressed(event, syn_check_result):
 		whole_screen_gui.show_control(_tower_with_color_show_panel)
 		_tower_with_color_show_panel.show_towers_with_colors(syn_check_result.synergy.colors_required)
 
+#
+
+func get_single_syn_displayer_with_synergy_name(arg_syn_name : String):
+	return active_and_nonactive_syn_displayer.get_single_syn_displayer_with_synergy_name(arg_syn_name)
 

@@ -65,8 +65,8 @@ margin_bottom = 139.0
 rect_min_size = Vector2( 80, 80 )
 
 [node name="MarginContainer" type="MarginContainer" parent="ContentContainer/ScrollContainer"]
-margin_right = 158.0
-margin_bottom = 128.0
+margin_right = 146.0
+margin_bottom = 143.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -78,16 +78,26 @@ custom_constants/margin_bottom = 15
 [node name="VBoxContainer" type="VBoxContainer" parent="ContentContainer/ScrollContainer/MarginContainer"]
 margin_left = 5.0
 margin_top = 15.0
-margin_right = 153.0
-margin_bottom = 113.0
+margin_right = 141.0
+margin_bottom = 128.0
 mouse_filter = 2
 custom_constants/separation = 15
 
 [node name="Tutorial_Chapter01" parent="ContentContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource( 1 )]
-margin_left = 18.0
-margin_right = 129.0
+margin_left = 12.0
+margin_right = 123.0
 margin_bottom = 49.0
 size_flags_horizontal = 6
 text_for_label = "Chapter 1:
 Game Basics"
+is_toggle_on_by_hover_instead_of_click = true
+
+[node name="Tutorial_Chapter02" parent="ContentContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource( 1 )]
+margin_left = 12.0
+margin_top = 64.0
+margin_right = 123.0
+margin_bottom = 113.0
+size_flags_horizontal = 6
+text_for_label = "Chapter 2:
+Tower Tier & Synergies"
 is_toggle_on_by_hover_instead_of_click = true
