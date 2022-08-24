@@ -6,6 +6,7 @@ var _content_text : String
 
 onready var _header_label = $VBoxContainer/BodyMarginer/ContentContainer/VBoxContainer/HeaderLabel
 onready var _content_label = $VBoxContainer/BodyMarginer/ContentContainer/VBoxContainer/ContentLabel
+onready var _vbox = $VBoxContainer
 
 const INFINITE_DURATION = -1
 const default_notif_duration : float = 5.0
@@ -14,6 +15,9 @@ var _push_notif_timer : Timer
 #
 
 func push_notification(arg_content_text : String, arg_header_text : String = "", arg_duration : float = default_notif_duration, arg_ignore_game_speed : bool = true):
+	_vbox.rect_size.x = 0
+	_vbox.rect_size.y = 0
+	
 	_set_content_text(arg_content_text)
 	_set_header_text(arg_header_text)
 	visible = true

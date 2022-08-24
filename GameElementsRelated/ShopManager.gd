@@ -137,6 +137,13 @@ var can_refresh_shop_clauses : ConditionalClauses
 var last_calculated_can_refresh_shop : bool
 
 
+enum CanRefreshShopAtRoundEndClauses {
+	TUTORIAL_DISABLE = 1000
+}
+var can_refresh_shop_at_round_end_clauses : ConditionalClauses
+var last_calculated_can_refresh_shop_at_round_end : bool
+
+
 # setters
 
 func set_stage_round_manager(arg_manager):
@@ -159,7 +166,7 @@ func set_gold_manager(arg_manager : GoldManager):
 	gold_manager = arg_manager
 	
 	gold_manager.connect("current_gold_changed", self, "_emit_can_roll_changed", [], CONNECT_PERSIST)
-
+	_update_last_calculated_can_refresh_shop()
 
 func set_cost_per_roll(new_cost):
 	current_cost_per_roll = new_cost
@@ -174,6 +181,10 @@ func _ready():
 	can_refresh_shop_clauses.connect("clause_inserted", self, "_on_can_refresh_shop_clauses_inserted_or_removed", [], CONNECT_PERSIST)
 	can_refresh_shop_clauses.connect("clause_removed", self, "_on_can_refresh_shop_clauses_inserted_or_removed", [], CONNECT_PERSIST)
 	
+	can_refresh_shop_at_round_end_clauses = ConditionalClauses.new()
+	can_refresh_shop_at_round_end_clauses.connect("clause_inserted", self, "_on_can_refresh_shop_at_round_end_clauses_inserted_or_removed", [], CONNECT_PERSIST)
+	can_refresh_shop_at_round_end_clauses.connect("clause_removed", self, "_on_can_refresh_shop_at_round_end_clauses_inserted_or_removed", [], CONNECT_PERSIST)
+	
 	#
 	for tower_id in Towers.TowerTiersMap.keys():
 		if !towers_not_initially_in_inventory.has(tower_id):
@@ -182,7 +193,7 @@ func _ready():
 	_update_tier_has_tower_map()
 	
 	_update_last_calculated_effective_shop_level(true)
-	_update_last_calculated_can_refresh_shop()
+	_update_last_calculated_can_refresh_shop_at_round_end()
 
 
 func add_tower_to_inventory(tower_id : int, tower_tier : int):
@@ -205,7 +216,8 @@ func remove_tower_from_inventory(tower_id : int):
 # on round end
 
 func _on_round_end_game_start_aware(curr_stageround, is_game_start):
-	call_deferred("roll_towers_in_shop")
+	if last_calculated_can_refresh_shop_at_round_end:
+		call_deferred("roll_towers_in_shop")
 
 
 # towers per refresh
@@ -506,3 +518,8 @@ func _update_last_calculated_can_refresh_shop():
 	emit_signal("can_roll_changed", last_calculated_can_refresh_shop)
 
 
+func _on_can_refresh_shop_at_round_end_clauses_inserted_or_removed(arg_clause):
+	_update_last_calculated_can_refresh_shop_at_round_end()
+
+func _update_last_calculated_can_refresh_shop_at_round_end():
+	last_calculated_can_refresh_shop_at_round_end = can_refresh_shop_at_round_end_clauses.is_passed

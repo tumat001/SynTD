@@ -81,6 +81,10 @@ onready var bottom_right_coord_of_map = $BottomRight
 
 onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
 
+# Tutorial related
+
+var can_return_to_round_panel : bool = true
+
 # Vars to be set by outside of game elements
 
 var game_mode_id : int
@@ -95,6 +99,11 @@ func _ready():
 	
 	game_mode_id = CommsForBetweenScenes.game_mode_id
 	map_id = CommsForBetweenScenes.map_id
+	# TEST HERE
+	game_mode_id = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_01
+	#
+	var game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
+	game_modi_ids = game_mode_type_info.game_modi_ids.duplicate()
 	
 	TowerCompositionColors.reset_synergies_instances()
 	TowerDominantColors.reset_synergies_instances()
@@ -181,7 +190,7 @@ func _ready():
 	synergy_manager.left_panel = left_panel
 	
 	# gold manager
-	gold_manager.connect("current_gold_changed", panel_buy_sell_level_roll, "_update_tower_cards_buyability_based_on_gold")
+	gold_manager.connect("current_gold_changed", panel_buy_sell_level_roll, "_update_tower_cards_buyability_based_on_gold_and_clauses")
 	gold_manager.stage_round_manager = stage_round_manager
 	
 	# relic manager
@@ -305,11 +314,11 @@ func _ready():
 	
 	
 	# FOR TESTING ------------------------------------
-	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_7
-	#level_manager.current_level = LevelManager.LEVEL_3
-	
-	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+#	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+#	level_manager.current_level = LevelManager.LEVEL_7
+#	#level_manager.current_level = LevelManager.LEVEL_3
+#
+#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -321,28 +330,28 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHAOS,
-			Towers.ROYAL_FLAME,
-			Towers.NUCLEUS,
-			Towers.REBOUND,
-			Towers.TESLA,
-			Towers.LA_CHASSEUR,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.BEACON_DISH,
-			Towers.MAGNETIZER,
-			Towers.CHARGE,
-			Towers.MINI_TESLA,
-			Towers.GRAND,
-			Towers.EMBER
-		])
-	
-	even = !even
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.CHAOS,
+#			Towers.ROYAL_FLAME,
+#			Towers.NUCLEUS,
+#			Towers.REBOUND,
+#			Towers.TESLA,
+#			Towers.LA_CHASSEUR,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.BEACON_DISH,
+#			Towers.MAGNETIZER,
+#			Towers.CHARGE,
+#			Towers.MINI_TESLA,
+#			Towers.GRAND,
+#			Towers.EMBER
+#		])
+#
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -360,7 +369,7 @@ func _unhandled_input(event):
 	
 	if event is InputEventMouseButton:
 		if event.pressed and (event.button_index == BUTTON_RIGHT or event.button_index == BUTTON_LEFT):
-			if right_side_panel.panel_showing != right_side_panel.Panels.ROUND:
+			if right_side_panel.panel_showing != right_side_panel.Panels.ROUND and can_return_to_round_panel:
 				tower_manager._show_round_panel()
 				any_action_taken = true
 	

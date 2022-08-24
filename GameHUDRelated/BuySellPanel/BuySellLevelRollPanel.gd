@@ -80,6 +80,8 @@ var buy_slot_to_disabled_clauses : Dictionary
 
 
 enum CanRefreshShopClauses {
+	PLAYER_LEVEL_01 = 1
+	
 	TUTORIAL_DISABLE = 1000
 }
 var can_refresh_shop_clauses : ConditionalClauses
@@ -106,7 +108,7 @@ func set_shop_manager(arg_manager):
 	shop_manager.connect("on_cost_per_roll_changed", self, "update_reroll_gold_cost", [], CONNECT_PERSIST)
 	shop_manager.connect("can_roll_changed", self, "_can_roll_changed", [], CONNECT_PERSIST)
 	update_reroll_gold_cost(shop_manager.current_cost_per_roll)
-
+	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
 
 func set_tower_manager(arg_manager):
 	tower_manager = arg_manager
@@ -196,7 +198,7 @@ func _ready():
 	
 	
 	_update_last_calculated_can_refresh_shop()
-	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
+	
 
 
 func _on_RerollButton_pressed():
@@ -226,6 +228,12 @@ func update_new_rolled_towers(tower_ids_to_roll_to : Array):
 		
 		buy_slot_pos += 1
 	
+	last_calculated_buy_slot_01_disabled = buy_slot_01_disabled_clauses.is_passed
+	last_calculated_buy_slot_02_disabled = buy_slot_02_disabled_clauses.is_passed
+	last_calculated_buy_slot_03_disabled = buy_slot_03_disabled_clauses.is_passed
+	last_calculated_buy_slot_04_disabled = buy_slot_04_disabled_clauses.is_passed
+	last_calculated_buy_slot_05_disabled = buy_slot_05_disabled_clauses.is_passed
+	last_calculated_buy_slot_06_disabled = buy_slot_06_disabled_clauses.is_passed
 	
 	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
 
@@ -332,10 +340,12 @@ func _can_roll_changed(can_roll):
 
 func _on_current_level_changed(curr_level : int):
 	if curr_level == level_manager.LEVEL_1:
-		reroll_panel.visible = false
+		#reroll_panel.visible = false
+		can_refresh_shop_clauses.attempt_insert_clause(CanRefreshShopClauses.PLAYER_LEVEL_01)
 		level_up_panel.visible = false
 	else:
-		reroll_panel.visible = true
+		#reroll_panel.visible = true
+		can_refresh_shop_clauses.remove_clause(CanRefreshShopClauses.PLAYER_LEVEL_01)
 		level_up_panel.visible = true
 
 ####
@@ -387,7 +397,7 @@ func _on_can_refresh_shop_clauses_inserted_or_removed(arg_clause):
 
 func _update_last_calculated_can_refresh_shop():
 	last_calculated_can_refresh_shop = can_refresh_shop_clauses.is_passed
-	reroll_button.visible = last_calculated_can_refresh_shop
+	reroll_panel.visible = last_calculated_can_refresh_shop
 	
 	emit_signal("can_refresh_shop_changed", last_calculated_can_refresh_shop)
 

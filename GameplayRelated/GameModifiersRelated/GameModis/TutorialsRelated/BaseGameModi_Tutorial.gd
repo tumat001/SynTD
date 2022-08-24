@@ -2,6 +2,8 @@ extends "res://GameplayRelated/GameModifiersRelated/BaseGameModifier.gd"
 
 const Tutorial_WhiteArrow_Particle = preload("res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/Sub/Tutorial_WhiteArrow_Particle.gd")
 const Tutorial_WhiteArrow_Particle_Scene = preload("res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/Sub/Tutorial_WhiteArrow_Particle.tscn")
+const Tutorial_WhiteCircle_Particle = preload("res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/Sub/Tutorial_WhiteCircle_Particle.gd")
+const Tutorial_WhiteCircle_Particle_Scene = preload("res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/Sub/Tutorial_WhiteCircle_Particle.tscn")
 
 
 signal on_current_transcript_index_changed(arg_index, arg_message)
@@ -33,8 +35,8 @@ func _apply_game_modifier_to_elements(arg_elements : GameElements):
 	._apply_game_modifier_to_elements(arg_elements)
 	game_elements.connect("unhandled_input", self, "_game_elements_unhandled_input")
 	game_elements.connect("unhandled_key_input", self, "_game_elements_unhandled_key_input")
+	game_elements.connect("before_game_start", self, "_on_game_elements_before_game_start__base_class", [], CONNECT_ONESHOT)
 	
-	set_notif_from_attempt_placing_towers(false)
 
 func _unapply_game_modifier_from_elements(arg_elements : GameElements):
 	._unapply_game_modifier_from_elements(arg_elements)
@@ -42,12 +44,17 @@ func _unapply_game_modifier_from_elements(arg_elements : GameElements):
 
 #
 
+func _on_game_elements_before_game_start__base_class():
+	set_notif_from_attempt_placing_towers(false)
+
+
 func _game_elements_unhandled_input(arg_event, arg_action_taken):
 	if !arg_action_taken:
 		if arg_event is InputEventMouseButton:
 			if arg_event.pressed and (arg_event.button_index == BUTTON_RIGHT or arg_event.button_index == BUTTON_LEFT):
 				if game_elements.tower_manager.get_tower_on_mouse_hover() == null:
 					_player_requests_advance_to_next_transcript_message()
+
 
 func _game_elements_unhandled_key_input(arg_event, arg_action_taken):
 	if !arg_action_taken:
@@ -94,7 +101,6 @@ func advance_to_next_custom_towers_at_shop():
 	current_custom_towers_at_shop_index += 1
 	var tower_ids = _get_custom_shop_towers()[current_custom_towers_at_shop_index]
 	if tower_ids != null:
-		
 		game_elements.shop_manager.roll_towers_in_shop__specific_ids(tower_ids)
 
 #
@@ -117,6 +123,13 @@ func set_can_refresh_shop__panel_based(arg_val : bool):
 		game_elements.panel_buy_sell_level_roll.can_refresh_shop_clauses.remove_clause(game_elements.ShopManager.CanRefreshShopClauses.TUTORIAL_DISABLE)
 	else:
 		game_elements.panel_buy_sell_level_roll.can_refresh_shop_clauses.attempt_insert_clause(game_elements.ShopManager.CanRefreshShopClauses.TUTORIAL_DISABLE)
+
+func set_can_refresh_shop_at_round_end_clauses(arg_val):
+	if arg_val:
+		game_elements.shop_manager.can_refresh_shop_at_round_end_clauses.remove_clause(game_elements.ShopManager.CanRefreshShopAtRoundEndClauses.TUTORIAL_DISABLE)
+	else:
+		game_elements.shop_manager.can_refresh_shop_at_round_end_clauses.attempt_insert_clause(game_elements.ShopManager.CanRefreshShopAtRoundEndClauses.TUTORIAL_DISABLE)
+
 
 func set_enabled_buy_slots(arg_array : Array): # ex: [1, 2] = the first and second buy slots (from the left) are enabled
 	for i in game_elements.panel_buy_sell_level_roll.all_buy_slots.size():
@@ -161,6 +174,13 @@ func clear_all_tower_cards_from_shop():
 func add_gold_amount(arg_amount : int):
 	game_elements.gold_manager.increase_gold_by(arg_amount, game_elements.GoldManager.IncreaseGoldSource.SYNERGY)
 
+func set_player_level(arg_level : int):
+	game_elements.level_manager.set_current_level(arg_level)
+
+
+func set_can_return_to_round_panel(arg_val : bool):
+	game_elements.can_return_to_round_panel = arg_val
+
 # 
 
 func set_tower_is_draggable(arg_tower, arg_val):
@@ -174,6 +194,7 @@ func set_tower_is_sellable(arg_tower, arg_val):
 		arg_tower.can_be_sold_conditonal_clauses.remove_clause(arg_tower.CanBeSoldClauses.TUTORIAL_DISABLED_CLAUSE)
 	else:
 		arg_tower.can_be_sold_conditonal_clauses.attempt_insert_clause(arg_tower.CanBeSoldClauses.TUTORIAL_DISABLED_CLAUSE)
+
 
 ##
 
@@ -277,7 +298,7 @@ func listen_for_view_tower_info_panel(arg_expected_tower_id : int, arg_func_sour
 func _on_viewing_tower_info_panel(arg_tower, arg_expected_tower_id, arg_func_source, arg_func_name):
 	if arg_expected_tower_id == -1 or arg_tower.tower_id == arg_expected_tower_id:
 		game_elements.tower_manager.disconnect("tower_info_panel_shown", self, "_on_viewing_tower_info_panel")
-		arg_func_source.call(arg_func_name, arg_tower, arg_func_name)
+		arg_func_source.call(arg_func_name, arg_tower)
 
 
 # expects a method that accepts tower info panel, and tower instance
@@ -336,10 +357,10 @@ func get_tower_stats_panel_from_tower_info_panel():
 	return game_elements.tower_info_panel.tower_stats_panel
 
 func get_level_up_button_from_shop_panel():
-	return game_elements.panel_buy_sell_level_roll.level_up_button
+	return game_elements.panel_buy_sell_level_roll.level_up_panel
 
 func get_reroll_button_from_shop_panel():
-	return game_elements.panel_buy_sell_level_roll.reroll_button
+	return game_elements.panel_buy_sell_level_roll.reroll_panel
 
 # INDICATORS
 
@@ -367,6 +388,16 @@ func _construct_tutorial_white_arrow(arg_node, arg_is_vertical : bool, arg_queue
 	
 	return arrow
 
+
+func display_white_circle_at_node(arg_node, arg_queue_free_at_index : int):
+	var circle = Tutorial_WhiteCircle_Particle_Scene.instance()
+	circle.node_to_point_at = arg_node
+	circle.queue_free_at_transcript_index = arg_queue_free_at_index
+	
+	connect("on_current_transcript_index_changed", circle, "_on_current_transcript_index_changed__for_white_arrow_monitor")
+	game_elements.get_tree().get_root().add_child(circle)
+	
+	return circle
 
 
 #### Map related

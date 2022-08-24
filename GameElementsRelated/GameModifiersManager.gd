@@ -18,7 +18,7 @@ func set_game_manager(arg_manager):
 
 func add_game_modi_ids(arg_ids : Array):
 	for id in arg_ids:
-		var modi : BaseGameModifier = StoreOfGameModifiers.get_game_modifier_from_id(id)
+		var modi = StoreOfGameModifiers.get_game_modifier_from_id(id)
 		if modi.breakpoint_activation == BaseGameModifier.BreakpointActivation.BEFORE_MAIN_INIT:
 			_game_modi_ids_at_before_main_init__to_modi_map[id] = modi
 		elif modi.breakpoint_activation == BaseGameModifier.BreakpointActivation.BEFORE_GAME_START:

@@ -433,8 +433,6 @@ static func _get_default_region_size_for_atlas(tower_sprite) -> Vector2:
 	
 	return Vector2(width_to_use, length_to_use)
 
-
-
 ########
 
 

@@ -4,12 +4,15 @@ const GeneralDialog = preload("res://MiscRelated/PlayerGUI_Category_Related/Gene
 const GeneralDialog_Scene = preload("res://MiscRelated/PlayerGUI_Category_Related/GeneralDialog/GeneralDialog.tscn")
 const WholeMapSelectionScreen = preload("res://PreGameHUDRelated/MapSelectionScreen/WholeMapSelectionScreen.gd")
 const WholeMapSelectionScreen_Scene = preload("res://PreGameHUDRelated/MapSelectionScreen/WholeMapSelectionScreen.tscn")
+const TutorialHubScreen = preload("res://PreGameHUDRelated/TutorialHubScreen/TutorialHubScreen.gd")
+const TutorialHubScreen_Scene = preload("res://PreGameHUDRelated/TutorialHubScreen/TutorialHubScreen.tscn")
 
 
 var pre_game_screen
 
 var quit_game_general_dialog : GeneralDialog
 var whole_map_selection_screen : WholeMapSelectionScreen
+var tutorial_hub_screen : TutorialHubScreen
 
 onready var general_container = $GeneralContainer
 
@@ -35,7 +38,11 @@ func _on_PlayButton_on_button_released_with_button_left():
 #
 
 func _on_TutorialButton_on_button_released_with_button_left():
-	pass # Replace with function body.
+	if tutorial_hub_screen == null:
+		tutorial_hub_screen = TutorialHubScreen_Scene.instance()
+		tutorial_hub_screen.pre_game_screen = pre_game_screen
+	
+	pre_game_screen.show_control(tutorial_hub_screen)
 
 
 

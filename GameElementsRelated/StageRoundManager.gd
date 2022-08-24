@@ -61,9 +61,9 @@ func set_game_mode_to_normal():
 func set_game_mode(mode : int):
 	game_mode = mode
 	
-	if mode == StoreOfGameMode.Mode.STANDARD_NORMAL:
-		stagerounds = StoreOfGameMode.get_stage_rounds_of_mode_from_id(mode).new() #ModeNormal_StageRounds.new()
-		_replace_current_spawn_ins_to_second_half(stagerounds.get_first_half_faction())
+	#if mode == StoreOfGameMode.Mode.STANDARD_NORMAL:
+	stagerounds = StoreOfGameMode.get_stage_rounds_of_mode_from_id(mode).new() #ModeNormal_StageRounds.new()
+	_replace_current_spawn_ins_to_second_half(stagerounds.get_first_half_faction())
 		#spawn_ins_of_faction_mode = StoreOfGameMode.get_spawn_ins_of_faction__based_on_mode(stagerounds.get_first_half_faction(), mode)
 
 #

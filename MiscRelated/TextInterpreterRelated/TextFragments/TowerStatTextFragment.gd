@@ -84,13 +84,16 @@ func _init(arg_tower,
 		arg_is_percent = false).(true):
 	
 	_tower = arg_tower
-	_tower_info = arg_tower_info
 	_stat_type = arg_stat_type
 	_stat_basis = arg_stat_basis
 	_scale = arg_scale
 	_damage_type = arg_damage_type
 	_is_percent = arg_is_percent
 	
+	if arg_tower_info is WeakRef:
+		_tower_info = arg_tower_info
+	else:
+		_tower_info = weakref(arg_tower_info)
 	
 	update_damage_type_based_on_args()
 
@@ -118,10 +121,10 @@ func _get_as_numerical_value() -> float:
 		elif _stat_basis == STAT_BASIS.BONUS:
 			val = _tower.call(type_to_stat__bonus__get_method_of_tower_map[_stat_type])
 		
-	elif _tower_info != null:
+	elif _tower_info != null and _tower_info.get_ref() != null:
 		if _stat_basis != STAT_BASIS.BONUS:
 			if type_to_stat__all__property_of_tower_info_map.has(_stat_type):
-				val = _tower_info.get(type_to_stat__all__property_of_tower_info_map[_stat_type])
+				val = _tower_info.get_ref().get(type_to_stat__all__property_of_tower_info_map[_stat_type])
 		else:
 			val = 0.0
 	

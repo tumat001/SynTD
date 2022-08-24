@@ -12,7 +12,7 @@ signal on_button_released_with_button_left()
 const enabled_modulate : Color = Color(1, 1, 1, 1)
 const disabled_modulate : Color = Color(0.3, 0.3, 0.3, 1)
 
-export(String) var text_for_label : String setget set_text_for_text_label
+export(String, MULTILINE) var text_for_label : String setget set_text_for_text_label
 export(Texture) var border_texture : Texture = SideBorder_Normal_Texture setget set_border_texture
 
 export(Texture) var background_texture_normal : Texture = Background_NormalTexture setget set_body_background_normal_texture

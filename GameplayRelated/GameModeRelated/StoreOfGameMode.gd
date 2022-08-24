@@ -12,8 +12,8 @@ enum Mode {
 	
 	#
 	TUTORIAL_CHAPTER_01 = 10000,
-	TUTORIAL_CHAPTER_02 = 10000,
-	TUTORIAL_CHAPTER_03 = 10000,
+	TUTORIAL_CHAPTER_02 = 10001,
+	TUTORIAL_CHAPTER_03 = 10002,
 	
 }
 
@@ -35,7 +35,7 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 	if arg_id == Mode.TUTORIAL_CHAPTER_01:
 		
 		info.mode_name = "Tutorial Chapter 01"
-		info.game_modi_ids.append(StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_01)
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_01]
 		
 		return info
 		

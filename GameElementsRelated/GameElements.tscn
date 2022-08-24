@@ -266,10 +266,11 @@ margin_bottom = -69.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 363.772
-margin_top = -217.434
-margin_right = -363.228
-margin_bottom = -160.434
+margin_left = 1.0
+margin_top = -217.0
+margin_right = 1.00006
+margin_bottom = -160.0
+grow_horizontal = 2
 grow_vertical = 0
 
 [node name="ScreenEffectsManager" type="Node" parent="."]

@@ -24,7 +24,6 @@ func _init(arg_stat_type : int = -1,
 	_damage_type = arg_damage_type
 	_text_desc = arg_text_desc
 	_has_space_between_num_and_text = arg_has_spacing
-	
 
 #
 

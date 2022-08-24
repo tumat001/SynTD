@@ -44,11 +44,25 @@ var display_header : bool = true
 var header_description : String = ""
 
 var tower_to_use_for_tower_stat_fragments
-var tower_info_to_use_for_tower_stat_fragments
+var tower_info_to_use_for_tower_stat_fragments setget set_tower_info_to_use_for_tower_stat_fragments, get_tower_info_to_use_for_tower_stat_fragments
 
 var use_color_for_dark_background : bool
 
 var estimate_method_for_final_num_val : int = ESTIMATE_METHOD.NONE
+
+#
+
+func set_tower_info_to_use_for_tower_stat_fragments(arg_tower_info):
+	if !arg_tower_info is WeakRef:
+		tower_info_to_use_for_tower_stat_fragments = weakref(arg_tower_info)
+	else:
+		tower_info_to_use_for_tower_stat_fragments = arg_tower_info
+
+func get_tower_info_to_use_for_tower_stat_fragments():
+	if tower_info_to_use_for_tower_stat_fragments != null:
+		return tower_info_to_use_for_tower_stat_fragments.get_ref()
+	else:
+		return null
 
 #
 
@@ -291,8 +305,8 @@ static func get_bbc_modified_description_as_string(arg_desc : String, arg_text_f
 		if interpreter.tower_to_use_for_tower_stat_fragments == null:
 			interpreter.tower_to_use_for_tower_stat_fragments = arg_tower
 		
-		if interpreter.tower_info_to_use_for_tower_stat_fragments == null:
-			interpreter.tower_info_to_use_for_tower_stat_fragments = arg_tower_info
+		if interpreter.get_tower_info_to_use_for_tower_stat_fragments() == null:
+			interpreter.set_tower_info_to_use_for_tower_stat_fragments(arg_tower_info)
 		
 		
 		var interpreted_text = interpreter.interpret_array_of_instructions_to_final_text()
