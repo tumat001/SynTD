@@ -96,4 +96,12 @@ func _bring_up_combination_whole_screen_gui():
 	
 	whole_screen_gui.show_control(combination_whole_screen_panel)
 
+##
+
+func get_tower_icon_with_tower_id(arg_tower_id):
+	for icon in combination_icons_hbox.get_children():
+		if icon.tower_type_info != null and icon.tower_type_info.tower_type_id == arg_tower_id:
+			return icon
+	
+	return null
 

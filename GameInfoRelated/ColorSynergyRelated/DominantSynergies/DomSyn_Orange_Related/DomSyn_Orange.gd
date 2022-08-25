@@ -16,9 +16,8 @@ const tier_3_heat_effect_scale : float = 3.0
 const tier_4_heat_effect_scale : float = 1.0
 
 const inc_heat_amount_from_ability : int = 20
-const inc_heat_amount_round_cooldown : int = 2
-
-const dec_heat_amount_round_cooldown : int = 3
+const inc_heat_amount_round_cooldown : int = 3
+const dec_heat_amount_round_cooldown : int = 4
 
 var current_heat_effect_scale : float
 

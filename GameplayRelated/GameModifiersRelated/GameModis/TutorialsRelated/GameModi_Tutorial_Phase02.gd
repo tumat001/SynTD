@@ -318,7 +318,7 @@ func _on_railgun_placed_in_map__on_34(arg_towers):
 func _on_end_of_transcript():
 	hide_current_transcript_message()
 	
-	add_gold_amount(10)
+	add_gold_amount(20)
 	set_can_refresh_shop__panel_based(true)
 	for tower in _all_towers:
 		if tower != null:

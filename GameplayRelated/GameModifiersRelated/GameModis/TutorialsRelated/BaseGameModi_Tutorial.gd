@@ -179,6 +179,12 @@ func add_shop_per_refresh_modifier(arg_modi : int):
 func clear_all_tower_cards_from_shop():
 	game_elements.panel_buy_sell_level_roll.remove_tower_card_from_all_buy_slots()
 
+func set_can_do_combination(arg_val : bool):
+	if arg_val:
+		game_elements.combination_manager.can_do_combination_clauses.remove_clause(game_elements.CombinationManager.CanDoCombinationClauses.TUTORIAL_DISABLE)
+	else:
+		game_elements.combination_manager.can_do_combination_clauses.attempt_insert_clause(game_elements.CombinationManager.CanDoCombinationClauses.TUTORIAL_DISABLE)
+
 #
 
 func add_gold_amount(arg_amount : int):
@@ -187,6 +193,8 @@ func add_gold_amount(arg_amount : int):
 func set_player_level(arg_level : int):
 	game_elements.level_manager.set_current_level(arg_level)
 
+func set_ingredient_limit_modi(arg_amount : int):
+	game_elements.tower_manager.set_ing_cap_changer(StoreOfIngredientLimitModifierID.TUTORIAL, arg_amount)
 
 func set_can_return_to_round_panel(arg_val : bool):
 	game_elements.can_return_to_round_panel = arg_val
@@ -204,6 +212,12 @@ func set_tower_is_sellable(arg_tower, arg_val):
 		arg_tower.can_be_sold_conditonal_clauses.remove_clause(arg_tower.CanBeSoldClauses.TUTORIAL_DISABLED_CLAUSE)
 	else:
 		arg_tower.can_be_sold_conditonal_clauses.attempt_insert_clause(arg_tower.CanBeSoldClauses.TUTORIAL_DISABLED_CLAUSE)
+
+#
+
+func create_tower_at_placable(arg_tower_id, arg_placable):
+	var tower = game_elements.tower_inventory_bench.create_tower_and_add_to_scene(arg_tower_id, arg_placable)
+	return tower
 
 
 ##
@@ -378,6 +392,37 @@ func _on_tower_dropped_from_drag__to_place_in_bench_multiple_needed(arg_tower_in
 		_towers_placed_in_bench_for_multiple_listen.clear()
 
 
+# expects a method that accepts no args
+func listen_for_ingredient_mode_toggle(arg_expected_ing_mode_active : bool, arg_func_name, arg_func_source):
+	game_elements.tower_manager.connect("ingredient_mode_turned_into", self, "_on_ing_mode_toggled", [arg_expected_ing_mode_active, arg_func_name, arg_func_source])
+
+func _on_ing_mode_toggled(arg_ing_mode_active : bool, arg_expected_ing_mode_active : bool, arg_func_name, arg_func_source):
+	if arg_ing_mode_active == arg_expected_ing_mode_active:
+		game_elements.tower_manager.disconnect("ingredient_mode_turned_into", self, "_on_ing_mode_toggled")
+		arg_func_source.call(arg_func_name)
+
+
+# expects a method that accepts an ing effect
+func listen_for_tower_to_absorb_ing_id(arg_expected_tower, arg_expected_ing_id, arg_func_name, arg_func_source):
+	arg_expected_tower.connect("on_ingredient_absorbed", self, "_on_tower_absorbed_ingredient", [arg_expected_tower, arg_expected_ing_id, arg_func_name, arg_func_source])
+
+func _on_tower_absorbed_ingredient(arg_ing_effect, arg_expected_tower, arg_expected_ing_id, arg_func_name, arg_func_source):
+	if arg_ing_effect.tower_base_effect.effect_uuid == arg_expected_ing_id:
+		arg_expected_tower.disconnect("on_ingredient_absorbed", self, "_on_tower_absorbed_ingredient")
+		arg_func_source.call(arg_func_name, arg_ing_effect)
+
+
+# expects a method that accepts no args
+func listen_for_combination_effect_added(arg_expected_combi_id, arg_func_name, arg_func_source):
+	game_elements.combination_manager.connect("on_combination_effect_added", self, "_on_combination_effect_added", [arg_expected_combi_id, arg_func_name, arg_func_source])
+	
+
+func _on_combination_effect_added(arg_combi_effect_id, arg_expected_combi_id, arg_func_name, arg_func_source):
+	if arg_combi_effect_id == arg_expected_combi_id:
+		game_elements.combination_manager.disconnect("on_combination_effect_added", self, "_on_combination_effect_added")
+		arg_func_source.call(arg_func_name)
+
+
 
 ########
 
@@ -407,6 +452,15 @@ func get_shop_odds_panel():
 
 func get_single_syn_displayer_with_synergy_name__from_left_panel(arg_syn_name):
 	return game_elements.left_panel.get_single_syn_displayer_with_synergy_name(arg_syn_name)
+
+func get_color_wheel_on_bottom_panel_side():
+	return game_elements.color_wheel_sprite_button
+
+func get_tower_icon_with_tower_id__on_combination_top_panel(arg_id):
+	return game_elements.combination_top_panel.get_tower_icon_with_tower_id(arg_id)
+
+func get_more_combination_info__on_combi_top_panel():
+	return game_elements.combination_top_panel.combination_more_details_button
 
 # INDICATORS
 
@@ -479,6 +533,9 @@ func get_map_area_04__from_glade():
 
 func get_map_area_06__from_glade():
 	return get_map_area_with_name__from_glade("InMapAreaPlacable6")
+
+func get_map_area_10__from_glade():
+	return get_map_area_with_name__from_glade("InMapAreaPlacable10")
 
 
 

@@ -87,6 +87,7 @@ signal targeting_options_modified
 signal final_ability_potency_changed
 signal final_ability_cd_changed
 
+signal on_ingredient_absorbed(arg_ingredient) # should be used to detect if this tower has absorbed an ing, and not what ings are active
 signal on_sellback_value_changed(new_value)
 
 signal on_max_health_changed(new_max)
@@ -1831,16 +1832,20 @@ func _remove_all_countbound_effects():
 
 
 func _remove_all_timebound_and_countbound_and_roundbound_effects():
+	var effects_to_remove : Array = []
+	
 	for effect_uuid in _all_uuid_tower_buffs_map.keys():
 		var effect : TowerBaseEffect = _all_uuid_tower_buffs_map[effect_uuid]
 		
 		if effect.is_countbound or effect.is_timebound:
-			remove_tower_effect(effect)
+			effects_to_remove.append(effect)
 		elif effect.is_roundbound:
 			effect.round_count -= 1
 			if effect.round_count <= 0:
-				remove_tower_effect(effect)
-
+				effects_to_remove.append(effect)
+	
+	for effect in effects_to_remove:
+		remove_tower_effect(effect)
 
 
 # Ingredient Related
@@ -1853,6 +1858,9 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 		
 		_emit_ingredients_absorbed_changed()
 		_calculate_sellback_value()
+		
+		emit_signal("on_ingredient_absorbed", ingredient_effect)
+
 
 func remove_ingredient(ingredient_effect : IngredientEffect, refund_gold : bool = false):
 	if ingredient_effect != null:

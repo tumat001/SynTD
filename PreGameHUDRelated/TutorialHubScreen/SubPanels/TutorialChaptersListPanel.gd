@@ -8,6 +8,8 @@ signal on_tutorial_toggled(arg_descs, arg_mode_id)
 
 onready var tutorial_chapter01_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter01
 onready var tutorial_chapter02_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter02
+onready var tutorial_chapter03_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter03
+onready var tutorial_chapter04_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter04
 
 var tutorial_button_to_tutorial_descriptions_map : Dictionary = {}
 var tutorial_button_to_tutorial_game_mode_id : Dictionary = {}
@@ -25,6 +27,12 @@ func _ready():
 	
 	tutorial_chapter02_button.configure_self_with_button_group(tutorial_button_group)
 	tutorial_chapter02_button.connect("toggle_mode_changed", self, "_on_tutorial_button_toggle_mode_changed", [tutorial_chapter02_button])
+	
+	tutorial_chapter03_button.configure_self_with_button_group(tutorial_button_group)
+	tutorial_chapter03_button.connect("toggle_mode_changed", self, "_on_tutorial_button_toggle_mode_changed", [tutorial_chapter03_button])
+	
+	tutorial_chapter04_button.configure_self_with_button_group(tutorial_button_group)
+	tutorial_chapter04_button.connect("toggle_mode_changed", self, "_on_tutorial_button_toggle_mode_changed", [tutorial_chapter04_button])
 	
 
 func _initialize_descriptions():
@@ -67,12 +75,46 @@ func _initialize_descriptions():
 		"There are two types of synergies: Dominant and Composite/Group. Dominant synergies are composed of one color. Composite synergies are composed of many colors. There can only be one dominant synergy, and only one composite synergy. Attempting to have more than one cancels one or both of them out (depending on the number of towers contributing to the synergy.).",
 		"",
 	]
+	var desc_for_tutorial_chapter_03 = [
+		"(Playthrough available for this chapter! Click at the button below.)",
+		"",
+		"What to expect here: Absorbtion, and Ingredient Effects.",
+		"-----------",
+		"",
+		"Most towers have an ingredient effect, which is an effect that gives bonus stats and special buffs/modifiers. Towers do not give themselves the effect of their ingredient effect.",
+		"Towers can make use of other tower's ingredient effect by absorbing them, gaining its effects.",
+		"Pressing %s toggles ingredient mode, which is a mode where dragging a tower to another tower (the recepient) gives the dragged tower's ingredient effect to its recepient." % InputMap.get_action_list("game_ingredient_toggle")[0].as_text(),
+		"",
+		"There are limitations however. Receiving towers can only absorb other towers who share tower colors, or if the dragged tower's colors is one of the receiving tower's neighbor colors. As an example, Red's neighbor colors are Orange and Violet. Yellow's neighbor colors are Orange and Green.",
+		"An example: Striker (a red tower) cannot absorb Sprinkler (a blue tower). Striker (a red tower) can absorb Ember (an orange tower).",
+		"",
+		"In a normal game, towers can only absorb one (1) ingredient, so spend that limit wisely. There are ways to change that however.",
+		""
+	]
+	var desc_for_tutorial_chapter_04 = [
+		"(Playthrough available for this chapter! Click at the button below.)",
+		"",
+		"What to expect here: Combination.",
+		"-----------",
+		"",
+		"Get 4 of the same tower to combine them, sacrificing them to apply their ingredient effect to towers. Affects existing and future towers bought.",
+		"Press %s to combine towers." % InputMap.get_action_list("game_combine_combinables")[0].as_text(),
+		"However, combination applies the combined tower's ingredient effect\nto towers with tiers who are below, equal, and 1 tier above the combined tower. For example, combining a tier 3 tower gives its ingredient effect tiers 1, 2, 3, and 4 only.",
+		"",
+	]
+	
 	
 	tutorial_button_to_tutorial_descriptions_map[tutorial_chapter01_button] = desc_for_tutorial_chapter_01
 	tutorial_button_to_tutorial_game_mode_id[tutorial_chapter01_button] = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_01
 	
 	tutorial_button_to_tutorial_descriptions_map[tutorial_chapter02_button] = desc_for_tutorial_chapter_02
 	tutorial_button_to_tutorial_game_mode_id[tutorial_chapter02_button] = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_02
+	
+	tutorial_button_to_tutorial_descriptions_map[tutorial_chapter03_button] = desc_for_tutorial_chapter_03
+	tutorial_button_to_tutorial_game_mode_id[tutorial_chapter03_button] = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_03
+	
+	tutorial_button_to_tutorial_descriptions_map[tutorial_chapter04_button] = desc_for_tutorial_chapter_04
+	tutorial_button_to_tutorial_game_mode_id[tutorial_chapter04_button] = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_04
 	
 
 #

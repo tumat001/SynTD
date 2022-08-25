@@ -40,7 +40,7 @@ const level_tower_limit_amount_map : Dictionary = {
 	LevelManager.LEVEL_10 : 9,
 }
 
-signal ingredient_mode_turned_into(on_or_off)
+signal ingredient_mode_turned_into(on_or_off) # true if on
 signal show_ingredient_acceptability(ingredient_effect, tower_selected)
 signal hide_ingredient_acceptability
 

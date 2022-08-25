@@ -50,7 +50,7 @@ func _get_instructions_for_0_1():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BASIC),
 		
-		#SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.BASIC),
+		#SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.MAGUS),
 		
 		#MultipleEnemySpawnInstruction.new(5, 3, 2, EnemyConstants.Enemies.HEALER),
 		

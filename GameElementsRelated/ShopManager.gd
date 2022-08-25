@@ -414,9 +414,10 @@ func _if_tower_in_tier_exists(tier : int) -> bool:
 
 func _remove_tower_ids_with_no_available_inventory_from_array(arg_tower_ids : Array):
 	for tower_id in arg_tower_ids:
-		var curr_inventory_amount : int = current_tower_stock_inventory[tower_id]
-		if curr_inventory_amount <= 0:
-			arg_tower_ids.erase(tower_id)
+		if current_tower_stock_inventory.has(tower_id):
+			var curr_inventory_amount : int = current_tower_stock_inventory[tower_id]
+			if curr_inventory_amount <= 0:
+				arg_tower_ids.erase(tower_id)
 
 
 func _get_tower_id_inventory_count_map(arg_tower_ids : Array) -> Dictionary:

@@ -5006,7 +5006,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_direct_rocket_dmg = []
 		ins_for_direct_rocket_dmg.append(NumericalTextFragment.new(15, false, DamageType.PHYSICAL))
 		ins_for_direct_rocket_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_direct_rocket_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 5, DamageType.PHYSICAL))
+		ins_for_direct_rocket_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 12, DamageType.PHYSICAL))
 		
 		outer_ins_for_direct_rocket_dmg.append(ins_for_direct_rocket_dmg)
 		

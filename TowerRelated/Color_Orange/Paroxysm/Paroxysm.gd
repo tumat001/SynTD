@@ -41,7 +41,7 @@ const enemy_min_flat_health_needed_for_big_missle_cast : float = 100.0
 const enemy_min_distance_needed_for_big_missle_cast : float = 100.0
 
 var big_missle_bullet_attk_module : BulletAttackModule
-const big_missle__direct_hit__base_damage_ratio : float = 5.0
+const big_missle__direct_hit__base_damage_ratio : float = 12.0
 
 var big_missle_small_explosion_attk_module : AOEAttackModule
 const big_missle__small_aoe__flat_dmg : float = 4.0
@@ -118,7 +118,7 @@ func _ready():
 	
 	connect("on_range_module_enemy_entered", self, "_on_enemy_entered_range_p", [], CONNECT_PERSIST)
 	connect("on_range_module_enemy_exited", self, "_on_enemy_exited_range_p", [], CONNECT_PERSIST)
-	connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
+	connect("on_round_end", self, "_on_round_end_p", [], CONNECT_PERSIST)
 	
 	#
 	
@@ -424,7 +424,7 @@ func _get_texture_to_use__random():
 		return Outburst_SpewYellowPic
 
 
-func _on_round_end():
+func _on_round_end_p():
 	_set_current_spew_count(0)
 
 

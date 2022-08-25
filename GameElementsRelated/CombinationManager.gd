@@ -2,6 +2,7 @@ extends Node
 
 const TowerManager = preload("res://GameElementsRelated/TowerManager.gd")
 const Towers = preload("res://GameInfoRelated/Towers.gd")
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const ShowTowersWithParticleComponent = preload("res://MiscRelated/CommonComponents/ShowTowersWithParticleComponent.gd")
 const CombinationEffect = preload("res://GameInfoRelated/CombinationRelated/CombinationEffect.gd")
@@ -20,6 +21,7 @@ const CombinationIndicator_Pic08 = preload("res://GameInfoRelated/CombinationRel
 signal on_combination_effect_added(arg_new_effect_id)
 signal on_combination_amount_needed_changed(new_val)
 signal on_tiers_affected_changed()
+signal on_can_do_combination_changed(arg_val)
 
 
 var _is_doing_combination : bool
@@ -82,18 +84,23 @@ enum TowerBuyCardMetadata {
 	ALREADY_HAS_COMBINATION = 3, # Same as none, or faded logo
 }
 
+enum CanDoCombinationClauses {
+	
+	TUTORIAL_DISABLE = 10000
+}
+
+var can_do_combination_clauses : ConditionalClauses
+var last_calculated_can_do_combination : bool
+
 #
 
 
-
 var tower_manager : TowerManager setget set_tower_manager
-
 var combination_top_panel : CombinationTopPanel setget set_combination_top_panel
 
 #
 
 var combination_indicator_shower : ShowTowersWithParticleComponent
-
 var current_combination_candidates : Array
 
 #
@@ -105,10 +112,16 @@ var all_combination_id_to_effect_map : Dictionary
 # init
 
 func _ready():
+	can_do_combination_clauses = ConditionalClauses.new()
+	can_do_combination_clauses.connect("clause_inserted", self, "_on_can_do_combination_clause_ins_or_rem", [], CONNECT_PERSIST)
+	can_do_combination_clauses.connect("clause_removed", self, "_on_can_do_combination_clause_ins_or_rem", [], CONNECT_PERSIST)
+	connect("on_can_do_combination_changed", self, "_on_can_do_combination_changed", [], CONNECT_PERSIST)
+	
 	_construct_tower_indicator_shower()
 	
 	_update_combination_amount(false)
 	_update_tier_affected_by_combi()
+	_update_can_do_combinations()
 
 func _construct_tower_indicator_shower():
 	combination_indicator_shower = ShowTowersWithParticleComponent.new()
@@ -225,8 +238,9 @@ func _on_tower_in_queue_free(tower_destroyed):
 		call_deferred("_update_applicable_combinations_on_towers")
 
 
-
+# the main method that does it all
 func _update_applicable_combinations_on_towers():
+	
 	var towers_combination_candidates : Array = _get_towers_with_tower_combination_amount_met()
 	current_combination_candidates = towers_combination_candidates
 	
@@ -264,6 +278,7 @@ func _get_towers_with_tower_combination_amount_met(arg_combination_amount : int 
 	var tower_id_map : Dictionary = {}
 	var to_combine_towers : Array = []
 	
+	
 	for tower in all_towers:
 		if tower.originally_has_ingredient and !tower.is_queued_for_deletion() and !blacklisted_tower_ids_from_combining.has(tower.tower_id) and !all_combination_id_to_effect_map.keys().has(tower.tower_id):
 			if (tower_id_map.has(tower.tower_id)):
@@ -285,7 +300,7 @@ func _get_towers_with_tower_combination_amount_met(arg_combination_amount : int 
 				
 			else:
 				tower_id_map[tower.tower_id] = 1
-		
+	
 	
 	return to_combine_towers
 
@@ -352,7 +367,7 @@ func _get_towers_immediately_ready_to_combine(arg_tower_id_arr_from_cards : Arra
 # ----- On Combination Activated Related ------
 
 func on_combination_activated():
-	if current_combination_candidates.size() > 0:
+	if current_combination_candidates.size() > 0 and last_calculated_can_do_combination:
 		_is_doing_combination = true
 		
 		var combi_effect = _construct_combination_effect_from_tower(current_combination_candidates[0].tower_id)
@@ -472,6 +487,17 @@ func _remove_combination_effect_id_from_tower(combi_id : int, arg_tower):
 
 # ----- 
 
+
+func _on_can_do_combination_clause_ins_or_rem(arg_clause_id):
+	_update_can_do_combinations()
+
+func _update_can_do_combinations():
+	last_calculated_can_do_combination = can_do_combination_clauses.is_passed
+	emit_signal("on_can_do_combination_changed", last_calculated_can_do_combination)
+
+
+func _on_can_do_combination_changed(arg_val):
+	call_deferred("_update_applicable_combinations_on_towers")
 
 
 

@@ -265,8 +265,6 @@ onready var knock_up_layer = $SpriteLayer/KnockUpLayer
 # internals
 
 var _self_size : Vector2
-#var _is_yielding_for_lifebar : bool = true
-#var _is_queued_freed_during_yielding : bool
 
 # Effects map
 
@@ -415,16 +413,6 @@ func _post_inherit_ready():
 	infobar.visible = true
 	lifebar.update_first_time()
 	
-	
-	#_is_yielding_for_lifebar = false
-	
-	#
-	
-#	if _is_queued_freed_during_yielding:
-#		queue_free()
-	
-	
-	
 	# 
 	
 	yield(get_tree(), "idle_frame")
@@ -435,8 +423,8 @@ func _post_inherit_ready():
 	calculate_invulnerability_status()
 	
 	#
-	emit_signal("on_finished_ready_prep")
 	
+	emit_signal("on_finished_ready_prep")
 	if is_queue_free_called_during_ready_prepping:
 		queue_free()
 
@@ -729,12 +717,12 @@ func _destroy_self():
 
 func queue_free():
 	if !is_ready_prepping:
-		emit_signal("cancel_all_lockons")
-		
-		.queue_free()
-		emit_signal("on_death_by_any_cause")
+		if !is_queued_for_deletion():
+			emit_signal("cancel_all_lockons")
+			
+			.queue_free()
+			emit_signal("on_death_by_any_cause")
 	else:
-		#_is_queued_freed_during_yielding = true
 		is_queue_free_called_during_ready_prepping = true
 
 

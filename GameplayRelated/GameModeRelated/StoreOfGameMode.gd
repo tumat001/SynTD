@@ -14,6 +14,7 @@ enum Mode {
 	TUTORIAL_CHAPTER_01 = 10000,
 	TUTORIAL_CHAPTER_02 = 10001,
 	TUTORIAL_CHAPTER_03 = 10002,
+	TUTORIAL_CHAPTER_04 = 10003,
 	
 }
 
@@ -54,6 +55,11 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 		
 		return info
 		
+	elif arg_id == Mode.TUTORIAL_CHAPTER_04:
+		info.mode_name = "Tutorial Chapter 04"
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_04]
+		
+		return info
 	
 	
 	return null
@@ -70,7 +76,7 @@ static func get_stage_rounds_of_mode_from_id(arg_id):
 		
 		return ModeNormal_StageRounds
 		
-	elif arg_id == Mode.TUTORIAL_CHAPTER_01 or arg_id == Mode.TUTORIAL_CHAPTER_02 or arg_id == Mode.TUTORIAL_CHAPTER_03:
+	elif arg_id == Mode.TUTORIAL_CHAPTER_01 or arg_id == Mode.TUTORIAL_CHAPTER_02 or arg_id == Mode.TUTORIAL_CHAPTER_03 or arg_id == Mode.TUTORIAL_CHAPTER_04:
 		
 		return ModeNormal_StageRounds
 		
@@ -100,7 +106,7 @@ func get_spawn_ins_of_faction__based_on_mode(arg_faction_id : int, arg_mode : in
 	elif arg_faction_id == EnemyConstants.EnemyFactions.BASIC:
 		if arg_mode == Mode.STANDARD_NORMAL:
 			spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionBasic_EnemySpawnIns.gd").new()
-		elif arg_mode == Mode.TUTORIAL_CHAPTER_01 or arg_mode == Mode.TUTORIAL_CHAPTER_02 or arg_mode == Mode.TUTORIAL_CHAPTER_03:
+		elif arg_mode == Mode.TUTORIAL_CHAPTER_01 or arg_mode == Mode.TUTORIAL_CHAPTER_02 or arg_mode == Mode.TUTORIAL_CHAPTER_03 or arg_mode == Mode.TUTORIAL_CHAPTER_04:
 			spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionBasic_EnemySpawnIns.gd").new()
 	
 	

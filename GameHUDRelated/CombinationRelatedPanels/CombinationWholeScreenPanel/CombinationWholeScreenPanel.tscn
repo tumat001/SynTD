@@ -35,13 +35,13 @@ __meta__ = {
 
 [node name="Background" type="TextureRect" parent="."]
 margin_right = 626.0
-margin_bottom = 293.0
+margin_bottom = 233.0
 texture = ExtResource( 5 )
 stretch_mode = 2
 
 [node name="ContentContainer" type="MarginContainer" parent="."]
 margin_right = 626.0
-margin_bottom = 293.0
+margin_bottom = 233.0
 custom_constants/margin_right = 5
 custom_constants/margin_top = 5
 custom_constants/margin_left = 5
@@ -51,18 +51,18 @@ custom_constants/margin_bottom = 5
 margin_left = 5.0
 margin_top = 5.0
 margin_right = 621.0
-margin_bottom = 288.0
+margin_bottom = 228.0
 mouse_filter = 2
 custom_constants/separation = 6
 
 [node name="TitleLabel" type="Label" parent="ContentContainer/VBoxContainer"]
-margin_left = 182.0
-margin_right = 434.0
+margin_left = 231.0
+margin_right = 385.0
 margin_bottom = 27.0
 size_flags_horizontal = 6
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 1 )
-text = "Combination Effect"
+text = "Combination"
 
 [node name="Spacer" type="MarginContainer" parent="ContentContainer/VBoxContainer"]
 margin_top = 33.0
@@ -72,14 +72,15 @@ mouse_filter = 2
 custom_constants/margin_top = 5
 
 [node name="TowerAmountForCombiDescLabel" type="Label" parent="ContentContainer/VBoxContainer"]
-margin_left = 112.0
+margin_left = 116.0
 margin_top = 44.0
-margin_right = 504.0
+margin_right = 500.0
 margin_bottom = 79.0
 size_flags_horizontal = 6
 custom_fonts/font = SubResource( 2 )
 text = "Getting %s of the same tower allows you to 
-sacrifice them and gain their combination effect."
+sacrifice them and gain their ingredient effect."
+align = 1
 
 [node name="TierApplyDescLabel" type="Label" parent="ContentContainer/VBoxContainer"]
 margin_top = 85.0
@@ -88,8 +89,9 @@ margin_bottom = 120.0
 size_flags_horizontal = 6
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 3 )
-text = "Combination effect applies the ingredient effect of the combined tower
+text = "Combinations apply the ingredient effect of the combined towers
  to all towers of their tier (%s) and below, without taking ingredient slots."
+align = 1
 
 [node name="TierSelectionPanel" parent="ContentContainer/VBoxContainer" instance=ExtResource( 4 )]
 margin_left = 288.0

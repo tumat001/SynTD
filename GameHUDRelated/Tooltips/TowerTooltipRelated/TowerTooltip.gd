@@ -13,7 +13,7 @@ var tower_info : TowerTypeInformation
 var game_settings_manager : GameSettingsManager
 
 onready var tower_descriptions_tooltip = $RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody
-
+onready var ingredient_tooltp_body = $RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

@@ -19,6 +19,8 @@ export(Vector2) var scale_of_bars_scale : Vector2 = Vector2(2, 1)
 
 export(bool) var yield_before_update : bool = false
 
+var _is_in_yield : bool = false
+var _queue_free_called_during_yield : bool = false
 
 onready var bar_backround : TextureRect = $BarBackgroundPanel/BarBackground
 onready var fill_foreground : TextureRect = $BarFillForeground/FillForeground
@@ -67,8 +69,10 @@ func set_current_value(value : float):
 	if fill_foreground != null:
 		var ratio = current_value / max_value
 		
-		if yield_before_update: #and is_instance_valid(self):
+		if yield_before_update:
+			set_val_for_is_in_yield(true)
 			yield(get_tree(), "idle_frame")
+			set_val_for_is_in_yield(false)
 		
 		if !allow_overflow and ratio > 1:
 			ratio = 1
@@ -165,13 +169,26 @@ func _get_determined_positions_of_chunks(num) -> Array:
 	return bucket
 
 
+#
+
+func set_val_for_is_in_yield(arg_val):
+	_is_in_yield = arg_val
+	
+	if !_is_in_yield and _queue_free_called_during_yield:
+		queue_free()
+
 # Overriding stuffs
 
 func queue_free():
-	for n in chunks:
-		n.queue_free()
-	
-	.queue_free()
+	if !_is_in_yield:
+		if !is_queued_for_deletion():
+			for n in chunks:
+				n.queue_free()
+			
+			.queue_free()
+		
+	else:
+		_queue_free_called_during_yield = true
 
 
 #

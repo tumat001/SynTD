@@ -77,7 +77,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# BASIC FACTION
 	if enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
-		info.base_health = 1 #24
+		info.base_health = 24
 		info.base_movement_speed = 40
 		
 	elif enemy_id == Enemies.BRUTE:
@@ -111,7 +111,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# EXPERT FACTION
 	elif enemy_id == Enemies.EXPERIENCED:
 		info = EnemyTypeInformation.new(Enemies.EXPERIENCED, EnemyFactions.EXPERT)
-		info.base_health = 34.5
+		info.base_health = 33.5
 		info.base_movement_speed = 40
 		#info.base_resistance = 25
 		info.base_toughness = 4.5

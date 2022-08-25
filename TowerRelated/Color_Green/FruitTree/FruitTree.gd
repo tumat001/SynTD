@@ -2,7 +2,7 @@ extends "res://TowerRelated/AbstractTower.gd"
 
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
-const base_round_count : int = 1#3
+const base_round_count : int = 1#3 #todo
 var current_round_count : int = base_round_count
 var fruit_cost : int
 

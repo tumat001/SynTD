@@ -33,8 +33,8 @@ func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.FRUIT_TREE_FRUIT)
 	
 	tower_id = info.tower_type_id
+	tower_type_info = info
 	#_tower_colors = info.colors
-	#ingredient_of_self = info.ingredient_effect
 	_base_gold_cost = info.tower_cost
 	
 	can_be_placed_in_map_conditional_clause.attempt_insert_clause(CanBePlacedInMapClauses.GENERIC_CANNOT_BE_PLACED_IN_MAP)

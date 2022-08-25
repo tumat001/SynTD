@@ -8,9 +8,17 @@ const ExplosionParticle_Scene = preload("res://EnemyRelated/CommonParticles/Expl
 const Wizard_Beam_Scene = preload("res://EnemyRelated/CommonParticles/Wizard_Beam/Wizard_Beam.tscn")
 
 
+var beam_explosion_interval_timer : Timer
+const _beam_explosion_interval_delay : float = 0.25
+const _base_beam_explosion_count : int = 3
+var _current_beam_count_left : int
+var _current_target_for_beam
+
+#
+
 const _base_range : float = 140.0
 
-const _explosion_dmg : float = 5.0
+const _explosion_dmg : float = 5.05 / _base_beam_explosion_count
 const _explosion_cooldown : float = 5.0
 const _explosion_cooldown_no_targets_in_range : float = 3.0
 const _explosion_modulate : Color = Color(0.25, 0, 1, 1)
@@ -28,6 +36,11 @@ func _init():
 
 
 func _ready():
+	beam_explosion_interval_timer = Timer.new()
+	beam_explosion_interval_timer.connect("timeout", self, "_on_beam_explosion_interval_timer_timeout")
+	beam_explosion_interval_timer.one_shot = false
+	add_child(beam_explosion_interval_timer)
+	
 	tower_detecting_range_module = TowerDetectingRangeModule_Scene.instance()
 	tower_detecting_range_module.can_display_range = false
 	tower_detecting_range_module.detection_range = _base_range
@@ -65,12 +78,10 @@ func _explosion_ability_activated():
 		var valid_targets = Targeting.enemies_to_target(targets, _targeting_for_explosion, 1, global_position)
 		
 		if valid_targets.size() > 0:
-			explosion_ability.on_ability_before_cast_start(_explosion_cooldown)
-			
-			_summon_beam_to_target(valid_targets[0], explosion_ability.get_potency_to_use(last_calculated_final_ability_potency))
-			explosion_ability.start_time_cooldown(_explosion_cooldown)
-			
-			explosion_ability.on_ability_after_cast_ended(_explosion_cooldown)
+			_current_beam_count_left = _base_beam_explosion_count
+			_current_target_for_beam = valid_targets[0]
+			_consume_beam_charge_for_summon_beam_to_target(_current_target_for_beam)
+			beam_explosion_interval_timer.start(_beam_explosion_interval_delay)
 
 
 func _summon_beam_to_target(target, final_potency : float):
@@ -102,3 +113,31 @@ func _create_and_show_expl_particle(pos):
 	particle.scale *= 1.5
 	
 	get_tree().get_root().add_child(particle)
+
+#
+
+func _on_beam_explosion_interval_timer_timeout():
+	_consume_beam_charge_for_summon_beam_to_target(_current_target_for_beam)
+
+
+func _consume_beam_charge_for_summon_beam_to_target(arg_tower):
+	if _current_beam_count_left > 0:
+		if _current_target_for_beam == null or _current_target_for_beam.is_queued_for_deletion():
+			var targets = tower_detecting_range_module.get_all_in_map_and_active_towers_in_range()
+			var valid_targets = Targeting.enemies_to_target(targets, _targeting_for_explosion, 1, global_position)
+			if valid_targets.size() > 0:
+				_current_target_for_beam = valid_targets[0]
+		
+		#
+		
+		explosion_ability.on_ability_before_cast_start(_explosion_cooldown)
+		
+		_summon_beam_to_target(arg_tower, explosion_ability.get_potency_to_use(last_calculated_final_ability_potency))
+		explosion_ability.start_time_cooldown(_explosion_cooldown)
+		
+		explosion_ability.on_ability_after_cast_ended(_explosion_cooldown)
+		
+		_current_beam_count_left -= 1
+		
+	else:
+		beam_explosion_interval_timer.stop()

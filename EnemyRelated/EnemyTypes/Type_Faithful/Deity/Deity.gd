@@ -334,7 +334,11 @@ func _on_enemy_entered_range_d(enemy):
 		
 		grant_revive_ability_activation_clauses.remove_clause(no_enemy_in_range_clause_id)
 		taunt_ability_activation_clauses.remove_clause(no_enemy_in_range_clause_id)
+		
+		enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_faithful_killed_with_no_more_revives", [], CONNECT_ONESHOT)
 
+func _on_faithful_killed_with_no_more_revives(damage_instance_report, arg_enemy):
+	_on_enemy_left_range_d(arg_enemy)
 
 func _on_enemy_left_range_d(enemy):
 	if enemy is AbstractFaithfulEnemy:
