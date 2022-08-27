@@ -323,10 +323,10 @@ const tier_base_dmg_map : Dictionary = {
 	1 : 0.5,
 	2 : 1.0,
 	3 : 1.5,
-	
-	4 : 2.25,
-	5 : 2.75,
-	6 : 3.25,
+
+	4 : 2.5,
+	5 : 3.0,
+	6 : 3.5,
 	
 #	1 : 0.5,
 #	2 : 1.0,
@@ -345,6 +345,14 @@ const tier_attk_speed_map : Dictionary = {
 	4 : 45,
 	5 : 60,
 	6 : 70,
+	
+#	1 : 15,
+#	2 : 25,
+#	3 : 35,
+#
+#	4 : 45,
+#	5 : 60,
+#	6 : 70,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
@@ -352,13 +360,13 @@ const tier_on_hit_dmg_map : Dictionary = {
 	2 : 1.25,
 	3 : 1.75,
 	
-	4 : 2.5,
-	5 : 3.0,
-	6 : 3.5,
+	4 : 2.75,
+	5 : 3.25,
+	6 : 3.75,
 	
 #	1 : 0.75,
 #	2 : 1.25,
-#	3 : 2,
+#	3 : 1.75,
 #
 #	4 : 2.75,
 #	5 : 3.25,
@@ -435,8 +443,14 @@ static func _get_default_region_size_for_atlas(tower_sprite) -> Vector2:
 
 ########
 
+static func get_tower_tier_from_tower_id(arg_id : int):
+	if tower_id_info_type_singleton_map.has(arg_id):
+		return tower_id_info_type_singleton_map[arg_id].tower_tier
+	else:
+		return -1
 
 
+#######
 
 #
 
@@ -567,10 +581,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = simplex_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 0.48
-		info.base_attk_speed = 5.5
+		info.base_damage = 0.48  #0.52
+		info.base_attk_speed = 5.5   #5
 		info.base_pierce = 0
-		info.base_range = 105
+		info.base_range = 95
 		info.base_damage_type = DamageType.PURE
 		info.on_hit_multiplier = 0.2
 		
@@ -980,7 +994,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 1.5
 		info.base_attk_speed = 0.6
 		info.base_pierce = 0
-		info.base_range = 150
+		info.base_range = 130
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
 		
@@ -3059,9 +3073,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_bolt = []
 		ins_for_bolt.append(NumericalTextFragment.new(2, false, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.5, DamageType.ELEMENTAL))
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.25, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.5)) # stat basis does not matter here
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25)) # stat basis does not matter here
 		
 		interpreter_for_bolt.array_of_instructions = ins_for_bolt
 		
@@ -3624,7 +3638,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		#
 		
 		info.tower_descriptions = [
-			"Shoots a pinecone that fragments into 3 pieces upon hitting an enemy.",
+			"Shoots a pinecone that releases 3 fragments upon hitting an enemy.",
 			["Each fragment deals |0|.", [interpreter_for_flat_on_hit]],
 		]
 		
@@ -4597,8 +4611,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = l_assaut_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.25
-		info.base_attk_speed = 0.875
+		info.base_damage = 2.75
+		info.base_attk_speed = 0.925
 		info.base_pierce = 0
 		info.base_range = 110
 		info.base_damage_type = DamageType.PHYSICAL

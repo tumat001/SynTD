@@ -19,16 +19,16 @@ const player_worth_for_offerable : int = 60
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.JEWELED_BLADE, "Jeweled Blade", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
-		total_worth_per_100_to_base_dmg_ratio = 8
+		total_worth_per_100_to_base_dmg_ratio = 7
 		level_up_additional_cost_scale = 0.3
 	elif tier == 1:
-		total_worth_per_100_to_base_dmg_ratio = 5
+		total_worth_per_100_to_base_dmg_ratio = 4
 		level_up_additional_cost_scale = 0.3
 	elif tier == 2:
-		total_worth_per_100_to_base_dmg_ratio = 3
+		total_worth_per_100_to_base_dmg_ratio = 2.5
 		level_up_additional_cost_scale = 0.3
 	elif tier == 3:
-		total_worth_per_100_to_base_dmg_ratio = 1.5
+		total_worth_per_100_to_base_dmg_ratio = 1
 		level_up_additional_cost_scale = 0.3
 	
 	

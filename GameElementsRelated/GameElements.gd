@@ -291,6 +291,7 @@ func _ready():
 	# combination manager
 	combination_manager.tower_manager = tower_manager
 	combination_manager.combination_top_panel = combination_top_panel
+	combination_manager.game_elements = self
 	
 	# shared passive manager
 	shared_passive_manager.game_elements = self
@@ -320,7 +321,7 @@ func _ready():
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	level_manager.current_level = LevelManager.LEVEL_7
 	#level_manager.current_level = LevelManager.LEVEL_3
-	
+
 	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
@@ -339,21 +340,21 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.ROYAL_FLAME,
-			Towers.NUCLEUS,
-			Towers.FRUIT_TREE,
-			Towers.ASHEND,
-			Towers.LA_CHASSEUR,
+			Towers.STRIKER,
+			Towers.BEACON_DISH,
+			Towers.SHACKLED,
+			Towers.BEACON_DISH,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.BEACON_DISH,
-			Towers.MAGNETIZER,
+			Towers.SHOCKER,
 			Towers.CHARGE,
 			Towers.MINI_TESLA,
 			Towers.GRAND,
 			Towers.EMBER
 		])
-	
+
 	even = !even
 
 

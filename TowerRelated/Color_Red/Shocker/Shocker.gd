@@ -19,7 +19,7 @@ const ShockBolt_03 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/
 const ShockBolt_04 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt04.png")
 const ShockBolt_05 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt05.png")
 
-const shock_base_damage_ratio : float = 0.5
+const shock_base_damage_and_on_hit_ratio : float = 0.25
 const shock_ball_range : float = 100.0
 const no_shock_ball_clause : int = AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01
 
@@ -90,7 +90,7 @@ func _ready():
 	shock_range_module.set_current_targeting(Targeting.CLOSE)
 	
 	shock_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	shock_attack_module.base_damage_scale = shock_base_damage_ratio
+	shock_attack_module.base_damage_scale = shock_base_damage_and_on_hit_ratio
 	shock_attack_module.base_damage = 2 / shock_attack_module.base_damage_scale
 	shock_attack_module.base_damage_type = DamageType.ELEMENTAL
 	shock_attack_module.base_attack_speed = 0
@@ -99,7 +99,7 @@ func _ready():
 	shock_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	shock_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.SHOCKER_SHOCK_BALL_MAIN_DAMAGE
 	
-	shock_attack_module.on_hit_damage_scale = shock_base_damage_ratio
+	shock_attack_module.on_hit_damage_scale = shock_base_damage_and_on_hit_ratio
 	shock_attack_module.on_hit_effect_scale = 1
 	
 	shock_attack_module.benefits_from_bonus_on_hit_effect = false

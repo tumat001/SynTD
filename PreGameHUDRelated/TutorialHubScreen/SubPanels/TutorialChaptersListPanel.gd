@@ -1,6 +1,7 @@
 extends MarginContainer
 
 const ButtonGroup_Custom = preload("res://MiscRelated/PlayerGUI_Category_Related/ButtonToggleStandard/ButtonGroup.gd")
+const CombinationManager = preload("res://GameElementsRelated/CombinationManager.gd")
 
 #
 
@@ -91,13 +92,15 @@ func _initialize_descriptions():
 		"In a normal game, towers can only absorb one (1) ingredient, so spend that limit wisely. There are ways to change that however.",
 		""
 	]
+	
+	var same_towers_needed_for_combi : int = CombinationManager.base_combination_amount
 	var desc_for_tutorial_chapter_04 = [
 		"(Playthrough available for this chapter! Click at the button below.)",
 		"",
 		"What to expect here: Combination.",
 		"-----------",
 		"",
-		"Get 4 of the same tower to combine them, sacrificing them to apply their ingredient effect to towers. Affects existing and future towers bought.",
+		"Get %s of the same tower to combine them, sacrificing them to apply their ingredient effect to towers. Affects existing and future towers bought." % str(same_towers_needed_for_combi),
 		"Press %s to combine towers." % InputMap.get_action_list("game_combine_combinables")[0].as_text(),
 		"However, combination applies the combined tower's ingredient effect\nto towers with tiers who are below, equal, and 1 tier above the combined tower. For example, combining a tier 3 tower gives its ingredient effect tiers 1, 2, 3, and 4 only.",
 		"",

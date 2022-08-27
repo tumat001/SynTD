@@ -52,6 +52,8 @@ const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
+const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
+const AbsorbIngParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/AbsorbRelated/AbsorbIngParticle.tscn")
 
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self)
@@ -458,6 +460,18 @@ var ability_manager
 var synergy_manager
 var game_elements
 
+
+# particle related
+
+const ing_tier_to_amount_of_particles_map : Dictionary = {
+	1 : 3,
+	2 : 3,
+	3 : 3,
+	4 : 4,
+	5 : 5,
+	6 : 6
+}
+var absorb_ing_particle_pool_component : AttackSpritePoolComponent
 
 
 # SYN RELATED ---------------------------- #
@@ -1860,6 +1874,7 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 		_calculate_sellback_value()
 		
 		emit_signal("on_ingredient_absorbed", ingredient_effect)
+		_display_absorbed_ingredient_effects(Towers.get_tower_tier_from_tower_id(ingredient_effect.tower_id))
 
 
 func remove_ingredient(ingredient_effect : IngredientEffect, refund_gold : bool = false):
@@ -3338,3 +3353,54 @@ func _emit_heat_module_overheat():
 
 func _emit_heat_module_overheat_cooldown():
 	emit_signal("on_heat_module_overheat_cooldown")
+
+
+####### Particle related
+
+func _display_absorbed_ingredient_effects(arg_tier_of_ing : int):
+	if absorb_ing_particle_pool_component == null:
+		_initialize_absorb_ing_particle_pool_component()
+	
+	var max_i = ing_tier_to_amount_of_particles_map[arg_tier_of_ing]
+	for i in ing_tier_to_amount_of_particles_map[arg_tier_of_ing]:
+		var particle = absorb_ing_particle_pool_component.get_or_create_attack_sprite_from_pool()
+		particle.center_pos_of_basis = global_position
+		particle.tier = arg_tier_of_ing
+		particle.particle_i_val = i
+		particle.particle_max_i_val = max_i
+		particle.lifetime = 0.6
+		
+		particle.visible = true
+		particle.reset_for_another_use__absorb_ing_specific()
+		particle.reset_for_another_use()
+	
+
+func _initialize_absorb_ing_particle_pool_component():
+	absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
+	absorb_ing_particle_pool_component.node_to_parent_attack_sprites = get_tree().get_root()
+	absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
+	absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
+	absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_abosrb_ing_particle"
+	absorb_ing_particle_pool_component.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_absorb_ing_particle_properties_when_get_from_pool_after_add_child"
+	
+
+func _create_abosrb_ing_particle():
+	var particle = AbsorbIngParticle_Scene.instance()
+	particle.speed_accel_towards_center = 450
+	particle.initial_speed_towards_center = -100
+	
+	particle.min_starting_distance_from_center = 35
+	particle.max_starting_distance_from_center = 35
+	
+	particle.queue_free_at_end_of_lifetime = false
+	
+	
+	return particle
+
+func _set_absorb_ing_particle_properties_when_get_from_pool_after_add_child(arg_particle):
+	pass
+	#arg_particle.center_pos_of_basis = global_position
+	
+	#arg_particle.reset_for_another_use()
+	
+	

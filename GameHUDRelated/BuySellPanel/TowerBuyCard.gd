@@ -18,17 +18,16 @@ signal viewing_tower_description_tooltip(tower_type_id)
 signal tower_bought(tower_type_id, tower_cost)
 
 const can_buy_modulate : Color = Color(1, 1, 1, 1)
-const cannot_buy_modulate : Color = Color(0.4, 0.4, 0.4, 1)
+const cannot_buy_modulate : Color = Color(0.5, 0.5, 0.5, 1)
 
 const shine_sparkle_rotation_speed_per_sec : int = 560
 const shine_sparkle_fade_per_sec : float = 1.25
 const shine_sparkle_y_initial_speed : int = -75 # updwards
 const shine_sparkle_y_accel_per_sec : int = 150
 const shine_max_duration : float = 0.5
-
-
 var shine_current_y_vel : float = 0
 
+#
 
 var tower_information : TowerTypeInformation
 var disabled : bool = false
@@ -42,6 +41,8 @@ var is_playing_shine_sparkle : bool = false
 var shine_current_duration : float
 
 var game_settings_manager
+
+#
 
 onready var ingredient_icon_rect = $MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer/IngredientIcon
 onready var tower_name_label = $MarginContainer/VBoxContainer/MarginerLower/Lower/TowerNameLabel
@@ -58,7 +59,7 @@ onready var tier_crown_rect = $MarginContainer/VBoxContainer/TierCrownPanel/Tier
 onready var buy_card = $BuyCard
 
 onready var shine_texture_rect = $MarginContainer/ShineContainer/ShinePic
-
+onready var shiny_border_texture_rect = $Control/ShinyBorder
 
 #
 
@@ -86,21 +87,26 @@ func update_display():
 			color_icon_01.texture = TowerColors.get_color_symbol_on_card(color01)
 			color_label_01.text = TowerColors.get_color_name_on_card(color01)
 		else:
-			color_icon_01.self_modulate.a = 0
-			color_label_01.self_modulate.a = 0
+			color_icon_01.texture = null
+			color_label_01.text = ""
+			#color_icon_01.self_modulate.a = 0
+			#color_label_01.self_modulate.a = 0
 		
 		if color02 != null:
 			color_icon_02.texture = TowerColors.get_color_symbol_on_card(color02)
 			color_label_02.text = TowerColors.get_color_name_on_card(color02)
 		else:
-			color_icon_02.self_modulate.a = 0
-			color_label_02.self_modulate.a = 0
+			color_icon_02.texture = null
+			color_label_02.text = ""
+			#color_icon_02.self_modulate.a = 0
+			#color_label_02.self_modulate.a = 0
 		
 		# Ingredient Related
 		if tower_information.ingredient_effect != null:
 			ingredient_icon_rect.texture = tower_information.ingredient_effect.tower_base_effect.effect_icon
 		else:
-			ingredient_icon_rect.self_modulate.a = 0
+			ingredient_icon_rect.texture = null
+			#ingredient_icon_rect.self_modulate.a = 0
 		
 		# TowerImageRelated
 		if tower_information.tower_image_in_buy_card != null:
@@ -200,9 +206,9 @@ func _tower_removed_from_bench_slot(tower, bench_slot):
 
 func _update_can_buy_card():
 	if can_buy_card():
-		modulate = can_buy_modulate
+		set_tower_card_modulate(can_buy_modulate)
 	else:
-		modulate = cannot_buy_modulate
+		set_tower_card_modulate(cannot_buy_modulate)
 
 func can_buy_card():
 	return _can_afford() and !tower_inventory_bench.is_bench_full() and can_buy__set_from_clauses
@@ -219,7 +225,6 @@ func play_shine_sparkle_on_card():
 	shine_current_y_vel = shine_sparkle_y_initial_speed
 	shine_texture_rect.rect_rotation = 0
 	shine_texture_rect.modulate = Color(1, 1, 1, 1)
-	
 
 
 func _process(delta):
@@ -241,3 +246,23 @@ func _process(delta):
 func hide_shine_sparkle_on_card():
 	is_playing_shine_sparkle = false
 	shine_texture_rect.visible = false
+
+
+###
+
+func set_tower_card_modulate(arg_modulate):
+	set_control_modulate(self, arg_modulate)
+	shine_texture_rect.self_modulate = can_buy_modulate
+	shiny_border_texture_rect.self_modulate = can_buy_modulate
+
+func set_control_modulate(arg_control, arg_modulate):
+	arg_control.self_modulate = arg_modulate
+	for child in arg_control.get_children():
+		child.self_modulate = arg_modulate
+		if child.get_child_count() > 0:
+			for inner_child in child.get_children():
+				set_control_modulate(inner_child, arg_modulate)
+
+
+
+

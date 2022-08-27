@@ -54,10 +54,11 @@ var attack_modules_using_this : Array = []
 onready var range_shape = $RangeShape
 
 func _ready():
+	_connect_area_shape_entered_and_exit_signals()
 	#connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
 	#connect("area_shape_exited" , self, "_on_Range_area_shape_exited", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
-	connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_PERSIST)
-	connect("area_shape_exited" , self, "_on_Range_area_shape_exited", [], CONNECT_PERSIST)
+#	connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_PERSIST)
+#	connect("area_shape_exited" , self, "_on_Range_area_shape_exited", [], CONNECT_PERSIST)
 	
 
 func _init():
@@ -207,20 +208,33 @@ func update_range():
 	var final_range = calculate_final_range_radius()
 	call_deferred("emit_signal", "final_range_changed")
 	
-	$RangeShape.shape.set_deferred("radius", final_range)
-	
+	_change_range(final_range)
+	#call_deferred("_change_range", final_range)
+
+
+
+func _change_range(final_range):
 	if is_connected("area_shape_entered", self, "_on_Range_area_shape_entered"):
 		disconnect("area_shape_entered", self, "_on_Range_area_shape_entered")
 	
 	if is_connected("area_shape_exited", self, "_on_Range_area_shape_exited"):
 		disconnect("area_shape_exited", self, "_on_Range_area_shape_exited")
 	
+	$RangeShape.shape.set_deferred("radius", final_range)
 	#$RangeShape.shape.radius = final_range
 	
-	connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_DEFERRED | CONNECT_PERSIST)
-	connect("area_shape_exited", self, "_on_Range_area_shape_exited", [], CONNECT_DEFERRED | CONNECT_PERSIST)
+	_connect_area_shape_entered_and_exit_signals()
+	#call_deferred("_connect_area_shape_entered_and_exit_signals")
 	
 	update()
+
+func _connect_area_shape_entered_and_exit_signals():
+	if !is_connected("area_shape_entered", self, "_on_Range_area_shape_entered"):
+		connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_DEFERRED | CONNECT_PERSIST)
+	
+	if !is_connected("area_shape_exited", self, "_on_Range_area_shape_exited"):
+		connect("area_shape_exited", self, "_on_Range_area_shape_exited", [], CONNECT_DEFERRED | CONNECT_PERSIST)
+
 
 
 #Enemy Detection Related

@@ -129,7 +129,7 @@ func set_tower_inventory_bench(arg_bench):
 func set_combination_manager(arg_manager):
 	combination_manager = arg_manager
 	
-	
+	combination_manager.connect("updated_applicable_combinations_on_towers", self, "_on_updated_applicable_combinations_on_towers__from_combi_manager", [], CONNECT_PERSIST)
 
 func set_game_settings_manager(arg_manager):
 	game_settings_manager = arg_manager
@@ -216,18 +216,18 @@ func update_new_rolled_towers(tower_ids_to_roll_to : Array):
 			all_buy_slots[i].roll_buy_card_to_tower_id(Towers.NONE)
 			all_buy_slots[i].visible = false
 	
-	var tower_card_combination_metadata : Dictionary = combination_manager.get_tower_buy_cards_metadata(tower_ids_to_roll_to) 
 	
-	var buy_slot_pos : int = 0
-	for tower_id in tower_card_combination_metadata.keys():
-		var metadata = tower_card_combination_metadata[tower_id]
-		if (metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE):
-			
-			var tower_card = all_buy_slots[buy_slot_pos].current_child
-			if tower_card != null:
-				tower_card.call_deferred("play_shine_sparkle_on_card")
-		
-		buy_slot_pos += 1
+	_update_cards_based_on_combination_metadata(tower_ids_to_roll_to)
+	
+#	for tower_id in tower_card_combination_metadata.keys():
+#		var metadata = tower_card_combination_metadata[tower_id]
+#		if (metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE):
+#
+#			var tower_card = all_buy_slots[buy_slot_pos].current_child
+#			if tower_card != null:
+#				tower_card.call_deferred("play_shine_sparkle_on_card")
+#
+#		buy_slot_pos += 1
 	
 	last_calculated_buy_slot_01_disabled = buy_slot_01_disabled_clauses.is_passed
 	last_calculated_buy_slot_02_disabled = buy_slot_02_disabled_clauses.is_passed
@@ -237,6 +237,34 @@ func update_new_rolled_towers(tower_ids_to_roll_to : Array):
 	last_calculated_buy_slot_06_disabled = buy_slot_06_disabled_clauses.is_passed
 	
 	_update_tower_cards_buyability_based_on_gold_and_clauses(gold_manager.current_gold)
+
+
+func _update_cards_based_on_combination_metadata(tower_ids_to_roll_to = get_tower_ids_in_current_buy_cards()):
+	var tower_card_combination_metadata : Dictionary = combination_manager.get_tower_buy_cards_metadata(tower_ids_to_roll_to) 
+	
+	for buy_card in all_buy_slots:
+		var tower_card = buy_card.current_child
+		if tower_card != null:
+			var tower_id = tower_card.tower_information.tower_type_id
+			var metadata = tower_card_combination_metadata[tower_id]
+			
+			if (metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE):
+				tower_card.call_deferred("play_shine_sparkle_on_card")
+				
+			
+			tower_card.shiny_border_texture_rect.visible = (metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE or metadata == CombinationManager.TowerBuyCardMetadata.PROGRESS_TOWARDS_COMBINABLE)
+
+func get_tower_ids_in_current_buy_cards():
+	var bucket = []
+	for buy_card in all_buy_slots:
+		var tower_card = buy_card.current_child
+		if tower_card != null:
+			bucket.append(tower_card.tower_information.tower_type_id)
+	
+	return bucket
+
+func _on_updated_applicable_combinations_on_towers__from_combi_manager():
+	_update_cards_based_on_combination_metadata()
 
 
 #

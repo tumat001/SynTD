@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://GameHUDRelated/BuySellPanel/TowerBuyCard.gd" type="Script" id=1]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/BuyAndInfoTowerBackground.png" type="Texture" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://GameHUDRelated/BuySellPanel/CombinationMetadataOnCards/ShineSparkle/ShineSparkle.png" type="Texture" id=5]
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=6]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/Tier02_Crown.png" type="Texture" id=7]
+[ext_resource path="res://GameHUDRelated/BuySellPanel/CombinationMetadataOnCards/ShinyBorder.png" type="Texture" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 size = 8
@@ -21,8 +22,8 @@ size = 11
 font_data = ExtResource( 6 )
 
 [node name="BuyCardContainer" type="MarginContainer"]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_right = 104.0
+margin_bottom = 75.0
 mouse_filter = 2
 script = ExtResource( 1 )
 __meta__ = {
@@ -33,6 +34,22 @@ __meta__ = {
 margin_right = 104.0
 margin_bottom = 75.0
 texture_normal = ExtResource( 2 )
+
+[node name="Control" type="Control" parent="."]
+margin_right = 104.0
+margin_bottom = 75.0
+mouse_filter = 2
+
+[node name="ShinyBorder" type="TextureRect" parent="Control"]
+margin_top = 11.0
+margin_right = 104.0
+margin_bottom = 75.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 margin_right = 104.0

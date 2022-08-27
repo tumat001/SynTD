@@ -19,16 +19,16 @@ const player_worth_for_offerable : int = 60
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.JEWELED_STAFF, "Jeweled Staff", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
-		total_worth_per_100_to_ap_ratio = 7
+		total_worth_per_100_to_ap_ratio = 5
 		level_up_additional_cost_scale = 0.3
 	elif tier == 1:
-		total_worth_per_100_to_ap_ratio = 4
+		total_worth_per_100_to_ap_ratio = 3.5
 		level_up_additional_cost_scale = 0.3
 	elif tier == 2:
 		total_worth_per_100_to_ap_ratio = 2
 		level_up_additional_cost_scale = 0.3
 	elif tier == 3:
-		total_worth_per_100_to_ap_ratio = 1.0
+		total_worth_per_100_to_ap_ratio = 0.75
 		level_up_additional_cost_scale = 0.3
 	
 	

@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://TowerRelated/CommonTowerParticles/AbsorbRelated/AbsorbIngParticle.gd" type="Script" id=1]
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/CenterBasedAttackSprite.tscn" type="PackedScene" id=2]
+[ext_resource path="res://TowerRelated/CommonTowerParticles/AbsorbRelated/White_AbsorbIngParticle.png" type="Texture" id=3]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="AbsorbIngParticle" instance=ExtResource( 2 )]
+frames = SubResource( 1 )
+script = ExtResource( 1 )
+queue_free_at_end_of_lifetime = false
+lifetime = 0.5

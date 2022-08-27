@@ -45,11 +45,11 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		_range_per_shadow_kill = 15
 	elif tier == 3:
 		_base_downtime_for_range_gain = 2.0
-		_range_gain_per_second_percent = 5.0
-		_max_limit_of_range_percent = 40.0
+		_range_gain_per_second_percent = 4.0
+		_max_limit_of_range_percent = 36.0
 		
 		_amount_of_shadow_enemies_to_spawn = 1
-		_range_per_shadow_kill = 15
+		_range_per_shadow_kill = 10
 	
 	# INS START
 	var interpreter_for_range_per_sec = TextFragmentInterpreter.new()

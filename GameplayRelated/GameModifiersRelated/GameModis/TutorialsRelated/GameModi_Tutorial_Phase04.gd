@@ -8,6 +8,7 @@ var towers_offered_on_shop_refresh : Array = [
 ]
 
 var transcript_to_progress_mode : Dictionary
+var _same_towers_needed_for_combi : int
 
 #
 func _init().(StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_04, 
@@ -37,6 +38,8 @@ func _unapply_game_modifier_from_elements(arg_elements : GameElements):
 #
 
 func _on_game_elements_before_game_start():
+	_same_towers_needed_for_combi = game_elements.combination_manager.base_combination_amount
+	
 	transcript_to_progress_mode = {
 		"Welcome to the chapter 4 of the tutorial. Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
 		
@@ -44,16 +47,16 @@ func _on_game_elements_before_game_start():
 		"Towers can \"absorb\" other towers, gaining the absorbed tower's ingredient effect.\nThis can be done under certain color-related conditions." : ProgressMode.CONTINUE,
 		"\"Combination\" is just another way of giving ingredient effects to towers, along with its own conditions." : ProgressMode.CONTINUE,
 		
-		"In order to combine towers, you need 4 identical towers." : ProgressMode.CONTINUE,
-		"Right now we have 3 Rebounds.\nWe only need one more Rebound to do a combination." : ProgressMode.CONTINUE,
+		"In order to combine towers, you need %s identical towers." % str(_same_towers_needed_for_combi) : ProgressMode.CONTINUE,
+		"Right now we have %s Rebounds.\nWe only need one more Rebound to do a combination." % str(_same_towers_needed_for_combi - 1) : ProgressMode.CONTINUE,
 		#6
 		"Please Refresh the shop." : ProgressMode.ACTION_FROM_PLAYER,
 		"A Rebound! Did you catch that?\nA shine particle is shown if buying that tower can allow you to trigger combination." : ProgressMode.CONTINUE,
 		#8
 		"Buy Rebound." : ProgressMode.ACTION_FROM_PLAYER,
-		"Now, an indicator is shown to the 4 Rebounds that are going to be sacrificed for the Combination to take place." : ProgressMode.CONTINUE,
+		"Now, an indicator is shown to the %s Rebounds that are going to be sacrificed for the Combination to take place." % str(_same_towers_needed_for_combi): ProgressMode.CONTINUE,
 		#10
-		"Press %s to combine the 4 Rebounds." % InputMap.get_action_list("game_combine_combinables")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
+		"Press %s to combine the %s Rebounds." % [InputMap.get_action_list("game_combine_combinables")[0].as_text(), str(_same_towers_needed_for_combi)] : ProgressMode.ACTION_FROM_PLAYER,
 		#11
 		"Nice! We can see here (this icon) that we have indeed combined the Rebounds." : ProgressMode.CONTINUE,
 		
@@ -69,7 +72,7 @@ func _on_game_elements_before_game_start():
 		#19
 		"Clicking this icon shows you all of your combination effects.\nIt also shows a description of combinations, and what combinations apply to the selected tier." : ProgressMode.CONTINUE,
 		"..." : ProgressMode.CONTINUE,
-		"While finding 4 of the same tower may be challenging and costly,\nit has its own upsides." : ProgressMode.CONTINUE,
+		"While finding %s of the same tower may be challenging and costly,\nit has its own upsides." % str(_same_towers_needed_for_combi): ProgressMode.CONTINUE,
 		"No ingredient slots are taken by the combinations, so the sky's the limit.\nAlso, it is not color dependent, so it can apply to a whole range of towers it normally would not." : ProgressMode.CONTINUE,
 		
 		"That concludes this chapter of the tutorial." : ProgressMode.CONTINUE,
@@ -93,23 +96,42 @@ func _on_game_elements_before_game_start():
 	#set_visiblity_of_placable(get_map_area_09__from_glade(), true)
 	#set_visiblity_of_placable(get_map_area_04__from_glade(), true)
 	#set_visiblity_of_placable(get_map_area_06__from_glade(), true)
-	set_player_level(6)
+	set_player_level(8)
 	add_gold_amount(34)
 	set_ingredient_limit_modi(9)
 	
-	var rebound_01 = create_tower_at_placable(Towers.REBOUND, get_map_area_05__from_glade())
-	var rebound_02 = create_tower_at_placable(Towers.REBOUND, get_map_area_07__from_glade())
-	var rebound_03 = create_tower_at_placable(Towers.REBOUND, get_map_area_09__from_glade())
-	var cannon_01 = create_tower_at_placable(Towers.CANNON, get_map_area_04__from_glade())
-	var flameburst_01 = create_tower_at_placable(Towers.FLAMEBURST, get_map_area_06__from_glade())
-	var sprinkler_01 = create_tower_at_placable(Towers.SPRINKLER, get_map_area_10__from_glade())
 	
-	set_tower_is_sellable(rebound_01, false)
-	set_tower_is_sellable(rebound_02, false)
-	set_tower_is_sellable(rebound_03, false)
+#	var rebound_01 = create_tower_at_placable(Towers.REBOUND, get_map_area_05__from_glade())
+#	var rebound_02 = create_tower_at_placable(Towers.REBOUND, get_map_area_07__from_glade())
+#	var rebound_03 = create_tower_at_placable(Towers.REBOUND, get_map_area_09__from_glade())
+#	var cannon_01 = create_tower_at_placable(Towers.CANNON, get_map_area_04__from_glade())
+#	var flameburst_01 = create_tower_at_placable(Towers.FLAMEBURST, get_map_area_06__from_glade())
+#	var sprinkler_01 = create_tower_at_placable(Towers.SPRINKLER, get_map_area_10__from_glade())
+#
+#	set_tower_is_sellable(rebound_01, false)
+#	set_tower_is_sellable(rebound_02, false)
+#	set_tower_is_sellable(rebound_03, false)
+#	set_tower_is_sellable(cannon_01, false)
+#	set_tower_is_sellable(flameburst_01, false)
+#	set_tower_is_sellable(sprinkler_01, false)
+	
+	var area_placables = get_map_area__for_defaults__from_glade()
+	
+	var cannon_01 = create_tower_at_placable(Towers.CANNON, area_placables[0])
+	var flameburst_01 = create_tower_at_placable(Towers.FLAMEBURST, area_placables[1])
+	var sprinkler_01 = create_tower_at_placable(Towers.SPRINKLER, area_placables[2])
+	
+	area_placables.remove(0)
+	area_placables.remove(0)
+	area_placables.remove(0)
+	
 	set_tower_is_sellable(cannon_01, false)
 	set_tower_is_sellable(flameburst_01, false)
 	set_tower_is_sellable(sprinkler_01, false)
+	
+	for i in _same_towers_needed_for_combi - 1:
+		var rebound = create_tower_at_placable(Towers.REBOUND, area_placables[i])
+		set_tower_is_sellable(rebound, false)
 	
 	#exit_scene_if_at_end_of_transcript = false
 	#connect("at_end_of_transcript", self, "_on_end_of_transcript", [], CONNECT_ONESHOT)

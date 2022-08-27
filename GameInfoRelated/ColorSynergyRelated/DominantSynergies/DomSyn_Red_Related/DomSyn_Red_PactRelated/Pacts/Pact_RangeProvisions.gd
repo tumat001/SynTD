@@ -22,7 +22,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		_range_flat_amount = 50
 		_attk_speed_reduc_percent = -6
 	elif tier == 3:
-		_range_flat_amount = 25
+		_range_flat_amount = 15
 		_attk_speed_reduc_percent = -4
 	
 	

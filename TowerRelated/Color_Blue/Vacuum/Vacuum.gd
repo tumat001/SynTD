@@ -16,7 +16,6 @@ const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/
 
 const EnemyKnockUpEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyKnockUpEffect.gd")
 const EnemyForcedPathOffsetMovementEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyForcedPathOffsetMovementEffect.gd")
-const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
 
 const CenterBasedAttackSprite = preload("res://MiscRelated/AttackSpriteRelated/CenterBasedAttackSprite.gd")
 const CenterBasedAttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/CenterBasedAttackSprite.tscn")
@@ -313,7 +312,7 @@ func _create_suck_particle():
 	particle.texture_to_use = Suck_AestheticParticle_Pic
 	particle.queue_free_at_end_of_lifetime = false
 	particle.turn_invisible_at_end_of_lifetime = true
-	particle.lifetime = 0.7
+	#particle.lifetime = 0.7
 	
 	return particle
 

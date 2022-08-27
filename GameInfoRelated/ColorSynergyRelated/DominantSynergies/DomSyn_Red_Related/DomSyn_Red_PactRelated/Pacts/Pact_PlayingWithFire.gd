@@ -24,7 +24,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		possible_speed_gain_values = [35, 40, 45]
 		possible_damage_gain_values = [3, 3, 4]
 	elif tier == 3:
-		possible_speed_gain_values = [20, 25, 30]
+		possible_speed_gain_values = [15, 20, 25]
 		possible_damage_gain_values = [1, 2, 3]
 	
 	var index_rng = pact_mag_rng.randi_range(0, 2)
