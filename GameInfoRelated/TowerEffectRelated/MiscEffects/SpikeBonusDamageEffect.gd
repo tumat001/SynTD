@@ -11,11 +11,13 @@ const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/Te
 
 
 const bonus_damage_percent_threshold : float = 0.5
-const bonus_damage : float = 1.0
+var bonus_damage : float
 var bonus_on_hit : OnHitDamage
 
-func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):
+func _init(arg_bonus_dmg : float).(StoreOfTowerEffectsUUID.ING_SPIKE):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Spike.png")
+	
+	bonus_damage = arg_bonus_dmg
 	
 	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
 	interpreter_for_flat_on_hit.display_body = false

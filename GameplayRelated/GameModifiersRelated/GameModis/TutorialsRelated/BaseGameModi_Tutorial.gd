@@ -130,9 +130,9 @@ func set_can_level_up(arg_val : bool):
 
 func set_can_refresh_shop__panel_based(arg_val : bool):
 	if arg_val:
-		game_elements.panel_buy_sell_level_roll.can_refresh_shop_clauses.remove_clause(game_elements.ShopManager.CanRefreshShopClauses.TUTORIAL_DISABLE)
+		game_elements.panel_buy_sell_level_roll.can_refresh_shop_clauses.remove_clause(game_elements.panel_buy_sell_level_roll.CanRefreshShopClauses.TUTORIAL_DISABLE)
 	else:
-		game_elements.panel_buy_sell_level_roll.can_refresh_shop_clauses.attempt_insert_clause(game_elements.ShopManager.CanRefreshShopClauses.TUTORIAL_DISABLE)
+		game_elements.panel_buy_sell_level_roll.can_refresh_shop_clauses.attempt_insert_clause(game_elements.panel_buy_sell_level_roll.CanRefreshShopClauses.TUTORIAL_DISABLE)
 
 func set_can_refresh_shop_at_round_end_clauses(arg_val):
 	if arg_val:

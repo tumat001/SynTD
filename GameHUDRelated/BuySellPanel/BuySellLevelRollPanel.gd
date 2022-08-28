@@ -54,6 +54,7 @@ var tower_inventory_bench setget set_tower_inventory_bench
 #
 
 enum BuySlotDisabledClauses {
+	END_OF_GAME = 100,
 	
 	TUTORIAL_DISABLE = 1000
 }
@@ -81,6 +82,8 @@ var buy_slot_to_disabled_clauses : Dictionary
 
 enum CanRefreshShopClauses {
 	PLAYER_LEVEL_01 = 1
+	
+	END_OF_GAME = 10
 	
 	TUTORIAL_DISABLE = 1000
 }
@@ -246,13 +249,16 @@ func _update_cards_based_on_combination_metadata(tower_ids_to_roll_to = get_towe
 		var tower_card = buy_card.current_child
 		if tower_card != null:
 			var tower_id = tower_card.tower_information.tower_type_id
-			var metadata = tower_card_combination_metadata[tower_id]
 			
-			if (metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE):
-				tower_card.call_deferred("play_shine_sparkle_on_card")
+			if tower_card_combination_metadata.has(tower_id):
+				var metadata = tower_card_combination_metadata[tower_id]
 				
-			
-			tower_card.shiny_border_texture_rect.visible = (metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE or metadata == CombinationManager.TowerBuyCardMetadata.PROGRESS_TOWARDS_COMBINABLE)
+				if (metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE):
+					tower_card.call_deferred("play_shine_sparkle_on_card")
+					
+				
+				tower_card.shiny_border_texture_rect.visible = (metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE or metadata == CombinationManager.TowerBuyCardMetadata.PROGRESS_TOWARDS_COMBINABLE)
+
 
 func get_tower_ids_in_current_buy_cards():
 	var bucket = []

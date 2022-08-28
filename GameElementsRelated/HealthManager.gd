@@ -2,6 +2,7 @@ extends Node
 
 const RoundInfoPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel.gd")
 
+
 enum IncreaseHealthSource {
 	
 	TOWER = 100,
@@ -18,13 +19,19 @@ enum DecreaseHealthSource {
 }
 
 signal current_health_changed(current_health)
-signal zero_health_reached
+signal zero_health_reached()
 
 
 var starting_health : float
 var current_health : float setget set_health
 var round_info_panel : RoundInfoPanel
 
+#
+
+func _ready():
+	connect("zero_health_reached", self, "_on_zero_health_reached", [], CONNECT_PERSIST)
+
+#
 
 func set_health(health : float):
 	current_health = health
@@ -52,3 +59,6 @@ func _health_changed():
 func _check_if_no_health_remaining():
 	if current_health <= 0:
 		call_deferred("emit_signal", "zero_health_reached")
+
+
+

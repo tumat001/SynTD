@@ -323,6 +323,8 @@ enum CanBeSoldClauses {
 	
 	DOM_SYN_RED__PACT_HOLOGRAPHIC_TOWERS = 1,
 	
+	END_OF_GAME = 100,
+	
 	TUTORIAL_DISABLED_CLAUSE = 10000
 }
 
@@ -405,6 +407,8 @@ var last_calculated_tower_base_modulate : Color
 # Clickalbe related
 
 enum TowerDraggableClauseIds{
+	END_OF_GAME = 100
+	
 	TUTORIAL_DISABLED = 1000
 }
 var tower_is_draggable_clauses : ConditionalClauses

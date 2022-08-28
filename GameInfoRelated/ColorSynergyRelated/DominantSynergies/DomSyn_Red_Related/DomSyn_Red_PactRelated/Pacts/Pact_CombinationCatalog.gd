@@ -16,19 +16,19 @@ const combinations_required_for_offerable_inclusive : int = 5
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.COMBINATION_CATALOG, "Combination Catalog", arg_tier, arg_tier_for_activation):
 	if tier == 0:
 		bonus_dmg_per_combination = 0.07
-		gold_reduction_per_round = 1
+		gold_reduction_per_round = 2
 		
 	elif tier == 1:
 		bonus_dmg_per_combination = 0.05
-		gold_reduction_per_round = 1
+		gold_reduction_per_round = 2
 		
 	elif tier == 2:
 		bonus_dmg_per_combination = 0.03
-		gold_reduction_per_round = 1
+		gold_reduction_per_round = 2
 		
 	elif tier == 3:
-		bonus_dmg_per_combination = 0.02
-		gold_reduction_per_round = 1
+		bonus_dmg_per_combination = 0.015
+		gold_reduction_per_round = 2
 	
 	#
 	var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()

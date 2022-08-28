@@ -19,6 +19,7 @@ var combination_whole_screen_panel : CombinationWholeScreenPanel
 
 var combination_manager
 var whole_screen_gui
+var game_settings_manager
 
 var per_tier_index_position : Dictionary = {
 	1 : 0,
@@ -71,6 +72,7 @@ func _free_old_and_create_tooltip_for_tower(tower_type_info, combi_icon):
 	current_tooltip = TowerTooltipScene.instance()
 	current_tooltip.tower_info = tower_type_info
 	current_tooltip.tooltip_owner = combi_icon
+	current_tooltip.game_settings_manager = game_settings_manager
 	
 	get_tree().get_root().add_child(current_tooltip)
 

@@ -48,11 +48,14 @@ var tower_drag_mode : int setget set_tower_drag_mode
 
 var tower_drag_mode_search_radius : float = 100 setget set_tower_drag_mode_search_radius
 
+
 #
 
+# SETS LOCATED HERE
 func _ready():
 	set_descriptions_mode(DescriptionsMode.SIMPLE)
-	set_tower_drag_mode(TowerDragMode.EXACT)
+	set_tower_drag_mode(TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE)
+
 
 ######### DESCRIPTIONS MODE
 

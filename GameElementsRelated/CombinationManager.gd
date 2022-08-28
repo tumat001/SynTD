@@ -119,12 +119,12 @@ var all_combination_id_to_effect_map : Dictionary
 # Particles related
 
 const combi_tier_to_amount_of_particles_map : Dictionary = {
-	1 : 3,
-	2 : 3,
+	1 : 2,
+	2 : 2,
 	3 : 3,
-	4 : 4,
-	5 : 5,
-	6 : 6
+	4 : 6,
+	5 : 9,
+	6 : 12
 }
 var on_combi_particle_pool_component : AttackSpritePoolComponent
 var on_combi_particle_timer : Timer
@@ -414,8 +414,13 @@ func on_combination_activated():
 	if current_combination_candidates.size() > 0 and last_calculated_can_do_combination:
 		_is_doing_combination = true
 		
-		var combi_effect = _construct_combination_effect_from_tower(current_combination_candidates[0].tower_id)
+		var combi_effect : CombinationEffect = _construct_combination_effect_from_tower(current_combination_candidates[0].tower_id)
 		all_combination_id_to_effect_map[combi_effect.combination_id] = combi_effect
+		
+#		var tower_type_info_of_tower = Towers.get_tower_info(current_combination_candidates[0].tower_id)
+#		combi_effect.tower_type_info = tower_type_info_of_tower
+#		combi_effect.ingredient_effect = tower_type_info_of_tower.ingredient_effect
+#		combi_effect.tier_of_source_tower = tower_type_info_of_tower.tower_tier
 		
 		_destroy_current_candidates(combi_effect.tower_type_info.tower_tier)
 		_apply_combination_effect_to_appropriate_towers(combi_effect)
@@ -436,8 +441,7 @@ func _construct_combination_effect_from_tower(arg_tower_id : int) -> Combination
 	var tower_type_info_of_tower = Towers.get_tower_info(arg_tower_id)
 	
 	var combi_effect := CombinationEffect.new(tower_type_info_of_tower.tower_type_id, tower_type_info_of_tower.ingredient_effect, tower_type_info_of_tower)
-	
-	#combi_effect.applicable_to_tower_tiers = tiers_affected_per_combo_tier[tower_type_info_of_tower.tower_tier]
+	#var combi_effect := CombinationEffect.new(arg_tower_id)
 	combi_effect.tier_of_source_tower = tower_type_info_of_tower.tower_tier
 	
 	return combi_effect

@@ -1087,6 +1087,8 @@ func hit_by_aoe(base_aoe):
 		if base_aoe.attack_module_source != null:
 			if !is_connected("on_hit", base_aoe.attack_module_source, "on_enemy_hit"):
 				connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
+			
+			if !is_connected("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt"):
 				connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
 		
 		hit_by_damage_instance(base_aoe.damage_instance, base_aoe.damage_register_id, true, base_aoe.attack_module_source)

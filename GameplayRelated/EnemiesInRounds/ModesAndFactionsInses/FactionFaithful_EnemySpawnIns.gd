@@ -14,7 +14,7 @@ func get_instructions_for_stageround(uuid : String):
 #		return _get_instructions_for_0_4()
 #	elif uuid == "05":
 #		return _get_instructions_for_0_5()
-#
+
 	if uuid == "41":
 		return _get_instructions_for_4_1()
 	elif uuid == "42":
@@ -75,10 +75,10 @@ func get_instructions_for_stageround(uuid : String):
 
 # TEST
 
-func _get_instructions_for_0_1():
-	return [
-		MultipleEnemySpawnInstruction.new(0, 1, 1, EnemyConstants.Enemies.DVARAPALA),
-	]
+#func _get_instructions_for_0_1():
+#	return [
+#		MultipleEnemySpawnInstruction.new(0, 12, 1, EnemyConstants.Enemies.SACRIFICER),
+#	]
 
 #func _get_instructions_for_0_2():
 #	return [

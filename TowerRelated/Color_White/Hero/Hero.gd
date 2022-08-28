@@ -114,11 +114,11 @@ const main_attack_proj_speed : float = 500.0
 const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
 const attks_needed_for_light_explosion : int = 35
 const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3.5]
-const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.4, 1.0]
+const light_explosion_dmg_ratio_in_levels : Array = [0, 0, 0.4, 0.9]
 const light_explosion_pierce : int = 8
 
-const judgement_dmg_ratio_in_levels : Array = [0.5, 1, 2, 3.5]
-const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 1.5, 2, 6]
+const judgement_dmg_ratio_in_levels : Array = [0.5, 1, 2, 4]
+const judgement_bonus_on_hit_dmg_in_levels : Array = [1, 1.5, 2.5, 6.5]
 var judgement_bonus_on_hit_dmg_dmg_type : int = DamageType.PHYSICAL
 
 const judgement_bonus_dmg_ratio : float = 1.20
@@ -135,7 +135,7 @@ const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 8, 16]
 
 var white_dom_active : bool
 
-var current_hero_xp : float = 0
+var current_hero_xp : float = 0 #todo
 var current_hero_natural_level : int = 0
 var current_hero_effective_level : int = 0
 var current_spendables : int = 0
@@ -1044,13 +1044,18 @@ func get_judgement_ability_descs() -> Array:
 func get_vol_ability_descs() -> Array:
 	if ability_VOL_level != 0:
 		
+		
 		var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
 		interpreter_for_bonus_dmg.tower_to_use_for_tower_stat_fragments = self
-		interpreter_for_bonus_dmg.display_body = false
+		interpreter_for_bonus_dmg.display_body = true
 		interpreter_for_bonus_dmg.header_description = ""
 		
 		var ins_for_bonus_dmg = []
-		ins_for_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", (current_vol_damage_scale - 1) * 100, true))
+		ins_for_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, ""))
+		ins_for_bonus_dmg.append(NumericalTextFragment.new((current_vol_damage_scale - 1) * 100, true, -1, "", false, TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP))
+		ins_for_bonus_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_bonus_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
 		interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
 		
 		
@@ -1060,11 +1065,6 @@ func get_vol_ability_descs() -> Array:
 			["Voice of Light buffs tower's outgoing damage %s times by |0|" % [current_vol_count], [interpreter_for_bonus_dmg]],
 		]
 		
-#		var descs = [
-#			"Every %s attack is accompanied by Hero casting Voice of Light." % (str(current_attks_needed_for_vol) + "th"),
-#			"Voice of Light buffs %s towers in range, prioritizing the closest towers, and ignoring towers that cannot attack." % current_towers_affected_by_vol,
-#			"Voice of Light buffs tower's outgoing damage %s times by %s" % [current_vol_count, (str((current_vol_damage_scale * 100) - 100) + "%.")],
-#		]
 		
 		descs.append("")
 		if current_hero_natural_level < max_hero_level:
@@ -1313,13 +1313,18 @@ func get_vol_upgrade_descs():
 			
 		else:
 			
+			
 			var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
 			interpreter_for_bonus_dmg.tower_to_use_for_tower_stat_fragments = self
-			interpreter_for_bonus_dmg.display_body = false
+			interpreter_for_bonus_dmg.display_body = true
 			interpreter_for_bonus_dmg.header_description = ""
 			
 			var ins_for_bonus_dmg = []
-			ins_for_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", (VOL_dmg_ratio_buff_in_levels[0] - 1) * 100, true))
+			ins_for_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, ""))
+			ins_for_bonus_dmg.append(NumericalTextFragment.new((VOL_dmg_ratio_buff_in_levels[0] - 1) * 100, true, -1, "", false, TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP))
+			ins_for_bonus_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+			ins_for_bonus_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+			
 			interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
 			
 			

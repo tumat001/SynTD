@@ -16,16 +16,16 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	
 	if tier == 0:
 		possible_speed_gain_values = [100, 110, 120]
-		possible_damage_gain_values = [20, 25, 30]
+		possible_damage_gain_values = [30, 40, 50]
 	elif tier == 1:
 		possible_speed_gain_values = [60, 70, 80]
-		possible_damage_gain_values = [6, 7, 8]
+		possible_damage_gain_values = [7, 10, 13]
 	elif tier == 2:
-		possible_speed_gain_values = [35, 40, 45]
-		possible_damage_gain_values = [3, 3, 4]
+		possible_speed_gain_values = [30, 40, 45]
+		possible_damage_gain_values = [4, 7, 10]
 	elif tier == 3:
-		possible_speed_gain_values = [15, 20, 25]
-		possible_damage_gain_values = [1, 2, 3]
+		possible_speed_gain_values = [10, 20, 25]
+		possible_damage_gain_values = [2, 4, 7]
 	
 	var index_rng = pact_mag_rng.randi_range(0, 2)
 	attk_speed_gain_val = possible_speed_gain_values[index_rng]

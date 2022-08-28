@@ -330,7 +330,7 @@ const tier_base_dmg_map : Dictionary = {
 	
 #	1 : 0.5,
 #	2 : 1.0,
-#	3 : 1.75,
+#	3 : 1.5,
 #
 #	4 : 2.5,
 #	5 : 3.0,
@@ -338,11 +338,11 @@ const tier_base_dmg_map : Dictionary = {
 }
 
 const tier_attk_speed_map : Dictionary = {
-	1 : 15,
-	2 : 25,
-	3 : 35,
+	1 : 12,
+	2 : 22,
+	3 : 33,
 	
-	4 : 45,
+	4 : 50,
 	5 : 60,
 	6 : 70,
 	
@@ -356,9 +356,9 @@ const tier_attk_speed_map : Dictionary = {
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
-	1 : 0.75,
-	2 : 1.25,
-	3 : 1.75,
+	1 : 0.7,
+	2 : 1.2,
+	3 : 1.7,
 	
 	4 : 2.75,
 	5 : 3.25,
@@ -374,12 +374,12 @@ const tier_on_hit_dmg_map : Dictionary = {
 }
 
 const tier_flat_range_map : Dictionary = {
-	1 : 25,
-	2 : 35,
-	3 : 45,
-	4 : 55,
-	5 : 65,
-	6 : 75,
+	1 : 20,
+	2 : 30,
+	3 : 40,
+	4 : 60,
+	5 : 70,
+	6 : 80,
 }
 
 
@@ -581,19 +581,31 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = simplex_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 0.48  #0.52
-		info.base_attk_speed = 5.5   #5
+		info.base_damage = 0.6 #0.48
+		info.base_attk_speed = 4.5 #5.5
 		info.base_pierce = 0
 		info.base_range = 95
 		info.base_damage_type = DamageType.PURE
-		info.on_hit_multiplier = 0.2
+		info.on_hit_multiplier = 0.25#0.2
 		
 		info.tower_descriptions = [
 			"Directs a constant pure energy beam at a single target.",
-			"The energy beam's on hit damages are only 20% effective.",
+			"The energy beam's on hit damages are only %s%% effective." % info.on_hit_multiplier,
 			"",
 			"\"First Iteration\""
 		]
+		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SIMPLEX)
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_SIMPLEX)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
+		
 		
 		
 	elif tower_id == RAILGUN:
@@ -975,12 +987,24 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"The tower has a 1/50 chance of granting 1 gold to the player when attacking.",
 		]
 		
-		var tower_base_effect : TowerFullSellbackEffect = TowerFullSellbackEffect.new(COIN)
-		var ing_effect : IngredientEffect = IngredientEffect.new(COIN, tower_base_effect)
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_COIN)
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_COIN)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "sellback"
+		info.ingredient_effect_simple_description = "+ attk spd"
 		
+		
+#		var tower_base_effect : TowerFullSellbackEffect = TowerFullSellbackEffect.new(COIN)
+#		var ing_effect : IngredientEffect = IngredientEffect.new(COIN, tower_base_effect)
+#
+#		info.ingredient_effect = ing_effect
+#		info.ingredient_effect_simple_description = "sellback"
+#
 		
 	elif tower_id == BEACON_DISH:
 		info = TowerTypeInformation.new("Beacon-Dish", BEACON_DISH)
@@ -1121,13 +1145,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"5 attacks against an enemy stuns them for 2 seconds."
 		]
 		
-		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(1, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
+		var mini_tesla_ing_stun_duration : float = 0.65
+		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(mini_tesla_ing_stun_duration, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
 		var enemy_effect : EnemyStackEffect = EnemyStackEffect.new(enemy_final_effect, 1, 5, StoreOfEnemyEffectsUUID.ING_MINI_TESLA_STACK)
 		enemy_effect.is_timebound = true
 		enemy_effect.time_in_seconds = 3
 		
 		var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.ING_MINI_TESLA)
-		tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 1 second."
+		tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for %s seconds." % str(mini_tesla_ing_stun_duration)
 		tower_effect.effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Static.png")
 		
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
@@ -1234,7 +1259,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var outer_ins = []
 		var ins = []
-		ins.append(NumericalTextFragment.new(9, false, DamageType.ELEMENTAL))
+		ins.append(NumericalTextFragment.new(7, false, DamageType.ELEMENTAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1, DamageType.ELEMENTAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
@@ -1349,7 +1374,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# Ingredient related
 		var burn_dmg : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_EMBER)
-		burn_dmg.flat_modifier = 0.5
+		burn_dmg.flat_modifier = 0.25
 		
 		var burn_on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_EMBER, burn_dmg, DamageType.ELEMENTAL)
 		var burn_dmg_instance = DamageInstance.new()
@@ -2109,8 +2134,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Spike's main attack deals |0| to enemies below 50% health.", [interpreter_for_flat_on_hit]]
 		]
 		
-		
-		var spike_dmg_effect = SpikeBonusDamageEffect.new()
+		var on_hit_dmg_for_tier : float = tier_on_hit_dmg_map[info.tower_tier]
+		var bonus_on_hit_amount : float = 0.15
+		var spike_dmg_effect = SpikeBonusDamageEffect.new(on_hit_dmg_for_tier + bonus_on_hit_amount)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, spike_dmg_effect)
 		
 		info.ingredient_effect = ing_effect
@@ -3071,7 +3097,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_bolt.header_description = "elemental damage"
 		
 		var ins_for_bolt = []
-		ins_for_bolt.append(NumericalTextFragment.new(2, false, DamageType.ELEMENTAL))
+		ins_for_bolt.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.25, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
@@ -3442,8 +3468,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = hero_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 1.3
-		info.base_attk_speed = 0.83
+		info.base_damage = 1.35#1.3
+		info.base_attk_speed = 0.83#0.83
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.PHYSICAL
@@ -3479,7 +3505,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_ap.display_body = false
 		
 		var ins_for_ap = []
-		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.25, false))
+		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.5, false))
 		
 		interpreter_for_ap.array_of_instructions = ins_for_ap
 		
@@ -3616,7 +3642,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = pinecone_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.65
+		info.base_damage = 2.0 #2.65
 		info.base_attk_speed = 0.6
 		info.base_pierce = 1
 		info.base_range = 100
@@ -3634,12 +3660,25 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 		
+		#
+		
+		var interpreter_for_pierce = TextFragmentInterpreter.new()
+		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_pierce.display_body = true
+		interpreter_for_pierce.header_description = "pierce"
+		
+		var ins_for_pierce = []
+		ins_for_pierce.append(NumericalTextFragment.new(1, false, -1, "", false, TowerStatTextFragment.STAT_TYPE.PIERCE))
+		ins_for_pierce.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.BONUS, 1.0, -1))
+		
+		interpreter_for_pierce.array_of_instructions = ins_for_pierce
 		
 		#
 		
 		info.tower_descriptions = [
 			"Shoots a pinecone that releases 3 fragments upon hitting an enemy.",
-			["Each fragment deals |0|.", [interpreter_for_flat_on_hit]],
+			["Each fragment deals |0|, and has |1|.", [interpreter_for_flat_on_hit, interpreter_for_pierce]],
 		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_PINECONE)
@@ -4558,6 +4597,17 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
+		# Ingredient related
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SE_PROAPGER)
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_SE_PROAPGER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ base dmg"
+		
+		
 		
 	elif tower_id == LES_SEMIS:
 		info = TowerTypeInformation.new("Les Semis", tower_id)
@@ -4696,6 +4746,19 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_L_ASSAUT)
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_L_ASSAUT)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
+		
+		
+		
 	elif tower_id == LA_CHASSEUR:
 		info = TowerTypeInformation.new("La Chasseur", tower_id)
 		info.tower_tier = TowerTiersMap[tower_id]
@@ -4750,6 +4813,17 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Ability: Hunt Down. Rapidly fire 4 shots at its current target, each dealing |0|. Shots apply on hit effects.", [interpreter_for_hunt_down]],
 			["If the last shot kills an enemy, La Chasseur permanently gains stacking |0|. Also, gain 3 gold.", [interpreter_for_flat_on_hit]],
 		]
+		
+		#
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_LA_CHASSEUR)
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_LA_CHASSEUR, attr_mod, DamageType.PHYSICAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_LA_CHASSEUR)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
 		
 		
 	elif tower_id == LA_NATURE:
@@ -5147,7 +5221,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		#
 		
 		info.tower_descriptions = [
-			["Every 8th main attack leaves a Star near the target's location for 20 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.", [interpreter_for_crash_dmg]],
+			["Every 8th main attack leaves a Star near the target's location for 30 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.", [interpreter_for_crash_dmg]],
 			"",
 			["When all enemies have spawned, all idle Stars focus a beam at a target, dealing |0| per 0.25 seconds.", [interpreter_for_beam_dmg]],
 			"When only one enemy remains, all Stars crash to that enemy.",

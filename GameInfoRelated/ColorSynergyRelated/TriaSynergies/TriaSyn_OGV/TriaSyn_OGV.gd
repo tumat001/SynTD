@@ -59,6 +59,7 @@ var power_fund_effect : TowerAttributesEffect
 var game_elements : GameElements
 var gold_manager : GoldManager
 var enemy_manager : EnemyManager
+var game_result_manager 
 var curr_tier : int
 
 var enemy_soul_id : int
@@ -76,6 +77,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		game_elements = arg_game_elements
 		gold_manager = game_elements.gold_manager
 		enemy_manager = game_elements.enemy_manager
+		game_result_manager = game_elements.game_result_manager
 	
 	if !gold_manager.is_connected("current_gold_changed", self, "_gold_changed"):
 		gold_manager.connect("current_gold_changed", self, "_gold_changed", [], CONNECT_PERSIST)
@@ -278,7 +280,6 @@ func _damage_enemy_player(damage_amount):
 #
 
 func _enemy_player_reached_zero_health():
-	# do win thing here
-	pass
+	game_result_manager.set_game_result__accessed_from_outside(game_result_manager.GameResult.VICTORY)
 
 

@@ -278,13 +278,13 @@ func _init():
 	interpreter_for_yelloGO_ele_on_hit_tier_1.display_body = false
 	
 	var ins_for_yelloGO_ele_on_hit_tier_1 = []
-	ins_for_yelloGO_ele_on_hit_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental on hit damage", 6))
+	ins_for_yelloGO_ele_on_hit_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental on hit damage", 5))
 	
 	interpreter_for_yelloGO_ele_on_hit_tier_1.array_of_instructions = ins_for_yelloGO_ele_on_hit_tier_1
 	
 	
 	var interpreter_for_yelloGO_ele_on_hit_tier_2 : TextFragmentInterpreter = interpreter_for_yelloGO_ele_on_hit_tier_1.get_deep_copy()
-	interpreter_for_yelloGO_ele_on_hit_tier_2.array_of_instructions[0].num_val = 3.5
+	interpreter_for_yelloGO_ele_on_hit_tier_2.array_of_instructions[0].num_val = 3.0
 	
 	var interpreter_for_yelloGO_ele_on_hit_tier_3 : TextFragmentInterpreter = interpreter_for_yelloGO_ele_on_hit_tier_1.get_deep_copy()
 	interpreter_for_yelloGO_ele_on_hit_tier_3.array_of_instructions[0].num_val = 2.0
@@ -298,13 +298,13 @@ func _init():
 	interpreter_for_yelloGO_base_dmg_tier_1.display_body = false
 	
 	var ins_for_yelloGO_base_dmg_tier_1 = []
-	ins_for_yelloGO_base_dmg_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, -1, "total base damage", 150, true))
+	ins_for_yelloGO_base_dmg_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, -1, "total base damage", 130, true))
 	
 	interpreter_for_yelloGO_base_dmg_tier_1.array_of_instructions = ins_for_yelloGO_base_dmg_tier_1
 	
 	
 	var interpreter_for_yelloGO_base_dmg_tier_2 : TextFragmentInterpreter = interpreter_for_yelloGO_base_dmg_tier_1.get_deep_copy()
-	interpreter_for_yelloGO_base_dmg_tier_2.array_of_instructions[0].num_val = 80
+	interpreter_for_yelloGO_base_dmg_tier_2.array_of_instructions[0].num_val = 70
 	
 	var interpreter_for_yelloGO_base_dmg_tier_3 : TextFragmentInterpreter = interpreter_for_yelloGO_base_dmg_tier_1.get_deep_copy()
 	interpreter_for_yelloGO_base_dmg_tier_3.array_of_instructions[0].num_val = 40
@@ -319,13 +319,13 @@ func _init():
 	interpreter_for_yelloGO_attk_speed_tier_1.display_body = false
 	
 	var ins_for_yelloGO_attk_speed_tier_1 = []
-	ins_for_yelloGO_attk_speed_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "total attack speed", 150, true))
+	ins_for_yelloGO_attk_speed_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "total attack speed", 130, true))
 	
 	interpreter_for_yelloGO_attk_speed_tier_1.array_of_instructions = ins_for_yelloGO_attk_speed_tier_1
 	
 	
 	var interpreter_for_yelloGO_attk_speed_tier_2 : TextFragmentInterpreter = interpreter_for_yelloGO_attk_speed_tier_1.get_deep_copy()
-	interpreter_for_yelloGO_attk_speed_tier_2.array_of_instructions[0].num_val = 80
+	interpreter_for_yelloGO_attk_speed_tier_2.array_of_instructions[0].num_val = 70
 	
 	var interpreter_for_yelloGO_attk_speed_tier_3 : TextFragmentInterpreter = interpreter_for_yelloGO_attk_speed_tier_1.get_deep_copy()
 	interpreter_for_yelloGO_attk_speed_tier_3.array_of_instructions[0].num_val = 40

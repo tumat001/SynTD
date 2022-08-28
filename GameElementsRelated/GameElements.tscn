@@ -32,7 +32,7 @@
 [ext_resource path="res://GameElementsRelated/LevelManager.gd" type="Script" id=30]
 [ext_resource path="res://GameHUDRelated/NotificationPanel/TowerEmptySlotNotifPanel/TowerEmptySlotNotifPanel.tscn" type="PackedScene" id=31]
 [ext_resource path="res://GameElementsRelated/MapManager.gd" type="Script" id=32]
-[ext_resource path="res://GameElementsRelated/GameSettingsManager.gd" type="Script" id=33]
+[ext_resource path="res://GameElementsRelated/GameResultManager.gd" type="Script" id=33]
 [ext_resource path="res://GameHUDRelated/NotificationPanel/GenericPanel/GenericNotifPanel.tscn" type="PackedScene" id=34]
 [ext_resource path="res://GameElementsRelated/PauseManager.tscn" type="PackedScene" id=35]
 [ext_resource path="res://GameElementsRelated/GameModifiersManager.gd" type="Script" id=36]
@@ -95,6 +95,9 @@ script = ExtResource( 13 )
 
 [node name="GameModifiersManager" type="Node" parent="."]
 script = ExtResource( 36 )
+
+[node name="GameResultManager" type="Node" parent="."]
+script = ExtResource( 33 )
 
 [node name="BottomPanel" type="MarginContainer" parent="."]
 anchor_top = 1.0
@@ -277,9 +280,6 @@ grow_vertical = 0
 script = ExtResource( 25 )
 
 [node name="EffectsHolder" type="Node2D" parent="ScreenEffectsManager"]
-
-[node name="GameSettingsManager" type="Node" parent="."]
-script = ExtResource( 33 )
 
 [node name="WholeScreenGUI" type="MarginContainer" parent="."]
 anchor_right = 1.0

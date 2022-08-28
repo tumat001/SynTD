@@ -13,18 +13,18 @@ const FluctuationParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRel
 const FluctuationParticle = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_YellowGO/Assets/FluctuationParticle/FluctuationParticle.gd")
 
 
-const ele_on_hit_tier_1 : float = 6.0
-const ele_on_hit_tier_2 : float = 3.5
+const ele_on_hit_tier_1 : float = 5.0
+const ele_on_hit_tier_2 : float = 3.0
 const ele_on_hit_tier_3 : float = 2.0
 const ele_on_hit_tier_4 : float = 1.0
 
-const base_dmg_tier_1 : float = 150.0
-const base_dmg_tier_2 : float = 80.0
+const base_dmg_tier_1 : float = 130.0
+const base_dmg_tier_2 : float = 70.0
 const base_dmg_tier_3 : float = 40.0
 const base_dmg_tier_4 : float = 20.0
 
-const attk_speed_tier_1 : float = 150.0
-const attk_speed_tier_2 : float = 80.0
+const attk_speed_tier_1 : float = 130.0
+const attk_speed_tier_2 : float = 70.0
 const attk_speed_tier_3 : float = 40.0
 const attk_speed_tier_4 : float = 20.0
 

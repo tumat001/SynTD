@@ -14,11 +14,11 @@ signal shop_rolled_with_towers(arg_tower_ids)
 const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_1 : [100, 0, 0, 0, 0, 0],
 	LevelManager.LEVEL_2 : [90, 10, 0, 0, 0, 0],
-	LevelManager.LEVEL_3 : [80, 20, 0, 0, 0, 0],
+	LevelManager.LEVEL_3 : [75, 25, 0, 0, 0, 0],
 	LevelManager.LEVEL_4 : [55, 43, 2, 0, 0, 0],
 	LevelManager.LEVEL_5 : [45, 35, 20, 0, 0, 0],
 	LevelManager.LEVEL_6 : [23, 40, 35, 2, 0, 0],
-	LevelManager.LEVEL_7 : [17, 30, 45, 7, 1, 0],
+	LevelManager.LEVEL_7 : [22, 30, 40, 7, 1, 0],
 	LevelManager.LEVEL_8 : [15, 20, 33, 30, 2, 0],
 	LevelManager.LEVEL_9 : [10, 15, 20, 35, 20, 0],
 	LevelManager.LEVEL_10 : [5, 10, 10, 25, 25, 25],
@@ -33,7 +33,7 @@ const base_level_tier_roll_probabilities : Dictionary = {
 const base_tower_tier_stock : Dictionary = {
 	1 : 20,
 	2 : 18,
-	3 : 16,
+	3 : 14,
 	4 : 10,
 	5 : 8,
 	6 : 2 # 2 for exclusivity, 4 for combination. Decide what's best

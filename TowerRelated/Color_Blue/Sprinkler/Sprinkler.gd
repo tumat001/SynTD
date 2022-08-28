@@ -23,7 +23,7 @@ func _ready():
 	
 	_initialize_stats_from_tower_info(info)
 	
-	var y_shift_of_attack_module : float = 7
+	var y_shift_of_attack_module : float = 4
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
@@ -43,7 +43,7 @@ func _ready():
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.base_proj_inaccuracy = 20
-	attack_module.position.y += y_shift_of_attack_module
+	attack_module.position.y -= y_shift_of_attack_module
 	
 	var bullet_shape = RectangleShape2D.new()
 	bullet_shape.extents = Vector2(6, 5)

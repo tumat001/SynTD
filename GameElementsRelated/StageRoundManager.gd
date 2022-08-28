@@ -29,6 +29,8 @@ signal round_ended_game_start_aware(current_stageround, is_game_start)
 signal life_lost_from_enemy_first_time_in_round(enemy)
 signal life_lost_from_enemy(enemy)
 
+signal end_of_stagerounds()
+
 
 const gold_gain_on_win : int = 1
 
@@ -111,70 +113,81 @@ func _after_round_start():
 func end_round(from_game_start : bool = false):
 	round_started = false
 	
-	_before_round_end()
-	_at_round_end()
-	_after_round_end()
-	
-	# streak related
-	if !from_game_start and can_gain_streak:
-		if current_round_lost:
-			current_win_streak = 0
-			current_lose_streak += 1
+	var is_end_of_stageround = _before_round_end()
+	if !is_end_of_stageround:
+		_at_round_end()
+		_after_round_end()
+		
+		# streak related
+		if !from_game_start and can_gain_streak:
+			if current_round_lost:
+				current_win_streak = 0
+				current_lose_streak += 1
+			else:
+				current_win_streak += 1
+				current_lose_streak = 0
+		
+		
+		# gold income related
+		
+		gold_manager.set_gold_income(GoldManager.GoldIncomeIds.ROUND_END, current_stageround.end_of_round_gold)
+		if current_win_streak >= 1:
+			var gold_from_streak = gold_manager.get_gold_amount_from_win_streak(current_win_streak)
+			gold_manager.set_gold_income(GoldManager.GoldIncomeIds.WIN_STREAK, gold_from_streak)
+			gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.LOSE_STREAK)
+			
+		elif current_lose_streak >= 1:
+			var gold_from_streak = gold_manager.get_gold_amount_from_lose_streak(current_lose_streak)
+			gold_manager.set_gold_income(GoldManager.GoldIncomeIds.LOSE_STREAK, gold_from_streak)
+			gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.WIN_STREAK)
+			
 		else:
-			current_win_streak += 1
-			current_lose_streak = 0
-	
-	
-	# gold income related
-	
-	gold_manager.set_gold_income(GoldManager.GoldIncomeIds.ROUND_END, current_stageround.end_of_round_gold)
-	if current_win_streak >= 1:
-		var gold_from_streak = gold_manager.get_gold_amount_from_win_streak(current_win_streak)
-		gold_manager.set_gold_income(GoldManager.GoldIncomeIds.WIN_STREAK, gold_from_streak)
-		gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.LOSE_STREAK)
+			gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.LOSE_STREAK)
+			gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.WIN_STREAK)
 		
-	elif current_lose_streak >= 1:
-		var gold_from_streak = gold_manager.get_gold_amount_from_lose_streak(current_lose_streak)
-		gold_manager.set_gold_income(GoldManager.GoldIncomeIds.LOSE_STREAK, gold_from_streak)
-		gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.WIN_STREAK)
+		if !from_game_start:
+			var gold = gold_manager.get_total_income_for_the_round()
+			if !current_round_lost:
+				gold += gold_gain_on_win
+			
+			gold_manager.increase_gold_by(gold, GoldManager.IncreaseGoldSource.END_OF_ROUND)
 		
-	else:
-		gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.LOSE_STREAK)
-		gold_manager.remove_gold_income(GoldManager.GoldIncomeIds.WIN_STREAK)
-	
-	if !from_game_start:
-		var gold = gold_manager.get_total_income_for_the_round()
-		if !current_round_lost:
-			gold += gold_gain_on_win
 		
-		gold_manager.increase_gold_by(gold, GoldManager.IncreaseGoldSource.END_OF_ROUND)
-	
-	
-	# spawn inses related
-	var spawn_ins_in_stageround
-	if !spawn_ins_of_faction_mode.is_transition_time_in_stageround(current_stageround.id):
-		spawn_ins_in_stageround = spawn_ins_of_faction_mode.get_instructions_for_stageround(current_stageround.id)
-	else:
-		_replace_current_spawn_ins_to_second_half(stagerounds.get_second_half_faction())
-		spawn_ins_in_stageround = spawn_ins_of_faction_mode.get_instructions_for_stageround(current_stageround.id)
-		enemy_manager.apply_faction_passive(spawn_ins_of_faction_mode.get_faction_passive())
-	
-	enemy_manager.set_instructions_of_interpreter(spawn_ins_in_stageround)
-	enemy_manager.enemy_first_damage = current_stageround.enemy_first_damage
-	enemy_manager.enemy_health_multiplier = current_stageround.enemy_health_multiplier
-	enemy_manager.enemy_damage_multiplier = current_stageround.enemy_damage_multiplier
-	
-	can_gain_streak = current_stageround.can_gain_streak
-	
-	emit_signal("round_ended_game_start_aware", current_stageround, from_game_start)
-	emit_signal("round_ended", current_stageround)
+		# spawn inses related
+		var spawn_ins_in_stageround
+		if !spawn_ins_of_faction_mode.is_transition_time_in_stageround(current_stageround.id):
+			spawn_ins_in_stageround = spawn_ins_of_faction_mode.get_instructions_for_stageround(current_stageround.id)
+		else:
+			_replace_current_spawn_ins_to_second_half(stagerounds.get_second_half_faction())
+			spawn_ins_in_stageround = spawn_ins_of_faction_mode.get_instructions_for_stageround(current_stageround.id)
+			enemy_manager.apply_faction_passive(spawn_ins_of_faction_mode.get_faction_passive())
+		
+		enemy_manager.set_instructions_of_interpreter(spawn_ins_in_stageround)
+		enemy_manager.enemy_first_damage = current_stageround.enemy_first_damage
+		enemy_manager.enemy_health_multiplier = current_stageround.enemy_health_multiplier
+		enemy_manager.enemy_damage_multiplier = current_stageround.enemy_damage_multiplier
+		
+		can_gain_streak = current_stageround.can_gain_streak
+		
+		emit_signal("round_ended_game_start_aware", current_stageround, from_game_start)
+		emit_signal("round_ended", current_stageround)
+		
+		
+	else: # end of stagerounds. end the game.
+		emit_signal("end_of_stagerounds")
+		
 
 
 func _before_round_end():
 	current_stageround_index += 1
-	current_stageround = stagerounds.stage_rounds[current_stageround_index]
 	
-	emit_signal("before_round_ends", current_stageround)
+	if stagerounds.stage_rounds.size() > current_stageround_index:
+		current_stageround = stagerounds.stage_rounds[current_stageround_index]
+		emit_signal("before_round_ends", current_stageround)
+		return false
+	else:
+		return true
+
 
 func _at_round_end():
 	pass

@@ -91,7 +91,7 @@ func _ready():
 	
 	shock_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
 	shock_attack_module.base_damage_scale = shock_base_damage_and_on_hit_ratio
-	shock_attack_module.base_damage = 2 / shock_attack_module.base_damage_scale
+	shock_attack_module.base_damage = 1 / shock_attack_module.base_damage_scale
 	shock_attack_module.base_damage_type = DamageType.ELEMENTAL
 	shock_attack_module.base_attack_speed = 0
 	shock_attack_module.base_attack_wind_up = 0

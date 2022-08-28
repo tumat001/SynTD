@@ -1,9 +1,7 @@
 extends MarginContainer
 
-const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
 
-
-var game_settings_manager : GameSettingsManager
+var game_settings_manager
 var main_pause_screen_panel
 var hub_pause_panel
 
@@ -15,6 +13,7 @@ onready var tower_drag_mode__selection_panel = $VBoxContainer/ContentMargin/Scro
 
 
 func _ready():
+	game_settings_manager = GameSettingsManager
 	
 	# DESC MODE
 	_initialize_desc_mode__selection_panel()

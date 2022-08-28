@@ -41,8 +41,8 @@ const base_level_up_costs : Dictionary = {
 	LEVEL_2 : [2, Currency.GOLD],
 	LEVEL_3 : [6, Currency.GOLD],
 	LEVEL_4 : [18, Currency.GOLD],
-	LEVEL_5 : [30, Currency.GOLD],
-	LEVEL_6 : [40, Currency.GOLD],
+	LEVEL_5 : [38, Currency.GOLD],
+	LEVEL_6 : [48, Currency.GOLD],
 	LEVEL_7 : [60, Currency.GOLD],
 	LEVEL_8 : [80, Currency.GOLD],
 	LEVEL_9 : [1, Currency.RELIC],
@@ -95,6 +95,8 @@ var relic_manager : RelicManager setget set_relic_manager
 # clauses
 
 enum CanLevelUpClauses {
+	END_OF_GAME = 100,
+	
 	TUTORIAL_DISABLE = 1000
 }
 var can_level_up_clauses : ConditionalClauses

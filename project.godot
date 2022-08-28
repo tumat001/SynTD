@@ -49,6 +49,7 @@ StoreOfTrailType="*res://MiscRelated/TrailRelated/StoreOfTrailType.gd"
 StoreOfGameMode="*res://GameplayRelated/GameModeRelated/StoreOfGameMode.gd"
 CommsForBetweenScenes="*res://SingletonForCommsRelated/CommsForBetweenScenes.gd"
 StoreOfGameModifiers="*res://GameplayRelated/GameModifiersRelated/StoreOfGameModifiers.gd"
+GameSettingsManager="*res://GameElementsRelated/GameSettingsManager.gd"
 
 [debug]
 

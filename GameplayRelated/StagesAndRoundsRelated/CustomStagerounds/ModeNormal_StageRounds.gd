@@ -65,9 +65,6 @@ func _init():
 func _decide_second_half_faction():
 	var second_half_factions = EnemyConstants.second_half_faction_id_pool.duplicate(true)
 	
-	# TODO
-	second_half_factions.erase(EnemyConstants.EnemyFactions.FAITHFUL)
-	
 	var faction_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SECOND_HALF_FACTION)
 	var rand_num = faction_rng.randi_range(0, second_half_factions.size() - 1)
 	
@@ -312,7 +309,7 @@ func _get_stageround_5_4():
 
 func _get_stageround_6_1():
 	var stageround = StageRound.new(6, 1)
-	stageround.end_of_round_gold = 5
+	stageround.end_of_round_gold = 4
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 3
 	stageround.enemy_health_multiplier = 1.25
@@ -321,7 +318,7 @@ func _get_stageround_6_1():
 
 func _get_stageround_6_2():
 	var stageround = StageRound.new(6, 2)
-	stageround.end_of_round_gold = 5
+	stageround.end_of_round_gold = 4
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 3
 	stageround.enemy_health_multiplier = 1.25
@@ -330,7 +327,7 @@ func _get_stageround_6_2():
 
 func _get_stageround_6_3():
 	var stageround = StageRound.new(6, 3)
-	stageround.end_of_round_gold = 5
+	stageround.end_of_round_gold = 4
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 3
 	stageround.enemy_health_multiplier = 1.25
@@ -339,7 +336,7 @@ func _get_stageround_6_3():
 
 func _get_stageround_6_4():
 	var stageround = StageRound.new(6, 4)
-	stageround.end_of_round_gold = 5
+	stageround.end_of_round_gold = 4
 	stageround.enemy_damage_multiplier = 1
 	stageround.enemy_first_damage = 3
 	stageround.enemy_health_multiplier = 1.25

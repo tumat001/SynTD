@@ -89,6 +89,7 @@ func _ready():
 	burst_attack_module.benefits_from_bonus_attack_speed = false
 	burst_attack_module.benefits_from_bonus_base_damage = false
 	burst_attack_module.benefits_from_bonus_on_hit_damage = false
+	burst_attack_module.benefits_from_bonus_pierce = true
 	
 	var burst_bullet_shape = RectangleShape2D.new()
 	burst_bullet_shape.extents = Vector2(5, 3)

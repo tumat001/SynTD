@@ -27,10 +27,11 @@ const RoundDamageStatsPanel = preload("res://GameHUDRelated/RightSidePanel/Round
 const MapManager = preload("res://GameElementsRelated/MapManager.gd")
 const CombinationManager = preload("res://GameElementsRelated/CombinationManager.gd")
 const CombinationTopPanel = preload("res://GameHUDRelated/CombinationRelatedPanels/CombinationTopPanel/CombinationTopPanel.gd")
-const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
+#const GameSettingsManager = preload("res://GameElementsRelated/GameSettingsManager.gd")
 const GenericNotifPanel = preload("res://GameHUDRelated/NotificationPanel/GenericPanel/GenericNotifPanel.gd")
 const PauseManager = preload("res://GameElementsRelated/PauseManager.gd")
 const SellPanel = preload("res://GameHUDRelated/BuySellPanel/SellPanel.gd")
+const GameResultManager = preload("res://GameElementsRelated/GameResultManager.gd")
 
 signal before_main_init()
 signal before_game_start()
@@ -61,6 +62,7 @@ var combination_top_panel : CombinationTopPanel
 var shared_passive_manager
 onready var pause_manager : PauseManager = $PauseManager
 onready var game_modifiers_manager = $GameModifiersManager
+onready var game_result_manager = $GameResultManager
 
 var round_status_panel : RoundStatusPanel
 var round_info_panel : RoundInfoPanel
@@ -72,7 +74,8 @@ var tower_empty_slot_notif_panel : TowerEmptySlotNotifPanel
 var left_panel
 var round_damage_stats_panel : RoundDamageStatsPanel
 var map_manager : MapManager
-var game_settings_manager : GameSettingsManager
+#var game_settings_manager : GameSettingsManager
+var game_settings_manager
 var generic_notif_panel : GenericNotifPanel
 onready var sell_panel : SellPanel = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/SellPanel
 onready var color_wheel_sprite_button = $BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelSprite
@@ -141,7 +144,10 @@ func _ready():
 	combination_manager = $CombinationManager
 	combination_top_panel = $CombinationTopPanel
 	shared_passive_manager = $SharedPassiveManager
-	game_settings_manager = $GameSettingsManager
+	#game_settings_manager = $GameSettingsManager
+	game_settings_manager = GameSettingsManager
+	
+	game_modifiers_manager = $GameModifiersManager
 	generic_notif_panel = $NotificationNode/GenericNotifPanel
 	
 	selection_notif_panel = $NotificationNode/SelectionNotifPanel
@@ -299,11 +305,17 @@ func _ready():
 	# combination top panel
 	combination_top_panel.whole_screen_gui = whole_screen_gui
 	combination_top_panel.combination_manager = combination_manager
+	combination_top_panel.game_settings_manager = game_settings_manager
 	
 	# pause manager
 	pause_manager.game_elements = self
 	pause_manager.screen_effect_manager = screen_effect_manager
 	
+	# game result manager
+	game_result_manager.set_health_manager(health_manager)
+	game_result_manager.set_stage_round_manager(stage_round_manager)
+	game_result_manager.whole_screen_gui = whole_screen_gui
+	game_result_manager.game_elements = self
 	
 	#GAME START
 	stage_round_manager.set_game_mode(game_mode_id)
@@ -334,16 +346,16 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
-			Towers.ROYAL_FLAME,
-			Towers.STRIKER,
-			Towers.BEACON_DISH,
-			Towers.SHACKLED,
-			Towers.BEACON_DISH,
+			Towers.HERO,
+			Towers.ACCUMULAE,
+			Towers.NUCLEUS,
+			Towers.SIMPLEX,
+			Towers.BLOSSOM,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
@@ -354,7 +366,6 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.GRAND,
 			Towers.EMBER
 		])
-
 	even = !even
 
 
