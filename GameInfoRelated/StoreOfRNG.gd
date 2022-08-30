@@ -20,6 +20,7 @@ var random_tower_decider_rng : RandomNumberGenerator = RandomNumberGenerator.new
 var chaos_events_to_play_rng : RandomNumberGenerator = RandomNumberGenerator.new()
 var chaos_events_rng_general_purpose := RandomNumberGenerator.new()
 var iota_star_positioning_rng := RandomNumberGenerator.new()
+var variance_state_rng := RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -35,6 +36,7 @@ enum RNGSource {
 	CHAOS_EVENTS_TO_PLAY = 104,
 	CHAOS_EVENTS_GENERAL_PURPOSE = 105,
 	IOTA_STAR_POSITIONING = 106,
+	VARIANCE_STATE = 107,
 	
 	INACCURACY = 1000,
 	
@@ -98,5 +100,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return chaos_events_rng_general_purpose
 	elif rng_source == RNGSource.IOTA_STAR_POSITIONING:
 		return iota_star_positioning_rng
+	elif rng_source == RNGSource.VARIANCE_STATE:
+		return variance_state_rng
 	
 	return null

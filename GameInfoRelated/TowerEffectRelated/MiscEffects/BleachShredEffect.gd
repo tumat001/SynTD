@@ -12,7 +12,7 @@ var toughness_shred_effect : EnemyAttributesEffect
 
 func _init().(StoreOfTowerEffectsUUID.ING_BLEACH):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Bleach.png")
-	description = "Every 5th attack reduces the enemy's toughness by 5 for 5 seconds. Does not stack."
+	description = "Every 5th main attack reduces the enemy's toughness by 5 for 5 seconds. Does not stack."
 
 
 func _make_modifications_to_tower(tower):

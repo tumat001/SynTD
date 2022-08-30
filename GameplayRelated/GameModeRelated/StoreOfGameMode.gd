@@ -4,6 +4,8 @@ const GameModeTypeInformation = preload("res://GameplayRelated/GameModeRelated/G
 
 const ModeNormal_StageRounds = preload("res://GameplayRelated/StagesAndRoundsRelated/CustomStagerounds/ModeNormal_StageRounds.gd")
 
+const GameModi_EasyDifficulty = preload("res://GameplayRelated/GameModifiersRelated/GameModis/GameModi_EasyDifficulty.gd")
+
 
 enum Mode {
 	STANDARD_EASY = 0,
@@ -18,6 +20,8 @@ enum Mode {
 	
 }
 
+#
+
 
 static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 	var info = GameModeTypeInformation.new()
@@ -26,11 +30,20 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 	if arg_id == Mode.STANDARD_EASY:
 		
 		info.mode_name = "Easy"
+		info.mode_descriptions = [
+			"For new players:",
+			"",
+			"Enemies have %s%% less health." % [str((1 - GameModi_EasyDifficulty.enemy_health_multiplier) * 100)]
+		]
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.EASY_DIFFICULTY]
 		return info
 		
 	elif arg_id == Mode.STANDARD_NORMAL:
 		
 		info.mode_name = "Normal"
+		info.mode_descriptions = [
+			"The true experience."
+		]
 		return info
 		
 		
@@ -70,7 +83,7 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 static func get_stage_rounds_of_mode_from_id(arg_id):
 	if arg_id == Mode.STANDARD_EASY:
 		
-		return null
+		return ModeNormal_StageRounds
 		
 	elif arg_id == Mode.STANDARD_NORMAL:
 		
@@ -91,20 +104,20 @@ func get_spawn_ins_of_faction__based_on_mode(arg_faction_id : int, arg_mode : in
 	var spawn_ins_of_faction_mode
 	
 	if arg_faction_id == EnemyConstants.EnemyFactions.EXPERT:
-		if arg_mode == Mode.STANDARD_NORMAL:
+		if arg_mode == Mode.STANDARD_NORMAL or arg_mode == Mode.STANDARD_EASY:
 			spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionExpert_EnemySpawnIns.gd").new()
 			
 	elif arg_faction_id == EnemyConstants.EnemyFactions.FAITHFUL:
-		if arg_mode == Mode.STANDARD_NORMAL:
+		if arg_mode == Mode.STANDARD_NORMAL or arg_mode == Mode.STANDARD_EASY:
 			spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionFaithful_EnemySpawnIns.gd").new()
 		
 	elif arg_faction_id == EnemyConstants.EnemyFactions.SKIRMISHERS:
-		if arg_mode == Mode.STANDARD_NORMAL:
+		if arg_mode == Mode.STANDARD_NORMAL or arg_mode == Mode.STANDARD_EASY:
 			spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionSkirmisher_EnemySpawnIns.gd").new()
 		
 		
 	elif arg_faction_id == EnemyConstants.EnemyFactions.BASIC:
-		if arg_mode == Mode.STANDARD_NORMAL:
+		if arg_mode == Mode.STANDARD_NORMAL or arg_mode == Mode.STANDARD_EASY:
 			spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionBasic_EnemySpawnIns.gd").new()
 		elif arg_mode == Mode.TUTORIAL_CHAPTER_01 or arg_mode == Mode.TUTORIAL_CHAPTER_02 or arg_mode == Mode.TUTORIAL_CHAPTER_03 or arg_mode == Mode.TUTORIAL_CHAPTER_04:
 			spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionBasic_EnemySpawnIns.gd").new()

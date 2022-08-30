@@ -2,8 +2,10 @@ extends MarginContainer
 
 
 onready var map_selection_panel = $VBoxContainer/MapSelectionPanel
-onready var mode_selection_panel = $VBoxContainer/HBoxContainer/ModeSelectionPanel
+onready var mode_selection_panel = $VBoxContainer/HBoxContainer/VBoxContainer/ModeSelectionPanel
+onready var mode_description_panel = $VBoxContainer/HBoxContainer/VBoxContainer/GameModeDescPanel
 onready var map_summary_panel = $VBoxContainer/HBoxContainer/MapSummaryPanel
+
 
 
 var pre_game_screen
@@ -21,6 +23,7 @@ func _ready():
 	
 	#
 	map_selection_panel.select_first_visible_map_card()
+	
 	
 	connect("visibility_changed", self, "_on_visibility_changed")
 	_on_visibility_changed()
@@ -56,8 +59,12 @@ func _on_current_selected_mode_changed(arg_mode_id):
 	
 	if mode_type_info != null:
 		map_summary_panel.set_difficulty_name(mode_type_info.mode_name)
+		mode_description_panel.set_descriptions(mode_type_info.mode_descriptions)
 	else:
 		map_summary_panel.set_difficulty_name("")
+		mode_description_panel.set_descriptions([])
+	
+	#
 	
 	current_mode_type_info_selected = mode_type_info
 	

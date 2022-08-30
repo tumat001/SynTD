@@ -71,7 +71,8 @@ func set_current_value(value : float):
 		
 		if yield_before_update:
 			set_val_for_is_in_yield(true)
-			yield(get_tree(), "idle_frame")
+			if !is_queued_for_deletion():
+				yield(get_tree(), "idle_frame")
 			set_val_for_is_in_yield(false)
 		
 		if !allow_overflow and ratio > 1:

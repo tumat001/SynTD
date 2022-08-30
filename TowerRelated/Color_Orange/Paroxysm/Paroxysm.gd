@@ -293,6 +293,7 @@ func _on_enemy_exited_range_p(enemy, arg_module, arg_range_module):
 	if main_attack_module != null and arg_range_module == main_attack_module.range_module:
 		is_an_enemy_in_range = arg_range_module.is_an_enemy_in_range()
 
+
 func _attempt_cast_outburst():
 	if outburst_ability_is_ready and is_an_enemy_in_range:
 		_cast_outburst()

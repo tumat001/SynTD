@@ -58,9 +58,18 @@ var _is_running : bool
 #
 
 var enemy_damage_multiplier : float
-var enemy_health_multiplier : float
-var _enemy_first_damage_applied : bool
 var enemy_first_damage : float
+
+var _enemy_first_damage_applied : bool
+
+
+enum EnemyHealthMultipliersSourceIds {
+	GAME_MODI_DIFFICULTY_GENERIC_TAG = 1,
+}
+
+var base_enemy_health_multiplier__from_stagerounds : float
+var _enemy_health_multiplier_id_to_percent_amount : Dictionary
+var last_calculated_enemy_health_multiplier : float
 
 #
 
@@ -69,6 +78,25 @@ var current_enemy_spawned_from_ins_count : int
 
 var highest_enemy_spawn_timepos_in_round : float
 var current_spawn_timepos_in_round : float
+
+#
+
+func add_enemy_health_multiplier_percent_amount(arg_id : int, arg_amount : float):
+	_enemy_health_multiplier_id_to_percent_amount[arg_id] = arg_amount
+	_calculate_final_enemy_health_multiplier()
+
+func remove_enemy_health_multiplier_percent_amount(arg_id : int):
+	_enemy_health_multiplier_id_to_percent_amount.erase(arg_id)
+	_calculate_final_enemy_health_multiplier()
+
+func _calculate_final_enemy_health_multiplier():
+	var amount = base_enemy_health_multiplier__from_stagerounds
+	for perc_amount in _enemy_health_multiplier_id_to_percent_amount.values():
+		amount *= perc_amount
+	
+	last_calculated_enemy_health_multiplier = amount
+
+
 
 #
 
@@ -101,6 +129,7 @@ func _ready():
 	connect("on_enemy_queue_freed", self, "_on_enemy_queue_freed", [], CONNECT_PERSIST)
 	
 	#
+
 
 # Setting related
 
@@ -161,6 +190,7 @@ func append_instructions_to_interpreter(inses : Array):
 # Spawning related
 
 func start_run():
+	_calculate_final_enemy_health_multiplier()
 	_is_running = true
 
 
@@ -208,7 +238,7 @@ func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _get_path_based
 	emit_signal("before_enemy_stats_are_set", enemy_instance)
 	
 	if enemy_instance.respect_stage_round_health_scale:
-		enemy_instance.base_health *= enemy_health_multiplier
+		enemy_instance.base_health *= last_calculated_enemy_health_multiplier
 	enemy_instance.base_player_damage *= enemy_damage_multiplier
 	enemy_instance.z_index = ZIndexStore.ENEMIES
 	

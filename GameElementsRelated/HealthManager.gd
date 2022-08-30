@@ -28,11 +28,6 @@ var round_info_panel : RoundInfoPanel
 
 #
 
-func _ready():
-	connect("zero_health_reached", self, "_on_zero_health_reached", [], CONNECT_PERSIST)
-
-#
-
 func set_health(health : float):
 	current_health = health
 	

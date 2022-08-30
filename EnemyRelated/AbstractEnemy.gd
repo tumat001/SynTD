@@ -1237,7 +1237,6 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		no_action_from_self_clauses.attempt_insert_clause(NoActionClauses.IS_STUNNED)
 		
 	elif to_use_effect is EnemyClearAllEffects:
-		# When adding effects, update this
 		_clear_effects_from_clear_effect()
 		
 	elif to_use_effect is EnemyStackEffect:
@@ -2010,6 +2009,16 @@ func _phy_process_forced_positional_movement(delta):
 					unit_distance_to_exit = 1
 			
 			remove_current_forced_positional_movement_effect()
+
+
+func configure_path_move_offset_to_mov_self_backward_on_track(arg_effect : EnemyForcedPathOffsetMovementEffect):
+	var point_in_front = global_position + (Vector2.LEFT * current_rad_angle_of_movement)
+	
+	var forward_offset_path = current_path.curve.get_closest_offset(point_in_front)
+	if forward_offset_path <= offset:
+		arg_effect.reverse_movements()
+
+
 
 
 # 

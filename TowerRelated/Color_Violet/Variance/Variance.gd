@@ -1,0 +1,790 @@
+extends "res://TowerRelated/AbstractTower.gd"
+
+
+const Towers = preload("res://GameInfoRelated/Towers.gd")
+
+const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
+const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
+const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
+const ArcingBaseBullet = preload("res://TowerRelated/DamageAndSpawnables/ArcingBaseBullet.gd")
+const ArcingBaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/ArcingBaseBullet.tscn")
+const ArcingBulletAttackModule_Scene = preload("res://TowerRelated/Modules/ArcingBulletAttackModule.tscn")
+const ArcingBulletAttackModule = preload("res://TowerRelated/Modules/ArcingBulletAttackModule.gd")
+const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
+const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
+const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
+const WithBeamInstantDamageAttackModule = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.gd")
+const WithBeamInstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.tscn")
+const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
+
+
+const Variance_MainProj = preload("res://TowerRelated/Color_Violet/Variance/Attks/Variance_MainProj.png")
+
+const Variance_Frame_Yellow_Pic = preload("res://TowerRelated/Color_Violet/Variance/Variance_Frame_Yellow.png")
+const Variance_Frame_Blue_Pic = preload("res://TowerRelated/Color_Violet/Variance/Variance_Frame_Blue.png")
+const Variance_Frame_Red_Pic = preload("res://TowerRelated/Color_Violet/Variance/Variance_Frame_Red.png")
+const Variance_LockAbility_Pic = preload("res://TowerRelated/Color_Violet/Variance/Panel/Assets/LockVariance_ButtonImage.png")
+const Variance_RedExplosion_AMI = preload("res://TowerRelated/Color_Violet/Variance/Assets/Variance_RedExplosion_AttkModuleAsset.png")
+const Variance_BlueExplosion_AMI = preload("res://TowerRelated/Color_Violet/Variance/Assets/Variance_BlueExplosion_AttkModuleAsset.png")
+const Variance_BlueBeam_AMI = preload("res://TowerRelated/Color_Violet/Variance/Assets/Variance_BlueBeam_AttkModuleAsset.png")
+
+const Variance_RedLobProj_Pic = preload("res://TowerRelated/Color_Violet/Variance/Attks/Variance_RedLobProj.png")
+const Variance_ClearCircle_Scene = preload("res://TowerRelated/Color_Violet/Variance/Attks/ClearCircle/VarianceClearCircle.tscn")
+const Variance_Red_Explosion_01 = preload("res://TowerRelated/Color_Violet/Variance/Attks/RedExplosion/Variance_RedExplosion_01.png")
+const Variance_Red_Explosion_02 = preload("res://TowerRelated/Color_Violet/Variance/Attks/RedExplosion/Variance_RedExplosion_02.png")
+const Variance_Red_Explosion_03 = preload("res://TowerRelated/Color_Violet/Variance/Attks/RedExplosion/Variance_RedExplosion_03.png")
+const Variance_Red_Explosion_04 = preload("res://TowerRelated/Color_Violet/Variance/Attks/RedExplosion/Variance_RedExplosion_04.png")
+const Variance_Red_Explosion_05 = preload("res://TowerRelated/Color_Violet/Variance/Attks/RedExplosion/Variance_RedExplosion_05.png")
+const Variance_Red_Explosion_06 = preload("res://TowerRelated/Color_Violet/Variance/Attks/RedExplosion/Variance_RedExplosion_06.png")
+const Variance_Red_Explosion_07 = preload("res://TowerRelated/Color_Violet/Variance/Attks/RedExplosion/Variance_RedExplosion_07.png")
+
+const Variance_BlueBeam_Pic = preload("res://TowerRelated/Color_Violet/Variance/Attks/BlueBeam/Variance_BlueBeam.png")
+const Variance_BlueExplosion_01 = preload("res://TowerRelated/Color_Violet/Variance/Attks/BlueExplosion/Variance_BlueExplosion_01.png")
+const Variance_BlueExplosion_02 = preload("res://TowerRelated/Color_Violet/Variance/Attks/BlueExplosion/Variance_BlueExplosion_02.png")
+const Variance_BlueExplosion_03 = preload("res://TowerRelated/Color_Violet/Variance/Attks/BlueExplosion/Variance_BlueExplosion_03.png")
+const Variance_BlueExplosion_04 = preload("res://TowerRelated/Color_Violet/Variance/Attks/BlueExplosion/Variance_BlueExplosion_04.png")
+const Variance_BlueExplosion_05 = preload("res://TowerRelated/Color_Violet/Variance/Attks/BlueExplosion/Variance_BlueExplosion_05.png")
+const Variance_BlueExplosion_06 = preload("res://TowerRelated/Color_Violet/Variance/Attks/BlueExplosion/Variance_BlueExplosion_06.png")
+const Variance_BlueExplosion_07 = preload("res://TowerRelated/Color_Violet/Variance/Attks/BlueExplosion/Variance_BlueExplosion_07.png")
+const Variance_BlueParticle_Scene = preload("res://TowerRelated/Color_Violet/Variance/Assets/Particles/Variance_BlueParticle.tscn")
+
+const EnemyClearAllEffects = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyClearAllEffects.gd")
+const EnemyKnockUpEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyKnockUpEffect.gd")
+const EnemyForcedPathOffsetMovementEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyForcedPathOffsetMovementEffect.gd")
+
+
+onready var variance_frame_sprites = $TowerBase/KnockUpLayer/FrameSprites
+onready var variance_chain_sprite = $TowerBase/KnockUpLayer/ChainSprite
+
+enum VarianceState {
+	INITIAL = 0,
+	YELLOW = 1,
+	BLUE = 2,
+	RED = 3
+}
+
+var current_variance_state : int = VarianceState.INITIAL #changing this does nothing. use method in _ready to change initial
+var variance_state_rng : RandomNumberGenerator
+var current_cd_for_change_state : int = 1    # 1 is needed to not change state immediately upon buying
+
+var variance_blue_ing_effect : IngredientEffect
+var variance_yellow_ing_effect : IngredientEffect
+var variance_red_ing_effect : IngredientEffect
+
+var lock_ability : BaseAbility
+const lock_already_casted_clause : int = -10
+
+#
+var specialize_ability : BaseAbility
+const specialize_base_cooldown : float = 35.0
+const specialize_initial_cooldown : float = 1.0 #5.0 #todo
+var _specialize_ability_is_ready : bool = false
+var is_an_enemy_in_range : bool = false
+
+#
+var enemy_clear_effect : EnemyClearAllEffects
+var clear_ability_timer : Timer
+const clear_ability_interval_delay : float = 5.0
+const base_clear_cast_count : int = 3
+var current_clear_cast_count_remaining : int
+var is_casting_as_clear_type : bool
+
+#
+var red_knockup_effect : EnemyKnockUpEffect
+var red_forced_path_mov_effect : EnemyForcedPathOffsetMovementEffect
+
+const red_knockup_accel : float = 30.0
+const red_knockup_time : float = 0.6
+const red_stun_duration : float = 2.0
+
+const red_mov_speed : float = 60.0
+const red_mov_speed_deceleration : float = 65.0
+
+const red_blob_explosion_flat_dmg : float = 10.0
+const red_blob_explosion_base_dmg_scale : float = 8.0
+const red_blob_pierce : int = 3
+
+# the first knocks back and stuns, the second one stuns
+var current_main_attack_count_as_red : int
+var is_casting_as_red_type : bool
+
+var current_attks_left_for_lob_glob_red : int
+const lob_glob_red_disabled_from_attking_clause : int = -10
+var red_lob_glob_attk_module : ArcingBulletAttackModule
+var red_burst_attk_module : AOEAttackModule
+
+#
+var is_casting_as_blue_type : bool
+const blue_beam_dmg_per_instance : float = 1.0
+const blue_beam_attk_speed : float = 4.0
+
+var blue_beam_attk_module : WithBeamInstantDamageAttackModule
+const blue_beam_disabled_from_attking_clause : int = -10
+
+const blue_explosion_base_dmg : float = 15.0
+const blue_explosion_pierce : int = 3
+var blue_explosion_attk_module : AOEAttackModule
+
+var blue_particle_attk_sprite_pool : AttackSpritePoolComponent
+var position_offset_for_center_of_blue_particle : Vector2
+var non_essential_rng : RandomNumberGenerator
+
+#
+var is_casting_as_yellow_type : bool
+
+
+
+
+const y_shift_of_attk_module : float = 16.0
+
+#
+
+func _ready():
+	var info : TowerTypeInformation = Towers.get_tower_info(Towers.VARIANCE)
+	
+	tower_id = info.tower_type_id
+	tower_highlight_sprite = info.tower_image_in_buy_card
+	tower_image_icon_atlas_texture = info.tower_atlased_image
+	_tower_colors = info.colors
+	ingredient_of_self = info.ingredient_effect
+	_base_gold_cost = info.tower_cost
+	tower_type_info = info
+	
+	_initialize_stats_from_tower_info(info)
+	position_offset_for_center_of_blue_particle = Vector2(0, -y_shift_of_attk_module)
+	
+	range_module = RangeModule_Scene.instance()
+	range_module.base_range_radius = info.base_range
+	range_module.set_range_shape(CircleShape2D.new())
+	range_module.position.y += y_shift_of_attk_module
+	
+	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()
+	attack_module.base_damage = info.base_damage
+	attack_module.base_damage_type = info.base_damage_type
+	attack_module.base_attack_speed = info.base_attk_speed
+	attack_module.base_attack_wind_up = 0
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	attack_module.is_main_attack = true
+	attack_module.base_pierce = info.base_pierce
+	attack_module.base_proj_speed = 420
+	attack_module.base_proj_life_distance = info.base_range
+	attack_module.module_id = StoreOfAttackModuleID.MAIN
+	attack_module.on_hit_damage_scale = info.on_hit_multiplier
+	attack_module.position.y -= y_shift_of_attk_module
+	
+	var bullet_shape = CircleShape2D.new()
+	bullet_shape.radius = 7
+	
+	attack_module.bullet_shape = bullet_shape
+	attack_module.bullet_scene = BaseBullet_Scene
+	attack_module.set_texture_as_sprite_frame(Variance_MainProj)
+	
+	add_attack_module(attack_module)
+	
+	#
+	
+	#_construct_and_add_lob_attack_module()
+	#_construct_and_add_red_burst_explosion()
+	
+	_construct_lock_ability()
+	variance_chain_sprite.visible = false
+	
+	_construct_and_register_specialize_ability()
+	
+	variance_state_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.VARIANCE_STATE)
+	connect("on_round_end", self, "_on_round_end_v", [], CONNECT_PERSIST)
+	connect("on_range_module_enemy_entered", self, "_on_enemy_entered_range_v", [], CONNECT_PERSIST)
+	connect("on_range_module_enemy_exited", self, "_on_enemy_exited_range_v", [], CONNECT_PERSIST)
+	connect("on_round_end", self, "_on_round_end_v__ability_reset", [], CONNECT_PERSIST)
+	connect("on_round_start", self, "_on_round_start_v", [], CONNECT_PERSIST)
+	
+	# temp for testing
+	_set_variance_state(VarianceState.BLUE)
+	
+	_post_inherit_ready()
+
+
+
+func _construct_and_add_lob_attack_module():
+	var proj_attack_module : ArcingBulletAttackModule = ArcingBulletAttackModule_Scene.instance()
+	proj_attack_module.base_damage = 0
+	proj_attack_module.base_damage_type = DamageType.ELEMENTAL
+	proj_attack_module.base_attack_speed = 5
+	proj_attack_module.base_attack_wind_up = 0
+	proj_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	proj_attack_module.is_main_attack = false
+	proj_attack_module.base_pierce = 0
+	proj_attack_module.base_proj_speed = 0.45
+	proj_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	proj_attack_module.on_hit_damage_scale = 0
+	
+	proj_attack_module.benefits_from_bonus_base_damage = false
+	proj_attack_module.benefits_from_bonus_on_hit_damage = false
+	proj_attack_module.benefits_from_bonus_on_hit_effect = false
+	
+	proj_attack_module.position.y -= y_shift_of_attk_module
+	
+	proj_attack_module.bullet_scene = ArcingBaseBullet_Scene
+	proj_attack_module.set_texture_as_sprite_frame(Variance_RedLobProj_Pic)
+	
+	proj_attack_module.max_height = 700
+	proj_attack_module.bullet_rotation_per_second = 0
+	
+	proj_attack_module.connect("before_bullet_is_shot", self, "_modify_bullet_v__red_lob", [], CONNECT_PERSIST)
+	
+	proj_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(lob_glob_red_disabled_from_attking_clause)
+	
+	proj_attack_module.is_displayed_in_tracker = false
+	
+	red_lob_glob_attk_module = proj_attack_module
+	
+	add_attack_module(proj_attack_module)
+
+
+func _construct_and_add_red_burst_explosion():
+	var explosion_attack_module = AOEAttackModule_Scene.instance()
+	explosion_attack_module.base_damage_scale = red_blob_explosion_base_dmg_scale
+	explosion_attack_module.base_damage = red_blob_explosion_flat_dmg / explosion_attack_module.base_damage_scale
+	explosion_attack_module.base_damage_type = DamageType.PURE
+	explosion_attack_module.base_attack_speed = 0
+	explosion_attack_module.base_attack_wind_up = 0
+	explosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	explosion_attack_module.is_main_attack = false
+	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	explosion_attack_module.base_explosion_scale = 2.6
+	
+	explosion_attack_module.benefits_from_bonus_explosion_scale = true
+	explosion_attack_module.benefits_from_bonus_base_damage = true
+	explosion_attack_module.benefits_from_bonus_attack_speed = false
+	explosion_attack_module.benefits_from_bonus_on_hit_damage = false
+	explosion_attack_module.benefits_from_bonus_on_hit_effect = false
+	
+	
+	var sprite_frames = SpriteFrames.new()
+	sprite_frames.add_frame("default", Variance_Red_Explosion_01)
+	sprite_frames.add_frame("default", Variance_Red_Explosion_02)
+	sprite_frames.add_frame("default", Variance_Red_Explosion_03)
+	sprite_frames.add_frame("default", Variance_Red_Explosion_04)
+	sprite_frames.add_frame("default", Variance_Red_Explosion_05)
+	sprite_frames.add_frame("default", Variance_Red_Explosion_06)
+	sprite_frames.add_frame("default", Variance_Red_Explosion_07)
+	
+	explosion_attack_module.aoe_sprite_frames = sprite_frames
+	explosion_attack_module.sprite_frames_only_play_once = true
+	explosion_attack_module.pierce = red_blob_pierce
+	explosion_attack_module.duration = 0.32
+	explosion_attack_module.damage_repeat_count = 1
+	
+	explosion_attack_module.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
+	explosion_attack_module.base_aoe_scene = BaseAOE_Scene
+	explosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
+	
+	explosion_attack_module.can_be_commanded_by_tower = false
+	
+	explosion_attack_module.set_image_as_tracker_image(Variance_RedExplosion_AMI)
+	explosion_attack_module.is_displayed_in_tracker = false
+	
+	red_burst_attk_module = explosion_attack_module
+	
+	add_attack_module(explosion_attack_module)
+
+func _construct_and_add_blue_beam_attk_module():
+	var attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
+	attack_module.base_damage = blue_beam_dmg_per_instance
+	attack_module.base_damage_type = DamageType.ELEMENTAL
+	attack_module.base_attack_speed = blue_beam_attk_speed
+	attack_module.base_attack_wind_up = 0
+	attack_module.is_main_attack = false
+	attack_module.module_id = StoreOfAttackModuleID.MAIN
+	attack_module.position.y -= y_shift_of_attk_module
+	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	
+	attack_module.benefits_from_bonus_base_damage = false
+	attack_module.benefits_from_bonus_attack_speed = false
+	attack_module.benefits_from_bonus_on_hit_damage = false
+	attack_module.benefits_from_bonus_on_hit_effect = false
+	
+	var beam_sprite_frame : SpriteFrames = SpriteFrames.new()
+	beam_sprite_frame.add_frame("default", Variance_BlueBeam_Pic)
+	#beam_sprite_frame.set_animation_loop("default", true)
+	#beam_sprite_frame.set_animation_speed("default", 15)
+	
+	attack_module.is_displayed_in_tracker = false
+	attack_module.set_image_as_tracker_image(Variance_BlueBeam_AMI)
+	
+	attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(blue_beam_disabled_from_attking_clause)
+	
+	attack_module.beam_scene = BeamAesthetic_Scene
+	attack_module.beam_sprite_frames = beam_sprite_frame
+	
+	blue_beam_attk_module = attack_module
+	
+	blue_beam_attk_module.connect("on_damage_instance_constructed", self, "_on_dmg_instance_constructed__by_blue_beam", [], CONNECT_PERSIST)
+	blue_beam_attk_module.connect("on_enemy_hit", self, "_on_blue_beam_attk_module_hit_enemy", [], CONNECT_PERSIST)
+	
+	_initialize_particle_attk_sprite_pool()
+	
+	add_attack_module(attack_module)
+
+
+func _construct_and_add_blue_explosion_attk_module():
+	var explosion_attack_module = AOEAttackModule_Scene.instance()
+	explosion_attack_module.base_damage = blue_explosion_base_dmg
+	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
+	explosion_attack_module.base_attack_speed = 0
+	explosion_attack_module.base_attack_wind_up = 0
+	explosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	explosion_attack_module.is_main_attack = false
+	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	explosion_attack_module.base_explosion_scale = 2
+	
+	explosion_attack_module.benefits_from_bonus_explosion_scale = true
+	explosion_attack_module.benefits_from_bonus_base_damage = false
+	explosion_attack_module.benefits_from_bonus_attack_speed = false
+	explosion_attack_module.benefits_from_bonus_on_hit_damage = false
+	explosion_attack_module.benefits_from_bonus_on_hit_effect = false
+	
+	
+	var sprite_frames = SpriteFrames.new()
+	sprite_frames.add_frame("default", Variance_BlueExplosion_01)
+	sprite_frames.add_frame("default", Variance_BlueExplosion_02)
+	sprite_frames.add_frame("default", Variance_BlueExplosion_03)
+	sprite_frames.add_frame("default", Variance_BlueExplosion_04)
+	sprite_frames.add_frame("default", Variance_BlueExplosion_05)
+	sprite_frames.add_frame("default", Variance_BlueExplosion_06)
+	sprite_frames.add_frame("default", Variance_BlueExplosion_07)
+	
+	
+	explosion_attack_module.aoe_sprite_frames = sprite_frames
+	explosion_attack_module.sprite_frames_only_play_once = true
+	explosion_attack_module.pierce = blue_explosion_pierce
+	explosion_attack_module.duration = 0.32
+	explosion_attack_module.damage_repeat_count = 1
+	
+	explosion_attack_module.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
+	explosion_attack_module.base_aoe_scene = BaseAOE_Scene
+	explosion_attack_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
+	
+	explosion_attack_module.can_be_commanded_by_tower = false
+	
+	explosion_attack_module.set_image_as_tracker_image(Variance_BlueExplosion_AMI)
+	explosion_attack_module.is_displayed_in_tracker = false
+	
+	blue_explosion_attk_module = explosion_attack_module
+	
+	add_attack_module(explosion_attack_module)
+
+
+func _construct_lock_ability():
+	lock_ability = BaseAbility.new()
+	
+	lock_ability.is_timebound = true
+	lock_ability.connect("ability_activated", self, "_lock_ability_activated", [], CONNECT_PERSIST)
+	lock_ability.icon = Variance_LockAbility_Pic
+	
+	lock_ability.set_properties_to_usual_tower_based()
+	lock_ability.activation_conditional_clauses.blacklisted_clauses.append(BaseAbility.ActivationClauses.ROUND_INTERMISSION_STATE)
+	lock_ability.counter_decrease_clauses.blacklisted_clauses.append(BaseAbility.CounterDecreaseClauses.ROUND_INTERMISSION_STATE)
+	lock_ability.should_be_displaying_clauses.blacklisted_clauses.append(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
+	lock_ability.should_be_displaying_clauses.remove_clause(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
+	
+	lock_ability.tower = self
+	
+	lock_ability.descriptions = [
+		"On activation: Permanently prevents Variance from changing types on round end."
+	]
+	lock_ability.display_name = "Lock"
+	
+	register_ability_to_manager(lock_ability, false)
+
+
+func _on_round_start_v():
+	if current_variance_state == VarianceState.INITIAL:
+		_set_attack_module_is_displayed_in_tracker(red_burst_attk_module, false)
+		_set_attack_module_is_displayed_in_tracker(blue_beam_attk_module, false)
+		_set_attack_module_is_displayed_in_tracker(blue_explosion_attk_module, false)
+		
+	elif current_variance_state == VarianceState.RED:
+		_set_attack_module_is_displayed_in_tracker(red_burst_attk_module, true)
+		_set_attack_module_is_displayed_in_tracker(blue_beam_attk_module, false)
+		_set_attack_module_is_displayed_in_tracker(blue_explosion_attk_module, false)
+		
+	elif current_variance_state == VarianceState.YELLOW:
+		_set_attack_module_is_displayed_in_tracker(red_burst_attk_module, false)
+		_set_attack_module_is_displayed_in_tracker(blue_beam_attk_module, false)
+		_set_attack_module_is_displayed_in_tracker(blue_explosion_attk_module, false)
+		
+	elif current_variance_state == VarianceState.BLUE:
+		_set_attack_module_is_displayed_in_tracker(red_burst_attk_module, false)
+		_set_attack_module_is_displayed_in_tracker(blue_beam_attk_module, true)
+		_set_attack_module_is_displayed_in_tracker(blue_explosion_attk_module, true)
+
+func _set_attack_module_is_displayed_in_tracker(arg_module, arg_should_display):
+	if arg_module != null:
+		arg_module.is_displayed_in_tracker = arg_should_display
+
+#
+
+func _on_round_end_v():
+	if current_cd_for_change_state <= 0:
+		_update_curr_state_to_random_state()
+	
+	current_cd_for_change_state -= 1
+
+func _update_curr_state_to_random_state():
+	var new_state = variance_state_rng.randi_range(1, 3)
+	
+	_set_variance_state(new_state)
+	
+	#_set_variance_state(VarianceState.RED) #testing
+
+#
+
+func _set_variance_state(arg_state_id):
+	var old_state = current_variance_state
+	current_variance_state = arg_state_id
+	
+	if old_state != current_variance_state:
+		if arg_state_id == VarianceState.BLUE:
+			_set_variance_state_to_blue()
+		elif arg_state_id == VarianceState.YELLOW:
+			_set_variance_state_to_yellow()
+		elif arg_state_id == VarianceState.RED:
+			_set_variance_state_to_red()
+
+
+
+func _set_variance_state_to_blue():
+	if blue_beam_attk_module == null:
+		_construct_and_add_blue_beam_attk_module()
+		_construct_and_add_blue_explosion_attk_module()
+	
+	variance_frame_sprites.texture = Variance_Frame_Blue_Pic
+	_initialize_blue_ing()
+	set_self_ingredient_effect(variance_blue_ing_effect)
+
+func _initialize_blue_ing():
+	if variance_blue_ing_effect == null:
+		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_VARIANCE_STAT)
+		base_ap_attr_mod.flat_modifier = Towers.tier_ap_range_map[tower_type_info.tower_tier]
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_VARIANCE_STAT)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		variance_blue_ing_effect = ing_effect
+		
+
+
+#
+
+func _set_variance_state_to_yellow():
+	variance_frame_sprites.texture = Variance_Frame_Yellow_Pic
+	_initialize_yellow_ing()
+	set_self_ingredient_effect(variance_yellow_ing_effect)
+
+func _initialize_yellow_ing():
+	if variance_yellow_ing_effect == null:
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_VARIANCE_STAT)
+		attk_speed_attr_mod.percent_amount = Towers.tier_attk_speed_map[tower_type_info.tower_tier]
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_VARIANCE_STAT)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		variance_yellow_ing_effect = ing_effect
+
+#
+
+func _set_variance_state_to_red():
+	if red_lob_glob_attk_module == null:
+		_construct_and_add_lob_attack_module()
+		_construct_and_add_red_burst_explosion()
+	
+	variance_frame_sprites.texture = Variance_Frame_Red_Pic
+	_initialize_red_ing()
+	set_self_ingredient_effect(variance_red_ing_effect)
+
+func _initialize_red_ing():
+	if variance_red_ing_effect == null:
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_VARIANCE_STAT)
+		base_dmg_attr_mod.flat_modifier = Towers.tier_base_dmg_map[tower_type_info.tower_tier]
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_VARIANCE_STAT)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		variance_red_ing_effect = ing_effect
+
+#
+
+func _lock_ability_activated():
+	lock_ability.activation_conditional_clauses.attempt_insert_clause(lock_already_casted_clause)
+	variance_chain_sprite.visible = true
+	if is_connected("on_round_end", self, "_on_round_end_v"):
+		disconnect("on_round_end", self, "_on_round_end_v")
+
+#########
+
+func _construct_and_register_specialize_ability():
+	specialize_ability = BaseAbility.new()
+	
+	specialize_ability.is_timebound = true
+	
+	specialize_ability.set_properties_to_usual_tower_based()
+	specialize_ability.tower = self
+	
+	specialize_ability.connect("updated_is_ready_for_activation", self, "_can_cast_specialize_changed", [], CONNECT_PERSIST)
+	register_ability_to_manager(specialize_ability, false)
+	
+	specialize_ability.start_time_cooldown(specialize_initial_cooldown)
+	
+	# Clear related
+	enemy_clear_effect = EnemyClearAllEffects.new(StoreOfEnemyEffectsUUID.VARIANCE_CLEAR_ENEMY_EFFECT)
+	clear_ability_timer = Timer.new()
+	clear_ability_timer.one_shot = false
+	clear_ability_timer.connect("timeout", self, "_clear_ability_timer_timeout", [], CONNECT_PERSIST)
+	add_child(clear_ability_timer)
+	
+	# Red related
+	red_knockup_effect = EnemyKnockUpEffect.new(red_knockup_time, red_knockup_accel, StoreOfEnemyEffectsUUID.VARIANCE_RED_KNOCK_UP_EFFECT)
+	red_knockup_effect.custom_stun_duration = red_stun_duration
+	
+	red_forced_path_mov_effect = EnemyForcedPathOffsetMovementEffect.new(red_mov_speed, red_mov_speed_deceleration, StoreOfEnemyEffectsUUID.VARIANCE_RED_FORCED_MOV_EFFECT)
+	red_forced_path_mov_effect.is_timebound = true
+	red_forced_path_mov_effect.time_in_seconds = red_stun_duration
+
+
+
+func _can_cast_specialize_changed(arg_val):
+	_specialize_ability_is_ready = arg_val
+	
+
+func _on_enemy_entered_range_v(enemy, arg_module, arg_range_module):
+	if main_attack_module != null and arg_range_module == main_attack_module.range_module:
+		is_an_enemy_in_range = true
+		_attempt_cast_specialize()
+
+func _on_enemy_exited_range_v(enemy, arg_module, arg_range_module):
+	if main_attack_module != null and arg_range_module == main_attack_module.range_module:
+		is_an_enemy_in_range = arg_range_module.is_an_enemy_in_range()
+
+
+func _attempt_cast_specialize():
+	if _specialize_ability_is_ready and is_an_enemy_in_range:
+		_cast_specialize()
+
+func _cast_specialize():
+	var cd = _get_cd_to_use(specialize_base_cooldown)
+	specialize_ability.on_ability_before_cast_start(cd)
+	specialize_ability.start_time_cooldown(cd)
+	
+	if current_variance_state == VarianceState.INITIAL:
+		_cast_specialize_as_clear_state()
+	elif current_variance_state == VarianceState.BLUE:
+		_cast_specialize_as_blue_state()
+	elif current_variance_state == VarianceState.RED:
+		_cast_specialize_as_red_state()
+	elif current_variance_state == VarianceState.YELLOW:
+		_cast_specialize_as_yellow_type()
+	
+	specialize_ability.on_ability_after_cast_ended(cd)
+
+#
+
+func _on_round_end_v__ability_reset():
+	if is_casting_as_clear_type:
+		_stop_clear_ability()
+	elif is_casting_as_red_type:
+		_stop_red_ability()
+	elif is_casting_as_blue_type:
+		_stop_blue_ability()
+	elif is_casting_as_yellow_type:
+		_stop_yellow_ability()
+	
+
+#
+
+func _cast_specialize_as_clear_state():
+	is_casting_as_clear_type = true
+	current_clear_cast_count_remaining = base_clear_cast_count
+	_clear_ability_timer_timeout()
+	clear_ability_timer.start(clear_ability_interval_delay)
+
+
+func _clear_ability_timer_timeout():
+	if current_clear_cast_count_remaining > 0:
+		var particle = Variance_ClearCircle_Scene.instance()
+		
+		particle.position = global_position
+		get_tree().get_root().call_deferred("add_child", particle)
+		
+		#
+		
+		if range_module != null:
+			for enemy in range_module.get_enemies_in_range__not_affecting_curr_enemies_in_range():
+				enemy._add_effect(enemy_clear_effect)
+		
+		current_clear_cast_count_remaining -= 1
+		
+	else:
+		_stop_clear_ability()
+
+func _stop_clear_ability():
+	current_clear_cast_count_remaining = 0
+	clear_ability_timer.stop()
+	is_casting_as_clear_type = false
+
+
+#
+
+func _cast_specialize_as_red_state():
+	current_main_attack_count_as_red = 1
+	is_casting_as_red_type = true
+	if !is_connected("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_v__as_red"):
+		connect("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_v__as_red")
+
+func _on_main_bullet_attack_module_before_bullet_is_shot_v__as_red(bullet : BaseBullet, attack_module):
+	if current_main_attack_count_as_red == 1:
+		bullet.damage_instance.on_hit_effects[red_knockup_effect.effect_uuid] = red_knockup_effect
+		bullet.connect("hit_an_enemy", self, "_on_red_knockback_bullet_hit_enemy")
+		current_main_attack_count_as_red += 1
+		
+	elif current_main_attack_count_as_red == 2:
+		bullet.damage_instance.on_hit_effects[red_knockup_effect.effect_uuid] = red_knockup_effect
+		current_main_attack_count_as_red += 1
+		
+	elif current_main_attack_count_as_red == 3:
+		current_attks_left_for_lob_glob_red = 1
+		red_lob_glob_attk_module.can_be_commanded_by_tower_other_clauses.remove_clause(lob_glob_red_disabled_from_attking_clause)
+		current_main_attack_count_as_red = 0
+		if is_connected("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_v__as_red"):
+			disconnect("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_v__as_red")
+
+func _on_red_knockback_bullet_hit_enemy(bullet, arg_enemy):
+	var knockback_effect = red_forced_path_mov_effect._get_copy_scaled_by(1)
+	arg_enemy.configure_path_move_offset_to_mov_self_backward_on_track(knockback_effect)
+	
+	arg_enemy._add_effect(knockback_effect)
+
+
+func _modify_bullet_v__red_lob(bullet):
+	if current_attks_left_for_lob_glob_red > 0:
+		current_attks_left_for_lob_glob_red -= 1
+		
+		bullet.connect("on_final_location_reached", self, "_on_red_lob_arcing_bullet_landed", [], CONNECT_ONESHOT)
+		
+		if current_attks_left_for_lob_glob_red <= 0:
+			red_lob_glob_attk_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(lob_glob_red_disabled_from_attking_clause)
+
+func _on_red_lob_arcing_bullet_landed(arg_final_location : Vector2, bullet : ArcingBaseBullet):
+	var explosion = red_burst_attk_module.construct_aoe(arg_final_location, arg_final_location)
+	
+	get_tree().get_root().call_deferred("add_child", explosion)
+
+
+func _stop_red_ability():
+	current_attks_left_for_lob_glob_red = 0
+	red_lob_glob_attk_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(lob_glob_red_disabled_from_attking_clause)
+	current_main_attack_count_as_red = 0
+	
+	if is_connected("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_v__as_red"):
+		disconnect("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_v__as_red")
+
+###
+
+func _cast_specialize_as_blue_state():
+	is_casting_as_blue_type = true
+	
+	var curr_target
+	if range_module != null:
+		var enemies = range_module.get_enemies_in_range__not_affecting_curr_enemies_in_range()
+		if enemies.size() > 0:
+			curr_target = enemies[0]
+	
+	if curr_target != null:
+		blue_beam_attk_module.can_be_commanded_by_tower_other_clauses.remove_clause(blue_beam_disabled_from_attking_clause)
+		range_module.connect("enemy_left_range", self, "_on_enemy_exited_range_module", [range_module])
+		curr_target.connect("tree_exiting", self, "_on_enemy_killed", [curr_target, range_module])
+		
+	else:
+		blue_beam_attk_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(blue_beam_disabled_from_attking_clause)
+
+
+func _on_dmg_instance_constructed__by_blue_beam(arg_dmg_instance, arg_module):
+	arg_dmg_instance.scale_only_damage_by(specialize_ability.get_potency_to_use(last_calculated_final_ability_potency))
+
+func _on_enemy_exited_range_module(arg_enemy, arg_range_mod):
+	_create_blue_explosion_at_pos__and_end_blue_beam(arg_enemy.global_position, arg_enemy, arg_range_mod)
+
+func _on_enemy_killed(arg_enemy, arg_range_mod):
+	_create_blue_explosion_at_pos__and_end_blue_beam(arg_enemy.global_position, arg_enemy, arg_range_mod)
+
+
+func _create_blue_explosion_at_pos__and_end_blue_beam(arg_pos : Vector2, arg_enemy, arg_range_mod):
+	var explosion = blue_explosion_attk_module.construct_aoe(arg_pos, arg_pos)
+	explosion.damage_instance.scale_only_damage_by(specialize_ability.get_potency_to_use(last_calculated_final_ability_potency))
+	get_tree().get_root().call_deferred("add_child", explosion)
+	
+	if arg_enemy.is_connected("tree_exiting", self, "_on_enemy_killed"):
+		arg_enemy.disconnect("tree_exiting", self, "_on_enemy_killed")
+	
+	_stop_blue_ability()
+
+
+func _stop_blue_ability():
+	is_casting_as_blue_type = false
+	blue_beam_attk_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(blue_beam_disabled_from_attking_clause)
+	
+	if range_module.is_connected("enemy_left_range", self, "_on_enemy_exited_range_module"):
+		range_module.disconnect("enemy_left_range", self, "_on_enemy_exited_range_module")
+
+#
+
+func _initialize_particle_attk_sprite_pool():
+	blue_particle_attk_sprite_pool = AttackSpritePoolComponent.new()
+	blue_particle_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	blue_particle_attk_sprite_pool.node_to_listen_for_queue_free = self
+	blue_particle_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
+	blue_particle_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_blue_particle"
+	blue_particle_attk_sprite_pool.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_blue_particle_properties_when_get_from_pool_after_add_child"
+	
+	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
+
+func _create_blue_particle():
+	var particle = Variance_BlueParticle_Scene.instance()
+	
+	particle.initial_speed_towards_center = 200
+	particle.speed_accel_towards_center = 300
+	particle.queue_free_at_end_of_lifetime = false
+	particle.turn_invisible_at_end_of_lifetime = true
+	
+	return particle
+
+func _set_blue_particle_properties_when_get_from_pool_after_add_child(particle):
+	pass
+	
+
+func _on_blue_beam_attk_module_hit_enemy(enemy, damage_register_id, damage_instance, module):
+	var particle = blue_particle_attk_sprite_pool.get_or_create_attack_sprite_from_pool()
+	
+	var pos_of_center = global_position + position_offset_for_center_of_blue_particle
+	var distance_to_enemy = pos_of_center.distance_to(enemy.global_position)
+	particle.center_pos_of_basis = pos_of_center
+	
+	particle.reset_for_another_use()
+	
+	var rand_num_01 = non_essential_rng.randi_range(-14, 14)
+	var rand_num_02 = non_essential_rng.randi_range(-14, 14)
+	particle.global_position = enemy.global_position + Vector2(rand_num_01, rand_num_01)
+	
+	particle.lifetime = 0.3
+	particle.visible = true
+
+
+###
+
+func _cast_specialize_as_yellow_type():
+	is_casting_as_yellow_type = true
+
+func _stop_yellow_ability():
+	is_casting_as_yellow_type = false
+

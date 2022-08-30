@@ -63,8 +63,8 @@ var second_half_faction_id_pool : Array
 func _init():
 	first_half_faction_id_pool.append(EnemyFactions.BASIC)
 	
-	#second_half_faction_id_pool.append(EnemyFactions.EXPERT)
-	second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
+	second_half_faction_id_pool.append(EnemyFactions.EXPERT)
+	#second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
 	#second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
 
 
@@ -74,7 +74,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# BASIC FACTION
 	if enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
-		info.base_health = 24
+		info.base_health = 800#24
 		info.base_movement_speed = 40
 		
 	elif enemy_id == Enemies.BRUTE:
@@ -108,7 +108,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# EXPERT FACTION
 	elif enemy_id == Enemies.EXPERIENCED:
 		info = EnemyTypeInformation.new(Enemies.EXPERIENCED, EnemyFactions.EXPERT)
-		info.base_health = 33.5
+		info.base_health = 34 #33.5
 		info.base_movement_speed = 40
 		#info.base_resistance = 25
 		info.base_toughness = 4.5
@@ -172,7 +172,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.SACRIFICER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 1#37
+		info.base_health = 37
 		info.base_movement_speed = 23
 		
 	elif enemy_id == Enemies.SEER:

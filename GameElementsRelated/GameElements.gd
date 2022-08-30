@@ -105,7 +105,7 @@ func _ready():
 	map_id = CommsForBetweenScenes.map_id
 	
 	# TEST HERE
-	#game_mode_id = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_04
+	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
 	#
 	
 	var game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
@@ -120,6 +120,7 @@ func _ready():
 	
 	#
 	emit_signal("before_main_init")
+	
 	#####
 	panel_buy_sell_level_roll = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel
 	synergy_manager = $SynergyManager
@@ -346,14 +347,14 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	shop_manager.roll_towers_in_shop_with_cost()
+	#shop_manager.roll_towers_in_shop_with_cost()
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.HERO,
-			Towers.ACCUMULAE,
-			Towers.NUCLEUS,
+			Towers.VARIANCE,
+			Towers.TRANSPORTER,
 			Towers.SIMPLEX,
 			Towers.BLOSSOM,
 		])

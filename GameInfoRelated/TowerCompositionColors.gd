@@ -187,7 +187,7 @@ func _init():
 	
 	var interpreter_for_orangeblue_explosion_dmg_increase = TextFragmentInterpreter.new()
 	interpreter_for_orangeblue_explosion_dmg_increase.display_body = false
-	interpreter_for_orangeblue_explosion_dmg.display_header = true
+	interpreter_for_orangeblue_explosion_dmg.display_header = false
 	
 	var ins_for_orangeblue_explosion_dmg_increase = []
 	ins_for_orangeblue_explosion_dmg_increase.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "increased damage", 25, true))

@@ -29,6 +29,8 @@ var adeptling_am : WithBeamInstantDamageAttackModule
 const _beam_cooldown : float = 0.1
 var own_timer : Timer
 
+var adepting_base_dmg : float = 2.5
+
 
 func _init().(StoreOfTowerEffectsUUID.ING_ADEPT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Adeptling.png")
@@ -40,7 +42,7 @@ func _init().(StoreOfTowerEffectsUUID.ING_ADEPT):
 	interpreter.display_header = true
 	
 	var ins = []
-	ins.append(NumericalTextFragment.new(2, false, DamageType.PHYSICAL))
+	ins.append(NumericalTextFragment.new(adepting_base_dmg, false, DamageType.PHYSICAL))
 	#ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 	#ins.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.4, DamageType.PHYSICAL))
 	#ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
@@ -77,7 +79,7 @@ func _make_modifications_to_tower(tower):
 func _construct_attack_module():
 	adeptling_am = WithBeamInstantDamageAttackModule_Scene.instance()
 	adeptling_am.base_damage_scale = 0.40
-	adeptling_am.base_damage = 2 / adeptling_am.base_damage_scale
+	adeptling_am.base_damage = adepting_base_dmg  / adeptling_am.base_damage_scale
 	adeptling_am.base_damage_type = DamageType.PHYSICAL
 	adeptling_am.base_attack_speed = 0
 	adeptling_am.base_attack_wind_up = 1 / 0.15

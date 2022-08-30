@@ -34,6 +34,8 @@ const LaChasseur_InfoPanel = preload("res://TowerRelated/Color_Green/La_Chasseur
 const LaChasseur_InfoPanel_Scene = preload("res://TowerRelated/Color_Green/La_Chasseur/GUI/LaChasseur_InfoPanel.tscn")
 const Tesla_InfoPanel = preload("res://TowerRelated/Color_Violet/Tesla/GUI/Tesla_InfoPanel.gd")
 const Tesla_InfoPanel_Scene = preload("res://TowerRelated/Color_Violet/Tesla/GUI/Tesla_InfoPanel.tscn")
+const Variance_InfoPanel = preload("res://TowerRelated/Color_Violet/Variance/Panel/Variance_InfoPanel.gd")
+const Variance_InfoPanel_Scene = preload("res://TowerRelated/Color_Violet/Variance/Panel/Variance_InfoPanel.tscn")
 
 signal on_extra_info_panel_shown(arg_info_panel, arg_tower)
 signal on_tower_panel_ability_01_activate()
@@ -71,6 +73,7 @@ var se_propager_info_panel : SePropager_InfoPanel
 var lassaut_info_panel : LAssaut_InfoPanel
 var la_chasseur_info_panel : LaChasseur_InfoPanel
 var tesla_info_panel : Tesla_InfoPanel
+var variance_info_panel : Variance_InfoPanel
 
 var current_active_info_panel
 
@@ -379,6 +382,20 @@ func _update_tower_specific_info_panel():
 		if tesla_info_panel != null:
 			tesla_info_panel.visible = false
 			tesla_info_panel.set_tesla(null)
+	
+	# Variance
+	if Variance_InfoPanel.should_display_self_for(tower):
+		if variance_info_panel == null:
+			variance_info_panel = Variance_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(variance_info_panel)
+		
+		variance_info_panel.visible = true
+		variance_info_panel.set_variance(tower)
+		current_active_info_panel = variance_info_panel
+	else:
+		if variance_info_panel != null:
+			variance_info_panel.visible = false
+			variance_info_panel.set_variance(null)
 	
 	
 	# KEEP THIS AT THE BOTTOM

@@ -60,7 +60,7 @@ const star_beam_attack_speed : float = 4.0 # 4 times per sec (just like attack s
 const star_crash_flat_dmg_amount : float = 2.0
 const star_crash_on_hit_dmg_scale : float = 1.0
 
-const main_attacks_for_star_summon : int = 8
+const main_attacks_for_star_summon : int = 7
 var _current_main_attack_count : int
 
 

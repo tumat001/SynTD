@@ -23,25 +23,25 @@ const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_9 : [10, 15, 20, 35, 20, 0],
 	LevelManager.LEVEL_10 : [5, 10, 10, 25, 25, 25],
 	
-	# Reachable by red syn
-	LevelManager.LEVEL_11 : [3, 5, 5, 20, 35, 32], 
-	LevelManager.LEVEL_12 : [0, 0, 5, 15, 40, 40],
+	# Reachable by red syn -- prestige
+	LevelManager.LEVEL_11 : [3, 5, 5, 15, 40, 32], 
+	LevelManager.LEVEL_12 : [0, 0, 2, 13, 50, 35],
 }
 
 #
 
 const base_tower_tier_stock : Dictionary = {
-	1 : 20,
-	2 : 18,
-	3 : 14,
+	1 : 18, #20
+	2 : 16, #18
+	3 : 12, #14
 	4 : 10,
 	5 : 8,
-	6 : 2 # 2 for exclusivity, 4 for combination. Decide what's best
+	6 : 2 # 2 for exclusivity, x for combination. Decide what's best
 }
 
 # When a tower should have a different initial stock amount
 const tower_stock_amount_exceptions : Dictionary = {
-	#Towers.HERO : 1
+	#ex: Towers.HERO : 1
 }
 
 # When a tower should not appear in shop nor replenish stock (by selling)

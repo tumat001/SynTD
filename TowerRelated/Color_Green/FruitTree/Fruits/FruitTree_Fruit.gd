@@ -34,6 +34,7 @@ func _ready():
 	
 	tower_id = info.tower_type_id
 	tower_type_info = info
+	
 	#_tower_colors = info.colors
 	_base_gold_cost = info.tower_cost
 	

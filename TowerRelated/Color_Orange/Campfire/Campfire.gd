@@ -127,6 +127,7 @@ func _construct_and_connect_ability():
 	
 	register_ability_to_manager(rage_ability, false)
 
+
 # Giving effects and trigger
 
 func _enemy_damage_taken(damage_report, is_lethal, enemy):
@@ -134,7 +135,8 @@ func _enemy_damage_taken(damage_report, is_lethal, enemy):
 		_current_rage += damage_report.get_total_effective_damage_excluding([StoreOfTowerEffectsUUID.CAMPFIRE_PHY_ON_HIT])
 		
 		if _current_rage >= last_calculated_rage_threshold:
-			if heat_module == null or !last_calculated_disabled_from_attacking:
+			#if heat_module == null or !last_calculated_disabled_from_attacking:
+			if !last_calculated_disabled_from_attacking:
 				var cd = _get_cd_to_use(initial_cooldown_after_ability_cast)
 				rage_ability.on_ability_before_cast_start(cd)
 				

@@ -49,7 +49,7 @@ var plow_attack_module : BulletAttackModule
 
 var plow_knockup_effect : EnemyKnockUpEffect
 var plow_forced_path_mov_effect : EnemyForcedPathOffsetMovementEffect
-const plow_base_stun_duration : float = 2.0
+const plow_base_stun_duration : float = 2.5
 
 const plow_knockup_accel : float = 20.0
 const plow_knockup_time : float = 0.5

@@ -31,22 +31,22 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		_range_per_shadow_kill = 20
 	elif tier == 1:
 		_base_downtime_for_range_gain = 1.0
-		_range_gain_per_second_percent = 15.0
-		_max_limit_of_range_percent = 120.0
-		
-		_amount_of_shadow_enemies_to_spawn = 3
-		_range_per_shadow_kill = 15
-	elif tier == 2:
-		_base_downtime_for_range_gain = 1.5
 		_range_gain_per_second_percent = 10.0
 		_max_limit_of_range_percent = 80.0
 		
+		_amount_of_shadow_enemies_to_spawn = 3
+		_range_per_shadow_kill = 10
+	elif tier == 2:
+		_base_downtime_for_range_gain = 1.5
+		_range_gain_per_second_percent = 7.0
+		_max_limit_of_range_percent = 56.0
+		
 		_amount_of_shadow_enemies_to_spawn = 2
-		_range_per_shadow_kill = 15
+		_range_per_shadow_kill = 10
 	elif tier == 3:
 		_base_downtime_for_range_gain = 2.0
-		_range_gain_per_second_percent = 4.0
-		_max_limit_of_range_percent = 36.0
+		_range_gain_per_second_percent = 3.0
+		_max_limit_of_range_percent = 24.0
 		
 		_amount_of_shadow_enemies_to_spawn = 1
 		_range_per_shadow_kill = 10

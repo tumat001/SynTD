@@ -285,8 +285,8 @@ func _get_instructions_for_9_2():
 
 func _get_instructions_for_9_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 15, 5, EnemyConstants.Enemies.FIEND),
-		MultipleEnemySpawnInstruction.new(1, 26, 2.5, EnemyConstants.Enemies.ENCHANTRESS),
+		MultipleEnemySpawnInstruction.new(0, 15, 4.5, EnemyConstants.Enemies.FIEND),
+		MultipleEnemySpawnInstruction.new(1, 26, 2.25, EnemyConstants.Enemies.ENCHANTRESS),
 		MultipleEnemySpawnInstruction.new(6, 3, 10, EnemyConstants.Enemies.MAGUS),
 	]
 

@@ -83,6 +83,7 @@ signal final_attack_speed_changed
 signal final_range_changed
 signal ingredients_absorbed_changed
 signal ingredients_limit_changed(new_limit)
+signal self_ingredient_changed(arg_old_ing, arg_new_ing)
 signal tower_colors_changed
 signal targeting_changed # by main module's range module
 signal targeting_options_modified
@@ -132,6 +133,7 @@ signal on_any_range_module_current_enemies_acquired(module, range_module)
 
 
 signal on_round_end
+signal on_round_end__set_up_from_manager_aware(arg_is_startup_from_tower_manager)
 signal on_round_end__before_any_round_end_reverts() # used to check if tower had this effect (before being cleared), and if the tower is dead before the round ending (look at round end func to see what gets reverted)
 signal on_round_start
 
@@ -274,7 +276,7 @@ var last_calculated_can_be_placed_in_map : bool
 # Ingredient related
 
 var ingredients_absorbed : Dictionary = {} # Map of tower_id (ingredient source) to ingredient_effect
-var ingredient_of_self : IngredientEffect
+var ingredient_of_self : IngredientEffect setget set_self_ingredient_effect
 var originally_has_ingredient : bool # used by combination manager
 var ingredient_compatible_colors : Array = []
 
@@ -2012,6 +2014,13 @@ func _update_last_calculated_can_be_used_as_ing():
 	last_calculated_can_be_used_as_ingredient = can_be_used_as_ingredient_conditonal_clauses.is_passed
 
 
+# own ing related
+
+func set_self_ingredient_effect(arg_ing_effect : IngredientEffect):
+	var old_ing = ingredient_of_self
+	ingredient_of_self = arg_ing_effect
+	emit_signal("self_ingredient_changed", old_ing, ingredient_of_self)
+
 
 # Ingredient limit related
 
@@ -2940,6 +2949,7 @@ func queue_free():
 func _physics_process(delta):
 	if global_position != old_global_position:
 		emit_signal("global_position_changed", old_global_position, global_position)
+		
 	old_global_position = global_position
 	
 	_phy_knock_up_process(delta)
@@ -3365,7 +3375,11 @@ func _display_absorbed_ingredient_effects(arg_tier_of_ing : int):
 	if absorb_ing_particle_pool_component == null:
 		_initialize_absorb_ing_particle_pool_component()
 	
-	var max_i = ing_tier_to_amount_of_particles_map[arg_tier_of_ing]
+	var max_i = 3 #default
+	
+	if ing_tier_to_amount_of_particles_map.has(arg_tier_of_ing):
+		max_i = ing_tier_to_amount_of_particles_map[arg_tier_of_ing]
+	
 	for i in ing_tier_to_amount_of_particles_map[arg_tier_of_ing]:
 		var particle = absorb_ing_particle_pool_component.get_or_create_attack_sprite_from_pool()
 		particle.center_pos_of_basis = global_position

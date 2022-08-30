@@ -261,7 +261,7 @@ func _on_enemy_enter_range(enemy : AbstractEnemy):
 	
 	#enemy.connect("tree_exiting", self, "_on_enemy_leave_range", [enemy])
 
-# by leaving range or by dying
+# by leaving range
 func _on_enemy_leave_range(enemy : AbstractEnemy):
 	#enemies_in_range.erase(enemy)
 	_remove_enemy_from_enemies_in_range(enemy)
