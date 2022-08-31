@@ -22,7 +22,7 @@ var on_hit_effect_multiplier : float = 1
 var current_on_hit_damage_reapply_count : int = 0
 var current_on_hit_effect_reapply_count : int = 0
 
-# source of damage instance
+# source of damage instance. Use to credit damage from burns/poisons/DOT (not from direct hits from bullets, etc).
 var source_ref : WeakRef
 
 

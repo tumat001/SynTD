@@ -65,6 +65,7 @@ func create_tower_and_add_to_scene(tower_id : int, arg_placable_slot, is_tower_b
 
 
 func create_tower(tower_id : int, arg_placable_slot) -> AbstractTower:
+	# if it says "called instance on nil", you probably did not give the GDScript in Towers's get_tower_scene function
 	var tower_as_instance : AbstractTower = Towers.get_tower_scene(tower_id).instance()
 	
 	tower_as_instance.hovering_over_placable = arg_placable_slot

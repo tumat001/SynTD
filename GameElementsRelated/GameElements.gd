@@ -351,8 +351,8 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHAOS,
-			Towers.HERO,
+			Towers.ASHEND,
+			Towers.SHACKLED,
 			Towers.VARIANCE,
 			Towers.TRANSPORTER,
 			Towers.SIMPLEX,

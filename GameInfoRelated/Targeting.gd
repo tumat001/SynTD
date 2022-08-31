@@ -438,7 +438,7 @@ static func get_deg_angle_and_enemy_hit_count__that_hits_most_enemies(arg_param 
 		var targets_hit_and_ave_deviation = _get_target_hit_count_on_angle__and_average_deviation(arg_param, angle)
 		
 		if candidate_angle_targets_hit <= targets_hit_and_ave_deviation[0] and targets_hit_and_ave_deviation[0] != 0:
-			if (candidate_is_set and candidate_deviation > targets_hit_and_ave_deviation[1]) or !candidate_is_set or candidate_angle_targets_hit < targets_hit_and_ave_deviation[0]:
+			if (candidate_is_set and candidate_deviation > targets_hit_and_ave_deviation[1]) or !candidate_is_set or (candidate_angle_targets_hit < targets_hit_and_ave_deviation[0]):
 				candidate_angle = angle
 				candidate_angle_targets_hit = targets_hit_and_ave_deviation[0]
 				candidate_deviation = targets_hit_and_ave_deviation[1]
@@ -522,8 +522,25 @@ static func _if_target_is_hit_by_line_with_width__and_get_difference_of_angle_to
 	
 	var angle_to_enemy_pos = rad2deg(source_pos.angle_to_point(arg_target_pos))
 	angle_to_enemy_pos = _convert_angle_to_1to360(angle_to_enemy_pos)
+	arg_angle = _convert_angle_to_1to360(arg_angle)
 	
-	return [within_angle, abs(angle_to_enemy_pos - arg_angle)]
+#	var diff = abs(angle_to_enemy_pos - arg_angle)
+#	if diff > 180:
+#		diff = abs(diff - 360)
+	
+	var diff = _get_angle_diff(angle_to_enemy_pos, arg_angle)
+	#var diff = 0 # TODO use this for now to check is angle between angle
+	
+	return [within_angle, diff]
+
+static func _get_angle_diff(angle_01, angle_02):
+	var diff = angle_02 - angle_01
+	if diff < -180:
+		diff += 360
+	elif diff > 180:
+		diff -= 360
+
+	return abs(diff)
 
 
 static func _is_angle_between_angles(arg_angle, arg_angle_01, arg_angle_02):
@@ -531,13 +548,21 @@ static func _is_angle_between_angles(arg_angle, arg_angle_01, arg_angle_02):
 	arg_angle_01 = _convert_angle_to_1to360(arg_angle_01)
 	arg_angle_02 = _convert_angle_to_1to360(arg_angle_02)
 	
-	#print("angle: %s, angle_end_pos_02 : %s, angle_end_pos_01 : %s" % [arg_angle, arg_angle_02, arg_angle_01])
 	
 	if arg_angle_01 < arg_angle_02:
-		return arg_angle_01 <= arg_angle and arg_angle <= arg_angle_02
+		if arg_angle_02 - arg_angle_01 < 270:
+			return arg_angle_01 <= arg_angle and arg_angle <= arg_angle_02 #orig
+		else:
+			return arg_angle_01 >= arg_angle and arg_angle >= arg_angle_02
+		
 	else:
-		return arg_angle_01 <= arg_angle_01 or arg_angle <= arg_angle_02
-
+		
+		if arg_angle_01 - arg_angle_02 < 270:
+			return arg_angle_01 >= arg_angle and arg_angle >= arg_angle_02 #orig
+		else:
+			#print("angle: %s, angle_end_pos_01 : %s, angle_end_pos_02 : %s" % [arg_angle, arg_angle_01, arg_angle_02])
+			return arg_angle <= arg_angle_02 and arg_angle_01 >= arg_angle
+			
 
 static func _convert_angle_to_1to360(arg_angle):
 	arg_angle = fmod(arg_angle, 360)
@@ -587,3 +612,13 @@ static func _convert_angle_to_1to360(arg_angle):
 #	else: #dir == 2
 #		return arg_angle <= smaller_angle and arg_angle >= bigger_angle
 #
+
+
+static func convert_deg_angle_to_pos_to_target(arg_deg_angle_hit_count_arr : Array, arg_life_distance_of_proj : float, arg_pos_of_source : Vector2):
+	if arg_deg_angle_hit_count_arr.size() > 0:
+		return arg_pos_of_source + Vector2(-arg_life_distance_of_proj, 0).rotated(deg2rad(arg_deg_angle_hit_count_arr[0]))
+		
+	else:
+		return arg_pos_of_source + Vector2(-1, 0)
+
+

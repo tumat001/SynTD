@@ -60,7 +60,7 @@ const chaos_takeover_darksword_dmg_scale : float = 0.2
 
 
 func _init().(EffectType.CHAOS_TAKEOVER, StoreOfTowerEffectsUUID.ING_CHAOS):
-	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting with its own, however CHAOS's dark sword is only 20% effective. CHAOS retains the tower's colors and ingredient effects. The tower's self ingredient is replaced by this."
+	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting with its own, however CHAOS's dark sword is only 20% effective. CHAOS retains the tower's colors and absorbed ingredient effects. The tower's self ingredient is replaced to this."
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Chaos.png")
 
 

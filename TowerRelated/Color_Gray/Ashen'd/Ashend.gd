@@ -33,7 +33,7 @@ var efflux_ability : BaseAbility
 var efflux_attk_module : BulletAttackModule
 
 const efflux_wave_life_distance_ratio_to_current_range : float = 2.0
-const efflux_main_attacks_count_required : int = 16
+const efflux_main_attacks_count_required : int = 1 #16 #TODO
 const efflux_tower_empower__base_duration : float = 15.0
 const efflux_tower_empower__explosion_dmg_ratio_to_main : float = 0.25
 const efflux_tower_empower__explosion_pierce : int = 3
@@ -228,21 +228,23 @@ func _construct_and_add_efflux_wave():
 	targeting_line_params.source_position = efflux_attk_module.global_position
 	
 	var deg_angle_and_hit_count_arr = Targeting.get_deg_angle_and_enemy_hit_count__that_hits_most_enemies(targeting_line_params)
-	var target_pos = _convert_deg_angle_to_pos_to_target(deg_angle_and_hit_count_arr, life_distance_of_wave)
 	
-	#
-	var efflux_wave = efflux_attk_module.construct_bullet(target_pos)
-	
-	
-	efflux_wave.can_hit_towers = true
-	efflux_wave.connect("hit_a_tower", self, "_on_efflux_wave_hit_tower")
-	efflux_wave.life_distance = life_distance_of_wave
-	efflux_wave.decrease_pierce = false
-	efflux_wave.scale *= efflux_proj_size_scale
-	efflux_wave.modulate.a = 0.7
-	
-	efflux_attk_module.set_up_bullet__add_child_and_emit_signals(efflux_wave)
-	
+	if deg_angle_and_hit_count_arr.size() > 0:
+		var target_pos = Targeting.convert_deg_angle_to_pos_to_target(deg_angle_and_hit_count_arr, life_distance_of_wave, efflux_attk_module.global_position)  #_convert_deg_angle_to_pos_to_target(deg_angle_and_hit_count_arr, life_distance_of_wave)
+		
+		#
+		var efflux_wave = efflux_attk_module.construct_bullet(target_pos)
+		
+		
+		efflux_wave.can_hit_towers = true
+		efflux_wave.connect("hit_a_tower", self, "_on_efflux_wave_hit_tower")
+		efflux_wave.life_distance = life_distance_of_wave
+		efflux_wave.decrease_pierce = false
+		efflux_wave.scale *= efflux_proj_size_scale
+		efflux_wave.modulate.a = 0.7
+		
+		efflux_attk_module.set_up_bullet__add_child_and_emit_signals(efflux_wave)
+		
 
 
 func _get_poses_of_enemies(arg_enemies : Array) -> Array:
@@ -253,11 +255,11 @@ func _get_poses_of_enemies(arg_enemies : Array) -> Array:
 	
 	return poses
 
-func _convert_deg_angle_to_pos_to_target(arg_deg_angle_hit_count_arr : Array, arg_life_distance_of_wave : float):
-	if arg_deg_angle_hit_count_arr.size() > 0:
-		return efflux_attk_module.global_position + Vector2(-arg_life_distance_of_wave, 0).rotated(deg2rad(arg_deg_angle_hit_count_arr[0]))
-	else:
-		return efflux_attk_module.global_position + Vector2(-1, 0)
+#func _convert_deg_angle_to_pos_to_target(arg_deg_angle_hit_count_arr : Array, arg_life_distance_of_wave : float):
+#	if arg_deg_angle_hit_count_arr.size() > 0:
+#		return efflux_attk_module.global_position + Vector2(-arg_life_distance_of_wave, 0).rotated(deg2rad(arg_deg_angle_hit_count_arr[0]))
+#	else:
+#		return efflux_attk_module.global_position + Vector2(-1, 0)
 
 
 func _on_efflux_wave_hit_tower(arg_wave, arg_tower):

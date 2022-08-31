@@ -132,6 +132,7 @@ const amalgamator_image = preload("res://TowerRelated/Color_Black/Amalgamator/Am
 
 const healing_symbol_image = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/HealingSymbols_Omni_Charged.png")
 const nightwatcher_image = preload("res://TowerRelated/Color_Violet/Chaos/AbilityAssets/NightWatcher/Chaos_NightWatcher.png")
+const variance_vessel_image = preload("res://TowerRelated/Color_Violet/Variance_Vessel/Variance_Vessel_Omni.png")
 
 enum {
 	NONE = 0,
@@ -230,10 +231,11 @@ enum {
 	
 	
 	# MISC (2000)
-	FRUIT_TREE_FRUIT = 2000, #THIS VALUE IS HARDCODED IN AbstractTower's can_accept_ingredient..
+	FRUIT_TREE_FRUIT = 2000, #READ: THIS VALUE IS HARDCODED IN AbstractTower's can_accept_ingredient..
 	
 	HEALING_SYMBOL = 2001,
 	NIGHTWATCHER = 2002,
+	VARIANCE_VESSEL = 2003,
 }
 
 # Can be used as official list of all towers
@@ -299,6 +301,7 @@ const TowerTiersMap : Dictionary = {
 	L_ASSAUT : 4,
 	PAROXYSM : 4,
 	VARIANCE : 4,
+	VARIANCE_VESSEL : 4,
 	
 	VOLCANO : 5,
 	LAVA_JET : 5,
@@ -4936,10 +4939,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = ashend_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2
-		info.base_attk_speed = 0.9
+		info.base_damage = 0 #2 #todo
+		info.base_attk_speed = 5.0 #0.9 todo
 		info.base_pierce = 1
-		info.base_range = 135
+		info.base_range = 700 #135 todo
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -5199,7 +5202,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = iota_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.5
+		info.base_damage = 2 #2.5
 		info.base_attk_speed = 0.85
 		info.base_pierce = 1
 		info.base_range = 115
@@ -5342,10 +5345,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = variance_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 12))
 		
-		info.base_damage = 3
-		info.base_attk_speed = 0.7
+		info.base_damage = 0 #2.75 #todo
+		info.base_attk_speed = 2.0 #0.80 #todo
 		info.base_pierce = 1
-		info.base_range = 105
+		info.base_range = 300 #105 #todo
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -5388,6 +5391,47 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		interpreter_for_blue_explosion_dmg.array_of_instructions = ins_for_blue_explosion_dmg
 		
+		
+		var interpreter_for_ap = TextFragmentInterpreter.new()
+		interpreter_for_ap.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_ap.display_body = false
+		
+		var ins_for_ap = []
+		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.5, false))
+		
+		interpreter_for_ap.array_of_instructions = ins_for_ap
+		
+		#
+		
+		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+		interpreter_for_attk_speed.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_attk_speed.display_body = false
+		interpreter_for_attk_speed.header_description = "attack speed"
+		
+		var ins_for_attk_speed = []
+		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 30, true))
+		
+		#ins_for_attk_speed.append(NumericalTextFragment.new(30, true))
+		#ins_for_attk_speed.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		#ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+		
+		#
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(35, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
 		#
 		
 		info.tower_descriptions = [
@@ -5396,19 +5440,51 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ability: Specialize. Effect differs based on Variance's type.",
 			"Clear Type: Remove almost all effects from enemies in range three times over 10 seconds.",
 			["Damage Type: The first main attack knocks its target back. The first and second main attack stuns for 2 seconds. Afterwards, fire a massive glob that deals |0| to 3 enemies.", [interpreter_for_red_explosion]],
-			["Speed Type: .", []],
-			["Potency Type: Deal |0| per 0.25 seconds to its current target until it dies or leaves range. Afterwards, release an explosion at its target's location, dealing |1|.", [interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg]],
-			["Cooldown: |0|", []],
+			["Speed Type: Gain |0| for 20 seconds. Innate: Summon a vessel outside of range every 30 main attacks. Vessels last for only one round.", [interpreter_for_attk_speed]],
+			["Potency Type: Deal |0| per 0.25 seconds to its current target until it dies or leaves range. Afterwards, release an explosion at its target's location, dealing |1|. If this is casted while the beam is active, gain stacking |2|.", [interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg, interpreter_for_ap]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
 #			"",
 #			"After 1 round, learn ability: Lock.",
 #			"Ability: Lock. Permanently prevents Variance from changing types on round end."
 		]
+		
+		info.tower_simple_descriptions = [
+			"On round end: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it.",
+			"",
+			"Ability: Specialize. Effect differs based on Variance's type.",
+			"",
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+		]
+		
 		
 		var tower_effect = TowerResetEffects.new(StoreOfTowerEffectsUUID.ING_VARIANCE_ING_RESET)
 		var ing_effect = IngredientEffect.new(tower_id, tower_effect)
 		ing_effect.ignore_ingredient_limit = true
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "clear"
+		
+		
+		
+	elif tower_id == VARIANCE_VESSEL:
+		info = TowerTypeInformation.new("Var-Vessel", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.VIOLET)
+		info.base_tower_image = variance_vessel_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0
+		info.base_pierce = 0
+		info.base_range = 0
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			["On its creator's main attack: fire a bullet toward its creator's target. The bullet deals |0| and has |1|.", []],
+			"On this tower's 10th attack, fire additional 3 bullets to the largest line of enemies."
+		]
+		
 		
 		
 #	elif tower_id == WYVERN:
@@ -5599,5 +5675,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Blue/Vacuum/Vacuum.tscn")
 	elif tower_id == VARIANCE:
 		return load("res://TowerRelated/Color_Violet/Variance/Variance.tscn")
-
+	elif tower_id == VARIANCE_VESSEL:
+		return load("res://TowerRelated/Color_Violet/Variance_Vessel/Variance_Vessel.tscn")
 

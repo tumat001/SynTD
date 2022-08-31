@@ -352,6 +352,14 @@ func get_path_of_enemy(arg_enemy) -> EnemyPath:
 	
 	return null
 
+#
+
+func get_all_targetable_enemy_positions():
+	var bucket := []
+	for enemy in get_all_targetable_enemies():
+		bucket.append(enemy.global_position)
+	
+	return bucket
 
 # enemy count related
 

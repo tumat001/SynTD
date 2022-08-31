@@ -417,7 +417,8 @@ func _update_active_synergy():
 func _get_all_synergy_contributing_towers() -> Array:
 	var bucket : Array = []
 	for tower in get_children():
-		if tower is AbstractTower and tower.last_calculated_is_contributing_to_synergy:
+		# if something synergy related broke, its probably by !is_queued_by_deletion()
+		if tower is AbstractTower and tower.last_calculated_is_contributing_to_synergy and tower != null and !tower.is_queued_for_deletion():
 			bucket.append(tower)
 	
 	return bucket

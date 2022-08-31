@@ -133,7 +133,7 @@ signal on_any_range_module_current_enemies_acquired(module, range_module)
 
 
 signal on_round_end
-signal on_round_end__set_up_from_manager_aware(arg_is_startup_from_tower_manager)
+#signal on_round_end__set_up_from_manager_aware(arg_is_startup_from_tower_manager)
 signal on_round_end__before_any_round_end_reverts() # used to check if tower had this effect (before being cleared), and if the tower is dead before the round ending (look at round end func to see what gets reverted)
 signal on_round_start
 
@@ -159,8 +159,11 @@ signal on_is_contributing_to_synergy_color_count_changed(new_val)
 
 signal on_per_round_total_damage_changed(per_round_total_dmg)
 
-#
+# Clause related
 
+signal on_last_calculated_disabled_from_attacking_changed(arg_new_val)
+
+#
 signal on_heat_module_overheat()
 signal on_heat_module_overheat_cooldown()
 
@@ -2879,6 +2882,7 @@ func _disabled_from_attacking_clause_added_or_removed(id):
 
 func _update_last_calculated_disabled_from_attacking():
 	last_calculated_disabled_from_attacking = !disabled_from_attacking_clauses.is_passed_clauses()
+	emit_signal("on_last_calculated_disabled_from_attacking_changed", last_calculated_disabled_from_attacking)
 
 # Untargetability Clauses
 

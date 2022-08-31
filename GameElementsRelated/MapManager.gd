@@ -17,6 +17,12 @@ enum PlacableState {
 	ANY,
 }
 
+enum RangeState {
+	IN_RANGE,
+	OUT_OF_RANGE,
+	ANY,
+}
+
 
 #
 
@@ -101,13 +107,29 @@ func get_all_placables_in_range_from_mouse(radius : float,
 func get_all_placables_in_range(center_pos : Vector2, radius : float, 
 		placable_state : int = PlacableState.ANY, sort_order : int = SortOrder.CLOSEST) -> Array:
 	
+	return get_all_placables_based_on_targeting_params(center_pos, radius, placable_state, sort_order)
+
+func get_all_placables_out_of_range(center_pos : Vector2, radius : float, 
+		placable_state : int = PlacableState.ANY, sort_order : int = SortOrder.CLOSEST) -> Array:
+	
+	return get_all_placables_based_on_targeting_params(center_pos, radius, placable_state, sort_order, RangeState.OUT_OF_RANGE)
+
+
+
+func get_all_placables_based_on_targeting_params(center_pos : Vector2, radius : float, 
+		placable_state : int = PlacableState.ANY, sort_order : int = SortOrder.CLOSEST,
+		range_state : int = RangeState.IN_RANGE) -> Array:
+	
 	var bucket := []
 	
 	var placable_to_distance_array := []
 	var all_placables = base_map.all_in_map_placables
 	for placable in all_placables:
+		
 		var distance = center_pos.distance_to(placable.global_position)
-		if (radius < distance):
+		if (range_state == RangeState.IN_RANGE and radius < distance):
+			continue
+		elif (range_state == RangeState.OUT_OF_RANGE and radius > distance):
 			continue
 		
 		#
@@ -128,7 +150,8 @@ func get_all_placables_in_range(center_pos : Vector2, radius : float,
 	elif sort_order == SortOrder.CLOSEST:
 		placable_to_distance_array.sort_custom(CustomSorter, "sort_placable_by_closest")
 	elif sort_order == SortOrder.RANDOM:
-		_find_random_distinct_placables(placable_to_distance_array, placable_to_distance_array.size())
+		placable_to_distance_array = _find_random_distinct_placables(placable_to_distance_array, placable_to_distance_array.size())
+		placable_to_distance_array.shuffle()
 	
 	#
 	

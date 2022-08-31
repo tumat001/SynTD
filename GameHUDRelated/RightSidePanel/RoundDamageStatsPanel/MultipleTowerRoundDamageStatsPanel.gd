@@ -65,7 +65,8 @@ func _on_round_start(curr_stageround):
 	yield(get_tree(), "idle_frame")
 	
 	for active_tower in tower_manager.get_all_in_map_towers():
-		_attempt_create_single_stat_panel_for_tower(active_tower)
+		if !active_tower.is_queued_for_deletion():
+			_attempt_create_single_stat_panel_for_tower(active_tower)
 	
 	update_timer.paused = false
 	_update_display_of_all_single_damage_stats()
@@ -117,3 +118,5 @@ func _update_display_of_all_single_damage_stats():
 
 func _on_single_stat_panel_left_clicked(arg_tower, panel):
 	emit_signal("on_tower_in_single_panel_left_clicked", arg_tower)
+
+
