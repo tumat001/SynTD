@@ -22,7 +22,8 @@ func _ready():
 func update_display():
 	
 	if tower != null:
-		var tower_type_info =  Towers.get_tower_info(tower.tower_id)
+		#var tower_type_info =  Towers.get_tower_info(tower.tower_id)
+		var tower_type_info = tower.tower_type_info
 		
 		tooltip_body.descriptions = GameSettingsManager.get_descriptions_to_use_based_on_tower_type_info(tower_type_info, game_settings_manager)
 		tooltip_body.tower_for_text_fragment_interpreter = tower

@@ -54,11 +54,11 @@ signal all_stars_beam_to_target(arg_target)
 
 const star_base_lifetime : float = 30.0
 const star_beam_flat_dmg_amount : float = 0.25
-const star_beam_base_dmg_scale : float = 0.05
+const star_beam_base_dmg_scale : float = 0.25
 const star_beam_attack_speed : float = 4.0 # 4 times per sec (just like attack speed)
 
 const star_crash_flat_dmg_amount : float = 2.0
-const star_crash_on_hit_dmg_scale : float = 1.0
+const star_crash_on_hit_dmg_scale : float = 4.0
 
 const main_attacks_for_star_summon : int = 7
 var _current_main_attack_count : int
@@ -158,6 +158,8 @@ func _ready():
 	
 	
 	info_bar_layer.position.y -= 31
+	
+	core_sprite.use_parent_material = false
 	
 	#
 	

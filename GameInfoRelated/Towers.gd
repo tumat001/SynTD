@@ -412,7 +412,7 @@ func _init():
 	for color in TowerColors.get_all_colors():
 		tower_color_to_tower_id_map[color] = []
 	
-	for tower_id in TowerTiersMap:
+	for tower_id in TowerTiersMap.keys():
 		var tower_info = get_tower_info(tower_id)
 		tower_id_info_type_singleton_map[tower_id] = tower_info
 		
@@ -771,8 +771,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"When not on cooldown, gain a stack per main attack, increased to 2 stacks against stunned enemies. On 20 stacks, cast Amp Up.",
 			["Ability: Amp Up: Summon an Amp that orbits around Tesla, dealing |0| to enemies hit. Applies on hit effects.", [interpreter_for_flat_on_hit]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
-			"",
-			"Ability potency increases orbit speed."
+			#"",
+			#"Ability potency increases orbit speed."
 		]
 		
 		var enemy_effect : EnemyStunEffect = EnemyStunEffect.new(0.25, StoreOfEnemyEffectsUUID.ING_TESLA)
@@ -947,7 +947,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_simple_descriptions = [
 			["Shoots an arrow that marks up to |0|.", [interpreter_for_mark_count]],
-			["Ping shoots all marked enemies, dealing |0| to each enemy.", [interpreter_for_normal_shot]],
+			["After a brief delay, Ping shoots all marked enemies, dealing |0| to each enemy.", [interpreter_for_normal_shot]],
 			["If only 1 enemy is marked, the shot instead deals |0|.", [interpreter_for_emp_shot]],
 		]
 		
@@ -1000,7 +1000,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			["Shoots coins at enemies. Coins can hit up to |0|.", [interpreter_for_pierce]],
 			"When a coin kills 2 enemies, it grants 1 gold to the player.",
-			"The tower has a 1/50 chance of granting 1 gold to the player when attacking.",
+			"Main attacks have a 1/50 chance of granting 1 gold to the player.",
 		]
 		
 		# Ingredient related
@@ -1153,8 +1153,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Attacks apply a stack of \"static\" on enemies hit for 3 seconds, with this duration refreshing per hit.",
-			"When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 2 seconds."
+#			"Attacks apply a stack of \"static\" on enemies hit for 3 seconds, with this duration refreshing per hit.",
+#			"When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for 2 seconds."
+			"5 attacks against an enemy within 3 seconds of the last attack stuns them for 2 seconds."
 		]
 		
 		info.tower_simple_descriptions = [
@@ -1168,7 +1169,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		enemy_effect.time_in_seconds = 3
 		
 		var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.ING_MINI_TESLA)
-		tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for %s seconds." % str(mini_tesla_ing_stun_duration)
+		#tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for %s seconds." % str(mini_tesla_ing_stun_duration)
+		tower_effect.description = "5 attacks within 3 seconds of the last attack against an enemy stuns them for %s seconds." % str(mini_tesla_ing_stun_duration)
 		tower_effect.effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Static.png")
 		
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
@@ -1330,7 +1332,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = sunflower_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.1
+		info.base_damage = 2
 		info.base_attk_speed = 0.375
 		info.base_pierce = 1
 		info.base_range = 110
@@ -1338,7 +1340,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		info.tower_descriptions = [
-			"Sprays lots of seeds at enemies with slight inaccuracy. Attacks in bursts of 8.",
+			"Sprays lots of seeds at enemies with slight inaccuracy. Attacks in bursts of 7.",
 		]
 		
 		# Ingredient related
@@ -3496,8 +3498,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = hero_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 1.3
-		info.base_attk_speed = 0.83
+		info.base_damage = 1.5#1.3
+		info.base_attk_speed = 0.85 #0.83
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.PHYSICAL
@@ -3670,8 +3672,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = pinecone_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.0 #2.65
-		info.base_attk_speed = 0.6
+		info.base_damage = 2.35 #2.65
+		info.base_attk_speed = 0.66#0.6
 		info.base_pierce = 1
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
@@ -4369,9 +4371,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var outer_ins = []
 		var ins = []
-		ins.append(NumericalTextFragment.new(2.5, false, DamageType.ELEMENTAL))
+		ins.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1, DamageType.ELEMENTAL))
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.75, DamageType.ELEMENTAL))
 		
 		outer_ins.append(ins)
 		
@@ -4389,7 +4391,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_cooldown.header_description = "s"
 		
 		var ins_for_cooldown = []
-		ins_for_cooldown.append(NumericalTextFragment.new(50, false))
+		ins_for_cooldown.append(NumericalTextFragment.new(65, false))
 		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
 		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
@@ -4939,10 +4941,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = ashend_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 0 #2 #todo
-		info.base_attk_speed = 5.0 #0.9 todo
+		info.base_damage = 2
+		info.base_attk_speed = 0.9
 		info.base_pierce = 1
-		info.base_range = 700 #135 todo
+		info.base_range = 135
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -5202,10 +5204,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = iota_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2 #2.5
-		info.base_attk_speed = 0.85
+		info.base_damage = 2
+		info.base_attk_speed = 0.875
 		info.base_pierce = 1
-		info.base_range = 115
+		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -5218,7 +5220,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_crash_dmg = []
 		ins_for_crash_dmg.append(NumericalTextFragment.new(2.0, false, DamageType.PHYSICAL))
 		ins_for_crash_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_crash_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0)) # stat basis does not matter here
+		ins_for_crash_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 4.0)) # stat basis does not matter here
 		
 		interpreter_for_crash_dmg.array_of_instructions = ins_for_crash_dmg
 		
@@ -5230,7 +5232,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_beam_dmg = []
 		ins_for_beam_dmg.append(NumericalTextFragment.new(0.25, false, DamageType.ELEMENTAL))
 		ins_for_beam_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_beam_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.05, DamageType.ELEMENTAL))
+		ins_for_beam_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.25, DamageType.ELEMENTAL))
 		
 		interpreter_for_beam_dmg.array_of_instructions = ins_for_beam_dmg
 		
@@ -5345,10 +5347,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = variance_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 12))
 		
-		info.base_damage = 0 #2.75 #todo
-		info.base_attk_speed = 2.0 #0.80 #todo
+		info.base_damage = 2.75
+		info.base_attk_speed = 0.80
 		info.base_pierce = 1
-		info.base_range = 300 #105 #todo
+		info.base_range = 105
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -5411,10 +5413,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_attk_speed = []
 		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 30, true))
 		
-		#ins_for_attk_speed.append(NumericalTextFragment.new(30, true))
-		#ins_for_attk_speed.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
-		#ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
-		
 		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
 		
 		#
@@ -5440,11 +5438,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ability: Specialize. Effect differs based on Variance's type.",
 			"Clear Type: Remove almost all effects from enemies in range three times over 10 seconds.",
 			["Damage Type: The first main attack knocks its target back. The first and second main attack stuns for 2 seconds. Afterwards, fire a massive glob that deals |0| to 3 enemies.", [interpreter_for_red_explosion]],
-			["Speed Type: Gain |0| for 20 seconds. Innate: Summon a vessel outside of range every 30 main attacks. Vessels last for only one round.", [interpreter_for_attk_speed]],
+			["Speed Type: Gain |0| for 20 seconds. Innate: Summon a vessel outside of range every 25 main attacks. Vessels last for only one round.", [interpreter_for_attk_speed]],
 			["Potency Type: Deal |0| per 0.25 seconds to its current target until it dies or leaves range. Afterwards, release an explosion at its target's location, dealing |1|. If this is casted while the beam is active, gain stacking |2|.", [interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg, interpreter_for_ap]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 #			"",
-#			"After 1 round, learn ability: Lock.",
 #			"Ability: Lock. Permanently prevents Variance from changing types on round end."
 		]
 		
@@ -5480,10 +5477,37 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
-		info.tower_descriptions = [
-			["On its creator's main attack: fire a bullet toward its creator's target. The bullet deals |0| and has |1|.", []],
-			"On this tower's 10th attack, fire additional 3 bullets to the largest line of enemies."
-		]
+		# GENERATED BY VARIANCE
+#		var interpreter_for_bullet_dmg = TextFragmentInterpreter.new()
+#		interpreter_for_bullet_dmg.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_bullet_dmg.display_body = true
+#		interpreter_for_bullet_dmg.display_header = false
+#
+#		var ins_for_bullet_dmg = []
+#		ins_for_bullet_dmg.append(NumericalTextFragment.new(1, false, DamageType.PHYSICAL))
+#		ins_for_bullet_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+#		ins_for_bullet_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25)) # stat basis does not matter here
+#
+#		interpreter_for_bullet_dmg.array_of_instructions = ins_for_bullet_dmg
+#
+#
+#		var interpreter_for_pierce = TextFragmentInterpreter.new()
+#		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_pierce.display_body = true
+#		interpreter_for_pierce.display_header = false
+#		interpreter_for_pierce.header_description = "pierce"
+#
+#		var ins_for_pierce = []
+#		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+#
+#		interpreter_for_pierce.array_of_instructions = ins_for_pierce
+#
+#		#
+#
+#		info.tower_descriptions = [
+#			["On its creator's main attack: fire a bullet toward its creator's target. The bullet deals |0| and has |1|.", [interpreter_for_bullet_dmg, interpreter_for_pierce]],
+#			"On this tower's 10th attack, fire additional 3 bullets to the largest line of enemies. These bullets have infinite pierce."
+#		]
 		
 		
 		

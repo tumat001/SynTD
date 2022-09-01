@@ -63,14 +63,17 @@ class TargetingParameters:
 static func _find_random_distinct_enemies(enemies : Array, count : int):
 	var copy : Array = enemies.duplicate(false)
 	
-	if count >= enemies.size():
-		return copy
+	#if count >= enemies.size():
+	#	return copy
 	
 	var bucket : Array = []
 	var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TARGETING)
 	
 	for i in count:
-		if i >= copy.size():
+#		if i >= copy.size():
+#			return bucket
+		
+		if count <= bucket.size():
 			return bucket
 		
 		var rand_index = rng.randi_range(0, copy.size() - 1)

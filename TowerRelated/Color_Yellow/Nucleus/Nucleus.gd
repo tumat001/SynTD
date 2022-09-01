@@ -50,11 +50,11 @@ var nucleus_original_attk_module : BulletAttackModule
 
 
 var gamma_ability : BaseAbility
-var gamma_ability_flat_damage_amount : float = 2.5
-var gamma_ability_percent_base_dmg_amount : float = 0.4
+var gamma_ability_flat_damage_amount : float = 1
+var gamma_ability_percent_base_dmg_amount : float = 0.75
 var gamma_ability_duration : float = 8.0
 var gamma_ability_damage_repeat_count : int = 16
-var gamma_ability_base_cooldown : float = 50.0
+var gamma_ability_base_cooldown : float = 65.0
 
 var gamma_ability_activation_clauses : ConditionalClauses
 const _no_enemies_in_range_clause : int = -10

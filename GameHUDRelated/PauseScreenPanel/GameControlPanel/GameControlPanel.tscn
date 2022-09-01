@@ -77,7 +77,7 @@ scroll_horizontal_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer"]
 margin_right = 400.0
-margin_bottom = 520.0
+margin_bottom = 577.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 8
@@ -137,10 +137,20 @@ margin_right = 191.0
 margin_left = 209.0
 margin_right = 397.0
 
-[node name="Separator" type="MarginContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+[node name="HBoxContainer10" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
 margin_top = 228.0
 margin_right = 400.0
-margin_bottom = 235.0
+margin_bottom = 277.0
+custom_constants/separation = 12
+
+[node name="KeySum_ShowExtraInfoPanel" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer10" instance=ExtResource( 3 )]
+margin_left = 106.0
+margin_right = 294.0
+
+[node name="Separator" type="MarginContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 285.0
+margin_right = 400.0
+margin_bottom = 292.0
 custom_constants/margin_right = 10
 custom_constants/margin_top = 2
 custom_constants/margin_left = 10
@@ -155,9 +165,9 @@ texture = ExtResource( 4 )
 stretch_mode = 2
 
 [node name="HBoxContainer5" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
-margin_top = 243.0
+margin_top = 300.0
 margin_right = 400.0
-margin_bottom = 292.0
+margin_bottom = 349.0
 custom_constants/separation = 12
 
 [node name="KeySum_TowerAbility01" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer5" instance=ExtResource( 3 )]
@@ -169,9 +179,9 @@ margin_left = 209.0
 margin_right = 397.0
 
 [node name="HBoxContainer6" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
-margin_top = 300.0
+margin_top = 357.0
 margin_right = 400.0
-margin_bottom = 349.0
+margin_bottom = 406.0
 custom_constants/separation = 12
 
 [node name="KeySum_TowerAbility03" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer6" instance=ExtResource( 3 )]
@@ -183,9 +193,9 @@ margin_left = 209.0
 margin_right = 397.0
 
 [node name="HBoxContainer7" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
-margin_top = 357.0
+margin_top = 414.0
 margin_right = 400.0
-margin_bottom = 406.0
+margin_bottom = 463.0
 custom_constants/separation = 12
 
 [node name="KeySum_TowerAbility05" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer7" instance=ExtResource( 3 )]
@@ -197,9 +207,9 @@ margin_left = 209.0
 margin_right = 397.0
 
 [node name="HBoxContainer8" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
-margin_top = 414.0
+margin_top = 471.0
 margin_right = 400.0
-margin_bottom = 463.0
+margin_bottom = 520.0
 custom_constants/separation = 12
 
 [node name="KeySum_TowerAbility07" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer8" instance=ExtResource( 3 )]
@@ -211,9 +221,9 @@ margin_left = 209.0
 margin_right = 397.0
 
 [node name="HBoxContainer9" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
-margin_top = 471.0
+margin_top = 528.0
 margin_right = 400.0
-margin_bottom = 520.0
+margin_bottom = 577.0
 custom_constants/separation = 12
 
 [node name="KeySum_TowerPanelAbility01" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer9" instance=ExtResource( 3 )]

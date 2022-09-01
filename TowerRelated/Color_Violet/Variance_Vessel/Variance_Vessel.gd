@@ -16,15 +16,14 @@ const TimerForTower = preload("res://TowerRelated/CommonBehaviorRelated/TimerFor
 
 const bullet_pierce : int = 1
 
-const attacks_for_super_bullet_salvo : int = 2#10 #TODO
+const attacks_for_super_bullet_salvo : int = 10
 const super_bullet_count_per_salvo : int = 3
-const super_bullet_life_distance : float = 1500.0
+const super_bullet_min_life_distance : float = 1500.0
 const delay_per_bullet_in_salvo : float = 0.15
 const bullet_salvo_y_extent_hitbox : float = 6.0
 var _current_attacks_left_to_trigger_salvo : int = attacks_for_super_bullet_salvo
 var _current_salvo_count_left : int
 var _current_pos_of_fire_for_salvo : Vector2
-var _current_deg_angle : float #TODO TEMP
 var _current_distance_to_pos_of_fire : float
 var _has_pos_to_fire_for_salvo : bool
 
@@ -124,7 +123,7 @@ func _construct_super_proj_attk_module():
 	attack_module.is_main_attack = false
 	attack_module.base_pierce = bullet_pierce
 	attack_module.base_proj_speed = 750
-	attack_module.base_proj_life_distance = super_bullet_life_distance
+	attack_module.base_proj_life_distance = super_bullet_min_life_distance
 	attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	attack_module.position.y -= y_shift_of_attk_module
 	
@@ -157,6 +156,8 @@ func set_variance_creator(arg_creator):
 	variance_creator.connect("tree_exiting", self, "_on_creator_queue_free", [], CONNECT_ONESHOT)
 	variance_creator.connect("on_main_attack", self, "_on_variance_creator_main_attack")
 	
+	tower_type_info.tower_descriptions = variance_creator.get_tower_descriptions_to_use_for_vessel()
+	
 
 func _on_creator_queue_free():
 	queue_free()
@@ -186,7 +187,7 @@ func _configure_bullet_dmg_instance(arg_bullet : BaseBullet, arg_target_pos):
 	var variance_yellow_dmg_inst = variance_creator.yellow_inst_dmg_attk_module.construct_damage_instance()
 	arg_bullet.damage_instance = variance_yellow_dmg_inst
 	
-	var pierce_to_use : int = 1
+	var pierce_to_use : int = bullet_pierce
 	if variance_creator.main_attack_module != null and variance_creator.main_attack_module is BulletAttackModule:
 		pierce_to_use = variance_creator.main_attack_module.last_calculated_final_pierce
 	arg_bullet.pierce = pierce_to_use
@@ -196,8 +197,8 @@ func _configure_bullet_dmg_instance(arg_bullet : BaseBullet, arg_target_pos):
 
 func _attack_as_salvo_with_super_proj(arg_pos):
 	var distance = super_bullet_attack_module.global_position.distance_to(arg_pos)
-	if super_bullet_life_distance > distance: #todo put this back
-		distance = super_bullet_life_distance
+	if super_bullet_min_life_distance > distance:
+		distance = super_bullet_min_life_distance
 	_current_distance_to_pos_of_fire = distance
 	
 	_current_salvo_count_left = super_bullet_count_per_salvo
@@ -218,18 +219,7 @@ func _update_vector_to_fire_salvo(arg_distance_to_enemy):
 	_has_pos_to_fire_for_salvo = angle_and_count.size() > 0
 	
 	if _has_pos_to_fire_for_salvo:
-		_current_pos_of_fire_for_salvo = Targeting.convert_deg_angle_to_pos_to_target(angle_and_count, super_bullet_life_distance, super_bullet_attack_module.global_position)  #_convert_deg_angle_to_pos_to_target(angle_and_count, super_bullet_life_distance)
-		_current_deg_angle = angle_and_count[0] #TODO
-		update() #TODO TEMP
-
-func _draw(): #TODO TEMP
-	draw_line(Vector2(0, 0), Vector2(-100, 0).rotated(deg2rad(_current_deg_angle)), Color(1, 0, 0, 1), 3)
-
-#func _convert_deg_angle_to_pos_to_target(arg_deg_angle_hit_count_arr : Array, arg_life_distance_of_wave : float):
-#	if arg_deg_angle_hit_count_arr.size() > 0:
-#		return super_bullet_attack_module.global_position + Vector2(-arg_life_distance_of_wave, 0).rotated(deg2rad(arg_deg_angle_hit_count_arr[0]))
-#	else:
-#		return super_bullet_attack_module.global_position + Vector2(-1, 0)
+		_current_pos_of_fire_for_salvo = Targeting.convert_deg_angle_to_pos_to_target(angle_and_count, _current_distance_to_pos_of_fire, super_bullet_attack_module.global_position)  #_convert_deg_angle_to_pos_to_target(angle_and_count, super_bullet_life_distance)
 
 
 func _fire_super_bullet_as_part_of_salvo():
@@ -238,6 +228,7 @@ func _fire_super_bullet_as_part_of_salvo():
 	var bullet = super_bullet_attack_module.construct_bullet(_current_pos_of_fire_for_salvo)
 	_configure_bullet_dmg_instance(bullet, _current_pos_of_fire_for_salvo)
 	bullet.life_distance = _current_distance_to_pos_of_fire #super_bullet_life_distance
+	bullet.decrease_pierce = false 
 	
 	super_bullet_attack_module.set_up_bullet__add_child_and_emit_signals(bullet)
 
@@ -258,6 +249,7 @@ func _on_round_end_v():
 	_has_pos_to_fire_for_salvo = false
 	_current_distance_to_pos_of_fire = 0
 	
+
 
 func _before_on_round_start_v(curr_stageround):
 	if variance_creator != null: # needed since it will prevent this from passing when called by tower manager.. Jank solution but whatever

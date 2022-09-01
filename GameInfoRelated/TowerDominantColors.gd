@@ -118,7 +118,7 @@ func _init():
 	interpreter_for_black_bonus_dmg.array_of_instructions = ins_for_black_bonus_dmg
 	
 	
-	var black_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.BLACK], [TowerColors.BLACK], [10, 8, 5, 2],
+	var black_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.BLACK], [TowerColors.BLACK], [4, 3, 2, 1], #[10, 8, 5, 2], #todo
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_black,
 	[

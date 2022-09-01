@@ -14,6 +14,8 @@ onready var keysum_toggle_tower_targeting_right = $VBoxContainer/ContentContaine
 onready var keysum_combine_towers = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer4/KeySum_CombineTowers
 onready var keysum_toggle_description_mode = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer4/KeySum_ToggleDescriptionMode
 
+onready var keysum_show_extra_tower_info = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer10/KeySum_ShowExtraInfoPanel
+
 
 onready var keysum_tower_ability_01 = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer5/KeySum_TowerAbility01
 onready var keysum_tower_ability_02 = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer5/KeySum_TowerAbility02
@@ -70,6 +72,10 @@ func _ready():
 	keysum_toggle_description_mode.set_key_name_text("Toggle\nDescription Mode")
 	keysum_toggle_description_mode.set_action_name("game_description_mode_toggle")
 	all_keysums.append(keysum_toggle_description_mode)
+	
+	keysum_show_extra_tower_info.set_key_name_text("Show Extra Info\nof Tower")
+	keysum_show_extra_tower_info.set_action_name("game_show_tower_extra_info_panel")
+	all_keysums.append(keysum_show_extra_tower_info)
 	
 	
 	var highest_rect_x = 0

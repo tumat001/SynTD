@@ -57,6 +57,11 @@ const Black_Nova_Explosion01 = preload("res://GameInfoRelated/ColorSynergyRelate
 const Black_NovaAPEffect_StatusBarIcon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/StatusBarIcons/Black_NovaAPEffect_StatusBarIcon.png")
 const Black_LightningAPEffect_StatusBarIcon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/StatusBarIcons/Black_LightningAPEffect_StatusBarIcon.png")
 
+const MultipleTrailsForNodeComponent = preload("res://MiscRelated/TrailRelated/MultipleTrailsForNodeComponent.gd")
+const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
+const CenterBasedAttackSprite = preload("res://MiscRelated/AttackSpriteRelated/CenterBasedAttackSprite.gd")
+const CenterBasedAttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/CenterBasedAttackSprite.tscn")
+const Nova_SmallParticle_Pic = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/Assets/NovaParticle/Black_Nova_SmallParticle.png")
 
 const SYN_INACTIVE : int = -1
 
@@ -96,9 +101,7 @@ const disarray_beam_applies_on_hit_effects_tier_2 : bool = false
 const disarray_beam_applies_on_hit_effects_tier_1 : bool = true
 
 const disarray_name : String = "Disarray"
-const disarray_descriptions_tier_2_simple : Array = [
-	
-]
+const disarray_descriptions_tier_2_simple : Array = []
 
 
 const disarray_fireball_base_damage : float = 2.0
@@ -110,9 +113,7 @@ const disarray_fireball_bonus_on_hit_dmg_scale : float = 0.4
 
 const disarray_fireball_black_beam_count_for_summon : int = 10
 
-const disarray_descriptions_tier_1_simple : Array = [
-	
-]
+const disarray_descriptions_tier_1_simple : Array = []
 #const disarray_descriptions_tier_1_simple : Array = [
 #	"Black beams now apply on hit effects.",
 #	"Every %sth black beam is replaced by a fireball, dealing %s damage to %s enemies. Benefits from base damage and on hit damage buffs." % [str(disarray_fireball_black_beam_count_for_summon), str(disarray_fireball_base_damage), str(disarray_fireball_pierce)]
@@ -128,9 +129,9 @@ enum EntityType {
 	ENEMY = 2,
 }
 
-const capacitor_ability_cast_count_requirement : int = 25
-const capacitor_buff_duration_tier_2 : float = 50.0
-const capacitor_buff_duration_tier_1 : float = 50.0
+const capacitor_ability_cast_count_requirement : int = 15
+const capacitor_buff_duration_tier_2 : float = 90.0
+const capacitor_buff_duration_tier_1 : float = 90.0 # no desc is made. if this should be different, then change descs
 
 const capacitor_ap_buff_amount_tier_2 : float = 0.75
 const capacitor_ap_buff_amount_tier_1 : float = 0.75
@@ -151,18 +152,24 @@ var _capacitor_nova_created_in_round : bool
 var _capacitor_current_cast_count_in_round : int
 
 const capacitor_name : String = "Capacitor"
-const capacitor_descriptions_tier_2_simple : Array = [
-	
-]
+const capacitor_descriptions_tier_2_simple : Array = []
 #const capacitor_descriptions_tier_2_simple : Array = [
 #	"After %s abilities are casted, summon a nova that explodes after %s seconds, stunning all enemies for %s seconds, and preventing new enemies from spawning for %s seconds. All tower abilities's ongoing cooldowns are reduced by %s%%" % [str(capacitor_ability_cast_count_requirement), str(capacitor_nova_ramp_up_time), str(capacitor_nova_stun_time), str(capacitor_nova_stop_enemy_spawn_time), str(capacitor_ongoing_cooldown_percent_reduction_tier_2 * 100)],
 #	"For the next %s seconds, towers gain %s ability potency and %s%% cooldown reduction." % [str(capacitor_buff_duration_tier_2), str(capacitor_ap_buff_amount_tier_2), str(capacitor_cdr_buff_amount_tier_2)]
 #]
 
+var capacitor_nova_small_particle_pool : AttackSpritePoolComponent
+var capacitor_nova_small_particle_trail_compo : MultipleTrailsForNodeComponent
+var capacitor_nova_small_particle_interval_timer : Timer
+var capacitor_nova_small_particle_spawn_duration_timer : Timer
+const capacitor_nova_small_particle_delay_interval : float = 0.15
+const capacitor_nova_small_particle_lifetime : float = 0.7
+const capacitor_nova_small_particle_spawn_duration : float = capacitor_nova_ramp_up_time - capacitor_nova_small_particle_lifetime
+
 
 const capacitor_lightning_delay_after_nova : float = capacitor_nova_stun_time
 
-const capacitor_lightning_count_tier_1 : int = 5
+const capacitor_lightning_count_tier_1 : int = 8
 const capacitor_lightning_delay_per_strke : float = 1.0
 
 const capacitor_lightning_tower_ap_amount : float = 0.75
@@ -186,9 +193,7 @@ var _capacitor_delay_for_next_lightning : float
 
 var _capacitor_lightning_explosion_attack_module : AOEAttackModule
 
-const capacitor_descriptions_tier_1_simple : Array = [
-	
-]
+const capacitor_descriptions_tier_1_simple : Array = []
 
 
 var capacitor_path : BaseBlackPath
@@ -211,9 +216,7 @@ const overflow_overkill_can_summon_overkill_explosion_tier_2 : bool = false
 const overflow_overkill_can_summon_overkill_explosion_tier_1 : bool = true
 
 const overflow_name : String = "Overflow"
-const overflow_descriptions_tier_2_simple : Array = [
-	
-]
+const overflow_descriptions_tier_2_simple : Array = [	]
 
 #const overflow_descriptions_tier_2_simple : Array = [
 #	"After %s seconds of not dealing damage, the next damage instance deals +%s%% more damage, increasing by %s%% every second, up to %s%%." % [str(overflow_idle_time_for_scale_to_start), str(overflow_damage_scale_base_amount * 100), str(overflow_damage_scale_per_second * 100), str(overflow_total_max_damage_scale * 100)],
@@ -306,7 +309,7 @@ func _initialize_descriptions():
 	
 	
 	var temp_capacitor_tier_2_desc = [
-		"After %s abilities are casted, summon a nova that explodes after %s seconds, stunning all enemies for %s seconds, and preventing new enemies from spawning for %s seconds. All tower abilities's ongoing cooldowns are reduced by %s%%." % [str(capacitor_ability_cast_count_requirement), str(capacitor_nova_ramp_up_time), str(capacitor_nova_stun_time), str(capacitor_nova_stop_enemy_spawn_time), str(capacitor_ongoing_cooldown_percent_reduction_tier_2 * 100)],
+		"After %s abilities are casted by black towers, summon a nova that explodes after %s seconds, stunning all enemies for %s seconds, and preventing new enemies from spawning for %s seconds. All tower abilities's ongoing cooldowns are reduced by %s%%." % [str(capacitor_ability_cast_count_requirement), str(capacitor_nova_ramp_up_time), str(capacitor_nova_stun_time), str(capacitor_nova_stop_enemy_spawn_time), str(capacitor_ongoing_cooldown_percent_reduction_tier_2 * 100)],
 		["For the next %s seconds, towers gain |0| and |1|." % [str(capacitor_buff_duration_tier_2)], [interpreter_for_capacitor_tier_2_ap, interpreter_for_capacitor_tier_2_cdr]]
 	]
 	for desc in temp_capacitor_tier_2_desc:
@@ -686,6 +689,31 @@ func _apply_capacitor_effects_to_game(arg_tier : int):
 	elif curr_tier <= SYN_TIER_PATH_BASIC_LEVEL:
 		pass
 	
+	if capacitor_nova_small_particle_pool == null:
+		capacitor_nova_small_particle_pool = AttackSpritePoolComponent.new()
+		capacitor_nova_small_particle_pool.node_to_parent_attack_sprites = game_elements.get_tree().get_root()
+		capacitor_nova_small_particle_pool.node_to_listen_for_queue_free = game_elements
+		capacitor_nova_small_particle_pool.source_for_funcs_for_attk_sprite = self
+		capacitor_nova_small_particle_pool.func_name_for_creating_attack_sprite = "_create_nova_small_particle"
+		#capacitor_nova_small_particle_pool.func_name_for_setting_attks_sprite_properties_when_get_from_pool_before_add_child = "_set_nova_small_particle_properties_when_get_from_pool_before_add_child"
+		
+		capacitor_nova_small_particle_interval_timer = Timer.new()
+		capacitor_nova_small_particle_interval_timer.one_shot = false
+		capacitor_nova_small_particle_interval_timer.connect("timeout", self, "_on_nova_small_particle_timer_delay_interval_timeout", [], CONNECT_PERSIST)
+		game_elements.add_child(capacitor_nova_small_particle_interval_timer)
+		
+		capacitor_nova_small_particle_spawn_duration_timer = Timer.new()
+		capacitor_nova_small_particle_spawn_duration_timer.one_shot = false
+		capacitor_nova_small_particle_spawn_duration_timer.connect("timeout", self, "_on_nova_small_particle_spawn_duration_timeout", [], CONNECT_PERSIST)
+		game_elements.add_child(capacitor_nova_small_particle_spawn_duration_timer)
+		
+		capacitor_nova_small_particle_trail_compo = MultipleTrailsForNodeComponent.new()
+		capacitor_nova_small_particle_trail_compo.node_to_host_trails = game_elements
+		capacitor_nova_small_particle_trail_compo.trail_type_id = StoreOfTrailType.BASIC_TRAIL
+		capacitor_nova_small_particle_trail_compo.connect("on_trail_before_attached_to_node", self, "_nova_small_particle_trail_before_attached_to_node", [], CONNECT_PERSIST)
+		
+	
+	
 	if _capacitor_lightning_queue_timer == null:
 		_capacitor_lightning_queue_timer = Timer.new()
 		_capacitor_lightning_queue_timer.one_shot = true
@@ -815,15 +843,70 @@ func _summon_nova():
 	game_elements.get_tree().get_root().add_child(nova)
 	nova.global_position = game_elements.get_middle_coordinates_of_playable_map()
 	
-	_capacitor_nova_particle = nova
+	_start_playing_nova_small_particles()
 	
+	_capacitor_nova_particle = nova
+
 
 func _on_nova_tree_exiting(arg_nova):
 	if game_elements.stage_round_manager.round_started:
 		_on_nova_detonated__start_effects(arg_nova)
+	
+	capacitor_nova_small_particle_interval_timer.stop()
+	capacitor_nova_small_particle_spawn_duration_timer.stop()
 
+func _start_playing_nova_small_particles():
+	_spawn_nova_small_particles__as_going_to_center()
+	capacitor_nova_small_particle_interval_timer.start(capacitor_nova_small_particle_delay_interval)
+	capacitor_nova_small_particle_spawn_duration_timer.start(capacitor_nova_small_particle_spawn_duration)
+
+func _on_nova_small_particle_timer_delay_interval_timeout():
+	_spawn_nova_small_particles__as_going_to_center()
+
+func _spawn_nova_small_particles__as_going_to_center():
+	for i in 2:
+		var particle = capacitor_nova_small_particle_pool.get_or_create_attack_sprite_from_pool()
+		particle.lifetime = capacitor_nova_small_particle_lifetime
+		particle.min_starting_distance_from_center = 250
+		particle.max_starting_distance_from_center = 300
+		particle.initial_speed_towards_center = 300
+		particle.speed_accel_towards_center = 200
+		
+		particle.reset_for_another_use()
+		particle.visible = true
+		particle.modulate.a = 0.6
+		
+		capacitor_nova_small_particle_trail_compo.create_trail_for_node(particle)
+
+
+func _create_nova_small_particle(): #used by pool
+	var particle = CenterBasedAttackSprite_Scene.instance()
+	particle.texture_to_use = Nova_SmallParticle_Pic
+	particle.lifetime = capacitor_nova_small_particle_lifetime
+	particle.queue_free_at_end_of_lifetime = false
+	particle.center_pos_of_basis = game_elements.get_middle_coordinates_of_playable_map()
+	
+	return particle
+
+
+func _nova_small_particle_trail_before_attached_to_node(arg_trail, node):
+	arg_trail.max_trail_length = 7
+	arg_trail.trail_color = Color(0, 0, 0, 0.6)
+	arg_trail.width = 3
+	
+	arg_trail.set_to_idle_and_available_if_node_is_not_visible = true
+
+
+func _on_nova_small_particle_spawn_duration_timeout():
+	capacitor_nova_small_particle_interval_timer.stop()
+
+
+
+#
 
 func _on_nova_detonated__start_effects(arg_nova):
+	call_deferred("_spawn_nova_small_particles__as_going_away_from_center")
+	
 	var all_towers = _get_all_black_towers()
 	
 	_summon_nova_aesthetic_explosion(arg_nova)
@@ -832,6 +915,23 @@ func _on_nova_detonated__start_effects(arg_nova):
 	
 	if curr_tier <= SYN_TIER_PATH_ADV_LEVEL:
 		_start_lightning_queue()
+
+
+func _spawn_nova_small_particles__as_going_away_from_center():
+	for i in 25:
+		var particle = capacitor_nova_small_particle_pool.get_or_create_attack_sprite_from_pool()
+		particle.lifetime = 0.8
+		particle.min_starting_distance_from_center = 20
+		particle.max_starting_distance_from_center = 0
+		particle.initial_speed_towards_center = -500
+		particle.speed_accel_towards_center = 550
+		
+		particle.reset_for_another_use()
+		particle.visible = true
+		particle.modulate.a = 0.6
+		
+		capacitor_nova_small_particle_trail_compo.create_trail_for_node(particle)
+
 
 
 func _summon_nova_aesthetic_explosion(arg_nova):
@@ -1010,7 +1110,7 @@ func _create_lightning_into_destination(arg_pos : Vector2):
 	var lightning = Black_CapacitorLightning_Scene.instance()
 	
 	game_elements.get_tree().get_root().add_child(lightning)
-	lightning.global_position = arg_pos + Vector2(0, -66)
+	lightning.global_position = arg_pos + Vector2(0, -66 * 3)
 	lightning.update_destination_position(arg_pos)
 
 
@@ -1027,6 +1127,7 @@ func _give_tower_lightning_buffs(arg_tower):
 	ap_attr_effect.is_roundbound = true
 	ap_attr_effect.round_count = 1
 	ap_attr_effect.status_bar_icon = Black_LightningAPEffect_StatusBarIcon
+	ap_attr_effect.is_timebound = false
 	
 	arg_tower.add_tower_effect(ap_attr_effect)
 	

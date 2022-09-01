@@ -317,7 +317,7 @@ func _update_line_range_modules_state():
 			range_mod.global_position = (global_position + placable.global_position) / 2.0
 			range_mod.rotation = angle
 			
-			line_range_module_enemy_to_in_range_count_map[range_mod] = 0
+			line_range_module_enemy_to_in_range_count_map[range_mod] = 0 # reset purposes
 			range_mod.range_shape.disabled = false
 		else:
 			range_mod.get_range_shape().extents = Vector2(0, 0)
@@ -455,6 +455,10 @@ func _on_round_end_p():
 		if _original_placable_at_round_start.tower_occupying == null:
 			_transfer_to_placable_with_default_params(_original_placable_at_round_start)
 		_original_placable_at_round_start = null
+	
+	for range_module_i in line_range_module_to_in_map_placable_map.keys():
+		if range_module_i != null:
+			range_module_i.clear_all_detected_enemies()
 
 
 func _on_round_start_p():

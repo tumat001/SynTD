@@ -84,7 +84,6 @@ func _set_fruit_properties():
 		ing_effect = IngredientEffect.new(StoreOfTowerEffectsUUID.ING_YELLOW_FRUIT, YellowFruitEffect.new())
 	
 	tower_base_sprites.frames = new_sprite_frames
-	
 	ingredient_of_self = ing_effect
 
 

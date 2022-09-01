@@ -11,7 +11,7 @@ const BrownSeed_Pic = preload("res://TowerRelated/Color_Yellow/Sunflower/BrownSe
 const GreenSeed_Pic = preload("res://TowerRelated/Color_Yellow/Sunflower/GreenSeed.png")
 const YellowSeed_Pic = preload("res://TowerRelated/Color_Yellow/Sunflower/YellowSeed.png")
 
-const base_sunflower_burst_amount : int = 8
+const base_sunflower_burst_amount : int = 7
 const sunflower_original_inaccuracy : float = 30.0
 var sunflower_attack_module : BulletAttackModule
 var cycle : int = 0
@@ -87,14 +87,14 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Greatly increases sunflower's accuracy. Attacks in bursts of 16 instead."
+			"Greatly increases sunflower's accuracy. Attacks in bursts of 12 instead."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
 	sunflower_attack_module.base_proj_inaccuracy = 3
 	sunflower_attack_module.calculate_final_proj_inaccuracy()
-	sunflower_attack_module.burst_amount = 16
+	sunflower_attack_module.burst_amount = 12
 
 func _module_turned_off():
 	sunflower_attack_module.base_proj_inaccuracy = sunflower_original_inaccuracy

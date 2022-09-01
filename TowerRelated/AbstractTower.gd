@@ -431,7 +431,6 @@ var is_dead_for_the_round : bool = false
 
 var tower_limit_slots_taken : int = 1
 
-
 var last_calculated_has_commandable_attack_modules : bool
 
 var all_tower_abiltiies : Array
@@ -440,7 +439,6 @@ var all_tower_abiltiies : Array
 
 var old_global_position : Vector2
 
-
 # Damage tracker
 
 var in_round_total_damage_dealt : float# setget ,get_in_round_total_damage_dealt
@@ -448,6 +446,7 @@ var in_round_pure_damage_dealt : float
 var in_round_elemental_damage_dealt : float
 var in_round_physical_damage_dealt : float
 
+#var displayable_in_damage_stats_panel : bool = true #
 
 # compatibility stuffs
 var distance_to_exit : float = 0 # this is here for Targeting purposes
@@ -3375,7 +3374,7 @@ func _emit_heat_module_overheat_cooldown():
 
 ####### Particle related
 
-func _display_absorbed_ingredient_effects(arg_tier_of_ing : int):
+func _display_absorbed_ingredient_effects(arg_tier_of_ing : int): 
 	if absorb_ing_particle_pool_component == null:
 		_initialize_absorb_ing_particle_pool_component()
 	
@@ -3383,8 +3382,11 @@ func _display_absorbed_ingredient_effects(arg_tier_of_ing : int):
 	
 	if ing_tier_to_amount_of_particles_map.has(arg_tier_of_ing):
 		max_i = ing_tier_to_amount_of_particles_map[arg_tier_of_ing]
+	else:
+		max_i = 3
+		arg_tier_of_ing = 1
 	
-	for i in ing_tier_to_amount_of_particles_map[arg_tier_of_ing]:
+	for i in max_i:
 		var particle = absorb_ing_particle_pool_component.get_or_create_attack_sprite_from_pool()
 		particle.center_pos_of_basis = global_position
 		particle.tier = arg_tier_of_ing

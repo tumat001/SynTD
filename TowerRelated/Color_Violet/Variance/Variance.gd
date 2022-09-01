@@ -22,6 +22,12 @@ const InstantDamageAttackModule = preload("res://TowerRelated/Modules/InstantDam
 const InstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/InstantDamageAttackModule.tscn")
 const MapManager = preload("res://GameElementsRelated/MapManager.gd")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 const Variance_MainProj = preload("res://TowerRelated/Color_Violet/Variance/Attks/Variance_MainProj.png")
 
 const Variance_Frame_Yellow_Pic = preload("res://TowerRelated/Color_Violet/Variance/Variance_Frame_Yellow.png")
@@ -82,8 +88,8 @@ const lock_already_casted_clause : int = -10
 
 #
 var specialize_ability : BaseAbility
-const specialize_base_cooldown : float = 10.0 #35.0 #todo
-const specialize_initial_cooldown : float = 1.0 #5.0 #todo
+const specialize_base_cooldown : float = 35.0
+const specialize_initial_cooldown : float = 5.0
 var _specialize_ability_is_ready : bool = false
 var is_an_enemy_in_range : bool = false
 
@@ -146,7 +152,7 @@ var is_casting_as_yellow_type : bool
 var yellow_inst_dmg_attk_module : InstantDamageAttackModule
 const yellow_bullet_flat_dmg : float = 1.0
 const yellow_bullet_on_hit_dmg_ratio_of_creator : float = 0.25
-const base_main_attks_for_vessel_summon : int = 5#30 #todo
+const base_main_attks_for_vessel_summon : int = 25
 var _current_main_attack_count_for_vessel_summon : int
 
 var yellow_attk_speed_effect : TowerAttributesEffect
@@ -220,13 +226,12 @@ func _ready():
 	connect("on_round_end", self, "_on_round_end_v__ability_reset", [], CONNECT_PERSIST)
 	connect("on_round_start", self, "_on_round_start_v", [], CONNECT_PERSIST)
 	
-	# temp for testing. REMOVE THIS AFTERWARDS
-	_set_variance_state(VarianceState.YELLOW)
+	_set_variance_state(VarianceState.INITIAL)
+	#_set_variance_state(VarianceState.RED) #For testing
+	
+	variance_frame_sprites.use_parent_material = false
 	
 	_post_inherit_ready()
-	
-	# todo REMOVE THIS WHEN DONE
-	#connect("global_position_changed", self, "_changed_pos")
 
 
 func _construct_and_add_lob_attack_module():
@@ -418,7 +423,7 @@ func _construct_and_add_yellow_inst_attack_module():
 	attack_module.is_main_attack = false
 	attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
-	attack_module.on_hit_damage_scale = 0
+	attack_module.on_hit_damage_scale = yellow_bullet_on_hit_dmg_ratio_of_creator
 	
 	attack_module.benefits_from_bonus_attack_speed = false
 	attack_module.benefits_from_bonus_base_damage = false
@@ -745,13 +750,12 @@ func _on_main_bullet_attack_module_before_bullet_is_shot_v__as_red(bullet : Base
 		current_main_attack_count_as_red += 1
 		
 	elif current_main_attack_count_as_red == 3:
-		_stop_red_ability()
-#		current_attks_left_for_lob_glob_red = 1
-#		red_lob_glob_attk_module.can_be_commanded_by_tower_other_clauses.remove_clause(lob_glob_red_disabled_from_attking_clause)
-#		current_main_attack_count_as_red = 0
-#		if is_connected("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_v__as_red"):
-#			disconnect("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_v__as_red")
-#		is_casting_as_red_type = false
+		current_attks_left_for_lob_glob_red = 1
+		red_lob_glob_attk_module.can_be_commanded_by_tower_other_clauses.remove_clause(lob_glob_red_disabled_from_attking_clause)
+		current_main_attack_count_as_red = 0
+		if is_connected("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_v__as_red"):
+			disconnect("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_v__as_red")
+		is_casting_as_red_type = false
 
 func _on_red_knockback_bullet_hit_enemy(bullet, arg_enemy):
 	var knockback_effect = red_forced_path_mov_effect._get_copy_scaled_by(1)
@@ -800,7 +804,8 @@ func _cast_specialize_as_blue_state():
 		if curr_target != null:
 			blue_beam_attk_module.can_be_commanded_by_tower_other_clauses.remove_clause(blue_beam_disabled_from_attking_clause)
 			range_module.connect("enemy_left_range", self, "_on_enemy_exited_range_module", [range_module])
-			curr_target.connect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed", [curr_target, range_module])
+			#curr_target.connect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed", [curr_target, range_module])
+			curr_target.connect("tree_exiting", self, "_on_enemy_killed", [null, null, curr_target, range_module])
 			
 		else:
 			blue_beam_attk_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(blue_beam_disabled_from_attking_clause)
@@ -926,7 +931,6 @@ func _cast_specialize_as_yellow_type():
 	
 	is_casting_as_yellow_type = false
 
-
 func _stop_yellow_ability():
 	is_casting_as_yellow_type = false
 
@@ -954,76 +958,33 @@ func _attempt_summon_variance_vessel():
 			var vessel = game_elements.tower_inventory_bench.create_tower_and_add_to_scene(Towers.VARIANCE_VESSEL, placable)
 			vessel.set_variance_creator(self)
 
-
-
-##########
-#
-#func update_tower_description_of_self():
-#
-#	var interpreter_for_red_explosion = TextFragmentInterpreter.new()
-#	interpreter_for_red_explosion.tower_info_to_use_for_tower_stat_fragments = info
-#	interpreter_for_red_explosion.header_description = "pure damage"
-#	interpreter_for_red_explosion.display_body = true
-#
-#	var ins_for_red_explosion = []
-#	ins_for_red_explosion.append(NumericalTextFragment.new(10, false, DamageType.PURE))
-#	ins_for_red_explosion.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-#	ins_for_red_explosion.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 8, DamageType.PURE))
-#
-#	interpreter_for_red_explosion.array_of_instructions = ins_for_red_explosion
-#
-#	#
-#
-#	var interpreter_for_blue_beam_dmg = TextFragmentInterpreter.new()
-#	interpreter_for_blue_beam_dmg.tower_info_to_use_for_tower_stat_fragments = info
-#	interpreter_for_blue_beam_dmg.display_body = true
-#
-#	var ins_for_blue_beam_dmg = []
-#	ins_for_blue_beam_dmg.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
-#	ins_for_blue_beam_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
-#	ins_for_blue_beam_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
-#
-#	interpreter_for_blue_beam_dmg.array_of_instructions = ins_for_blue_beam_dmg
-#
-#
-#	var interpreter_for_blue_explosion_dmg = TextFragmentInterpreter.new()
-#	interpreter_for_blue_explosion_dmg.tower_info_to_use_for_tower_stat_fragments = info
-#	interpreter_for_blue_explosion_dmg.display_body = true
-#
-#	var ins_for_blue_explosion_dmg = []
-#	ins_for_blue_explosion_dmg.append(NumericalTextFragment.new(15, false, DamageType.ELEMENTAL))
-#	ins_for_blue_explosion_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
-#	ins_for_blue_explosion_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
-#
-#	interpreter_for_blue_explosion_dmg.array_of_instructions = ins_for_blue_explosion_dmg
-#
-#	#
-#
-#	info.tower_descriptions = [
-#		"On round end: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it.",
-#		"",
-#		"Ability: Specialize. Effect differs based on Variance's type.",
-#		"Clear Type: Remove almost all effects from enemies in range three times over 10 seconds.",
-#		["Damage Type: The first main attack knocks its target back. The first and second main attack stuns for 2 seconds. Afterwards, fire a massive glob that deals |0| to 3 enemies.", [interpreter_for_red_explosion]],
-#		["Speed Type: .", []],
-#		["Potency Type: Deal |0| per 0.25 seconds to its current target until it dies or leaves range. Afterwards, release an explosion at its target's location, dealing |1|. If this is casted while the beam is active, gain |2|.", [interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg]],
-#		["Cooldown: |0|", []],
-##			"",
-##			"After 1 round, learn ability: Lock.",
-##			"Ability: Lock. Permanently prevents Variance from changing types on round end."
-#	]
-#
-#
-
-# ----- ALL BELOW ARE tests -----------
-# TODO REMOVE THIS WHEN DONE
-#func _changed_pos(old_pos, new_pos):
-#	update()
-#
-#func _draw():
-#	for i in 360:
-#		var pos = Targeting.convert_deg_angle_to_pos_to_target([i, 1], 100, global_position)
-#
-#		draw_circle(pos - global_position, 2, Color(1, 0, 0, 1))
-
+func get_tower_descriptions_to_use_for_vessel():
+	var interpreter_for_bullet_dmg = TextFragmentInterpreter.new()
+	interpreter_for_bullet_dmg.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_bullet_dmg.display_body = true
+	
+	var ins_for_bullet_dmg = []
+	ins_for_bullet_dmg.append(NumericalTextFragment.new(1, false, DamageType.PHYSICAL))
+	ins_for_bullet_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	ins_for_bullet_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25)) # stat basis does not matter here
+	
+	interpreter_for_bullet_dmg.array_of_instructions = ins_for_bullet_dmg
+	
+	
+	var interpreter_for_pierce = TextFragmentInterpreter.new()
+	interpreter_for_pierce.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_pierce.display_body = true
+	interpreter_for_pierce.header_description = "pierce"
+	
+	var ins_for_pierce = []
+	ins_for_pierce.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+	
+	interpreter_for_pierce.array_of_instructions = ins_for_pierce
+	
+	#
+	
+	return [
+		["On its creator's main attack: fire a bullet toward its creator's target. Bullets deal |0| and has |1|. These stats are based on the creator.", [interpreter_for_bullet_dmg, interpreter_for_pierce]],
+		"On this tower's 10th attack, fire additional 3 bullets to the largest line of enemies. These bullets have infinite pierce."
+	]
 

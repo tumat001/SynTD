@@ -389,7 +389,7 @@ func _init():
 	interpreter_for_greenBY_ele_on_hit_per_stack_tier_1.display_body = false
 	
 	var ins_for_greenBY_ele_on_hit_per_stack_tier_1 = []
-	ins_for_greenBY_ele_on_hit_per_stack_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "on hit dmg", 0.35))
+	ins_for_greenBY_ele_on_hit_per_stack_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "on hit dmg", 0.30))
 	
 	interpreter_for_greenBY_ele_on_hit_per_stack_tier_1.array_of_instructions = ins_for_greenBY_ele_on_hit_per_stack_tier_1
 	
@@ -409,7 +409,7 @@ func _init():
 	interpreter_for_greenBY_ele_on_hit_max_tier_1.display_body = false
 	
 	var ins_for_greenBY_ele_on_hit_max_tier_1 = []
-	ins_for_greenBY_ele_on_hit_max_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "", 7.0))
+	ins_for_greenBY_ele_on_hit_max_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "", 6.0))
 	
 	interpreter_for_greenBY_ele_on_hit_max_tier_1.array_of_instructions = ins_for_greenBY_ele_on_hit_max_tier_1
 	

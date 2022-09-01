@@ -10,7 +10,7 @@ const GameSettingsPanel_Scene = preload("res://GameHUDRelated/PauseScreenPanel/G
 onready var resume_button = $VBoxContainer/ContentContainer/VBoxContainer/ResumeButton
 onready var game_controls_button = $VBoxContainer/ContentContainer/VBoxContainer/GameControlsButton
 onready var game_settings_button = $VBoxContainer/ContentContainer/VBoxContainer/GameSettingsButton
-
+onready var game_mode_label_indicator = $VBoxContainer/VBoxContainer/ModeLabel
 
 var pause_manager
 var main_pause_screen_panel
@@ -26,6 +26,7 @@ func _ready():
 	resume_button.set_text_for_text_label("Resume")
 	game_controls_button.set_text_for_text_label("Controls")
 	game_settings_button.set_text_for_text_label("Settings")
+	game_mode_label_indicator.text = "Game mode: %s" % game_elements.game_mode_type_info.mode_name
 	
 	set_process_unhandled_key_input(false)
 

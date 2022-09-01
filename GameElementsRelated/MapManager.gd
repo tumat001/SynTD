@@ -151,7 +151,6 @@ func get_all_placables_based_on_targeting_params(center_pos : Vector2, radius : 
 		placable_to_distance_array.sort_custom(CustomSorter, "sort_placable_by_closest")
 	elif sort_order == SortOrder.RANDOM:
 		placable_to_distance_array = _find_random_distinct_placables(placable_to_distance_array, placable_to_distance_array.size())
-		placable_to_distance_array.shuffle()
 	
 	#
 	

@@ -21,6 +21,7 @@ size_flags_horizontal = 6
 size_flags_vertical = 6
 texture_normal = ExtResource( 4 )
 texture_pressed = ExtResource( 3 )
+texture_hover = ExtResource( 3 )
 
 [node name="BlackPathTextureRect" type="TextureRect" parent="."]
 margin_left = 31.0

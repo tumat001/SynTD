@@ -92,6 +92,7 @@ var can_return_to_round_panel : bool = true
 # Vars to be set by outside of game elements
 
 var game_mode_id : int
+var game_mode_type_info
 var map_id : int
 var game_modi_ids : Array
 
@@ -108,7 +109,7 @@ func _ready():
 	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
 	#
 	
-	var game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
+	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
 	game_modi_ids = game_mode_type_info.game_modi_ids.duplicate()
 	
 	TowerCompositionColors.reset_synergies_instances()
@@ -334,7 +335,7 @@ func _ready():
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	level_manager.current_level = LevelManager.LEVEL_7
 	#level_manager.current_level = LevelManager.LEVEL_3
-
+	
 	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
@@ -351,12 +352,12 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.ASHEND,
-			Towers.SHACKLED,
+			Towers.FRUIT_TREE,
+			Towers.IOTA,
 			Towers.VARIANCE,
-			Towers.TRANSPORTER,
-			Towers.SIMPLEX,
-			Towers.BLOSSOM,
+			Towers.CHAOS,
+			Towers.AMALGAMATOR,
+			Towers._704,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
@@ -469,7 +470,11 @@ func _unhandled_key_input(event):
 				tower_info_panel.activate_tower_panel_ability_02()
 				any_action_taken = true
 				
-				
+			elif event.is_action("game_show_tower_extra_info_panel"):
+				if right_side_panel.panel_showing == right_side_panel.Panels.TOWER_INFO:
+					tower_info_panel._on_TowerNameAndPicPanel_show_extra_tower_info()
+					any_action_taken = true
+			
 			
 		else: # if there is wholescreen gui
 			if event.scancode == KEY_ESCAPE:

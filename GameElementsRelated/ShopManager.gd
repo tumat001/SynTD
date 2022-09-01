@@ -31,9 +31,9 @@ const base_level_tier_roll_probabilities : Dictionary = {
 #
 
 const base_tower_tier_stock : Dictionary = {
-	1 : 18, #20
-	2 : 16, #18
-	3 : 12, #14
+	1 : 19, #20
+	2 : 17, #18
+	3 : 13, #14
 	4 : 10,
 	5 : 8,
 	6 : 2 # 2 for exclusivity, x for combination. Decide what's best

@@ -70,12 +70,14 @@ func _ready():
 
 func _process(delta):
 	rotation_degrees += rotation_per_second * delta
+	
+	_move(delta)
 
 
 # Movement
 
-func _physics_process(delta):
-	_move(delta)
+#func _physics_process(delta):
+#	_move(delta)
 
 func _move(delta):
 	emit_signal("before_mov_is_executed", self, delta)

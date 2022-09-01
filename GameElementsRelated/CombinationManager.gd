@@ -120,11 +120,11 @@ var all_combination_id_to_effect_map : Dictionary
 
 const combi_tier_to_amount_of_particles_map : Dictionary = {
 	1 : 2,
-	2 : 2,
-	3 : 3,
-	4 : 6,
-	5 : 9,
-	6 : 12
+	2 : 3,
+	3 : 4,
+	4 : 7,
+	5 : 10,
+	6 : 15
 }
 var on_combi_particle_pool_component : AttackSpritePoolComponent
 var on_combi_particle_timer : Timer
