@@ -5204,7 +5204,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = iota_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2
+		info.base_damage = 2.5
 		info.base_attk_speed = 0.875
 		info.base_pierce = 1
 		info.base_range = 120

@@ -50,6 +50,7 @@ StoreOfGameMode="*res://GameplayRelated/GameModeRelated/StoreOfGameMode.gd"
 CommsForBetweenScenes="*res://SingletonForCommsRelated/CommsForBetweenScenes.gd"
 StoreOfGameModifiers="*res://GameplayRelated/GameModifiersRelated/StoreOfGameModifiers.gd"
 GameSettingsManager="*res://GameElementsRelated/GameSettingsManager.gd"
+GameSaveManager="*res://GameSaveRelated/GameSaveManager.gd"
 
 [debug]
 

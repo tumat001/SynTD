@@ -10,6 +10,7 @@ enum DescriptionsMode {
 	COMPLEX = 0, # The default
 	SIMPLE = 1,
 }
+const description_mode_name_identifier := "Description Mode"
 const descriptions_mode_to_explanation : Dictionary = {
 	DescriptionsMode.COMPLEX : [
 		"Tooltips display all information regarding the synergy or tower."
@@ -32,6 +33,7 @@ enum TowerDragMode {
 	EXACT = 0, # The default
 	SNAP_TO_NEARBY_IN_MAP_PLACABLE = 1
 }
+const tower_drag_mode_name_identifier := "Tower Drag Mode"
 const tower_drag_mode_to_explanation : Dictionary = {
 	TowerDragMode.EXACT : [
 		"Towers must be dropped inside tower slots to be placed there, otherwise the tower will return to its original location."
@@ -53,8 +55,10 @@ var tower_drag_mode_search_radius : float = 100 setget set_tower_drag_mode_searc
 
 # SETS LOCATED HERE
 func _ready():
-	set_descriptions_mode(DescriptionsMode.SIMPLE)
-	set_tower_drag_mode(TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE)
+	var load_success = GameSaveManager.load_game_settings__of_settings_manager()
+	if !load_success:
+		set_descriptions_mode(DescriptionsMode.SIMPLE)
+		set_tower_drag_mode(TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE)
 
 
 ######### DESCRIPTIONS MODE
@@ -127,4 +131,22 @@ func set_tower_drag_mode_search_radius(arg_val):
 	tower_drag_mode_search_radius = arg_val
 	
 	emit_signal("on_tower_drag_mode_search_radius_changed", tower_drag_mode_search_radius)
+
+
+
+
+#### SAVE RELATED for Settings & Controls ####
+# called by game save manager
+func _get_save_dict_for_game_settings():
+	# NOTE: The order of identifiers/values matters. If that is changed, change the order in the load method.
+	var save_dict := {
+		description_mode_name_identifier : descriptions_mode,
+		tower_drag_mode_name_identifier : tower_drag_mode
+	}
+
+# called by game save manager. Don't close it, as game save manager does it.
+func _load_game_settings(arg_file : File):
+	set_descriptions_mode(arg_file.get_var())
+	set_tower_drag_mode(arg_file.get_var())
+	
 

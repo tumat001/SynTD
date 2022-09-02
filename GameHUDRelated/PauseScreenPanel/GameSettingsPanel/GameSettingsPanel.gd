@@ -56,7 +56,7 @@ func _get_desc_mode_descriptions(arg_curr_desc_mode):
 	var expl = game_settings_manager.descriptions_mode_to_explanation[arg_curr_desc_mode]
 	
 	var base_desc = [
-		"Description Mode:",
+		"%s:" % GameSettingsManager.description_mode_name_identifier,
 		"",
 	]
 	
@@ -95,7 +95,7 @@ func _get_tower_drag_mode_descriptions(arg_curr_mode):
 	var expl = game_settings_manager.tower_drag_mode_to_explanation[arg_curr_mode]
 	
 	var base_desc = [
-		"Tower Drag Mode:",
+		"%s:" % GameSettingsManager.tower_drag_mode_name_identifier,
 		"",
 	]
 	
@@ -139,8 +139,14 @@ func _unhandled_key_input(event : InputEventKey):
 	if !event.echo and event.pressed:
 		if event.is_action_pressed("ui_cancel"):
 			
-			main_pause_screen_panel.show_control_at_content_panel(hub_pause_panel)
+			_on_exit_panel()
 	
 	
 	accept_event()
+
+#
+
+func _on_exit_panel():
+	GameSaveManager.save_game_settings__of_settings_manager()
+	main_pause_screen_panel.show_control_at_content_panel(hub_pause_panel)
 
