@@ -1,9 +1,10 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://GameHUDRelated/PauseScreenPanel/GameControlPanel/GameControlPanel.gd" type="Script" id=2]
 [ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/InputKeySummary/InputKeySummary.tscn" type="PackedScene" id=3]
 [ext_resource path="res://GameHUDRelated/PauseScreenPanel/MainPauseScreenPanel/Assets/MainPausePanel_SideBorder.png" type="Texture" id=4]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/ButtonStandard/PlayerGUI_ButtonStandard.tscn" type="PackedScene" id=5]
 
 [sub_resource type="DynamicFont" id=1]
 size = 20
@@ -77,7 +78,7 @@ scroll_horizontal_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer"]
 margin_right = 400.0
-margin_bottom = 577.0
+margin_bottom = 644.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 8
@@ -233,3 +234,16 @@ margin_right = 191.0
 [node name="KeySum_TowerPanelAbility02" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer9" instance=ExtResource( 3 )]
 margin_left = 209.0
 margin_right = 397.0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 585.0
+margin_right = 400.0
+margin_bottom = 644.0
+custom_constants/margin_bottom = 10
+
+[node name="ResetHotkeysButton" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/MarginContainer" instance=ExtResource( 5 )]
+margin_left = 144.0
+margin_right = 255.0
+margin_bottom = 49.0
+size_flags_horizontal = 6
+text_for_label = "Reset to Defaults"

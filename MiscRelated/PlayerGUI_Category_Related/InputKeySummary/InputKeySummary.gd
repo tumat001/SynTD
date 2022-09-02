@@ -68,6 +68,9 @@ func _on_advanced_button_mouse_exited():
 
 func _on_visibility_changed():
 	_on_advanced_button_mouse_exited()
+	
+	# update
+	set_action_name(input_key_action_name)
 
 
 
@@ -93,6 +96,8 @@ func set_action_name(arg_action_name : String):
 	
 	key_char_label.text = key_char
 
+func refresh():
+	set_action_name(input_key_action_name)
 
 #####
 
@@ -113,6 +118,10 @@ func _on_input_dialog_ok_pressed():
 	node_to_parent_for_input_key_dialog.call(node_to_parent__remove_control_func_name, input_dialog)
 	
 	set_action_name(input_key_action_name)
+	
+	# SAVE CHANGES
+	GameSaveManager.save_game_controls__input_map()
+	#
 	
 	emit_signal("on_input_dialog_removed", input_dialog)
 

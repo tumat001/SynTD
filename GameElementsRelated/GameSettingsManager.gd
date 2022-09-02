@@ -55,11 +55,7 @@ var tower_drag_mode_search_radius : float = 100 setget set_tower_drag_mode_searc
 
 # SETS LOCATED HERE
 func _ready():
-	var load_success = GameSaveManager.load_game_settings__of_settings_manager()
-	if !load_success:
-		set_descriptions_mode(DescriptionsMode.SIMPLE)
-		set_tower_drag_mode(TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE)
-
+	_initialize_settings__called_from_ready()
 
 ######### DESCRIPTIONS MODE
 
@@ -75,6 +71,9 @@ func toggle_descriptions_mode():
 		
 	elif descriptions_mode == DescriptionsMode.SIMPLE:
 		set_descriptions_mode(DescriptionsMode.COMPLEX)
+	
+	
+	GameSaveManager.save_game_settings__of_settings_manager()
 
 
 static func get_descriptions_to_use_based_on_tower_type_info(arg_tower_type_info,
@@ -136,6 +135,14 @@ func set_tower_drag_mode_search_radius(arg_val):
 
 
 #### SAVE RELATED for Settings & Controls ####
+
+func _initialize_settings__called_from_ready():
+	var load_success = GameSaveManager.load_game_settings__of_settings_manager()
+	if !load_success: # default
+		set_descriptions_mode(DescriptionsMode.SIMPLE)
+		set_tower_drag_mode(TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE)
+
+
 # called by game save manager
 func _get_save_dict_for_game_settings():
 	# NOTE: The order of identifiers/values matters. If that is changed, change the order in the load method.
@@ -143,10 +150,15 @@ func _get_save_dict_for_game_settings():
 		description_mode_name_identifier : descriptions_mode,
 		tower_drag_mode_name_identifier : tower_drag_mode
 	}
+	
+	return save_dict
 
 # called by game save manager. Don't close it, as game save manager does it.
 func _load_game_settings(arg_file : File):
-	set_descriptions_mode(arg_file.get_var())
-	set_tower_drag_mode(arg_file.get_var())
+	var data = parse_json(arg_file.get_line())
 	
+	if data != null:
+		set_descriptions_mode(data[description_mode_name_identifier])
+		set_tower_drag_mode(data[tower_drag_mode_name_identifier])
+
 

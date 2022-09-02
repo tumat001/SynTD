@@ -1,7 +1,6 @@
 extends MarginContainer
 
 
-
 onready var keysum_toggle_ingredient_mode = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer/KeySum_AbsorbIngMode
 onready var keysum_sell_tower = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer/KeySum_SellTower
 
@@ -31,6 +30,8 @@ onready var keysum_tower_ability_08 = $VBoxContainer/ContentContainer/ScrollCont
 
 onready var keysum_tower_panel_ability_01 = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer9/KeySum_TowerPanelAbility01
 onready var keysum_tower_panel_ability_02 = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer9/KeySum_TowerPanelAbility02
+
+onready var reset_hotkeys_button = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/MarginContainer/ResetHotkeysButton
 
 
 var pause_manager
@@ -137,6 +138,9 @@ func _ready():
 	keysum_tower_panel_ability_02.set_action_name("game_tower_panel_ability_02")
 	all_keysums.append(keysum_tower_panel_ability_02)
 	
+	#
+	
+	reset_hotkeys_button.connect("on_button_released_with_button_left", self, "_reset_controls_to_defaults")
 	
 	######
 	
@@ -152,6 +156,15 @@ func _ready():
 		keysum.node_to_parent_for_input_key_dialog = pause_manager
 		keysum.node_to_parent__show_control_func_name = "show_control"
 		keysum.node_to_parent__remove_control_func_name = "remove_control"
+
+#
+
+func _reset_controls_to_defaults():
+	InputMap.load_from_globals()
+	for keysum in all_keysums:
+		keysum.refresh()
+	GameSaveManager.save_game_controls__input_map()
+
 
 
 #

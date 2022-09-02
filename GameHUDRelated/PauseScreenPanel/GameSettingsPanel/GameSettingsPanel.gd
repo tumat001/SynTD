@@ -17,11 +17,9 @@ func _ready():
 	
 	# DESC MODE
 	_initialize_desc_mode__selection_panel()
-	_update_desc_mode_panels()
 	
 	# TOWER DRAG MODE
 	_initialize_tower_drag_mode__selection_panel()
-	_update_tower_drag_mode_panels()
 	
 	#
 	
@@ -127,6 +125,9 @@ func _on_visibility_changed():
 		if !game_settings_manager.is_connected("on_descriptions_mode_changed", self, "_on_desc_mode_changed"):
 			game_settings_manager.connect("on_descriptions_mode_changed", self, "_on_desc_mode_changed", [], CONNECT_PERSIST)
 			game_settings_manager.connect("on_tower_drag_mode_changed", self, "_on_tower_drag_mode_changed", [], CONNECT_PERSIST)
+		
+		_update_desc_mode_panels()
+		_update_tower_drag_mode_panels()
 		
 	else:
 		# DESC MODE
