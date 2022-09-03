@@ -31,7 +31,7 @@ const base_level_tier_roll_probabilities : Dictionary = {
 #
 
 const base_tower_tier_stock : Dictionary = {
-	1 : 19, #20
+	1 : 20, #20
 	2 : 17, #18
 	3 : 13, #14
 	4 : 10,

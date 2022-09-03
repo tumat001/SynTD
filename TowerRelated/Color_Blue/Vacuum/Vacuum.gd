@@ -199,10 +199,20 @@ func _can_cast_suck_updated(is_ready):
 func _on_enemies_entered_range_module(enemy, module, arg_range_module):
 	if range_module == arg_range_module:
 		suck_ability.activation_conditional_clauses.remove_clause(no_enemies_in_range_clause)
+		
+		if !enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives"):
+			enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives")
+
+func _on_enemy_killed_with_no_more_revives(damage_instance_report, arg_enemy):
+	_on_enemies_exited_range_module(arg_enemy, null, range_module)
+
 
 func _on_enemies_exited_range_module(enemy, module, arg_range_module):
 	if range_module == arg_range_module and range_module.get_enemy_in_range_count() == 0:
 		suck_ability.activation_conditional_clauses.attempt_insert_clause(no_enemies_in_range_clause)
+		
+		if enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives"):
+			enemy.disconnect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives")
 
 
 

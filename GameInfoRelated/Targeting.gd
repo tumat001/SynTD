@@ -70,8 +70,8 @@ static func _find_random_distinct_enemies(enemies : Array, count : int):
 	var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TARGETING)
 	
 	for i in count:
-#		if i >= copy.size():
-#			return bucket
+		if i >= copy.size():
+			return bucket
 		
 		if count <= bucket.size():
 			return bucket

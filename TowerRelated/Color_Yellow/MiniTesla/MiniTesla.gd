@@ -106,7 +106,7 @@ func set_energy_module(module):
 	if module != null:
 		module.module_effect_descriptions = [
 			"Static only needs 3 stacks to stun the enemy.",
-			"Attacking an enemy affected by \"static's\" stun stuns the enemy again (with static) for 2 seconds. When this effect occurs, Mini Tesla gains stacking %s attack speed that lasts for the round." % [str(attack_speed_stack_base_amount)]
+			"Attacking an enemy affected by \"static's\" stun stuns the enemy again (with static) for 2 seconds. When this effect occurs, Mini Tesla gains stacking %s%% attack speed that lasts for the round." % [str(attack_speed_stack_base_amount)]
 		]
 
 

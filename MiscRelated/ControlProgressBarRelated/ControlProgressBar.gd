@@ -68,17 +68,26 @@ func set_current_value(value : float):
 	
 	if fill_foreground != null:
 		var ratio = current_value / max_value
-		
-		if yield_before_update:
-			set_val_for_is_in_yield(true)
-			if !is_queued_for_deletion():
-				yield(get_tree(), "idle_frame")
-			set_val_for_is_in_yield(false)
-		
-		if !allow_overflow and ratio > 1:
-			ratio = 1
-		
-		fill_foreground.rect_scale.x = ratio
+		call_deferred("_set_curr_value_deferred", ratio)
+#		if yield_before_update:
+#			set_val_for_is_in_yield(true)
+#			if !is_queued_for_deletion():
+#				yield(get_tree(), "idle_frame")
+#
+#			set_val_for_is_in_yield(false)
+#
+#		if !allow_overflow and ratio > 1:
+#			ratio = 1
+#
+#		fill_foreground.rect_scale.x = ratio
+
+func _set_curr_value_deferred(ratio : float):
+	if !allow_overflow and ratio > 1:
+		ratio = 1
+	
+	fill_foreground.rect_scale.x = ratio
+
+
 
 
 func set_max_value(value : float):

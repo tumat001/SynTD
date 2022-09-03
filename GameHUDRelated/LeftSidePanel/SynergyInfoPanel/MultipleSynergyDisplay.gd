@@ -2,7 +2,6 @@ extends MarginContainer
 
 const SingleDisplayer_Scene = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SingleSynergyDisplayer.tscn")
 
-
 signal on_single_syn_tooltip_shown(synergy)
 signal on_single_syn_tooltip_hidden(synergy)
 
@@ -38,7 +37,6 @@ func _kill_all_previous_displayers():
 		if displayer != null:
 			displayer.queue_free()
 			# do not erase displayer from the single_synergy_displayers
-
 
 #
 

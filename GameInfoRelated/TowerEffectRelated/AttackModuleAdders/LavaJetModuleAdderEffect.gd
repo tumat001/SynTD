@@ -68,8 +68,10 @@ func _make_modifications_to_tower(tower):
 	_construct_lava_jet_module()
 	
 	tower.add_attack_module(lava_jet_beam_am)
-	tower.connect("on_main_attack", self, "_on_main_tower_attack", [], CONNECT_PERSIST)
-	tower.connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
+	
+	if !tower.is_connected("on_main_attack", self, "_on_main_tower_attack"):
+		tower.connect("on_main_attack", self, "_on_main_tower_attack", [], CONNECT_PERSIST)
+		tower.connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
 
 
 func _construct_lava_jet_module():

@@ -19,10 +19,10 @@ const tier2_cdr_amount : float = 60.0
 const tier3_cdr_amount : float = 40.0
 const tier4_cdr_amount : float = 20.0
 
-const tier1_ap_per_cd_cooldown_amount : float = 15.0
-const tier2_ap_per_cd_cooldown_amount : float = 20.0
-const tier3_ap_per_cd_cooldown_amount : float = 30.0
-const tier4_ap_per_cd_cooldown_amount : float = 40.0
+const tier1_ap_per_cd_cooldown_amount : float = 20.0#15.0
+const tier2_ap_per_cd_cooldown_amount : float = 30.0#20.0
+const tier3_ap_per_cd_cooldown_amount : float = 40.0#30.0
+const tier4_ap_per_cd_cooldown_amount : float = 50.0#40.0
 
 const ap_on_no_cooldown_amount : float = 0.05
 

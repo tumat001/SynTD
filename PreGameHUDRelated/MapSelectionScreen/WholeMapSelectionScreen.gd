@@ -2,9 +2,9 @@ extends MarginContainer
 
 
 onready var map_selection_panel = $VBoxContainer/MapSelectionPanel
-onready var mode_selection_panel = $VBoxContainer/HBoxContainer/VBoxContainer/ModeSelectionPanel
-onready var mode_description_panel = $VBoxContainer/HBoxContainer/VBoxContainer/GameModeDescPanel
-onready var map_summary_panel = $VBoxContainer/HBoxContainer/MapSummaryPanel
+onready var mode_selection_panel = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer/ModeSelectionPanel
+onready var mode_description_panel = $VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer/GameModeDescPanel
+onready var map_summary_panel = $VBoxContainer/MarginContainer/HBoxContainer/MapSummaryPanel
 
 
 

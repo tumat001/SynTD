@@ -279,7 +279,7 @@ func _on_enemy_leave_range(enemy : AbstractEnemy):
 func is_an_enemy_in_range() -> bool:
 	var to_remove = []
 	for target in enemies_in_range:
-		if target == null:
+		if target == null or target.is_queued_for_deletion():
 			to_remove.append(target)
 	
 	for removal in to_remove:
@@ -290,7 +290,7 @@ func is_an_enemy_in_range() -> bool:
 func get_enemy_in_range_count() -> int:
 	var to_remove = []
 	for target in enemies_in_range:
-		if target == null:
+		if target == null or target.is_queued_for_deletion():
 			to_remove.append(target)
 	
 	for removal in to_remove:

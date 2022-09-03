@@ -232,17 +232,17 @@ func _init():
 	interpreter_for_orangeYR_attk_speed_tier_1.display_body = false
 	
 	var ins_for_orangeYR_attk_speed_tier_1 = []
-	ins_for_orangeYR_attk_speed_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 170, true))
+	ins_for_orangeYR_attk_speed_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 140, true))
 	
 	interpreter_for_orangeYR_attk_speed_tier_1.array_of_instructions = ins_for_orangeYR_attk_speed_tier_1
 	
 	#
 	
 	var interpreter_for_orangeYR_attk_speed_tier_2 : TextFragmentInterpreter = interpreter_for_orangeYR_attk_speed_tier_1.get_deep_copy()
-	interpreter_for_orangeYR_attk_speed_tier_2.array_of_instructions[0].num_val = 90
+	interpreter_for_orangeYR_attk_speed_tier_2.array_of_instructions[0].num_val = 80
 	
 	var interpreter_for_orangeYR_attk_speed_tier_3 : TextFragmentInterpreter = interpreter_for_orangeYR_attk_speed_tier_1.get_deep_copy()
-	interpreter_for_orangeYR_attk_speed_tier_3.array_of_instructions[0].num_val = 50
+	interpreter_for_orangeYR_attk_speed_tier_3.array_of_instructions[0].num_val = 40
 	
 	var interpreter_for_orangeYR_attk_speed_tier_4 : TextFragmentInterpreter = interpreter_for_orangeYR_attk_speed_tier_1.get_deep_copy()
 	interpreter_for_orangeYR_attk_speed_tier_4.array_of_instructions[0].num_val = 20
@@ -498,10 +498,10 @@ func _init():
 	],
 	[AnaSyn_BlueVG],
 	[
-		["|0|. +|1| per 40 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_4, interpreter_for_blueVG_ap_per_cast_ratio]],
-		["|0|. +|1| per 30 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_3, interpreter_for_blueVG_ap_per_cast_ratio]],
-		["|0|. +|1| per 20 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_2, interpreter_for_blueVG_ap_per_cast_ratio]],
-		["|0|. +|1| per 15 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_1, interpreter_for_blueVG_ap_per_cast_ratio]],
+		["|0|. +|1| per 50 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_4, interpreter_for_blueVG_ap_per_cast_ratio]],
+		["|0|. +|1| per 40 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_3, interpreter_for_blueVG_ap_per_cast_ratio]],
+		["|0|. +|1| per 30 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_2, interpreter_for_blueVG_ap_per_cast_ratio]],
+		["|0|. +|1| per 20 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_1, interpreter_for_blueVG_ap_per_cast_ratio]],
 		
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
@@ -554,8 +554,8 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
 	[
-		"Main attacks cause towers to lose 5% of their max health.",
-		"Upon dying, towers equally split a percent of their total base damage and total ability potency to all other towers.",
+		"Main attacks cause towers to lose 4% of their max health.",
+		"Upon dying, towers split a percent of their total base damage and total ability potency equally to all other towers.",
 		"The last standing tower becomes invulenrable and immune to enemy effects, and gains 50% projectile speed for the rest of the round.",
 		""
 	],

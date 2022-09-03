@@ -112,9 +112,9 @@ const red_stun_duration : float = 2.0
 const red_mov_speed : float = 60.0
 const red_mov_speed_deceleration : float = 65.0
 
-const red_blob_explosion_flat_dmg : float = 10.0
+const red_blob_explosion_flat_dmg : float = 20.0
 const red_blob_explosion_base_dmg_scale : float = 8.0
-const red_blob_pierce : int = 3
+const red_blob_pierce : int = 5
 
 # the first knocks back and stuns, the second one stuns
 var current_main_attack_count_as_red : int
@@ -127,7 +127,7 @@ var red_burst_attk_module : AOEAttackModule
 
 #
 var is_casting_as_blue_type : bool
-const blue_beam_dmg_per_instance : float = 1.0
+const blue_beam_dmg_per_instance : float = 2.0
 const blue_beam_attk_speed : float = 4.0
 
 var blue_beam_attk_module : WithBeamInstantDamageAttackModule
@@ -280,7 +280,7 @@ func _construct_and_add_red_burst_explosion():
 	explosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	explosion_attack_module.is_main_attack = false
 	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	explosion_attack_module.base_explosion_scale = 2.6
+	explosion_attack_module.base_explosion_scale = 3.6#2.6
 	
 	explosion_attack_module.benefits_from_bonus_explosion_scale = true
 	explosion_attack_module.benefits_from_bonus_base_damage = true
@@ -816,7 +816,7 @@ func _cast_specialize_as_blue_state():
 		
 		for i in 6:
 			blue_ap_inc_attk_sprite_pool.get_or_create_attack_sprite_from_pool()
-
+		is_casting_as_blue_type = false
 
 
 func _on_dmg_instance_constructed__by_blue_beam(arg_dmg_instance, arg_module):

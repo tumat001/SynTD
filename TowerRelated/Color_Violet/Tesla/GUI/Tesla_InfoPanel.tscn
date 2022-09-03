@@ -10,7 +10,7 @@ size_flags_horizontal = 6
 script = ExtResource( 4 )
 
 [node name="VBoxContainer" parent="." index="0"]
-margin_bottom = 56.0
+margin_bottom = 95.0
 
 [node name="MarginContainer" parent="VBoxContainer/HeaderMarginer/MarginContainer" index="1"]
 margin_left = 3.0
@@ -21,12 +21,12 @@ margin_right = 44.0
 text = "Tesla Orbit"
 
 [node name="BodyMarginer" parent="VBoxContainer" index="2"]
-margin_bottom = 55.0
+margin_bottom = 94.0
 size_flags_horizontal = 6
 
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer/BodyMarginer" index="0"]
 margin_right = 110.0
-margin_bottom = 41.0
+margin_bottom = 80.0
 size_flags_horizontal = 6
 texture = ExtResource( 3 )
 stretch_mode = 2
@@ -34,7 +34,7 @@ stretch_mode = 2
 [node name="ContentMargin" type="MarginContainer" parent="VBoxContainer/BodyMarginer" index="1"]
 margin_left = 8.0
 margin_right = 102.0
-margin_bottom = 41.0
+margin_bottom = 80.0
 size_flags_horizontal = 6
 custom_constants/margin_right = 3
 custom_constants/margin_top = 3
@@ -45,7 +45,7 @@ custom_constants/margin_bottom = 3
 margin_left = 3.0
 margin_top = 3.0
 margin_right = 91.0
-margin_bottom = 38.0
+margin_bottom = 77.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BodyMarginer/ContentMargin/VBoxContainer" index="0"]
 margin_right = 88.0
@@ -60,6 +60,14 @@ margin_left = 53.0
 margin_right = 88.0
 destroy_button_if_ability_lost = false
 
+[node name="ToggleOrbitDirectionButton" parent="VBoxContainer/BodyMarginer/ContentMargin/VBoxContainer" index="1" instance=ExtResource( 2 )]
+margin_left = 26.0
+margin_top = 39.0
+margin_right = 61.0
+margin_bottom = 74.0
+size_flags_horizontal = 6
+destroy_button_if_ability_lost = false
+
 [node name="BottomBorder" parent="VBoxContainer" index="3"]
-margin_top = 55.0
-margin_bottom = 56.0
+margin_top = 94.0
+margin_bottom = 95.0

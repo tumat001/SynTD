@@ -14,7 +14,7 @@ var armor_loss_effect : EnemyAttributesEffect
 var gain_val
 var loss_val
 
-const loss_duration : float = 15.0
+const loss_duration : float = 12.0
 
 
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.FIRST_IMPRESSION, "First Impression", arg_tier, arg_tier_for_activation):
@@ -22,17 +22,17 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	var possible_loss_values : Array
 	
 	if tier == 0:
-		possible_gain_values = [19, 20, 21]
-		possible_loss_values = [-20, -21, -22]
-	elif tier == 1:
 		possible_gain_values = [9, 10, 11]
 		possible_loss_values = [-10, -11, -12]
+	elif tier == 1:
+		possible_gain_values = [7, 8, 9]
+		possible_loss_values = [-6, -7, -8]
 	elif tier == 2:
 		possible_gain_values = [4, 5, 6]
-		possible_loss_values = [-5, -6, -7]
+		possible_loss_values = [-3, -4, -5]
 	elif tier == 3:
 		possible_gain_values = [2, 3, 4]
-		possible_loss_values = [-3, -4, -5]
+		possible_loss_values = [-1, -2, -3]
 	
 	var index_rng = pact_mag_rng.randi_range(0, 2)
 	gain_val = possible_gain_values[index_rng]

@@ -258,7 +258,7 @@ func _update_cards_based_on_combination_metadata(tower_ids_to_roll_to = get_towe
 					
 				
 				tower_card.shiny_border_texture_rect.visible = (metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE or metadata == CombinationManager.TowerBuyCardMetadata.PROGRESS_TOWARDS_COMBINABLE)
-
+				#tower_card.set_show_border_shine(metadata == CombinationManager.TowerBuyCardMetadata.IMMEDIATELY_COMBINABLE)
 
 func get_tower_ids_in_current_buy_cards():
 	var bucket = []

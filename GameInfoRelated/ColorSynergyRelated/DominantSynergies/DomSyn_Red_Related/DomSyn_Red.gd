@@ -25,7 +25,6 @@ var tier_0_pacts_uuids : Array = [] # from future sight
 
 var syn_icon_interactable : Red_SynergyIconInteractable
 
-
 var curr_tier : int
 const TIER_INACTIVE : int = -1
 
@@ -33,6 +32,7 @@ const TIER_INACTIVE : int = -1
 
 var pact_uuid_to_pact_map_singleton : Dictionary = {}
 
+var auto_open_pact_shop_at_round_end : bool = true
 
 #
 
@@ -295,7 +295,9 @@ func _on_round_end(curr_stageround):
 	
 	if pact != null:
 		red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
-
+	
+	if auto_open_pact_shop_at_round_end:
+		_on_show_syn_shop()
 
 func _on_unsworn_pact_to_be_sworn(pact):
 	red_pact_whole_panel.unsworn_pact_list.remove_pact(pact)
@@ -333,8 +335,10 @@ func _initialize_red_pact_whole_panel():
 	red_pact_whole_panel.unsworn_pact_list.card_limit = 3
 	red_pact_whole_panel.sworn_pact_list.card_limit = 3
 	
+	red_pact_whole_panel.set_auto_open_checkbox_val(auto_open_pact_shop_at_round_end)
 	red_pact_whole_panel.connect("unsworn_pact_to_be_sworn", self, "_on_unsworn_pact_to_be_sworn", [], CONNECT_PERSIST)
 	red_pact_whole_panel.connect("sworn_pact_card_removed", self, "_on_sworn_pact_card_removed", [], CONNECT_PERSIST)
+	red_pact_whole_panel.connect("auto_open_shop_checkbox_val_changed", self, "_auto_open_shop_checkbox_val_changed", [], CONNECT_PERSIST)
 	
 	# add three
 	for i in 3:
@@ -342,6 +346,13 @@ func _initialize_red_pact_whole_panel():
 		if pact != null:
 			red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 	
-	# for debugging only
+	# for debugging only ############
 	#red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.RETRIBUTION, 3, 3))
 	#red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS, 3. 3))
+
+
+###
+
+func _auto_open_shop_checkbox_val_changed(arg_val):
+	auto_open_pact_shop_at_round_end = arg_val
+	

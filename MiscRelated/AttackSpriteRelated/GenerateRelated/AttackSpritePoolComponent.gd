@@ -8,7 +8,7 @@ var node_to_listen_for_queue_free : Node setget set_node_to_listen_for_queue_fre
 
 var _attack_sprite_pool_to_available_state : Dictionary = {}
 
-var source_for_funcs_for_attk_sprite : Object
+var source_for_funcs_for_attk_sprite setget set_source_for_funcs_for_attk_sprite, get_source_for_funcs_for_attk_sprite
 var func_name_for_creating_attack_sprite : String
 
 # a one time thing
@@ -63,7 +63,7 @@ func _get_available_attack_sprite_in_pool():
 
 
 func _create_attack_sprite() -> AttackSprite:
-	var attack_sprite : AttackSprite = source_for_funcs_for_attk_sprite.call(func_name_for_creating_attack_sprite)
+	var attack_sprite : AttackSprite = get_source_for_funcs_for_attk_sprite().call(func_name_for_creating_attack_sprite)
 	
 	if set__attack_sprite_queue_free_if_over__to_false:
 		attack_sprite.queue_free_at_end_of_lifetime = false
@@ -76,13 +76,13 @@ func _create_attack_sprite() -> AttackSprite:
 	return attack_sprite
 
 func _set_attk_sprite_properties_before_add_child(arg_attk_sprite):
-	source_for_funcs_for_attk_sprite.call(func_name_for_setting_attks_sprite_properties_before_add_child, arg_attk_sprite)
+	get_source_for_funcs_for_attk_sprite().call(func_name_for_setting_attks_sprite_properties_before_add_child, arg_attk_sprite)
 
 func _set_attk_sprite_properties_when_get_from_pool_before_add_child(arg_attk_sprite):
-	source_for_funcs_for_attk_sprite.call(func_name_for_setting_attks_sprite_properties_when_get_from_pool_before_add_child, arg_attk_sprite)
+	get_source_for_funcs_for_attk_sprite().call(func_name_for_setting_attks_sprite_properties_when_get_from_pool_before_add_child, arg_attk_sprite)
 
 func _set_attk_sprite_properties_when_get_from_pool_after_add_child(arg_attk_sprite):
-	source_for_funcs_for_attk_sprite.call(func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child, arg_attk_sprite)
+	get_source_for_funcs_for_attk_sprite().call(func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child, arg_attk_sprite)
 
 
 func _on_attack_sprite_turned_invisible_at_end_of_lifetime(arg_attk_sprite : AttackSprite):
@@ -113,5 +113,17 @@ func clear_all_attack_sprites_from_pool():
 	
 	_attack_sprite_pool_to_available_state.clear()
 
+#
 
+func set_source_for_funcs_for_attk_sprite(arg_source):
+	if arg_source is WeakRef:
+		source_for_funcs_for_attk_sprite = arg_source
+	else:
+		source_for_funcs_for_attk_sprite = weakref(arg_source)
+
+func get_source_for_funcs_for_attk_sprite():
+	if source_for_funcs_for_attk_sprite == null:
+		return null
+	else:
+		return source_for_funcs_for_attk_sprite.get_ref()
 

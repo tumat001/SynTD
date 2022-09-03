@@ -40,6 +40,7 @@ const Variance_InfoPanel_Scene = preload("res://TowerRelated/Color_Violet/Varian
 signal on_extra_info_panel_shown(arg_info_panel, arg_tower)
 signal on_tower_panel_ability_01_activate()
 signal on_tower_panel_ability_02_activate()
+signal on_tower_panel_ability_03_activate()
 
 var game_settings_manager : GameSettingsManager
 var tower : AbstractTower
@@ -412,6 +413,9 @@ func activate_tower_panel_ability_01():
 
 func activate_tower_panel_ability_02():
 	emit_signal("on_tower_panel_ability_02_activate")
+
+func activate_tower_panel_ability_03():
+	emit_signal("on_tower_panel_ability_03_activate")
 
 
 

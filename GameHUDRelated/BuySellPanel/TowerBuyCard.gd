@@ -61,6 +61,8 @@ onready var buy_card = $BuyCard
 onready var shine_texture_rect = $MarginContainer/ShineContainer/ShinePic
 onready var shiny_border_texture_rect = $Control/ShinyBorder
 
+#onready var border_shine = $BorderShine
+
 #
 
 func _ready():
@@ -68,6 +70,8 @@ func _ready():
 	
 	shine_texture_rect.rect_pivot_offset.x = shine_texture_rect.rect_size.x / 2
 	shine_texture_rect.rect_pivot_offset.y = shine_texture_rect.rect_size.y / 2
+	
+	#border_shine.set_control_to_match_border(shiny_border_texture_rect)
 
 func update_display():
 	if tower_information != null:
@@ -246,6 +250,10 @@ func _process(delta):
 func hide_shine_sparkle_on_card():
 	is_playing_shine_sparkle = false
 	shine_texture_rect.visible = false
+
+
+#func set_show_border_shine(arg_val : bool):
+#	border_shine.show_border_shine = arg_val
 
 
 ###

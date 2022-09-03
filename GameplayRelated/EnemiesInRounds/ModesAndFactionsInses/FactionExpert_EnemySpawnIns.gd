@@ -70,6 +70,7 @@ func _get_instructions_for_4_1():
 		SingleEnemySpawnInstruction.new(19.5, EnemyConstants.Enemies.EXPERIENCED),
 		SingleEnemySpawnInstruction.new(27, EnemyConstants.Enemies.EXPERIENCED),
 		SingleEnemySpawnInstruction.new(28, EnemyConstants.Enemies.ENCHANTRESS),
+		SingleEnemySpawnInstruction.new(29, EnemyConstants.Enemies.EXPERIENCED),
 	]
 
 func _get_instructions_for_4_2():
@@ -77,7 +78,7 @@ func _get_instructions_for_4_2():
 		MultipleEnemySpawnInstruction.new(0, 9, 6.5, EnemyConstants.Enemies.EXPERIENCED),
 		MultipleEnemySpawnInstruction.new(0.25, 9, 6.5, EnemyConstants.Enemies.EXPERIENCED),
 		MultipleEnemySpawnInstruction.new(15, 2, 15, EnemyConstants.Enemies.ENCHANTRESS),
-		MultipleEnemySpawnInstruction.new(35, 2, 1, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(35, 3, 1, EnemyConstants.Enemies.EXPERIENCED),
 	]
 
 func _get_instructions_for_4_3():

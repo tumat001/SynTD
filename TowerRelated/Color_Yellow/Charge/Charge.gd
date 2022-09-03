@@ -28,7 +28,7 @@ const proj_speed_level_2 : float = 400.0
 const proj_speed_level_3 : float = 500.0
 const proj_speed_level_4 : float = 650.0
 
-const original_max_on_hit_damage : float = 25.0
+const original_max_on_hit_damage : float = 35.0
 const original_max_percent_on_hit_damage : float = 20.0
 
 const original_max_energy : float = 100.0
@@ -259,12 +259,12 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Max flat on hit damage is increased to 130. Charge's flat portion of its passive becomes pure damage instead. Also recharges faster."
+			"Max flat on hit damage is increased to 160. Charge's flat portion of its passive becomes pure damage instead. Also recharges faster."
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	max_on_hit_damage = 130.0
+	max_on_hit_damage = 160.0
 	base_energy_recharge_per_sec = 50.0
 	_current_chargebar_06 = ChargeBar_6_Special
 	

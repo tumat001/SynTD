@@ -78,7 +78,7 @@ scroll_horizontal_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer"]
 margin_right = 400.0
-margin_bottom = 644.0
+margin_bottom = 701.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 8
@@ -235,10 +235,20 @@ margin_right = 191.0
 margin_left = 209.0
 margin_right = 397.0
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+[node name="HBoxContainer11" type="HBoxContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
 margin_top = 585.0
 margin_right = 400.0
-margin_bottom = 644.0
+margin_bottom = 634.0
+custom_constants/separation = 12
+
+[node name="KeySum_TowerPanelAbility03" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer11" instance=ExtResource( 3 )]
+margin_left = 106.0
+margin_right = 294.0
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer"]
+margin_top = 642.0
+margin_right = 400.0
+margin_bottom = 701.0
 custom_constants/margin_bottom = 10
 
 [node name="ResetHotkeysButton" parent="VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/MarginContainer" instance=ExtResource( 5 )]

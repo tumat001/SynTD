@@ -38,6 +38,7 @@ var directions_02 : Array = [
 ]
 
 var _curr_direction_index : int = 0
+const flamelet_base_dmg : float = 0.6
 
 var tree
 
@@ -49,7 +50,7 @@ func _init().(StoreOfTowerEffectsUUID.ING_FLAMEBURST):
 	interpreter_for_flat_on_hit.display_body = false
 	
 	var ins_for_flat_on_hit = []
-	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", 0.8))
+	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", flamelet_base_dmg))
 	
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 	# ins
@@ -61,7 +62,7 @@ func _init().(StoreOfTowerEffectsUUID.ING_FLAMEBURST):
 func _construct_burst_module():
 	burst_attack_module = BulletAttackModule_Scene.instance()
 	#burst_attack_module.base_damage_scale = 1
-	burst_attack_module.base_damage = 0.8 #/ burst_attack_module.base_damage_scale
+	burst_attack_module.base_damage = flamelet_base_dmg #/ burst_attack_module.base_damage_scale
 	burst_attack_module.base_damage_type = DamageType.ELEMENTAL
 	burst_attack_module.base_attack_speed = 0
 	burst_attack_module.base_attack_wind_up = 0

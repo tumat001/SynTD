@@ -3406,7 +3406,7 @@ func _initialize_absorb_ing_particle_pool_component():
 	absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
 	absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_abosrb_ing_particle"
 	absorb_ing_particle_pool_component.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_absorb_ing_particle_properties_when_get_from_pool_after_add_child"
-	
+
 
 func _create_abosrb_ing_particle():
 	var particle = AbsorbIngParticle_Scene.instance()
@@ -3417,7 +3417,6 @@ func _create_abosrb_ing_particle():
 	particle.max_starting_distance_from_center = 35
 	
 	particle.queue_free_at_end_of_lifetime = false
-	
 	
 	return particle
 

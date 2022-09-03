@@ -20,7 +20,7 @@ const tier_1_damage_split_percent : float = 1.0
 
 const ap_ratio_of_percent : float = 0.25
 
-const percent_health_damage_per_attack : float = 0.05#0.025
+const percent_health_damage_per_attack : float = 0.04
 const proj_speed_percent_amount : float = 50.0
 
 const death_count_for_stage_3_aura_particle : int = 2

@@ -37,7 +37,7 @@ var pierce_mod : FlatModifier
 const ap_needed_for_show_trail : float = 1.5
 var _current_should_show_trail : bool
 
-const trail_color : Color = Color(0.4, 0.5, 1, 1)
+const trail_color : Color = Color(0.3, 0.4, 0.9, 1)#Color(0.4, 0.5, 1, 1)
 const trail_transparency : float = 0.75
 const base_trail_length : int = 10
 var _current_trail_length : int = base_trail_length

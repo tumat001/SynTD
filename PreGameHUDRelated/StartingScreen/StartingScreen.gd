@@ -6,6 +6,8 @@ const WholeMapSelectionScreen = preload("res://PreGameHUDRelated/MapSelectionScr
 const WholeMapSelectionScreen_Scene = preload("res://PreGameHUDRelated/MapSelectionScreen/WholeMapSelectionScreen.tscn")
 const TutorialHubScreen = preload("res://PreGameHUDRelated/TutorialHubScreen/TutorialHubScreen.gd")
 const TutorialHubScreen_Scene = preload("res://PreGameHUDRelated/TutorialHubScreen/TutorialHubScreen.tscn")
+const AboutPanel = preload("res://PreGameHUDRelated/AboutPanel/AboutPanel.gd")
+const AboutPanel_Scene = preload("res://PreGameHUDRelated/AboutPanel/AboutPanel.tscn")
 
 
 var pre_game_screen
@@ -13,6 +15,7 @@ var pre_game_screen
 var quit_game_general_dialog : GeneralDialog
 var whole_map_selection_screen : WholeMapSelectionScreen
 var tutorial_hub_screen : TutorialHubScreen
+var about_panel : AboutPanel
 
 onready var general_container = $GeneralContainer
 
@@ -63,7 +66,14 @@ func _on_QuitButton_on_button_released_with_button_left():
 func _on_quit_game_dialog__ok_chosen():
 	get_tree().notification(MainLoop.NOTIFICATION_WM_QUIT_REQUEST)
 
+#
 
+func _on_AboutButton_on_button_released_with_button_left():
+	if about_panel == null:
+		about_panel = AboutPanel_Scene.instance()
+		general_container.add_child(about_panel)
+	
+	about_panel.show_panel()
 
 #
 

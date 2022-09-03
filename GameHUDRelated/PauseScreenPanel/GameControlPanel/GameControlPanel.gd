@@ -31,6 +31,9 @@ onready var keysum_tower_ability_08 = $VBoxContainer/ContentContainer/ScrollCont
 onready var keysum_tower_panel_ability_01 = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer9/KeySum_TowerPanelAbility01
 onready var keysum_tower_panel_ability_02 = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer9/KeySum_TowerPanelAbility02
 
+onready var keysum_tower_panel_ability_03 = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/HBoxContainer11/KeySum_TowerPanelAbility03
+
+
 onready var reset_hotkeys_button = $VBoxContainer/ContentContainer/ScrollContainer/VBoxContainer/MarginContainer/ResetHotkeysButton
 
 
@@ -137,6 +140,11 @@ func _ready():
 	keysum_tower_panel_ability_02.set_key_name_text("Selected Tower\nAbility Slot 2")
 	keysum_tower_panel_ability_02.set_action_name("game_tower_panel_ability_02")
 	all_keysums.append(keysum_tower_panel_ability_02)
+	
+	keysum_tower_panel_ability_03.set_key_name_text("Selected Tower\nAbility Slot 3")
+	keysum_tower_panel_ability_03.set_action_name("game_tower_panel_ability_03")
+	all_keysums.append(keysum_tower_panel_ability_03)
+	
 	
 	#
 	

@@ -25,6 +25,7 @@ const Jolt_Particle_Pic_01 = preload("res://TowerRelated/Color_Violet/Tesla/Othe
 const Jolt_AttackModuleIcon = preload("res://TowerRelated/Color_Violet/Tesla/OtherAssets/Tesla_Jolt_AttackModuleIcon.png")
 const OrbitIncrease_Pic = preload("res://TowerRelated/Color_Violet/Tesla/GUI/GUIAssets/Tesla_IncreaseOrbitRadius_Icon.png")
 const OrbitDecrease_Pic = preload("res://TowerRelated/Color_Violet/Tesla/GUI/GUIAssets/Tesla_DecreaseOrbitRadius_Icon.png")
+const OrbitChangeRotPic = preload("res://TowerRelated/Color_Violet/Tesla/GUI/GUIAssets/Tesla_ChangeOrbitRotation_Icon.png")
 
 const TeslaJoltPathFollow2D = preload("res://TowerRelated/Color_Violet/Tesla/TeslaJoltPathFollow2D.gd")
 const TeslaJoltPathFollow2D_Scene = preload("res://TowerRelated/Color_Violet/Tesla/TeslaJoltPathFollow2D.tscn")
@@ -38,6 +39,8 @@ signal on_offset_to_add(arg_val)
 
 const stun_duration : float = 0.25
 var tesla_main_attack_module : AbstractAttackModule
+
+const energy_module_on_count_of_main_attk : int = 2
 
 #
 
@@ -72,6 +75,14 @@ var orbit_increase_activation_condi_clause : ConditionalClauses
 
 var orbit_decrease_radius_ability : BaseAbility
 var orbit_decrease_activation_condi_clause : ConditionalClauses
+
+var orbit_change_rotation_ability : BaseAbility
+var orbit_change_rotation_condi_clause : ConditionalClauses
+var current_orbit_rotation : int = 1 # 1 (clockwise) or -1 (counter)
+const orbit_change_rotation_base_description = [
+	"Toggles orbit direction.",
+	"",
+]
 
 const trail_color : Color = Color(78.0/255.0, 187.0/255.0, 253.0/255.0, 0.7)
 var multiple_trail_component : MultipleTrailsForNodeComponent
@@ -214,12 +225,12 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Tesla's main attack now attacks up to 2 enemies."
+			"Tesla's main attack now attacks up to %s enemies." % str(energy_module_on_count_of_main_attk)
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	main_attack_module.number_of_unique_targets = 2
+	main_attack_module.number_of_unique_targets = energy_module_on_count_of_main_attk
 	
 	if !is_connected("attack_module_added", self, "_attack_module_attached"):
 		connect("attack_module_added", self, "_attack_module_attached")
@@ -243,7 +254,7 @@ func _attack_module_detached(attack_module : AbstractAttackModule):
 func _attack_module_attached(attack_module : AbstractAttackModule):
 	if attack_module == main_attack_module:
 		if energy_module != null and energy_module.is_turned_on:
-			main_attack_module.number_of_unique_targets = 3
+			main_attack_module.number_of_unique_targets = energy_module_on_count_of_main_attk
 		else:
 			main_attack_module.number_of_unique_targets = 1
 
@@ -315,7 +326,31 @@ func _construct_and_register_abilities():
 	
 	register_ability_to_manager(orbit_decrease_radius_ability, false)
 	
+	###
 	
+	
+	orbit_change_rotation_ability = BaseAbility.new()
+	
+	orbit_change_rotation_ability.is_timebound = true
+	orbit_change_rotation_ability.connect("ability_activated", self, "_on_orbit_change_orbit_activated", [], CONNECT_PERSIST)
+	orbit_change_rotation_ability.icon = OrbitChangeRotPic
+	
+	orbit_change_rotation_ability.set_properties_to_usual_tower_based()
+	orbit_change_rotation_ability.activation_conditional_clauses.blacklisted_clauses.append(BaseAbility.ActivationClauses.ROUND_INTERMISSION_STATE)
+	orbit_change_rotation_ability.counter_decrease_clauses.blacklisted_clauses.append(BaseAbility.CounterDecreaseClauses.ROUND_INTERMISSION_STATE)
+	orbit_change_rotation_ability.should_be_displaying_clauses.blacklisted_clauses.append(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
+	orbit_change_rotation_ability.should_be_displaying_clauses.remove_clause(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
+	orbit_decrease_activation_condi_clause = orbit_change_rotation_ability.activation_conditional_clauses
+	
+	orbit_decrease_activation_condi_clause.blacklisted_clauses.erase(BaseAbility.ActivationClauses.ROUND_ONGOING_STATE)
+	
+	orbit_change_rotation_ability.tower = self
+	
+	orbit_change_rotation_ability.display_name = "Toggle Orbit Direction"
+	
+	register_ability_to_manager(orbit_change_rotation_ability, false)
+	
+	_update_change_orbit_description()
 
 
 func _can_cast_amp_up_updated(is_ready):
@@ -502,7 +537,7 @@ func _get_final_range_of_self_for_orbit() -> float:
 #
 
 func _process(delta):
-	emit_signal("on_offset_to_add", current_jolt_orbit_speed_per_sec * delta)
+	emit_signal("on_offset_to_add", current_jolt_orbit_speed_per_sec * delta * current_orbit_rotation)
 
 
 func _on_round_end_t():
@@ -523,7 +558,6 @@ func toggle_module_ranges():
 func _draw():
 	if is_showing_ranges:
 		draw_circle_arc(Vector2(0, 0), current_orbit_radius, 0, 360, Color(0, 0, 1, 0.5))
-
 
 func draw_circle_arc(center, radius, angle_from, angle_to, color):
 	var nb_points = 32
@@ -589,3 +623,22 @@ func _trail_before_attached_to_node(arg_trail, node):
 	arg_trail.width = 4
 	
 
+
+##
+
+func _on_orbit_change_orbit_activated():
+	current_orbit_rotation *= -1
+	
+	_update_change_orbit_description()
+
+func _update_change_orbit_description():
+	var curr_orbit_name : String
+	if current_orbit_rotation == 1:
+		curr_orbit_name = "clockwise"
+	else:
+		curr_orbit_name = "counter clockwise"
+	
+	var desc_copy = orbit_change_rotation_base_description.duplicate()
+	desc_copy.append("Current orbit direction: %s" % curr_orbit_name)
+	
+	orbit_change_rotation_ability.set_descriptions(desc_copy)

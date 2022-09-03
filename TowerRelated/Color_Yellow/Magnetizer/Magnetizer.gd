@@ -108,7 +108,7 @@ func _ready():
 	# Stretched AOE 
 	
 	beam_attack_module = AOEAttackModule_Scene.instance()
-	beam_attack_module.base_damage = 7
+	beam_attack_module.base_damage = 5
 	beam_attack_module.base_damage_type = DamageType.ELEMENTAL
 	beam_attack_module.base_attack_speed = 0
 	beam_attack_module.base_attack_wind_up = 0

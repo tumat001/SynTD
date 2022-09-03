@@ -28,7 +28,7 @@ const TowerDetectingRangeModule_Scene = preload("res://EnemyRelated/TowerInterac
 const BaseTowerDetectingBullet_Scene = preload("res://EnemyRelated/TowerInteractingRelated/Spawnables/BaseTowerDetectingBullet.tscn")
 
 
-const base_douser_base_damage_buff : float = 1.0
+const base_douser_base_damage_buff : float = 2.0
 const base_douser_base_time : float = 10.0
 const base_douser_base_count : int = 4
 

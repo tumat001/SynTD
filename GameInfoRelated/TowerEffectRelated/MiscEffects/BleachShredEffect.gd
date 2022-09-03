@@ -1,3 +1,6 @@
+# OLD. No longer used
+
+
 extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd"
 
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")

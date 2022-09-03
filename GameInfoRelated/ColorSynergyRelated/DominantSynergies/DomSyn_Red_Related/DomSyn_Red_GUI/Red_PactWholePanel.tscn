@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_GUI/Red_PactSinglePanel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/DomSyn_Red_IconSymbol.png" type="Texture" id=2]
 [ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_GUI/Red_PactWholePanel.gd" type="Script" id=3]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/CheckboxStandard/PlayerGUI_CheckboxStandard.tscn" type="PackedScene" id=4]
 
 [node name="Red_PactWholePanel" type="MarginContainer"]
 margin_right = 40.0
@@ -17,8 +18,9 @@ __meta__ = {
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 598.0
-margin_bottom = 306.0
+margin_bottom = 346.0
 mouse_filter = 2
+custom_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_right = 598.0
@@ -43,5 +45,16 @@ texture = ExtResource( 2 )
 margin_left = 323.0
 margin_right = 598.0
 header_title = "Sworn"
+
+[node name="SettingsContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 316.0
+margin_right = 598.0
+margin_bottom = 346.0
+
+[node name="AutoOpenCheckbox" parent="VBoxContainer/SettingsContainer" instance=ExtResource( 4 )]
+margin_left = 423.0
+margin_right = 598.0
+size_flags_horizontal = 10
 [connection signal="pact_card_clicked" from="VBoxContainer/HBoxContainer/UnswornPactList" to="." method="_on_UnswornPactList_pact_card_clicked"]
 [connection signal="pact_card_removed" from="VBoxContainer/HBoxContainer/SwornPactList" to="." method="_on_SwornPactList_pact_card_removed"]
+[connection signal="on_checkbox_val_changed" from="VBoxContainer/SettingsContainer/AutoOpenCheckbox" to="." method="_on_AutoOpenCheckbox_on_checkbox_val_changed"]

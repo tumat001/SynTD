@@ -35,9 +35,9 @@ const faithful_interaction_range_amount : float = 200.0
 const tower_interaction_range_amount : float = 160.0
 
 const base_armor_toughness_amount_per_faithful : float = 1.0
-const base_health_regen_per_sec_per_sacrificer : float = 5.0
+const base_health_regen_per_sec_per_sacrificer : float = 3.5#5.0
 const base_ap_per_seer : float = 0.5
-const base_health_gain_from_cross_marker : float = 20.0
+const base_health_gain_percent_from_cross_marker : float = 20.0
 
 var faithfuls_in_range : int
 var sacrificers_in_range : int
@@ -151,6 +151,8 @@ func _ready():
 	
 	#
 	
+	z_index = ZIndexStore.ENEMIES_ABOVE_TOWERS
+	
 	_construct_and_register_abilities()
 	connect("final_ability_potency_changed", self, "_on_ability_potency_changed_d")
 	connect("on_current_health_changed", self, "_on_curr_health_changed_d")
@@ -211,7 +213,7 @@ func _construct_and_add_effects():
 	
 	if !_if_surpassed_cross_marker():
 		max_health_gain_modi = PercentModifier.new(StoreOfEnemyEffectsUUID.DEITY_MAX_HEALTH_GAIN_EFFECT)
-		max_health_gain_modi.percent_amount = base_health_gain_from_cross_marker
+		max_health_gain_modi.percent_amount = base_health_gain_percent_from_cross_marker
 		max_health_gain_modi.percent_based_on = PercentType.MAX
 		
 		max_health_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_HEALTH, max_health_gain_modi, StoreOfEnemyEffectsUUID.DEITY_MAX_HEALTH_GAIN_EFFECT)
@@ -335,7 +337,9 @@ func _on_enemy_entered_range_d(enemy):
 		grant_revive_ability_activation_clauses.remove_clause(no_enemy_in_range_clause_id)
 		taunt_ability_activation_clauses.remove_clause(no_enemy_in_range_clause_id)
 		
-		enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_faithful_killed_with_no_more_revives", [], CONNECT_ONESHOT)
+		if !enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_faithful_killed_with_no_more_revives"):
+			enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_faithful_killed_with_no_more_revives", [])
+
 
 func _on_faithful_killed_with_no_more_revives(damage_instance_report, arg_enemy):
 	_on_enemy_left_range_d(arg_enemy)
@@ -357,6 +361,10 @@ func _on_enemy_left_range_d(enemy):
 		else:
 			grant_revive_ability_activation_clauses.attempt_insert_clause(no_enemy_in_range_clause_id)
 			taunt_ability_activation_clauses.attempt_insert_clause(no_enemy_in_range_clause_id)
+		
+		if enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_faithful_killed_with_no_more_revives"):
+			enemy.disconnect("on_killed_by_damage_with_no_more_revives", self, "_on_faithful_killed_with_no_more_revives")
+
 
 #
 
@@ -550,7 +558,7 @@ func _construct_knock_up_particle():
 
 #
 
-func _physics_process(delta):
+func _process(delta): #changed from _phy_pro to _pro
 	_remove_max_health_if_surpassed_cross_marker()
 	
 	if _is_stunned:

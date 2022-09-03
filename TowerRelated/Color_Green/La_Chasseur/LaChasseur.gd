@@ -24,7 +24,7 @@ signal on_hit_bonus_changed()
 const bonus_on_hit_damage_per_kill : float = 3.0
 const on_hit_damage_type : int = DamageType.PHYSICAL
 const shot_base_damage_ratio : float = 10.0
-const shot_on_hit_dmg_ratio : float = 2.5
+const shot_on_hit_dmg_ratio : float = 5.0
 
 const gold_gained_per_kill : int = 3
 

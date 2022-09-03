@@ -4,6 +4,8 @@ const Red_BasePact = preload("res://GameInfoRelated/ColorSynergyRelated/Dominant
 const Red_PactCard = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_GUI/Red_PactCard.gd")
 const Red_PactCard_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_GUI/Red_PactCard.tscn")
 
+const BaseTooltip = preload("res://GameHUDRelated/Tooltips/BaseTooltip.gd")
+const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.tscn")
 
 signal pact_card_clicked(pact)
 signal pact_card_removed(pact)
@@ -13,8 +15,12 @@ var card_limit : int setget set_card_limit
 export(String) var header_title : String setget set_header_title
 const card_height : float = 140.0
 
+var about_tooltip : BaseTooltip
+var descriptions_about_panel : Array
+
 onready var header_label = $VBoxContainer/HeaderMarginer/MarginContainer/HeaderLabel
 onready var pact_card_container = $VBoxContainer/HBoxContainer/BodyMarginer/MarginContainer/PactCardContainer
+onready var header_marginer = $VBoxContainer/HeaderMarginer
 
 
 func set_card_limit(new_limit : int):
@@ -42,6 +48,11 @@ func set_header_title(new_title : String):
 func _ready():
 	set_card_limit(card_limit)
 	set_header_title(header_title)
+	
+	#connect("visibility_changed", self, "_on_visiblitiy_changed", [], CONNECT_PERSIST)
+	header_marginer.connect("mouse_entered", self, "_on_mouse_entered_header_marginer", [], CONNECT_PERSIST)
+	#header_marginer.connect("mouse_exited", self, "_on_mouse_exited_header_marginer", [], CONNECT_PERSIST)
+	
 
 
 func add_pact(pact : Red_BasePact):
@@ -92,3 +103,33 @@ func get_all_pact_uuids() -> Array:
 		bucket.append(pact_card.base_pact.pact_uuid)
 	
 	return bucket
+
+##
+
+#func _on_visiblitiy_changed():
+#	if !visible:
+#		_on_mouse_exited_header_marginer()
+
+func _on_mouse_entered_header_marginer():
+	if about_tooltip == null:
+		about_tooltip = _construct_tooltip()
+		_display_requested_about_tooltip(about_tooltip)
+
+#func _on_mouse_exited_header_marginer():
+#	pass
+
+
+func _construct_tooltip():
+	var a_tooltip = BaseTowerSpecificTooltip_Scene.instance()
+	a_tooltip.descriptions = descriptions_about_panel
+	a_tooltip.header_left_text = "Pacts"
+	
+	return a_tooltip
+
+func _display_requested_about_tooltip(arg_about_tooltip : BaseTooltip):
+	if arg_about_tooltip != null:
+		about_tooltip = arg_about_tooltip
+		about_tooltip.visible = true
+		about_tooltip.tooltip_owner = header_marginer
+		get_tree().get_root().add_child(about_tooltip)
+		about_tooltip.update_display()

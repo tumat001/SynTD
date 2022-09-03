@@ -8,6 +8,8 @@ enum IncreaseGoldSource {
 	TOWER_EFFECT_RESET,
 	SYNERGY,
 	TOWER_GOLD_INCOME,
+	
+	GAME_MODIFIER,
 }
 
 enum DecreaseGoldSource {

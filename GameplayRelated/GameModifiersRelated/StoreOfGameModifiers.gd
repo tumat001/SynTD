@@ -6,6 +6,7 @@ const GameModi_EasyDifficulty = preload("res://GameplayRelated/GameModifiersRela
 enum GameModiIds {
 	
 	EASY_DIFFICULTY = 1
+	BEGINNER_DIFFICULTY = 2
 	
 	MODI_TUTORIAL_PHASE_01 = -10
 	MODI_TUTORIAL_PHASE_02 = -11
@@ -32,6 +33,9 @@ static func get_game_modifier_from_id(arg_id):
 		return script.new()
 	elif arg_id == GameModiIds.EASY_DIFFICULTY:
 		var script = GameModi_EasyDifficulty
+		return script.new()
+	elif arg_id == GameModiIds.BEGINNER_DIFFICULTY:
+		var script = preload("res://GameplayRelated/GameModifiersRelated/GameModis/GameModi_BeginnerDifficulty.gd")
 		return script.new()
 	
 	return null

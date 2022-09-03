@@ -20,6 +20,7 @@ const attk_speed_research_duration : float = 5.0
 const research_stack_trigger_amount : int = 3
 
 const piercing_base_dmg : float = 3.0
+const piercing_on_hit_dmg_ratio : float = 0.5
 const piercing_pierce_amount : int = 4
 
 
@@ -96,11 +97,11 @@ func _construct_and_add_piercing_attk_module():
 	attack_module.base_proj_speed = 580
 	#attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	attack_module.on_hit_damage_scale = 1
+	attack_module.on_hit_damage_scale = piercing_on_hit_dmg_ratio
 	
 	attack_module.benefits_from_bonus_attack_speed = false
 	attack_module.benefits_from_bonus_base_damage = false
-	attack_module.benefits_from_bonus_on_hit_damage = false
+	attack_module.benefits_from_bonus_on_hit_damage = true
 	attack_module.benefits_from_bonus_on_hit_effect = false
 	attack_module.benefits_from_bonus_pierce = true
 	

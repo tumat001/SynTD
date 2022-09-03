@@ -41,7 +41,8 @@ const enemy_min_flat_health_needed_for_big_missle_cast : float = 100.0
 const enemy_min_distance_needed_for_big_missle_cast : float = 100.0
 
 var big_missle_bullet_attk_module : BulletAttackModule
-const big_missle__direct_hit__base_damage_ratio : float = 12.0
+const big_missle__direct_hit__flat_dmg : float = 15.0
+const big_missle__direct_hit__base_damage_ratio : float = 15.0
 
 var big_missle_small_explosion_attk_module : AOEAttackModule
 const big_missle__small_aoe__flat_dmg : float = 4.0
@@ -54,8 +55,8 @@ var spew_attack_module : BulletAttackModule
 const spew_disabled_from_attacking_custom_clause : int = -10
 
 const spew_base_count : int = 14
-const spew_on_hit_dmg_scale : float = 0.5
-const spew_flat_dmg_amount : float = 1.5
+const spew_on_hit_dmg_scale : float = 0.75
+const spew_flat_dmg_amount : float = 2.5
 
 var _current_spew_count : int
 var non_essential_rng : RandomNumberGenerator
@@ -129,7 +130,7 @@ func _ready():
 func _construct_and_add_big_missle_attk_module(attack_module_y_shift):
 	big_missle_bullet_attk_module = BulletAttackModule_Scene.instance()
 	big_missle_bullet_attk_module.base_damage_scale = big_missle__direct_hit__base_damage_ratio
-	big_missle_bullet_attk_module.base_damage = 15 / big_missle_bullet_attk_module.base_damage_scale 
+	big_missle_bullet_attk_module.base_damage = big_missle__direct_hit__flat_dmg / big_missle_bullet_attk_module.base_damage_scale 
 	big_missle_bullet_attk_module.base_damage_type = DamageType.PHYSICAL
 	big_missle_bullet_attk_module.base_attack_speed = 0
 	big_missle_bullet_attk_module.base_attack_wind_up = 0

@@ -20,9 +20,12 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Roguelike Tower Defence"
+config/name="SynergyTD"
 run/main_scene="res://PreGameHUDRelated/PreGameScreen.tscn"
-config/icon="res://icon.png"
+boot_splash/image="res://game_icon.png"
+boot_splash/fullsize=false
+boot_splash/use_filter=false
+config/icon="res://game_icon.png"
 
 [autoload]
 
@@ -177,6 +180,11 @@ game_tower_panel_ability_01={
 game_tower_panel_ability_02={
 "deadzone": 0.5,
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":88,"unicode":0,"echo":false,"script":null)
+ ]
+}
+game_tower_panel_ability_03={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":67,"unicode":0,"echo":false,"script":null)
  ]
 }
 game_show_tower_extra_info_panel={

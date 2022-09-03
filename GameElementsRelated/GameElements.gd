@@ -332,11 +332,11 @@ func _ready():
 	
 	
 	# FOR TESTING ------------------------------------
-	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_7
-	#level_manager.current_level = LevelManager.LEVEL_3
-	
-	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+#	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+#	level_manager.current_level = LevelManager.LEVEL_7
+#	#level_manager.current_level = LevelManager.LEVEL_3
+#
+#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -348,27 +348,28 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.FRUIT_TREE,
-			Towers.IOTA,
-			Towers.VARIANCE,
-			Towers.CHAOS,
-			Towers.AMALGAMATOR,
-			Towers._704,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.BEACON_DISH,
-			Towers.SHOCKER,
-			Towers.CHARGE,
-			Towers.MINI_TESLA,
-			Towers.GRAND,
-			Towers.EMBER
-		])
-	even = !even
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.BLEACH,
+#			Towers.IOTA,
+#			Towers.TESLA,
+#			Towers.CHAOS,
+#			Towers.PROBE,
+#			Towers.GRAND,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.SHOCKER,
+#			Towers.HEXTRIBUTE,
+#			Towers.CHARGE,
+#			Towers.MINI_TESLA,
+#			Towers.NUCLEUS,
+#			Towers.EMBER
+#		])
+#
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -468,6 +469,10 @@ func _unhandled_key_input(event):
 				
 			elif event.is_action("game_tower_panel_ability_02"):
 				tower_info_panel.activate_tower_panel_ability_02()
+				any_action_taken = true
+				
+			elif event.is_action("game_tower_panel_ability_03"):
+				tower_info_panel.activate_tower_panel_ability_03()
 				any_action_taken = true
 				
 			elif event.is_action("game_show_tower_extra_info_panel"):
