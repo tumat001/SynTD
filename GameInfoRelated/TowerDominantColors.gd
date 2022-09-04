@@ -104,7 +104,7 @@ func _init():
 	interpreter_for_black_attk_speed_give.display_body = false
 	
 	var ins_for_black_attk_speed_give = []
-	ins_for_black_attk_speed_give.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 20, true))
+	ins_for_black_attk_speed_give.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 30, true))
 	
 	interpreter_for_black_attk_speed_give.array_of_instructions = ins_for_black_attk_speed_give
 	
@@ -113,7 +113,7 @@ func _init():
 	interpreter_for_black_bonus_dmg.display_body = false
 	
 	var ins_for_black_bonus_dmg = []
-	ins_for_black_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", 10, true))
+	ins_for_black_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", 15, true))
 	
 	interpreter_for_black_bonus_dmg.array_of_instructions = ins_for_black_bonus_dmg
 	

@@ -1,6 +1,6 @@
 extends Node
 
-const BaseGameModifier = preload("res://GamePlayRelated/GameModifiersRelated/BaseGameModifier.gd")
+const BaseGameModifier = preload("res://GameplayRelated/GameModifiersRelated/BaseGameModifier.gd")
 const GameModeTypeInformation = preload("res://GameplayRelated/GameModeRelated/GameModeTypeInformation.gd")
 
 var game_elements setget set_game_manager

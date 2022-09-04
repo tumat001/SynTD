@@ -26,6 +26,7 @@ boot_splash/image="res://game_icon.png"
 boot_splash/fullsize=false
 boot_splash/use_filter=false
 config/icon="res://game_icon.png"
+config/windows_native_icon="res://game_icon.ico"
 
 [autoload]
 

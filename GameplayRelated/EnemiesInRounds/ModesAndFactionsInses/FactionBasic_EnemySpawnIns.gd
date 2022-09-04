@@ -185,9 +185,9 @@ func _get_instructions_for_3_3():
 func _get_instructions_for_3_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 24, 2, EnemyConstants.Enemies.BASIC),
-		MultipleEnemySpawnInstruction.new(0, 6, 6, EnemyConstants.Enemies.WIZARD),
+		MultipleEnemySpawnInstruction.new(0, 5, 6, EnemyConstants.Enemies.WIZARD),
 		MultipleEnemySpawnInstruction.new(18, 1, 1, EnemyConstants.Enemies.BRUTE),
-		MultipleEnemySpawnInstruction.new(38, 4, 0.5, EnemyConstants.Enemies.PAIN),
+		MultipleEnemySpawnInstruction.new(38, 3, 0.5, EnemyConstants.Enemies.PAIN),
 	]
 
 
