@@ -35,7 +35,7 @@ const faithful_interaction_range_amount : float = 200.0
 const tower_interaction_range_amount : float = 160.0
 
 const base_armor_toughness_amount_per_faithful : float = 1.0
-const base_health_regen_per_sec_per_sacrificer : float = 3.5#5.0
+const base_health_regen_per_sec_per_sacrificer : float = 3.0#5.0
 const base_ap_per_seer : float = 0.5
 const base_health_gain_percent_from_cross_marker : float = 20.0
 

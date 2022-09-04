@@ -51,7 +51,7 @@ const OrbBeam_AttackModule_Icon = preload("res://TowerRelated/Color_Blue/Orb/AMA
 signal current_level_changed()
 
 
-const ap_amount_per_orb_absorbed : float = 0.50
+const ap_amount_per_orb_absorbed : float = 0.75
 var ap_from_orbs_effect : TowerAttributesEffect
 var _original_gold_cost : int
 
@@ -459,6 +459,8 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 func _gain_bonus_from_orb_absorbed():
 	ap_from_orbs_effect.attribute_as_modifier.flat_modifier += ap_amount_per_orb_absorbed
 	_calculate_final_ability_potency()
+	
+	_display_absorbed_ingredient_effects(tower_type_info.tower_tier)
 
 #
 

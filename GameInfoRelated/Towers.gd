@@ -389,15 +389,13 @@ const tier_flat_range_map : Dictionary = {
 	6 : 80,
 }
 
-const tier_ap_range_map : Dictionary = {
+const tier_ap_map : Dictionary = {
 	1 : 0.25,
 	2 : 0.35,
 	3 : 0.5,
-	4 : 0.75,
+	4 : 0.65,
 	5 : 0.75,
 	6 : 1,
-	
-	#ORB uses a different value from these
 }
 
 
@@ -2290,7 +2288,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_simple_descriptions = [
 			"Leader's main attack marks the target enemy.",
-			"Leader also manages members. Leader can have up to 5 members.",
+			"Leader can also manage up to 5 members (towers).",
 			"",
 		]
 		
@@ -2328,7 +2326,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_ap.display_body = false
 		
 		var ins_for_ap = []
-		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.5, false))
+		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.75, false))
 		
 		interpreter_for_ap.array_of_instructions = ins_for_ap
 		
@@ -2345,7 +2343,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ORB)
-		base_ap_attr_mod.flat_modifier = 0.5#tier_ap_range_map[Towers.ORB]
+		base_ap_attr_mod.flat_modifier = tier_ap_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_ORB)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -2406,7 +2404,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_GRAND)
-		base_ap_attr_mod.flat_modifier = tier_ap_range_map[info.tower_tier]
+		base_ap_attr_mod.flat_modifier = tier_ap_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_GRAND)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -4083,7 +4081,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ACCUMULAE)
-		base_ap_attr_mod.flat_modifier = tier_ap_range_map[info.tower_tier]
+		base_ap_attr_mod.flat_modifier = tier_ap_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_ACCUMULAE)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -5184,7 +5182,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_PAROXYSM)
-		base_ap_attr_mod.flat_modifier = tier_ap_range_map[info.tower_tier]
+		base_ap_attr_mod.flat_modifier = tier_ap_map[info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_PAROXYSM)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)

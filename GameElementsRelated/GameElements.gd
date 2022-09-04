@@ -355,7 +355,7 @@ func _on_BuySellLevelRollPanel_reroll():
 #			Towers.BLEACH,
 #			Towers.IOTA,
 #			Towers.TESLA,
-#			Towers.CHAOS,
+#			Towers.ORB,
 #			Towers.PROBE,
 #			Towers.GRAND,
 #		])

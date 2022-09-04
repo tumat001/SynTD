@@ -384,6 +384,6 @@ func _get_9_4_deity_stats():
 	
 	info.base_health = 1000
 	info.base_effect_vulnerability = 0.50
-	info.base_player_damage = 30
+	info.base_player_damage = 32
 	
 	return info

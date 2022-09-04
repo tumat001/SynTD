@@ -78,30 +78,56 @@ func set_bar_foreground_current_value(arg_id : int, arg_val : float, arg_adjust_
 		
 		var ratio = arg_val / max_value
 		
-		if yield_before_update: #and is_instance_valid(self):
-			yield(get_tree(), "idle_frame")
+		call_deferred("_set_vals_deferred", ratio, rect, arg_id)
 		
-		if !allow_overflow and ratio > 1:
-			ratio = 1
-		
-		rect.rect_scale.x = ratio
-		
-		
-		# adjust other's position
-		var total_x_size_of_all : float = fill_foreground_margin_left
-		var skip : bool = true
-		for id in _id_to_bar_foreground_map.keys():
-			if id == arg_id:
-				skip = false
-			elif id != arg_id and !skip:
-				var curr_rect = _id_to_bar_foreground_map[id] 
-				curr_rect.rect_position.x = total_x_size_of_all
-				
+#		if yield_before_update: #and is_instance_valid(self):
+#			yield(get_tree(), "idle_frame")
+#
+#		if !allow_overflow and ratio > 1:
+#			ratio = 1
+#
+#		rect.rect_scale.x = ratio
+#
+#
+#		# adjust other's position
+#		var total_x_size_of_all : float = fill_foreground_margin_left
+#		var skip : bool = true
+#		for id in _id_to_bar_foreground_map.keys():
+#			if id == arg_id:
+#				skip = false
+#			elif id != arg_id and !skip:
+#				var curr_rect = _id_to_bar_foreground_map[id] 
+#				curr_rect.rect_position.x = total_x_size_of_all
+#
+#
+#			#
+#			var _curr_rect = _id_to_bar_foreground_map[id]
+#			total_x_size_of_all += _curr_rect.rect_size.x * _curr_rect.rect_scale.x
+
+
+func _set_vals_deferred(ratio : float, rect, arg_id):
+	if !allow_overflow and ratio > 1:
+		ratio = 1
+	
+	rect.rect_scale.x = ratio
+	
+	# adjust other's position
+	var total_x_size_of_all : float = fill_foreground_margin_left
+	var skip : bool = true
+	for id in _id_to_bar_foreground_map.keys():
+		if id == arg_id:
+			skip = false
+		elif id != arg_id and !skip:
+			var curr_rect = _id_to_bar_foreground_map[id] 
+			curr_rect.rect_position.x = total_x_size_of_all
 			
-			#
-			
-			var _curr_rect = _id_to_bar_foreground_map[id]
-			total_x_size_of_all += _curr_rect.rect_size.x * _curr_rect.rect_scale.x
+		
+		#
+		var _curr_rect = _id_to_bar_foreground_map[id]
+		total_x_size_of_all += _curr_rect.rect_size.x * _curr_rect.rect_scale.x
+
+
+
 
 
 func update_each_bar_position_based_on_each_other():
