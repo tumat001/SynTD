@@ -82,6 +82,7 @@ func _ready():
 	#
 	
 	tower_limit_slots_taken = 0
+	is_a_summoned_tower = true
 	
 	_post_inherit_ready()
 

@@ -31,8 +31,6 @@ func add_game_modi_ids__from_game_mode_id(arg_game_mode_id : int):
 #
 
 
-
-
 func _apply_game_modifiers__before_main_init():
 	_apply_game_modifiers_to_game_elements(_game_modi_ids_at_before_main_init__to_modi_map.values())
 
@@ -49,6 +47,4 @@ func _apply_game_modifiers_to_game_elements(arg_game_modis : Array):
 func _apply_game_modifier_to_game_elements(arg_game_modifier):
 	if arg_game_modifier != null:
 		arg_game_modifier._apply_game_modifier_to_elements(game_elements)
-
-
 

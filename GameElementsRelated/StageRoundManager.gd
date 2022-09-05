@@ -18,7 +18,8 @@ const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
 
 
 
-signal stage_round_changed(stage_num, round_num)
+signal stage_rounds_set(arg_stagerounds)
+#signal stage_round_changed(stage_num, round_num)
 signal before_round_starts(current_stageround)
 signal round_started(current_stageround) # incomming round
 
@@ -67,6 +68,8 @@ func set_game_mode(mode : int):
 	stagerounds = StoreOfGameMode.get_stage_rounds_of_mode_from_id(mode).new() #ModeNormal_StageRounds.new()
 	_replace_current_spawn_ins_to_second_half(stagerounds.get_first_half_faction())
 		#spawn_ins_of_faction_mode = StoreOfGameMode.get_spawn_ins_of_faction__based_on_mode(stagerounds.get_first_half_faction(), mode)
+	
+	emit_signal("stage_rounds_set", stagerounds)
 
 #
 

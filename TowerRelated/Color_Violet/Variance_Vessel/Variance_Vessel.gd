@@ -105,6 +105,7 @@ func _ready():
 	#contributing_to_synergy_clauses.attempt_insert_clause(ContributingToSynergyClauses.GENERIC_DOES_NOT_CONTRIBUTE)
 	set_contribute_to_synergy_color_count(false)
 	tower_limit_slots_taken = 0
+	is_a_summoned_tower = true
 	
 	#
 	

@@ -13,14 +13,15 @@ const pic_round_fast_forward_button = preload("res://GameHUDRelated/RightSidePan
 const pic_round_normal_speed_button = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundNormalSpeedButton.png")
 
 onready var round_status_button : TextureButton = $VBoxContainer/MarginContainer/RoundStatusButton
-onready var round_info_panel : RoundInfoPanel = $VBoxContainer/RoundInfoPanel
+#onready var round_info_panel : RoundInfoPanel = $VBoxContainer/RoundInfoPanel
 onready var ability_panel : AbilityPanel = $VBoxContainer/AbilityPanel
+onready var round_info_panel_v2 = $VBoxContainer/RoundInfoPanel_V2
 
 var round_started : bool
 var round_fast_forwarded : bool
 
 var game_settings_manager setget set_game_settings_manager
-
+var game_elements setget set_game_elements
 
 var can_start_round : bool = true setget set_can_start_round
 
@@ -33,6 +34,13 @@ func _ready():
 func set_game_settings_manager(arg_manager):
 	game_settings_manager = arg_manager
 	ability_panel.game_settings_manager = arg_manager
+
+func set_game_elements(arg_elements):
+	game_elements = arg_elements
+	
+	round_info_panel_v2.set_heath_manager(game_elements.health_manager)
+	round_info_panel_v2.set_stage_round_manager(game_elements.stage_round_manager)
+
 
 #
 
@@ -81,5 +89,14 @@ func set_can_start_round(arg_val : bool):
 	can_start_round = arg_val
 	
 	round_status_button.visible = can_start_round
+
+#
+
+
+
+
+func _on_MainMenuButton_released_mouse_event(event : InputEventMouseButton):
+	if event.button_index == BUTTON_LEFT:
+		game_elements._esc_no_wholescreen_gui_pressed()
 
 

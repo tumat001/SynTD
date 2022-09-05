@@ -168,7 +168,7 @@ func _get_random_valid_in_map_tower():
 	var towers_to_remove : Array = []
 	
 	for tower in valid_towers:
-		if tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.AMALGAMATE_TO_CONVERT_MARK_EFFECT):
+		if tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.AMALGAMATE_TO_CONVERT_MARK_EFFECT) and !tower.is_a_summoned_tower:
 			towers_to_remove.append(tower)
 	
 	for tower in towers_to_remove:
@@ -282,7 +282,7 @@ func _update_amalgam_activation_clause():
 	var has_one_candidate : bool = false
 	
 	for tower in towers:
-		if !tower._tower_colors.has(TowerColors.BLACK):
+		if !tower._tower_colors.has(TowerColors.BLACK) and !tower.is_a_summoned_tower:
 			has_one_candidate = true
 			break
 	
@@ -337,14 +337,18 @@ func _get_candidate_towers_from_ability():
 	var return_bucket = []
 	
 	for tower in towers:
-		if !tower._tower_colors.has(TowerColors.BLACK) and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.AMALGAMATE_TO_CONVERT_MARK_EFFECT):
+		if !tower._tower_colors.has(TowerColors.BLACK) and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.AMALGAMATE_TO_CONVERT_MARK_EFFECT) and !tower.is_a_summoned_tower:
 			if tower.is_current_placable_in_map():
-				high_prio_bucket.append(tower)
 				
-				if high_prio_bucket.size() > amalgam_tower_count:
-					break
+				if high_prio_bucket.size() < amalgam_tower_count:
+					high_prio_bucket.append(tower)
 			else:
 				low_prio_bucket.append(tower)
+	
+	print(high_prio_bucket)
+	print(low_prio_bucket)
+	print("--------------")
+	
 	
 	var converted_counter : int = 0
 	for tower in high_prio_bucket:

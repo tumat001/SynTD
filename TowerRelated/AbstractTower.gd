@@ -430,6 +430,7 @@ var current_health : float
 var is_dead_for_the_round : bool = false
 
 var tower_limit_slots_taken : int = 1
+var is_a_summoned_tower : bool = false
 
 var last_calculated_has_commandable_attack_modules : bool
 
