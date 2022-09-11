@@ -56,3 +56,9 @@ func get_copy_scaled_by(scale : float):
 	clone.resistance_pierce_modifiers = resistance_pierce_modifiers.duplicate(true)
 	
 	return clone
+
+func scale_by(scale : float):
+	damage_as_modifier.scale_by(scale)
+	
+
+

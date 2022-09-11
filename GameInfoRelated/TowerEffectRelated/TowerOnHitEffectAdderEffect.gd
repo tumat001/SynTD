@@ -11,6 +11,11 @@ func _init(arg_enemy_base_effect : EnemyBaseEffect,
 	
 	enemy_base_effect = arg_enemy_base_effect
 	effect_icon = enemy_base_effect.effect_icon
+	_update_description()
+	
+	_can_be_scaled_by_yel_vio = enemy_base_effect._can_be_scaled_by_yel_vio
+
+func _update_description():
 	description = enemy_base_effect.description
 
 
@@ -35,4 +40,19 @@ func _deep_copy():
 	_configure_copy_to_match_self(copy)
 	
 	return copy
+
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	if enemy_base_effect != null:
+		enemy_base_effect.add_additive_scaling_by_amount(arg_amount)
+		_update_description()
+
+# to be implemented by classes
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	if enemy_base_effect != null:
+		enemy_base_effect._consume_current_additive_scaling_for_actual_scaling_in_stats()
 

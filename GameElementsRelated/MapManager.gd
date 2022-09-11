@@ -94,7 +94,8 @@ func get_random_enemy_path(arg_paths_to_choose_from : Array = base_map._all_enem
 func get_path_point_closest_to_point(arg_coord : Vector2, paths_to_inspect : Array = base_map._all_enemy_paths) -> Vector2:
 	return base_map.get_path_point_closest_to_point(arg_coord, paths_to_inspect)
 
-
+func get_average_exit_position_of_all_paths():
+	return base_map.get_average_exit_position_of_all_paths()
 
 #
 
@@ -135,10 +136,11 @@ func get_all_placables_based_on_targeting_params(center_pos : Vector2, radius : 
 		#
 		
 		if placable_state == PlacableState.OCCUPIED:
-			if placable.tower_occupying == null:
+			if placable.tower_occupying == null or !placable.last_calculated_can_be_occupied:
 				continue
 		elif placable_state == PlacableState.UNOCCUPIED:
-			if placable.tower_occupying != null:
+			#if placable.tower_occupying != null:
+			if !placable.last_calculated_can_be_occupied:
 				continue
 		
 		placable_to_distance_array.append([placable, distance])

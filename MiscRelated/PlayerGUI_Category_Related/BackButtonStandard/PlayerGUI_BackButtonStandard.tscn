@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/BackButtonStandard/Assets/BackButton_Highlighted.png" type="Texture" id=1]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/BackButtonStandard/Assets/BackButton.png" type="Texture" id=2]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWithTooltip.tscn" type="PackedScene" id=3]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/BackButtonStandard/PlayerGUI_BackButtonStandard.gd" type="Script" id=4]
+
+[node name="PlayerGUI_BackButtonStandard" type="MarginContainer"]
+margin_right = 19.0
+margin_bottom = 19.0
+mouse_filter = 2
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="BackButton" parent="." instance=ExtResource( 3 )]
+margin_right = 19.0
+margin_bottom = 19.0
+texture_normal = ExtResource( 2 )
+texture_hover = ExtResource( 1 )

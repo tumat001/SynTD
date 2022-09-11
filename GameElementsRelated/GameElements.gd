@@ -79,6 +79,7 @@ var game_settings_manager
 var generic_notif_panel : GenericNotifPanel
 onready var sell_panel : SellPanel = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/SellPanel
 onready var color_wheel_sprite_button = $BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelSprite
+onready var tutotial_notif_panel = $NotificationNode/TutorialNotifPanel
 
 onready var top_left_coord_of_map = $TopLeft
 onready var bottom_right_coord_of_map = $BottomRight
@@ -224,7 +225,6 @@ func _ready():
 	enemy_manager.stage_round_manager = stage_round_manager
 	enemy_manager.map_manager = map_manager
 	enemy_manager.set_spawn_paths(map_manager.base_map.get_all_enemy_paths())
-	enemy_manager.connect("no_enemies_left", round_status_panel, "_update_round_ended")
 	enemy_manager.health_manager = health_manager
 	enemy_manager.game_elements = self
 	
@@ -241,6 +241,9 @@ func _ready():
 	
 	# Generic Notif Panel
 	generic_notif_panel.visible = false
+	
+	# Tutorial Notif Panel
+	tutotial_notif_panel.visible = false
 	
 	# Whole screen GUI
 	whole_screen_gui.game_elements = self
@@ -354,11 +357,11 @@ func _on_BuySellLevelRollPanel_reroll():
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
-			Towers.WAVE,
-			Towers.TESLA,
-			Towers.ORB,
-			Towers.AMALGAMATOR,
-			Towers.GRAND,
+			Towers.PROMINENCE,
+			Towers.YELVIO_RIFT_AXIS,
+			Towers.FRUIT_TREE,
+			Towers.LEADER,
+			Towers.SPIKE,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
@@ -405,7 +408,8 @@ func _unhandled_key_input(event):
 				any_action_taken = true
 				
 			elif event.is_action_pressed("game_round_toggle"):
-				right_side_panel.round_status_panel._on_RoundStatusButton_pressed()
+				#right_side_panel.round_status_panel._on_RoundStatusButton_pressed()
+				right_side_panel.round_status_panel.start_round_or_speed_toggle()
 				any_action_taken = true
 				
 			elif event.is_action_pressed("ui_cancel"):

@@ -10,7 +10,7 @@ const AboutPanel = preload("res://PreGameHUDRelated/AboutPanel/AboutPanel.gd")
 const AboutPanel_Scene = preload("res://PreGameHUDRelated/AboutPanel/AboutPanel.tscn")
 
 
-var pre_game_screen
+var pre_game_screen setget set_pre_game_screen
 
 var quit_game_general_dialog : GeneralDialog
 var whole_map_selection_screen : WholeMapSelectionScreen
@@ -27,6 +27,15 @@ func _ready():
 
 func _on_visibility_changed():
 	set_process_unhandled_key_input(visible)
+	
+	if pre_game_screen != null:
+		pre_game_screen.set_should_show_back_button(!visible)
+
+func set_pre_game_screen(arg_screen):
+	pre_game_screen = arg_screen
+	
+	pre_game_screen.set_should_show_back_button(!visible)
+
 
 #
 

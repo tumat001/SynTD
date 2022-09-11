@@ -162,6 +162,7 @@ func _ready():
 	can_absorb_ingredient_conditonal_clauses.attempt_insert_clause(CanAbsorbIngredientClauses.CAN_NOT_ABSORB_INGREDIENT_GENERIC_TAG)
 	#contributing_to_synergy_clauses.attempt_insert_clause(ContributingToSynergyClauses.GENERIC_DOES_NOT_CONTRIBUTE)
 	tower_limit_slots_taken = 0
+	is_a_summoned_tower = true
 	
 	#
 	

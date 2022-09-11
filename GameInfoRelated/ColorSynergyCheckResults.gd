@@ -6,7 +6,9 @@ var synergy_tier : int
 var total_exceed : int
 var raw_total : int
 var tier_pic
-var synergy 
+var synergy
+var color_types_amount_met : int
+var color_types_amount_from_baseline : int
 
 var count_per_color : Array = []
 
@@ -26,6 +28,11 @@ func _init(arg_passed : bool, arg_towers_in_tier : int,
 	
 	for count in arg_count_per_color[0]:
 		raw_total += count
+		
+		color_types_amount_from_baseline += 1
+		if count != 0:
+			color_types_amount_met += 1
+	
 	#raw_total = (towers_in_tier * arg_num_of_colors) + total_exceed
 
 

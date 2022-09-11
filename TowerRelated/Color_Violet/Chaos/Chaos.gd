@@ -211,6 +211,7 @@ const sword_field_max_sword_count_for_replenish : int = 1
 const sword_field_wait_time_for_kill_register : float = 0.5 # also serves as delay per sword
 
 var _current_sword_field_sword_count : int
+var _is_sword_from_ability : bool
 
 #
 
@@ -507,13 +508,22 @@ func _check_damage_accumulated():
 # Showing sword related
 
 func _construct_attack_sprite_on_attack():
-	return ChaosSword.instance()
+	var sword = ChaosSword.instance()
+	
+	if _is_sword_from_ability:
+		_is_sword_from_ability = false
+		sword.animation = "fromability"
+	else:
+		sword.animation = "default"
+	
+	return sword
 
 
 func _on_sword_attk_module_enemy_hit(enemy, damage_register_id, damage_instance, module):
 	if enemy != null:
 		var sword = _construct_attack_sprite_on_attack()
 		sword.global_position = enemy.global_position
+		
 		get_tree().get_root().add_child(sword)
 		sword.playing = true
 
@@ -919,9 +929,9 @@ func _construct_absolute_chaos_ability():
 	absolute_chaos_ability.descriptions = [
 		["Bring about |0| out of the 7 chaotic events.", [interpreter_for_cast_count]],
 		"1) Orb Maelstrom.",
-		"2) Diamond Storm.",
+		"2) Diamond Swarm.",
 		"3) Big Bolt.",
-		"4) Sword Fields.",
+		"4) Swords Field.",
 		"5) Void Lakes.",
 		"6) Night Watchers.",
 		"7) Explosive Rain.", # rain (like pestilence) that minor knocks away enemies (similar to Brewd's yellow explosion potion).
@@ -931,9 +941,9 @@ func _construct_absolute_chaos_ability():
 	absolute_chaos_ability.simple_descriptions = [
 		["Bring about |0| out of the 7 chaotic events.", [interpreter_for_cast_count]],
 		"1) Orb Maelstrom.",
-		"2) Diamond Storm.",
+		"2) Diamond Swarm.",
 		"3) Big Bolt.",
-		"4) Sword Fields.",
+		"4) Swords Field.",
 		"5) Void Lakes.",
 		"6) Night Watchers.",
 		"7) Explosive Rain.",
@@ -1190,6 +1200,7 @@ func _summon_big_bolt_at_enemy():
 	var target_enemy = _get_enemy_to_target_using_range_module__default_to_other_enemies(range_module, Targeting.HEALTHIEST)
 	
 	var bolt_particle = Chaos_BigBolt_Particle_Scene.instance()
+	bolt_particle.scale.y *= 2
 	bolt_particle.position = target_enemy.global_position
 	bolt_particle.connect("on_struck_ground", self, "_on_big_bolt_struck_ground", [target_enemy, target_enemy.global_position], CONNECT_ONESHOT)
 	
@@ -1244,7 +1255,8 @@ func _general_purpose_timer_timeout__for_sword_field_delay():
 
 func _hit_enemy_with_chaos_sword():
 	var enemy = _get_enemy_to_target_using_range_module__default_to_other_enemies(sword_attack_module.range_module, Targeting.WEAKEST)
-
+	
+	_is_sword_from_ability = true
 	sword_attack_module.on_command_attack_enemies([enemy], 1)
 
 
@@ -1258,7 +1270,8 @@ func _on_post_mitigated_dmg_dealt_by_sword_attack_module(damage_instance_report,
 func _end_sword_field_event(arg_play_next : bool):
 	general_purpose_timer.disconnect("timeout", self, "_general_purpose_timer_timeout__for_sword_field_delay")
 	sword_attack_module.disconnect("on_post_mitigation_damage_dealt", self, "_on_post_mitigated_dmg_dealt_by_sword_attack_module")
-
+	
+	_is_sword_from_ability = false
 	_current_event_id_playing = -1
 	_play_event_in_front_index_and_configure_current(arg_play_next)
 

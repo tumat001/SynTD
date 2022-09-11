@@ -86,8 +86,10 @@ func _on_play_button_pressed():
 func _unhandled_key_input(event : InputEventKey):
 	if !event.echo and event.pressed:
 		if event.is_action_pressed("ui_cancel"):
-			pre_game_screen.hide_or_remove_latest_from_node_tree__except_for_starting_screen()
+			_exit_to_previous()
 	
 	accept_event()
 
+func _exit_to_previous():
+	pre_game_screen.hide_or_remove_latest_from_node_tree__except_for_starting_screen()
 

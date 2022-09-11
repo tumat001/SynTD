@@ -31,26 +31,33 @@ const Ingredient_pic = preload("res://GameHUDRelated/RightSidePanel/TowerInforma
 
 var shot_attack_module : WithBeamInstantDamageAttackModule
 
+var ping_base_dmg : float = 3.0
+var ping_base_dmg_scale : float = 0.25
+var ping_on_hit_dmg_scale : float = 0.25
+
 
 func _init().(StoreOfTowerEffectsUUID.ING_PING):
 	effect_icon = Ingredient_pic
 	#
+	_update_description()
 	
+	_can_be_scaled_by_yel_vio = true
+
+func _update_description():
 	var interpreter_for_dmg = TextFragmentInterpreter.new()
 	interpreter_for_dmg.display_body = true
 	interpreter_for_dmg.display_header = true
 	
 	var ins_for_dmg = []
-	ins_for_dmg.append(NumericalTextFragment.new(3, false, DamageType.PHYSICAL))
+	ins_for_dmg.append(NumericalTextFragment.new(ping_base_dmg * _current_additive_scale, false, DamageType.PHYSICAL))
 	ins_for_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-	ins_for_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.25, DamageType.PHYSICAL))
+	ins_for_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, ping_base_dmg_scale * _current_additive_scale, DamageType.PHYSICAL))
 	ins_for_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-	ins_for_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25)) # stat basis does not matter here
+	ins_for_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, ping_on_hit_dmg_scale * _current_additive_scale)) # stat basis does not matter here
 	
 	interpreter_for_dmg.array_of_instructions = ins_for_dmg
 	
 	#
-	
 	var interpreter_for_range = TextFragmentInterpreter.new()
 	interpreter_for_range.display_body = false
 	
@@ -63,7 +70,8 @@ func _init().(StoreOfTowerEffectsUUID.ING_PING):
 	
 	
 	description = ["Pinglet: Summons a Pinglet beside your tower that attacks on its own. Has |0|. Its shots deal |1|. Applies on hit effects. Benefits from bonus attack speed.", [interpreter_for_range, interpreter_for_dmg]]
-	#description = "Pinglet: Summons a Pinglet beside your tower. Has 120 range, 4 physical base damage and 0.8 attack speed. Applies on hit effects. Benefits from base damage and on hit damage buffs at 25% efficiency."
+
+
 
 
 func _construct_pinglet():
@@ -74,9 +82,9 @@ func _construct_pinglet():
 	shot_range_module.benefits_from_bonus_range = false
 	
 	shot_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	shot_attack_module.base_damage_scale = 0.25
-	shot_attack_module.on_hit_damage_scale = 0.25
-	shot_attack_module.base_damage = 3 / shot_attack_module.base_damage_scale
+	shot_attack_module.base_damage_scale = ping_base_dmg_scale
+	shot_attack_module.on_hit_damage_scale = ping_on_hit_dmg_scale
+	shot_attack_module.base_damage = ping_base_dmg / shot_attack_module.base_damage_scale
 	shot_attack_module.base_damage_type = DamageType.PHYSICAL
 	shot_attack_module.base_attack_speed = 0.8
 	shot_attack_module.base_attack_wind_up = 1.0 / 0.15
@@ -131,3 +139,16 @@ func _undo_modifications_to_tower(tower):
 		tower.remove_attack_module(shot_attack_module)
 		shot_attack_module.queue_free()
 
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_description()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	ping_base_dmg *= _current_additive_scale
+	ping_base_dmg_scale *= _current_additive_scale
+	ping_on_hit_dmg_scale *= _current_additive_scale
+	_current_additive_scale = 1

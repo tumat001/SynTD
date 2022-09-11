@@ -9,7 +9,11 @@ func _init(arg_duration : float,
 	time_in_seconds = arg_duration
 	is_timebound = true
 	effect_icon = stun_icon
-	description = "Stuns enemies for " + str(time_in_seconds) + " seconds on hit."
+	
+	_update_description()
+
+func _update_description():
+	description = "Stuns enemies for " + str(time_in_seconds * _current_additive_scale) + " seconds on hit."
 
 
 func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
@@ -29,3 +33,16 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 func _reapply(copy):
 	if time_in_seconds < copy.time_in_seconds:
 		time_in_seconds = copy.time_in_seconds
+
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_description()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	time_in_seconds *= _current_additive_scale
+	_current_additive_scale = 1
+

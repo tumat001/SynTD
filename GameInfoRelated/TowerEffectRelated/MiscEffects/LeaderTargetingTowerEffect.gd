@@ -3,17 +3,22 @@ extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd"
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerAttributesEffect.gd")
 
-const armor_pierce_amount : float = 5.0
-const toughness_pierce_amount : float = 5.0
 
 var affected_range_module
 var armor_pierce_effect : TowerAttributesEffect
 var toughness_pierce_effect : TowerAttributesEffect
 
+var armor_and_toughness_pierce_amount : float = 5.0
+
 
 func _init().(StoreOfTowerEffectsUUID.ING_LEADER):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Leader.png")
-	description = "Tower gains all targeting options, and receives 5 armor and toughness pierce."
+	_update_description()
+	
+	_can_be_scaled_by_yel_vio = true
+
+func _update_description():
+	description = "Tower gains all targeting options, and receives %s armor and toughness pierce." % str(armor_and_toughness_pierce_amount * _current_additive_scale)
 
 
 func _make_modifications_to_tower(tower):
@@ -50,10 +55,10 @@ func _tower_attack_module_removed(module):
 
 func _construct_pierce_effects():
 	var armor_pierce_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_LEADER_ARMOR_PIERCE)
-	armor_pierce_modi.flat_modifier = armor_pierce_amount
+	armor_pierce_modi.flat_modifier = armor_and_toughness_pierce_amount
 	
 	var toughness_pierce_modi : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_LEADER_TOUGHNESS_PIERCE)
-	toughness_pierce_modi.flat_modifier = toughness_pierce_amount
+	toughness_pierce_modi.flat_modifier = armor_and_toughness_pierce_amount
 	
 	armor_pierce_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ARMOR_PIERCE, armor_pierce_modi, StoreOfTowerEffectsUUID.ING_LEADER_ARMOR_PIERCE)
 	
@@ -72,3 +77,14 @@ func _undo_modifications_to_tower(tower):
 	tower.remove_tower_effect(armor_pierce_effect)
 	tower.remove_tower_effect(toughness_pierce_effect)
 
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_description()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	armor_and_toughness_pierce_amount *= _current_additive_scale
+	_current_additive_scale = 1

@@ -52,6 +52,10 @@ var effect_source_ref setget set_effect_source
 
 var status_bar_icon : Texture
 
+var _current_additive_scale : float = 1.0
+var _can_be_scaled_by_yel_vio : bool = false
+var border_modi_textures : Array = []
+
 
 func _init(arg_effect_type : int,
 		arg_effect_uuid : int):
@@ -93,6 +97,25 @@ func _configure_copy_to_match_self(copy):
 	copy.set_effect_source(effect_source_ref)
 	copy.should_map_in_all_effects_map = should_map_in_all_effects_map
 	copy.is_clearable = is_clearable
+	
+	copy._current_additive_scale = _current_additive_scale
+	copy.border_modi_textures = border_modi_textures.duplicate()
+	copy._can_be_scaled_by_yel_vio = _can_be_scaled_by_yel_vio
+
 
 #
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	_current_additive_scale += arg_amount
+	
+	var desc = _get_overriden_description()
+	if desc != null:
+		description = desc
+	else:
+		description = ""
+
+# to be implemented by classes
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	pass
 

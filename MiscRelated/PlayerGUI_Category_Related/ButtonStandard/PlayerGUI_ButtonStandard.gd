@@ -20,6 +20,11 @@ export(Texture) var background_texture_highlighted : Texture = Background_Highli
 
 export(bool) var is_button_enabled : bool = true setget set_is_button_enabled
 
+export(Font) var custom_font : Font setget set_custom_font
+#export(int) var custom_font_size : int = 16 setget set_custom_font_size
+export(Color) var custom_color : Color = Color(1, 1, 1, 1) setget set_custom_color
+export(Color) var custom_color_highlighted := Color(1, 1, 1, 1) setget set_custom_color_highlighted
+
 onready var advanced_button_with_tooltip = $AdvancedButtonWithTooltip
 onready var text_label = $ContentPanel/TextLabel
 onready var body_background_texture_rect = $BodyBackground
@@ -29,6 +34,7 @@ onready var right_border = $RightBorder
 onready var top_border = $TopBorder
 onready var bottom_border = $BottomBorder
 
+var _is_highlighted : bool
 
 #
 
@@ -46,7 +52,9 @@ func _ready():
 	set_body_background_normal_texture(background_texture_normal)
 	set_body_background_highlighted_texture(background_texture_highlighted)
 	set_is_button_enabled(is_button_enabled)
-
+	
+	set_custom_font(custom_font)
+	set_custom_color(custom_color)
 
 func _on_advanced_button_released_mouse_event(arg_event : InputEventMouseButton):
 	if arg_event.button_index == BUTTON_LEFT and is_button_enabled:
@@ -58,13 +66,25 @@ func _on_advanced_button_tooltip_requested():
 #
 
 func _on_advanced_button_mouse_entered():
-	body_background_texture_rect.texture = background_texture_highlighted
+	_set_highlighted_disp_properties()
 
 func _on_advanced_button_mouse_exited():
-	body_background_texture_rect.texture = background_texture_normal
+	_set_normal_disp_properties()
 
 func _on_visibility_changed():
+	_set_normal_disp_properties()
+
+
+func _set_highlighted_disp_properties():
+	body_background_texture_rect.texture = background_texture_highlighted
+	text_label.set("custom_colors/font_color", custom_color_highlighted)
+	_is_highlighted = true
+
+func _set_normal_disp_properties():
 	body_background_texture_rect.texture = background_texture_normal
+	text_label.set("custom_colors/font_color", custom_color)
+	_is_highlighted = false
+
 
 #
 
@@ -112,4 +132,30 @@ func set_is_button_enabled(arg_val):
 		else:
 			advanced_button_with_tooltip.modulate = disabled_modulate
 
+#
+
+func set_custom_font(arg_font):
+	custom_font = arg_font
+	
+	if custom_font != null and is_inside_tree():
+		text_label.add_font_override("font", custom_font)
+
+#func set_custom_font_size(arg_font_size):
+#	custom_font_size = arg_font_size
+#
+#	if custom_font != null and is_inside_tree():
+#		text_label.add_font_override("font", custom_font)
+
+
+func set_custom_color(arg_color):
+	custom_color = arg_color
+	
+	if custom_color != null and is_inside_tree() and !_is_highlighted:
+		text_label.set("custom_colors/font_color", custom_color)
+
+func set_custom_color_highlighted(arg_color):
+	custom_color_highlighted = arg_color
+	
+	if custom_color != null and is_inside_tree() and _is_highlighted:
+		text_label.set("custom_colors/font_color", custom_color_highlighted)
 

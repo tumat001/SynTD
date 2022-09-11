@@ -53,6 +53,8 @@ func _init(arg_attribute_type : int,
 	
 	attribute_type = arg_attribute_type
 	attribute_as_modifier = arg_attribute_as_modifier
+	
+	_can_be_scaled_by_yel_vio = true
 
 # Description Related
 
@@ -91,7 +93,7 @@ func _get_overriden_description() -> String:
 
 
 func _generate_flat_description(descriptor : String) -> String:
-	var semi_final_desc =  "" + attribute_as_modifier.get_description() + " " + descriptor
+	var semi_final_desc =  "" + attribute_as_modifier.get_description_scaled(_current_additive_scale) + " " + descriptor
 	
 	if is_timebound:
 		var append_plural : String = "s"
@@ -104,7 +106,7 @@ func _generate_flat_description(descriptor : String) -> String:
 	return semi_final_desc
 
 func _generate_percent_description(descriptor : String) -> String:
-	var descriptions : Array = attribute_as_modifier.get_description()
+	var descriptions : Array = attribute_as_modifier.get_description_scaled(_current_additive_scale)
 	var desc01 = descriptions[0]
 	var desc02 = ""
 	
@@ -165,4 +167,9 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 	return copy
 
 
+#
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	attribute_as_modifier.scale_by(_current_additive_scale)
+	_current_additive_scale = 1
 

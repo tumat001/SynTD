@@ -7,12 +7,15 @@ extends "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/B
 # Shop 3: Flameburst*, spike, striker, mini tesla
 # Shop 4: pinecone, time machine, scatter*, transmutator
 # Shop 5: vacuum, cannon, railgun*, sprinkler
+# Shop 6: Campfire*, entropy*, propel*
 var towers_offered_on_shop_refresh : Array = [
 	[Towers.SIMPLEX, Towers.EMBER, Towers.SPRINKLER, Towers.STRIKER],
 	[Towers.SPIKE, Towers.SPRINKLER, Towers.SIMPLEX, Towers.REBOUND],
 	[Towers.FLAMEBURST, Towers.SPIKE, Towers.STRIKER, Towers.MINI_TESLA],
 	[Towers.PINECONE, Towers.SHOCKER, Towers.SCATTER, Towers.TRANSMUTATOR],
-	[Towers.VACUUM, Towers.CANNON, Towers.RAILGUN, Towers.SPRINKLER]
+	[Towers.VACUUM, Towers.CANNON, Towers.RAILGUN, Towers.SPRINKLER],
+	[Towers.CAMPFIRE, Towers.ENTROPY, Towers.PROPEL],
+	[Towers.BEACON_DISH, Towers.PROBE]
 ]
 var transcript_to_progress_mode : Dictionary
 
@@ -70,7 +73,7 @@ func _on_game_elements_before_game_start():
 		#8
 		"Tough luck! We didn't get what we want. Refresh the shop again." : ProgressMode.ACTION_FROM_PLAYER,
 		"Nice! Buy that tier 3 tower." : ProgressMode.ACTION_FROM_PLAYER,
-		"In general, higher tier towers are much stronger than lower tier ones." : ProgressMode.CONTINUE,
+		"In general, higher tier towers are stronger than lower tier ones." : ProgressMode.CONTINUE,
 		#11
 		"Let's place all those towers in the map." : ProgressMode.ACTION_FROM_PLAYER,
 		"Let's start the round." : ProgressMode.ACTION_FROM_PLAYER,
@@ -113,9 +116,31 @@ func _on_game_elements_before_game_start():
 		"Synergies also have multiple tiers.\nThe more orange towers you place, the more powerful the Orange synergy becomes." : ProgressMode.CONTINUE,
 		"For the case of the Orange synergy: placing 6 Orange towers increases its power.\nOther synergies also have multiple tiers." : ProgressMode.CONTINUE,
 		
+		# 38 #TODO everything above this is NEW
+		"Let's demonstrate activating 6 Orange instead of just 3 Orange." : ProgressMode.CONTINUE,
+		#39
+		"Please refresh the shop." : ProgressMode.ACTION_FROM_PLAYER,
+		#40
+		"Buy the three orange towers" : ProgressMode.ACTION_FROM_PLAYER,
+		#41
+		"Since we only have 5 tower slots available, we need to level up.\nLet's level up for more tower slots!" : ProgressMode.ACTION_FROM_PLAYER,
+		"Please place the three orange towers, replacing the non-orange towers in the process.\nNote: you can swap two tower's positions by dragging one and dropping it to the other." : ProgressMode.ACTION_FROM_PLAYER,
+		"Good job! Orange 6 synergy allows your towers to be a lot more powerful than with Orange 3 synergy." : ProgressMode.CONTINUE,
+		
+		# 44
+		"Now lets try putting OrangeYR 2." : ProgressMode.CONTINUE,
+		# 45
+		"Please refresh the shop once more." : ProgressMode.ACTION_FROM_PLAYER,
+		"Buy every tower in the shop." : ProgressMode.ACTION_FROM_PLAYER,
+		#47
+		"Now activate OrangeYR 2 by placing 2 orange towers,\n2 yellow towers, and 2 red towers in the map." : ProgressMode.ACTION_FROM_PLAYER,
+		"Nice job! OrangeYR 2 allows your towers to be a lot more stronger than with OrangeYR 1." : ProgressMode.CONTINUE,
+		"But which is better? Orange 6 or OrangeYR2?\nThat's up to you to decide." : ProgressMode.CONTINUE,
 		
 		"That concludes this chapter of the tutorial.\nFeel free to tinker with the towers." : ProgressMode.CONTINUE,
 		"(If you are new to the game, proceed to chapter 3.)" : ProgressMode.CONTINUE,
+		
+		"(Once you're done experimenting, you can exit the game by pressing ESC\n and quitting the game.)" : ProgressMode.WAIT_FOR_EVENT,
 	}
 	
 	clear_all_tower_cards_from_shop()
@@ -197,6 +222,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		set_enabled_buy_slots([3])
 		set_tower_is_sellable(_sprinkler, true)
 		set_tower_is_draggable(_sprinkler, true)
+		display_white_circle_at_node(_sprinkler, 19)
 		display_white_arrows_pointed_at_node(get_tower_buy_card_at_buy_slot_index(2), 19)
 		listen_for_towers_with_ids__placed_in_map__then_call_func([Towers.SCATTER], "_on_towers_placed_on_map__on_18", self)
 		
@@ -224,8 +250,41 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 	elif arg_index == 34:
 		set_tower_is_draggable(_railgun, true)
 		listen_for_towers_with_ids__placed_in_map__then_call_func([Towers.RAILGUN], "_on_railgun_placed_in_map__on_34", self)
-
-
+		
+	elif arg_index == 39:
+		add_gold_amount(90)
+		set_can_refresh_shop__panel_based(true)
+		listen_for_shop_refresh(self, "_on_shop_refresh__on_39")
+		
+	elif arg_index == 40:
+		set_enabled_buy_slots([1, 2, 3])
+		listen_for_towers_with_ids__bought__then_call_func([Towers.CAMPFIRE, Towers.ENTROPY, Towers.PROPEL], "_on_towers_bought__for_40", self)
+		
+	elif arg_index == 41:
+		set_can_level_up(true)
+		listen_for_player_level_up(6, self, "_on_player_lvl_changed_41")
+		set_visiblity_of_placable(get_map_area_11__from_glade(), true)
+		
+	elif arg_index == 42:
+		for tower in _all_towers:
+			if tower != null:
+				set_tower_is_draggable(tower, true)
+		set_can_towers_swap_positions_to_another_tower(true)
+		listen_for_synergy_to_be_activated(TowerDominantColors.synergy_id_to_syn_name_dictionary[TowerDominantColors.SynergyId.ORANGE], 3, "_on_orange_syn_met__42", self)
+		
+	elif arg_index == 45:
+		set_can_refresh_shop__panel_based(true)
+		listen_for_shop_refresh(self, "_on_shop_refresh__on_45")
+		
+	elif arg_index == 46:
+		listen_for_towers_with_ids__bought__then_call_func([Towers.BEACON_DISH, Towers.PROBE], "_on_towers_bought__for_46", self)
+		
+	elif arg_index == 47:
+		for tower in _all_towers:
+			if tower != null:
+				set_tower_is_draggable(tower, true)
+		listen_for_synergy_to_be_activated(TowerCompositionColors.synergy_id_to_syn_name_dictionary[TowerCompositionColors.SynergyId.OrangeYR], 3, "_on_syn_met__47", self)
+		
 
 #
 func _on_towers_bought__for_01(arg_towers : Array):
@@ -313,10 +372,49 @@ func _on_railgun_placed_in_map__on_34(arg_towers):
 	set_tower_is_draggable(_railgun, false)
 	advance_to_next_transcript_message()
 
+#
+func _on_shop_refresh__on_39(arg_tower_ids : Array):
+	set_can_refresh_shop__panel_based(false)
+	advance_to_next_custom_towers_at_shop()
+	advance_to_next_transcript_message()
+
+
+func _on_towers_bought__for_40(arg_towers : Array):
+	for tower in arg_towers:
+		_all_towers.append(tower)
+		set_tower_is_sellable(tower, false)
+	
+	advance_to_next_transcript_message()
+
+func _on_player_lvl_changed_41(arg_player_lvl):
+	set_can_level_up(false)
+	advance_to_next_transcript_message()
+
+
+func _on_orange_syn_met__42():
+	advance_to_next_transcript_message()
+
+func _on_shop_refresh__on_45(arg_tower_ids):
+	set_can_refresh_shop__panel_based(false)
+	advance_to_next_custom_towers_at_shop()
+	advance_to_next_transcript_message()
+
+
+func _on_towers_bought__for_46(arg_towers):
+	for tower in arg_towers:
+		_all_towers.append(tower)
+		set_tower_is_sellable(tower, false)
+	
+	advance_to_next_transcript_message()
+
+
+func _on_syn_met__47():
+	advance_to_next_transcript_message()
+
 
 #
 func _on_end_of_transcript():
-	hide_current_transcript_message()
+	#hide_current_transcript_message()
 	
 	add_gold_amount(20)
 	set_can_refresh_shop__panel_based(true)

@@ -8,6 +8,9 @@ var node_tree_of_screen : Array = []
 var starting_screen : StartingScreen
 var current_visible_control : Control
 
+onready var back_button = $BackButton
+onready var content_panel = $ContentPanel
+
 #
 
 func _ready():
@@ -25,7 +28,7 @@ func show_control(control : Control):
 		node_tree_of_screen.append(control)
 	
 	if !has_control(control):
-		add_child(control)
+		content_panel.add_child(control)
 	
 	if current_visible_control != null:
 		current_visible_control.visible = false
@@ -50,24 +53,24 @@ func hide_control(control : Control):
 
 
 func has_any_visible_control() -> bool:
-	for child in get_children():
+	for child in content_panel.get_children():
 		if child.visible:
 			return true
 	
 	return false
 
 func has_control(control : Control) -> bool:
-	return get_children().has(control)
+	return content_panel.get_children().has(control)
 
 func has_control_with_script(script : Reference) -> bool:
-	for child in get_children():
+	for child in content_panel.get_children():
 		if child.get_script() == script:
 			return true
 	
 	return false
 
 func get_control_with_script(script : Reference) -> Control:
-	for child in get_children():
+	for child in content_panel.get_children():
 		if child.get_script() == script:
 			return child
 	
@@ -106,4 +109,14 @@ func _unhandled_key_input(event : InputEventKey):
 			hide_or_remove_latest_from_node_tree__except_for_starting_screen()
 	
 	accept_event()
+
+#
+
+func set_should_show_back_button(arg_val):
+	back_button.visible = arg_val
+
+func _on_BackButton_on_button_released_with_button_left():
+	if current_visible_control != null:
+		if current_visible_control.has_method("_exit_to_previous"):
+			current_visible_control._exit_to_previous()
 

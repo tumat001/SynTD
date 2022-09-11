@@ -114,7 +114,6 @@ custom_constants/separation = 20
 
 [node name="ModeSelectionPanel" parent="VBoxContainer/MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource( 2 )]
 margin_right = 300.0
-rect_min_size = Vector2( 0, 40 )
 size_flags_vertical = 2
 custom_constants/margin_top = 0
 custom_constants/margin_left = 10
@@ -128,7 +127,7 @@ custom_constants/margin_left = 10
 
 [node name="MapSummaryPanel" parent="VBoxContainer/MarginContainer/HBoxContainer" instance=ExtResource( 3 )]
 margin_left = 660.0
-margin_top = 34.0
+margin_top = 53.0
 margin_right = 860.0
 margin_bottom = 160.0
 rect_min_size = Vector2( 200, 0 )

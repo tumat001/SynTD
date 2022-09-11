@@ -32,11 +32,16 @@ const Prominence_SwordBeam_Explosion_Pic08 = preload("res://TowerRelated/Color_V
 const Prominence_SwordBeam_Explosion_Pic09 = preload("res://TowerRelated/Color_Violet/Prominence/Assets/SwordAssets/SwordBeamExplosion/SwordBeam_Explosion09.png")
 
 const EffectIcon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Prominence.png")
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 
 
 const main_attack_trigger_count : int = 5
-const explosion_base_damage_ratio : float = 2.5
 const explosion_pierce : int = 3
+var explosion_base_damage_ratio : float = 2.5
+
 
 var _attached_tower
 
@@ -48,8 +53,24 @@ var explosion_attk_module : AOEAttackModule
 
 
 func _init().(StoreOfTowerEffectsUUID.ING_PROMINENCE):
-	description = "After every %s main attack or ability cast, fire a beam that explodes at the current target, dealing %s of the tower's total base damage as physical damage to %s enemies." % [str(main_attack_trigger_count) + "th", str(explosion_base_damage_ratio * 100) + "%", str(explosion_pierce)]
 	effect_icon = EffectIcon
+	_update_description()
+	
+	_can_be_scaled_by_yel_vio = true
+
+func _update_description():
+	
+	var interpreter_for_sword_dmg = TextFragmentInterpreter.new()
+	interpreter_for_sword_dmg.display_body = true
+	interpreter_for_sword_dmg.display_header = true
+	interpreter_for_sword_dmg.header_description = "damage"
+	
+	var ins_for_sword_dmg = []
+	ins_for_sword_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, explosion_base_damage_ratio * _current_additive_scale, DamageType.PHYSICAL))
+	
+	interpreter_for_sword_dmg.array_of_instructions = ins_for_sword_dmg
+	
+	description = ["After every ability cast or %s main attack, fire a beam that explodes at the current target, dealing |0| to %s enemies." % [str(main_attack_trigger_count) + "th", str(explosion_pierce)], [interpreter_for_sword_dmg]]
 
 
 func _make_modifications_to_tower(tower):
@@ -229,3 +250,14 @@ func _undo_modifications_to_tower(tower):
 	
 	_attached_tower = null
 
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_description()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	explosion_base_damage_ratio *= _current_additive_scale
+	_current_additive_scale = 1

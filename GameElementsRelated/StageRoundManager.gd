@@ -43,7 +43,7 @@ var current_stageround : StageRound
 var spawn_ins_of_faction_mode : BaseMode_EnemySpawnIns
 
 var round_started : bool
-var round_fast_forwarded : bool
+#var round_fast_forwarded : bool
 
 var enemy_manager : EnemyManager setget _set_enemy_manager
 var gold_manager : GoldManager

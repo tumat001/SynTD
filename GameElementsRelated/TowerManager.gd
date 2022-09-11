@@ -362,7 +362,7 @@ func _tower_dropped_from_dragged(tower_released : AbstractTower):
 
 
 func can_place_tower_based_on_limit_and_curr_placement(tower : AbstractTower) -> bool:
-	return tower.is_current_placable_in_map() or !is_beyond_limit_after_placing_tower(tower)
+	return (tower.is_current_placable_in_map() or !is_beyond_limit_after_placing_tower(tower))
 
 
 # Ingredient drag related
@@ -817,7 +817,7 @@ func if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(arg_tower_to
 func _on_attempt_drop_tower_on_placable(arg_tower, arg_placable, arg_move_success):
 	if can_show_player_desc_of_level_required:
 		if !game_elements.stage_round_manager.round_started and !is_in_ingredient_mode:
-			if !arg_move_success and arg_placable != null and arg_placable is InMapAreaPlacable and arg_tower.last_calculated_can_be_placed_in_map:
+			if !arg_move_success and arg_placable != null and arg_placable is InMapAreaPlacable and arg_tower.last_calculated_can_be_placed_in_map and arg_placable.last_calculated_can_be_occupied__ignoring_has_tower_clause:
 				if arg_tower.tower_limit_slots_taken == 1:
 					attempt_count_trigger_for_level_up_to_place_more.add_attempt_to_trigger()
 				elif arg_tower.tower_limit_slots_taken > 1:

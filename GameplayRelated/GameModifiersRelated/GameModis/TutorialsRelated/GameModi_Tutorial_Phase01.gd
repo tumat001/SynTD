@@ -50,7 +50,8 @@ func _apply_game_modifier_to_elements(arg_elements : GameElements):
 		"Nice! You're getting the hang of it." : ProgressMode.CONTINUE,
 		"The number of towers you can place in the map is equal to your level. Since you are level 2, you can place 2 towers." : ProgressMode.CONTINUE,
 		"Let's start the round. (Press %s, or click this button)." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
-		"While the round is started, you can fast forward the game by pressing %s." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.WAIT_FOR_EVENT, #wait for round to end
+		#13
+		"While the round is started, you can fast forward the game by pressing %s,\nor by pressing the speed buttons here." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.WAIT_FOR_EVENT, #wait for round to end
 		
 		#14 #Right click spike
 		"To view a tower's description and stats, just right click a tower.\nPlease right click this tower." : ProgressMode.ACTION_FROM_PLAYER,
@@ -84,10 +85,10 @@ func _apply_game_modifier_to_elements(arg_elements : GameElements):
 		"To wrap up this tutorial, let's sell a tower." : ProgressMode.CONTINUE,
 		#34
 		"Please sell this tower by pressing %s while hovering the tower,\nor by dragging the tower to the bottom panel (where the shop is)." % InputMap.get_action_list("game_tower_sell")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
-		
 		"Good job, as always!" : ProgressMode.CONTINUE,
+		
 		"That concludes this chapter of the tutorial." : ProgressMode.CONTINUE,
-		"(If you are new to the game, proceed to chapter 2.)" : ProgressMode.CONTINUE,
+		"(If you are new to the game, proceed to chapter 1.5.)" : ProgressMode.CONTINUE,
 	}
 	
 	._apply_game_modifier_to_elements(arg_elements)
@@ -250,6 +251,8 @@ func _on_transc_12__round_end(): # technically transc 13
 	advance_to_next_custom_towers_at_shop()
 	#set_enabled_buy_slots([])
 	set_round_is_startable(false)
+	
+
 
 #
 func _on_open_tower_info_panel__for_transc_14(arg_tower):

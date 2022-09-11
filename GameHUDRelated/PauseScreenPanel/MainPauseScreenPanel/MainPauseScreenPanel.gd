@@ -55,3 +55,9 @@ func get_control_with_script_at_content_panel(script : Reference) -> Control:
 
 
 
+
+
+func _on_BackButton_on_button_released_with_button_left():
+	if current_showing_control.has_method("_on_exit_panel") and current_showing_control.has_method("_is_a_dialog_visible__for_main"):
+		if !current_showing_control._is_a_dialog_visible__for_main():
+			current_showing_control._on_exit_panel()

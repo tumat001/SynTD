@@ -29,8 +29,6 @@ func _remove_toggle_button_from_group(arg_button):
 			arg_button.disconnect("toggle_mode_changed", self, "_on_button_toggle_mode_changed")
 			arg_button.disconnect("tree_exiting", self, "_on_button_tree_exiting")
 
-
-
 #
 
 func _on_button_toggle_mode_changed(arg_val, arg_button):

@@ -36,6 +36,9 @@ const Tesla_InfoPanel = preload("res://TowerRelated/Color_Violet/Tesla/GUI/Tesla
 const Tesla_InfoPanel_Scene = preload("res://TowerRelated/Color_Violet/Tesla/GUI/Tesla_InfoPanel.tscn")
 const Variance_InfoPanel = preload("res://TowerRelated/Color_Violet/Variance/Panel/Variance_InfoPanel.gd")
 const Variance_InfoPanel_Scene = preload("res://TowerRelated/Color_Violet/Variance/Panel/Variance_InfoPanel.tscn")
+const RiftAxis_InfoPanel = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/YelVio_RiftAxis/GUI/RiftAxis_InfoPanel.gd")
+const RiftAxis_InfoPanel_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/YelVio_RiftAxis/GUI/RiftAxis_InfoPanel.tscn")
+
 
 signal on_extra_info_panel_shown(arg_info_panel, arg_tower)
 signal on_tower_panel_ability_01_activate()
@@ -75,6 +78,7 @@ var lassaut_info_panel : LAssaut_InfoPanel
 var la_chasseur_info_panel : LaChasseur_InfoPanel
 var tesla_info_panel : Tesla_InfoPanel
 var variance_info_panel : Variance_InfoPanel
+var rift_axis_info_panel : RiftAxis_InfoPanel
 
 var current_active_info_panel
 
@@ -398,6 +402,20 @@ func _update_tower_specific_info_panel():
 			variance_info_panel.visible = false
 			variance_info_panel.set_variance(null)
 	
+	
+	# Rift Axis
+	if RiftAxis_InfoPanel.should_display_self_for(tower):
+		if rift_axis_info_panel == null:
+			rift_axis_info_panel = RiftAxis_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(rift_axis_info_panel)
+		
+		rift_axis_info_panel.visible = true
+		rift_axis_info_panel.set_rift_axis(tower)
+		current_active_info_panel = rift_axis_info_panel
+	else:
+		if rift_axis_info_panel != null:
+			rift_axis_info_panel.visible = false
+			rift_axis_info_panel.set_rift_axis(null)
 	
 	# KEEP THIS AT THE BOTTOM
 	if current_active_info_panel != null:

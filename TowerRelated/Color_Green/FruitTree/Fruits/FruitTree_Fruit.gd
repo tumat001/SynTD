@@ -40,6 +40,7 @@ func _ready():
 	
 	can_be_placed_in_map_conditional_clause.attempt_insert_clause(CanBePlacedInMapClauses.GENERIC_CANNOT_BE_PLACED_IN_MAP)
 	tower_limit_slots_taken = 0
+	is_a_summoned_tower = true
 	
 	_initialize_stats_from_tower_info(info)
 	

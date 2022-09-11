@@ -27,6 +27,13 @@ func get_description_scaled(scale : float):
 
 func get_copy_scaled_by(scale_factor : float):
 	var copy = get_script().new(internal_id)
-	copy.flat_modifier = flat_modifier * scale_factor
+	copy.flat_modifier = flat_modifier #* scale_factor
+	copy.scale_by(scale_factor)
 	
 	return copy
+
+func scale_by(scale_factor : float):
+	flat_modifier *= scale_factor 
+	emit_signal("on_values_changed")
+
+

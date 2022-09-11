@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=2]
 
-[ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundStartButton.png" type="Texture" id=1]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RightSideBackground.png" type="Texture" id=2]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundStatusPanel.gd" type="Script" id=3]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundSpeedAndStartPanel/RoundSpeedAndStartPanel.tscn" type="PackedScene" id=4]
 [ext_resource path="res://GameHUDRelated/AbilityPanel/AbilityPanel.tscn" type="PackedScene" id=5]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/UserControls/MenuButton.png" type="Texture" id=6]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/UserControls/MenuButton_Highlighted.png" type="Texture" id=7]
@@ -10,8 +10,8 @@
 [ext_resource path="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/MainPanel/RoundInfoPanel_V2.tscn" type="PackedScene" id=9]
 
 [node name="RoundStatusPanel" type="MarginContainer"]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_right = 120.0
+margin_bottom = 440.0
 mouse_filter = 2
 script = ExtResource( 3 )
 __meta__ = {
@@ -55,9 +55,9 @@ custom_constants/margin_left = 1
 
 [node name="AbilityPanel" parent="VBoxContainer" instance=ExtResource( 5 )]
 margin_left = 20.0
-margin_top = 110.0
+margin_top = 131.0
 margin_right = 100.0
-margin_bottom = 354.0
+margin_bottom = 440.0
 rect_min_size = Vector2( 80, 0 )
 size_flags_stretch_ratio = 3.0
 custom_constants/margin_right = 5
@@ -65,21 +65,11 @@ custom_constants/margin_top = 5
 custom_constants/margin_left = 5
 custom_constants/margin_bottom = 5
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_left = 37.0
-margin_top = 375.0
-margin_right = 82.0
+[node name="RoundSpeedAndStartPanel" parent="." instance=ExtResource( 4 )]
+margin_left = 3.0
+margin_top = 360.0
+margin_right = 117.0
 margin_bottom = 440.0
-mouse_filter = 2
 size_flags_horizontal = 6
 size_flags_vertical = 10
-custom_constants/margin_bottom = 20
-
-[node name="RoundStatusButton" type="TextureButton" parent="VBoxContainer/MarginContainer"]
-margin_right = 45.0
-margin_bottom = 45.0
-focus_mode = 0
-enabled_focus_mode = 0
-texture_normal = ExtResource( 1 )
 [connection signal="released_mouse_event" from="VBoxContainer/MarginContainer2/MainMenuButton" to="." method="_on_MainMenuButton_released_mouse_event"]
-[connection signal="pressed" from="VBoxContainer/MarginContainer/RoundStatusButton" to="." method="_on_RoundStatusButton_pressed"]

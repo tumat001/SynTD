@@ -1,12 +1,8 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/SingleIngredientPanel.gd" type="Script" id=1]
-[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_BaseDamageIncrease.png" type="Texture" id=2]
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/IngredientIconPanel.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=3]
-
-[sub_resource type="DynamicFont" id=2]
-size = 8
-font_data = ExtResource( 3 )
 
 [sub_resource type="DynamicFont" id=1]
 size = 8
@@ -25,11 +21,7 @@ margin_right = 65.0
 margin_bottom = 14.0
 mouse_filter = 2
 
-[node name="IngredientIcon" type="TextureRect" parent="HBoxContainer"]
-margin_right = 14.0
-margin_bottom = 14.0
-mouse_filter = 2
-texture = ExtResource( 2 )
+[node name="IngredientIconPanel" parent="HBoxContainer" instance=ExtResource( 2 )]
 
 [node name="Marginer" type="MarginContainer" parent="HBoxContainer"]
 margin_left = 18.0
@@ -44,18 +36,7 @@ margin_top = 2.0
 margin_right = 47.0
 margin_bottom = 14.0
 mouse_filter = 2
-custom_fonts/normal_font = SubResource( 2 )
+custom_fonts/normal_font = SubResource( 1 )
 fit_content_height = true
 scroll_active = false
-
-[node name="IngredientLabel_OLD" type="Label" parent="HBoxContainer/Marginer"]
-visible = false
-margin_top = 3.0
-margin_right = 47.0
-margin_bottom = 12.0
-size_flags_horizontal = 3
-custom_fonts/font = SubResource( 1 )
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-text = "PlaceHolder"
-autowrap = true
 [connection signal="gui_input" from="." to="." method="_on_SingleIngredientPanel_gui_input"]

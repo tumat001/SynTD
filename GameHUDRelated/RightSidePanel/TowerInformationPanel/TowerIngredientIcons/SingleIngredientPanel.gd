@@ -14,7 +14,11 @@ export(bool) var use_dynamic_description : bool = false
 var collapsed : bool setget set_collapsed
 
 onready var ingredient_label = $HBoxContainer/Marginer/IngredientLabel
-onready var ingredient_icon = $HBoxContainer/IngredientIcon
+
+onready var ingredient_icon_panel = $HBoxContainer/IngredientIconPanel
+#onready var ingredient_icon = $HBoxContainer/IngIconContainer/IngredientIcon
+#onready var ingredient_icon_container = $HBoxContainer/IngIconContainer
+#onready var additional_border_modi = $HBoxContainer/IngIconContainer/AdditionalBorderModi
 
 #
 
@@ -39,8 +43,6 @@ func update_display():
 
 
 func _update_panel(arg_tower_base_effect):
-	ingredient_icon.texture = arg_tower_base_effect.effect_icon
-	
 	var desc_to_use
 	var use_bbcode : bool
 	
@@ -66,6 +68,12 @@ func _update_panel(arg_tower_base_effect):
 		ingredient_label.bbcode_text = desc_to_use
 	else:
 		ingredient_label.text = desc_to_use
+	
+	#
+	
+	ingredient_icon_panel.tower_base_effect = arg_tower_base_effect
+	ingredient_icon_panel.update_display()
+
 
 #
 
@@ -99,5 +107,6 @@ func _on_SingleIngredientPanel_gui_input(event):
 			set_collapsed(!collapsed)
 
 
+######
 
 

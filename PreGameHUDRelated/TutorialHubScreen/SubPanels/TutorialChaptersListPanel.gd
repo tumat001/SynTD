@@ -8,6 +8,7 @@ const CombinationManager = preload("res://GameElementsRelated/CombinationManager
 signal on_tutorial_toggled(arg_descs, arg_mode_id)
 
 onready var tutorial_chapter01_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter01
+onready var tutorial_chapter01_01_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter01_01
 onready var tutorial_chapter02_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter02
 onready var tutorial_chapter03_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter03
 onready var tutorial_chapter04_button = $ContentContainer/ScrollContainer/MarginContainer/VBoxContainer/Tutorial_Chapter04
@@ -26,6 +27,9 @@ func _ready():
 	tutorial_chapter01_button.configure_self_with_button_group(tutorial_button_group)
 	tutorial_chapter01_button.connect("toggle_mode_changed", self, "_on_tutorial_button_toggle_mode_changed", [tutorial_chapter01_button])
 	
+	tutorial_chapter01_01_button.configure_self_with_button_group(tutorial_button_group)
+	tutorial_chapter01_01_button.connect("toggle_mode_changed", self, "_on_tutorial_button_toggle_mode_changed", [tutorial_chapter01_01_button])
+	
 	tutorial_chapter02_button.configure_self_with_button_group(tutorial_button_group)
 	tutorial_chapter02_button.connect("toggle_mode_changed", self, "_on_tutorial_button_toggle_mode_changed", [tutorial_chapter02_button])
 	
@@ -35,6 +39,8 @@ func _ready():
 	tutorial_chapter04_button.configure_self_with_button_group(tutorial_button_group)
 	tutorial_chapter04_button.connect("toggle_mode_changed", self, "_on_tutorial_button_toggle_mode_changed", [tutorial_chapter04_button])
 	
+	
+
 
 func _initialize_descriptions():
 	var desc_for_tutorial_chapter_01 = [
@@ -64,6 +70,23 @@ func _initialize_descriptions():
 		"You can sell a tower by pressing %s while hovering on the tower you want to sell. You can also drag the tower to the bottom panel (where the shop is)." % InputMap.get_action_list("game_shop_refresh")[0],
 		"",
 	]
+	var desc_for_tutorial_chapter_01_01 = [
+		"(Playthrough available for this chapter! Click at the button below.)",
+		"",
+		"What to expect here: Tower tiers, Gold mechanics, Rounds, Player health.",
+		"-----------",
+		"",
+		"There are 6 tower tiers. The higher tiers are in general more powerful than the lower tiers. Higher player levels allow you to get higher tier towers.",
+		"",
+		"Gold is gained at the end of round. The baseline amount of gold increases as the rounds progress. You also gain 1 gold every 10 gold that you have, up to 5 bonus gold.",
+		"You additionally gain bonus gold based on your win or lose streak, so if you find yourself winning, then winning more allows you to gain more gold (and same for losing).",
+		"",
+		"The game ends at round 9-4. If you survive after that round, you win the game.",
+		"",
+		"You start with 150 health. Once it reaches 0, you lose.",
+		"",
+	]
+	
 	var desc_for_tutorial_chapter_02 = [
 		"(Playthrough available for this chapter! Click at the button below.)",
 		"",
@@ -102,13 +125,17 @@ func _initialize_descriptions():
 		"",
 		"Get %s of the same tower to combine them, sacrificing them to apply their ingredient effect to towers. Affects existing and future towers bought." % str(same_towers_needed_for_combi),
 		"Press %s to combine towers." % InputMap.get_action_list("game_combine_combinables")[0].as_text(),
-		"However, combination applies the combined tower's ingredient effect\nto towers with tiers who are below, equal, and 1 tier above the combined tower. For example, combining a tier 3 tower gives its ingredient effect tiers 1, 2, 3, and 4 only.",
+		"Combination applies the combined tower's ingredient effect to towers with tiers who are below, equal, and 1 tier above the combined tower. For example, combining a tier 3 tower gives its ingredient effect tiers 1, 2, 3, and 4 only.",
 		"",
 	]
 	
 	
 	tutorial_button_to_tutorial_descriptions_map[tutorial_chapter01_button] = desc_for_tutorial_chapter_01
 	tutorial_button_to_tutorial_game_mode_id[tutorial_chapter01_button] = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_01
+	
+	tutorial_button_to_tutorial_descriptions_map[tutorial_chapter01_01_button] = desc_for_tutorial_chapter_01_01
+	tutorial_button_to_tutorial_game_mode_id[tutorial_chapter01_01_button] = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_01_01
+	
 	
 	tutorial_button_to_tutorial_descriptions_map[tutorial_chapter02_button] = desc_for_tutorial_chapter_02
 	tutorial_button_to_tutorial_game_mode_id[tutorial_chapter02_button] = StoreOfGameMode.Mode.TUTORIAL_CHAPTER_02

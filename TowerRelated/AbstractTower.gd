@@ -56,9 +56,9 @@ const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated
 const AbsorbIngParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/AbsorbRelated/AbsorbIngParticle.tscn")
 
 signal tower_being_dragged(tower_self)
-signal tower_dropped_from_dragged(tower_self)
+signal tower_dropped_from_dragged(tower_self) # use when listening for player input. Note: does not take into account the swapping of towers
 signal on_attempt_drop_tower_on_placable(tower_self, arg_placable, arg_move_success) # 3rd arg is if there is enough tower slots to put the tower
-signal on_tower_transfered_to_placable(towrer_self, arg_placable)
+signal on_tower_transfered_to_placable(tower_self, arg_placable)
 
 signal tower_toggle_show_info
 signal on_tower_toggle_showing_range(is_showing_ranges)
@@ -300,6 +300,7 @@ var last_calculated_can_absorb_ingredient : bool
 
 
 enum CanBeUsedAsIngredientClauses {
+	CANNOT_BE_USED_AS_ING_GENERIC_TAG = 0,
 	DOM_SYN_RED__HOLOGRAPHIC_TOWERS = 1
 }
 var can_be_used_as_ingredient_conditonal_clauses : ConditionalClauses
@@ -1875,6 +1876,9 @@ func _remove_all_timebound_and_countbound_and_roundbound_effects():
 
 func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_base_cost : int):
 	if ingredient_effect != null:
+		if ingredient_effect.tower_base_effect._can_be_scaled_by_yel_vio:
+			ingredient_effect.tower_base_effect._consume_current_additive_scaling_for_actual_scaling_in_stats()
+		
 		ingredients_absorbed[ingredient_effect.tower_id] = ingredient_effect
 		_ingredients_tower_id_base_gold_costs_map[ingredient_effect.tower_id] = ingredient_gold_base_cost
 		add_tower_effect(ingredient_effect.tower_base_effect, all_attack_modules, true, true, ingredient_effect)
@@ -2621,6 +2625,8 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 		if !is_in_ingredient_mode or ignore_ing_mode:
 			new_area_placable = null
 	
+	if new_area_placable != null and !new_area_placable.last_calculated_can_be_occupied__ignoring_has_tower_clause:
+		new_area_placable = null
 	
 	var should_update_active_synergy : bool
 	if new_area_placable != null and !do_not_update:

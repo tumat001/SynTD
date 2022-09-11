@@ -17,6 +17,7 @@ var is_toggle_mode_on : bool = false setget set_is_toggle_mode_on, get_is_toggle
 var current_button_group
 export(bool) var is_toggle_on_by_hover_instead_of_click : bool = false setget set_is_toggle_on_by_hover_instead_of_click
 
+export(bool) var can_be_untoggled_if_is_toggled : bool = true
 
 #
 
@@ -25,10 +26,11 @@ func _ready():
 	set_is_toggle_on_by_hover_instead_of_click(is_toggle_on_by_hover_instead_of_click)
 
 func _on_advanced_button_released_mouse_event(arg_event : InputEventMouseButton):
-	._on_advanced_button_released_mouse_event(arg_event)
-	
-	if !is_toggle_on_by_hover_instead_of_click:
-		set_is_toggle_mode_on(!is_toggle_mode_on)
+	if can_be_untoggled_if_is_toggled or (!is_toggle_mode_on and !can_be_untoggled_if_is_toggled):
+		._on_advanced_button_released_mouse_event(arg_event)
+		
+		if !is_toggle_on_by_hover_instead_of_click:
+			set_is_toggle_mode_on(!is_toggle_mode_on)
 
 func _on_mouse_entered():
 	if is_toggle_on_by_hover_instead_of_click:

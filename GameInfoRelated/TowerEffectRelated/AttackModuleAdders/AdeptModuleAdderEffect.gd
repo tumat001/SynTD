@@ -35,6 +35,11 @@ var adepting_base_dmg : float = 2.5
 func _init().(StoreOfTowerEffectsUUID.ING_ADEPT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Adeptling.png")
 	
+	_update_description()
+	
+	_can_be_scaled_by_yel_vio = true
+
+func _update_description():
 	# INS START
 	
 	var interpreter = TextFragmentInterpreter.new()
@@ -42,20 +47,15 @@ func _init().(StoreOfTowerEffectsUUID.ING_ADEPT):
 	interpreter.display_header = true
 	
 	var ins = []
-	ins.append(NumericalTextFragment.new(adepting_base_dmg, false, DamageType.PHYSICAL))
-	#ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-	#ins.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.4, DamageType.PHYSICAL))
-	#ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-	#ins.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.4)) # stat basis does not matter here
-	
+	ins.append(NumericalTextFragment.new(adepting_base_dmg * _current_additive_scale, false, DamageType.PHYSICAL))
+
 	interpreter.array_of_instructions = ins
-	
 	
 	# INS END
 	
 	description = ["Adeptling: Summons an adeptling beside your tower. Main attacks cause Adeptling to attack a different target, with a cooldown of 0.1 seconds. Its shots deal |0| and apply on hit effects.", [interpreter]]
-	#description = ["Adeptling: Summons an adeptling beside your tower. Adeptling attacks a different target when its tower hits its main attack. Its shots deal |0| and apply on hit effects.", [interpreter]]
-	
+
+
 
 func _make_modifications_to_tower(tower):
 	if adeptling_am == null:
@@ -169,3 +169,16 @@ func _undo_modifications_to_tower(tower):
 	if own_timer != null:
 		own_timer.queue_free()
 		own_timer = null
+
+
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_description()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	adepting_base_dmg *= _current_additive_scale
+	_current_additive_scale = 1

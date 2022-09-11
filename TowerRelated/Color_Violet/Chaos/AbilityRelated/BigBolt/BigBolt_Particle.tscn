@@ -23,7 +23,7 @@ animations = [ {
 
 [node name="BigBoltParticle" instance=ExtResource( 1 )]
 frames = SubResource( 1 )
-frame = 8
+frame = 5
 offset = Vector2( 0, -38 )
 script = ExtResource( 12 )
 lifetime = 0.25

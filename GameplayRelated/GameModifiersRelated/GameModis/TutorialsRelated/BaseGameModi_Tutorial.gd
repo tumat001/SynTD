@@ -5,6 +5,10 @@ const Tutorial_WhiteArrow_Particle_Scene = preload("res://GameplayRelated/GameMo
 const Tutorial_WhiteCircle_Particle = preload("res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/Sub/Tutorial_WhiteCircle_Particle.gd")
 const Tutorial_WhiteCircle_Particle_Scene = preload("res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/Sub/Tutorial_WhiteCircle_Particle.tscn")
 
+const StatusIcon_ContinueNext = preload("res://GameHUDRelated/NotificationPanel/TutorialPanel/Assets/TutorialPanel_Indicator_Next.png")
+const StatusIcon_ActionNeeded = preload("res://GameHUDRelated/NotificationPanel/TutorialPanel/Assets/TutorialPanel_Indicator_ActionNeeded.png")
+const StatusIcon_Wait = preload("res://GameHUDRelated/NotificationPanel/TutorialPanel/Assets/TutorialPanel_Indicator_Wait.png")
+
 
 signal on_current_transcript_index_changed(arg_index, arg_message)
 signal at_end_of_transcript()
@@ -15,8 +19,21 @@ enum ProgressMode {
 	WAIT_FOR_EVENT = 2,
 }
 
+var progress_mode_to_icon_img : Dictionary = {
+	ProgressMode.CONTINUE : StatusIcon_ContinueNext,
+	ProgressMode.ACTION_FROM_PLAYER : StatusIcon_ActionNeeded,
+	ProgressMode.WAIT_FOR_EVENT : StatusIcon_Wait
+}
 
-var current_transcript_index : int = -1
+var progress_mode_to_default_tooltip_msg : Dictionary = {
+	ProgressMode.CONTINUE : "Click anywhere or Press ENTER to continue.",
+	ProgressMode.ACTION_FROM_PLAYER : "Please do the requested action to continue.",
+	ProgressMode.WAIT_FOR_EVENT : "Waiting",
+}
+
+
+const starting_curr_transcript_index : int = -1 # do not touch
+var current_transcript_index : int = starting_curr_transcript_index
 var current_custom_towers_at_shop_index : int = -1
 
 var exit_scene_if_at_end_of_transcript : bool = true
@@ -37,6 +54,9 @@ func _get_transcript(): # implemented by classes
 
 func _apply_game_modifier_to_elements(arg_elements : GameElements):
 	._apply_game_modifier_to_elements(arg_elements)
+	
+	game_elements.tutotial_notif_panel.initialize()
+	
 	game_elements.connect("unhandled_input", self, "_game_elements_unhandled_input")
 	game_elements.connect("unhandled_key_input", self, "_game_elements_unhandled_key_input")
 	game_elements.connect("before_game_start", self, "_on_game_elements_before_game_start__base_class", [], CONNECT_ONESHOT)
@@ -71,36 +91,55 @@ func _game_elements_unhandled_key_input(arg_event, arg_action_taken):
 func _player_requests_advance_to_next_transcript_message():
 	if _if_current_transcript_has_progress_mode(ProgressMode.CONTINUE):
 		advance_to_next_transcript_message()
+		
+	else:
+		if !game_elements.tutotial_notif_panel.all_text_is_visible or current_transcript_index != starting_curr_transcript_index:
+			game_elements.tutotial_notif_panel.show_all_text_and_icon()
+
 
 func _if_current_transcript_has_progress_mode(arg_mode):
 	var curr_transcript = _get_text_transcript_at_current_index()
 	return _get_transcript()[curr_transcript] == arg_mode
 
 func advance_to_next_transcript_message():
-	current_transcript_index += 1
-	
-	if _get_transcript().size() <= current_transcript_index:
-		if exit_scene_if_at_end_of_transcript:
-			CommsForBetweenScenes.goto_starting_screen(game_elements)
+	if game_elements.tutotial_notif_panel.all_text_is_visible or current_transcript_index == starting_curr_transcript_index:
+		current_transcript_index += 1
+		
+		if _get_transcript().size() <= current_transcript_index:
+			if exit_scene_if_at_end_of_transcript:
+				CommsForBetweenScenes.goto_starting_screen(game_elements)
+			else:
+				game_elements.disconnect("unhandled_input", self, "_game_elements_unhandled_input")
+				game_elements.disconnect("unhandled_key_input", self, "_game_elements_unhandled_key_input")
+				emit_signal("at_end_of_transcript")
 		else:
-			game_elements.disconnect("unhandled_input", self, "_game_elements_unhandled_input")
-			game_elements.disconnect("unhandled_key_input", self, "_game_elements_unhandled_key_input")
-			emit_signal("at_end_of_transcript")
+			_show_transcript_msg_at_index(current_transcript_index)
+			emit_signal("on_current_transcript_index_changed", current_transcript_index, _get_text_transcript_at_current_index())
+		
+		
 	else:
-		_show_transcript_msg_at_index(current_transcript_index)
-		emit_signal("on_current_transcript_index_changed", current_transcript_index, _get_text_transcript_at_current_index())
+		game_elements.tutotial_notif_panel.show_all_text_and_icon()
 
 
 func _show_transcript_msg_at_index(arg_index):
-	game_elements.generic_notif_panel.push_notification(_get_text_transcript_at_current_index(), "", game_elements.GenericNotifPanel.INFINITE_DURATION)
-	
+	#todo
+	#game_elements.generic_notif_panel.push_notification(_get_text_transcript_at_current_index(), "", game_elements.GenericNotifPanel.INFINITE_DURATION)
+	var progress_mode = _get_progress_mode_of_transcript_at_current_index()
+	var img_of_progress_mode = progress_mode_to_icon_img[progress_mode]
+	var tooltip_for_img = progress_mode_to_default_tooltip_msg[progress_mode]
+	game_elements.tutotial_notif_panel.set_text_and_icon(_get_text_transcript_at_current_index(), img_of_progress_mode, tooltip_for_img)
+
 
 func _get_text_transcript_at_current_index():
 	return _get_transcript().keys()[current_transcript_index]
 
-func hide_current_transcript_message():
-	game_elements.generic_notif_panel.hide_notification()
+func _get_progress_mode_of_transcript_at_current_index():
+	return _get_transcript().values()[current_transcript_index]
 
+
+func hide_current_transcript_message():
+	#game_elements.generic_notif_panel.hide_notification()
+	game_elements.tutotial_notif_panel.hide_notif_panel()
 
 #
 
@@ -121,6 +160,7 @@ func set_notif_from_attempt_placing_towers(arg_val : bool):
 
 func set_round_is_startable(arg_val : bool):
 	game_elements.round_status_panel.can_start_round = arg_val
+	game_elements.round_status_panel.round_speed_and_start_panel.visible = arg_val
 
 func set_can_level_up(arg_val : bool):
 	if arg_val:
@@ -301,7 +341,7 @@ func _if_tower_arr_matches_tower_id_arr(arg_tower_arr : Array, arg_tower_id_arr 
 func listen_for_round_start__then_listen_for_round_end__call_func_for_both(arg_func_source, arg_func_name_for_start, arg_func_name_for_end):
 	game_elements.stage_round_manager.connect("round_started", self, "_on_round_start", [arg_func_source, arg_func_name_for_start], CONNECT_ONESHOT)
 	game_elements.stage_round_manager.connect("round_ended", self, "_on_round_end", [arg_func_source, arg_func_name_for_end], CONNECT_ONESHOT)
-	
+
 
 func _on_round_start(arg_stageround, arg_func_source, arg_func_name_to_call):
 	if arg_func_source.has_method(arg_func_name_to_call):
@@ -423,6 +463,15 @@ func _on_combination_effect_added(arg_combi_effect_id, arg_expected_combi_id, ar
 		arg_func_source.call(arg_func_name)
 
 
+func listen_for_synergy_to_be_activated(arg_expected_synergy_name : String, arg_expected_syn_tier : int, arg_func_name, arg_func_source):
+	game_elements.synergy_manager.connect("synergies_updated", self, "_on_synergies_updated", [arg_expected_synergy_name, arg_expected_syn_tier, arg_func_name, arg_func_source])
+
+func _on_synergies_updated(arg_expected_synergy_name : String, arg_expected_syn_tier : int, arg_func_name, arg_func_source):
+	var is_active = game_elements.synergy_manager.is_color_synergy_name_active__with_tier_being_equal_to(arg_expected_synergy_name, arg_expected_syn_tier)
+	
+	if is_active:
+		game_elements.synergy_manager.disconnect("synergies_updated", self, "_on_synergies_updated")
+		arg_func_source.call(arg_func_name)
 
 ########
 
@@ -433,7 +482,11 @@ func get_tower_buy_card_at_buy_slot_index(arg_index):
 	return buy_slot.get_current_tower_buy_card()
 
 func get_round_status_button():
-	return game_elements.round_status_panel.round_status_button
+	return game_elements.round_status_panel.round_speed_and_start_panel.start_button
+
+func get_round_start_and_speed_panel():
+	return game_elements.round_status_panel.round_speed_and_start_panel
+
 
 func get_extra_info_button_from_tower_info_panel(): # the little "i" button that displays the tower's description
 	return game_elements.tower_info_panel.tower_name_and_pic_panel.extra_info_button
@@ -461,6 +514,21 @@ func get_tower_icon_with_tower_id__on_combination_top_panel(arg_id):
 
 func get_more_combination_info__on_combi_top_panel():
 	return game_elements.combination_top_panel.combination_more_details_button
+
+func get_player_level_panel():
+	return game_elements.general_stats_panel.level_label
+
+func get_streak_panel():
+	return game_elements.general_stats_panel.streak_panel
+
+func get_gold_panel():
+	return game_elements.general_stats_panel.gold_amount_label
+
+func get_round_indicator_panel():
+	return game_elements.right_side_panel.round_status_panel.round_info_panel_v2.round_indicator_panel
+
+func get_player_health_bar_panel():
+	return game_elements.right_side_panel.round_status_panel.round_info_panel_v2.player_health_panel
 
 # INDICATORS
 

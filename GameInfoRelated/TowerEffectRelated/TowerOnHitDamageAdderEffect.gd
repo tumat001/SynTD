@@ -28,6 +28,8 @@ func _init(arg_on_hit_damage : OnHitDamage,
 	on_hit_damage.damage_as_modifier.internal_id = arg_effect_uuid
 	
 	on_hit_damage.connect("on_damage_as_modifier_values_changed", self, "_on_on_hit_dmg_vals_changed", [], CONNECT_PERSIST)
+	
+	_can_be_scaled_by_yel_vio = true
 
 #
 
@@ -53,7 +55,7 @@ func _get_description() -> String:
 	var type_name = DamageType.get_name_of_damage_type(on_hit_damage.damage_type)
 	
 	var modifier = on_hit_damage.damage_as_modifier
-	var modifier_desc = modifier.get_description()
+	var modifier_desc = modifier.get_description_scaled(_current_additive_scale)
 	
 	if modifier is FlatModifier:
 		return ("+" + modifier_desc + " " + type_name + " on hit damage")
@@ -89,3 +91,16 @@ func _shallow_duplicate():
 	_configure_copy_to_match_self(copy)
 	
 	return copy
+
+
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_on_on_hit_dmg_vals_changed()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	on_hit_damage.scale_by(_current_additive_scale)
+	_current_additive_scale = 1

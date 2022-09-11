@@ -66,7 +66,7 @@ rect_min_size = Vector2( 80, 80 )
 
 [node name="MarginContainer" type="MarginContainer" parent="ContentContainer/ScrollContainer"]
 margin_right = 146.0
-margin_bottom = 271.0
+margin_bottom = 240.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -79,45 +79,49 @@ custom_constants/margin_bottom = 15
 margin_left = 5.0
 margin_top = 15.0
 margin_right = 141.0
-margin_bottom = 256.0
+margin_bottom = 225.0
 mouse_filter = 2
 custom_constants/separation = 15
 
 [node name="Tutorial_Chapter01" parent="ContentContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource( 1 )]
-margin_left = 12.0
-margin_right = 123.0
-margin_bottom = 49.0
+margin_left = 43.0
+margin_right = 93.0
 size_flags_horizontal = 6
 text_for_label = "Chapter 1:
 Game Basics"
-is_toggle_on_by_hover_instead_of_click = true
+
+[node name="Tutorial_Chapter01_01" parent="ContentContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource( 1 )]
+margin_left = 43.0
+margin_top = 45.0
+margin_right = 93.0
+margin_bottom = 75.0
+size_flags_horizontal = 6
+text_for_label = "Chapter 1.5:
+Game Basics Part 2"
 
 [node name="Tutorial_Chapter02" parent="ContentContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource( 1 )]
-margin_left = 12.0
-margin_top = 64.0
-margin_right = 123.0
-margin_bottom = 113.0
+margin_left = 43.0
+margin_top = 90.0
+margin_right = 93.0
+margin_bottom = 120.0
 size_flags_horizontal = 6
 text_for_label = "Chapter 2:
 Tower Tier & Synergies"
-is_toggle_on_by_hover_instead_of_click = true
 
 [node name="Tutorial_Chapter03" parent="ContentContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource( 1 )]
-margin_left = 12.0
-margin_top = 128.0
-margin_right = 123.0
-margin_bottom = 177.0
+margin_left = 43.0
+margin_top = 135.0
+margin_right = 93.0
+margin_bottom = 165.0
 size_flags_horizontal = 6
 text_for_label = "Chapter 3:
 Ingredient Effects"
-is_toggle_on_by_hover_instead_of_click = true
 
 [node name="Tutorial_Chapter04" parent="ContentContainer/ScrollContainer/MarginContainer/VBoxContainer" instance=ExtResource( 1 )]
-margin_left = 12.0
-margin_top = 192.0
-margin_right = 123.0
-margin_bottom = 241.0
+margin_left = 43.0
+margin_top = 180.0
+margin_right = 93.0
+margin_bottom = 210.0
 size_flags_horizontal = 6
 text_for_label = "Chapter 4:
 Combination"
-is_toggle_on_by_hover_instead_of_click = true

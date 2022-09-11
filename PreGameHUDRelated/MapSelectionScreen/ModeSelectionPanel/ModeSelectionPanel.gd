@@ -10,7 +10,7 @@ const MapTypeInformation = preload("res://MapsRelated/MapTypeInformation.gd")
 
 signal current_mode_selected_changed(arg_mode_id)
 
-onready var button_container = $ContentContainer/ButtonContainer
+onready var button_container = $ContentContainer/ScrollContainer/ButtonContainer
 
 var mode_id_to_button_map : Dictionary = {}
 var button_group_for_mode : ButtonGroup_Custom

@@ -3115,14 +3115,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var interpreter_for_bolt = TextFragmentInterpreter.new()
 		interpreter_for_bolt.tower_info_to_use_for_tower_stat_fragments = info
 		interpreter_for_bolt.display_body = true
-		interpreter_for_bolt.header_description = "elemental damage"
+		interpreter_for_bolt.header_description = " damage"
 		
 		var ins_for_bolt = []
 		ins_for_bolt.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.25, DamageType.ELEMENTAL))
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.35, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25)) # stat basis does not matter here
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.35)) # stat basis does not matter here
 		
 		interpreter_for_bolt.array_of_instructions = ins_for_bolt
 		
@@ -5690,4 +5690,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Variance/Variance.tscn")
 	elif tower_id == VARIANCE_VESSEL:
 		return load("res://TowerRelated/Color_Violet/Variance_Vessel/Variance_Vessel.tscn")
-
+	elif tower_id == YELVIO_RIFT_AXIS:
+		return load("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/YelVio_RiftAxis/YelVio_RiftAxis.tscn")

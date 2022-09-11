@@ -15,17 +15,25 @@ const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/Te
 
 const bonus_damage_percent_threshold : float = 0.75
 
-const bonus_damage_new_scale : float = 1.30
-const bonus_damage_new_scale_against_normal_typed : float = 1.60
+var bonus_damage_new_scale : float = 1.30
+var bonus_damage_new_scale_against_normal_typed : float = 1.60
+
 
 func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Impale.png")
+	
+	_update_description()
+	
+	_can_be_scaled_by_yel_vio = true
+
+
+func _update_description():
 	#
 	var interpreter_for_bonus_dmg_on_threshold = TextFragmentInterpreter.new()
 	interpreter_for_bonus_dmg_on_threshold.display_body = false
 	
 	var ins_for_bonus_dmg_on_threshold = []
-	ins_for_bonus_dmg_on_threshold.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", (bonus_damage_new_scale - 1.0) * 100.0, true))
+	ins_for_bonus_dmg_on_threshold.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", (bonus_damage_new_scale - 1.0) * 100.0 * _current_additive_scale, true))
 	
 	interpreter_for_bonus_dmg_on_threshold.array_of_instructions = ins_for_bonus_dmg_on_threshold
 	
@@ -34,14 +42,15 @@ func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):
 	interpreter_for_bonus_dmg_normals_on_threshold.display_body = false
 	
 	var ins_for_bonus_dmg_normals_on_threshold = []
-	ins_for_bonus_dmg_normals_on_threshold.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", (bonus_damage_new_scale_against_normal_typed - 1.0) * 100.0, true))
+	ins_for_bonus_dmg_normals_on_threshold.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "", (bonus_damage_new_scale_against_normal_typed - 1.0) * 100.0 * _current_additive_scale, true))
 	
 	interpreter_for_bonus_dmg_normals_on_threshold.array_of_instructions = ins_for_bonus_dmg_normals_on_threshold
-	
 	
 	#
 	
 	description = ["All of the tower's attacks deal |0| to enemies below 75% health. The damage bonus is increased to |1| against Normal typed enemies.", [interpreter_for_bonus_dmg_on_threshold, interpreter_for_bonus_dmg_normals_on_threshold]]
+
+
 
 
 func _make_modifications_to_tower(tower):
@@ -63,4 +72,18 @@ func _on_enemy_hit_s(enemy, damage_register_id, damage_instance, module):
 func _undo_modifications_to_tower(tower):
 	if tower.is_connected("on_any_attack_module_enemy_hit", self, "_on_enemy_hit_s"):
 		tower.disconnect("on_any_attack_module_enemy_hit", self, "_on_enemy_hit_s")
+
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_description()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	bonus_damage_new_scale *= _current_additive_scale
+	bonus_damage_new_scale_against_normal_typed *= _current_additive_scale
+	
+	_current_additive_scale = 1
 

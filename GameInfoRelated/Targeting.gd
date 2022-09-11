@@ -519,7 +519,7 @@ static func _if_target_is_hit_by_line_with_width__and_get_difference_of_angle_to
 	var angle_to_end_pos_02 = rad2deg(source_pos.angle_to_point(end_pos_02))
 	
 	
-	var within_angle : bool = _is_angle_between_angles(arg_angle, angle_to_end_pos_01, angle_to_end_pos_02)
+	var within_angle : bool = is_angle_between_angles(arg_angle, angle_to_end_pos_01, angle_to_end_pos_02)
 	
 	#print("angle: %s, angle_end_pos_02 : %s, angle_end_pos_01 : %s, arg_target_pos : %s, within angle: %s, angle_to_enemy: %s" % [arg_angle, angle_to_end_pos_02, angle_to_end_pos_01, arg_target_pos, within_angle, rad2deg(source_pos.angle_to_point(arg_target_pos))])
 	#print("-------------")
@@ -547,7 +547,7 @@ static func _get_angle_diff(angle_01, angle_02):
 	return abs(diff)
 
 
-static func _is_angle_between_angles(arg_angle, arg_angle_01, arg_angle_02):
+static func is_angle_between_angles(arg_angle, arg_angle_01, arg_angle_02):
 	arg_angle = _convert_angle_to_1to360(arg_angle)
 	arg_angle_01 = _convert_angle_to_1to360(arg_angle_01)
 	arg_angle_02 = _convert_angle_to_1to360(arg_angle_02)
@@ -560,13 +560,27 @@ static func _is_angle_between_angles(arg_angle, arg_angle_01, arg_angle_02):
 			return arg_angle_01 >= arg_angle and arg_angle >= arg_angle_02
 		
 	else:
-		
 		if arg_angle_01 - arg_angle_02 < 270:
 			return arg_angle_01 >= arg_angle and arg_angle >= arg_angle_02 #orig
 		else:
 			#print("angle: %s, angle_end_pos_01 : %s, angle_end_pos_02 : %s" % [arg_angle, arg_angle_01, arg_angle_02])
 			return arg_angle <= arg_angle_02 and arg_angle_01 >= arg_angle
-			
+
+
+static func is_angle_between_angles__do_no_correction(arg_angle, arg_angle_01, arg_angle_02):
+	arg_angle = _convert_angle_to_1to360(arg_angle)
+	arg_angle_01 = _convert_angle_to_1to360(arg_angle_01)
+	arg_angle_02 = _convert_angle_to_1to360(arg_angle_02)
+	
+	
+	#if arg_angle_01 < arg_angle_02:
+	return arg_angle_01 <= arg_angle and arg_angle <= arg_angle_02 #orig
+	#	
+#	else:
+#		return arg_angle_01 >= arg_angle and arg_angle >= arg_angle_02 #orig
+#
+
+
 
 static func _convert_angle_to_1to360(arg_angle):
 	arg_angle = fmod(arg_angle, 360)

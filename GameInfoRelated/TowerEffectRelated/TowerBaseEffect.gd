@@ -55,6 +55,11 @@ var ignore_effect_shield_effect : bool = true
 var is_from_enemy : bool = false
 
 
+var _current_additive_scale : float = 1.0
+var _can_be_scaled_by_yel_vio : bool = false
+var border_modi_textures : Array = []
+
+
 func _init(arg_effect_type : int,
 		arg_effect_uuid : int):
 	
@@ -89,3 +94,21 @@ func _configure_copy_to_match_self(copy):
 	
 	copy.is_roundbound = is_roundbound
 	copy.round_count = round_count
+	
+	copy._current_additive_scale = _current_additive_scale
+	copy.border_modi_textures = border_modi_textures.duplicate()
+	copy._can_be_scaled_by_yel_vio = _can_be_scaled_by_yel_vio
+
+func _get_description():
+	pass
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	_current_additive_scale += arg_amount
+	
+	description = _get_description()
+
+# to be implemented by classes
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	pass
+

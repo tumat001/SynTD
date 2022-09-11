@@ -33,7 +33,7 @@ const base_attack_count_trigger : int = 5
 const toughness_reduc : float = 1.0
 const toughness_reduc_duration : float = 5.0
 
-const explosion_base_dmg : float = 1.0
+var explosion_base_dmg : float = 1.0
 const explosion_pierce : int = 3
 
 var _curr_num_of_attacks : int = 0
@@ -46,18 +46,23 @@ var tower_attached_to
 func _init().(StoreOfTowerEffectsUUID.ING_BLEACH):
 	effect_icon = Effect_Icon
 	
+	_update_description()
+	
+	_can_be_scaled_by_yel_vio = true
+
+
+func _update_description():
 	# ins
 	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
 	interpreter_for_flat_on_hit.display_body = false
 	
 	var ins_for_flat_on_hit = []
-	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", explosion_base_dmg))
+	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", explosion_base_dmg * _current_additive_scale))
 	
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 	# ins
 	
 	description = ["On the %sth main attack, shoot a projectile that explodes, dealing |0| to %s enemies and reducing %s toughness for %s seconds." % [str(base_attack_count_trigger), str(explosion_pierce), str(toughness_reduc), str(toughness_reduc_duration)], [interpreter_for_flat_on_hit]]
-	
 
 
 func _construct_lob_attack_module(arg_y_shift : float):
@@ -210,5 +215,15 @@ func _undo_modifications_to_tower(tower):
 		
 		tower.remove_attack_module(bleach_burst_attk_module)
 		bleach_burst_attk_module.queue_free()
-	
 
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_description()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	explosion_base_dmg *= _current_additive_scale
+	_current_additive_scale = 1

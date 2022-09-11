@@ -93,8 +93,7 @@ func _ready():
 	
 	_initialize_map_cards()
 	_update_map_card_selection_display()
-	
-	select_first_visible_map_card()
+
 
 func _initialize_map_cards():
 	var maps_per_page = map_card_per_row * row_count
@@ -109,6 +108,7 @@ func _initialize_map_cards():
 		var container : HBoxContainer = row_index_to_map_row_dict[curr_row]
 		container.add_child(map_card)
 		
+		map_card.map_id = -1
 		map_card.configure_self_with_button_group(button_group_for_map_cards)
 		map_card.connect("toggle_mode_changed", self, "_on_map_card_toggle_mode_changed", [map_card])
 		
@@ -157,15 +157,7 @@ func clear_current_map_id_selected():
 
 func set_current_map_id_selected(arg_id):
 	current_map_id_selected = arg_id
-	
-	if current_map_id_selected != -1:
-		for map_card in all_map_cards:
-			if map_card.map_id == arg_id:
-				map_card.set_is_toggle_mode_on(true)
-	else:
-		for map_card in all_map_cards:
-			map_card.set_is_toggle_mode_on(false)
-	
+
 	emit_signal("on_current_selected_map_id_changed", current_map_id_selected)
 
 #
@@ -182,5 +174,14 @@ func _on_map_card_toggle_mode_changed(arg_val : bool, arg_map_card : MapCard):
 
 func select_first_visible_map_card():
 	if current_map_ids_displayed.size() > 0:
-		set_current_map_id_selected(current_map_ids_displayed[0])
-
+		var first_id_displayed = current_map_ids_displayed[0]
+		set_current_map_id_selected(first_id_displayed)
+		
+		var first_card_displayed
+		for map_card in all_map_cards:
+			if map_card.map_id == first_id_displayed and first_id_displayed != -1:
+				first_card_displayed = map_card
+				break
+		if first_card_displayed != null:
+			first_card_displayed.set_is_toggle_mode_on(true)
+		

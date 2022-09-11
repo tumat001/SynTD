@@ -38,25 +38,29 @@ var directions_02 : Array = [
 ]
 
 var _curr_direction_index : int = 0
-const flamelet_base_dmg : float = 0.6
+var flamelet_base_dmg : float = 0.6
 
 var tree
 
 func _init().(StoreOfTowerEffectsUUID.ING_FLAMEBURST):
 	effect_icon = Effect_Icon
 	
+	_update_description()
+	
+	_can_be_scaled_by_yel_vio = true
+
+func _update_description():
 	# ins
 	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
 	interpreter_for_flat_on_hit.display_body = false
 	
 	var ins_for_flat_on_hit = []
-	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", flamelet_base_dmg))
+	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", flamelet_base_dmg * _current_additive_scale))
 	
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 	# ins
 	
 	description = ["This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals |0|. Benefits from bonus pierce.", [interpreter_for_flat_on_hit]]
-	#description = "This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals 1 elemental damage. Does not benefit from pierce."
 
 
 func _construct_burst_module():
@@ -173,3 +177,15 @@ func _on_tower_attack_module_removed(module):
 	if module.module_id == StoreOfAttackModuleID.MAIN:
 		if module.is_connected("on_enemy_hit", self, "_bullet_burst"):
 			module.disconnect("on_enemy_hit", self, "_bullet_burst")
+
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_description()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	flamelet_base_dmg *= _current_additive_scale
+	_current_additive_scale = 1

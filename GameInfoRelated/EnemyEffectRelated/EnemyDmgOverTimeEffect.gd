@@ -34,6 +34,8 @@ func _init(arg_damage_instance : DamageInstance,
 	_curr_delay_per_tick = arg_delay_per_tick
 	
 	effect_icon = _get_icon()
+	
+	_can_be_scaled_by_yel_vio = true
 
 
 # Description related
@@ -45,7 +47,7 @@ func _get_description() -> String:
 	var type_name = DamageType.get_name_of_damage_type(damage_type)
 	
 	var modifier = primary_on_hit_damage.damage_as_modifier
-	var modifier_desc = modifier.get_description_scaled(time_in_seconds / delay_per_tick)
+	var modifier_desc = modifier.get_description_scaled((time_in_seconds / delay_per_tick) * _current_additive_scale)
 	
 	if modifier is FlatModifier:
 		if is_timebound:
@@ -136,4 +138,15 @@ func _on_enemy_post_mitigated_dmg_dealt(damage_instance_report, is_lethal, enemy
 	#emit_signal("on_post_mitigated_dmg_dealt", damage_instance_report, is_lethal, enemy, self)
 	if effect_source_ref != null and effect_source_ref.get_ref() != null and damage_instance_report.dmg_instance_ref.get_ref() == damage_instance:
 		effect_source_ref.get_ref()._on_post_mitigated_dmg_dealt_from_effect(damage_instance_report, is_lethal, enemy, self)
+
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+
+# to be implemented by classes
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	damage_instance.scale_only_damage_by(_current_additive_scale)
+	description = _get_description()
 

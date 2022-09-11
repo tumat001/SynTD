@@ -164,6 +164,7 @@ func _ready():
 		keysum.node_to_parent_for_input_key_dialog = pause_manager
 		keysum.node_to_parent__show_control_func_name = "show_control"
 		keysum.node_to_parent__remove_control_func_name = "remove_control"
+		
 
 #
 
@@ -186,8 +187,20 @@ func _unhandled_key_input(event : InputEventKey):
 	if !event.echo and event.pressed:
 		if event.is_action_pressed("ui_cancel"):
 			
-			main_pause_screen_panel.show_control_at_content_panel(hub_pause_panel)
-	
+			_on_exit_panel()
 	
 	accept_event()
 
+###
+
+# name matters!
+func _on_exit_panel():
+	main_pause_screen_panel.show_control_at_content_panel(hub_pause_panel)
+
+func _is_a_dialog_visible__for_main():
+	for keysum in all_keysums:
+		if keysum.input_dialog != null and keysum.input_dialog.visible:
+			return true
+	
+	return false
+	

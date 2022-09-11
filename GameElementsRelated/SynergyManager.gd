@@ -87,10 +87,10 @@ func update_synergies(towers : Array):
 			to_remove.append(res)
 	for to_rem in to_remove:
 		results_of_dom.erase(to_rem)
-	#Remove compos with raw_total of 0
+	#Remove compos with raw_total of 0, or if only meets x - 1 of its colors
 	to_remove.clear()
 	for res in results_of_compo:
-		if res.raw_total == 0:
+		if res.raw_total == 0 or (res.color_types_amount_met < res.color_types_amount_from_baseline - 1):
 			to_remove.append(res)
 	for to_rem in to_remove:
 		results_of_compo.erase(to_rem)
@@ -290,3 +290,20 @@ func is_dom_color_synergy_active(syn) -> bool:
 			return true
 	
 	return false
+
+func is_compo_color_synergy_active(syn) -> bool:
+	for res in active_compo_color_synergies_res:
+		if res.synergy == syn:
+			return true
+	
+	return false
+
+
+func is_color_synergy_name_active__with_tier_being_equal_to(arg_syn_name : String, arg_tier : int):
+	for res in active_synergies_res:
+		if res.synergy.synergy_name == arg_syn_name and res.synergy_tier == arg_tier:
+			return true
+	
+	return false
+
+

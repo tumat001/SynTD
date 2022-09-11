@@ -20,31 +20,31 @@ __meta__ = {
 }
 
 [node name="BodyBackground" type="TextureRect" parent="."]
-margin_right = 111.0
-margin_bottom = 49.0
+margin_right = 50.0
+margin_bottom = 30.0
 mouse_filter = 2
 texture = ExtResource( 4 )
 stretch_mode = 2
 
 [node name="LeftBorder" type="TextureRect" parent="."]
 margin_right = 3.0
-margin_bottom = 49.0
+margin_bottom = 30.0
 mouse_filter = 2
 size_flags_horizontal = 2
 texture = ExtResource( 3 )
 stretch_mode = 2
 
 [node name="RightBorder" type="TextureRect" parent="."]
-margin_left = 108.0
-margin_right = 111.0
-margin_bottom = 49.0
+margin_left = 47.0
+margin_right = 50.0
+margin_bottom = 30.0
 mouse_filter = 2
 size_flags_horizontal = 10
 texture = ExtResource( 3 )
 stretch_mode = 2
 
 [node name="TopBorder" type="TextureRect" parent="."]
-margin_right = 111.0
+margin_right = 50.0
 margin_bottom = 3.0
 mouse_filter = 2
 size_flags_vertical = 2
@@ -52,38 +52,36 @@ texture = ExtResource( 3 )
 stretch_mode = 2
 
 [node name="BottomBorder" type="TextureRect" parent="."]
-margin_top = 46.0
-margin_right = 111.0
-margin_bottom = 49.0
+margin_top = 27.0
+margin_right = 50.0
+margin_bottom = 30.0
 mouse_filter = 2
 size_flags_vertical = 10
 texture = ExtResource( 3 )
 stretch_mode = 2
 
 [node name="ContentPanel" type="MarginContainer" parent="."]
-margin_right = 111.0
-margin_bottom = 49.0
+margin_right = 50.0
+margin_bottom = 30.0
 mouse_filter = 2
 custom_constants/margin_right = 6
-custom_constants/margin_top = 6
+custom_constants/margin_top = 7
 custom_constants/margin_left = 6
 custom_constants/margin_bottom = 6
 
 [node name="TextLabel" type="Label" parent="ContentPanel"]
-margin_left = 6.0
-margin_top = 6.0
-margin_right = 105.0
-margin_bottom = 43.0
+margin_left = 25.0
+margin_top = 7.0
+margin_right = 25.0
+margin_bottom = 24.0
 size_flags_horizontal = 6
 custom_fonts/font = SubResource( 1 )
-text = "Sample Text
-Here"
 align = 1
 valign = 1
 
 [node name="AdvancedButtonWithTooltip" parent="." instance=ExtResource( 1 )]
-margin_right = 111.0
-margin_bottom = 49.0
+margin_right = 50.0
+margin_bottom = 30.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 define_tooltip_construction_in_button = false

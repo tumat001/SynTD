@@ -35,7 +35,7 @@ func _ready():
 	advanced_button_with_tooltip.connect("mouse_exited", self, "_on_advanced_button_mouse_exited", [], CONNECT_PERSIST)
 	
 	connect("visibility_changed", self, "_on_visibility_changed", [], CONNECT_PERSIST)
-
+	
 
 func _on_advanced_button_released_mouse_event(arg_event : InputEventMouseButton):
 	if arg_event.button_index == BUTTON_LEFT:
@@ -68,7 +68,7 @@ func _update_border_glow_state():
 	else:
 		_make_borders_not_glow()
 	
-	emit_signal("toggle_mode_changed", is_toggle_mode_on)
+	
 
 func _make_borders_not_glow():
 	card_leftborder.texture = Line_Dark
@@ -96,17 +96,19 @@ func set_is_toggle_mode_on(arg_mode):
 		_make_borders_glow()
 	else:
 		_make_borders_not_glow()
+	
+	emit_signal("toggle_mode_changed", is_toggle_mode_on)
 
 func get_is_toggle_mode_on():
 	return is_toggle_mode_on
 
 func configure_self_with_button_group(arg_group):
-	if current_button_group != arg_group:
+	if current_button_group == null or current_button_group != arg_group:
 		arg_group._add_toggle_button_to_group(self)
 		current_button_group = arg_group # this should be below the add button to group
 
 func unconfigure_self_from_button_group(arg_group):
-	if current_button_group == null or current_button_group == arg_group:
+	if current_button_group == arg_group:
 		arg_group._remove_toggle_button_from_group(self)
 		current_button_group = null
 

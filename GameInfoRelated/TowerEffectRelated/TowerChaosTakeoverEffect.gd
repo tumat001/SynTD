@@ -56,12 +56,15 @@ var trail_component_for_diamonds : MultipleTrailsForNodeComponent
 
 const CHAOS_TOWER_ID = 703
 
-const chaos_takeover_darksword_dmg_scale : float = 0.2
-
+const base_chaos_takeover_darksword_dmg_scale : float = 0.5
+var _current_chaos_takeover_darksword_dmg_scale : float = base_chaos_takeover_darksword_dmg_scale
 
 func _init().(EffectType.CHAOS_TAKEOVER, StoreOfTowerEffectsUUID.ING_CHAOS):
-	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting with its own, however CHAOS's dark sword is only 20% effective. CHAOS retains the tower's colors and absorbed ingredient effects. The tower's self ingredient is replaced to this."
+	_update_desc_of_takeover()
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Chaos.png")
+
+func _update_desc_of_takeover():
+	description = "Takeover: CHAOS replaces the tower's attacks, stats, range, and targeting with its own, however CHAOS's dark sword is only %s%% effective. CHAOS retains the tower's colors and absorbed ingredient effects. The tower's self ingredient is replaced to this." % str(_current_chaos_takeover_darksword_dmg_scale * _current_additive_scale * 100)
 
 
 func _construct_modules():
@@ -393,7 +396,7 @@ func _on_sword_attk_module_enemy_hit(enemy, damage_register_id, damage_instance,
 #
 
 func _on_sword_hit_enemy(enemy, damage_register_id, damage_instance, module):
-	damage_instance.scale_only_damage_by(chaos_takeover_darksword_dmg_scale)
+	damage_instance.scale_only_damage_by(_current_chaos_takeover_darksword_dmg_scale * _current_additive_scale)
 
 #
 
@@ -403,3 +406,18 @@ func _tower_added_attack_module(module):
 func _tower_removed_attack_module(module):
 	_attempt_set_attack_module_to_commandable_by_tower(module)
 
+
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_desc_of_takeover()
+
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	pass
+	# NOTE: DO not do this since CHAOS's ing is passed around. Actually it's not implemented that way yet (self ing given is a new fresh copy), but if in case it becomes like that.
+	#_current_chaos_takeover_darksword_dmg_scale *= _current_additive_scale
+	#_current_additive_scale = 1

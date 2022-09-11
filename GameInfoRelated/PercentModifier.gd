@@ -72,6 +72,7 @@ func get_description_scaled(scale : float) -> Array:
 
 func get_copy_scaled_by(scale_factor : float):
 	var copy = get_script().new(internal_id)
+	#copy.scale_by(scale_factor)
 	copy.percent_amount = percent_amount * scale_factor
 	copy.flat_minimum = flat_minimum * scale_factor
 	copy.flat_maximum = flat_maximum * scale_factor
@@ -80,3 +81,12 @@ func get_copy_scaled_by(scale_factor : float):
 	copy.percent_based_on = percent_based_on
 	
 	return copy
+
+func scale_by(scale_factor : float):
+	percent_amount *= scale_factor
+	flat_minimum *= scale_factor
+	flat_maximum *= scale_factor
+	
+	emit_signal("on_values_changed")
+	
+

@@ -10,5 +10,12 @@ func _init(arg_internal_id : int):
 func get_description():
 	pass
 
+func get_description_scaled(scale : float):
+	pass
+
+
 func get_copy_scaled_by(scale_factor : float):
+	pass
+
+func scale_by(scale_factor : float):
 	pass

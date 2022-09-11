@@ -19,16 +19,23 @@ func _init(arg_bonus_dmg : float).(StoreOfTowerEffectsUUID.ING_SPIKE):
 	
 	bonus_damage = arg_bonus_dmg
 	
+	_update_description()
+	_can_be_scaled_by_yel_vio = true
+
+
+func _update_description():
 	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
 	interpreter_for_flat_on_hit.display_body = false
 	
 	var ins_for_flat_on_hit = []
-	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "additional physical damage", bonus_damage))
+	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "additional physical damage", bonus_damage * _current_additive_scale))
 	
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 	
 	
 	description = ["All of the tower's attacks deal |0| to enemies below 50% health.", [interpreter_for_flat_on_hit]]
+
+
 
 
 func _make_modifications_to_tower(tower):
@@ -58,5 +65,18 @@ func _on_enemy_hit_s(enemy, damage_register_id, damage_instance, module):
 func _undo_modifications_to_tower(tower):
 	if tower.is_connected("on_any_attack_module_enemy_hit", self, "_on_enemy_hit_s"):
 		tower.disconnect("on_any_attack_module_enemy_hit", self, "_on_enemy_hit_s")
+
+
+#
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_description()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	bonus_damage *= _current_additive_scale
+	_current_additive_scale = 1
 
 

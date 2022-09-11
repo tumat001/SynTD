@@ -20,6 +20,7 @@ var game_control_panel : GameControlPanel
 var game_settings_panel : GameSettingsPanel
 var quit_game_general_dialog : GeneralDialog
 var restart_game_dialog : GeneralDialog
+var _is_a_dialog_visible : bool
 
 
 func _ready():
@@ -58,6 +59,7 @@ func _on_MainMenuButton_on_button_released_with_button_left():
 	if quit_game_general_dialog == null:
 		quit_game_general_dialog = GeneralDialog_Scene.instance()
 		quit_game_general_dialog.connect("ok_button_released", self, "_on_quit_game_dialog__ok_chosen")
+		quit_game_general_dialog.connect("cancel_button_released", self, "_on_quit_game_dialog__cancel_chosen")
 		quit_game_general_dialog.size_flags_horizontal = SIZE_EXPAND | SIZE_SHRINK_CENTER
 		quit_game_general_dialog.size_flags_vertical = SIZE_EXPAND | SIZE_SHRINK_CENTER
 		add_child(quit_game_general_dialog)
@@ -65,16 +67,22 @@ func _on_MainMenuButton_on_button_released_with_button_left():
 		quit_game_general_dialog.set_content_label_text("Note: The game is not saved.")
 	
 	quit_game_general_dialog.start_dialog_prompt(GeneralDialog.DialogMode.OK_CANCEL)
+	_is_a_dialog_visible = true
 
 func _on_quit_game_dialog__ok_chosen():
+	_is_a_dialog_visible = false
 	pause_manager.unpause_game__accessed_for_scene_change()
 	CommsForBetweenScenes.goto_starting_screen(game_elements)
+
+func _on_quit_game_dialog__cancel_chosen():
+	_is_a_dialog_visible = false
 
 
 func _on_RestartButton_on_button_released_with_button_left():
 	if restart_game_dialog == null:
 		restart_game_dialog = GeneralDialog_Scene.instance()
 		restart_game_dialog.connect("ok_button_released", self, "_on_restart_game_dialog__ok_chosen")
+		restart_game_dialog.connect("cancel_button_released", self, "_on_restart_game_dialog__cancel_chosen")
 		restart_game_dialog.size_flags_horizontal = SIZE_EXPAND | SIZE_SHRINK_CENTER
 		restart_game_dialog.size_flags_vertical = SIZE_EXPAND | SIZE_SHRINK_CENTER
 		add_child(restart_game_dialog)
@@ -82,9 +90,21 @@ func _on_RestartButton_on_button_released_with_button_left():
 		restart_game_dialog.set_content_label_text("Restart game?")
 	
 	restart_game_dialog.start_dialog_prompt(GeneralDialog.DialogMode.OK_CANCEL)
+	_is_a_dialog_visible = true
 
 func _on_restart_game_dialog__ok_chosen():
+	_is_a_dialog_visible = false
 	pause_manager.unpause_game__accessed_for_scene_change()
 	CommsForBetweenScenes.goto_game_elements(game_elements)
 
+func _on_restart_game_dialog__cancel_chosen():
+	_is_a_dialog_visible = false
 
+#
+
+# name matters
+func _on_exit_panel():
+	_on_ResumeButton_on_button_released_with_button_left()
+
+func _is_a_dialog_visible__for_main():
+	return _is_a_dialog_visible

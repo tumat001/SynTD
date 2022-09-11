@@ -61,7 +61,7 @@ func get_random_enemy_path(arg_paths_to_choose_from : Array = _all_enemy_paths) 
 		return null
 
 
-#
+# path related (helper funcs)
 
 func get_path_point_closest_to_point(arg_coord : Vector2, paths_to_inspect : Array = _all_enemy_paths) -> Vector2:
 	var nearest_points_per_path : Array = []
@@ -72,6 +72,16 @@ func get_path_point_closest_to_point(arg_coord : Vector2, paths_to_inspect : Arr
 		
 	
 	return nearest_points_per_path.min()
+
+func get_exit_position_of_path(arg_path : EnemyPath):
+	return arg_path.curve.get_point_position(arg_path.curve.get_point_count() - 1)
+
+func get_average_exit_position_of_all_paths():
+	var average_pos : Vector2
+	for path in _all_enemy_paths:
+		average_pos += get_exit_position_of_path(path)
+	
+	return average_pos / _all_enemy_paths.size()
 
 
 

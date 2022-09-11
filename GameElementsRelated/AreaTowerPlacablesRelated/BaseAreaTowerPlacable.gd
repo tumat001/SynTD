@@ -1,9 +1,48 @@
 extends Node2D
 
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
+
 signal on_occupancy_changed(tower_occupying_nullable)
 signal on_tower_left_placement(tower_left)
+signal last_calculated_can_be_occupied_changed(arg_val)
 
 var tower_occupying setget set_tower_occupying
+
+
+enum CanBeOccupiedClauseIds {
+	HAS_TOWER = 0,
+	NOT_VISIBLE = 1,
+}
+
+var can_be_occupied_clauses : ConditionalClauses
+var last_calculated_can_be_occupied : bool
+var last_calculated_can_be_occupied__ignoring_has_tower_clause : bool
+
+#
+
+func _init():
+	can_be_occupied_clauses = ConditionalClauses.new()
+	can_be_occupied_clauses.connect("clause_inserted", self, "_on_can_be_occupied_clause_added_or_removed", [], CONNECT_PERSIST)
+	can_be_occupied_clauses.connect("clause_removed", self, "_on_can_be_occupied_clause_added_or_removed", [], CONNECT_PERSIST)
+	
+	if !is_connected("visibility_changed", self, "_on_visibility_changed_base"):
+		connect("visibility_changed", self, "_on_visibility_changed_base", [], CONNECT_PERSIST)
+	
+	_on_visibility_changed_base()
+	_update_is_tower_occupying_clause()
+	_on_can_be_occupied_clause_added_or_removed(0)
+
+func _on_can_be_occupied_clause_added_or_removed(arg_clause_id):
+	last_calculated_can_be_occupied = can_be_occupied_clauses.is_passed
+	last_calculated_can_be_occupied__ignoring_has_tower_clause = can_be_occupied_clauses.has_only_clause_or_no_clause(CanBeOccupiedClauseIds.HAS_TOWER)
+	
+	emit_signal("last_calculated_can_be_occupied_changed", last_calculated_can_be_occupied)
+
+func _on_visibility_changed_base():
+	if visible:
+		can_be_occupied_clauses.remove_clause(CanBeOccupiedClauseIds.NOT_VISIBLE)
+	else:
+		can_be_occupied_clauses.attempt_insert_clause(CanBeOccupiedClauseIds.NOT_VISIBLE)
 
 #
 
@@ -13,13 +52,24 @@ func set_tower_occupying(arg_tower):
 	
 	tower_occupying = arg_tower
 	
+	_update_is_tower_occupying_clause()
+	
 	emit_signal("on_occupancy_changed", tower_occupying)
+
+func _update_is_tower_occupying_clause():
+	if tower_occupying != null:
+		can_be_occupied_clauses.attempt_insert_clause(CanBeOccupiedClauseIds.HAS_TOWER)
+	else:
+		can_be_occupied_clauses.remove_clause(CanBeOccupiedClauseIds.HAS_TOWER)
+	
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	z_as_relative = false
 	z_index = ZIndexStore.TOWER_PLACABLES
+	
+	_on_visibility_changed_base()
 
 func get_tower_center_position() -> Vector2:
 	return $TowerCenterLocation.global_position

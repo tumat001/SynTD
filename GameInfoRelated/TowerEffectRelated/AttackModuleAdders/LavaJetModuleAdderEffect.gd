@@ -35,8 +35,8 @@ const AttackModule_Icon = preload("res://TowerRelated/Color_Orange/LavaJet/Asset
 #const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 
 
-const health_percent_dmg : float = 15.0
-const percent_dmg_max_limit : float = 20.0
+var health_percent_dmg : float = 15.0
+var percent_dmg_max_limit : float = 20.0
 
 var lava_jet_beam_am : WithBeamInstantDamageAttackModule
 const num_of_attacks_before_beam : int = 5
@@ -48,20 +48,23 @@ var _curr_num_of_attacks : int = 0
 func _init().(StoreOfTowerEffectsUUID.LAVA_JET_BEAM):
 	effect_icon = Ingredient_pic
 	#
+	_update_description()
 	
+	_can_be_scaled_by_yel_vio = true
+
+func _update_description():
 	var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
 	interpreter_for_perc_on_hit.display_body = false
 	
 	var ins_for_perc_on_hit = []
-	ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "max health damage", health_percent_dmg, true))
+	ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "max health damage", health_percent_dmg * _current_additive_scale, true))
 	
 	interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
 	
-	
 	#
 	
-	description = ["Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals |0|, up to %s." % [str(percent_dmg_max_limit)], [interpreter_for_perc_on_hit]]
-	#description = "Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals 20% of the enemy's max health damage as elemental damage, up to 30."
+	description = ["Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals |0|, up to %s." % [str(percent_dmg_max_limit * _current_additive_scale)], [interpreter_for_perc_on_hit]]
+
 
 
 func _make_modifications_to_tower(tower):
@@ -151,4 +154,16 @@ func _undo_modifications_to_tower(tower):
 	if lava_jet_beam_am != null:
 		tower.remove_attack_module(lava_jet_beam_am)
 		lava_jet_beam_am.queue_free()
+
+
+# SCALING related. Used by YelVio only.
+func add_additive_scaling_by_amount(arg_amount):
+	.add_additive_scaling_by_amount(arg_amount)
+	
+	_update_description()
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	health_percent_dmg *= _current_additive_scale
+	percent_dmg_max_limit *= _current_additive_scale
+	_current_additive_scale = 1
 

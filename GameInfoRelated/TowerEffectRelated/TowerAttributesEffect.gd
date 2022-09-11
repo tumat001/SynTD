@@ -68,6 +68,8 @@ func _init(arg_attribute_type : int, arg_modifier,
 	effect_icon = _get_icon()
 	
 	attribute_as_modifier.internal_id = arg_effect_uuid
+	
+	_can_be_scaled_by_yel_vio = true
 
 
 # Description Related
@@ -118,10 +120,10 @@ func _get_description() -> String:
 
 
 func _generate_flat_description(descriptor : String) -> String:
-	return "+" + attribute_as_modifier.get_description() + " " + descriptor
+	return "+" + attribute_as_modifier.get_description_scaled(_current_additive_scale) + " " + descriptor
 
 func _generate_percent_description(descriptor : String) -> String:
-	var descriptions : Array = attribute_as_modifier.get_description()
+	var descriptions : Array = attribute_as_modifier.get_description_scaled(_current_additive_scale)
 	var desc01 = descriptions[0]
 	var desc02 = ""
 	
@@ -187,3 +189,11 @@ func _get_copy_scaled_by(scale):
 	_configure_copy_to_match_self(copy)
 	
 	return copy
+
+
+#
+
+func _consume_current_additive_scaling_for_actual_scaling_in_stats():
+	attribute_as_modifier.scale_by(_current_additive_scale)
+	_current_additive_scale = 1
+

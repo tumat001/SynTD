@@ -72,6 +72,8 @@ func remove_clause(clause, clause_emit_signal : bool = true):
 func has_clause(clause):
 	return _clauses.has(clause) or _composite_clauses.has(clause)
 
+func has_only_clause_or_no_clause(clause):
+	return (_clauses.has(clause) and _clauses.size() == 1) or is_passed_clauses()
 
 
 func _update_is_passed():

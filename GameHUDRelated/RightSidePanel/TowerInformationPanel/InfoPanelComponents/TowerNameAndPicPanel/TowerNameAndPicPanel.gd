@@ -21,7 +21,7 @@ onready var tower_pic : TextureRect = $VBoxContainer/PicMarginer/Marginer/TowerP
 onready var extra_info_button = $VBoxContainer/PicMarginer/TowerExtraInfoButton/TextureButton
 
 onready var tier_texture_rect = $VBoxContainer/PicMarginer/MarginContainer/VBoxContainer/TierIcon
-onready var ing_texture_rect = $VBoxContainer/PicMarginer/MarginContainer/VBoxContainer/IngIcon
+onready var ing_icon_panel = $VBoxContainer/PicMarginer/MarginContainer/VBoxContainer/IngIcon
 
 
 func update_display():
@@ -32,17 +32,19 @@ func update_display():
 		
 		name_label.text = tower_type_info.tower_name
 		tower_pic.texture = tower.tower_highlight_sprite
-		if tower.ingredient_of_self != null and tower.ingredient_of_self.tower_base_effect != null:
-			ing_texture_rect.texture = tower.ingredient_of_self.tower_base_effect.effect_icon
+		if tower.ingredient_of_self != null:
+			ing_icon_panel.tower_base_effect = tower.ingredient_of_self.tower_base_effect
 		else:
-			ing_texture_rect.texture = null
+			ing_icon_panel.tower_base_effect = null
 		
+		ing_icon_panel.update_display()
 		tier_texture_rect.texture = _get_tier_icon_to_use(tower_type_info.tower_tier)
 		
 	else:
 		name_label.text = ""
 		tower_pic.texture = null
-		ing_texture_rect.texture = null
+		ing_icon_panel.tower_base_effect = null
+		ing_icon_panel.update_display()
 		tier_texture_rect.texture = null
 
 func _get_tier_icon_to_use(arg_tier : int):

@@ -147,7 +147,11 @@ func _unhandled_key_input(event : InputEventKey):
 
 #
 
+# name matters!
 func _on_exit_panel():
 	GameSaveManager.save_game_settings__of_settings_manager()
 	main_pause_screen_panel.show_control_at_content_panel(hub_pause_panel)
+
+func _is_a_dialog_visible__for_main():
+	return false
 
