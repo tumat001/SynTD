@@ -58,7 +58,10 @@ func _get_description() -> String:
 	var modifier_desc = modifier.get_description_scaled(_current_additive_scale)
 	
 	if modifier is FlatModifier:
-		return ("+" + modifier_desc + " " + type_name + " on hit damage")
+		var primary_desc = ("+" + modifier_desc + " " + type_name + " on hit damage")
+		primary_desc += _generate_desc_for_persisting_total_additive_scaling()
+		return primary_desc
+		
 	elif modifier is PercentModifier:
 		var first_part : String = modifier_desc[0]
 		var second_part : String 
@@ -68,6 +71,8 @@ func _get_description() -> String:
 		var part1 = (first_part + " enemy health as " + type_name + " damage on hit,")
 		if second_part != null:
 			part1 += " " + second_part
+		
+		part1 += _generate_desc_for_persisting_total_additive_scaling()
 		
 		return part1
 	

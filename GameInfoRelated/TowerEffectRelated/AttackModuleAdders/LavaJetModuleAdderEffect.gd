@@ -63,7 +63,7 @@ func _update_description():
 	
 	#
 	
-	description = ["Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals |0|, up to %s." % [str(percent_dmg_max_limit * _current_additive_scale)], [interpreter_for_perc_on_hit]]
+	description = ["Every 5th main attack of this tower causes this to shoot a lava beam at the current enemy. The beam deals |0|, up to %s.%s" % [str(percent_dmg_max_limit * _current_additive_scale), str(_generate_desc_for_persisting_total_additive_scaling(true))], [interpreter_for_perc_on_hit]]
 
 
 

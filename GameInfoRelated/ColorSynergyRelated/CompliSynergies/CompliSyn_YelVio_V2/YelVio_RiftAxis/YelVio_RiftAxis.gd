@@ -20,22 +20,26 @@ var _rotated_rift_height_as_vector__plus_three_half_PI
 
 var _rift_start_animation_delta_timer : Timer
 var _is_in_rift_expand_animation : bool
-const _rift_expand_per_sec : float = 400.0
+const _rift_expand_delta : float = 0.02
+const _rift_expand_percent_per_sec : float = 0.3
+var _current_rift_expand_percent : float = 0.0
 
 const _yellow_rift_modulate := Color(233/255.0, 1, 0, 0.1)
 const _violet_rift_modulate := Color(163/255.0, 77/255.0, 253/255.0, 0.3)
 const _boundary_rift_modulate := Color(217/255.0, 81/255.0, 2/255.0, 0.4)
 
 const _rift_height : float = 1700.0
-const _rift_height_as_vector : Vector2 = Vector2(0, _rift_height)
+var _rift_height_as_vector : Vector2 = Vector2(0, 0)  #Vector2(0, _rift_height) #use this if no need for rift expand animation on first time summon
 
 
 var is_rift_sides_flipped : bool = false
+var is_rift_axis_activated : bool = true
 
 const round_ongoing_clause : int = -10
 var rift_swap_sides_ability : BaseAbility
 var rift_swap_sides_ability_condi_clause : ConditionalClauses
 
+var yel_vio_syn
 
 #
 
@@ -61,6 +65,8 @@ func _ready():
 	
 	can_be_sold_conditonal_clauses.attempt_insert_clause(CanBeSoldClauses.IS_NOT_SELLABLE_GENERIC_TAG)
 	can_be_used_as_ingredient_conditonal_clauses.attempt_insert_clause(CanBeUsedAsIngredientClauses.CANNOT_BE_USED_AS_ING_GENERIC_TAG)
+	can_be_placed_in_bench_conditional_clause.attempt_insert_clause(CanBePlacedInBenchClauses.GENERIC_CANNOT_BE_PLACED_IN_BENCH)
+	untargetability_clauses.attempt_insert_clause(UntargetabilityClauses.GENERIC_IS_UNTARGETABLE_CLAUSE)
 	
 	rift_layer.position += _rift_pivot_point_modi
 	rift_layer.z_as_relative = false
@@ -80,6 +86,15 @@ func _ready():
 	call_deferred("_called_from_ready__update_rift_poses_draw_rift_and_give_stats")
 	
 	_construct_abilities()
+	
+	#
+	
+	# rift expand anim related
+	_rift_start_animation_delta_timer = Timer.new()
+	_rift_start_animation_delta_timer.one_shot = false
+	_rift_start_animation_delta_timer.connect("timeout", self, "_on_rift_start_animation_delta_timer_timeout", [], CONNECT_PERSIST)
+	add_child(_rift_start_animation_delta_timer)
+	_rift_start_animation_delta_timer.start(_rift_expand_delta)
 
 #
 
@@ -100,26 +115,30 @@ func _called_from_ready__update_rift_poses_draw_rift_and_give_stats():
 	_update_rift_poses__and_draw_rift()
 	_give_tower_effects_based_on_rift_side_pos()
 	for tower in tower_manager.get_all_towers_except_in_queue_free():
-		if !tower.is_connected("on_tower_transfered_to_placable", self, "_on_non_self_tower_transfered_to_new_placable"):
-			tower.connect("on_tower_transfered_to_placable", self, "_on_non_self_tower_transfered_to_new_placable", [], CONNECT_PERSIST)
-
+		_connect_signals_for_tower_on_dropped_to_placable(tower, false)
+		
 
 func _update_rift_poses__and_draw_rift():
 	_update_rotated_rift_height_poses()
-	rift_layer.update()
-	
+	_update_draw_of_rift_layer()
 
 func _update_rotated_rift_height_poses():
 	_update_rift_angle_point()
+	
+
+func _update_draw_of_rift_layer():
+	rift_layer.update()
+
+
+func _draw_on_rift_layer():
+	_rift_height_as_vector = Vector2(0, _rift_height * _current_rift_expand_percent)
 	
 	_rotated_rift_height_as_vector = _rift_height_as_vector.rotated(_rift_angle_point)
 	_rotated_rift_height_as_vector__plus_PI = _rift_height_as_vector.rotated(_rift_angle_point + PI)
 	_rotated_rift_height_as_vector__plus_half_PI = _rift_height_as_vector.rotated(_rift_angle_point + (PI / 2))
 	_rotated_rift_height_as_vector__plus_three_half_PI = _rift_height_as_vector.rotated(_rift_angle_point + (3 * PI / 2))
+
 	
-
-
-func _draw_on_rift_layer():
 	var yellow_poly_points : Array = []
 	yellow_poly_points.append(_rotated_rift_height_as_vector)
 	yellow_poly_points.append(_rotated_rift_height_as_vector__plus_PI)
@@ -160,11 +179,12 @@ func _give_tower_effects_based_on_rift_side_pos():
 		_give_tower_effects_based_on_rift_side_pos_to_tower(tower)
 
 func _give_tower_effects_based_on_rift_side_pos_to_tower(arg_tower):
-	if arg_tower != self:
-		if _is_tower_on_violet_side(arg_tower):
-			_give_tower_violet_effect_side(arg_tower)
-		else:
-			_give_tower_yellow_effect_side(arg_tower)
+	if is_rift_axis_activated:
+		if arg_tower != self:
+			if _is_tower_on_violet_side(arg_tower):
+				_give_tower_violet_effect_side(arg_tower)
+			else:
+				_give_tower_yellow_effect_side(arg_tower)
 
 func _is_tower_on_violet_side(arg_tower):
 	var tower_pos = arg_tower.global_position
@@ -196,7 +216,9 @@ func _give_tower_yellow_effect_side(arg_tower):
 	
 	if !arg_tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.YELVIO_YELLOW_SIDE_EFFECT):
 		var effect = TowerEffect_YelVio_YellowSide.new()
+		effect.explosion_base_damage = yel_vio_syn.current_yel_side_explosion_damage
 		
+		effect.connect_signals_with_syn(yel_vio_syn)
 		arg_tower.add_tower_effect(effect)
 
 
@@ -207,8 +229,21 @@ func _give_tower_violet_effect_side(arg_tower):
 	
 	if !arg_tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.YELVIO_VIOLET_SIDE_EFFECT):
 		var effect = TowerEffect_YelVio_VioletSide.new()
+		effect.scale_amount_to_use = yel_vio_syn.current_vio_side_ing_upgrade_amount
 		
 		arg_tower.add_tower_effect(effect)
+
+
+func _remove_rift_tower_effects_from_towers():
+	for arg_tower in tower_manager.get_all_towers_except_in_queue_free():
+		var yel_effect = arg_tower.get_tower_effect(StoreOfTowerEffectsUUID.YELVIO_YELLOW_SIDE_EFFECT)
+		if yel_effect != null:
+			arg_tower.remove_tower_effect(yel_effect)
+		
+		var vio_effect = arg_tower.get_tower_effect(StoreOfTowerEffectsUUID.YELVIO_VIOLET_SIDE_EFFECT)
+		if vio_effect != null:
+			arg_tower.remove_tower_effect(vio_effect)
+
 
 #
 
@@ -222,16 +257,35 @@ func _on_transfered_to_new_placable(arg_self, arg_placable):
 
 #
 
-func _connect_signals_for_tower_on_dropped_to_placable(arg_tower):
+func _connect_signals_for_tower_on_dropped_to_placable(arg_tower, arg_give_effect : bool = true):
 	if arg_tower != self:
 		if !arg_tower.is_connected("on_tower_transfered_to_placable", self, "_on_non_self_tower_transfered_to_new_placable"):
 			arg_tower.connect("on_tower_transfered_to_placable", self, "_on_non_self_tower_transfered_to_new_placable", [], CONNECT_PERSIST)
 		
-		_on_non_self_tower_transfered_to_new_placable(arg_tower, null)
+		if arg_give_effect:
+			_on_non_self_tower_transfered_to_new_placable(arg_tower, null)
 
 
 func _on_non_self_tower_transfered_to_new_placable(arg_tower, arg_placable):
 	_give_tower_effects_based_on_rift_side_pos_to_tower(arg_tower)
+
+
+# rift expand anim related
+
+func _on_rift_start_animation_delta_timer_timeout():
+	_current_rift_expand_percent += _rift_expand_percent_per_sec * _rift_expand_delta
+	
+	if _current_rift_expand_percent >= 1.0:
+		_current_rift_expand_percent = 1.0
+		
+		_rift_start_animation_delta_timer.stop()
+	
+	_update_draw_of_rift_layer()
+
+func set_current_rift_expand(arg_val):
+	_current_rift_expand_percent = arg_val
+	
+	_update_draw_of_rift_layer()
 
 ######
 
@@ -266,5 +320,26 @@ func _rift_swap_sides_ability_activated():
 	_update_rift_poses__and_draw_rift()
 	_give_tower_effects_based_on_rift_side_pos()
 
+
+## called from syn
+
+func activate_rift_axis():
+	is_rift_axis_activated = true
+	_current_rift_expand_percent = 1.0
+	_update_rift_poses__and_draw_rift()
+	_give_tower_effects_based_on_rift_side_pos()
+	
+	can_be_sold_conditonal_clauses.attempt_insert_clause(CanBeSoldClauses.IS_NOT_SELLABLE_GENERIC_TAG)
+
+func deactivate_rift_axis():
+	is_rift_axis_activated = false
+	_remove_rift_tower_effects_from_towers()
+	_current_rift_expand_percent = 0.0
+	_rift_start_animation_delta_timer.stop()
+	_update_rift_poses__and_draw_rift()
+	
+	can_be_sold_conditonal_clauses.remove_clause(CanBeSoldClauses.IS_NOT_SELLABLE_GENERIC_TAG)
+
+##
 
 

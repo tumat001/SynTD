@@ -48,7 +48,7 @@ func _update_description():
 	
 	#
 	
-	description = ["All of the tower's attacks deal |0| to enemies below 75% health. The damage bonus is increased to |1| against Normal typed enemies.", [interpreter_for_bonus_dmg_on_threshold, interpreter_for_bonus_dmg_normals_on_threshold]]
+	description = ["All of the tower's attacks deal |0| to enemies below 75%% health. The damage bonus is increased to |1| against Normal typed enemies.%s" % [_generate_desc_for_persisting_total_additive_scaling(true)], [interpreter_for_bonus_dmg_on_threshold, interpreter_for_bonus_dmg_normals_on_threshold]]
 
 
 

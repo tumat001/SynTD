@@ -60,7 +60,7 @@ func _update_description():
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 	# ins
 	
-	description = ["This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals |0|. Benefits from bonus pierce.", [interpreter_for_flat_on_hit]]
+	description = ["This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals |0|. Benefits from bonus pierce.%s" % [_generate_desc_for_persisting_total_additive_scaling(true)], [interpreter_for_flat_on_hit]]
 
 
 func _construct_burst_module():

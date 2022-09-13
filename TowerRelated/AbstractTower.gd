@@ -207,6 +207,7 @@ enum DisabledFromAttackingSourceClauses {
 }
 
 enum UntargetabilityClauses {
+	GENERIC_IS_UNTARGETABLE_CLAUSE = 0,
 	
 	TOWER_NO_HEALTH = 1,
 	IS_INVISIBLE = 2,
@@ -275,6 +276,12 @@ enum CanBePlacedInMapClauses {
 var can_be_placed_in_map_conditional_clause : ConditionalClauses
 var last_calculated_can_be_placed_in_map : bool
 
+
+enum CanBePlacedInBenchClauses {
+	GENERIC_CANNOT_BE_PLACED_IN_BENCH = 0
+}
+var can_be_placed_in_bench_conditional_clause : ConditionalClauses
+var last_calculated_can_be_placed_in_bench : bool
 
 # Ingredient related
 
@@ -549,6 +556,10 @@ func _init():
 	can_be_placed_in_map_conditional_clause.connect("clause_inserted", self, "_on_can_move_to_in_map_clause_added_or_removed", [], CONNECT_PERSIST)
 	can_be_placed_in_map_conditional_clause.connect("clause_removed", self, "_on_can_move_to_in_map_clause_added_or_removed", [], CONNECT_PERSIST)
 	
+	can_be_placed_in_bench_conditional_clause = ConditionalClauses.new()
+	can_be_placed_in_bench_conditional_clause.connect("clause_inserted", self, "_on_can_move_to_bench_clause_added_or_removed", [], CONNECT_PERSIST)
+	can_be_placed_in_bench_conditional_clause.connect("clause_removed", self, "_on_can_move_to_bench_clause_added_or_removed", [], CONNECT_PERSIST)
+	
 	tower_is_draggable_clauses = ConditionalClauses.new()
 	tower_is_draggable_clauses.connect("clause_inserted", self, "_on_tower_is_draggable_clause_ins_or_rem", [], CONNECT_PERSIST)
 	tower_is_draggable_clauses.connect("clause_removed", self, "_on_tower_is_draggable_clause_ins_or_rem", [], CONNECT_PERSIST)
@@ -560,6 +571,7 @@ func _init():
 	_update_last_calculated_can_absorb_ing()
 	_update_last_calculated_can_be_used_as_ing()
 	_update_last_calculated_can_be_placed_in_map()
+	_update_last_calculated_can_be_placed_in_bench()
 	_update_last_calculate_tower_is_draggable()
 
 func _ready():
@@ -2625,6 +2637,10 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 		if !is_in_ingredient_mode or ignore_ing_mode:
 			new_area_placable = null
 	
+	if !last_calculated_can_be_placed_in_bench and new_area_placable is TowerBenchSlot:
+		if !is_in_ingredient_mode or ignore_ing_mode:
+			new_area_placable = null
+	
 	if new_area_placable != null and !new_area_placable.last_calculated_can_be_occupied__ignoring_has_tower_clause:
 		new_area_placable = null
 	
@@ -2730,6 +2746,13 @@ func _on_can_move_to_in_map_clause_added_or_removed(arg_clause_id):
 
 func _update_last_calculated_can_be_placed_in_map():
 	last_calculated_can_be_placed_in_map = can_be_placed_in_map_conditional_clause.is_passed
+
+
+func _on_can_move_to_bench_clause_added_or_removed(arg_clause_id):
+	_update_last_calculated_can_be_placed_in_bench()
+
+func _update_last_calculated_can_be_placed_in_bench():
+	last_calculated_can_be_placed_in_bench = can_be_placed_in_bench_conditional_clause.is_passed
 
 #
 

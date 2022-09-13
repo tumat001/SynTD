@@ -103,6 +103,9 @@ func _generate_flat_description(descriptor : String) -> String:
 		semi_final_desc += " for %s second%s" % [time_in_seconds, append_plural]
 	
 	semi_final_desc += " on hit."
+	
+	semi_final_desc += _generate_desc_for_persisting_total_additive_scaling(true)
+	
 	return semi_final_desc
 
 func _generate_percent_description(descriptor : String) -> String:
@@ -122,6 +125,9 @@ func _generate_percent_description(descriptor : String) -> String:
 		semi_final_desc += "for %s second%s" % [time_in_seconds, append_plural]
 	
 	semi_final_desc += " on hit."
+	
+	semi_final_desc += _generate_desc_for_persisting_total_additive_scaling(true)
+	
 	return semi_final_desc
 
 # Icon related

@@ -56,6 +56,7 @@ var is_from_enemy : bool = false
 
 
 var _current_additive_scale : float = 1.0
+var _persisting_total_additive_scale : float = 1.0 #used for descs
 var _can_be_scaled_by_yel_vio : bool = false
 var border_modi_textures : Array = []
 
@@ -98,13 +99,16 @@ func _configure_copy_to_match_self(copy):
 	copy._current_additive_scale = _current_additive_scale
 	copy.border_modi_textures = border_modi_textures.duplicate()
 	copy._can_be_scaled_by_yel_vio = _can_be_scaled_by_yel_vio
+	copy._persisting_total_additive_scale = _persisting_total_additive_scale
 
 func _get_description():
 	pass
 
+
 # SCALING related. Used by YelVio only.
 func add_additive_scaling_by_amount(arg_amount):
 	_current_additive_scale += arg_amount
+	_persisting_total_additive_scale += arg_amount
 	
 	description = _get_description()
 
@@ -112,3 +116,11 @@ func add_additive_scaling_by_amount(arg_amount):
 func _consume_current_additive_scaling_for_actual_scaling_in_stats():
 	pass
 
+func _generate_desc_for_persisting_total_additive_scaling(arg_with_front_spacing : bool = false):
+	if _persisting_total_additive_scale != 1.0:
+		if !arg_with_front_spacing:
+			return "(+%s%%)" % str((_persisting_total_additive_scale - 1) * 100)
+		else:
+			return " (+%s%%)" % str((_persisting_total_additive_scale - 1) * 100)
+	else:
+		return ""

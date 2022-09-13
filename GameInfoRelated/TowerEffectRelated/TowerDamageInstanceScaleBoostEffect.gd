@@ -25,7 +25,7 @@ var _dmg_instance_boost_func_name_to_use : String
 
 func _init(arg_dmg_instance_types_to_boost : int, 
 		arg_boost_type : int, 
-		arg_boost_amount : int, 
+		arg_boost_amount : float, 
 		arg_uuid : int).(arg_uuid):
 	
 	_dmg_instance_types_to_boost = arg_dmg_instance_types_to_boost
@@ -94,7 +94,6 @@ func _boost_on_hit_effect_of_dmg_instance(damage_instance):
 
 func _boost_all_of_dmg_instance(damage_instance):
 	damage_instance.scale_by(boost_scale_amount)
-
 
 
 #

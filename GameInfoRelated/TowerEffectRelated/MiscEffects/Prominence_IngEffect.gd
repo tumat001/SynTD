@@ -70,7 +70,7 @@ func _update_description():
 	
 	interpreter_for_sword_dmg.array_of_instructions = ins_for_sword_dmg
 	
-	description = ["After every ability cast or %s main attack, fire a beam that explodes at the current target, dealing |0| to %s enemies." % [str(main_attack_trigger_count) + "th", str(explosion_pierce)], [interpreter_for_sword_dmg]]
+	description = ["After every ability cast or %s main attack, fire a beam that explodes at the current target, dealing |0| to %s enemies.%s" % [str(main_attack_trigger_count) + "th", str(explosion_pierce), _generate_desc_for_persisting_total_additive_scaling(true)], [interpreter_for_sword_dmg]]
 
 
 func _make_modifications_to_tower(tower):

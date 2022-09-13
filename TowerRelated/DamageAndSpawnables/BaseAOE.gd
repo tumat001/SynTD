@@ -16,6 +16,7 @@ var collision_duration : float = -1
 var decrease_duration : bool = true
 var pierce : int = -1
 var rotation_deg_per_sec : float = 0
+var enemy_hit_count : int = 0
 
 
 var enemies_to_ignore : Array = []
@@ -247,6 +248,7 @@ func _attempt_damage_entity(entity):
 		if entity is AbstractEnemy:
 			emit_signal("before_enemy_hit_aoe", entity)
 			entity.hit_by_aoe(self)
+			enemy_hit_count += 1
 			_enemies_inside_damage_cd_map[entity] = _delay_in_between_repeats
 			_pierce_available -= 1
 			
@@ -255,6 +257,7 @@ func _attempt_damage_entity(entity):
 
 
 func queue_free():
+	collision_shape.disabled = true
 	.queue_free()
 
 #

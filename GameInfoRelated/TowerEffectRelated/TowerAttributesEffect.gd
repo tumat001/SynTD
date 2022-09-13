@@ -120,7 +120,9 @@ func _get_description() -> String:
 
 
 func _generate_flat_description(descriptor : String) -> String:
-	return "+" + attribute_as_modifier.get_description_scaled(_current_additive_scale) + " " + descriptor
+	var primary_desc = "+" + attribute_as_modifier.get_description_scaled(_current_additive_scale) + " " + descriptor
+	primary_desc += _generate_desc_for_persisting_total_additive_scaling()
+	return primary_desc
 
 func _generate_percent_description(descriptor : String) -> String:
 	var descriptions : Array = attribute_as_modifier.get_description_scaled(_current_additive_scale)
@@ -130,7 +132,10 @@ func _generate_percent_description(descriptor : String) -> String:
 	if descriptions.size() == 2:
 		desc02 = descriptions[1]
 	
-	return "+" + desc01 + " " + descriptor + " " + desc02
+	var primary_desc = "+" + desc01 + " " + descriptor + " " + desc02
+	primary_desc += _generate_desc_for_persisting_total_additive_scaling()
+	return primary_desc
+
 
 # Icon Related
 

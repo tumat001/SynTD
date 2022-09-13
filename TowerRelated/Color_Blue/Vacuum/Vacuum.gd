@@ -59,7 +59,6 @@ var suck_particle_attk_sprite_pool : AttackSpritePoolComponent
 var shockwave_knockup_effect : EnemyKnockUpEffect
 var shockwave_forced_path_mov_effect : EnemyForcedPathOffsetMovementEffect
 
-
 const trail_color : Color = Color(0.3, 0.4, 1, 0.75)
 const base_trail_length : int = 10
 const base_trail_width : int = 3

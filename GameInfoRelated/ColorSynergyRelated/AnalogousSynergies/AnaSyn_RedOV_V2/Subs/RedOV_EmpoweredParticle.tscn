@@ -1,0 +1,24 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/SizeAdaptingAttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV_V2/Assets/SelfParticle/RedOV_V2_EmpoweredParticle_01.png" type="Texture" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV_V2/Assets/SelfParticle/RedOV_V2_EmpoweredParticle_02.png" type="Texture" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV_V2/Assets/SelfParticle/RedOV_V2_EmpoweredParticle_03.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV_V2/Assets/SelfParticle/RedOV_V2_EmpoweredParticle_04.png" type="Texture" id=5]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV_V2/Assets/SelfParticle/RedOV_V2_EmpoweredParticle_05.png" type="Texture" id=6]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV_V2/Subs/RedOV_EmpoweredParticle.gd" type="Script" id=7]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ), ExtResource( 5 ), ExtResource( 6 ) ],
+"loop": true,
+"name": "default",
+"speed": 15.0
+} ]
+
+[node name="RedOV_EmpoweredParticle" instance=ExtResource( 1 )]
+frames = SubResource( 1 )
+frame = 2
+script = ExtResource( 7 )
+has_lifetime = false
+adapt_ratio = 1.2

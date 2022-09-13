@@ -358,16 +358,16 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.PROMINENCE,
-			Towers.YELVIO_RIFT_AXIS,
-			Towers.FRUIT_TREE,
-			Towers.LEADER,
 			Towers.SPIKE,
+			Towers.PROMINENCE,
+			Towers.SPIKE,
+			Towers.EMBER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.BEACON_DISH,
+			Towers.TESLA,
 			Towers.SHOCKER,
-			Towers.HEXTRIBUTE,
-			Towers.CHARGE,
 			Towers.MINI_TESLA,
 			Towers.NUCLEUS,
 			Towers.EMBER

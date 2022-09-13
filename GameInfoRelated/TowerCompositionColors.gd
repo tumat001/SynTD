@@ -38,11 +38,13 @@ const syn_compo_special_ROYGBV = preload("res://GameHUDRelated/LeftSidePanel/Syn
 
 const CompleSyn_OrangeBlue = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_OrangeBlue/CompliSyn_OrangeBlue.gd")
 const CompliSyn_RedGreen = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_RedGreen/CompliSyn_RedGreen.gd")
+const CompliSyn_YellowViolet = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/CompliSyn_YelVio_V2.gd")
 
 const AnaSyn_BlueVG = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_BlueVG/AnaSyn_BlueVG.gd")
 const AnaSyn_VioletRB = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/AnaSyn_VioletRB_V2.gd")
 const AnaSyn_OrangeYR = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_OrangeYR/AnaSyn_OrangeYR.gd")
-const AnaSyn_RedOV = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV/AnaSyn_RedOV.gd")
+#const AnaSyn_RedOV = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV/AnaSyn_RedOV.gd")
+const AnaSyn_RedOV = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV_V2/AnaSyn_RedOV_V2.gd")
 const AnaSyn_YellowGO = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_YellowGO/AnaSyn_YellowGO.gd")
 const AnaSyn_GreenBY = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_GreenBY/AnaSyn_GreenBY.gd")
 
@@ -54,7 +56,7 @@ const TriaSyn_OGV = preload("res://GameInfoRelated/ColorSynergyRelated/TriaSyner
 enum SynergyId {
 	RedGreen = 1,
 	OrangeBlue = 2,
-	#YellowViolet = 3,
+	YellowViolet = 3,
 	OrangeYR = 4,
 	YellowGO = 5,
 	GreenBY = 6,
@@ -68,7 +70,7 @@ enum SynergyId {
 const synergy_id_to_syn_name_dictionary := {
 	SynergyId.RedGreen : "RedGreen",
 	SynergyId.OrangeBlue : "OrangeBlue",
-	#SynergyId.YellowViolet : "YellowViolet",
+	SynergyId.YellowViolet : "YellowViolet",
 	SynergyId.OrangeYR : "OrangeYR",
 	SynergyId.YellowGO : "YellowGO",
 	SynergyId.GreenBY : "GreenBY",
@@ -611,6 +613,48 @@ func _init():
 	)
 	
 	
+	var interpreter_for_yelvio_yellow_shell_dmg_tier_4 = TextFragmentInterpreter.new()
+	interpreter_for_yelvio_yellow_shell_dmg_tier_4.display_body = false
+	interpreter_for_yelvio_yellow_shell_dmg_tier_4.use_color_for_dark_background = false
+	
+	var ins_for_yelvio_yellow_shell_dmg_tier_4 = []
+	ins_for_yelvio_yellow_shell_dmg_tier_4.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", 3.0))
+	
+	interpreter_for_yelvio_yellow_shell_dmg_tier_4.array_of_instructions = ins_for_yelvio_yellow_shell_dmg_tier_4
+	
+	
+	var interpreter_for_yelvio_yellow_shell_dmg_tier_3 : TextFragmentInterpreter = interpreter_for_yelvio_yellow_shell_dmg_tier_4.get_deep_copy()
+	interpreter_for_yelvio_yellow_shell_dmg_tier_3.array_of_instructions[0].num_val = 4.0
+	
+	var interpreter_for_yelvio_yellow_shell_dmg_tier_2 : TextFragmentInterpreter = interpreter_for_yelvio_yellow_shell_dmg_tier_4.get_deep_copy()
+	interpreter_for_yelvio_yellow_shell_dmg_tier_2.array_of_instructions[0].num_val = 6.0
+	
+	var interpreter_for_yelvio_yellow_shell_dmg_tier_1 : TextFragmentInterpreter = interpreter_for_yelvio_yellow_shell_dmg_tier_4.get_deep_copy()
+	interpreter_for_yelvio_yellow_shell_dmg_tier_1.array_of_instructions[0].num_val = 8.0
+	
+	
+	###
+	
+	var interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3 = TextFragmentInterpreter.new()
+	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.display_body = false
+	var ins_for_red_ov_initial_bonus_dmg_amount_tier_3 = []
+	ins_for_red_ov_initial_bonus_dmg_amount_tier_3.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 5, true))
+	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.array_of_instructions = ins_for_red_ov_initial_bonus_dmg_amount_tier_3
+	
+	var interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_3 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
+	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_3.array_of_instructions[0].num_val = 5
+	
+	var interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
+	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 12
+	var interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
+	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 12
+	
+	var interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
+	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 20
+	var interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
+	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 20
+	
+	
 	# ------------------------------------------------------
 	
 	synergies = {
@@ -618,23 +662,27 @@ func _init():
 	synergy_id_to_syn_name_dictionary[SynergyId.RedGreen] : red_green_syn,
 	
 	
-	
-#	"YellowViolet" : ColorSynergy.new("YellowViolet", [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
-#	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
-#	syn_compo_compli_yellowviolet,
-#	[
-#		"Gain bonuses depending on this synergy's tier.",
-#		""
-#	],
-#	[CompleSyn_YelVio_YellowIng.new()],
-#	[
-#		"Violet towers can now gain an Energy Module from the Yellow Synergy.",
-#		"Yellow towers can absorb 1 more ingredient.",
-#		"Gain 2 energy after a round when that round is lost.",
-#		"Gain 1 energy after a round when that round is won.",
-#	],
-#	ColorSynergy.HighlightDeterminer.ALL_BELOW
-#	),
+	synergy_id_to_syn_name_dictionary[SynergyId.YellowViolet] : ColorSynergy.new("YellowViolet", [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
+	syn_compo_compli_yellowviolet,
+	[
+		"Summon Rift Axis that controls the division between the Yellow and Violet rifts. Towers receive effects based on their rift location.",
+		"",
+		"Violet rift: On round end, towers have their self ingredient effect upgraded by an amount.",
+		"",
+		"Yellow rift: Every 15 seconds, all towers in the yellow rift fire a shell at the first enemy, exploding to deal damage to 3 enemies. Towers fire again if only 1 enemy is hit.",
+		"",
+	],
+	[CompliSyn_YellowViolet],
+	[
+		["+10% ingredient upgrade. |0| per yellow shell.", [interpreter_for_yelvio_yellow_shell_dmg_tier_4]],
+		["+15% ingredient upgrade. |0| per yellow shell.", [interpreter_for_yelvio_yellow_shell_dmg_tier_3]],
+		["+30% ingredient upgrade. |0| per yellow shell.", [interpreter_for_yelvio_yellow_shell_dmg_tier_2]],
+		["+45% ingredient upgrade. |0| per yellow shell.", [interpreter_for_yelvio_yellow_shell_dmg_tier_1]],
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE
+	),
+	 
 	
 	synergy_id_to_syn_name_dictionary[SynergyId.OrangeBlue] : orange_blue_syn,
 	
@@ -644,14 +692,15 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_redOV,
 	[
-		"All towers gain armor pierce and toughness pierce. These bonuses are doubled for the round after killing 4 enemies or dealing 140 post-mitigated damage.",
+		"After 10 main attacks, towers rally all other towers in range, buffing them to gain bonus damage.",
+		"A tower triggering rally for the 4th time or more allows it to give an additional bonus damage buff per rally.",
 		""
 	],
 	[AnaSyn_RedOV],
 	[
-		"+4 armor and toughness pierce.",
-		"+8 armor and toughness pierce.",
-		"+14 armor and toughness pierce.",
+		["Base buff: |0|. Additional buff: |1|.", [interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3, interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_3]],
+		["Base buff: |0|. Additional buff: |1|.", [interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2, interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2]],
+		["Base buff: |0|. Additional buff: |1|.", [interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1, interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1]],
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE
 	),

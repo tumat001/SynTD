@@ -43,7 +43,7 @@ func set_rift_axis(arg_rift_axis):
 	rift_axis = arg_rift_axis
 	
 	if rift_axis != null:
-		rift_swap_sides_button.ability = rift_axis.partner_assign_ability
+		rift_swap_sides_button.ability = rift_axis.rift_swap_sides_ability
 		#unassign_partner_button.ability = rift_axis.partner_unassign_ability
 
 #

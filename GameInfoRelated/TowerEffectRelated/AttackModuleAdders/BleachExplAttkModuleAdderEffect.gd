@@ -62,7 +62,7 @@ func _update_description():
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 	# ins
 	
-	description = ["On the %sth main attack, shoot a projectile that explodes, dealing |0| to %s enemies and reducing %s toughness for %s seconds." % [str(base_attack_count_trigger), str(explosion_pierce), str(toughness_reduc), str(toughness_reduc_duration)], [interpreter_for_flat_on_hit]]
+	description = ["On the %sth main attack, shoot a projectile that explodes, dealing |0| to %s enemies and reducing %s toughness for %s seconds.%s" % [str(base_attack_count_trigger), str(explosion_pierce), str(toughness_reduc), str(toughness_reduc_duration), _generate_desc_for_persisting_total_additive_scaling(true)], [interpreter_for_flat_on_hit]]
 
 
 func _construct_lob_attack_module(arg_y_shift : float):

@@ -62,6 +62,7 @@ signal tower_current_health_changed(tower, new_val)
 
 signal tower_being_dragged(tower)
 signal tower_dropped_from_dragged(tower)
+signal tower_transfered_to_placable(tower, arg_placable)
 
 signal tower_max_limit_changed(new_limit)
 signal tower_current_limit_taken_changed(curr_slots_taken)
@@ -257,6 +258,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("tower_being_dragged", self, "_tower_being_dragged", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_dropped_from_dragged", self, "_tower_dropped_from_dragged", [], CONNECT_PERSIST)
 	tower_instance.connect("on_attempt_drop_tower_on_placable", self, "_on_attempt_drop_tower_on_placable", [], CONNECT_PERSIST)
+	tower_instance.connect("on_tower_transfered_to_placable", self, "_tower_transfered_to_placable", [], CONNECT_PERSIST)
 	
 	tower_instance.connect("tower_toggle_show_info", self, "_tower_toggle_show_info", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_in_queue_free", self, "_tower_in_queue_free", [], CONNECT_PERSIST)
@@ -359,6 +361,9 @@ func _tower_dropped_from_dragged(tower_released : AbstractTower):
 	
 	if is_in_ingredient_mode:
 		emit_signal("hide_ingredient_acceptability")
+
+func _tower_transfered_to_placable(arg_tower, arg_placable):
+	emit_signal("tower_transfered_to_placable", arg_tower, arg_placable)
 
 
 func can_place_tower_based_on_limit_and_curr_placement(tower : AbstractTower) -> bool:

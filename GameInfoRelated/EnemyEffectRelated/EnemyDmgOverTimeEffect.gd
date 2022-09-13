@@ -51,9 +51,9 @@ func _get_description() -> String:
 	
 	if modifier is FlatModifier:
 		if is_timebound:
-			return (modifier_desc + " " + type_name + " damage over " + _get_total_duration() + " seconds")
+			return (modifier_desc + " " + type_name + " damage over " + _get_total_duration() + " seconds.%s" % _generate_desc_for_persisting_total_additive_scaling(true))
 		else:
-			return (str(modifier.flat_modifier) + " " + type_name + " damage per " + str(delay_per_tick) + " " + _attach_plural_if_needed("second", time_in_seconds))
+			return (str(modifier.flat_modifier) + " " + type_name + " damage per " + str(delay_per_tick) + " " + _attach_plural_if_needed("second", time_in_seconds) + _generate_desc_for_persisting_total_additive_scaling(true))
 	elif modifier is PercentModifier:
 		if time_in_seconds != 0 and is_timebound:
 			var first_part : String = modifier_desc[0]
@@ -64,6 +64,8 @@ func _get_description() -> String:
 				part1 += " " + second_part
 			
 			part1 += " over" + _get_total_duration() + " seconds"
+			part1 += _generate_desc_for_persisting_total_additive_scaling(true)
+			return part1
 		else:
 			var desc = modifier.get_description()
 			
@@ -74,6 +76,7 @@ func _get_description() -> String:
 			if second_part != null:
 				part1 = " " + second_part
 			
+			part1 += _generate_desc_for_persisting_total_additive_scaling(true)
 			return part1
 	
 	return ""

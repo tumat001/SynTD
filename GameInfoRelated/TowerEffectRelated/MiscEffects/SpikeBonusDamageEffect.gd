@@ -33,7 +33,7 @@ func _update_description():
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 	
 	
-	description = ["All of the tower's attacks deal |0| to enemies below 50% health.", [interpreter_for_flat_on_hit]]
+	description = ["All of the tower's attacks deal |0| to enemies below 50%% health.%s" % [_generate_desc_for_persisting_total_additive_scaling(true)], [interpreter_for_flat_on_hit]]
 
 
 

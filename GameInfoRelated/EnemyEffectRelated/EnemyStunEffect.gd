@@ -11,9 +11,10 @@ func _init(arg_duration : float,
 	effect_icon = stun_icon
 	
 	_update_description()
+	_can_be_scaled_by_yel_vio = true
 
 func _update_description():
-	description = "Stuns enemies for " + str(time_in_seconds * _current_additive_scale) + " seconds on hit."
+	description = "Stuns enemies for " + str(time_in_seconds * _current_additive_scale) + " seconds on hit.%s" % _generate_desc_for_persisting_total_additive_scaling(true)
 
 
 func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
