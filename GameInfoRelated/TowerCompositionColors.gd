@@ -638,21 +638,21 @@ func _init():
 	var interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3 = TextFragmentInterpreter.new()
 	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.display_body = false
 	var ins_for_red_ov_initial_bonus_dmg_amount_tier_3 = []
-	ins_for_red_ov_initial_bonus_dmg_amount_tier_3.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 5, true))
+	ins_for_red_ov_initial_bonus_dmg_amount_tier_3.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 15, true))
 	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.array_of_instructions = ins_for_red_ov_initial_bonus_dmg_amount_tier_3
 	
 	var interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_3 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_3.array_of_instructions[0].num_val = 5
+	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_3.array_of_instructions[0].num_val = 15
 	
 	var interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 12
+	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 25
 	var interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 12
+	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 25
 	
 	var interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 20
+	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 35
 	var interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 20
+	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 35
 	
 	
 	# ------------------------------------------------------
@@ -692,7 +692,7 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_redOV,
 	[
-		"After 10 main attacks, towers rally all other towers in range, buffing them to gain bonus damage.",
+		"After 8 main attacks, towers rally all other towers in range, buffing them to gain bonus damage for 6 seconds.",
 		"A tower triggering rally for the 4th time or more allows it to give an additional bonus damage buff per rally.",
 		""
 	],

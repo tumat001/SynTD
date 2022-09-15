@@ -358,10 +358,10 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.PROMINENCE,
-			Towers.SPIKE,
-			Towers.PROMINENCE,
-			Towers.SPIKE,
-			Towers.EMBER,
+			Towers.WAVE,
+			Towers.L_ASSAUT,
+			Towers.DOUSER,
+			Towers.VACUUM,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([

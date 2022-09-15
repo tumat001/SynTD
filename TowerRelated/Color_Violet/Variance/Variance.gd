@@ -88,7 +88,7 @@ const lock_already_casted_clause : int = -10
 
 #
 var specialize_ability : BaseAbility
-const specialize_base_cooldown : float = 35.0
+const specialize_base_cooldown : float = 22.0
 const specialize_initial_cooldown : float = 5.0
 var _specialize_ability_is_ready : bool = false
 var is_an_enemy_in_range : bool = false

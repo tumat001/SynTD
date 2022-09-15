@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Vacuum_Omni.png-2dfbb16ece95265a8ac1b2b0cbcbbfff.stex"
+path="res://.import/Douser_W.png-6030ad7eb0c8a788a8bb22892da65a72.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TowerRelated/Color_Blue/Vacuum/Vacuum_Omni.png"
-dest_files=[ "res://.import/Vacuum_Omni.png-2dfbb16ece95265a8ac1b2b0cbcbbfff.stex" ]
+source_file="res://TowerRelated/Color_Blue/Douser/Douser_W.png"
+dest_files=[ "res://.import/Douser_W.png-6030ad7eb0c8a788a8bb22892da65a72.stex" ]
 
 [params]
 

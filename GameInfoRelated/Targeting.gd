@@ -572,13 +572,14 @@ static func is_angle_between_angles__do_no_correction(arg_angle, arg_angle_01, a
 	arg_angle_01 = _convert_angle_to_1to360(arg_angle_01)
 	arg_angle_02 = _convert_angle_to_1to360(arg_angle_02)
 	
-	
-	#if arg_angle_01 < arg_angle_02:
 	return arg_angle_01 <= arg_angle and arg_angle <= arg_angle_02 #orig
-	#	
-#	else:
-#		return arg_angle_01 >= arg_angle and arg_angle >= arg_angle_02 #orig
-#
+
+static func is_angle_between_angles__v2(arg_angle, arg_angle_01, arg_angle_02):
+	if arg_angle_01 > arg_angle_02:
+		return Targeting.is_angle_between_angles__do_no_correction(arg_angle, arg_angle_01, arg_angle_02)
+	else:
+		return Targeting.is_angle_between_angles__do_no_correction(arg_angle, arg_angle_02, arg_angle_01)
+
 
 
 

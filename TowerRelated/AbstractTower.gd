@@ -52,6 +52,7 @@ const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
+const AnimFaceDirComponent = preload("res://MiscRelated/CommonComponents/AnimFaceDirComponent.gd")
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
 const AbsorbIngParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/AbsorbRelated/AbsorbIngParticle.tscn")
 
@@ -98,10 +99,15 @@ signal on_current_health_changed(new_curr)
 signal on_tower_no_health()
 
 
+signal on_main_attack_in_attack_windup(wind_up_time, enemies, module)
 signal on_main_attack_finished(module)
 signal on_main_attack(attk_speed_delay, enemies, module)
+signal on_any_attack_in_attack_windup(wind_up_time, enemies)
 signal on_any_attack_finished(module)
 signal on_any_attack(attk_speed_delay, enemies, module)
+
+signal on_main_attack_module_commanded_to_attack_enemies_or_poses(arg_enemies_or_poses, module)
+
 
 # on any damage instance constructed
 signal on_damage_instance_constructed(damage_instance, module)
@@ -243,7 +249,6 @@ var is_showing_ranges : bool
 
 var contributing_to_synergy_clauses : ConditionalClauses
 var last_calculated_is_contributing_to_synergy : bool
-
 
 
 #####
@@ -390,7 +395,6 @@ var last_calculated_is_invulnerable : bool = false
 const invulnerable_sprite_layer_self_modulate : Color = Color(1.5, 1.5, 1, 1)
 const normal_sprite_layer_self_modulate : Color = Color(1, 1, 1, 1)
 
-
 # Other effects
 
 var _stun_id_effect_map : Dictionary = {}
@@ -443,6 +447,8 @@ var is_a_summoned_tower : bool = false
 var last_calculated_has_commandable_attack_modules : bool
 
 var all_tower_abiltiies : Array
+
+var anim_face_dir_component : AnimFaceDirComponent
 
 # tracker
 
@@ -573,6 +579,11 @@ func _init():
 	_update_last_calculated_can_be_placed_in_map()
 	_update_last_calculated_can_be_placed_in_bench()
 	_update_last_calculate_tower_is_draggable()
+	
+	##
+	
+	anim_face_dir_component = AnimFaceDirComponent.new()
+
 
 func _ready():
 	$IngredientDeclinePic.visible = false
@@ -585,8 +596,7 @@ func _ready():
 	for child in knock_up_layer.get_children():
 		child.use_parent_material = true
 	tower_base.material = ShaderMaterial.new()
-
-
+	
 
 func _post_inherit_ready():
 	_update_ingredient_compatible_colors()
@@ -623,6 +633,16 @@ func _post_inherit_ready():
 	#initialize_atlas_texture()
 	
 	_calculate_sellback_value()
+	
+	
+	##
+	
+	var sprite_frames_of_base : SpriteFrames = tower_base_sprites.frames
+	if sprite_frames_of_base.animations.size() >= 2:
+		anim_face_dir_component.initialize_with_sprite_frame_to_monitor(sprite_frames_of_base)
+		anim_face_dir_component.set_animated_sprite_animation_to_default(tower_base_sprites)
+		#connect("on_main_attack", self, "_on_main_attack__for_face_direction_updates", [], CONNECT_PERSIST)
+		connect("on_main_attack_module_commanded_to_attack_enemies_or_poses", self, "_on_main_attk_module__commanded_to_attack_enemies_or_poses", [], CONNECT_PERSIST)
 
 
 func get_current_anim_size() -> Vector2:
@@ -674,6 +694,7 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		attack_module.connect("on_damage_instance_constructed", self, "_emit_on_damage_instance_constructed", [], CONNECT_PERSIST)
 		attack_module.connect("on_enemy_hit" , self, "_emit_on_any_attack_module_enemy_hit", [], CONNECT_PERSIST)
 		attack_module.connect("on_post_mitigation_damage_dealt", self, "_emit_on_any_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
+		attack_module.connect("in_attack_windup", self, "_emit_on_any_attack_in_windup", [attack_module], CONNECT_PERSIST)
 		
 		if attack_module is BulletAttackModule:
 			attack_module.connect("before_bullet_is_shot", self, "_emit_on_any_bullet_attack_module_before_bullet_is_shot", [attack_module], CONNECT_PERSIST)
@@ -714,6 +735,8 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			main_attack_module.connect("on_enemy_hit" , self, "_emit_on_main_attack_module_enemy_hit", [], CONNECT_PERSIST)
 			main_attack_module.connect("on_damage_instance_constructed", self, "_emit_on_main_attack_module_damage_instance_constructed", [], CONNECT_PERSIST)
 			main_attack_module.connect("on_post_mitigation_damage_dealt", self, "_emit_on_main_post_mitigation_damage_dealt", [], CONNECT_PERSIST)
+			main_attack_module.connect("in_attack_windup", self, "_emit_on_main_attack_in_windup", [main_attack_module], CONNECT_PERSIST)
+			main_attack_module.connect("on_commanded_to_attack_enemies_or_poses", self, "_emit_on_main_attack_module_commanded_to_attack_enemies_or_poses", [main_attack_module], CONNECT_PERSIST)
 			
 			if main_attack_module is BulletAttackModule:
 				main_attack_module.connect("before_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_before_bullet_is_shot", [attack_module], CONNECT_PERSIST)
@@ -757,6 +780,7 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		attack_module_to_remove.disconnect("on_damage_instance_constructed", self, "_emit_on_damage_instance_constructed")
 		attack_module_to_remove.disconnect("on_enemy_hit", self, "_emit_on_any_attack_module_enemy_hit")
 		attack_module_to_remove.disconnect("on_post_mitigation_damage_dealt", self, "_emit_on_any_post_mitigation_damage_dealt")
+		attack_module_to_remove.disconnect("in_attack_windup", self, "_emit_on_any_attack_in_windup")
 		
 		if attack_module_to_remove is BulletAttackModule:
 			attack_module_to_remove.disconnect("before_bullet_is_shot", self, "_emit_on_any_bullet_attack_module_before_bullet_is_shot")
@@ -770,6 +794,8 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 		attack_module_to_remove.disconnect("on_enemy_hit", self, "_emit_on_main_attack_module_enemy_hit")
 		attack_module_to_remove.disconnect("on_damage_instance_constructed", self, "_emit_on_main_attack_module_damage_instance_constructed")
 		attack_module_to_remove.disconnect("on_post_mitigation_damage_dealt", self, "_emit_on_main_post_mitigation_damage_dealt")
+		attack_module_to_remove.disconnect("in_attack_windup", self, "_emit_on_main_attack_in_windup")
+		attack_module_to_remove.disconnect("on_commanded_to_attack_enemies_or_poses", self, "_emit_on_main_attack_module_commanded_to_attack_enemies_or_poses")
 		
 		if attack_module_to_remove is BulletAttackModule:
 			attack_module_to_remove.disconnect("before_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_before_bullet_is_shot")
@@ -837,11 +863,23 @@ func _emit_on_any_attack_finished(module):
 func _emit_on_any_attack(attack_delay, enemies_or_poses, module):
 	emit_signal("on_any_attack", attack_delay, enemies_or_poses, module)
 
+func _emit_on_any_attack_in_windup(windup_time, arg_poses, module):
+	emit_signal("on_any_attack_in_attack_windup", windup_time, arg_poses, module)
+
+
+
 func _emit_on_main_attack_finished(module):
 	call_deferred("emit_signal", "on_main_attack_finished", module)
 
 func _emit_on_main_attack(attack_delay, enemies_or_poses, module):
 	emit_signal("on_main_attack", attack_delay, enemies_or_poses, module)
+
+func _emit_on_main_attack_in_windup(windup_time, arg_poses, module):
+	emit_signal("on_main_attack_in_attack_windup", windup_time, arg_poses, module)
+
+func _emit_on_main_attack_module_commanded_to_attack_enemies_or_poses(arg_enemies_or_poses, module):
+	emit_signal("on_main_attack_module_commanded_to_attack_enemies_or_poses", arg_enemies_or_poses, module)
+
 
 func _emit_on_damage_instance_constructed(damage_instance, module):
 	emit_signal("on_damage_instance_constructed", damage_instance, module)
@@ -957,6 +995,8 @@ func _on_round_end():
 			module.range_module.clear_all_detected_enemies()
 	
 	_remove_all_timebound_and_countbound_and_roundbound_effects()
+	
+	anim_face_dir_component.set_animated_sprite_animation_to_default(tower_base_sprites)
 	
 	emit_signal("on_round_end")
 
@@ -3317,8 +3357,84 @@ func _conv_angle_to_positive_val(arg_angle):
 			return arg_angle - (2 * PI)
 
 
+######### TOWER animations related
 
-# SYNERGIES RELATED ---------------------
+#func _on_main_attack__for_face_direction_updates(attk_speed_delay, enemies, module):
+#	if enemies.size() > 0:
+#		_change_animation_to_face_position(enemies[0].global_position)
+
+func _on_main_attk_module__commanded_to_attack_enemies_or_poses(arg_enemies_or_poses, module):
+	if arg_enemies_or_poses.size() > 0:
+		var ent = arg_enemies_or_poses[0]
+		if ent is Vector2:
+			_change_animation_to_face_position(ent)
+		else:
+			_change_animation_to_face_position(ent.global_position)
+
+
+func _change_animation_to_face_position(arg_position, pos_basis = global_position):
+	var angle = pos_basis.angle_to_point(arg_position)
+	_change_animation_to_face_angle(angle)
+
+func _change_animation_to_face_angle(arg_angle):
+	var anim_name = anim_face_dir_component.get_anim_name_to_use_based_on_angle(arg_angle)
+	anim_face_dir_component.set_animation_sprite_animation_using_anim_name(tower_base_sprites, anim_name)
+
+
+
+####### Particle related
+
+func _display_absorbed_ingredient_effects(arg_tier_of_ing : int): 
+	if absorb_ing_particle_pool_component == null:
+		_initialize_absorb_ing_particle_pool_component()
+	
+	var max_i = 3 #default
+	
+	if ing_tier_to_amount_of_particles_map.has(arg_tier_of_ing):
+		max_i = ing_tier_to_amount_of_particles_map[arg_tier_of_ing]
+	else:
+		max_i = 3
+		arg_tier_of_ing = 1
+	
+	for i in max_i:
+		var particle = absorb_ing_particle_pool_component.get_or_create_attack_sprite_from_pool()
+		particle.center_pos_of_basis = global_position
+		particle.tier = arg_tier_of_ing
+		particle.particle_i_val = i
+		particle.particle_max_i_val = max_i
+		particle.lifetime = 0.6
+		
+		particle.visible = true
+		particle.reset_for_another_use__absorb_ing_specific()
+		particle.reset_for_another_use()
+	
+
+func _initialize_absorb_ing_particle_pool_component():
+	absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
+	absorb_ing_particle_pool_component.node_to_parent_attack_sprites = get_tree().get_root()
+	absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
+	absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
+	absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_abosrb_ing_particle"
+	absorb_ing_particle_pool_component.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_absorb_ing_particle_properties_when_get_from_pool_after_add_child"
+
+
+func _create_abosrb_ing_particle():
+	var particle = AbsorbIngParticle_Scene.instance()
+	particle.speed_accel_towards_center = 450
+	particle.initial_speed_towards_center = -100
+	
+	particle.min_starting_distance_from_center = 35
+	particle.max_starting_distance_from_center = 35
+	
+	particle.queue_free_at_end_of_lifetime = false
+	
+	return particle
+
+func _set_absorb_ing_particle_properties_when_get_from_pool_after_add_child(arg_particle):
+	pass
+
+
+# SYNERGIES RELATED -----------------------------------------
 # YELLOW - energy module related
 
 func set_energy_module(module):
@@ -3401,59 +3517,3 @@ func _emit_heat_module_overheat():
 func _emit_heat_module_overheat_cooldown():
 	emit_signal("on_heat_module_overheat_cooldown")
 
-
-####### Particle related
-
-func _display_absorbed_ingredient_effects(arg_tier_of_ing : int): 
-	if absorb_ing_particle_pool_component == null:
-		_initialize_absorb_ing_particle_pool_component()
-	
-	var max_i = 3 #default
-	
-	if ing_tier_to_amount_of_particles_map.has(arg_tier_of_ing):
-		max_i = ing_tier_to_amount_of_particles_map[arg_tier_of_ing]
-	else:
-		max_i = 3
-		arg_tier_of_ing = 1
-	
-	for i in max_i:
-		var particle = absorb_ing_particle_pool_component.get_or_create_attack_sprite_from_pool()
-		particle.center_pos_of_basis = global_position
-		particle.tier = arg_tier_of_ing
-		particle.particle_i_val = i
-		particle.particle_max_i_val = max_i
-		particle.lifetime = 0.6
-		
-		particle.visible = true
-		particle.reset_for_another_use__absorb_ing_specific()
-		particle.reset_for_another_use()
-	
-
-func _initialize_absorb_ing_particle_pool_component():
-	absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
-	absorb_ing_particle_pool_component.node_to_parent_attack_sprites = get_tree().get_root()
-	absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
-	absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
-	absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_abosrb_ing_particle"
-	absorb_ing_particle_pool_component.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_absorb_ing_particle_properties_when_get_from_pool_after_add_child"
-
-
-func _create_abosrb_ing_particle():
-	var particle = AbsorbIngParticle_Scene.instance()
-	particle.speed_accel_towards_center = 450
-	particle.initial_speed_towards_center = -100
-	
-	particle.min_starting_distance_from_center = 35
-	particle.max_starting_distance_from_center = 35
-	
-	particle.queue_free_at_end_of_lifetime = false
-	
-	return particle
-
-func _set_absorb_ing_particle_properties_when_get_from_pool_after_add_child(arg_particle):
-	pass
-	#arg_particle.center_pos_of_basis = global_position
-	
-	#arg_particle.reset_for_another_use()
-	
-	

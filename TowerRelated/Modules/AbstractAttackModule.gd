@@ -21,6 +21,11 @@ signal in_attack_windup(windup_time, enemies_or_poses)
 signal in_attack(attack_speed_delay, enemies_or_poses)
 signal in_attack_end()
 
+signal on_commanded_to_attack_enemies_or_poses(arg_enemies_or_poses)
+signal on_commanded_to_attack_enemies(arg_enemies)
+signal on_commanded_to_attack_poses(arg_poses)
+
+
 signal on_round_end()
 
 signal on_post_mitigation_damage_dealt(damage_instance_report, killed, enemy, damage_register_id, module)
@@ -588,9 +593,7 @@ func _connect_attack_enemies_in_range_when_ready(arg_enemies, num_of_targets):
 		connect("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready", [num_of_targets, 0])
 
 
-
 #
-
 
 func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = number_of_unique_targets) -> bool:
 	var enemies : Array
@@ -627,34 +630,33 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 		return false
 	
 	
-	#while enemies.has(null):
-	#	enemies.erase(null)
-	
+	var return_stat : bool
 	
 	if !_is_attacking:
 		if _last_calculated_attack_wind_up == 0:
 			_check_attack_enemies(enemies)
+			
 			
 			if has_burst:
 				_is_attacking = true
 				_current_burst_count += 1
 				_current_burst_delay = _last_calculated_burst_pause
 				_is_bursting = true
-				return false #wdad
+				return_stat = false
 			else:
 				_current_attack_wait = _last_calculated_attack_speed_as_delay
 				_is_attacking = false
 				_is_in_windup = false
 				_finished_attacking()
-				return true #dwad
+				return_stat = true
 			
-			#return true
+			
 		else:
 			_current_wind_up_wait = _last_calculated_attack_wind_up
 			_is_attacking = true
 			_is_in_windup = true
 			_during_windup_multiple(enemies)
-			return false
+			return_stat = false
 		
 	else:
 		if !has_burst:
@@ -663,15 +665,14 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 			_is_attacking = false
 			_is_in_windup = false
 			_finished_attacking()
-			return true
+			return_stat = true
 		else:
 			if _current_burst_count < burst_amount - 1:
 				_check_attack_enemies(enemies)
 				_current_burst_delay = _last_calculated_burst_pause
 				_is_bursting = true
 				_current_burst_count += 1
-				#return true
-				return false #wdadwad
+				return_stat = false
 			else:
 				_check_attack_enemies(enemies)
 				_is_in_windup = false
@@ -680,10 +681,16 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 				_is_attacking = false
 				_current_burst_count = 0
 				_finished_attacking()
-				return true
-
+				return_stat = true
+	
+	
+	emit_signal("on_commanded_to_attack_enemies_or_poses", enemies)
+	emit_signal("on_commanded_to_attack_enemies", enemies)
+	return return_stat
 
 func on_command_attack_at_positions(positions : Array):
+	var return_stat : bool
+	
 	if !_is_attacking:
 		if calculate_final_attack_wind_up() == 0:
 			_attack_at_positions(positions)
@@ -699,13 +706,13 @@ func on_command_attack_at_positions(positions : Array):
 				_is_in_windup = false
 				_finished_attacking()
 			
-			return true
+			return_stat = true
 		else:
 			_current_wind_up_wait = calculate_final_attack_wind_up()
 			_is_attacking = true
 			_is_in_windup = true
 			_during_windup_multiple(positions)
-			return false
+			return_stat = false
 		
 	else:
 		if !has_burst:
@@ -713,12 +720,14 @@ func on_command_attack_at_positions(positions : Array):
 			_current_attack_wait = calculate_final_attack_speed()
 			_is_attacking = false
 			_finished_attacking()
+			return_stat = true
 		else:
 			if _current_burst_count < burst_amount - 1:
 				_attack_at_positions(positions)
 				_current_burst_delay = calculate_final_burst_attack_speed()
 				_is_bursting = true
 				_current_burst_count += 1
+				return_stat = false
 			else:
 				_attack_at_positions(positions)
 				_current_attack_wait = calculate_final_attack_speed()
@@ -727,7 +736,12 @@ func on_command_attack_at_positions(positions : Array):
 				_current_burst_count = 0
 				_is_in_windup = false
 				_finished_attacking()
-
+				return_stat = true
+	
+	
+	emit_signal("on_commanded_to_attack_enemies_or_poses", positions)
+	emit_signal("on_commanded_to_attack_poses", positions)
+	return return_stat
 
 #func _attack_enemy(enemy : AbstractEnemy):
 #	pass
@@ -769,10 +783,6 @@ func _attack_at_positions(positions : Array):
 	#if !_is_bursting:
 	emit_signal("in_attack", _last_calculated_attack_speed_as_delay, positions)
 
-
-
-#func _during_windup(enemy_or_pos):
-#	emit_signal("in_attack_windup", _last_calculated_attack_wind_up, enemy_or_pos)
 
 func _during_windup_multiple(enemies_or_poses : Array = []):
 	if commit_to_targets_of_windup:

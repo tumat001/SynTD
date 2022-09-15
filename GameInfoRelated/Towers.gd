@@ -115,7 +115,7 @@ const bleach_image = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_E.png"
 const time_machine_image = preload("res://TowerRelated/Color_Blue/TimeMachine/TimeMachine_Omni.png")
 const transpose_image = preload("res://TowerRelated/Color_Blue/Transpose/Transpose_Omni01.png")
 const accumulae_image = preload("res://TowerRelated/Color_Blue/Accumulae/Accumulae_Omni.png")
-const vacuum_image = preload("res://TowerRelated/Color_Blue/Vacuum/Vacuum_Omni.png")
+const vacuum_image = preload("res://TowerRelated/Color_Blue/Vacuum/Vacuum_E.png")
 
 # VIOLET
 const simpleobelisk_image = preload("res://TowerRelated/Color_Violet/SimpleObelisk/SimpleObelisk_Omni.png")
@@ -5424,7 +5424,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_cooldown.header_description = "s"
 		
 		var ins_for_cooldown = []
-		ins_for_cooldown.append(NumericalTextFragment.new(35, false))
+		ins_for_cooldown.append(NumericalTextFragment.new(22, false))
 		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
 		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
@@ -5436,6 +5436,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"On round end: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it.",
 			"",
+			"Auto casts Specialize:",
 			"Ability: Specialize. Effect differs based on Variance's type.",
 			"Clear Type: Remove almost all effects from enemies in range three times over 10 seconds.",
 			["Damage Type: The first main attack knocks its target back. The first and second main attack stuns for 2 seconds. Afterwards, fire a massive glob that deals |0| to 5 enemies.", [interpreter_for_red_explosion]],
@@ -5449,6 +5450,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			"On round end: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it.",
 			"",
+			"Auto casts Specialize:",
 			"Ability: Specialize. Effect differs based on Variance's type.",
 			"",
 			["Cooldown: |0|", [interpreter_for_cooldown]],

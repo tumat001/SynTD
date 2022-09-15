@@ -234,6 +234,9 @@ func _attempt_shoot_buffing_bullet():
 		current_attack_count = 0
 		
 		douser_buff_ability.on_ability_after_cast_ended(douser_buff_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+		
+		#
+		_change_animation_to_face_position(tower_to_target.global_position)
 
 
 func _find_closest_unbuffed_tower() -> Node:

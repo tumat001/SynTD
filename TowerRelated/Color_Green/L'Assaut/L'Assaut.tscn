@@ -1,15 +1,21 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://TowerRelated/Color_Green/L'Assaut/Assets/Animations/L'Assaut_E.png" type="Texture" id=1]
 [ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=2]
 [ext_resource path="res://TowerRelated/Color_Green/L'Assaut/Assets/PetalHead/L'Assaut_Petal_Base.png" type="Texture" id=3]
 [ext_resource path="res://TowerRelated/Color_Green/L'Assaut/L'Assaut.gd" type="Script" id=4]
+[ext_resource path="res://TowerRelated/Color_Green/L'Assaut/Assets/Animations/L'Assaut_W.png" type="Texture" id=5]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ ExtResource( 1 ) ],
 "loop": true,
-"name": "default",
+"name": "E",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "W",
 "speed": 5.0
 } ]
 
@@ -24,6 +30,7 @@ position = Vector2( 0, -7 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
+animation = "W"
 
 [node name="PetalSprite" type="Sprite" parent="TowerBase/KnockUpLayer" index="1"]
 position = Vector2( 1, -12 )

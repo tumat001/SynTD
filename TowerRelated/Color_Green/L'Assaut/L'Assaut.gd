@@ -41,6 +41,17 @@ const Petal_Blue = preload("res://TowerRelated/Color_Green/L'Assaut/Assets/Petal
 
 signal stack_state_changed(new_state)
 
+
+enum PetalColor {
+	NORMAL = 0,
+	YELLOW = 1,
+	RED = 2,
+	VIOLET = 3,
+	BLUE = 4,
+}
+var _current_petal_color : int = PetalColor.NORMAL
+var _current_petal_E_AND_W_texture : Texture = Petal_Normal
+
 enum PursueState {
 	NONE = 0,
 	FADING = 1,
@@ -173,6 +184,14 @@ func _ready():
 	_construct_and_register_ability()
 	
 	#
+	
+	var aux_sprite_param__for_petal := AnimFaceDirComponent.AuxSpritesParameters.new()
+	var dir_name_to_texture_get_method_map : Dictionary = AnimFaceDirComponent.AuxSpritesParameters.construct_empty_texture_dir_name_to_get_methods_map__for_W_and_E()
+	dir_name_to_texture_get_method_map[AnimFaceDirComponent.dir_east_name] = "_get_petal_texture__at_E_and_W_dir"
+	dir_name_to_texture_get_method_map[AnimFaceDirComponent.dir_west_name] = "_get_petal_texture__at_E_and_W_dir"
+	aux_sprite_param__for_petal.configure_param_with__E_pos__E_texture_get_method__E_flip__for_W_and_E(petal_head_sprite.position, dir_name_to_texture_get_method_map, self, false)
+	aux_sprite_param__for_petal.sprite = petal_head_sprite
+	anim_face_dir_component.set__and_update_auxilliary_sprites_on_anim_change(aux_sprite_param__for_petal)
 	
 	_post_inherit_ready()
 
@@ -358,11 +377,16 @@ func _on_round_lost_in_map():
 	call_deferred("emit_signal", "stack_state_changed", get_stack_state())
 	
 	if defeat_count_for_blue_petal <= defeat_count:
-		petal_head_sprite.texture = Petal_Blue
+		_current_petal_E_AND_W_texture = Petal_Blue
+		_set_petal_color(PetalColor.BLUE)
 	elif defeat_count_for_violet_petal <= defeat_count:
-		petal_head_sprite.texture = Petal_Violet
+		_current_petal_E_AND_W_texture = Petal_Violet
+		_set_petal_color(PetalColor.VIOLET)
 	else:
-		petal_head_sprite.texture = Petal_Normal
+		_current_petal_E_AND_W_texture = Petal_Normal
+		_set_petal_color(PetalColor.NORMAL)
+	#petal_head_sprite.texture = _current_petal_E_AND_W_texture
+	
 
 func _on_round_won_in_map():
 	victory_count += 1
@@ -379,11 +403,17 @@ func _on_round_won_in_map():
 	call_deferred("emit_signal", "stack_state_changed", get_stack_state())
 	
 	if victory_count_for_red_petal <= victory_count:
-		petal_head_sprite.texture = Petal_Red
+		_current_petal_E_AND_W_texture = Petal_Red
+		_set_petal_color(PetalColor.RED)
+		
 	elif victory_count_for_yellow_petal <= victory_count:
-		petal_head_sprite.texture = Petal_Yellow
+		_current_petal_E_AND_W_texture = Petal_Yellow
+		_set_petal_color(PetalColor.YELLOW)
 	else:
-		petal_head_sprite.texture = Petal_Normal
+		_current_petal_E_AND_W_texture = Petal_Normal
+		_set_petal_color(PetalColor.NORMAL)
+	#petal_head_sprite.texture = _current_petal_E_AND_W_texture
+	
 
 
 # GUI Related
@@ -425,3 +455,15 @@ func _before_effect_is_removed_l(arg_tower_effect):
 func _on_effect_removed_l(arg_tower_effect):
 	if arg_tower_effect.effect_uuid == StoreOfTowerEffectsUUID.L_ASSAUT_RANGE_EFFECT:
 		is_range_being_changed = false
+
+
+## PETAL RELATED
+
+func _set_petal_color(arg_color : int):
+	_current_petal_color = arg_color
+	anim_face_dir_component.update_state_of_aux_sprite_texture_to_use()
+
+func _get_petal_texture__at_E_and_W_dir():
+	return _current_petal_E_AND_W_texture
+
+

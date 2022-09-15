@@ -9,8 +9,23 @@ var node_to_listen_for_queue_free : Node setget set_node_to_listen_for_queue_fre
 
 var _resource_to_available_state_map : Dictionary = {}
 
-var source_of_create_resource : Object
+var source_of_create_resource setget set_source_of_create_resource, get_source_of_create_resource
 var func_name_for_create_resource : String
+
+#
+
+func set_source_of_create_resource(arg_source):
+	if !arg_source is WeakRef:
+		source_of_create_resource = weakref(arg_source)
+	else:
+		source_of_create_resource = arg_source
+
+func get_source_of_create_resource():
+	if source_of_create_resource is WeakRef:
+		return source_of_create_resource.get_ref()
+	else:
+		return source_of_create_resource
+
 
 #
 
@@ -39,10 +54,10 @@ func _get_available_resource_in_pool():
 
 
 func _create_resource() -> Object:
-	var res = source_of_create_resource.call(func_name_for_create_resource)
+	var res = get_source_of_create_resource().call(func_name_for_create_resource)
 	
 	if res is Node:
-		res.connect("tree_exiting", self, "_on_res_tree_exiting", [], CONNECT_PERSIST)
+		res.connect("tree_exiting", self, "_on_res_tree_exiting", [res], CONNECT_PERSIST)
 	
 	emit_signal("resource_created", res)
 	
