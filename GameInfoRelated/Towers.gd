@@ -4602,7 +4602,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Ability: Production. Se Propager plants a Les Semis in an unoccupied in-range tower slot.",
 			["Cooldown : |0|.", [interpreter_for_cooldown]],
 			"",
-			"Les Semis: a tower that inherits 100% of its parents base damage on creation.",
+			"Les Semis: a tower that inherits 100% of its parent's base damage on creation.",
 			"Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by 2.",
 			"Does not take a tower slot.",
 		]
@@ -4651,7 +4651,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		#Se Propager description also uses this. Change se prop desc if changing this
 		info.tower_descriptions = [
-			"Inherits 100% of its parents base damage upon creation.",
+			"Inherits 100% of its parent's base damage upon creation.",
 			"Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by 2.",
 			["Les Semis gains |0| per 1 gold it is worth selling for.", [interpreter_for_base_dmg]],
 			"Les Semis does not contribute to the color synergy, but benefits from it. Does not take a tower slot.",

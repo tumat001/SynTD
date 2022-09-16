@@ -11,36 +11,76 @@ const dir_south_name : String = "S"
 
 const dir_none_name_ERR : String = "ERR"
 
-const dir_name_to_primary_rad_angle_map : Dictionary = {
-	dir_omni_name : PI / 2,
-	dir_west_name : 0,
-	dir_north_name : PI / 2,
-	dir_east_name : PI,
-	dir_south_name : -PI / 2,
-}
-
-const initial_dir_as_name_hierarchy : Array = [
-	dir_omni_name,
-	dir_east_name,
+# find anim with name of omni first, then with name of east. play as start as default, and on round end.
+var initial_dir_as_name_hierarchy : Array = [ 
+	
 ]
 
+
+var dir_name_to_primary_rad_angle_map : Dictionary = {}
+
 var _current_dir_name_to_rad_angle_range : Dictionary = {}
+var _current_anim_names
 var _sprite_frames : SpriteFrames
 var _current_dir_as_name : String
+var _anim_sprite : AnimatedSprite
 
 var _aux_sprites_param : Array # NEEDED to make them not unreferenced from 0 ref count
 
-func initialize_with_sprite_frame_to_monitor(arg_sprite_frames : SpriteFrames):
+func initialize_with_sprite_frame_to_monitor(arg_sprite_frames : SpriteFrames, arg_anim_sprite : AnimatedSprite, arg_anim_names_to_use = null, arg_custom_dir_name_to_primary_rad_angle_map = null, arg_default_dir_name_hierarcy = null):
 	_sprite_frames = arg_sprite_frames
-	var animation_names : PoolStringArray = arg_sprite_frames.get_animation_names()
-	var anim_count : int = animation_names.size()
-	for anim_name in animation_names:
+	_anim_sprite = arg_anim_sprite
+	
+	var animation_names
+	if arg_anim_names_to_use == null:
+		animation_names = _sprite_frames.get_animation_names()
+	else:
+		animation_names = arg_anim_names_to_use
+	
+	update_dir_name_to_primary_rad_angle_map(animation_names, arg_custom_dir_name_to_primary_rad_angle_map, arg_default_dir_name_hierarcy)
+
+func generate_default_dir_name_to_primary_rad_angle_map():
+	return {
+		dir_omni_name : PI / 2,
+		dir_west_name : 0,
+		dir_north_name : PI / 2,
+		dir_east_name : PI,
+		dir_south_name : -PI / 2,
+	}
+
+func generate_default_dir_name_hierarchy():
+	return [
+		dir_omni_name,
+		dir_east_name,
+	]
+
+func update_dir_name_to_primary_rad_angle_map(arg_anim_names_to_use : Array, arg_custom_dir_name_to_primary_rad_angle_map = null, arg_default_dir_name_hierarcy = null):
+	_current_anim_names = arg_anim_names_to_use
+	var anim_count : int = arg_anim_names_to_use.size()
+	
+	if arg_custom_dir_name_to_primary_rad_angle_map == null:
+		dir_name_to_primary_rad_angle_map = generate_default_dir_name_to_primary_rad_angle_map()
+	else:
+		dir_name_to_primary_rad_angle_map = arg_custom_dir_name_to_primary_rad_angle_map
+	
+	if arg_default_dir_name_hierarcy == null:
+		initial_dir_as_name_hierarchy = generate_default_dir_name_hierarchy()
+	else:
+		initial_dir_as_name_hierarchy = arg_default_dir_name_hierarcy
+	
+	for anim_name in dir_name_to_primary_rad_angle_map.keys():#arg_anim_names_to_use:
 		var primary_angle_of_anim : float = dir_name_to_primary_rad_angle_map[anim_name]
 		var angle_range : Array = []
 		angle_range.append(rad2deg(primary_angle_of_anim - (PI / anim_count)))
 		angle_range.append(rad2deg(primary_angle_of_anim + (PI / anim_count)))
 		_current_dir_name_to_rad_angle_range[anim_name] = angle_range
 	
+	#
+	
+	if dir_name_to_primary_rad_angle_map.keys().has(_current_dir_as_name):
+		set_animation_sprite_animation_using_anim_name(_anim_sprite, _current_dir_as_name)
+
+#
 
 func set_animated_sprite_animation_to_default(arg_animated_sprite : AnimatedSprite):
 	if _sprite_frames != null:
@@ -59,19 +99,23 @@ func set_animated_sprite_animation_to_default(arg_animated_sprite : AnimatedSpri
 func get_anim_name_to_use_based_on_angle(arg_angle):
 	arg_angle = rad2deg(arg_angle)
 	var index = 0
-	var anim_names = _sprite_frames.get_animation_names()
+	var anim_names = _current_anim_names #_sprite_frames.get_animation_names()
 	var anim_count : int = anim_names.size()
 	
 	for anim_name in anim_names:
 		var angle_range = _current_dir_name_to_rad_angle_range[anim_name]
+		#print("anim name: %s, range: %s" % [anim_name, angle_range])
 		if Targeting.is_angle_between_angles__do_no_correction(arg_angle, angle_range[0], angle_range[1]):
+			#print(anim_name)
 			return anim_name
 		
 		if index == anim_count - 1: # guarantee to return last anim name
+			#print(anim_name)
 			return anim_name
 		
 		index += 1
 	
+	#print(dir_none_name_ERR)
 	return dir_none_name_ERR # unreachable unless no anim names
 
 
@@ -161,4 +205,14 @@ func set__and_update_auxilliary_sprites_on_anim_change(arg_aux_sprites_param : A
 func update_state_of_aux_sprite_texture_to_use():
 	for aux_param in _aux_sprites_param:
 		aux_param.update_state_of_sprite_texture_to_use(_current_dir_as_name)
+
+###
+
+func get_current_dir_as_name():
+	return _current_dir_as_name
+
+# use this if you know what you're doing (look at LesSemis for example)
+func set_current_dir_as_name(arg_name):
+	_current_dir_as_name = arg_name
+
 

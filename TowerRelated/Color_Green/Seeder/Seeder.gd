@@ -204,6 +204,7 @@ func _on_main_post_mitigated_dmg_dealt(damage_instance_report, killed, enemy, da
 		implant_ability.on_ability_before_cast_start(cd)
 		
 		exploding_seed_am.call_deferred("_attack_enemies", [enemy])
+		_change_animation_to_face_position(enemy.global_position)
 		
 		implant_ability.start_time_cooldown(cd)
 		implant_ability.on_ability_after_cast_ended(cd)
@@ -214,6 +215,7 @@ func _on_main_post_mitigated_dmg_dealt(damage_instance_report, killed, enemy, da
 func _on_exploding_seed_before_shot(bullet : Seeder_ExplodingSeed):
 	bullet.connect("seed_to_explode", self, "_seed_to_explode", [], CONNECT_ONESHOT)
 	bullet.damage_reg_to_detect = dmg_reg_to_detect
+
 
 
 func _seed_to_explode(bullet : Seeder_ExplodingSeed):

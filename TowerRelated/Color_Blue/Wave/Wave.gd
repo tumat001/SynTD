@@ -297,6 +297,8 @@ func _ability_activated_w():
 			curr_target = targets[0]
 	
 	if curr_target != null:
+		_change_animation_to_face_position(curr_target.global_position)
+		
 		var cd = _get_cd_to_use(base_ability_cooldown)
 		tidal_wave_ability.on_ability_before_cast_start(cd)
 		

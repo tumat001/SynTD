@@ -484,6 +484,12 @@ var synergy_manager
 var game_elements
 
 
+# anim related
+
+var _anim_face__custom_anim_names_to_use
+var _anim_face__custom_dir_name_to_primary_rad_angle_map
+var _anim_face__custom_initial_dir_hierarchy
+
 # particle related
 
 const ing_tier_to_amount_of_particles_map : Dictionary = {
@@ -639,7 +645,7 @@ func _post_inherit_ready():
 	
 	var sprite_frames_of_base : SpriteFrames = tower_base_sprites.frames
 	if sprite_frames_of_base.animations.size() >= 2:
-		anim_face_dir_component.initialize_with_sprite_frame_to_monitor(sprite_frames_of_base)
+		anim_face_dir_component.initialize_with_sprite_frame_to_monitor(sprite_frames_of_base, tower_base_sprites,_anim_face__custom_anim_names_to_use, _anim_face__custom_dir_name_to_primary_rad_angle_map, _anim_face__custom_initial_dir_hierarchy)
 		anim_face_dir_component.set_animated_sprite_animation_to_default(tower_base_sprites)
 		#connect("on_main_attack", self, "_on_main_attack__for_face_direction_updates", [], CONNECT_PERSIST)
 		connect("on_main_attack_module_commanded_to_attack_enemies_or_poses", self, "_on_main_attk_module__commanded_to_attack_enemies_or_poses", [], CONNECT_PERSIST)

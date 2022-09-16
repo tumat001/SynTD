@@ -18,9 +18,38 @@ const gold_worth_increase_on_kill_count_achieved : int = 2
 const kill_count_needed : int = 3
 const ad_increase_per_gold_worth : float = 0.75
 
-const animation_default_name : String = "default"
-const animation_golden_name : String = "golden"
 
+const animation_normal_E_name : String = "normal_E"
+const animation_normal_W_name : String = "normal_W"
+
+#const animation_normal_N_name : String = "normal_N"
+#const animation_normal_S_name : String = "normal_S"
+
+const animation_golden_E_name : String = "golden_E"
+const animation_golden_W_name : String = "golden_W"
+
+# order matters for some reason???? (you know why, but at the same time not)
+const normal_dir_name_to_primary_rad_angle_map : Dictionary = {
+	#dir_omni_name : PI / 2,
+	#animation_normal_N_name : PI / 2,
+	animation_normal_E_name : PI,
+	#animation_normal_S_name : -PI / 2,
+	animation_normal_W_name : 0,
+}
+const normal_dir_name_initial_hierarchy : Array = [
+	animation_normal_E_name
+]
+
+const golden_dir_name_to_primary_rad_angle_map : Dictionary = {
+	#dir_omni_name : PI / 2,
+	#dir_north_name : PI / 2,
+	animation_golden_E_name : PI,
+	#dir_south_name : -PI / 2,
+	animation_golden_W_name : 0,
+}
+const golden_dir_name_initial_hierarchy : Array = [
+	animation_golden_E_name
+]
 
 var ad_of_parent : float
 var total_kill_count : int
@@ -90,7 +119,12 @@ func _ready():
 	connect("on_any_post_mitigation_damage_dealt", self, "_on_any_post_miti_dmg_dealt", [], CONNECT_PERSIST)
 	connect("on_sellback_value_changed", self, "_on_sellback_value_changed_l", [], CONNECT_PERSIST)
 	
-	tower_base_sprites.animation = animation_default_name
+	# anim related
+	#tower_base_sprites.animation = animation_default_name
+	
+	_anim_face__custom_dir_name_to_primary_rad_angle_map = normal_dir_name_to_primary_rad_angle_map
+	_anim_face__custom_anim_names_to_use = normal_dir_name_to_primary_rad_angle_map.keys()
+	_anim_face__custom_initial_dir_hierarchy = normal_dir_name_initial_hierarchy
 	
 	#
 	_construct_and_add_base_dmg_effect()
@@ -122,7 +156,17 @@ func _on_any_post_miti_dmg_dealt(damage_instance_report, killed, enemy, damage_r
 			set_base_gold_cost(_base_gold_cost + gold_worth_increase_on_kill_count_achieved)
 			disconnect("on_any_post_mitigation_damage_dealt", self, "_on_any_post_miti_dmg_dealt")
 			call_deferred("emit_signal", "on_reached_golden_state")
-			tower_base_sprites.animation = animation_golden_name
+			
+			_transform_dir_name_from_normal_to_golden()
+			anim_face_dir_component.update_dir_name_to_primary_rad_angle_map(golden_dir_name_to_primary_rad_angle_map.keys(), golden_dir_name_to_primary_rad_angle_map, golden_dir_name_initial_hierarchy)
+
+func _transform_dir_name_from_normal_to_golden():
+	var current_dir_as_name = anim_face_dir_component.get_current_dir_as_name()
+	if current_dir_as_name == animation_normal_E_name:
+		anim_face_dir_component.set_current_dir_as_name(animation_golden_E_name)
+	elif current_dir_as_name == animation_normal_W_name:
+		anim_face_dir_component.set_current_dir_as_name(animation_golden_W_name)
+
 
 #
 
