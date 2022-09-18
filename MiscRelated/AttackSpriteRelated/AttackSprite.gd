@@ -32,7 +32,7 @@ func _init():
 
 func _ready():
 	if frames_based_on_lifetime:
-		frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(frames.get_frame_count(animation)))
+		set_anim_speed_based_on_lifetime()
 	
 	if reset_frame_to_start:
 		frame = 0
@@ -44,8 +44,13 @@ func _ready():
 	connect("visibility_changed", self, "_on_visiblity_changed")
 
 
+func set_anim_speed_based_on_lifetime():
+	frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(frames.get_frame_count(animation)))
+
 func _calculate_fps_of_sprite_frames(frame_count : int) -> int:
 	return int(ceil(frame_count / lifetime))
+
+#
 
 func _process(delta):
 	if has_lifetime:
@@ -55,10 +60,10 @@ func _process(delta):
 			if queue_free_at_end_of_lifetime: 
 				queue_free()
 			elif turn_invisible_at_end_of_lifetime:
-				visible = false
-				emit_signal("turned_invisible_from_lifetime_end")
-				
-				
+				if visible:
+					visible = false
+					emit_signal("turned_invisible_from_lifetime_end")
+	
 	
 	global_position.y += y_displacement_per_sec * delta
 	global_position.x += x_displacement_per_sec * delta

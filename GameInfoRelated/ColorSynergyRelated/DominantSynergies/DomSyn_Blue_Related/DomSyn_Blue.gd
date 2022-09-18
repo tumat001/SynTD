@@ -113,10 +113,6 @@ const empowered_mana_blast_ap_buff_amount : float = 2.25
 
 # Assigned at construct mana blast ability func
 const empowered_mana_blast_extra_descriptions = []
-#const empowered_mana_blast_extra_descriptions = [
-#	"",
-#	"Empowered: Towers caught in the mana blast recieve %s instead." % (str(empowered_mana_blast_ap_buff_amount) + " ability potency"),
-#]
 
 const linked_mana_blast_descriptions : Array = [
 	mana_blast_ability_descriptions,
@@ -124,39 +120,13 @@ const linked_mana_blast_descriptions : Array = [
 ]
 
 
-#
 
-#var renew_empower_ability : BaseAbility
-#var renew_empower_ability_button : AbilityButton
-#const renew_empower_ability_cooldown : float = 60.0
-#const renew_empower_ability_empower_static_cooldown : float = 0.25
-#
-#const renew_empower_side_renew_icon : Texture = Renew_Pic
-#
-#const renew_empower_ability_constant_description : Array = [
-#	"This ability comes with two possible outcomes: Renew and Empower. These two outcomes share the same cooldown. Cooldown: %s" % (str(renew_empower_ability_cooldown) + " s"),
-#	"",
-#	"Renew: Removes remaining cooldowns of all other blue abilities. Renew is castable only when at least one blue ability is in cooldown.",
-#	"",
-#	"Empower: Greatly empowers the next blue ability that is casted. Empower is castable only when no blue ability is in cooldown.",
-#	"Re-casting empower cancels the effect instead, putting this ability at a %s cooldown." % (str(renew_empower_ability_empower_static_cooldown) + "s"),
-#	"",
-#]
-#
-#const renew_empower_ability_renew_active_description : Array = [
-#	"Current castable ability: Renew"
-#]
-#
-#const renew_empower_ability_empower_active_description : Array = [
-#	"Current castable ability: Empower"
-#]
-
-const renew_empower_shared_ability_cooldown : float = 60.0
+const renew_empower_shared_ability_cooldown : float = 50.0
 const cannot_cast_as_renew_or_empower_clause_id : int = -20
 
 var renew_ability : BaseAbility
 const renew_ability_description : Array = [
-	"Removes remaining cooldowns of all other blue abilities. Renew is castable only when at least one blue ability is in cooldown.",
+	"Removes remaining time based cooldowns of ALL abilities. Renew is castable only when at least one BLUE ability is in cooldown.",
 	"",
 	"Does not affect Empower ability. Shares cooldown with Empower ability.",
 	"Cooldown: %s" % [str(renew_empower_shared_ability_cooldown) + "s"]
@@ -166,7 +136,7 @@ const renew_ability_description : Array = [
 const empower_ability_cancel_static_cooldown : float = 0.25
 var empower_ability : BaseAbility
 const empower_ability_description : Array = [
-	"Greatly empowers the next blue ability that is casted. Empower is castable only when no blue ability is in cooldown.",
+	"Greatly empowers the next BLUE ability that is casted. Empower is castable only when no BLUE ability is in cooldown.",
 	"Re-casting cancels the effect instead, putting this ability at a %s cooldown." % (str(empower_ability_cancel_static_cooldown) + "s"),
 	"",
 	"Does not affect Renew ability. Shares cooldown with Renew ability.",
@@ -219,16 +189,6 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		if mana_blast_ability != null:
 			mana_blast_ability.set_clauses_to_usual_synergy_insufficient_based()
 	
-	
-#	if tier <= 1:
-#		if renew_empower_ability == null:
-#			_construct_renew_empower_ability()
-#		else:
-#			renew_empower_ability.set_clauses_to_usual_synergy_sufficient_based()
-#	else:
-#		if renew_empower_ability != null:
-#			renew_empower_ability.set_clauses_to_usual_synergy_insufficient_based()
-#
 	
 	if tier <= 1:
 		if renew_ability == null:
@@ -723,8 +683,12 @@ func _disable_renew_and_enable_empower():
 #
 
 func _cast_as_renew():
-	for ability in connected_blue_abilities:
-		ability.remove_all_time_cooldown()
+	#for ability in connected_blue_abilities:
+	#	ability.remove_all_time_cooldown()
+	
+	for ability in game_elements.ability_manager.all_abilities:
+		if ability != empower_ability and ability != renew_ability:
+			ability.remove_all_time_cooldown()
 	
 	#renew_empower_ability.start_time_cooldown(renew_empower_ability_cooldown)
 	renew_ability.start_time_cooldown(renew_empower_shared_ability_cooldown)

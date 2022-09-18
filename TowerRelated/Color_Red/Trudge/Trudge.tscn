@@ -1,0 +1,62 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Column_Pic.png" type="Texture" id=2]
+[ext_resource path="res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_BasePlatform_Back_Pic.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Weight_Back_Pic.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Weight_Front_Pic.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_BasePlatform_Front_Pic.png" type="Texture" id=6]
+[ext_resource path="res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Indicator_Glowing_Pic.png" type="Texture" id=7]
+[ext_resource path="res://TowerRelated/Color_Red/Trudge/Trudge.gd" type="Script" id=8]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 14.6148, 20.0235 )
+
+[node name="Trudge" instance=ExtResource( 1 )]
+script = ExtResource( 8 )
+
+[node name="TowerBase" parent="." index="0"]
+position = Vector2( 0, -12 )
+
+[node name="BasePlatformBack" type="Sprite" parent="TowerBase/KnockUpLayer" index="0"]
+position = Vector2( 0, 11 )
+texture = ExtResource( 3 )
+
+[node name="WeightsBack" type="Sprite" parent="TowerBase/KnockUpLayer" index="1"]
+position = Vector2( 0, -15 )
+texture = ExtResource( 4 )
+
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="2"]
+frames = SubResource( 1 )
+
+[node name="WeightsFront" type="Sprite" parent="TowerBase/KnockUpLayer" index="3"]
+position = Vector2( 0, -8 )
+texture = ExtResource( 5 )
+
+[node name="BasePlatformFront" type="Sprite" parent="TowerBase/KnockUpLayer" index="4"]
+position = Vector2( 0, 23 )
+texture = ExtResource( 6 )
+
+[node name="IndicatorMiddle" type="Sprite" parent="TowerBase/KnockUpLayer" index="5"]
+position = Vector2( 0, 23 )
+texture = ExtResource( 7 )
+
+[node name="IndicatorLeft" type="Sprite" parent="TowerBase/KnockUpLayer" index="6"]
+position = Vector2( -16, 22 )
+texture = ExtResource( 7 )
+
+[node name="IndicatorRight" type="Sprite" parent="TowerBase/KnockUpLayer" index="7"]
+position = Vector2( 16, 22 )
+texture = ExtResource( 7 )
+
+[node name="CollisionShape" parent="." index="1"]
+position = Vector2( 0, -5 )
+shape = SubResource( 2 )

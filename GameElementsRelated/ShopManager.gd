@@ -53,6 +53,9 @@ const blacklisted_towers_to_inventory : Array = [
 	Towers.NIGHTWATCHER,
 	Towers.VARIANCE_VESSEL,
 	Towers.YELVIO_RIFT_AXIS,
+	
+	#red towers
+	Towers.TRUDGE,
 ]
 
 const towers_not_initially_in_inventory : Array = [
@@ -68,6 +71,9 @@ const towers_not_initially_in_inventory : Array = [
 	Towers.NIGHTWATCHER,
 	Towers.VARIANCE_VESSEL,
 	Towers.YELVIO_RIFT_AXIS,
+	
+	# red towers
+	Towers.TRUDGE,
 ]
 
 # tower id to amount map

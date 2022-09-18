@@ -118,6 +118,8 @@ func _construct_and_add_piercing_attk_module():
 	
 	piercing_attk_module = attack_module
 	
+	configure_self_to_change_direction_on_attack_module_when_commanded(piercing_attk_module)
+	
 	add_attack_module(attack_module)
 
 

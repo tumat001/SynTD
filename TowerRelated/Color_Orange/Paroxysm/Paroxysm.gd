@@ -255,6 +255,7 @@ func _construct_and_add_spew_attack_module():
 	
 	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
 	
+	configure_self_to_change_direction_on_attack_module_when_commanded(spew_attack_module)
 
 
 #
@@ -342,6 +343,9 @@ func _fire_big_rocket_at_target(arg_enemy, arg_potency_to_use : float):
 		bullet_homing_component.connect("on_target_tree_exiting", self, "_on_bullet_homing_compo_target_lost", [rocket, bullet_homing_component])
 	
 	big_missle_bullet_attk_module.set_up_bullet__add_child_and_emit_signals(rocket)
+	
+	_change_animation_to_face_position(arg_enemy.global_position)
+
 
 func _on_rocket_tree_exiting(arg_bullet_homing_compo):
 	if arg_bullet_homing_compo.is_connected("on_bullet_tree_exiting", self, "_on_rocket_tree_exiting"):

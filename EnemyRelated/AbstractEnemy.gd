@@ -39,6 +39,8 @@ const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalC
 const DuringReviveParticle = preload("res://EnemyRelated/CommonParticles/ReviveParticle/DuringReviveParticle.gd")
 const DuringReviveParticle_Scene = preload("res://EnemyRelated/CommonParticles/ReviveParticle/DuringReviveParticle.tscn")
 
+const AnimFaceDirComponent = preload("res://MiscRelated/CommonComponents/AnimFaceDirComponent.gd")
+
 
 signal on_death_by_any_cause
 
@@ -75,6 +77,8 @@ signal on_ability_before_cast_start(cooldown, ability)
 signal on_ability_after_cast_end(cooldown, ability)
 
 signal on_finished_ready_prep() # is now targetable, not invulnerable
+
+signal moved__from_process(arg_has_moved_from_natural_means, arg_prev_angle_dir, arg_curr_angle_dir)
 
 
 # SHARED IN EnemyTypeInformation. Changes here must be
@@ -161,7 +165,7 @@ var base_movement_speed : float
 var flat_movement_speed_id_effect_map : Dictionary = {}
 var percent_movement_speed_id_effect_map : Dictionary = {}
 var _last_calculated_final_movement_speed : float
-
+var last_calculated_has_slow_effect : bool
 
 var base_effect_vulnerability : float = 1
 var flat_effect_vulnerability_id_effect_map : Dictionary = {}
@@ -207,8 +211,8 @@ var current_path_length : float
 var current_path # EnemyPath
 
 var _position_at_previous_frame : Vector2
+var _rad_angle_at_previous_frame : float
 var current_rad_angle_of_movement : float # compares previous pos to curr pos
-
 
 var no_movement_from_self_clauses : ConditionalClauses
 var last_calculated_no_movement_from_self : bool = false
@@ -244,6 +248,13 @@ var _knock_up_current_acceleration_deceleration : float
 # one can be non null at a time
 var _current_forced_offset_movement_effect : EnemyForcedPathOffsetMovementEffect 
 var _current_forced_positional_movement_effect : EnemyForcedPositionalMovementEffect
+
+
+# anim related
+
+var anim_face_dir_component : AnimFaceDirComponent
+var _anim_face__custom_anim_names_to_use
+var _anim_face__custom_dir_name_to_primary_rad_angle_map
 
 #
 
@@ -337,6 +348,8 @@ func is_untargetable_only_from_invisibility():
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	anim_face_dir_component = AnimFaceDirComponent.new()
+	
 	_self_size = get_current_anim_size()
 	
 	var scale_of_layer : float = _get_scale_for_layer_lifebar()
@@ -355,10 +368,6 @@ func _ready():
 	connect("on_current_health_changed", lifebar, "set_current_health_value", [], CONNECT_PERSIST)
 	connect("on_current_shield_changed", lifebar, "set_current_shield_value", [], CONNECT_PERSIST)
 	connect("on_max_health_changed", lifebar, "set_max_value", [], CONNECT_PERSIST)
-	
-	
-	
-	# TEST
 	
 	#
 	
@@ -380,22 +389,19 @@ func _post_inherit_ready():
 	calculate_flat_heal_modifier_amount()
 	calculate_percent_heal_modifier_amount()
 	
-	#
-#	var heal_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
-#	heal_modi.flat_modifier = 10.0
-#
-#	var heal_effect = EnemyHealEffect.new(heal_modi, StoreOfEnemyEffectsUUID.HEALER_HEAL_EFFECT)
-#	heal_effect.is_from_enemy = true
-#
-#	var revive_effect = EnemyReviveEffect.new(heal_effect, 9999, 5)
-#	revive_effect.is_from_enemy = true
-#	_add_effect(revive_effect)
-	
 	
 	#
 	if current_health < 0:
 		current_health = _last_calculated_max_health
 	
+	
+	var sprite_frames_of_base : SpriteFrames = anim_sprite.frames
+	if sprite_frames_of_base.animations.size() >= 2:
+		anim_face_dir_component.initialize_with_sprite_frame_to_monitor(sprite_frames_of_base, anim_sprite, _anim_face__custom_anim_names_to_use, _anim_face__custom_dir_name_to_primary_rad_angle_map)
+		connect("moved__from_process", self, "on_moved__from_process__change_anim_dir")
+	
+	
+	#
 	
 	# All this for scaling of the bar purposes,
 	# but the status bar (and any other) wont be
@@ -427,6 +433,7 @@ func _post_inherit_ready():
 	emit_signal("on_finished_ready_prep")
 	if is_queue_free_called_during_ready_prepping:
 		queue_free()
+	
 
 
 func get_current_anim_size() -> Vector2:
@@ -458,11 +465,13 @@ func _process(delta):
 	_phy_process_forced_offset_movement(delta)
 	_phy_process_forced_positional_movement(delta)
 	
+	var has_moved_by_natural_means : bool = false
 	if !_is_stunned and !last_calculated_no_movement_from_self:
 		var distance_traveled = delta * _last_calculated_final_movement_speed
 		offset += distance_traveled
 		distance_to_exit -= distance_traveled
 		unit_distance_to_exit -= distance_traveled / current_path_length
+		has_moved_by_natural_means = true
 	
 	if unit_offset == 1 and exits_when_at_map_end:
 		var exit_prevented : bool = false
@@ -484,15 +493,32 @@ func _process(delta):
 	
 	#
 	
+	_rad_angle_at_previous_frame = current_rad_angle_of_movement
 	current_rad_angle_of_movement = _position_at_previous_frame.angle_to_point(global_position)
-	
 	_position_at_previous_frame = global_position
+	
+	emit_signal("moved__from_process", has_moved_by_natural_means, _rad_angle_at_previous_frame, current_rad_angle_of_movement)
+	#
+	
+
+##
+
+func on_moved__from_process__change_anim_dir(arg_has_moved_by_natural_means, arg_rad_angle_at_previous_frame, arg_current_rad_angle_of_movement):
+	if arg_has_moved_by_natural_means and (arg_rad_angle_at_previous_frame != arg_current_rad_angle_of_movement):
+		_change_animation_to_face_angle(arg_current_rad_angle_of_movement)
+
+
+func _change_animation_to_face_position(arg_position, pos_basis = global_position):
+	var angle = pos_basis.angle_to_point(arg_position)
+	_change_animation_to_face_angle(angle)
+
+func _change_animation_to_face_angle(arg_angle):
+	var anim_name = anim_face_dir_component.get_anim_name_to_use_based_on_angle(arg_angle)
+	anim_face_dir_component.set_animation_sprite_animation_using_anim_name(anim_sprite, anim_name)
 
 
 
-#func _physics_process(delta):
-#	pass
-
+##
 
 # Health related functions. Different from the norm
 # because percentages must be preserved when removing
@@ -1056,6 +1082,9 @@ func calculate_final_movement_speed() -> float:
 		final_movement_speed = 1
 	
 	_last_calculated_final_movement_speed = final_movement_speed
+	
+	last_calculated_has_slow_effect = (highest_slow != 0)
+	
 	return final_movement_speed
 
 
@@ -2019,9 +2048,12 @@ func configure_path_move_offset_to_mov_self_backward_on_track(arg_effect : Enemy
 		arg_effect.reverse_movements()
 
 
+###### ANIMATION RELATED
 
 
-# 
+
+
+####### 
 
 func copy_enemy_stats(arg_enemy,
 		including_curr_health : bool = false,

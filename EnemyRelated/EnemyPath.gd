@@ -33,13 +33,11 @@ func add_child(node : Node, legible_unique_name : bool = false):
 		node.connect("on_death_by_any_cause", self, "_emit_enemy_on_death", [node])
 		node.connect("reached_end_of_path", self, "_emit_enemy_reached_end")
 
-
 func _emit_enemy_on_death(enemy):
 	emit_signal("on_enemy_death", enemy)
 
 func _emit_enemy_reached_end(enemy):
 	emit_signal("on_enemy_reached_end", enemy)
-
 
 
 #

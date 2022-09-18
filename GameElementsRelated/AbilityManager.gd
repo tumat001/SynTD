@@ -15,6 +15,7 @@ var ability_panel : AbilityPanel setget set_ability_panel
 
 
 var all_effects : Dictionary = {}
+var all_abilities : Array
 
 
 # adding removing connections
@@ -37,7 +38,8 @@ func add_ability(ability : BaseAbility, add_ability_to_panel : bool = true):
 		
 		if ability_panel != null and add_ability_to_panel:
 			ability_panel.add_ability(ability)
-
+		
+		all_abilities.append(ability)
 
 # Use base ability's destroy_self func
 #func remove_ability(ability : BaseAbility):

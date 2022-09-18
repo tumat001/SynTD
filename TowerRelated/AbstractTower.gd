@@ -647,8 +647,8 @@ func _post_inherit_ready():
 	if sprite_frames_of_base.animations.size() >= 2:
 		anim_face_dir_component.initialize_with_sprite_frame_to_monitor(sprite_frames_of_base, tower_base_sprites,_anim_face__custom_anim_names_to_use, _anim_face__custom_dir_name_to_primary_rad_angle_map, _anim_face__custom_initial_dir_hierarchy)
 		anim_face_dir_component.set_animated_sprite_animation_to_default(tower_base_sprites)
-		#connect("on_main_attack", self, "_on_main_attack__for_face_direction_updates", [], CONNECT_PERSIST)
-		connect("on_main_attack_module_commanded_to_attack_enemies_or_poses", self, "_on_main_attk_module__commanded_to_attack_enemies_or_poses", [], CONNECT_PERSIST)
+		connect("on_main_attack_module_commanded_to_attack_enemies_or_poses", self, "_on_attk_module__commanded_to_attack_enemies_or_poses", [], CONNECT_PERSIST)
+		
 
 
 func get_current_anim_size() -> Vector2:
@@ -3365,11 +3365,8 @@ func _conv_angle_to_positive_val(arg_angle):
 
 ######### TOWER animations related
 
-#func _on_main_attack__for_face_direction_updates(attk_speed_delay, enemies, module):
-#	if enemies.size() > 0:
-#		_change_animation_to_face_position(enemies[0].global_position)
-
-func _on_main_attk_module__commanded_to_attack_enemies_or_poses(arg_enemies_or_poses, module):
+# also used by method "configure_self_to_change_direction_on_attack_module_when_commanded"
+func _on_attk_module__commanded_to_attack_enemies_or_poses(arg_enemies_or_poses, module):
 	if arg_enemies_or_poses.size() > 0:
 		var ent = arg_enemies_or_poses[0]
 		if ent is Vector2:
@@ -3385,6 +3382,11 @@ func _change_animation_to_face_position(arg_position, pos_basis = global_positio
 func _change_animation_to_face_angle(arg_angle):
 	var anim_name = anim_face_dir_component.get_anim_name_to_use_based_on_angle(arg_angle)
 	anim_face_dir_component.set_animation_sprite_animation_using_anim_name(tower_base_sprites, anim_name)
+
+
+func configure_self_to_change_direction_on_attack_module_when_commanded(arg_attack_module : AbstractAttackModule):
+	arg_attack_module.connect("on_commanded_to_attack_enemies_or_poses", self, "_on_attk_module__commanded_to_attack_enemies_or_poses", [arg_attack_module], CONNECT_PERSIST)
+
 
 
 

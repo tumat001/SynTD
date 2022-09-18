@@ -815,7 +815,7 @@ func if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(arg_tower_to
 		var tower_slots_of_tower_in_bench = tower_in_bench.tower_limit_slots_taken
 		var tower_slots_of_tower_in_map = tower_in_map.tower_limit_slots_taken
 		
-		return (tower_slots_of_tower_in_bench - tower_slots_of_tower_in_map) <= excess_available_tower_slots
+		return (tower_slots_of_tower_in_bench - tower_slots_of_tower_in_map) <= excess_available_tower_slots and tower_in_map.last_calculated_can_be_placed_in_bench
 
 
 

@@ -58,6 +58,7 @@ const transmutator_image = preload("res://TowerRelated/Color_Red/Transmutator/Tr
 const soul_image = preload("res://TowerRelated/Color_Red/Soul/Soul_Omni.png")
 const probe_image = preload("res://TowerRelated/Color_Red/Probe/Probe_E.png")
 const wyvern_image = preload("res://TowerRelated/Color_Red/Wyvern/Wyvern_E.png")
+const trudge_image = preload("res://TowerRelated/Color_Red/Trudge/Trudge_ImageInTowerCard.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -155,6 +156,7 @@ enum {
 	SOUL = 207, # NOT INCLUDED IN POOL
 	PROBE = 208,
 	WYVERN = 209,
+	TRUDGE = 210,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -307,6 +309,7 @@ const TowerTiersMap : Dictionary = {
 	PAROXYSM : 4,
 	VARIANCE : 4,
 	VARIANCE_VESSEL : 4,
+	TRUDGE : 4,
 	
 	VOLCANO : 5,
 	LAVA_JET : 5,
@@ -5502,6 +5505,107 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
+	elif tower_id == TRUDGE:
+		info = TowerTypeInformation.new("Trudge", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		info.base_tower_image = trudge_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 4
+		info.base_attk_speed = 0.5
+		info.base_pierce = 0
+		info.base_range = 125
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		
+		var interpreter = TextFragmentInterpreter.new()
+		interpreter.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter.display_body = true
+		interpreter.header_description = "damage"
+		
+		var ins = []
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1, DamageType.PHYSICAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter.array_of_instructions = ins
+		
+		
+		var interpreter_for_spurt_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_spurt_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_spurt_flat_on_hit.display_body = false
+		
+		var ins_for_spurt_flat_on_hit = []
+		ins_for_spurt_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "physical damage", 2))
+		
+		interpreter_for_spurt_flat_on_hit.array_of_instructions = ins_for_spurt_flat_on_hit
+		
+		
+		var interpreter_for_slam_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_slam_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_slam_flat_on_hit.display_body = false
+		
+		var ins_for_slam_flat_on_hit = []
+		ins_for_slam_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "physical damage", 4))
+		
+		interpreter_for_slam_flat_on_hit.array_of_instructions = ins_for_slam_flat_on_hit
+		
+		
+		var interpreter_for_first_slam_slow = TextFragmentInterpreter.new()
+		interpreter_for_first_slam_slow.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_first_slam_slow.display_body = true
+		
+		var ins_for_first_slam_slow = []
+		
+		ins_for_first_slam_slow.append(NumericalTextFragment.new(25, true))
+		ins_for_first_slam_slow.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_first_slam_slow.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_first_slam_slow.array_of_instructions = ins_for_first_slam_slow
+		
+		
+		var interpreter_for_final_slam_ku_duration = TextFragmentInterpreter.new()
+		interpreter_for_final_slam_ku_duration.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_final_slam_ku_duration.display_body = true
+		interpreter_for_final_slam_ku_duration.header_description = "seconds"
+		
+		var ins_for_final_slam_ku_duration = []
+		ins_for_final_slam_ku_duration.append(NumericalTextFragment.new(2, false))
+		ins_for_final_slam_ku_duration.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_final_slam_ku_duration.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_final_slam_ku_duration.array_of_instructions = ins_for_final_slam_ku_duration
+		
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(90, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		info.tower_descriptions = [
+			["Trudge's mortar attacks explode, dealing |0| to 3 enemies.", [interpreter]],
+			"",
+			"Attacks against stunned or slowed targets trigger Spurt.",
+			["Spurt: Release an explosion, dealing |0| to 3 enemies and slowing them by |1| for 6 seconds. Additionally, Stampede's cooldown is reduced by 1 second.", [interpreter_for_spurt_flat_on_hit, interpreter_for_first_slam_slow]],
+			"",
+			"Auto casts Stampede.",
+			["Ability: Stampede: Trudge slams the ground 3 times, each dealing |0|. Each slam affects up to 15 enemies.", [interpreter_for_slam_flat_on_hit]],
+			["The first slam applies Spurt's slow. The second slam knocks enemies up for 0.5 seconds. The final slam knocks enemies up for |0|. Only the final slam can trigger Spurt.", [interpreter_for_final_slam_ku_duration]],
+			["Cooldown: |0|", [interpreter_for_cooldown]]
+		]
+		
+		
 #	elif tower_id == WYVERN:
 #		info = TowerTypeInformation.new("Wyvern", tower_id)
 #		info.tower_tier = TowerTiersMap[tower_id]
@@ -5694,3 +5798,8 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Variance_Vessel/Variance_Vessel.tscn")
 	elif tower_id == YELVIO_RIFT_AXIS:
 		return load("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/YelVio_RiftAxis/YelVio_RiftAxis.tscn")
+	elif tower_id == TRUDGE:
+		return load("res://TowerRelated/Color_Red/Trudge/Trudge.tscn")
+
+
+
