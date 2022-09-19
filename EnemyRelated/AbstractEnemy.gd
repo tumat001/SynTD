@@ -188,6 +188,15 @@ var percent_heal_modifier_id_effect_map : Dictionary = {}
 var last_calculated_percent_heal_modifier_amount : float
 
 
+var base_flat_shield_recieve_modifier_amount : float = 0
+var flat_shield_receive_modifier_id_effect_map : Dictionary = {}
+var last_calculated_flat_shield_receive_modifier_amount : float
+
+var base_percent_shield_receive_modifier_amount : float = 1
+var percent_shield_receive_modifier_id_effect_map : Dictionary = {}
+var last_calculated_percent_shield_receive_modifier_amount : float
+
+
 var invisibility_id_effect_map : Dictionary = {}
 var last_calculated_invisibility_status : bool = false
 
@@ -388,7 +397,8 @@ func _post_inherit_ready():
 	calculate_final_has_effect_shield()
 	calculate_flat_heal_modifier_amount()
 	calculate_percent_heal_modifier_amount()
-	
+	calculate_flat_shield_receive_modifier_amount()
+	calculate_percent_shield_receive_modifier_amount()
 	
 	#
 	if current_health < 0:
@@ -833,6 +843,9 @@ func add_shield_effect(shield_effect : EnemyShieldEffect):
 		elif mod.percent_based_on == PercentType.MISSING:
 			curr_shield = mod.get_modification_to_value(_last_calculated_max_health - current_health)
 	
+	curr_shield *= last_calculated_percent_shield_receive_modifier_amount
+	curr_shield += last_calculated_flat_shield_receive_modifier_amount
+	
 	shield_effect._current_shield = curr_shield
 	
 	calculate_current_shield()
@@ -939,6 +952,25 @@ func calculate_percent_heal_modifier_amount() -> float:
 		final_amount += effect.attribute_as_modifier.get_modification_to_value(base_percent_heal_modifier_amount)
 	
 	last_calculated_percent_heal_modifier_amount = final_amount
+	return final_amount
+
+
+func calculate_flat_shield_receive_modifier_amount() -> float:
+	var final_amount = base_flat_shield_recieve_modifier_amount
+	
+	for effect in flat_shield_receive_modifier_id_effect_map.values():
+		final_amount += effect.attribute_as_modifier.flat_modifier
+	
+	last_calculated_flat_shield_receive_modifier_amount = final_amount
+	return final_amount
+
+func calculate_percent_shield_receive_modifier_amount() -> float:
+	var final_amount = base_percent_shield_receive_modifier_amount
+	
+	for effect in percent_shield_receive_modifier_id_effect_map.values():
+		final_amount += effect.attribute_as_modifier.get_modification_to_value(base_percent_shield_receive_modifier_amount)
+	
+	last_calculated_percent_shield_receive_modifier_amount = final_amount
 	return final_amount
 	
 
@@ -1202,6 +1234,7 @@ func _process_direct_damage_and_type(damage : float, damage_type : int, damage_i
 	else:
 		final_damage *= damage_instance.on_hit_damage_multiplier
 	
+	final_damage *= damage_instance.final_damage_multiplier
 	
 	if damage_type == DamageType.ELEMENTAL:
 		final_damage *= _calculate_multiplier_from_total_toughness(damage_instance.final_toughness_pierce, damage_instance.final_percent_enemy_toughness_pierce)
@@ -1370,7 +1403,14 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_HEALTH_MODIFIER:
 			percent_heal_modifier_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
 			calculate_percent_heal_modifier_amount()
-		
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_SHIELD_RECEIVE_MODIFIER:
+			flat_shield_receive_modifier_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_flat_shield_receive_modifier_amount()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_SHIELD_RECEIVE_MODIFIER:
+			percent_shield_receive_modifier_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_percent_shield_receive_modifier_amount()
 		
 		
 	elif to_use_effect is EnemyHealOverTimeEffect:
@@ -1507,6 +1547,14 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_HEALTH_MODIFIER:
 			percent_heal_modifier_id_effect_map.erase(base_effect.effect_uuid)
 			calculate_percent_heal_modifier_amount()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_SHIELD_RECEIVE_MODIFIER:
+			flat_shield_receive_modifier_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_flat_shield_receive_modifier_amount()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_SHIELD_RECEIVE_MODIFIER:
+			percent_shield_receive_modifier_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_percent_shield_receive_modifier_amount()
 		
 		
 	elif base_effect is EnemyHealOverTimeEffect:
@@ -2070,6 +2118,10 @@ func copy_enemy_stats(arg_enemy,
 	base_effect_vulnerability = arg_enemy.base_effect_vulnerability
 	base_percent_health_hit_scale = arg_enemy.base_percent_health_hit_scale
 	base_ability_potency = arg_enemy.base_ability_potency
+	base_flat_heal_modifier_amount = arg_enemy.base_flat_heal_modifier_amount
+	base_percent_heal_modifier_amount = arg_enemy.base_percent_heal_modifier_amount
+	base_flat_shield_recieve_modifier_amount = arg_enemy.base_flat_shield_recieve_modifier_amount
+	base_percent_shield_receive_modifier_amount = arg_enemy.base_percent_shield_receive_modifier_amount
 	
 	enemy_type = arg_enemy.enemy_type
 	
@@ -2084,6 +2136,8 @@ func copy_enemy_stats(arg_enemy,
 		calculate_final_ability_potency()
 		calculate_flat_heal_modifier_amount()
 		calculate_percent_heal_modifier_amount()
+		calculate_flat_shield_receive_modifier_amount()
+		calculate_percent_shield_receive_modifier_amount()
 	
 	# Health
 	if including_curr_health:

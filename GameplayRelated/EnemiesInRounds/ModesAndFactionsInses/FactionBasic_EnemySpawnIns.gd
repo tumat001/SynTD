@@ -52,11 +52,13 @@ func _get_instructions_for_0_1():
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BASIC),
 		
 		#
-		#SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.DOMSYN_RED_ORACLES_EYE_SHADOW),
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.FIEND),
 		
-		#SingleEnemySpawnInstruction.new(2, EnemyConstants.Enemies.TRIASYN_OGV_SOUL),
+		SingleEnemySpawnInstruction.new(2, EnemyConstants.Enemies.GRANDMASTER),
 		
-		MultipleEnemySpawnInstruction.new(0.1, 15, 0.5, EnemyConstants.Enemies.BASIC),
+		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.BASIC),
+		
+		#MultipleEnemySpawnInstruction.new(0.1, 15, 0.5, EnemyConstants.Enemies.BASIC),
 		
 		#MultipleEnemySpawnInstruction.new(10, 4, 0.1, EnemyConstants.Enemies.BASIC),
 	]

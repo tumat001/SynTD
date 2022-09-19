@@ -60,6 +60,7 @@ const probe_image = preload("res://TowerRelated/Color_Red/Probe/Probe_E.png")
 const wyvern_image = preload("res://TowerRelated/Color_Red/Wyvern/Wyvern_E.png")
 const trudge_image = preload("res://TowerRelated/Color_Red/Trudge/Trudge_ImageInTowerCard.png")
 const sophist_image = preload("res://TowerRelated/Color_Red/Sophist/Sophist_Omni.png")
+const fulgurant_image = preload("res://TowerRelated/Color_Red/Fulgurant/Fulgurant.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -159,6 +160,8 @@ enum {
 	WYVERN = 209,
 	TRUDGE = 210,
 	SOPHIST = 211,
+	FULGURANT = 212,
+	ENERVATE = 213,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -295,6 +298,8 @@ const TowerTiersMap : Dictionary = {
 	AMALGAMATOR : 3,
 	SE_PROPAGER : 3,
 	LES_SEMIS : 3,
+	#ENERVATE : 3, #TODO put this back when ready to do so
+	FULGURANT : 3,
 	
 	#RE : 4,
 	PING : 4,
@@ -312,6 +317,7 @@ const TowerTiersMap : Dictionary = {
 	VARIANCE : 4,
 	VARIANCE_VESSEL : 4,
 	TRUDGE : 4,
+	WYVERN : 4,
 	
 	VOLCANO : 5,
 	LAVA_JET : 5,
@@ -320,7 +326,6 @@ const TowerTiersMap : Dictionary = {
 	NUCLEUS : 5,
 	ORB : 5,
 	BURGEON : 5,
-	#WYVERN : 5,
 	LA_CHASSEUR : 5,
 	ASHEND : 5,
 	IOTA : 5,
@@ -1284,7 +1289,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		outer_ins.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 		outer_ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
-		
 		
 		interpreter.array_of_instructions = outer_ins
 		
@@ -5108,7 +5112,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var outer_ins_for_direct_rocket_dmg = []
 		var ins_for_direct_rocket_dmg = []
-		ins_for_direct_rocket_dmg.append(NumericalTextFragment.new(15, false, DamageType.PHYSICAL))
+		ins_for_direct_rocket_dmg.append(NumericalTextFragment.new(50, false, DamageType.PHYSICAL))
 		ins_for_direct_rocket_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins_for_direct_rocket_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 15, DamageType.PHYSICAL))
 		
@@ -5137,7 +5141,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_spew_count.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.CEIL
 		
 		var ins_for_spew_count = []
-		ins_for_spew_count.append(NumericalTextFragment.new(14, false, -1))
+		ins_for_spew_count.append(NumericalTextFragment.new(16, false, -1))
 		ins_for_spew_count.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 		ins_for_spew_count.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
 		
@@ -5164,7 +5168,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_cooldown.header_description = "s"
 		
 		var ins_for_cooldown = []
-		ins_for_cooldown.append(NumericalTextFragment.new(28, false))
+		ins_for_cooldown.append(NumericalTextFragment.new(22, false))
 		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
 		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
@@ -5515,7 +5519,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = trudge_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 4
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.5
 		info.base_pierce = 0
 		info.base_range = 125
@@ -5718,38 +5722,159 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "+ attk spd"
 		
 		
-#	elif tower_id == WYVERN:
-#		info = TowerTypeInformation.new("Wyvern", tower_id)
-#		info.tower_tier = TowerTiersMap[tower_id]
-#		info.tower_cost = info.tower_tier
-#		info.colors.append(TowerColors.WHITE)
-#		info.colors.append(TowerColors.RED)
-#		info.base_tower_image = wyvern_image
-#		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
-#
-#		info.base_damage = 12
-#		info.base_attk_speed = 0.35
-#		info.base_pierce = 2
-#		info.base_range = 185
-#		info.base_damage_type = DamageType.PHYSICAL
-#		info.on_hit_multiplier = 1
-#
-#
-#		info.tower_descriptions = [
-#			"Bullets from main attacks that expire without cosuming all their pierce ",
-#			""
-#		]
-#
-#		info.tower_descriptions = [
-#			"Wyvern stores 8% of its post mitigated damage dealt as Fury.",
-#			"When Wyvern has at least 10 Fury, it attempts to cast Fulminate.",
-#			"Fulminate: Wyvern's next 2 main attacks explode, dealing bonus on hit physical damage equal to the Fury amount.",
-#			"Bonus on hit damage scales with ability potency.",
-#			"Cooldown: 18 s",
-#			"",
-#
-#		]
+	elif tower_id == WYVERN:
+		info = TowerTypeInformation.new("Wyvern", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		info.base_tower_image = wyvern_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
+		info.base_damage = 8
+		info.base_attk_speed = 0.4
+		info.base_pierce = 1
+		info.base_range = 185
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		
+		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+		interpreter_for_attk_speed.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_attk_speed.display_body = true
+		interpreter_for_attk_speed.header_description = "attack speed"
+		
+		var ins_for_attk_speed = []
+		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1))
+		
+		ins_for_attk_speed.append(NumericalTextFragment.new(100, true))
+		ins_for_attk_speed.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+		
+		
+		var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
+		interpreter_for_bonus_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_bonus_dmg.display_body = true
+		interpreter_for_bonus_dmg.header_description = "damage"
+		
+		var ins_for_bonus_dmg = []
+		ins_for_bonus_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 3, DamageType.PHYSICAL))
+		ins_for_bonus_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_bonus_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 4)) # stat basis does not matter here
+		
+		interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
+		
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(18, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		info.tower_descriptions = [
+			"Auto casts Fury.",
+			"Ability: Fury: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies or becomes untargetable.",
+			["Each bullet deals |0|. However, the damage is only 40% effective against boss enemies.", [interpreter_for_bonus_dmg]],
+			["Wyvern additionally gains |0| during Fury.", [interpreter_for_attk_speed]],
+			["Cooldown: |0|", [interpreter_for_cooldown]]
+		]
+		
+		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_WYVERN)
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_WYVERN, attr_mod, DamageType.PHYSICAL)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_WYVERN)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
+		
+		
+	elif tower_id == FULGURANT:
+		info = TowerTypeInformation.new("Fulgurant", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		info.base_tower_image = fulgurant_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 2.75
+		info.base_attk_speed = 0.70
+		info.base_pierce = 1
+		info.base_range = 120
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		
+		var interpreter_for_smite_dmg = TextFragmentInterpreter.new()
+		interpreter_for_smite_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_smite_dmg.display_body = true
+		
+		var outer_ins = []
+		var ins = []
+		ins.append(NumericalTextFragment.new(4, false, DamageType.ELEMENTAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 2, DamageType.ELEMENTAL))
+		outer_ins.append(ins)
+		
+		outer_ins.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		outer_ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_smite_dmg.array_of_instructions = outer_ins
+		
+		
+		info.tower_descriptions = [
+			"Auto casts Smite.",
+			["Ability: Smite: Fulgurant smites a random enemy outside of its range, dealing |0| as an explosion hitting up to 3 enemies. The explosion stuns for 1 second.", [interpreter_for_smite_dmg]],
+			"Every 3rd cast of Smite targets three enemies instead of one.",
+			["Cooldown: |0|", []]
+		]
+		
+		
+	elif tower_id == ENERVATE:
+		info = TowerTypeInformation.new("Enervate", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		#info.base_tower_image = wyvern_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 2.25
+		info.base_attk_speed = 0.75
+		info.base_pierce = 1
+		info.base_range = 115
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		
+		info.tower_simple_descriptions = [
+			"Auto casts Chant.",
+			"Ability: Chant: Create an orb that curses enemies based on Enervate's targeting. Duplicate orbs are avoided.",
+			["Cooldown : |0|", []]
+		]
+		
+		info.tower_descriptions = [
+			"Auto casts Chant.",
+			"Ability: Chant: Create an orb that curses enemies based on Enervate's targeting. Duplicate orbs are avoided.",
+			["Cooldown : |0|", []],
+			"",
+			["Shrivel Orb: Remove |0| <armor & toughness> from the target.", []],
+			["Stun Orb: Every 6 seconds, stun the target for |0|.", []],
+			["Slow Orb: Slow the target by |0|.", []],
+			["Death Orb: On the target's death, create an explosion at the target's location, dealing |0|.", []],
+			["Decay Orb: The target receives |0| <less healing & shielding>.", []],
+			"",
+			["If Chant is casted when all orbs are activated, Enervate instead gains |0|."]
+		]
 		
 	
 	return info
@@ -5914,5 +6039,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Trudge/Trudge.tscn")
 	elif tower_id == SOPHIST:
 		return load("res://TowerRelated/Color_Red/Sophist/Sophist.tscn")
-
+	elif tower_id == WYVERN:
+		return load("res://TowerRelated/Color_Red/Wyvern/Wyvern.tscn")
 

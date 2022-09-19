@@ -245,6 +245,10 @@ func _ready():
 	
 	_summon_pre_spurt_summoning_area_arr = NullErasingArray.new()
 	
+	indicator_left.use_parent_material = false
+	indicator_middle.use_parent_material = false
+	indicator_right.use_parent_material = false
+	
 	#
 	
 	_construct_and_register_ability()
@@ -547,7 +551,12 @@ func _end_slam_state():
 	set_slam_state(0)
 	
 	if stampede_ability_activation_cond_clause.has_clause(stampede_is_casting_act_clause):
-		stampede_ability.start_time_cooldown(_get_cd_to_use(stampede_ability_base_cooldown))
+		var cd = _get_cd_to_use(stampede_ability_base_cooldown)
+		stampede_ability.on_ability_before_cast_start(cd)
+		
+		stampede_ability.start_time_cooldown(cd)
+		
+		stampede_ability.on_ability_after_cast_ended(cd)
 		stampede_ability_activation_cond_clause.remove_clause(stampede_is_casting_act_clause)
 	
 	_set_weight_velocity(0)
@@ -571,7 +580,7 @@ func _add_small_knockup_effect_to_dmg_instance(arg_dmg_instance):
 	arg_dmg_instance.on_hit_effects[effect_copy.effect_uuid] = effect_copy
 
 func _add_big_knockup_effect_to_dmg_instance(arg_dmg_instance):
-	var effect_copy = slam_big_knock_up_effect._get_copy_scaled_by(last_calculated_final_ability_potency)
+	var effect_copy = slam_big_knock_up_effect._get_copy_scaled_by(stampede_ability.get_potency_to_use(last_calculated_final_ability_potency))
 	arg_dmg_instance.on_hit_effects[effect_copy.effect_uuid] = effect_copy
 
 

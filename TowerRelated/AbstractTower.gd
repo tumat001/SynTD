@@ -612,6 +612,7 @@ func _post_inherit_ready():
 			add_child(range_module)
 		
 		range_module.update_range() 
+		range_module.enemy_manager = game_elements.enemy_manager
 	
 	_calculate_final_ability_potency()
 	_calculate_final_flat_ability_cdr()

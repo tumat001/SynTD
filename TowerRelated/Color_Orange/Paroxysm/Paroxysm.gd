@@ -31,7 +31,7 @@ const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModul
 #
 
 var outburst_ability : BaseAbility
-const outburst_base_cooldown : float = 28.0
+const outburst_base_cooldown : float = 22.0
 var outburst_ability_is_ready : bool = false
 var is_an_enemy_in_range : bool = false
 
@@ -41,7 +41,7 @@ const enemy_min_flat_health_needed_for_big_missle_cast : float = 100.0
 const enemy_min_distance_needed_for_big_missle_cast : float = 100.0
 
 var big_missle_bullet_attk_module : BulletAttackModule
-const big_missle__direct_hit__flat_dmg : float = 15.0
+const big_missle__direct_hit__flat_dmg : float = 50.0
 const big_missle__direct_hit__base_damage_ratio : float = 15.0
 
 var big_missle_small_explosion_attk_module : AOEAttackModule
@@ -54,7 +54,7 @@ var bullet_homing_component_pool : BulletHomingComponentPool
 var spew_attack_module : BulletAttackModule
 const spew_disabled_from_attacking_custom_clause : int = -10
 
-const spew_base_count : int = 14
+const spew_base_count : int = 16
 const spew_on_hit_dmg_scale : float = 0.75
 const spew_flat_dmg_amount : float = 2.5
 

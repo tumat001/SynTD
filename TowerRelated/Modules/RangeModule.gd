@@ -45,14 +45,19 @@ var _all_targeting_options : Array = []
 
 var last_calculated_final_range : float
 
-
 # tracker
 
 var attack_modules_using_this : Array = []
 
+# managers
+
+var enemy_manager # needed for getting enemies out of range
+
 #
+
 onready var range_shape = $RangeShape
 
+#
 func _ready():
 	_connect_area_shape_entered_and_exit_signals()
 	#connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
@@ -507,5 +512,27 @@ func is_enemy_in_range(arg_enemy) -> bool:
 			return true
 	
 	return false
+
+#
+
+func get_all_targetable_enemies_outside_of_range(arg_targeting : int, arg_count : int = -1, arg_include_invis_enemies : bool = false):
+	var all_targetable_enemies = enemy_manager.get_all_enemies()
+	all_targetable_enemies = Targeting.enemies_to_target(all_targetable_enemies, arg_targeting, all_targetable_enemies.size(), global_position, arg_include_invis_enemies)
+	
+	var all_enemies_in_range = get_enemies_in_range__not_affecting_curr_enemies_in_range()
+	
+	if arg_count == -1:
+		arg_count = all_targetable_enemies.size()
+	
+	var bucket = []
+	
+	for enemy in all_targetable_enemies:
+		if !all_enemies_in_range.has(enemy):
+			bucket.append(enemy)
+			
+			if bucket.size() >= arg_count:
+				break
+	
+	return bucket
 
 
