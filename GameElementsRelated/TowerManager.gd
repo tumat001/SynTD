@@ -573,6 +573,7 @@ func get_all_ids_of_towers_except_in_queue_free() -> Array:
 	return bucket
 
 # "Active" Towers meaning towers in map and contributing to synergy
+# if you want all in map towers, then use "get_all_in_map_towers()"
 func get_all_active_towers() -> Array:
 	var bucket : Array = []
 	

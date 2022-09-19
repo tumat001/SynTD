@@ -152,7 +152,7 @@ func _init():
 	[
 		"Main attacks apply a stack of \"Red\" or \"Green\" based on the tower's color. Breaking the single color streak triggers effects.",
 		"If Red streak is broken: Deal additional damage.",
-		"If at 10+ stacks: shoot (5 + 1/2 of total stakcs) red bolt to random enemies in range.",
+		"If at 10+ stacks: shoot (5 + 1/2 of total stacks) red bolt to random enemies in range.",
 		"",
 		"If Green streak is broken: Block the next enemy effect for a duration.",
 		"If at 10+ stacks: heal nearby towers, and slow enemies hit. Stacks increase the heal, the slow, and the number of attacks that apply the slow.",

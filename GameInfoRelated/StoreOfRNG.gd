@@ -21,6 +21,7 @@ var chaos_events_to_play_rng : RandomNumberGenerator = RandomNumberGenerator.new
 var chaos_events_rng_general_purpose := RandomNumberGenerator.new()
 var iota_star_positioning_rng := RandomNumberGenerator.new()
 var variance_state_rng := RandomNumberGenerator.new()
+var sophist_crystal_positioning_rng := RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -37,6 +38,7 @@ enum RNGSource {
 	CHAOS_EVENTS_GENERAL_PURPOSE = 105,
 	IOTA_STAR_POSITIONING = 106,
 	VARIANCE_STATE = 107,
+	SOPHIST_CRYSAL_POS = 108,
 	
 	INACCURACY = 1000,
 	
@@ -102,5 +104,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return iota_star_positioning_rng
 	elif rng_source == RNGSource.VARIANCE_STATE:
 		return variance_state_rng
+	elif rng_source == RNGSource.SOPHIST_CRYSAL_POS:
+		return sophist_crystal_positioning_rng
 	
 	return null

@@ -59,6 +59,7 @@ const soul_image = preload("res://TowerRelated/Color_Red/Soul/Soul_Omni.png")
 const probe_image = preload("res://TowerRelated/Color_Red/Probe/Probe_E.png")
 const wyvern_image = preload("res://TowerRelated/Color_Red/Wyvern/Wyvern_E.png")
 const trudge_image = preload("res://TowerRelated/Color_Red/Trudge/Trudge_ImageInTowerCard.png")
+const sophist_image = preload("res://TowerRelated/Color_Red/Sophist/Sophist_Omni.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -157,6 +158,7 @@ enum {
 	PROBE = 208,
 	WYVERN = 209,
 	TRUDGE = 210,
+	SOPHIST = 211,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -322,6 +324,7 @@ const TowerTiersMap : Dictionary = {
 	LA_CHASSEUR : 5,
 	ASHEND : 5,
 	IOTA : 5,
+	SOPHIST : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
@@ -3408,7 +3411,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var on_hit_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(hextribute_effect_vul_effect, StoreOfTowerEffectsUUID.ING_HEXTRIBUTE)
 		
-		
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, on_hit_effect)
 		
 		info.ingredient_effect = ing_effect
@@ -5605,6 +5607,116 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
 		
+		info.tower_simple_descriptions = [
+			"Attacks against stunned or slowed targets trigger Spurt.",
+			["Spurt: Release an explosion, dealing |0| to 3 enemies and slowing them by |1| for 6 seconds.", [interpreter_for_spurt_flat_on_hit, interpreter_for_first_slam_slow]],
+			"",
+			"Auto casts Stampede.",
+			["Ability: Stampede: Trudge slams the ground 3 times, each dealing |0|. Each slam affects up to 15 enemies.", [interpreter_for_slam_flat_on_hit]],
+			["The final slam knocks enemies up for |0|.", [interpreter_for_final_slam_ku_duration]],
+			["Cooldown: |0|", [interpreter_for_cooldown]]
+		]
+		
+		
+		var effect_vul_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.ING_TRUDGE)
+		effect_vul_modi.percent_amount = -20
+		effect_vul_modi.percent_based_on = PercentType.BASE
+		var hextribute_effect_vul_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED, effect_vul_modi, StoreOfEnemyEffectsUUID.ING_TRUDGE)
+		hextribute_effect_vul_effect.is_timebound = true
+		hextribute_effect_vul_effect.time_in_seconds = 6
+		
+		var on_hit_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(hextribute_effect_vul_effect, StoreOfTowerEffectsUUID.ING_TRUDGE)
+		
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, on_hit_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "- mov speed"
+		
+		
+		
+	elif tower_id == SOPHIST:
+		info = TowerTypeInformation.new("Sophist", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		info.base_tower_image = sophist_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 2.5
+		info.base_attk_speed = 0.72
+		info.base_pierce = 0
+		info.base_range = 125
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		var interpreter_for_base_amount = TextFragmentInterpreter.new()
+		interpreter_for_base_amount.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_base_amount.display_body = false
+		
+		var ins_for_base_amount = []
+		ins_for_base_amount.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 20, true))
+		
+		interpreter_for_base_amount.array_of_instructions = ins_for_base_amount
+		
+		
+		var interpreter_for_extra_amount = TextFragmentInterpreter.new()
+		interpreter_for_extra_amount.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_extra_amount.display_body = false
+		
+		var ins_for_extra_amount = []
+		ins_for_extra_amount.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 10, true))
+		
+		interpreter_for_extra_amount.array_of_instructions = ins_for_extra_amount
+		
+		
+		var interpreter_for_max_amount = TextFragmentInterpreter.new()
+		interpreter_for_max_amount.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_max_amount.display_body = false
+		
+		var ins_for_max_amount = []
+		ins_for_max_amount.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 100, true))
+		
+		interpreter_for_max_amount.array_of_instructions = ins_for_max_amount
+		
+		
+		var interpreter_for_range = TextFragmentInterpreter.new()
+		interpreter_for_range.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_range.display_body = false
+		
+		var ins_for_range = []
+		ins_for_range.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE, -1, "range", 120, false))
+		
+		interpreter_for_range.array_of_instructions = ins_for_range
+		
+		
+		
+		info.tower_descriptions = [
+			"Casts Enchant every 10th main attack.",
+			"Ability: Enchant. Fire a crystal that lands near Sophist's current target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 5 seconds.",
+			["Crystals give |0|, which increases by |1| per additional crystal in the map, up to |2|. Crystals have |3|.", [interpreter_for_base_amount, interpreter_for_extra_amount, interpreter_for_max_amount, interpreter_for_range]],
+			"Crystals cannot affect Sophist towers.",
+		]
+		
+		# needed even if the same as above.
+		info.tower_simple_descriptions = [
+			"Casts Enchant every 10th main attack.",
+			"Ability: Enchant. Fire a crystal that lands near Sophist's current target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 5 seconds.",
+			["Crystals give |0|, which increases by |1| per additional crystal in the map, up to |2|. Crystals have |3|.", [interpreter_for_base_amount, interpreter_for_extra_amount, interpreter_for_max_amount, interpreter_for_range]],
+			"Crystals cannot affect Sophist towers.",
+		]
+		
+		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SOPHIST)
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_SOPHIST)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
+		
 		
 #	elif tower_id == WYVERN:
 #		info = TowerTypeInformation.new("Wyvern", tower_id)
@@ -5628,15 +5740,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 #			""
 #		]
 #
-##		info.tower_descriptions = [
-##			"Wyvern stores 8% of its post mitigated damage dealt as Fury.",
-##			"When Wyvern has at least 10 Fury, it attempts to cast Fulminate.",
-##			"Fulminate: Wyvern's next 2 main attacks explode, dealing bonus on hit physical damage equal to the Fury amount.",
-##			"Bonus on hit damage scales with ability potency.",
-##			"Cooldown: 18 s",
-##			"",
-##
-##		]
+#		info.tower_descriptions = [
+#			"Wyvern stores 8% of its post mitigated damage dealt as Fury.",
+#			"When Wyvern has at least 10 Fury, it attempts to cast Fulminate.",
+#			"Fulminate: Wyvern's next 2 main attacks explode, dealing bonus on hit physical damage equal to the Fury amount.",
+#			"Bonus on hit damage scales with ability potency.",
+#			"Cooldown: 18 s",
+#			"",
+#
+#		]
 		
 		
 	
@@ -5800,6 +5912,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/YelVio_RiftAxis/YelVio_RiftAxis.tscn")
 	elif tower_id == TRUDGE:
 		return load("res://TowerRelated/Color_Red/Trudge/Trudge.tscn")
-
+	elif tower_id == SOPHIST:
+		return load("res://TowerRelated/Color_Red/Sophist/Sophist.tscn")
 
 

@@ -361,7 +361,7 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.CHARGE,
 			Towers.COIN,
 			Towers.TRUDGE,
-			Towers.NUCLEUS,
+			Towers.SOPHIST,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([

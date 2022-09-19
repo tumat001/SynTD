@@ -116,7 +116,7 @@ func _generate_percent_description(descriptor : String) -> String:
 	if descriptions.size() == 2:
 		desc02 = descriptions[1]
 	
-	var semi_final_desc =  "+" + desc01 + " " + descriptor + " " + desc02
+	var semi_final_desc =  "" + desc01 + " " + descriptor + " " + desc02
 	if is_timebound:
 		var append_plural : String = "s"
 		if time_in_seconds == 1:

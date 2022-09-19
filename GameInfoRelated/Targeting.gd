@@ -52,10 +52,18 @@ static func get_all_targeting_options() -> Array:
 
 #
 
+enum TargetingRangeState {
+	ANY = 0,
+	OUT_OF_RANGE = 1,
+	IN_RANGE = 2,
+}
+
 class TargetingParameters:
 	var priority_enemies_in_range : Array
 	var priority_enemies_regardless_of_range : Array
-
+	
+	#var range_of_search : float
+	#var range_state : int = TargetingRangeState.ANY
 
 
 #
@@ -106,12 +114,25 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 		for enemy in targeting_parameters.priority_enemies_regardless_of_range:
 			if enemy != null and !enemy.is_queued_for_deletion():
 				priority_enemies_regardless_of_range.append(enemy)
-			
 	
 	
 	for enemy in arg_enemies:
 		if enemy != null and !enemy.is_queued_for_deletion() and !priority_enemies_in_range.has(enemy) and !priority_enemies_regardless_of_range.has(enemy):
+			#if targeting_parameters == null:
 			enemies.append(enemy)
+#
+#			else:
+#				var range_state = targeting_parameters.range_state
+#				var distance = enemy.global_position.distance_to(pos)
+#
+#				if range_state == TargetingRangeState.ANY:
+#					enemies.append(enemy)
+#				elif range_state == TargetingRangeState.IN_RANGE and distance <= targeting_parameters.range_of_search:
+#					enemies.append(enemy)
+#				elif range_state == TargetingRangeState.OUT_OF_RANGE and distance <= targeting_parameters.range_of_search:
+#					enemies.append(enemy)
+#
+		
 	
 	#
 	
@@ -640,4 +661,28 @@ static func convert_deg_angle_to_pos_to_target(arg_deg_angle_hit_count_arr : Arr
 	else:
 		return arg_pos_of_source + Vector2(-1, 0)
 
+
+############
+
+static func get_targets__based_on_range_from_center_as_circle(
+		arg_targets : Array,
+		targeting : int,
+		arg_target_count : int,
+		center_pos : Vector2, 
+		radius : float,
+		range_state : int = TargetingRangeState.IN_RANGE,
+		arg_include_invis : bool = false) -> Array:
+	
+	var bucket = []
+	
+	for target in arg_targets:
+		var distance = center_pos.distance_to(target.global_position)
+		if (range_state == TargetingRangeState.IN_RANGE and radius >= distance):
+			bucket.append(target)
+		elif (range_state == TargetingRangeState.OUT_OF_RANGE and radius < distance):
+			bucket.append(target)
+	
+	#
+	
+	return enemies_to_target(bucket, targeting, arg_target_count, center_pos, arg_include_invis)
 

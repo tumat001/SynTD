@@ -29,7 +29,8 @@ func _on_round_start():
 		paused = false
 
 func _on_last_calculated_disabled_from_attacking_changed(arg_val):
-	stop()
+	if arg_val:
+		stop()
 
 #
 

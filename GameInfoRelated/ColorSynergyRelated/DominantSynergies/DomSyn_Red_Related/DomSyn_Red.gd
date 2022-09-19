@@ -318,9 +318,11 @@ func remove_pact_from_sworn_list(pact):
 #
 
 func _on_round_end_red_inactive(curr_stageround):
-	if red_pact_whole_panel.sworn_pact_list.get_pact_count() > 0:
-		#game_elements.health_manager.decrease_health_by(red_inactive_health_deduct, game_elements.HealthManager.DecreaseHealthSource.SYNERGY)
-		pass
+	pass
+#	if red_pact_whole_panel != null and red_pact_whole_panel.sworn_pact_list != null:
+#		if red_pact_whole_panel.sworn_pact_list.get_pact_count() > 0:
+#			#game_elements.health_manager.decrease_health_by(red_inactive_health_deduct, game_elements.HealthManager.DecreaseHealthSource.SYNERGY)
+#			pass
 
 #
 

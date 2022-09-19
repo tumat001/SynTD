@@ -7,5 +7,6 @@ export(float) var scale_of_scale : float = 1
 
 func _process(delta):
 	if lifetime <= scale_trigger_lifetime_threshold:
-		var inc = scale_of_scale * delta
-		scale += Vector2(inc, inc)
+		if visible:
+			var inc = scale_of_scale * delta
+			scale += Vector2(inc, inc)
