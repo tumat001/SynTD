@@ -61,6 +61,7 @@ const wyvern_image = preload("res://TowerRelated/Color_Red/Wyvern/Wyvern_E.png")
 const trudge_image = preload("res://TowerRelated/Color_Red/Trudge/Trudge_ImageInTowerCard.png")
 const sophist_image = preload("res://TowerRelated/Color_Red/Sophist/Sophist_Omni.png")
 const fulgurant_image = preload("res://TowerRelated/Color_Red/Fulgurant/Fulgurant.png")
+const enervate_image = preload("res://TowerRelated/Color_Red/Enervate/Enervate_Omni.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -298,7 +299,7 @@ const TowerTiersMap : Dictionary = {
 	AMALGAMATOR : 3,
 	SE_PROPAGER : 3,
 	LES_SEMIS : 3,
-	#ENERVATE : 3, #TODO put this back when ready to do so
+	ENERVATE : 3,
 	FULGURANT : 3,
 	
 	#RE : 4,
@@ -5658,7 +5659,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_base_amount.display_body = false
 		
 		var ins_for_base_amount = []
-		ins_for_base_amount.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 20, true))
+		ins_for_base_amount.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 10, true))
 		
 		interpreter_for_base_amount.array_of_instructions = ins_for_base_amount
 		
@@ -5678,7 +5679,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_max_amount.display_body = false
 		
 		var ins_for_max_amount = []
-		ins_for_max_amount.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 100, true))
+		ins_for_max_amount.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 60, true))
 		
 		interpreter_for_max_amount.array_of_instructions = ins_for_max_amount
 		
@@ -5696,7 +5697,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Casts Enchant every 10th main attack.",
-			"Ability: Enchant. Fire a crystal that lands near Sophist's current target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 5 seconds.",
+			"Ability: Enchant. Fire a crystal that lands near Sophist's current target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 8 seconds.",
 			["Crystals give |0|, which increases by |1| per additional crystal in the map, up to |2|. Crystals have |3|.", [interpreter_for_base_amount, interpreter_for_extra_amount, interpreter_for_max_amount, interpreter_for_range]],
 			"Crystals cannot affect Sophist towers.",
 		]
@@ -5704,7 +5705,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# needed even if the same as above.
 		info.tower_simple_descriptions = [
 			"Casts Enchant every 10th main attack.",
-			"Ability: Enchant. Fire a crystal that lands near Sophist's current target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 5 seconds.",
+			"Ability: Enchant. Fire a crystal that lands near Sophist's current target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 8 seconds.",
 			["Crystals give |0|, which increases by |1| per additional crystal in the map, up to |2|. Crystals have |3|.", [interpreter_for_base_amount, interpreter_for_extra_amount, interpreter_for_max_amount, interpreter_for_range]],
 			"Crystals cannot affect Sophist towers.",
 		]
@@ -5832,12 +5833,36 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_smite_dmg.array_of_instructions = outer_ins
 		
 		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(10, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
 		info.tower_descriptions = [
 			"Auto casts Smite.",
 			["Ability: Smite: Fulgurant smites a random enemy outside of its range, dealing |0| as an explosion hitting up to 3 enemies. The explosion stuns for 1 second.", [interpreter_for_smite_dmg]],
 			"Every 3rd cast of Smite targets three enemies instead of one.",
-			["Cooldown: |0|", []]
+			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
+		
+		
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_FULGURANT)
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_FULGURANT)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ base dmg"
+		
 		
 		
 	elif tower_id == ENERVATE:
@@ -5845,7 +5870,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		#info.base_tower_image = wyvern_image
+		info.colors.append(TowerColors.BLUE) #TODO TEMPORARY
+		info.base_tower_image = enervate_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.25
@@ -5856,24 +5882,132 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		
+		var interpreter_for_armor_tou_shred = TextFragmentInterpreter.new()
+		interpreter_for_armor_tou_shred.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_armor_tou_shred.display_body = true
+		interpreter_for_armor_tou_shred.header_description = "armor and toughness"
+		
+		var ins_for_armor_tou_shred = []
+		ins_for_armor_tou_shred.append(NumericalTextFragment.new(25, true))
+		ins_for_armor_tou_shred.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_armor_tou_shred.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_armor_tou_shred.array_of_instructions = ins_for_armor_tou_shred
+		
+		#
+		
+		var interpreter_for_stun_duration = TextFragmentInterpreter.new()
+		interpreter_for_stun_duration.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_stun_duration.display_body = true
+		interpreter_for_stun_duration.header_description = "s"
+		
+		var ins_for_stun_duration = []
+		ins_for_stun_duration.append(NumericalTextFragment.new(1, false))
+		ins_for_stun_duration.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_stun_duration.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_stun_duration.array_of_instructions = ins_for_stun_duration
+		
+		#
+		
+		var interpreter_for_slow_amount = TextFragmentInterpreter.new()
+		interpreter_for_slow_amount.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_slow_amount.display_body = true
+		
+		var ins_for_slow_amount = []
+		ins_for_slow_amount.append(NumericalTextFragment.new(20, true))
+		ins_for_slow_amount.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_slow_amount.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_slow_amount.array_of_instructions = ins_for_slow_amount
+		
+		#
+		
+		var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_perc_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_perc_on_hit.display_body = true
+		interpreter_for_perc_on_hit.header_description = "of the target's max health as damage"
+		
+		var ins_for_perc_on_hit = []
+		ins_for_perc_on_hit.append(NumericalTextFragment.new(20, true, DamageType.ELEMENTAL))
+		ins_for_perc_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_perc_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1, true))
+		
+		interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
+		
+		#
+		
+		var interpreter_for_decay_amount = TextFragmentInterpreter.new()
+		interpreter_for_decay_amount.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_decay_amount.display_body = true
+		interpreter_for_decay_amount.header_description = "less healing and shielding"
+		
+		var ins_for_decay_amount = []
+		ins_for_decay_amount.append(NumericalTextFragment.new(40, true))
+		ins_for_decay_amount.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_decay_amount.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_decay_amount.array_of_instructions = ins_for_decay_amount
+		
+		#
+		
+		var interpreter_for_ap = TextFragmentInterpreter.new()
+		interpreter_for_ap.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_ap.display_body = false
+		
+		var ins_for_ap = []
+		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.25, false))
+		
+		interpreter_for_ap.array_of_instructions = ins_for_ap
+		
+		#
+		
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", 0.4))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		#
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(12, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		#
+		
 		info.tower_simple_descriptions = [
 			"Auto casts Chant.",
-			"Ability: Chant: Create an orb that curses enemies based on Enervate's targeting. Duplicate orbs are avoided.",
-			["Cooldown : |0|", []]
+			"Ability: Chant: Create an orb that curses an enemy based on Enervate's targeting. Duplicate orbs are avoided.",
+			"Each orb has its own unique effect.",
+			["Orbs deal |0| per 0.5 seconds.", [interpreter_for_flat_on_hit]],
+			["Cooldown : |0|", [interpreter_for_cooldown]]
 		]
 		
 		info.tower_descriptions = [
 			"Auto casts Chant.",
-			"Ability: Chant: Create an orb that curses enemies based on Enervate's targeting. Duplicate orbs are avoided.",
-			["Cooldown : |0|", []],
+			"Ability: Chant: Create an orb that curses an enemy based on Enervate's targeting. Duplicate orbs are avoided.",
+			["Orbs deal |0| per 0.5 seconds.", [interpreter_for_flat_on_hit]],
+			["Cooldown : |0|", [interpreter_for_cooldown]],
 			"",
-			["Shrivel Orb: Remove |0| <armor & toughness> from the target.", []],
-			["Stun Orb: Every 6 seconds, stun the target for |0|.", []],
-			["Slow Orb: Slow the target by |0|.", []],
-			["Death Orb: On the target's death, create an explosion at the target's location, dealing |0|.", []],
-			["Decay Orb: The target receives |0| <less healing & shielding>.", []],
+			["Shrivel Orb: Remove |0| from the target.", [interpreter_for_armor_tou_shred]],
+			["Stun Orb: Every 6 seconds, stun the target for |0|.", [interpreter_for_stun_duration]],
+			["Slow Orb: Slow the target by |0|.", [interpreter_for_slow_amount]],
+			["Death Orb: On the target's death, create an explosion at the target's location, dealing |0|.", [interpreter_for_perc_on_hit]],
+			["Decay Orb: The target receives |0|.", [interpreter_for_decay_amount]],
 			"",
-			["If Chant is casted when all orbs are activated, Enervate instead gains |0|."]
+			["If Chant is casted when all orbs are activated, Enervate instead gains |0|.", [interpreter_for_ap]]
 		]
 		
 	
@@ -5935,7 +6069,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/Entropy/Entropy.tscn")
 	elif tower_id == ROYAL_FLAME:
 		return load("res://TowerRelated/Color_Orange/RoyalFlame/RoyalFlame.tscn")
-	elif tower_id == IEU: #28th tower
+	elif tower_id == IEU: #28
 		return load("res://TowerRelated/Color_Orange/IEU/IEU.tscn")
 	elif tower_id == FRUIT_TREE:
 		return load("res://TowerRelated/Color_Green/FruitTree/FruitTree.tscn")
@@ -6025,7 +6159,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Orange/Propel/Propel.tscn")
 	elif tower_id == PAROXYSM:
 		return load("res://TowerRelated/Color_Orange/Paroxysm/Paroxysm.tscn")
-	elif tower_id == IOTA:
+	elif tower_id == IOTA: # 73
 		return load("res://TowerRelated/Color_Yellow/Iota/Iota.tscn")
 	elif tower_id == VACUUM:
 		return load("res://TowerRelated/Color_Blue/Vacuum/Vacuum.tscn")
@@ -6039,6 +6173,10 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Trudge/Trudge.tscn")
 	elif tower_id == SOPHIST:
 		return load("res://TowerRelated/Color_Red/Sophist/Sophist.tscn")
-	elif tower_id == WYVERN:
+	elif tower_id == WYVERN: # 80
 		return load("res://TowerRelated/Color_Red/Wyvern/Wyvern.tscn")
+	elif tower_id == FULGURANT:
+		return load("res://TowerRelated/Color_Red/Fulgurant/Fulgurant.tscn")
+	elif tower_id == ENERVATE:
+		return load("res://TowerRelated/Color_Red/Enervate/Enervate.tscn")
 

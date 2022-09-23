@@ -863,28 +863,68 @@ func remove_shield_effect(effect_uuid : int, cause_calculate : bool = true):
 # Calculation of attributes
 
 func calculate_final_armor() -> float:
-	#All percent modifiers here are to BASE armor only
+	var totals_bucket : Array = []
 	var final_armor = base_armor
+	
 	for effect in percent_armor_id_effect_map.values():
-		final_armor += effect.attribute_as_modifier.get_modification_to_value(base_armor)
+		if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
+			final_armor += effect.attribute_as_modifier.get_modification_to_value(base_armor)
+		else:
+			totals_bucket.append(effect)
 	
 	for effect in flat_armor_id_effect_map.values():
 		final_armor += effect.attribute_as_modifier.get_modification_to_value(base_armor)
 	
+	var final_base_armor = final_armor
+	for effect in totals_bucket:
+		final_base_armor += effect.attribute_as_modifier.get_modification_to_value(final_base_armor)
+	final_armor = final_base_armor
+	
 	_last_calculated_final_armor = final_armor
-	return final_armor
+	return _last_calculated_final_armor
+	
+#	#All percent modifiers here are to BASE armor only
+#	var final_armor = base_armor
+#	for effect in percent_armor_id_effect_map.values():
+#		final_armor += effect.attribute_as_modifier.get_modification_to_value(base_armor)
+#
+#	for effect in flat_armor_id_effect_map.values():
+#		final_armor += effect.attribute_as_modifier.get_modification_to_value(base_armor)
+#
+#	_last_calculated_final_armor = final_armor
+#	return final_armor
 
 func calculate_final_toughness() -> float:
-	#All percent modifiers here are to BASE toughness only
-	var final_toughness = base_toughness
+	var totals_bucket : Array = []
+	var final_tou = base_toughness
+	
 	for effect in percent_toughness_id_effect_map.values():
-		final_toughness += effect.attribute_as_modifier.get_modification_to_value(base_toughness)
+		if effect.attribute_as_modifier.percent_based_on != PercentType.MAX:
+			final_tou += effect.attribute_as_modifier.get_modification_to_value(base_toughness)
+		else:
+			totals_bucket.append(effect)
 	
 	for effect in flat_toughness_id_effect_map.values():
-		final_toughness += effect.attribute_as_modifier.get_modification_to_value(base_toughness)
+		final_tou += effect.attribute_as_modifier.get_modification_to_value(base_toughness)
 	
-	_last_calculated_final_toughness = final_toughness
-	return final_toughness
+	var final_base_tou = final_tou
+	for effect in totals_bucket:
+		final_base_tou += effect.attribute_as_modifier.get_modification_to_value(final_base_tou)
+	final_tou = final_base_tou
+	
+	_last_calculated_final_toughness = final_tou
+	return _last_calculated_final_toughness
+	
+#	#All percent modifiers here are to BASE toughness only
+#	var final_toughness = base_toughness
+#	for effect in percent_toughness_id_effect_map.values():
+#		final_toughness += effect.attribute_as_modifier.get_modification_to_value(base_toughness)
+#
+#	for effect in flat_toughness_id_effect_map.values():
+#		final_toughness += effect.attribute_as_modifier.get_modification_to_value(base_toughness)
+#
+#	_last_calculated_final_toughness = final_toughness
+#	return final_toughness
 
 
 func calculate_final_resistance() -> float:

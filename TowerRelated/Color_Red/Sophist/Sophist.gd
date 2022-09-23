@@ -38,10 +38,10 @@ const main_attacks_to_cast_enchant : int = 10
 var _current_main_attack_count : int = 0
 var _current_crystal_count : int = 0
 
-const base_attk_speed_buff_amount : float = 20.0
+const base_attk_speed_buff_amount : float = 10.0
 const attk_speed_buff_amount_per_crystal : float = 10.0
-const max_attack_speed_buff_amount : float = 100.0
-const attk_speed_buff_duration : float = 5.0
+const max_attack_speed_buff_amount : float = 60.0
+const attk_speed_buff_duration : float = 8.0
 var _current_attk_speed_buff_amount : float
 var crystal_attk_speed_effect : TowerAttributesEffect
 
@@ -263,12 +263,10 @@ func _get_all_towers_in_range_of_crystals() -> Array:
 	for crystal in get_tree().get_nodes_in_group(crystal_group_name):
 		var towers_in_range_of_crystal = Targeting.get_targets__based_on_range_from_center_as_circle(all_towers_in_map, Targeting.CLOSE, all_towers_in_map.size(), crystal.global_position, crystal_tower_seek_range, Targeting.TargetingRangeState.IN_RANGE, true)
 		for tower in towers_in_range_of_crystal:
-			if !candidate_towers.has(tower):
+			if !candidate_towers.has(tower) and tower.tower_id != Towers.SOPHIST:
 				candidate_towers.append(tower)
 		
 		_display_crystal_circle_sprite_on_location(crystal.global_position)
-	
-	candidate_towers.erase(self)
 	
 	return candidate_towers
 

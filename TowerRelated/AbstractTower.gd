@@ -3029,7 +3029,7 @@ func queue_free():
 func _physics_process(delta):
 	if global_position != old_global_position:
 		emit_signal("global_position_changed", old_global_position, global_position)
-		
+	
 	old_global_position = global_position
 	
 	_phy_knock_up_process(delta)

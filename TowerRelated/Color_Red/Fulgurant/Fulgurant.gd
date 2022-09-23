@@ -10,6 +10,7 @@ const WithBeamInstantDamageAttackModule_Scene = preload("res://TowerRelated/Modu
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
 const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
+const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 
 const Fulgurant_Beam_01 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/MainAttkSprite/Fulgurant_Beam_01.png")
 const Fulgurant_Beam_02 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/MainAttkSprite/Fulgurant_Beam_02.png")
@@ -49,10 +50,14 @@ const smite_explosion_pierce : int = 3
 var smite_ability : BaseAbility
 var smite_ability_is_ready : bool = false
 const smite_ability_base_cooldown : float = 10.0
+const smite_ability_cooldown_on_no_targets : float = 2.0
 
 var explosion_attack_module : AOEAttackModule
 
 var smite_beam_attk_sprite_pool_component : AttackSpritePoolComponent
+
+var smite_stun_effect : EnemyStunEffect
+const smite_stun_duration : float = 1.0
 
 #
 
@@ -64,7 +69,7 @@ const smite_target_count_for_normal : int = 1
 
 
 func _ready():
-	var info : TowerTypeInformation = Towers.get_tower_info(Towers.ENTROPY)
+	var info : TowerTypeInformation = Towers.get_tower_info(Towers.FULGURANT)
 	
 	tower_id = info.tower_type_id
 	tower_highlight_sprite = info.tower_image_in_buy_card
@@ -79,7 +84,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 24
+	range_module.position.y += 28
 	
 	var attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -88,7 +93,7 @@ func _ready():
 	attack_module.base_attack_wind_up = 0
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
-	attack_module.position.y -= 24
+	attack_module.position.y -= 28
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
@@ -115,6 +120,9 @@ func _ready():
 	
 	_construct_and_register_ability()
 	_construct_attk_sprite_pool_components()
+	_construct_and_add_smite_explosion_am()
+	
+	smite_stun_effect = EnemyStunEffect.new(smite_stun_duration, StoreOfEnemyEffectsUUID.FULGURANT_SMITE_STUN_EFFECT)
 	
 	#
 	
@@ -124,7 +132,7 @@ func _construct_and_add_smite_explosion_am():
 	explosion_attack_module = AOEAttackModule_Scene.instance()
 	explosion_attack_module.base_damage_scale = smite_explosion_base_dmg_scale
 	explosion_attack_module.base_damage = smite_explosion_flat_dmg / explosion_attack_module.base_damage_scale
-	explosion_attack_module.base_damage_type = DamageType.PHYSICAL
+	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
 	explosion_attack_module.base_attack_wind_up = 0
 	explosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
@@ -197,35 +205,44 @@ func _attempt_cast_smite():
 		_cast_smite()
 
 func _cast_smite():
-	var cd = _get_cd_to_use(smite_ability_base_cooldown)
-	smite_ability.on_ability_before_cast_start(cd)
+	var targets = _get_targets_for_smite()
 	
-	#
-	_current_cast_count += 1
-	var is_empowered : bool = false
-	
-	if _current_cast_count >= cast_count_for_empowered_version:
-		is_empowered = true
-	
-	var targets = _get_targets_for_smite(is_empowered)
-	
-	for target in targets:
-		call_deferred("_summon_smite_lightning_onto_pos", target.global_position)
-	
-	#
-	
-	smite_ability.start_time_cooldown(cd)
-	smite_ability.on_ability_after_cast_ended(cd)
+	if targets.size() > 0:
+		var cd = _get_cd_to_use(smite_ability_base_cooldown)
+		smite_ability.on_ability_before_cast_start(cd)
+		
+		#
+		
+		_current_cast_count += 1
+		var is_empowered : bool = false
+		
+		if _current_cast_count >= cast_count_for_empowered_version:
+			is_empowered = true
+			_current_cast_count = 0
+		
+		var target_count : int = smite_target_count_for_normal
+		if is_empowered:
+			target_count = smite_target_count_for_empowered
+		
+		for target in targets:
+			call_deferred("_summon_smite_lightning_onto_pos", target.global_position)
+			target_count -= 1
+			if target_count <= 0:
+				break
+		
+		#
+		
+		smite_ability.start_time_cooldown(cd)
+		smite_ability.on_ability_after_cast_ended(cd)
+		
+	else:
+		smite_ability.start_time_cooldown(smite_ability_cooldown_on_no_targets)
 
 #
 
-func _get_targets_for_smite(arg_is_empowered : bool):
-	var target_count : int = smite_target_count_for_normal
-	if arg_is_empowered:
-		target_count = smite_target_count_for_empowered
-	
+func _get_targets_for_smite():
 	if range_module != null:
-		return range_module.get_all_targetable_enemies_outside_of_range(Targeting.RANDOM, target_count, false)
+		return range_module.get_all_targetable_enemies_outside_of_range(Targeting.RANDOM, smite_target_count_for_empowered, false)
 	else:
 		return []
 
@@ -246,6 +263,7 @@ func _create_smite_lightning():
 	
 	smite_lightning.scale *= 2
 	smite_lightning.offset.y -= smite_lightning.get_sprite_size().y / 2.0
+	smite_lightning.modulate.a = 0.6
 	
 	smite_lightning.queue_free_at_end_of_lifetime = false
 	
@@ -255,8 +273,11 @@ func _create_smite_lightning():
 
 
 func _on_smite_lightning_animation_ended(arg_lightning):
-	pass
-
-
-
+	var pos = arg_lightning.global_position
+	var explosion = explosion_attack_module.construct_aoe(pos, pos)
+	explosion.modulate.a = 0.6
+	explosion.damage_instance.on_hit_effects[smite_stun_effect.effect_uuid] = smite_stun_effect
+	explosion.damage_instance.scale_only_damage_by(smite_ability.get_potency_to_use(last_calculated_final_ability_potency))
+	
+	get_tree().get_root().call_deferred("add_child", explosion)
 

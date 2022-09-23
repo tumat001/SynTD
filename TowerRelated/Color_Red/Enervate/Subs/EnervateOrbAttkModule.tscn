@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://TowerRelated/Modules/WithBeamInstantDamageAttackModule.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Red/Enervate/Subs/EnervateOrbAttkModule.gd" type="Script" id=2]
+
+[node name="EnervateOrbAttkModule" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="OrbSprite" type="Sprite" parent="." index="0"]

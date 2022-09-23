@@ -906,7 +906,6 @@ func _create_blue_ap_inc_particle():
 	
 	return particle
 
-
 func _set_blue_ap_inc_particle_properties_when_get_from_pool_before_add_child(particle):
 	particle.lifetime = 0.5
 

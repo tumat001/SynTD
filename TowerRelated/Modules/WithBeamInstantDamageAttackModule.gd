@@ -5,6 +5,7 @@ const BeamAestheric_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic
 
 signal beam_connected_to_enemy(beam, enemy)
 signal kill_all_spawned_beams()
+signal global_position_changed(old_pos, new_pos)
 
 # Used for allocation, as to avoid deleting
 # and creating many of them...
@@ -18,6 +19,8 @@ var beam_sprite_frames : SpriteFrames
 
 var show_beam_at_windup : bool = false
 var show_beam_regardless_of_state : bool = false
+
+var old_global_position : Vector2
 
 # internals
 
@@ -153,17 +156,31 @@ func queue_free():
 #
 
 func set_parent_tower(arg_parent_tower):
-	if parent_tower != null:
-		parent_tower.disconnect("global_position_changed", self, "_on_tower_global_pos_changed")
+	#if parent_tower != null:
+	#	parent_tower.disconnect("global_position_changed", self, "_on_tower_global_pos_changed")
 	
 	.set_parent_tower(arg_parent_tower)
 	
-	if arg_parent_tower != null:
-		arg_parent_tower.connect("global_position_changed", self, "_on_tower_global_pos_changed", [], CONNECT_PERSIST)
+	#if arg_parent_tower != null:
+	#	arg_parent_tower.connect("global_position_changed", self, "_on_tower_global_pos_changed", [], CONNECT_PERSIST)
 
 
-func _on_tower_global_pos_changed(old_pos, new_pos):
+#func _on_tower_global_pos_changed(old_pos, new_pos):
+#	for beam in beam_to_enemy_map.keys():
+#		beam.global_position = global_position
+
+func _on_global_pos_changed(old_pos, new_pos):
 	for beam in beam_to_enemy_map.keys():
 		beam.global_position = global_position
 
+#
 
+func _physics_process(delta):
+	if global_position != old_global_position:
+		emit_signal("global_position_changed", old_global_position, global_position)
+	
+	old_global_position = global_position
+	
+
+func _ready():
+	connect("global_position_changed", self, "_on_global_pos_changed", [], CONNECT_PERSIST)

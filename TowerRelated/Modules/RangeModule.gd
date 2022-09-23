@@ -136,11 +136,22 @@ func remove_targeting_option(targeting : int):
 
 func remove_targeting_options(targetings : Array):
 	var switch : bool = false
+	var affected_index : Array = []
+	var curr_index_shift : int = 0
 	
 	if targetings.has(all_distinct_targeting_options[_current_targeting_option_index]):
 		switch = true
 	
+	for targeting in targetings:
+		var index = all_distinct_targeting_options.find(targeting)
+		if index != -1:
+			affected_index.append(index)
+	
 	_last_used_targeting_option_index = 0
+	for aff_i in affected_index:
+		if aff_i < _current_targeting_option_index:
+			curr_index_shift -= 1
+	_current_targeting_option_index += curr_index_shift
 	
 	for targ in targetings:
 		_all_targeting_options.erase(targ)
@@ -148,6 +159,7 @@ func remove_targeting_options(targetings : Array):
 	
 	if switch:
 		targeting_cycle_right()
+	
 	
 	call_deferred("emit_signal", "targeting_options_modified")
 
@@ -443,6 +455,23 @@ func _mirrored_range_module_targeting_options_modified(module):
 		add_targeting_options(module.all_distinct_targeting_options)
 
 
+# Other Tower interaction
+
+func mirror_tower_main_range_module_targeting_changes(arg_tower):
+	if arg_tower != null:
+		arg_tower.connect("targeting_changed", self, "_mirrored_tower_main_range_module_targeting_changed", [arg_tower], CONNECT_PERSIST)
+		arg_tower.connect("targeting_options_modified", self, "_mirrored_tower_main_range_module_targeting_options_modified", [arg_tower], CONNECT_PERSIST)
+
+
+func _mirrored_tower_main_range_module_targeting_changed(arg_tower):
+	if arg_tower != null:
+		set_current_targeting(arg_tower.range_module.get_current_targeting_option())
+
+func _mirrored_tower_main_range_module_targeting_options_modified(arg_tower):
+	if arg_tower != null:
+		clear_all_targeting()
+		add_targeting_options(arg_tower.range_module.all_distinct_targeting_options)
+
 
 # Uses
 
@@ -512,6 +541,9 @@ func is_enemy_in_range(arg_enemy) -> bool:
 			return true
 	
 	return false
+
+func get_current_enemies() -> Array:
+	return _current_enemies.duplicate()
 
 #
 
