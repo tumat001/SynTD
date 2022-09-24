@@ -326,10 +326,10 @@ func get_all_enemies() -> Array:
 	
 	return bucket
 
-func get_all_targetable_enemies() -> Array:
+func get_all_targetable_enemies(arg_include_invis : bool = false) -> Array:
 	var enemies = get_all_enemies()
 	
-	Targeting.filter_untargetable_enemies(enemies, false)
+	Targeting.filter_untargetable_enemies(enemies, arg_include_invis)
 	
 	return enemies
 
@@ -354,12 +354,27 @@ func get_path_of_enemy(arg_enemy) -> EnemyPath:
 
 #
 
-func get_all_targetable_enemy_positions():
+func get_all_targetable_enemy_positions(arg_include_invis : bool = false):
 	var bucket := []
-	for enemy in get_all_targetable_enemies():
+	for enemy in get_all_targetable_enemies(arg_include_invis):
 		bucket.append(enemy.global_position)
 	
 	return bucket
+
+func get_all_targetable_enemy_positions_excluding(arg_blacklist : Array, arg_include_invis : bool = false):
+	var bucket := []
+	for enemy in get_all_targetable_enemies(arg_include_invis):
+		if !arg_blacklist.has(enemy):
+			bucket.append(enemy.global_position)
+	
+	return bucket
+
+# result removes the arg_enemy from the initial params
+func get_enemy_count_within_distance_of_enemy(arg_enemy, arg_radius, arg_include_invis : bool = true):
+	var enemies = get_all_targetable_enemies(arg_include_invis)
+	
+	return Targeting.get_targets__based_on_range_from_center_as_circle(enemies, Targeting.CLOSE, enemies.size(), arg_enemy.global_position, arg_radius, Targeting.TargetingRangeState.IN_RANGE, arg_include_invis).size()
+
 
 # enemy count related
 

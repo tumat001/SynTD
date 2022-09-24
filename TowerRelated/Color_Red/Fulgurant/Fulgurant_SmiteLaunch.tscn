@@ -1,0 +1,24 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLaunchFx/SmiteLaunchFx_02.png" type="Texture" id=2]
+[ext_resource path="res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLaunchFx/SmiteLaunchFx_03.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLaunchFx/SmiteLaunchFx_01.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLaunchFx/SmiteLaunchFx_04.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLaunchFx/SmiteLaunchFx_05.png" type="Texture" id=6]
+[ext_resource path="res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLaunchFx/SmiteLaunchFx_06.png" type="Texture" id=7]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 4 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 5 ), ExtResource( 6 ), ExtResource( 7 ) ],
+"loop": false,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Fulgurant_SmiteLaunch" instance=ExtResource( 1 )]
+frames = SubResource( 1 )
+frame = 5
+queue_free_at_end_of_lifetime = false
+lifetime = 0.25
+frames_based_on_lifetime = true

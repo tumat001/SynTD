@@ -21,6 +21,7 @@ const Fulgurant_Beam_06 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets
 const Fulgurant_Beam_07 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/MainAttkSprite/Fulgurant_Beam_07.png")
 const Fulgurant_Beam_08 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/MainAttkSprite/Fulgurant_Beam_08.png")
 const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic.tscn")
+
 const Smite_Explosion_01 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteExplosion/Fulgurant_Explosion_01.png")
 const Smite_Explosion_02 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteExplosion/Fulgurant_Explosion_02.png")
 const Smite_Explosion_03 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteExplosion/Fulgurant_Explosion_03.png")
@@ -29,21 +30,13 @@ const Smite_Explosion_05 = preload("res://TowerRelated/Color_Red/Fulgurant/Asset
 const Smite_Explosion_06 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteExplosion/Fulgurant_Explosion_06.png")
 const Smite_Explosion_07 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteExplosion/Fulgurant_Explosion_07.png")
 const Smite_Explosion_08 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteExplosion/Fulgurant_Explosion_08.png")
-const Smite_Beam_01 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLightning/Fulgurant_SmiteLightning_01.png")
-const Smite_Beam_02 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLightning/Fulgurant_SmiteLightning_02.png")
-const Smite_Beam_03 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLightning/Fulgurant_SmiteLightning_03.png")
-const Smite_Beam_04 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLightning/Fulgurant_SmiteLightning_04.png")
-const Smite_Beam_05 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLightning/Fulgurant_SmiteLightning_05.png")
-const Smite_Beam_06 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLightning/Fulgurant_SmiteLightning_06.png")
-const Smite_Beam_07 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLightning/Fulgurant_SmiteLightning_07.png")
-const Smite_Beam_08 = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/SmiteLightning/Fulgurant_SmiteLightning_08.png")
 const Smite_Explosion_AMI = preload("res://TowerRelated/Color_Red/Fulgurant/Assets/Fulgurant_SmiteExplosion_AMI.png")
-
 const Fulgurant_SmiteBeam_Scene = preload("res://TowerRelated/Color_Red/Fulgurant/Fulgurant_SmiteBeam.tscn")
+const Fulgurant_SmiteLaunch_Scene = preload("res://TowerRelated/Color_Red/Fulgurant/Fulgurant_SmiteLaunch.tscn")
 
 #
 
-const smite_explosion_flat_dmg : float = 4.0
+const smite_explosion_flat_dmg : float = 6.0
 const smite_explosion_base_dmg_scale : float = 2.0
 const smite_explosion_pierce : int = 3
 
@@ -55,9 +48,12 @@ const smite_ability_cooldown_on_no_targets : float = 2.0
 var explosion_attack_module : AOEAttackModule
 
 var smite_beam_attk_sprite_pool_component : AttackSpritePoolComponent
+var smite_launch_fx_attk_sprite_pool_component : AttackSpritePoolComponent
 
 var smite_stun_effect : EnemyStunEffect
 const smite_stun_duration : float = 1.0
+
+const y_shift_of_attk_module : float = 37.0
 
 #
 
@@ -65,8 +61,6 @@ const cast_count_for_empowered_version : int = 3
 var _current_cast_count : int
 const smite_target_count_for_empowered : int = 3
 const smite_target_count_for_normal : int = 1
-
-
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.FULGURANT)
@@ -84,7 +78,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_range_shape(CircleShape2D.new())
-	range_module.position.y += 28
+	range_module.position.y += y_shift_of_attk_module
 	
 	var attack_module : WithBeamInstantDamageAttackModule = WithBeamInstantDamageAttackModule_Scene.instance()
 	attack_module.base_damage = info.base_damage
@@ -93,7 +87,7 @@ func _ready():
 	attack_module.base_attack_wind_up = 0
 	attack_module.is_main_attack = true
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
-	attack_module.position.y -= 28
+	attack_module.position.y -= y_shift_of_attk_module
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	
@@ -192,6 +186,12 @@ func _construct_attk_sprite_pool_components():
 	smite_beam_attk_sprite_pool_component.source_for_funcs_for_attk_sprite = self
 	smite_beam_attk_sprite_pool_component.func_name_for_creating_attack_sprite = "_create_smite_lightning"
 	
+	smite_launch_fx_attk_sprite_pool_component = AttackSpritePoolComponent.new()
+	smite_launch_fx_attk_sprite_pool_component.node_to_parent_attack_sprites = get_tree().get_root()
+	smite_launch_fx_attk_sprite_pool_component.node_to_listen_for_queue_free = self
+	smite_launch_fx_attk_sprite_pool_component.source_for_funcs_for_attk_sprite = self
+	smite_launch_fx_attk_sprite_pool_component.func_name_for_creating_attack_sprite = "_create_smite_launch"
+	
 
 
 #
@@ -225,7 +225,7 @@ func _cast_smite():
 			target_count = smite_target_count_for_empowered
 		
 		for target in targets:
-			call_deferred("_summon_smite_lightning_onto_pos", target.global_position)
+			call_deferred("_summon_smite_launch_particle", target.global_position)
 			target_count -= 1
 			if target_count <= 0:
 				break
@@ -249,9 +249,35 @@ func _get_targets_for_smite():
 
 #
 
+func _summon_smite_launch_particle(arg_pos):
+	var launch_particle = smite_launch_fx_attk_sprite_pool_component.get_or_create_attack_sprite_from_pool()
+	launch_particle.lifetime = 0.25
+	launch_particle.frame = 0
+	
+	launch_particle.global_position = global_position - Vector2(0, y_shift_of_attk_module)
+	launch_particle.visible = true
+	
+	if launch_particle.is_connected("animation_finished", self, "_on_smite_launch_animation_ended"):
+		launch_particle.disconnect("animation_finished", self, "_on_smite_launch_animation_ended")
+	launch_particle.connect("animation_finished", self, "_on_smite_launch_animation_ended", [arg_pos], CONNECT_ONESHOT)
+
+
+func _create_smite_launch():
+	var launch_sprite = Fulgurant_SmiteLaunch_Scene.instance()
+	launch_sprite.modulate.a = 0.6
+	
+	launch_sprite.queue_free_at_end_of_lifetime = false
+	
+	return launch_sprite
+
+func _on_smite_launch_animation_ended(arg_pos):
+	_summon_smite_lightning_onto_pos(arg_pos)
+
+
+
 func _summon_smite_lightning_onto_pos(arg_pos):
 	var smite_lightning = smite_beam_attk_sprite_pool_component.get_or_create_attack_sprite_from_pool()
-	smite_lightning.lifetime = 0.3
+	smite_lightning.lifetime = 0.25
 	smite_lightning.frame = 0
 	
 	smite_lightning.global_position = arg_pos

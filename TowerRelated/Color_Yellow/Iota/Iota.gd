@@ -6,7 +6,6 @@ const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttac
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
 
-
 const Core_Yellow_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Core_Yellow.png")
 const Core_Orange_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Core_Orange.png")
 const Core_Blue_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Core_Blue.png")
@@ -30,13 +29,11 @@ const Iota_StarCrashPic_05 = preload("res://TowerRelated/Color_Yellow/Iota/Attks
 const Iota_Star_Yellow_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Attks/Stars/Iota_Stars_Yellow.png")
 const Star_BeamPic_01 = preload("res://TowerRelated/Color_Yellow/Iota/Attks/StarBeam/Iota_StarBeam_Yellow.png")
 
-
 const Iota_StarBullet = preload("res://TowerRelated/Color_Yellow/Iota/Attks/Stars/Iota_Star.gd")
 const Iota_StarBullet_Scene = preload("res://TowerRelated/Color_Yellow/Iota/Attks/Stars/Iota_Star.tscn")
 
 const BulletHomingComponent = preload("res://TowerRelated/CommonBehaviorRelated/BulletHomingComponent.gd")
 const BulletHomingComponentPool = preload("res://MiscRelated/PoolRelated/Implementations/BulletHomingComponentPool.gd")
-
 const InstantDamageAttackModule = preload("res://TowerRelated/Modules/InstantDamageAttackModule.gd")
 const InstantDamageAttackModule_Scene = preload("res://TowerRelated/Modules/InstantDamageAttackModule.tscn")
 
@@ -564,7 +561,7 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Crashing stars can now hit its target up to 5 times."
+			"Crashing stars can now hit its target up to %s times." % str(star_pierce_count_on_energy)
 		]
 
 
@@ -574,6 +571,3 @@ func _module_turned_on(_first_time_per_round : bool):
 
 func _module_turned_off():
 	is_energy_module_on = false
-
-
-

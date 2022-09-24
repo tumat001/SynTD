@@ -4,8 +4,10 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
 
-signal before_enemy_hit_aoe(enemy)
 
+signal before_enemy_hit_aoe(enemy)
+signal enemy_entered(enemy)
+signal enemy_exited(enemy)
 
 var damage_instance : DamageInstance
 var damage_register_id : int
@@ -64,7 +66,7 @@ func _on_AOEArea_area_shape_entered(area_id, area, area_shape, self_shape):
 		if parent is AbstractEnemy:
 			if !enemies_to_ignore.has(parent):
 				_enemies_inside_damage_cd_map[parent] = 0
-
+				emit_signal("enemy_entered", parent)
 
 func _on_AOEArea_area_shape_exited(area_id, area, area_shape, self_shape):
 	if area != null:
@@ -72,6 +74,7 @@ func _on_AOEArea_area_shape_exited(area_id, area, area_shape, self_shape):
 		
 		if parent is AbstractEnemy:
 			_enemies_inside_damage_cd_map.erase(parent)
+			emit_signal("enemy_exited", parent)
 
 #
 
@@ -238,7 +241,8 @@ func _attempt_damage_entities_inside(delta):
 		else:
 			_enemies_inside_damage_cd_map[entity] -= delta
 	
-	_enemies_inside_damage_cd_map.erase(null)
+	while _enemies_inside_damage_cd_map.keys().has(null):
+		_enemies_inside_damage_cd_map.erase(null)
 
 
 func _attempt_damage_entity(entity):
@@ -272,4 +276,12 @@ func get_coll_circle_radius():
 
 func get_coll_circle_radius_with_scale():
 	return get_coll_circle_radius() * scale
+
+#
+
+func get_num_of_enemies_inside():
+	while _enemies_inside_damage_cd_map.keys().has(null):
+		_enemies_inside_damage_cd_map.erase(null)
+	
+	return _enemies_inside_damage_cd_map.size()
 

@@ -26,6 +26,7 @@ const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelat
 const LavaJetModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/LavaJetModuleAdderEffect.gd")
 const FlameBurstModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/FlameBurstModuleAdderEffect.gd")
 const AdeptModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/AdeptModuleAdderEffect.gd")
+const FulSmiteAttackModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/FulSmiteAttkModuleAdder.gd")
 
 const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
@@ -62,6 +63,7 @@ const trudge_image = preload("res://TowerRelated/Color_Red/Trudge/Trudge_ImageIn
 const sophist_image = preload("res://TowerRelated/Color_Red/Sophist/Sophist_Omni.png")
 const fulgurant_image = preload("res://TowerRelated/Color_Red/Fulgurant/Fulgurant.png")
 const enervate_image = preload("res://TowerRelated/Color_Red/Enervate/Enervate_Omni.png")
+const solitar_image = preload("res://TowerRelated/Color_Red/Solitar/Solitar_E.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -163,6 +165,8 @@ enum {
 	SOPHIST = 211,
 	FULGURANT = 212,
 	ENERVATE = 213,
+	SOLITAR = 214,
+	TRAPPER = 215,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -266,6 +270,7 @@ const TowerTiersMap : Dictionary = {
 	REBOUND : 1,
 	STRIKER : 1,
 	PINECONE : 1,
+	#TRAPPER : 1, #TODO Enable this when you're ready to
 	
 	RAILGUN : 2,
 	SCATTER : 2,
@@ -281,6 +286,7 @@ const TowerTiersMap : Dictionary = {
 	COIN : 2,
 	PROPEL : 2,
 	VACUUM : 2,
+	SOLITAR : 2,
 	
 	#SIMPLE_OBELISK : 3,
 	BEACON_DISH : 3,
@@ -5606,7 +5612,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Attacks against stunned or slowed targets trigger Spurt.",
 			["Spurt: Release an explosion, dealing |0| to 3 enemies and slowing them by |1| for 6 seconds. Additionally, Stampede's cooldown is reduced by 1 second.", [interpreter_for_spurt_flat_on_hit, interpreter_for_first_slam_slow]],
 			"",
-			"Auto casts Stampede.",
+			"Auto casts Stampede when at least 1 enemy is in range.",
 			["Ability: Stampede: Trudge slams the ground 3 times, each dealing |0|. Each slam affects up to 15 enemies.", [interpreter_for_slam_flat_on_hit]],
 			["The first slam applies Spurt's slow. The second slam knocks enemies up for 0.5 seconds. The final slam knocks enemies up for |0|. Only the final slam can trigger Spurt.", [interpreter_for_final_slam_ku_duration]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
@@ -5781,6 +5787,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		info.tower_descriptions = [
+			"Auto casts Fury when at least 1 enemy is in range.",
+			"Ability: Fury: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies or becomes untargetable.",
+			["Each bullet deals |0|. However, the damage is only 40% effective against boss enemies.", [interpreter_for_bonus_dmg]],
+			["Wyvern additionally gains |0| during Fury.", [interpreter_for_attk_speed]],
+			["Cooldown: |0|", [interpreter_for_cooldown]]
+		]
+		
+		info.tower_simple_descriptions = [
 			"Auto casts Fury.",
 			"Ability: Fury: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies or becomes untargetable.",
 			["Each bullet deals |0|. However, the damage is only 40% effective against boss enemies.", [interpreter_for_bonus_dmg]],
@@ -5808,8 +5822,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = fulgurant_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.75
-		info.base_attk_speed = 0.70
+		info.base_damage = 2.5
+		info.base_attk_speed = 0.95
 		info.base_pierce = 1
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -5822,7 +5836,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var outer_ins = []
 		var ins = []
-		ins.append(NumericalTextFragment.new(4, false, DamageType.ELEMENTAL))
+		ins.append(NumericalTextFragment.new(6, false, DamageType.ELEMENTAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 2, DamageType.ELEMENTAL))
 		outer_ins.append(ins)
@@ -5847,22 +5861,33 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		info.tower_descriptions = [
+			"Auto casts Smite when at least 1 enemy is in the map. If none are found, this ability goes on a 2 second cooldown.",
+			["Ability: Smite: Fulgurant smites a random enemy outside of its range, dealing |0| as an explosion hitting up to 3 enemies. The explosion stuns for 1 second.", [interpreter_for_smite_dmg]],
+			"Every 3rd cast of Smite targets three enemies instead of one.",
+			["Cooldown: |0|", [interpreter_for_cooldown]]
+		]
+		
+		info.tower_simple_descriptions = [
 			"Auto casts Smite.",
 			["Ability: Smite: Fulgurant smites a random enemy outside of its range, dealing |0| as an explosion hitting up to 3 enemies. The explosion stuns for 1 second.", [interpreter_for_smite_dmg]],
 			"Every 3rd cast of Smite targets three enemies instead of one.",
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
 		
-		
-		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_FULGURANT)
-		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
-		
-		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_FULGURANT)
-		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		var effect = FulSmiteAttackModuleAdderEffect.new()
+		var ing_effect := IngredientEffect.new(tower_id, effect)
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "+ base dmg"
 		
+#		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_FULGURANT)
+#		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
+#
+#		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_FULGURANT)
+#		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+#
+#		info.ingredient_effect = ing_effect
+#		info.ingredient_effect_simple_description = "+ base dmg"
+#
 		
 		
 	elif tower_id == ENERVATE:
@@ -5870,7 +5895,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.colors.append(TowerColors.BLUE) #TODO TEMPORARY
 		info.base_tower_image = enervate_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
@@ -5996,7 +6020,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_descriptions = [
-			"Auto casts Chant.",
+			"Auto casts Chant when at least 1 enemy is in range.",
 			"Ability: Chant: Create an orb that curses an enemy based on Enervate's targeting. Duplicate orbs are avoided.",
 			["Orbs deal |0| per 0.5 seconds.", [interpreter_for_flat_on_hit]],
 			["Cooldown : |0|", [interpreter_for_cooldown]],
@@ -6009,6 +6033,126 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			["If Chant is casted when all orbs are activated, Enervate instead gains |0|.", [interpreter_for_ap]]
 		]
+		
+		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_ENERVATE)
+		base_ap_attr_mod.flat_modifier = tier_ap_map[info.tower_tier]
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_ENERVATE)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ ap"
+		
+		
+		
+	elif tower_id == SOLITAR:
+		info = TowerTypeInformation.new("Solitar", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		info.base_tower_image = solitar_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 2
+		info.base_attk_speed = 1.25
+		info.base_pierce = 1
+		info.base_range = 115
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PURE, "additional damage", 2))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		
+		var interpreter_for_pierce = TextFragmentInterpreter.new()
+		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_pierce.display_body = false
+		
+		var ins_for_pierce = []
+		ins_for_pierce.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.PIERCE, -1, "bonus pierce", 1))
+		
+		interpreter_for_pierce.array_of_instructions = ins_for_pierce
+		
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(8, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		info.tower_descriptions = [
+			"Auto casts Isolation when at least 1 enemy is in range.",
+			["Ability: Isolation: For 8 seconds, main attacks on hit against isolated enemies deal |0|.", [interpreter_for_flat_on_hit]],
+			["Main attacks also gain |0|, and stun enemies hit (except the first enemy) for 1 second.", [interpreter_for_pierce]],
+			["Cooldown: |0|. Cooldown starts when Isolation ends.", [interpreter_for_cooldown]],
+			"",
+			"Enemies with no enemies in range within 30 units are considered isolated."
+		]
+		
+		info.tower_simple_descriptions = [
+			"Auto casts Isolation.",
+			["Ability: Isolation: For 8 seconds, main attacks on hit against isolated enemies deal |0|.", [interpreter_for_flat_on_hit]],
+			["Main attacks also gain |0|, and stun enemies hit (except the first enemy) for 1 second.", [interpreter_for_pierce]],
+			["Cooldown: |0|", [interpreter_for_cooldown]]
+		]
+		
+		
+		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SOLITAR)
+		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
+		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_SOLITAR, attr_mod, DamageType.PURE)
+		
+		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_SOLITAR)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ on hit"
+		
+		
+	elif tower_id == TRAPPER:
+		info = TowerTypeInformation.new("Trapper", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		#info.base_tower_image = enervate_image
+		#info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 6
+		info.base_attk_speed = 0.375
+		info.base_pierce = 1
+		info.base_range = 130
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		
+		info.tower_descriptions = [
+			["On round start: Lay down 3 traps. Enemies take |0| damage upon stepping on the trap.", []],
+			"When 3 or more enemies are inside a trap, the trap stuns all enemies on it for 1 second. Recharge time: 15 s.",
+		]
+		
+		# Ingredient related
+		var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_TRAPPER)
+		base_dmg_attr_mod.flat_modifier = tier_base_dmg_map[info.tower_tier]
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.ING_TRAPPER)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ base dmg"
+		
 		
 	
 	return info
@@ -6179,4 +6323,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Fulgurant/Fulgurant.tscn")
 	elif tower_id == ENERVATE:
 		return load("res://TowerRelated/Color_Red/Enervate/Enervate.tscn")
-
+	elif tower_id == SOLITAR:
+		return load("res://TowerRelated/Color_Red/Solitar/Solitar.tscn")

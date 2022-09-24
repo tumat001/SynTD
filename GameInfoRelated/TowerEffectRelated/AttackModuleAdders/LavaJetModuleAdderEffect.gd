@@ -12,7 +12,6 @@ const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 
-
 const LavaJet_Bullet_Pic = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJetBullet.png")
 
 const LavaJet_Beam01 = preload("res://TowerRelated/Color_Orange/LavaJet/LavaJet_Beam/LavaJetBeam_01.png")

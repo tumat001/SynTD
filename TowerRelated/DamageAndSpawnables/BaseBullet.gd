@@ -51,6 +51,8 @@ var is_animated_sprite_playing : bool
 var can_hit_towers : bool = false setget set_can_hit_towers
 var reduce_pierce_if_hit_towers : bool = false
 
+# includes hitting the same enemy
+var num_of_non_unique_enemy_hits : int = 0
 
 #
 
@@ -115,6 +117,7 @@ func _move(delta):
 
 
 func hit_by_enemy(enemy):
+	num_of_non_unique_enemy_hits += 1
 	emit_signal("hit_an_enemy", self, enemy)
 
 func decrease_pierce(amount):

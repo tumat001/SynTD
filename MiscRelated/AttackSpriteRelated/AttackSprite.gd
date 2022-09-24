@@ -31,15 +31,16 @@ func _init():
 	z_as_relative = false
 
 func _ready():
+	if texture_to_use != null and frames == null:
+		frames = SpriteFrames.new()
+		frames.add_frame("default", texture_to_use)
+	
 	if frames_based_on_lifetime:
 		set_anim_speed_based_on_lifetime()
 	
 	if reset_frame_to_start:
 		frame = 0
 	
-	if texture_to_use != null and frames == null:
-		frames = SpriteFrames.new()
-		frames.add_frame("default", texture_to_use)
 	
 	connect("visibility_changed", self, "_on_visiblity_changed")
 

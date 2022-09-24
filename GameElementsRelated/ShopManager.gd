@@ -60,7 +60,8 @@ const blacklisted_towers_to_inventory : Array = [
 	Towers.WYVERN,
 	Towers.ENERVATE,
 	Towers.FULGURANT,
-	
+	Towers.SOLITAR,
+	Towers.TRAPPER,
 ]
 
 const towers_not_initially_in_inventory : Array = [
@@ -83,7 +84,8 @@ const towers_not_initially_in_inventory : Array = [
 	Towers.WYVERN,
 	Towers.ENERVATE,
 	Towers.FULGURANT,
-	
+	Towers.SOLITAR,
+	Towers.TRAPPER,
 ]
 
 # tower id to amount map
