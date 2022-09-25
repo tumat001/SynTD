@@ -19,6 +19,7 @@ var direction_as_relative_location : Vector2
 var speed
 var speed_inc_per_sec : float = 0
 var speed_max : float = 10000
+var speed_min : float = 0
 
 var life_distance
 var decrease_life_distance : bool = true
@@ -54,6 +55,8 @@ var reduce_pierce_if_hit_towers : bool = false
 # includes hitting the same enemy
 var num_of_non_unique_enemy_hits : int = 0
 
+var _is_in_queue_free : bool
+
 #
 
 onready var bullet_sprite = $BulletSprite
@@ -73,7 +76,8 @@ func _ready():
 func _process(delta):
 	rotation_degrees += rotation_per_second * delta
 	
-	_move(delta)
+	if !_is_in_queue_free:
+		_move(delta)
 
 
 # Movement
@@ -102,11 +106,12 @@ func _move(delta):
 		move_and_collide(vector_mov)
 	
 	speed += speed_inc_per_sec * delta
-	if speed < 0:
-		speed = 0
 	
+	if speed < speed_min:
+		speed = 0
 	if speed > speed_max:
 		speed = speed_max
+	
 	
 	if decrease_life_duration:
 		current_life_duration -= delta
@@ -157,6 +162,9 @@ func _inactivate():
 func true_destroy():
 	queue_free()
 
+func queue_free():
+	_is_in_queue_free = true
+	.queue_free()
 
 #
 
@@ -207,5 +215,7 @@ func _if_enemies_to_hit_only_has_only_nulls():
 			return false
 	
 	return true
+
+#
 
 

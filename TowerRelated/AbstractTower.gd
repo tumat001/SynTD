@@ -59,7 +59,7 @@ const AbsorbIngParticle_Scene = preload("res://TowerRelated/CommonTowerParticles
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self) # use when listening for player input. Note: does not take into account the swapping of towers
 signal on_attempt_drop_tower_on_placable(tower_self, arg_placable, arg_move_success) # 3rd arg is if there is enough tower slots to put the tower
-signal on_tower_transfered_to_placable(tower_self, arg_placable)
+signal on_tower_transfered_to_placable(tower_self, arg_placable) # called regardless transfer was due to player input or other means
 
 signal tower_toggle_show_info
 signal on_tower_toggle_showing_range(is_showing_ranges)

@@ -64,6 +64,8 @@ const sophist_image = preload("res://TowerRelated/Color_Red/Sophist/Sophist_Omni
 const fulgurant_image = preload("res://TowerRelated/Color_Red/Fulgurant/Fulgurant.png")
 const enervate_image = preload("res://TowerRelated/Color_Red/Enervate/Enervate_Omni.png")
 const solitar_image = preload("res://TowerRelated/Color_Red/Solitar/Solitar_E.png")
+const trapper_image = preload("res://TowerRelated/Color_Red/Trapper/Trapper_Omni.png")
+const outreach_image = preload("res://TowerRelated/Color_Red/Outreach/Outreach_Omni.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -167,6 +169,7 @@ enum {
 	ENERVATE = 213,
 	SOLITAR = 214,
 	TRAPPER = 215,
+	OUTREACH = 216,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -270,7 +273,7 @@ const TowerTiersMap : Dictionary = {
 	REBOUND : 1,
 	STRIKER : 1,
 	PINECONE : 1,
-	#TRAPPER : 1, #TODO Enable this when you're ready to
+	TRAPPER : 1,
 	
 	RAILGUN : 2,
 	SCATTER : 2,
@@ -346,6 +349,7 @@ const TowerTiersMap : Dictionary = {
 	ACCUMULAE : 6,
 	HEXTRIBUTE : 6,
 	LA_NATURE : 6,
+	OUTREACH : 6,
 }
 
 const tier_base_dmg_map : Dictionary = {
@@ -392,15 +396,8 @@ const tier_on_hit_dmg_map : Dictionary = {
 	4 : 2.7,
 	5 : 3.2,
 	6 : 3.7,
-	
-#	1 : 0.75,
-#	2 : 1.25,
-#	3 : 1.75,
-#
-#	4 : 2.75,
-#	5 : 3.25,
-#	6 : 3.75,
 }
+const tier_on_hit_dmg_reduc_if_pure : float = 0.25
 
 const tier_flat_range_map : Dictionary = {
 	1 : 15,
@@ -6113,6 +6110,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SOLITAR)
 		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
+		attr_mod.flat_modifier -= tier_on_hit_dmg_reduc_if_pure
 		var on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.ING_SOLITAR, attr_mod, DamageType.PURE)
 		
 		var attr_effect : TowerOnHitDamageAdderEffect = TowerOnHitDamageAdderEffect.new(on_hit, StoreOfTowerEffectsUUID.ING_SOLITAR)
@@ -6127,20 +6125,42 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		#info.base_tower_image = enervate_image
-		#info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		info.base_tower_image = trapper_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 6
-		info.base_attk_speed = 0.375
+		info.base_damage = 0
+		info.base_attk_speed = 0
 		info.base_pierce = 1
-		info.base_range = 130
+		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		
+		var interpreter = TextFragmentInterpreter.new()
+		interpreter.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter.display_body = true
+		interpreter.header_description = "damage"
+		
+		var ins = []
+		ins.append(NumericalTextFragment.new(2, false, DamageType.PHYSICAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 2, DamageType.PHYSICAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1)) # stat basis does not matter here
+		
+		interpreter.array_of_instructions = ins
+		
+		
 		info.tower_descriptions = [
-			["On round start: Lay down 3 traps. Enemies take |0| damage upon stepping on the trap.", []],
-			"When 3 or more enemies are inside a trap, the trap stuns all enemies on it for 1 second. Recharge time: 15 s.",
+			"Does not attack.",
+			"",
+			["On round start: Trapper lays down 3 traps on the track in its range. Enemies take |0| upon stepping on the trap. Traps are considered to be Trapper's main attack.", [interpreter]],
+		]
+		
+		info.tower_simple_descriptions = [
+			"Does not attack.",
+			"",
+			["On round start: Trapper lays down 3 traps on the track. Enemies take |0| upon stepping on the trap.", [interpreter]],
 		]
 		
 		# Ingredient related
@@ -6153,6 +6173,119 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ base dmg"
 		
+		
+	elif tower_id == OUTREACH:
+		info = TowerTypeInformation.new("Outreach", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		info.base_tower_image = outreach_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
+		
+		info.base_damage = 6
+		info.base_attk_speed = 0.7
+		info.base_pierce = 1
+		info.base_range = 145
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		#
+		
+		var interpreter_for_range = TextFragmentInterpreter.new()
+		interpreter_for_range.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_range.display_body = false
+		
+		var ins_for_range = []
+		ins_for_range.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE, -1, "range", 150, false))
+		
+		interpreter_for_range.array_of_instructions = ins_for_range
+		
+		
+		var interpreter_for_base_missle_count = TextFragmentInterpreter.new()
+		interpreter_for_base_missle_count.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_base_missle_count.display_body = true
+		interpreter_for_base_missle_count.header_description = "missles"
+		interpreter_for_base_missle_count.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.CEIL
+		
+		var ins_for_base_missle_count = []
+		ins_for_base_missle_count.append(NumericalTextFragment.new(20, false, -1))
+		ins_for_base_missle_count.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_base_missle_count.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_base_missle_count.array_of_instructions = ins_for_base_missle_count
+		
+		
+		var interpreter = TextFragmentInterpreter.new()
+		interpreter.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter.display_body = true
+		
+		var ins = []
+		ins.append(NumericalTextFragment.new(2, false, DamageType.ELEMENTAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25)) # stat basis does not matter here
+		
+		interpreter.array_of_instructions = ins
+		
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(54, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		var interpreter_for_extra_missle_count = TextFragmentInterpreter.new()
+		interpreter_for_extra_missle_count.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_extra_missle_count.display_body = true
+		interpreter_for_extra_missle_count.header_description = "additional missles"
+		interpreter_for_extra_missle_count.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.CEIL
+		
+		var ins_for_extra_missle_count = []
+		ins_for_extra_missle_count.append(NumericalTextFragment.new(10, false, -1))
+		ins_for_extra_missle_count.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_extra_missle_count.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_extra_missle_count.array_of_instructions = ins_for_extra_missle_count
+		
+		
+		var interpreter_for_shorter_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_shorter_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_shorter_cooldown.display_body = true
+		interpreter_for_shorter_cooldown.header_description = "s"
+		
+		var ins_for_shorter_cooldown = []
+		ins_for_shorter_cooldown.append(NumericalTextFragment.new(27, false))
+		ins_for_shorter_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_shorter_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_shorter_cooldown.array_of_instructions = ins_for_shorter_cooldown
+		
+		
+		#
+		
+		info.tower_descriptions = [
+			"Auto casts Reach.",
+			["Ability: Reach. Outreach gains |0|, then shoots |1| at random enemies, prioritising those in range. Missles explode on impact to deal |2| to 3 enemies and stun for 1.25 seconds.", [interpreter_for_range, interpreter_for_base_missle_count, interpreter]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+			"",
+			["If no enemies are in range even after gaining range, the next cast of Reach shoots |0|. The cooldown for triggering this is reduced to |1| instead.", [interpreter_for_extra_missle_count, interpreter_for_shorter_cooldown]],
+		]
+		
+		
+		var range_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_OUTREACH)
+		range_attr_mod.flat_modifier = tier_flat_range_map[info.tower_tier]
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_OUTREACH)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ range"
 		
 	
 	return info
@@ -6325,3 +6458,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Enervate/Enervate.tscn")
 	elif tower_id == SOLITAR:
 		return load("res://TowerRelated/Color_Red/Solitar/Solitar.tscn")
+	elif tower_id == TRAPPER:
+		return load("res://TowerRelated/Color_Red/Trapper/Trapper.tscn")
+	elif tower_id == OUTREACH:
+		return load("res://TowerRelated/Color_Red/Outreach/Outreach.tscn")

@@ -9,6 +9,12 @@ signal on_enemy_path_removed(enemy_path)
 signal on_all_enemy_paths_changed(new_all_paths)
 
 
+enum EnemyPathState {
+	USED_AND_ACTIVE = 0,
+	NOT_USED_AND_ACTIVE = 1,
+	ANY = 2
+}
+
 var all_in_map_placables : Array = []
 var _all_enemy_paths : Array = []
 
@@ -50,15 +56,38 @@ func remove_enemy_path(path : EnemyPath):
 func get_all_enemy_paths():
 	return _all_enemy_paths.duplicate(false)
 
-func get_random_enemy_path(arg_paths_to_choose_from : Array = _all_enemy_paths) -> EnemyPath:
+
+
+
+func get_random_enemy_path__with_params(arg_path_state : int = EnemyPathState.ANY , arg_paths_to_choose_from : Array = _all_enemy_paths) -> EnemyPath:
+	var bucket = []
+	if arg_path_state == EnemyPathState.USED_AND_ACTIVE:
+		for path in arg_paths_to_choose_from:
+			if path.is_used_and_active:
+				bucket.append(path)
+		
+	elif arg_path_state == EnemyPathState.NOT_USED_AND_ACTIVE:
+		for path in arg_paths_to_choose_from:
+			if !path.is_used_and_active:
+				bucket.append(path)
+		
+	elif arg_path_state == EnemyPathState.ANY:
+		for path in arg_paths_to_choose_from:
+			bucket.append(path)
+	
+	#
 	var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TARGETING)
 	
-	var rng_i = rng.randi_range(0, arg_paths_to_choose_from.size() - 1)
+	var rng_i = rng.randi_range(0, bucket.size() - 1)
 	
-	if arg_paths_to_choose_from.size() > 0:
-		return arg_paths_to_choose_from[rng_i]
+	if bucket.size() > 0:
+		return bucket[rng_i]
 	else:
 		return null
+
+
+func get_random_enemy_path(arg_paths_to_choose_from : Array = _all_enemy_paths) -> EnemyPath:
+	return get_random_enemy_path__with_params(EnemyPathState.ANY, arg_paths_to_choose_from)
 
 
 # path related (helper funcs)

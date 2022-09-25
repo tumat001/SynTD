@@ -1,0 +1,32 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Red/Trapper/Subs/TrapperTrap.gd" type="Script" id=2]
+[ext_resource path="res://TowerRelated/Color_Red/Trapper/Assets/Trapper_Traps_Grayed.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Red/Trapper/Assets/Trapper_Traps_Active.png" type="Texture" id=4]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "gray",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 4 ) ],
+"loop": true,
+"name": "active",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 8.65154, 4.93566 )
+
+[node name="TrapperTrap" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="BulletSprite" parent="." index="0"]
+frames = SubResource( 1 )
+animation = "active"
+
+[node name="CollisionShape2D" parent="." index="1"]
+shape = SubResource( 2 )

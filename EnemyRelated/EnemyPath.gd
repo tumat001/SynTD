@@ -5,6 +5,8 @@ const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 signal on_enemy_death(enemy)
 signal on_enemy_reached_end(enemy)
 
+signal is_used_and_active_changed(arg_val)
+
 enum MarkerIds {
 	SKIRMISHER_CLONE_OF_BASE_PATH = 1,
 	SKIRMISHER_BASE_PATH_ALREADY_CLONED = 2,
@@ -13,6 +15,7 @@ enum MarkerIds {
 
 
 var path_length : float
+var is_used_and_active : bool = true setget set_is_used_and_active# if true, then this signifies that enemies will use this path during the round.
 
 var marker_id_to_value_map : Dictionary = {}
 
@@ -61,5 +64,12 @@ func get_copy_of_path(reversed : bool):
 	copy.marker_id_to_value_map = marker_id_to_value_map.duplicate(true)
 	
 	return copy
+
+##
+
+func set_is_used_and_active(arg_val):
+	is_used_and_active = arg_val
+	emit_signal("is_used_and_active_changed", is_used_and_active)
+
 
 

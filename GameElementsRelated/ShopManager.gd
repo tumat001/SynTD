@@ -62,6 +62,8 @@ const blacklisted_towers_to_inventory : Array = [
 	Towers.FULGURANT,
 	Towers.SOLITAR,
 	Towers.TRAPPER,
+	Towers.OUTREACH,
+	
 ]
 
 const towers_not_initially_in_inventory : Array = [
@@ -79,13 +81,15 @@ const towers_not_initially_in_inventory : Array = [
 	Towers.YELVIO_RIFT_AXIS,
 	
 	# red towers
-	Towers.TRUDGE,
-	Towers.SOPHIST,
-	Towers.WYVERN,
-	Towers.ENERVATE,
-	Towers.FULGURANT,
-	Towers.SOLITAR,
-	Towers.TRAPPER,
+	Towers.TRUDGE, #4
+	Towers.SOPHIST, #5
+	Towers.WYVERN, #4
+	Towers.ENERVATE, #3
+	Towers.FULGURANT, #3
+	Towers.SOLITAR, #2
+	Towers.TRAPPER, #1
+	Towers.OUTREACH, #6
+	
 ]
 
 # tower id to amount map

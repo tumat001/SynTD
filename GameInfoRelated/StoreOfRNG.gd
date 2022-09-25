@@ -24,7 +24,7 @@ var variance_state_rng := RandomNumberGenerator.new()
 var sophist_crystal_positioning_rng := RandomNumberGenerator.new()
 var enervate_orb_reposition_rng := RandomNumberGenerator.new()
 var enervate_orb_choose_rng := RandomNumberGenerator.new()
-
+var trapper_trap_pos_rng := RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -44,6 +44,7 @@ enum RNGSource {
 	SOPHIST_CRYSAL_POS = 108,
 	ENERVATE_REPOSITION = 109,
 	ENERVATE_ORB_CHOOSE = 110,
+	TRAPPER_TRAP_POS = 111,
 	
 	INACCURACY = 1000,
 	
@@ -115,5 +116,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return enervate_orb_reposition_rng
 	elif rng_source == RNGSource.ENERVATE_ORB_CHOOSE:
 		return enervate_orb_choose_rng
+	elif rng_source == RNGSource.TRAPPER_TRAP_POS:
+		return trapper_trap_pos_rng
 	
 	return null
