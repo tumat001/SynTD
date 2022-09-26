@@ -47,7 +47,7 @@ var suck_particle_show_timer : Timer
 var suck_particle_show_interval_delay : float = 0.15
 
 
-const shockwave_stun_duration : float = 1.0
+const shockwave_stun_duration : float = 1.5
 const shockwave_knockup_accel : float = 30.0
 const shockwave_knockup_time : float = 0.8
 

@@ -290,7 +290,7 @@ var _self_size : Vector2
 
 var _stack_id_effects_map : Dictionary = {}
 var _stun_id_effects_map : Dictionary = {}
-var _is_stunned : bool
+var _is_stunned : bool  #last_calculated_is_stunned
 var _dmg_over_time_id_effects_map : Dictionary = {}
 var _heal_over_time_id_effects_map : Dictionary = {}
 var _before_reaching_end_path_effects_map : Dictionary = {}

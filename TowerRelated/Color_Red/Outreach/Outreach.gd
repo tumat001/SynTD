@@ -33,7 +33,7 @@ const reach_base_missle_count : int = 20
 const reach_missle_explosion_base_dmg : float = 2.0
 const reach_missle_explosion_on_hit_dmg_ratio : float = 0.25
 const reach_missle_explosion_pierce : int = 3
-const reach_missle_explosion_stun_duration : float = 1.25
+const reach_missle_explosion_stun_duration : float = 0.75
 const reach_missle_lifetime_duration : float = 12.0
 
 const reach_bonus_range_amount : float = 150.0

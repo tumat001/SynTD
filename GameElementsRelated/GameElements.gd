@@ -113,6 +113,9 @@ func _ready():
 	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
 	game_modi_ids = game_mode_type_info.game_modi_ids.duplicate()
 	
+	# TEMPORARY HERE. MAKE IT BE EDITABLE IN MAP SELECTION
+	game_modi_ids.append(StoreOfGameModifiers.GameModiIds.RED_TOWER_RANDOMIZER)
+	
 	TowerCompositionColors.reset_synergies_instances()
 	TowerDominantColors.reset_synergies_instances()
 	
@@ -323,17 +326,19 @@ func _ready():
 	game_result_manager.whole_screen_gui = whole_screen_gui
 	game_result_manager.game_elements = self
 	
-	#GAME START
-	stage_round_manager.set_game_mode(game_mode_id)
-	stage_round_manager.end_round(true)
 	
+	###
 	gold_manager.increase_gold_by(3, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	health_manager.starting_health = 150
 	health_manager.set_health(150)
 	
-	
 	emit_signal("before_game_start")
 	
+	#GAME START
+	shop_manager.finalize_towers_in_shop()
+	
+	stage_round_manager.set_game_mode(game_mode_id)
+	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
@@ -358,10 +363,10 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
 			Towers.TRAPPER,
-			Towers.OUTREACH,
+			Towers.VARIANCE,
 			Towers.ENERVATE,
-			Towers.SOLITAR,
-			Towers.PAROXYSM,
+			Towers.BLAST,
+			Towers.OUTREACH,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([

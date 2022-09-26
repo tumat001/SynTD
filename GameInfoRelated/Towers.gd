@@ -66,6 +66,7 @@ const enervate_image = preload("res://TowerRelated/Color_Red/Enervate/Enervate_O
 const solitar_image = preload("res://TowerRelated/Color_Red/Solitar/Solitar_E.png")
 const trapper_image = preload("res://TowerRelated/Color_Red/Trapper/Trapper_Omni.png")
 const outreach_image = preload("res://TowerRelated/Color_Red/Outreach/Outreach_Omni.png")
+const blast_image = preload("res://TowerRelated/Color_Red/Blast/Blast_ImageInTowerCard.png")
 
 # ORANGE
 const ember_image = preload("res://TowerRelated/Color_Orange/Ember/Ember_E.png")
@@ -170,6 +171,7 @@ enum {
 	SOLITAR = 214,
 	TRAPPER = 215,
 	OUTREACH = 216,
+	BLAST = 217,
 	
 	# ORANGE (300)
 	EMBER = 300,
@@ -290,6 +292,7 @@ const TowerTiersMap : Dictionary = {
 	PROPEL : 2,
 	VACUUM : 2,
 	SOLITAR : 2,
+	BLAST : 2,
 	
 	#SIMPLE_OBELISK : 3,
 	BEACON_DISH : 3,
@@ -2132,8 +2135,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = spike_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2
-		info.base_attk_speed = 0.775
+		info.base_damage = 1.8#2
+		info.base_attk_speed = 0.85#0.775
 		info.base_pierce = 0
 		info.base_range = 120
 		info.base_damage_type = DamageType.PHYSICAL
@@ -3676,8 +3679,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = pinecone_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.25 #2.65
-		info.base_attk_speed = 0.7#0.6
+		info.base_damage = 2.25
+		info.base_attk_speed = 0.7
 		info.base_pierce = 1
 		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
@@ -5329,14 +5332,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Auto casts \"Suck\" when enemies are in range.",
 			"Ability: Suck. Enemies in range that are moving away from Vacuum are slowed by 70%.",
-			["After |0| release a shockwave that stuns enemies in range for 1 second.", [interpreter_for_suck_duration]],
+			["After |0| release a shockwave that stuns enemies in range for 1.5 seconds.", [interpreter_for_suck_duration]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
 		
 		info.tower_simple_descriptions = [
-			"Auto casts \"Suck\" when enemies are in range.",
+			"Auto casts \"Suck\".",
 			"Ability: Suck. Enemies in range that are moving away from Vacuum are slowed by 70%.",
-			["After |0| release a shockwave that stuns enemies in range for 1 second.", [interpreter_for_suck_duration]],
+			["After |0| release a shockwave that stuns enemies in range for 1.5 seconds.", [interpreter_for_suck_duration]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
 		
@@ -6142,7 +6145,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter.header_description = "damage"
 		
 		var ins = []
-		ins.append(NumericalTextFragment.new(2, false, DamageType.PHYSICAL))
+		ins.append(NumericalTextFragment.new(1.5, false, DamageType.PHYSICAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 2, DamageType.PHYSICAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
@@ -6271,7 +6274,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Auto casts Reach.",
-			["Ability: Reach. Outreach gains |0|, then shoots |1| at random enemies, prioritising those in range. Missles explode on impact to deal |2| to 3 enemies and stun for 1.25 seconds.", [interpreter_for_range, interpreter_for_base_missle_count, interpreter]],
+			["Ability: Reach. Outreach gains |0|, then shoots |1| at random enemies, prioritising those in range. Missles explode on impact to deal |2| to 3 enemies and stun for 0.75 seconds.", [interpreter_for_range, interpreter_for_base_missle_count, interpreter]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
 			["If no enemies are in range even after gaining range, the next cast of Reach shoots |0|. The cooldown for triggering this is reduced to |1| instead.", [interpreter_for_extra_missle_count, interpreter_for_shorter_cooldown]],
@@ -6286,6 +6289,68 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ range"
+		
+		
+	elif tower_id == BLAST:
+		info = TowerTypeInformation.new("Blast", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.RED)
+		info.base_tower_image = blast_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
+		
+		info.base_damage = 4
+		info.base_attk_speed = 0.6
+		info.base_pierce = 1
+		info.base_range = 120
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		
+		var interpreter_for_slow = TextFragmentInterpreter.new()
+		interpreter_for_slow.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_slow.display_body = true
+		
+		var ins_for_slow = []
+		
+		ins_for_slow.append(NumericalTextFragment.new(60, true))
+		ins_for_slow.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_slow.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_slow.array_of_instructions = ins_for_slow
+		
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(22, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+		interpreter_for_attk_speed.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_attk_speed.display_body = false
+		
+		var ins_for_attk_speed = []
+		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 80, true))
+		
+		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+		
+		
+		info.tower_descriptions = [
+			"Auto casts Shockwave if at least 1 enemy is in range.",
+			["Ability: Shockwave: Send a wave that knocks 5 enemies back by when facing Blast, or slows them by |0| for 2 seconds when not. Ability potency increases knockback.", [interpreter_for_slow]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+			"",
+			["Blast gains |0| on main attacks against stunned or slowed enemies.", [interpreter_for_attk_speed]]
+		]
+		
 		
 	
 	return info
@@ -6462,3 +6527,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Trapper/Trapper.tscn")
 	elif tower_id == OUTREACH:
 		return load("res://TowerRelated/Color_Red/Outreach/Outreach.tscn")
+	elif tower_id == BLAST:
+		return load("res://TowerRelated/Color_Red/Blast/Blast.tscn")
+	

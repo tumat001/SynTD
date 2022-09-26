@@ -25,6 +25,7 @@ var sophist_crystal_positioning_rng := RandomNumberGenerator.new()
 var enervate_orb_reposition_rng := RandomNumberGenerator.new()
 var enervate_orb_choose_rng := RandomNumberGenerator.new()
 var trapper_trap_pos_rng := RandomNumberGenerator.new()
+var red_tower_randomizer_rng := RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -56,6 +57,7 @@ enum RNGSource {
 	ROLL_TOWERS = 2000,
 	TIER = 2001,
 	RANDOM_TOWER_DECIDER = 2002, # ex: gain 2 tier 5 towers.
+	RED_TOWER_RANDOMIZER = 2003,
 	
 	BLACK_BUFF = 3000,
 	BLACK_CAPACITOR_NOVA_LIGHTNING_TOWER_OR_ENEMY_RNG = 3001,
@@ -118,5 +120,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return enervate_orb_choose_rng
 	elif rng_source == RNGSource.TRAPPER_TRAP_POS:
 		return trapper_trap_pos_rng
+	elif rng_source == RNGSource.RED_TOWER_RANDOMIZER:
+		return red_tower_randomizer_rng
 	
 	return null

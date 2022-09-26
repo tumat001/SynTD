@@ -55,20 +55,34 @@ const blacklisted_towers_to_inventory : Array = [
 	Towers.YELVIO_RIFT_AXIS,
 	
 	#red towers
-	Towers.TRUDGE,
-	Towers.SOPHIST,
-	Towers.WYVERN,
-	Towers.ENERVATE,
-	Towers.FULGURANT,
-	Towers.SOLITAR,
-	Towers.TRAPPER,
-	Towers.OUTREACH,
+	Towers.OUTREACH, #6
+	Towers.SOPHIST, #5
+	Towers.TRUDGE, #4
+	Towers.WYVERN, #4
+	Towers.ENERVATE, #3
+	Towers.FULGURANT, #3
+	Towers.SOLITAR, #2
+	Towers.BLAST, #2
+	Towers.TRAPPER, #1
+	
+#	Towers.HEXTRIBUTE,
+#	Towers.BLOSSOM,
+#	Towers.ADEPT,
+#	Towers.REAPER,
+#	Towers.PROBE,
+#	Towers.CHARGE,
+#	Towers.TRANSMUTATOR,
+#	Towers.SHOCKER,
+#	Towers.STRIKER,
+#	Towers.REBOUND,
+	# end of red towers
 	
 ]
 
 const towers_not_initially_in_inventory : Array = [
 	Towers.FRUIT_TREE_FRUIT,
 	
+	# Green special towers
 	Towers.SE_PROPAGER,
 	Towers.L_ASSAUT,
 	Towers.LA_CHASSEUR,
@@ -81,16 +95,29 @@ const towers_not_initially_in_inventory : Array = [
 	Towers.YELVIO_RIFT_AXIS,
 	
 	# red towers
-	Towers.TRUDGE, #4
+	Towers.OUTREACH, #6
 	Towers.SOPHIST, #5
+	Towers.TRUDGE, #4
 	Towers.WYVERN, #4
 	Towers.ENERVATE, #3
 	Towers.FULGURANT, #3
 	Towers.SOLITAR, #2
+	Towers.BLAST, #2
 	Towers.TRAPPER, #1
-	Towers.OUTREACH, #6
 	
+#	Towers.HEXTRIBUTE,
+#	Towers.BLOSSOM,
+#	Towers.ADEPT,
+#	Towers.REAPER,
+#	Towers.PROBE,
+#	Towers.CHARGE,
+#	Towers.TRANSMUTATOR,
+#	Towers.SHOCKER,
+#	Towers.STRIKER,
+#	Towers.REBOUND,
+	# end of red towers
 ]
+
 
 # tower id to amount map
 var current_tower_stock_inventory : Dictionary = {}
@@ -210,15 +237,16 @@ func _ready():
 	can_refresh_shop_at_round_end_clauses.connect("clause_inserted", self, "_on_can_refresh_shop_at_round_end_clauses_inserted_or_removed", [], CONNECT_PERSIST)
 	can_refresh_shop_at_round_end_clauses.connect("clause_removed", self, "_on_can_refresh_shop_at_round_end_clauses_inserted_or_removed", [], CONNECT_PERSIST)
 	
-	#
+	_update_last_calculated_effective_shop_level(true)
+	_update_last_calculated_can_refresh_shop_at_round_end()
+
+
+func finalize_towers_in_shop():
 	for tower_id in Towers.TowerTiersMap.keys():
 		if !towers_not_initially_in_inventory.has(tower_id):
 			add_tower_to_inventory(tower_id, Towers.TowerTiersMap[tower_id])
 	
 	_update_tier_has_tower_map()
-	
-	_update_last_calculated_effective_shop_level(true)
-	_update_last_calculated_can_refresh_shop_at_round_end()
 
 
 func add_tower_to_inventory(tower_id : int, tower_tier : int):
@@ -556,3 +584,24 @@ func _on_can_refresh_shop_at_round_end_clauses_inserted_or_removed(arg_clause):
 
 func _update_last_calculated_can_refresh_shop_at_round_end():
 	last_calculated_can_refresh_shop_at_round_end = can_refresh_shop_at_round_end_clauses.is_passed
+
+
+### Manipulation of stock. May be used by game modifiers
+
+func add_tower_id_to_blacklisted_towers_to_inventory(arg_id):
+	if !blacklisted_towers_to_inventory.has(arg_id):
+		blacklisted_towers_to_inventory.append(arg_id)
+
+func remove_tower_id_from_blacklisted_towers_to_inventory(arg_id):
+	blacklisted_towers_to_inventory.erase(arg_id)
+
+
+
+func add_tower_id_to_towers_not_initially_in_inventory(arg_id):
+	if !towers_not_initially_in_inventory.has(arg_id):
+		towers_not_initially_in_inventory.append(arg_id)
+
+func remove_tower_id_from_towers_not_initially_in_inventory(arg_id):
+	towers_not_initially_in_inventory.erase(arg_id)
+
+

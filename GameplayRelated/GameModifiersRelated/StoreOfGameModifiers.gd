@@ -5,9 +5,18 @@ const GameModi_EasyDifficulty = preload("res://GameplayRelated/GameModifiersRela
 
 enum GameModiIds {
 	
+	# STANDARD DIFFICULTY MODIFIERS (0)
 	EASY_DIFFICULTY = 1
 	BEGINNER_DIFFICULTY = 2
 	
+	
+	# OTHER MODIFIERS (1000)
+	
+	
+	# FRAGMENT MODIFIERS (10000)
+	RED_TOWER_RANDOMIZER = 10000
+	
+	# TUTORIALS (-10)
 	MODI_TUTORIAL_PHASE_01 = -10
 	MODI_TUTORIAL_PHASE_01_01 = -11
 	MODI_TUTORIAL_PHASE_02 = -13
@@ -20,7 +29,12 @@ enum GameModiIds {
 
 
 static func get_game_modifier_from_id(arg_id):
-	if arg_id == GameModiIds.EASY_DIFFICULTY:
+	
+	if arg_id == GameModiIds.RED_TOWER_RANDOMIZER:
+		var script = load("res://GameplayRelated/GameModifiersRelated/GameModis/OmniPresent/GameModiOmni_RedTowerDecider.gd")
+		return script.new()
+		
+	elif arg_id == GameModiIds.EASY_DIFFICULTY:
 		var script = GameModi_EasyDifficulty
 		return script.new()
 	elif arg_id == GameModiIds.BEGINNER_DIFFICULTY:
