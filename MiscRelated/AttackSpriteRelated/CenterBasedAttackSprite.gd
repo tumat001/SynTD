@@ -18,9 +18,11 @@ export(bool) var is_enabled_mov_toward_center : bool = true
 var non_essential_rng : RandomNumberGenerator
 
 
+func _init():
+	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
+
 
 func _ready():
-	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
 	
 	reset_for_another_use()
 

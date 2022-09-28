@@ -43,13 +43,13 @@ func _make_modifications_to_tower(tower):
 		_base_downtime_timer = Timer.new()
 		_base_downtime_timer.one_shot = true
 		_base_downtime_timer.connect("timeout", self, "_on_base_downtime_timer_expired", [], CONNECT_PERSIST)
-		_tower.get_tree().get_root().add_child(_base_downtime_timer)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_base_downtime_timer)
 	
 	if _per_sec_timer == null:
 		_per_sec_timer = Timer.new()
 		_per_sec_timer.one_shot = true
 		_per_sec_timer.connect("timeout", self, "_on_per_sec_timer_expired", [], CONNECT_PERSIST)
-		_tower.get_tree().get_root().add_child(_per_sec_timer)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_per_sec_timer)
 	
 	_construct_and_add_range_effects()
 	

@@ -74,80 +74,80 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# BASIC FACTION
 	if enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
-		info.base_health = 1000#24
-		info.base_movement_speed = 40
+		info.base_health = 800 #16 #24
+		info.base_movement_speed = 60 #40
 		
 	elif enemy_id == Enemies.BRUTE:
 		info = EnemyTypeInformation.new(Enemies.BRUTE, EnemyFactions.BASIC)
-		info.base_health = 130
-		info.base_movement_speed = 25
+		info.base_health = 88 #130
+		info.base_movement_speed = 37 #25
 		info.enemy_type = info.EnemyType.ELITE
 		
 	elif enemy_id == Enemies.DASH:
 		info = EnemyTypeInformation.new(Enemies.DASH, EnemyFactions.BASIC)
-		info.base_health = 40 #38
-		info.base_movement_speed = 34
+		info.base_health = 27 #40
+		info.base_movement_speed = 51 #34
 		
 	elif enemy_id == Enemies.HEALER:
 		info = EnemyTypeInformation.new(Enemies.HEALER, EnemyFactions.BASIC)
-		info.base_health = 38 #36
-		info.base_movement_speed = 30
+		info.base_health = 25 #38
+		info.base_movement_speed = 45 #30
 		
 	elif enemy_id == Enemies.WIZARD:
 		info = EnemyTypeInformation.new(Enemies.WIZARD, EnemyFactions.BASIC)
-		info.base_health = 32
-		info.base_movement_speed = 29
+		info.base_health = 21 #32
+		info.base_movement_speed = 44 #29
 		
 	elif enemy_id == Enemies.PAIN:
 		info = EnemyTypeInformation.new(Enemies.PAIN, EnemyFactions.BASIC)
-		info.base_health = 25
-		info.base_movement_speed = 38
+		info.base_health = 17 #25
+		info.base_movement_speed = 57 #38
 		info.base_player_damage = 2
 		
 		
 	# EXPERT FACTION
 	elif enemy_id == Enemies.EXPERIENCED:
 		info = EnemyTypeInformation.new(Enemies.EXPERIENCED, EnemyFactions.EXPERT)
-		info.base_health = 34 #33.5
-		info.base_movement_speed = 40
+		info.base_health = 23 #34
+		info.base_movement_speed = 60 #40
 		#info.base_resistance = 25
 		info.base_toughness = 4.5
 		info.base_armor = 3
 		
 	elif enemy_id == Enemies.FIEND:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 180
-		info.base_movement_speed = 25
+		info.base_health = 118 #180
+		info.base_movement_speed = 38 #25
 		info.base_armor = 18
 		info.base_toughness = 10
 		info.enemy_type = info.EnemyType.ELITE
 		
 	elif enemy_id == Enemies.CHARGE:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 55
-		info.base_movement_speed = 36
+		info.base_health = 37 #55
+		info.base_movement_speed = 54 #36
 		
 	elif enemy_id == Enemies.ENCHANTRESS:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 29
-		info.base_movement_speed = 30
+		info.base_health = 19 #29
+		info.base_movement_speed = 45 #30
 		info.base_toughness = 1
 		
 	elif enemy_id == Enemies.MAGUS:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 30
-		info.base_movement_speed = 29
+		info.base_health = 20 #30
+		info.base_movement_speed = 43 #29
 		
 	elif enemy_id == Enemies.ASSASSIN:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 35
-		info.base_movement_speed = 40
+		info.base_health = 23 #35
+		info.base_movement_speed = 60 #40
 		info.base_player_damage = 2
 		
 	elif enemy_id == Enemies.GRANDMASTER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 100
-		info.base_movement_speed = 40
+		info.base_health = 67 #100
+		info.base_movement_speed = 60 #40
 		info.base_effect_vulnerability = 0.2
 		#info.base_resistance = 25
 		info.base_toughness = 3
@@ -162,44 +162,44 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.BELIEVER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 43
-		info.base_movement_speed = 38
+		info.base_health = 29 #43
+		info.base_movement_speed = 57 #38
 		
 	elif enemy_id == Enemies.PRIEST:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 41
-		info.base_movement_speed = 25
+		info.base_health = 27 #41
+		info.base_movement_speed = 37 #25
 		
 	elif enemy_id == Enemies.SACRIFICER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 37
-		info.base_movement_speed = 23
+		info.base_health = 25 #37
+		info.base_movement_speed = 35 #23
 		
 	elif enemy_id == Enemies.SEER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 42
-		info.base_movement_speed = 25
+		info.base_health = 28 #42
+		info.base_movement_speed = 37 #25
 		info.base_toughness = 2
 		
 	elif enemy_id == Enemies.CROSS_BEARER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 47
-		info.base_movement_speed = 34
+		info.base_health = 31 #47
+		info.base_movement_speed = 51 #34
 		info.base_armor = 2
 		info.base_toughness = 2
 		
 	elif enemy_id == Enemies.DVARAPALA:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 130
-		info.base_movement_speed = 26
+		info.base_health = 87 #130
+		info.base_movement_speed = 39 #26
 		info.base_armor = 9
 		info.base_toughness = 9
 		info.enemy_type = info.EnemyType.ELITE
 		
 	elif enemy_id == Enemies.PROVIDENCE:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.FAITHFUL)
-		info.base_health = 88
-		info.base_movement_speed = 29
+		info.base_health = 59 #88
+		info.base_movement_speed = 44 #29
 		info.base_armor = 5
 		info.base_toughness = 5
 		info.enemy_type = info.EnemyType.ELITE
@@ -208,8 +208,8 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# SKIRMISHER
 	elif enemy_id == Enemies.COSMIC:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 54
-		info.base_movement_speed = 23
+		info.base_health = 36 #54
+		info.base_movement_speed = 35 #23
 		info.enemy_type = info.EnemyType.NORMAL
 		
 		
@@ -218,8 +218,8 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	# OTHERS
 	elif enemy_id == Enemies.TRIASYN_OGV_SOUL:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
-		info.base_health = 52
-		info.base_movement_speed = 27
+		info.base_health = 35 #52
+		info.base_movement_speed = 40 #27
 		info.base_armor = 5
 		info.base_toughness = 5
 		info.enemy_type = info.EnemyType.ELITE
@@ -227,8 +227,8 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.DOMSYN_RED_ORACLES_EYE_SHADOW:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
-		info.base_health = 65
-		info.base_movement_speed = 25
+		info.base_health = 43 #65
+		info.base_movement_speed = 38 #25
 		#info.base_armor = 5
 		#info.base_toughness = 5
 		info.enemy_type = info.EnemyType.NORMAL

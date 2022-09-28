@@ -249,7 +249,7 @@ func _on_bullet_hit_enemy(arg_bullet, arg_enemy):
 	max_charge_particle.position = arg_enemy.global_position
 	max_charge_particle.scale *= 1.5
 	
-	get_tree().get_root().add_child(max_charge_particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(max_charge_particle)
 
 
 # Module related

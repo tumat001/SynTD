@@ -203,7 +203,7 @@ func _construct_and_add_star_bullet_attk_module():
 	star_positioning_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.IOTA_STAR_POSITIONING)
 	
 	star_homing_component_pool = BulletHomingComponentPool.new()
-	star_homing_component_pool.node_to_parent = get_tree().get_root()
+	star_homing_component_pool.node_to_parent = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	star_homing_component_pool.source_of_create_resource = self
 	star_homing_component_pool.func_name_for_create_resource = "_create_star_homing_component"
 

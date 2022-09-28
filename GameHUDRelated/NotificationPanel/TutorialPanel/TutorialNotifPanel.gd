@@ -21,7 +21,7 @@ func initialize():
 	timer_for_char_appear = Timer.new()
 	timer_for_char_appear.one_shot = false
 	timer_for_char_appear.connect("timeout", self, "_on_char_timer_timeout", [], CONNECT_PERSIST)
-	get_tree().get_root().add_child(timer_for_char_appear)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(timer_for_char_appear)
 
 #
 
@@ -72,7 +72,7 @@ func _on_StatusIcon_mouse_entered():
 	
 	_current_tooltip.visible = true
 	_current_tooltip.tooltip_owner = status_icon
-	get_tree().get_root().add_child(_current_tooltip)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_current_text_for_tooltip)
 	_current_tooltip.update_display()
 
 func _construct_tooltip_for_status_icon() -> BaseTowerSpecificTooltip:

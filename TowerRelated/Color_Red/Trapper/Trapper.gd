@@ -150,6 +150,7 @@ func _fire_trap_at_pos(arg_pos):
 	trap.decrease_life_duration = false
 	
 	trap.connect("tree_entered", self, "_on_trap_tree_entered", [trap, arg_pos], CONNECT_ONESHOT)
+	
 	trap_attack_module.set_up_bullet__add_child_and_emit_signals(trap)
 
 func _on_trap_tree_entered(trap, arg_pos):

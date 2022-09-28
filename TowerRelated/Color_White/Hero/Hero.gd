@@ -342,7 +342,7 @@ func _on_any_attack_hit_h(enemy, damage_register_id, damage_instance, module):
 func _summon_light_wave_to_enemy(enemy):
 	if enemy != null:
 		var wave = lightwave_attack_module.construct_bullet(enemy.global_position)
-		get_tree().get_root().add_child(wave)
+		lightwave_attack_module.set_up_bullet__add_child_and_emit_signals(wave)
 
 func _summon_light_explosion_to_enemy(enemy, damage_instance_copy):
 	if enemy != null:
@@ -350,7 +350,7 @@ func _summon_light_explosion_to_enemy(enemy, damage_instance_copy):
 		explosion.damage_instance = damage_instance_copy
 		explosion.damage_instance.on_hit_effects.clear()
 		
-		get_tree().get_root().add_child(explosion)
+		lightexplosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 func _construct_and_add_light_waves_attack_module():
@@ -666,7 +666,7 @@ func _cast_VOL():
 		
 		var particle = VOL_BlessSprite.instance()
 		particle.position = tower.global_position
-		get_tree().get_root().call_deferred("add_child", particle)
+		CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 	
 	VOL_ability.on_ability_after_cast_ended(VOL_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 
@@ -1424,5 +1424,5 @@ func _create_and_show_level_up_particle():
 	particle.position.x += non_essential_rng.randi_range(-17, 17)
 	particle.position.y += non_essential_rng.randi_range(-16, 10)
 	
-	get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 

@@ -223,7 +223,7 @@ func _construct_tooltip():
 	ability_tooltip.tooltip_owner = ability_button
 	ability_tooltip.tower_associated_with_ability = ability.tower
 	
-	get_tree().get_root().add_child(ability_tooltip)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(ability_tooltip)
 
 
 func _update_tooltip():

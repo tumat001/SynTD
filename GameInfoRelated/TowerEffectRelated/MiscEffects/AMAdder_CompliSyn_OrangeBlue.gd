@@ -59,7 +59,7 @@ func _make_modifications_to_tower(tower):
 		_explosion_timer = Timer.new()
 		_explosion_timer.one_shot = true
 		_explosion_timer.wait_time = 0.1
-		tower.get_tree().get_root().add_child(_explosion_timer)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_explosion_timer)
 	
 
 func _construct_attk_module():
@@ -121,7 +121,7 @@ func _on_tower_main_attack_hit(enemy, damage_register_id, damage_instance, modul
 		explosion.damage_instance.scale_only_damage_by(tower.last_calculated_final_ability_potency)
 		explosion.scale *= explosion_scale
 		
-		tower.get_tree().get_root().add_child(explosion)
+		explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 func _on_round_end():

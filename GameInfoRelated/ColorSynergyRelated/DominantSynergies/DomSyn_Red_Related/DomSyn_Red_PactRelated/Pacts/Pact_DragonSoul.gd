@@ -109,7 +109,7 @@ func _summon_soul_execute_attk_sprite(enemy):
 	attk_sprite.global_position = enemy.global_position + Vector2(0, -10)
 	attk_sprite.connect("tree_exiting", self, "_execute_enemy", [enemy], CONNECT_ONESHOT)
 	
-	game_elements.get_tree().get_root().add_child(attk_sprite)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(attk_sprite)
 
 func _execute_enemy(enemy):
 	if enemy != null:

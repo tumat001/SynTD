@@ -74,7 +74,7 @@ func _construct_hit_particle_on_position(arg_pos):
 	var particle = Retribution_HitParticle_Scene.instance()
 	particle.global_position = arg_pos
 	
-	_tower.get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 
 ##

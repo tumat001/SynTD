@@ -510,7 +510,7 @@ func _construct_taunt_particle():
 	var particle = Taunt_CircleParticle.instance()
 	particle.position = global_position
 	
-	get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 
 func _on_curr_health_changed_d(curr_health):
@@ -553,7 +553,7 @@ func _construct_knock_up_particle():
 	particle.position = global_position
 	particle.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
 	
-	get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 
 #

@@ -338,7 +338,7 @@ func _extinguish_on_enemy_beam_hit(enemy):
 		var steam_explosion = explosion_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
 		steam_explosion.damage_instance.on_hit_damages[dmg_as_on_hit.internal_id] = dmg_as_on_hit
 		
-		get_tree().get_root().add_child(steam_explosion)
+		explosion_attack_module.set_up_aoe__add_child_and_emit_signals(steam_explosion)
 		
 		
 		# extinguish

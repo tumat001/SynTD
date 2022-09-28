@@ -209,12 +209,11 @@ func _modify_bullet(bullet : ArcingBaseBullet):
 func _volcano_proj_hit_ground(arg_final_location : Vector2, bullet : ArcingBaseBullet):
 	var scorched_e = crater_attack_module.construct_aoe(arg_final_location, arg_final_location)
 	#scorched_e.scale *= 1
-	get_tree().get_root().add_child(scorched_e)
+	crater_attack_module.set_up_aoe__add_child_and_emit_signals(scorched_e)
 	
 	var explosion = explosion_attack_module.construct_aoe(arg_final_location, arg_final_location)
 	explosion.scale *= 1.5
-	get_tree().get_root().add_child(explosion)
-
+	explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 # HeatModule
 

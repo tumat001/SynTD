@@ -235,8 +235,7 @@ func _on_bleach_lob_arcing_bullet_landed(arg_final_location : Vector2, bullet : 
 	explosion.damage_instance.scale_only_damage_by(arg_ap_to_use)
 	explosion.damage_instance.on_hit_effects[toughness_shred_effect.effect_uuid] = toughness_shred_effect
 	
-	get_tree().get_root().call_deferred("add_child", explosion)
-
+	bleach_burst_attk_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 # Only Self module modify

@@ -118,7 +118,7 @@ func _construct_and_add_heal_particle(pos):
 	attk_sprite.position = pos
 	attk_sprite.connect("tree_exiting", self, "_particle_expired", [], CONNECT_ONESHOT)
 	
-	get_tree().get_root().add_child(attk_sprite)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(attk_sprite)
 
 func _particle_expired():
 	no_movement_from_self_clauses.remove_clause(NoMovementClauses.CUSTOM_CLAUSE_01)

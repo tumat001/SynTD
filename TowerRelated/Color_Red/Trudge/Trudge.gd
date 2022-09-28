@@ -238,7 +238,7 @@ func _ready():
 	add_child(pre_spurt_activation_timer)
 	
 	pre_spurt_attk_sprite_pool = AttackSpritePoolComponent.new()
-	pre_spurt_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	pre_spurt_attk_sprite_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	pre_spurt_attk_sprite_pool.node_to_listen_for_queue_free = self
 	pre_spurt_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
 	pre_spurt_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_pre_spurt_particle"
@@ -364,7 +364,7 @@ func _modify_bullet(bullet : ArcingBaseBullet):
 func _main_proj_hit_ground(arg_final_location : Vector2, bullet : ArcingBaseBullet):
 	var explosion = explosion_from_main__attack_module.construct_aoe(arg_final_location, arg_final_location)
 	
-	get_tree().get_root().call_deferred("add_child", explosion)
+	explosion_from_main__attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 func _on_any_attack_hit_enemy_t(enemy, damage_register_id, damage_instance, module):
@@ -426,7 +426,7 @@ func _on_pre_spurt_lifetime_end(arg_pre_spurt : Trudge_PreSpurtSummongArea):
 	
 	_add_ap_scaled_slow_effect_to_dmg_instance(spurt_explosion.damage_instance)
 	
-	get_tree().get_root().call_deferred("add_child", spurt_explosion)
+	spurt_explosion_attack_module.set_up_aoe__add_child_and_emit_signals(spurt_explosion)
 
 
 func _add_ap_scaled_slow_effect_to_dmg_instance(arg_dmg_instance):
@@ -600,7 +600,7 @@ func _construct_and_show_slam_expanding_attk_sprite(arg_global_pos, arg_range_mo
 		
 		particle.position = arg_global_pos
 		particle.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
-		get_tree().get_root().add_child(particle)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(particle)
 		
 		CommonAttackSpriteTemplater.configure_scale_and_expansion_of_expanding_attk_sprite(particle, 10, arg_range_module.last_calculated_final_range)
 		

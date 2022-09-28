@@ -126,4 +126,5 @@ func _bullet_burst(enemy, damage_reg_id, damage_instance, module):
 		bullet.direction_as_relative_location = bullet.direction_as_relative_location.rotated(deg2rad(final_angle))
 		bullet.rotation_degrees = rad2deg(bullet.direction_as_relative_location.angle())
 		
-		get_tree().get_root().call_deferred("add_child", bullet)
+		burst_attack_module.set_up_bullet__add_child_and_emit_signals(bullet)
+

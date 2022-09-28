@@ -711,7 +711,7 @@ func _clear_ability_timer_timeout():
 		var particle = Variance_ClearCircle_Scene.instance()
 		
 		particle.position = global_position
-		get_tree().get_root().call_deferred("add_child", particle)
+		CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 		
 		#
 		
@@ -776,7 +776,7 @@ func _modify_bullet_v__red_lob(bullet):
 func _on_red_lob_arcing_bullet_landed(arg_final_location : Vector2, bullet : ArcingBaseBullet):
 	var explosion = red_burst_attk_module.construct_aoe(arg_final_location, arg_final_location)
 	
-	get_tree().get_root().call_deferred("add_child", explosion)
+	red_burst_attk_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 func _stop_red_ability():
@@ -832,7 +832,7 @@ func _on_enemy_killed(damage_instance_report, enemy_me, arg_enemy, arg_range_mod
 func _create_blue_explosion_at_pos__and_end_blue_beam(arg_pos : Vector2, arg_enemy, arg_range_mod):
 	var explosion = blue_explosion_attk_module.construct_aoe(arg_pos, arg_pos)
 	explosion.damage_instance.scale_only_damage_by(specialize_ability.get_potency_to_use(last_calculated_final_ability_potency))
-	get_tree().get_root().call_deferred("add_child", explosion)
+	blue_explosion_attk_module.set_up_aoe__add_child_and_emit_signals(explosion)
 	
 	if arg_enemy.is_connected("tree_exiting", self, "_on_enemy_killed"):
 		arg_enemy.disconnect("tree_exiting", self, "_on_enemy_killed")
@@ -851,14 +851,14 @@ func _stop_blue_ability():
 
 func _initialize_particle_attk_sprite_pool():
 	blue_particle_attk_sprite_pool = AttackSpritePoolComponent.new()
-	blue_particle_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	blue_particle_attk_sprite_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	blue_particle_attk_sprite_pool.node_to_listen_for_queue_free = self
 	blue_particle_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
 	blue_particle_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_blue_particle"
 	blue_particle_attk_sprite_pool.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_blue_particle_properties_when_get_from_pool_after_add_child"
 	
 	blue_ap_inc_attk_sprite_pool = AttackSpritePoolComponent.new()
-	blue_ap_inc_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	blue_ap_inc_attk_sprite_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	blue_ap_inc_attk_sprite_pool.node_to_listen_for_queue_free = self
 	blue_ap_inc_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
 	blue_ap_inc_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_blue_ap_inc_particle"

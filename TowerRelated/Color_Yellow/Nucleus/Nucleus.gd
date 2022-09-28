@@ -322,8 +322,7 @@ func _start_gamma_mode(arg_enemy, cd_to_use):
 	if _is_energy_module_on:
 		_current_gamma_beam.damage_instance.scale_only_damage_by(2.5)
 	
-	get_tree().get_root().add_child(_current_gamma_beam)
-	
+	gamma_attack_module.set_up_aoe__add_child_and_emit_signals(_current_gamma_beam)
 	
 	_gamma_duration_timer.connect("timeout", self, "_gamma_duration_timer_timeout", [], CONNECT_ONESHOT)
 	_gamma_duration_timer.start(gamma_ability_duration)

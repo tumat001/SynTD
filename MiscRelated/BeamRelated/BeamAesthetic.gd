@@ -90,12 +90,13 @@ func update_destination_position(destination_pos : Vector2):
 		rotation_degrees = _get_angle(destination_pos)
 		offset.y = -(_get_current_size().y / 2)
 	
+	
 	curr_destination_pos = destination_pos
 	
 	var diff_in_dist = global_position - curr_destination_pos
 	distance_x_from_destination_pos = diff_in_dist.x
 	distance_y_from_destination_pos = diff_in_dist.y
-	
+
 #	if curve_to_destination_pos == null:
 #		curve_to_destination_pos = Curve2D.new()
 #	curve_to_destination_pos.clear_points()

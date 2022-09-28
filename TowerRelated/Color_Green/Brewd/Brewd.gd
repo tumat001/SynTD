@@ -442,7 +442,7 @@ func _construct_and_add_potion_throwing_attk_module(info):
 	attack_module.is_main_attack = false
 	attack_module.base_pierce = 1
 	attack_module.base_proj_speed = 640
-	attack_module.base_proj_life_distance = info.base_range
+	attack_module.base_proj_life_distance = info.base_range + 100
 	attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	attack_module.on_hit_damage_scale = 0
 	attack_module.position.y -= attk_source_y_pos_shift
@@ -503,8 +503,7 @@ func _potion_thrown_hit_enemy(enemy, damage_register_id, damage_instance, module
 		repel_explosion.connect("before_enemy_hit_aoe", self, "_before_repel_explosion_hit_enemy", [repel_explosion])
 		repel_explosion.scale *= 1.75
 		
-		get_tree().get_root().add_child(repel_explosion)
-		
+		repel_attk_module.set_up_aoe__add_child_and_emit_signals(repel_explosion)
 		
 	#----------
 	elif current_potion_type_selected == PotionTypes.IMPLODE:
@@ -512,8 +511,7 @@ func _potion_thrown_hit_enemy(enemy, damage_register_id, damage_instance, module
 		implode_explosion.connect("before_enemy_hit_aoe", self, "_before_implosion_explosion_hit_enemy", [implode_explosion])
 		implode_explosion.scale *= 1.75
 		
-		get_tree().get_root().add_child(implode_explosion)
-		
+		implosion_attk_module.set_up_aoe__add_child_and_emit_signals(implode_explosion)
 		
 		
 	#----------
@@ -522,7 +520,7 @@ func _potion_thrown_hit_enemy(enemy, damage_register_id, damage_instance, module
 		shuffle_explosion.connect("before_enemy_hit_aoe", self, "_before_shuffle_explosion_hit_enemy", [shuffle_explosion])
 		shuffle_explosion.scale *= 1.75
 		
-		get_tree().get_root().add_child(shuffle_explosion)
+		shuffle_attk_module.set_up_aoe__add_child_and_emit_signals(shuffle_explosion)
 
 
 

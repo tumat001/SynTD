@@ -402,7 +402,7 @@ func _sword_beam_attk_module_hit_enemy(enemy, damage_register_id, damage_instanc
 	explosion.scale *= 2.5
 	explosion.modulate.a = 0.7
 	
-	get_tree().get_root().add_child(explosion)
+	sword_explosion_attk_module.set_up_aoe__add_child_and_emit_signals(explosion)
 	
 	add_after_regards_empowered_attack_count(-1)
 
@@ -511,7 +511,7 @@ func _construct_and_show_regards_expanding_attk_sprite(arg_global_pos, arg_range
 		
 		particle.position = arg_global_pos
 		particle.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
-		get_tree().get_root().add_child(particle)
+		CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 
 #

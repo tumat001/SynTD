@@ -294,8 +294,7 @@ func _on_enemy_hit_by_shot(arg_enemy, damage_register_id, damage_instance, attk_
 	beam.queue_free_if_time_over = true
 	beam.modulate_a_subtract_per_sec = 1 / 0.75
 	
-	
-	get_tree().get_root().add_child(beam)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 	
 	if current_shots_to_take_count == 1:
 		beam.set_texture_as_default_anim(LaChasseur_FinalShot_Pic)

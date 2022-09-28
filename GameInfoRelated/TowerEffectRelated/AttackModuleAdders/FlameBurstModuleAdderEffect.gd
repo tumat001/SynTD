@@ -40,7 +40,6 @@ var directions_02 : Array = [
 var _curr_direction_index : int = 0
 var flamelet_base_dmg : float = 0.6
 
-var tree
 
 func _init().(StoreOfTowerEffectsUUID.ING_FLAMEBURST):
 	effect_icon = Effect_Icon
@@ -108,8 +107,6 @@ func _make_modifications_to_tower(tower):
 	_construct_burst_module()
 	tower.add_attack_module(burst_attack_module)
 	
-	tree = tower.get_tree()
-	
 	for module in tower.all_attack_modules:
 		if module.module_id == StoreOfAttackModuleID.MAIN:
 			if !module.is_connected("on_enemy_hit", self, "_bullet_burst"):
@@ -149,7 +146,7 @@ func _bullet_burst(enemy, damage_reg_id, damage_instance, module):
 		bullet.global_position = spawn_pos
 		bullet.scale *= 0.75
 		
-		tree.get_root().call_deferred("add_child", bullet)
+		burst_attack_module.set_up_bullet__add_child_and_emit_signals(bullet)
 	
 	_inc_directions_index()
 

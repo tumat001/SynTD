@@ -511,7 +511,7 @@ func _place_marker(enemy):
 	marker.global_position = mana_blast_module.get_viewport().get_mouse_position()
 	
 	marker.connect("tree_exiting", self, "_marker_expire", [marker, enemy], CONNECT_ONESHOT)
-	game_elements.get_tree().get_root().add_child(marker)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(marker)
 
 
 func _marker_expire(marker : Node2D, enemy):
@@ -522,7 +522,7 @@ func _marker_expire(marker : Node2D, enemy):
 	explosion.global_position = marker.global_position
 	#explosion.connect("before_enemy_hit_aoe", self, "_on_explosion_hit_enemy", [enemy], CONNECT_DEFERRED)
 	
-	game_elements.get_tree().get_root().add_child(explosion)
+	mana_blast_module.set_up_aoe__add_child_and_emit_signals(explosion)
 	_summon_tower_detecting_aoe(marker.global_position)
 
 
@@ -534,7 +534,7 @@ func _summon_tower_detecting_aoe(pos : Vector2):
 	aoe.coll_source_layer = CollidableSourceAndDest.Source.FROM_TOWER
 	
 	aoe.connect("on_tower_hit", self, "_on_buff_aoe_hit_tower", [])
-	game_elements.get_tree().get_root().add_child(aoe)
+	CommsForBetweenScenes.ge_add_child_to_proj_hoster(aoe)
 
 
 #func _on_explosion_hit_enemy(enemy, main_enemy):

@@ -165,13 +165,13 @@ func _before_yel_arc_bullet_is_fired(arg_bullet : ArcingBaseBullet):
 func _on_yel_arc_bullet_reached_location(arg_final_location : Vector2, bullet : ArcingBaseBullet):
 	var explosion = _explosion_attack_module.construct_aoe(arg_final_location, arg_final_location)
 	explosion.connect("tree_exiting", self, "_on_yel_explosion_queue_free", [explosion], CONNECT_ONESHOT)
-	explosion.modulate.a = 0.75
+	explosion.modulate.a = 0.55
 	
-	_attached_tower.get_tree().get_root().add_child(explosion)
+	_explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 func _on_yel_explosion_queue_free(arg_explosion):
 	var requested_refire : bool = false
-	if _attached_tower != null and arg_explosion.enemy_hit_count == 1:
+	if _attached_tower != null and arg_explosion.enemy_hit_count <= 1:
 		if _attached_tower.game_elements.stage_round_manager.round_started:
 			_yelvio_synergy.request_refire_of_shell(_current_yel_side_shell_id)
 			requested_refire = true

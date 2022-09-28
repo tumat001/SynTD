@@ -250,7 +250,7 @@ func _boost_beyond_attack(damage_instance, pos):
 	atk_sprite.frames_based_on_lifetime = true
 	atk_sprite.position = pos
 	
-	get_tree().get_root().add_child(atk_sprite)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(atk_sprite)
 
 #
 
@@ -295,5 +295,4 @@ func _on_round_ended_a():
 			particle.position = global_position
 			particle.position.y -= 10
 			
-			get_tree().get_root().add_child(particle)
-
+			CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)

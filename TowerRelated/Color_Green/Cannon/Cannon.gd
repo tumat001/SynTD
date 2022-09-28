@@ -125,5 +125,5 @@ func _modify_bullet(bullet : ArcingBaseBullet):
 func _cannon_proj_hit_ground(arg_final_location : Vector2, bullet : ArcingBaseBullet):
 	var explosion = explosion_attack_module.construct_aoe(arg_final_location, arg_final_location)
 	explosion.scale *= 1.5
-	get_tree().get_root().add_child(explosion)
-
+	#get_tree().get_root().add_child(explosion)
+	explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)

@@ -195,7 +195,7 @@ func _construct_and_place_pulse_particle(initial_radius : float, final_radius : 
 	CommonAttackSpriteTemplater.configure_scale_and_expansion_of_expanding_attk_sprite(particle, initial_radius, final_radius)
 	particle.position = attached_tower.global_position
 	
-	attached_tower.get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 func _construct_and_place_pulse_aoe(final_radius : float, stack_amount : int):
 	var aoe = green_pulse_aoe_module.construct_aoe(attached_tower.global_position, attached_tower.global_position)
@@ -205,7 +205,7 @@ func _construct_and_place_pulse_aoe(final_radius : float, stack_amount : int):
 	aoe.modulate = aoe_pulse_modulate
 	aoe.connect("on_tower_hit", self, "_on_pulse_aoe_on_tower_hit", [stack_amount])
 	
-	attached_tower.get_tree().get_root().add_child(aoe)
+	CommsForBetweenScenes.ge_add_child_to_proj_hoster(aoe)
 	aoe.set_coll_shape(coll_shape)
 
 

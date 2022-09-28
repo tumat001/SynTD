@@ -235,11 +235,11 @@ func _on_round_end():
 
 func _attempt_form_beam():
 	for blue_mag in activated_blue_magnets:
-		if blue_mag == null or blue_mag.is_queued_for_deletion():
+		if blue_mag == null or blue_mag.is_queued_for_deletion() and blue_mag.current_uses_left <= 0:
 			activated_blue_magnets.erase(blue_mag)
 	
 	for red_mag in activated_red_magnets:
-		if red_mag == null or red_mag.is_queued_for_deletion():
+		if red_mag == null or red_mag.is_queued_for_deletion() and red_mag.current_uses_left <= 0:
 			activated_red_magnets.erase(red_mag)
 	
 	#
@@ -277,7 +277,7 @@ func _form_beam_between_points(origin_pos : Vector2, destination_pos : Vector2):
 	aoe.scale.y *= 1.4
 	aoe.scale.x *= 1.25
 	
-	get_tree().get_root().add_child(aoe)
+	beam_attack_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 func _get_extended_position_away_from_position(var base_pos : Vector2, var pos_to_expand_away_from : Vector2):
 	return base_pos.move_toward(pos_to_expand_away_from, -beam_position_offset_from_ball)

@@ -58,7 +58,7 @@ func _make_modifications_to_tower(tower):
 	if _explosion_cooldown_timer == null:
 		_explosion_cooldown_timer = Timer.new()
 		_explosion_cooldown_timer.one_shot = true
-		_tower.get_tree().get_root().add_child(_explosion_cooldown_timer)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_explosion_cooldown_timer)
 	
 	if !_tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy"):
 		_tower.connect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy", [], CONNECT_PERSIST)
@@ -167,7 +167,7 @@ func _create_explosion_around_self():
 	aoe_explosion_inst.scale *= 3
 	aoe_explosion_inst.modulate.a = 0.7
 	
-	_tower.get_tree().get_root().add_child(aoe_explosion_inst)
+	explosion_attack_module.set_up_aoe__add_child_and_emit_signals(aoe_explosion_inst)
 
 
 #
@@ -208,3 +208,4 @@ func _undo_modifications_to_tower(tower):
 	
 	_tower.remove_attack_module(explosion_attack_module)
 	explosion_attack_module.queue_free()
+	

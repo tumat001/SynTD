@@ -80,7 +80,7 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 550
+	attack_module.base_proj_speed = 625
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
@@ -143,7 +143,7 @@ func _construct_isolation_ability():
 
 func _construct_attk_sprite_pools():
 	isolation_hit_particle_attk_sprite_pool = AttackSpritePoolComponent.new()
-	isolation_hit_particle_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	isolation_hit_particle_attk_sprite_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	isolation_hit_particle_attk_sprite_pool.node_to_listen_for_queue_free = self
 	isolation_hit_particle_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
 	isolation_hit_particle_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_isolation_hit_particle"

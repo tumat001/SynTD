@@ -199,7 +199,7 @@ func _fire_proliferate_seed_at_placable(arg_placable):
 	var seed_proj = proliferate_seed_attack_module.construct_bullet(arg_placable.global_position)
 	seed_proj.connect("on_final_location_reached", self, "_proliferate_seed_landed", [arg_placable], CONNECT_ONESHOT)
 	
-	get_tree().get_root().add_child(seed_proj)
+	proliferate_seed_attack_module.set_up_bullet__add_child_and_emit_signals(seed_proj)
 
 #
 

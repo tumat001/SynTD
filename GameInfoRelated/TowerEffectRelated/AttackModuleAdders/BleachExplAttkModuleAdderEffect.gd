@@ -39,7 +39,7 @@ const explosion_pierce : int = 3
 var _curr_num_of_attacks : int = 0
 
 var bleach_lob_attk_module
-var bleach_burst_attk_module
+var bleach_burst_attk_module : AOEAttackModule
 var toughness_shred_effect
 var tower_attached_to
 
@@ -194,7 +194,7 @@ func _on_bleach_lob_arcing_bullet_landed(arg_final_location : Vector2, bullet : 
 	var explosion = bleach_burst_attk_module.construct_aoe(arg_final_location, arg_final_location)
 	explosion.damage_instance.on_hit_effects[toughness_shred_effect.effect_uuid] = toughness_shred_effect
 	
-	tower_attached_to.get_tree().get_root().call_deferred("add_child", explosion)
+	bleach_burst_attk_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 #
 

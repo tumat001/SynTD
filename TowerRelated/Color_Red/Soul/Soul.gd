@@ -241,7 +241,7 @@ func _create_explosion(enemy, effigy):
 		var modi_of_dmg = explosion.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE].damage_as_modifier
 		modi_of_dmg.flat_modifier = effigy.current_health * base_effigy_explosion_health_scale
 		
-		get_tree().get_root().add_child(explosion)
+		effigy_explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 #

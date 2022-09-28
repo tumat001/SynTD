@@ -96,7 +96,7 @@ func _summon_beam_to_target(target, final_potency : float):
 		beam.frame = 0
 		beam.modulate = _explosion_modulate
 		
-		get_tree().get_root().add_child(beam)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 		beam.update_destination_position(target.global_position)
 
 
@@ -112,7 +112,7 @@ func _create_and_show_expl_particle(pos):
 	particle.modulate = _explosion_modulate
 	particle.scale *= 1.5
 	
-	get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 #
 

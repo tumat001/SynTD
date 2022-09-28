@@ -271,8 +271,7 @@ func _on_main_bullet_attk_reached_zero_pierce(arg_bullet, arg_module):
 	
 	var aoe = proj_aoe_attack_module.construct_aoe(pos, pos)
 	
-	get_tree().get_root().call_deferred("add_child", aoe)
-
+	proj_aoe_attack_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 ####
 
@@ -337,7 +336,7 @@ func _create_range_module_for_line_detection(arg_placable_pos : Vector2):
 	line_range_module_enemy_to_in_range_count_map[line_range_module] = 0
 	
 	line_range_module.position = global_position
-	get_tree().get_root().add_child(line_range_module)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(line_range_module)
 	
 	return line_range_module
 

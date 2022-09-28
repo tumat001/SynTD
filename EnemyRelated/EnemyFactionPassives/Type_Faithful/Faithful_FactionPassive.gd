@@ -80,11 +80,11 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 	if deity_spawn_timer == null:
 		deity_spawn_timer = Timer.new()
 		deity_spawn_timer.one_shot = true
-		game_elements.get_tree().get_root().call_deferred("add_child", deity_spawn_timer)
+		CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(deity_spawn_timer)
 		
 		_deity_summoning_duration_timer = Timer.new()
 		_deity_summoning_duration_timer.one_shot = true
-		game_elements.get_tree().get_root().call_deferred("add_child", _deity_summoning_duration_timer)
+		CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(_deity_summoning_duration_timer)
 		_deity_summoning_duration_timer.connect("timeout", self, "_on_deity_spawn_summon_delay_finished", [], CONNECT_PERSIST)
 	
 	if deity_stun_effect_while_summoning == null:
@@ -220,8 +220,7 @@ func _on_deity_spawned(deity):
 	portal_particle.lifetime = deity_summon_duration
 	portal_particle.scale *= 2
 	
-	deity.get_tree().get_root().add_child(portal_particle)
-	
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(portal_particle)
 	
 	#
 	
@@ -281,8 +280,7 @@ func _get_current_cross_or_construct():
 	else:
 		_current_cross = CrossMarker_Scene.instance()
 		_current_cross.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
-		#game_elements.get_tree().get_root().add_child(_current_cross)
-		game_elements.get_tree().get_root().call_deferred("add_child", _current_cross)
+		CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(_current_cross)
 		
 		return _current_cross
 

@@ -151,6 +151,9 @@ func _init():
 		"",
 		"Synergy level affects the quality and types of unsworn pacts that appear in the shop.",
 		"",
+		"-----------------------------",
+		"Red towers change every game.",
+		"",
 	],
 	[DomSyn_Red],
 	[

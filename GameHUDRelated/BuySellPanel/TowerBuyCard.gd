@@ -173,7 +173,7 @@ func _free_old_and_create_tooltip_for_tower():
 		current_tooltip.tooltip_owner = buy_card
 		current_tooltip.game_settings_manager = game_settings_manager
 		
-		get_tree().get_root().add_child(current_tooltip)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(current_tooltip)
 	
 	emit_signal("viewing_tower_description_tooltip", tower_information)
 

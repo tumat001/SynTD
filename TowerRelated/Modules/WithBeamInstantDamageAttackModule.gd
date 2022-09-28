@@ -137,7 +137,7 @@ func _get_available_beam_instance() -> BeamAesthetic:
 	available_beam_instance.attack_module_source = self
 	available_beam_instance.is_blockable = (base_attack_wind_up != 0)
 	
-	get_tree().get_root().add_child(available_beam_instance)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(available_beam_instance)
 	
 	connect("kill_all_spawned_beams", available_beam_instance, "queue_free", [], CONNECT_ONESHOT)
 	

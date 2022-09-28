@@ -189,7 +189,7 @@ func _construct_mark_indicator():
 	
 	mark_indicator.has_lifetime = false
 	
-	get_tree().get_root().add_child(mark_indicator)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(mark_indicator)
 
 
 func _construct_attk_speed_effect():

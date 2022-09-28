@@ -65,8 +65,7 @@ func _construct_and_show_mastery_particle():
 	particle.position = _attached_tower.global_position
 	particle.position.y -= 10
 	
-	_attached_tower.get_tree().get_root().add_child(particle)
-
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 #
 

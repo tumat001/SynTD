@@ -3,6 +3,10 @@ extends Node
 const WholeLoadingScreen = preload("res://SingletonForCommsRelated/BetweenScenesRelated/WholeLoadingScreen.gd")
 const WholeLoadingScreen_Scene = preload("res://SingletonForCommsRelated/BetweenScenesRelated/WholeLoadingScreen.tscn")
 
+const game_elements_path : String = "res://GameElementsRelated/GameElements.tscn"
+
+#
+
 var map_id : int
 var game_mode_id : int
 
@@ -12,6 +16,14 @@ var loader
 var wait_frames : int
 var time_max = 100 #msec
 var whole_loading_screen : WholeLoadingScreen
+
+var _curr_path_for_load : String
+
+#
+
+var current_game_elements
+var current_game_elements__other_node_hoster
+var current_game_elements__proj_hoster
 
 #
 
@@ -34,6 +46,7 @@ func _initialize_whole_loading_screen():
 #
 
 func goto_scene(arg_path, arg_scene_to_remove):
+	_curr_path_for_load = arg_path
 	call_deferred("_deferred_goto_scene", arg_path, arg_scene_to_remove)
 
 func _deferred_goto_scene(arg_path, arg_scene_to_remove):
@@ -104,9 +117,24 @@ func set_new_scene(scene_resource):
 #######
 
 func goto_game_elements(arg_scene_to_remove : Node):
-	goto_scene("res://GameElementsRelated/GameElements.tscn", arg_scene_to_remove)
+	goto_scene(game_elements_path, arg_scene_to_remove)
 
 func goto_starting_screen(arg_scene_to_remove : Node):
 	goto_scene("res://PreGameHUDRelated/PreGameScreen.tscn", arg_scene_to_remove)
 
+
+## GAME ELEMENTS related
+
+func ge_add_child_to_other_node_hoster(arg_node):
+	current_game_elements__other_node_hoster.add_child(arg_node)
+
+func deferred_ge_add_child_to_other_node_hoster(arg_node):
+	current_game_elements__other_node_hoster.call_deferred("add_child", arg_node)
+
+
+func ge_add_child_to_proj_hoster(arg_node):
+	current_game_elements__proj_hoster.add_child(arg_node)
+
+func deferred_ge_add_child_to_proj_hoster(arg_node):
+	current_game_elements__proj_hoster.call_deferred("add_child", arg_node)
 

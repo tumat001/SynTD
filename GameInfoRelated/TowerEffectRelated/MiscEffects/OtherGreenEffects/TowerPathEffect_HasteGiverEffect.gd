@@ -83,7 +83,7 @@ func _display_particle_at_tower():
 	
 	particle.position = attached_tower.global_position
 	particle.position.y -= 12
-	attached_tower.get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 #
 

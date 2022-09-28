@@ -1974,7 +1974,7 @@ func _construct_during_revive_particle(lifetime : float):
 	particle.lifetime = lifetime
 	particle.position = global_position
 	
-	get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(particle)
 
 
 

@@ -261,7 +261,7 @@ func _construct_and_register_ability():
 
 func _on_main_attack_enemy_hit_s(enemy, damage_register_id, damage_instance, module):
 	var aoe = proj_aoe_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
-	get_tree().get_root().add_child(aoe)
+	proj_aoe_attack_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 
 func _on_round_end_s():

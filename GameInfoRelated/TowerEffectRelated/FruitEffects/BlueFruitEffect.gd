@@ -26,7 +26,6 @@ const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/Te
 
 
 var explosion_attack_module : AOEAttackModule
-var tree
 
 func _init().(StoreOfTowerEffectsUUID.ING_BLUE_FRUIT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_BlueFruit.png")
@@ -47,8 +46,6 @@ func _init().(StoreOfTowerEffectsUUID.ING_BLUE_FRUIT):
 # make mod
 
 func _make_modifications_to_tower(tower):
-	tree = tower.get_tree()
-	
 	if !tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_module_enemy_hit"):
 		_construct_attack_module()
 		tower.add_attack_module(explosion_attack_module)
@@ -116,8 +113,9 @@ func _construct_attack_module():
 
 func _on_tower_main_attack_module_enemy_hit(enemy, damage_register_id, damage_instance, module):
 	var explo_instance = explosion_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
+	explo_instance.modulate.a = 0.75
 	
-	tree.get_root().add_child(explo_instance)
+	explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explo_instance)
 
 
 

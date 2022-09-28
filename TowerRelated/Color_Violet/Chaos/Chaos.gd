@@ -524,7 +524,7 @@ func _on_sword_attk_module_enemy_hit(enemy, damage_register_id, damage_instance,
 		var sword = _construct_attack_sprite_on_attack()
 		sword.global_position = enemy.global_position
 		
-		get_tree().get_root().add_child(sword)
+		CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(sword)
 		sword.playing = true
 
 
@@ -639,14 +639,14 @@ func _initialize_particle_sprite_frames():
 
 func _initialize_particle_attk_sprite_pool():
 	changing_purple_particle_attk_sprite_pool = AttackSpritePoolComponent.new()
-	changing_purple_particle_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	changing_purple_particle_attk_sprite_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	changing_purple_particle_attk_sprite_pool.node_to_listen_for_queue_free = self
 	changing_purple_particle_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
 	changing_purple_particle_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_center_purple_particle"
 	changing_purple_particle_attk_sprite_pool.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_center_particle_properties_when_get_from_pool_after_add_child"
 	
 	light_background_purple_particle_attk_sprite_pool = AttackSpritePoolComponent.new()
-	light_background_purple_particle_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	light_background_purple_particle_attk_sprite_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	light_background_purple_particle_attk_sprite_pool.node_to_listen_for_queue_free = self
 	light_background_purple_particle_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
 	light_background_purple_particle_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_background_purple_particle"
@@ -1204,7 +1204,7 @@ func _summon_big_bolt_at_enemy():
 	bolt_particle.position = target_enemy.global_position
 	bolt_particle.connect("on_struck_ground", self, "_on_big_bolt_struck_ground", [target_enemy, target_enemy.global_position], CONNECT_ONESHOT)
 	
-	get_tree().get_root().add_child(bolt_particle)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(bolt_particle)
 
 func _on_big_bolt_struck_ground(arg_primary_target, arg_bolt_pos):
 	if arg_primary_target != null:
@@ -1220,7 +1220,7 @@ func _big_bolt_hit_primary_target(arg_primary_target):
 func _create_big_bolt_explosion_at_location(arg_pos : Vector2):
 	var aoe = big_bolt_explosion_attack_module.construct_aoe(arg_pos, arg_pos)
 	
-	get_tree().get_root().add_child(aoe)
+	big_bolt_explosion_attack_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 
 func _end_big_bolt_event(arg_play_next : bool):
@@ -1296,7 +1296,7 @@ func _summon_void_lakes_to_enemies():
 		void_lake.modulate.a = 0.5
 		
 		
-		get_tree().get_root().call_deferred("add_child", void_lake)
+		void_lakes_aoe_attack_module.set_up_aoe__add_child_and_emit_signals(void_lake)
 
 
 
@@ -1320,7 +1320,8 @@ func _play_night_watcher_event():
 	
 	for i in night_watcher_summon_count:
 		var target_placable = _get_nearest_in_map_placable_from_random_pos()
-		call_deferred("_summon_nightwatcher_at_placable", target_placable)
+		#call_deferred("_summon_nightwatcher_at_placable", target_placable)
+		_summon_nightwatcher_at_placable(target_placable)
 	
 	general_purpose_timer.connect("timeout", self, "_general_purpose_timer_timeout__for_night_watcher_delay")
 	
@@ -1329,7 +1330,7 @@ func _play_night_watcher_event():
 
 
 func _summon_nightwatcher_at_placable(arg_placable):
-	if arg_placable.tower_occupying == null:
+	if arg_placable != null and arg_placable.tower_occupying == null:
 		var nightwatcher = game_elements.tower_inventory_bench.create_tower(Towers.NIGHTWATCHER, arg_placable)
 		nightwatcher.lifetime = night_watcher_summon_duration
 		nightwatcher.explosion_flat_dmg_amount = night_watcher_explosion_flat_dmg
@@ -1342,7 +1343,7 @@ func _summon_nightwatcher_at_placable(arg_placable):
 
 func _get_nearest_in_map_placable_from_random_pos():
 	var random_pos = _get_random_position_of_random_path_in_map()
-	var placables = game_elements.map_manager.get_all_placables_in_range(random_pos, 300, game_elements.map_manager.PlacableState.UNOCCUPIED)
+	var placables = game_elements.map_manager.get_all_placables_in_range(random_pos, 400, game_elements.map_manager.PlacableState.UNOCCUPIED)
 	
 	if placables.size() > 1:
 		return placables[0]
@@ -1406,7 +1407,7 @@ func _summon_one_rain_drop_and_increase_fired_count():
 	_set_rain_drop_position(rain_drop, pos_to_target)
 	rain_drop.connect("animation_finished", self, "_on_rain_drop_time_over", [rain_drop.position], CONNECT_ONESHOT)
 	
-	get_tree().get_root().call_deferred("add_child", rain_drop)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(rain_drop)
 	
 	_current_explosive_rain_fired += 1
 
@@ -1437,8 +1438,7 @@ func _summon_rain_explosion_at_pos(arg_pos):
 	var rain_explosion = explosive_rain_aoe_attk_module.construct_aoe(arg_pos, arg_pos)
 	rain_explosion.connect("before_enemy_hit_aoe", self, "_before_explosive_rain_explosion_hit_enemy", [rain_explosion])
 	
-	get_tree().get_root().call_deferred("add_child", rain_explosion)
-
+	explosive_rain_aoe_attk_module.set_up_aoe__add_child_and_emit_signals(rain_explosion)
 
 func _before_explosive_rain_explosion_hit_enemy(enemy, explosion):
 	if enemy != null and explosion != null and enemy.current_path != null:

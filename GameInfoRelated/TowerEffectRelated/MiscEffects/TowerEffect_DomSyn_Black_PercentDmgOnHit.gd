@@ -53,6 +53,5 @@ func _summon_particle(enemy):
 	var particle = Black_HitParticle_Scene.instance()
 	particle.global_position = enemy.global_position
 	
-	enemy.get_tree().get_root().call_deferred("add_child", particle)
-
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 

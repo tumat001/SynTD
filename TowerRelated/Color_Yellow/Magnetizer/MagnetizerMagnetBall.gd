@@ -96,6 +96,8 @@ func _process(delta):
 # Beam formation
 
 func used_in_beam_formation():
+	current_uses_left -= 1 #new
+	
 	beam_formation_triggered = true
 
 
@@ -114,7 +116,7 @@ func used_in_beam_formation():
 #
 
 func _decrease_use_count_and_check():
-	current_uses_left -= 1
+	#current_uses_left -= 1
 	
 	beam_formation_triggered = false
 	_current_lifetime_after = 0

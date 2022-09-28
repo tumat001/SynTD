@@ -319,7 +319,8 @@ func _construct_air_beam(pos : Vector2, emit_when_time_over : bool = true) -> Be
 	return beam
 
 func _add_beam_to_tree(beam : BeamAesthetic):
-	get_tree().get_root().add_child(beam)
+	#get_tree().get_root().add_child(beam)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 	beam.update_destination_position(beam.global_position + Vector2(0, sky_attack_y_shift))
 
 
@@ -332,8 +333,7 @@ func _beam_time_over(beam : BeamAesthetic):
 func _summon_explosion(pos : Vector2):
 	var explosion = explosion_attack_module.construct_aoe(pos, pos)
 	
-	get_tree().get_root().add_child(explosion)
-
+	explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 # Attack Speed Leaching related ------------------

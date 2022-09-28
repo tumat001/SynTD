@@ -243,7 +243,7 @@ func _enemy_hit_by_arrow(arrow, enemy):
 	for enemy in _enemies_marked:
 		aoe.enemies_to_ignore.append(enemy)
 	
-	get_tree().get_root().call_deferred("add_child", aoe)
+	seek_attack_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 
 func _enemy_seeked(enemy, damage_register_id : int, damage_instance, module):

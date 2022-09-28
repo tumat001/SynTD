@@ -264,8 +264,8 @@ func _construct_sky_beam():
 	
 	beam.set_sprite_frames(sky_attack_sprite_frames)
 	beam.frames.set_animation_loop("default", false)
-	
-	get_tree().get_root().add_child(beam)
+
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 	
 	sky_attack_beams_enemy_map[beam] = null
 
@@ -284,7 +284,7 @@ func _attempt_summon_explosion(explosion_pos : Vector2, arg_enemy):
 		if arg_enemy != null:
 			explosion.enemies_to_ignore.append(arg_enemy)
 		
-		get_tree().get_root().add_child(explosion)
+		explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 

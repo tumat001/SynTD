@@ -82,8 +82,7 @@ func _on_enemy_implale_hit(enemy, damage_register_id, damage_instance, module):
 		
 		impale_proj.enemy = enemy
 		impale_proj.connect("spike_retracted", self, "_on_impale_rectract")
-		get_tree().get_root().add_child(impale_proj)
-
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(impale_proj)
 
 func _on_impale_rectract(enemy):
 	if enemy != null:

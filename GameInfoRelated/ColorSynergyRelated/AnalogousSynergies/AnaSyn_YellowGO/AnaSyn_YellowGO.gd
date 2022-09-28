@@ -76,7 +76,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		fluctuation_timer = Timer.new()
 		fluctuation_timer.wait_time = fluctuation_duration
 		fluctuation_timer.one_shot = true
-		arg_game_elements.get_tree().get_root().add_child(fluctuation_timer)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(fluctuation_timer)
 		fluctuation_timer.connect("timeout", self, "_on_flucuation_timer_done", [], CONNECT_PERSIST)
 	
 	# FLUCTUATION Cycle is set here
@@ -268,8 +268,7 @@ func _attach_particle_to_tower(tower):
 	fluctutation_particle = FluctuationParticle_Scene.instance()
 	fluctutation_particle.tower = tower
 	
-	tower.get_tree().get_root().add_child(fluctutation_particle)
-
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(fluctutation_particle)
 
 #
 

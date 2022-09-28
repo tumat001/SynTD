@@ -64,6 +64,9 @@ onready var pause_manager : PauseManager = $PauseManager
 onready var game_modifiers_manager = $GameModifiersManager
 onready var game_result_manager = $GameResultManager
 
+onready var other_node_hoster : Node = $OtherNodeHoster
+onready var proj_hoster : Node = $OtherNodeHoster
+
 var round_status_panel : RoundStatusPanel
 #var round_info_panel : RoundInfoPanel
 var tower_info_panel
@@ -344,7 +347,7 @@ func _ready():
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	level_manager.current_level = LevelManager.LEVEL_7
 	#level_manager.current_level = LevelManager.LEVEL_3
-	
+
 	#relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
@@ -362,19 +365,19 @@ func _on_BuySellLevelRollPanel_reroll():
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.CHAOS,
-			Towers.TRAPPER,
-			Towers.VARIANCE,
-			Towers.ENERVATE,
-			Towers.BLAST,
-			Towers.OUTREACH,
+			Towers.BEACON_DISH,
+			Towers.WYVERN,
+			Towers.MAGNETIZER,
+			Towers.SOPHIST,
+			Towers.TRANSPORTER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.BEACON_DISH,
-			Towers.LEADER,
-			Towers.VARIANCE,
-			Towers.RAILGUN,
-			Towers.FLAMEBURST,
+			Towers.BLEACH,
+			Towers.EMBER,
+			Towers.SIMPLEX,
+			Towers.BREWD,
 			Towers.TRANSPORTER
 		])
 
@@ -542,4 +545,11 @@ func get_middle_coordinates_of_playable_map() -> Vector2:
 
 func _get_average(arg_x : float, arg_y : float) -> float:
 	return (arg_x + arg_y) / 2
+
+###
+
+func _enter_tree():
+	CommsForBetweenScenes.current_game_elements = self
+	
+
 

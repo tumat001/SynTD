@@ -392,7 +392,7 @@ func _on_sword_attk_module_enemy_hit(enemy, damage_register_id, damage_instance,
 	if enemy != null:
 		var sword = _construct_attack_sprite_on_attack()
 		sword.global_position = enemy.global_position
-		tower_taken_over.get_tree().get_root().add_child(sword)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(sword)
 		sword.playing = true
 
 #

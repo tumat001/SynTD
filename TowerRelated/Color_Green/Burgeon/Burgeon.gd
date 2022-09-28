@@ -287,7 +287,7 @@ func _air_proj_sensor_tripped(air_proj : BurgeonArcingSeed):
 	var explosion = explosion_attack_module.construct_aoe(air_proj.global_position, air_proj.global_position)
 	explosion.scale *= 1.5
 	explosion.modulate = aoe_modulate
-	get_tree().get_root().add_child(explosion)
+	explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 	
 	air_proj.queue_free()
 
@@ -369,7 +369,7 @@ func _fire_proliferate_seed_at_tower(tower):
 	var seed_proj = proliferate_seed_attack_module.construct_bullet(tower.global_position + mini_burgeon_offset_from_tower)
 	seed_proj.connect("on_final_location_reached", self, "_proliferate_seed_landed", [tower], CONNECT_ONESHOT)
 	
-	get_tree().get_root().add_child(seed_proj)
+	proliferate_seed_attack_module.set_up_bullet__add_child_and_emit_signals(seed_proj)
 
 
 #

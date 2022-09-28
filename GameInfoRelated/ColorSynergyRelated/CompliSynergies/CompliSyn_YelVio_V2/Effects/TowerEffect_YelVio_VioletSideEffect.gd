@@ -40,7 +40,7 @@ func _make_modifications_to_tower(tower):
 
 func _construct_vio_ing_upgrade_particle_pool():
 	violet_ing_upgrade_particle_pool = AttackSpritePoolComponent.new()
-	violet_ing_upgrade_particle_pool.node_to_parent_attack_sprites = _attached_tower.get_tree().get_root()
+	violet_ing_upgrade_particle_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	violet_ing_upgrade_particle_pool.node_to_listen_for_queue_free = _attached_tower
 	violet_ing_upgrade_particle_pool.source_for_funcs_for_attk_sprite = self
 	violet_ing_upgrade_particle_pool.func_name_for_creating_attack_sprite = "_create_vio_ing_upgrade_particle"

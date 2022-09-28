@@ -101,7 +101,7 @@ func disconnect_from_battery():
 
 func _initialize_energy_particles_pool():
 	energy_particles_pool = AttackSpritePoolComponent.new()
-	energy_particles_pool.node_to_parent_attack_sprites = tower_connected_to.get_tree().get_root()
+	energy_particles_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	energy_particles_pool.node_to_listen_for_queue_free = tower_connected_to
 	energy_particles_pool.source_for_funcs_for_attk_sprite = self
 	energy_particles_pool.func_name_for_creating_attack_sprite = "_create_energy_particle"

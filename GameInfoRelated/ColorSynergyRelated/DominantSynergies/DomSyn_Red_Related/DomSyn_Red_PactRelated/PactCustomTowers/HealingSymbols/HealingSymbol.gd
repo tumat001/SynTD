@@ -174,7 +174,7 @@ func _show_heal_other_tower_cosmetic_effects(arg_tower):
 		particle.position.x += non_essential_rng.randi_range(-17, 17)
 		particle.position.y += non_essential_rng.randi_range(-16, 10)
 		
-		get_tree().get_root().add_child(particle)
+		CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 func _show_on_cast_heal_cosmetic_effects():
 	var particle = OnCastHealParticle_Scene.instance()
@@ -183,35 +183,4 @@ func _show_on_cast_heal_cosmetic_effects():
 	particle.position = global_position - Vector2(0, 14)
 	particle.scale *= 1.5
 	
-	get_tree().get_root().add_child(particle)
-
-#	if particle_timer == null:
-#		particle_timer = Timer.new()
-#		particle_timer.one_shot = true
-#		particle_timer.connect("timeout", self, "_on_particle_timer_expired", [], CONNECT_PERSIST)
-#		add_child(particle_timer)
-#
-#	_on_particle_timer_expired()
-
-#func _on_particle_timer_expired():
-#	if _current_particle_showing_count < total_particle_count_per_show:
-#		_create_and_show_heal_towers_particle()
-#		_current_particle_showing_count += 1
-#
-#		particle_timer.start(delay_per_particle)
-#	else:
-#		_current_particle_showing_count = 0
-#
-#
-#func _create_and_show_heal_towers_particle():
-#	var particle = HealingParticle_Scene.instance()
-#
-#	CommonAttackSpriteTemplater.configure_properties_of_attk_sprite(particle, CommonAttackSpriteTemplater.TemplateIDs.COMMON_UPWARD_DECELERATING_PARTICLE)
-#	particle.position = global_position
-#	particle.scale *= 1.5
-#
-#	particle.position.x += non_essential_rng.randi_range(-17, 17)
-#	particle.position.y += non_essential_rng.randi_range(-16, 10)
-#
-#	get_tree().get_root().add_child(particle)
-
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)

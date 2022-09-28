@@ -165,7 +165,7 @@ func _construct_and_add_big_missle_attk_module(attack_module_y_shift):
 	#
 	
 	bullet_homing_component_pool = BulletHomingComponentPool.new()
-	bullet_homing_component_pool.node_to_parent = get_tree().get_root()
+	bullet_homing_component_pool.node_to_parent = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	bullet_homing_component_pool.source_of_create_resource = self
 	bullet_homing_component_pool.func_name_for_create_resource = "_create_bullet_homing_component"
 	
@@ -379,7 +379,7 @@ func _on_rocket_hit_enemy(arg_bullet, arg_enemy):
 	var pos = arg_enemy.global_position
 	var aoe = big_missle_small_explosion_attk_module.construct_aoe(pos, pos)
 	
-	get_tree().get_root().call_deferred("add_child", aoe)
+	big_missle_small_explosion_attk_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 ######
 

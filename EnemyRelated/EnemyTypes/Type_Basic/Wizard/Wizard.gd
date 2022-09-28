@@ -95,7 +95,7 @@ func _summon_beam_to_target(target, final_potency : float):
 		beam.global_position = global_position
 		beam.frame = 0
 		
-		get_tree().get_root().add_child(beam)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 		beam.update_destination_position(target.global_position)
 
 
@@ -109,7 +109,7 @@ func _create_and_show_expl_particle(pos):
 	var particle = ExplosionParticle_Scene.instance()
 	particle.position = pos
 	
-	get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 #
 

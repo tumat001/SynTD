@@ -112,7 +112,7 @@ func _free_old_and_create_tooltip_for_tower(tower_type_info, combi_icon):
 	current_tooltip.tower_info = tower_type_info
 	current_tooltip.tooltip_owner = combi_icon
 	
-	get_tree().get_root().add_child(current_tooltip)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(current_tooltip)
 
 func on_tower_icon_mouse_exited(combi_icon):
 	if current_tooltip != null:

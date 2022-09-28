@@ -8,7 +8,7 @@ const tier_0__v1__player_level_to_rewards_map : Dictionary = {
 	LevelManager.LEVEL_6 : [4, 4, 4, 4, 4],
 	LevelManager.LEVEL_7 : [4, 4, 4, 4, 4, 4, 4],
 	LevelManager.LEVEL_8 : [4, 5, 5, 5, 5],
-	LevelManager.LEVEL_9 : [5, 5, 5, 6],
+	LevelManager.LEVEL_9 : [5, 5, 6, 6],
 	LevelManager.LEVEL_10 : [6, 6, 6, 6, 6, 6, 6],
 }
 

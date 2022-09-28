@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=2]
+[gd_scene load_steps=42 format=2]
 
 [ext_resource path="res://GameHUDRelated/BottomPanelBackground.png" type="Texture" id=1]
 [ext_resource path="res://GameHUDRelated/StatsPanel/GeneralStatsPanel.tscn" type="PackedScene" id=2]
@@ -37,6 +37,8 @@
 [ext_resource path="res://GameElementsRelated/PauseManager.tscn" type="PackedScene" id=35]
 [ext_resource path="res://GameElementsRelated/GameModifiersManager.gd" type="Script" id=36]
 [ext_resource path="res://GameHUDRelated/NotificationPanel/TutorialPanel/TutorialNotifPanel.tscn" type="PackedScene" id=37]
+[ext_resource path="res://GameElementsRelated/OtherNodeHoster.gd" type="Script" id=38]
+[ext_resource path="res://GameElementsRelated/ProjHoster.gd" type="Script" id=39]
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
@@ -310,6 +312,12 @@ position = Vector2( 94, 30 )
 position = Vector2( 840, 380 )
 
 [node name="PauseManager" parent="." instance=ExtResource( 35 )]
+
+[node name="ProjHoster" type="Node" parent="."]
+script = ExtResource( 39 )
+
+[node name="OtherNodeHoster" type="Node" parent="."]
+script = ExtResource( 38 )
 [connection signal="pressed" from="BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelSprite" to="." method="_on_ColorWheelSprite_pressed"]
 [connection signal="level_up" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_up"]
 [connection signal="reroll" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_reroll"]

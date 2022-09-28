@@ -208,7 +208,7 @@ func _construct_self_stacking_ap_effect_and_particles():
 	add_tower_effect(chant_stacking_ability_potency_effect)
 	
 	chant_ap_inc_attk_sprite_pool = AttackSpritePoolComponent.new()
-	chant_ap_inc_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	chant_ap_inc_attk_sprite_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	chant_ap_inc_attk_sprite_pool.node_to_listen_for_queue_free = self
 	chant_ap_inc_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
 	chant_ap_inc_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_chant_ap_inc_particle"
@@ -565,7 +565,7 @@ func _on_death_orb_enemy_killed_by_dmg(damage_instance_report, enemy):
 	copied_on_hit.damage_as_modifier.flat_modifier = enemy._last_calculated_max_health * chant_ability.get_potency_to_use(last_calculated_final_ability_potency) * death_orb__percent_damage_ratio
 	explosion.damage_instance.on_hit_damages[copied_on_hit.internal_id] = copied_on_hit
 	
-	get_tree().get_root().call_deferred("add_child", explosion)
+	death_orb_explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 

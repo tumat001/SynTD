@@ -29,9 +29,9 @@ var can_start_round : bool
 #
 
 func _ready():
-	speed_button_01.set_text_for_text_label(str(speed_of_engine_time_scale_arr[0]))
-	speed_button_02.set_text_for_text_label(str(speed_of_engine_time_scale_arr[1]))
-	speed_button_03.set_text_for_text_label(str(speed_of_engine_time_scale_arr[2]))
+	speed_button_01.set_text_for_text_label(str(ceil(speed_of_engine_time_scale_arr[0])))
+	speed_button_02.set_text_for_text_label(str(ceil(speed_of_engine_time_scale_arr[1])))
+	speed_button_03.set_text_for_text_label(str(ceil(speed_of_engine_time_scale_arr[2])))
 	
 	_button_group = CustomButtonGroup.new()
 	

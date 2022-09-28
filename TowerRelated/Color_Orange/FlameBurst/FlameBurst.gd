@@ -164,7 +164,7 @@ func _bullet_burst(enemy, damage_reg_id, damage_instance, module):
 		bullet.global_position = spawn_pos
 		bullet.scale *= 0.75
 		
-		get_tree().get_root().call_deferred("add_child", bullet)
+		burst_attack_module.set_up_bullet__add_child_and_emit_signals(bullet)
 	
 	_inc_directions_index()
 

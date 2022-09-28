@@ -224,7 +224,7 @@ func _on_beam_attack_module_hit_enemy(enemy, damage_register_id, damage_instance
 	if _attached_tower.main_attack_module != null:
 		explosion.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE].damage_as_modifier.flat_modifier = _attached_tower.main_attack_module.last_calculated_final_damage * explosion_base_damage_ratio
 	
-	_attached_tower.get_tree().get_root().add_child(explosion)
+	explosion_attk_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 #

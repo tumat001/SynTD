@@ -120,6 +120,6 @@ func _construct_boost_effect_sprite():
 	var particle = RedOV_BoostIndicator_Scene.instance()
 	particle.position = attached_tower.global_position
 	particle.position.y -= 8
-	attached_tower.get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 

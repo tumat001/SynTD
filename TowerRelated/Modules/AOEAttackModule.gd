@@ -150,10 +150,7 @@ func _attack_at_positions(positions : Array):
 func _attack_at_position(enemy_pos : Vector2):
 	var created_aoe = construct_aoe(global_position, enemy_pos)
 	
-	#._modify_attack(created_aoe)
-	emit_signal("before_aoe_is_added_as_child", created_aoe)
-	
-	get_tree().get_root().add_child(created_aoe)
+	set_up_aoe__add_child_and_emit_signals(created_aoe)
 
 
 # Center pos, explosion scale, and beam stretching
@@ -226,11 +223,18 @@ func on_round_end():
 
 func kill_all_created_aoe():
 	emit_signal("kill_all_spawned_aoe")
-#	for aoe in get_tree().get_nodes_in_group(aoe_group_tag):
-#		if aoe != null:
-#			aoe.queue_free()
 
 func queue_free():
 	kill_all_created_aoe()
 	
 	.queue_free()
+
+#
+
+func set_up_aoe__add_child_and_emit_signals(aoe) -> BaseAOE:
+	emit_signal("before_aoe_is_added_as_child", aoe)
+	CommsForBetweenScenes.deferred_ge_add_child_to_proj_hoster(aoe)
+	
+	return aoe
+
+

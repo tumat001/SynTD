@@ -88,7 +88,6 @@ func _show_maxed_aura_particle():
 	aura_particle.adapt_ratio = 0.4
 	aura_particle.position.y += (tower_affected.get_current_anim_size().y / 2) - 3
 	
-	#tower_affected.get_tree().get_root().add_child(aura_particle)
 	tower_affected.add_child(aura_particle)
 
 

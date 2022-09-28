@@ -232,8 +232,7 @@ func _create_attk_sprite(pos, stack_amount):
 	attk_sprite.frame = frame_to_use
 	attk_sprite.reset_frame_to_start = false
 	
-	get_tree().get_root().add_child(attk_sprite)
-	
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(attk_sprite)
 
 
 func _attempt_execute_elite_enemy(enemy):
@@ -252,8 +251,7 @@ func _executed_enemy_by_hexes(arg_enemy):
 	var particle = ExecuteParticle_Scene.instance()
 	particle.global_position = arg_enemy.global_position
 	
-	get_tree().get_root().add_child(particle)
-
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 
 func _update_stack_amount_of_hex_effect():

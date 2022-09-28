@@ -208,7 +208,7 @@ func _construct_beam():
 	beam.z_index = ZIndexStore.PARTICLE_EFFECTS
 	beam.z_as_relative = false
 	
-	get_tree().get_root().add_child(beam)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 	return beam
 
 func _update_connection_to_lamp():
@@ -266,7 +266,7 @@ func _construct_sky_attk(arg_enemy_pos):
 	beam.connect("time_visible_is_over", self, "_on_sky_attk_time_visible_over", [arg_enemy_pos], CONNECT_ONESHOT)
 	
 	
-	get_tree().get_root().add_child(beam)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 	
 	beam.set_frame_rate_based_on_lifetime()
 	beam.global_position = lamp_sprite_2d.global_position + Vector2(0, lamp_sprite_2d.offset.y)
@@ -280,7 +280,7 @@ func _on_sky_attk_time_visible_over(arg_pos_of_explosion):
 func _summon_explosion_at_pos(arg_pos):
 	var aoe = aoe_attk_module.construct_aoe(arg_pos, arg_pos)
 	
-	get_tree().get_root().call_deferred("add_child", aoe)
+	aoe_attk_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 
 #

@@ -691,7 +691,7 @@ func _apply_capacitor_effects_to_game(arg_tier : int):
 	
 	if capacitor_nova_small_particle_pool == null:
 		capacitor_nova_small_particle_pool = AttackSpritePoolComponent.new()
-		capacitor_nova_small_particle_pool.node_to_parent_attack_sprites = game_elements.get_tree().get_root()
+		capacitor_nova_small_particle_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 		capacitor_nova_small_particle_pool.node_to_listen_for_queue_free = game_elements
 		capacitor_nova_small_particle_pool.source_for_funcs_for_attk_sprite = self
 		capacitor_nova_small_particle_pool.func_name_for_creating_attack_sprite = "_create_nova_small_particle"
@@ -718,18 +718,18 @@ func _apply_capacitor_effects_to_game(arg_tier : int):
 		_capacitor_lightning_queue_timer = Timer.new()
 		_capacitor_lightning_queue_timer.one_shot = true
 		_capacitor_lightning_queue_timer.connect("timeout", self, "_timer_for_lightning_queue_finished", [], CONNECT_PERSIST)
-		game_elements.get_tree().get_root().add_child(_capacitor_lightning_queue_timer)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_capacitor_lightning_queue_timer)
 	
 	if _capacitor_lightning_delay_for_next_lightning_timer == null:
 		_capacitor_lightning_delay_for_next_lightning_timer = Timer.new()
 		_capacitor_lightning_delay_for_next_lightning_timer.one_shot = true
 		_capacitor_lightning_delay_for_next_lightning_timer.connect("timeout", self, "_timer_for_next_lightning_finished", [], CONNECT_PERSIST)
-		game_elements.get_tree().get_root().add_child(_capacitor_lightning_delay_for_next_lightning_timer)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_capacitor_lightning_delay_for_next_lightning_timer)
 	
 	if _capacitor_lightning_from_ground_to_strike_timer == null:
 		_capacitor_lightning_from_ground_to_strike_timer = Timer.new()
 		_capacitor_lightning_from_ground_to_strike_timer.one_shot = true
-		game_elements.get_tree().get_root().add_child(_capacitor_lightning_from_ground_to_strike_timer)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_capacitor_lightning_from_ground_to_strike_timer)
 	
 	if _capacitor_lightning_explosion_attack_module == null:
 		_capacitor_lightning_explosion_attack_module = AOEAttackModule_Scene.instance()
@@ -793,7 +793,7 @@ func _apply_capacitor_effects_to_game(arg_tier : int):
 		
 		#
 		
-		game_elements.get_tree().get_root().add_child(_capacitor_lightning_explosion_attack_module)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_capacitor_lightning_explosion_attack_module)
 	
 	black_syn_icon.set_visibility_of_nova_counter(true)
 	
@@ -840,7 +840,7 @@ func _summon_nova():
 	nova.connect("tree_exiting", self, "_on_nova_tree_exiting", [nova], CONNECT_ONESHOT)
 	nova.modulate.a = 0.6
 	nova.lifetime = capacitor_nova_ramp_up_time
-	game_elements.get_tree().get_root().add_child(nova)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(nova)
 	nova.global_position = game_elements.get_middle_coordinates_of_playable_map()
 	
 	_start_playing_nova_small_particles()
@@ -950,7 +950,7 @@ func _summon_nova_aesthetic_explosion(arg_nova):
 	sp.add_frame("default", Black_Nova_Explosion01)
 	explosion.frames = sp
 	
-	game_elements.get_tree().get_root().add_child(explosion)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(explosion) #note, used to be add_child that's not defereed
 	
 
 func _give_towers_capacitor_nova_effects(arg_towers):
@@ -1109,7 +1109,7 @@ func _summon_lightning_strike_onto_enemy(arg_enemy):
 func _create_lightning_into_destination(arg_pos : Vector2):
 	var lightning = Black_CapacitorLightning_Scene.instance()
 	
-	game_elements.get_tree().get_root().add_child(lightning)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(lightning)
 	lightning.global_position = arg_pos + Vector2(0, -66 * 3)
 	lightning.update_destination_position(arg_pos)
 
@@ -1142,7 +1142,7 @@ func _on_lightning_strike_hit_enemy(arg_position_of_enemy):
 
 func _create_lightning_explosion_against_enemies(arg_pos):
 	var explosion = _capacitor_lightning_explosion_attack_module.construct_aoe(arg_pos, arg_pos)
-	game_elements.get_tree().get_root().add_child(explosion)
+	_capacitor_lightning_explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
 func _on_round_end(stageround):

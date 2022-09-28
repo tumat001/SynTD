@@ -181,13 +181,13 @@ func _construct_and_register_ability():
 
 func _construct_attk_sprite_pool_components():
 	smite_beam_attk_sprite_pool_component = AttackSpritePoolComponent.new()
-	smite_beam_attk_sprite_pool_component.node_to_parent_attack_sprites = get_tree().get_root()
+	smite_beam_attk_sprite_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	smite_beam_attk_sprite_pool_component.node_to_listen_for_queue_free = self
 	smite_beam_attk_sprite_pool_component.source_for_funcs_for_attk_sprite = self
 	smite_beam_attk_sprite_pool_component.func_name_for_creating_attack_sprite = "_create_smite_lightning"
 	
 	smite_launch_fx_attk_sprite_pool_component = AttackSpritePoolComponent.new()
-	smite_launch_fx_attk_sprite_pool_component.node_to_parent_attack_sprites = get_tree().get_root()
+	smite_launch_fx_attk_sprite_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	smite_launch_fx_attk_sprite_pool_component.node_to_listen_for_queue_free = self
 	smite_launch_fx_attk_sprite_pool_component.source_for_funcs_for_attk_sprite = self
 	smite_launch_fx_attk_sprite_pool_component.func_name_for_creating_attack_sprite = "_create_smite_launch"
@@ -305,5 +305,4 @@ func _on_smite_lightning_animation_ended(arg_lightning):
 	explosion.damage_instance.on_hit_effects[smite_stun_effect.effect_uuid] = smite_stun_effect
 	explosion.damage_instance.scale_only_damage_by(smite_ability.get_potency_to_use(last_calculated_final_ability_potency))
 	
-	get_tree().get_root().call_deferred("add_child", explosion)
-
+	explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)

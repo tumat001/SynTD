@@ -428,8 +428,7 @@ func _on_lob_arcing_bullet_landed(arg_final_location : Vector2, bullet : ArcingB
 	explosion.damage_instance.scale_only_damage_by(arg_ap_to_use)
 	explosion.scale *= 2.5
 	
-	get_tree().get_root().add_child(explosion)
-
+	spell_burst_attk_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 #
 

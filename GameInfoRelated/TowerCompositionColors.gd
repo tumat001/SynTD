@@ -670,7 +670,7 @@ func _init():
 		"",
 		"Violet rift: On round end, towers have their self ingredient effect upgraded by an amount.",
 		"",
-		"Yellow rift: Every 15 seconds, all towers in the yellow rift fire a shell at the first enemy, exploding to deal damage to 3 enemies. Towers fire again if only 1 enemy is hit.",
+		"Yellow rift: Every 15 seconds, all towers in the yellow rift fire a shell at the first enemy, exploding to deal damage to 3 enemies. Towers fire again if only 0 or 1 enemies is hit.",
 		"",
 	],
 	[CompliSyn_YellowViolet],

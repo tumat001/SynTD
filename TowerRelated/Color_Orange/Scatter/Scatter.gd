@@ -83,17 +83,6 @@ func _modify_bullet(bullet : BaseBullet):
 	elif rand_num == 4:
 		bullet.set_texture_as_sprite_frames(Scatter_Fragment04)
 
-#
-#func _scatter_attack_module_in_attack(atk_speed_delay, enemies):
-#	for i in 2:
-#		if enemies.size() > 0:
-#			var enemy = enemies[0]
-#
-#			var bullet = scatter_attack_module.construct_bullet(enemy.global_position)
-#
-#			get_tree().get_root().call_deferred("add_child", bullet)
-
-
 
 # Heat Module
 

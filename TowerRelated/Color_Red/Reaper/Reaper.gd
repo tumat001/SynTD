@@ -224,7 +224,7 @@ func _slash_at_enemy(potency_to_use : float):
 		main_on_hit_dmg.damage_as_modifier.flat_modifier = final_modi
 		
 		
-		get_tree().get_root().add_child(slash_aoe)
+		slash_attack_module.set_up_aoe__add_child_and_emit_signals(slash_aoe)
 		
 		current_slash_subsequent_dmg_reduction_duration = slash_subsequent_dmg_reduction_duration
 

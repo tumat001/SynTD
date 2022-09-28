@@ -226,6 +226,6 @@ func _seed_to_explode(bullet : Seeder_ExplodingSeed):
 	#explosion.damage_instance = explosion.damage_instance.get_copy_damage_only_scaled_by(final_potency)
 	explosion.damage_instance.scale_only_damage_by(final_potency)
 	
-	get_tree().get_root().add_child(explosion)
+	explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 	bullet.queue_free()
 	

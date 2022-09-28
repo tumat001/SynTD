@@ -56,7 +56,7 @@ func _construct_timer(tower):
 	_timer = Timer.new()
 	_timer.one_shot = true
 	_timer.wait_time = seconds_per_tick
-	tower.get_tree().get_root().add_child(_timer)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_timer)
 
 #
 
@@ -91,7 +91,7 @@ func _construct_and_show_inc_particle_effect():
 	particle.position.x += misc_rng.randi_range(-4, 4)
 	particle.position.y += misc_rng.randi_range(0, 8)
 	
-	_attached_tower.get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 
 func _construct_and_show_max_particle_effect():
@@ -101,17 +101,15 @@ func _construct_and_show_max_particle_effect():
 	particle.position = _attached_tower.global_position
 	particle.position.y -= 8
 	
-	_attached_tower.get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 	
 	#
 	
 	aura_particle = GreenBY_AuraParticle_Scene.instance()
-	#aura_particle.position = _attached_tower.global_position
 	aura_particle.size_adapting_to = _attached_tower
 	aura_particle.adapt_ratio = 0.4
 	aura_particle.position.y += (_attached_tower.get_current_anim_size().y / 2) - 3
 	
-	#_attached_tower.get_tree().get_root().add_child(aura_particle)
 	_attached_tower.add_child(aura_particle)
 
 #

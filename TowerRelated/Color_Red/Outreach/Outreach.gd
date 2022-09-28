@@ -195,7 +195,7 @@ func _construct_and_add_missle_bullet_attk_module(arg_y_shift):
 	missle_positioning_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.INACCURACY)
 	
 	missle_homing_component_pool = BulletHomingComponentPool.new()
-	missle_homing_component_pool.node_to_parent = get_tree().get_root()
+	missle_homing_component_pool.node_to_parent = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	missle_homing_component_pool.source_of_create_resource = self
 	missle_homing_component_pool.func_name_for_create_resource = "_create_missle_homing_component"
 
@@ -455,7 +455,7 @@ func _on_missle_hit_enemy(bullet, enemy):
 	explosion.modulate.a = 0.6
 	explosion.damage_instance.on_hit_effects[missle_explosion_stun_effect.effect_uuid] = missle_explosion_stun_effect
 	
-	get_tree().get_root().call_deferred("add_child", explosion)
+	missle_explosion_attk_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 #
 

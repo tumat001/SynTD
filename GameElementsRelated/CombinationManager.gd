@@ -554,7 +554,7 @@ func _on_can_do_combination_changed(arg_val):
 
 func _initialize_on_combi_particle_pool_component():
 	on_combi_particle_pool_component = AttackSpritePoolComponent.new()
-	on_combi_particle_pool_component.node_to_parent_attack_sprites = get_tree().get_root()
+	on_combi_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	on_combi_particle_pool_component.node_to_listen_for_queue_free = self
 	on_combi_particle_pool_component.source_for_funcs_for_attk_sprite = self
 	on_combi_particle_pool_component.func_name_for_creating_attack_sprite = "_create_on_combi_particle"

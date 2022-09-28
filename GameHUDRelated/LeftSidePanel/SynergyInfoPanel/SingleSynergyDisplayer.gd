@@ -89,7 +89,7 @@ func _on_SingleSynergyDisplayer_mouse_entered():
 	
 	emit_signal("on_single_syn_tooltip_displayed", result.synergy)
 	
-	get_tree().get_root().add_child(current_tooltip)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(current_tooltip)
 
 #func _on_SingleSynergyDisplayer_mouse_exited():
 #	if current_tooltip != null:

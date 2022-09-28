@@ -72,7 +72,7 @@ func _make_modifications_to_tower(tower):
 		own_timer = Timer.new()
 		own_timer.one_shot = true
 		own_timer.wait_time = 0.1
-		tower.get_tree().get_root().add_child(own_timer)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(own_timer)
 
 
 

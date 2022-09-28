@@ -224,7 +224,8 @@ func _attack_at_position(arg_pos : Vector2):
 # use this when adding bullet through custom ways (other means) of spawning bullets
 func set_up_bullet__add_child_and_emit_signals(bullet) -> BaseBullet:
 	emit_signal("before_bullet_is_shot", bullet)
-	get_tree().get_root().call_deferred("add_child", bullet)
+	#get_tree().get_root().call_deferred("add_child", bullet)
+	CommsForBetweenScenes.deferred_ge_add_child_to_proj_hoster(bullet)
 	emit_signal("after_bullet_is_shot", bullet)
 	
 	return bullet
