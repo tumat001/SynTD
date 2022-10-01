@@ -16,6 +16,7 @@ __meta__ = {
 [node name="ContentPanel" type="MarginContainer" parent="."]
 margin_right = 960.0
 margin_bottom = 540.0
+mouse_filter = 2
 
 [node name="BackButton" parent="." instance=ExtResource( 2 )]
 margin_left = 935.0

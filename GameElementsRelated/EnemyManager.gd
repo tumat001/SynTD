@@ -27,6 +27,10 @@ signal first_enemy_escaped(enemy, first_damage)
 signal round_time_passed(delta, current_timepos)
 
 signal number_of_enemies_remaining_changed(arg_val)
+signal last_enemy_standing(arg_enemy)
+signal last_enemy_standing_killed_by_damage(damage_instance_report, enemy)
+signal last_enemy_standing_killed_by_damage_no_revives(damage_instance_report, enemy)
+signal last_enemy_standing_current_health_changed(arg_health_val, arg_enemy) # called when last standing, and when health has changed
 signal on_enemy_queue_freed(arg_enemy)
 
 
@@ -75,6 +79,7 @@ var last_calculated_enemy_health_multiplier : float
 
 var enemy_count_in_round : int # from instruction
 var current_enemy_spawned_from_ins_count : int
+var _last_standing_enemy
 
 var highest_enemy_spawn_timepos_in_round : float
 var current_spawn_timepos_in_round : float
@@ -463,6 +468,40 @@ func _on_enemy_spawned(arg_enemy):
 	_emit_number_of_enemies_remaining()
 
 func _emit_number_of_enemies_remaining():
-	emit_signal("number_of_enemies_remaining_changed", get_number_of_enemies_remaining())
+	var num_of_ene_remaining = get_number_of_enemies_remaining()
+	emit_signal("number_of_enemies_remaining_changed", num_of_ene_remaining)
+	
+	if num_of_ene_remaining == 1:
+		_emit_last_enemy_standing()
+
+func _emit_last_enemy_standing():
+	var enemies = get_all_enemies()
+	
+	if enemies.size() > 0:
+		var last_enemy = enemies[0]
+		_last_standing_enemy = last_enemy
+		
+		last_enemy.connect("on_killed_by_damage", self, "_on_last_enemy_standing_killed_by_damage")
+		last_enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_last_enemy_standing_killed_by_damage_no_revives")
+		last_enemy.connect("on_current_health_changed", self, "_on_last_enemy_standing_current_health_changed", [last_enemy])
+		emit_signal("last_enemy_standing", last_enemy)
+		emit_signal("last_enemy_standing_current_health_changed", last_enemy.current_health, last_enemy)
+
+func _on_last_enemy_standing_killed_by_damage(damage_instance_report, enemy):
+	emit_signal("last_enemy_standing_killed_by_damage", damage_instance_report, enemy)
+
+func _on_last_enemy_standing_killed_by_damage_no_revives(damage_instance_report, enemy):
+	emit_signal("last_enemy_standing_killed_by_damage_no_revives", damage_instance_report, enemy)
+
+func _on_last_enemy_standing_current_health_changed(current_health, arg_enemy):
+	emit_signal("last_enemy_standing_current_health_changed", current_health, arg_enemy)
+
+
+
+func get_last_standing_enemy():
+	if _last_standing_enemy != null and _last_standing_enemy.is_queued_for_deletion():
+		return null
+	
+	return _last_standing_enemy 
 
 

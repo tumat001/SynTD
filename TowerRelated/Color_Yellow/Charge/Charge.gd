@@ -7,11 +7,16 @@ const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttac
 const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.tscn")
 
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+
+
 const ChargeBullet_Level1 = preload("res://TowerRelated/Color_Yellow/Charge/Charge_Bullet_Level1.png")
 const ChargeBullet_Level2 = preload("res://TowerRelated/Color_Yellow/Charge/Charge_Bullet_Level2.png")
 const ChargeBullet_Level3 = preload("res://TowerRelated/Color_Yellow/Charge/Charge_Bullet_Level3.png")
 const ChargeBullet_Level4 = preload("res://TowerRelated/Color_Yellow/Charge/Charge_Bullet_Level4.png")
-
 const ChargeBar_0 = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Bar00.png")
 const ChargeBar_1 = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Bar01.png")
 const ChargeBar_2 = preload("res://TowerRelated/Color_Yellow/Charge/ChargeBar/Bar02.png")
@@ -30,6 +35,9 @@ const proj_speed_level_4 : float = 650.0
 
 const original_max_on_hit_damage : float = 35.0
 const original_max_percent_on_hit_damage : float = 20.0
+
+const with_energy_max_on_hit_damage : float = 160.0
+
 
 const original_max_energy : float = 100.0
 const original_base_energy_recharge_per_sec : float = 20.0
@@ -52,6 +60,10 @@ var bonus_on_hit_damage : OnHitDamage
 var bonus_percent_on_hit_damage : OnHitDamage
 var bonus_damage_as_modifier : FlatModifier
 var bonus_percent_damage_as_modifier : PercentModifier
+
+var interpreter_for_flat_on_hit : TextFragmentInterpreter
+
+#
 
 onready var charge_bar_sprite : Sprite = $TowerBase/KnockUpLayer/ChargeBarSprite
 
@@ -257,14 +269,17 @@ func _on_bullet_hit_enemy(arg_bullet, arg_enemy):
 func set_energy_module(module):
 	.set_energy_module(module)
 	
+	if interpreter_for_flat_on_hit == null:
+		_construct_interpreter_for_energy_module()
+	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Max flat on hit damage is increased to 160. Charge's flat portion of its passive becomes pure damage instead. Also recharges faster."
+			["Max base flat on hit damage is increased to |0|. Charge's flat portion of its passive becomes pure damage instead. Also recharges faster.", [interpreter_for_flat_on_hit]]
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	max_on_hit_damage = 160.0
+	max_on_hit_damage = with_energy_max_on_hit_damage
 	base_energy_recharge_per_sec = 50.0
 	_current_chargebar_06 = ChargeBar_6_Special
 	
@@ -289,3 +304,19 @@ func _module_turned_off():
 	#bonus_percent_on_hit_damage.damage_type = DamageType.PHYSICAL
 	
 	_calculate_recharge_per_sec()
+
+
+
+func _construct_interpreter_for_energy_module():
+	# INS START
+	interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+	interpreter_for_flat_on_hit.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_flat_on_hit.display_body = false
+	
+	var ins_for_flat_on_hit = []
+	ins_for_flat_on_hit.append(NumericalTextFragment.new(with_energy_max_on_hit_damage, false, DamageType.PHYSICAL))
+	
+	
+	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+	
+

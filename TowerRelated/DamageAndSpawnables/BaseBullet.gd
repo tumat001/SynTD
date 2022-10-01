@@ -216,6 +216,21 @@ func _if_enemies_to_hit_only_has_only_nulls():
 	
 	return true
 
-#
 
+### bounce related
 
+func bounce_off_left():
+	bounce(Vector2.LEFT)
+
+func bounce_off_right():
+	bounce(Vector2.RIGHT)
+
+func bounce_off_top():
+	bounce(Vector2.UP)
+
+func bounce_off_bottom():
+	bounce(Vector2.DOWN)
+
+func bounce(arg_normalized_vector : Vector2):
+	direction_as_relative_location = direction_as_relative_location.bounce(arg_normalized_vector)
+	rotation = direction_as_relative_location.angle()

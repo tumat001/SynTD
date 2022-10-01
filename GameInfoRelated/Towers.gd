@@ -675,7 +675,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# INS END
 		
 		info.tower_descriptions = [
-			["Shoots a dart that pierces through |0|.", [interpreter_for_pierce]]
+			["Shoots a dart that pierces through |0|.", [interpreter_for_pierce]],
+			"Railgun's main attacks bounce off the edges of the screen."
+		]
+		
+		info.tower_simple_descriptions = [
+			["Shoots a dart that pierces through |0|.", [interpreter_for_pierce]],
 		]
 		
 		# Ingredient related
@@ -1210,7 +1215,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_flat_on_hit.display_body = true
 		
 		var ins_for_flat_on_hit = []
-		#ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", 25))
 		ins_for_flat_on_hit.append(NumericalTextFragment.new(35, false, DamageType.PHYSICAL))
 		ins_for_flat_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 		ins_for_flat_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
@@ -5259,7 +5263,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Every 7th main attack leaves a Star near the target's location for 30 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.", [interpreter_for_crash_dmg]],
 			"",
 			["When all enemies have spawned, all idle Stars focus a beam at a target, dealing |0| per 0.25 seconds.", [interpreter_for_beam_dmg]],
-			"When only one enemy remains, all Stars crash to that enemy.",
+			"When the last enemy remaining has 100 health or less, all Stars crash to that enemy.",
 			"",
 			"Targeting affects which enemies are targeted by the Stars."
 		]
@@ -5268,7 +5272,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Every 7th main attack leaves a Star near the target's location for 30 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.", [interpreter_for_crash_dmg]],
 			"",
 			["When all enemies have spawned, all idle Stars focus a beam at a target, dealing |0| per 0.25 seconds.", [interpreter_for_beam_dmg]],
-			"When only one enemy remains, all Stars crash to that enemy.",
+			"When the last enemy remaining has 100 health or less, all Stars crash to that enemy.",
 		]
 		
 		
@@ -6158,12 +6162,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Does not attack.",
 			"",
 			["On round start: Trapper lays down 3 traps on the track in its range. Enemies take |0| upon stepping on the trap. Traps are considered to be Trapper's main attack.", [interpreter]],
+			"Traps instantly kill the last non-boss enemy."
 		]
 		
 		info.tower_simple_descriptions = [
 			"Does not attack.",
 			"",
 			["On round start: Trapper lays down 3 traps on the track. Enemies take |0| upon stepping on the trap.", [interpreter]],
+			"Traps instantly kill the last non-boss enemy."
 		]
 		
 		# Ingredient related

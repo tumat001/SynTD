@@ -16,8 +16,7 @@ enum _button_indexes {
 }
 export(_button_indexes) var about_button_index_trigger : int = BUTTON_RIGHT
 
-# true when extending the button and defining tooltip
-# construction in the button
+# true when extending the button and defining tooltip construction in the button
 export(bool) var define_tooltip_construction_in_button : bool = true
 
 func _on_AdvancedButton_gui_input(event):

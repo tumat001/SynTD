@@ -83,6 +83,9 @@ func _ready():
 	connect("on_round_start", self, "_on_round_start_t", [], CONNECT_PERSIST)
 	connect("on_round_end", self, "_on_round_end_t", [], CONNECT_PERSIST)
 	
+	game_elements.enemy_manager.connect("last_enemy_standing", self, "_on_last_enemy_standing", [], CONNECT_PERSIST)
+	game_elements.enemy_manager.connect("last_enemy_standing_killed_by_damage_no_revives", self, "_on_last_enemy_standing_killed_by_damage_no_revives", [], CONNECT_PERSIST)
+	
 	#
 	
 	_post_inherit_ready()
@@ -101,6 +104,10 @@ func _on_round_start_t():
 func _on_round_end_t():
 	_end_attempts_at_trap_placement()
 	
+	if trap_attack_module.is_connected("on_enemy_hit", self, "_on_enemy_hit_by_trap__as_oneshot"):
+		trap_attack_module.disconnect("on_enemy_hit", self, "_on_enemy_hit_by_trap__as_oneshot")
+
+
 
 func _on_trap_placmement_timer_timeout():
 	_attempt_place_trap_at_track()
@@ -171,5 +178,19 @@ func _disconnect_wait_for_placable_transfer():
 	if is_connected("on_tower_transfered_to_placable", self, "_on_tower_transfered_to_new_placable"):
 		disconnect("on_tower_transfered_to_placable", self, "_on_tower_transfered_to_new_placable")
 	
+
+#
+
+func _on_last_enemy_standing(enemy):
+	if !trap_attack_module.is_connected("on_enemy_hit", self, "_on_enemy_hit_by_trap__as_oneshot"):
+		trap_attack_module.connect("on_enemy_hit", self, "_on_enemy_hit_by_trap__as_oneshot", [], CONNECT_DEFERRED)
+
+func _on_last_enemy_standing_killed_by_damage_no_revives(damage_instance_report, enemy):
+	if trap_attack_module.is_connected("on_enemy_hit", self, "_on_enemy_hit_by_trap__as_oneshot"):
+		trap_attack_module.disconnect("on_enemy_hit", self, "_on_enemy_hit_by_trap__as_oneshot")
+
+func _on_enemy_hit_by_trap__as_oneshot(enemy, damage_register_id, damage_instance, module):
+	if !enemy.is_enemy_type_boss():
+		enemy.execute_self_by(0, trap_attack_module)
 
 

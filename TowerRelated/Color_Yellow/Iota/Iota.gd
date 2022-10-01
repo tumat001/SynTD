@@ -60,6 +60,8 @@ const star_crash_on_hit_dmg_scale : float = 4.0
 const main_attacks_for_star_summon : int = 7
 var _current_main_attack_count : int
 
+const star_last_enemy_curr_health_for_trigger_to_crash : float = 100.0
+
 
 var star_bullet_attack_module : BulletAttackModule
 var star_positioning_rng : RandomNumberGenerator
@@ -152,7 +154,6 @@ func _ready():
 	connect("on_round_end", self, "_on_round_end_i", [], CONNECT_PERSIST)
 	connect("targeting_changed", self, "_on_range_module_current_targeting_changed", [], CONNECT_PERSIST)
 	game_elements.enemy_manager.connect("enemy_spawned", self, "_on_enemy_spawned", [], CONNECT_PERSIST)
-	
 	
 	info_bar_layer.position.y -= 31
 	
@@ -448,8 +449,20 @@ func _update_current_star_target():
 
 func _on_number_of_enemies_remaining_changed(arg_val):
 	if arg_val == 1:
-		#set_iota_state(IotaState.AllCrash)
+		#call_deferred("set_iota_state", IotaState.AllCrash)
+		
+		if !game_elements.enemy_manager.is_connected("last_enemy_standing_current_health_changed", self, "_on_last_enemy_standing_current_health_changed"):
+			game_elements.enemy_manager.connect("last_enemy_standing_current_health_changed", self, "_on_last_enemy_standing_current_health_changed", [], CONNECT_PERSIST)
+		
+
+func _on_last_enemy_standing_current_health_changed(arg_health_val, arg_enemy):
+	if arg_health_val <= star_last_enemy_curr_health_for_trigger_to_crash:
 		call_deferred("set_iota_state", IotaState.AllCrash)
+		
+		if game_elements.enemy_manager.is_connected("last_enemy_standing_current_health_changed", self, "_on_last_enemy_standing_current_health_changed"):
+			game_elements.enemy_manager.disconnect("last_enemy_standing_current_health_changed", self, "_on_last_enemy_standing_current_health_changed")
+		
+
 
 func _on_enemy_spawned(arg_enemy):
 	call_deferred("_update_current_star_target")
@@ -463,7 +476,6 @@ func _on_current_star_target_tree_exiting():
 func _on_range_module_current_targeting_changed():
 	call_deferred("_update_current_star_target")
 	#_update_current_star_target()
-
 
 
 #

@@ -8,6 +8,7 @@ const ModeTutorial_01_01_StageRounds = preload("res://GameplayRelated/StagesAndR
 const GameModi_EasyDifficulty = preload("res://GameplayRelated/GameModifiersRelated/GameModis/GameModi_EasyDifficulty.gd")
 const GameModi_BeginnerDifficulty = preload("res://GameplayRelated/GameModifiersRelated/GameModis/GameModi_BeginnerDifficulty.gd")
 
+
 enum Mode {
 	STANDARD_BEGINNER = 0,
 	STANDARD_EASY = 1,
@@ -26,7 +27,7 @@ enum Mode {
 
 #
 
-
+###### 01
 static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 	var info = GameModeTypeInformation.new()
 	info.mode_id = arg_id
@@ -38,6 +39,11 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 			"Enemies have %s%% less health." % [str((1 - GameModi_EasyDifficulty.enemy_health_multiplier) * 100)]
 		]
 		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.EASY_DIFFICULTY]
+		
+		info.game_mode_button_normal_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeEasy/ModeEasy_ButtonPic_Normal.png")
+		info.game_mode_button_highlighted_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeEasy/ModeEasy_ButtonPic_Highlighted.png")
+		info.game_mode_frame_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeEasy/ModeEasy_Frame_Normal.png")
+		
 		return info
 		
 		
@@ -49,6 +55,11 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 			"Gain %s additional gold per end of round." % [str(GameModi_BeginnerDifficulty.bonus_gold_at_round_end)]
 		]
 		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.BEGINNER_DIFFICULTY]
+		
+		info.game_mode_button_normal_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeBeginner/ModeBeginner_ButtonPic_Normal.png")
+		info.game_mode_button_highlighted_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeBeginner/ModeBeginner_ButtonPic_Highlighted.png")
+		info.game_mode_frame_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeBeginner/ModeBeginner_Frame_Normal.png")
+		
 		return info
 		
 		
@@ -58,6 +69,11 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 		info.mode_descriptions = [
 			"The true experience."
 		]
+		
+		info.game_mode_button_normal_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeNormal/ModeNormal_ButtonPic_Normal.png")
+		info.game_mode_button_highlighted_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeNormal/ModeNormal_ButtonPic_Highlighted.png")
+		info.game_mode_frame_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeNormal/ModeNormal_Frame_Normal.png")
+		
 		return info
 		
 		
@@ -102,6 +118,7 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 
 #
 
+###### 02
 static func get_stage_rounds_of_mode_from_id(arg_id):
 	if arg_id == Mode.STANDARD_EASY or arg_id == Mode.STANDARD_BEGINNER:
 		
@@ -123,7 +140,7 @@ static func get_stage_rounds_of_mode_from_id(arg_id):
 
 #
 
-
+###### 03
 func get_spawn_ins_of_faction__based_on_mode(arg_faction_id : int, arg_mode : int):
 	var spawn_ins_of_faction_mode
 	
@@ -151,6 +168,4 @@ func get_spawn_ins_of_faction__based_on_mode(arg_faction_id : int, arg_mode : in
 			spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/Tutorial/FactionBasic_EnemySpawnIns_TutorialPhase01_01.gd").new()
 	
 	return spawn_ins_of_faction_mode
-
-
 

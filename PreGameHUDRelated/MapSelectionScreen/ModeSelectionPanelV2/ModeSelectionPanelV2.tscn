@@ -1,0 +1,166 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Fonts/chivo/chivo.regular.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/ModeSelectionPanelV2/Subs/ModeButton/GameModeButton.tscn" type="PackedScene" id=2]
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/ModeSelectionPanelV2/Assets/ModeSelectionPanelV2_Arrow_Normal.png" type="Texture" id=3]
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/ModeSelectionPanelV2/Assets/ModeSelectionPanelV2_Background_Normal.png" type="Texture" id=4]
+[ext_resource path="res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeBeginner/ModeBeginner_Frame_Normal.png" type="Texture" id=5]
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/ModeSelectionPanelV2/ModeSelectionPanelV2.gd" type="Script" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+font_data = ExtResource( 1 )
+
+[node name="ModeSelectionPanelV2" type="MarginContainer"]
+margin_right = 136.0
+margin_bottom = 78.0
+mouse_filter = 2
+size_flags_horizontal = 2
+size_flags_vertical = 2
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 164.0
+margin_bottom = 144.0
+mouse_filter = 2
+custom_constants/separation = 0
+
+[node name="Header" type="MarginContainer" parent="VBoxContainer"]
+margin_right = 164.0
+margin_bottom = 39.0
+rect_min_size = Vector2( 40, 30 )
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="VBoxContainer/Header"]
+margin_right = 164.0
+margin_bottom = 39.0
+mouse_filter = 2
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="Left" type="TextureRect" parent="VBoxContainer/Header"]
+margin_right = 3.0
+margin_bottom = 39.0
+mouse_filter = 2
+size_flags_horizontal = 2
+size_flags_vertical = 3
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="Right" type="TextureRect" parent="VBoxContainer/Header"]
+margin_left = 161.0
+margin_right = 164.0
+margin_bottom = 39.0
+mouse_filter = 2
+size_flags_horizontal = 10
+size_flags_vertical = 3
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="Top" type="TextureRect" parent="VBoxContainer/Header"]
+margin_right = 164.0
+margin_bottom = 3.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="Bottom" type="TextureRect" parent="VBoxContainer/Header"]
+margin_top = 36.0
+margin_right = 164.0
+margin_bottom = 39.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="HeaderPanel" type="MarginContainer" parent="VBoxContainer/Header"]
+margin_right = 164.0
+margin_bottom = 39.0
+mouse_filter = 2
+custom_constants/margin_right = 7
+custom_constants/margin_top = 7
+custom_constants/margin_left = 7
+custom_constants/margin_bottom = 7
+
+[node name="ArrowPic" type="TextureRect" parent="VBoxContainer/Header/HeaderPanel"]
+margin_left = 132.0
+margin_top = 7.0
+margin_right = 157.0
+margin_bottom = 32.0
+size_flags_horizontal = 10
+texture = ExtResource( 3 )
+
+[node name="ModeLabel" type="Label" parent="VBoxContainer/Header/HeaderPanel"]
+margin_left = 7.0
+margin_top = 9.0
+margin_right = 157.0
+margin_bottom = 29.0
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 1 )
+text = "Game Mode"
+align = 1
+
+[node name="Content" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 39.0
+margin_right = 164.0
+margin_bottom = 144.0
+rect_min_size = Vector2( 40, 30 )
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="VBoxContainer/Content"]
+margin_right = 164.0
+margin_bottom = 105.0
+mouse_filter = 2
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="Left" type="TextureRect" parent="VBoxContainer/Content"]
+margin_right = 3.0
+margin_bottom = 105.0
+mouse_filter = 2
+size_flags_horizontal = 2
+size_flags_vertical = 3
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="Right" type="TextureRect" parent="VBoxContainer/Content"]
+margin_left = 161.0
+margin_right = 164.0
+margin_bottom = 105.0
+mouse_filter = 2
+size_flags_horizontal = 10
+size_flags_vertical = 3
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="Bottom" type="TextureRect" parent="VBoxContainer/Content"]
+margin_top = 102.0
+margin_right = 164.0
+margin_bottom = 105.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="ModePanel" type="MarginContainer" parent="VBoxContainer/Content"]
+margin_right = 164.0
+margin_bottom = 105.0
+mouse_filter = 2
+custom_constants/margin_right = 7
+custom_constants/margin_top = 4
+custom_constants/margin_left = 7
+custom_constants/margin_bottom = 7
+
+[node name="GameModeButton" parent="VBoxContainer/Content/ModePanel" instance=ExtResource( 2 )]
+margin_left = 7.0
+margin_top = 4.0
+margin_right = 157.0
+margin_bottom = 98.0
+
+[node name="ModeSelectionButton" type="TextureButton" parent="."]
+margin_right = 164.0
+margin_bottom = 144.0
+action_mode = 0
