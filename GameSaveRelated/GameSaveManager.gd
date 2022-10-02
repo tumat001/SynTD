@@ -152,8 +152,8 @@ func _load_game_hotkey_using_file(arg_file : File):
 func save_map_selection_defaults__of_settings_manager():
 	var save_arr = GameSettingsManager._get_save_arr_with_inner_info_for_map_selection_default_values()
 	var err_msg = "Saving error! -- Map Default values of settings manager"
-	_save_using_arr(save_arr, settings_file_path, err_msg)
-	
+	_save_using_arr(save_arr, map_selection_default_vals_file_path, err_msg)
+
 
 func load_map_selection_defaults__of_settings_manager():
 	var load_file = File.new()

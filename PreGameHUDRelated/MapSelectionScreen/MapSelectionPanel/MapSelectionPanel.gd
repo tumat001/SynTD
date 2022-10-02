@@ -171,20 +171,31 @@ func _on_map_card_toggle_mode_changed(arg_val : bool, arg_map_card : MapCard):
 
 
 #
+#
+#func select_first_visible_map_card():
+#	if current_map_ids_displayed.size() > 0:
+#		var first_id_displayed = current_map_ids_displayed[0]
+#		set_current_map_id_selected(first_id_displayed)
+#
+#		var first_card_displayed
+#		for map_card in all_map_cards:
+#			if map_card.map_id == first_id_displayed and first_id_displayed != -1:
+#				first_card_displayed = map_card
+#				break
+#		if first_card_displayed != null:
+#			first_card_displayed.set_is_toggle_mode_on(true)
 
-func select_first_visible_map_card():
-	if current_map_ids_displayed.size() > 0:
-		var first_id_displayed = current_map_ids_displayed[0]
-		set_current_map_id_selected(first_id_displayed)
-		
-		var first_card_displayed
-		for map_card in all_map_cards:
-			if map_card.map_id == first_id_displayed and first_id_displayed != -1:
-				first_card_displayed = map_card
-				break
-		if first_card_displayed != null:
-			first_card_displayed.set_is_toggle_mode_on(true)
 
-
+func select_map_card_with_id(arg_id):
+	var first_id_displayed = arg_id
+	set_current_map_id_selected(first_id_displayed)
+	
+	var first_card_displayed
+	for map_card in all_map_cards:
+		if map_card.map_id == first_id_displayed and first_id_displayed != -1:
+			first_card_displayed = map_card
+			break
+	if first_card_displayed != null:
+		first_card_displayed.set_is_toggle_mode_on(true)
 
 

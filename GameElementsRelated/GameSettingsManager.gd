@@ -178,7 +178,7 @@ func _initialize_map_selection_default_vals__called_from_ready():
 
 func _generate_and_set_map_selection_default_vals():
 	map_id_to_last_chosen_mode_id_map = {}
-	for map_id in StoreOfMaps.MapsIds:
+	for map_id in StoreOfMaps.MapsIds.values():
 		var last_chosen_mode_id_for_map : int = -1
 		var map_type_info : MapTypeInformation = StoreOfMaps.get_map_type_information_from_id(map_id)
 		var mode_ids_accessible_from_menu : Array = map_type_info.game_mode_ids_accessible_from_menu
@@ -196,7 +196,12 @@ func _generate_and_set_map_selection_default_vals():
 # called when load_map_selection_defaults__of_settings_manager returns true
 func _load_map_selection_defaults(arg_file : File):
 	# First line: map id to mode id map
-	map_id_to_last_chosen_mode_id_map = parse_json(arg_file.get_line())
+	var map_name_to_last_chosen_mode_id_map__string_key : Dictionary = parse_json(arg_file.get_line())
+	for map_name in map_name_to_last_chosen_mode_id_map__string_key.keys():
+		var id = StoreOfMaps.MapsIds[map_name]
+		map_id_to_last_chosen_mode_id_map[id] = map_name_to_last_chosen_mode_id_map__string_key[map_name]
+	
+	# next line, last chosen map id
 	last_chosen_map_id = parse_json(arg_file.get_line())
 
 
@@ -204,11 +209,16 @@ func _load_map_selection_defaults(arg_file : File):
 func _get_save_arr_with_inner_info_for_map_selection_default_values():
 	# NOTE: The order of identifiers/values matters. If that is changed, change the order in the load method.
 	var save_arr = []
-	var map_id_to_mode_save_dict = map_id_to_last_chosen_mode_id_map
+	var map_name_to_mode_save_dict = {}
+	for map_name in StoreOfMaps.MapsIds.keys():
+		var map_id = StoreOfMaps.MapsIds[map_name]
+		if map_id_to_last_chosen_mode_id_map.has(map_id):
+			map_name_to_mode_save_dict[map_name] = map_id_to_last_chosen_mode_id_map[map_id]
+	
 	var last_chosen_map_id_to_save : int = last_chosen_map_id
 	
 	#
-	save_arr.append(map_id_to_mode_save_dict)
+	save_arr.append(map_name_to_mode_save_dict)
 	save_arr.append(last_chosen_map_id_to_save)
 	
 	return save_arr

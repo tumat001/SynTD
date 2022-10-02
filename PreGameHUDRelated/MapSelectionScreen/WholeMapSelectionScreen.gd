@@ -35,7 +35,8 @@ func _ready():
 	
 	GameSaveManager.load_map_selection_defaults__of_settings_manager()
 	
-	map_selection_panel.set_current_map_id_selected(GameSettingsManager.last_chosen_map_id)
+	#map_selection_panel.set_current_map_id_selected(GameSettingsManager.last_chosen_map_id)
+	map_selection_panel.select_map_card_with_id(GameSettingsManager.last_chosen_map_id)
 	mode_selection_panel_v2.set_active_mode_using_game_settings_params()
 	
 	#
@@ -89,8 +90,8 @@ func _on_current_selected_mode_changed(arg_mode_id):
 
 func _on_play_button_pressed():
 	if _if_all_game_starting_requirements_set():
-		GameSettingsManager.last_chosen_map_id = current_map_type_info_selected
-		GameSettingsManager.map_id_to_last_chosen_mode_id_map[current_map_type_info_selected] = current_mode_type_info_selected.mode_id
+		GameSettingsManager.last_chosen_map_id = current_map_type_info_selected.map_id
+		GameSettingsManager.map_id_to_last_chosen_mode_id_map[current_map_type_info_selected.map_id] = current_mode_type_info_selected.mode_id
 		GameSaveManager.save_map_selection_defaults__of_settings_manager()
 		
 		CommsForBetweenScenes.map_id = current_map_type_info_selected.map_id
