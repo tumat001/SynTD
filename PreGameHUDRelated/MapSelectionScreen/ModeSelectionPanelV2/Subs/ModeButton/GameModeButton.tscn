@@ -5,7 +5,7 @@
 [ext_resource path="res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeBeginner/ModeBeginner_ButtonPic_Highlighted.png" type="Texture" id=3]
 [ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/ModeSelectionPanelV2/Subs/ModeButton/GameModeButton.gd" type="Script" id=4]
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=1]
 size = 22
 font_data = ExtResource( 1 )
 
@@ -30,7 +30,7 @@ texture_hover = ExtResource( 3 )
 margin_top = 33.0
 margin_right = 150.0
 margin_bottom = 60.0
-custom_fonts/font = SubResource( 2 )
+custom_fonts/font = SubResource( 1 )
 text = "Mode"
 align = 1
 [connection signal="button_up" from="ModeButton" to="." method="_on_ModeButton_button_up"]

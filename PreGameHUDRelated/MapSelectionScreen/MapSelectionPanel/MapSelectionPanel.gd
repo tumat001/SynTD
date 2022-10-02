@@ -184,4 +184,7 @@ func select_first_visible_map_card():
 				break
 		if first_card_displayed != null:
 			first_card_displayed.set_is_toggle_mode_on(true)
-		
+
+
+
+

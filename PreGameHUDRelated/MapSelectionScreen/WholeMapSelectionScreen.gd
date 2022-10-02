@@ -8,7 +8,8 @@ onready var map_selection_panel = $VBoxContainer/MapSelectionPanel
 onready var mode_description_panel = $VBoxContainer/MarginContainer/HBoxContainer2/GameModeDescPanel
 onready var mode_selection_panel_v2 = $VBoxContainer/MarginContainer/HBoxContainer2/ModeSelectionPanelV2
 
-onready var map_summary_panel = $VBoxContainer/MarginContainer/HBoxContainer/MapSummaryPanel
+#onready var map_summary_panel = $VBoxContainer/MarginContainer/HBoxContainer/MapSummaryPanel
+onready var start_button = $VBoxContainer/MarginContainer/HBoxContainer/MapSelection_StartButton
 
 onready var container_for_select_list = $ContainerForSelectLists
 
@@ -26,12 +27,18 @@ func _ready():
 	mode_selection_panel_v2.connect("current_selected_game_mode_changed", self, "_on_current_selected_mode_changed")
 	mode_selection_panel_v2.node_to_add_selection_list_to = container_for_select_list
 	
-	map_summary_panel.connect("play_button_released", self, "_on_play_button_pressed")
+	start_button.connect("play_button_released", self, "_on_play_button_pressed")
 	
 	#
-	map_selection_panel.select_first_visible_map_card()
-	mode_selection_panel_v2.set_first_valid_mode()
+	#map_selection_panel.select_first_visible_map_card()
+	#mode_selection_panel_v2.set_first_valid_mode()
 	
+	GameSaveManager.load_map_selection_defaults__of_settings_manager()
+	
+	map_selection_panel.set_current_map_id_selected(GameSettingsManager.last_chosen_map_id)
+	mode_selection_panel_v2.set_active_mode_using_game_settings_params()
+	
+	#
 	connect("visibility_changed", self, "_on_visibility_changed")
 	_on_visibility_changed()
 	
@@ -47,14 +54,14 @@ func _on_current_selected_map_id_changed(arg_map_id):
 	current_map_type_info_selected = map_type_info
 	
 	if map_type_info != null:
-		map_summary_panel.set_map_name(map_type_info.map_name)
+		#map_summary_panel.set_map_name(map_type_info.map_name)
 		mode_selection_panel_v2.set_map_id_to_display_modes_for(map_type_info.map_id)
 		mode_selection_panel_v2.visible = true
 	else:
-		map_summary_panel.set_map_name("")
+		#map_summary_panel.set_map_name("")
 		mode_selection_panel_v2.visible = true
 	
-	map_summary_panel.set_is_enabled(_if_all_game_starting_requirements_set())
+	start_button.set_is_enabled(_if_all_game_starting_requirements_set())
 
 
 func _if_all_game_starting_requirements_set() -> bool:
@@ -66,22 +73,26 @@ func _on_current_selected_mode_changed(arg_mode_id):
 	var mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(arg_mode_id)
 	
 	if mode_type_info != null:
-		map_summary_panel.set_difficulty_name(mode_type_info.mode_name)
+		#map_summary_panel.set_difficulty_name(mode_type_info.mode_name)
 		mode_description_panel.set_descriptions(mode_type_info.mode_descriptions)
 	else:
-		map_summary_panel.set_difficulty_name("")
+		#map_summary_panel.set_difficulty_name("")
 		mode_description_panel.set_descriptions([])
 	
 	#
 	
 	current_mode_type_info_selected = mode_type_info
 	
-	map_summary_panel.set_is_enabled(_if_all_game_starting_requirements_set())
+	start_button.set_is_enabled(_if_all_game_starting_requirements_set())
 
 #
 
 func _on_play_button_pressed():
 	if _if_all_game_starting_requirements_set():
+		GameSettingsManager.last_chosen_map_id = current_map_type_info_selected
+		GameSettingsManager.map_id_to_last_chosen_mode_id_map[current_map_type_info_selected] = current_mode_type_info_selected.mode_id
+		GameSaveManager.save_map_selection_defaults__of_settings_manager()
+		
 		CommsForBetweenScenes.map_id = current_map_type_info_selected.map_id
 		CommsForBetweenScenes.game_mode_id = current_mode_type_info_selected.mode_id
 		

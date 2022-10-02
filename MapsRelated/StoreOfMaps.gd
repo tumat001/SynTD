@@ -8,8 +8,6 @@ const Map_Glade_PreviewImage = preload("res://MapsRelated/MapList/Map_Glade/Glad
 
 
 enum MapsIds {
-	DEFAULT = 0
-	
 	GLADE = 0,
 }
 

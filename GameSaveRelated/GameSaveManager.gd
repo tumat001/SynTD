@@ -2,6 +2,7 @@ extends Node
 
 const settings_file_path = "user://game_settings.save"
 const hotkey_controls_file_path = "user://game_hotkey_controls.save"
+const map_selection_default_vals_file_path = "user://map_selection_default_vals.save"
 
 const game_controls_action_name_to_ignore_save : Array = [
 	"ui_select",
@@ -33,6 +34,21 @@ func _save_using_dict(arg_dict, arg_file_path, arg_print_err_msg):
 		return
 	
 	save_file.store_line(to_json(save_dict))
+	
+	save_file.close()
+
+func _save_using_arr(arg_arr, arg_file_path, arg_print_err_msg):
+	var save_arr = arg_arr
+	var save_file = File.new()
+	
+	var err_stat = save_file.open(arg_file_path, File.WRITE)
+	
+	if err_stat != OK:
+		print(arg_print_err_msg)
+		return
+	
+	for ele in save_arr:
+		save_file.store_line(to_json(ele))
 	
 	save_file.close()
 
@@ -130,6 +146,31 @@ func _load_game_hotkey_using_file(arg_file : File):
 				
 				InputMap.action_add_event(action_name, key_event)
 
-#######
 
+# MAP SELECTION DEFAULTS ---------------------
+
+func save_map_selection_defaults__of_settings_manager():
+	var save_arr = GameSettingsManager._get_save_arr_with_inner_info_for_map_selection_default_values()
+	var err_msg = "Saving error! -- Map Default values of settings manager"
+	_save_using_arr(save_arr, settings_file_path, err_msg)
+	
+
+func load_map_selection_defaults__of_settings_manager():
+	var load_file = File.new()
+	
+	if load_file.file_exists(map_selection_default_vals_file_path):
+		var err_stat = load_file.open(map_selection_default_vals_file_path, File.READ)
+		
+		if err_stat != OK:
+			print("Loading error! -- Game settings of settings manager")
+			return false
+		
+		GameSettingsManager._load_map_selection_defaults(load_file)
+		
+		load_file.close()
+		return true
+		
+	else:
+		return false
+	
 
