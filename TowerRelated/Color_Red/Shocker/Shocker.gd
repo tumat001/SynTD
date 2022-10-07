@@ -19,7 +19,7 @@ const ShockBolt_03 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/
 const ShockBolt_04 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt04.png")
 const ShockBolt_05 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt05.png")
 
-const shock_base_damage_and_on_hit_ratio : float = 0.35
+const shock_base_damage_and_on_hit_ratio : float = 0.30
 const shock_ball_range : float = 100.0
 const no_shock_ball_clause : int = AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01
 

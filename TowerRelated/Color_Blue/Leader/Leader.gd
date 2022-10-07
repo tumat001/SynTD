@@ -10,6 +10,8 @@ const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const AttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn")
 
+const Leader_AddMember_BeamScene = preload("res://TowerRelated/Color_Blue/Leader/ConnectionBeam/Leader_AddMember_Beam.tscn")
+const Leader_RemoveMember_BeamScene = preload("res://TowerRelated/Color_Blue/Leader/ConnectionBeam/Leader_RemoveMember_Beam.tscn")
 const ArcingBaseBullet = preload("res://TowerRelated/DamageAndSpawnables/ArcingBaseBullet.gd")
 
 const LeaderBeam01 = preload("res://TowerRelated/Color_Blue/Leader/Leader_Beam/LeaderBeam01.png")
@@ -222,6 +224,8 @@ func _ability_prompt_add_member():
 	if mouse_hovered_tower != null:
 		_ability_add_selected_member(mouse_hovered_tower)
 		
+		if !input_prompt_manager.can_prompt():
+			input_prompt_manager.cancel_selection()
 	else:
 		if input_prompt_manager.can_prompt():
 			input_prompt_manager.prompt_select_tower(self, "_ability_add_selected_member", "_ability_prompt_cancelled", "_can_add_tower_as_member")
@@ -233,6 +237,8 @@ func _ability_prompt_remove_member():
 	if mouse_hovered_tower != null:
 		_ability_remove_selected_member(mouse_hovered_tower)
 		
+		if !input_prompt_manager.can_prompt():
+			input_prompt_manager.cancel_selection()
 	else:
 		if input_prompt_manager.can_prompt():
 			input_prompt_manager.prompt_select_tower(self, "_ability_remove_selected_member", "_ability_prompt_cancelled", "_can_remove_member_tower")
@@ -265,6 +271,8 @@ func _ability_add_selected_member(tower):
 			beam.update_destination_position(tower.global_position)
 		
 		_toggle_show_tower_info()
+		
+		call_deferred("_show_add_member_beam_to_tower", tower)
 
 func _can_add_tower_as_member(tower) -> bool:
 	return !tower_members_beam_map.has(tower) and tower.is_current_placable_in_map() and !tower is get_script()
@@ -301,6 +309,8 @@ func _ability_remove_selected_member(tower):
 			remove_tower_activation_conditional_clauses.attempt_insert_clause(rt_activation_clause_no_member)
 		
 		_toggle_show_tower_info()
+		
+		call_deferred("_show_remove_member_beam_to_tower", tower)
 
 func _can_remove_member_tower(tower) -> bool:
 	return tower != null and tower_members_beam_map.has(tower)
@@ -376,7 +386,7 @@ func _construct_and_show_particle_at_pos(pos : Vector2):
 	var particle = LeaderCommandAttack_ParticleScene.instance()
 	particle.position = pos
 	
-	get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
 
 
 func _member_bullet_is_shot(bullet : BaseBullet, tower):
@@ -422,7 +432,7 @@ func _construct_mark_indicator():
 	
 	mark_indicator.has_lifetime = false
 	
-	get_tree().get_root().add_child(mark_indicator)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(mark_indicator)
 
 
 func _process(delta):
@@ -495,7 +505,7 @@ func _construct_beam():
 	beam.set_texture_as_default_anim(LeaderMemberConnectionBeam_Pic)
 	beam.global_position = global_position
 	
-	get_tree().get_root().add_child(beam)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 	return beam
 
 
@@ -539,4 +549,28 @@ func queue_free():
 	_remove_all_tower_members()
 	
 	.queue_free()
+
+###########
+
+func _show_add_member_beam_to_tower(arg_tower):
+	if arg_tower != null:
+		var beam = Leader_AddMember_BeamScene.instance()
+		beam.frame = 0
+		
+		beam.position = global_position
+		
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
+		beam.update_destination_position(arg_tower.global_position)
+
+func _show_remove_member_beam_to_tower(arg_tower):
+	if arg_tower != null:
+		var beam = Leader_RemoveMember_BeamScene.instance()
+		beam.frame = 0
+		
+		beam.position = global_position
+		
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
+		beam.update_destination_position(arg_tower.global_position)
+
+
 

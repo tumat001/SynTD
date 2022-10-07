@@ -154,6 +154,7 @@ func _get_instructions_for_6_1():
 		SingleEnemySpawnInstruction.new(26, EnemyConstants.Enemies.ENCHANTRESS),
 		SingleEnemySpawnInstruction.new(28, EnemyConstants.Enemies.ENCHANTRESS),
 		SingleEnemySpawnInstruction.new(32, EnemyConstants.Enemies.ENCHANTRESS),
+		SingleEnemySpawnInstruction.new(34, EnemyConstants.Enemies.ENCHANTRESS),
 		SingleEnemySpawnInstruction.new(36, EnemyConstants.Enemies.ENCHANTRESS),
 	]
 
@@ -168,16 +169,16 @@ func _get_instructions_for_6_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 17, 2, EnemyConstants.Enemies.CHARGE),
 		MultipleEnemySpawnInstruction.new(10, 4, 5, EnemyConstants.Enemies.EXPERIENCED),
-		MultipleEnemySpawnInstruction.new(20, 4, 2, EnemyConstants.Enemies.ENCHANTRESS),
+		MultipleEnemySpawnInstruction.new(20, 5, 2, EnemyConstants.Enemies.ENCHANTRESS),
 	]
 
 func _get_instructions_for_6_4():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.FIEND),
-		MultipleEnemySpawnInstruction.new(4, 5, 5, EnemyConstants.Enemies.ENCHANTRESS),
+		MultipleEnemySpawnInstruction.new(4, 6, 4, EnemyConstants.Enemies.ENCHANTRESS),
 		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.MAGUS),
 		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.MAGUS),
-		MultipleEnemySpawnInstruction.new(20, 2, 1, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(20, 3, 1, EnemyConstants.Enemies.EXPERIENCED),
 	]
 
 
@@ -189,6 +190,7 @@ func _get_instructions_for_7_1():
 		MultipleEnemySpawnInstruction.new(0.5, 22, 1.7, EnemyConstants.Enemies.CHARGE),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.ENCHANTRESS),
 		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.ENCHANTRESS),
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.ENCHANTRESS),
 	]
 
 func _get_instructions_for_7_2():
@@ -203,14 +205,14 @@ func _get_instructions_for_7_2():
 func _get_instructions_for_7_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 38, 1.3, EnemyConstants.Enemies.EXPERIENCED),
-		MultipleEnemySpawnInstruction.new((1.3 * 5), 8, 2.6, EnemyConstants.Enemies.ENCHANTRESS),
-		MultipleEnemySpawnInstruction.new((39 * 1.3), 6, 0.2, EnemyConstants.Enemies.ASSASSIN),
+		MultipleEnemySpawnInstruction.new((1.3 * 5), 9, 2.6, EnemyConstants.Enemies.ENCHANTRESS),
+		MultipleEnemySpawnInstruction.new((39 * 1.3), 7, 0.2, EnemyConstants.Enemies.ASSASSIN),
 	]
 
 func _get_instructions_for_7_4():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 31, 1.58, EnemyConstants.Enemies.EXPERIENCED),
-		MultipleEnemySpawnInstruction.new(0.75, 8, 6.5, EnemyConstants.Enemies.MAGUS),
+		MultipleEnemySpawnInstruction.new(0, 31, 1.54, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0.75, 8, 6.25, EnemyConstants.Enemies.MAGUS),
 	]
 
 

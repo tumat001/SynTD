@@ -95,8 +95,11 @@ margin_left = 6.0
 margin_top = 6.0
 margin_right = 87.0
 margin_bottom = 23.0
+size_flags_vertical = 6
 custom_fonts/font = SubResource( 1 )
 text = "Choice 01"
+align = 1
+valign = 1
 
 [node name="RightButton" type="TextureButton" parent="HBoxContainer"]
 margin_left = 131.0

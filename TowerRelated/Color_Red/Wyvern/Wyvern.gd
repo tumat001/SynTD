@@ -30,7 +30,7 @@ var _is_in_fury : bool
 
 const fury_base_dmg_ratio : float = 3.0
 const fury_on_hit_dmg_ratio : float = 4.0
-const fury_final_dmg_multiplier_against_bosses : float = 0.4
+const fury_final_dmg_multiplier_against_bosses : float = 0.8
 
 var _attk_module_disabled_by_fury_clause : AbstractAttackModule
 
@@ -52,6 +52,10 @@ const base_trail_width : int = 4
 var _current_trail_width : int = base_trail_width
 
 var trail_for_emp_proj_component : MultipleTrailsForNodeComponent
+
+const beam_to_target_color : Color = Color(1, 0, 0, 0.75)
+const beam_to_target_width : int = 2
+#var _should_show_beam : bool
 
 #
 
@@ -146,6 +150,8 @@ func _construct_empowered_proj_attk_module(y_shift_of_attk_module, info):
 	attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(not_in_fury_condi_clause)
 	attack_module.set_image_as_tracker_image(Wyvern_EmpProj_AMI)
 	
+	configure_self_to_change_direction_on_attack_module_when_commanded(attack_module)
+	
 	add_attack_module(attack_module)
 	
 	empowered_proj_attk_module = attack_module
@@ -159,7 +165,7 @@ func _on_dmg_instance_constructed__of_emp_proj(arg_dmg_instance, arg_module):
 
 func _before_bullet_is_shot__of_emp_proj(arg_bullet):
 	trail_for_emp_proj_component.create_trail_for_node(arg_bullet)
-	arg_bullet.life_distance = empowered_proj_attk_module.global_position.distance_to(_current_fury_locked_on_target.global_position) + 50 # 50 is for allowance
+	arg_bullet.life_distance = empowered_proj_attk_module.global_position.distance_to(_current_fury_locked_on_target.global_position) + BulletAttackModule.get_life_distance_bonus_allowance()
 
 func _on_emp_attk_module_bullet_hit_enemy(enemy, damage_register_id, damage_instance, arg_module):
 	if enemy.is_enemy_type_boss():
@@ -257,6 +263,10 @@ func _cast_fury():
 
 func _set_marker_visible_status(arg_visible):
 	mark_indicator.visible = arg_visible
+	#_should_show_beam = arg_visible
+	
+	if !arg_visible:
+		update()
 
 func _get_candidate_target():
 	if range_module != null:
@@ -345,6 +355,12 @@ func _on_round_end_w():
 func _process(delta):
 	if _current_fury_locked_on_target != null:
 		mark_indicator.global_position = _current_fury_locked_on_target.global_position
+		update()
+
+func _draw():
+	if _current_fury_locked_on_target != null:
+		draw_line(empowered_proj_attk_module.global_position - global_position, _current_fury_locked_on_target.global_position - global_position, beam_to_target_color, beam_to_target_width)
+
 
 #
 
@@ -353,4 +369,11 @@ func _trail_before_attached_to_node(arg_trail, node):
 	arg_trail.trail_color = trail_color
 	arg_trail.width = _current_trail_width
 
+#
+
+func queue_free():
+	if mark_indicator != null and !mark_indicator.is_queued_for_deletion():
+		mark_indicator.queue_free()
+	
+	.queue_free()
 

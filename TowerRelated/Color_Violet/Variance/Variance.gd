@@ -69,13 +69,13 @@ onready var variance_frame_sprites = $TowerBase/KnockUpLayer/FrameSprites
 onready var variance_chain_sprite = $TowerBase/KnockUpLayer/ChainSprite
 
 enum VarianceState {
-	INITIAL = 0,
-	YELLOW = 1,
-	BLUE = 2,
-	RED = 3
+	INITIAL = 1,
+	YELLOW = 2,
+	BLUE = 3,
+	RED = 4
 }
 
-var current_variance_state : int = VarianceState.INITIAL #changing this does nothing. use method in _ready to change initial
+var current_variance_state : int #= VarianceState.INITIAL #changing this does nothing. use method in _ready to change initial
 var variance_state_rng : RandomNumberGenerator
 var current_cd_for_change_state : int = 1    # 1 is needed to not change state immediately upon buying
 
@@ -162,6 +162,11 @@ const yellow_attk_speed_duration : float = 20.0
 #
 
 const y_shift_of_attk_module : float = 16.0
+
+var descs_for_clear : Array
+var descs_for_red : Array
+var descs_for_yellow : Array
+var descs_for_blue : Array
 
 #
 
@@ -466,6 +471,13 @@ func _construct_lock_ability():
 	lock_ability.should_be_displaying_clauses.blacklisted_clauses.append(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 	lock_ability.should_be_displaying_clauses.remove_clause(BaseAbility.ShouldBeDisplayingClauses.TOWER_IN_BENCH)
 	
+	lock_ability.activation_conditional_clauses.blacklisted_clauses.append(BaseAbility.ActivationClauses.TOWER_IN_BENCH)
+	lock_ability.activation_conditional_clauses.blacklisted_clauses.append(BaseAbility.ActivationClauses.ROUND_INTERMISSION_STATE)
+	lock_ability.activation_conditional_clauses.blacklisted_clauses.append(disabled_from_attacking_clauses)
+	lock_ability.activation_conditional_clauses.remove_clause(BaseAbility.ActivationClauses.TOWER_IN_BENCH)
+	lock_ability.activation_conditional_clauses.remove_clause(BaseAbility.ActivationClauses.ROUND_INTERMISSION_STATE)
+	
+	
 	lock_ability.tower = self
 	
 	lock_ability.descriptions = [
@@ -519,7 +531,7 @@ func _on_round_end_v(): # EVENTUALLY DISCONNECTED.
 
 
 func _update_curr_state_to_random_state():
-	var new_state = variance_state_rng.randi_range(1, 3)
+	var new_state = variance_state_rng.randi_range(2, 4)
 	
 	_set_variance_state(new_state)
 	
@@ -538,6 +550,8 @@ func _set_variance_state(arg_state_id):
 			_set_variance_state_to_yellow()
 		elif arg_state_id == VarianceState.RED:
 			_set_variance_state_to_red()
+		elif arg_state_id == VarianceState.INITIAL:
+			_set_vairance_state_to_initial()
 		
 		if arg_state_id == VarianceState.YELLOW and !is_connected("on_main_attack", self, "_on_main_attack__for_yellow_summon_vessel_count"):
 			connect("on_main_attack", self, "_on_main_attack__for_yellow_summon_vessel_count", [], CONNECT_PERSIST)
@@ -545,10 +559,24 @@ func _set_variance_state(arg_state_id):
 			disconnect("on_main_attack", self, "_on_main_attack__for_yellow_summon_vessel_count")
 
 
+func _set_vairance_state_to_initial():
+	if descs_for_clear.size() == 0:
+		descs_for_clear = _get_descriptions_for_clear_var()
+	tower_type_info.tower_descriptions = descs_for_clear
+	
+	
+	#TODO Do this when needed (if revertable to clear)
+	#variance_frame_sprites.texture = Variance_fra
+	#initialize_clear_ing
+
 func _set_variance_state_to_blue():
 	if blue_beam_attk_module == null:
 		_construct_and_add_blue_beam_attk_module()
 		_construct_and_add_blue_explosion_attk_module()
+	
+	if descs_for_blue.size() == 0:
+		descs_for_blue = _get_descriptions_for_blue_var()
+	tower_type_info.tower_descriptions = descs_for_blue
 	
 	variance_frame_sprites.texture = Variance_Frame_Blue_Pic
 	_initialize_blue_ing()
@@ -557,7 +585,7 @@ func _set_variance_state_to_blue():
 func _initialize_blue_ing():
 	if variance_blue_ing_effect == null:
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_VARIANCE_STAT)
-		base_ap_attr_mod.flat_modifier = Towers.tier_ap_range_map[tower_type_info.tower_tier]
+		base_ap_attr_mod.flat_modifier = Towers.tier_ap_map[tower_type_info.tower_tier]
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , base_ap_attr_mod, StoreOfTowerEffectsUUID.ING_VARIANCE_STAT)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
@@ -571,6 +599,10 @@ func _initialize_blue_ing():
 func _set_variance_state_to_yellow():
 	if yellow_inst_dmg_attk_module == null:
 		_construct_and_add_yellow_inst_attack_module()
+	
+	if descs_for_yellow.size() == 0:
+		descs_for_yellow = _get_descriptions_for_yellow_var()
+	tower_type_info.tower_descriptions = descs_for_yellow
 	
 	variance_frame_sprites.texture = Variance_Frame_Yellow_Pic
 	_initialize_yellow_ing()
@@ -593,6 +625,10 @@ func _set_variance_state_to_red():
 	if red_lob_glob_attk_module == null:
 		_construct_and_add_lob_attack_module()
 		_construct_and_add_red_burst_explosion()
+	
+	if descs_for_red.size() == 0:
+		descs_for_red = _get_descriptions_for_red_var()
+	tower_type_info.tower_descriptions = descs_for_red
 	
 	variance_frame_sprites.texture = Variance_Frame_Red_Pic
 	_initialize_red_ing()
@@ -986,4 +1022,126 @@ func get_tower_descriptions_to_use_for_vessel():
 		["On its creator's main attack: fire a bullet toward its creator's target. Bullets deal |0| and has |1|. These stats are based on the creator.", [interpreter_for_bullet_dmg, interpreter_for_pierce]],
 		"On this tower's 10th attack, fire additional 3 bullets to the largest line of enemies. These bullets have infinite pierce."
 	]
+
+#######
+
+
+func _get_descriptions_for_clear_var():
+	return [
+		_get_descriptions_header_01(),
+		"",
+		_get_descriptions_header_02(),
+		"Ability: Specialize as Clear Type: Remove almost all effects from enemies in range three times over 10 seconds.",
+		"",
+		_get_descriptions_for_cooldown(),
+	]
+
+func _get_descriptions_for_red_var():
+	var interpreter_for_red_explosion = TextFragmentInterpreter.new()
+	interpreter_for_red_explosion.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_red_explosion.header_description = "pure damage"
+	interpreter_for_red_explosion.display_body = true
+	
+	var ins_for_red_explosion = []
+	ins_for_red_explosion.append(NumericalTextFragment.new(20, false, DamageType.PURE))
+	ins_for_red_explosion.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	ins_for_red_explosion.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 8, DamageType.PURE))
+	
+	interpreter_for_red_explosion.array_of_instructions = ins_for_red_explosion
+	
+	return [
+		_get_descriptions_header_01(),
+		"",
+		_get_descriptions_header_02(),
+		["Ability: Specialize as Damage Type: The first main attack knocks its target back. The first and second main attack stuns for 2 seconds. Afterwards, fire a massive glob that deals |0| to 5 enemies.", [interpreter_for_red_explosion]],
+		"",
+		_get_descriptions_for_cooldown(),
+	]
+
+func _get_descriptions_for_blue_var():
+	var interpreter_for_blue_beam_dmg = TextFragmentInterpreter.new()
+	interpreter_for_blue_beam_dmg.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_blue_beam_dmg.display_body = true
+	
+	var ins_for_blue_beam_dmg = []
+	ins_for_blue_beam_dmg.append(NumericalTextFragment.new(2, false, DamageType.ELEMENTAL))
+	ins_for_blue_beam_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+	ins_for_blue_beam_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+	
+	interpreter_for_blue_beam_dmg.array_of_instructions = ins_for_blue_beam_dmg
+	
+	
+	var interpreter_for_blue_explosion_dmg = TextFragmentInterpreter.new()
+	interpreter_for_blue_explosion_dmg.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_blue_explosion_dmg.display_body = true
+	
+	var ins_for_blue_explosion_dmg = []
+	ins_for_blue_explosion_dmg.append(NumericalTextFragment.new(15, false, DamageType.ELEMENTAL))
+	ins_for_blue_explosion_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+	ins_for_blue_explosion_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+	
+	interpreter_for_blue_explosion_dmg.array_of_instructions = ins_for_blue_explosion_dmg
+	
+	
+	var interpreter_for_ap = TextFragmentInterpreter.new()
+	interpreter_for_ap.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_ap.display_body = false
+	
+	var ins_for_ap = []
+	ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.5, false))
+	
+	interpreter_for_ap.array_of_instructions = ins_for_ap
+	
+	return [
+		_get_descriptions_header_01(),
+		"",
+		_get_descriptions_header_02(),
+		["Ability: Specialize as Potency Type: Deal |0| per 0.25 seconds to its current target until it dies or leaves range. Afterwards, release an explosion at its target's location, dealing |1|. If this is casted while the beam is active, gain stacking |2|.", [interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg, interpreter_for_ap]],
+		"",
+		_get_descriptions_for_cooldown(),
+	]
+
+func _get_descriptions_for_yellow_var():
+	var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+	interpreter_for_attk_speed.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_attk_speed.display_body = false
+	interpreter_for_attk_speed.header_description = "attack speed"
+	
+	var ins_for_attk_speed = []
+	ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 30, true))
+	
+	interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+	
+	return [
+		_get_descriptions_header_01(),
+		"",
+		_get_descriptions_header_02(),
+		["Ability: Specialize as Speed Type: Gain |0| for 20 seconds. Innate: Summon a vessel outside of range every 25 main attacks. Vessels last for only one round.", [interpreter_for_attk_speed]],
+		"",
+		_get_descriptions_for_cooldown(),
+	]
+
+
+
+func _get_descriptions_header_01():
+	return "On round end: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it."
+
+func _get_descriptions_header_02():
+	return "Auto casts Specialize."
+
+
+func _get_descriptions_for_cooldown():
+	var interpreter_for_cooldown = TextFragmentInterpreter.new()
+	interpreter_for_cooldown.tower_to_use_for_tower_stat_fragments = self
+	interpreter_for_cooldown.display_body = true
+	interpreter_for_cooldown.header_description = "s"
+	
+	var ins_for_cooldown = []
+	ins_for_cooldown.append(NumericalTextFragment.new(22, false))
+	ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+	ins_for_cooldown.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+	
+	interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+	
+	return ["Cooldown: |0|", [interpreter_for_cooldown]]
 

@@ -25,7 +25,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		_range_percent_reduc = -13
 		_explosion_cooldown = 3.0
 	elif tier == 3:
-		_current_explosion_stun_duration = 0.4
+		_current_explosion_stun_duration = 0.3
 		_range_percent_reduc = -10
 		_explosion_cooldown = 3.0
 	

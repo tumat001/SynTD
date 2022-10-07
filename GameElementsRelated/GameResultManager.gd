@@ -4,6 +4,8 @@ const GameResultPanel = preload("res://GameHUDRelated/GameResult_VicDefPanel/Gam
 const GameResultPanel_Scene = preload("res://GameHUDRelated/GameResult_VicDefPanel/GameResultPanel.tscn")
 
 
+signal game_result_decided()
+
 enum GameResult {
 	ONGOING = 0, # not decided yet
 	VICTORY = 1,
@@ -49,6 +51,8 @@ func _set_game_result(arg_result : int):
 		_initialize_game_result_panel()
 		_set_properties_of_game_elements_to_post_battle()
 		game_elements.enemy_manager.end_run()
+		
+		emit_signal("game_result_decided")
 
 
 func _initialize_game_result_panel():

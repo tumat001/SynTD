@@ -1,0 +1,25 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://TowerRelated/Color_Blue/Leader/ConnectionBeam/Leader_RemoveMember_ConnectionBeam_05.png" type="Texture" id=1]
+[ext_resource path="res://TowerRelated/Color_Blue/Leader/ConnectionBeam/Leader_RemoveMember_ConnectionBeam_06.png" type="Texture" id=2]
+[ext_resource path="res://TowerRelated/Color_Blue/Leader/ConnectionBeam/Leader_RemoveMember_ConnectionBeam_03.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_Blue/Leader/ConnectionBeam/Leader_RemoveMember_ConnectionBeam_02.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_Blue/Leader/ConnectionBeam/Leader_RemoveMember_ConnectionBeam_01.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_Blue/Leader/ConnectionBeam/Leader_RemoveMember_ConnectionBeam_04.png" type="Texture" id=6]
+[ext_resource path="res://MiscRelated/BeamRelated/BeamAesthetic.tscn" type="PackedScene" id=7]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 5 ), ExtResource( 4 ), ExtResource( 3 ), ExtResource( 6 ), ExtResource( 1 ), ExtResource( 2 ) ],
+"loop": false,
+"name": "default",
+"speed": 30.0
+} ]
+
+[node name="Leader_RemoveMember_Beam" instance=ExtResource( 7 )]
+frames = SubResource( 1 )
+frame = 5
+playing = true
+time_visible = 0.4
+is_timebound = true
+queue_free_if_time_over = true

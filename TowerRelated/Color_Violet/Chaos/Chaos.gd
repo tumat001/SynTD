@@ -227,8 +227,8 @@ var void_lakes_aoe_attack_module : AOEAttackModule
 const night_watcher_summon_count : int = 2
 
 const night_watcher_summon_duration : float = 45.0
-const night_watcher_stun_duration : float = 2.0
-const night_watcher_explosion_flat_dmg : float = 4.0
+const night_watcher_stun_duration : float = 1.5
+const night_watcher_explosion_flat_dmg : float = 0.5
 const night_watcher_explosion_pierce : int = 3
 
 const night_watcher_delay_for_next_cast : float = 2.0

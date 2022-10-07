@@ -127,7 +127,7 @@ func _init():
 	
 	#
 	
-	var red_green_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.RedGreen], [TowerColors.RED, TowerColors.GREEN], [5, 4, 3],
+	var red_green_syn = ColorSynergy.new(SynergyId.RedGreen, synergy_id_to_syn_name_dictionary[SynergyId.RedGreen], [TowerColors.RED, TowerColors.GREEN], [5, 4, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_compo_compli_redgreen,
 	[
@@ -157,7 +157,8 @@ func _init():
 		"If Green streak is broken: Block the next enemy effect for a duration.",
 		"If at 10+ stacks: heal nearby towers, and slow enemies hit. Stacks increase the heal, the slow, and the number of attacks that apply the slow.",
 		""
-	]
+	],
+	ColorSynergy.Difficulty.DIFFICULT
 	)
 	
 	# 
@@ -199,7 +200,7 @@ func _init():
 	
 	#
 	
-	var orange_blue_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.OrangeBlue], [TowerColors.ORANGE, TowerColors.BLUE], [5, 4, 3, 2],
+	var orange_blue_syn = ColorSynergy.new(SynergyId.OrangeBlue, synergy_id_to_syn_name_dictionary[SynergyId.OrangeBlue], [TowerColors.ORANGE, TowerColors.BLUE], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_compli_orangeblue,
 	[
@@ -224,7 +225,8 @@ func _init():
 		"Main attacks on hit cause an explosion every few seconds.",
 		["Explosions deal |0| to 3 enemies.", [interpreter_for_orangeblue_explosion_dmg]],
 		"",
-	]
+	],
+	ColorSynergy.Difficulty.EFFORTLESS
 	)
 	
 	#
@@ -250,7 +252,7 @@ func _init():
 	
 	
 	
-	var orange_yr_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.OrangeYR], [TowerColors.ORANGE, TowerColors.YELLOW, TowerColors.RED], [4, 3, 2, 1],
+	var orange_yr_syn = ColorSynergy.new(SynergyId.OrangeYR, synergy_id_to_syn_name_dictionary[SynergyId.OrangeYR], [TowerColors.ORANGE, TowerColors.YELLOW, TowerColors.RED], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_orangeYR,
 	[
@@ -270,7 +272,8 @@ func _init():
 	[
 		"Main attacks cause towers to gain attack speed, up to a limit.",
 		"",
-	]
+	],
+	ColorSynergy.Difficulty.EFFORTLESS
 	)
 	
 	#
@@ -356,7 +359,7 @@ func _init():
 	
 	
 	
-	var yellow_go_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.YellowGO], [TowerColors.YELLOW, TowerColors.GREEN, TowerColors.ORANGE], [4, 3, 2, 1],
+	var yellow_go_syn = ColorSynergy.new(SynergyId.YellowGO, synergy_id_to_syn_name_dictionary[SynergyId.YellowGO], [TowerColors.YELLOW, TowerColors.GREEN, TowerColors.ORANGE], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_yellowGO,
 	[
@@ -381,7 +384,8 @@ func _init():
 		"The highest base damage tower, attack speed tower, and the tower that dealt the most damage in the round are prioritized by the buff.",
 		"Towers with no enemies in their range are ignored.",
 		""
-	]
+	],
+	ColorSynergy.Difficulty.EASY
 	)
 	
 	#
@@ -427,7 +431,7 @@ func _init():
 	
 	
 	
-	var green_by_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.GreenBY], [TowerColors.GREEN, TowerColors.BLUE, TowerColors.YELLOW], [4, 3, 2, 1],
+	var green_by_syn = ColorSynergy.new(SynergyId.GreenBY, synergy_id_to_syn_name_dictionary[SynergyId.GreenBY], [TowerColors.GREEN, TowerColors.BLUE, TowerColors.YELLOW], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_greenBY,
 	[
@@ -441,7 +445,10 @@ func _init():
 		["+|0|, up to |1|.", [interpreter_for_greenBY_ele_on_hit_per_stack_tier_2, interpreter_for_greenBY_ele_on_hit_max_tier_2]],
 		["+|0|, up to |1|.", [interpreter_for_greenBY_ele_on_hit_per_stack_tier_1, interpreter_for_greenBY_ele_on_hit_max_tier_1]],
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.EFFORTLESS
 	)
 	
 	#
@@ -487,7 +494,7 @@ func _init():
 	
 	
 	
-	var blue_vg_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.BlueVG], [TowerColors.BLUE, TowerColors.VIOLET, TowerColors.GREEN], [4, 3, 2, 1],
+	var blue_vg_syn = ColorSynergy.new(SynergyId.BlueVG, synergy_id_to_syn_name_dictionary[SynergyId.BlueVG], [TowerColors.BLUE, TowerColors.VIOLET, TowerColors.GREEN], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_blueVG,
 	[
@@ -505,7 +512,10 @@ func _init():
 		["|0|. +|1| per 20 seconds of cooldown.", [interpreter_for_blue_vg_cooldown_tier_1, interpreter_for_blueVG_ap_per_cast_ratio]],
 		
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.EFFORTLESS
 	)
 	
 	#
@@ -551,7 +561,7 @@ func _init():
 	
 	
 	
-	var violet_rb_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.VioletRB], [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
+	var violet_rb_syn = ColorSynergy.new(SynergyId.VioletRB, synergy_id_to_syn_name_dictionary[SynergyId.VioletRB], [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB,
 	[
@@ -567,7 +577,10 @@ func _init():
 		["|0|, |1|.", [interpreter_for_violetRB_base_dmg_ratio_tier_2, interpreter_for_violetRB_ap_ratio_tier_2]],
 		["|0|, |1|.", [interpreter_for_violetRB_base_dmg_ratio_tier_1, interpreter_for_violetRB_ap_ratio_tier_1]],
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.DIFFICULT
 	)
 	
 	#
@@ -588,8 +601,7 @@ func _init():
 	interpreter_for_ogv_attk_speed_tier_3.array_of_instructions[0].num_val = 30
 	
 	
-	
-	var ogv_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.OGV], [TowerColors.ORANGE, TowerColors.GREEN, TowerColors.VIOLET], [3, 2, 1], #[4, 3, 2],
+	var ogv_syn = ColorSynergy.new(SynergyId.OGV, synergy_id_to_syn_name_dictionary[SynergyId.OGV], [TowerColors.ORANGE, TowerColors.GREEN, TowerColors.VIOLET], [3, 2, 1], #[4, 3, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_OGV,
 	[
@@ -601,15 +613,25 @@ func _init():
 		"",
 		"Gain ability: Power Fund.",
 		"Power Fund: Spend 3 gold to give all towers bonus attack speed for 8 attacks for 5 seconds.",
-		"Cooldown: 1 round",
+		"Cooldown: 1 round.",
 		""
 	],
 	[TriaSyn_OGV],
 	[
-		["|0|. 15 max damage per round.", [interpreter_for_ogv_attk_speed_tier_3]],
-		["|0|. 20 max damage per round.", [interpreter_for_ogv_attk_speed_tier_2]],
+		["|0|. 12 max damage per round.", [interpreter_for_ogv_attk_speed_tier_3]],
+		["|0|. 16 max damage per round.", [interpreter_for_ogv_attk_speed_tier_2]],
 		["|0|. 30 max damage per round.", [interpreter_for_ogv_attk_speed_tier_1]],
-	]
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[
+		"Exposes the enemy player's soul every middle of the round, allowing towers to deal damage to it.",
+		"Killing the soul damages the enemy player. The damage amount is influenced by the synergy's tier, and how far the soul has travelled.",
+		"",
+		"You instantly win the game once the enemy player reaches 0 hp.",
+		""
+	],
+	ColorSynergy.Difficulty.CHALLENGING
 	)
 	
 	
@@ -662,7 +684,7 @@ func _init():
 	synergy_id_to_syn_name_dictionary[SynergyId.RedGreen] : red_green_syn,
 	
 	
-	synergy_id_to_syn_name_dictionary[SynergyId.YellowViolet] : ColorSynergy.new("YellowViolet", [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
+	synergy_id_to_syn_name_dictionary[SynergyId.YellowViolet] : ColorSynergy.new(SynergyId.YellowViolet, synergy_id_to_syn_name_dictionary[SynergyId.YellowViolet], [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_compo_compli_yellowviolet,
 	[
@@ -680,7 +702,10 @@ func _init():
 		["+30% ingredient upgrade. |0| per yellow shell.", [interpreter_for_yelvio_yellow_shell_dmg_tier_2]],
 		["+45% ingredient upgrade. |0| per yellow shell.", [interpreter_for_yelvio_yellow_shell_dmg_tier_1]],
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.DIFFICULT
 	),
 	 
 	
@@ -688,7 +713,7 @@ func _init():
 	
 	
 	# Ana
-	synergy_id_to_syn_name_dictionary[SynergyId.RedOV] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.RedOV], [TowerColors.RED, TowerColors.ORANGE, TowerColors.VIOLET], [3, 2, 1],
+	synergy_id_to_syn_name_dictionary[SynergyId.RedOV] : ColorSynergy.new(SynergyId.RedOV, synergy_id_to_syn_name_dictionary[SynergyId.RedOV], [TowerColors.RED, TowerColors.ORANGE, TowerColors.VIOLET], [3, 2, 1],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_redOV,
 	[
@@ -702,7 +727,10 @@ func _init():
 		["Base buff: |0|. Additional buff: |1|.", [interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2, interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2]],
 		["Base buff: |0|. Additional buff: |1|.", [interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1, interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1]],
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.EFFORTLESS
 	),
 	
 	synergy_id_to_syn_name_dictionary[SynergyId.OrangeYR] : orange_yr_syn,
@@ -738,12 +766,12 @@ func _init():
 	synergy_id_to_syn_name_dictionary[SynergyId.VioletRB] : violet_rb_syn,
 	
 	#Tria
-	synergy_id_to_syn_name_dictionary[SynergyId.RYB] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.RYB], [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2],
+	synergy_id_to_syn_name_dictionary[SynergyId.RYB] : ColorSynergy.new(SynergyId.RYB, synergy_id_to_syn_name_dictionary[SynergyId.RYB], [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_RYB,
 	[
 		"Every round: the first few enemies that reach the end of the track for the first time are instead brought back to the start of the track, preventing life loss.",
-		"Enemies brought back heal for 40% of their missing health and receive damage resistance. The damage resistance cannot be removed by any means.",
+		"Enemies brought back heal for 60% of their missing health and receive damage resistance. The damage resistance cannot be removed by any means.",
 		"Elite and Boss enemies count as 2 enemies for this effect.",
 		"",
 		"Triggering this effect counts as a round loss.",
@@ -753,20 +781,21 @@ func _init():
 	],
 	[TriaSyn_RYB],
 	[
-		"70% damage resistance, 6 enemies.",
-		"50% damage resistance, 10 enemies.",
-		"25% damage resistance, 16 enemies.",
+		"40% damage resistance, 6 enemies.",
+		"25% damage resistance, 10 enemies.",
+		"10% damage resistance, 16 enemies.",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE,
 	{},
 	[
 		"Every round: the first few enemies that reach the end of the track for the first time are instead brought back to the start of the track, preventing life loss.",
-		"Enemies brought back heal for 40% of their missing health and receive damage resistance.",
+		"Enemies brought back heal for 60% of their missing health and receive damage resistance.",
 		"Elite and Boss enemies count as 2 enemies for this effect.",
 		"",
 		"Triggering this effect counts as a round loss.",
 		"",
-	]
+	],
+	ColorSynergy.Difficulty.EFFORTLESS
 	),
 	
 	synergy_id_to_syn_name_dictionary[SynergyId.OGV] : ogv_syn,

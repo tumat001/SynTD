@@ -6,7 +6,7 @@ const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const HealParticle_Scene = preload("res://EnemyRelated/CommonParticles/HealParticle/HealParticle.tscn")
 
-const _heal_cooldown : float = 7.5
+const _heal_cooldown : float = 4.95 #7.5
 const _heal_range : float = 140.0
 const _heal_amount : float = 10.0
 const _shield_ratio : float = 35.0

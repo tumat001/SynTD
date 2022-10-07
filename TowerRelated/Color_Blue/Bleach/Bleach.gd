@@ -34,7 +34,7 @@ const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/Bas
 
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
 
-const toughness_remove_amount : float = -5.0
+const toughness_remove_amount : float = -3.0
 const toughness_debuff_duration : float = 5.0
 
 var cycle : int = 0

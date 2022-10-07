@@ -3,9 +3,12 @@ extends Node
 const MapTypeInformation = preload("res://MapsRelated/MapTypeInformation.gd")
 const GameModeTypeInformation = preload("res://GameplayRelated/GameModeRelated/GameModeTypeInformation.gd")
 
+
 signal on_descriptions_mode_changed(arg_new_val)
 signal on_tower_drag_mode_changed(arg_new_val)
 signal on_tower_drag_mode_search_radius_changed(arg_new_val)
+signal on_auto_show_extra_tower_info_mode_changed(arg_new_val)
+signal on_show_synergy_difficulty_mode_changed(arg_new_val)
 
 # DESCRIPTIONS MODE
 enum DescriptionsMode {
@@ -26,6 +29,7 @@ const descriptions_mode_to_name : Dictionary = {
 	DescriptionsMode.SIMPLE : "Simple"
 }
 
+const default_descriptions_mode : int = DescriptionsMode.SIMPLE
 var descriptions_mode : int setget set_descriptions_mode
 
 
@@ -47,9 +51,56 @@ const tower_drag_mode_to_name : Dictionary = {
 	TowerDragMode.EXACT : "Exact",
 	TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE : "Snap To Nearby"
 }
+
+const default_tower_drag_mode : int = TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE
 var tower_drag_mode : int setget set_tower_drag_mode
 
 var tower_drag_mode_search_radius : float = 100 setget set_tower_drag_mode_search_radius
+
+
+# AUTO SHOW EXTRA INFO MODE
+enum AutoShowExtraTowerInfoMode {
+	DONT_AUTO_SHOW = 0,
+	AUTO_SHOW = 1
+}
+const auto_show_extra_tower_info_mode_name_identifier := "Show Extra Tower Info"
+const auto_show_extra_tower_info_mode_to_explanation : Dictionary = {
+	AutoShowExtraTowerInfoMode.DONT_AUTO_SHOW : [
+		"Extra info is hidden and must be manually brought up when viewing tower information (right side panel)."
+	],
+	AutoShowExtraTowerInfoMode.AUTO_SHOW : [
+		"Extra info is brought up automatically when viewing tower information (right panel)."
+	],
+}
+const auto_show_extra_tower_info_mode_to_name : Dictionary = {
+	AutoShowExtraTowerInfoMode.DONT_AUTO_SHOW : "Don't Auto Show",
+	AutoShowExtraTowerInfoMode.AUTO_SHOW : "Auto Show"
+}
+
+const default_auto_show_extra_tower_info_mode = AutoShowExtraTowerInfoMode.DONT_AUTO_SHOW
+var auto_show_extra_tower_info_mode : int setget set_auto_show_extra_tower_info_mode
+
+
+# SHOW SYNERGY DIFFICULTY
+enum ShowSynergyDifficulty {
+	SHOW = 0,
+	DONT_SHOW = 1,
+}
+const show_synergy_difficulty_mode_name_identifier := "Show Synergy Difficulty"
+const show_synergy_difficulty_mode_to_explanation : Dictionary = {
+	ShowSynergyDifficulty.SHOW : [
+		"Show the difficulty rating of synergies in the tooltip."
+	],
+	ShowSynergyDifficulty.DONT_SHOW : [
+		"Do not show the difficulty rating of synergies in the tooltip."
+	],
+}
+const show_synergy_difficulty_mode_to_name : Dictionary = {
+	ShowSynergyDifficulty.SHOW : "Show",
+	ShowSynergyDifficulty.DONT_SHOW : "Don't Show"
+}
+const default_show_synergy_difficulty_mode = ShowSynergyDifficulty.SHOW
+var show_synergy_difficulty_mode : int setget set_show_synergy_difficulty_mode
 
 
 # MAP SELECTION DEFAULT VALUES
@@ -139,36 +190,6 @@ func set_tower_drag_mode_search_radius(arg_val):
 	emit_signal("on_tower_drag_mode_search_radius_changed", tower_drag_mode_search_radius)
 
 
-
-
-#### SAVE RELATED for Settings & Controls ####
-
-func _initialize_settings__called_from_ready():
-	var load_success = GameSaveManager.load_game_settings__of_settings_manager()
-	if !load_success: # default
-		set_descriptions_mode(DescriptionsMode.SIMPLE)
-		set_tower_drag_mode(TowerDragMode.SNAP_TO_NEARBY_IN_MAP_PLACABLE)
-
-
-# called by game save manager
-func _get_save_dict_for_game_settings():
-	# NOTE: The order of identifiers/values matters. If that is changed, change the order in the load method.
-	var save_dict := {
-		description_mode_name_identifier : descriptions_mode,
-		tower_drag_mode_name_identifier : tower_drag_mode
-	}
-	
-	return save_dict
-
-# called by game save manager. Don't close it, as game save manager does it.
-func _load_game_settings(arg_file : File):
-	var data = parse_json(arg_file.get_line())
-	
-	if data != null:
-		set_descriptions_mode(data[description_mode_name_identifier])
-		set_tower_drag_mode(data[tower_drag_mode_name_identifier])
-
-
 ########### MAP SELECTION DEFAULT VALUES
 
 func _initialize_map_selection_default_vals__called_from_ready():
@@ -223,3 +244,72 @@ func _get_save_arr_with_inner_info_for_map_selection_default_values():
 	
 	return save_arr
 
+
+########### AUTO SHOW EXTRA TOWER INFO MODE
+
+func set_auto_show_extra_tower_info_mode(arg_mode):
+	auto_show_extra_tower_info_mode = arg_mode
+	
+	emit_signal("on_auto_show_extra_tower_info_mode_changed", auto_show_extra_tower_info_mode)
+
+
+########### SHOW SYNERGY DIFFICUTLY MODE
+
+func set_show_synergy_difficulty_mode(arg_mode):
+	show_synergy_difficulty_mode = arg_mode
+	
+	emit_signal("on_show_synergy_difficulty_mode_changed", show_synergy_difficulty_mode)
+
+
+
+#### SAVE RELATED for Settings & Controls #### 
+#### KEEP AT BOTTOM #####################
+
+func _initialize_settings__called_from_ready():
+	var load_success = GameSaveManager.load_game_settings__of_settings_manager()
+	if !load_success: # default
+		set_descriptions_mode(default_descriptions_mode)
+		set_tower_drag_mode(default_tower_drag_mode)
+		set_auto_show_extra_tower_info_mode(default_auto_show_extra_tower_info_mode)
+		set_show_synergy_difficulty_mode(default_show_synergy_difficulty_mode)
+
+# called by game save manager
+func _get_save_dict_for_game_settings():
+	# NOTE: The order of identifiers/values matters. If that is changed, change the order in the load method.
+	var save_dict := {
+		description_mode_name_identifier : descriptions_mode,
+		tower_drag_mode_name_identifier : tower_drag_mode,
+		auto_show_extra_tower_info_mode_name_identifier : auto_show_extra_tower_info_mode,
+		show_synergy_difficulty_mode_name_identifier : show_synergy_difficulty_mode
+	}
+	
+	return save_dict
+
+# called by game save manager. Don't close it, as game save manager does it.
+func _load_game_settings(arg_file : File):
+	var data : Dictionary = parse_json(arg_file.get_line())
+	
+	if data != null:
+		# DESCRIPTION MODE
+		if data.has(description_mode_name_identifier):
+			set_descriptions_mode(data[description_mode_name_identifier])
+		else:
+			set_descriptions_mode(default_descriptions_mode)
+		
+		# TOWER DRAG MODE
+		if data.has(tower_drag_mode_name_identifier):
+			set_tower_drag_mode(data[tower_drag_mode_name_identifier])
+		else:
+			set_tower_drag_mode(default_tower_drag_mode)
+		
+		# AUTO SHOW EXTRA TOWER INFO
+		if data.has(auto_show_extra_tower_info_mode_name_identifier):
+			set_auto_show_extra_tower_info_mode(data[auto_show_extra_tower_info_mode_name_identifier])
+		else:
+			set_auto_show_extra_tower_info_mode(default_auto_show_extra_tower_info_mode)
+		
+		# SHOW SYNERGY DIFFICULTY
+		if data.has(show_synergy_difficulty_mode_name_identifier):
+			set_show_synergy_difficulty_mode(data[show_synergy_difficulty_mode_name_identifier])
+		else:
+			set_show_synergy_difficulty_mode(default_show_synergy_difficulty_mode)

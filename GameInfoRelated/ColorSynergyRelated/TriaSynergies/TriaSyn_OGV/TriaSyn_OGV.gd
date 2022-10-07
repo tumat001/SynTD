@@ -29,8 +29,8 @@ const enemy_player_max_health : float = 100.0
 var enemy_player_current_health : float = enemy_player_max_health
 
 const tier_1_max_damage_per_round : float = 30.0
-const tier_2_max_damage_per_round : float = 20.0
-const tier_3_max_damage_per_round : float = 15.0
+const tier_2_max_damage_per_round : float = 16.0
+const tier_3_max_damage_per_round : float = 12.0
 
 #
 

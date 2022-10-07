@@ -4,11 +4,11 @@ const TriaSyn_RYB_BeforeReachEndEffect = preload("res://GameInfoRelated/EnemyEff
 
 
 
-const heal_amount : float = 40.0
+const heal_amount : float = 60.0
 
-const tier_1_dmg_res_amount : float = 25.0
-const tier_2_dmg_res_amount : float = 50.0
-const tier_3_dmg_res_amount : float = 70.0
+const tier_1_dmg_res_amount : float = 10.0
+const tier_2_dmg_res_amount : float = 25.0
+const tier_3_dmg_res_amount : float = 40.0
 
 const tier_1_enemy_escape_count_before_deactivation : int = 16
 const tier_2_enemy_escape_count_before_deactivation : int = 10

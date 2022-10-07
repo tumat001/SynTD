@@ -10,12 +10,12 @@ var gold_reduction_per_round : int
 var _current_bonus_dmg_amount : float
 
 
-const combinations_required_for_offerable_inclusive : int = 5
+const combinations_required_for_offerable_inclusive : int = 2
 
 
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.COMBINATION_CATALOG, "Combination Catalog", arg_tier, arg_tier_for_activation):
 	if tier == 0:
-		bonus_dmg_per_combination = 0.07
+		bonus_dmg_per_combination = 0.08
 		gold_reduction_per_round = 2
 		
 	elif tier == 1:
@@ -27,7 +27,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		gold_reduction_per_round = 2
 		
 	elif tier == 3:
-		bonus_dmg_per_combination = 0.015
+		bonus_dmg_per_combination = 0.01
 		gold_reduction_per_round = 2
 	
 	#

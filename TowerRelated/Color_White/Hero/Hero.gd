@@ -34,6 +34,8 @@ const HeroAttk_LightBlast03Pic = preload("res://TowerRelated/Color_White/Hero/He
 const HeroAttk_LightBlast04Pic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_LightExplosion04.png")
 const HeroAttk_LightBlast05Pic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_LightExplosion05.png")
 const HeroAttk_LightBlast06Pic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_LightExplosion06.png")
+const HeroAttk_LightBlast07Pic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_LightExplosion07.png")
+const HeroAttk_LightBlast08Pic = preload("res://TowerRelated/Color_White/Hero/HeroAttks/HeroAttk_LightExplosion08.png")
 const Judgement_AttkSprite = preload("res://TowerRelated/Color_White/Hero/HeroAttks/JudgementAttkSprite.tscn")
 const VOL_BlessSprite = preload("res://TowerRelated/Color_White/Hero/HeroAttks/VOL_BlessParticle/VOL_BlessParticle.tscn")
 
@@ -59,7 +61,7 @@ const Hero_LevelUp_StatusBarIcon = preload("res://TowerRelated/Color_White/Hero/
 
 const LightWave_AttackModuleIcon = preload("res://TowerRelated/Color_White/Hero/AttackModuleAssets/LightWave_AttackModuleIcon.png")
 const Judgement_AttackModuleIcon = preload("res://TowerRelated/Color_White/Hero/AttackModuleAssets/Judgement_AttackModuleIcon.png")
-
+const LightExplosion_AttackModuleIcon = preload("res://TowerRelated/Color_White/Hero/AttackModuleAssets/LightExplosion_AttackModuleIcon.png")
 
 signal current_xp_changed(gained_amount, curr_xp)
 signal xp_needed_for_next_level_changed(new_req)
@@ -95,7 +97,7 @@ const xp_per_kill : float = 2.0
 const xp_scale_if_not_white_dom_color : float = 0.7
 const max_hero_level : int = 6 # max hero natural level
 
-const xp_needed_per_level : Array = [130, 525, 1550, 2900, 3300, 3500]
+const xp_needed_per_level : Array = [97, 394, 1162, 2175, 2475, 2625] #[130, 525, 1550, 2900, 3300, 3500]
 const gold_needed_per_level : Array = [2, 4, 7, 9, 9, 10]
 
 const xp_about_descriptions = [
@@ -135,7 +137,7 @@ const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 8, 16]
 
 var white_dom_active : bool
 
-var current_hero_xp : float = 0 #todo
+var current_hero_xp : float = 0
 var current_hero_natural_level : int = 0
 var current_hero_effective_level : int = 0
 var current_spendables : int = 0
@@ -397,7 +399,7 @@ func _construct_and_add_light_explosion_module():
 	lightexplosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	lightexplosion_attack_module.is_main_attack = false
 	lightexplosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	lightexplosion_attack_module.base_explosion_scale = 2
+	lightexplosion_attack_module.base_explosion_scale = 1.5
 	
 	lightexplosion_attack_module.benefits_from_bonus_explosion_scale = true
 	lightexplosion_attack_module.benefits_from_bonus_base_damage = false
@@ -412,6 +414,8 @@ func _construct_and_add_light_explosion_module():
 	sprite_frames.add_frame("default", HeroAttk_LightBlast04Pic)
 	sprite_frames.add_frame("default", HeroAttk_LightBlast05Pic)
 	sprite_frames.add_frame("default", HeroAttk_LightBlast06Pic)
+	sprite_frames.add_frame("default", HeroAttk_LightBlast07Pic)
+	sprite_frames.add_frame("default", HeroAttk_LightBlast08Pic)
 	
 	lightexplosion_attack_module.aoe_sprite_frames = sprite_frames
 	lightexplosion_attack_module.sprite_frames_only_play_once = true
@@ -425,7 +429,7 @@ func _construct_and_add_light_explosion_module():
 	
 	lightexplosion_attack_module.can_be_commanded_by_tower = false
 	
-	lightexplosion_attack_module.set_image_as_tracker_image(HeroAttk_LightBlast05Pic)
+	lightexplosion_attack_module.set_image_as_tracker_image(LightExplosion_AttackModuleIcon)
 	
 	add_attack_module(lightexplosion_attack_module)
 

@@ -5,6 +5,7 @@ const SingleTowerRoundDamageStatsPanel_Scene = preload("res://GameHUDRelated/Rig
 
 
 signal on_tower_in_single_panel_left_clicked(tower)
+signal calculated_total_damage_of_all_towers(arg_total_val, arg_pure_val, arg_ele_val, arg_phy_val)
 
 const seconds_per_update : float = 0.2
 
@@ -24,16 +25,6 @@ func _ready():
 	update_timer.one_shot = true
 	
 	add_child(update_timer)
-	
-#	connect("visibility_changed", self, "_visibility_changed", [], CONNECT_PERSIST)
-#
-#
-#
-#func _visibility_changed():
-#	if visible:
-#		_update_display_of_all_single_damage_stats()
-
-
 
 
 #
@@ -48,6 +39,11 @@ func set_stage_round_manager(arg_manager):
 	
 	stage_round_manager.connect("round_started", self, "_on_round_start", [], CONNECT_PERSIST)
 	stage_round_manager.connect("round_ended", self, "_on_round_end", [], CONNECT_PERSIST)
+
+func set_game_result_manager(arg_manager):
+	
+	arg_manager.connect("game_result_decided", self, "_on_game_result_decided", [], CONNECT_PERSIST)
+
 
 #
 
@@ -90,8 +86,22 @@ func _attempt_create_single_stat_panel_for_tower(tower):
 #
 
 func _on_round_end(curr_stageround):
+	_pause_and_update_and_emit_calculations()
+
+func _on_game_result_decided():
+	_pause_and_update_and_emit_calculations()
+
+func _pause_and_update_and_emit_calculations():
 	update_timer.paused = true
 	_update_display_of_all_single_damage_stats()
+	
+	prompt_calculation_of_total_damage_of_all_towers()
+
+
+
+func prompt_calculation_of_total_damage_of_all_towers():
+	var total_damages = _get_calculated_total_damages_of_all_panels()
+	emit_signal("calculated_total_damage_of_all_towers", total_damages[0], total_damages[1], total_damages[2], total_damages[3])
 
 
 #
@@ -119,4 +129,18 @@ func _update_display_of_all_single_damage_stats():
 func _on_single_stat_panel_left_clicked(arg_tower, panel):
 	emit_signal("on_tower_in_single_panel_left_clicked", arg_tower)
 
+#####
 
+func _get_calculated_total_damages_of_all_panels() -> Array:
+	var total_damage : float = 0
+	var total_pure_damage : float = 0
+	var total_ele_damage : float = 0
+	var total_phy_damage : float = 0
+	
+	for single_stat_panel in single_tower_stats_panel_container.get_children():
+		total_damage += single_stat_panel.in_round_total_dmg
+		total_pure_damage += single_stat_panel.in_round_pure_dmg
+		total_ele_damage += single_stat_panel.in_round_ele_dmg
+		total_phy_damage += single_stat_panel.in_round_phy_dmg
+	
+	return [total_damage, total_pure_damage, total_ele_damage, total_phy_damage]

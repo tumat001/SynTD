@@ -21,11 +21,12 @@ const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
 signal stage_rounds_set(arg_stagerounds)
 #signal stage_round_changed(stage_num, round_num)
 signal before_round_starts(current_stageround)
-signal round_started(current_stageround) # incomming round
+signal round_started(current_stageround) # incomming/current round
 
+signal before_round_ends_game_start_aware(current_stageround, is_game_start)
 signal before_round_ends(current_stageround) # new incomming round
-signal round_ended(current_stageround) # new incomming round
 signal round_ended_game_start_aware(current_stageround, is_game_start)
+signal round_ended(current_stageround) # new incomming round
 
 signal life_lost_from_enemy_first_time_in_round(enemy)
 signal life_lost_from_enemy(enemy)
@@ -116,7 +117,7 @@ func _after_round_start():
 func end_round(from_game_start : bool = false):
 	round_started = false
 	
-	var is_end_of_stageround = _before_round_end()
+	var is_end_of_stageround = _before_round_end(from_game_start)
 	if !is_end_of_stageround:
 		_at_round_end()
 		_after_round_end()
@@ -181,11 +182,12 @@ func end_round(from_game_start : bool = false):
 		
 
 
-func _before_round_end():
+func _before_round_end(arg_from_game_start):
 	current_stageround_index += 1
 	
 	if stagerounds.stage_rounds.size() > current_stageround_index:
 		current_stageround = stagerounds.stage_rounds[current_stageround_index]
+		emit_signal("before_round_ends_game_start_aware", current_stageround, arg_from_game_start)
 		emit_signal("before_round_ends", current_stageround)
 		return false
 	else:

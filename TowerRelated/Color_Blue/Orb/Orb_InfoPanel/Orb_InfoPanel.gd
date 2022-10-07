@@ -160,11 +160,11 @@ func _on_StarsIcon_pressed_mouse_event(event):
 		
 		var outer_ins_for_sub_ab = []
 		var inner_ins_for_bomb = []
-		inner_ins_for_bomb.append(NumericalTextFragment.new(1.5, false, DamageType.ELEMENTAL))
+		inner_ins_for_bomb.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
 		inner_ins_for_bomb.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.5, DamageType.ELEMENTAL))
+		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.4, DamageType.ELEMENTAL))
 		inner_ins_for_bomb.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.5)) # stat basis does not matter here
+		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.4)) # stat basis does not matter here
 		
 		outer_ins_for_sub_ab.append(inner_ins_for_bomb)
 		
@@ -210,9 +210,9 @@ func _on_RayIcon_pressed_mouse_event(event):
 		
 		var outer_ins_for_sub_ab = []
 		var inner_ins_for_bomb = []
-		inner_ins_for_bomb.append(NumericalTextFragment.new(1.5, false, DamageType.ELEMENTAL))
+		inner_ins_for_bomb.append(NumericalTextFragment.new(0.5, false, DamageType.ELEMENTAL))
 		inner_ins_for_bomb.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.5, DamageType.ELEMENTAL))
+		inner_ins_for_bomb.append(TowerStatTextFragment.new(orb_tower, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.4, DamageType.ELEMENTAL))
 		
 		outer_ins_for_sub_ab.append(inner_ins_for_bomb)
 		

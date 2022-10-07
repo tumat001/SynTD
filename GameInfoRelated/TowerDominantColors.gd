@@ -80,7 +80,7 @@ func _init():
 	
 	
 	
-	var blue_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.BLUE], [TowerColors.BLUE], [8, 5, 3],
+	var blue_syn = ColorSynergy.new(SynergyId.BLUE, synergy_id_to_syn_name_dictionary[SynergyId.BLUE], [TowerColors.BLUE], [8, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
 	[
@@ -94,7 +94,10 @@ func _init():
 		["Mana Blast: Big AOE damage, and AOE ability potency buff. +|0|.", [interpreter_for_blue_ap_tier_2]],
 		["Renew & Empower : Multi purpose abilities. +|0|.", [interpreter_for_blue_ap_tier_1]],
 	],
-	ColorSynergy.HighlightDeterminer.ALL_BELOW
+	ColorSynergy.HighlightDeterminer.ALL_BELOW,
+	{},
+	[],
+	ColorSynergy.Difficulty.CHALLENGING
 	)
 	
 	
@@ -118,7 +121,7 @@ func _init():
 	interpreter_for_black_bonus_dmg.array_of_instructions = ins_for_black_bonus_dmg
 	
 	
-	var black_syn = ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.BLACK], [TowerColors.BLACK], [10, 8, 5, 2],
+	var black_syn = ColorSynergy.new(SynergyId.BLACK, synergy_id_to_syn_name_dictionary[SynergyId.BLACK], [TowerColors.BLACK], [10, 8, 6, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_black,
 	[
@@ -131,7 +134,10 @@ func _init():
 		"Choose one of the four dark paths to take.",
 		"The chosen dark path is upgraded.",
 	],
-	ColorSynergy.HighlightDeterminer.ALL_BELOW
+	ColorSynergy.HighlightDeterminer.ALL_BELOW,
+	{},
+	[],
+	ColorSynergy.Difficulty.COMPLEX
 	)
 	
 	
@@ -141,7 +147,7 @@ func _init():
 	# ------------------------------------------------------
 	
 	synergies = {
-	synergy_id_to_syn_name_dictionary[SynergyId.RED] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.RED], [TowerColors.RED], [9, 6, 3],
+	synergy_id_to_syn_name_dictionary[SynergyId.RED] : ColorSynergy.new(SynergyId.RED, synergy_id_to_syn_name_dictionary[SynergyId.RED], [TowerColors.RED], [9, 6, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
 	[
@@ -167,10 +173,11 @@ func _init():
 		"Opens the Pact shop, which shows a list of up to three unsworn pacts.",
 		"Swearing a pact activates its buffs and debuffs. Up to 3 pacts can be sworn at a time.",
 		"",
-	]
+	],
+	ColorSynergy.Difficulty.COMPLEX
 	),
 	
-	synergy_id_to_syn_name_dictionary[SynergyId.ORANGE] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.ORANGE], [TowerColors.ORANGE], [12, 9, 6, 3],
+	synergy_id_to_syn_name_dictionary[SynergyId.ORANGE] : ColorSynergy.new(SynergyId.ORANGE, synergy_id_to_syn_name_dictionary[SynergyId.ORANGE], [TowerColors.ORANGE], [12, 9, 6, 3],
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
 	[
@@ -197,10 +204,11 @@ func _init():
 		"Orange tower's main attacks increases its heat. Orange towers gain bonus stats that increase in power the more heat they have.",
 		"Towers that reach max heat lose all heat by the end of the round.",
 		""
-	]
+	],
+	ColorSynergy.Difficulty.EASY
 	),
 	
-	synergy_id_to_syn_name_dictionary[SynergyId.YELLOW] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.YELLOW], [TowerColors.YELLOW], [10, 8, 5, 3],
+	synergy_id_to_syn_name_dictionary[SynergyId.YELLOW] : ColorSynergy.new(SynergyId.YELLOW, synergy_id_to_syn_name_dictionary[SynergyId.YELLOW], [TowerColors.YELLOW], [10, 8, 5, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[
@@ -231,10 +239,11 @@ func _init():
 		"ENERGIZE: Create an Energy Battery with 1 energy.",
 		"Yellow towers can consume an energy to gain special effects.",
 		""
-	]
+	],
+	ColorSynergy.Difficulty.EASY
 	),
 	
-	synergy_id_to_syn_name_dictionary[SynergyId.GREEN] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.GREEN], [TowerColors.GREEN], [12, 8, 5, 3],
+	synergy_id_to_syn_name_dictionary[SynergyId.GREEN] : ColorSynergy.new(SynergyId.GREEN, synergy_id_to_syn_name_dictionary[SynergyId.GREEN], [TowerColors.GREEN], [12, 8, 5, 3],
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_green,
 	[
@@ -257,12 +266,13 @@ func _init():
 		"Gain access to Adaptations, which grant various effects for Green towers.",
 		"New Adaptations are available per tier. Only one Adaptation can be selected per tier.",
 		"",
-	]
+	],
+	ColorSynergy.Difficulty.EASY
 	),
 	
 	synergy_id_to_syn_name_dictionary[SynergyId.BLUE] : blue_syn,
 	
-	synergy_id_to_syn_name_dictionary[SynergyId.VIOLET] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.VIOLET], [TowerColors.VIOLET], [5, 4, 3, 2],
+	synergy_id_to_syn_name_dictionary[SynergyId.VIOLET] : ColorSynergy.new(SynergyId.VIOLET, synergy_id_to_syn_name_dictionary[SynergyId.VIOLET], [TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	[
@@ -279,15 +289,27 @@ func _init():
 		"+3 ingredients. 9 total tower limit, 4 violet tower limit.",
 		"+2 ingredients. 14 total tower limit, 6 violet tower limit.",
 	],
-	ColorSynergy.HighlightDeterminer.SINGLE
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.CHALLENGING
 	),
 	
-	synergy_id_to_syn_name_dictionary[SynergyId.WHITE] : ColorSynergy.new(synergy_id_to_syn_name_dictionary[SynergyId.WHITE], [TowerColors.WHITE], [1],
+	synergy_id_to_syn_name_dictionary[SynergyId.WHITE] : ColorSynergy.new(SynergyId.WHITE, synergy_id_to_syn_name_dictionary[SynergyId.WHITE], [TowerColors.WHITE], [1],
 	[tier_dia_pic],
 	syn_dom_white,
 	[
 		"White towers rely on the White synergy to channel their powers.",
-	]),
+	],
+	[],
+	[
+		
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.CHALLENGING
+	),
 	
 	synergy_id_to_syn_name_dictionary[SynergyId.BLACK] : black_syn,
 	

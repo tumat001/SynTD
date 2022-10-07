@@ -28,7 +28,8 @@ onready var syn_towers_in_tier_label = $VBoxContainer/MainContentContainer/Margi
 onready var syn_tier_texture_rect = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/SynTier
 onready var syn_tier_label = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/SynTierAndProg/MarginContainer/Marginer/SynTierLabel
 
-onready var tooltip_body = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/TooltipBody
+onready var tooltip_body = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/VBoxContainer/TooltipBody
+onready var synergy_difficulty_panel = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/VBoxContainer/SynergyDifficultyPanel
 
 func _ready():
 	tooltip_body.override_color_of_descs = false
@@ -67,6 +68,13 @@ func update_display():
 		
 		tooltip_body.descriptions = final_descs
 		tooltip_body.update_display()
+		
+		
+		if game_settings_manager.show_synergy_difficulty_mode == GameSettingsManager.ShowSynergyDifficulty.SHOW:
+			synergy_difficulty_panel.set_difficulty(synergy.synergy_difficulty_num)
+			synergy_difficulty_panel.visible = true
+		elif game_settings_manager.show_synergy_difficulty_mode == GameSettingsManager.ShowSynergyDifficulty.DONT_SHOW:
+			synergy_difficulty_panel.visible = false
 
 
 func _get_number_of_towers_per_color_text() -> String:

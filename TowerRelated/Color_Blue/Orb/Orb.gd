@@ -201,8 +201,8 @@ func _ready():
 	# Beam
 	
 	beam_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
-	beam_attack_module.base_damage_scale = 0.5
-	beam_attack_module.base_damage = 1.5 / beam_attack_module.base_damage_scale
+	beam_attack_module.base_damage_scale = 0.4
+	beam_attack_module.base_damage = 0.5 / beam_attack_module.base_damage_scale
 	beam_attack_module.base_damage_type = DamageType.ELEMENTAL
 	beam_attack_module.base_attack_speed = 6
 	beam_attack_module.base_attack_wind_up = 0
@@ -243,8 +243,8 @@ func _ready():
 	# Sub attack
 	
 	sub_attack_module = BulletAttackModule_Scene.instance()
-	sub_attack_module.base_damage_scale = 0.5
-	sub_attack_module.base_damage = 1.5 / sub_attack_module.base_damage_scale
+	sub_attack_module.base_damage_scale = 0.4
+	sub_attack_module.base_damage = 1 / sub_attack_module.base_damage_scale
 	sub_attack_module.base_damage_type = DamageType.ELEMENTAL
 	sub_attack_module.base_attack_speed = 9#0
 	sub_attack_module.base_attack_wind_up = 0
@@ -254,7 +254,7 @@ func _ready():
 	sub_attack_module.base_proj_speed = 500
 	sub_attack_module.base_proj_life_distance = info.base_range
 	sub_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	sub_attack_module.on_hit_damage_scale = 0.5
+	sub_attack_module.on_hit_damage_scale = 0.4
 	sub_attack_module.position.y += y_shift_of_modules
 	
 	sub_attack_module.benefits_from_bonus_base_damage = true

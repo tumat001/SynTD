@@ -122,8 +122,9 @@ size_flags_vertical = 10
 [node name="GoldButton" parent="HBoxContainer/Middle/GoldPanel" instance=ExtResource( 7 )]
 margin_right = 59.0
 margin_bottom = 19.0
+button_mask = 3
 texture_normal = ExtResource( 2 )
-about_button_index_trigger = 1
+about_button_index_trigger = -1002
 define_tooltip_construction_in_button = false
 
 [node name="MarginContainer3" type="MarginContainer" parent="HBoxContainer/Middle/GoldPanel"]

@@ -19,8 +19,8 @@ var _current_target_for_beam
 const _base_range : float = 140.0
 
 const _explosion_dmg : float = 5.05 / _base_beam_explosion_count
-const _explosion_cooldown : float = 5.0
-const _explosion_cooldown_no_targets_in_range : float = 3.0
+const _explosion_cooldown : float = 3.75 #5.0
+const _explosion_cooldown_no_targets_in_range : float = 2.0 #3.0
 const _explosion_modulate : Color = Color(0.25, 0, 1, 1)
 
 var _targeting_for_explosion : int = Targeting.EXECUTE

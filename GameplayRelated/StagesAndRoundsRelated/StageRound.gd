@@ -33,3 +33,51 @@ func set_give_relic_count_in_round(arg_val):
 		round_icon = RoundIcon_NormalRound
 
 
+######
+
+static func convert_stageround_id_to_stage_and_round_num(arg_text_id : String) -> Array:
+	var first = arg_text_id.substr(0, 1)
+	var second = arg_text_id.substr(1, 1)
+	
+	return [first, second]
+
+
+static func is_stage_round_higher_than_second_param(a_stage_num, a_round_num, b_stage_num, b_round_num):
+	if a_stage_num > b_stage_num:
+		return true
+	elif a_stage_num == b_stage_num:
+		return a_round_num > b_round_num
+	else:
+		return false
+
+static func is_stageround_id_higher_than_second_param(a_stageround_id, b_stageround_id):
+	var converted_a = convert_stageround_id_to_stage_and_round_num(a_stageround_id)
+	var converted_b = convert_stageround_id_to_stage_and_round_num(b_stageround_id)
+	
+	return is_stage_round_higher_than_second_param(converted_a[0], converted_a[1], converted_b[0], converted_b[1])
+
+
+static func is_stage_round_higher_or_equal_than_second_param(a_stage_num, a_round_num, b_stage_num, b_round_num):
+	if a_stage_num > b_stage_num:
+		return true
+	elif a_stage_num == b_stage_num:
+		return a_round_num >= b_round_num
+	else:
+		return false
+
+static func is_stageround_id_higher_or_equal_than_second_param(a_stageround_id, b_stageround_id):
+	var converted_a = convert_stageround_id_to_stage_and_round_num(a_stageround_id)
+	var converted_b = convert_stageround_id_to_stage_and_round_num(b_stageround_id)
+	
+	return is_stage_round_higher_or_equal_than_second_param(converted_a[0], converted_a[1], converted_b[0], converted_b[1])
+
+
+static func is_stage_round_equal_than_second_param(a_stage_num, a_round_num, b_stage_num, b_round_num):
+	return a_stage_num == b_stage_num and a_round_num == b_round_num
+
+static func is_stageround_id_equal_than_second_param(a_stageround_id, b_stageround_id):
+	var converted_a = convert_stageround_id_to_stage_and_round_num(a_stageround_id)
+	var converted_b = convert_stageround_id_to_stage_and_round_num(b_stageround_id)
+	
+	return is_stage_round_equal_than_second_param(converted_a[0], converted_a[1], converted_b[0], converted_b[1])
+

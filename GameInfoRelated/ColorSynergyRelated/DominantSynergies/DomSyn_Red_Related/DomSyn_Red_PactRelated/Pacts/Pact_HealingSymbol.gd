@@ -32,7 +32,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	]
 	
 	bad_descriptions = [
-		"Towers lose %s max health." % [str(-_tower_max_health_reduc_percent)]
+		"Towers lose %s%% max health." % [str(-_tower_max_health_reduc_percent)]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_HealingSymbols_Icon.png")

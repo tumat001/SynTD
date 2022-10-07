@@ -168,7 +168,7 @@ func _get_random_valid_in_map_tower():
 	var towers_to_remove : Array = []
 	
 	for tower in valid_towers:
-		if tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.AMALGAMATE_TO_CONVERT_MARK_EFFECT) and !tower.is_a_summoned_tower:
+		if tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.AMALGAMATE_TO_CONVERT_MARK_EFFECT) or tower.is_a_summoned_tower:
 			towers_to_remove.append(tower)
 	
 	for tower in towers_to_remove:
@@ -250,7 +250,7 @@ func _construct_amalgam_ability():
 	amalgam_ability.is_timebound = false
 	amalgam_ability.is_roundbound = false
 	
-	register_ability_to_manager(amalgam_ability)
+	register_ability_to_manager(amalgam_ability, false)
 	amalgam_activation_condtional_clauses = amalgam_ability.activation_conditional_clauses
 	
 	#amalgam_activation_condtional_clauses.blacklisted_clauses.append(disabled_from_attacking_clauses)

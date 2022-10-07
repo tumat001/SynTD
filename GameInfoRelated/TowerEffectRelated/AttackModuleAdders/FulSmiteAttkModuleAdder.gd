@@ -25,10 +25,10 @@ const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyS
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
 const TimerForTower = preload("res://TowerRelated/CommonBehaviorRelated/TimerForTower.gd")
 
-var smite_explosion_flat_dmg : float = 6.0
-var smite_explosion_base_dmg_scale : float = 2.0
+var smite_explosion_flat_dmg : float = 4.0
+var smite_explosion_base_dmg_scale : float = 1.0
 const smite_explosion_pierce : int = 3
-const smite_stun_duration : float = 0.75
+const smite_stun_duration : float = 0.5
 
 const smite_cooldown : float = 10.0
 var smite_timer : TimerForTower

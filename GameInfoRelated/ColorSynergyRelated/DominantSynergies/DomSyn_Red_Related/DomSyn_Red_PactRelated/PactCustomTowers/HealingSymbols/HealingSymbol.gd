@@ -6,12 +6,11 @@ const CommonAttackSpriteTemplater = preload("res://MiscRelated/AttackSpriteRelat
 const HealingParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/OtherAssets/HealingParticle.tscn")
 const OnCastHealParticle_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactCustomTowers/HealingSymbols/OtherAssets/OnCastHealParticle.tscn")
 
-const player_heal_amount : float = 1.0
-const heal_cooldown : float = 5.0
 
+const heal_cooldown : float = 5.0
 const enhanced_heal_percent : float = 20.0
 const normal_heal_percent : float = 10.0
-
+const player_heal_amount : float = 2.0
 
 const anim_heal_charge_sprite_index : int = 0
 const anim_heal_depleted_sprite_index : int = 1

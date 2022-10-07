@@ -218,7 +218,6 @@ const image_size := Vector2(18, 18) # size of texture is 18x18
 func set_parent_tower(arg_parent_tower):
 	parent_tower = arg_parent_tower
 
-# Can be commanded related
 
 func _init():
 	can_be_commanded_by_tower_other_clauses = ConditionalClauses.new()
@@ -1060,6 +1059,7 @@ static func _get_default_region_size_for_atlas() -> Vector2:
 	return image_size
 
 
+#
 
 func set_image_as_tracker_image(image : Texture):
 	tracker_image = image#_generate_module_image_icon_atlas_texture(image)

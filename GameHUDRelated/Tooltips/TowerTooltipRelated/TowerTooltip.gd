@@ -65,7 +65,7 @@ func _update_ingredients():
 	
 	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.clear_descriptions_in_array()
 	if tower_info.ingredient_effect == null:
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions = ["(Cannot be used as an ingredient."]
+		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions = ["Cannot be used as an ingredient."]
 	else:
 		var ing_desc = tower_info.ingredient_effect.description
 		

@@ -44,7 +44,7 @@ const ShackledExplosion_AttackModule_Icon = preload("res://TowerRelated/Color_Vi
 
 #
 
-const aoe_base_damage : float = 1.0
+const aoe_base_damage : float = 0.9
 
 var proj_aoe_attack_module : AOEAttackModule
 

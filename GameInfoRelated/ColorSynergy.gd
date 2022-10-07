@@ -15,6 +15,14 @@ enum HighlightDeterminer {
 	CUSTOM = 30
 }
 
+enum Difficulty {
+	EFFORTLESS = 1,
+	EASY = 2,
+	CHALLENGING = 3,
+	DIFFICULT = 4,
+	COMPLEX = 5
+}
+
 # Make order similar to order in the synergy name
 var colors_required : Array = []
 # Number of towers required per tier of synergy.
@@ -24,6 +32,7 @@ var colors_required : Array = []
 var number_of_towers_in_tier : Array = []
 # IMPORTANT: Highest to Lowest
 var tier_pic_per_tier : Array = []
+var synergy_id : int
 var synergy_name : String
 var synergy_descriptions : Array = []
 var synergy_simple_descriptions : Array = []
@@ -45,13 +54,17 @@ var highlight_determiner : int
 #
 var custom_highlight_instructions : Dictionary = {}
 
+var synergy_difficulty_num : int        #from 1 to 5
+
 # curr stuffs
 
 var current_tier : int
 var current_highlighted_index_effects_descriptions : Array = []
 
 
-func _init(arg_synergy_name : String,
+func _init(
+		arg_synergy_id : int,
+		arg_synergy_name : String,
 		arg_colors_required : Array,
 		arg_number_of_towers_in_tier : Array,
 		arg_tier_pic_per_tier : Array,
@@ -61,8 +74,11 @@ func _init(arg_synergy_name : String,
 		arg_synergy_effects_descriptions = [],
 		arg_highlight_determiner : int = HighlightDeterminer.SINGLE,
 		arg_custom_highlight_instructions = {},
-		arg_synergy_simple_descriptions = []):
+		arg_synergy_simple_descriptions = [],
+		arg_synergy_difficulty_num : int = Difficulty.EFFORTLESS
+		):
 	
+	synergy_id = arg_synergy_id
 	colors_required = arg_colors_required
 	number_of_towers_in_tier = arg_number_of_towers_in_tier
 	synergy_name = arg_synergy_name
@@ -77,6 +93,8 @@ func _init(arg_synergy_name : String,
 	highlight_determiner = arg_highlight_determiner
 	custom_highlight_instructions = arg_custom_highlight_instructions
 	synergy_simple_descriptions = arg_synergy_simple_descriptions
+	
+	synergy_difficulty_num = arg_synergy_difficulty_num
 	
 	#reset_synergy_effects_instances()
 

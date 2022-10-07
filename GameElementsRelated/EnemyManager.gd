@@ -481,9 +481,11 @@ func _emit_last_enemy_standing():
 		var last_enemy = enemies[0]
 		_last_standing_enemy = last_enemy
 		
-		last_enemy.connect("on_killed_by_damage", self, "_on_last_enemy_standing_killed_by_damage")
-		last_enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_last_enemy_standing_killed_by_damage_no_revives")
-		last_enemy.connect("on_current_health_changed", self, "_on_last_enemy_standing_current_health_changed", [last_enemy])
+		if !last_enemy.is_connected("on_killed_by_damage", self, "_on_last_enemy_standing_killed_by_damage"):
+			last_enemy.connect("on_killed_by_damage", self, "_on_last_enemy_standing_killed_by_damage")
+			last_enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_last_enemy_standing_killed_by_damage_no_revives")
+			last_enemy.connect("on_current_health_changed", self, "_on_last_enemy_standing_current_health_changed", [last_enemy])
+			
 		emit_signal("last_enemy_standing", last_enemy)
 		emit_signal("last_enemy_standing_current_health_changed", last_enemy.current_health, last_enemy)
 

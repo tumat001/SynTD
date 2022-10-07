@@ -12,6 +12,7 @@ enum _button_indexes {
 	BUTTON_LEFT = BUTTON_LEFT,
 	BUTTON_RIGHT = BUTTON_RIGHT
 	BUTTON_MIDDLE = BUTTON_MIDDLE
+	BUTTON_LEFT_OR_RIGHT = -1002
 	MOUSE_HOVER = -1001
 }
 export(_button_indexes) var about_button_index_trigger : int = BUTTON_RIGHT
@@ -21,7 +22,7 @@ export(bool) var define_tooltip_construction_in_button : bool = true
 
 func _on_AdvancedButton_gui_input(event):
 	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == about_button_index_trigger:
+		if event.button_index == about_button_index_trigger or about_button_index_trigger == _button_indexes.BUTTON_LEFT_OR_RIGHT:
 			_trigger_create_about_tooltip()
 	
 	._on_AdvancedButton_gui_input(event)

@@ -22,7 +22,7 @@ const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated
 const OnCombiParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/CombinationRelated/OnCombiParticles/OnCombiParticle.tscn")
 
 
-signal on_combination_effect_added(arg_new_effect_id)
+signal on_combination_effect_added(arg_new_effect_id) # id is equal to tower id
 signal on_combination_amount_needed_changed(new_val)
 signal on_tiers_affected_changed()
 signal on_can_do_combination_changed(arg_val)

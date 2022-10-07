@@ -1,6 +1,7 @@
 extends MarginContainer
 
 const CustomButtonGroup = preload("res://MiscRelated/PlayerGUI_Category_Related/ButtonToggleStandard/ButtonGroup.gd")
+const GameResultManager = preload("res://GameElementsRelated/GameResultManager.gd")
 
 signal round_start_pressed()
 
@@ -12,6 +13,8 @@ onready var speed_button_03 = $ContentPanel/Control/SpeedButton03
 onready var arrow_pic_texture_rect = $ContentPanel/Control/ArrowPic
 onready var start_button = $Control/ReadyButton
 
+onready var status_label = $Control/StatusLabel
+
 #
 
 var speed_of_engine_time_scale_arr : Array = [
@@ -20,6 +23,7 @@ var speed_of_engine_time_scale_arr : Array = [
 var all_speed_buttons : Array = []
 
 var stage_round_manager setget set_stage_round_manager
+var game_result_manager setget set_game_result_manager
 
 var _curr_time_scale_to_use_on_ongoing_round : int = speed_of_engine_time_scale_arr[0]
 var _curr_time_scale_index : int
@@ -42,7 +46,6 @@ func _ready():
 	for button in all_speed_buttons:
 		button.can_be_untoggled_if_is_toggled = false
 		button.configure_self_with_button_group(_button_group)
-	
 
 
 func set_stage_round_manager(arg_manager):
@@ -52,6 +55,14 @@ func set_stage_round_manager(arg_manager):
 	stage_round_manager.connect("round_started", self, "_on_round_started", [], CONNECT_PERSIST)
 	
 	_make_arrow_follow_button(all_speed_buttons[0], true)
+
+
+func set_game_result_manager(arg_manager):
+	#NOTE, manager is not yet initalized at this time, so don't do any calling of methods/vars of that manager. But connecting signals is fine.
+	game_result_manager = arg_manager
+	
+	game_result_manager.connect("game_result_decided", self, "_on_game_result_decided", [], CONNECT_PERSIST)
+
 
 #
 
@@ -121,4 +132,16 @@ func _make_arrow_follow_button(arg_button : Control, arg_do_setting : bool = fal
 	
 	if arg_do_setting:
 		arg_button.set_is_toggle_mode_on(true)
+
+########
+
+func _on_game_result_decided():
+	var game_result = game_result_manager.game_result
+	
+	if game_result == GameResultManager.GameResult.DEFEAT:
+		status_label.text = "Defeat"
+	elif game_result == GameResultManager.GameResult.VICTORY:
+		status_label.text = "Victory"
+	elif game_result == GameResultManager.GameResult.DRAW:
+		status_label.text = "Draw"
 

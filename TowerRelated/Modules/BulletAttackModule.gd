@@ -30,7 +30,7 @@ var last_calculated_final_proj_speed : float
 
 var base_proj_life_distance : float setget _set_life_distance
 var base_proj_life_distance_scale : float = 1.0 setget _set_life_distance_scale
-const _life_distance_bonus : float = 50.0
+const _life_distance_bonus : float = 75.0  # so that bullets don't despawn immedately when outside of range.
 var last_calculated_final_proj_life_distance : float
 
 var base_proj_inaccuracy : float = 0
@@ -354,3 +354,8 @@ func queue_free():
 	kill_all_created_bullets()
 	
 	.queue_free()
+
+#
+
+static func get_life_distance_bonus_allowance():
+	return _life_distance_bonus

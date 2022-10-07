@@ -45,6 +45,9 @@ func set_game_elements(arg_elements):
 	round_speed_and_start_panel.stage_round_manager = game_elements.stage_round_manager
 	round_speed_and_start_panel.connect("round_start_pressed", self, "_on_button_for_round_ready_start", [], CONNECT_PERSIST)
 
+func set_game_result_manager(arg_manager):
+	round_speed_and_start_panel.set_game_result_manager(arg_manager)
+
 #
 
 

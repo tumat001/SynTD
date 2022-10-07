@@ -13,13 +13,16 @@ func update_display():
 		#single_color_panel_vbox.remove_child(child)
 		child.queue_free()
 	
-	for color in tower._tower_colors:
-		var color_panel = SingleColorPanel_Scene.instance()
-		color_panel.color = color
-		color_panel.update_display()
+	if tower != null:
+		for color in tower._tower_colors:
+			var color_panel = SingleColorPanel_Scene.instance()
+			color_panel.color = color
+			color_panel.update_display()
+			
+			single_color_panel_vbox.add_child(color_panel)
 		
-		single_color_panel_vbox.add_child(color_panel)
-	
-	count_label.text = str(tower._tower_colors.size())
-
+		count_label.text = str(tower._tower_colors.size())
+		
+	else:
+		count_label.text = "0"
 

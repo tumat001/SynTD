@@ -24,6 +24,7 @@ var _curr_path_for_load : String
 var current_game_elements
 var current_game_elements__other_node_hoster
 var current_game_elements__proj_hoster
+var current_game_elements__node_hoster_below_screen_effects_mngr
 
 #
 
@@ -137,4 +138,11 @@ func ge_add_child_to_proj_hoster(arg_node):
 
 func deferred_ge_add_child_to_proj_hoster(arg_node):
 	current_game_elements__proj_hoster.call_deferred("add_child", arg_node)
+
+
+func ge_add_child_to_below_screen_effects_node_hoster(arg_node):
+	current_game_elements__node_hoster_below_screen_effects_mngr.add_child(arg_node)
+
+func deferred_ge_add_child_to_below_screen_effects_node_hoster(arg_node):
+	current_game_elements__node_hoster_below_screen_effects_mngr.call_deferred("add_child", arg_node)
 

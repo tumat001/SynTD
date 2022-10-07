@@ -166,7 +166,7 @@ func _on_creator_queue_free():
 #
 
 func _on_variance_creator_main_attack(attk_speed_delay, enemies, module):
-	if enemies.size() > 0:
+	if enemies.size() > 0 and !last_calculated_disabled_from_attacking:
 		var enemy = enemies[0]
 		
 		_attack_with_normal_proj_towards_enemy(enemy)

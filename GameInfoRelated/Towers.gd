@@ -355,24 +355,6 @@ const TowerTiersMap : Dictionary = {
 	OUTREACH : 6,
 }
 
-const tier_base_dmg_map : Dictionary = {
-	1 : 0.5,
-	2 : 1.0,
-	3 : 1.5,
-
-	4 : 2.5,
-	5 : 3.0,
-	6 : 3.5,
-	
-#	1 : 0.5,
-#	2 : 1.0,
-#	3 : 1.5,
-#
-#	4 : 2.5,
-#	5 : 3.0,
-#	6 : 3.5,
-}
-
 const tier_attk_speed_map : Dictionary = {
 	1 : 15,
 	2 : 25,
@@ -381,14 +363,20 @@ const tier_attk_speed_map : Dictionary = {
 	4 : 50,
 	5 : 60,
 	6 : 70,
+}
+
+const tier_base_dmg_map : Dictionary = {
+	1 : 0.5,
+	2 : 1.0,
+	3 : 1.5,
 	
-#	1 : 15,
-#	2 : 25,
-#	3 : 35,
-#
-#	4 : 45,
-#	5 : 60,
-#	6 : 70,
+	4 : 2.5,
+	5 : 2.75,
+	6 : 3.0,
+	
+#	4 : 2.5,
+#	5 : 3.0,
+#	6 : 3.5,
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
@@ -396,16 +384,19 @@ const tier_on_hit_dmg_map : Dictionary = {
 	2 : 1.25,
 	3 : 1.75,
 	
-	4 : 2.7,
-	5 : 3.2,
-	6 : 3.7,
+	4 : 2.75,
+	5 : 3.00,
+	6 : 3.25,
+#	4 : 2.7,
+#	5 : 3.2,
+#	6 : 3.7,
 }
 const tier_on_hit_dmg_reduc_if_pure : float = 0.25
 
 const tier_flat_range_map : Dictionary = {
-	1 : 15,
-	2 : 25,
-	3 : 35,
+	1 : 20,
+	2 : 30,
+	3 : 40,
 	4 : 60,
 	5 : 70,
 	6 : 80,
@@ -618,12 +609,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = simplex_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 0.4 #0.6
-		info.base_attk_speed = 5.5 #4.5
+		info.base_damage = 0.45 #0.4
+		info.base_attk_speed = 5 #5.5
 		info.base_pierce = 0
 		info.base_range = 95
 		info.base_damage_type = DamageType.PURE
-		info.on_hit_multiplier = 0.2#0.2
+		info.on_hit_multiplier = 0.2
 		
 		info.tower_descriptions = [
 			"Directs a constant pure energy beam at a single target.",
@@ -2139,8 +2130,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = spike_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 1.8#2
-		info.base_attk_speed = 0.85#0.775
+		info.base_damage = 1.8
+		info.base_attk_speed = 0.85
 		info.base_pierce = 0
 		info.base_range = 120
 		info.base_damage_type = DamageType.PHYSICAL
@@ -2385,8 +2376,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = grand_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 4
-		info.base_attk_speed = 0.365
+		info.base_damage = 3.5 #4
+		info.base_attk_speed = 0.35 #0.365
 		info.base_pierce = 1
 		info.base_range = 135
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -2406,8 +2397,22 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		ins_for_pierce.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.BONUS, 1))
 		
-		
 		interpreter_for_pierce.array_of_instructions = ins_for_pierce
+		
+		
+		var interpreter_for_bonus_dmg = TextFragmentInterpreter.new()
+		interpreter_for_bonus_dmg.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_bonus_dmg.display_body = true
+		interpreter_for_bonus_dmg.header_description = "more damage"
+		
+		var ins_for_bonus_dmg = []
+		ins_for_bonus_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1))
+		ins_for_bonus_dmg.append(NumericalTextFragment.new(100, true, -1, "", false, TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP))
+		ins_for_bonus_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_bonus_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.BONUS, 1))
+		
+		interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
+		
 		
 		#
 		
@@ -2415,7 +2420,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Grand gains projectile speed at 1.25, 1.50, and 2.00 total ability potency.",
 			["Grand also gains |0|.", [interpreter_for_pierce]],
 			"",
-			"Grand's main attack damage scales with ability potency.",
+			["Grand's main attack is modified to deal |0|.", [interpreter_for_bonus_dmg]],
 			"",
 			"The orb bullets redirect to the farthest enemy from Grand when reaching its max distance.",
 		]
@@ -2423,9 +2428,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			["Grand gains |0|.", [interpreter_for_pierce]],
 			"",
-			"Grand's main attack damage scales with ability potency.",
-			"",
-			"The orb bullets redirect to the farthest enemy when reaching its max distance.",
+			["Grand's main attack is modified to deal |0|.", [interpreter_for_bonus_dmg]],
 		]
 		
 		var base_ap_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_GRAND)
@@ -2468,9 +2471,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		ins_for_attk_count.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
 		ins_for_attk_count.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
-		
 		interpreter_for_attk_count.array_of_instructions = ins_for_attk_count
-		
 		
 		
 		#
@@ -2485,7 +2486,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		ins_for_buff.append(NumericalTextFragment.new(2, false, -1, "", false, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE))
 		ins_for_buff.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 		ins_for_buff.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
-		
 		
 		interpreter_for_buff.array_of_instructions = ins_for_buff
 		
@@ -2527,8 +2527,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = wave_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 1
-		info.base_attk_speed = 0.40
+		info.base_damage = 1.5
+		info.base_attk_speed = 0.45
 		info.base_pierce = 0
 		info.base_range = 150
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -2682,7 +2682,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_explo.array_of_instructions = ins_for_explo
 		
 		info.tower_descriptions = [
-			["Every 5th main attack, Bleach fires a blob that explodes, dealing |0| to 3 enemies and removing 5 toughness from enemies hit for 5 seconds. Does not stack.", [interpreter_for_explo]]
+			["Every 5th main attack, Bleach fires a blob that explodes, dealing |0| to 3 enemies and removing 3 toughness from enemies hit for 5 seconds. Does not stack.", [interpreter_for_explo]]
 		]
 		
 		
@@ -3009,7 +3009,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_tier = TowerTiersMap[tower_id]
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.RED)
-		info.colors.append(TowerColors.GRAY)
+		#info.colors.append(TowerColors.GRAY)
 		info.base_tower_image = reaper_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
@@ -3141,9 +3141,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_bolt = []
 		ins_for_bolt.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.35, DamageType.ELEMENTAL))
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.30, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.35)) # stat basis does not matter here
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.30)) # stat basis does not matter here
 		
 		interpreter_for_bolt.array_of_instructions = ins_for_bolt
 		
@@ -4270,7 +4270,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = shackled_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.35
+		info.base_damage = 2.25
 		info.base_attk_speed = 0.78
 		info.base_pierce = 1
 		info.base_range = 165
@@ -4284,7 +4284,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_flat_on_hit.display_body = false
 		
 		var ins_for_flat_on_hit = []
-		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 1))
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", 0.9))
 		
 		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 		
@@ -4900,13 +4900,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Does not attack.",
 			"Every 5 seconds, Healing Symbol heals every tower in range by 10%, increased to 20% for the tower that has dealt the most damage (in range).",
 			"Does not heal itself and other Healing Symbols.",
-			"On round end: If Healing Symbol is alive and has not healed a damaged tower, heal the player by 1."
+			"On round end: If Healing Symbol is alive and has not healed a damaged tower, heal the player by 2."
 		]
 		
 		info.tower_simple_descriptions = [
 			"Does not attack.",
 			"Every 5 seconds, Healing Symbol heals every tower in range by 10%, increased to 20% for the tower that has dealt the most damage (in range).",
-			"On round end: If Healing Symbol is alive and has not healed a damaged tower, heal the player by 1."
+			"On round end: If Healing Symbol is alive and has not healed a damaged tower, heal the player by 2."
 		]
 		
 		
@@ -5216,7 +5216,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		
-		
 	elif tower_id == IOTA:
 		info = TowerTypeInformation.new("Iota", tower_id)
 		info.tower_tier = TowerTiersMap[tower_id]
@@ -5225,8 +5224,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = iota_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.5
-		info.base_attk_speed = 0.875
+		info.base_damage = 2.4
+		info.base_attk_speed = 0.888
 		info.base_pierce = 1
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -5239,9 +5238,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_crash_dmg.display_body = true
 		
 		var ins_for_crash_dmg = []
-		ins_for_crash_dmg.append(NumericalTextFragment.new(2.0, false, DamageType.PHYSICAL))
+		ins_for_crash_dmg.append(NumericalTextFragment.new(5.0, false, DamageType.PHYSICAL))
 		ins_for_crash_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_crash_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 4.0)) # stat basis does not matter here
+		ins_for_crash_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 6.0)) # stat basis does not matter here
 		
 		interpreter_for_crash_dmg.array_of_instructions = ins_for_crash_dmg
 		
@@ -5251,9 +5250,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_beam_dmg.display_body = true
 		
 		var ins_for_beam_dmg = []
-		ins_for_beam_dmg.append(NumericalTextFragment.new(0.25, false, DamageType.ELEMENTAL))
+		ins_for_beam_dmg.append(NumericalTextFragment.new(0.4, false, DamageType.ELEMENTAL))
 		ins_for_beam_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_beam_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.25, DamageType.ELEMENTAL))
+		ins_for_beam_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.4, DamageType.ELEMENTAL))
 		
 		interpreter_for_beam_dmg.array_of_instructions = ins_for_beam_dmg
 		
@@ -5376,106 +5375,109 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.on_hit_multiplier = 1
 		
 		#
+#
+#		var interpreter_for_red_explosion = TextFragmentInterpreter.new()
+#		interpreter_for_red_explosion.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_red_explosion.header_description = "pure damage"
+#		interpreter_for_red_explosion.display_body = true
+#
+#		var ins_for_red_explosion = []
+#		ins_for_red_explosion.append(NumericalTextFragment.new(20, false, DamageType.PURE))
+#		ins_for_red_explosion.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+#		ins_for_red_explosion.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 8, DamageType.PURE))
+#
+#		interpreter_for_red_explosion.array_of_instructions = ins_for_red_explosion
+#
+#		#
+#
+#		var interpreter_for_blue_beam_dmg = TextFragmentInterpreter.new()
+#		interpreter_for_blue_beam_dmg.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_blue_beam_dmg.display_body = true
+#
+#		var ins_for_blue_beam_dmg = []
+#		ins_for_blue_beam_dmg.append(NumericalTextFragment.new(2, false, DamageType.ELEMENTAL))
+#		ins_for_blue_beam_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+#		ins_for_blue_beam_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+#
+#		interpreter_for_blue_beam_dmg.array_of_instructions = ins_for_blue_beam_dmg
+#
+#
+#		var interpreter_for_blue_explosion_dmg = TextFragmentInterpreter.new()
+#		interpreter_for_blue_explosion_dmg.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_blue_explosion_dmg.display_body = true
+#
+#		var ins_for_blue_explosion_dmg = []
+#		ins_for_blue_explosion_dmg.append(NumericalTextFragment.new(15, false, DamageType.ELEMENTAL))
+#		ins_for_blue_explosion_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+#		ins_for_blue_explosion_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+#
+#		interpreter_for_blue_explosion_dmg.array_of_instructions = ins_for_blue_explosion_dmg
+#
+#
+#		var interpreter_for_ap = TextFragmentInterpreter.new()
+#		interpreter_for_ap.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_ap.display_body = false
+#
+#		var ins_for_ap = []
+#		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.5, false))
+#
+#		interpreter_for_ap.array_of_instructions = ins_for_ap
+#
+#		#
+#
+#		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+#		interpreter_for_attk_speed.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_attk_speed.display_body = false
+#		interpreter_for_attk_speed.header_description = "attack speed"
+#
+#		var ins_for_attk_speed = []
+#		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 30, true))
+#
+#		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+#
+#		#
+#
+#		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+#		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_cooldown.display_body = true
+#		interpreter_for_cooldown.header_description = "s"
+#
+#		var ins_for_cooldown = []
+#		ins_for_cooldown.append(NumericalTextFragment.new(22, false))
+#		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+#		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+#
+#		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+#
+#
+#		#
+#
+#		info.tower_descriptions = [
+#			"On round end: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it.",
+#			"",
+#			"Auto casts Specialize:",
+#			"Ability: Specialize. Effect differs based on Variance's type.",
+#			"Clear Type: Remove almost all effects from enemies in range three times over 10 seconds.",
+#			["Damage Type: The first main attack knocks its target back. The first and second main attack stuns for 2 seconds. Afterwards, fire a massive glob that deals |0| to 5 enemies.", [interpreter_for_red_explosion]],
+#			["Speed Type: Gain |0| for 20 seconds. Innate: Summon a vessel outside of range every 25 main attacks. Vessels last for only one round.", [interpreter_for_attk_speed]],
+#			["Potency Type: Deal |0| per 0.25 seconds to its current target until it dies or leaves range. Afterwards, release an explosion at its target's location, dealing |1|. If this is casted while the beam is active, gain stacking |2|.", [interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg, interpreter_for_ap]],
+#			["Cooldown: |0|", [interpreter_for_cooldown]],
+##			"",
+##			"Ability: Lock. Permanently prevents Variance from changing types on round end."
+#		]
+#
+#		info.tower_simple_descriptions = [
+#			"On round end: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it.",
+#			"",
+#		]
 		
-		var interpreter_for_red_explosion = TextFragmentInterpreter.new()
-		interpreter_for_red_explosion.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_red_explosion.header_description = "pure damage"
-		interpreter_for_red_explosion.display_body = true
-		
-		var ins_for_red_explosion = []
-		ins_for_red_explosion.append(NumericalTextFragment.new(20, false, DamageType.PURE))
-		ins_for_red_explosion.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_red_explosion.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 8, DamageType.PURE))
-		
-		interpreter_for_red_explosion.array_of_instructions = ins_for_red_explosion
-		
-		#
-		
-		var interpreter_for_blue_beam_dmg = TextFragmentInterpreter.new()
-		interpreter_for_blue_beam_dmg.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_blue_beam_dmg.display_body = true
-		
-		var ins_for_blue_beam_dmg = []
-		ins_for_blue_beam_dmg.append(NumericalTextFragment.new(2, false, DamageType.ELEMENTAL))
-		ins_for_blue_beam_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
-		ins_for_blue_beam_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
-		
-		interpreter_for_blue_beam_dmg.array_of_instructions = ins_for_blue_beam_dmg
-		
-		
-		var interpreter_for_blue_explosion_dmg = TextFragmentInterpreter.new()
-		interpreter_for_blue_explosion_dmg.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_blue_explosion_dmg.display_body = true
-		
-		var ins_for_blue_explosion_dmg = []
-		ins_for_blue_explosion_dmg.append(NumericalTextFragment.new(15, false, DamageType.ELEMENTAL))
-		ins_for_blue_explosion_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
-		ins_for_blue_explosion_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
-		
-		interpreter_for_blue_explosion_dmg.array_of_instructions = ins_for_blue_explosion_dmg
-		
-		
-		var interpreter_for_ap = TextFragmentInterpreter.new()
-		interpreter_for_ap.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_ap.display_body = false
-		
-		var ins_for_ap = []
-		ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.5, false))
-		
-		interpreter_for_ap.array_of_instructions = ins_for_ap
-		
-		#
-		
-		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
-		interpreter_for_attk_speed.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_attk_speed.display_body = false
-		interpreter_for_attk_speed.header_description = "attack speed"
-		
-		var ins_for_attk_speed = []
-		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 30, true))
-		
-		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
-		
-		#
-		
-		var interpreter_for_cooldown = TextFragmentInterpreter.new()
-		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_cooldown.display_body = true
-		interpreter_for_cooldown.header_description = "s"
-		
-		var ins_for_cooldown = []
-		ins_for_cooldown.append(NumericalTextFragment.new(22, false))
-		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
-		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
-		
-		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
-		
-		
-		#
 		
 		info.tower_descriptions = [
 			"On round end: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it.",
 			"",
-			"Auto casts Specialize:",
+			"Auto casts Specialize.",
 			"Ability: Specialize. Effect differs based on Variance's type.",
-			"Clear Type: Remove almost all effects from enemies in range three times over 10 seconds.",
-			["Damage Type: The first main attack knocks its target back. The first and second main attack stuns for 2 seconds. Afterwards, fire a massive glob that deals |0| to 5 enemies.", [interpreter_for_red_explosion]],
-			["Speed Type: Gain |0| for 20 seconds. Innate: Summon a vessel outside of range every 25 main attacks. Vessels last for only one round.", [interpreter_for_attk_speed]],
-			["Potency Type: Deal |0| per 0.25 seconds to its current target until it dies or leaves range. Afterwards, release an explosion at its target's location, dealing |1|. If this is casted while the beam is active, gain stacking |2|.", [interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg, interpreter_for_ap]],
-			["Cooldown: |0|", [interpreter_for_cooldown]],
-#			"",
-#			"Ability: Lock. Permanently prevents Variance from changing types on round end."
 		]
-		
-		info.tower_simple_descriptions = [
-			"On round end: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it.",
-			"",
-			"Auto casts Specialize:",
-			"Ability: Specialize. Effect differs based on Variance's type.",
-			"",
-			["Cooldown: |0|", [interpreter_for_cooldown]],
-		]
-		
 		
 		var tower_effect = TowerResetEffects.new(StoreOfTowerEffectsUUID.ING_VARIANCE_ING_RESET)
 		var ing_effect = IngredientEffect.new(tower_id, tower_effect)
@@ -5658,7 +5660,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.72
+		info.base_attk_speed = 0.85 #0.72
 		info.base_pierce = 0
 		info.base_range = 125
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -5741,7 +5743,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = wyvern_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 8
+		info.base_damage = 9
 		info.base_attk_speed = 0.4
 		info.base_pierce = 1
 		info.base_range = 185
@@ -5793,15 +5795,15 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Auto casts Fury when at least 1 enemy is in range.",
 			"Ability: Fury: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies or becomes untargetable.",
-			["Each bullet deals |0|. However, the damage is only 40% effective against boss enemies.", [interpreter_for_bonus_dmg]],
+			["Each bullet deals |0|, and benefits from bonus pierce. However, the damage is only 80% effective against boss enemies.", [interpreter_for_bonus_dmg]],
 			["Wyvern additionally gains |0| during Fury.", [interpreter_for_attk_speed]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
 		
 		info.tower_simple_descriptions = [
 			"Auto casts Fury.",
-			"Ability: Fury: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies or becomes untargetable.",
-			["Each bullet deals |0|. However, the damage is only 40% effective against boss enemies.", [interpreter_for_bonus_dmg]],
+			"Ability: Fury: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies.",
+			["Each bullet deals |0|. However, the damage is only 80% effective against boss enemies.", [interpreter_for_bonus_dmg]],
 			["Wyvern additionally gains |0| during Fury.", [interpreter_for_attk_speed]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
@@ -6048,7 +6050,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "+ ap"
 		
 		
-		
 	elif tower_id == SOLITAR:
 		info = TowerTypeInformation.new("Solitar", tower_id)
 		info.tower_tier = TowerTiersMap[tower_id]
@@ -6058,9 +6059,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2
-		info.base_attk_speed = 1.25
+		info.base_attk_speed = 0.9
 		info.base_pierce = 1
-		info.base_range = 115
+		info.base_range = 110
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -6149,7 +6150,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter.header_description = "damage"
 		
 		var ins = []
-		ins.append(NumericalTextFragment.new(1.5, false, DamageType.PHYSICAL))
+		ins.append(NumericalTextFragment.new(2.0, false, DamageType.PHYSICAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 2, DamageType.PHYSICAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
@@ -6357,6 +6358,25 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Blast gains |0| on main attacks against stunned or slowed enemies.", [interpreter_for_attk_speed]]
 		]
 		
+		info.tower_simple_descriptions = [
+			"Auto casts Shockwave.",
+			["Ability: Shockwave: Send a wave that knocks 5 enemies back by when facing Blast, or slows them by |0| for 2 seconds when not.", [interpreter_for_slow]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+			"",
+			["Blast gains |0| on main attacks against stunned or slowed enemies.", [interpreter_for_attk_speed]]
+		]
+		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_BLAST)
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_BLAST)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
+		
 		
 	
 	return info
@@ -6535,4 +6555,4 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Outreach/Outreach.tscn")
 	elif tower_id == BLAST:
 		return load("res://TowerRelated/Color_Red/Blast/Blast.tscn")
-	
+

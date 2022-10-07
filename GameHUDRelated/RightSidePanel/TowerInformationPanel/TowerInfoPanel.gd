@@ -38,7 +38,8 @@ const Variance_InfoPanel = preload("res://TowerRelated/Color_Violet/Variance/Pan
 const Variance_InfoPanel_Scene = preload("res://TowerRelated/Color_Violet/Variance/Panel/Variance_InfoPanel.tscn")
 const RiftAxis_InfoPanel = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/YelVio_RiftAxis/GUI/RiftAxis_InfoPanel.gd")
 const RiftAxis_InfoPanel_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/YelVio_RiftAxis/GUI/RiftAxis_InfoPanel.tscn")
-
+const Amalgamator_InfoPanel = preload("res://TowerRelated/Color_Black/Amalgamator/InfoPanel/Amalgamator_InfoPanel.gd")
+const Amalgamator_InfoPanel_Scene = preload("res://TowerRelated/Color_Black/Amalgamator/InfoPanel/Amalgamator_InfoPanel.tscn")
 
 signal on_extra_info_panel_shown(arg_info_panel, arg_tower)
 signal on_tower_panel_ability_01_activate()
@@ -79,6 +80,7 @@ var la_chasseur_info_panel : LaChasseur_InfoPanel
 var tesla_info_panel : Tesla_InfoPanel
 var variance_info_panel : Variance_InfoPanel
 var rift_axis_info_panel : RiftAxis_InfoPanel
+var amalgamator_info_panel : Amalgamator_InfoPanel
 
 var current_active_info_panel
 
@@ -125,39 +127,51 @@ func set_visible(value : bool):
 	
 	if !value:
 		_destroy_extra_info_panel()
+	
+	if value and game_settings_manager.auto_show_extra_tower_info_mode:
+		call_deferred("_create_extra_info_panel")
 
 
 
 # Extra info panel related (description and self ingredient)
 
 func _on_TowerNameAndPicPanel_show_extra_tower_info():
+	_toggle_extra_tower_info_show()
+
+func _toggle_extra_tower_info_show():
 	if extra_info_panel == null:
 		_create_extra_info_panel()
 	else:
 		_destroy_extra_info_panel()
 
 
+
 func _create_extra_info_panel():
-	extra_info_panel = ExtraInfoPanel_Scene.instance()
-	
-	extra_info_panel.tower = tower
-	extra_info_panel.game_settings_manager = game_settings_manager
-	
-	var topleft_pos = get_global_rect().position
-	var size_x_of_extra_info_panel = extra_info_panel.rect_size.x
-	var pos_of_info_panel = Vector2(topleft_pos.x - size_x_of_extra_info_panel, topleft_pos.y)
-	
-	extra_info_panel.rect_global_position = pos_of_info_panel
-	get_tree().get_root().add_child(extra_info_panel)
-	extra_info_panel._update_display()
-	
-	emit_signal("on_extra_info_panel_shown", extra_info_panel, tower)
+	if extra_info_panel == null:
+		extra_info_panel = ExtraInfoPanel_Scene.instance()
+		
+		extra_info_panel.tower = tower
+		extra_info_panel.game_settings_manager = game_settings_manager
+		
+		var topleft_pos = get_global_rect().position
+		var size_x_of_extra_info_panel = extra_info_panel.rect_size.x
+		var pos_of_info_panel = Vector2(topleft_pos.x - size_x_of_extra_info_panel, topleft_pos.y)
+		
+		extra_info_panel.rect_global_position = pos_of_info_panel
+		
+		CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(extra_info_panel)
+		extra_info_panel._update_display()
+		
+		emit_signal("on_extra_info_panel_shown", extra_info_panel, tower)
 
 
 func _destroy_extra_info_panel():
 	if extra_info_panel != null:
 		extra_info_panel.queue_free()
 		extra_info_panel = null
+
+func destroy_extra_info_panel__called_from_outside():
+	_destroy_extra_info_panel()
 
 
 # ENERGY MODULE PANEL DISPLAY RELATED --------------
@@ -416,6 +430,22 @@ func _update_tower_specific_info_panel():
 		if rift_axis_info_panel != null:
 			rift_axis_info_panel.visible = false
 			rift_axis_info_panel.set_rift_axis(null)
+	
+	# Amalgamator
+	if Amalgamator_InfoPanel.should_display_self_for(tower):
+		if amalgamator_info_panel == null:
+			amalgamator_info_panel = Amalgamator_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(amalgamator_info_panel)
+		
+		amalgamator_info_panel.visible = true
+		amalgamator_info_panel.set_amalgamator(tower)
+		current_active_info_panel = amalgamator_info_panel
+	else:
+		if amalgamator_info_panel != null:
+			amalgamator_info_panel.visible = false
+			amalgamator_info_panel.set_amalgamator(null)
+	
+	
 	
 	# KEEP THIS AT THE BOTTOM
 	if current_active_info_panel != null:

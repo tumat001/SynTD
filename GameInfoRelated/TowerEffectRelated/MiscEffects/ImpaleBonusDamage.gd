@@ -15,8 +15,8 @@ const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/Te
 
 const bonus_damage_percent_threshold : float = 0.75
 
-var bonus_damage_new_scale : float = 1.30
-var bonus_damage_new_scale_against_normal_typed : float = 1.60
+var bonus_damage_new_scale : float = 1.20
+var bonus_damage_new_scale_against_normal_typed : float = 1.30
 
 
 func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):
