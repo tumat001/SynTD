@@ -17,6 +17,9 @@ const tier06_crown = preload("res://GameHUDRelated/BuySellPanel/Tier06_Crown.png
 signal viewing_tower_description_tooltip(tower_type_id)
 signal tower_bought(tower_type_id, tower_cost)
 
+signal card_pressed_down()
+signal card_released_up_and_not_queue_freed()
+
 const can_buy_modulate : Color = Color(1, 1, 1, 1)
 const cannot_buy_modulate : Color = Color(0.5, 0.5, 0.5, 1)
 
@@ -41,6 +44,15 @@ var is_playing_shine_sparkle : bool = false
 var shine_current_duration : float
 
 var game_settings_manager
+var buy_sell_level_roll_panel
+var buy_slot
+
+var _mouse_pos_when_pressed : Vector2
+var _is_being_dragged_by_player_input : bool = false
+var _mouse_offset_from_top_left_pos : Vector2
+#var _mouse_moved_after_press : bool = false
+const time_after_press_threshold_for_buy : float = 0.1
+var _time_after_press : float
 
 #
 
@@ -142,26 +154,18 @@ func create_energy_display(energy_array : Array) -> String:
 
 
 func _on_BuyCard_gui_input(event):
-	if event is InputEventMouseButton and event.pressed:
+	if event is InputEventMouseButton:
 		match event.button_index:
 			BUTTON_LEFT:
-				 _on_BuyCard_pressed()
+				pass
+				
 			BUTTON_RIGHT:
-				if current_tooltip == null:
-					_free_old_and_create_tooltip_for_tower()
-				else:
-					current_tooltip.queue_free()
+				if event.pressed:
+					if current_tooltip == null:
+						_free_old_and_create_tooltip_for_tower()
+					else:
+						current_tooltip.queue_free()
 
-func _on_BuyCard_pressed():
-	if !disabled and can_buy_card() and !is_queued_for_deletion():
-		disabled = true
-		emit_signal("tower_bought", tower_information)
-		
-		if current_tooltip != null:
-			current_tooltip.queue_free()
-		
-		queue_free()
-	
 
 func _free_old_and_create_tooltip_for_tower():
 	if current_tooltip != null:
@@ -245,7 +249,19 @@ func _process(delta):
 	
 	if (shine_current_duration <= 0):
 		hide_shine_sparkle_on_card()
-
+	
+	if _is_being_dragged_by_player_input:
+		var mouse_pos = get_viewport().get_mouse_position()
+		rect_global_position = mouse_pos + _mouse_offset_from_top_left_pos
+		
+		if buy_sell_level_roll_panel.is_mouse_pos_within_panel_bounds():
+			modulate.a = 1
+		else:
+			modulate.a = 0.5
+		
+		_time_after_press += delta
+		#if !_mouse_moved_after_press and mouse_pos != _mouse_pos_when_pressed:
+		#	_mouse_moved_after_press = true
 
 func hide_shine_sparkle_on_card():
 	is_playing_shine_sparkle = false
@@ -266,7 +282,9 @@ func set_tower_card_modulate(arg_modulate):
 func set_control_modulate(arg_control, arg_modulate):
 	arg_control.self_modulate = arg_modulate
 	for child in arg_control.get_children():
-		child.self_modulate = arg_modulate
+		if child.get("self_modulate"):
+			child.self_modulate = arg_modulate
+		
 		if child.get_child_count() > 0:
 			for inner_child in child.get_children():
 				set_control_modulate(inner_child, arg_modulate)
@@ -274,3 +292,33 @@ func set_control_modulate(arg_control, arg_modulate):
 
 
 
+func _on_BuyCard_button_down():
+	_time_after_press = 0
+	_is_being_dragged_by_player_input = true
+	#_mouse_moved_after_press = false
+	var mouse_pos = get_viewport().get_mouse_position()
+	_mouse_offset_from_top_left_pos = rect_global_position - mouse_pos
+	
+	_mouse_pos_when_pressed = mouse_pos
+	
+	emit_signal("card_pressed_down")
+
+func _on_BuyCard_button_up():
+	_on_BuyCard_released()
+
+func _on_BuyCard_released():
+	_is_being_dragged_by_player_input = false
+	
+	#if !disabled and can_buy_card() and !is_queued_for_deletion() and (!buy_sell_level_roll_panel.is_mouse_pos_within_panel_bounds() or !_mouse_moved_after_press):
+	if !disabled and can_buy_card() and !is_queued_for_deletion() and (!buy_sell_level_roll_panel.is_mouse_pos_within_panel_bounds() or _time_after_press < time_after_press_threshold_for_buy):
+		disabled = true
+		emit_signal("tower_bought", tower_information)
+		
+		if current_tooltip != null:
+			current_tooltip.queue_free()
+		
+		queue_free()
+	else:
+		rect_global_position = buy_slot.rect_global_position
+		modulate.a = 1
+		emit_signal("card_released_up_and_not_queue_freed")

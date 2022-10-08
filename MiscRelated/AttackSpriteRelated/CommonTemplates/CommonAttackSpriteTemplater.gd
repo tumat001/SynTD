@@ -1,13 +1,13 @@
 
-const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
-const ExpandingAttackSprite = preload("res://MiscRelated/AttackSpriteRelated/ExpandingAttackSprite.gd")
+#const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
+#const ExpandingAttackSprite = preload("res://MiscRelated/AttackSpriteRelated/ExpandingAttackSprite.gd")
 
 enum TemplateIDs {
 	COMMON_UPWARD_DECELERATING_PARTICLE = 1,
 	
 }
 
-static func configure_properties_of_attk_sprite(attk_sprite : AttackSprite, template_id : int):
+static func configure_properties_of_attk_sprite(attk_sprite, template_id : int):
 	if template_id == TemplateIDs.COMMON_UPWARD_DECELERATING_PARTICLE:
 		attk_sprite.has_lifetime = true
 		attk_sprite.lifetime = 0.5
@@ -19,7 +19,7 @@ static func configure_properties_of_attk_sprite(attk_sprite : AttackSprite, temp
 
 
 # for circular attk sprites
-static func configure_scale_and_expansion_of_expanding_attk_sprite(attk_sprite : ExpandingAttackSprite, initial_radius : float, final_radius : float):
+static func configure_scale_and_expansion_of_expanding_attk_sprite(attk_sprite, initial_radius : float, final_radius : float):
 	var radius = attk_sprite.get_sprite_size().y / 2
 	radius = attk_sprite.scale * radius
 	

@@ -34,6 +34,9 @@ __meta__ = {
 margin_right = 104.0
 margin_bottom = 75.0
 texture_normal = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="Control" type="Control" parent="."]
 margin_right = 104.0
@@ -277,4 +280,6 @@ margin_right = 24.0
 margin_bottom = 24.0
 mouse_filter = 2
 texture = ExtResource( 5 )
+[connection signal="button_down" from="BuyCard" to="." method="_on_BuyCard_button_down"]
+[connection signal="button_up" from="BuyCard" to="." method="_on_BuyCard_button_up"]
 [connection signal="gui_input" from="BuyCard" to="." method="_on_BuyCard_gui_input"]

@@ -8,9 +8,14 @@ const TowerBuyCard = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCard.gd"
 signal tower_bought(tower_id)
 signal viewing_tower_description_tooltip(tower_type_id, arg_self)
 
-var current_child
+signal card_pressed_down(arg_card)
+signal card_released_up_and_not_queue_freed(arg_card)
+
+var current_child # current child of card container
 var tower_inventory_bench
 var game_settings_manager
+var buy_sell_level_roll_panel
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -27,11 +32,16 @@ func roll_buy_card_to_tower_id(tower_id : int):
 			buy_card_scene.tower_information = tower_info
 			buy_card_scene.tower_inventory_bench = tower_inventory_bench
 			buy_card_scene.game_settings_manager = game_settings_manager
+			buy_card_scene.buy_sell_level_roll_panel = buy_sell_level_roll_panel
+			buy_card_scene.buy_slot = self
 			
+			#card_container.add_child(buy_card_scene)
 			add_child(buy_card_scene)
 			current_child = buy_card_scene
 			current_child.connect("tower_bought", self, "_on_tower_bought")
 			current_child.connect("viewing_tower_description_tooltip", self, "_on_viewing_tower_description_tooltip")
+			current_child.connect("card_pressed_down", self, "_on_card_pressed_down", [current_child])
+			current_child.connect("card_released_up_and_not_queue_freed", self, "_on_card_released_up_and_not_queue_freed", [current_child])
 
 func _on_tower_bought(tower_type_info : TowerTypeInformation):
 	emit_signal("tower_bought", tower_type_info)
@@ -58,3 +68,10 @@ func get_current_tower_buy_card():
 	
 	return null
 
+#
+
+func _on_card_pressed_down(arg_card):
+	emit_signal("card_pressed_down", arg_card)
+
+func _on_card_released_up_and_not_queue_freed(arg_card):
+	emit_signal("card_released_up_and_not_queue_freed", arg_card)

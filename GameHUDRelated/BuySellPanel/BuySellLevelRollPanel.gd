@@ -23,6 +23,7 @@ const cannot_press_button_color : Color = Color(0.5, 0.5, 0.5, 1)
 const can_press_button_color : Color = Color(1, 1, 1, 1)
 
 var all_buy_slots : Array
+onready var buy_slot_container = $HBoxContainer/BuySlotContainer
 onready var buy_slot_01 = $HBoxContainer/BuySlotContainer/BuySlot01
 onready var buy_slot_02 = $HBoxContainer/BuySlotContainer/BuySlot02
 onready var buy_slot_03 = $HBoxContainer/BuySlotContainer/BuySlot03
@@ -50,6 +51,9 @@ var combination_manager : CombinationManager setget set_combination_manager
 var game_settings_manager setget set_game_settings_manager
 
 var tower_inventory_bench setget set_tower_inventory_bench
+
+# top left pos is global_position
+var bot_right_pos : Vector2
 
 #
 
@@ -198,10 +202,17 @@ func _ready():
 	for slot in all_buy_slots:
 		slot.tower_inventory_bench = tower_inventory_bench
 		slot.game_settings_manager = game_settings_manager
-	
+		slot.buy_sell_level_roll_panel = self
+		
+		slot.connect("card_pressed_down", self, "_on_buy_slot__card_pressed_down", [slot], CONNECT_PERSIST)
+		#slot.connect("card_released_up_and_not_queue_freed", self, "_on_buy_slot__card_released_up_and_not_queue_freed", [slot], CONNECT_PERSIST)
 	
 	_update_last_calculated_can_refresh_shop()
 	
+	call_deferred("_deferred_ready")
+
+func _deferred_ready():
+	bot_right_pos = rect_global_position + rect_size
 
 
 func _on_RerollButton_pressed():
@@ -435,4 +446,19 @@ func _update_last_calculated_can_refresh_shop():
 	reroll_panel.visible = last_calculated_can_refresh_shop
 	
 	emit_signal("can_refresh_shop_changed", last_calculated_can_refresh_shop)
+
+
+#
+
+func is_mouse_pos_within_panel_bounds():
+	var mouse_pos = get_viewport().get_mouse_position()
+	
+	return (mouse_pos.x >= rect_global_position.x and mouse_pos.x <= bot_right_pos.x) and (mouse_pos.y >= rect_global_position.y and mouse_pos.y <= bot_right_pos.y)
+
+
+func _on_buy_slot__card_pressed_down(arg_card, arg_buy_slot):
+	buy_slot_container.move_child(arg_buy_slot, buy_slot_container.get_child_count() - 1)
+
+#func _on_buy_slot__card_released_up_and_not_queue_freed(arg_card, arg_buy_slot):
+#	pass
 

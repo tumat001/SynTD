@@ -112,7 +112,6 @@ const TOWER_IN_MAP_GROUP_ID : String = "All_Towers_In_Map"
 
 var _is_round_on_going : bool
 
-
 #
 
 var _tower_limit_id_amount_map : Dictionary = {}
@@ -147,6 +146,7 @@ var attempt_count_trigger_for_level_up_to_place_more : AttemptCountTrigger
 const tower_takes_more_than_1_slot_content_desc : String = "%s takes %s tower slots."
 
 var can_show_player_desc_of_level_required : bool = true
+
 
 # setters
 
@@ -434,7 +434,7 @@ func _get_all_synergy_contributing_towers() -> Array:
 func _tower_sold(sellback_gold : int, tower):
 	emit_signal("tower_being_sold", sellback_gold, tower)
 	gold_manager.increase_gold_by(sellback_gold, GoldManager.IncreaseGoldSource.TOWER_SELLBACK)
-
+	game_elements.display_gold_particles(tower.global_position, sellback_gold)
 
 func _tower_generate_gold(gold : int, source_type : int):
 	gold_manager.increase_gold_by(gold, source_type)
@@ -852,3 +852,9 @@ func _on_can_towers_swap_positions_clause_ins_or_rem(arg_clause):
 
 func _update_can_towers_swap_positions_clauses():
 	last_calculated_can_towers_swap_position = can_towers_swap_positions_clauses.is_passed
+
+
+
+
+
+

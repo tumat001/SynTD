@@ -33,6 +33,10 @@ const PauseManager = preload("res://GameElementsRelated/PauseManager.gd")
 const SellPanel = preload("res://GameHUDRelated/BuySellPanel/SellPanel.gd")
 const GameResultManager = preload("res://GameElementsRelated/GameResultManager.gd")
 
+const CommonTexture_GoldCoin = preload("res://MiscRelated/CommonTextures/CommonTexture_GoldCoin/CommonTexture_GoldCoin.gd")
+const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
+
+
 signal before_main_init()
 signal before_game_start()
 
@@ -94,6 +98,14 @@ onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel
 
 var can_return_to_round_panel : bool = true
 
+# Particles related
+# Gold/Coin display
+
+var gold_sprite_particle_pool_component : AttackSpritePoolComponent
+var gold_sprite_particle_timer : Timer
+const _delay_per_gold_particle__as_delta : float = 0.15
+var gold_det_class_arr : Array
+
 # Vars to be set by outside of game elements
 
 var game_mode_id : int
@@ -117,7 +129,7 @@ func _ready():
 	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
 	game_modi_ids = game_mode_type_info.game_modi_ids.duplicate()
 	
-	# TEMPORARY HERE. MAKE IT BE EDITABLE IN MAP SELECTION
+	# TODO TEMPORARY HERE. MAKE IT BE EDITABLE IN MAP SELECTION
 	game_modi_ids.append(StoreOfGameModifiers.GameModiIds.RED_TOWER_RANDOMIZER)
 	
 	TowerCompositionColors.reset_synergies_instances()
@@ -126,6 +138,11 @@ func _ready():
 	
 	game_modifiers_manager.add_game_modi_ids(game_modi_ids)
 	game_modifiers_manager.add_game_modi_ids__from_game_mode_id(game_mode_id)
+	
+	
+	# particles related
+	
+	_initialize_gold_particle_pool_component()
 	
 	#
 	emit_signal("before_main_init")
@@ -356,9 +373,9 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
-#	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-#	level_manager.current_level = LevelManager.LEVEL_7
-#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	level_manager.current_level = LevelManager.LEVEL_7
+	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -370,27 +387,27 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	shop_manager.roll_towers_in_shop_with_cost()
+	#shop_manager.roll_towers_in_shop_with_cost()
 	
-#	if !even:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.CHAOS,
-#			Towers.WYVERN,
-#			Towers.TRUDGE,
-#			Towers.STRIKER,
-#			Towers.CANNON,
-#			Towers.ACCUMULAE,
-#		])
-#	else:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.BEACON_DISH,
-#			Towers.BLEACH,
-#			Towers.EMBER,
-#			Towers.SIMPLEX,
-#			Towers.BREWD,
-#			Towers.TRANSPORTER
-#		])
-#	even = !even
+	if !even:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.CHAOS,
+			Towers.WYVERN,
+			Towers.TRUDGE,
+			Towers.STRIKER,
+			Towers.CANNON,
+			Towers.ACCUMULAE,
+		])
+	else:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.BEACON_DISH,
+			Towers.BLEACH,
+			Towers.EMBER,
+			Towers.SIMPLEX,
+			Towers.BREWD,
+			Towers.TRANSPORTER
+		])
+	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -562,4 +579,73 @@ func _enter_tree():
 	CommsForBetweenScenes.current_game_elements = self
 	
 
+
+############# Particles related ##################
+
+class ParticlesDetClass extends Reference:
+	var pos : Vector2
+	var curr_amount_of_repeats : int
+
+# Gold related
+
+func _initialize_gold_particle_pool_component():
+	gold_sprite_particle_pool_component = AttackSpritePoolComponent.new()
+	gold_sprite_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	gold_sprite_particle_pool_component.node_to_listen_for_queue_free = self
+	gold_sprite_particle_pool_component.source_for_funcs_for_attk_sprite = self
+	gold_sprite_particle_pool_component.func_name_for_creating_attack_sprite = "_create_gold_particle"
+	gold_sprite_particle_pool_component.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_gold_particle_properties_when_get_from_pool_after_add_child"
+	
+	gold_sprite_particle_timer = Timer.new()
+	gold_sprite_particle_timer.one_shot = false
+	gold_sprite_particle_timer.connect("timeout", self, "_on_gold_particle_timer_timeout", [], CONNECT_PERSIST)
+	add_child(gold_sprite_particle_timer)
+	gold_sprite_particle_timer.paused = true
+	
+
+func _create_gold_particle():
+	var particle = CommonTexture_GoldCoin.create_coin_particle()
+	
+	particle.queue_free_at_end_of_lifetime = false
+	particle.turn_invisible_at_end_of_lifetime = true
+	
+	return particle
+
+func _set_gold_particle_properties_when_get_from_pool_after_add_child(arg_particle):
+	pass
+
+#
+
+func display_gold_particles(arg_pos : Vector2, arg_repeat_count : int):
+	var particle_det_class := ParticlesDetClass.new()
+	particle_det_class.pos = arg_pos
+	particle_det_class.curr_amount_of_repeats = arg_repeat_count
+	
+	_add_to_gold_det_class_arr(particle_det_class)
+
+func _add_to_gold_det_class_arr(arg_particle_det_class):
+	gold_det_class_arr.append(arg_particle_det_class)
+	
+	if gold_sprite_particle_timer.paused:
+		gold_sprite_particle_timer.paused = false
+		gold_sprite_particle_timer.start(_delay_per_gold_particle__as_delta)
+
+func _remove_from_gold_det_class_arr(arg_particle_det_class):
+	gold_det_class_arr.erase(arg_particle_det_class)
+	if gold_det_class_arr.size() == 0 and !gold_sprite_particle_timer.paused:
+		gold_sprite_particle_timer.paused = true
+
+func _on_gold_particle_timer_timeout():
+	for particle_det_class in gold_det_class_arr:
+		_display_gold_particle_on_pos(particle_det_class.pos)
+		particle_det_class.curr_amount_of_repeats -= 1
+		if particle_det_class.curr_amount_of_repeats <= 0:
+			gold_det_class_arr.erase(particle_det_class)
+
+func _display_gold_particle_on_pos(arg_pos : Vector2):
+	var particle = gold_sprite_particle_pool_component.get_or_create_attack_sprite_from_pool()
+	particle.global_position = arg_pos
+	particle.visible = true
+	
+	particle.reset_for_another_use()
 

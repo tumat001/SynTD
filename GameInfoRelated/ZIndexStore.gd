@@ -27,3 +27,9 @@ enum {
 	SCREEN_EFFECTS_ABOVE_ALL = 0#VisualServer.CANVAS_ITEM_Z_MAX - 2
 	WHOLE_SCREEN_GUI = 0 #VisualServer.CANVAS_ITEM_Z_MAX - 1
 }
+
+
+enum CanvasZLayer {
+	
+	BUY_CARD_DRAG = 100
+}
