@@ -48,7 +48,7 @@ func _give_fruit():
 		
 	else:
 		emit_signal("tower_give_gold", fruit_cost, GoldManager.IncreaseGoldSource.TOWER_SELLBACK)
-
+		game_elements.display_gold_particles(global_position, fruit_cost)
 
 func _modify_fruit_before_adding(tower):
 	var fruit_type_rng : int = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.FRUIT_TREE).randi_range(0, 5)

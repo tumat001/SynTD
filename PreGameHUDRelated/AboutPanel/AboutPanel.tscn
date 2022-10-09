@@ -29,8 +29,7 @@ texture = ExtResource( 2 )
 stretch_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-margin_left = -1.0
-margin_right = 416.0
+margin_right = 417.0
 margin_bottom = 300.0
 rect_min_size = Vector2( 417, 300 )
 mouse_filter = 2
@@ -110,7 +109,7 @@ margin_right = 387.0
 margin_bottom = 85.0
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 1 )
-text = "SynergyTD (Version 0.0)"
+text = "SynergyTD (Version 0.1)"
 align = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/ContentContainer/VBoxContainer"]

@@ -78,7 +78,7 @@ func _post_inherit_ready():
 	._post_inherit_ready()
 	
 	var burn_dmg : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.EMBER_BURN)
-	burn_dmg.flat_modifier = 0.5
+	burn_dmg.flat_modifier = 0.8
 	
 	var burn_on_hit : OnHitDamage = OnHitDamage.new(StoreOfTowerEffectsUUID.EMBER_BURN, burn_dmg, DamageType.ELEMENTAL)
 	var burn_dmg_instance = DamageInstance.new()

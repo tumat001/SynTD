@@ -18,6 +18,8 @@ const card_height : float = 140.0
 var about_tooltip : BaseTooltip
 var descriptions_about_panel : Array
 
+var disable_card_pact_button : bool = false
+
 onready var header_label = $VBoxContainer/HeaderMarginer/MarginContainer/HeaderLabel
 onready var pact_card_container = $VBoxContainer/HBoxContainer/BodyMarginer/MarginContainer/PactCardContainer
 onready var header_marginer = $VBoxContainer/HeaderMarginer
@@ -65,6 +67,8 @@ func add_pact(pact : Red_BasePact):
 	pact_card.connect("pact_card_pressed", self, "_emit_pact_card_clicked", [], CONNECT_PERSIST)
 	pact_card_container.add_child(pact_card)
 	pact_card_container.move_child(pact_card, 0)
+	
+	pact_card.set_button_disabled(disable_card_pact_button)
 
 func _create_pact_card(pact : Red_BasePact) -> Red_PactCard:
 	var card = Red_PactCard_Scene.instance()

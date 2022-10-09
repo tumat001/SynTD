@@ -50,8 +50,8 @@ var buy_slot
 var _mouse_pos_when_pressed : Vector2
 var _is_being_dragged_by_player_input : bool = false
 var _mouse_offset_from_top_left_pos : Vector2
-#var _mouse_moved_after_press : bool = false
-const time_after_press_threshold_for_buy : float = 0.1
+var _mouse_moved_after_press : bool = false
+const time_after_press_threshold_for_buy : float = 0.15
 var _time_after_press : float
 
 #
@@ -260,8 +260,9 @@ func _process(delta):
 			modulate.a = 0.5
 		
 		_time_after_press += delta
-		#if !_mouse_moved_after_press and mouse_pos != _mouse_pos_when_pressed:
-		#	_mouse_moved_after_press = true
+		
+		if !_mouse_moved_after_press and mouse_pos != _mouse_pos_when_pressed:
+			_mouse_moved_after_press = true
 
 func hide_shine_sparkle_on_card():
 	is_playing_shine_sparkle = false
@@ -295,7 +296,7 @@ func set_control_modulate(arg_control, arg_modulate):
 func _on_BuyCard_button_down():
 	_time_after_press = 0
 	_is_being_dragged_by_player_input = true
-	#_mouse_moved_after_press = false
+	_mouse_moved_after_press = false
 	var mouse_pos = get_viewport().get_mouse_position()
 	_mouse_offset_from_top_left_pos = rect_global_position - mouse_pos
 	
@@ -310,7 +311,7 @@ func _on_BuyCard_released():
 	_is_being_dragged_by_player_input = false
 	
 	#if !disabled and can_buy_card() and !is_queued_for_deletion() and (!buy_sell_level_roll_panel.is_mouse_pos_within_panel_bounds() or !_mouse_moved_after_press):
-	if !disabled and can_buy_card() and !is_queued_for_deletion() and (!buy_sell_level_roll_panel.is_mouse_pos_within_panel_bounds() or _time_after_press < time_after_press_threshold_for_buy):
+	if !disabled and can_buy_card() and !is_queued_for_deletion() and (!buy_sell_level_roll_panel.is_mouse_pos_within_panel_bounds() or _time_after_press < time_after_press_threshold_for_buy or !_mouse_moved_after_press):
 		disabled = true
 		emit_signal("tower_bought", tower_information)
 		
@@ -322,3 +323,6 @@ func _on_BuyCard_released():
 		rect_global_position = buy_slot.rect_global_position
 		modulate.a = 1
 		emit_signal("card_released_up_and_not_queue_freed")
+	
+	_mouse_moved_after_press = false
+	_time_after_press = 0

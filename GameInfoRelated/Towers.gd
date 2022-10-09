@@ -609,8 +609,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = simplex_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 0.45 #0.4
-		info.base_attk_speed = 5 #5.5
+		info.base_damage = 0.4 #0.45 #0.4
+		info.base_attk_speed = 4.5 #5 #5.5
 		info.base_pierce = 0
 		info.base_range = 95
 		info.base_damage_type = DamageType.PURE
@@ -902,7 +902,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 1
 		info.base_range = 165
 		info.base_damage_type = DamageType.PHYSICAL
-		info.on_hit_multiplier = 0
+		info.on_hit_multiplier = 1
 		
 		# INS START
 		
@@ -985,15 +985,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = coin_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2
+		info.base_damage = 2.25
 		info.base_attk_speed = 0.5
 		info.base_pierce = 2
-		info.base_range = 95
+		info.base_range = 100
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
 		# INS START
-		
 		var interpreter_for_pierce = TextFragmentInterpreter.new()
 		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
 		interpreter_for_pierce.display_body = true
@@ -1380,7 +1379,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_on_hit.display_body = false
 		
 		var ins_for_on_hit = []
-		ins_for_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 0.5))
+		ins_for_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "elemental damage", 0.8))
 		
 		interpreter_for_on_hit.array_of_instructions = ins_for_on_hit
 		
@@ -1722,10 +1721,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = scatter_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.39
 		info.base_pierce = 1
-		info.base_range = 110
+		info.base_range = 95
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -2156,7 +2155,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		var on_hit_dmg_for_tier : float = tier_on_hit_dmg_map[info.tower_tier]
-		var bonus_on_hit_amount : float = 0.15
+		var bonus_on_hit_amount : float = 0.25
 		var spike_dmg_effect = SpikeBonusDamageEffect.new(on_hit_dmg_for_tier + bonus_on_hit_amount)
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, spike_dmg_effect)
 		
@@ -2917,7 +2916,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_pierce = 0
 		info.base_range = 145
 		info.base_damage_type = DamageType.ELEMENTAL
-		info.on_hit_multiplier = 0.1
+		info.on_hit_multiplier = 1#0.1
 		
 		#
 		
@@ -3302,7 +3301,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = striker_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.3
+		info.base_damage = 2.0 #2.3
 		info.base_attk_speed = 0.8
 		info.base_pierce = 1
 		info.base_range = 135
@@ -5014,7 +5013,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = propel_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.5
+		info.base_damage = 2.75
 		info.base_attk_speed = 0.45
 		info.base_pierce = 1
 		info.base_range = 145
@@ -5179,7 +5178,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_cooldown.header_description = "s"
 		
 		var ins_for_cooldown = []
-		ins_for_cooldown.append(NumericalTextFragment.new(22, false))
+		ins_for_cooldown.append(NumericalTextFragment.new(18, false))
 		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
 		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
@@ -5191,7 +5190,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Auto casts Outburst.",
 			"Ability: Outburst. Paroxyxm chooses an attack based on its target.",
-			["If target has 100+ current health and is 100 range away from itself, fire a homing rocket that deals |0| to its intended target, and explodes to deal |1| to 3 enemies.", [interpreter_for_direct_rocket_dmg, interpreter_for_rocket_dmg_splash]],
+			["If target has 80+ current health and is 80 range away from itself, fire a homing rocket that deals |0| to its intended target, and explodes to deal |1| to 3 enemies.", [interpreter_for_direct_rocket_dmg, interpreter_for_rocket_dmg_splash]],
 			["Otherwise, spew out |0|, with each dealing |1| damage.", [interpreter_for_spew_count, interpreter_for_spew_dmg]],
 			["Cooldown: |0|.", [interpreter_for_cooldown]]
 		]
@@ -5367,10 +5366,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = variance_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 12))
 		
-		info.base_damage = 2.75
-		info.base_attk_speed = 0.80
+		info.base_damage = 3
+		info.base_attk_speed = 0.95
 		info.base_pierce = 1
-		info.base_range = 105
+		info.base_range = 110
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -6058,8 +6057,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = solitar_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2
-		info.base_attk_speed = 0.9
+		info.base_damage = 1.25 #2
+		info.base_attk_speed = 1 #0.9
 		info.base_pierce = 1
 		info.base_range = 110
 		info.base_damage_type = DamageType.PHYSICAL

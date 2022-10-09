@@ -265,6 +265,7 @@ func _check_if_shot_killed_enemy(damage_report, killed_enemy : bool, enemy, dama
 
 func _on_final_shot_killed_target():
 	game_elements.gold_manager.increase_gold_by(gold_gained_per_kill, GoldManager.IncreaseGoldSource.TOWER_GOLD_INCOME)
+	game_elements.display_gold_particles(global_position, gold_gained_per_kill)
 	
 	on_hit_damage_effect.on_hit_damage.damage_as_modifier.flat_modifier += bonus_on_hit_damage_per_kill
 	emit_signal("on_hit_bonus_changed")

@@ -43,7 +43,7 @@ func _on_game_elements_before_game_start():
 	var tier_1_odds_at_level_3 = get_tower_tier_odds_at_player_level(1, 3)
 	
 	transcript_to_progress_mode = {
-		"Welcome to Random Tower Defense! Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
+		"Welcome to Synergy Tower Defense! Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
 		
 		
 		"First, lets talk about player levels." : ProgressMode.CONTINUE,
@@ -136,7 +136,12 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		
 	elif arg_index == 7:
 		set_round_is_startable(true)
+		display_white_arrows_pointed_at_node(get_round_status_button(), 8)
 		listen_for_round_start__then_listen_for_round_end__call_func_for_both(self, "_on_transc_07__round_start", "_on_transc_07__round_end")
+		
+	elif arg_index == 8:
+		var arrows = display_white_arrows_pointed_at_node(get_round_speed_button_01(), 9, true, false)
+		arrows[0].x_offset = -35
 		
 	elif arg_index == 10:
 		var arrows = display_white_arrows_pointed_at_node(get_reroll_button_from_shop_panel(), 11)

@@ -22,6 +22,8 @@ onready var range_label : Label = $VBoxContainer/BodyMarginer/VBoxContainer/HBox
 onready var on_hit_multiplier_label : Label = $VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/OnHitMultiplierPanel/OnHitMultiplierLabel
 onready var damage_type_label : Label = $VBoxContainer/BodyMarginer/VBoxContainer/MarginContainer/DamageTypePanel/DamageTypeLabel
 onready var ability_potency_label : Label = $VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/AbilityPotencyPanel/AbilityPotencyLabel
+onready var on_hit_flat_label = $VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/OnHitFlatPanel/OnHitFlatLabel
+
 
 const color_equal_stat = Color(1, 1, 1, 1)
 const color_higher_stat = Color("#fffdc008")
@@ -37,6 +39,8 @@ func update_display():
 		range_label.text = ""
 		on_hit_multiplier_label.text = ""
 		damage_type_label.text = ""
+		ability_potency_label.text = ""
+		on_hit_flat_label.text = ""
 		
 		return
 	
@@ -59,11 +63,13 @@ func _update_base_stat_display():
 	on_hit_multiplier_label.text = "x" + str(tower.main_attack_module.on_hit_damage_scale)
 	damage_type_label.text = DamageType.get_name_of_damage_type(tower.main_attack_module.base_damage_type)
 	ability_potency_label.text = str(tower.base_ability_potency)
+	on_hit_flat_label.text = str(0)
 	
 	base_damage_label.set("custom_colors/font_color", color_equal_stat)
 	attack_speed_label.set("custom_colors/font_color", color_equal_stat)
 	range_label.set("custom_colors/font_color", color_equal_stat)
 	ability_potency_label.set("custom_colors/font_color", color_equal_stat)
+	on_hit_flat_label.set("custom_colors/font_color", color_equal_stat)
 
 
 # Total
@@ -87,7 +93,12 @@ func _update_final_stat_display():
 	# Dmg Type
 	damage_type_label.text = DamageType.get_name_of_damage_type(tower.main_attack_module.base_damage_type)
 	
+	# Ability potency
 	update_ability_potency()
+	
+	# On hit dmg
+	update_on_hit_flat_dmges()
+	
 
 
 func update_final_base_damage():
@@ -134,6 +145,16 @@ func update_ability_potency():
 			
 			ability_potency_label.text = str(final_ap)
 			ability_potency_label.set("custom_colors/font_color", _get_color_for_stat(base_ap, final_ap))
+
+
+func update_on_hit_flat_dmges():
+	if showing_stat == Stat.FINAL:
+		if tower != null:
+			var base_on_hit_dmg = 0
+			var final_dmg = tower.get_last_calculated_total_flat_on_hit_damages()
+			
+			on_hit_flat_label.text = str(final_dmg)
+			on_hit_flat_label.set("custom_colors/font_color", _get_color_for_stat(base_on_hit_dmg, final_dmg))
 
 
 

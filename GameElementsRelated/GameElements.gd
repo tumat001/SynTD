@@ -373,9 +373,9 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
-	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_7
-	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+#	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+#	level_manager.current_level = LevelManager.LEVEL_7
+#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -387,27 +387,27 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHAOS,
-			Towers.WYVERN,
-			Towers.TRUDGE,
-			Towers.STRIKER,
-			Towers.CANNON,
-			Towers.ACCUMULAE,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.BEACON_DISH,
-			Towers.BLEACH,
-			Towers.EMBER,
-			Towers.SIMPLEX,
-			Towers.BREWD,
-			Towers.TRANSPORTER
-		])
-	even = !even
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.CHAOS,
+#			Towers.WYVERN,
+#			Towers.TRUDGE,
+#			Towers.STRIKER,
+#			Towers.CANNON,
+#			Towers.ACCUMULAE,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.BEACON_DISH,
+#			Towers.BLEACH,
+#			Towers.MINI_TESLA,
+#			Towers.CANNON,
+#			Towers.BREWD,
+#			Towers.TRANSPORTER
+#		])
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -617,11 +617,12 @@ func _set_gold_particle_properties_when_get_from_pool_after_add_child(arg_partic
 #
 
 func display_gold_particles(arg_pos : Vector2, arg_repeat_count : int):
-	var particle_det_class := ParticlesDetClass.new()
-	particle_det_class.pos = arg_pos
-	particle_det_class.curr_amount_of_repeats = arg_repeat_count
-	
-	_add_to_gold_det_class_arr(particle_det_class)
+	if arg_repeat_count != 0:
+		var particle_det_class := ParticlesDetClass.new()
+		particle_det_class.pos = arg_pos
+		particle_det_class.curr_amount_of_repeats = arg_repeat_count
+		
+		_add_to_gold_det_class_arr(particle_det_class)
 
 func _add_to_gold_det_class_arr(arg_particle_det_class):
 	gold_det_class_arr.append(arg_particle_det_class)

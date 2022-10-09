@@ -31,14 +31,14 @@ const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModul
 #
 
 var outburst_ability : BaseAbility
-const outburst_base_cooldown : float = 22.0
+const outburst_base_cooldown : float = 18.0
 var outburst_ability_is_ready : bool = false
 var is_an_enemy_in_range : bool = false
 
 
 #
-const enemy_min_flat_health_needed_for_big_missle_cast : float = 100.0
-const enemy_min_distance_needed_for_big_missle_cast : float = 100.0
+const enemy_min_flat_health_needed_for_big_missle_cast : float = 80.0
+const enemy_min_distance_needed_for_big_missle_cast : float = 80.0
 
 var big_missle_bullet_attk_module : BulletAttackModule
 const big_missle__direct_hit__flat_dmg : float = 50.0

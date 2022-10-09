@@ -112,7 +112,7 @@ const red_stun_duration : float = 2.0
 const red_mov_speed : float = 60.0
 const red_mov_speed_deceleration : float = 65.0
 
-const red_blob_explosion_flat_dmg : float = 20.0
+const red_blob_explosion_flat_dmg : float = 30.0
 const red_blob_explosion_base_dmg_scale : float = 8.0
 const red_blob_pierce : int = 5
 
@@ -127,13 +127,13 @@ var red_burst_attk_module : AOEAttackModule
 
 #
 var is_casting_as_blue_type : bool
-const blue_beam_dmg_per_instance : float = 2.0
+const blue_beam_dmg_per_instance : float = 4.0
 const blue_beam_attk_speed : float = 4.0
 
 var blue_beam_attk_module : WithBeamInstantDamageAttackModule
 const blue_beam_disabled_from_attking_clause : int = -10
 
-const blue_explosion_base_dmg : float = 15.0
+const blue_explosion_base_dmg : float = 20.0
 const blue_explosion_pierce : int = 3
 var blue_explosion_attk_module : AOEAttackModule
 
@@ -150,13 +150,13 @@ var blue_ap_inc_attk_sprite_pool : AttackSpritePoolComponent
 var is_casting_as_yellow_type : bool
 
 var yellow_inst_dmg_attk_module : InstantDamageAttackModule
-const yellow_bullet_flat_dmg : float = 1.0
-const yellow_bullet_on_hit_dmg_ratio_of_creator : float = 0.25
+const yellow_bullet_flat_dmg : float = 3.0
+const yellow_bullet_on_hit_dmg_ratio_of_creator : float = 0.4
 const base_main_attks_for_vessel_summon : int = 25
 var _current_main_attack_count_for_vessel_summon : int
 
 var yellow_attk_speed_effect : TowerAttributesEffect
-const yellow_attk_speed_percent_amount : float = 30.0
+const yellow_attk_speed_percent_amount : float = 50.0
 const yellow_attk_speed_duration : float = 20.0
 
 #
@@ -999,9 +999,9 @@ func get_tower_descriptions_to_use_for_vessel():
 	interpreter_for_bullet_dmg.display_body = true
 	
 	var ins_for_bullet_dmg = []
-	ins_for_bullet_dmg.append(NumericalTextFragment.new(1, false, DamageType.PHYSICAL))
+	ins_for_bullet_dmg.append(NumericalTextFragment.new(yellow_bullet_flat_dmg, false, DamageType.PHYSICAL))
 	ins_for_bullet_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-	ins_for_bullet_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25)) # stat basis does not matter here
+	ins_for_bullet_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, yellow_bullet_on_hit_dmg_ratio_of_creator)) # stat basis does not matter here
 	
 	interpreter_for_bullet_dmg.array_of_instructions = ins_for_bullet_dmg
 	
@@ -1043,9 +1043,9 @@ func _get_descriptions_for_red_var():
 	interpreter_for_red_explosion.display_body = true
 	
 	var ins_for_red_explosion = []
-	ins_for_red_explosion.append(NumericalTextFragment.new(20, false, DamageType.PURE))
+	ins_for_red_explosion.append(NumericalTextFragment.new(red_blob_explosion_flat_dmg, false, DamageType.PURE))
 	ins_for_red_explosion.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-	ins_for_red_explosion.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 8, DamageType.PURE))
+	ins_for_red_explosion.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, red_blob_explosion_base_dmg_scale, DamageType.PURE))
 	
 	interpreter_for_red_explosion.array_of_instructions = ins_for_red_explosion
 	
@@ -1064,7 +1064,7 @@ func _get_descriptions_for_blue_var():
 	interpreter_for_blue_beam_dmg.display_body = true
 	
 	var ins_for_blue_beam_dmg = []
-	ins_for_blue_beam_dmg.append(NumericalTextFragment.new(2, false, DamageType.ELEMENTAL))
+	ins_for_blue_beam_dmg.append(NumericalTextFragment.new(blue_beam_dmg_per_instance, false, DamageType.ELEMENTAL))
 	ins_for_blue_beam_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 	ins_for_blue_beam_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
 	
@@ -1076,7 +1076,7 @@ func _get_descriptions_for_blue_var():
 	interpreter_for_blue_explosion_dmg.display_body = true
 	
 	var ins_for_blue_explosion_dmg = []
-	ins_for_blue_explosion_dmg.append(NumericalTextFragment.new(15, false, DamageType.ELEMENTAL))
+	ins_for_blue_explosion_dmg.append(NumericalTextFragment.new(blue_explosion_base_dmg, false, DamageType.ELEMENTAL))
 	ins_for_blue_explosion_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 	ins_for_blue_explosion_dmg.append(TowerStatTextFragment.new(self, null, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
 	
@@ -1088,7 +1088,7 @@ func _get_descriptions_for_blue_var():
 	interpreter_for_ap.display_body = false
 	
 	var ins_for_ap = []
-	ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", 0.5, false))
+	ins_for_ap.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", blue_ap_per_cast_during_cast, false))
 	
 	interpreter_for_ap.array_of_instructions = ins_for_ap
 	
@@ -1108,7 +1108,7 @@ func _get_descriptions_for_yellow_var():
 	interpreter_for_attk_speed.header_description = "attack speed"
 	
 	var ins_for_attk_speed = []
-	ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", 30, true))
+	ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "attack speed", yellow_attk_speed_percent_amount, true))
 	
 	interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
 	

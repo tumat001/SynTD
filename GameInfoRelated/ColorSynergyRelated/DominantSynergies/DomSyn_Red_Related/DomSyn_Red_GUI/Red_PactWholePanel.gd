@@ -28,6 +28,8 @@ func _ready():
 	
 	unsworn_pact_list.descriptions_about_panel = unsworn_descriptions
 	sworn_pact_list.descriptions_about_panel = sworn_descriptions
+	
+	sworn_pact_list.disable_card_pact_button = true
 
 #
 

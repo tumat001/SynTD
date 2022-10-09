@@ -72,7 +72,7 @@ func _on_StatusIcon_mouse_entered():
 	
 	_current_tooltip.visible = true
 	_current_tooltip.tooltip_owner = status_icon
-	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_current_text_for_tooltip)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_current_tooltip)
 	_current_tooltip.update_display()
 
 func _construct_tooltip_for_status_icon() -> BaseTowerSpecificTooltip:

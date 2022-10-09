@@ -3,6 +3,7 @@ extends "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/B
 
 var towers_offered_on_shop_refresh : Array = [
 	[Towers.REBOUND, Towers.MINI_TESLA, Towers.EMBER, Towers.TIME_MACHINE, Towers.SHACKLED],
+	[Towers.REBOUND]
 ]
 
 var transcript_to_progress_mode : Dictionary
@@ -78,13 +79,22 @@ func _on_game_elements_before_game_start():
 		"Towers with two colors work exactly the same way." : ProgressMode.CONTINUE,
 		"Time machine can absorb yellow and blue towers since those are its colors,\nand can absorb green, orange and violet towers since those are its neighbors." : ProgressMode.CONTINUE,
 		"With that said, Time Machine can absorb Mini Tesla, Ember and Shackled.\nYou can check that right now." : ProgressMode.CONTINUE,
+		
+		#27
+		"...." : ProgressMode.CONTINUE,
+		"One last rule. Towers cannot absorb the same tower more than once." : ProgressMode.CONTINUE,
+		#29
+		"Buy the Rebound from the shop." : ProgressMode.ACTION_FROM_PLAYER,
+		#30
+		"Notice that Striker cannot absorb it, even if the colors are compatible.\nThat is because Striker already has absorbed a Rebound." : ProgressMode.CONTINUE,
+		
 		"Remember that by default, towers can only absorb 1 ingredient, so use that limit wisely." : ProgressMode.CONTINUE,
 		
 		"That concludes this chapter of the tutorial.\nFeel free to tinker with the towers." : ProgressMode.CONTINUE,
 		"(If you are new to the game, and have played chapters 1 and 2,\nyou can now play the game. You now know the game's basics.)" : ProgressMode.CONTINUE,
 		"(You can proceed to chapter 4 once you have a bit of a feel for the game,\nor if you just want to.)" : ProgressMode.CONTINUE,
 		
-		#31
+		#35
 		"(Once you're done experimenting, you can exit the game by pressing ESC\n and quitting the game.)" : ProgressMode.WAIT_FOR_EVENT,
 	}
 	
@@ -162,7 +172,12 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		display_white_arrows_pointed_at_node(get_tower_buy_card_at_buy_slot_index(4), 24)
 		listen_for_tower_with_id__bought__then_call_func(Towers.SHACKLED, "_on_shackled_bought__23", self)
 		
-	elif arg_index == 31:
+	elif arg_index == 29:
+		set_enabled_buy_slots([1])
+		advance_to_next_custom_towers_at_shop()
+		listen_for_tower_with_id__bought__then_call_func(Towers.REBOUND, "_on_rebound_bought__29", self)
+		
+	elif arg_index == 35:
 		_on_end_of_transcript()
 
 #
@@ -227,6 +242,12 @@ func _on_shackled_bought__23(arg_tower):
 	
 	advance_to_next_transcript_message()
 
+#
+func _on_rebound_bought__29(arg_tower):
+	set_tower_is_sellable(arg_tower, false)
+	_all_towers.append(arg_tower)
+	
+	advance_to_next_transcript_message()
 
 #
 

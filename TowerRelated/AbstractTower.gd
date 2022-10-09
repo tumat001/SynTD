@@ -90,6 +90,7 @@ signal targeting_changed # by main module's range module
 signal targeting_options_modified
 signal final_ability_potency_changed
 signal final_ability_cd_changed
+signal final_on_hit_damages_changed
 
 signal on_ingredient_absorbed(arg_ingredient) # should be used to detect if this tower has absorbed an ing, and not what ings are active
 signal on_sellback_value_changed(new_value)
@@ -1392,8 +1393,10 @@ func _force_add_on_hit_damage_adder_effect_to_module(on_hit_adder : TowerOnHitDa
 	
 	module._listen_for_values_change_on_on_hit_dmg_effect(on_hit_adder)
 	module._update_last_calculated_on_hit_damages()
-
-
+	emit_signal("final_on_hit_damages_changed")
+	
+	if !on_hit_adder.is_connected("on_value_of_on_hit_damage_modified", self, "_on_value_of_added_on_hit_damage_modified"):
+		on_hit_adder.connect("on_value_of_on_hit_damage_modified", self, "_on_value_of_added_on_hit_damage_modified", [], CONNECT_PERSIST)
 
 func _remove_on_hit_damage_adder_effect(on_hit_adder_uuid : int, target_modules : Array):
 	for module in target_modules:
@@ -1407,19 +1410,18 @@ func _remove_on_hit_damage_adder_effect(on_hit_adder_uuid : int, target_modules 
 			
 			module._unlisten_for_values_change_on_on_hit_dmg_effect(on_hit_adder)
 			module._update_last_calculated_on_hit_damages()
+			
+			if on_hit_adder.is_connected("on_value_of_on_hit_damage_modified", self, "_on_value_of_added_on_hit_damage_modified"):
+				on_hit_adder.disconnect("on_value_of_on_hit_damage_modified", self, "_on_value_of_added_on_hit_damage_modified")
+			emit_signal("final_on_hit_damages_changed")
+
+func _on_value_of_added_on_hit_damage_modified():
+	call_deferred("emit_signal", "final_on_hit_damages_changed")
+
+
 
 
 func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
-#	if range_module != null:
-#		if range_module.benefits_from_bonus_range or attr_effect.force_apply:
-#			if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
-#				range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
-#			elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
-#				range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
-#
-#			range_module.update_range()
-#			_emit_final_range_changed()
-#
 	for module in target_modules:
 		if module.range_module != null:
 			if module.parent_tower == self and (module.range_module.benefits_from_bonus_range or attr_effect.force_apply):
@@ -3525,4 +3527,3 @@ func _emit_heat_module_overheat():
 
 func _emit_heat_module_overheat_cooldown():
 	emit_signal("on_heat_module_overheat_cooldown")
-

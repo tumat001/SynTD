@@ -17,7 +17,7 @@ var _towers_sorted_damage_descending : Array = []
 var _current_victor_tower : AbstractTower
 
 
-const tower_amount_for_offerable_inclusive = 4
+const tower_amount_for_offerable_inclusive = 7
 
 
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.SOLO_VICTOR, "Solo Victor", arg_tier, arg_tier_for_activation):
@@ -30,22 +30,22 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		possible_speed_gain_values = [55, 60, 70]
 		possible_range_values = [55, 60, 70]
 		possible_base_dmg_values = [2.75, 3.0, 3.5]
-		amount_of_towers_to_kill_values = [2, 3, 4]
+		amount_of_towers_to_kill_values = [1, 2, 3]
 	elif tier == 1:
 		possible_speed_gain_values = [40, 45, 55]
 		possible_range_values = [40, 45, 55]
 		possible_base_dmg_values = [2.0, 2.25, 2.75]
-		amount_of_towers_to_kill_values = [2, 3, 4]
+		amount_of_towers_to_kill_values = [1, 2, 3]
 	elif tier == 2:
 		possible_speed_gain_values = [25, 30, 40]
 		possible_range_values = [25, 30, 40]
 		possible_base_dmg_values = [1.25, 1.5, 2.0]
-		amount_of_towers_to_kill_values = [2, 3, 4]
+		amount_of_towers_to_kill_values = [1, 2, 3]
 	elif tier == 3:
 		possible_speed_gain_values = [15, 20, 30]
 		possible_range_values = [20, 25, 35]
 		possible_base_dmg_values = [0.5, 0.75, 1.25]
-		amount_of_towers_to_kill_values = [2, 3, 4]
+		amount_of_towers_to_kill_values = [1, 2, 3]
 	
 	var index_rng = pact_mag_rng.randi_range(0, 2)
 	_base_damage_buff_amount = possible_base_dmg_values[index_rng]

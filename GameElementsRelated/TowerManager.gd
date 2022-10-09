@@ -466,6 +466,7 @@ func _show_tower_info_panel(tower : AbstractTower):
 		tower.connect("energy_module_detached", self ,"_update_energy_module_display")
 		tower.connect("heat_module_should_be_displayed_changed", self, "_update_heat_module_should_display_display")
 		tower.connect("final_ability_potency_changed", self, "_update_final_ability_potency_in_info")
+		tower.connect("final_on_hit_damages_changed", self, "_update_on_hit_dmges_in_info")
 	
 	emit_signal("tower_info_panel_shown", tower)
 
@@ -480,6 +481,9 @@ func _update_final_base_damage_in_info():
 
 func _update_final_ability_potency_in_info():
 	tower_stats_panel.update_ability_potency()
+
+func _update_on_hit_dmges_in_info():
+	tower_stats_panel.update_on_hit_flat_dmges()
 
 
 func _update_ingredients_absorbed_in_info():
@@ -514,6 +518,7 @@ func _show_round_panel():
 		tower_being_shown_in_info.disconnect("energy_module_detached", self ,"_update_energy_module_display")
 		tower_being_shown_in_info.disconnect("heat_module_should_be_displayed_changed", self, "_update_heat_module_should_display_display")
 		tower_being_shown_in_info.disconnect("final_ability_potency_changed", self, "_update_final_ability_potency_in_info")
+		tower_being_shown_in_info.disconnect("final_on_hit_damages_changed", self, "_update_on_hit_dmges_in_info")
 		
 		tower_being_shown_in_info = null
 

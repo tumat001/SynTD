@@ -22,34 +22,34 @@ var _current_victor_towers : Array = []
 
 
 const base_amount_of_victors : int = 3
-const tower_amount_for_offerable_inclusive = 4
+const tower_amount_for_offerable_inclusive = 7
 
 
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.TRIO_VICTOR, "Trio Victor", arg_tier, arg_tier_for_activation):
 	
 	if tier == 0:
 		_base_damage_buff_amount = 3.0
-		_attack_speed_buff_amount = 40
+		_attack_speed_buff_amount = 45
 		
-		_ability_potency_reduction_amount = -0.5
+		_ability_potency_reduction_amount = -0.25
 		_attack_speed_reduction_amount = -30
 	elif tier == 1:
-		_base_damage_buff_amount = 1.75
+		_base_damage_buff_amount = 2.0
 		_attack_speed_buff_amount = 35
 		
-		_ability_potency_reduction_amount = -0.5
+		_ability_potency_reduction_amount = -0.20
 		_attack_speed_reduction_amount = -25
 	elif tier == 2:
 		_base_damage_buff_amount = 1.0
 		_attack_speed_buff_amount = 25
 		
-		_ability_potency_reduction_amount = -0.25
+		_ability_potency_reduction_amount = -0.15
 		_attack_speed_reduction_amount = -20
 	elif tier == 3:
 		_base_damage_buff_amount = 0.25
 		_attack_speed_buff_amount = 15
 		
-		_ability_potency_reduction_amount = -0.25
+		_ability_potency_reduction_amount = -0.10
 		_attack_speed_reduction_amount = -15
 	
 	

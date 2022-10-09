@@ -113,12 +113,12 @@ custom_constants/separation = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/BodyMarginer/VBoxContainer"]
 margin_right = 101.0
-margin_bottom = 37.0
+margin_bottom = 39.0
 mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer"]
 margin_right = 48.0
-margin_bottom = 37.0
+margin_bottom = 39.0
 mouse_filter = 2
 size_flags_horizontal = 3
 custom_constants/margin_right = 2
@@ -130,7 +130,7 @@ custom_constants/margin_bottom = 1
 margin_left = 2.0
 margin_top = 3.0
 margin_right = 46.0
-margin_bottom = 36.0
+margin_bottom = 38.0
 mouse_filter = 2
 size_flags_vertical = 3
 custom_constants/separation = 4
@@ -176,10 +176,31 @@ size_flags_horizontal = 10
 custom_fonts/font = SubResource( 1 )
 text = "atk spd"
 
+[node name="OnHitFlatPanel" type="HBoxContainer" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer"]
+margin_top = 26.0
+margin_right = 44.0
+margin_bottom = 35.0
+mouse_filter = 2
+custom_constants/separation = 0
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/OnHitFlatPanel"]
+margin_right = 7.0
+margin_bottom = 9.0
+mouse_filter = 2
+texture = ExtResource( 5 )
+
+[node name="OnHitFlatLabel" type="Label" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer/VBoxContainer/OnHitFlatPanel"]
+margin_left = 36.0
+margin_right = 44.0
+margin_bottom = 9.0
+size_flags_horizontal = 10
+custom_fonts/font = SubResource( 1 )
+text = "xx"
+
 [node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer"]
 margin_left = 52.0
 margin_right = 101.0
-margin_bottom = 37.0
+margin_bottom = 39.0
 mouse_filter = 2
 size_flags_horizontal = 3
 custom_constants/margin_right = 2
@@ -189,9 +210,9 @@ custom_constants/margin_bottom = 1
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2"]
 margin_left = 2.0
-margin_top = 3.0
+margin_top = 4.0
 margin_right = 47.0
-margin_bottom = 36.0
+margin_bottom = 37.0
 mouse_filter = 2
 size_flags_vertical = 6
 custom_constants/separation = 3
@@ -216,31 +237,10 @@ size_flags_horizontal = 10
 custom_fonts/font = SubResource( 1 )
 text = "range"
 
-[node name="OnHitMultiplierPanel" type="HBoxContainer" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+[node name="AbilityPotencyPanel" type="HBoxContainer" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
 margin_top = 12.0
 margin_right = 45.0
 margin_bottom = 21.0
-mouse_filter = 2
-custom_constants/separation = 0
-
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/OnHitMultiplierPanel"]
-margin_right = 7.0
-margin_bottom = 9.0
-mouse_filter = 2
-texture = ExtResource( 5 )
-
-[node name="OnHitMultiplierLabel" type="Label" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/OnHitMultiplierPanel"]
-margin_left = 37.0
-margin_right = 45.0
-margin_bottom = 9.0
-size_flags_horizontal = 10
-custom_fonts/font = SubResource( 1 )
-text = "xx"
-
-[node name="AbilityPotencyPanel" type="HBoxContainer" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
-margin_top = 24.0
-margin_right = 45.0
-margin_bottom = 33.0
 mouse_filter = 2
 custom_constants/separation = 0
 
@@ -257,6 +257,27 @@ margin_bottom = 9.0
 size_flags_horizontal = 10
 custom_fonts/font = SubResource( 1 )
 text = "ap"
+
+[node name="OnHitMultiplierPanel" type="HBoxContainer" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2"]
+margin_top = 24.0
+margin_right = 45.0
+margin_bottom = 33.0
+mouse_filter = 2
+custom_constants/separation = 0
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/OnHitMultiplierPanel"]
+margin_right = 7.0
+margin_bottom = 9.0
+mouse_filter = 2
+texture = ExtResource( 5 )
+
+[node name="OnHitMultiplierLabel" type="Label" parent="VBoxContainer/BodyMarginer/VBoxContainer/HBoxContainer/MarginContainer2/VBoxContainer2/OnHitMultiplierPanel"]
+margin_left = 37.0
+margin_right = 45.0
+margin_bottom = 9.0
+size_flags_horizontal = 10
+custom_fonts/font = SubResource( 1 )
+text = "xx"
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/BodyMarginer/VBoxContainer"]
 margin_top = 40.0

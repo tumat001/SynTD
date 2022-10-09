@@ -35,7 +35,7 @@ func _get_custom_shop_towers():
 
 func _apply_game_modifier_to_elements(arg_elements : GameElements):
 	transcript_to_progress_mode = {
-		"Welcome to Random Tower Defense! Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
+		"Welcome to Synergy Tower Defense! Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
 		"In a tower defense game, you place towers to defeat the enemies." : ProgressMode.CONTINUE,
 		"Left click this \"tower card\" to buy the displayed tower." : ProgressMode.ACTION_FROM_PLAYER,
 		"When you buy towers, they appear in your bench.\nBenched towers do not attack; you need to place them in the map." : ProgressMode.CONTINUE,
@@ -46,7 +46,7 @@ func _apply_game_modifier_to_elements(arg_elements : GameElements):
 		"Press %s to start the round, or click this button." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
 		
 		#9
-		"Now lets practice what we just learned. Buy a tower and place it in the map." : ProgressMode.ACTION_FROM_PLAYER,
+		"Now let's practice what we just learned. Buy a tower and place it in the map." : ProgressMode.ACTION_FROM_PLAYER,
 		"Nice! You're getting the hang of it." : ProgressMode.CONTINUE,
 		"The number of towers you can place in the map is equal to your level. Since you are level 2, you can place 2 towers." : ProgressMode.CONTINUE,
 		"Let's start the round. (Press %s, or click this button)." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
@@ -151,6 +151,10 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		set_round_is_startable(true)
 		display_white_arrows_pointed_at_node(get_round_status_button(), 13)
 		listen_for_round_start__then_listen_for_round_end__call_func_for_both(self, "_on_transc_12__round_start", "_on_transc_12__round_end")
+		
+	elif arg_index == 13:
+		var arrows = display_white_arrows_pointed_at_node(get_round_speed_button_01(), 14, true, false)
+		arrows[0].x_offset = -35
 		
 	elif arg_index == 14:
 		set_enabled_buy_slots([0])

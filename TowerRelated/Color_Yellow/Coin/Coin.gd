@@ -65,7 +65,7 @@ func _ready():
 
 func _gold_generated(amount):
 	call_deferred("emit_signal", "tower_give_gold", amount, GoldManager.IncreaseGoldSource.TOWER_GOLD_INCOME)
-
+	game_elements.display_gold_particles(global_position, amount)
 
 # energy module
 

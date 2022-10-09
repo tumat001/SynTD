@@ -1,11 +1,14 @@
 extends MarginContainer
 
 const Red_BasePact = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Red_BasePact.gd")
-
+const TierPic_Bronze = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/DomSyn_Red_TierCardPic_Bronze.png")
+const TierPic_Silver = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/DomSyn_Red_TierCardPic_Silver.png")
+const TierPic_Gold = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/DomSyn_Red_TierCardPic_Gold.png")
+const TierPic_Diamond = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/DomSyn_Red_TierCardPic_Diamond.png")
 
 signal pact_card_pressed(pact)
 
-const requirements_unmet_modulate : Color = Color(0.3, 0.3, 0.3, 1)
+const requirements_unmet_modulate : Color = Color(0.4, 0.4, 0.4, 1)
 const requirements_met_modulate : Color = Color(1, 1, 1, 1)
 
 
@@ -15,7 +18,10 @@ onready var name_label = $VBoxContainer/HeaderMarginer/NameLabel
 onready var good_descriptions = $VBoxContainer/MarginContainer/HBoxContainer/GoodMarginer/ScrollContainer/GoodDescriptions
 onready var bad_descriptions = $VBoxContainer/MarginContainer/HBoxContainer/BadMarginer/ScrollContainer/BadDescriptions
 onready var pact_icon = $VBoxContainer/MarginContainer/HBoxContainer/PicMarginer/PactIcon
-onready var tier_label = $VBoxContainer/MarginContainer/HBoxContainer/TierMarginer/TierLabel
+onready var tier_label = $VBoxContainer/MarginContainer/HBoxContainer/TierMarginer/TierTextMarginer/TierLabel
+onready var tier_pic = $VBoxContainer/MarginContainer/HBoxContainer/TierMarginer/TierPic
+
+onready var button = $AdvancedButton
 
 func set_base_pact(arg_pact : Red_BasePact):
 	
@@ -65,7 +71,7 @@ func update_display():
 		bad_descriptions.update_display()
 		
 		tier_label.text = _convert_number_to_roman_numeral(base_pact.tier)
-		
+		_set_tier_pic_to_appropriate_pic(base_pact.tier)
 		
 		if base_pact.is_activation_requirements_met:
 			modulate = requirements_met_modulate
@@ -94,6 +100,15 @@ func _convert_number_to_roman_numeral(number : int) -> String:
 	
 	return return_val
 
+func _set_tier_pic_to_appropriate_pic(arg_tier):
+	if arg_tier == 3:
+		tier_pic.texture = TierPic_Bronze
+	elif arg_tier == 2:
+		tier_pic.texture = TierPic_Silver
+	elif arg_tier == 1:
+		tier_pic.texture = TierPic_Gold
+	elif arg_tier == 0:
+		tier_pic.texture = TierPic_Diamond
 
 #
 
@@ -102,4 +117,8 @@ func _on_AdvancedButton_pressed_mouse_event(event):
 		if event.is_pressed() and event.button_index == BUTTON_LEFT:
 			if base_pact._if_pact_can_be_sworn():
 				emit_signal("pact_card_pressed", base_pact)
+
+
+func set_button_disabled(arg_val):
+	button.disabled = arg_val
 

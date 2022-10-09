@@ -481,6 +481,10 @@ func get_tower_buy_card_at_buy_slot_index(arg_index):
 	var buy_slot = game_elements.panel_buy_sell_level_roll.all_buy_slots[arg_index]
 	return buy_slot.get_current_tower_buy_card()
 
+
+func get_round_speed_button_01():
+	return game_elements.round_status_panel.round_speed_and_start_panel.speed_button_01
+
 func get_round_status_button():
 	return game_elements.round_status_panel.round_speed_and_start_panel.start_button
 
