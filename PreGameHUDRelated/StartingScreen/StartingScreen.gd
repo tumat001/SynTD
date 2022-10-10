@@ -28,7 +28,7 @@ func _ready():
 func _on_visibility_changed():
 	set_process_unhandled_key_input(visible)
 	
-	if pre_game_screen != null:
+	if is_instance_valid(pre_game_screen):
 		pre_game_screen.set_should_show_back_button(!visible)
 
 func set_pre_game_screen(arg_screen):
@@ -40,7 +40,7 @@ func set_pre_game_screen(arg_screen):
 #
 
 func _on_PlayButton_on_button_released_with_button_left():
-	if whole_map_selection_screen == null:
+	if !is_instance_valid(whole_map_selection_screen):
 		whole_map_selection_screen = WholeMapSelectionScreen_Scene.instance()
 		whole_map_selection_screen.pre_game_screen = pre_game_screen
 	
@@ -50,7 +50,7 @@ func _on_PlayButton_on_button_released_with_button_left():
 #
 
 func _on_TutorialButton_on_button_released_with_button_left():
-	if tutorial_hub_screen == null:
+	if !is_instance_valid(tutorial_hub_screen):
 		tutorial_hub_screen = TutorialHubScreen_Scene.instance()
 		tutorial_hub_screen.pre_game_screen = pre_game_screen
 	
@@ -61,7 +61,7 @@ func _on_TutorialButton_on_button_released_with_button_left():
 #
 
 func _on_QuitButton_on_button_released_with_button_left():
-	if quit_game_general_dialog == null:
+	if !is_instance_valid(quit_game_general_dialog):
 		quit_game_general_dialog = GeneralDialog_Scene.instance()
 		quit_game_general_dialog.connect("ok_button_released", self, "_on_quit_game_dialog__ok_chosen")
 		quit_game_general_dialog.size_flags_horizontal = SIZE_EXPAND | SIZE_SHRINK_CENTER
@@ -78,7 +78,7 @@ func _on_quit_game_dialog__ok_chosen():
 #
 
 func _on_AboutButton_on_button_released_with_button_left():
-	if about_panel == null:
+	if !is_instance_valid(about_panel):
 		about_panel = AboutPanel_Scene.instance()
 		general_container.add_child(about_panel)
 	

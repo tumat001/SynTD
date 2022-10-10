@@ -31,7 +31,7 @@ func _make_modifications_to_tower(tower):
 	
 	tower_affected = tower
 	
-	if tower_detecting_range_module == null:
+	if !is_instance_valid(tower_detecting_range_module):
 		_construct_tower_detecting_range_module()
 		tower_affected.add_child(tower_detecting_range_module)
 	

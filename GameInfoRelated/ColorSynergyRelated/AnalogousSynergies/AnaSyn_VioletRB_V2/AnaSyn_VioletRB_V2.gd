@@ -167,7 +167,7 @@ func _on_round_end(curr_stageround):
 		tower.recalculate_final_base_damage()
 	
 	
-	if last_standing_tower != null:
+	if is_instance_valid(last_standing_tower):
 		_remove_last_standing_effects_from_tower(last_standing_tower)
 		
 		last_standing_tower = null
@@ -209,7 +209,7 @@ func _get_percent_ratio_applicable_to_tier():
 
 func _on_tower_lost_all_health(tower : AbstractTower):
 	var percent_of_base_damage = 0
-	if tower.main_attack_module != null:
+	if is_instance_valid(tower.main_attack_module):
 		percent_of_base_damage = tower.get_last_calculated_base_damage_of_main_attk_module() * _get_percent_ratio_applicable_to_tier()
 	
 	var percent_of_ability_potency = 0
@@ -254,7 +254,7 @@ func _get_amount_after_split_to_valid_towers(initial_amount : float, total_valid
 
 
 func _give_last_standing_effects_to_tower(tower):
-	if tower != null:
+	if is_instance_valid(tower):
 		var invul_effect = TowerInvulnerabilityEffect.new(StoreOfTowerEffectsUUID.VIOLET_RB_V2_INVULNERABILITY_EFFECT)
 		invul_effect.status_bar_icon = Invul_StatusBarIcon
 		tower.add_tower_effect(invul_effect)
@@ -302,8 +302,8 @@ func _play_appropriate_aura_particle_to_specific_tower(arg_tower):
 		tower_to_aura_particle_map[arg_tower] = aura_particle
 		aura_particle.set_tower(arg_tower)
 		
-		if aura_particle.get_parent() == null:
-			game_elements.get_tree().get_root().add_child(aura_particle)
+		if !is_instance_valid(aura_particle.get_parent()):
+			CommsForBetweenScenes.ge_add_child_to_other_node_hoster(aura_particle)
 		
 		if !arg_tower.is_connected("tree_exiting", self, "_tower_queued_free"):
 			arg_tower.connect("tree_exiting", self, "_tower_queued_free", [arg_tower], CONNECT_PERSIST)

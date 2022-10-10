@@ -12,13 +12,13 @@ onready var spendables_label = $HBoxContainer/MarginContainer2/MarginContainer/S
 
 
 func set_hero(arg_hero : Hero):
-	if hero != null:
+	if is_instance_valid(hero):
 		hero.disconnect("hero_level_changed", self, "_hero_level_changed")
 		hero.disconnect("current_spendables_changed", self, "_hero_spendables_changed")
 	
 	hero = arg_hero
 	
-	if hero != null:
+	if is_instance_valid(hero):
 		hero.connect("hero_level_changed", self, "_hero_level_changed")
 		hero.connect("current_spendables_changed", self, "_hero_spendables_changed")
 		

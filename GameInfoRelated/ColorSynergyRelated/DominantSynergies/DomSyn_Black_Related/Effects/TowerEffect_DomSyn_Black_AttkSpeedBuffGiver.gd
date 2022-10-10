@@ -28,7 +28,7 @@ func _make_modifications_to_tower(tower):
 		tower.connect("on_main_attack_module_enemy_hit", self, "_main_attk_hit_enemy", [], CONNECT_PERSIST)
 		tower.connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
 	
-	if own_timer == null:
+	if !is_instance_valid(own_timer):
 		own_timer = Timer.new()
 		own_timer.one_shot = true
 		own_timer.wait_time = 0.1
@@ -52,7 +52,7 @@ func _undo_modifications_to_tower(tower):
 		tower.disconnect("on_main_attack_module_enemy_hit", self, "_main_attk_hit_enemy")
 		tower.disconnect("on_round_end", self, "_on_round_end")
 	
-	if own_timer != null:
+	if is_instance_valid(own_timer):
 		own_timer.queue_free()
 		own_timer = null
 
@@ -71,7 +71,7 @@ func _buff_random_tower():
 	
 	var all_targetable_black_towers = all_black_towers.duplicate(false)
 	for tower in all_targetable_black_towers:
-		if tower == null or tower.last_calculated_is_untargetable == true:
+		if !is_instance_valid(tower) or tower.last_calculated_is_untargetable == true:
 			all_targetable_black_towers.erase(tower)
 	
 	if all_targetable_black_towers.size() != 0:
@@ -88,5 +88,5 @@ func _buff_random_tower():
 
 
 func _on_round_end():
-	if own_timer != null:
+	if is_instance_valid(own_timer):
 		own_timer.start(0.1)

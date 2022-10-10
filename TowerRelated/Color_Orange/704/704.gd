@@ -218,9 +218,9 @@ func _on_704_attack_windup(windup_time : float, enemies : Array):
 			var beam = available_beams[i]
 			var enemy = enemies[i]
 			var enemy_pos = global_position
-			if enemy != null:
+			if is_instance_valid(enemy):
 				enemy_pos = enemy.global_position
-				
+			
 			sky_attack_beams_enemy_map[beam] = enemy
 			
 			beam.connect("time_visible_is_over", self, "_beam_in_sky", [beam, windup_time, enemy, enemy_pos], CONNECT_ONESHOT)
@@ -281,7 +281,7 @@ func _downward_beam_expired(enemy, explosion_pos : Vector2, beam):
 func _attempt_summon_explosion(explosion_pos : Vector2, arg_enemy):
 	if emblem_explosive_points > 0:
 		var explosion = explosion_attack_module.construct_aoe(explosion_pos, explosion_pos)
-		if arg_enemy != null:
+		if is_instance_valid(arg_enemy):
 			explosion.enemies_to_ignore.append(arg_enemy)
 		
 		explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)

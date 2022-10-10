@@ -13,14 +13,14 @@ var left_x : float
 var right_x : float
 
 func set_bullet(arg_bullet):
-	if bullet != null:
+	if is_instance_valid(bullet):
 		if bullet.is_connected("tree_exiting", self, "_on_bullet_queue_free"):
 			bullet.disconnect("tree_exiting", self, "_on_bullet_queue_free")
 			bullet.disconnect("before_mov_is_executed", self, "_on_bullet_before_mov_is_executed")
 	
 	bullet = arg_bullet
 	
-	if bullet != null:
+	if is_instance_valid(bullet):
 		if !bullet.is_connected("tree_exiting", self, "_on_bullet_queue_free"):
 			bullet.connect("tree_exiting", self, "_on_bullet_queue_free", [bullet])
 			bullet.connect("before_mov_is_executed", self, "_on_bullet_before_mov_is_executed")

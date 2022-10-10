@@ -133,14 +133,14 @@ func _construct_bonus_on_hit_and_modifier():
 # Module adding/removing
 
 func _on_attack_module_removed_from_charge(attack_module : AbstractAttackModule):
-	if attack_module == main_attack_module and attack_module != null:
+	if is_instance_valid(attack_module) and attack_module == main_attack_module:
 		if attack_module.has_signal("in_attack"):
 			attack_module.disconnect("in_attack", self, "_main_module_in_attack")
 			attack_module.disconnect("before_bullet_is_shot", self, "_modify_bullet_before_shooting")
 
 
 func _on_attack_module_added_from_charge(attack_module : AbstractAttackModule):
-	if attack_module == main_attack_module and attack_module != null:
+	if is_instance_valid(attack_module) and attack_module == main_attack_module:
 		attack_module.connect("in_attack", self, "_main_module_in_attack")
 		attack_module.connect("before_bullet_is_shot", self, "_modify_bullet_before_shooting")
 

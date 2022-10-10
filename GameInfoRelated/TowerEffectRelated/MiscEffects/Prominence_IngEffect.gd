@@ -207,7 +207,7 @@ func _execute_beam_attack_to_enemy():
 
 
 func _get_enemies_to_target():
-	if _attached_tower.range_module != null:
+	if is_instance_valid(_attached_tower.range_module):
 		var enemies_to_target = _attached_tower.range_module.get_targets_without_affecting_self_current_targets(1)
 		if enemies_to_target.size() > 0:
 			return enemies_to_target
@@ -221,7 +221,7 @@ func _on_beam_attack_module_hit_enemy(enemy, damage_register_id, damage_instance
 	explosion.modulate.a = 0.7
 	explosion.scale *= 1.75
 	
-	if _attached_tower.main_attack_module != null:
+	if is_instance_valid(_attached_tower.main_attack_module):
 		explosion.damage_instance.on_hit_damages[StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE].damage_as_modifier.flat_modifier = _attached_tower.main_attack_module.last_calculated_final_damage * explosion_base_damage_ratio
 	
 	explosion_attk_module.set_up_aoe__add_child_and_emit_signals(explosion)
@@ -240,11 +240,11 @@ func _undo_modifications_to_tower(tower):
 		tower.disconnect("on_round_end", self, "_on_round_end")
 		tower.disconnect("on_tower_ability_after_cast_end", self, "_on_tower_casted_ability")
 	
-	if beam_attack_module != null:
+	if is_instance_valid(beam_attack_module):
 		_attached_tower.remove_attack_module(beam_attack_module)
 		beam_attack_module.queue_free()
 	
-	if explosion_attk_module != null:
+	if is_instance_valid(explosion_attk_module):
 		_attached_tower.remove_attack_module(explosion_attk_module)
 		explosion_attk_module.queue_free()
 	

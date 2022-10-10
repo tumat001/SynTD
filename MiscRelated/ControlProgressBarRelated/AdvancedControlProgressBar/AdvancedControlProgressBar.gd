@@ -48,7 +48,7 @@ func _ready():
 func set_bar_background_pic(value : Texture):
 	bar_background_pic = value
 	
-	if bar_backround != null:
+	if is_instance_valid(bar_backround) and bar_backround.is_inside_tree():
 		bar_backround.texture = value
 
 
@@ -181,7 +181,7 @@ func set_max_value(value : float):
 # Chunks related
 
 func redraw_chunks():
-	if chunks_container != null:
+	if is_instance_valid(chunks_container):
 		if display_chunks:
 			var num = _number_of_chunks()
 			

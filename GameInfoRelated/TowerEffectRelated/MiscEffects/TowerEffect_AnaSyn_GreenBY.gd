@@ -76,10 +76,10 @@ func _on_main_attack(attk_speed_delay, enemies, module):
 func _on_round_end():
 	_dmg_modi.flat_modifier = 0
 	
-	if aura_particle != null:
+	if is_instance_valid(aura_particle):
 		aura_particle.queue_free()
 	
-	if _timer != null:
+	if is_instance_valid(_timer):
 		_timer.start(0.1)
 
 
@@ -121,8 +121,11 @@ func _undo_modifications_to_tower(tower):
 	
 	_remove_effect_from_tower()
 	
-	if aura_particle != null:
+	if is_instance_valid(aura_particle):
 		aura_particle.queue_free()
+	
+	if is_instance_valid(_timer): # if greenBY suddenly acts strangely, it might be because of this. Probably not tho (Oct 10 2022)
+		_timer.queue_free()
 	
 	_attached_tower = null
 

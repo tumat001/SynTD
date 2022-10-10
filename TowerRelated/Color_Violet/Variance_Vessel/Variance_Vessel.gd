@@ -189,7 +189,7 @@ func _configure_bullet_dmg_instance(arg_bullet : BaseBullet, arg_target_pos):
 	arg_bullet.damage_instance = variance_yellow_dmg_inst
 	
 	var pierce_to_use : int = bullet_pierce
-	if variance_creator.main_attack_module != null and variance_creator.main_attack_module is BulletAttackModule:
+	if is_instance_valid(variance_creator.main_attack_module) and variance_creator.main_attack_module is BulletAttackModule:
 		pierce_to_use = variance_creator.main_attack_module.last_calculated_final_pierce
 	arg_bullet.pierce = pierce_to_use
 
@@ -253,7 +253,7 @@ func _on_round_end_v():
 
 
 func _before_on_round_start_v(curr_stageround):
-	if variance_creator != null: # needed since it will prevent this from passing when called by tower manager.. Jank solution but whatever
+	if is_instance_valid(variance_creator): # needed since it will prevent this from passing when called by tower manager.. Jank solution but whatever
 		_current_round_lifetime_count -= 1
 		if _current_round_lifetime_count <= 0:
 			queue_free()

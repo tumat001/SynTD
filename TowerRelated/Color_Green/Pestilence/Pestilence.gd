@@ -262,7 +262,7 @@ func _on_main_attack_p(attk_speed_delay, enemies, module):
 	if enemies.size() != 0:
 		var enemy = enemies[0]
 		
-		if enemy != null:
+		if is_instance_valid(enemy):
 			if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.PESTILENCE_NOXIOUS):
 				_execute_air_attack(enemy.global_position)
 
@@ -373,7 +373,7 @@ func _update_self_buff_from_leeching():
 
 func _on_round_end_p():
 	for tower in leeched_towers:
-		if tower != null and is_instance_valid(tower):
+		if is_instance_valid(tower):
 			_remove_debuff_from_tower(tower)
 	
 	leeched_towers.clear()

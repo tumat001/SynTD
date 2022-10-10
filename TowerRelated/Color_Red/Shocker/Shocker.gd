@@ -164,7 +164,7 @@ func _on_shock_ball_enemy_hit(enemy):
 	var enemies = shock_range_module.get_targets(2)
 	
 	for cand_enemy in enemies:
-		if cand_enemy != enemy and cand_enemy != null:
+		if cand_enemy != enemy and is_instance_valid(cand_enemy):
 			_shock_to_attack_enemy(cand_enemy)
 			break
 

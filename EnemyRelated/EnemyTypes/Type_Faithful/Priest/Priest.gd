@@ -49,7 +49,7 @@ func _invul_ready_for_activation_updated(is_ready):
 		call_deferred("_give_invul_to_diety")
 
 func _give_invul_to_diety():
-	if deity != null:
+	if is_instance_valid(deity):
 		invul_ability.on_ability_before_cast_start(invul_cooldown)
 		
 		var copy_of_effect = invul_effect._get_copy_scaled_by(invul_ability.get_potency_to_use(last_calculated_final_ability_potency))

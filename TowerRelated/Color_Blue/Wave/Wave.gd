@@ -291,12 +291,12 @@ func _construct_and_connect_ability():
 
 func _ability_activated_w():
 	var curr_target : Node2D = null
-	if range_module != null:
+	if is_instance_valid(range_module):
 		var targets = range_module.get_targets(1)
 		if targets.size() != 0:
 			curr_target = targets[0]
 	
-	if curr_target != null:
+	if is_instance_valid(curr_target):
 		_change_animation_to_face_position(curr_target.global_position)
 		
 		var cd = _get_cd_to_use(base_ability_cooldown)

@@ -142,10 +142,10 @@ func _undo_modifications_to_tower(tower):
 		tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_enemy")
 		tower.disconnect("on_effect_removed", self, "_tower_removed_effect")
 		
-		if green_pulse_aoe_module != null:
+		if is_instance_valid(green_pulse_aoe_module):
 			green_pulse_aoe_module.queue_free()
 		
-		if _green_shield_particle != null:
+		if is_instance_valid(_green_shield_particle):
 			_green_shield_particle.queue_free()
 
 
@@ -212,7 +212,7 @@ func _construct_and_place_pulse_aoe(final_radius : float, stack_amount : int):
 # Slow related
 
 func _on_pulse_aoe_on_tower_hit(tower, stack_amount):
-	if tower != null and tower.is_current_placable_in_map():
+	if is_instance_valid(tower) and tower.is_current_placable_in_map():
 		var slow_count = _get_attack_amount_from_stack_amount(stack_amount)
 		var slow_amount = _get_slow_amount_from_stack_amount(stack_amount)
 		var slow_duration = _get_slow_duration_from_stack_amount(stack_amount)
@@ -286,6 +286,6 @@ func _get_duration_for_effect_shield(stack_amount : int):
 
 func _tower_removed_effect(effect, tower):
 	if effect.effect_uuid == StoreOfTowerEffectsUUID.RED_GREEN_GREEN_EFFECT_SHIELD_EFFECT:
-		if _green_shield_particle != null:
+		if is_instance_valid(_green_shield_particle):
 			_green_shield_particle.visible = false
 

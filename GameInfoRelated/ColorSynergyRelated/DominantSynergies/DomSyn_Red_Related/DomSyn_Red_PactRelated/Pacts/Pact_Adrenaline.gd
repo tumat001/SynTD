@@ -89,7 +89,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 
 
 func _enemy_spawned(enemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		enemy._add_effect(adrenaline_initial_marker_effect)
 		enemy.connect("on_hit", self, "_on_enemy_with_marker_hit")
 		enemy.connect("effect_removed", self, "_enemy_lost_marker_effect")

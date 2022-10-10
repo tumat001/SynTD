@@ -16,7 +16,7 @@ func _make_modifications_to_tower(arg_tower):
 	
 	_tower = arg_tower
 	
-	if _tower != null:
+	if is_instance_valid(_tower):
 		_construct_effect()
 		_tower.add_tower_effect(_bonus_dmg_effect)
 
@@ -36,7 +36,7 @@ func _undo_modifications_to_tower(arg_tower):
 		_pact_source.disconnect("on_bonus_dmg_amount_changed", self, "_on_source_bonus_dmg_changed")
 	
 	
-	if _tower != null:
+	if is_instance_valid(_tower):
 		var effect = _tower.get_tower_effect(StoreOfTowerEffectsUUID.RED_PACT_COMBINATION_CATALOG_BONUS_DMG_EFFECT)
 		
 		if effect != null:

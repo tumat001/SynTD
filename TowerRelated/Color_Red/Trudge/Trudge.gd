@@ -437,7 +437,12 @@ func _add_ap_scaled_slow_effect_to_dmg_instance(arg_dmg_instance):
 
 func _on_round_end_t():
 	_end_slam_state()
-
+	
+	# TODO new. Test this.
+	for pre_spurt in _summon_pre_spurt_summoning_area_arr.array_of_nodes:
+		if is_instance_valid(pre_spurt):
+			pre_spurt.visible = false
+			pre_spurt.deactivate
 
 #
 
@@ -585,14 +590,14 @@ func _add_big_knockup_effect_to_dmg_instance(arg_dmg_instance):
 
 
 func _get_targets_to_affect_with_slam():
-	if range_module != null:
+	if is_instance_valid(range_module):
 		return range_module.get_targets_without_affecting_self_current_targets(slam_pierce, Targeting.RANDOM, true)
 	else:
 		return []
 
 
 func _construct_and_show_slam_expanding_attk_sprite(arg_global_pos, arg_range_module):
-	if arg_range_module != null:
+	if is_instance_valid(arg_range_module):
 		var particle = ExpandingAttackSprite_Scene.instance()
 		particle.lifetime = 0.25
 		particle.texture_to_use = Trudge_SlamCircle_Pic

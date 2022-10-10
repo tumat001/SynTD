@@ -220,7 +220,7 @@ func _on_main_attack_b(attk_speed_delay, enemies, module):
 	if current_attack_count >= base_attack_count_for_buff:
 		current_attack_count = 0
 		
-		if enemies.size() > 0 and enemies[0] != null and !enemies[0].is_queued_for_deletion():
+		if enemies.size() > 0 and is_instance_valid(enemies[0]) and !enemies[0].is_queued_for_deletion():
 			_fire_ball_proj_at_enemy(enemies[0])
 
 

@@ -50,7 +50,7 @@ func _ready():
 
 # used when first summoned, and when no enemies are in range anymore.
 func assign_new_target_to_follow(arg_target):
-	if _assigned_target == null and arg_target != null:
+	if !is_instance_valid(_assigned_target) and is_instance_valid(arg_target):
 		_set_assigned_target__and_connect_signals_with_target(arg_target)
 		_move_towards_target(arg_target)
 
@@ -79,7 +79,7 @@ func _on_assigned_target_queue_freed():
 	_drop_assigned_target___and_request_for_new()
 
 func _drop_assigned_target___and_request_for_new():
-	if _assigned_target != null:
+	if is_instance_valid(_assigned_target):
 		if _assigned_target.is_connected("cancel_all_lockons", self, "_on_assigned_target_cancel_all_lockons"):
 			_assigned_target.disconnect("cancel_all_lockons", self, "_on_assigned_target_cancel_all_lockons")
 			_assigned_target.disconnect("on_killed_by_damage", self, "_on_assigned_target_killed")
@@ -124,7 +124,7 @@ func _process(delta):
 #
 
 func _physics_process(delta):
-	if _assigned_target != null and _current_speed_for_reposition <= _speed_to_consider_reposition:
+	if is_instance_valid(_assigned_target) and _current_speed_for_reposition <= _speed_to_consider_reposition:
 		var dist = global_position.distance_to(_assigned_target.global_position)
 		if dist >= distance_to_current_target_for_reposition:
 			_move_towards_target(_assigned_target)

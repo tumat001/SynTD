@@ -46,7 +46,7 @@ func _construct_debuff_effects():
 #
 
 func _on_hit_by_attk_module_p(me, damage_reg_id, damage_instance, attk_module):
-	if attk_module.parent_tower != null:
+	if is_instance_valid(attk_module.parent_tower):
 		attk_module.parent_tower.add_tower_effect(attk_speed_debuff_effect)
 		attk_module.parent_tower.add_tower_effect(base_dmg_debuff_effect)
 

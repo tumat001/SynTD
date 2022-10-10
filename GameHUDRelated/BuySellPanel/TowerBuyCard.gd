@@ -161,14 +161,14 @@ func _on_BuyCard_gui_input(event):
 				
 			BUTTON_RIGHT:
 				if event.pressed:
-					if current_tooltip == null:
+					if !is_instance_valid(current_tooltip):
 						_free_old_and_create_tooltip_for_tower()
 					else:
 						current_tooltip.queue_free()
 
 
 func _free_old_and_create_tooltip_for_tower():
-	if current_tooltip != null:
+	if is_instance_valid(current_tooltip):
 		current_tooltip.queue_free()
 	
 	if !disabled:
@@ -185,7 +185,7 @@ func _free_old_and_create_tooltip_for_tower():
 #	kill_current_tooltip()
 
 func kill_current_tooltip():
-	if current_tooltip != null:
+	if is_instance_valid(current_tooltip):
 		current_tooltip.queue_free()
 
 
@@ -315,7 +315,7 @@ func _on_BuyCard_released():
 		disabled = true
 		emit_signal("tower_bought", tower_information)
 		
-		if current_tooltip != null:
+		if is_instance_valid(current_tooltip):
 			current_tooltip.queue_free()
 		
 		queue_free()

@@ -36,12 +36,12 @@ var _energy_on_attack_sprite
 
 func _set_tower_connected_to(arg_tower : AbstractTower):
 	# Old if existing
-	if tower_connected_to != null:
+	if is_instance_valid(tower_connected_to):
 		tower_connected_to.disconnect("tower_in_queue_free", self, "_tower_connected_in_queue_free")
 		tower_connected_to.disconnect("tower_not_in_active_map", self, "_tower_not_active_in_map")
 	
 	# New incomming
-	if arg_tower != null:
+	if is_instance_valid(arg_tower):
 		tower_connected_to = arg_tower
 		tower_connected_to.connect("tower_in_queue_free", self, "_tower_connected_in_queue_free")
 		tower_connected_to.connect("tower_not_in_active_map", self, "_tower_not_active_in_map")
@@ -84,7 +84,7 @@ func module_turn_off():
 	is_turned_on = false
 	call_deferred("emit_signal", "module_turned_off")
 	
-	if tower_connected_to != null:
+	if is_instance_valid(tower_connected_to):
 		var effect = tower_connected_to.get_tower_effect(StoreOfTowerEffectsUUID.ENERGY_MODULE_ENERGY_EFFECT_GIVER)
 		if effect != null:
 			tower_connected_to.remove_tower_effect(effect)

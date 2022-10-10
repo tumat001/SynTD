@@ -291,13 +291,13 @@ func _on_tower_placable_changed(arg_tower, arg_placable):
 	if is_current_placable_in_map():
 		_update_line_range_modules_state()
 		
-		if is_round_started and _original_placable_at_round_start == null:
+		if is_round_started and !is_instance_valid(_original_placable_at_round_start):
 			_original_placable_at_round_start = current_placable
 
 
 func _update_line_range_modules_state():
 	var all_placables_in_range = game_elements.map_manager.get_all_placables_in_range(global_position, get_last_calculated_range_of_main_attk_module(), MapManager.PlacableState.ANY)
-	if current_placable != null and all_placables_in_range.has(current_placable):
+	if is_instance_valid(current_placable) and all_placables_in_range.has(current_placable):
 		all_placables_in_range.erase(current_placable)
 	
 	for in_map_placable in all_placables_in_range:
@@ -370,7 +370,7 @@ func _on_line_range_module_enemy_exited(enemy, arg_range_mod):
 func _attempt_cast_plow():
 	if is_plow_ability_ready:
 		var placable = _get_placable_with_most_enemies_in_between()
-		if placable != null:
+		if is_instance_valid(placable):
 			_cast_plow_ability(placable)
 
 
@@ -382,13 +382,13 @@ func _get_placable_with_most_enemies_in_between():
 	for line_range_module in line_range_module_enemy_to_in_range_count_map.keys():
 		var placable = line_range_module_to_in_map_placable_map[line_range_module]
 		
-		if placable != null and placable.tower_occupying == null:
+		if is_instance_valid(placable) and placable.tower_occupying == null:
 			var curr_count = line_range_module_enemy_to_in_range_count_map[line_range_module]
 			if curr_count > candidate_count:
 				candidate_count = curr_count
 				candidate_line_range_module = line_range_module
 	
-	if candidate_line_range_module != null and candidate_count != 0:
+	if is_instance_valid(candidate_line_range_module) and candidate_count != 0:
 		if line_range_module_to_in_map_placable_map.has(candidate_line_range_module):
 			return line_range_module_to_in_map_placable_map[candidate_line_range_module]
 	
@@ -423,7 +423,7 @@ func _construct_plow_bullet(arg_placable):
 
 
 func _on_plow_bullet_tree_exiting(arg_placable):
-	if arg_placable != null and arg_placable.tower_occupying == null:
+	if is_instance_valid(arg_placable) and arg_placable.tower_occupying == null:
 		_transfer_to_placable_with_default_params(arg_placable)
 	
 	plow_ability.activation_conditional_clauses.remove_clause(plow_is_during_cast_clause_id)
@@ -450,13 +450,13 @@ func _on_bullet_hit_enemy(bullet, enemy):
 #
 
 func _on_round_end_p():
-	if _original_placable_at_round_start != null:
+	if is_instance_valid(_original_placable_at_round_start):
 		if _original_placable_at_round_start.tower_occupying == null:
 			_transfer_to_placable_with_default_params(_original_placable_at_round_start)
 		_original_placable_at_round_start = null
 	
 	for range_module_i in line_range_module_to_in_map_placable_map.keys():
-		if range_module_i != null:
+		if is_instance_valid(range_module_i):
 			range_module_i.clear_all_detected_enemies()
 
 

@@ -213,8 +213,8 @@ custom_constants/separation = 10
 [node name="IngredientModeTitle" type="Label" parent="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/IngredientModeNotification/Marginer/VBoxContainer"]
 margin_right = 751.0
 margin_bottom = 25.0
-custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+custom_fonts/font = SubResource( 1 )
 text = "Absorb Ingredients Mode"
 align = 1
 
@@ -222,8 +222,8 @@ align = 1
 margin_top = 35.0
 margin_right = 751.0
 margin_bottom = 48.0
-custom_fonts/font = SubResource( 2 )
 custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+custom_fonts/font = SubResource( 2 )
 text = "Drag towers to receipient to buff the receiving tower"
 align = 1
 
@@ -326,6 +326,7 @@ script = ExtResource( 39 )
 
 [node name="OtherNodeHoster" type="Node" parent="."]
 script = ExtResource( 38 )
+
 [connection signal="pressed" from="BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelSprite" to="." method="_on_ColorWheelSprite_pressed"]
 [connection signal="level_up" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_up"]
 [connection signal="reroll" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_reroll"]

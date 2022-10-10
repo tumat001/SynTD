@@ -608,7 +608,7 @@ func _ready():
 func _post_inherit_ready():
 	_update_ingredient_compatible_colors()
 	
-	if range_module != null:
+	if is_instance_valid(range_module):
 		if range_module.get_parent() == null:
 			add_child(range_module)
 		
@@ -710,14 +710,14 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			attack_module.connect("bullet_on_zero_pierce", self, "_emit_on_any_bullet_attack_module_on_bullet_zero_pierce", [attack_module], CONNECT_PERSIST)
 	
 	
-	if attack_module.get_parent() == null:
+	if !is_instance_valid(attack_module.get_parent()):
 		add_child(attack_module)
 		attack_module.parent_tower = self
 	
-	if attack_module.range_module == null and range_module != null:
+	if !is_instance_valid(attack_module.range_module) and is_instance_valid(range_module):
 		attack_module.range_module = range_module
 	
-	if attack_module.range_module != null:
+	if is_instance_valid(attack_module.range_module):
 		if !attack_module.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
 			attack_module.range_module.connect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered", [attack_module, attack_module.range_module], CONNECT_PERSIST)
 			attack_module.range_module.connect("enemy_left_range" , self, "_emit_on_range_module_enemy_exited", [attack_module, attack_module.range_module], CONNECT_PERSIST)
@@ -726,11 +726,10 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		
 		attack_module.range_module.update_range()
 	
-	#if main_attack_module == null and attack_module.module_id == StoreOfAttackModuleID.MAIN:
 	if attack_module.module_id == StoreOfAttackModuleID.MAIN:
 		# Pre-existing attack module
-		if main_attack_module != null:
-			if range_module != null and range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):
+		if is_instance_valid(main_attack_module):
+			if is_instance_valid(range_module) and range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):
 				range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
 				range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
 				range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
@@ -751,10 +750,10 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 				main_attack_module.connect("after_bullet_is_shot", self, "_emit_on_main_bullet_attack_module_after_bullet_is_shot", [attack_module], CONNECT_PERSIST)
 				main_attack_module.connect("bullet_on_zero_pierce", self, "_emit_on_main_bullet_attack_module_on_bullet_zero_pierce", [attack_module], CONNECT_PERSIST)
 		
-		if range_module == null and main_attack_module.range_module != null:
+		if !is_instance_valid(range_module) and is_instance_valid(main_attack_module.range_module):
 			range_module = main_attack_module.range_module
 		
-		if range_module != null:
+		if is_instance_valid(range_module):
 			if range_module.get_parent() == null:
 				add_child(range_module)
 			
@@ -813,14 +812,14 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 	for tower_effect in _all_uuid_tower_buffs_map.values():
 		remove_tower_effect(tower_effect, [attack_module_to_remove], false, false)
 	
-	if range_module != null:
+	if is_instance_valid(range_module):
 		if range_module.attack_modules_using_this.has(attack_module_to_remove) and range_module.attack_modules_using_this.size() == 1:
 			if attack_module_to_remove.range_module == range_module:
 				range_module.disconnect("final_range_changed", self, "_emit_final_range_changed")
 				range_module.disconnect("targeting_changed", self, "_emit_targeting_changed")
 				range_module.disconnect("targeting_options_modified", self, "_emit_targeting_options_modified")
 	
-	if attack_module_to_remove.range_module != null:
+	if is_instance_valid(attack_module_to_remove.range_module):
 		if attack_module_to_remove.range_module.attack_modules_using_this.has(attack_module_to_remove) and attack_module_to_remove.range_module.attack_modules_using_this.size() == 1:
 			if attack_module_to_remove.range_module.is_connected("enemy_entered_range", self, "_emit_on_range_module_enemy_entered"):
 				attack_module_to_remove.range_module.disconnect("enemy_entered_range", self, "_emit_on_range_module_enemy_entered")
@@ -840,7 +839,7 @@ func remove_attack_module(attack_module_to_remove : AbstractAttackModule):
 			if module.module_id == StoreOfAttackModuleID.MAIN:
 				main_attack_module = module
 				
-				if main_attack_module != null:
+				if is_instance_valid(main_attack_module):
 					if !main_attack_module.range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):
 						main_attack_module.range_module.connect("final_range_changed", self, "_emit_final_range_changed", [], CONNECT_PERSIST)
 						main_attack_module.range_module.connect("targeting_changed", self, "_emit_targeting_changed", [], CONNECT_PERSIST)
@@ -956,14 +955,14 @@ func _emit_on_tower_ability_after_cast_end(cooldown, ability):
 func _process(delta):
 	if !last_calculated_disabled_from_attacking:
 		for attack_module in all_attack_modules:
-			if attack_module == null:
+			if !is_instance_valid(attack_module):
 				continue
 			
 			attack_module.time_passed(delta)
 			
 			if attack_module.last_calculated_can_be_commanded_by_tower and attack_module.is_ready_to_attack():
 				# If module itself does has a range_module
-				if attack_module.range_module != null:
+				if is_instance_valid(attack_module.range_module):
 					attack_module.attempt_find_then_attack_enemies()
 				else:
 					var targets = range_module.get_targets(attack_module.number_of_unique_targets)
@@ -999,7 +998,7 @@ func _on_round_end():
 	for module in all_attack_modules:
 		module.on_round_end()
 		
-		if module.range_module != null:
+		if is_instance_valid(module.range_module):
 			module.range_module.clear_all_detected_enemies()
 	
 	_remove_all_timebound_and_countbound_and_roundbound_effects()
@@ -1184,7 +1183,7 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect,
 		if include_non_module_effects:
 			_clear_ingredients_by_effect_reset()
 			
-			if main_attack_module != null:
+			if is_instance_valid(main_attack_module):
 				main_attack_module.reset_attack_timers()
 		
 	
@@ -1423,7 +1422,7 @@ func _on_value_of_added_on_hit_damage_modified():
 
 func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
 	for module in target_modules:
-		if module.range_module != null:
+		if is_instance_valid(module.range_module):
 			if module.parent_tower == self and (module.range_module.benefits_from_bonus_range or attr_effect.force_apply):
 				if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
 					module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
@@ -1443,7 +1442,7 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
 	var modules_to_remove_effect : Array = []
 	for module in target_modules:
-		if module.range_module != null:
+		if is_instance_valid(module.range_module):
 			var to_remove : bool = true
 			
 			for using_modules in module.range_module.attack_modules_using_this:
@@ -1745,12 +1744,12 @@ func _remove_percent_enemy_effect_vulnerability_effect(attr_effect : TowerAttrib
 
 func _add_priority_target_effect(effect : TowerPriorityTargetEffect, target_modules):
 	for module in target_modules:
-		if module.range_module != null:
+		if is_instance_valid(module.range_module):
 			module.range_module.add_priority_target_effect(effect)
 
 func _remove_priority_target_effect(effect : TowerPriorityTargetEffect, target_modules):
 	for module in target_modules:
-		if module.range_module != null:
+		if is_instance_valid(module.range_module):
 			module.range_module.remove_priority_target_effect(effect)
 
 
@@ -2271,7 +2270,7 @@ func recalculate_range():
 	var updated_range_modules : Array = []
 	
 	for module in all_attack_modules:
-		if module.range_module != null and !updated_range_modules.has(module.range_module):
+		if is_instance_valid(module.range_module) and !updated_range_modules.has(module.range_module):
 			module.range_module.update_range()
 			updated_range_modules.append(module.range_module)
 
@@ -2280,57 +2279,57 @@ func recalculate_range():
 # be done to the func names in TowerStatsTextFragment class
 
 func get_last_calculated_base_damage_of_main_attk_module() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.last_calculated_final_damage
 	else:
 		return 0.0
 
 func get_base_base_damage_of_main_attk_module() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.base_damage
 	else:
 		return 0.0
 
 func get_bonus_base_damage_of_main_attk_module() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.last_calculated_final_damage - main_attack_module.base_damage
 	else:
 		return 0.0
 
 
 func get_last_calculated_attack_speed_of_main_attk_module() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.last_calculated_final_attk_speed
 	else:
 		return 0.0
 
 func get_base_attack_speed_of_main_attk_module() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.base_attack_speed
 	else:
 		return 0.0
 
 func get_bonus_attack_speed_of_main_attk_module() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.last_calculated_final_attk_speed - main_attack_module.base_attack_speed
 	else:
 		return 0.0
 
 
 func get_last_calculated_range_of_main_attk_module() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.range_module.last_calculated_final_range
 	else:
 		return 0.0
 
 func get_base_range_of_main_attk_module() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.range_module.base_range_radius
 	else:
 		return 0.0
 
 func get_bonus_range_of_main_attk_module() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.range_module.last_calculated_final_range - main_attack_module.range_module.base_range_radius
 	else:
 		return 0.0
@@ -2357,19 +2356,19 @@ func get_bonus_percent_cdr() -> float:
 
 
 func get_last_calculated_bullet_pierce() -> float:
-	if main_attack_module != null and main_attack_module is BulletAttackModule:
+	if is_instance_valid(main_attack_module) and main_attack_module is BulletAttackModule:
 		return main_attack_module.last_calculated_final_pierce
 	else:
 		return 0.0
 
 func get_base_bullet_pierce() -> float:
-	if main_attack_module != null and main_attack_module is BulletAttackModule:
+	if is_instance_valid(main_attack_module) and main_attack_module is BulletAttackModule:
 		return main_attack_module.base_pierce
 	else:
 		return 0.0
 
 func get_bonus_bullet_pierce() -> float:
-	if main_attack_module != null and main_attack_module is BulletAttackModule:
+	if is_instance_valid(main_attack_module) and main_attack_module is BulletAttackModule:
 		return main_attack_module.last_calculated_final_pierce - main_attack_module.base_pierce
 	else:
 		return 0.0
@@ -2378,25 +2377,25 @@ func get_bonus_bullet_pierce() -> float:
 
 
 func get_last_calculated_total_flat_on_hit_damages() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.last_calculated_total_flat_on_hit_damage
 	else:
 		return 0.0
 
 func get_last_calculated_flat_elemental_on_hit_damages() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.last_calculated_flat_elemental_on_hit_damage
 	else:
 		return 0.0
 
 func get_last_calculated_flat_physical_on_hit_damages() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.last_calculated_flat_physical_on_hit_damage
 	else:
 		return 0.0
 
 func get_last_calculated_flat_pure_on_hit_damages() -> float:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.last_calculated_flat_pure_on_hit_damage
 	else:
 		return 0.0
@@ -2404,13 +2403,13 @@ func get_last_calculated_flat_pure_on_hit_damages() -> float:
 
 
 func get_all_on_hits_have_same_damage_type() -> bool:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.all_on_hits_have_same_damage_type
 	else:
 		return false
 
 func get_damage_type_of_all_on_hits() -> int:
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		return main_attack_module.damage_type_of_all_on_hits
 	else:
 		return -1
@@ -2586,7 +2585,7 @@ func enter_selection_mode(prompter, arg_prompt_tower_checker_predicate_name : St
 func exit_selection_mode():
 	_is_in_select_tower_prompt = false
 	
-	if cannot_apply_pic != null:
+	if is_instance_valid(cannot_apply_pic):
 		cannot_apply_pic.visible = false
 
 
@@ -2599,13 +2598,13 @@ func _self_is_selected_in_selection_mode():
 func toggle_module_ranges():
 	var range_modules_showing : Array = []
 	
-	if range_module != null:
+	if is_instance_valid(range_module):
 		range_module.toggle_show_range()
 		range_modules_showing.append(range_module)
 	
 	for attack_module in all_attack_modules:
-		if attack_module != null:
-			if attack_module.range_module != null and attack_module.use_self_range_module and (attack_module.range_module.can_display_range or attack_module.range_module.can_display_circle_arc):
+		if is_instance_valid(attack_module):
+			if is_instance_valid(attack_module.range_module) and attack_module.use_self_range_module and (attack_module.range_module.can_display_range or attack_module.range_module.can_display_circle_arc):
 				if !range_modules_showing.has(attack_module.range_module):
 					attack_module.range_module.toggle_show_range()
 					range_modules_showing.append(range_module)
@@ -2690,24 +2689,24 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 		if !is_in_ingredient_mode or ignore_ing_mode:
 			new_area_placable = null
 	
-	if new_area_placable != null and !new_area_placable.last_calculated_can_be_occupied__ignoring_has_tower_clause:
+	if is_instance_valid(new_area_placable) and !new_area_placable.last_calculated_can_be_occupied__ignoring_has_tower_clause:
 		new_area_placable = null
 	
 	var should_update_active_synergy : bool
-	if new_area_placable != null and !do_not_update:
-		if (current_placable != null and current_placable.get_placable_type_name() != new_area_placable.get_placable_type_name()):
+	if is_instance_valid(new_area_placable) and !do_not_update:
+		if (is_instance_valid(current_placable) and current_placable.get_placable_type_name() != new_area_placable.get_placable_type_name()):
 			should_update_active_synergy = true
-		elif current_placable == null and new_area_placable is InMapAreaPlacable:
+		elif !is_instance_valid(current_placable) and new_area_placable is InMapAreaPlacable:
 			should_update_active_synergy = true
 	
 	# The "old" one
-	if current_placable != null:
+	if is_instance_valid(current_placable):
 		if current_placable.tower_occupying == self:
 			current_placable.tower_occupying = null
 	
 	var transferred_tower : bool = false
 	# ing related and swapping
-	if new_area_placable != null and new_area_placable.tower_occupying != null:
+	if is_instance_valid(new_area_placable) and new_area_placable.tower_occupying != null:
 		if !is_in_ingredient_mode or ignore_ing_mode:
 			# swapping related
 			if (!(is_round_started and new_area_placable is InMapAreaPlacable) or ignore_is_round_started) and tower_manager.if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(self, new_area_placable.tower_occupying):
@@ -2730,7 +2729,7 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 		new_area_placable = null
 	
 	# The "new" one
-	if new_area_placable != null:
+	if is_instance_valid(new_area_placable):
 		current_placable = new_area_placable
 		$ClickableArea/ClickableShape.shape = current_placable.get_area_shape()
 	
@@ -2739,7 +2738,7 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 	$PlacableDetector.monitoring = false
 	is_being_dragged = false
 	
-	if current_placable != null:
+	if is_instance_valid(current_placable):
 		var pos = current_placable.get_tower_center_position()
 		position.x = pos.x
 		position.y = pos.y
@@ -2772,7 +2771,7 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 	
 	emit_signal("on_tower_transfered_to_placable", self, current_placable)
 	
-	return new_area_placable != null
+	return is_instance_valid(new_area_placable)
 
 func _on_PlacableDetector_area_entered(area):
 	if area is BaseAreaTowerPlacable:
@@ -3015,7 +3014,9 @@ func _on_ClickableArea_mouse_exited():
 func queue_free():
 	#is_contributing_to_synergy = false
 	contributing_to_synergy_clauses.attempt_insert_clause(ContributingToSynergyClauses.IN_QUEUE_FREE)
-	current_placable.tower_occupying = null
+	
+	if is_instance_valid(current_placable):
+		current_placable.tower_occupying = null
 	
 	# ORDER CHANGED FROM bottom to top (see commented code)
 	.queue_free()
@@ -3099,7 +3100,7 @@ func take_damage(damage_mod, enemy_source = null):
 	if amount > 0:
 		_set_health(current_health - amount)
 	
-	if enemy_source != null and amount > 0:
+	if is_instance_valid(enemy_source) and amount > 0:
 		emit_signal("on_taken_damage_from_enemy", enemy_source, amount)
 
 func _get_amount_from_arg(val):
@@ -3237,22 +3238,22 @@ func _on_tower_any_post_mitigation_damage_dealt(damage_instance_report, _killed,
 		var dmg = dmg_type_damage_map[dmg_type]
 		if dmg_type == DamageType.ELEMENTAL:
 			in_round_elemental_damage_dealt += dmg
-			if _module != null:
+			if is_instance_valid(_module):
 				_module.in_round_elemental_damage_dealt += dmg
 			
 		elif dmg_type == DamageType.PHYSICAL:
 			in_round_physical_damage_dealt += dmg
-			if _module != null:
+			if is_instance_valid(_module):
 				_module.in_round_physical_damage_dealt += dmg
 			
 		elif dmg_type == DamageType.PURE:
 			in_round_pure_damage_dealt += dmg
-			if _module != null:
+			if is_instance_valid(_module):
 				_module.in_round_pure_damage_dealt += dmg
 			
 		
 		in_round_total_damage_dealt += dmg
-		if _module != null:
+		if is_instance_valid(_module):
 			_module.in_round_total_damage_dealt += dmg
 	
 	

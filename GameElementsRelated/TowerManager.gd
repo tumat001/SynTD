@@ -379,7 +379,7 @@ func _toggle_ingredient_combine_mode():
 		emit_signal("ingredient_mode_turned_into", is_in_ingredient_mode)
 		
 		if is_in_ingredient_mode:
-			if tower_being_dragged != null:
+			if is_instance_valid(tower_being_dragged):
 				emit_signal("show_ingredient_acceptability", tower_being_dragged.ingredient_of_self, tower_being_dragged)
 			
 			
@@ -423,7 +423,7 @@ func _get_all_synergy_contributing_towers() -> Array:
 	var bucket : Array = []
 	for tower in get_children():
 		# if something synergy related broke, its probably by !is_queued_by_deletion()
-		if tower is AbstractTower and tower.last_calculated_is_contributing_to_synergy and tower != null and !tower.is_queued_for_deletion():
+		if is_instance_valid(tower) and tower is AbstractTower and tower.last_calculated_is_contributing_to_synergy and !tower.is_queued_for_deletion():
 			bucket.append(tower)
 	
 	return bucket
@@ -506,7 +506,7 @@ func _update_heat_module_should_display_display():
 func _show_round_panel():
 	right_side_panel.show_round_panel()
 	
-	if tower_being_shown_in_info != null:
+	if is_instance_valid(tower_being_shown_in_info):
 		tower_being_shown_in_info.disconnect("final_range_changed", self, "_update_final_range_in_info")
 		tower_being_shown_in_info.disconnect("final_attack_speed_changed", self, "_update_final_attack_speed_in_info")
 		tower_being_shown_in_info.disconnect("final_base_damage_changed", self, "_update_final_base_damage_in_info")
@@ -531,7 +531,7 @@ func _round_started(_stageround):
 	
 	_is_round_on_going = true
 	
-	if tower_being_dragged != null and tower_being_dragged.is_current_placable_in_map():
+	if is_instance_valid(tower_being_dragged) and tower_being_dragged.is_current_placable_in_map():
 		tower_being_dragged._end_drag()
 
 
@@ -828,7 +828,7 @@ func if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(arg_tower_to
 func _on_attempt_drop_tower_on_placable(arg_tower, arg_placable, arg_move_success):
 	if can_show_player_desc_of_level_required:
 		if !game_elements.stage_round_manager.round_started and !is_in_ingredient_mode:
-			if !arg_move_success and arg_placable != null and arg_placable is InMapAreaPlacable and arg_tower.last_calculated_can_be_placed_in_map and arg_placable.last_calculated_can_be_occupied__ignoring_has_tower_clause:
+			if !arg_move_success and is_instance_valid(arg_placable) and arg_placable is InMapAreaPlacable and arg_tower.last_calculated_can_be_placed_in_map and arg_placable.last_calculated_can_be_occupied__ignoring_has_tower_clause:
 				if arg_tower.tower_limit_slots_taken == 1:
 					attempt_count_trigger_for_level_up_to_place_more.add_attempt_to_trigger()
 				elif arg_tower.tower_limit_slots_taken > 1:

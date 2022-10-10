@@ -20,7 +20,7 @@ func _ready():
 	frame = 0
 
 func _process(delta):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		if !retracting and current_y_shift < max_y_shift:
 			var shift = delta * 80
 			current_y_shift += shift
@@ -31,7 +31,7 @@ func _process(delta):
 			queue_free()
 	
 	
-	if enemy == null and current_idle_time < max_idle_time:
+	if !is_instance_valid(enemy) and current_idle_time < max_idle_time:
 		current_idle_time += delta
 		
 		if current_idle_time >= max_idle_time:
@@ -46,7 +46,7 @@ func set_enemy(arg_enemy : AbstractEnemy):
 
 
 func _enemy_effect_remove(effect, enemy):
-	if enemy != null and effect.effect_uuid == StoreOfEnemyEffectsUUID.IMPALE_STUN:
+	if is_instance_valid(enemy) and effect.effect_uuid == StoreOfEnemyEffectsUUID.IMPALE_STUN:
 		_retract_spike(enemy)
 
 

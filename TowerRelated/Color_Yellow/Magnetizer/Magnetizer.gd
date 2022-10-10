@@ -193,7 +193,7 @@ func _magnet_hit_an_enemy(magnet : MagnetizerMagnetBall):
 	_attempt_form_beam()
 
 func _add_magnet_to_activated_list(magnet):
-	if magnet != null:
+	if is_instance_valid(magnet):
 		if magnet.type == MagnetizerMagnetBall.RED:
 			activated_red_magnets.append(magnet)
 		else:
@@ -222,12 +222,12 @@ func _on_round_end():
 	._on_round_end()
 	
 	for blue in activated_blue_magnets:
-		if blue != null:
+		if is_instance_valid(blue):
 			blue.queue_free()
 	activated_blue_magnets.clear()
 	
 	for red in activated_red_magnets:
-		if red != null:
+		if is_instance_valid(red):
 			red.queue_free()
 	activated_red_magnets.clear()
 
@@ -235,11 +235,11 @@ func _on_round_end():
 
 func _attempt_form_beam():
 	for blue_mag in activated_blue_magnets:
-		if blue_mag == null or blue_mag.is_queued_for_deletion() and blue_mag.current_uses_left <= 0:
+		if !is_instance_valid(blue_mag) or blue_mag.is_queued_for_deletion() and blue_mag.current_uses_left <= 0:
 			activated_blue_magnets.erase(blue_mag)
 	
 	for red_mag in activated_red_magnets:
-		if red_mag == null or red_mag.is_queued_for_deletion() and red_mag.current_uses_left <= 0:
+		if !is_instance_valid(red_mag) or red_mag.is_queued_for_deletion() and red_mag.current_uses_left <= 0:
 			activated_red_magnets.erase(red_mag)
 	
 	#
@@ -248,9 +248,9 @@ func _attempt_form_beam():
 		magnetize_ability.on_ability_before_cast_start(magnetize_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 		
 		for blue_magnet in activated_blue_magnets:
-			if blue_magnet != null:
+			if is_instance_valid(blue_magnet):
 				for red_magnet in activated_red_magnets:
-					if red_magnet != null:
+					if is_instance_valid(red_magnet):
 						_form_beam_between_points(blue_magnet.global_position, red_magnet.global_position)
 						red_magnet.used_in_beam_formation()
 					

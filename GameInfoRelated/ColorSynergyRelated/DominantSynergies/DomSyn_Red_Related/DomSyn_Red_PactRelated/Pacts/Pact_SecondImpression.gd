@@ -84,7 +84,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 		armor_loss_effect.status_bar_icon = SecondImpressionDebuff_Icon
 
 func _enemy_spawned(enemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		enemy._add_effect(armor_gain_effect)
 		enemy._add_effect(toughness_gain_effect)
 		enemy.connect("effect_removed", self, "_enemy_lost_effect")

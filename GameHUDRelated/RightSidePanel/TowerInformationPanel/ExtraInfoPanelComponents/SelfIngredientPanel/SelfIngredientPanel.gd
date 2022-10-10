@@ -12,7 +12,7 @@ onready var ingredient_self_panel : MultiIngredientPanel = $VBoxContainer/BodyMa
 func update_display():
 	ingredient_self_panel.ingredient_effect_limit = 100
 	
-	if tower != null and tower.ingredient_of_self != null:
+	if is_instance_valid(tower) and tower.ingredient_of_self != null:
 		ingredient_self_panel.ingredient_effects = [tower.ingredient_of_self]
 	else:
 		ingredient_self_panel.ingredient_effects = []

@@ -53,7 +53,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	._apply_pact_to_game_elements(arg_game_elements)
 	
 	for tower in _disabled_by_this_pact_towers:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.contributing_to_synergy_clauses.remove_clause(tower.ContributingToSynergyClauses.DOM_SYN__RED__COMPLEMENTARY_SUPPLEMENT)
 	
 	#
@@ -110,7 +110,7 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 	._remove_pact_from_game_elements(arg_game_elements)
 	
 	for tower in _disabled_by_this_pact_towers:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.contributing_to_synergy_clauses.attempt_insert_clause(tower.ContributingToSynergyClauses.DOM_SYN__RED__COMPLEMENTARY_SUPPLEMENT)
 	
 	#
@@ -124,7 +124,7 @@ func pact_unsworn():
 	_is_unsworn = true
 	
 	for tower in _disabled_by_this_pact_towers:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.sell_tower()
 	
 	game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end")

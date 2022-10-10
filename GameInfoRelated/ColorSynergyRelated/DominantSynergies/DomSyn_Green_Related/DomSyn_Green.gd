@@ -63,10 +63,10 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		_all_layers.append(_curr_tier_3_layer)
 		_all_layers.append(_curr_tier_4_layer)
 	
-	if green_syn_interactable_icon == null:
+	if !is_instance_valid(green_syn_interactable_icon):
 		_initialize_syn_interactable_icon()
 	
-	if green_whole_screen_gui == null:
+	if !is_instance_valid(green_whole_screen_gui):
 		_initialize_wholescreen_gui()
 	
 	curr_tier = tier

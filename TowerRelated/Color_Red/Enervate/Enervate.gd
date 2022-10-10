@@ -430,7 +430,7 @@ func _summon_orb__or_give_ap_to_self():
 	var type_to_summon = _get_chosen_orb_type_to_summon()
 	var target = _get_target_to_acquire_for_orbs()
 	
-	if type_to_summon == -1 or target == null: #all are taken
+	if type_to_summon == -1 or !is_instance_valid(target): #all are taken
 		_give_self_stacking_ap()
 	else:
 		_summoned_orb_types.append(type_to_summon)
@@ -439,7 +439,7 @@ func _summon_orb__or_give_ap_to_self():
 
 
 func _get_target_to_acquire_for_orbs():
-	if range_module != null:
+	if is_instance_valid(range_module):
 		var curr_enemies = range_module.get_current_enemies()
 		if curr_enemies.size() > 0:
 			return curr_enemies[0]
@@ -546,7 +546,7 @@ func _on_stun_orb_enemy_hit(enemy, damage_register_id, damage_instance, module):
 #
 
 func _on_death_orb_enemy_hit(enemy, damage_register_id, damage_instance, module):
-	if _current_death_orb_enemy != null and _current_death_orb_enemy != enemy:
+	if is_instance_valid(_current_death_orb_enemy) and _current_death_orb_enemy != enemy:
 		if _current_death_orb_enemy.is_connected("on_killed_by_damage", self, "_on_death_orb_enemy_killed_by_dmg"):
 			_current_death_orb_enemy.disconnect("on_killed_by_damage", self, "_on_death_orb_enemy_killed_by_dmg")
 

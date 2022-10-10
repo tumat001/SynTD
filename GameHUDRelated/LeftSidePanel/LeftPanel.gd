@@ -70,7 +70,7 @@ func _on_single_syn_displayer_tooltip_hidden(syn):
 func _on_single_syn_displayer_pressed(event, syn_check_result):
 	if event.pressed and event.button_index == BUTTON_LEFT:
 		var panel = whole_screen_gui.get_control_with_script(TowerWithColorShowPanel)
-		if panel == null:
+		if !is_instance_valid(panel) or panel == null:
 			_tower_with_color_show_panel = TowerWithColorShowPanel_Scene.instance()
 			_tower_with_color_show_panel.tower_manager = tower_manager
 			_tower_with_color_show_panel.game_settings_manager = game_settings_manager

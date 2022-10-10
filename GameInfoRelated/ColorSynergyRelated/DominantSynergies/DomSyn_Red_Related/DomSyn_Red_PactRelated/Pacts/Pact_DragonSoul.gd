@@ -112,7 +112,7 @@ func _summon_soul_execute_attk_sprite(enemy):
 	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(attk_sprite)
 
 func _execute_enemy(enemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		enemy.execute_self_by(StoreOfTowerEffectsUUID.RED_DRAGON_SOUL_EXECUTE_DAMAGE)
 
 

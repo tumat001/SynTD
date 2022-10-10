@@ -283,7 +283,7 @@ func _main_am_removed(attack_module):
 
 
 func _final_damage_changed():
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		burn_damage_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * burn_base_damage_ratio
 
 
@@ -319,7 +319,7 @@ func _extinguish_beam_created(beam, enemy):
 # Explosion related
 
 func _extinguish_on_enemy_beam_hit(enemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		var missing_health = enemy._last_calculated_max_health - enemy.current_health
 		var damage = missing_health * burst_missing_health_ratio
 		

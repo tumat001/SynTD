@@ -140,7 +140,7 @@ func _find_towers_to_declare_as_trio_victors():
 func get_valid_highest_damaging_towers_from_arr(arg_amount : int = base_amount_of_victors) -> Array:
 	var bucket = []
 	for tower in _towers_sorted_damage_descending:
-		if tower != null and !tower.is_queued_for_deletion() and tower.is_current_placable_in_map():
+		if is_instance_valid(tower) and !tower.is_queued_for_deletion() and tower.is_current_placable_in_map():
 			bucket.append(tower)
 			if bucket.size() >= arg_amount:
 				break
@@ -197,7 +197,7 @@ func _all_current_victors_to_be_disconnected():
 		_victor_to_be_disconnected(tower)
 
 func _victor_to_be_disconnected(arg_tower : AbstractTower):
-	if arg_tower != null:
+	if is_instance_valid(arg_tower):
 		if arg_tower.is_connected("tower_in_queue_free", self, "_on_victor_queued_free"):
 			arg_tower.disconnect("tower_in_queue_free", self, "_on_victor_queued_free")
 			arg_tower.disconnect("tower_not_in_active_map", self, "_on_victor_not_active_in_map")
@@ -235,7 +235,7 @@ func _remove_victor_effect_from_towers():
 		_remove_victor_effect_from_tower(tower)
 
 func _remove_victor_effect_from_tower(tower : AbstractTower):
-	if tower != null:
+	if is_instance_valid(tower):
 		var base_dmg_effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.RED_PACT_TRIO_VICTOR__BASE_DAMAGE_BUFF_EFFECT)
 		if base_dmg_effect != null:
 			tower.remove_tower_effect(base_dmg_effect)

@@ -125,7 +125,7 @@ func _on_tower_main_attack_hit(enemy, damage_register_id, damage_instance, modul
 
 
 func _on_round_end():
-	if _explosion_timer != null:
+	if is_instance_valid(_explosion_timer):
 		_explosion_timer.wait_time = 0.1
 		_explosion_timer.start()
 

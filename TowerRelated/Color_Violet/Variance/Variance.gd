@@ -232,7 +232,7 @@ func _ready():
 	connect("on_round_start", self, "_on_round_start_v", [], CONNECT_PERSIST)
 	
 	_set_variance_state(VarianceState.INITIAL)
-	#_set_variance_state(VarianceState.RED) #For testing
+	#_set_variance_state(VarianceState.YELLOW) #For testing
 	
 	variance_frame_sprites.use_parent_material = false
 	
@@ -516,7 +516,7 @@ func _on_round_start_v():
 
 
 func _set_attack_module_is_displayed_in_tracker(arg_module, arg_should_display):
-	if arg_module != null:
+	if is_instance_valid(arg_module):
 		arg_module.is_displayed_in_tracker = arg_should_display
 
 #
@@ -570,7 +570,7 @@ func _set_vairance_state_to_initial():
 	#initialize_clear_ing
 
 func _set_variance_state_to_blue():
-	if blue_beam_attk_module == null:
+	if !is_instance_valid(blue_beam_attk_module):
 		_construct_and_add_blue_beam_attk_module()
 		_construct_and_add_blue_explosion_attk_module()
 	
@@ -597,7 +597,7 @@ func _initialize_blue_ing():
 #
 
 func _set_variance_state_to_yellow():
-	if yellow_inst_dmg_attk_module == null:
+	if !is_instance_valid(yellow_inst_dmg_attk_module):
 		_construct_and_add_yellow_inst_attack_module()
 	
 	if descs_for_yellow.size() == 0:
@@ -622,7 +622,7 @@ func _initialize_yellow_ing():
 #
 
 func _set_variance_state_to_red():
-	if red_lob_glob_attk_module == null:
+	if !is_instance_valid(red_lob_glob_attk_module):
 		_construct_and_add_lob_attack_module()
 		_construct_and_add_red_burst_explosion()
 	
@@ -690,12 +690,12 @@ func _can_cast_specialize_changed(arg_val):
 	_attempt_cast_specialize()
 
 func _on_enemy_entered_range_v(enemy, arg_module, arg_range_module):
-	if main_attack_module != null and arg_range_module == main_attack_module.range_module:
+	if is_instance_valid(main_attack_module) and arg_range_module == main_attack_module.range_module:
 		is_an_enemy_in_range = true
 		_attempt_cast_specialize()
 
 func _on_enemy_exited_range_v(enemy, arg_module, arg_range_module):
-	if main_attack_module != null and arg_range_module == main_attack_module.range_module:
+	if is_instance_valid(main_attack_module) and arg_range_module == main_attack_module.range_module:
 		is_an_enemy_in_range = arg_range_module.is_an_enemy_in_range()
 
 
@@ -751,7 +751,7 @@ func _clear_ability_timer_timeout():
 		
 		#
 		
-		if range_module != null:
+		if is_instance_valid(range_module):
 			for enemy in range_module.get_enemies_in_range__not_affecting_curr_enemies_in_range():
 				enemy._add_effect(enemy_clear_effect)
 		
@@ -832,12 +832,12 @@ func _cast_specialize_as_blue_state():
 		is_casting_as_blue_type = true
 		
 		var curr_target
-		if range_module != null:
+		if is_instance_valid(range_module):
 			var enemies = range_module.get_enemies_in_range__not_affecting_curr_enemies_in_range()
 			if enemies.size() > 0:
 				curr_target = enemies[0]
 		
-		if curr_target != null:
+		if is_instance_valid(curr_target):
 			blue_beam_attk_module.can_be_commanded_by_tower_other_clauses.remove_clause(blue_beam_disabled_from_attking_clause)
 			range_module.connect("enemy_left_range", self, "_on_enemy_exited_range_module", [range_module])
 			#curr_target.connect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed", [curr_target, range_module])
@@ -983,7 +983,7 @@ func _on_main_attack__for_yellow_summon_vessel_count(attk_speed_delay, enemies, 
 func _attempt_summon_variance_vessel():
 	if !is_queued_for_deletion():
 		var range_to_use : float = 100
-		if range_module != null:
+		if is_instance_valid(range_module):
 			range_to_use = range_module.last_calculated_final_range
 		
 		var placables = game_elements.map_manager.get_all_placables_out_of_range(global_position, range_to_use, MapManager.PlacableState.UNOCCUPIED, MapManager.SortOrder.RANDOM)

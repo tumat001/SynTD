@@ -161,11 +161,11 @@ func _construct_smite_timer():
 #
 
 func _undo_modifications_to_tower(arg_tower):
-	if smite_explosion_attk_module != null:
+	if is_instance_valid(smite_explosion_attk_module):
 		_attached_tower.remove_attack_module(smite_explosion_attk_module)
 		smite_explosion_attk_module.queue_free()
 	
-	if smite_timer != null:
+	if is_instance_valid(smite_timer):
 		smite_timer.queue_free()
 
 
@@ -178,7 +178,7 @@ func _on_smite_timer_timeout():
 		_summon_smite_launch_particle(targets[0].global_position)
 
 func _get_targets_for_smite():
-	if _attached_tower.range_module != null:
+	if is_instance_valid(_attached_tower) and is_instance_valid(_attached_tower.range_module):
 		return _attached_tower.range_module.get_all_targetable_enemies_outside_of_range(Targeting.RANDOM, 1, false)
 	else:
 		return []
@@ -235,7 +235,7 @@ func _create_smite_lightning():
 
 
 func _on_smite_lightning_animation_ended(arg_lightning):
-	if smite_explosion_attk_module != null:
+	if is_instance_valid(smite_explosion_attk_module):
 		var pos = arg_lightning.global_position
 		var explosion = smite_explosion_attk_module.construct_aoe(pos, pos)
 		explosion.modulate.a = 0.6

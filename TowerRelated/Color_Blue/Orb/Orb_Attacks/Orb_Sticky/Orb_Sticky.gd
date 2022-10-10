@@ -58,7 +58,7 @@ func decrease_pierce(amount):
 
 
 func _process(delta):
-	if enemy_stuck_to != null:
+	if is_instance_valid(enemy_stuck_to):
 		global_position = enemy_stuck_to.global_position
 	
 	if activated:

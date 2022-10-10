@@ -149,7 +149,7 @@ func _enemy_damage_taken(damage_report, is_lethal, enemy):
 
 
 func _update_physical_on_hit_effect():
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		physical_on_hit.damage_as_modifier.flat_modifier = (main_attack_module.last_calculated_final_damage) * last_calculated_final_ability_potency
 		physical_on_hit_effect.on_hit_damage = physical_on_hit.duplicate()
 
@@ -247,7 +247,7 @@ func _on_round_end():
 	
 	_current_rage = 0
 	
-	if initial_cd_timer != null:
+	if is_instance_valid(initial_cd_timer):
 		initial_cd_timer.wait_time = 0.1
 		initial_cd_timer.start()
 

@@ -11,7 +11,7 @@ onready var body_marginer = $VBoxContainer/BodyMarginer
 func _on_AdvancedButton_pressed_mouse_event(event):
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == BUTTON_LEFT:
-			if about_tooltip == null:
+			if !is_instance_valid(about_tooltip):
 				about_tooltip = _construct_about_tooltip()
 				about_tooltip.visible = true
 				about_tooltip.tooltip_owner = advanced_button

@@ -642,7 +642,7 @@ func _set_current_health_to(health_amount, from_overheal : bool = false):
 
 
 func execute_self_by(source_id : int, attack_module_source = null):
-	if attack_module_source != null:
+	if is_instance_valid(attack_module_source):
 		connect("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt", [attack_module_source.damage_register_id], CONNECT_ONESHOT)
 	
 	_take_unmitigated_damages([[current_health + current_shield, DamageType.PURE, source_id]], null)
@@ -1171,7 +1171,7 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 			generic_bullet.decrease_pierce(pierce_consumed_per_hit)
 			
 			if generic_bullet.apply_damage_instance_on_hit:
-				if generic_bullet.attack_module_source != null:
+				if is_instance_valid(generic_bullet.attack_module_source):
 					if !is_connected("on_hit", generic_bullet.attack_module_source, "on_enemy_hit"):
 						connect("on_hit", generic_bullet.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
 					
@@ -1185,7 +1185,7 @@ func hit_by_bullet(generic_bullet : BaseBullet):
 
 func hit_by_aoe(base_aoe):
 	if !is_reviving:
-		if base_aoe.attack_module_source != null:
+		if is_instance_valid(base_aoe.attack_module_source):
 			if !is_connected("on_hit", base_aoe.attack_module_source, "on_enemy_hit"):
 				connect("on_hit", base_aoe.attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
 			
@@ -1197,7 +1197,7 @@ func hit_by_aoe(base_aoe):
 
 func hit_by_instant_damage(damage_instance : DamageInstance, damage_reg_id : int, attack_module_source):
 	if !is_reviving:
-		if attack_module_source != null:
+		if is_instance_valid(attack_module_source):
 			if !is_connected("on_hit", attack_module_source, "on_enemy_hit"):
 				connect("on_hit", attack_module_source, "on_enemy_hit", [], CONNECT_ONESHOT)
 				connect("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt", [damage_reg_id], CONNECT_ONESHOT)
@@ -1215,7 +1215,7 @@ func hit_by_damage_instance(damage_instance : DamageInstance, damage_reg_id : in
 		if emit_on_hit_signal:
 			emit_signal("on_hit", self, damage_reg_id, damage_instance)
 			
-			if attack_module_source != null:
+			if is_instance_valid(attack_module_source):
 				emit_signal("on_hit_by_attack_module", self, damage_reg_id, damage_instance, attack_module_source)
 		
 		emit_signal("before_damage_instance_is_processed", damage_instance, self)

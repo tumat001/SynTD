@@ -35,7 +35,7 @@ func set_heat_module(arg_module):
 		heat_module.connect("max_heat_per_round_reached", self, "_module_current_heat_changed", [], CONNECT_PERSIST)
 		heat_module.connect("should_be_shown_in_info_panel_changed", self, "_should_be_shown_status_changed", [], CONNECT_PERSIST)
 		
-		if current_heat_bar != null:
+		if is_instance_valid(current_heat_bar):
 			update_display()
 
 #

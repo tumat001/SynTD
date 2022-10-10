@@ -25,7 +25,7 @@ func _set_energy_battery(battery):
 
 
 func _energy_display_updated():
-	if energy_display_label != null:
+	if is_instance_valid(energy_display_label):
 		energy_display_label.text = energy_battery.display_output
 		
 		energy_display_bar.set_max_value(energy_battery.max_energy_capacity)

@@ -50,7 +50,7 @@ func set_level_manager(arg_manager : LevelManager):
 
 
 func _on_effective_shop_level_odds_changed(new_lvl_odds):
-	if shop_manager != null:
+	if is_instance_valid(shop_manager):
 		var probabilities : Array = shop_manager.get_shop_roll_chances_at_level()
 		
 		for i in 6:

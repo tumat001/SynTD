@@ -245,7 +245,7 @@ func _on_suck_slow_applier_timer_timeout():
 	_apply_slow_to_enemies_in_range()
 
 func _apply_slow_to_enemies_in_range():
-	if range_module != null:
+	if is_instance_valid(range_module):
 		var enemies_in_range = range_module.get_enemies_in_range__not_affecting_curr_enemies_in_range()
 		
 		for enemy in enemies_in_range:
@@ -263,7 +263,7 @@ func _on_suck_duration_timer_timeout():
 	_knock_all_enemies_in_range()
 
 func _end_suck():
-	if suck_slow_applier_timer != null:
+	if is_instance_valid(suck_slow_applier_timer):
 		suck_slow_applier_timer.stop()
 		suck_duration_timer.stop()
 		suck_particle_show_timer.stop()

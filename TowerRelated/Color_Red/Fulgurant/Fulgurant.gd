@@ -241,7 +241,7 @@ func _cast_smite():
 #
 
 func _get_targets_for_smite():
-	if range_module != null:
+	if is_instance_valid(range_module):
 		return range_module.get_all_targetable_enemies_outside_of_range(Targeting.RANDOM, smite_target_count_for_empowered, false)
 	else:
 		return []

@@ -49,7 +49,7 @@ func _on_tower_round_end():
 	current_unit_time_before_max = 0
 	_update_effect_modi()
 	
-	if aura_particle != null:
+	if is_instance_valid(aura_particle):
 		aura_particle.queue_free()
 
 
@@ -65,7 +65,7 @@ func _update_effect_modi():
 		current_unit_time_before_max = base_unit_time_before_max
 	
 	if current_unit_time_before_max / base_unit_time_before_max == 1:
-		if aura_particle == null:
+		if !is_instance_valid(aura_particle):
 			_show_maxed_aura_particle()
 	
 	var attk_speed_bonus = current_unit_time_before_max / base_unit_time_before_max * max_attk_speed_percent_amount
@@ -100,7 +100,7 @@ func _undo_modifications_to_tower(tower):
 	if effect != null:
 		tower.remove_tower_effect(effect)
 	
-	if aura_particle != null:
+	if is_instance_valid(aura_particle):
 		aura_particle.queue_free()
 	
 	if tower.is_connected("on_round_end", self, "_on_tower_round_end"):

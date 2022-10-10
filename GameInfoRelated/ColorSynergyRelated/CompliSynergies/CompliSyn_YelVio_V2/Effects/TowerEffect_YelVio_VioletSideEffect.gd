@@ -88,7 +88,7 @@ func _on_violet_ing_particle_show_timer_timeout():
 #
 
 func _undo_modifications_to_tower(tower):
-	if _violet_ing_particle_show_timer != null:
+	if is_instance_valid(_violet_ing_particle_show_timer):
 		_violet_ing_particle_show_timer.queue_free()
 	
 	if _attached_tower.is_connected("on_round_end", self, "_on_round_end"):

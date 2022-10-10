@@ -258,7 +258,7 @@ func _update_cards_based_on_combination_metadata(tower_ids_to_roll_to = get_towe
 	
 	for buy_card in all_buy_slots:
 		var tower_card = buy_card.current_child
-		if tower_card != null:
+		if is_instance_valid(tower_card):
 			var tower_id = tower_card.tower_information.tower_type_id
 			
 			if tower_card_combination_metadata.has(tower_id):
@@ -275,7 +275,7 @@ func get_tower_ids_in_current_buy_cards():
 	var bucket = []
 	for buy_card in all_buy_slots:
 		var tower_card = buy_card.current_child
-		if tower_card != null:
+		if is_instance_valid(tower_card):
 			bucket.append(tower_card.tower_information.tower_type_id)
 	
 	return bucket
@@ -291,7 +291,7 @@ func get_all_unbought_tower_ids() -> Array:
 	var ids : Array = []
 	
 	for slot in all_buy_slots:
-		if slot.current_child != null:
+		if is_instance_valid(slot.current_child):
 			ids.append(slot.current_child.tower_information.tower_type_id)
 	
 	return ids
@@ -353,7 +353,7 @@ func _update_tower_cards_buyability_based_on_gold_and_clauses(current_gold : int
 		var tower_card = buy_slot.current_child
 		var clause_prop_name = buy_slot_to_last_calc_property_name_map[buy_slot]
 		
-		if tower_card != null and tower_card is TowerBuyCard:
+		if is_instance_valid(tower_card) and tower_card is TowerBuyCard:
 			tower_card.current_gold = current_gold
 			tower_card.can_buy__set_from_clauses = get(clause_prop_name)
 			tower_card._update_can_buy_card()

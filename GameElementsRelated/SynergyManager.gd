@@ -136,7 +136,7 @@ func _get_list_of_distinct_towers(towers: Array) -> Array:
 	var tower_bucket : Array = []
 	var id_bucket : Array = []
 	for tower in towers:
-		if tower != null and tower.can_contribute_to_synergy_color_count:
+		if is_instance_valid(tower) and tower.can_contribute_to_synergy_color_count:
 			var id = tower.tower_id
 			if !id_bucket.has(id):
 				id_bucket.append(id)

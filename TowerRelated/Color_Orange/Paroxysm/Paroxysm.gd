@@ -287,12 +287,12 @@ func _can_cast_outburst_updated(is_ready):
 
 
 func _on_enemy_entered_range_p(enemy, arg_module, arg_range_module):
-	if main_attack_module != null and arg_range_module == main_attack_module.range_module:
+	if is_instance_valid(main_attack_module) and arg_range_module == main_attack_module.range_module:
 		is_an_enemy_in_range = true
 		_attempt_cast_outburst()
 
 func _on_enemy_exited_range_p(enemy, arg_module, arg_range_module):
-	if main_attack_module != null and arg_range_module == main_attack_module.range_module:
+	if is_instance_valid(main_attack_module) and arg_range_module == main_attack_module.range_module:
 		is_an_enemy_in_range = arg_range_module.is_an_enemy_in_range()
 
 
@@ -356,7 +356,7 @@ func _on_rocket_tree_exiting(arg_bullet_homing_compo):
 
 
 func _on_bullet_homing_compo_target_lost(arg_bullet, arg_bullet_homing_compo : BulletHomingComponent):
-	if range_module != null:
+	if is_instance_valid(range_module):
 		var targets = range_module.get_targets_without_affecting_self_current_targets(1, Targeting.HEALTHIEST)
 		if targets.size() > 0:
 			arg_bullet_homing_compo.target_node_to_home_to = targets[0]

@@ -56,7 +56,7 @@ func _module_successfully_turned_off():
 # Effect Desc related
 
 func _on_EffectDescriptionButton_mouse_entered():
-	if _desc_tooltip == null:
+	if !is_instance_valid(_desc_tooltip):
 		_desc_tooltip = EnergyEffectDescriptionTooltip_Scene.instance()
 		get_tree().get_root().add_child(_desc_tooltip)
 	
@@ -66,7 +66,7 @@ func _on_EffectDescriptionButton_mouse_entered():
 
 
 func _on_EffectDescriptionButton_mouse_exited():
-	if _desc_tooltip != null:
+	if is_instance_valid(_desc_tooltip):
 		_desc_tooltip.visible = false
 		_desc_tooltip.queue_free()
 
@@ -75,7 +75,7 @@ func _on_EffectDescriptionButton_mouse_exited():
 
 
 func _on_ModuleDescription_pressed():
-	if _about_tooltip == null:
+	if !is_instance_valid(_about_tooltip):
 		_about_tooltip = AboutEnergyModuleTooltip_Scene.instance()
 		get_tree().get_root().add_child(_about_tooltip)
 		
@@ -84,17 +84,17 @@ func _on_ModuleDescription_pressed():
 
 
 func _on_ModuleDescription_mouse_exited():
-	if _about_tooltip != null:
+	if is_instance_valid(_about_tooltip):
 		_about_tooltip.queue_free()
 
 
 # freeing
 
 func queue_free():
-	if _desc_tooltip != null:
+	if is_instance_valid(_desc_tooltip):
 		_desc_tooltip.queue_free()
 	
-	if _about_tooltip != null:
+	if is_instance_valid(_about_tooltip):
 		_about_tooltip.queue_free()
 	
 	.queue_free()

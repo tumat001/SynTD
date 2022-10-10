@@ -95,7 +95,7 @@ const mana_blast_ability_cooldown : float = 45.0
 
 var mana_blast_module : AOEAttackModule
 
-const mana_blast_base_damage : float = 20.0
+const mana_blast_base_damage : float = 14.0
 #const mana_blast_extra_main_target_dmg_scale : float = 2.0
 
 var mana_blast_buff_aoe_module : TD_AOEAttackModule

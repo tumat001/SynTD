@@ -97,7 +97,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	
 	#
 	
-	if syn_interactable == null:
+	if !is_instance_valid(syn_interactable):
 		_construct_and_add_syn_interactable()
 	
 	#
@@ -216,7 +216,7 @@ func _power_fund_ability_activated():
 	
 	var towers = game_elements.tower_manager.get_all_active_towers()
 	for tower in towers:
-		if tower != null and !tower.is_queued_for_deletion():
+		if is_instance_valid(tower) and !tower.is_queued_for_deletion():
 			tower.add_tower_effect(power_fund_effect._get_copy_scaled_by(final_ap_scale))
 	
 	gold_manager.decrease_gold_by(power_fund_gold_cost, GoldManager.DecreaseGoldSource.SYNERGY)

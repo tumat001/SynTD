@@ -8,12 +8,12 @@ const green_tier_requirement_inclusive : int = 2
 const path_name = "Resilience"
 const path_descs = [
 	"All green towers gain 300% bonus health.",
-	"Enemy effects against green towers are only 10% effective."
+	"Enemy effects against green towers are only 20% effective."
 ]
 const path_small_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/ResilienceFruit_Icon.png")
 
 const health_bonus_amount : float = 300.0
-const effect_vulnerability_scale : float = -90.0
+const effect_vulnerability_scale : float = -80.0
 
 var game_elements
 

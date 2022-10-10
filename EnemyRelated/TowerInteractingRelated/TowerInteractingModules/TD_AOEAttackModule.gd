@@ -132,7 +132,7 @@ func on_round_end():
 
 func kill_all_created_aoe():
 	for aoe in get_tree().get_nodes_in_group(td_aoe_group_tag):
-		if aoe != null:
+		if is_instance_valid(aoe):
 			aoe.queue_free()
 
 func queue_free():

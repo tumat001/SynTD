@@ -24,7 +24,7 @@ func update_display():
 	var ing_effects : Array = []
 	var ing_limit : int = 2
 	
-	if tower != null:
+	if is_instance_valid(tower):
 		ing_effects = tower.ingredients_absorbed.values()
 		ing_limit = tower.last_calculated_ingredient_limit
 		
@@ -45,7 +45,7 @@ func update_display():
 func update_limit_count_label_only():
 	var count_display : String = ""
 	
-	if tower != null:
+	if is_instance_valid(tower):
 		count_display = str(tower.ingredients_absorbed.size()) + "/" + str(tower.last_calculated_ingredient_limit)
 	
 	count_label.text = count_display

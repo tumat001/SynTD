@@ -97,7 +97,7 @@ func _construct_and_add_explosion_attack_module():
 
 
 func _on_tower_main_attack_hit_enemy(enemy, damage_register_id, damage_instance, module):
-	if _is_buff_active and enemy != null and enemy.has_effect_uuid(StoreOfEnemyEffectsUUID.ASHEND_BURN_EFFECT):
+	if _is_buff_active and is_instance_valid(enemy) and enemy.has_effect_uuid(StoreOfEnemyEffectsUUID.ASHEND_BURN_EFFECT):
 		var dmg_instance_copy = damage_instance.get_copy_scaled_by(1)
 		dmg_instance_copy.scale_only_damage_by(explosion_dmg_ratio_from_main)
 		dmg_instance_copy.on_hit_effects.clear()
@@ -137,7 +137,7 @@ func _on_buff_timer_timeout():
 #
 
 func _undo_modifications_to_tower(tower):
-	if buff_duration_timer != null:
+	if is_instance_valid(buff_duration_timer):
 		buff_duration_timer.queue_free()
 	
 	if _attached_tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy"):
@@ -145,7 +145,7 @@ func _undo_modifications_to_tower(tower):
 		_attached_tower.disconnect("on_round_end", self, "_on_round_end")
 		_attached_tower.disconnect("on_round_start", self, "_on_round_start")
 	
-	if explosion_attk_module != null:
+	if is_instance_valid(explosion_attk_module):
 		_attached_tower.remove_attack_module(explosion_attk_module)
 		explosion_attk_module.queue_free()
 	

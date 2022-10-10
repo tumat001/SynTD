@@ -34,7 +34,7 @@ func update_display():
 
 func _kill_all_previous_displayers():
 	for displayer in single_synergy_displayers:
-		if displayer != null:
+		if is_instance_valid(displayer):
 			displayer.queue_free()
 			# do not erase displayer from the single_synergy_displayers
 
@@ -53,7 +53,7 @@ func _on_single_syn_displayer_pressed(event, syn_check_result):
 
 func get_single_syn_displayer_with_synergy_name(arg_syn_name : String):
 	for single_syn in single_synergy_displayers:
-		if single_syn != null and arg_syn_name == single_syn.get_synergy_name():
+		if is_instance_valid(single_syn) and arg_syn_name == single_syn.get_synergy_name():
 			return single_syn
 	
 	return null

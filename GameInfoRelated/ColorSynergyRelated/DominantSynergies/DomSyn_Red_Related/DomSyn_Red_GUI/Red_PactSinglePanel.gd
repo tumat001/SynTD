@@ -28,7 +28,7 @@ onready var header_marginer = $VBoxContainer/HeaderMarginer
 func set_card_limit(new_limit : int):
 	card_limit = new_limit
 	
-	if pact_card_container != null:
+	if is_instance_valid(pact_card_container):
 		var height = card_height * card_limit
 		
 		pact_card_container.rect_min_size.y = height
@@ -44,7 +44,7 @@ func set_card_limit(new_limit : int):
 func set_header_title(new_title : String):
 	header_title = new_title
 	
-	if header_label != null and header_title != null:
+	if is_instance_valid(header_label) and header_title != null:
 		header_label.text = new_title
 
 func _ready():
@@ -115,7 +115,7 @@ func get_all_pact_uuids() -> Array:
 #		_on_mouse_exited_header_marginer()
 
 func _on_mouse_entered_header_marginer():
-	if about_tooltip == null:
+	if !is_instance_valid(about_tooltip):
 		about_tooltip = _construct_tooltip()
 		_display_requested_about_tooltip(about_tooltip)
 
@@ -131,7 +131,7 @@ func _construct_tooltip():
 	return a_tooltip
 
 func _display_requested_about_tooltip(arg_about_tooltip : BaseTooltip):
-	if arg_about_tooltip != null:
+	if is_instance_valid(arg_about_tooltip):
 		about_tooltip = arg_about_tooltip
 		about_tooltip.visible = true
 		about_tooltip.tooltip_owner = header_marginer

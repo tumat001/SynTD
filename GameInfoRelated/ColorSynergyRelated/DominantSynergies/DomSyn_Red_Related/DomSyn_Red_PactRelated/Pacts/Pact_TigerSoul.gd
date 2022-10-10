@@ -80,7 +80,7 @@ func _on_enemy_spawned(enemy):
 	enemy.connect("on_hit", self, "_on_enemy_hit", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 
 func _on_enemy_hit(enemy, damage_reg_id, damage_instance):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		enemy._add_effect(enemy_bleed_effect)
 
 

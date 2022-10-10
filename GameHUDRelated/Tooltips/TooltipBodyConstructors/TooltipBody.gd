@@ -77,7 +77,7 @@ func update_display():
 		
 		desc_instance.uses_bbcode = uses_bbcode
 		
-		if desc_instance._tower == null:
+		if !is_instance_valid(desc_instance._tower):
 			desc_instance._tower = tower_for_text_fragment_interpreter
 		
 		if desc_instance._tower_info == null:

@@ -59,7 +59,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 			game_elements.tower_manager.connect("tower_to_benefit_from_synergy_buff", self, "_attempt_give_energy_module_to_eligible_tower")
 		
 		
-		if energy_battery_panel == null:
+		if !is_instance_valid(energy_battery_panel):
 			energy_battery_panel = EnergyBatteryPanel_Scene.instance()
 			energy_battery_panel.energy_battery = energy_battery
 		

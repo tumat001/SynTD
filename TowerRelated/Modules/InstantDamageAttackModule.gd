@@ -3,7 +3,7 @@ extends "res://TowerRelated/Modules/AbstractAttackModule.gd"
 
 
 func _attack_enemy(enemy : AbstractEnemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		var damage_instance : DamageInstance = construct_damage_instance()
 		emit_signal("on_damage_instance_constructed", damage_instance, self)
 		

@@ -43,7 +43,7 @@ func _ready():
 
 func _reset_for_use():
 	if _dialog_mode == DialogMode.OK or _dialog_mode == DialogMode.OK_CANCEL:
-		if ok_button == null:
+		if !is_instance_valid(ok_button):
 			ok_button = PlayerGUI_ButtonStandard_Scene.instance()
 			ok_button.set_text_for_text_label("Ok")
 			ok_button.connect("on_button_released_with_button_left", self, "_on_ok_button_released")
@@ -52,11 +52,11 @@ func _reset_for_use():
 		ok_button.visible = true
 		
 	else:
-		if ok_button != null:
+		if is_instance_valid(ok_button):
 			ok_button.visible = false
 	
 	if _dialog_mode == DialogMode.OK_CANCEL or _dialog_mode == DialogMode.YES_NO_CANCEL:
-		if cancel_button == null:
+		if !is_instance_valid(cancel_button):
 			cancel_button = PlayerGUI_ButtonStandard_Scene.instance()
 			cancel_button.set_text_for_text_label("Cancel")
 			cancel_button.connect("on_button_released_with_button_left", self, "_on_cancel_button_released")
@@ -64,11 +64,11 @@ func _reset_for_use():
 		
 		cancel_button.visible = true
 	else:
-		if cancel_button != null:
+		if is_instance_valid(cancel_button):
 			cancel_button.visible = false
 	
 	if _dialog_mode == DialogMode.YES_NO_CANCEL:
-		if yes_button == null:
+		if !is_instance_valid(yes_button):
 			yes_button = PlayerGUI_ButtonStandard_Scene.instance()
 			yes_button.set_text_for_text_label("Yes")
 			yes_button.connect("on_button_released_with_button_left", self, "_on_yes_button_released")
@@ -77,7 +77,7 @@ func _reset_for_use():
 		yes_button.visible = true
 		
 		
-		if no_button == null:
+		if !is_instance_valid(no_button):
 			no_button = PlayerGUI_ButtonStandard_Scene.instance()
 			no_button.set_text_for_text_label("No")
 			no_button.connect("on_button_released_with_button_left", self, "_on_no_button_released")
@@ -86,10 +86,10 @@ func _reset_for_use():
 		no_button.visible = true
 		
 	else:
-		if yes_button != null:
+		if is_instance_valid(yes_button):
 			yes_button.visible = false
 		
-		if no_button != null:
+		if is_instance_valid(no_button):
 			no_button.visible = false
 
 #

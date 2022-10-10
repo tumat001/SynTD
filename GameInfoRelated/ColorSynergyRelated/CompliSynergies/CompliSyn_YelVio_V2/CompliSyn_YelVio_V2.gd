@@ -46,12 +46,12 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	
 	#
 	
-	if rift_axis_tower == null or rift_axis_tower.is_queued_for_deletion():
+	if !is_instance_valid(rift_axis_tower) or rift_axis_tower.is_queued_for_deletion():
 		_attempt_summon_rift_axis_tower()
 	else:
 		rift_axis_tower.activate_rift_axis()
 	
-	if yel_side_shell_cd_timer == null:
+	if !is_instance_valid(yel_side_shell_cd_timer):
 		_initialize_yel_shell_timer()
 	
 	._apply_syn_to_game_elements(arg_game_elements, tier)
@@ -113,7 +113,7 @@ func _pause_or_resume_timer_based_on_round_status():
 func _on_yel_shell_cd_timer_timeout():
 	var target = _get_candidate_target()
 	
-	if target != null:
+	if is_instance_valid(target):
 		_emit_yel_side_fire_shell_signal(target, false, false)
 
 func _get_candidate_target():
@@ -124,10 +124,10 @@ func _get_candidate_target():
 		return candidates[0]
 
 func request_refire_of_shell(arg_curr_id):
-	if _current_yel_side_targeted_enemy_from_refire == null:
+	if !is_instance_valid(_current_yel_side_targeted_enemy_from_refire):
 		_current_yel_side_targeted_enemy_from_refire = _get_candidate_target()
 		
-		if _current_yel_side_targeted_enemy_from_refire != null:
+		if is_instance_valid(_current_yel_side_targeted_enemy_from_refire):
 			call_deferred("_emit_yel_side_fire_shell_signal", _current_yel_side_targeted_enemy_from_refire, true, true)
 
 func _emit_yel_side_fire_shell_signal(arg_enemy_to_target, arg_set_curr_to_null, arg_is_refire):
@@ -139,13 +139,13 @@ func _emit_yel_side_fire_shell_signal(arg_enemy_to_target, arg_set_curr_to_null,
 
 
 func _on_round_end(_arg_stageround):
-	if yel_side_shell_cd_timer != null:
+	if is_instance_valid(yel_side_shell_cd_timer):
 		yel_side_shell_cd_timer.paused = true
 		
 		emit_signal("on_round_end")
 
 func _on_round_start(_arg_stageround):
-	if yel_side_shell_cd_timer != null:
+	if is_instance_valid(yel_side_shell_cd_timer):
 		yel_side_shell_cd_timer.paused = false
 		
 		yel_side_shell_cd_timer.start(yel_side_shell_cooldown)
@@ -170,7 +170,7 @@ func _update_yelside_explosion_dmg_and_vioside_scale_based_on_tier():
 ##
 
 func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int):
-	if rift_axis_tower != null:
+	if is_instance_valid(rift_axis_tower):
 		rift_axis_tower.deactivate_rift_axis()
 	
 	curr_tier = -1

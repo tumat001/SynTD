@@ -77,7 +77,7 @@ func on_round_end():
 	_current_heat_gained_in_round = 0
 	is_max_heat_per_round_reached = false
 	
-	if tower != null: #and tower.is_current_placable_in_map():
+	if is_instance_valid(tower): #and tower.is_current_placable_in_map():
 		if is_in_overheat_active:
 			is_in_overheat_active = false
 			set_current_heat(0)
@@ -162,7 +162,7 @@ func set_base_heat_effect(arg_heat_effect : TowerBaseEffect):
 		current_heat_effect = base_heat_effect._shallow_duplicate()
 		update_current_heat_effect()
 		
-		if tower != null:
+		if is_instance_valid(tower):
 			_set_tower_current_heat_effect()
 
 # Note: accessed by domsyn_orange thru signal
@@ -173,7 +173,7 @@ func set_base_effect_multiplier(scale : float):
 
 
 func set_tower(arg_tower : AbstractTower):
-	if tower != null:
+	if is_instance_valid(tower):
 		_remove_tower_current_heat_effect()
 		
 		if tower.is_connected("on_main_attack_finished", self, "_on_tower_attack_finished"):
@@ -182,7 +182,7 @@ func set_tower(arg_tower : AbstractTower):
 	
 	tower = arg_tower
 	
-	if tower != null:
+	if is_instance_valid(tower):
 		_set_tower_current_heat_effect()
 		_calculate_final_effect_multiplier()
 		
@@ -198,7 +198,7 @@ func set_tower(arg_tower : AbstractTower):
 func set_should_be_shown_in_info_panel(value : bool):
 	should_be_shown_in_info_panel = value
 	
-	if tower != null and !tower.is_queued_for_deletion():
+	if is_instance_valid(tower) and !tower.is_queued_for_deletion():
 		call_deferred("emit_signal", "should_be_shown_in_info_panel_changed")
 
 

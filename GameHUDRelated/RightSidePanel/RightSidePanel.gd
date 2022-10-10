@@ -38,7 +38,7 @@ func show_round_panel():
 	# Tower Info
 	tower_info_panel.set_visible(false)
 	
-	if current_tower_showing != null:
+	if is_instance_valid(current_tower_showing):
 		if current_tower_showing.is_showing_ranges:
 			current_tower_showing.toggle_module_ranges()
 	current_tower_showing = null
@@ -73,7 +73,7 @@ func show_round_damage_stats_panel():
 	# Tower Info
 	tower_info_panel.set_visible(false)
 	
-	if current_tower_showing != null:
+	if is_instance_valid(current_tower_showing):
 		if current_tower_showing.is_showing_ranges:
 			current_tower_showing.toggle_module_ranges()
 	current_tower_showing = null

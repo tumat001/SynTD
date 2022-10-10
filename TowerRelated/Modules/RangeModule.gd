@@ -257,14 +257,14 @@ func _connect_area_shape_entered_and_exit_signals():
 #Enemy Detection Related
 
 func _on_Range_area_shape_entered(area_id, area, area_shape, self_shape):
-	if area != null:
+	if is_instance_valid(area):
 		if area.get_parent() is AbstractEnemy:
 			_on_enemy_enter_range(area.get_parent())
 	
 	#connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
 
 func _on_Range_area_shape_exited(area_id, area, area_shape, self_shape):
-	if area != null:
+	if is_instance_valid(area):
 		if area.get_parent() is AbstractEnemy:
 			_on_enemy_leave_range(area.get_parent())
 	
@@ -296,7 +296,7 @@ func _on_enemy_leave_range(enemy : AbstractEnemy):
 func is_an_enemy_in_range() -> bool:
 	var to_remove = []
 	for target in enemies_in_range:
-		if target == null or target.is_queued_for_deletion():
+		if !is_instance_valid(target) or target.is_queued_for_deletion():
 			to_remove.append(target)
 	
 	for removal in to_remove:
@@ -307,7 +307,7 @@ func is_an_enemy_in_range() -> bool:
 func get_enemy_in_range_count() -> int:
 	var to_remove = []
 	for target in enemies_in_range:
-		if target == null or target.is_queued_for_deletion():
+		if !is_instance_valid(target) or target.is_queued_for_deletion():
 			to_remove.append(target)
 	
 	for removal in to_remove:
@@ -319,7 +319,7 @@ func get_enemy_in_range_count() -> int:
 func get_enemies_in_range__not_affecting_curr_enemies_in_range() -> Array:
 	var bucket = []
 	for target in enemies_in_range:
-		if target != null and !target.is_queued_for_deletion():
+		if is_instance_valid(target) and !target.is_queued_for_deletion():
 			bucket.append(target)
 	
 	return bucket
@@ -380,7 +380,7 @@ func calculate_final_range_radius() -> float:
 # Priority effects related
 
 func add_priority_target_effect(effect : TowerPriorityTargetEffect):
-	if !priority_targets_effects.has(effect.effect_uuid) and effect.target != null:
+	if !priority_targets_effects.has(effect.effect_uuid) and is_instance_valid(effect.target):
 		priority_targets_effects[effect.effect_uuid] = effect
 		
 		if !effect.is_priority_regardless_of_range:
@@ -392,12 +392,12 @@ func add_priority_target_effect(effect : TowerPriorityTargetEffect):
 		effect.connect("on_target_tree_exiting", self, "_on_target_from_target_effect_tree_exiting", [effect], CONNECT_ONESHOT)
 
 func add_priority_target_within_range(target):
-	if target != null:
+	if is_instance_valid(target):
 		priority_enemies_within_range.append(target)
 		#_add_enemy_to_enemies_in_range(target)
 
 func add_priority_target_regardless_of_range(target):
-	if target != null:
+	if is_instance_valid(target):
 		priority_enemies_regardless_of_range.append(target)
 
 func _on_target_from_target_effect_tree_exiting(target, effect):
@@ -406,7 +406,7 @@ func _on_target_from_target_effect_tree_exiting(target, effect):
 
 func _remove_priority_target_effect_from_tower(effect : TowerPriorityTargetEffect):
 	for am in attack_modules_using_this:
-		if am != null and am.parent_tower != null:
+		if is_instance_valid(am) and is_instance_valid(am.parent_tower):
 			am.parent_tower.remove_tower_effect(effect)
 
 
@@ -440,17 +440,17 @@ func clear_all_target_effects():
 # Other range module interaction
 
 func mirror_range_module_targeting_changes(other_module):
-	if other_module != null:
+	if is_instance_valid(other_module):
 		other_module.connect("targeting_changed", self, "_mirrored_range_module_targeting_changed", [other_module], CONNECT_PERSIST)
 		other_module.connect("targeting_options_modified", self, "_mirrored_range_module_targeting_options_modified", [other_module], CONNECT_PERSIST)
 
 
 func _mirrored_range_module_targeting_changed(module):
-	if module != null:
+	if is_instance_valid(module):
 		set_current_targeting(module.get_current_targeting_option())
 
 func _mirrored_range_module_targeting_options_modified(module):
-	if module != null:
+	if is_instance_valid(module):
 		clear_all_targeting()
 		add_targeting_options(module.all_distinct_targeting_options)
 
@@ -458,17 +458,17 @@ func _mirrored_range_module_targeting_options_modified(module):
 # Other Tower interaction
 
 func mirror_tower_main_range_module_targeting_changes(arg_tower):
-	if arg_tower != null:
+	if is_instance_valid(arg_tower):
 		arg_tower.connect("targeting_changed", self, "_mirrored_tower_main_range_module_targeting_changed", [arg_tower], CONNECT_PERSIST)
 		arg_tower.connect("targeting_options_modified", self, "_mirrored_tower_main_range_module_targeting_options_modified", [arg_tower], CONNECT_PERSIST)
 
 
 func _mirrored_tower_main_range_module_targeting_changed(arg_tower):
-	if arg_tower != null:
+	if is_instance_valid(arg_tower):
 		set_current_targeting(arg_tower.range_module.get_current_targeting_option())
 
 func _mirrored_tower_main_range_module_targeting_options_modified(arg_tower):
-	if arg_tower != null:
+	if is_instance_valid(arg_tower):
 		clear_all_targeting()
 		add_targeting_options(arg_tower.range_module.all_distinct_targeting_options)
 

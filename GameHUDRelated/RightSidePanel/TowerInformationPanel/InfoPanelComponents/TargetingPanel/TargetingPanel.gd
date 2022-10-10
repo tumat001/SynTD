@@ -12,7 +12,7 @@ onready var targeting_label = $HBoxContainer/TargetPanelMarginer/Marginer/Target
 var _is_button_hiding : bool
 
 func update_display():
-	if tower != null and tower.range_module != null:
+	if is_instance_valid(tower) and is_instance_valid(tower.range_module):
 		var targetings = tower.range_module.all_distinct_targeting_options
 		var current_targeting = tower.range_module.get_current_targeting_option()
 		
@@ -54,7 +54,7 @@ func _on_ButtonLeft_pressed():
 
 func cycle_targeting_left():
 	if visible:
-		if !_is_button_hiding and tower != null and tower.range_module != null:
+		if !_is_button_hiding and is_instance_valid(tower) and is_instance_valid(tower.range_module):
 			tower.range_module.targeting_cycle_left()
 			update_display()
 
@@ -64,6 +64,6 @@ func _on_ButtonRight_pressed():
 
 func cycle_targeting_right():
 	if visible:
-		if !_is_button_hiding and tower != null and tower.range_module != null:
+		if !_is_button_hiding and is_instance_valid(tower) and is_instance_valid(tower.range_module):
 			tower.range_module.targeting_cycle_right()
 			update_display()

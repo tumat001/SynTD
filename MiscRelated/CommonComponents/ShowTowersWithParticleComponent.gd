@@ -50,7 +50,7 @@ func set_tower_particle_indicator_to_usual_properties():
 func set_source_and_provider_func_name(arg_source, arg_tower_provider_func_name : String):
 	_source_tower_provider_func_name = arg_tower_provider_func_name
 	
-	if _source != null:
+	if is_instance_valid(_source):
 		if _source is AbstractTower:
 			if _source.is_connected("tree_exiting", self, "_tower_source_queue_freed"):
 				_source.disconnect("tree_exiting", self, "_tower_source_queue_freed", [], CONNECT_PERSIST)
@@ -63,7 +63,7 @@ func set_source_and_provider_func_name(arg_source, arg_tower_provider_func_name 
 	
 	_source = arg_source
 	
-	if _source != null:
+	if is_instance_valid(_source):
 		if _source is AbstractTower:
 			if !_source.is_connected("tree_exiting", self, "_tower_source_queue_freed"):
 				_source.connect("tree_exiting", self, "_tower_source_queue_freed", [], CONNECT_PERSIST)
@@ -87,7 +87,7 @@ func _on_tower_being_dragged(tower_self):
 
 
 func _update_particle_state():
-	if _source != null and (!(_source is AbstractTower) or (_source is AbstractTower and _source.is_showing_ranges and !_source.is_being_dragged and _source.is_current_placable_in_map())):
+	if is_instance_valid(_source) and (!(_source is AbstractTower) or (_source is AbstractTower and _source.is_showing_ranges and !_source.is_being_dragged and _source.is_current_placable_in_map())):
 		if _source.has_method(_source_tower_provider_func_name):
 			show_indicators_to_towers(_source.call(_source_tower_provider_func_name))
 	else:
@@ -116,7 +116,7 @@ func show_indicators_to_towers(arg_towers, remove_tower_indicators_from_prev_exi
 	var towers_not_in_new_arg : Array = []
 	
 	for tower in arg_towers:
-		if tower != null:
+		if is_instance_valid(tower):
 			if !_tower_particle_map.has(tower):
 				var particle = _construct_particle_indicator()
 				
@@ -144,7 +144,7 @@ func _construct_particle_indicator():
 
 func destroy_indicators_from_towers(arg_towers = _tower_particle_map.keys().duplicate()):
 	for tower in arg_towers:
-		if tower != null and tower.is_connected("tree_exiting", self, "_tower_target_queue_freed"):
+		if is_instance_valid(tower) and tower.is_connected("tree_exiting", self, "_tower_target_queue_freed"):
 			tower.disconnect("tree_exiting", self, "_tower_target_queue_freed")
 			tower.disconnect("tower_not_in_active_map", self, "_tower_target_benched")
 		
@@ -167,7 +167,7 @@ func _tower_target_benched(tower):
 func _destroy_particle_associated_with_tower(tower, update_state : bool = true):
 	if _tower_particle_map.has(tower):
 		var particle = _tower_particle_map[tower]
-		if particle != null:
+		if is_instance_valid(particle):
 			particle.queue_free()
 	
 	_tower_particle_map.erase(tower)

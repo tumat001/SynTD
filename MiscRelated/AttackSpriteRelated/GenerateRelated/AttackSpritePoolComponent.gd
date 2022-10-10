@@ -25,7 +25,7 @@ func get_or_create_attack_sprite_from_pool():
 	var attk_sprite : AttackSprite = _get_available_attack_sprite_in_pool()
 	var is_from_creation : bool = false
 	
-	if attk_sprite == null:
+	if attk_sprite == null or !is_instance_valid(attk_sprite):
 		attk_sprite = _create_attack_sprite()
 		is_from_creation = true
 	
@@ -38,7 +38,7 @@ func get_or_create_attack_sprite_from_pool():
 	if func_name_for_setting_attks_sprite_properties_when_get_from_pool_before_add_child.length() > 0:
 		_set_attk_sprite_properties_when_get_from_pool_before_add_child(attk_sprite)
 	
-	if node_to_parent_attack_sprites != null and attk_sprite.get_parent() == null:
+	if is_instance_valid(node_to_parent_attack_sprites) and !is_instance_valid(attk_sprite.get_parent()):
 		node_to_parent_attack_sprites.add_child(attk_sprite)
 	
 	if func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child.length() > 0:
@@ -93,12 +93,12 @@ func _on_attack_sprite_turned_invisible_at_end_of_lifetime(arg_attk_sprite : Att
 #
 
 func set_node_to_listen_for_queue_free(arg_node):
-	if node_to_listen_for_queue_free != null:
+	if is_instance_valid(node_to_listen_for_queue_free):
 		node_to_listen_for_queue_free.disconnect("tree_exiting", self, "_on_node_to_listen_for_queue_free__tree_exited")
 	
 	node_to_listen_for_queue_free = arg_node
 	
-	if node_to_listen_for_queue_free != null:
+	if is_instance_valid(node_to_listen_for_queue_free):
 		node_to_listen_for_queue_free.connect("tree_exiting", self, "_on_node_to_listen_for_queue_free__tree_exited", [], CONNECT_PERSIST)
 
 
@@ -108,7 +108,7 @@ func _on_node_to_listen_for_queue_free__tree_exited():
 
 func clear_all_attack_sprites_from_pool():
 	for attk_sprite in _attack_sprite_pool_to_available_state:
-		if attk_sprite != null and !attk_sprite.is_queued_for_deletion():
+		if is_instance_valid(attk_sprite) and !attk_sprite.is_queued_for_deletion():
 			attk_sprite.queue_free()
 	
 	_attack_sprite_pool_to_available_state.clear()

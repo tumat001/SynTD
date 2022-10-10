@@ -214,7 +214,7 @@ func _on_tower_id_combined(arg_combi_tower_id):
 func _set_curr_stat_sample__with_THD_and_damages():
 	var highest_dmging_tower = _get_highest_damaging_active_towers_sorted(1)
 	
-	if highest_dmging_tower != null:
+	if is_instance_valid(highest_dmging_tower):
 		_current_stat_sample.tower_id_with_highest_dmg = highest_dmging_tower.tower_id
 		_set_curr_stat_sample_with_total_damages_of_tower(highest_dmging_tower)
 

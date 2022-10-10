@@ -53,7 +53,7 @@ func _init().(StoreOfTowerEffectsUUID.YELVIO_YELLOW_SIDE_EFFECT):
 func _make_modifications_to_tower(tower):
 	_attached_tower = tower
 	
-	if _lob_attack_module == null:
+	if !is_instance_valid(_lob_attack_module):
 		_construct_lob_attack_module(0)
 		_construct_explosion_attk_module(0)
 		
@@ -171,7 +171,7 @@ func _on_yel_arc_bullet_reached_location(arg_final_location : Vector2, bullet : 
 
 func _on_yel_explosion_queue_free(arg_explosion):
 	var requested_refire : bool = false
-	if _attached_tower != null and arg_explosion.enemy_hit_count <= 1:
+	if is_instance_valid(_attached_tower) and arg_explosion.enemy_hit_count <= 1:
 		if _attached_tower.game_elements.stage_round_manager.round_started:
 			_yelvio_synergy.request_refire_of_shell(_current_yel_side_shell_id)
 			requested_refire = true

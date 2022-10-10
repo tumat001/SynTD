@@ -199,7 +199,7 @@ func _on_exit_panel():
 
 func _is_a_dialog_visible__for_main():
 	for keysum in all_keysums:
-		if keysum.input_dialog != null and keysum.input_dialog.visible:
+		if is_instance_valid(keysum.input_dialog) and keysum.input_dialog.visible:
 			return true
 	
 	return false

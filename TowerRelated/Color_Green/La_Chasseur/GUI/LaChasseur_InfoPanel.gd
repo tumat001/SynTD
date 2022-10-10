@@ -11,12 +11,12 @@ var tower : LaChasseur setget set_la_chasseur
 onready var on_hit_label = $VBoxContainer/BodyMarginer/ContentMarginer/HBoxContainer/OnHitLabel
 
 func set_la_chasseur(arg_tower):
-	if tower != null:
+	if is_instance_valid(tower):
 		tower.disconnect("on_hit_bonus_changed", self, "_on_hit_changed")
 	
 	tower = arg_tower
 	
-	if tower != null:
+	if is_instance_valid(tower):
 		tower.connect("on_hit_bonus_changed", self, "_on_hit_changed", [], CONNECT_PERSIST)
 		
 		_on_hit_changed()

@@ -15,13 +15,13 @@ var bullet : BaseBullet setget set_bullet
 #
 
 func set_target_node_to_home_to(arg_node):
-	if target_node_to_home_to != null:
+	if is_instance_valid(target_node_to_home_to):
 		if target_node_to_home_to.is_connected("tree_exiting", self, "_on_target_node_tree_exiting"):
 			target_node_to_home_to.disconnect("tree_exiting", self, "_on_target_node_tree_exiting")
 	
 	target_node_to_home_to = arg_node
 	
-	if target_node_to_home_to != null:
+	if is_instance_valid(target_node_to_home_to):
 		if !target_node_to_home_to.is_connected("tree_exiting", self, "_on_target_node_tree_exiting"):
 			target_node_to_home_to.connect("tree_exiting", self, "_on_target_node_tree_exiting")
 
@@ -32,14 +32,14 @@ func _on_target_node_tree_exiting():
 
 
 func set_bullet(arg_bullet):
-	if bullet != null:
+	if is_instance_valid(bullet):
 		if bullet.is_connected("before_mov_is_executed", self, "_on_bullet_before_mov_is_executed"):
 			bullet.disconnect("before_mov_is_executed", self, "_on_bullet_before_mov_is_executed")
 			bullet.disconnect("tree_exiting", self, "_on_bullet_queue_free")
 	
 	bullet = arg_bullet
 	
-	if bullet != null:
+	if is_instance_valid(bullet):
 		if !bullet.is_connected("before_mov_is_executed", self, "_on_bullet_before_mov_is_executed"):
 			bullet.connect("before_mov_is_executed", self, "_on_bullet_before_mov_is_executed")
 			bullet.connect("tree_exiting", self, "_on_bullet_queue_free", [bullet])
@@ -55,7 +55,7 @@ func _on_bullet_queue_free(arg_bullet):
 #
 
 func update_bullet_curr_relative_norm_dir(arg_delta : float, arg_bullet : BaseBullet = bullet):
-	if target_node_to_home_to != null:
+	if is_instance_valid(target_node_to_home_to):
 		arg_bullet.direction_as_relative_location = get_relative_normalized_direction_for_homing(target_node_to_home_to.global_position, arg_bullet.global_position, arg_bullet.direction_as_relative_location, arg_delta)
 		arg_bullet.rotation = arg_bullet.direction_as_relative_location.angle()
 

@@ -20,8 +20,7 @@ func _ready():
 
 
 func update_display():
-	
-	if tower != null:
+	if is_instance_valid(tower):
 		#var tower_type_info =  Towers.get_tower_info(tower.tower_id)
 		var tower_type_info = tower.tower_type_info
 		

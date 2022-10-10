@@ -331,7 +331,7 @@ func _slow_star_down_to_halt(arg_star):
 
 
 func _on_enemy_targeted_by_homing_non_crashing_star_tree_exiting(arg_star : Iota_StarBullet, arg_bullet_homing_component : BulletHomingComponent):
-	if arg_star != null:
+	if is_instance_valid(arg_star):
 		_slow_star_down_to_halt(arg_star)
 		arg_star.has_homing_component_attached = false
 		arg_star.enemies_to_hit_only.clear()
@@ -368,7 +368,7 @@ func _configure_crashing_star(arg_star : Iota_StarBullet):
 	if !arg_star.has_homing_component_attached:
 		var target = get_current_star_target()
 		
-		if target != null and !target.is_queued_for_deletion():
+		if is_instance_valid(target) and !target.is_queued_for_deletion():
 			arg_star.speed_inc_per_sec = 150
 			arg_star.speed_max = 350
 			arg_star.speed += 2
@@ -395,7 +395,7 @@ func _configure_crashing_star(arg_star : Iota_StarBullet):
 
 
 func _on_enemy_targeted_by_homing_crashing_star_tree_exiting(arg_star, arg_bullet_homing_component):
-	if arg_star != null:
+	if is_instance_valid(arg_star):
 		arg_star.has_homing_component_attached = false
 		arg_star.enemies_to_hit_only.clear()
 	
@@ -417,13 +417,13 @@ func get_current_star_target():
 	return current_star_target
 
 func set_current_star_target(arg_target):
-	if current_star_target != null:
+	if is_instance_valid(current_star_target):
 		if current_star_target.is_connected("tree_exiting", self, "_on_current_star_target_tree_exiting"):
 			current_star_target.disconnect("tree_exiting", self, "_on_current_star_target_tree_exiting")
 	
 	current_star_target = arg_target
 	
-	if current_star_target != null:
+	if is_instance_valid(current_star_target):
 		if !current_star_target.is_connected("tree_exiting", self, "_on_current_star_target_tree_exiting"):
 			current_star_target.connect("tree_exiting", self, "_on_current_star_target_tree_exiting")
 
@@ -432,7 +432,7 @@ func _update_current_star_target():
 	var all_enemies = game_elements.enemy_manager.get_all_enemies()
 	var include_invis_enemies = true
 	var targeting : int = Targeting.FIRST
-	if range_module != null:
+	if is_instance_valid(range_module):
 		targeting = range_module.get_current_targeting_option()
 	
 	var enemies = Targeting.enemies_to_target(all_enemies, targeting, 1, global_position, include_invis_enemies)
@@ -552,7 +552,7 @@ func _on_star_tree_exiting__for_beam_count_track(arg_star):
 
 
 func _star_beam_attk_module_ready_to_attack(arg_target):
-	if current_star_target != null and current_iota_state == IotaState.Beam:
+	if is_instance_valid(current_star_target) and current_iota_state == IotaState.Beam:
 		if current_star_at_beam_state_count > 0:
 			star_beam_attack_module.on_command_attack_enemies_and_attack_when_ready([current_star_target], 1)
 		

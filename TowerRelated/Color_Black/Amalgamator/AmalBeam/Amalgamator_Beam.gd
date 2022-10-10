@@ -11,7 +11,7 @@ func _ready():
 
 
 func _animation_finished_a():
-	if tower_to_convert != null and !tower_to_convert.is_queued_for_deletion():
+	if is_instance_valid(tower_to_convert) and !tower_to_convert.is_queued_for_deletion():
 		tower_to_convert.remove_all_colors_from_tower(false)
 		tower_to_convert.add_color_to_tower(TowerColors.BLACK)
 		

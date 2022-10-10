@@ -16,16 +16,16 @@ var _is_unsworn : bool = false
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.DOMINANCE_SUPPLEMENT, "Dominance Supplement", arg_tier, arg_tier_for_activation):
 	if tier == 0:
 		_additional_dom_syn_activatable = 2
-		_curr_number_of_towers_that_cant_attack = 5
+		_curr_number_of_towers_that_cant_attack = 6
 	elif tier == 1:
 		_additional_dom_syn_activatable = 2
-		_curr_number_of_towers_that_cant_attack = 4
+		_curr_number_of_towers_that_cant_attack = 5
 	elif tier == 2:
 		_additional_dom_syn_activatable = 1
-		_curr_number_of_towers_that_cant_attack = 2
+		_curr_number_of_towers_that_cant_attack = 3
 	elif tier == 3:
 		_additional_dom_syn_activatable = 1
-		_curr_number_of_towers_that_cant_attack = 1
+		_curr_number_of_towers_that_cant_attack = 2
 	
 	_less_comple_syn_activatable = -1
 	
@@ -64,7 +64,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	._apply_pact_to_game_elements(arg_game_elements)
 	
 	for tower in _disabled_by_this_pact_towers:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.contributing_to_synergy_clauses.remove_clause(tower.ContributingToSynergyClauses.DOM_SYN__RED__DOMINANCE_SUPPLEMENT)
 	
 	#
@@ -103,7 +103,7 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 	._remove_pact_from_game_elements(arg_game_elements)
 	
 	for tower in _disabled_by_this_pact_towers:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.contributing_to_synergy_clauses.attempt_insert_clause(tower.ContributingToSynergyClauses.DOM_SYN__RED__DOMINANCE_SUPPLEMENT)
 	
 	#
@@ -120,7 +120,7 @@ func pact_unsworn():
 	_is_unsworn = true
 	
 	for tower in _disabled_by_this_pact_towers:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.sell_tower()
 
 

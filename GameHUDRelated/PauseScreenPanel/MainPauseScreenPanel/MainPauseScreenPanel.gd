@@ -15,7 +15,7 @@ func _ready():
 
 
 func show_control_at_content_panel(control : Control):
-	if current_showing_control != null:
+	if is_instance_valid(current_showing_control):
 		hide_control_at_content_panel(current_showing_control, false)
 	
 	#

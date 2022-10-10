@@ -17,7 +17,7 @@ func _ready():
 func set_icons_per_row(value : int):
 	icons_per_row = value
 	
-	if grid_container != null:
+	if is_instance_valid(grid_container):
 		grid_container.columns = icons_per_row
 
 

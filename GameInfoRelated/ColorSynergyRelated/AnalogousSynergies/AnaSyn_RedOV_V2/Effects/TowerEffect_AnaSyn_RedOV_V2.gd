@@ -93,10 +93,10 @@ func _undo_modifications_to_tower(tower):
 		tower.disconnect("on_round_end", self, "_on_round_end")
 		tower.disconnect("on_main_attack", self, "_on_tower_main_attack")
 	
-	if tower_detecting_range_module != null:
+	if is_instance_valid(tower_detecting_range_module):
 		tower_detecting_range_module.queue_free()
 	
-	if empower_particle_effect != null:
+	if is_instance_valid(empower_particle_effect):
 		empower_particle_effect.queue_free()
 		empower_particle_effect = null
 	
@@ -115,7 +115,7 @@ func _on_round_end():
 	_current_dmg_amp_trigger_count = 0
 	_current_main_attack_count_for_dmg_amp_trigger = 0
 	_is_empowered = false
-	if empower_particle_effect != null:
+	if is_instance_valid(empower_particle_effect):
 		empower_particle_effect.queue_free()
 		empower_particle_effect = null
 
@@ -166,7 +166,7 @@ func _construct_new_emp_bonus_dmg_scale_effect() -> TowerDamageInstanceScaleBoos
 func _empower_curr_dmg_buff_effect_amount():
 	_is_empowered = true
 	
-	if empower_particle_effect == null:
+	if !is_instance_valid(empower_particle_effect):
 		empower_particle_effect = RedOV_EmpoweredParticle_Scene.instance()
 		empower_particle_effect.tower = attached_tower
 		attached_tower.get_tree().get_root().add_child(empower_particle_effect)

@@ -327,7 +327,7 @@ func _attempt_cast_proliferate():
 func _cast_proliferate():
 	var candidate_tower = _find_candidate_tower()
 	
-	if candidate_tower != null:
+	if is_instance_valid(candidate_tower):
 		var cd = _get_cd_to_use(proliferate_base_cooldown)
 		proliferate_ability.on_ability_before_cast_start(cd)
 		
@@ -345,7 +345,7 @@ func _find_candidate_tower():
 	var attacking_towers : Array = []
 	var non_attacking_towers : Array = []
 	for tower in towers:
-		if tower.range_module != null:
+		if is_instance_valid(tower.range_module):
 			if tower.range_module.enemies_in_range.size() > 0:
 				attacking_towers.append(tower)
 			else:
@@ -375,7 +375,7 @@ func _fire_proliferate_seed_at_tower(tower):
 #
 
 func _proliferate_seed_landed(seed_pos, seed_proj, tower):
-	if tower != null:
+	if is_instance_valid(tower):
 		var mini_burgeon = _construct_mini_burgeon_attack_module(seed_pos, tower)
 		
 		mini_burgeon_time_map[mini_burgeon] = proliferate_mini_burgeon_base_duration * last_calculated_final_ability_potency
@@ -430,7 +430,7 @@ func _construct_mini_burgeon_attack_module(seed_position : Vector2, landed_tower
 	
 	proj_attack_module.global_position = seed_position
 	
-	if landed_tower.range_module != null:
+	if is_instance_valid(landed_tower.range_module):
 		proj_attack_module._set_range_module(landed_tower.range_module)
 		
 	

@@ -32,7 +32,7 @@ func set_visibility_of_nova_counter(arg_val : bool):
 
 
 func _trigger_create_about_tooltip():
-	if about_tooltip == null:
+	if !is_instance_valid(about_tooltip):
 		display_requested_about_tooltip(_construct_about_tooltip())
 	else:
 		about_tooltip.queue_free()
@@ -52,7 +52,7 @@ func _construct_about_tooltip() -> BaseTooltip:
 #
 # use this only when define_tooltip_construction_in_button is false
 func display_requested_about_tooltip(arg_about_tooltip : BaseTooltip):
-	if arg_about_tooltip != null:
+	if is_instance_valid(arg_about_tooltip):
 		about_tooltip = arg_about_tooltip
 		about_tooltip.visible = true
 		about_tooltip.tooltip_owner = nova_count_for_activation_panel

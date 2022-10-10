@@ -211,7 +211,7 @@ func _attempt_cast_enchant(arg_enemy):
 		_cast_enchant(arg_enemy)
 
 func _cast_enchant(arg_enemy):
-	if arg_enemy != null:
+	if is_instance_valid(arg_enemy):
 		_current_main_attack_count = 0
 		set_crystal_count_amount(_current_crystal_count + 1)
 		

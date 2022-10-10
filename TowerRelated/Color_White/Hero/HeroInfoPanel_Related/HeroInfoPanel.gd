@@ -35,12 +35,12 @@ func _on_tower_panel_ability_01_pressed():
 #
 
 func set_hero(arg_hero : Hero):
-	if hero != null:
+	if is_instance_valid(hero):
 		hero.disconnect("notify_xp_cap_of_level_reached", self, "_hero_reached_xp_cap_of_level")
 	
 	hero = arg_hero
 	
-	if hero != null:
+	if is_instance_valid(hero):
 		hero.connect("notify_xp_cap_of_level_reached", self, "_hero_reached_xp_cap_of_level")
 		
 		_hero_reached_xp_cap_of_level()
@@ -78,7 +78,7 @@ func _on_ShowHeroGUI_pressed_mouse_event(event):
 func _show_whole_screen_gui():
 	var whole_screen_gui : WholeScreenGUI = hero.game_elements.whole_screen_gui
 	var hero_gui = whole_screen_gui.get_control_with_script(Hero_WholeScreenGUI)
-	if hero_gui == null:
+	if !is_instance_valid(hero_gui):
 		hero_gui = Hero_WholeScreenGUI_Scene.instance()
 	
 	whole_screen_gui.show_control(hero_gui)

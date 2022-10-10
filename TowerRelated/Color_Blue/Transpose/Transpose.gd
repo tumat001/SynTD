@@ -228,7 +228,7 @@ func _transpose_with_tower(tower, cooldown):
 
 
 func _can_transpose_with_tower(tower) -> bool:
-	return tower != self and tower != null and tower.is_current_placable_in_map()
+	return tower != self and is_instance_valid(tower) and tower.is_current_placable_in_map()
 
 #
 

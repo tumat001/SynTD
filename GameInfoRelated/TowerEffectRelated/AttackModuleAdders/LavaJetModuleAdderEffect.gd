@@ -150,7 +150,7 @@ func _undo_modifications_to_tower(tower):
 	tower.disconnect("on_main_attack", self, "_on_main_tower_attack")
 	tower.disconnect("on_round_end", self, "_on_round_end")
 	
-	if lava_jet_beam_am != null:
+	if is_instance_valid(lava_jet_beam_am):
 		tower.remove_attack_module(lava_jet_beam_am)
 		lava_jet_beam_am.queue_free()
 

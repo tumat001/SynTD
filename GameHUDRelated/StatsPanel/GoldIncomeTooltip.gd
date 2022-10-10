@@ -18,7 +18,7 @@ func set_gold_manager(arg_manager):
 	
 	gold_manager.connect("gold_income_changed", self, "update_display", [], CONNECT_PERSIST)
 	
-	if income_name_descs != null:
+	if is_instance_valid(income_name_descs):
 		update_display()
 
 

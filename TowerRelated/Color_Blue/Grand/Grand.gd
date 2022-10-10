@@ -212,7 +212,7 @@ func _grand_bullet_curr_distance_expired(bullet):
 	
 	if targets.size() > 0:
 		var enemy = targets[0]
-		if enemy != null:
+		if is_instance_valid(enemy):
 			grand_attack_module._adjust_bullet_physics_settings(bullet, enemy.global_position, bullet.global_position)
 			
 			bullet.current_life_distance *= 2

@@ -146,7 +146,7 @@ func _construct_attk_speed_effect():
 #
 
 func _on_main_attk_hit_enemy_p(enemy, damage_register_id, damage_instance, module):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		if enemy._stack_id_effects_map.has(StoreOfEnemyEffectsUUID.PROBE_RESEARCH_STACK):
 			var effect = enemy._stack_id_effects_map[StoreOfEnemyEffectsUUID.PROBE_RESEARCH_STACK]
 			
@@ -157,7 +157,7 @@ func _on_main_attk_hit_enemy_p(enemy, damage_register_id, damage_instance, modul
 
 func _grant_self_attk_speed():
 	if has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.PROBE_ATTK_SPEED_EFFECT):
-		if range_module != null:
+		if is_instance_valid(range_module):
 			var targets = range_module.get_targets_without_affecting_self_current_targets(1)
 			if targets.size() > 0:
 				piercing_attk_module.on_command_attack_enemies_and_attack_when_ready(targets)

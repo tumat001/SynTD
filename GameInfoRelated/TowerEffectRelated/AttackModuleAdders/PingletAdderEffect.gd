@@ -135,7 +135,7 @@ func _make_modifications_to_tower(tower):
 
 
 func _undo_modifications_to_tower(tower):
-	if shot_attack_module != null:
+	if is_instance_valid(shot_attack_module):
 		tower.remove_attack_module(shot_attack_module)
 		shot_attack_module.queue_free()
 

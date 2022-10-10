@@ -58,7 +58,7 @@ func _update_description():
 
 
 func _make_modifications_to_tower(tower):
-	if adeptling_am == null:
+	if !is_instance_valid(adeptling_am):
 		_construct_attack_module()
 		tower.add_attack_module(adeptling_am)
 	
@@ -68,7 +68,7 @@ func _make_modifications_to_tower(tower):
 	if !tower.is_connected("on_main_attack", self, "_on_tower_main_attack"):
 		tower.connect("on_main_attack", self, "_on_tower_main_attack", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 	
-	if own_timer == null:
+	if !is_instance_valid(own_timer):
 		own_timer = Timer.new()
 		own_timer.one_shot = true
 		own_timer.wait_time = 0.1
@@ -133,7 +133,7 @@ func _construct_attack_module():
 #			call_deferred("_attempt_command_am_to_attack", enemies[1])
 
 func _on_tower_main_attack(attk_speed_delay, arg_enemies, am):
-	if am != null and am.range_module != null:
+	if is_instance_valid(am) and is_instance_valid(am.range_module):
 		var enemies = am.range_module.get_targets_without_affecting_self_current_targets(2)
 		
 		if enemies.size() == 2:
@@ -148,13 +148,13 @@ func _attempt_command_am_to_attack(enemy):
 		own_timer.start(_beam_cooldown)
 
 func _attack_secondary_target(enemy):
-	if enemy != null and adeptling_am != null:
+	if is_instance_valid(enemy) and is_instance_valid(adeptling_am):
 		adeptling_am.on_command_attack_enemies_and_attack_when_ready([enemy], 1)
 
 
 
 func _undo_modifications_to_tower(tower):
-	if adeptling_am != null:
+	if is_instance_valid(adeptling_am):
 		tower.remove_attack_module(adeptling_am)
 		adeptling_am.queue_free()
 		adeptling_am = null
@@ -166,7 +166,7 @@ func _undo_modifications_to_tower(tower):
 		tower.disconnect("on_main_attack", self, "_on_tower_main_attack")
 	
 	
-	if own_timer != null:
+	if is_instance_valid(own_timer):
 		own_timer.queue_free()
 		own_timer = null
 

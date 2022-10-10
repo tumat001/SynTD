@@ -12,12 +12,12 @@ onready var stat_icon = $VBoxContainer/BodyMarginer/ContentMarginer/HBoxContaine
 onready var stat_label = $VBoxContainer/BodyMarginer/ContentMarginer/HBoxContainer/StatLabel
 
 func set_lassaut(arg_tower):
-	if tower != null:
+	if is_instance_valid(tower):
 		tower.disconnect("stack_state_changed", self, "_stack_state_changed")
 	
 	tower = arg_tower
 	
-	if tower != null:
+	if is_instance_valid(tower):
 		tower.connect("stack_state_changed", self, "_stack_state_changed", [], CONNECT_PERSIST)
 		
 		_stack_state_changed(tower.get_stack_state())

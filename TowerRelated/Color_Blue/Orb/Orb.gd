@@ -417,7 +417,7 @@ func _main_attack_on_hit(enemy, damage_register_id, damage_instance, module):
 		sub_attack_module.on_command_attack_enemies_in_range_and_attack_when_ready(1, 1)
 
 func _sub_attack_bullet_shot(bullet, enemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		var distance = global_position.distance_to(enemy.global_position)
 		
 		if bullet.life_distance < distance:
@@ -466,7 +466,7 @@ func _gain_bonus_from_orb_absorbed():
 
 func _tower_placed_in_map(tower):
 	if is_current_placable_in_map():
-		if tower != null and tower.tower_id == Towers.ORB and tower != self:
+		if is_instance_valid(tower) and tower.tower_id == Towers.ORB and tower != self:
 			tower.sell_tower()
 			_gain_bonus_from_orb_absorbed()
 

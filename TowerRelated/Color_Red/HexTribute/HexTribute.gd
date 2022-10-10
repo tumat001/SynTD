@@ -236,14 +236,14 @@ func _create_attk_sprite(pos, stack_amount):
 
 
 func _attempt_execute_elite_enemy(enemy):
-	if enemy != null and !enemy.is_queued_for_deletion():
+	if is_instance_valid(enemy) and !enemy.is_queued_for_deletion():
 		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE, execute_attack_module)
 		_executed_enemy_by_hexes(enemy)
 		
 		
 
 func _attempt_execute_normal_enemy(enemy):
-	if enemy != null and !enemy.is_queued_for_deletion():
+	if is_instance_valid(enemy) and !enemy.is_queued_for_deletion():
 		enemy.execute_self_by(StoreOfTowerEffectsUUID.HEXTRIBUTE_EXECUTE, execute_attack_module)
 		_executed_enemy_by_hexes(enemy)
 

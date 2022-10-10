@@ -10,7 +10,7 @@ var hero : Hero setget set_hero
 onready var hero_xp_bar : ControlProgressBar = $VBoxContainer/BodyMarginer/HeroXPBar
 
 func set_hero(arg_hero : Hero):
-	if hero != null:
+	if is_instance_valid(hero):
 		if hero.is_connected("current_xp_changed", self, "_hero_xp_changed"):
 			hero.disconnect("current_xp_changed", self, "_hero_xp_changed")
 			hero.disconnect("xp_needed_for_next_level_changed", self, "_hero_xp_cap_changed")
@@ -18,7 +18,7 @@ func set_hero(arg_hero : Hero):
 	
 	hero = arg_hero
 	
-	if hero != null:
+	if is_instance_valid(hero):
 		if hero.max_hero_level > hero.current_hero_natural_level:
 			if !hero.is_connected("current_xp_changed", self, "_hero_xp_changed"):
 				hero.connect("current_xp_changed", self, "_hero_xp_changed", [], CONNECT_PERSIST)

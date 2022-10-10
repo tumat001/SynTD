@@ -393,8 +393,8 @@ func _on_BuySellLevelRollPanel_reroll():
 #		panel_buy_sell_level_roll.update_new_rolled_towers([
 #			Towers.CHAOS,
 #			Towers.WYVERN,
-#			Towers.TRUDGE,
-#			Towers.STRIKER,
+#			Towers.VARIANCE,
+#			Towers.SOPHIST,
 #			Towers.CANNON,
 #			Towers.ACCUMULAE,
 #		])
@@ -528,7 +528,7 @@ func _unhandled_key_input(event):
 	emit_signal("unhandled_key_input", event, any_action_taken)
 
 func if_allow_key_inputs_due_to_conditions():
-	return whole_screen_gui.current_showing_control == null and !pause_manager.has_any_visible_control()
+	return !is_instance_valid(whole_screen_gui.current_showing_control) and !pause_manager.has_any_visible_control()
 
 
 
@@ -545,7 +545,7 @@ func _esc_no_wholescreen_gui_pressed():
 
 func _sell_hovered_tower():
 	var tower = tower_manager.get_tower_on_mouse_hover()
-	if tower != null and !tower.is_being_dragged:
+	if is_instance_valid(tower) and !tower.is_being_dragged:
 		tower.sell_tower()
 
 #

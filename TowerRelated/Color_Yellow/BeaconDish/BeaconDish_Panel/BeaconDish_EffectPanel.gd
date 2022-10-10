@@ -13,14 +13,14 @@ onready var range_effect_panel = $VBoxContainer/BodyMarginer/MarginContainer/HBo
 #
 
 func set_beacon_dish(arg_tower):
-	if beacon_dish != null:
+	if is_instance_valid(beacon_dish):
 		beacon_dish.disconnect("elemental_buff_changed", self, "_update_elemental_panel")
 		beacon_dish.disconnect("attk_speed_buff_changed", self, "_update_attk_speed_panel")
 		beacon_dish.disconnect("range_buff_changed", self, "_update_range_panel")
 	
 	beacon_dish = arg_tower
 	
-	if beacon_dish != null:
+	if is_instance_valid(beacon_dish):
 		beacon_dish.connect("elemental_buff_changed", self, "_update_elemental_panel", [], CONNECT_PERSIST)
 		beacon_dish.connect("attk_speed_buff_changed", self, "_update_attk_speed_panel", [], CONNECT_PERSIST)
 		beacon_dish.connect("range_buff_changed", self, "_update_range_panel", [], CONNECT_PERSIST)

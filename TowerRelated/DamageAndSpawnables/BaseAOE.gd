@@ -60,7 +60,7 @@ onready var collision_shape : CollisionShape2D = $AOEArea/Shape
 #
 
 func _on_AOEArea_area_shape_entered(area_id, area, area_shape, self_shape):
-	if area != null:
+	if is_instance_valid(area):
 		var parent = area.get_parent()
 		
 		if parent is AbstractEnemy:
@@ -69,7 +69,7 @@ func _on_AOEArea_area_shape_entered(area_id, area, area_shape, self_shape):
 				emit_signal("enemy_entered", parent)
 
 func _on_AOEArea_area_shape_exited(area_id, area, area_shape, self_shape):
-	if area != null:
+	if is_instance_valid(area):
 		var parent = area.get_parent()
 		
 		if parent is AbstractEnemy:

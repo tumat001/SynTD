@@ -63,7 +63,7 @@ func _ready():
 
 
 func _process(delta):
-	if node_to_point_at != null:
+	if is_instance_valid(node_to_point_at):
 		var new_position : Vector2
 		if node_to_point_at.get("global_position"):
 			new_position = node_to_point_at.global_position

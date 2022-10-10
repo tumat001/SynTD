@@ -14,12 +14,12 @@ var func_name_of_desc_of_leveling : String
 var _can_attempt_level : bool
 
 func set_hero(arg_hero : Hero):
-	if hero != null:
+	if is_instance_valid(hero):
 		hero.disconnect(signal_name_of_can_spend_x_for_level, self, "update_if_can_upgrade")
 	
 	hero = arg_hero
 	
-	if hero != null:
+	if is_instance_valid(hero):
 		hero.connect(signal_name_of_can_spend_x_for_level, self, "update_if_can_upgrade")
 		
 		update_if_can_upgrade(hero.call(func_name_of_if_can_level))

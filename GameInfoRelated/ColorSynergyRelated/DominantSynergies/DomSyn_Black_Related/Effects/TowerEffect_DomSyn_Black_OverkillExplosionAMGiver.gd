@@ -58,17 +58,17 @@ func _make_modifications_to_tower(tower):
 	if !tower.is_connected("on_any_post_mitigation_damage_dealt", self, "_on_any_post_mitigation_damage_dealt_by_tower"):
 		tower.connect("on_any_post_mitigation_damage_dealt", self, "_on_any_post_mitigation_damage_dealt_by_tower", [], CONNECT_PERSIST)
 	
-	if explosion_attk_module == null:
+	if !is_instance_valid(explosion_attk_module):
 		_construct_and_add_explosion_attack_module()
 	
-	if initial_delay_dmg_scale_timer == null:
+	if !is_instance_valid(initial_delay_dmg_scale_timer):
 		initial_delay_dmg_scale_timer = Timer.new()
 		initial_delay_dmg_scale_timer.one_shot = true
 		initial_delay_dmg_scale_timer.connect("timeout", self, "_on_initial_delay_dmg_scale_timer_timeout", [], CONNECT_PERSIST)
 		
 		tower.get_tree().get_root().add_child(initial_delay_dmg_scale_timer)
 	
-	if bonus_delay_dmg_scale_timer == null:
+	if !is_instance_valid(bonus_delay_dmg_scale_timer):
 		bonus_delay_dmg_scale_timer = Timer.new()
 		bonus_delay_dmg_scale_timer.one_shot = true
 		bonus_delay_dmg_scale_timer.connect("timeout", self, "_on_bonus_delay_dmg_scale_timer_timeout", [], CONNECT_PERSIST)
@@ -165,16 +165,16 @@ func _undo_modifications_to_tower(tower):
 	if tower.is_connected("on_any_post_mitigation_damage_dealt", self, "_on_any_post_mitigation_damage_dealt_by_tower"):
 		tower.disconnect("on_any_post_mitigation_damage_dealt", self, "_on_any_post_mitigation_damage_dealt_by_tower")
 	
-	if explosion_attk_module != null:
+	if is_instance_valid(explosion_attk_module):
 		_attached_tower.remove_attack_module(explosion_attk_module)
 		explosion_attk_module.queue_free()
 	
 	_attached_tower = null
 	
-	if initial_delay_dmg_scale_timer != null:
+	if is_instance_valid(initial_delay_dmg_scale_timer):
 		initial_delay_dmg_scale_timer.queue_free()
 	
-	if bonus_delay_dmg_scale_timer != null:
+	if is_instance_valid(bonus_delay_dmg_scale_timer):
 		bonus_delay_dmg_scale_timer.queue_free()
 	
 	if tower.is_connected("on_round_start", self, "_on_round_start"):

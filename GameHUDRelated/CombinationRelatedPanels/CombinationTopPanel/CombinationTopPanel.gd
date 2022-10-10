@@ -66,7 +66,7 @@ func on_tower_icon_mouse_entered(tower_type_info, combi_icon):
 	_free_old_and_create_tooltip_for_tower(tower_type_info, combi_icon)
 
 func _free_old_and_create_tooltip_for_tower(tower_type_info, combi_icon):
-	if current_tooltip != null:
+	if is_instance_valid(current_tooltip):
 		current_tooltip.queue_free()
 	
 	current_tooltip = TowerTooltipScene.instance()
@@ -77,7 +77,7 @@ func _free_old_and_create_tooltip_for_tower(tower_type_info, combi_icon):
 	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(current_tooltip)
 
 func on_tower_icon_mouse_exited(combi_icon):
-	if current_tooltip != null:
+	if is_instance_valid(current_tooltip):
 		current_tooltip.queue_free()
 		current_tooltip = null
 

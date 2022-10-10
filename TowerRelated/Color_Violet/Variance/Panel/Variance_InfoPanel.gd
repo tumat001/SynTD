@@ -30,12 +30,12 @@ func _ready():
 #
 
 func set_variance(arg_variance):
-	if variance != null:
+	if is_instance_valid(variance):
 		lock_button.ability = null
 	
 	variance = arg_variance
 	
-	if variance != null:
+	if is_instance_valid(variance):
 		lock_button.ability = variance.lock_ability
 		
 

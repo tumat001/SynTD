@@ -295,6 +295,6 @@ func _process(delta):
 func queue_free():
 	.queue_free()
 	
-	if lamp_beam_connection != null and !lamp_beam_connection.is_queued_for_deletion():
+	if is_instance_valid(lamp_beam_connection) and !lamp_beam_connection.is_queued_for_deletion():
 		lamp_beam_connection.queue_free()
 

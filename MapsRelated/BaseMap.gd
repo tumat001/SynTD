@@ -37,7 +37,7 @@ func _ready():
 # path related
 
 func add_enemy_path(path : EnemyPath):
-	if path != null:
+	if is_instance_valid(path):
 		_all_enemy_paths.append(path)
 		emit_signal("on_enemy_path_added", path)
 		emit_signal("on_all_enemy_paths_changed", get_all_enemy_paths())
@@ -45,7 +45,7 @@ func add_enemy_path(path : EnemyPath):
 		add_child(path)
 
 func remove_enemy_path(path : EnemyPath):
-	if path != null:
+	if is_instance_valid(path):
 		_all_enemy_paths.erase(path)
 		emit_signal("on_enemy_path_removed", path)
 		emit_signal("on_all_enemy_paths_changed", get_all_enemy_paths())
@@ -126,18 +126,18 @@ func make_all_placables_not_glow():
 
 func make_all_placables_with_towers_glow():
 	for placables in all_in_map_placables:
-		if placables.tower_occupying != null:
+		if is_instance_valid(placables.tower_occupying):
 			placables.set_area_texture_to_glow()
 
 func make_all_placables_with_no_towers_glow():
 	for placables in all_in_map_placables:
-		if placables.tower_occupying == null:
+		if !is_instance_valid(placables.tower_occupying):
 			placables.set_area_texture_to_glow()
 
 
 func make_all_placables_with_tower_colors_glow(tower_colors : Array):
 	for placables in all_in_map_placables:
-		if placables.tower_occupying != null:
+		if is_instance_valid(placables.tower_occupying):
 			for color in tower_colors:
 				if placables.tower_occupying._tower_colors.has(color):
 					placables.set_area_texture_to_glow()

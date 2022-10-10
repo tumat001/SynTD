@@ -85,7 +85,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	._apply_pact_to_game_elements(arg_game_elements)
 	
 	for tower in _current_healing_symbols:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.disabled_from_attacking_clauses.remove_clause(tower.DisabledFromAttackingSourceClauses.DOM_SYN__RED__HEALING_SYMBOLS)
 			
 			var effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.RED_PACT_HEALING_SYMBOL_TOWER_DISABLED_MARKER)
@@ -132,7 +132,7 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 
 func _disable_all_created_healing_symbols():
 	for tower in _current_healing_symbols:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.disabled_from_attacking_clauses.attempt_insert_clause(tower.DisabledFromAttackingSourceClauses.DOM_SYN__RED__HEALING_SYMBOLS)
 			
 			var effect = TowerMarkEffect.new(StoreOfTowerEffectsUUID.RED_PACT_HEALING_SYMBOL_TOWER_DISABLED_MARKER)
@@ -159,7 +159,7 @@ func pact_unsworn():
 	game_elements.tower_inventory_bench.disconnect("tower_entered_bench_slot", self, "_on_tower_entered_bench_space")
 	
 	for tower in _current_healing_symbols:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.queue_free()
 	
 

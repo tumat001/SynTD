@@ -308,13 +308,13 @@ func _ready():
 
 
 func _set_range_module(new_module):
-	if range_module != null:
+	if is_instance_valid(range_module):
 		if get_children().has(range_module):
 			remove_child(range_module)
 		range_module.attack_modules_using_this.erase(self)
 	
-	if new_module != null:
-		if new_module.get_parent() == null:
+	if is_instance_valid(new_module):
+		if !is_instance_valid(new_module.get_parent()):
 			add_child(new_module)
 		new_module.attack_modules_using_this.append(self)
 	
@@ -327,7 +327,7 @@ func time_passed(delta):
 	if !_last_calculated_is_disabled:
 		_current_attack_wait -= delta
 		
-		if (range_module != null and range_module.enemies_in_range.size() != 0) or (commit_to_targets_of_windup and _is_in_windup):#_targets_during_windup.size() > 0):
+		if (is_instance_valid(range_module) and range_module.enemies_in_range.size() != 0) or (commit_to_targets_of_windup and _is_in_windup):#_targets_during_windup.size() > 0):
 			_current_wind_up_wait -= delta
 		
 		if _is_bursting:
@@ -498,7 +498,7 @@ func is_ready_to_attack() -> bool:
 
 
 func attempt_find_then_attack_enemies(num : int = number_of_unique_targets) -> bool:
-	if range_module == null:
+	if !is_instance_valid(range_module):
 		return false
 	
 	var targets : Array = _get_enemies_found_by_range_module(num)
@@ -507,7 +507,7 @@ func attempt_find_then_attack_enemies(num : int = number_of_unique_targets) -> b
 
 
 func _get_enemies_found_by_range_module(arg_num_of_targets : int):
-	if range_module == null:
+	if !is_instance_valid(range_module):
 		return null
 	
 	var targets : Array
@@ -600,7 +600,7 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 	
 	if commit_to_targets_of_windup and _is_in_windup:
 		for target in _targets_during_windup:
-			if target == null or !is_instance_valid(target):
+			if !is_instance_valid(target):
 				_targets_during_windup.erase(target)
 		
 		if fill_empty_windup_target_slots and _targets_during_windup.size() < num_of_targets:
@@ -618,7 +618,7 @@ func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = numbe
 	
 	var to_delete : Array = []
 	for enemy in enemies:
-		if enemy == null or enemy.is_queued_for_deletion():
+		if !is_instance_valid(enemy) or enemy.is_queued_for_deletion():
 			to_delete.append(enemy)
 	
 	for enemy in to_delete:
@@ -760,7 +760,7 @@ func _attack_enemies(enemies : Array):
 	
 	if attack_sprite_show_in_attack:
 		for enemy in enemies:
-			if attack_sprite_scene != null and enemy != null:
+			if is_instance_valid(attack_sprite_scene) and is_instance_valid(enemy):
 				var attack_sprite = attack_sprite_scene.instance()
 				emit_signal("before_attack_sprite_is_shown", attack_sprite)
 				
@@ -791,7 +791,7 @@ func _during_windup_multiple(enemies_or_poses : Array = []):
 	
 	if attack_sprite_show_in_windup:
 		for enemy in enemies_or_poses:
-			if attack_sprite_scene != null and enemy != null:
+			if is_instance_valid(attack_sprite_scene) and is_instance_valid(enemy):
 				var attack_sprite = attack_sprite_scene.instance()
 				
 				if attack_sprite_match_lifetime_to_windup:
@@ -991,7 +991,7 @@ func on_round_end():
 		disconnect("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready")
 	
 	
-	if range_module != null:
+	if is_instance_valid(range_module):
 		range_module.clear_all_target_effects()
 
 

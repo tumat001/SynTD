@@ -259,7 +259,7 @@ func _construct_repel_attk_module_and_relateds():
 
 
 func _before_repel_explosion_hit_enemy(enemy, explosion):
-	if enemy != null and explosion != null and enemy.current_path != null:
+	if is_instance_valid(enemy) and is_instance_valid(explosion) and is_instance_valid(enemy.current_path):
 		var knock_up_copy = repel_knockup_effect._get_copy_scaled_by(1)
 		var forced_mov_copy = repel_forced_path_mov_effect._get_copy_scaled_by(1)
 		
@@ -333,7 +333,7 @@ func _construct_implosion_attk_module_and_relateds():
 
 
 func _before_implosion_explosion_hit_enemy(enemy, explosion):
-	if enemy != null and explosion != null and enemy.current_path != null:
+	if is_instance_valid(enemy) and is_instance_valid(explosion) and is_instance_valid(enemy.current_path):
 		var knock_up_copy = implosion_knockup_effect._get_copy_scaled_by(1)
 		var forced_mov_copy = implosion_forced_path_mov_template_effect._get_copy_scaled_by(1)
 		
@@ -413,7 +413,7 @@ func _construct_shuffle_attk_module_and_relateds():
 	shuffle_forced_path_mov_template_effect.time_in_seconds = shuffle_stun_duration
 
 func _before_shuffle_explosion_hit_enemy(enemy, explosion):
-	if enemy != null and explosion != null and enemy.current_path != null:
+	if is_instance_valid(enemy) and is_instance_valid(explosion) and is_instance_valid(enemy.current_path):
 		var knock_up_copy = shuffle_knockup_effect._get_copy_scaled_by(1)
 		var forced_mov_copy = shuffle_forced_path_mov_template_effect._get_copy_scaled_by(1)
 		

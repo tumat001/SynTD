@@ -330,7 +330,7 @@ func set_display_name(arg_name : String):
 
 
 func set_tower(arg_tower : Node):
-	if tower != null:
+	if is_instance_valid(tower):
 		if tower.is_connected("tree_exiting", self, "destroy_self"): 
 			tower.disconnect("tree_exiting", self, "destroy_self")
 			tower.disconnect("tower_active_in_map", self, "_tower_active_in_map")
@@ -339,7 +339,7 @@ func set_tower(arg_tower : Node):
 	
 	tower = arg_tower
 	
-	if tower != null:
+	if is_instance_valid(tower):
 		if !tower.is_connected("tree_exiting", self, "destroy_self"): 
 			tower.connect("tree_exiting", self, "destroy_self", [], CONNECT_PERSIST)
 			tower.connect("tower_active_in_map", self, "_tower_active_in_map", [], CONNECT_PERSIST)
@@ -449,7 +449,7 @@ func emit_auto_cast_state_changed(clause):
 func _on_ability_attempt_auto_cast(any_var):
 	if is_ready_for_activation() and auto_cast_on:
 		if auto_cast_func != null:
-			if tower != null:
+			if is_instance_valid(tower):
 				tower.call_deferred(auto_cast_func)
 			
 			elif synergy != null:

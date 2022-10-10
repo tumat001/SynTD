@@ -79,10 +79,8 @@ func decrease_pierce(amount):
 
 
 func _process(delta):
-	if enemy_stuck_to != null:
-		
+	if is_instance_valid(enemy_stuck_to):
 		var curr_enemy_pos = enemy_stuck_to.global_position
-		
 		global_position = curr_enemy_pos + offset_from_enemy
 	
 	

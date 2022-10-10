@@ -22,7 +22,7 @@ func _update_description():
 
 
 func _make_modifications_to_tower(tower):
-	if tower.main_attack_module != null and tower.main_attack_module.range_module != null:
+	if is_instance_valid(tower.main_attack_module) and is_instance_valid(tower.main_attack_module.range_module):
 		affected_range_module = tower.main_attack_module.range_module 
 		_add_targetings(affected_range_module)
 	
@@ -68,7 +68,7 @@ func _construct_pierce_effects():
 #
 
 func _undo_modifications_to_tower(tower):
-	if affected_range_module != null:
+	if is_instance_valid(affected_range_module):
 		_remove_targetings(affected_range_module)
 	
 	tower.disconnect("attack_module_added", self, "_tower_attack_module_added")

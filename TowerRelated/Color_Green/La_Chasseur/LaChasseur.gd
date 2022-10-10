@@ -212,9 +212,9 @@ func _cast_hunt_down(is_a_recast : bool):
 	
 	#
 	
-	if _attk_module_disabled_by_hunt_down_ability == null:
+	if !is_instance_valid(_attk_module_disabled_by_hunt_down_ability):
 		_attk_module_disabled_by_hunt_down_ability = main_attack_module
-		if _attk_module_disabled_by_hunt_down_ability != null:
+		if is_instance_valid(_attk_module_disabled_by_hunt_down_ability):
 			_attk_module_disabled_by_hunt_down_ability.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.LA_CHASSEUR_DISABLE)
 	
 	#
@@ -278,9 +278,9 @@ func _on_final_shot_event():
 		_end_hunt_down()
 
 func _end_hunt_down():
-	if _attk_module_disabled_by_hunt_down_ability != null:
+	if is_instance_valid(_attk_module_disabled_by_hunt_down_ability):
 		_attk_module_disabled_by_hunt_down_ability.can_be_commanded_by_tower_other_clauses.remove_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.LA_CHASSEUR_DISABLE)
-		_attk_module_disabled_by_hunt_down_ability = null
+	_attk_module_disabled_by_hunt_down_ability = null
 	
 	shot_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.LA_CHASSEUR_DISABLE)
 	

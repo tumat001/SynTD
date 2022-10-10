@@ -39,7 +39,7 @@ func set_base_pact(arg_pact : Red_BasePact):
 			base_pact.connect("on_activation_requirements_unmet", self, "_on_base_pact_activation_requirements_unmet", [], CONNECT_PERSIST)
 			base_pact.connect("on_description_changed", self, "_on_base_pact_description_changed", [], CONNECT_PERSIST)
 	
-	if name_label != null:
+	if is_instance_valid(name_label):
 		update_display()
 
 
@@ -60,7 +60,7 @@ func _ready():
 	update_display()
 
 func update_display():
-	if base_pact != null and !is_queued_for_deletion() and name_label != null:
+	if base_pact != null and is_instance_valid(self) and !is_queued_for_deletion() and name_label != null:
 		name_label.text = base_pact.pact_name
 		pact_icon.texture = base_pact.pact_icon
 		

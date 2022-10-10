@@ -135,7 +135,7 @@ func _on_input_dialog_cancel_pressed():
 	remove_input_key_dialog()
 
 func remove_input_key_dialog():
-	if input_dialog != null and !input_dialog.is_queued_for_deletion():
+	if is_instance_valid(input_dialog) and !input_dialog.is_queued_for_deletion():
 		node_to_parent_for_input_key_dialog.call(node_to_parent__remove_control_func_name, input_dialog)
 
 

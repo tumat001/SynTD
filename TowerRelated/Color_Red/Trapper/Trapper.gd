@@ -142,7 +142,7 @@ func _generate_pos_for_trap_firing():
 	
 	candidate_pos = path.curve.get_closest_point(candidate_pos)
 	
-	if path != null and global_position.distance_to(candidate_pos) <= curr_range:
+	if is_instance_valid(path) and global_position.distance_to(candidate_pos) <= curr_range:
 		return candidate_pos + trap_vector2_offset
 	else:
 		return null
@@ -161,7 +161,7 @@ func _fire_trap_at_pos(arg_pos):
 	trap_attack_module.set_up_bullet__add_child_and_emit_signals(trap)
 
 func _on_trap_tree_entered(trap, arg_pos):
-	if trap != null:
+	if is_instance_valid(trap):
 		trap.send_to_position(arg_pos, initial_trap_placement_speed)
 
 #

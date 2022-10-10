@@ -520,7 +520,7 @@ func _construct_attack_sprite_on_attack():
 
 
 func _on_sword_attk_module_enemy_hit(enemy, damage_register_id, damage_instance, module):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		var sword = _construct_attack_sprite_on_attack()
 		sword.global_position = enemy.global_position
 		
@@ -569,13 +569,13 @@ func _received_chaos_ing():
 	if absolute_chaos_rng_for_events_to_play == null:
 		_initialize_rng()
 	
-	if general_purpose_timer == null:
+	if !is_instance_valid(general_purpose_timer):
 		_initialize_general_purpose_timer()
 	
-	if big_bolt_instant_dmg_attack_module == null:
+	if !is_instance_valid(big_bolt_instant_dmg_attack_module):
 		_construct_absolute_chaos_attack_modules()
 	
-	if particle_create_timer == null:
+	if !is_instance_valid(particle_create_timer):
 		_initialize_particle_timer()
 	
 	if particle_background_particle_sprite_frames == null:
@@ -1098,7 +1098,7 @@ func _play_diamond_storm_event():
 func _fire_one_diamond_and_increase_fired_count():
 	var enemy = _get_enemy_to_target_using_range_module__default_to_other_enemies(diamond_attack_module.range_module)
 	var pos_to_target = global_position
-	if enemy != null:
+	if is_instance_valid(enemy):
 		pos_to_target = enemy.global_position
 	
 	var diamond = diamond_attack_module.construct_bullet(pos_to_target)
@@ -1207,7 +1207,7 @@ func _summon_big_bolt_at_enemy():
 	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(bolt_particle)
 
 func _on_big_bolt_struck_ground(arg_primary_target, arg_bolt_pos):
-	if arg_primary_target != null:
+	if is_instance_valid(arg_primary_target):
 		_big_bolt_hit_primary_target(arg_primary_target)
 	
 	_create_big_bolt_explosion_at_location(arg_bolt_pos)
@@ -1330,7 +1330,7 @@ func _play_night_watcher_event():
 
 
 func _summon_nightwatcher_at_placable(arg_placable):
-	if arg_placable != null and arg_placable.tower_occupying == null:
+	if is_instance_valid(arg_placable) and arg_placable.tower_occupying == null:
 		var nightwatcher = game_elements.tower_inventory_bench.create_tower(Towers.NIGHTWATCHER, arg_placable)
 		nightwatcher.lifetime = night_watcher_summon_duration
 		nightwatcher.explosion_flat_dmg_amount = night_watcher_explosion_flat_dmg
@@ -1354,7 +1354,7 @@ func _get_random_position_of_random_path_in_map():
 	var random_path = game_elements.map_manager.get_random_enemy_path()
 	var random_offset = _get_random_offset_with_weights()
 	
-	if random_path != null:
+	if is_instance_valid(random_path):
 		return random_path.curve.interpolate_baked(random_offset * random_path.curve.get_baked_length())
 	else:
 		return global_position
@@ -1400,7 +1400,7 @@ func _general_purpose_timer_timeout__for_explosive_rain_delay():
 func _summon_one_rain_drop_and_increase_fired_count():
 	var enemy = _get_enemy_to_target_using_range_module__default_to_other_enemies(diamond_attack_module.range_module)
 	var pos_to_target = global_position
-	if enemy != null:
+	if is_instance_valid(enemy):
 		pos_to_target = enemy.global_position
 	
 	var rain_drop = _create_rain_drop()
@@ -1441,7 +1441,7 @@ func _summon_rain_explosion_at_pos(arg_pos):
 	explosive_rain_aoe_attk_module.set_up_aoe__add_child_and_emit_signals(rain_explosion)
 
 func _before_explosive_rain_explosion_hit_enemy(enemy, explosion):
-	if enemy != null and explosion != null and enemy.current_path != null:
+	if is_instance_valid(enemy) and is_instance_valid(explosion) and is_instance_valid(enemy.current_path):
 		var knock_up_copy = explosive_rain_knockup_effect._get_copy_scaled_by(1)
 		var forced_mov_copy = explosive_rain_forced_path_mov_effect._get_copy_scaled_by(1)
 		

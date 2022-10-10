@@ -126,9 +126,9 @@ func _on_main_attack_hit_enemy_t(enemy, damage_register_id, damage_instance, mod
 	else:
 		#var copy_of_heal_eff = enemy_heal_effect._get_copy_scaled_by(1)
 		
-		if main_attack_module != null:
-			#copy_of_heal_eff.heal_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * base_heal_ratio
-			#damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.TRANSMUTATOR_HEAL] = copy_of_heal_eff
-			pass
+		#if is_instance_valid(main_attack_module):
+		#	#copy_of_heal_eff.heal_as_modifier.flat_modifier = main_attack_module.last_calculated_final_damage * base_heal_ratio
+		#	#damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.TRANSMUTATOR_HEAL] = copy_of_heal_eff
+		#	pass
 		
 		damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.TRANSMUTATOR_SLOW_EFFECT] = enemy_slow_effect._get_copy_scaled_by(1)

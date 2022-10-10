@@ -76,7 +76,7 @@ func _game_elements_unhandled_input(arg_event, arg_action_taken):
 	if !arg_action_taken:
 		if arg_event is InputEventMouseButton:
 			if arg_event.pressed and (arg_event.button_index == BUTTON_RIGHT or arg_event.button_index == BUTTON_LEFT):
-				if game_elements.tower_manager.get_tower_on_mouse_hover() == null:
+				if is_instance_valid(game_elements.tower_manager.get_tower_on_mouse_hover()):
 					_player_requests_advance_to_next_transcript_message()
 
 

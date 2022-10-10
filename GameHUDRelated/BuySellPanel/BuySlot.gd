@@ -24,7 +24,7 @@ func _ready():
 func roll_buy_card_to_tower_id(tower_id : int):
 	if tower_id != -1:
 		var tower_info = Towers.get_tower_info(tower_id)
-		if current_child != null:
+		if is_instance_valid(current_child):
 			current_child.queue_free()
 		
 		if tower_info != null:
@@ -52,18 +52,18 @@ func _on_viewing_tower_description_tooltip(tower_type_info : TowerTypeInformatio
 
 
 func kill_tooltip_of_tower_card():
-	if current_child is TowerBuyCard:
+	if is_instance_valid(current_child) and current_child is TowerBuyCard:
 		current_child.kill_current_tooltip()
 
 
 func kill_current_tower_buy_card():
-	if current_child != null and current_child is TowerBuyCard and !current_child.is_queued_for_deletion():
+	if is_instance_valid(current_child) and current_child is TowerBuyCard and !current_child.is_queued_for_deletion():
 		current_child.queue_free()
 
 #
 
 func get_current_tower_buy_card():
-	if current_child is TowerBuyCard and !current_child.is_queued_for_deletion():
+	if is_instance_valid(current_child) and current_child is TowerBuyCard and !current_child.is_queued_for_deletion():
 		return current_child
 	
 	return null

@@ -36,7 +36,7 @@ func _on_ResumeButton_on_button_released_with_button_left():
 	pause_manager.hide_or_remove_latest_from_pause_tree__and_unpause_if_empty()
 
 func _on_GameControlsButton_on_button_released_with_button_left():
-	if game_control_panel == null:
+	if !is_instance_valid(game_control_panel):
 		game_control_panel = GameControlPanel_Scene.instance()
 		game_control_panel.main_pause_screen_panel = main_pause_screen_panel
 		game_control_panel.hub_pause_panel = self
@@ -46,7 +46,7 @@ func _on_GameControlsButton_on_button_released_with_button_left():
 
 
 func _on_GameSettingsButton_on_button_released_with_button_left():
-	if game_settings_panel == null:
+	if !is_instance_valid(game_settings_panel):
 		game_settings_panel = GameSettingsPanel_Scene.instance()
 		game_settings_panel.main_pause_screen_panel = main_pause_screen_panel
 		game_settings_panel.hub_pause_panel = self
@@ -56,7 +56,7 @@ func _on_GameSettingsButton_on_button_released_with_button_left():
 
 
 func _on_MainMenuButton_on_button_released_with_button_left():
-	if quit_game_general_dialog == null:
+	if !is_instance_valid(quit_game_general_dialog):
 		quit_game_general_dialog = GeneralDialog_Scene.instance()
 		quit_game_general_dialog.connect("ok_button_released", self, "_on_quit_game_dialog__ok_chosen")
 		quit_game_general_dialog.connect("cancel_button_released", self, "_on_quit_game_dialog__cancel_chosen")
@@ -79,7 +79,7 @@ func _on_quit_game_dialog__cancel_chosen():
 
 
 func _on_RestartButton_on_button_released_with_button_left():
-	if restart_game_dialog == null:
+	if !is_instance_valid(restart_game_dialog):
 		restart_game_dialog = GeneralDialog_Scene.instance()
 		restart_game_dialog.connect("ok_button_released", self, "_on_restart_game_dialog__ok_chosen")
 		restart_game_dialog.connect("cancel_button_released", self, "_on_restart_game_dialog__cancel_chosen")

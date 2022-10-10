@@ -287,7 +287,7 @@ func _on_range_module_enemy_exited_n(enemy, module, arg_range_module):
 
 func _gamma_ability_activated():
 	var target = _get_single_targetable_enemy()
-	if target != null:
+	if is_instance_valid(target):
 		var cd = _get_cd_to_use(gamma_ability_base_cooldown)
 		gamma_ability.on_ability_before_cast_start(cd)
 		
@@ -302,7 +302,7 @@ func _get_single_targetable_enemy():
 #
 	var targets = range_module.get_targets(1)
 	for target in targets:
-		if target != null:
+		if is_instance_valid(target):
 			return target
 	
 	return null
@@ -310,7 +310,7 @@ func _get_single_targetable_enemy():
 func _start_gamma_mode(arg_enemy, cd_to_use):
 	_is_in_gamma_mode = true
 	_attk_module_disabled_by_gamma = main_attack_module
-	if _attk_module_disabled_by_gamma != null:
+	if is_instance_valid(_attk_module_disabled_by_gamma):
 		_attk_module_disabled_by_gamma.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.NUCLEUS_DISABLE)
 	
 	# change beam pos/size/length
@@ -336,12 +336,12 @@ func _gamma_duration_timer_timeout():
 func _end_gamma_mode():
 	if _is_in_gamma_mode:
 		_is_in_gamma_mode = false
-		if _attk_module_disabled_by_gamma != null:
+		if is_instance_valid(_attk_module_disabled_by_gamma):
 			_attk_module_disabled_by_gamma.can_be_commanded_by_tower_other_clauses.remove_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.NUCLEUS_DISABLE)
 		
 		_attk_module_disabled_by_gamma = null
 		
-		if _current_gamma_beam != null:
+		if is_instance_valid(_current_gamma_beam):
 			_current_gamma_beam.queue_free()
 
 
@@ -386,13 +386,13 @@ func _get_extended_beam_pos(arg_enemy_pos : Vector2, dir_scale : float = 1):
 func _physics_process(delta):
 	if _is_in_gamma_mode:
 		var target = _get_single_targetable_enemy()
-		if target != null:
+		if is_instance_valid(target):
 			_steer_beam_to_target(target, delta)
 
 
 
 func _steer_beam_to_target(arg_enemy, delta):
-	if _current_gamma_beam != null:
+	if is_instance_valid(_current_gamma_beam):
 		var rotated_direction = _current_direction_of_beam.rotated(_get_rotation_for_steer(arg_enemy.global_position, delta))
 		_set_current_direction_of_beam(rotated_direction, gamma_attack_module.global_position + rotated_direction)
 
@@ -443,7 +443,7 @@ func _conv_angle_to_positive_val(arg_angle):
 #
 
 func _on_main_attack_hit_enemy_n(enemy, damage_register_id, damage_instance, module):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		damage_instance.final_percent_enemy_armor_pierce = percent_armor_ignore
 #		var enemy_armor = enemy._last_calculated_final_armor
 #

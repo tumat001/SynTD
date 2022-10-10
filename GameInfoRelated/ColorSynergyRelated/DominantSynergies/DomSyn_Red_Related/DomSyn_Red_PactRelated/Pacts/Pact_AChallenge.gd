@@ -62,7 +62,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 		
 
 func _enemy_spawned(enemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		enemy._add_effect(health_gain_effect)
 
 

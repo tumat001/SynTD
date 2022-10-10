@@ -57,13 +57,13 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	if game_elements == null:
 		game_elements = arg_game_elements
 	
-	if red_pact_whole_panel == null:
+	if !is_instance_valid(red_pact_whole_panel):
 		pact_decider_rng = StoreOfRNG.domsyn_red_pact_rng
 		
 		red_pact_whole_panel = Red_PactWholePanel_Scene.instance()
 		#_initialize_red_pact_whole_panel()
 	
-	if syn_icon_interactable == null:
+	if !is_instance_valid(syn_icon_interactable):
 		syn_icon_interactable = Red_SynergyIconInteractable_Scene.instance()
 		syn_icon_interactable.connect("show_syn_shop", self, "_on_show_syn_shop", [], CONNECT_PERSIST)
 		game_elements.synergy_interactable_panel.add_synergy_interactable(syn_icon_interactable)
@@ -226,7 +226,7 @@ func _generate_random_untaken_tier_0_pact(arg_tier_for_activation : int = 0) -> 
 
 # code for deciding what pact to offer
 func _generate_random_untaken_pact_from_source(source : Array, tier : int, tier_for_activation : int) -> Red_BasePact:
-	if red_pact_whole_panel != null and red_pact_whole_panel.unsworn_pact_list != null:
+	if is_instance_valid(red_pact_whole_panel) and is_instance_valid(red_pact_whole_panel.unsworn_pact_list):
 		var copy = source.duplicate()
 		for pact_uuid in red_pact_whole_panel.unsworn_pact_list.get_all_pact_uuids():
 			copy.erase(pact_uuid)

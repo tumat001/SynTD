@@ -161,7 +161,7 @@ func _construct_effect():
 func _make_modifications_to_tower(tower):
 	tower_attached_to = tower
 	
-	if bleach_burst_attk_module == null:
+	if !is_instance_valid(bleach_burst_attk_module):
 		_construct_effect()
 		
 		_construct_lob_attack_module(0)
@@ -181,7 +181,7 @@ func _on_main_tower_attack(attack_delay, enemies, module):
 	if _curr_num_of_attacks >= base_attack_count_trigger:
 		_curr_num_of_attacks = 0
 		
-		if enemies.size() > 0 and enemies[0] != null and !enemies[0].is_queued_for_deletion():
+		if enemies.size() > 0 and is_instance_valid(enemies[0]) and !enemies[0].is_queued_for_deletion():
 			_fire_ball_proj_at_enemy(enemies[0])
 
 func _fire_ball_proj_at_enemy(arg_enemy):
@@ -209,7 +209,7 @@ func _undo_modifications_to_tower(tower):
 		tower.disconnect("on_main_attack", self, "_on_main_tower_attack")
 		tower.disconnect("on_round_end", self, "_on_round_end")
 	
-	if bleach_lob_attk_module != null:
+	if is_instance_valid(bleach_lob_attk_module):
 		tower.remove_attack_module(bleach_lob_attk_module)
 		bleach_lob_attk_module.queue_free()
 		

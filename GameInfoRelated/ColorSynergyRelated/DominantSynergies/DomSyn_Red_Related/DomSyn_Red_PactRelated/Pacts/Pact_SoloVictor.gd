@@ -128,13 +128,13 @@ func _get_tower_damage_list_descending() -> Array:
 
 func _find_tower_to_declare_as_victor():
 	var tower = get_valid_highest_damaging_tower_from_arr()
-	if tower != null:
+	if is_instance_valid(tower):
 		_tower_to_be_declared_victor(tower)
 
 
 func get_valid_highest_damaging_tower_from_arr():
 	for tower in _towers_sorted_damage_descending:
-		if tower != null and !tower.is_queued_for_deletion() and tower.is_current_placable_in_map():
+		if is_instance_valid(tower) and !tower.is_queued_for_deletion() and tower.is_current_placable_in_map():
 			return tower
 	
 	return null
@@ -148,7 +148,7 @@ func _tower_to_be_declared_victor(tower : AbstractTower):
 func _assign_tower_as_victor(arg_tower):
 	_current_victor_tower = arg_tower
 	
-	if _current_victor_tower != null:
+	if is_instance_valid(_current_victor_tower):
 		if !_current_victor_tower.is_connected("tower_in_queue_free", self, "_on_victor_queued_free"):
 			_current_victor_tower.connect("tower_in_queue_free", self, "_on_victor_queued_free", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 			_current_victor_tower.connect("tower_not_in_active_map", self, "_on_victor_not_active_in_map", [], CONNECT_PERSIST | CONNECT_DEFERRED)
@@ -196,7 +196,7 @@ func get_valid_lowest_damaging_towers(arg_amount : int, towers_list : Array = _g
 	var bucket : Array = []
 	
 	for tower in inverted_list:
-		if tower != null and !tower.is_queued_for_deletion() and tower.is_current_placable_in_map() and tower != _current_victor_tower:
+		if is_instance_valid(tower) and !tower.is_queued_for_deletion() and tower.is_current_placable_in_map() and tower != _current_victor_tower:
 			bucket.append(tower)
 			if bucket.size() >= arg_amount:
 				break
@@ -207,7 +207,7 @@ func get_valid_lowest_damaging_towers(arg_amount : int, towers_list : Array = _g
 #
 
 func _current_victor_to_be_disconnected():
-	if _current_victor_tower != null:
+	if is_instance_valid(_current_victor_tower):
 		if _current_victor_tower.is_connected("tower_in_queue_free", self, "_on_victor_queued_free"):
 			_current_victor_tower.disconnect("tower_in_queue_free", self, "_on_victor_queued_free")
 			_current_victor_tower.disconnect("tower_not_in_active_map", self, "_on_victor_not_active_in_map")
@@ -242,7 +242,7 @@ func _on_tower_placed_in_map(arg_tower):
 #
 
 func _remove_victor_effect_from_tower(tower : AbstractTower):
-	if tower != null:
+	if is_instance_valid(tower):
 		var base_dmg_effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.RED_PACT_SOLO_VICTOR_BASE_DAMAGE_EFFECT)
 		if base_dmg_effect != null:
 			tower.remove_tower_effect(base_dmg_effect)
@@ -267,7 +267,7 @@ func _apply_lowest_dmg_effects_to_tower(tower : AbstractTower):
 func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 	._remove_pact_from_game_elements(arg_game_elements)
 	
-	if _current_victor_tower != null: #and arg_game_elements.stage_round_manager.round_started:
+	if is_instance_valid(_current_victor_tower): #and arg_game_elements.stage_round_manager.round_started:
 		_current_victor_to_be_disconnected()
 		_remove_victor_effect_from_tower(_current_victor_tower)
 	

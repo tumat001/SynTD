@@ -12,13 +12,13 @@ var node_to_host_trails : Node setget set_node_to_host_trails # Ex: the tower (t
 
 
 func set_node_to_host_trails(arg_node):
-	if node_to_host_trails != null:
+	if is_instance_valid(node_to_host_trails):
 		if node_to_host_trails.is_connected("tree_exiting", self, "_on_hosting_node_queued_free"):
 			node_to_host_trails.disconnect("tree_exiting", self, "_on_hosting_node_queued_free")
 	
 	node_to_host_trails = arg_node
 	
-	if node_to_host_trails != null:
+	if is_instance_valid(node_to_host_trails):
 		if !node_to_host_trails.is_connected("tree_exiting", self, "_on_hosting_node_queued_free"):
 			node_to_host_trails.connect("tree_exiting", self, "_on_hosting_node_queued_free", [], CONNECT_PERSIST)
 
@@ -27,7 +27,7 @@ func set_node_to_host_trails(arg_node):
 
 func create_trail_for_node(arg_node):
 	var trail = _get_idle_and_available_trail()
-	if trail == null:
+	if trail == null or !is_instance_valid(trail):
 		trail = _construct_trail()
 	
 	emit_signal("on_trail_before_attached_to_node", trail, arg_node)
@@ -39,7 +39,7 @@ func create_trail_for_node(arg_node):
 
 func _get_idle_and_available_trail():
 	for trail in all_associated_trails:
-		if trail != null and !trail.is_queued_for_deletion() and trail.is_idle_and_available:
+		if is_instance_valid(trail) and !trail.is_queued_for_deletion() and trail.is_idle_and_available:
 			return trail
 	
 	return null

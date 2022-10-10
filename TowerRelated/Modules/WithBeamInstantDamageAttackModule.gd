@@ -39,7 +39,7 @@ func update_beams_state():
 			_should_update_beams = false
 	
 	#if range_module.enemies_in_range.size() == 0:
-	if range_module != null and range_module._current_enemies.size() == 0:
+	if is_instance_valid(range_module) and range_module._current_enemies.size() == 0:
 		_terminate_update_on_next = true
 		
 	else:
@@ -52,10 +52,10 @@ func force_update_beam_state():
 		if beam.visible:
 			var enemy = beam_to_enemy_map[beam]
 			
-			if !show_beam_regardless_of_state and (enemy == null or !range_module._current_enemies.has(enemy)):
+			if !show_beam_regardless_of_state and (!is_instance_valid(enemy) or !range_module._current_enemies.has(enemy)):
 				beam.visible = false
 			else:
-				if enemy != null:
+				if is_instance_valid(enemy):
 					beam.update_destination_position(enemy.global_position)
 				else:
 					beam.visible = false
@@ -66,20 +66,20 @@ func force_update_beam_state():
 
 func _during_windup(enemy : AbstractEnemy = null):
 	._during_windup(enemy)
-	if show_beam_at_windup and enemy != null:
+	if show_beam_at_windup and is_instance_valid(enemy):
 		_connect_beam_to_enemy(enemy)
 
 func _during_windup_multiple(enemies : Array = []):
 	._during_windup_multiple(enemies)
 	
 	for enemy in enemies:
-		if show_beam_at_windup and enemy != null:
+		if show_beam_at_windup and is_instance_valid(enemy):
 			_connect_beam_to_enemy(enemy)
 
 func _attack_enemy(enemy : AbstractEnemy):
 	._attack_enemy(enemy)
 	
-	if enemy != null and !show_beam_at_windup:
+	if is_instance_valid(enemy) and !show_beam_at_windup:
 		_connect_beam_to_enemy(enemy)
 
 # Disabling and Enabling

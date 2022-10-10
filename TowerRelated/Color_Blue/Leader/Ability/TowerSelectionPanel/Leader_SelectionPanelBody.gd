@@ -21,14 +21,14 @@ func _ready():
 #
 
 func set_tower_leader(arg_leader : Leader):
-	if tower_leader != null:
+	if is_instance_valid(tower_leader):
 		add_tower_ability_button.ability = null
 		remove_tower_ability_button.ability = null
 		tower_leader.disconnect("show_member_connection_mode_changed", self, "_showing_member_state_changed")
 	
 	tower_leader = arg_leader
 	
-	if tower_leader != null:
+	if is_instance_valid(tower_leader):
 		add_tower_ability_button.ability = tower_leader.add_tower_as_member_ability
 		remove_tower_ability_button.ability = tower_leader.remove_tower_as_member_ability
 		tower_leader.connect("show_member_connection_mode_changed", self, "_showing_member_state_changed")

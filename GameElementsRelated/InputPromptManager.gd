@@ -40,7 +40,7 @@ func prompt_select_tower(prompter, arg_prompt_successful_method_handler : String
 		_current_prompter = prompter
 		_current_prompt_tower_checker_predicate_name = arg_prompt_tower_checker_predicate_name
 		
-		if _current_prompter != null:
+		if is_instance_valid(_current_prompter) and _current_prompter != null:
 			_current_prompter.connect("tree_exiting", self, "cancel_selection")
 			
 			if _current_prompter is AbstractTower:
@@ -73,7 +73,7 @@ func clean_up_selection():
 	if current_selection_mode == SelectionMode.TOWER:
 		current_selection_mode = SelectionMode.NONE
 		
-		if _current_prompter != null:
+		if is_instance_valid(_current_prompter) and _current_prompter != null:
 			_current_prompter.disconnect("tree_exiting", self, "cancel_selection")
 			
 			if _current_prompter is AbstractTower:

@@ -83,7 +83,7 @@ func update_dir_name_to_primary_rad_angle_map(arg_anim_names_to_use : Array, arg
 #
 
 func set_animated_sprite_animation_to_default(arg_animated_sprite : AnimatedSprite):
-	if _sprite_frames != null:
+	if is_instance_valid(_sprite_frames):
 		var animation_names : PoolStringArray = _sprite_frames.get_animation_names()
 		
 		for dir_name in initial_dir_as_name_hierarchy:

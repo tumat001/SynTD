@@ -313,7 +313,7 @@ func _remove_self_reach_range_effect():
 #
 
 func _on_reach_before_fire_of_missles_timer_timeout():
-	if range_module != null and range_module.is_a_targetable_enemy_in_range():
+	if is_instance_valid(range_module) and range_module.is_a_targetable_enemy_in_range():
 		_cd_calculated_from_ability = _get_cd_to_use(reach_base_ability_cooldown)
 		reach_ability.on_ability_before_cast_start(_cd_calculated_from_ability)
 		
@@ -346,7 +346,7 @@ func _attempt_fire_missle_at_random_enemy_in_range():
 func _fire_missle_at_random_enemy_in_range():
 	var target = _get_target_for_missle__including_in_map()
 	
-	if target != null:
+	if is_instance_valid(target):
 		var missle = missle_attack_module.construct_bullet(target.global_position)
 		missle.decrease_life_distance = false
 		missle.decrease_life_duration = true
@@ -366,7 +366,7 @@ func _fire_missle_at_random_enemy_in_range():
 		missle_attack_module.set_up_bullet__add_child_and_emit_signals(missle)
 
 func _get_target_for_missle():
-	if range_module != null:
+	if is_instance_valid(range_module):
 		var targets = range_module.get_targets_without_affecting_self_current_targets(1, Targeting.RANDOM, false)
 		if targets.size() > 0:
 			return targets[0]
@@ -376,7 +376,7 @@ func _get_target_for_missle():
 func _get_target_for_missle__including_in_map():
 	var target = _get_target_for_missle()
 	
-	if target != null:
+	if is_instance_valid(target):
 		return target
 	
 	
@@ -434,7 +434,7 @@ func _create_missle_homing_component():
 
 func _on_enemy_targeted_by_homing_missle_tree_exiting(missle, homing_component):
 	var target = _get_target_for_missle__including_in_map()
-	if target != null:
+	if is_instance_valid(target):
 		homing_component.target_node_to_home_to = target
 	else:
 		missle.trigger_on_death_events()

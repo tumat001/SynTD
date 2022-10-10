@@ -38,7 +38,7 @@ func _before_enemy_hit_sensor_aoe(enemy):
 #
 
 func queue_free():
-	if sensor_aoe != null:
+	if is_instance_valid(sensor_aoe):
 		sensor_aoe.queue_free()
 	
 	.queue_free()

@@ -29,7 +29,7 @@ func _on_CombinationTowerTierButton_pressed_mouse_event(event : InputEventMouseB
 func set_tier(arg_tier : int):
 	tier = arg_tier
 	
-	if tier_icon != null:
+	if is_instance_valid(tier_icon):
 		if tier == 1:
 			tier_icon.texture = Tier_1_icon
 		elif tier == 2:

@@ -18,14 +18,14 @@ var sprite_frames_for_beam : SpriteFrames
 # setters
 
 func set_owning_node(node : Node2D):
-	if owning_node != null:
+	if is_instance_valid(owning_node):
 		if owning_node.is_connected("global_position_changed", self, "_owner_node_global_pos_changed"):
 			owning_node.disconnect("global_position_changed", self, "_owner_node_global_pos_changed")
 			owning_node.disconnect("tree_exiting", self, "_owning_node_tree_exiting")
 	
 	owning_node = node
 	
-	if owning_node != null:
+	if is_instance_valid(owning_node):
 		if !owning_node.is_connected("global_position_changed", self, "_owner_node_global_pos_changed"):
 			owning_node.connect("global_position_changed", self, "_owner_node_global_pos_changed", [], CONNECT_PERSIST)
 			owning_node.connect("tree_exiting", self, "_owning_node_tree_exiting", [], CONNECT_PERSIST)
@@ -38,7 +38,7 @@ func show_beam_connections():
 	emit_signal("showing_connection_mode_changed", true)
 	
 	for node in _node_beam_map.keys():
-		if _node_beam_map[node] == null:
+		if _node_beam_map[node] == null or !is_instance_valid(_node_beam_map[node]):
 			_node_beam_map[node] = _construct_beam()
 		
 		var beam = _node_beam_map[node]
@@ -80,7 +80,7 @@ func _node_global_pos_changed(old_position, new_position, node):
 	if _node_beam_map.has(node) and node.is_current_placable_in_map():
 		var beam = _node_beam_map[node]
 		
-		if beam != null and beam.visible:
+		if is_instance_valid(beam) and beam.visible:
 			beam.update_destination_position(node.global_position)
 
 
@@ -109,7 +109,7 @@ func attempt_add_connection_to_node(node):
 
 func remove_connection_of_node(node):
 	if _node_beam_map.has(node):
-		if _node_beam_map[node] != null:
+		if is_instance_valid(_node_beam_map[node]):
 			_node_beam_map[node].queue_free()
 		
 		_node_beam_map.erase(node)

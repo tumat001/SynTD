@@ -72,7 +72,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	if on_hit_dmg_adder_effect == null:
 		_construct_effects()
 	
-	if fluctuation_timer == null:
+	if !is_instance_valid(fluctuation_timer):
 		fluctuation_timer = Timer.new()
 		fluctuation_timer.wait_time = fluctuation_duration
 		fluctuation_timer.one_shot = true
@@ -162,7 +162,7 @@ func _construct_effects():
 # Fluc related
 
 func _on_round_end(curr_stageround):
-	if fluctuated_tower != null:
+	if is_instance_valid(fluctuated_tower):
 		_clean_up_fluc_modifications()
 		
 		fluctuation_timer.wait_time = 0.1
@@ -277,7 +277,7 @@ func _attempt_pass_flucutation_to_next_candidate():
 	
 	var candidate_tower = _find_next_candidate_tower()
 	var success : bool = false
-	if candidate_tower != null:
+	if is_instance_valid(candidate_tower):
 		success = _attempt_assign_fluctuation_to_tower(candidate_tower)
 	
 	if !success:
@@ -291,7 +291,7 @@ func _clean_up_fluc_modifications():
 	is_fluctuation_active = false
 
 func _disconnect_from_current_fluctuated_tower():
-	if fluctuated_tower != null:
+	if is_instance_valid(fluctuated_tower):
 		if fluctuated_tower.is_connected("on_tower_no_health", self, "_on_fluctuating_tower_zero_health_reached"):
 			fluctuated_tower.disconnect("on_tower_no_health", self, "_on_fluctuating_tower_zero_health_reached")
 			fluctuated_tower.disconnect("tree_exiting", self, "_on_flucutating_tower_tree_exiting")
@@ -300,12 +300,12 @@ func _disconnect_from_current_fluctuated_tower():
 			#fluctuated_tower.disconnect("on_range_module_enemy_exited", self, "_on_enemy_left_tower_range")
 
 func _remove_fluctuation_effect_from_curr_tower():
-	if fluctuated_tower != null:
+	if is_instance_valid(fluctuated_tower):
 		if fluctuated_tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.YELLOW_GO_EFFECT_BUNDLE):
 			fluctuated_tower.remove_tower_effect(fluctuation_effect)
 
 func _destroy_fluctuation_particle():
-	if fluctutation_particle != null:
+	if is_instance_valid(fluctutation_particle):
 		fluctutation_particle.queue_free()
 
 
@@ -317,7 +317,7 @@ func _find_next_candidate_tower() -> AbstractTower:
 		
 		for tower in sorted_towers:
 			# if one of these conditions is met, then this tower cannot be chosen as the next candidate
-			if tower == fluctuated_tower or tower.range_module == null or tower.current_health <= 0 or tower.last_calculated_disabled_from_attacking or tower.range_module.enemies_in_range.size() == 0 or !tower.last_calculated_has_commandable_attack_modules:
+			if tower == fluctuated_tower or !is_instance_valid(tower.range_module) or tower.current_health <= 0 or tower.last_calculated_disabled_from_attacking or tower.range_module.enemies_in_range.size() == 0 or !tower.last_calculated_has_commandable_attack_modules:
 				continue
 			else:
 				return tower

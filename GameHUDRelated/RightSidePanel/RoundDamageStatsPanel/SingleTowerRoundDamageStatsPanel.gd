@@ -20,7 +20,7 @@ onready var tower_icon_panel = $HBoxContainer/TowerIconPanel
 #
 
 func _ready():
-	if _tower != null:
+	if is_instance_valid(_tower):
 		tower_icon_panel.tower_type_info = _tower.tower_type_info
 	
 	tower_icon_panel.set_button_interactable(false)
@@ -29,15 +29,15 @@ func _ready():
 #
 
 func set_tower(arg_tower : AbstractTower):
-	if _tower != null:
+	if is_instance_valid(_tower):
 		_tower.disconnect("on_per_round_total_damage_changed", self, "_on_tower_in_round_total_damage_changed")
 	
 	_tower = arg_tower
 	
-	if _tower != null:
+	if is_instance_valid(_tower):
 		_tower.connect("on_per_round_total_damage_changed", self, "_on_tower_in_round_total_damage_changed", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 		
-		if tower_icon_panel != null:
+		if is_instance_valid(tower_icon_panel):
 			tower_icon_panel.tower_type_info = _tower.tower_type_info
 
 

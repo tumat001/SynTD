@@ -79,7 +79,7 @@ func _disconnect_ability_signals():
 
 
 func _update_button_status():
-	if ability_button != null and ability != null:
+	if is_instance_valid(ability_button) and ability != null:
 		ability_button.texture_normal = ability.icon
 		
 		if ability.is_timebound:
@@ -201,7 +201,7 @@ func attempt_activate_ability():
 
 func _ability_button_right_pressed():
 	if ability != null:
-		if ability_tooltip != null:
+		if is_instance_valid(ability_tooltip):
 			ability_tooltip.queue_free()
 			ability_tooltip = null
 			
@@ -227,7 +227,7 @@ func _construct_tooltip():
 
 
 func _update_tooltip():
-	if ability_tooltip != null:
+	if is_instance_valid(ability_tooltip):
 		if game_settings_manager == null or game_settings_manager.descriptions_mode == GameSettingsManager.DescriptionsMode.COMPLEX or !ability.has_simple_descriptions():
 			if ability.descriptions_source == null:
 				ability_tooltip.descriptions = ability.descriptions

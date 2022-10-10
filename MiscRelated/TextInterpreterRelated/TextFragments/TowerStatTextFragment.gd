@@ -98,7 +98,7 @@ func _init(arg_tower,
 	update_damage_type_based_on_args()
 
 func update_damage_type_based_on_args():
-	if _stat_type == STAT_TYPE.ON_HIT_DAMAGE and _tower != null:
+	if _stat_type == STAT_TYPE.ON_HIT_DAMAGE and is_instance_valid(_tower):
 		var all_on_hits_have_same_type = _tower.get_all_on_hits_have_same_damage_type()
 		var on_hit_type = _tower.get_damage_type_of_all_on_hits()
 		
@@ -113,7 +113,7 @@ func update_damage_type_based_on_args():
 func _get_as_numerical_value() -> float:
 	var val : float = 0
 	
-	if _tower != null:
+	if is_instance_valid(_tower):
 		if _stat_basis == STAT_BASIS.TOTAL:
 			val = _tower.call(type_to_stat__total__get_method_of_tower_map[_stat_type])
 		elif _stat_basis == STAT_BASIS.BASE:

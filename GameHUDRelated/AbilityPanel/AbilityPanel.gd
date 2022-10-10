@@ -46,7 +46,7 @@ func activate_ability_at_index(i : int):
 	#var ability_buttons : Array = ability_container.get_children()
 	
 	var ability_button_to_activate = get_ability_button_with_hotkey(i + 1)
-	if ability_button_to_activate != null:
+	if is_instance_valid(ability_button_to_activate):
 		ability_button_to_activate._ability_button_left_pressed()
 	
 	#for button in ability_buttons:
@@ -128,7 +128,7 @@ func swap_buttons_with_hotkeys(hotkey01 : int, hotkey02 : int):
 	var button_with_hotkey02 = get_ability_button_with_hotkey(hotkey02)
 	var all_ability_buttons = get_all_ability_buttons()
 	
-	if button_with_hotkey01 != null and button_with_hotkey02 != null:
+	if is_instance_valid(button_with_hotkey01) and is_instance_valid(button_with_hotkey02):
 		var button_01_index : int = get_all_ability_buttons().find(button_with_hotkey01)
 		var button_02_index : int = get_all_ability_buttons().find(button_with_hotkey02)
 		

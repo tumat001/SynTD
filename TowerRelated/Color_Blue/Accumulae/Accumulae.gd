@@ -346,7 +346,7 @@ func _on_main_attack_hit_enemy_a(enemy, damage_register_id, damage_instance, mod
 		call_deferred("_attk_enemy_with_siphon", enemy)
 
 func _attk_enemy_with_siphon(enemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		siphon_attk_module.on_command_attack_enemies([enemy])
 		enemy._add_effect(enemy_siphon_ap_effect)
 		
@@ -374,13 +374,13 @@ func _enter_in_salvo_mode():
 	
 	is_in_salvo = true
 	_attk_module_disabled_by_salvo_clause = main_attack_module
-	if _attk_module_disabled_by_salvo_clause != null:
+	if is_instance_valid(_attk_module_disabled_by_salvo_clause):
 		_attk_module_disabled_by_salvo_clause.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.ACCUMULAE_DISABLE)
 
 
 func _exit_in_salvo_mode():
 	is_in_salvo = false
-	if _attk_module_disabled_by_salvo_clause != null:
+	if is_instance_valid(_attk_module_disabled_by_salvo_clause):
 		_attk_module_disabled_by_salvo_clause.can_be_commanded_by_tower_other_clauses.remove_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.ACCUMULAE_DISABLE)
 	
 	_attk_module_disabled_by_salvo_clause = null

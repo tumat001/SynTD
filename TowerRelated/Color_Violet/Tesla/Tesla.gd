@@ -528,7 +528,7 @@ func _update_orbit_radius_conditional_clauses():
 		orbit_decrease_activation_condi_clause.remove_clause(ORBIT_CANNOT_DECREASE_CLAUSE)
 
 func _get_final_range_of_self_for_orbit() -> float:
-	if range_module != null:
+	if is_instance_valid(range_module):
 		return range_module.last_calculated_final_range
 	else:
 		return float(orbit_radius_minimum)

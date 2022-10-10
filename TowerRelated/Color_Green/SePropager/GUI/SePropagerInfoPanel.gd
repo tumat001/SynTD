@@ -14,13 +14,13 @@ onready var sell_all_golden_button = $VBoxContainer/BodyMarginer/ContentMarginer
 
 
 func set_se_propager(arg_se_propager):
-	if se_propager != null:
+	if is_instance_valid(se_propager):
 		toggle_auto_sell_golden_button.ability = null
 		sell_all_golden_button.ability = null
 	
 	se_propager = arg_se_propager
 	
-	if se_propager != null:
+	if is_instance_valid(se_propager):
 		toggle_auto_sell_golden_button.ability = se_propager.toggle_auto_sell_golden_ability
 		sell_all_golden_button.ability = se_propager.sell_all_golden_abiltiy
 

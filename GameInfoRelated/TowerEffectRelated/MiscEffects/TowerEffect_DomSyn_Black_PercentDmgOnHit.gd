@@ -46,7 +46,7 @@ func _attempt_give_on_hit_dmg(enemy, damage_register_id, damage_instance, module
 
 func _enemy_hit(enemy, damage_register_id, damage_instance, module):
 	damage_instance.on_hit_damages[dmg_on_hit.internal_id] = dmg_on_hit.get_copy_scaled_by(1)
-	if enemy != null:
+	if is_instance_valid(enemy):
 		_summon_particle(enemy)
 
 func _summon_particle(enemy):

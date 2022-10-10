@@ -714,24 +714,24 @@ func _apply_capacitor_effects_to_game(arg_tier : int):
 		
 	
 	
-	if _capacitor_lightning_queue_timer == null:
+	if !is_instance_valid(_capacitor_lightning_queue_timer):
 		_capacitor_lightning_queue_timer = Timer.new()
 		_capacitor_lightning_queue_timer.one_shot = true
 		_capacitor_lightning_queue_timer.connect("timeout", self, "_timer_for_lightning_queue_finished", [], CONNECT_PERSIST)
 		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_capacitor_lightning_queue_timer)
 	
-	if _capacitor_lightning_delay_for_next_lightning_timer == null:
+	if !is_instance_valid(_capacitor_lightning_delay_for_next_lightning_timer):
 		_capacitor_lightning_delay_for_next_lightning_timer = Timer.new()
 		_capacitor_lightning_delay_for_next_lightning_timer.one_shot = true
 		_capacitor_lightning_delay_for_next_lightning_timer.connect("timeout", self, "_timer_for_next_lightning_finished", [], CONNECT_PERSIST)
 		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_capacitor_lightning_delay_for_next_lightning_timer)
 	
-	if _capacitor_lightning_from_ground_to_strike_timer == null:
+	if !is_instance_valid(_capacitor_lightning_from_ground_to_strike_timer):
 		_capacitor_lightning_from_ground_to_strike_timer = Timer.new()
 		_capacitor_lightning_from_ground_to_strike_timer.one_shot = true
 		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_capacitor_lightning_from_ground_to_strike_timer)
 	
-	if _capacitor_lightning_explosion_attack_module == null:
+	if !is_instance_valid(_capacitor_lightning_explosion_attack_module):
 		_capacitor_lightning_explosion_attack_module = AOEAttackModule_Scene.instance()
 		
 		_capacitor_lightning_explosion_attack_module.base_damage = 0
@@ -1116,7 +1116,7 @@ func _create_lightning_into_destination(arg_pos : Vector2):
 
 
 func _on_lightning_strike_hit_tower(arg_tower):
-	if arg_tower != null:
+	if is_instance_valid(arg_tower):
 		_give_tower_lightning_buffs(arg_tower)
 
 func _give_tower_lightning_buffs(arg_tower):
@@ -1154,12 +1154,12 @@ func _clean_up_capacitor_states():
 		_queued_for_lightning = false
 		
 		_capacitor_current_cast_count_in_round = 0
-		if black_syn_icon != null:
+		if is_instance_valid(black_syn_icon):
 			black_syn_icon.set_nova_counter(capacitor_ability_cast_count_requirement - _capacitor_current_cast_count_in_round)
 		
 		_capacitor_current_lightning_count_to_summon = 0
 		_capacitor_delay_for_next_lightning = 0
 		#_capacitor_current_entities_hit.clear()
 		
-		if _capacitor_nova_particle != null and !_capacitor_nova_particle.is_queued_for_deletion():
+		if is_instance_valid(_capacitor_nova_particle) and !_capacitor_nova_particle.is_queued_for_deletion():
 			_capacitor_nova_particle.queue_free()

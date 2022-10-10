@@ -139,7 +139,7 @@ func _on_TowerNameAndPicPanel_show_extra_tower_info():
 	_toggle_extra_tower_info_show()
 
 func _toggle_extra_tower_info_show():
-	if extra_info_panel == null:
+	if !is_instance_valid(extra_info_panel):
 		_create_extra_info_panel()
 	else:
 		_destroy_extra_info_panel()
@@ -147,7 +147,7 @@ func _toggle_extra_tower_info_show():
 
 
 func _create_extra_info_panel():
-	if extra_info_panel == null:
+	if !is_instance_valid(extra_info_panel):
 		extra_info_panel = ExtraInfoPanel_Scene.instance()
 		
 		extra_info_panel.tower = tower
@@ -166,7 +166,7 @@ func _create_extra_info_panel():
 
 
 func _destroy_extra_info_panel():
-	if extra_info_panel != null:
+	if is_instance_valid(extra_info_panel):
 		extra_info_panel.queue_free()
 		extra_info_panel = null
 
@@ -178,7 +178,7 @@ func destroy_extra_info_panel__called_from_outside():
 
 func update_display_of_energy_module():
 	if tower.energy_module != null:
-		if energy_module_panel == null:
+		if !is_instance_valid(energy_module_panel):
 			energy_module_panel = EnergyModulePanel_Scene.instance()
 			energy_module_extra_slot.add_child(energy_module_panel)
 		
@@ -188,7 +188,7 @@ func update_display_of_energy_module():
 		energy_module_extra_slot.update_visibility_based_on_children()
 		
 	else:
-		if energy_module_panel != null:
+		if is_instance_valid(energy_module_panel):
 			energy_module_panel.visible = false
 			energy_module_extra_slot.update_visibility_based_on_children()
 
@@ -197,7 +197,7 @@ func update_display_of_energy_module():
 
 func update_display_of_heat_module_panel():
 	if tower.heat_module != null and tower.heat_module.should_be_shown_in_info_panel:
-		if heat_module_panel == null:
+		if !is_instance_valid(heat_module_panel):
 			heat_module_panel = HeatModulePanel_Scene.instance()
 			heat_module_extra_slot.add_child(heat_module_panel)
 		
@@ -207,7 +207,7 @@ func update_display_of_heat_module_panel():
 		heat_module_extra_slot.update_visibility_based_on_children()
 		
 	else:
-		if heat_module_panel != null:
+		if is_instance_valid(heat_module_panel):
 			heat_module_panel.visible = false
 			heat_module_extra_slot.update_visibility_based_on_children()
 
@@ -215,7 +215,7 @@ func update_display_of_heat_module_panel():
 # TOWER SPECIFIC INFO PANEL -----------------
 
 func _update_tower_specific_info_panel():
-	if current_active_info_panel != null:
+	if is_instance_valid(current_active_info_panel):
 		if current_active_info_panel.has_method("UNLISTEN_TO_INFO_PANEL_SIGNALS"):
 			current_active_info_panel.call("UNLISTEN_TO_INFO_PANEL_SIGNALS", self)
 	
@@ -224,7 +224,7 @@ func _update_tower_specific_info_panel():
 	
 	# 704
 	if _704_InfoPanel.should_display_self_for(tower):
-		if _704_info_panel == null:
+		if !is_instance_valid(_704_info_panel):
 			_704_info_panel = _704_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(_704_info_panel)
 		
@@ -234,14 +234,14 @@ func _update_tower_specific_info_panel():
 		current_active_info_panel = _704_info_panel
 		
 	else:
-		if _704_info_panel != null:
+		if is_instance_valid(_704_info_panel):
 			_704_info_panel.visible = false
 			_704_info_panel.tower_704 = null
 	
 	
 	# Leader
 	if Leader_SelectionPanel.should_display_self_for(tower):
-		if leader_selection_panel == null:
+		if !is_instance_valid(leader_selection_panel):
 			leader_selection_panel = Leader_SelectionPanel_Scene.instance()
 			tower_specific_slot.add_child(leader_selection_panel)
 		
@@ -250,14 +250,14 @@ func _update_tower_specific_info_panel():
 		current_active_info_panel = leader_selection_panel
 		
 	else:
-		if leader_selection_panel != null:
+		if is_instance_valid(leader_selection_panel):
 			leader_selection_panel.visible = false
 			leader_selection_panel.set_leader(null)
 	
 	
 	# Orb
 	if Orb_InfoPanel.should_display_self_for(tower):
-		if orb_info_panel == null:
+		if !is_instance_valid(orb_info_panel):
 			orb_info_panel = Orb_InfoPanel_Scene.instance()
 			orb_info_panel.game_settings_manager = game_settings_manager
 			tower_specific_slot.add_child(orb_info_panel)
@@ -266,14 +266,14 @@ func _update_tower_specific_info_panel():
 		orb_info_panel.set_orb_tower(tower)
 		current_active_info_panel = orb_info_panel
 	else:
-		if orb_info_panel != null:
+		if is_instance_valid(orb_info_panel):
 			orb_info_panel.visible = false
 			orb_info_panel.set_orb_tower(null)
 	
 	
 	# Wave
 	if Wave_InfoPanel.should_display_self_for(tower):
-		if wave_info_panel == null:
+		if !is_instance_valid(wave_info_panel):
 			wave_info_panel = Wave_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(wave_info_panel)
 		
@@ -281,14 +281,14 @@ func _update_tower_specific_info_panel():
 		wave_info_panel.set_wave_tower(tower)
 		current_active_info_panel = wave_info_panel
 	else:
-		if wave_info_panel != null:
+		if is_instance_valid(wave_info_panel):
 			wave_info_panel.visible = false
 			wave_info_panel.set_wave_tower(null)
 	
 	
 	# Hero
 	if Hero_InfoPanel.should_display_self_for(tower):
-		if hero_info_panel == null:
+		if !is_instance_valid(hero_info_panel):
 			hero_info_panel = Hero_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(hero_info_panel)
 		
@@ -296,14 +296,14 @@ func _update_tower_specific_info_panel():
 		hero_info_panel.set_hero(tower)
 		current_active_info_panel = hero_info_panel
 	else:
-		if hero_info_panel != null:
+		if is_instance_valid(hero_info_panel):
 			hero_info_panel.visible = false
 			hero_info_panel.set_hero(null)
 	
 	
 	# Blossom
 	if Blossom_InfoPanel.should_display_self_for(tower):
-		if blossom_info_panel == null:
+		if !is_instance_valid(blossom_info_panel):
 			blossom_info_panel = Blossom_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(blossom_info_panel)
 		
@@ -311,14 +311,14 @@ func _update_tower_specific_info_panel():
 		blossom_info_panel.set_blossom(tower)
 		current_active_info_panel = blossom_info_panel
 	else:
-		if blossom_info_panel != null:
+		if is_instance_valid(blossom_info_panel):
 			blossom_info_panel.visible = false
 			blossom_info_panel.set_blossom(null)
 	
 	
 	# Brewd
 	if Brewd_InfoPanel.should_display_self_for(tower):
-		if brewd_info_panel == null:
+		if !is_instance_valid(brewd_info_panel):
 			brewd_info_panel = Brewd_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(brewd_info_panel)
 		
@@ -326,14 +326,14 @@ func _update_tower_specific_info_panel():
 		brewd_info_panel.set_brewd_tower(tower)
 		current_active_info_panel = brewd_info_panel
 	else:
-		if brewd_info_panel != null:
+		if is_instance_valid(brewd_info_panel):
 			brewd_info_panel.visible = false
 			brewd_info_panel.set_brewd_tower(null)
 	
 	
 	# BeaconDish
 	if BeaconDish_EffectPanel.should_display_self_for(tower):
-		if beacon_dish_effect_panel == null:
+		if !is_instance_valid(beacon_dish_effect_panel):
 			beacon_dish_effect_panel = BeaconDish_EffectPanel_Scene.instance()
 			tower_specific_slot.add_child(beacon_dish_effect_panel)
 		
@@ -341,14 +341,14 @@ func _update_tower_specific_info_panel():
 		beacon_dish_effect_panel.set_beacon_dish(tower)
 		current_active_info_panel = beacon_dish_effect_panel
 	else:
-		if beacon_dish_effect_panel != null:
+		if is_instance_valid(beacon_dish_effect_panel):
 			beacon_dish_effect_panel.visible = false
 			beacon_dish_effect_panel.set_beacon_dish(null)
 	
 	
 	# Se Propager
 	if SePropager_InfoPanel.should_display_self_for(tower):
-		if se_propager_info_panel == null:
+		if !is_instance_valid(se_propager_info_panel):
 			se_propager_info_panel = SePropager_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(se_propager_info_panel)
 		
@@ -356,13 +356,13 @@ func _update_tower_specific_info_panel():
 		se_propager_info_panel.set_se_propager(tower)
 		current_active_info_panel = se_propager_info_panel
 	else:
-		if se_propager_info_panel != null:
+		if is_instance_valid(se_propager_info_panel):
 			se_propager_info_panel.visible = false
 			se_propager_info_panel.set_se_propager(null)
 	
 	# L_Assaut
 	if LAssaut_InfoPanel.should_display_self_for(tower):
-		if lassaut_info_panel == null:
+		if !is_instance_valid(lassaut_info_panel):
 			lassaut_info_panel = LAssaut_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(lassaut_info_panel)
 		
@@ -370,13 +370,13 @@ func _update_tower_specific_info_panel():
 		lassaut_info_panel.set_lassaut(tower)
 		current_active_info_panel = lassaut_info_panel
 	else:
-		if lassaut_info_panel != null:
+		if is_instance_valid(lassaut_info_panel):
 			lassaut_info_panel.visible = false
 			lassaut_info_panel.set_lassaut(null)
 	
 	# La_Chasseur
 	if LaChasseur_InfoPanel.should_display_self_for(tower):
-		if la_chasseur_info_panel == null:
+		if !is_instance_valid(la_chasseur_info_panel):
 			la_chasseur_info_panel = LaChasseur_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(la_chasseur_info_panel)
 		
@@ -384,13 +384,13 @@ func _update_tower_specific_info_panel():
 		la_chasseur_info_panel.set_la_chasseur(tower)
 		current_active_info_panel = la_chasseur_info_panel
 	else:
-		if la_chasseur_info_panel != null:
+		if is_instance_valid(la_chasseur_info_panel):
 			la_chasseur_info_panel.visible = false
 			la_chasseur_info_panel.set_la_chasseur(null)
 	
 	# Tesla
 	if Tesla_InfoPanel.should_display_self_for(tower):
-		if tesla_info_panel == null:
+		if !is_instance_valid(tesla_info_panel):
 			tesla_info_panel = Tesla_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(tesla_info_panel)
 		
@@ -398,13 +398,13 @@ func _update_tower_specific_info_panel():
 		tesla_info_panel.set_tesla(tower)
 		current_active_info_panel = tesla_info_panel
 	else:
-		if tesla_info_panel != null:
+		if is_instance_valid(tesla_info_panel):
 			tesla_info_panel.visible = false
 			tesla_info_panel.set_tesla(null)
 	
 	# Variance
 	if Variance_InfoPanel.should_display_self_for(tower):
-		if variance_info_panel == null:
+		if !is_instance_valid(variance_info_panel):
 			variance_info_panel = Variance_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(variance_info_panel)
 		
@@ -412,14 +412,14 @@ func _update_tower_specific_info_panel():
 		variance_info_panel.set_variance(tower)
 		current_active_info_panel = variance_info_panel
 	else:
-		if variance_info_panel != null:
+		if is_instance_valid(variance_info_panel):
 			variance_info_panel.visible = false
 			variance_info_panel.set_variance(null)
 	
 	
 	# Rift Axis
 	if RiftAxis_InfoPanel.should_display_self_for(tower):
-		if rift_axis_info_panel == null:
+		if !is_instance_valid(rift_axis_info_panel):
 			rift_axis_info_panel = RiftAxis_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(rift_axis_info_panel)
 		
@@ -427,13 +427,13 @@ func _update_tower_specific_info_panel():
 		rift_axis_info_panel.set_rift_axis(tower)
 		current_active_info_panel = rift_axis_info_panel
 	else:
-		if rift_axis_info_panel != null:
+		if is_instance_valid(rift_axis_info_panel):
 			rift_axis_info_panel.visible = false
 			rift_axis_info_panel.set_rift_axis(null)
 	
 	# Amalgamator
 	if Amalgamator_InfoPanel.should_display_self_for(tower):
-		if amalgamator_info_panel == null:
+		if !is_instance_valid(amalgamator_info_panel):
 			amalgamator_info_panel = Amalgamator_InfoPanel_Scene.instance()
 			tower_specific_slot.add_child(amalgamator_info_panel)
 		
@@ -441,14 +441,14 @@ func _update_tower_specific_info_panel():
 		amalgamator_info_panel.set_amalgamator(tower)
 		current_active_info_panel = amalgamator_info_panel
 	else:
-		if amalgamator_info_panel != null:
+		if is_instance_valid(amalgamator_info_panel):
 			amalgamator_info_panel.visible = false
 			amalgamator_info_panel.set_amalgamator(null)
 	
 	
 	
 	# KEEP THIS AT THE BOTTOM
-	if current_active_info_panel != null:
+	if is_instance_valid(current_active_info_panel):
 		if current_active_info_panel.has_method("LISTEN_TO_INFO_PANEL_SIGNALS"):
 			current_active_info_panel.call("LISTEN_TO_INFO_PANEL_SIGNALS", self)
 	
@@ -470,7 +470,7 @@ func activate_tower_panel_ability_03():
 # queue free
 
 func queue_free():
-	if energy_module_panel != null:
+	if is_instance_valid(energy_module_panel):
 		energy_module_panel.queue_free()
 	
 	.queue_free()

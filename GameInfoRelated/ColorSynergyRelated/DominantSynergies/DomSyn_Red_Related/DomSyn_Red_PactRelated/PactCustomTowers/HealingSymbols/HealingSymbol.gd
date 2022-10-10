@@ -138,7 +138,7 @@ func _cast_heal():
 	for i in active_towers_in_range.size():
 		var tower = active_towers_in_range[i]
 		
-		if tower != null and !tower.has_full_health():
+		if is_instance_valid(tower) and !tower.has_full_health():
 			_has_healed_damaged_towers_in_the_round = true
 			healed_at_least_one = true
 			tower_base_sprites.frame = anim_heal_depleted_sprite_index

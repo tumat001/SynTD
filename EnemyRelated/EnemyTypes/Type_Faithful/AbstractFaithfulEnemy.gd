@@ -51,7 +51,7 @@ func _decide_mov_speed_to_give():
 		if percent_movement_speed_id_effect_map.has(_speed_effect.effect_uuid):
 			_remove_effect(_speed_effect)
 		
-	elif deity != null and deity.unit_offset > unit_offset:
+	elif is_instance_valid(deity) and deity.unit_offset > unit_offset:
 		_add_effect(_speed_effect)
 		if percent_movement_speed_id_effect_map.has(_slow_effect.effect_uuid):
 			_remove_effect(_slow_effect)

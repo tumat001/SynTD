@@ -157,7 +157,7 @@ func _on_round_end_a():
 		var tower_to_convert = _get_random_valid_in_map_tower()
 		
 		#mark tower
-		if tower_to_convert != null:
+		if is_instance_valid(tower_to_convert):
 			tower_to_convert.add_tower_effect(to_convert_mark_effect)
 			call_deferred("_shoot_tower_converting_beam_to_tower", tower_to_convert)
 
@@ -184,7 +184,7 @@ func _get_random_valid_in_map_tower():
 
 
 func _shoot_tower_converting_beam_to_tower(arg_tower):
-	if arg_tower != null:
+	if is_instance_valid(arg_tower):
 		var beam = AmalgamatorBeam_Scene.instance()
 		beam.set_sprite_frames(convert_beam_sprite_frame)
 		#beam.connect("animation_finished", self, "_convert_tower_to_black", [arg_tower])

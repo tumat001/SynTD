@@ -85,7 +85,7 @@ func _explosion_ability_activated():
 
 
 func _summon_beam_to_target(target, final_potency : float):
-	if target != null:
+	if is_instance_valid(target):
 		var beam = Wizard_Beam_Scene.instance()
 		beam.connect("time_visible_is_over", self, "_summon_explosion_to_target", [target, final_potency], CONNECT_ONESHOT)
 		
@@ -100,7 +100,7 @@ func _summon_beam_to_target(target, final_potency : float):
 
 
 func _summon_explosion_to_target(target, final_potency : float):
-	if target != null:
+	if is_instance_valid(target):
 		target.take_damage(final_potency * _explosion_dmg, self)
 		_create_and_show_expl_particle(target.global_position)
 
@@ -119,7 +119,7 @@ func _on_beam_explosion_interval_timer_timeout():
 
 func _consume_beam_charge_for_summon_beam_to_target(arg_tower):
 	if _current_beam_count_left > 0:
-		if _current_target_for_beam == null or _current_target_for_beam.is_queued_for_deletion():
+		if !is_instance_valid(_current_target_for_beam) or _current_target_for_beam.is_queued_for_deletion():
 			var targets = tower_detecting_range_module.get_all_in_map_and_active_towers_in_range()
 			var valid_targets = Targeting.enemies_to_target(targets, _targeting_for_explosion, 1, global_position)
 			if valid_targets.size() > 0:

@@ -113,7 +113,7 @@ func set_stage_round_manager(arg_manager):
 func set_map_manager(arg_manager):
 	map_manager = arg_manager
 	
-	if map_manager.base_map != null:
+	if is_instance_valid(map_manager.base_map):
 		#map_manager.base_map.connect("on_all_enemy_paths_changed", self, "_on_base_map_paths_changed", [], CONNECT_PERSIST)
 		map_manager.base_map.connect("on_enemy_path_added", self, "_on_base_map_path_added", [], CONNECT_PERSIST)
 		map_manager.base_map.connect("on_enemy_path_removed", self, "_on_base_map_path_removed", [], CONNECT_PERSIST)
@@ -326,7 +326,7 @@ func get_all_enemies() -> Array:
 	var bucket = []
 	
 	for enemy in enemies:
-		if enemy != null and !enemy.is_queued_for_deletion():
+		if is_instance_valid(enemy) and !enemy.is_queued_for_deletion():
 			bucket.append(enemy)
 	
 	return bucket
@@ -501,7 +501,7 @@ func _on_last_enemy_standing_current_health_changed(current_health, arg_enemy):
 
 
 func get_last_standing_enemy():
-	if _last_standing_enemy != null and _last_standing_enemy.is_queued_for_deletion():
+	if !is_instance_valid(_last_standing_enemy) or _last_standing_enemy.is_queued_for_deletion():
 		return null
 	
 	return _last_standing_enemy 

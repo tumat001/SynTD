@@ -107,17 +107,17 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 	
 	if targeting_parameters != null:
 		for enemy in targeting_parameters.priority_enemies_in_range:
-			if enemy != null and !enemy.is_queued_for_deletion():
+			if is_instance_valid(enemy) and !enemy.is_queued_for_deletion():
 				priority_enemies_in_range.append(enemy)
 			
 		
 		for enemy in targeting_parameters.priority_enemies_regardless_of_range:
-			if enemy != null and !enemy.is_queued_for_deletion():
+			if is_instance_valid(enemy) and !enemy.is_queued_for_deletion():
 				priority_enemies_regardless_of_range.append(enemy)
 	
 	
 	for enemy in arg_enemies:
-		if enemy != null and !enemy.is_queued_for_deletion() and !priority_enemies_in_range.has(enemy) and !priority_enemies_regardless_of_range.has(enemy):
+		if is_instance_valid(enemy) and !enemy.is_queued_for_deletion() and !priority_enemies_in_range.has(enemy) and !priority_enemies_regardless_of_range.has(enemy):
 			#if targeting_parameters == null:
 			enemies.append(enemy)
 #
@@ -199,13 +199,13 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 		
 	elif targeting == TOWERS_HIGHEST_TOTAL_ATTACK_SPEED:
 		for tower in enemies:
-			if tower.main_attack_module == null:
+			if !is_instance_valid(tower.main_attack_module):
 				enemies.erase(tower)
 		enemies.sort_custom(CustomSorter, "sort_towers_by_highest_total_attack_speed")
 		
 	elif targeting == TOWERS_HIGHEST_TOTAL_BASE_DAMAGE:
 		for tower in enemies:
-			if tower.main_attack_module == null:
+			if !is_instance_valid(tower.main_attack_module):
 				enemies.erase(tower)
 		enemies.sort_custom(CustomSorter, "sort_towers_by_highest_total_base_damage")
 	
@@ -223,7 +223,7 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 	var deletion_bucket : Array = []
 	
 	for enemy in final_enemies:
-		if enemy == null or enemy.is_queued_for_deletion():
+		if !is_instance_valid(enemy) or enemy.is_queued_for_deletion():
 			deletion_bucket.append(enemy)
 	
 	for enemy in deletion_bucket:

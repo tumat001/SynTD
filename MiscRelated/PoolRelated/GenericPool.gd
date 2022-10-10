@@ -78,12 +78,12 @@ func _on_res_tree_exiting(arg_res):
 #
 
 func set_node_to_listen_for_queue_free(arg_node):
-	if node_to_listen_for_queue_free != null:
+	if is_instance_valid(node_to_listen_for_queue_free):
 		node_to_listen_for_queue_free.disconnect("tree_exiting", self, "_on_node_to_listen_for_queue_free__tree_exited")
 	
 	node_to_listen_for_queue_free = arg_node
 	
-	if node_to_listen_for_queue_free != null:
+	if is_instance_valid(node_to_listen_for_queue_free):
 		node_to_listen_for_queue_free.connect("tree_exiting", self, "_on_node_to_listen_for_queue_free__tree_exited", [], CONNECT_PERSIST)
 
 
@@ -93,7 +93,7 @@ func _on_node_to_listen_for_queue_free__tree_exited():
 
 func queue_free_all_from_pool():
 	for res in _resource_to_available_state_map:
-		if res != null and res is Node and !res.is_queued_for_deletion():
+		if is_instance_valid(res) and res is Node and !res.is_queued_for_deletion():
 			res.queue_free()
 	
 	_resource_to_available_state_map.clear()

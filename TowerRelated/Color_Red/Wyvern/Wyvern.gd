@@ -244,7 +244,7 @@ func _attempt_cast_fury():
 func _cast_fury():
 	var target = _get_candidate_target()
 	
-	if target != null:
+	if is_instance_valid(target):
 		_set_fury_mode(true)
 		_current_fury_locked_on_target = target
 		
@@ -269,7 +269,7 @@ func _set_marker_visible_status(arg_visible):
 		update()
 
 func _get_candidate_target():
-	if range_module != null:
+	if is_instance_valid(range_module):
 		var candidates = range_module.get_targets_without_affecting_self_current_targets(1, Targeting.HEALTHIEST, false)
 		if candidates.size() > 0:
 			return candidates[0]
@@ -282,12 +282,12 @@ func _set_fury_mode(arg_is_on : bool):
 	_is_in_fury = arg_is_on
 
 func _disable_current_main_attk_module():
-	if _attk_module_disabled_by_fury_clause == null:
+	if !is_instance_valid(_attk_module_disabled_by_fury_clause):
 		_attk_module_disabled_by_fury_clause = main_attack_module
 		_attk_module_disabled_by_fury_clause.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.WYVERN_DISABLE)
 
 func _reenable_disabled_attk_module():
-	if _attk_module_disabled_by_fury_clause != null:
+	if is_instance_valid(_attk_module_disabled_by_fury_clause):
 		_attk_module_disabled_by_fury_clause.can_be_commanded_by_tower_other_clauses.remove_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.WYVERN_DISABLE)
 		_attk_module_disabled_by_fury_clause = null
 
@@ -312,7 +312,7 @@ func _on_target_cancel_lock_ons():
 func _end_fury_mode():
 	_set_fury_mode(false)
 	
-	if _current_fury_locked_on_target != null:
+	if is_instance_valid(_current_fury_locked_on_target):
 		if _current_fury_locked_on_target.is_connected("cancel_all_lockons", self, "_on_target_cancel_lock_ons"):
 			_current_fury_locked_on_target.disconnect("cancel_all_lockons", self, "_on_target_cancel_lock_ons")
 		
@@ -339,7 +339,7 @@ func _end_fury_mode():
 #
 
 func _on_emp_proj_ready_to_attack():
-	if !_is_in_fury or _current_fury_locked_on_target == null:
+	if !_is_in_fury or !is_instance_valid(_current_fury_locked_on_target):
 		if empowered_proj_attk_module.is_connected("ready_to_attack", self, "_on_emp_proj_ready_to_attack"):
 			empowered_proj_attk_module.disconnect("ready_to_attack", self, "_on_emp_proj_ready_to_attack")
 	else:
@@ -353,12 +353,12 @@ func _on_round_end_w():
 #
 
 func _process(delta):
-	if _current_fury_locked_on_target != null:
+	if is_instance_valid(_current_fury_locked_on_target):
 		mark_indicator.global_position = _current_fury_locked_on_target.global_position
 		update()
 
 func _draw():
-	if _current_fury_locked_on_target != null:
+	if is_instance_valid(_current_fury_locked_on_target):
 		draw_line(empowered_proj_attk_module.global_position - global_position, _current_fury_locked_on_target.global_position - global_position, beam_to_target_color, beam_to_target_width)
 
 
@@ -372,7 +372,7 @@ func _trail_before_attached_to_node(arg_trail, node):
 #
 
 func queue_free():
-	if mark_indicator != null and !mark_indicator.is_queued_for_deletion():
+	if is_instance_valid(mark_indicator) and !mark_indicator.is_queued_for_deletion():
 		mark_indicator.queue_free()
 	
 	.queue_free()

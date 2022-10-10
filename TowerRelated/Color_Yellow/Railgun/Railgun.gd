@@ -69,16 +69,6 @@ func _ready():
 	
 	_post_inherit_ready()
 
-
-func _on_main_attack_module_enemy_hit_r(enemy, damage_register_id, damage_instance, module):
-	if is_energy_module_on:
-		call_deferred("_punch_hole_at_enemy", enemy)
-
-func _punch_hole_at_enemy(enemy):
-	if enemy != null:
-		enemy.pierce_consumed_per_hit /= 2
-		print(enemy.pierce_consumed_per_hit)
-
 #
 
 func _on_main_bullet_attack_module_after_bullet_is_shot_r(bullet, attack_module):
@@ -96,7 +86,7 @@ func set_energy_module(module):
 	if module != null:
 		module.module_effect_descriptions = [
 			"Railgun's base pierce is increased to 77. Bullets travel 5 times further.",
-			"On hit damages and effects are 400% effective.",
+			"On hit damages and effects are 300% effective.",
 			"",
 			"Railgun's main attack also punches a hole in enemies, making bullets pierce through them at twice the effectiveness. This effect stacks."
 		]
@@ -104,8 +94,8 @@ func set_energy_module(module):
 
 func _module_turned_on(_first_time_per_round : bool):
 	railgun_attack_module.base_pierce = 77
-	railgun_attack_module.on_hit_damage_scale = 4
-	railgun_attack_module.on_hit_effect_scale = 4
+	railgun_attack_module.on_hit_damage_scale = 3
+	railgun_attack_module.on_hit_effect_scale = 3
 	railgun_attack_module.base_proj_life_distance_scale = 15
 	
 	railgun_attack_module.calculate_final_pierce()
@@ -128,6 +118,17 @@ func _module_turned_off():
 	
 	if is_connected("on_main_attack_module_enemy_hit", self, "_on_main_attack_module_enemy_hit_r"):
 		disconnect("on_main_attack_module_enemy_hit", self, "_on_main_attack_module_enemy_hit_r")
+
+#
+
+func _on_main_attack_module_enemy_hit_r(enemy, damage_register_id, damage_instance, module):
+	if is_energy_module_on:
+		call_deferred("_punch_hole_at_enemy", enemy)
+
+func _punch_hole_at_enemy(enemy):
+	if is_instance_valid(enemy):
+		enemy.pierce_consumed_per_hit /= 2
+		print(enemy.pierce_consumed_per_hit)
 
 #
 

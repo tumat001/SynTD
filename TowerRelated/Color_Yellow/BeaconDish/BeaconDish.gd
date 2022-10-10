@@ -219,19 +219,19 @@ func _update_all_bd_effects():
 	_update_flat_range_effect()
 
 func _update_elemental_on_hit_effect():
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		elemental_on_hit.damage_as_modifier.flat_modifier = (main_attack_module.last_calculated_final_damage * ratio_elemental_on_hit) * last_calculated_final_ability_potency
 		elemental_on_hit_effect.on_hit_damage = elemental_on_hit.duplicate()
 		emit_signal("elemental_buff_changed")
 
 func _update_flat_attk_speed_effect():
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		attack_speed_modifier.percent_amount = (main_attack_module.last_calculated_final_attk_speed * ratio_attack_speed) * last_calculated_final_ability_potency
 		attack_speed_effect.attribute_as_modifier = attack_speed_modifier.get_copy_scaled_by(1)
 		emit_signal("attk_speed_buff_changed")
 
 func _update_flat_range_effect():
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		main_attack_module.range_module.calculate_final_range_radius()
 		
 		range_modifier.flat_modifier = (main_attack_module.range_module.last_calculated_final_range * ratio_range) * last_calculated_final_ability_potency

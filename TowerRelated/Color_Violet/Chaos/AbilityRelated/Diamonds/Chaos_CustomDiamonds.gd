@@ -35,7 +35,7 @@ func _process(delta):
 func _target_towards_enemy():
 	var enemy = _get_enemy_to_target()
 	
-	if enemy != null:
+	if is_instance_valid(enemy):
 		diamond_attack_module._adjust_bullet_physics_settings(self, enemy.global_position, global_position)
 		
 	else:
@@ -43,9 +43,9 @@ func _target_towards_enemy():
 
 
 func _get_enemy_to_target():
-	if initial_enemy_to_target != null and !initial_enemy_to_target.is_queued_for_deletion():
+	if is_instance_valid(initial_enemy_to_target) and !initial_enemy_to_target.is_queued_for_deletion():
 		return initial_enemy_to_target
-	elif diamond_attack_module.range_module != null and diamond_attack_module.range_module.is_a_targetable_enemy_in_range():
+	elif is_instance_valid(diamond_attack_module.range_module) and diamond_attack_module.range_module.is_a_targetable_enemy_in_range():
 		var arr = diamond_attack_module.range_module.get_targets_without_affecting_self_current_targets(1)
 		if arr.size() > 0:
 			return arr[0]

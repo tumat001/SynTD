@@ -75,13 +75,13 @@ func calculate_final_proj_life_distance():
 
 
 func _set_range_module(new_module):
-	if range_module != null:
+	if is_instance_valid(range_module):
 		if range_module.is_connected("final_range_changed", self, "_range_of_range_module_changed"):
 			range_module.disconnect("final_range_changed", self, "_range_of_range_module_changed")
 	
 	._set_range_module(new_module)
 	
-	if range_module != null:
+	if is_instance_valid(range_module):
 		if !range_module.is_connected("final_range_changed", self, "_range_of_range_module_changed"):
 			range_module.connect("final_range_changed", self, "_range_of_range_module_changed")
 
@@ -212,7 +212,7 @@ func calculate_final_proj_inaccuracy():
 
 
 func _attack_enemy(enemy : AbstractEnemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		_attack_at_position(enemy.position)
 
 
@@ -310,7 +310,7 @@ func _attack_enemies(enemies : Array):
 	._attack_enemies(enemies)
 	
 	for enemy in enemies:
-		if enemy != null:
+		if is_instance_valid(enemy):
 			_attack_at_position(enemy.position)
 
 func _attack_at_positions(arg_poses : Array):

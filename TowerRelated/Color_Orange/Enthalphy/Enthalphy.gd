@@ -127,7 +127,7 @@ func _heat_module_current_heat_effect_changed():
 	._heat_module_current_heat_effect_changed()
 	
 	for module in all_attack_modules:
-		if module.range_module != null and module.range_module.benefits_from_bonus_range:
+		if is_instance_valid(module.range_module) and module.range_module.benefits_from_bonus_range:
 			module.range_module.update_range()
 	
 	emit_signal("final_range_changed")

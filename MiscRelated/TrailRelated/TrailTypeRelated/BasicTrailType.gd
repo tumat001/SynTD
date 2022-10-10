@@ -13,12 +13,12 @@ var set_to_idle_and_available_if_node_is_not_visible : bool = false
 
 
 func set_node_to_trail(arg_node : Node2D):
-	if node_to_trail != null:
+	if is_instance_valid(node_to_trail):
 		node_to_trail.disconnect("tree_exiting", self, "_on_node_tree_exiting")
 	
 	node_to_trail = arg_node
 	
-	if node_to_trail != null:
+	if is_instance_valid(node_to_trail):
 		node_to_trail.connect("tree_exiting", self, "_on_node_tree_exiting", [], CONNECT_ONESHOT)
 		set_process(true)
 		is_idle_and_available = false
@@ -44,9 +44,9 @@ func set_trail_color(arg_color : Color):
 #
 
 func _process(delta):
-	var node_is_not_invis = !set_to_idle_and_available_if_node_is_not_visible or (node_to_trail != null and (set_to_idle_and_available_if_node_is_not_visible and node_to_trail.visible))
+	var node_is_not_invis = !set_to_idle_and_available_if_node_is_not_visible or (is_instance_valid(node_to_trail) and (set_to_idle_and_available_if_node_is_not_visible and node_to_trail.visible))
 	
-	if node_to_trail != null and node_is_not_invis:
+	if is_instance_valid(node_to_trail) and node_is_not_invis:
 		if node_to_trail.is_inside_tree():
 			var pos_of_point = node_to_trail.global_position
 			global_rotation = 0
@@ -55,7 +55,7 @@ func _process(delta):
 			if get_point_count() > max_trail_length:
 				remove_point(0)
 	else:
-		if node_to_trail != null:
+		if is_instance_valid(node_to_trail):
 			if node_to_trail.is_connected("tree_exiting", self, "_on_node_tree_exiting"):
 				node_to_trail.disconnect("tree_exiting", self, "_on_node_tree_exiting")
 			node_to_trail = null

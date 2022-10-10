@@ -66,14 +66,14 @@ func _make_modifications_to_tower(tower):
 	if !tower.is_connected("on_round_end", self, "_on_round_end"):
 		tower.connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
 	
-	if own_timer == null:
+	if !is_instance_valid(own_timer):
 		own_timer = Timer.new()
 		own_timer.one_shot = true
 		own_timer.wait_time = 0.1
 		tower.get_tree().get_root().add_child(own_timer)
 	
 	
-	if black_beam_attack_module == null:
+	if !is_instance_valid(black_beam_attack_module):
 		_construct_beam_am()
 		tower.add_attack_module(black_beam_attack_module)
 	
@@ -104,16 +104,16 @@ func _undo_modifications_to_tower(tower):
 		tower.disconnect("on_round_end", self, "_on_round_end")
 	
 	
-	if own_timer != null:
+	if is_instance_valid(own_timer):
 		own_timer.queue_free()
 		own_timer = null
 	
-	if black_beam_attack_module != null:
+	if is_instance_valid(black_beam_attack_module):
 		tower.remove_attack_module(black_beam_attack_module)
 		black_beam_attack_module.queue_free()
 		black_beam_attack_module = null
 	
-	if black_fireball_attack_module != null:
+	if is_instance_valid(black_fireball_attack_module):
 		tower.remove_attack_module(black_fireball_attack_module)
 		black_fireball_attack_module.queue_free()
 		black_fireball_attack_module = null
@@ -217,7 +217,7 @@ func _attempt_command_am_to_attack__no_fireball():
 		own_timer.start(beam_cooldown)
 
 func _command_black_beam_am_to_attack__no_fireball():
-	if attached_tower.main_attack_module != null and attached_tower.main_attack_module.range_module != null:
+	if is_instance_valid(attached_tower.main_attack_module) and is_instance_valid(attached_tower.main_attack_module.range_module):
 		var range_module = attached_tower.main_attack_module.range_module
 		
 		var decided_target = range_module.get_targets_without_affecting_self_current_targets(1, Targeting.RANDOM)
@@ -239,7 +239,7 @@ func _command_black_beam_am_to_attack__with_fireball():
 	_black_beam_count_until_fireball -= 1
 	
 	if _black_beam_count_until_fireball > 0:
-		if attached_tower.main_attack_module != null and attached_tower.main_attack_module.range_module != null:
+		if is_instance_valid(attached_tower.main_attack_module) and is_instance_valid(attached_tower.main_attack_module.range_module):
 			var range_module = attached_tower.main_attack_module.range_module
 			
 			var decided_target = range_module.get_targets_without_affecting_self_current_targets(1, Targeting.RANDOM)
@@ -251,7 +251,7 @@ func _command_black_beam_am_to_attack__with_fireball():
 
 
 func _command_black_fireball_am_to_attack():
-	if attached_tower.main_attack_module != null and attached_tower.main_attack_module.range_module != null:
+	if is_instance_valid(attached_tower.main_attack_module) and is_instance_valid(attached_tower.main_attack_module.range_module):
 		var range_module = attached_tower.main_attack_module.range_module
 		
 		var decided_target = range_module.get_targets_without_affecting_self_current_targets(1, Targeting.RANDOM)

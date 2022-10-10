@@ -24,5 +24,5 @@ func _in_exiting():
 	particle.position = global_position
 	particle.position.y += 3
 	
-	get_tree().get_root().call_deferred("add_child", particle)
-
+	#get_tree().get_root().call_deferred("add_child", particle)
+	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)

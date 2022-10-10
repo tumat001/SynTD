@@ -209,7 +209,7 @@ func _on_round_start_l():
 
 func _on_round_end_l():
 	if is_current_placable_in_map():
-		if initial_placable_at_round_start != null and initial_placable_at_round_start.tower_occupying == null:
+		if is_instance_valid(initial_placable_at_round_start) and initial_placable_at_round_start.tower_occupying == null:
 			_transfer_to_placable_with_default_params(initial_placable_at_round_start)
 		
 		_check_if_round_won_or_lost()
@@ -264,16 +264,16 @@ func _can_cast_pursue_updated(is_ready):
 
 func _on_enemy_exited_range(enemy, module, arg_range_module):
 	if module == main_attack_module:
-		if main_attack_module != null and main_attack_module.range_module == arg_range_module:
+		if is_instance_valid(main_attack_module) and main_attack_module.range_module == arg_range_module:
 			if is_pursue_ability_ready and !is_range_being_changed:
 				_attempt_check_and_cast_pursue_on_target(enemy)
 
 
 func _attempt_check_and_cast_pursue_on_target(arg_enemy):
-	if arg_enemy != null and !arg_enemy.is_queued_for_deletion():
+	if is_instance_valid(arg_enemy) and !arg_enemy.is_queued_for_deletion():
 		var candidate_placable = _get_candidate_placable(arg_enemy)
 		
-		if (candidate_placable != null):
+		if is_instance_valid(candidate_placable):
 			_cast_pursue_on_target(arg_enemy, candidate_placable)
 			
 
@@ -331,7 +331,7 @@ func _process(delta):
 			_pursue_ended()
 
 func _start_pursue_appearing():
-	if targeted_placable != null and targeted_placable.tower_occupying == null:
+	if is_instance_valid(targeted_placable) and targeted_placable.tower_occupying == null:
 		_transfer_to_placable_with_default_params(targeted_placable)
 	
 	current_pursue_state = PursueState.APPEARING

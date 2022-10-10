@@ -55,7 +55,7 @@ func _init(arg_pact_parent).(StoreOfTowerEffectsUUID.RED_PACT_CLOSE_COMBAT_EFFEC
 func _make_modifications_to_tower(tower):
 	_tower = tower
 	
-	if _explosion_cooldown_timer == null:
+	if !is_instance_valid(_explosion_cooldown_timer):
 		_explosion_cooldown_timer = Timer.new()
 		_explosion_cooldown_timer.one_shot = true
 		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_explosion_cooldown_timer)
@@ -191,7 +191,7 @@ func _undo_modifications_to_tower(tower):
 	if range_effect != null:
 		_tower.remove_tower_effect(range_effect)
 	
-	if _explosion_cooldown_timer != null:
+	if is_instance_valid(_explosion_cooldown_timer):
 		_explosion_cooldown_timer.queue_free()
 	
 	if _tower.is_connected("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_hit_enemy"):

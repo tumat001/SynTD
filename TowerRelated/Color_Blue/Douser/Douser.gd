@@ -204,7 +204,7 @@ func _on_main_attack_finished_d(module):
 
 # Range related
 func _on_range_changed_d():
-	if main_attack_module != null and main_attack_module.range_module != null:
+	if is_instance_valid(main_attack_module) and is_instance_valid(main_attack_module.range_module):
 		tower_detecting_range_module.detection_range = main_attack_module.range_module.last_calculated_final_range
 
 
@@ -213,7 +213,7 @@ func _on_range_changed_d():
 func _attempt_shoot_buffing_bullet():
 	var tower_to_target = _find_closest_unbuffed_tower()
 	
-	if tower_to_target != null:
+	if is_instance_valid(tower_to_target):
 		douser_buff_ability.on_ability_before_cast_start(douser_buff_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 		
 		var bullet := _construct_buffing_bullet(tower_to_target.global_position)
@@ -248,7 +248,7 @@ func _find_closest_unbuffed_tower() -> Node:
 		if tower != self and tower.last_calculated_has_commandable_attack_modules and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.DOUSER_BASE_DAMAGE_INC):
 			return tower
 		elif !tower.last_calculated_has_commandable_attack_modules:
-			if unattacking_tower == null:
+			if !is_instance_valid(unattacking_tower):
 				unattacking_tower = tower
 	
 	return unattacking_tower

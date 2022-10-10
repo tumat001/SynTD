@@ -87,6 +87,6 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 #
 
 func _enemy_after_ability_casted_end(cooldown, ability):
-	if voided_effect != null and !voided_effect.is_queued_for_deletion():
+	if is_instance_valid(voided_effect) and !voided_effect.is_queued_for_deletion():
 		voided_effect._add_effect(ability_void_stun_effect)
 

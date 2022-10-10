@@ -24,7 +24,7 @@ static func should_display_self_for(tower) -> bool:
 # setters and connects (and updates)
 
 func set_tower(tower : _704):
-	if tower_704 != null and tower_704.is_connected("available_points_changed", self, "_update_available_points"):
+	if is_instance_valid(tower_704) and tower_704.is_connected("available_points_changed", self, "_update_available_points"):
 		tower_704.disconnect("available_points_changed", self, "_update_available_points")
 		tower_704.disconnect("fire_level_changed", self, "_update_fire_level")
 		tower_704.disconnect("explosive_level_changed", self, "_update_explosive_level")
@@ -32,7 +32,7 @@ func set_tower(tower : _704):
 	
 	tower_704 = tower
 	
-	if tower_704 != null and !tower_704.is_connected("available_points_changed", self, "_update_available_points"):
+	if is_instance_valid(tower_704) and !tower_704.is_connected("available_points_changed", self, "_update_available_points"):
 		tower_704.connect("available_points_changed", self, "_update_available_points")
 		tower_704.connect("fire_level_changed", self, "_update_fire_level")
 		tower_704.connect("explosive_level_changed", self, "_update_explosive_level")
@@ -56,7 +56,7 @@ func _update_toughness_pierce_level():
 
 
 func update_display():
-	if tower_704 != null:
+	if is_instance_valid(tower_704):
 		_update_available_points()
 		_update_fire_level()
 		_update_explosive_level()
@@ -77,14 +77,14 @@ func _ready():
 # fire emblem pressed
 
 func _on_EmblemButtonFire_emblem_button_left_pressed():
-	if tower_704 != null:
+	if is_instance_valid(tower_704):
 		tower_704.attempt_allocate_points_to_fire()
 		
 		_update_tooltip_of_fire_level()
 
 
 func _on_EmblemButtonFire_emblem_button_right_pressed():
-	if tower_tooltip == null:
+	if !is_instance_valid(tower_tooltip):
 		_construct_tower_tooltip(emblem_fire_button)
 		tower_tooltip.descriptions = [
 			"704's attacks causes enemies to burn on hit. Burned enemies take elemental damage every 0.5 seconds for 5 seconds.",
@@ -106,7 +106,7 @@ func _on_EmblemButtonFire_emblem_button_right_pressed():
 		tower_tooltip = null
 
 func _update_tooltip_of_fire_level():
-	if tower_tooltip != null:
+	if is_instance_valid(tower_tooltip):
 		tower_tooltip.left_label.text = "Fire Emblem: Lvl " + str(tower_704.emblem_fire_points)
 
 
@@ -119,13 +119,13 @@ func _construct_tower_tooltip(button_owner : BaseButton):
 # explosive emblem pressed
 
 func _on_EmblemButtonExplosive_emblem_button_left_pressed():
-	if tower_704 != null:
+	if is_instance_valid(tower_704):
 		tower_704.attempt_allocate_points_to_explosive()
 		_update_tooltip_of_explosive_level()
 
 
 func _on_EmblemButtonExplosive_emblem_button_right_pressed():
-	if tower_tooltip == null:
+	if !is_instance_valid(tower_tooltip):
 		_construct_tower_tooltip(emblem_explosive_button)
 		tower_tooltip.descriptions = [
 			"704's main attacks explode upon reaching the target location. Explosions affect up to 5 enemies, but not including the main target.",
@@ -149,19 +149,19 @@ func _on_EmblemButtonExplosive_emblem_button_right_pressed():
 
 
 func _update_tooltip_of_explosive_level():
-	if tower_tooltip != null:
+	if is_instance_valid(tower_tooltip):
 		tower_tooltip.left_label.text = "Explosive Emblem: Lvl " + str(tower_704.emblem_explosive_points)
 
 
 # toughness pierce pressed
 
 func _on_EmblemButtonToughnessPierce_emblem_button_left_pressed():
-	if tower_704 != null:
+	if is_instance_valid(tower_704):
 		tower_704.attempt_allocate_points_to_toughness_pierce()
 		_update_tooltip_of_toughness_pierce_level()
 
 func _on_EmblemButtonToughnessPierce_emblem_button_right_pressed():
-	if tower_tooltip == null:
+	if !is_instance_valid(tower_tooltip):
 		_construct_tower_tooltip(emblem_toughness_pierce_button)
 		tower_tooltip.descriptions = [
 			"704's launched attack gains toughness pierce.",
@@ -184,14 +184,14 @@ func _on_EmblemButtonToughnessPierce_emblem_button_right_pressed():
 
 
 func _update_tooltip_of_toughness_pierce_level():
-	if tower_tooltip != null:
+	if is_instance_valid(tower_tooltip):
 		tower_tooltip.left_label.text = "Toughness Pierce Emblem: Lvl " + str(tower_704.emblem_toughness_pierce_points)
 
 
 # About pressed
 
 func _on_AboutButton_pressed():
-	if tower_tooltip == null:
+	if !is_instance_valid(tower_tooltip):
 		_construct_tower_tooltip(about_button)
 		
 		tower_tooltip.descriptions = [

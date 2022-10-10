@@ -39,14 +39,14 @@ func _on_AdvancedButtonWithTooltip_mouse_entered():
 
 func _trigger_create_about_tooltip():
 	if define_tooltip_construction_in_button:
-		if about_tooltip == null:
+		if !is_instance_valid(about_tooltip):
 			display_requested_about_tooltip(_construct_about_tooltip())
 		else:
 			about_tooltip.queue_free()
 			about_tooltip = null
 		
 	else:
-		if about_tooltip == null:
+		if !is_instance_valid(about_tooltip):
 			emit_signal("about_tooltip_construction_requested")
 		else:
 			about_tooltip.queue_free()
@@ -61,7 +61,7 @@ func _construct_about_tooltip() -> BaseTooltip:
 #
 # use this only when define_tooltip_construction_in_button is false
 func display_requested_about_tooltip(arg_about_tooltip : BaseTooltip):
-	if arg_about_tooltip != null:
+	if is_instance_valid(arg_about_tooltip):
 		about_tooltip = arg_about_tooltip
 		about_tooltip.visible = true
 		about_tooltip.tooltip_owner = self

@@ -47,17 +47,16 @@ func _on_visibility_changed_base():
 #
 
 func set_tower_occupying(arg_tower):
-	if tower_occupying != null:
+	if is_instance_valid(tower_occupying):
 		emit_signal("on_tower_left_placement", tower_occupying)
 	
 	tower_occupying = arg_tower
 	
 	_update_is_tower_occupying_clause()
-	
 	emit_signal("on_occupancy_changed", tower_occupying)
 
 func _update_is_tower_occupying_clause():
-	if tower_occupying != null:
+	if is_instance_valid(tower_occupying):
 		can_be_occupied_clauses.attempt_insert_clause(CanBeOccupiedClauseIds.HAS_TOWER)
 	else:
 		can_be_occupied_clauses.remove_clause(CanBeOccupiedClauseIds.HAS_TOWER)

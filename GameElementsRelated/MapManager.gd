@@ -136,7 +136,7 @@ func get_all_placables_based_on_targeting_params(center_pos : Vector2, radius : 
 		#
 		
 		if placable_state == PlacableState.OCCUPIED:
-			if placable.tower_occupying == null or !placable.last_calculated_can_be_occupied:
+			if is_instance_valid(placable.tower_occupying) or !placable.last_calculated_can_be_occupied:
 				continue
 		elif placable_state == PlacableState.UNOCCUPIED:
 			#if placable.tower_occupying != null:

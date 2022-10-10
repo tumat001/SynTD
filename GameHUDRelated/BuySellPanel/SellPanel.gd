@@ -34,7 +34,7 @@ func _ready():
 #
 
 func update_display():
-	if tower != null:
+	if is_instance_valid(tower):
 		if last_calculated_can_sell:
 			if tower.last_calculated_can_be_sold:
 				sell_label.text = "Sell for " + str(tower._calculate_sellback_value())
@@ -67,7 +67,7 @@ func _input(event):
 
 
 func _sell_tower():
-	if tower != null and last_calculated_can_sell:
+	if is_instance_valid(tower) and last_calculated_can_sell:
 		tower.sell_tower()
 	
 	#_is_mouse_inside = false

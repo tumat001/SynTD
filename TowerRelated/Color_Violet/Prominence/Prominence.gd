@@ -448,7 +448,7 @@ func _physics_process(delta):
 
 
 func _sword_landed_to_ground():
-	if range_module != null:
+	if is_instance_valid(range_module):
 		_execute_knock_up()
 	
 	add_after_regards_empowered_attack_count(base_after_regards_empowered_attks)
@@ -494,7 +494,7 @@ func _get_candidate_towers():
 	var bucket : Array = []
 	
 	for tower in sorted_towers:
-		if tower.range_module != null and tower != self:
+		if is_instance_valid(tower.range_module) and tower != self:
 			bucket.append(tower)
 			
 			if bucket.size() > 0 and !is_energy_module_on:
@@ -504,7 +504,7 @@ func _get_candidate_towers():
 
 
 func _construct_and_show_regards_expanding_attk_sprite(arg_global_pos, arg_range_module):
-	if arg_range_module != null:
+	if is_instance_valid(arg_range_module):
 		var particle = Regards_Explosion_AS_Scene.instance()
 		
 		CommonAttackSpriteTemplater.configure_scale_and_expansion_of_expanding_attk_sprite(particle, 10, arg_range_module.last_calculated_final_range)

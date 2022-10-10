@@ -47,14 +47,14 @@ onready var collision_shape : CollisionShape2D = $AOEArea/Shape
 #
 
 func _on_AOEArea_area_shape_entered(area_id, area, area_shape, self_shape):
-	if area != null:
+	if is_instance_valid(area):
 		if area is AbstractTower:
 			if !towers_to_ignore.has(area):
 				_towers_inside_damage_cd_map[area] = 0
 
 
 func _on_AOEArea_area_shape_exited(area_id, area, area_shape, self_shape):
-	if area != null:
+	if is_instance_valid(area):
 		if area is AbstractTower:
 			_towers_inside_damage_cd_map.erase(area)
 

@@ -175,7 +175,7 @@ func _attempt_cast_proliferate():
 func _cast_proliferate():
 	var candidate_placable = _find_candidate_placable()
 	
-	if candidate_placable != null:
+	if is_instance_valid(candidate_placable):
 		var cd = _get_cd_to_use(proliferate_base_cooldown)
 		proliferate_ability.on_ability_before_cast_start(cd)
 		
@@ -204,14 +204,14 @@ func _fire_proliferate_seed_at_placable(arg_placable):
 #
 
 func _proliferate_seed_landed(seed_pos, seed_proj, placable):
-	if placable != null and placable.tower_occupying == null:
+	if is_instance_valid(placable) and placable.tower_occupying == null:
 		_create_les_semis_at_placable(placable)
 
 func _create_les_semis_at_placable(placable):
 	var les_semis_instance : LesSemis = game_elements.tower_inventory_bench.create_tower(Towers.LES_SEMIS, placable)
 	
 	var base_dmg_of_self : float = 0
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		base_dmg_of_self = main_attack_module.last_calculated_final_damage
 	
 	les_semis_instance.ad_of_parent = base_dmg_of_self

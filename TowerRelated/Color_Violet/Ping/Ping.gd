@@ -281,7 +281,7 @@ func _on_round_end():
 	ping_eye_sprite.texture = PingEye_sleep_pic
 	
 	for mark in _markers:
-		if mark != null:
+		if is_instance_valid(mark) and !mark.is_queued_for_deletion():
 			mark.queue_free()
 	_markers.clear()
 
@@ -307,7 +307,7 @@ func _shoot_marked_enemies():
 	
 	shot_attack_module._attack_enemies(_enemies_marked)
 	for mark in _markers:
-		if mark != null:
+		if is_instance_valid(mark):
 			mark.call_deferred("queue_free")
 	_markers.clear()
 	

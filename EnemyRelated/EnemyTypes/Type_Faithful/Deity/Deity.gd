@@ -499,7 +499,7 @@ func _cast_taunt_ability(cooldown_amount : float):
 	taunt_ability.on_ability_before_cast_start(cooldown_amount)
 	
 	for tower in tower_detecting_range_module.get_all_in_map_and_active_towers_in_range():
-		if tower != null and tower.range_module != null and tower.range_module.is_an_enemy_in_range():
+		if is_instance_valid(tower) and is_instance_valid(tower.range_module) and tower.range_module.is_an_enemy_in_range():
 			tower.add_tower_effect(tower_target_priority_effect)
 	
 	_construct_taunt_particle()
@@ -540,7 +540,7 @@ func _cast_knock_up_ability(cooldown_amount : float):
 	knock_up_towers_ability.on_ability_before_cast_start(cooldown_amount)
 	
 	for tower in tower_detecting_range_module.get_all_in_map_and_active_towers_in_range():
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.add_tower_effect(knock_up_effect)
 			tower.take_damage(knock_up_flat_damage_to_towers, self)
 	

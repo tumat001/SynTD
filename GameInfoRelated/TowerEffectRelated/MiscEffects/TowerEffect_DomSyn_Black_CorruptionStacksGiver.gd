@@ -48,7 +48,7 @@ func _construct_stack_effect():
 
 
 func _tower_base_dmg_changed():
-	if attached_tower.main_attack_module != null:
+	if is_instance_valid(attached_tower.main_attack_module):
 		var final_base_dmg = attached_tower.main_attack_module.last_calculated_final_damage
 		
 		if final_base_dmg >= _dmg_threshold_for_increase:

@@ -118,7 +118,7 @@ func _make_modifications_to_tower(tower):
 
 
 func _undo_modifications_to_tower(tower):
-	if burst_attack_module != null:
+	if is_instance_valid(burst_attack_module):
 		tower.remove_attack_module(burst_attack_module)
 		burst_attack_module.queue_free()
 	

@@ -215,7 +215,7 @@ func _cast_isolation():
 	isolation_ability.activation_conditional_clauses.attempt_insert_clause(isolation_during_cast_clause)
 	isolation_duration_timer.start(isolation_base_duration)
 	
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		if main_attack_module is BulletAttackModule:
 			if !is_connected("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_s"):
 				connect("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot_s")

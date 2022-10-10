@@ -42,14 +42,14 @@ func _ready():
 
 
 func set_tesla(arg_tesla):
-	if tesla != null:
+	if is_instance_valid(tesla):
 		increase_orbit_button.ability = null
 		decrease_orbit_button.ability = null
 		toggle_orbit_dir_button.ability = null
 	
 	tesla = arg_tesla
 	
-	if tesla != null:
+	if is_instance_valid(tesla):
 		increase_orbit_button.ability = tesla.orbit_increase_radius_ability
 		decrease_orbit_button.ability = tesla.orbit_decrease_radius_ability
 		toggle_orbit_dir_button.ability = tesla.orbit_change_rotation_ability

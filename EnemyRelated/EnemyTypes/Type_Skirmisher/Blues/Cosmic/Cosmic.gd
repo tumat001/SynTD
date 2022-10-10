@@ -220,8 +220,8 @@ func _construct_and_add_cosmic_shield_aoe(aoe_position : Vector2):
 	aoe.modulate = _cosmic_modulate
 	aoe.scale *= 2.5
 	
-	game_elements.get_tree().get_root().add_child(aoe)
-
+	#game_elements.get_tree().get_root().add_child(aoe)
+	cosmic_aoe_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 func _on_aoe_hit_enemy(enemy_hit):
 	enemy_hit._add_effect(shield_effect)
@@ -232,5 +232,5 @@ func _on_aoe_hit_enemy(enemy_hit):
 func _queue_free():
 	.queue_free()
 	
-	if (cosmic_aoe_module != null):
+	if is_instance_valid(cosmic_aoe_module):
 		cosmic_aoe_module.queue_free()

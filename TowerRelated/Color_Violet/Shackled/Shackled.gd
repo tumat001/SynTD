@@ -322,7 +322,7 @@ func _attempt_cast_chains():
 func _cast_chains_ability():
 	var chains_targeting : int = Targeting.FIRST
 	
-	if range_module != null:
+	if is_instance_valid(range_module):
 		chains_targeting = range_module.get_current_targeting_option()
 	
 	var enemies = _get_enemies_to_target(chains_targeting)

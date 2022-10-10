@@ -207,7 +207,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 #
 func _transcript_02_deferred_call():
 	var tower_buy_card = get_tower_buy_card_at_buy_slot_index(0)
-	if tower_buy_card != null:
+	if is_instance_valid(tower_buy_card):
 		display_white_arrows_pointed_at_node(tower_buy_card, 3)
 		#display_white_circle_at_node(tower_buy_card, 3)
 
@@ -237,7 +237,7 @@ func _on_transc_08__round_end():
 func _transcript_09_deferred_call():
 	advance_to_next_custom_towers_at_shop()
 	var tower_buy_card = get_tower_buy_card_at_buy_slot_index(0)
-	if tower_buy_card != null:
+	if is_instance_valid(tower_buy_card):
 		#display_white_circle_at_node(tower_buy_card, 10)
 		display_white_arrows_pointed_at_node(tower_buy_card, 10)
 

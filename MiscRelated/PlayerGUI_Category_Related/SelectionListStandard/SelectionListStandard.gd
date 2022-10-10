@@ -23,7 +23,7 @@ onready var header_label = $VBoxContainer/Header/TextContainer/HeaderLabel
 #
 
 func set_tooltip_owner(arg_owner : Control):
-	if tooltip_owner != null:
+	if is_instance_valid(tooltip_owner):
 		if tooltip_owner.is_connected("visibility_changed", self, "_tooltip_owner_visibility_changed"):
 			tooltip_owner.disconnect("visibility_changed", self, "_tooltip_owner_visibility_changed")
 			#tooltip_owner.disconnect("mouse_exited", self, "_tooltip_owner_mouse_exited")
@@ -31,7 +31,7 @@ func set_tooltip_owner(arg_owner : Control):
 	
 	tooltip_owner = arg_owner
 	
-	if tooltip_owner != null:
+	if is_instance_valid(tooltip_owner):
 		if !tooltip_owner.is_connected("visibility_changed", self, "_tooltip_owner_visibility_changed"):
 			tooltip_owner.connect("visibility_changed", self, "_tooltip_owner_visibility_changed")
 			#tooltip_owner.connect("mouse_exited", self, "_tooltip_owner_mouse_exited", [], CONNECT_ONESHOT)

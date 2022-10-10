@@ -342,12 +342,12 @@ func _on_any_attack_hit_h(enemy, damage_register_id, damage_instance, module):
 # Light waves related
 
 func _summon_light_wave_to_enemy(enemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		var wave = lightwave_attack_module.construct_bullet(enemy.global_position)
 		lightwave_attack_module.set_up_bullet__add_child_and_emit_signals(wave)
 
 func _summon_light_explosion_to_enemy(enemy, damage_instance_copy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		var explosion = lightexplosion_attack_module.construct_aoe(enemy.global_position, enemy.global_position)
 		explosion.damage_instance = damage_instance_copy
 		explosion.damage_instance.on_hit_effects.clear()
@@ -446,7 +446,7 @@ func set_light_waves_level(new_level):
 	ability_light_waves_level = new_level
 	
 	if ability_light_waves_level == 1:
-		if lightwave_attack_module == null:
+		if !is_instance_valid(lightwave_attack_module):
 			_construct_and_add_light_waves_attack_module()
 		lightwave_attack_module.base_damage = light_wave_base_damage_in_levels[0]
 		current_attks_needed_for_light_wave = attks_needed_for_light_wave_in_levels[0]
@@ -460,7 +460,7 @@ func set_light_waves_level(new_level):
 	elif ability_light_waves_level == 3:
 		lightwave_attack_module.base_damage = light_wave_base_damage_in_levels[2]
 		current_attks_needed_for_light_wave = attks_needed_for_light_wave_in_levels[2]
-		if lightexplosion_attack_module == null:
+		if !is_instance_valid(lightexplosion_attack_module):
 			_construct_and_add_light_explosion_module()
 		current_light_explosion_dmg_ratio = light_explosion_dmg_ratio_in_levels[2]
 		staff_sprite.texture = Hero_StaffPic03
@@ -530,7 +530,7 @@ func _construct_and_add_judgement_attack_module():
 
 
 func _on_judgement_enemy_hit(enemy, damage_register_id, damage_instance, module):
-	if main_attack_module != null:
+	if is_instance_valid(main_attack_module):
 		var health_ratio : float = enemy.current_health / enemy._last_calculated_max_health
 		
 		var final_mod : float = current_judgement_dmg_ratio * main_attack_module.last_calculated_final_damage
@@ -556,7 +556,7 @@ func set_judgement_level(new_level):
 	ability_judgement_level = new_level
 	
 	if ability_judgement_level == 1:
-		if judgement_attack_module == null:
+		if !is_instance_valid(judgement_attack_module):
 			_construct_and_add_judgement_attack_module()
 		if judgement_effect_adder == null:
 			_construct_and_add_judgement_effect()
@@ -608,7 +608,7 @@ func _construct_and_add_VOL_range_module():
 	
 	add_child(VOL_range_module)
 	
-	if range_module != null and range_module.displaying_range:
+	if is_instance_valid(range_module) and range_module.displaying_range:
 		VOL_range_module.show_range()
 
 func _construct_and_add_VOL_ability():
@@ -632,7 +632,7 @@ func _construct_VOL_effect():
 func toggle_module_ranges():
 	.toggle_module_ranges()
 	
-	if VOL_range_module != null:
+	if is_instance_valid(VOL_range_module):
 		if is_showing_ranges:
 			VOL_range_module.show_range()
 			
@@ -645,11 +645,11 @@ func toggle_module_ranges():
 
 
 func _on_tower_show_range():
-	if VOL_range_module != null:
+	if is_instance_valid(VOL_range_module):
 		VOL_range_module.glow_all_towers_in_range()
 
 func _on_tower_hide_range():
-	if VOL_range_module != null:
+	if is_instance_valid(VOL_range_module):
 		VOL_range_module.unglow_all_towers_in_range()
 
 
@@ -675,7 +675,7 @@ func _cast_VOL():
 	VOL_ability.on_ability_after_cast_ended(VOL_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 
 func _get_vol_target_towers():
-	if VOL_range_module != null:
+	if is_instance_valid(VOL_range_module):
 		var in_range_towers = VOL_range_module.get_all_in_map_towers_in_range()
 		
 		var sorted_towers = Targeting.enemies_to_target(in_range_towers, Targeting.CLOSE, in_range_towers.size(), global_position, true)
@@ -704,7 +704,7 @@ func set_vol_level(new_level):
 	ability_VOL_level = new_level
 	
 	if ability_VOL_level == 1:
-		if VOL_range_module == null:
+		if !is_instance_valid(VOL_range_module):
 			_construct_and_add_VOL_range_module()
 		if VOL_effect == null:
 			_construct_VOL_effect()
@@ -1400,7 +1400,7 @@ func get_self_description_in_info_panel() -> Array:
 #
 
 func _show_level_up_cosmetic_effects():
-	if particle_timer == null:
+	if !is_instance_valid(particle_timer):
 		particle_timer = Timer.new()
 		particle_timer.one_shot = true
 		particle_timer.connect("timeout", self, "_on_particle_timer_expired", [], CONNECT_PERSIST)

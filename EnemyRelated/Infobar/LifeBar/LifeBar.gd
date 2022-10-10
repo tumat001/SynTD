@@ -33,20 +33,20 @@ onready var bar_fill_foreground_marginer : MarginContainer = $BarFillForeground
 func set_bar_background_pic(value : Texture):
 	bar_background_pic = value
 	
-	if bar_background != null:
+	if is_instance_valid(bar_background):
 		bar_background.texture = value
 
 
 func set_fill_health_foreground_pic(value : Texture):
 	fill_health_foreground_pic = value
 	
-	if fill_health_foreground != null:
+	if is_instance_valid(fill_health_foreground):
 		fill_health_foreground.texture = value
 
 func set_fill_shield_foreground_pic(value : Texture):
 	fill_shield_foreground_pic = value
 	
-	if fill_shield_foreground != null:
+	if is_instance_valid(fill_shield_foreground):
 		fill_shield_foreground.texture = value
 
 
@@ -92,7 +92,7 @@ func update_first_time():
 func set_current_health_value(value : float):
 	current_health_value = value
 	
-	if fill_health_foreground != null:
+	if is_instance_valid(fill_health_foreground):
 		var ratio = current_health_value / max_value
 		
 		if !allow_overflow and ratio > 1:
@@ -107,7 +107,7 @@ func set_current_health_value(value : float):
 func set_current_shield_value(value : float):
 	current_shield_value = value
 	
-	if fill_shield_foreground != null:
+	if is_instance_valid(fill_shield_foreground):
 		var ratio = current_shield_value / max_value
 		
 		if !allow_overflow and ratio > 1:
@@ -145,7 +145,7 @@ func set_overflow(value : bool):
 # Chunks related
 
 func redraw_chunks():
-	if chunks_container != null:
+	if is_instance_valid(chunks_container):
 		if display_chunks:
 			var num = _number_of_chunks()
 			

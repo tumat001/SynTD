@@ -95,7 +95,7 @@ func pact_sworn():
 	for i in tower_count_to_offer:
 		var tower = game_elements.shop_manager.create_random_tower_at_bench(tower_tier_to_offer)
 		
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.can_be_sold_conditonal_clauses.attempt_insert_clause(tower.CanBeSoldClauses.DOM_SYN_RED__PACT_HOLOGRAPHIC_TOWERS)
 			tower.can_be_used_as_ingredient_conditonal_clauses.attempt_insert_clause(tower.CanBeUsedAsIngredientClauses.DOM_SYN_RED__HOLOGRAPHIC_TOWERS)
 			tower.set_base_gold_cost(0)
@@ -113,7 +113,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	._apply_pact_to_game_elements(arg_game_elements)
 	
 	for tower in _towers_created:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.disabled_from_attacking_clauses.remove_clause(tower.DisabledFromAttackingSourceClauses.DOM_SYN__RED__HOLOGRAPHIC_TOWERS)
 			
 			var effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.RED_PACT_HOLOGRAPHIC_TOWER_HOLOGRAPHIC_DISABLED_MARKER)
@@ -129,7 +129,7 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 
 func _disable_all_created_holographic_towers():
 	for tower in _towers_created:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.disabled_from_attacking_clauses.attempt_insert_clause(tower.DisabledFromAttackingSourceClauses.DOM_SYN__RED__HOLOGRAPHIC_TOWERS)
 			
 			var effect = TowerMarkEffect.new(StoreOfTowerEffectsUUID.RED_PACT_HOLOGRAPHIC_TOWER_HOLOGRAPHIC_DISABLED_MARKER)
@@ -143,12 +143,12 @@ func pact_unsworn():
 	game_elements.tower_inventory_bench.disconnect("tower_entered_bench_slot", self, "_on_tower_entered_bench_space")
 	
 	for tower in _towers_created:
-		if tower != null:
+		if is_instance_valid(tower):
 			tower.can_be_sold_conditonal_clauses.remove_clause(tower.CanBeSoldClauses.DOM_SYN_RED__PACT_HOLOGRAPHIC_TOWERS)
 			tower.sell_tower()
 	
 	var random_tower = _get_random_tower()
-	if random_tower != null and random_tower.last_calculated_can_be_sold:
+	if is_instance_valid(random_tower) and random_tower.last_calculated_can_be_sold:
 		random_tower.sell_tower()
 
 

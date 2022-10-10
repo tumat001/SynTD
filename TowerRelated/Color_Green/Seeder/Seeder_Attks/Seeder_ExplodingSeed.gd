@@ -53,7 +53,7 @@ func _enemy_escaped(enemy):
 	emit_signal("seed_to_explode", self)
 
 func _process(delta):
-	if enemy_stuck_to != null:
+	if is_instance_valid(enemy_stuck_to):
 		global_position = (enemy_stuck_to.global_position + bullet_attach_shift)
 	
 	current_lifetime_s -= delta

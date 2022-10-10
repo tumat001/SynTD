@@ -60,18 +60,18 @@ func _update_star_state():
 		#call_deferred("emit_signal", "on_request_configure_self_for_crash", self)
 
 func set_current_target_for_beam(arg_target):
-	if current_target_for_beam != null:
+	if is_instance_valid(current_target_for_beam):
 		if current_target_for_beam.is_connected("tree_exiting", self, "_on_curr_target_tree_exiting"):
 			current_target_for_beam.disconnect("tree_exiting", self, "_on_curr_target_tree_exiting")
 		_hide_star_beam()
 	
 	current_target_for_beam = arg_target
 	
-	if is_inside_tree() and current_target_for_beam != null:
+	if is_inside_tree() and is_instance_valid(current_target_for_beam):
 		current_target_for_beam.connect("tree_exiting", self, "_on_curr_target_tree_exiting")
 		
 		if current_star_state == StarState.Beam:
-			if star_beam == null:
+			if !is_instance_valid(star_beam):
 				_construct_star_beam()
 
 func _construct_star_beam():
@@ -79,14 +79,14 @@ func _construct_star_beam():
 	star_beam.set_texture_as_default_anim(Star_BeamPic_01)
 	star_beam.visible = false
 	
-	get_tree().get_root().add_child(star_beam)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(star_beam)
 
 
 func _on_curr_target_tree_exiting():
 	_hide_star_beam()
 
 func _hide_star_beam():
-	if star_beam != null:
+	if is_instance_valid(star_beam):
 		star_beam.visible = false
 
 
@@ -104,7 +104,7 @@ func _process(delta):
 		set_current_star_state(StarState.Crash)
 	
 	if current_star_state == StarState.Beam:
-		if current_target_for_beam != null:
+		if is_instance_valid(current_target_for_beam):
 			_update_beam_pos_and_dest()
 	
 	if speed == 0:
@@ -113,7 +113,7 @@ func _process(delta):
 #
 
 func _update_beam_pos_and_dest():
-	if star_beam != null:
+	if is_instance_valid(star_beam):
 		star_beam.visible = true
 		star_beam.global_position = global_position
 		star_beam.update_destination_position(current_target_for_beam.global_position)
@@ -122,7 +122,7 @@ func _update_beam_pos_and_dest():
 func queue_free():
 	.queue_free()
 	
-	if star_beam != null:
+	if is_instance_valid(star_beam):
 		star_beam.queue_free()
 
 #

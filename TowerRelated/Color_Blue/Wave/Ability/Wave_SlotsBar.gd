@@ -21,7 +21,7 @@ func _ready():
 func set_wave_tower(arg_tower):
 	wave_tower = arg_tower
 	
-	if wave_tower != null:
+	if is_instance_valid(wave_tower):
 		wave_tower.connect("effect_modifier_changed", self, "_effect_modi_changed", [], CONNECT_PERSIST)
 		_slots_castable = wave_tower.base_damage_amount_modifier / wave_tower.debuff_damage_amount_per_cast
 		

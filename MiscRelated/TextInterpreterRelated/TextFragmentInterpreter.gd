@@ -181,7 +181,7 @@ static func _interpret_arr_to_portions(arg_arr : Array, arg_header_desc : String
 				at_least_one_is_tower_stat_fragment = true
 				
 				if no_tower_info_or_tower_provided:
-					if item._tower != null or item._tower_info != null:
+					if is_instance_valid(item._tower) or item._tower_info != null:
 						no_tower_info_or_tower_provided = false
 			
 			if item is NumericalTextFragment or item is TowerStatTextFragment:
@@ -302,7 +302,7 @@ static func get_bbc_modified_description_as_string(arg_desc : String, arg_text_f
 		# if you see "invalid set index 'use_color...'... on base array, with value type 'bool', then you've inserted an array of ins instead of the interpreter.
 		interpreter.use_color_for_dark_background = arg_use_color_for_dark_background
 		
-		if interpreter.tower_to_use_for_tower_stat_fragments == null:
+		if !is_instance_valid(interpreter.tower_to_use_for_tower_stat_fragments):
 			interpreter.tower_to_use_for_tower_stat_fragments = arg_tower
 		
 		if interpreter.get_tower_info_to_use_for_tower_stat_fragments() == null:

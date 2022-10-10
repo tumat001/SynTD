@@ -33,7 +33,7 @@ const button_active_pic = preload("res://GameHUDRelated/RightSidePanel/TowerInfo
 const button_inactive_pic = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerStatsPanel/Stats_ButtonInactivated.png")
 
 func update_display():
-	if tower == null or tower.main_attack_module == null:
+	if !is_instance_valid(tower) or !is_instance_valid(tower.main_attack_module):
 		base_damage_label.text = ""
 		attack_speed_label.text = ""
 		range_label.text = ""
@@ -103,7 +103,7 @@ func _update_final_stat_display():
 
 func update_final_base_damage():
 	if showing_stat == Stat.FINAL:
-		if tower != null and tower.main_attack_module != null:
+		if is_instance_valid(tower) and is_instance_valid(tower.main_attack_module):
 			var base_damage = tower.main_attack_module.base_damage
 			var final_base_damage = base_damage
 			
@@ -115,7 +115,7 @@ func update_final_base_damage():
 
 func update_final_attack_speed():
 	if showing_stat == Stat.FINAL:
-		if tower != null and tower.main_attack_module != null:
+		if is_instance_valid(tower) and is_instance_valid(tower.main_attack_module):
 			var attk_speed = tower.main_attack_module.base_attack_speed
 			var final_attk_speed = attk_speed
 			
@@ -127,7 +127,7 @@ func update_final_attack_speed():
 
 func update_final_range():
 	if showing_stat == Stat.FINAL:
-		if tower != null and tower.main_attack_module != null and tower.main_attack_module.range_module != null:
+		if is_instance_valid(tower) and is_instance_valid(tower.main_attack_module) and is_instance_valid(tower.main_attack_module.range_module):
 			var base_range = tower.main_attack_module.range_module.base_range_radius
 			var final_range = base_range
 			
@@ -139,7 +139,7 @@ func update_final_range():
 
 func update_ability_potency():
 	if showing_stat == Stat.FINAL:
-		if tower != null:
+		if is_instance_valid(tower):
 			var base_ap = tower.base_ability_potency
 			var final_ap = tower.last_calculated_final_ability_potency
 			
@@ -149,7 +149,7 @@ func update_ability_potency():
 
 func update_on_hit_flat_dmges():
 	if showing_stat == Stat.FINAL:
-		if tower != null:
+		if is_instance_valid(tower):
 			var base_on_hit_dmg = 0
 			var final_dmg = tower.get_last_calculated_total_flat_on_hit_damages()
 			

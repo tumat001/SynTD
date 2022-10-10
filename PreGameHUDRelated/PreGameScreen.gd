@@ -30,7 +30,7 @@ func show_control(control : Control):
 	if !has_control(control):
 		content_panel.add_child(control)
 	
-	if current_visible_control != null:
+	if is_instance_valid(current_visible_control):
 		current_visible_control.visible = false
 	
 	current_visible_control = control
@@ -47,7 +47,7 @@ func hide_control(control : Control):
 	
 	if node_tree_of_screen.size() > 0:
 		var node = node_tree_of_screen[node_tree_of_screen.size() - 1]
-		if node != null:
+		if is_instance_valid(node):
 			node.visible = true
 			current_visible_control = node
 
@@ -116,7 +116,7 @@ func set_should_show_back_button(arg_val):
 	back_button.visible = arg_val
 
 func _on_BackButton_on_button_released_with_button_left():
-	if current_visible_control != null:
+	if is_instance_valid(current_visible_control):
 		if current_visible_control.has_method("_exit_to_previous"):
 			current_visible_control._exit_to_previous()
 

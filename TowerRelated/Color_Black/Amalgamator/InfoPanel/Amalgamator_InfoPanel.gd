@@ -31,12 +31,12 @@ func _ready():
 #
 
 func set_amalgamator(arg_variance):
-	if amalgamator != null:
-		amalgam_button.ability = null
+	#if is_instance_valid(amalgamator):
+	amalgam_button.ability = null
 	
 	amalgamator = arg_variance
 	
-	if amalgamator != null:
+	if is_instance_valid(amalgamator):
 		amalgam_button.ability = amalgamator.amalgam_ability
 
 #

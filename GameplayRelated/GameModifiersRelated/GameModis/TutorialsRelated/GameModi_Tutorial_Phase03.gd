@@ -257,7 +257,7 @@ func _on_end_of_transcript():
 	add_gold_amount(30)
 	set_can_refresh_shop__panel_based(true)
 	for tower in _all_towers:
-		if tower != null:
+		if is_instance_valid(tower):
 			set_tower_is_draggable(tower, true)
 			set_tower_is_sellable(tower, true)
 	

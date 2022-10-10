@@ -17,14 +17,14 @@ func _ready():
 #
 
 func set_tower(arg_tower):
-	if tower != null:
+	if is_instance_valid(tower):
 		tower.disconnect("current_siphon_stacks_changed", self, "_tower_curr_stacks_changed")
 		tower.disconnect("tower_not_in_active_map", self, "_should_be_shown_status_changed")
 		tower.disconnect("tower_active_in_map", self, "_should_be_shown_status_changed")
 	
 	tower = arg_tower
 	
-	if tower != null:
+	if is_instance_valid(tower):
 		tower.connect("current_siphon_stacks_changed", self, "_tower_curr_stacks_changed", [], CONNECT_PERSIST)
 		tower.connect("tower_not_in_active_map", self, "_should_be_shown_status_changed", [], CONNECT_PERSIST)
 		tower.connect("tower_active_in_map", self, "_should_be_shown_status_changed", [], CONNECT_PERSIST)
@@ -51,7 +51,7 @@ func _should_be_shown_status_changed():
 #
 
 func update_display():
-	if tower != null:
+	if is_instance_valid(tower):
 		_should_be_shown_status_changed()
 		_tower_curr_stacks_changed()
 

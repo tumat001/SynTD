@@ -35,13 +35,13 @@ func _ready():
 		ability_texture_rect.texture = ability_image
 
 func set_hero(arg_hero : Hero):
-	if hero != null:
+	if is_instance_valid(hero):
 		hero.disconnect("current_spendables_changed", self, "_hero_curr_spendables_changed")
 		hero.disconnect(signal_name_of_ability_level_changed, self, "_hero_ability_level_changed")
 	
 	hero = arg_hero
 	
-	if hero != null:
+	if is_instance_valid(hero):
 		hero.connect("current_spendables_changed", self, "_hero_curr_spendables_changed")
 		hero.connect(signal_name_of_ability_level_changed, self, "_hero_ability_level_changed")
 		

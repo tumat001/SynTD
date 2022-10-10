@@ -71,7 +71,7 @@ func _update_desc_of_takeover():
 
 func _construct_modules():
 	for module in chaos_attack_modules:
-		if module != null:
+		if is_instance_valid(module):
 			module.queue_free()
 	chaos_attack_modules.clear()
 	
@@ -340,7 +340,7 @@ func untakeover(tower):
 		
 		tower.ingredient_of_self = replaced_self_ingredient
 		
-		if chaos_shadow_anim_sprite != null:
+		if is_instance_valid(chaos_shadow_anim_sprite):
 			tower.remove_child(chaos_shadow_anim_sprite)
 			chaos_shadow_anim_sprite.queue_free()
 		
@@ -348,7 +348,7 @@ func untakeover(tower):
 			_attempt_set_attack_module_to_commandable_by_tower(module)
 		
 		for module in chaos_attack_modules:
-			if module != null:
+			if is_instance_valid(module):
 				tower.remove_attack_module(module)
 				module.queue_free()
 		
@@ -358,10 +358,10 @@ func untakeover(tower):
 
 
 func _attempt_set_attack_module_to_commandable_by_tower(module):
-	if module != null:
+	if is_instance_valid(module):
 		module.can_be_commanded_by_tower_other_clauses.remove_clause(AbstractAttackModule.CanBeCommandedByTower_ClauseId.CHAOS_TAKEOVER)
 		
-		if module.range_module == sword_attack_module.range_module or module.range_module == null:
+		if module.range_module == sword_attack_module.range_module or !is_instance_valid(module.range_module):
 			module.range_module = replaced_range_module
 
 
@@ -389,7 +389,7 @@ func _construct_attack_sprite_on_attack():
 	return ChaosSword.instance()
 
 func _on_sword_attk_module_enemy_hit(enemy, damage_register_id, damage_instance, module):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		var sword = _construct_attack_sprite_on_attack()
 		sword.global_position = enemy.global_position
 		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(sword)

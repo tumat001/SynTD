@@ -55,7 +55,7 @@ func _on_tower_placed_in_map(tower):
 
 func _on_round_start(curr_stageround):
 	for single_stat_panel in single_tower_stats_panel_container.get_children():
-		if single_stat_panel._tower == null or !single_stat_panel._tower.is_current_placable_in_map() or single_stat_panel._tower.is_queued_for_deletion():
+		if !is_instance_valid(single_stat_panel._tower) or !single_stat_panel._tower.is_current_placable_in_map() or single_stat_panel._tower.is_queued_for_deletion():
 			single_stat_panel.queue_free()
 	
 	yield(get_tree(), "idle_frame")

@@ -30,7 +30,7 @@ func _init(arg_dmg_amount_trigger : float, arg_attack_count_trigger : int,
 
 
 func _make_modifications_to_tower(tower):
-	if attached_tower == null:
+	if !is_instance_valid(attached_tower):
 		attached_tower = tower
 	
 	if attk_speed_effect == null:

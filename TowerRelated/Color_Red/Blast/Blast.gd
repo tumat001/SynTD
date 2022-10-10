@@ -210,7 +210,7 @@ func _attempt_cast_shockwave():
 func _cast_shockwave():
 	var target = _get_target_for_shockwave()
 	
-	if target != null:
+	if is_instance_valid(target):
 		var cd_to_use = _get_cd_to_use(shockwave_cooldown_duration)
 		shockwave_ability.on_ability_before_cast_start(cd_to_use)
 		
@@ -224,7 +224,7 @@ func _cast_shockwave():
 
 
 func _get_target_for_shockwave():
-	if range_module != null:
+	if is_instance_valid(range_module):
 		var targets = range_module.get_targets_without_affecting_self_current_targets(1)
 		if targets.size() > 0:
 			return targets[0]

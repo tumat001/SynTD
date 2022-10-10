@@ -191,7 +191,7 @@ func set_shape(shape : Shape2D):
 #
 
 func hit_by_tower(arg_tower):
-	if arg_tower != null and !arg_tower.is_queued_for_deletion() and arg_tower.is_current_placable_in_map():
+	if is_instance_valid(arg_tower) and !arg_tower.is_queued_for_deletion() and arg_tower.is_current_placable_in_map():
 		emit_signal("hit_a_tower", self, arg_tower)
 		
 		if reduce_pierce_if_hit_towers:
@@ -211,7 +211,7 @@ func can_hit_enemy(arg_enemy):
 
 func _if_enemies_to_hit_only_has_only_nulls():
 	for enemy in enemies_to_hit_only:
-		if enemy != null and !enemy.is_queued_for_deletion():
+		if is_instance_valid(enemy) and !enemy.is_queued_for_deletion():
 			return false
 	
 	return true

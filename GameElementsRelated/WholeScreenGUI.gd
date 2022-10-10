@@ -38,7 +38,7 @@ func show_control(control : Control, make_background_dark : bool = true):
 		screen_effect_manager.add_screen_tint_effect(screen_effect)
 
 func hide_control(control : Control, update_vis : bool = true):
-	if control != null:
+	if is_instance_valid(control):
 		control.visible = false
 		screen_effect_manager.destroy_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
 		current_showing_control = null

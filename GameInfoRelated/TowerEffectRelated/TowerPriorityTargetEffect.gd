@@ -16,7 +16,7 @@ func _init(arg_target,
 	
 
 func set_up_signal_with_target():
-	if target != null:
+	if is_instance_valid(target):
 		if !target.is_connected("tree_exiting", self, "_on_target_tree_exiting"):
 			target.connect("tree_exiting", self, "_on_target_tree_exiting", [target])
 

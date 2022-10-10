@@ -38,12 +38,12 @@ static func should_display_self_for(tower):
 
 
 func set_orb_tower(tower):
-	if orb_tower != null:
+	if is_instance_valid(orb_tower):
 		orb_tower.disconnect("current_level_changed", self, "_orb_current_level_changed")
 	
 	orb_tower = tower
 	
-	if orb_tower != null:
+	if is_instance_valid(orb_tower):
 		orb_tower.connect("current_level_changed", self, "_orb_current_level_changed")
 		_orb_current_level_changed()
 
@@ -74,7 +74,7 @@ func _construct_tower_tooltip(button_owner : BaseButton):
 
 
 func _on_StickyIcon_pressed_mouse_event(event):
-	if attack_tooltip == null:
+	if !is_instance_valid(attack_tooltip):
 		_construct_tower_tooltip(sticky_icon)
 #		attack_tooltip.descriptions = [
 #			"Orb throws a cosmic bomb every 2.5 seconds that latches onto the first enemy it hits. The bomb explodes after 2 seconds, or when the enemy dies.",
@@ -145,7 +145,7 @@ func _on_StickyIcon_pressed_mouse_event(event):
 
 
 func _on_StarsIcon_pressed_mouse_event(event):
-	if attack_tooltip == null:
+	if !is_instance_valid(attack_tooltip):
 		_construct_tower_tooltip(star_icon)
 #		attack_tooltip.descriptions = [
 #			"Main attacks on hit causes Orb to follow up the attack with 3 stars.",
@@ -194,7 +194,7 @@ func _on_StarsIcon_pressed_mouse_event(event):
 
 
 func _on_RayIcon_pressed_mouse_event(event):
-	if attack_tooltip == null:
+	if !is_instance_valid(attack_tooltip):
 		_construct_tower_tooltip(ray_icon)
 #		attack_tooltip.descriptions = [
 #			"Orb channels a constant cosmic ray at its target.",

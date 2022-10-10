@@ -449,7 +449,7 @@ func _construct_combination_effect_from_tower(arg_tower_id : int) -> Combination
 
 func _destroy_current_candidates(arg_tower_tier):
 	for tower in current_combination_candidates:
-		if tower != null:
+		if is_instance_valid(tower):
 			#_display_on_combi_effects_on_tower_pos(tower.global_position, arg_tower_tier)
 			_start_display_of_combi_effects_on_tower(tower, tower.global_position, arg_tower_tier)
 			tower.queue_free()
@@ -465,7 +465,7 @@ func _apply_combination_effect_to_appropriate_towers(arg_combi_effect : Combinat
 
 
 func _attempt_apply_all_combination_effects_to_tower(arg_tower):
-	if arg_tower != null and !arg_tower.is_queued_for_deletion():
+	if is_instance_valid(arg_tower) and !arg_tower.is_queued_for_deletion():
 		var arg_tower_tier : int = arg_tower.tower_type_info.tower_tier
 		
 		for combi_effect in all_combination_id_to_effect_map.values():

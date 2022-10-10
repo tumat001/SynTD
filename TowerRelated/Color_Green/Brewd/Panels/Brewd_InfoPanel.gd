@@ -14,12 +14,12 @@ onready var potion_implosion_button = $VBoxContainer/BodyMarginer/MarginContaine
 onready var potion_shuffle_button = $VBoxContainer/BodyMarginer/MarginContainer/HBoxContainer/PotionShuffle_Button
 
 func set_brewd_tower(arg_tower):
-	if brewd_tower != null:
+	if is_instance_valid(brewd_tower):
 		brewd_tower.disconnect("selected_potion_type_changed", self, "_brewd_selected_potion_changed")
 	
 	brewd_tower = arg_tower
 	
-	if brewd_tower != null:
+	if is_instance_valid(brewd_tower):
 		brewd_tower.connect("selected_potion_type_changed", self, "_brewd_selected_potion_changed", [], CONNECT_PERSIST)
 		_brewd_selected_potion_changed(brewd_tower.current_potion_type_selected)
 

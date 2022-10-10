@@ -219,7 +219,7 @@ func _module_turned_off():
 # time portal related
 
 func _enemy_shifted_by_main_attack(enemy, enemy_curr_position):
-	if is_energy_module_on and enemy != null:
+	if is_energy_module_on and is_instance_valid(enemy):
 		var time_portal = time_portal_attack_module.construct_aoe(enemy_curr_position, enemy_curr_position)
 		time_portal.enemies_to_ignore.append(enemy)
 		#time_portal.rotation_deg_per_sec = 360 / time_portal_duration
@@ -230,7 +230,7 @@ func _enemy_shifted_by_main_attack(enemy, enemy_curr_position):
 
 
 func _time_portal_hit_enemy(enemy, aoe):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		if !enemy.is_enemy_type_boss():
 			_shift_enemy_position_t(enemy, time_portal_rewind_scale)
 			aoe.enemies_to_ignore.append(enemy)

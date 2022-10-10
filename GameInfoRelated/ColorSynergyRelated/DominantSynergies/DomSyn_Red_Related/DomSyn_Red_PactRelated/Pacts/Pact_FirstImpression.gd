@@ -85,7 +85,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 
 
 func _enemy_spawned(enemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		enemy._add_effect(armor_loss_effect)
 		enemy._add_effect(toughness_loss_effect)
 		enemy.connect("effect_removed", self, "_enemy_lost_effect")

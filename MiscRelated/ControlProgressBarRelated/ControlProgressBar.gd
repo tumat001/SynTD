@@ -34,14 +34,14 @@ onready var bar_fill_foreground_marginer : MarginContainer = $BarFillForeground
 func set_bar_background_pic(value : Texture):
 	bar_background_pic = value
 	
-	if bar_backround != null:
+	if is_instance_valid(bar_backround) and bar_backround.is_inside_tree():
 		bar_backround.texture = value
 
 
 func set_fill_foreground_pic(value : Texture):
 	fill_foreground_pic = value
 	
-	if fill_foreground != null:
+	if is_instance_valid(fill_foreground) and fill_foreground.is_inside_tree():
 		fill_foreground.texture = value
 
 
@@ -66,7 +66,7 @@ func _ready():
 func set_current_value(value : float):
 	current_value = value
 	
-	if fill_foreground != null:
+	if is_instance_valid(fill_foreground):
 		var ratio = current_value / max_value
 		call_deferred("_set_curr_value_deferred", ratio)
 #		if yield_before_update:
@@ -115,7 +115,7 @@ func set_overflow(value : bool):
 # Chunks related
 
 func redraw_chunks():
-	if chunks_container != null:
+	if is_instance_valid(chunks_container):
 		if display_chunks:
 			var num = _number_of_chunks()
 			

@@ -18,7 +18,7 @@ func _ready():
 # Enemy hit and pos related
 
 func hit_by_enemy(enemy):
-	if enemy_stuck_to == null:
+	if !is_instance_valid(enemy_stuck_to):
 		_current_time_before_queue_free = base_time_before_queue_free
 		
 		offset_from_enemy = global_position - enemy.global_position
@@ -42,7 +42,7 @@ func decrease_pierce(amount):
 
 
 func _physics_process(delta):
-	if enemy_stuck_to != null:
+	if is_instance_valid(enemy_stuck_to):
 		
 		var curr_enemy_pos = enemy_stuck_to.global_position
 		

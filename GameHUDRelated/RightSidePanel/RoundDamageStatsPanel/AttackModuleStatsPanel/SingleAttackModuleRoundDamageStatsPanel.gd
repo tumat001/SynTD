@@ -24,12 +24,12 @@ func _ready():
 
 
 func set_attack_module(arg_attack_module : AbstractAttackModule):
-	if attack_module != null:
+	if is_instance_valid(attack_module):
 		attack_module.disconnect("on_in_round_total_dmg_changed", self, "_on_attk_module_in_round_total_damage_changed")
 	
 	attack_module = arg_attack_module
 	
-	if attack_module != null:
+	if is_instance_valid(attack_module):
 		attack_module.connect("on_in_round_total_dmg_changed", self, "_on_attk_module_in_round_total_damage_changed", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 		attack_module_texture_rect.texture = attack_module.tracker_image
 		

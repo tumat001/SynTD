@@ -41,7 +41,7 @@ func _on_tower_in_single_tower_rdsp_tree_exiting(tower):
 
 
 func _on_tower_in_multiple_tower_rdsp_selected(tower):
-	if tower != null:
+	if is_instance_valid(tower):
 		show_single_tower_detailed_rdsp_only()
 		single_tower_detailed_damage_stats_panel.set_tower(tower)
 

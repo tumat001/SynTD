@@ -42,7 +42,7 @@ func _ready():
 #
 
 func set_tower(arg_tower : AbstractTower):
-	if tower != null:
+	if is_instance_valid(tower):
 		tower.disconnect("attack_module_added", self, "_tower_attack_module_added")
 		tower.disconnect("attack_module_removed", self, "_tower_attack_module_removed")
 		tower.disconnect("tree_exiting", self, "_on_tower_tree_exiting")
@@ -56,7 +56,7 @@ func set_tower(arg_tower : AbstractTower):
 	if tower_rdsp._tower != tower:
 		tower_rdsp.set_tower(tower)
 	
-	if tower != null:
+	if is_instance_valid(tower):
 		tower.connect("attack_module_added", self, "_tower_attack_module_added", [], CONNECT_PERSIST)
 		tower.connect("attack_module_removed", self, "_tower_attack_module_removed", [], CONNECT_PERSIST)
 		tower.connect("tree_exiting", self, "_on_tower_tree_exiting", [], CONNECT_PERSIST)
@@ -141,7 +141,7 @@ func _on_tower_tree_exiting():
 
 func _on_round_start(curr_stageround):
 	for am_panel in attack_module_rdsp_panel.get_children():
-		if am_panel.attack_module == null:
+		if !is_instance_valid(am_panel.attack_module):
 			am_panel.queue_free()
 	
 	yield(get_tree(), "idle_frame")

@@ -139,7 +139,7 @@ func _on_current_health_chaged_b(curr_health):
 
 func _update_sprite_display():
 	if current_health > 0:
-		if partner_tower == null:
+		if !is_instance_valid(partner_tower):
 			tower_base_sprites.frame = unpaired_frame_index
 		else:
 			tower_base_sprites.frame = paired_frame_index
@@ -150,13 +150,13 @@ func _update_sprite_display():
 # Partner related
 
 func can_assign_new_partner() -> bool:
-	return partner_tower == null or !is_round_started
+	return !is_instance_valid(partner_tower) or !is_round_started
 
 func _emit_can_assign_new_partner():
 	emit_signal("can_assign_partner_status_changed", can_assign_new_partner())
 
 func can_unassign_current_partner() -> bool:
-	return partner_tower != null and !is_round_started
+	return is_instance_valid(partner_tower) and !is_round_started
 
 func _emit_can_unassign_current_partner():
 	emit_signal("can_unassign_current_partner_status_changed" , can_unassign_current_partner())
@@ -165,7 +165,7 @@ func _emit_can_unassign_current_partner():
 func assign_new_tower_partner(tower):
 	if _can_assign_tower_as_partner(tower):
 		
-		if partner_tower != null:
+		if is_instance_valid(partner_tower):
 			unassign_current_partner()
 		
 		partner_tower = tower
@@ -184,11 +184,11 @@ func assign_new_tower_partner(tower):
 		_partner_changed()
 
 func _can_assign_tower_as_partner(tower) -> bool:
-	return tower != null and partner_tower != tower and tower.is_current_placable_in_map() and !tower is get_script() and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLOSSOM_MARK_EFFECT)
+	return is_instance_valid(tower) and partner_tower != tower and tower.is_current_placable_in_map() and !tower is get_script() and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLOSSOM_MARK_EFFECT)
 
 
 func unassign_current_partner():
-	if partner_tower != null:
+	if is_instance_valid(partner_tower):
 		if partner_tower.is_connected("on_tower_no_health", self, "_on_partner_zero_health_reached"):
 			partner_tower.disconnect("on_tower_no_health", self, "_on_partner_zero_health_reached")
 			partner_tower.disconnect("tree_exiting", self, "_on_partner_tree_exiting")
@@ -238,7 +238,7 @@ func _attempt_revive_partner():
 
 
 func _add_effects_to_partner():
-	if partner_tower != null:
+	if is_instance_valid(partner_tower):
 		if !partner_tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLOSSOM_MARK_EFFECT):
 			partner_tower.add_tower_effect(total_attk_speed_effect)
 			partner_tower.add_tower_effect(total_base_damage_effect)
@@ -248,7 +248,7 @@ func _add_effects_to_partner():
 
 
 func _remove_benefitting_effects_from_partner():
-	if partner_tower != null:
+	if is_instance_valid(partner_tower):
 		if partner_tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLOSSOM_TOTAL_ATTK_SPEED_BUFF):
 			partner_tower.remove_tower_effect(total_attk_speed_effect)
 			partner_tower.remove_tower_effect(total_base_damage_effect)
@@ -257,7 +257,7 @@ func _remove_benefitting_effects_from_partner():
 
 
 func _remove_all_effects_from_partner():
-	if partner_tower != null:
+	if is_instance_valid(partner_tower):
 		_remove_benefitting_effects_from_partner()
 		
 		if partner_tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLOSSOM_MARK_EFFECT):
@@ -370,7 +370,7 @@ func _unassign_ability_activated():
 
 func _assign_ability_activated():
 	var mouse_hovered_tower = tower_manager.get_tower_on_mouse_hover()
-	if mouse_hovered_tower != null:
+	if is_instance_valid(mouse_hovered_tower):
 		assign_new_tower_partner(mouse_hovered_tower)
 		
 	else:

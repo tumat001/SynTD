@@ -13,7 +13,7 @@ func update_display():
 		#single_color_panel_vbox.remove_child(child)
 		child.queue_free()
 	
-	if tower != null:
+	if is_instance_valid(tower):
 		for color in tower._tower_colors:
 			var color_panel = SingleColorPanel_Scene.instance()
 			color_panel.color = color

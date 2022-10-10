@@ -85,7 +85,7 @@ func _on_enemy_implale_hit(enemy, damage_register_id, damage_instance, module):
 		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(impale_proj)
 
 func _on_impale_rectract(enemy):
-	if enemy != null:
+	if is_instance_valid(enemy):
 		var dmg_instance = impale_attack_module.construct_damage_instance()
 		dmg_instance.on_hit_effects.erase(StoreOfEnemyEffectsUUID.IMPALE_STUN)
 		

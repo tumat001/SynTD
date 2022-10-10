@@ -67,7 +67,7 @@ func show_all_text_and_icon():
 ##
 
 func _on_StatusIcon_mouse_entered():
-	if _current_tooltip == null:
+	if !is_instance_valid(_current_tooltip):
 		_current_tooltip = _construct_tooltip_for_status_icon()
 	
 	_current_tooltip.visible = true

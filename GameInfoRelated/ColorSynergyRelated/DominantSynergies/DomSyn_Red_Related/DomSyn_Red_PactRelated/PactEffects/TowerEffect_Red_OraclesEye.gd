@@ -39,13 +39,13 @@ func _make_modifications_to_tower(tower):
 		_tower.connect("on_round_end", self, "_on_round_end", [], CONNECT_PERSIST)
 		_tower.connect("on_round_start", self, "_on_round_start", [], CONNECT_PERSIST)
 	
-	if _base_downtime_timer == null:
+	if !is_instance_valid(_base_downtime_timer):
 		_base_downtime_timer = Timer.new()
 		_base_downtime_timer.one_shot = true
 		_base_downtime_timer.connect("timeout", self, "_on_base_downtime_timer_expired", [], CONNECT_PERSIST)
 		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_base_downtime_timer)
 	
-	if _per_sec_timer == null:
+	if !is_instance_valid(_per_sec_timer):
 		_per_sec_timer = Timer.new()
 		_per_sec_timer.one_shot = true
 		_per_sec_timer.connect("timeout", self, "_on_per_sec_timer_expired", [], CONNECT_PERSIST)

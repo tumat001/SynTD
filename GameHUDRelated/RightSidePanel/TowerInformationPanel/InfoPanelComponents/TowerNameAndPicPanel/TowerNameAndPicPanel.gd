@@ -25,7 +25,7 @@ onready var ing_icon_panel = $VBoxContainer/PicMarginer/MarginContainer/VBoxCont
 
 
 func update_display():
-	if tower != null:
+	if is_instance_valid(tower):
 		#Towers.get_tower_info(tower.tower_id)
 		
 		var tower_type_info = tower.tower_type_info

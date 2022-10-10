@@ -196,6 +196,6 @@ func mirror_tower_range_module_range_changes(arg_tower):
 	_mirrored_tower_range_module_range_changed(arg_tower)
 
 func _mirrored_tower_range_module_range_changed(arg_tower):
-	if arg_tower.range_module != null:
+	if is_instance_valid(arg_tower.range_module):
 		update_range(arg_tower.range_module.last_calculated_final_range)
 

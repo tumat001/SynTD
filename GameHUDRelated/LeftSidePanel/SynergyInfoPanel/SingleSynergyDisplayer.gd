@@ -98,7 +98,7 @@ func _on_SingleSynergyDisplayer_mouse_entered():
 #		current_tooltip.queue_free()
 
 func _on_SingleSynergyDisplayer_mouse_exited():
-	if current_tooltip != null:
+	if is_instance_valid(current_tooltip):
 		current_tooltip.queue_free()
 	
 	emit_signal("on_single_syn_tooltip_hidden", result.synergy)
