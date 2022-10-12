@@ -91,7 +91,7 @@ const linked_breeze_descriptions : Array = [
 
 #
 var mana_blast_ability : BaseAbility
-const mana_blast_ability_cooldown : float = 45.0
+const mana_blast_ability_cooldown : float = 55.0
 
 var mana_blast_module : AOEAttackModule
 

@@ -7,8 +7,8 @@ const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_R
 var relic_manager : RelicManager setget set_relic_manager
 var tower_manager setget set_tower_manager
 
-onready var tower_limit_relic_cost_label = $VBoxContainer/TowerLimitPanel/HBoxContainer/MarginContainer2/TowerLimitRelicCostLabel
-onready var ing_cap_relic_cost_label = $VBoxContainer/TowerIngCapPanel/HBoxContainer/MarginContainer2/IngCapRelicCostLabel
+onready var tower_limit_relic_cost_label = $VBoxContainer/TowerLimitPanel/HBoxContainer/HBoxContainer/MarginContainer2/TowerLimitRelicCostLabel
+onready var ing_cap_relic_cost_label = $VBoxContainer/TowerIngCapPanel/HBoxContainer2/HBoxContainer/MarginContainer2/IngCapRelicCostLabel
 onready var tower_limit_button = $VBoxContainer/TowerLimitPanel/TowerLimitButton
 onready var ing_cap_button = $VBoxContainer/TowerIngCapPanel/IngCapButton
 

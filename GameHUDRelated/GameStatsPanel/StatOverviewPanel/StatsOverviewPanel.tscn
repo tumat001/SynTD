@@ -1,0 +1,111 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/StageRoundLineGraphPanel/StageRoundLineGraphPanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/StatOverviewPanel/StatsOverviewPanel.gd" type="Script" id=2]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=3]
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/Assets/GoldIcon_20x20.png" type="Texture" id=4]
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/Assets/PlayerHealthHeart_20x20.png" type="Texture" id=5]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/ButtonToggleStandard/PlayerGUI_ButtonToggleStandard.tscn" type="PackedScene" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+size = 20
+font_data = ExtResource( 3 )
+
+[node name="StatsOverviewPanel" type="MarginContainer"]
+margin_right = 600.0
+margin_bottom = 400.0
+rect_min_size = Vector2( 700, 480 )
+mouse_filter = 2
+script = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 700.0
+margin_bottom = 480.0
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_right = 700.0
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 265.0
+margin_right = 700.0
+margin_bottom = 480.0
+mouse_filter = 2
+size_flags_vertical = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer"]
+margin_right = 700.0
+margin_bottom = 215.0
+mouse_filter = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_left = 315.0
+margin_right = 385.0
+margin_bottom = 21.0
+mouse_filter = 2
+size_flags_horizontal = 6
+
+[node name="GraphLabel" type="Label" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 66.0
+margin_bottom = 21.0
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 1 )
+text = "Header"
+align = 1
+
+[node name="GraphIcon" type="TextureRect" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 70.0
+margin_right = 70.0
+margin_bottom = 21.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_left = 73.0
+margin_top = 25.0
+margin_right = 627.0
+margin_bottom = 215.0
+mouse_filter = 2
+size_flags_horizontal = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+margin_right = 554.0
+margin_bottom = 190.0
+mouse_filter = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/HBoxContainer"]
+margin_right = 100.0
+margin_bottom = 190.0
+rect_min_size = Vector2( 100, 0 )
+mouse_filter = 2
+custom_constants/margin_right = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/HBoxContainer/MarginContainer"]
+margin_right = 95.0
+margin_bottom = 190.0
+mouse_filter = 2
+custom_constants/separation = 8
+
+[node name="Stat_HealthButton" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/HBoxContainer/MarginContainer/VBoxContainer" instance=ExtResource( 6 )]
+margin_right = 95.0
+text_for_label = "Health"
+custom_button_icon = ExtResource( 5 )
+is_toggle_on_by_hover_instead_of_click = false
+can_be_untoggled_if_is_toggled = false
+
+[node name="Stat_GoldButton" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/HBoxContainer/MarginContainer/VBoxContainer" instance=ExtResource( 6 )]
+margin_top = 38.0
+margin_right = 95.0
+margin_bottom = 68.0
+text_for_label = "Gold"
+custom_button_icon = ExtResource( 4 )
+is_toggle_on_by_hover_instead_of_click = false
+can_be_untoggled_if_is_toggled = false
+
+[node name="StageRoundLineGraphPanel" parent="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/HBoxContainer" instance=ExtResource( 1 )]
+margin_left = 104.0
+margin_right = 554.0
+margin_bottom = 190.0
+
+[connection signal="toggle_mode_changed" from="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/HBoxContainer/MarginContainer/VBoxContainer/Stat_HealthButton" to="." method="_on_Stat_HealthButton_toggle_mode_changed"]
+[connection signal="toggle_mode_changed" from="VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/HBoxContainer/MarginContainer/VBoxContainer/Stat_GoldButton" to="." method="_on_Stat_GoldButton_toggle_mode_changed"]

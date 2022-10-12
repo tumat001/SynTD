@@ -806,6 +806,9 @@ func if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(arg_tower_to
 	
 	if arg_tower_to_place.is_current_placable_in_map() and arg_tower_to_swap_with.is_current_placable_in_map():
 		return true
+	elif !arg_tower_to_place.is_current_placable_in_map() and !arg_tower_to_swap_with.is_current_placable_in_map():
+		return true
+		
 	else:
 		var tower_in_bench 
 		var tower_in_map

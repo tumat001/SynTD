@@ -15,7 +15,7 @@ func _on_AdvancedButton_pressed_mouse_event(event):
 				about_tooltip = _construct_about_tooltip()
 				about_tooltip.visible = true
 				about_tooltip.tooltip_owner = advanced_button
-				get_tree().get_root().add_child(about_tooltip)
+				CommsForBetweenScenes.ge_add_child_to_other_node_hoster(about_tooltip)
 				about_tooltip.update_display()
 				
 			else:

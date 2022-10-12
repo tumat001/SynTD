@@ -1,9 +1,40 @@
 extends Node
 
 const StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/StageRound.gd")
-
+const StageRoundDataPoint = preload("res://GameHUDRelated/GameStatsPanel/shared/StageRoundDataPoint.gd")
+const WholeScreenGameStatsPanel = preload("res://GameHUDRelated/GameStatsPanel/WholeScreenGameStatsPanel/WholeScreenGameStatsPanel.gd")
+const WholeScreenGameStatsPanel_Scene = preload("res://GameHUDRelated/GameStatsPanel/WholeScreenGameStatsPanel/WholeScreenGameStatsPanel.tscn")
+const WholeScreenGUI = preload("res://GameElementsRelated/WholeScreenGUI.gd")
 
 signal stat_overview_construction_finished()
+
+
+const compressed_stage_round_graph_points : Array = [
+	"01",
+	"10",
+	"13",
+	"22",
+	"31",
+	"34",
+	"43",
+	"52",
+	"61",
+	"64",
+	"73",
+	"82",
+	"91",
+	"94",
+]
+const health_line_label_of_col : String = "Health"
+const health_line_color : Color = Color(46/255.0, 195/255.0, 24/255.0, 1)
+const health_graph_name : String = "Player Health"
+
+const gold_line_label_of_col : String = "Gold"
+const gold_line_color : Color = Color(253/255.0, 192/255.0, 8/255.0, 1)
+const gold_graph_name : String = "Gold"
+
+
+#
 
 var stage_round_manager setget set_stage_round_manager
 var tower_manager setget set_tower_manager
@@ -17,6 +48,14 @@ var _current_stat_sample : StatSample
 
 var stat_overview : StatOverview
 var is_stat_overview_construction_finished : bool = false
+var is_stat_overview_construction_create_failed : bool = false
+var _stat_overview_thread_constructor : Thread
+
+#
+
+var whole_screen_gui : WholeScreenGUI
+
+var whole_screen_game_stats_panel : WholeScreenGameStatsPanel
 
 #
 
@@ -61,13 +100,14 @@ func _on_before_round_ends_game_start_aware(arg_staground, arg_is_game_start):
 		_take_stat_sample__before_end_of_round()
 
 func _on_round_end_game_start_aware(arg_stageround, arg_is_game_start):
-	if !arg_is_game_start:
-		_take_stat_sample__end_of_round()
+	#if !arg_is_game_start:
+	#	_take_stat_sample__end_of_round()
 	
 	_start_new_stat_sample()
 
 func _on_game_result_decided():
-	_take_stat_sample__end_of_round()
+	#_take_stat_sample__end_of_round()
+	_take_stat_sample__before_end_of_round()
 	
 	call_deferred("_construct_stat_overview")
 
@@ -78,7 +118,7 @@ func _start_new_stat_sample():
 	_current_stat_sample = StatSample.new()
 	_current_stat_sample.stage_num = stage_round_manager.current_stageround.stage_num
 	_current_stat_sample.round_num = stage_round_manager.current_stageround.round_num
-	_current_stat_sample.stageround_id = stage_round_manager.current_stageround.stageround_id
+	_current_stat_sample.stageround_id = stage_round_manager.current_stageround.id
 	
 	_start_tower_sold_listen()
 
@@ -100,16 +140,18 @@ func _take_stat_sample__before_end_of_round():
 	
 	_current_stat_sample.is_round_won = !stage_round_manager.current_round_lost
 	
-
-
-func _take_stat_sample__end_of_round():
 	_current_stat_sample.win_streak = stage_round_manager.current_win_streak
-	_current_stat_sample.lose_steak = stage_round_manager.current_lose_streak
+	_current_stat_sample.lose_streak = stage_round_manager.current_lose_streak
 	
 	_current_stat_sample.player_health_at_end = game_elements.health_manager.current_health
+	_current_stat_sample.gold_amount_at_end = game_elements.gold_manager.current_gold
 	
 	# Store _curr_sample.
-	stageround_id_to_stat_sample_map[stage_round_manager.current_stageround.id] = _current_stat_sample
+	stageround_id_to_stat_sample_map[_current_stat_sample.stageround_id] = _current_stat_sample
+	
+
+#func _take_stat_sample__end_of_round():
+#	pass
 
 
 class StatSample:
@@ -133,12 +175,13 @@ class StatSample:
 	
 	var is_round_won : bool
 	var win_streak : int
-	var lose_steak : int
+	var lose_streak : int
 	
 	var gold_amount_at_start : int
 	var player_level_at_start : int
 	var player_health_at_start : float
-	var player_health_at_end : float
+	var player_health_at_end : float setget set_player_health_at_end
+	var gold_amount_at_end : int
 	
 	var tower_id_with_highest_dmg : int
 	var THD_in_round_total_damage_dealt : float
@@ -152,6 +195,15 @@ class StatSample:
 	var round_physical_damage_dealt : float
 	
 	#var enemy_strength_val : int      #soon
+	
+	
+	func set_player_health_at_end(arg_val):
+		if arg_val < 0:
+			arg_val = 0
+		
+		player_health_at_end = arg_val
+	
+	#
 	
 	static func _custom_sort_descending(a, b):
 		return a > b
@@ -295,17 +347,29 @@ class StatOverview:
 	var total_pure_damage_dealt : float
 	var total_elemental_damage_dealt : float
 	var total_physical_damage_dealt : float
-
+	
+	var stage_round_data_points : Array
+	var total_data_points_count : int
 
 func _construct_stat_overview():
+	#_construct_stat_overview__method_for_thread(null)
+	
+	_stat_overview_thread_constructor = Thread.new()
+	var stat = _stat_overview_thread_constructor.start(self, "_construct_stat_overview__method_for_thread")
+	
+	if stat == ERR_CANT_CREATE:
+		is_stat_overview_construction_create_failed = true
+
+
+func _construct_stat_overview__method_for_thread(arg_userdata):
 	stat_overview = StatOverview.new()
 	
 	_configure_stat_overview__synergy_stats()
 	
-	
 	#
 	is_stat_overview_construction_finished = true
 	emit_signal("stat_overview_construction_finished")
+
 
 
 func _configure_stat_overview__synergy_stats():
@@ -323,6 +387,9 @@ func _configure_stat_overview__synergy_stats():
 	var total_ing_absorbed : int
 	var player_health_at_prev_end_round : float = game_elements.health_manager.starting_health
 	var stageround_id_where_most_health_lost : String
+	
+	var stage_round_data_points : Array = []
+	var count = 0
 	
 	for stat_sample in stageround_id_to_stat_sample_map.values():
 		# stage round ids dependend stats
@@ -368,9 +435,21 @@ func _configure_stat_overview__synergy_stats():
 		stat_overview.total_elemental_damage_dealt = stat_sample.round_elemental_damage_dealt
 		stat_overview.total_physical_damage_dealt = stat_sample.round_physical_damage_dealt
 		
+		#
+		
+		var stage_round_data_point = StageRoundDataPoint.new()
+		stage_round_data_point.stage_num = stat_sample.stage_num
+		stage_round_data_point.round_num = stat_sample.round_num
+		stage_round_data_point.line_label_to_val_maps = {
+			health_line_label_of_col : { health_line_label_of_col : stat_sample.player_health_at_end },
+			gold_line_label_of_col : { gold_line_label_of_col : stat_sample.gold_amount_at_end }
+		}
+		stage_round_data_points.append(stage_round_data_point)
+		
 		# KEEP AT BOTTOM
 		player_health_at_prev_end_round = stat_sample.player_health_at_end
 		prev_stageround_id = stat_sample.stageround_id
+		count += 1
 	
 	#
 	
@@ -379,9 +458,30 @@ func _configure_stat_overview__synergy_stats():
 	stat_overview.final_gold_amount = game_elements.gold_manager.current_gold
 	stat_overview.final_combination_count = combination_manager.all_combination_id_to_effect_map.size()
 	stat_overview.final_ing_absorb_count = total_ing_absorbed
+	stat_overview.stage_round_data_points = stage_round_data_points
+	stat_overview.total_data_points_count = count
 	
 	##########
 	is_stat_overview_construction_finished = true
 	emit_signal("stat_overview_construction_finished")
 
+###
+
+# called from round speed and start panel
+func show_game_stats_panel():
+	if !is_instance_valid(whole_screen_game_stats_panel):
+		whole_screen_game_stats_panel = WholeScreenGameStatsPanel_Scene.instance()
+		whole_screen_game_stats_panel.game_stats_manager = self
+	
+	whole_screen_game_stats_panel.visible = false
+	whole_screen_gui.show_control(whole_screen_game_stats_panel)
+	whole_screen_game_stats_panel.initialize_display()
+	whole_screen_game_stats_panel.visible = true
+
+
+####
+
+func _exit_tree():
+	if _stat_overview_thread_constructor != null:
+		_stat_overview_thread_constructor.wait_to_finish()
 

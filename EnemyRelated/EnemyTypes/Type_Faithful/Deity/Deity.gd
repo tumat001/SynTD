@@ -478,7 +478,7 @@ func _get_next_ready_ability() -> BaseAbility:
 			ability = current_abilities_ids_ability_map[next_candidiate_id]
 			check_cycle_count += 1
 			
-			if check_cycle_count > current_abilities_ids_ability_map.size():
+			if check_cycle_count > current_abilities_ids_ability_map.size() + 1:
 				break
 	
 	last_casted_ability_id = next_candidiate_id

@@ -10,50 +10,50 @@ func _init():
 		_get_stageround_0_2(),
 		_get_stageround_0_3(),
 		
-		_get_stageround_1_1(),
-		_get_stageround_1_2(),
-		_get_stageround_1_3(),
-		_get_stageround_1_4(),
-
-		_get_stageround_2_1(),
-		_get_stageround_2_2(),
-		_get_stageround_2_3(),
-		_get_stageround_2_4(),
-
-		_get_stageround_3_1(),
-		_get_stageround_3_2(),
-		_get_stageround_3_3(),
-		_get_stageround_3_4(),
-
-		_get_stageround_4_1(),
-		_get_stageround_4_2(),
-		_get_stageround_4_3(),
-		_get_stageround_4_4(),
-
-		_get_stageround_5_1(),
-		_get_stageround_5_2(),
-		_get_stageround_5_3(),
-		_get_stageround_5_4(),
-
-		_get_stageround_6_1(),
-		_get_stageround_6_2(),
-		_get_stageround_6_3(),
-		_get_stageround_6_4(),
-
-		_get_stageround_7_1(),
-		_get_stageround_7_2(),
-		_get_stageround_7_3(),
-		_get_stageround_7_4(),
-
-		_get_stageround_8_1(),
-		_get_stageround_8_2(),
-		_get_stageround_8_3(),
-		_get_stageround_8_4(),
-
-		_get_stageround_9_1(),
-		_get_stageround_9_2(),
-		_get_stageround_9_3(),
-		_get_stageround_9_4(),
+#		_get_stageround_1_1(),
+#		_get_stageround_1_2(),
+#		_get_stageround_1_3(),
+#		_get_stageround_1_4(),
+#
+#		_get_stageround_2_1(),
+#		_get_stageround_2_2(),
+#		_get_stageround_2_3(),
+#		_get_stageround_2_4(),
+#
+#		_get_stageround_3_1(),
+#		_get_stageround_3_2(),
+#		_get_stageround_3_3(),
+#		_get_stageround_3_4(),
+#
+#		_get_stageround_4_1(),
+#		_get_stageround_4_2(),
+#		_get_stageround_4_3(),
+#		_get_stageround_4_4(),
+#
+#		_get_stageround_5_1(),
+#		_get_stageround_5_2(),
+#		_get_stageround_5_3(),
+#		_get_stageround_5_4(),
+#
+#		_get_stageround_6_1(),
+#		_get_stageround_6_2(),
+#		_get_stageround_6_3(),
+#		_get_stageround_6_4(),
+#
+#		_get_stageround_7_1(),
+#		_get_stageround_7_2(),
+#		_get_stageround_7_3(),
+#		_get_stageround_7_4(),
+#
+#		_get_stageround_8_1(),
+#		_get_stageround_8_2(),
+#		_get_stageround_8_3(),
+#		_get_stageround_8_4(),
+#
+#		_get_stageround_9_1(),
+#		_get_stageround_9_2(),
+#		_get_stageround_9_3(),
+#		_get_stageround_9_4(),
 	]
 	
 	_decide_first_half_faction()

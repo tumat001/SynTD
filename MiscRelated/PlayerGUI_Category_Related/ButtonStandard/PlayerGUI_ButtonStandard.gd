@@ -25,8 +25,11 @@ export(Font) var custom_font : Font setget set_custom_font
 export(Color) var custom_color : Color = Color(1, 1, 1, 1) setget set_custom_color
 export(Color) var custom_color_highlighted := Color(1, 1, 1, 1) setget set_custom_color_highlighted
 
+export(Texture) var custom_button_icon : Texture = null setget set_custom_button_icon
+
 onready var advanced_button_with_tooltip = $AdvancedButtonWithTooltip
-onready var text_label = $ContentPanel/TextLabel
+onready var text_label = $ContentPanel/HBoxContainer/MarginContainer/TextLabel
+onready var button_icon = $ContentPanel/HBoxContainer/ButtonIcon
 onready var body_background_texture_rect = $BodyBackground
 
 onready var left_border = $LeftBorder
@@ -55,6 +58,8 @@ func _ready():
 	
 	set_custom_font(custom_font)
 	set_custom_color(custom_color)
+	
+	set_custom_button_icon(custom_button_icon)
 
 func _on_advanced_button_released_mouse_event(arg_event : InputEventMouseButton):
 	if arg_event.button_index == BUTTON_LEFT and is_button_enabled:
@@ -158,4 +163,15 @@ func set_custom_color_highlighted(arg_color):
 	
 	if custom_color != null and is_inside_tree() and _is_highlighted:
 		text_label.set("custom_colors/font_color", custom_color_highlighted)
+
+func set_custom_button_icon(arg_icon):
+	custom_button_icon = arg_icon
+	
+	if custom_button_icon != null and is_inside_tree():
+		button_icon.texture = custom_button_icon
+		button_icon.visible = true
+	else:
+		if is_inside_tree():
+			button_icon.visible = false
+
 

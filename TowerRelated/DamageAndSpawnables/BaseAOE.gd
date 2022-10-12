@@ -216,7 +216,8 @@ func _set_default_circle_shape():
 		var coll_shape = CircleShape2D.new()
 		coll_shape.radius = size_of_sprite.x / 2.0
 		
-		collision_shape.shape = coll_shape
+		#collision_shape.shape = coll_shape
+		collision_shape.set_deferred("shape", coll_shape)
 
 func _get_first_anim_size() -> Vector2:
 	return anim_sprite.frames.get_frame(anim_sprite.animation, anim_sprite.frame).get_size()

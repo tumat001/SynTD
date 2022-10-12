@@ -23,6 +23,7 @@ var round_started : bool
 
 var game_settings_manager setget set_game_settings_manager
 var game_elements setget set_game_elements
+var enemy_manager setget set_enemy_manager
 
 var can_start_round : bool = true setget set_can_start_round
 
@@ -31,6 +32,10 @@ var can_start_round : bool = true setget set_can_start_round
 func _ready():
 	set_can_start_round(can_start_round)
 
+
+func set_enemy_manager(arg_manager):
+	enemy_manager = arg_manager
+	round_info_panel_v2.set_enemy_manager(arg_manager)
 
 func set_game_settings_manager(arg_manager):
 	game_settings_manager = arg_manager
@@ -44,6 +49,7 @@ func set_game_elements(arg_elements):
 	
 	round_speed_and_start_panel.stage_round_manager = game_elements.stage_round_manager
 	round_speed_and_start_panel.connect("round_start_pressed", self, "_on_button_for_round_ready_start", [], CONNECT_PERSIST)
+	round_speed_and_start_panel.set_game_stats_manager(game_elements.game_stats_manager)
 
 func set_game_result_manager(arg_manager):
 	round_speed_and_start_panel.set_game_result_manager(arg_manager)

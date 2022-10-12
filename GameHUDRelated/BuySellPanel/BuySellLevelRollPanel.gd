@@ -7,6 +7,10 @@ const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation
 const CombinationManager = preload("res://GameElementsRelated/CombinationManager.gd")
 const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
+const LevelUpIcon_Green_Pic = preload("res://GameHUDRelated/BuySellPanel/AdditionalIcons/LevelUpIcon_Green_20x20.png")
+const LevelUpIcon_Orange_Pic = preload("res://GameHUDRelated/BuySellPanel/AdditionalIcons/LevelUpIcon_Orange_20x20.png")
+
+
 const Towers = preload("res://GameInfoRelated/Towers.gd")
 
 signal level_up
@@ -31,10 +35,11 @@ onready var buy_slot_04 = $HBoxContainer/BuySlotContainer/BuySlot04
 onready var buy_slot_05 = $HBoxContainer/BuySlotContainer/BuySlot05
 onready var buy_slot_06 = $HBoxContainer/BuySlotContainer/BuySlot06
 
-onready var level_up_cost_label = $HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer2/LevelUpCostLabel
-onready var reroll_cost_label = $HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer/MarginContainer2/RerollCostLabel
+onready var level_up_cost_label = $HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/HBoxContainer/MarginContainer2/LevelUpCostLabel
+onready var reroll_cost_label = $HBoxContainer/LevelRerollContainer/RerollPanel/HBoxContainer2/HBoxContainer/MarginContainer2/RerollCostLabel
 
-onready var level_up_cost_currency_icon = $HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer3/LevelUpCurrencyIcon
+onready var level_up_cost_currency_icon = $HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/HBoxContainer/MarginContainer3/LevelUpCurrencyIcon
+onready var level_up_texture_icon = $HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/HBoxContainer/MarginContainer2/LevelUpTexture
 
 onready var level_up_button = $HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/LevelUpButton
 onready var reroll_button = $HBoxContainer/LevelRerollContainer/RerollPanel/RerollButton
@@ -54,6 +59,8 @@ var tower_inventory_bench setget set_tower_inventory_bench
 
 # top left pos is global_position
 var bot_right_pos : Vector2
+
+var _can_level_up : bool
 
 #
 
@@ -368,12 +375,16 @@ func kill_all_tooltips_of_buycards():
 # button state related
 
 func _can_level_up_changed(can_level_up):
+	_can_level_up = can_level_up
+	
 	if can_level_up:
 		level_up_button.disabled = false
-		level_up_panel.modulate = can_press_button_color
+		#level_up_panel.modulate = can_press_button_color
 	else:
 		level_up_button.disabled = true
-		level_up_panel.modulate = cannot_press_button_color
+		#level_up_panel.modulate = cannot_press_button_color
+	
+	_update_level_up_panel_modulate()
 
 func _can_roll_changed(can_roll):
 	if can_roll:
@@ -393,6 +404,24 @@ func _on_current_level_changed(curr_level : int):
 		#reroll_panel.visible = true
 		can_refresh_shop_clauses.remove_clause(CanRefreshShopClauses.PLAYER_LEVEL_01)
 		level_up_panel.visible = true
+	
+	if curr_level == level_manager.LEVEL_9:
+		level_up_texture_icon.texture = LevelUpIcon_Green_Pic
+	else:
+		level_up_texture_icon.texture = LevelUpIcon_Orange_Pic
+	
+	_update_level_up_panel_modulate()
+
+##
+
+func _update_level_up_panel_modulate():
+	if level_manager.current_level == level_manager.LEVEL_10:
+		level_up_panel.modulate.a = 0
+	else:
+		if _can_level_up:
+			level_up_panel.modulate = can_press_button_color
+		else:
+			level_up_panel.modulate = cannot_press_button_color
 
 ####
 

@@ -15,6 +15,8 @@ onready var start_button = $Control/ReadyButton
 
 onready var status_label = $Control/StatusLabel
 
+onready var stats_button = $StatsButton
+
 #
 
 var speed_of_engine_time_scale_arr : Array = [
@@ -24,6 +26,7 @@ var all_speed_buttons : Array = []
 
 var stage_round_manager setget set_stage_round_manager
 var game_result_manager setget set_game_result_manager
+var game_stats_manager setget set_game_stats_manager
 
 var _curr_time_scale_to_use_on_ongoing_round : int = speed_of_engine_time_scale_arr[0]
 var _curr_time_scale_index : int
@@ -46,7 +49,8 @@ func _ready():
 	for button in all_speed_buttons:
 		button.can_be_untoggled_if_is_toggled = false
 		button.configure_self_with_button_group(_button_group)
-
+	
+	stats_button.visible = false
 
 func set_stage_round_manager(arg_manager):
 	stage_round_manager = arg_manager
@@ -62,6 +66,10 @@ func set_game_result_manager(arg_manager):
 	game_result_manager = arg_manager
 	
 	game_result_manager.connect("game_result_decided", self, "_on_game_result_decided", [], CONNECT_PERSIST)
+
+
+func set_game_stats_manager(arg_manager):
+	game_stats_manager = arg_manager
 
 
 #
@@ -136,12 +144,20 @@ func _make_arrow_follow_button(arg_button : Control, arg_do_setting : bool = fal
 ########
 
 func _on_game_result_decided():
-	var game_result = game_result_manager.game_result
+	stats_button.visible = true
 	
-	if game_result == GameResultManager.GameResult.DEFEAT:
-		status_label.text = "Defeat"
-	elif game_result == GameResultManager.GameResult.VICTORY:
-		status_label.text = "Victory"
-	elif game_result == GameResultManager.GameResult.DRAW:
-		status_label.text = "Draw"
+#	var game_result = game_result_manager.game_result
+#
+#	if game_result == GameResultManager.GameResult.DEFEAT:
+#		status_label.text = "Defeat"
+#	elif game_result == GameResultManager.GameResult.VICTORY:
+#		status_label.text = "Victory"
+#	elif game_result == GameResultManager.GameResult.DRAW:
+#		status_label.text = "Draw"
+#
+
+
+func _on_StatsButton_on_button_released_with_button_left():
+	if game_stats_manager != null:
+		game_stats_manager.show_game_stats_panel()
 

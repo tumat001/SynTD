@@ -9,12 +9,24 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "ReferenceRect",
+"class": "CGChart",
+"language": "GDScript",
+"path": "res://addons/ChartGraph/core/chart.gd"
+}, {
+"base": "CGChart",
+"class": "CGLine",
+"language": "GDScript",
+"path": "res://addons/ChartGraph/line_chart/line_chart.gd"
+}, {
 "base": "",
 "class": "GitAPI",
 "language": "NativeScript",
 "path": "res://git_api.gdns"
 } ]
 _global_script_class_icons={
+"CGChart": "",
+"CGLine": "",
 "GitAPI": ""
 }
 

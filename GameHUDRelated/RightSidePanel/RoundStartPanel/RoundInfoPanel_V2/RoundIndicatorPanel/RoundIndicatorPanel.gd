@@ -2,7 +2,9 @@ extends MarginContainer
 
 const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
 const StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/StageRound.gd")
-
+const BaseTowerSpecificTooltip = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.gd")
+const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.tscn")
+const BaseTowerSpecificTooltip_GreenHeader_Pic = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip_HeaderBackground_Green.png")
 
 const modulate_lose := Color(218/255.0, 2/255.0, 5/255.0, 1)
 const modulate_win := Color(2/255.0, 218/255.0, 55/255.0, 1)
@@ -10,6 +12,7 @@ const modulate_curr_round := Color(1, 1, 1, 1)
 const modulate_future_round := Color(0.6, 0.6, 0.6, 1)
 
 var stage_round_manager : StageRoundManager setget set_stage_round_manager
+var enemy_manager setget set_enemy_manager
 
 var _round_icon_local_positions_of_slot : Array
 var _all_round_icons__in_order_as_seen : Array
@@ -30,17 +33,26 @@ var _current_icon_slide_speed : float = 0
 var _base_icon_slide_x_amount : float
 var _current_icon_slide_total_amount : float = 0
 
+const round_count_left_base_string = "%s / %s"
 
-onready var round_icon_01 = $HBoxContainer/VBoxContainer/MarginContainer/MiddlePanel/ContentPanel/RoundIconsPanel/RoundIcon01
-onready var round_icon_02 = $HBoxContainer/VBoxContainer/MarginContainer/MiddlePanel/ContentPanel/RoundIconsPanel/RoundIcon02
-onready var round_icon_03 = $HBoxContainer/VBoxContainer/MarginContainer/MiddlePanel/ContentPanel/RoundIconsPanel/RoundIcon03
-onready var round_icon_04 = $HBoxContainer/VBoxContainer/MarginContainer/MiddlePanel/ContentPanel/RoundIconsPanel/RoundIcon04
-onready var round_icon_05 = $HBoxContainer/VBoxContainer/MarginContainer/MiddlePanel/ContentPanel/RoundIconsPanel/RoundIcon05
+var _current_tooltip : BaseTowerSpecificTooltip
 
-onready var arrow_top = $HBoxContainer/VBoxContainer/MarginContainer/ArrowContainers/ArrowTop
-onready var arrow_bottom = $HBoxContainer/VBoxContainer/MarginContainer/ArrowContainers/ArrowBottom
+onready var round_icon_01 = $VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/MiddlePanel/ContentPanel/RoundIconsPanel/RoundIcon01
+onready var round_icon_02 = $VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/MiddlePanel/ContentPanel/RoundIconsPanel/RoundIcon02
+onready var round_icon_03 = $VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/MiddlePanel/ContentPanel/RoundIconsPanel/RoundIcon03
+onready var round_icon_04 = $VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/MiddlePanel/ContentPanel/RoundIconsPanel/RoundIcon04
+onready var round_icon_05 = $VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/MiddlePanel/ContentPanel/RoundIconsPanel/RoundIcon05
 
-onready var stageround_id_label = $HBoxContainer/MarginContainer/MiddlePanel2/MarginContainer/StageroundLabel
+onready var arrow_top = $VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/ArrowContainers/ArrowTop
+onready var arrow_bottom = $VBoxContainer/HBoxContainer/VBoxContainer/MarginContainer/ArrowContainers/ArrowBottom
+
+onready var stageround_id_label = $VBoxContainer/HBoxContainer/MarginContainer/MiddlePanel2/MarginContainer/StageroundLabel
+
+onready var stageround_count_label = $VBoxContainer/HBoxContainer2/MarginContainer2/MiddlePanel2/RoundsCountContaner/RoundsCountLabel
+onready var stageround_count_container = $VBoxContainer/HBoxContainer2/MarginContainer2/MiddlePanel2/RoundsCountContaner
+
+onready var first_enemy_damage_label = $VBoxContainer/HBoxContainer2/MarginContainer3/MiddlePanel2/FirstEnemyDamageContainer/HBoxContainer/FirstEnemyDamageLabel
+onready var first_enemy_damage_container = $VBoxContainer/HBoxContainer2/MarginContainer3/MiddlePanel2/FirstEnemyDamageContainer
 
 #
 
@@ -70,6 +82,10 @@ func _get_arrow_to_be_pos_x_adjusted(arg_intended_x):
 
 
 #
+
+func set_enemy_manager(arg_manager):
+	enemy_manager = arg_manager
+	
 
 func set_stage_round_manager(arg_manager):
 	stage_round_manager = arg_manager
@@ -107,7 +123,6 @@ func _set_latest_round_icon_to_appropriate_icon(arg_stage_rounds : Array, arg_in
 
 func _on_round_ended_game_start_aware(arg_stage_round, arg_is_game_start):
 	if !arg_is_game_start:
-		
 		_set_modulate_of_curr_round_icon()
 		
 		var icon_at_next = _all_round_icons__in_order_as_seen[_curr_arrow_index_pointing_at + 1]
@@ -127,6 +142,8 @@ func _on_round_ended_game_start_aware(arg_stage_round, arg_is_game_start):
 		icon_at_curr.modulate = modulate_curr_round
 	
 	stageround_id_label.text = "%s-%s" % [stage_round_manager.current_stageround.stage_num, stage_round_manager.current_stageround.round_num]
+	
+	update_round_count_and_first_enemy_dmg_label()
 
 func _set_modulate_of_curr_round_icon():
 	var icon_at_curr = _all_round_icons__in_order_as_seen[_curr_arrow_index_pointing_at]
@@ -194,4 +211,46 @@ func _process(delta):
 
 ###
 
+func update_round_count_and_first_enemy_dmg_label():
+	stageround_count_label.text = round_count_left_base_string % [str(stage_round_manager.current_stageround_index + 1), str(stage_round_manager.stageround_total_count)]
+	first_enemy_damage_label.text = str(enemy_manager.enemy_first_damage)
 
+##
+
+
+func _on_FirstEnemyDamageContainer_mouse_entered():
+	if !is_instance_valid(_current_tooltip):
+		_current_tooltip = BaseTowerSpecificTooltip_Scene.instance()
+		_current_tooltip.descriptions = ["The first enemy that escapes in this round deals additional %s damage." % first_enemy_damage_label.text]
+		_current_tooltip.custom_header_texture = BaseTowerSpecificTooltip_GreenHeader_Pic
+		_current_tooltip.visible = true
+		_current_tooltip.tooltip_owner = first_enemy_damage_container
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_current_tooltip)
+		_current_tooltip.update_display()
+	else:
+		_current_tooltip.queue_free()
+		_current_tooltip = null
+
+func _on_RoundsCountContaner_mouse_entered():
+	if !is_instance_valid(_current_tooltip):
+		_current_tooltip = BaseTowerSpecificTooltip_Scene.instance()
+		_current_tooltip.descriptions = ["You are at wave %s out of %s" % [str(stage_round_manager.current_stageround_index + 1), str(stage_round_manager.stageround_total_count)]]
+		_current_tooltip.custom_header_texture = BaseTowerSpecificTooltip_GreenHeader_Pic
+		_current_tooltip.visible = true
+		_current_tooltip.tooltip_owner = first_enemy_damage_container
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_current_tooltip)
+		_current_tooltip.update_display()
+	else:
+		_current_tooltip.queue_free()
+		_current_tooltip = null
+
+
+func _on_RoundsCountContaner_mouse_exited():
+	if is_instance_valid(_current_tooltip):
+		_current_tooltip.queue_free()
+		_current_tooltip = null
+
+func _on_FirstEnemyDamageContainer_mouse_exited():
+	if is_instance_valid(_current_tooltip):
+		_current_tooltip.queue_free()
+		_current_tooltip = null

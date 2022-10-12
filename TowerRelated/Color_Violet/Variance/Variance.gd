@@ -841,7 +841,9 @@ func _cast_specialize_as_blue_state():
 			blue_beam_attk_module.can_be_commanded_by_tower_other_clauses.remove_clause(blue_beam_disabled_from_attking_clause)
 			range_module.connect("enemy_left_range", self, "_on_enemy_exited_range_module", [range_module])
 			#curr_target.connect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed", [curr_target, range_module])
-			curr_target.connect("tree_exiting", self, "_on_enemy_killed", [null, null, curr_target, range_module])
+			
+			if !curr_target.is_connected("tree_exiting", self, "_on_enemy_killed"):
+				curr_target.connect("tree_exiting", self, "_on_enemy_killed", [null, null, curr_target, range_module])
 			
 		else:
 			blue_beam_attk_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(blue_beam_disabled_from_attking_clause)

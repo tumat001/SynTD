@@ -77,7 +77,7 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 	if game_elements == null:
 		game_elements = arg_game_elements
 	
-	if deity_spawn_timer == null:
+	if !is_instance_valid(deity_spawn_timer):
 		deity_spawn_timer = Timer.new()
 		deity_spawn_timer.one_shot = true
 		CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(deity_spawn_timer)
@@ -161,7 +161,7 @@ func _on_enemy_spawned(enemy):
 			connect("on_deity_tree_exiting", enemy, "on_deity_tree_exiting")
 			connect("on_deity_summoning_delay_finished", enemy, "on_deity_summoning_finished")
 		
-		if _current_deity != null and !_current_deity.is_queued_for_deletion():
+		if is_instance_valid(_current_deity) and !_current_deity.is_queued_for_deletion():
 			enemy.set_deity_in_round(_current_deity)
 		
 		enemy._slow_effect = _faithful_dec_mov_speed_effect
@@ -252,7 +252,7 @@ func _on_deity_tree_exiting():
 
 func _on_round_end(curr_stageround):
 	if _is_deity_round:
-		if _current_cross != null:
+		if is_instance_valid(_current_cross):
 			_destroy_current_cross()
 
 func _destroy_current_cross():
@@ -275,7 +275,7 @@ func _on_cross_bearer_dies(cross_bearer):
 
 
 func _get_current_cross_or_construct():
-	if _current_cross != null:
+	if is_instance_valid(_current_cross):
 		return _current_cross
 	else:
 		_current_cross = CrossMarker_Scene.instance()

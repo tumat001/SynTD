@@ -43,6 +43,8 @@ var current_stageround_index : int = -1
 var current_stageround : StageRound
 var spawn_ins_of_faction_mode : BaseMode_EnemySpawnIns
 
+var stageround_total_count : int
+
 var round_started : bool
 #var round_fast_forwarded : bool
 
@@ -69,6 +71,8 @@ func set_game_mode(mode : int):
 	stagerounds = StoreOfGameMode.get_stage_rounds_of_mode_from_id(mode).new() #ModeNormal_StageRounds.new()
 	_replace_current_spawn_ins_to_second_half(stagerounds.get_first_half_faction())
 		#spawn_ins_of_faction_mode = StoreOfGameMode.get_spawn_ins_of_faction__based_on_mode(stagerounds.get_first_half_faction(), mode)
+	
+	stageround_total_count = stagerounds.stage_rounds.size()
 	
 	emit_signal("stage_rounds_set", stagerounds)
 

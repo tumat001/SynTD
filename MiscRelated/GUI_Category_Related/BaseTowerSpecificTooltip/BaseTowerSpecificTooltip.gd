@@ -16,11 +16,13 @@ export(bool) var use_simple_descriptions : bool = false
 var descriptions : Array = []
 export(Color) var body_color : Color = Color(1, 1, 1, 1)
 
+export(Texture) var custom_header_texture : Texture
+
 onready var tooltip_body : TooltipBody = $VBoxContainer/BodyMarginer/TooltipBody
 onready var left_label : Label = $VBoxContainer/HeaderMarginer/LabelMarginer/LeftLabel
 onready var middle_label : Label = $VBoxContainer/HeaderMarginer/LabelMarginer/MiddleLabel
 onready var right_label : Label = $VBoxContainer/HeaderMarginer/LabelMarginer/RightLabel
-
+onready var header_background = $VBoxContainer/HeaderMarginer/HeaderBackground
 
 func update_display():
 	rect_min_size.y = 0
@@ -35,7 +37,9 @@ func update_display():
 	_set_label_properties(left_label, header_left_text, header_left_color)
 	_set_label_properties(middle_label, header_middle_text, header_middle_color)
 	_set_label_properties(right_label, header_right_text, header_right_color)
-
+	
+	if custom_header_texture != null:
+		header_background.texture = custom_header_texture
 
 func _get_descriptions_to_use() -> Array:
 	if use_simple_descriptions:
