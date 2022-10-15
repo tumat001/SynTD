@@ -23,7 +23,7 @@ const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelate
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
-
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
 var explosion_attack_module : AOEAttackModule
 
@@ -38,9 +38,13 @@ func _init().(StoreOfTowerEffectsUUID.ING_BLUE_FRUIT):
 	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", 0.5))
 	
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+	
+	
+	var plain_fragment__slows = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SLOW, "slows")
+	
 	# ins
 	
-	description = ["Tower's main attacks create an icy explosion that deals |0| and slows 4 enemies by 25% for 2 seconds.", [interpreter_for_flat_on_hit]]
+	description = ["Tower's main attacks create an icy explosion that deals |0| and |1| 4 enemies by 25% for 2 seconds.", [interpreter_for_flat_on_hit, plain_fragment__slows]]
 
 
 # make mod

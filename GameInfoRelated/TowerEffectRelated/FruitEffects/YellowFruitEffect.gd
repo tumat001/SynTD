@@ -1,9 +1,16 @@
 extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd"
 
 
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+
+
 func _init().(StoreOfTowerEffectsUUID.ING_YELLOW_FRUIT):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_YellowFruit.png")
-	description = "The tower is worth 3 more gold per round when active in the map."
+	
+	var plain_fragment__on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
+	var plain_fragment__sell_value = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "3 more gold")
+	
+	description = ["|0|: The tower is worth |1| (when active in the map).", [plain_fragment__on_round_end, plain_fragment__sell_value]]
 
 
 

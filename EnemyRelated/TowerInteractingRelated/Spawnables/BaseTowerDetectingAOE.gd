@@ -118,7 +118,8 @@ func _process(delta):
 # Expose methods
 
 func set_coll_shape(shape):
-	collision_shape.shape = shape
+	#collision_shape.shape = shape
+	collision_shape.set_deferred("shape", shape)
 
 func set_offset_of_coll_area(arg_offset : Vector2):
 	offset = arg_offset

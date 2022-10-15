@@ -14,6 +14,8 @@ const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/Bas
 const EnemyKnockUpEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyKnockUpEffect.gd")
 const EnemyForcedPathOffsetMovementEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyForcedPathOffsetMovementEffect.gd")
 
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+
 const Brewd_NormalProj_Pic = preload("res://TowerRelated/Color_Green/Brewd/AttkAssets/Brewd_NormalProj.png")
 const Brewd_SpecialProjPic = preload("res://TowerRelated/Color_Green/Brewd/AttkAssets/Brewd_SpecialProj.png")
 
@@ -61,6 +63,10 @@ enum PotionTypes {
 }
 
 
+var _plain_fragment_stuns : PlainTextFragment = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stuns")
+
+#
+
 const attk_source_y_pos_shift : float = 15.0
 
 # REPEL
@@ -71,9 +77,9 @@ const repel_stun_duration : float = 2.25
 const repel_mov_speed : float = 80.0
 const repel_mov_speed_deceleration : float = 65.0
 
-const repel_descriptions : Array = [
+var repel_descriptions : Array = [
 	"Throws a potion that creates a blast at impact.",
-	"The blast knocks enemies away from its center. The blast also stuns enemies hit for %s seconds." % [str(repel_stun_duration)],
+	["The blast knocks enemies away from its center. The blast also |0| enemies hit for %s seconds." % [str(repel_stun_duration)], [_plain_fragment_stuns]],
 	"",
 	"\"Enemies tend to be separated with this potion.\""
 ]
@@ -93,9 +99,9 @@ const implosion_stun_duration : float = 1.75
 const implosion_base_mov_speed : float = 50.0
 const implosion_base_mov_speed_deceleration : float = 40.0
 
-const implosion_descriptions : Array = [
+var implosion_descriptions : Array = [
 	"Throws a potion that creates an void implosion at impact.",
-	"The implosion knocks enemies towards its center, with enemies closer to the center knocked less. The implosion also stuns enemies hit for %s seconds." % [str(implosion_stun_duration)],
+	["The implosion knocks enemies towards its center, with enemies closer to the center knocked less. The implosion also |0| enemies hit for %s seconds." % [str(implosion_stun_duration)], [_plain_fragment_stuns]],
 	"",
 	"\"Enemies tend to clump up with this potion.\"",
 ]
@@ -114,9 +120,9 @@ const shuffle_stun_duration : float = 2.0
 const shuffle_base_mov_speed : float = 120.0
 const shuffle_base_mov_speed_deceleration : float = 60.0
 
-const shuffle_descriptions : Array = [
+var shuffle_descriptions : Array = [
 	"Throws a potion that creates a shuffling implosion at impact.",
-	"The implosion knocks enemies towards its center, with enemies farther from the center knocked more. The implosion also stuns enemies hit for %s seconds." % [str(shuffle_stun_duration)],
+	["The implosion knocks enemies towards its center, with enemies farther from the center knocked more. The implosion also |0| enemies hit for %s seconds." % [str(shuffle_stun_duration)], [_plain_fragment_stuns]],
 	"",
 	"\"Enemies at the back tend to be sent forward, and vice versa, with this potion.\""
 ]

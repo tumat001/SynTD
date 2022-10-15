@@ -4,6 +4,7 @@ const AbstractTextFragment = preload("res://MiscRelated/TextInterpreterRelated/T
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
@@ -114,9 +115,12 @@ func interpret_array_of_instructions_to_final_text():
 static func interpret_arr_to_final_text(arg_arr : Array, arg_header_desc : String = "", arg_display_body : bool = true, arg_tower_to_use_for_tower_stat_fragments = null, arg_use_color_for_dark_background = false, arg_estimate_method_for_final_num_val = ESTIMATE_METHOD.NONE, arg_display_header : bool = true) -> String:
 	var portions = _interpret_arr_to_portions(arg_arr, arg_header_desc, arg_tower_to_use_for_tower_stat_fragments, arg_use_color_for_dark_background, arg_estimate_method_for_final_num_val)
 	
+	if !portions[6]:
+		return "%s" % portions[2]
+	
 	if arg_display_body and arg_display_header:
 		if !portions[5]: # no tower or tower_info is provided, but one of the inses is a TowerStatFragment ("incomplete info")
-			return "%s" % [portions[2]]
+			return "%s" % portions[2]
 		else:
 			if portions[3]: # if outcome text fragment is not the only ins
 				return "%s (%s)" % [portions[1], portions[2]]
@@ -124,16 +128,16 @@ static func interpret_arr_to_final_text(arg_arr : Array, arg_header_desc : Strin
 				if portions[2].length() > 0: # is there is base string
 					return "%s %s" % [portions[1], portions[2]]
 				else:
-					return "%s" % [portions[1]]
+					return "%s" % portions[1]
 		
 	elif arg_display_body:
-		return "%s" % [portions[2]]
+		return "%s" % portions[2]
 		
 	if arg_display_header:
-		return "%s" % [portions[1]]
+		return "%s" % portions[1]
 		
 	else:
-		return "%s" % [portions[1]]
+		return "%s" % portions[1]
 	
 
 
@@ -154,7 +158,14 @@ static func _interpret_arr_to_portions(arg_arr : Array, arg_header_desc : String
 	var no_tower_info_or_tower_provided : bool = arg_tower_to_use_for_tower_stat_fragments == null
 	var at_least_one_is_tower_stat_fragment : bool = false
 	
+	var has_numerical_val : bool = true
+	var plain_text_fragment : PlainTextFragment
+	
 	for item in arg_arr:
+		if item is PlainTextFragment:
+			has_numerical_val = false
+			plain_text_fragment = item
+		
 		if item is OutcomeTextFragment:
 			curr_outcome_text_fragment = item
 			if only_outcome_text_fragment_in_ins == -1:
@@ -261,7 +272,10 @@ static func _interpret_arr_to_portions(arg_arr : Array, arg_header_desc : String
 	
 	var frag_header
 	if curr_outcome_text_fragment == null:
-		frag_header = NumericalTextFragment.new(num_val, is_percent, curr_damage_type, arg_header_desc, true)
+		if plain_text_fragment == null:
+			frag_header = NumericalTextFragment.new(num_val, is_percent, curr_damage_type, arg_header_desc, true)
+		else:
+			frag_header = plain_text_fragment
 	else:
 		frag_header = curr_outcome_text_fragment
 		
@@ -277,7 +291,7 @@ static func _interpret_arr_to_portions(arg_arr : Array, arg_header_desc : String
 	var num_val_is_backed_by_tower_stats_but_no_stats_provided : bool = !no_tower_info_or_tower_provided and at_least_one_is_tower_stat_fragment
 	
 	
-	return [num_val, _interpret_AFT_to_text(frag_header), base_string, !only_outcome_text_fragment_in_ins, [is_percent, curr_damage_type], num_val_is_backed_by_tower_stats_but_no_stats_provided]
+	return [num_val, _interpret_AFT_to_text(frag_header), base_string, !only_outcome_text_fragment_in_ins, [is_percent, curr_damage_type], num_val_is_backed_by_tower_stats_but_no_stats_provided, has_numerical_val] #6
 
 
 
@@ -299,22 +313,35 @@ static func get_bbc_modified_description_as_string(arg_desc : String, arg_text_f
 	var index = 0
 	
 	for interpreter in arg_text_fragment_interpreters:
-		# if you see "invalid set index 'use_color...'... on base array, with value type 'bool', then you've inserted an array of ins instead of the interpreter.
-		interpreter.use_color_for_dark_background = arg_use_color_for_dark_background
 		
-		if !is_instance_valid(interpreter.tower_to_use_for_tower_stat_fragments):
-			interpreter.tower_to_use_for_tower_stat_fragments = arg_tower
-		
-		if interpreter.get_tower_info_to_use_for_tower_stat_fragments() == null:
-			interpreter.set_tower_info_to_use_for_tower_stat_fragments(arg_tower_info)
-		
-		
-		var interpreted_text = interpreter.interpret_array_of_instructions_to_final_text()
-		arg_desc = arg_desc.replace("|%s|" % str(index), interpreted_text)
+		if interpreter is PlainTextFragment:
+			# in this case, interpreter is an item/fragment
+			if arg_use_color_for_dark_background:
+				interpreter.color_mode = AbstractTextFragment.ColorMode.FOR_DARK_BACKGROUND
+			else:
+				interpreter.color_mode = AbstractTextFragment.ColorMode.FOR_LIGHT_BACKGROUND
+			
+			var text = interpreter.get_as_text_for_tooltip()
+			
+			arg_desc = arg_desc.replace("|%s|" % str(index), text)
+			
+		else:
+			# if you see "invalid set index 'use_color...'... on base array, with value type 'bool', then you've inserted an array of ins instead of the interpreter.
+			interpreter.use_color_for_dark_background = arg_use_color_for_dark_background
+			
+			if !is_instance_valid(interpreter.tower_to_use_for_tower_stat_fragments):
+				interpreter.tower_to_use_for_tower_stat_fragments = arg_tower
+			
+			if interpreter.get_tower_info_to_use_for_tower_stat_fragments() == null:
+				interpreter.set_tower_info_to_use_for_tower_stat_fragments(arg_tower_info)
+			
+			
+			var interpreted_text = interpreter.interpret_array_of_instructions_to_final_text()
+			arg_desc = arg_desc.replace("|%s|" % str(index), interpreted_text)
 		
 		index += 1
 	
-	arg_desc = arg_desc.replace(AbstractTextFragment.width_img_val_placeholder, str(arg_font_size / 2))
+	arg_desc = arg_desc.replace(AbstractTextFragment.width_img_val_placeholder, str((arg_font_size / 2) + 2))
 	
 	
 	return "[color=#%s]%s[/color]" % [arg_color_for_common_text.to_html(false), arg_desc]

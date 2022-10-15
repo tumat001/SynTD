@@ -14,10 +14,31 @@ enum STAT_TYPE {
 	PERCENT_COOLDOWN_REDUCTION = 105,
 	PIERCE = 106,
 	
-	#
-	
 	DAMAGE_SCALE_AMP = 200,
 	
+	#
+	
+	ABILITY = 1000,
+	BURN = 1001,
+	EXECUTE = 1002,
+	GOLD = 1003,
+	KNOCK_BACK = 1004,
+	KNOCK_UP = 1005,
+	#MAIN_ATTACK = 1006,
+	#NOT_MAIN_ATTACK = 1007,
+	#ON_HIT_EFFECT = 1008,
+	ON_ROUND_END = 1009,
+	ON_ROUND_START = 1010,
+	SLOW = 1011,
+	STUN = 1012,
+	TOWER_TIER_01 = 1013
+	TOWER_TIER_02 = 1014
+	TOWER_TIER_03 = 1015
+	TOWER_TIER_04 = 1016
+	TOWER_TIER_05 = 1017
+	TOWER_TIER_06 = 1018
+	
+	INGREDIENT = 1019
 }
 
 
@@ -31,8 +52,27 @@ const type_to_for_light_color_map : Dictionary = {
 	STAT_TYPE.ON_HIT_DAMAGE : "#6F6F6F",
 	STAT_TYPE.PERCENT_COOLDOWN_REDUCTION : "#026C6A",
 	STAT_TYPE.PIERCE : "#B61691",
+	STAT_TYPE.DAMAGE_SCALE_AMP : "#C00205",
 	
-	STAT_TYPE.DAMAGE_SCALE_AMP : "#C00205"
+	STAT_TYPE.ABILITY : "#022897",
+	STAT_TYPE.EXECUTE : "#6F0103",
+	STAT_TYPE.GOLD : "#715D21",
+	STAT_TYPE.KNOCK_BACK : "#821719",
+	STAT_TYPE.KNOCK_UP : "#821719",
+	STAT_TYPE.ON_ROUND_END : "#4F4F4F",
+	STAT_TYPE.ON_ROUND_START : "#4F4F4F",
+	STAT_TYPE.SLOW : "#024F50",
+	STAT_TYPE.STUN : "#821719",
+	
+	STAT_TYPE.TOWER_TIER_01 : "#474747",
+	STAT_TYPE.TOWER_TIER_02 : "#0B5101",
+	STAT_TYPE.TOWER_TIER_03 : "#011C6A",
+	STAT_TYPE.TOWER_TIER_04 : "#2E015B",
+	STAT_TYPE.TOWER_TIER_05 : "#6A0103",
+	STAT_TYPE.TOWER_TIER_06 : "#6A5001",
+	
+	STAT_TYPE.INGREDIENT : "#5102A2",
+	
 }
 
 const type_to_for_dark_color_map : Dictionary = {
@@ -48,6 +88,25 @@ const type_to_for_dark_color_map : Dictionary = {
 	
 	STAT_TYPE.DAMAGE_SCALE_AMP : "#FD4E51",
 	
+	STAT_TYPE.ABILITY : "#C7D6FE",
+	STAT_TYPE.EXECUTE : "#DA0205",
+	STAT_TYPE.GOLD : "#CC9222",
+	STAT_TYPE.KNOCK_BACK : "#F09294",
+	STAT_TYPE.KNOCK_UP : "#F09294",
+	STAT_TYPE.ON_ROUND_END : "#B8B8B8",
+	STAT_TYPE.ON_ROUND_START : "#B8B8B8",
+	STAT_TYPE.SLOW : "#04BABC",
+	STAT_TYPE.STUN : "#F09294",
+	
+	STAT_TYPE.TOWER_TIER_01 : "#A3A3A3",
+	STAT_TYPE.TOWER_TIER_02 : "#1FE302",
+	STAT_TYPE.TOWER_TIER_03 : "#3FB9FD",
+	STAT_TYPE.TOWER_TIER_04 : "#C690FE",
+	STAT_TYPE.TOWER_TIER_05 : "#FE9092",
+	STAT_TYPE.TOWER_TIER_06 : "#FEDD7C",
+	
+	STAT_TYPE.INGREDIENT : "#C48BFE",
+	
 }
 
 
@@ -59,8 +118,28 @@ const type_to_name_map : Dictionary = {
 	STAT_TYPE.ON_HIT_DAMAGE : "on hit damages",
 	STAT_TYPE.PERCENT_COOLDOWN_REDUCTION : "cooldown reduction",
 	STAT_TYPE.PIERCE : "bullet pierce",
-	
 	STAT_TYPE.DAMAGE_SCALE_AMP : "more damage",
+	
+	STAT_TYPE.ABILITY : "ability",
+	STAT_TYPE.EXECUTE : "execute",
+	STAT_TYPE.GOLD : "gold",
+	STAT_TYPE.KNOCK_BACK : "knock back",
+	STAT_TYPE.KNOCK_UP : "knock up",
+	STAT_TYPE.ON_ROUND_END : "on round end",
+	STAT_TYPE.ON_ROUND_START : "on round start",
+	STAT_TYPE.SLOW : "slow",
+	STAT_TYPE.STUN : "stun",
+	
+	STAT_TYPE.TOWER_TIER_01 : "tier 1",
+	STAT_TYPE.TOWER_TIER_02 : "tier 2",
+	STAT_TYPE.TOWER_TIER_03 : "tier 3",
+	STAT_TYPE.TOWER_TIER_04 : "tier 4",
+	STAT_TYPE.TOWER_TIER_05 : "tier 5",
+	STAT_TYPE.TOWER_TIER_06 : "tier 6",
+	
+	STAT_TYPE.INGREDIENT : "ingredient",
+	
+	
 }
 
 const type_to_img_map : Dictionary = {
@@ -71,8 +150,28 @@ const type_to_img_map : Dictionary = {
 	STAT_TYPE.ON_HIT_DAMAGE : "res://GameInfoRelated/TowerStatsIcons/StatIcon_OnHitMultiplier.png",
 	STAT_TYPE.PERCENT_COOLDOWN_REDUCTION : "res://GameInfoRelated/TowerStatsIcons/StatIcon_CooldownReduction.png",
 	STAT_TYPE.PIERCE : "res://GameInfoRelated/TowerStatsIcons/StatIcon_Bullet_Pierce.png",
+	STAT_TYPE.DAMAGE_SCALE_AMP : "res://GameInfoRelated/TowerStatsIcons/StatIcon_BonusDamageScale.png",
 	
-	STAT_TYPE.DAMAGE_SCALE_AMP : "res://GameInfoRelated/TowerStatsIcons/StatIcon_BonusDamageScale.png"
+	STAT_TYPE.ABILITY : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Ability.png",
+	STAT_TYPE.EXECUTE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Execute.png",
+	STAT_TYPE.GOLD : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Gold.png",
+	STAT_TYPE.KNOCK_BACK : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Knockback.png",
+	STAT_TYPE.KNOCK_UP : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_KnockUp.png",
+	
+	STAT_TYPE.ON_ROUND_END : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_OnRoundEnd.png",
+	STAT_TYPE.ON_ROUND_START : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_OnRoundStart.png",
+	STAT_TYPE.SLOW : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Slow.png",
+	STAT_TYPE.STUN : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Stun.png",
+	
+	STAT_TYPE.TOWER_TIER_01 : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_TowerTier01.png",
+	STAT_TYPE.TOWER_TIER_02 : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_TowerTier02.png",
+	STAT_TYPE.TOWER_TIER_03 : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_TowerTier03.png",
+	STAT_TYPE.TOWER_TIER_04 : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_TowerTier04.png",
+	STAT_TYPE.TOWER_TIER_05 : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_TowerTier05.png",
+	STAT_TYPE.TOWER_TIER_06 : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_TowerTier06.png",
+	
+	STAT_TYPE.INGREDIENT : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Ingredient.png",
+	
 }
 
 
@@ -108,7 +207,7 @@ const dmg_type_to_for_dark_color_map : Dictionary = {
 	
 	DamageType.PHYSICAL : "#FD6453",
 	DamageType.ELEMENTAL : "#FC3DFD",
-	DamageType.PURE : "#FD4447",
+	DamageType.PURE : "#FD6467",
 	
 	DamageType.MIXED : "#AA78FD"
 }

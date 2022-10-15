@@ -25,7 +25,7 @@ const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelate
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
-
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
 const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerAttributesEffect.gd")
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
@@ -260,9 +260,11 @@ func _construct_breeze_relateds():
 	interpreter_for_breeze_dmg.array_of_instructions = ins_for_breeze_dmg
 	
 	
+	var plain_fragment__slow = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SLOW, "Slows")
+	
 	# INS END
 	var temp_breeze_ability_desc = [
-		["Slows all enemies by %s%% for %s seconds, then slows by %s%% for %s seconds. Also deals |0|." % [str(-base_breeze_first_slow_amount), str(base_breeze_first_slow_duration), str(-base_breeze_second_slow_amount), str(base_breeze_second_slow_duration - base_breeze_first_slow_duration)], [interpreter_for_breeze_dmg]],
+		["|0| all enemies by %s%% for %s seconds, then slows by %s%% for %s seconds. Also deals |1|." % [str(-base_breeze_first_slow_amount), str(base_breeze_first_slow_duration), str(-base_breeze_second_slow_amount), str(base_breeze_second_slow_duration - base_breeze_first_slow_duration)], [plain_fragment__slow, interpreter_for_breeze_dmg]],
 		"Cooldown: %s s" % [str(base_breeze_ability_cooldown)],
 		#"",
 		#"Ability potency increases the slow percentage and the damage."

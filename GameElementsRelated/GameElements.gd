@@ -373,9 +373,9 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
-	gold_manager.increase_gold_by(150, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	level_manager.current_level = LevelManager.LEVEL_7
-	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -391,12 +391,12 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHAOS,
+			Towers.BLAST,
 			Towers.WYVERN,
-			Towers.VARIANCE,
-			Towers.ORB,
-			Towers.CANNON,
-			Towers.ACCUMULAE,
+			Towers.SE_PROPAGER,
+			Towers.LES_SEMIS,
+			Towers.SOLITAR,
+			Towers.OUTREACH,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([

@@ -9,7 +9,7 @@ func _init():
 		_get_stageround_0_1(),
 		_get_stageround_0_2(),
 		_get_stageround_0_3(),
-		
+#
 #		_get_stageround_1_1(),
 #		_get_stageround_1_2(),
 #		_get_stageround_1_3(),

@@ -24,6 +24,7 @@ const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/Bas
 const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStunEffect.gd")
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
 const TimerForTower = preload("res://TowerRelated/CommonBehaviorRelated/TimerForTower.gd")
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
 var smite_explosion_flat_dmg : float = 3.0
 var smite_explosion_base_dmg_scale : float = 0.5
@@ -69,9 +70,12 @@ func _update_description():
 	
 	interpreter_for_smite_dmg.array_of_instructions = outer_ins
 	
+	
+	var plain_fragment__stunning = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stunning")
+	
 	#
 	
-	description = ["Smite a random enemy out of range every %s s, dealing |0| to %s enemies and stunning for %s s." % [str(smite_cooldown), str(smite_explosion_pierce), str(smite_stun_duration)], [interpreter_for_smite_dmg]]
+	description = ["Smite a random enemy out of range every %s s, dealing |0| to %s enemies and |1| for %s s." % [str(smite_cooldown), str(smite_explosion_pierce), str(smite_stun_duration)], [interpreter_for_smite_dmg, plain_fragment__stunning]]
 
 #
 

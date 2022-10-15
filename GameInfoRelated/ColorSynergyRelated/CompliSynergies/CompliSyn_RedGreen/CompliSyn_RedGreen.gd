@@ -10,9 +10,9 @@ const red_detonation_damage_per_stack_tier_1 : float = 0.4
 const red_detonation_damage_per_stack_tier_2 : float = 0.3
 const red_detonation_damage_per_stack_tier_3 : float = 0.2
 
-const red_bolt_damage_tier_1 : float = 6.0
-const red_bolt_damage_tier_2 : float = 4.5
-const red_bolt_damage_tier_3 : float = 3.5
+const red_bolt_damage_tier_1 : float = 12.0
+const red_bolt_damage_tier_2 : float = 8.0
+const red_bolt_damage_tier_3 : float = 6.0
 
 const red_bolt_base_count : int = 5
 const red_bolt_count_stack_ratio : float = 0.5

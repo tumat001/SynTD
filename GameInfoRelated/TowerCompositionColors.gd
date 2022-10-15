@@ -8,6 +8,7 @@ const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
 
 const tier_bronze_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Bronze.png")
@@ -92,17 +93,17 @@ func _init():
 	interpreter_for_redgreen_dmg_per_bolt_gold.use_color_for_dark_background = false
 	
 	var ins_for_redgreen_dmg_per_bolt_gold = []
-	ins_for_redgreen_dmg_per_bolt_gold.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "dmg", 6))
+	ins_for_redgreen_dmg_per_bolt_gold.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "dmg", 12))
 	
 	interpreter_for_redgreen_dmg_per_bolt_gold.array_of_instructions = ins_for_redgreen_dmg_per_bolt_gold
 	
 	#
 	
 	var interpreter_for_redgreen_dmg_per_bolt_silver : TextFragmentInterpreter = interpreter_for_redgreen_dmg_per_bolt_gold.get_deep_copy()
-	interpreter_for_redgreen_dmg_per_bolt_silver.array_of_instructions[0].num_val = 4.5
+	interpreter_for_redgreen_dmg_per_bolt_silver.array_of_instructions[0].num_val = 8
 	
 	var interpreter_for_redgreen_dmg_per_bolt_bronze : TextFragmentInterpreter = interpreter_for_redgreen_dmg_per_bolt_gold.get_deep_copy()
-	interpreter_for_redgreen_dmg_per_bolt_bronze.array_of_instructions[0].num_val = 3.5
+	interpreter_for_redgreen_dmg_per_bolt_bronze.array_of_instructions[0].num_val = 6
 	
 	
 	#
@@ -124,6 +125,7 @@ func _init():
 	var interpreter_for_redgreen_dmg_per_stack_bronze : TextFragmentInterpreter = interpreter_for_redgreen_dmg_per_stack_gold.get_deep_copy()
 	interpreter_for_redgreen_dmg_per_stack_bronze.array_of_instructions[0].num_val = 0.2
 	
+	var plain_fragment__slow = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SLOW, "slow")
 	
 	#
 	
@@ -138,7 +140,7 @@ func _init():
 		"10+ stacks) Tantrum: Rapidly shoot (5 + 1/2 of total stacks) red bolts to random enemies in range. Bolts deal physical damage.",
 		"",
 		"Green Detonation: Gain a single use effect shield for a duration.",
-		"10+ stacks) Pulse: Towers caught in the pulse receive healing, and have their next (3 + 1/5 of total stacks) attacks apply a slow for 8 seconds. Number of stacks inceases healing, size of Pulse, and the slow's effectiveness.",
+		["10+ stacks) Pulse: Towers caught in the pulse receive healing, and have their next (3 + 1/5 of total stacks) attacks apply a |0| for 8 seconds. Number of stacks inceases healing, size of Pulse, and the slow's effectiveness.", [plain_fragment__slow]],
 		"",
 	],
 	[CompliSyn_RedGreen],
@@ -155,7 +157,7 @@ func _init():
 		"If at 10+ stacks: shoot (5 + 1/2 of total stacks) red bolt to random enemies in range.",
 		"",
 		"If Green streak is broken: Block the next enemy effect for a duration.",
-		"If at 10+ stacks: heal nearby towers, and slow enemies hit. Stacks increase the heal, the slow, and the number of attacks that apply the slow.",
+		["If at 10+ stacks: heal nearby towers, and |0| enemies hit. Stacks increase the heal, the slow, and the number of attacks that apply the slow.", [plain_fragment__slow]],
 		""
 	],
 	ColorSynergy.Difficulty.DIFFICULT

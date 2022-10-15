@@ -13,39 +13,41 @@ var tower_info : TowerTypeInformation
 var game_settings_manager : GameSettingsManager
 
 onready var tower_descriptions_tooltip = $RowsMainContainer/DescriptionContainer/Marginer/DescriptionsBody
-onready var ingredient_tooltp_body = $RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody
+
+onready var tower_name_label = $RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/TowerName
+onready var tower_color_01_texturerect = $RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer/HBoxContainer/TowerColor01
+onready var tower_color_02_texturerect = $RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer/HBoxContainer/TowerColor02
+
+onready var base_damage_label = $RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/BaseDamagePanel/BaseDamageLabel
+onready var attack_speed_label = $RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/AttkSpeedPanel/AttkSpeedLabel
+onready var damage_type_label = $RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/DamageTypePanel/DamageTypeLabel
+onready var range_label = $RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/RangePanel/RangeLabel
+onready var on_hit_multiplier_label = $RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/OnHitMultiplierPanel/OnHitMultiplierLabel
+
+onready var ing_info_body = $RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/IngInfoBody
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	tower_descriptions_tooltip.use_color_for_dark_background = true
 	update_display()
+
 
 func update_display():
 	if tower_info != null:
-		$RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/TowerName.text = tower_info.tower_name
+		tower_name_label.text = tower_info.tower_name
 		
 		var tower_colors : Array = tower_info.colors
 		if tower_colors.size() >= 1:
-			$RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer/HBoxContainer/TowerColor01.texture = TowerColors.get_color_symbol_on_card(tower_colors[0])
+			tower_color_01_texturerect.texture = TowerColors.get_color_symbol_on_card(tower_colors[0])
 		if tower_colors.size() >= 2:
-			$RowsMainContainer/HeaderContainer/Marginer/HeaderColumns/Marginer/HBoxContainer/TowerColor02.texture = TowerColors.get_color_symbol_on_card(tower_colors[1])
+			tower_color_02_texturerect.texture = TowerColors.get_color_symbol_on_card(tower_colors[1])
 		
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/BaseDamagePanel/BaseDamageLabel.text = str(tower_info.base_damage)
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/DamageTypePanel/DamageTypeLabel.text = DamageType.get_name_of_damage_type(tower_info.base_damage_type)
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/AttkSpeedPanel/AttkSpeedLabel.text = str(tower_info.base_attk_speed)
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/RangePanel/RangeLabel.text = str(tower_info.base_range)
+		base_damage_label.text = str(tower_info.base_damage)
+		damage_type_label.text = DamageType.get_name_of_damage_type(tower_info.base_damage_type)
+		attack_speed_label.text = str(tower_info.base_attk_speed)
+		range_label.text = str(tower_info.base_range)
 		
 		_update_ingredients()
-		
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.clear_descriptions_in_array()
-		if tower_info.energy_consumption_levels.size() == 0:
-			$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.descriptions = ["(Cannot use energy)"]
-		else:
-			for energy_buff in tower_info.energy_consumption_level_buffs:
-				if energy_buff != null:
-					$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.descriptions.append(energy_buff.get_description())
-				else:
-					$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.descriptions = ["No effect"]
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/EnergyInfoBody.update_display()
 		
 		
 		# descriptions
@@ -54,8 +56,7 @@ func update_display():
 		
 		for desc in descriptions_to_use:
 			tower_descriptions_tooltip.descriptions.append(desc)
-			tower_descriptions_tooltip.use_color_for_dark_background = false
-
+		
 		tower_descriptions_tooltip.update_display()
 		
 		
@@ -63,9 +64,9 @@ func update_display():
 
 func _update_ingredients():
 	
-	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.clear_descriptions_in_array()
+	ing_info_body.clear_descriptions_in_array()
 	if tower_info.ingredient_effect == null:
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions = ["Cannot be used as an ingredient."]
+		ing_info_body.descriptions = ["Cannot be used as an ingredient."]
 	else:
 		var ing_desc = tower_info.ingredient_effect.description
 		
@@ -80,9 +81,9 @@ func _update_ingredients():
 		desc_instance.img_indicator = tower_info.ingredient_effect.tower_base_effect.effect_icon
 		desc_instance._use_color_for_dark_background = false
 		
-		$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.descriptions.append(desc_instance)
-	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow/CmbInfoBody.update_display()
+		ing_info_body.descriptions.append(desc_instance)
+	ing_info_body.update_display()
 	
 
 func _update_on_hit_multiplier():
-	$RowsMainContainer/StatsContainer/StatsAndInfoDivider/TowerStatsPanel/StatsRow/OnHitMultiplierPanel/OnHitMultiplierLabel.text = "x" + str(tower_info.on_hit_multiplier)
+	on_hit_multiplier_label.text = "x" + str(tower_info.on_hit_multiplier)

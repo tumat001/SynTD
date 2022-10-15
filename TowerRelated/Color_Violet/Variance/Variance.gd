@@ -26,7 +26,7 @@ const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelate
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
-
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
 const Variance_MainProj = preload("res://TowerRelated/Color_Violet/Variance/Attks/Variance_MainProj.png")
 
@@ -1025,15 +1025,17 @@ func get_tower_descriptions_to_use_for_vessel():
 		"On this tower's 10th attack, fire additional 3 bullets to the largest line of enemies. These bullets have infinite pierce."
 	]
 
-#######
+################# DESCRIPTIONS ################
 
 
 func _get_descriptions_for_clear_var():
+	var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Specialize as Clear Type")
+	
 	return [
 		_get_descriptions_header_01(),
 		"",
 		_get_descriptions_header_02(),
-		"Ability: Specialize as Clear Type: Remove almost all effects from enemies in range three times over 10 seconds.",
+		["|0|: Remove almost all effects from enemies in range three times over 10 seconds.", [plain_fragment__ability_name]],
 		"",
 		_get_descriptions_for_cooldown(),
 	]
@@ -1051,11 +1053,16 @@ func _get_descriptions_for_red_var():
 	
 	interpreter_for_red_explosion.array_of_instructions = ins_for_red_explosion
 	
+	var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Specialize as Damage Type")
+	var plain_text__knock_back = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.KNOCK_BACK, "knocks its target back")
+	var plain_fragment__stuns = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stuns")
+	
+	
 	return [
 		_get_descriptions_header_01(),
 		"",
 		_get_descriptions_header_02(),
-		["Ability: Specialize as Damage Type: The first main attack knocks its target back. The first and second main attack stuns for 2 seconds. Afterwards, fire a massive glob that deals |0| to 5 enemies.", [interpreter_for_red_explosion]],
+		["|0|: The first main attack |1|. The first and second main attack |2| for 2 seconds. Afterwards, fire a massive glob that deals |3| to 5 enemies.", [plain_fragment__ability_name, plain_text__knock_back, plain_fragment__stuns, interpreter_for_red_explosion]],
 		"",
 		_get_descriptions_for_cooldown(),
 	]
@@ -1094,11 +1101,14 @@ func _get_descriptions_for_blue_var():
 	
 	interpreter_for_ap.array_of_instructions = ins_for_ap
 	
+	
+	var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Specialize as Potency Type")
+	
 	return [
 		_get_descriptions_header_01(),
 		"",
 		_get_descriptions_header_02(),
-		["Ability: Specialize as Potency Type: Deal |0| per 0.25 seconds to its current target until it dies or leaves range. Afterwards, release an explosion at its target's location, dealing |1|. If this is casted while the beam is active, gain stacking |2|.", [interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg, interpreter_for_ap]],
+		["|0|: Deal |1| per 0.25 seconds to its current target until it dies or leaves range. Afterwards, release an explosion at its target's location, dealing |2|. If this is casted while the beam is active, gain stacking |3|.", [plain_fragment__ability_name, interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg, interpreter_for_ap]],
 		"",
 		_get_descriptions_for_cooldown(),
 	]
@@ -1114,11 +1124,14 @@ func _get_descriptions_for_yellow_var():
 	
 	interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
 	
+	
+	var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Specialize as Speed Type")
+	
 	return [
 		_get_descriptions_header_01(),
 		"",
 		_get_descriptions_header_02(),
-		["Ability: Specialize as Speed Type: Gain |0| for 20 seconds. Innate: Summon a vessel outside of range every 25 main attacks. Vessels last for only one round.", [interpreter_for_attk_speed]],
+		["|0|: Gain |1| for 20 seconds. Innate: Summon a vessel outside of range every 25 main attacks. Vessels last for only one round.", [plain_fragment__ability_name, interpreter_for_attk_speed]],
 		"",
 		_get_descriptions_for_cooldown(),
 	]
@@ -1126,7 +1139,9 @@ func _get_descriptions_for_yellow_var():
 
 
 func _get_descriptions_header_01():
-	return "On round end: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it."
+	var plain_fragment__round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
+	
+	return ["|0|: Variance morphs, changing type and its ingredient effect. Activates even if not placed in the map. Always starts as Clear type, but cannot revert to it.", [plain_fragment__round_end]]
 
 func _get_descriptions_header_02():
 	return "Auto casts Specialize."
@@ -1146,4 +1161,3 @@ func _get_descriptions_for_cooldown():
 	interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
 	
 	return ["Cooldown: |0|", [interpreter_for_cooldown]]
-
