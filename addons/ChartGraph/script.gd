@@ -317,7 +317,7 @@ func draw_line_chart():
 
 				draw_line(previous_point[key], point, current_point_color[key].line, current_line_width)
 
-				# Don't add points that are too close of each others
+				# Don't add points that are too close of each other
 				if abs(previous_point[key].x - point.x) < 10.0:
 					pointListObject[key].pop_back()
 
@@ -331,8 +331,18 @@ func draw_line_chart():
 		if current_show_label & LABELS_TO_SHOW.X_LABEL:
 			var label = tr(point_data.label).left(3)
 			var string_decal = Vector2(14, -LABEL_SPACE.y + 8.0)
-
-			draw_string(label_font, Vector2(point.x, vertical_line[1].y) - string_decal, label, grid_color)
+			
+			var labels = label.split("\n")
+			var counter : int = 0
+			var pos_offset_per_i : float = label_font.get_height()
+			
+			var point_middle = dot_texture.get_width() / 2.0
+			
+			for lab in labels:
+				var label_x_length = label_font.get_string_size(lab).x / 4.0
+				
+				draw_string(label_font, Vector2(point.x + point_middle - label_x_length, vertical_line[1].y + (pos_offset_per_i * counter)) - string_decal, lab, grid_color)
+				counter += 1
 	
 #	_draw_chart_background(pointListObject)
 

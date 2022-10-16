@@ -9,11 +9,12 @@ const TooltipWithTextIndicatorDescriptionScene = preload("res://GameHUDRelated/T
 const TooltipWithImageIndicatorDescription = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithImageIndicatorDescription.gd")
 const TooltipWithImageIndicatorDescriptionScene = preload("res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipWithImageIndicatorDescription.tscn")
 
+const Background_ForHighlighted = preload("res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltipPic_background_ForHighlighted.png")
 
 #const highlighted_color : Color = Color(0, 0, 0, 1)
 #const not_highlighted_color : Color = Color(0.3, 0.3, 0.3, 1)
 
-const text_color : Color = Color(0, 0, 0, 1)
+const text_color : Color = Color(1, 1, 1, 1)
 const highlighted_modulate : Color = Color(1, 1, 1, 1)
 const not_highlighted_modulate : Color = Color(1, 1, 1, 0.65)
 
@@ -31,9 +32,10 @@ onready var syn_tier_label = $VBoxContainer/MainContentContainer/Marginer/VBoxCo
 onready var tooltip_body = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/VBoxContainer/TooltipBody
 onready var synergy_difficulty_panel = $VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/VBoxContainer/SynergyDifficultyPanel
 
+
 func _ready():
-	tooltip_body.override_color_of_descs = false
-	tooltip_body.use_color_for_dark_background = false
+	tooltip_body.override_color_of_descs = true
+	tooltip_body.use_color_for_dark_background = true
 	
 	update_display()
 
@@ -147,6 +149,7 @@ func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy) -> Array
 		else:
 			text_desc.description = provided_desc
 		
+		text_desc._use_color_for_dark_background = tooltip_body.use_color_for_dark_background
 		
 		#text_desc.indicator = _convert_number_to_roman_numeral(desc_i + 1) + ")"
 		#text_desc.indicator = str(result.synergy.number_of_towers_in_tier[desc_i]) + ")"
@@ -155,6 +158,13 @@ func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy) -> Array
 		text_desc.color = text_color
 		if synergy.current_highlighted_index_effects_descriptions.has(desc_i):
 			text_desc.modulate = highlighted_modulate
+			
+			var highlighted_texturerect = TextureRect.new()
+			highlighted_texturerect.texture = Background_ForHighlighted
+			highlighted_texturerect.stretch_mode = TextureRect.STRETCH_TILE
+			text_desc.add_child(highlighted_texturerect)
+			text_desc.move_child(highlighted_texturerect, 0)
+			
 		else:
 			text_desc.modulate = not_highlighted_modulate
 		

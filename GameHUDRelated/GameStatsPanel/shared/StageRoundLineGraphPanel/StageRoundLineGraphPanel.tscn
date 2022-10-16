@@ -10,11 +10,11 @@ font_data = ExtResource( 3 )
 [node name="StageRoundLineGraphPanel" type="MarginContainer"]
 margin_right = 450.0
 margin_bottom = 180.0
-rect_min_size = Vector2( 450, 190 )
+rect_min_size = Vector2( 600, 190 )
 script = ExtResource( 2 )
 
 [node name="Graph" type="ReferenceRect" parent="."]
-margin_right = 450.0
+margin_right = 600.0
 margin_bottom = 190.0
 script = ExtResource( 1 )
 label_font = SubResource( 1 )

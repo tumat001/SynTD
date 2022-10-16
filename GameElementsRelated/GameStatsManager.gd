@@ -472,12 +472,13 @@ func show_game_stats_panel():
 	if !is_instance_valid(whole_screen_game_stats_panel):
 		whole_screen_game_stats_panel = WholeScreenGameStatsPanel_Scene.instance()
 		whole_screen_game_stats_panel.game_stats_manager = self
+		whole_screen_game_stats_panel.whole_screen_gui = whole_screen_gui
 	
 	whole_screen_game_stats_panel.visible = false
 	whole_screen_gui.show_control(whole_screen_game_stats_panel)
 	whole_screen_game_stats_panel.initialize_display()
 	whole_screen_game_stats_panel.visible = true
-
+	
 
 ####
 

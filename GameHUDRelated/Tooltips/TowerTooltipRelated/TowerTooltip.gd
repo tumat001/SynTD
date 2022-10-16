@@ -63,7 +63,6 @@ func update_display():
 		_update_on_hit_multiplier()
 
 func _update_ingredients():
-	
 	ing_info_body.clear_descriptions_in_array()
 	if tower_info.ingredient_effect == null:
 		ing_info_body.descriptions = ["Cannot be used as an ingredient."]
@@ -79,7 +78,7 @@ func _update_ingredients():
 			desc_instance.description = tower_info.ingredient_effect.description
 		
 		desc_instance.img_indicator = tower_info.ingredient_effect.tower_base_effect.effect_icon
-		desc_instance._use_color_for_dark_background = false
+		desc_instance._use_color_for_dark_background = true
 		
 		ing_info_body.descriptions.append(desc_instance)
 	ing_info_body.update_display()

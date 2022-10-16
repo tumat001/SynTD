@@ -5,7 +5,7 @@
 [ext_resource path="res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SingleSynergyDisplayer.gd" type="Script" id=4]
 
 [sub_resource type="DynamicFont" id=1]
-size = 10
+size = 11
 font_data = ExtResource( 2 )
 
 [sub_resource type="DynamicFont" id=2]
@@ -17,9 +17,6 @@ margin_right = 37.0
 margin_bottom = 14.0
 size_flags_vertical = 4
 script = ExtResource( 4 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_right = 37.0
@@ -43,7 +40,7 @@ texture = ExtResource( 1 )
 [node name="SpecialMarginer" type="MarginContainer" parent="HBoxContainer/TierIconPanel"]
 margin_left = 3.0
 margin_right = 10.0
-margin_bottom = 13.0
+margin_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -56,10 +53,10 @@ custom_constants/margin_left = 1
 margin_left = 1.0
 margin_top = 2.0
 margin_right = 7.0
-margin_bottom = 13.0
+margin_bottom = 14.0
 size_flags_vertical = 1
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 1 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "I"
 
 [node name="SynergyIconPanel" type="MarginContainer" parent="HBoxContainer"]
@@ -89,11 +86,12 @@ margin_left = 5.0
 margin_top = 3.0
 margin_right = 9.0
 margin_bottom = 12.0
-custom_fonts/font = SubResource( 2 )
-custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_constants/line_spacing = 0
+custom_fonts/font = SubResource( 2 )
 text = "t"
 valign = 1
+
 [connection signal="gui_input" from="." to="." method="_on_SingleSynergyDisplayer_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_SingleSynergyDisplayer_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_SingleSynergyDisplayer_mouse_exited"]

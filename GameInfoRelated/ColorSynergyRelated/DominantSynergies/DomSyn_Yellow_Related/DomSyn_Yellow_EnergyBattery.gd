@@ -17,8 +17,8 @@ const tier_3_recharge_rate : int = 1
 
 
 const tier_1_max_capacity = 8
-const tier_2_max_capacity = 6
-const tier_3_max_capacity = 4
+const tier_2_max_capacity = 4
+const tier_3_max_capacity = 2
 
 
 # used by violet yellow

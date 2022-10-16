@@ -4704,13 +4704,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Production")
 		
 		var plain_fragment__sell_value = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "2")
+		var plain_fragment__tower_les_semis = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Les Semis")
 		
 		# INS END
 		
 		#Les semis description also uses this. Change les semis desc when changing this
 		info.tower_descriptions = [
 			"Auto casts Production.",
-			["|0|: Production. Se Propager attempts to plant a Les Semis in an unoccupied in-range tower slot.", [plain_fragment__ability]],
+			["|0|: Production. Se Propager attempts to plant a |1| in an unoccupied in-range tower slot.", [plain_fragment__ability, plain_fragment__tower_les_semis]],
 			["Cooldown : |0|.", [interpreter_for_cooldown]],
 			"",
 			"Les Semis: a tower that inherits 100% of its parents base damage on creation.",
@@ -4723,7 +4724,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_simple_descriptions = [
 			"Auto casts Production.",
-			["|0|: Se Propager plants a Les Semis in an unoccupied in-range tower slot.", [plain_fragment__ability_name]],
+			["|0|: Se Propager plants a |1| in an unoccupied in-range tower slot.", [plain_fragment__ability_name, plain_fragment__tower_les_semis]],
 			["Cooldown : |0|.", [interpreter_for_cooldown]],
 			"",
 			"Les Semis: a tower that inherits 100% of its parent's base damage on creation.",

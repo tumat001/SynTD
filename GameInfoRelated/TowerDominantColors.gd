@@ -208,7 +208,7 @@ func _init():
 	ColorSynergy.Difficulty.EASY
 	),
 	
-	synergy_id_to_syn_name_dictionary[SynergyId.YELLOW] : ColorSynergy.new(SynergyId.YELLOW, synergy_id_to_syn_name_dictionary[SynergyId.YELLOW], [TowerColors.YELLOW], [10, 8, 5, 3],
+	synergy_id_to_syn_name_dictionary[SynergyId.YELLOW] : ColorSynergy.new(SynergyId.YELLOW, synergy_id_to_syn_name_dictionary[SynergyId.YELLOW], [TowerColors.YELLOW], [11, 8, 5, 3],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_yellow,
 	[
@@ -223,8 +223,8 @@ func _init():
 	[DomSyn_Yellow_GoldIncome, DomSyn_Yellow_EnergyBattery],
 	[
 		"+1 gold per round.",
-		"Activates ENERGIZE. Battery has 4 energy capacity. Gain 1 energy per turn.",
-		"Activates ENERGIZE. Battery has 6 energy capacity. Gain 2 energy per turn.",
+		"Activates ENERGIZE. Battery has 2 energy capacity. Gain 1 energy per turn.",
+		"Activates ENERGIZE. Battery has 4 energy capacity. Gain 2 energy per turn.",
 		"Activates ENERGIZE. Battery has 9 energy capacity. Gain 3 energy per turn.",
 	],
 	ColorSynergy.HighlightDeterminer.CUSTOM,
@@ -237,7 +237,7 @@ func _init():
 	},
 	[
 		"ENERGIZE: Create an Energy Battery with 1 energy.",
-		"Yellow towers can consume an energy to gain special effects.",
+		"Yellow towers can consume 1 energy to gain special effects.",
 		""
 	],
 	ColorSynergy.Difficulty.EASY

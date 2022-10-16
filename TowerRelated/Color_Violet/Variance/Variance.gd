@@ -157,7 +157,7 @@ var _current_main_attack_count_for_vessel_summon : int
 
 var yellow_attk_speed_effect : TowerAttributesEffect
 const yellow_attk_speed_percent_amount : float = 50.0
-const yellow_attk_speed_duration : float = 20.0
+const yellow_attk_speed_duration : float = 15.0
 
 #
 
@@ -1126,12 +1126,14 @@ func _get_descriptions_for_yellow_var():
 	
 	
 	var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Specialize as Speed Type")
+	var plain_fragment__tower_vessel = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Variance-Vessel")
+		
 	
 	return [
 		_get_descriptions_header_01(),
 		"",
 		_get_descriptions_header_02(),
-		["|0|: Gain |1| for 20 seconds. Innate: Summon a vessel outside of range every 25 main attacks. Vessels last for only one round.", [plain_fragment__ability_name, interpreter_for_attk_speed]],
+		["|0|: Gain |1| for %s seconds. Innate: Summon a |2| outside of range every 25 main attacks. Vessels last for only one round." % str(yellow_attk_speed_duration), [plain_fragment__ability_name, interpreter_for_attk_speed, plain_fragment__tower_vessel]],
 		"",
 		_get_descriptions_for_cooldown(),
 	]

@@ -98,13 +98,13 @@ func _on_linegraph_point_unhovered(key, val, other_data, sprite_node):
 func _get_descriptions_for_tooltip(key, val, other_data):
 	if _current_stat_shown_at_graph == StatAtGraphShown.HEALTH:
 		return [
-			"Stageround: %s" % other_data,
+			"Stageround: %s" % other_data[1],
 			"Health: %s" % val
 		]
 		
 	elif _current_stat_shown_at_graph == StatAtGraphShown.GOLD:
 		return [
-			"Stageround: %s" % other_data,
+			"Stageround: %s" % other_data[1],
 			"Gold: %s" % val
 		]
 

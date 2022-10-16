@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/screenshot.png-836091f94baad9c66f52d1d068ff5e95.stex"
+path="res://.import/FragmentIcon_Tower.png-430bfe1d8fd9aab24927b49f1ad1578d.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://imgs/screenshot.png"
-dest_files=[ "res://.import/screenshot.png-836091f94baad9c66f52d1d068ff5e95.stex" ]
+source_file="res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Tower.png"
+dest_files=[ "res://.import/FragmentIcon_Tower.png-430bfe1d8fd9aab24927b49f1ad1578d.stex" ]
 
 [params]
 
@@ -28,6 +28,7 @@ process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false
+process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=true

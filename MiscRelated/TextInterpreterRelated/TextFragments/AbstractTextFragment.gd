@@ -3,7 +3,7 @@ extends Reference
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 #
-
+#TODO ADD TOWER
 
 enum STAT_TYPE {
 	BASE_DAMAGE = 100,
@@ -39,6 +39,7 @@ enum STAT_TYPE {
 	TOWER_TIER_06 = 1018
 	
 	INGREDIENT = 1019
+	TOWER = 1020
 }
 
 
@@ -72,6 +73,7 @@ const type_to_for_light_color_map : Dictionary = {
 	STAT_TYPE.TOWER_TIER_06 : "#6A5001",
 	
 	STAT_TYPE.INGREDIENT : "#5102A2",
+	STAT_TYPE.TOWER : "#016F46",
 	
 }
 
@@ -106,6 +108,7 @@ const type_to_for_dark_color_map : Dictionary = {
 	STAT_TYPE.TOWER_TIER_06 : "#FEDD7C",
 	
 	STAT_TYPE.INGREDIENT : "#C48BFE",
+	STAT_TYPE.TOWER : "#9AFED8",
 	
 }
 
@@ -138,7 +141,7 @@ const type_to_name_map : Dictionary = {
 	STAT_TYPE.TOWER_TIER_06 : "tier 6",
 	
 	STAT_TYPE.INGREDIENT : "ingredient",
-	
+	STAT_TYPE.TOWER : "tower",
 	
 }
 
@@ -171,6 +174,8 @@ const type_to_img_map : Dictionary = {
 	STAT_TYPE.TOWER_TIER_06 : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_TowerTier06.png",
 	
 	STAT_TYPE.INGREDIENT : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Ingredient.png",
+	STAT_TYPE.TOWER : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Tower.png",
+	
 	
 }
 
@@ -205,9 +210,9 @@ const dmg_type_to_for_light_color_map : Dictionary = {
 const dmg_type_to_for_dark_color_map : Dictionary = {
 	-1 : "#B8B8B8",
 	
-	DamageType.PHYSICAL : "#FD6453",
-	DamageType.ELEMENTAL : "#FC3DFD",
-	DamageType.PURE : "#FD6467",
+	DamageType.PHYSICAL : "#FEAC7C",
+	DamageType.ELEMENTAL : "#FF6DFF",
+	DamageType.PURE : "#FF8487",
 	
 	DamageType.MIXED : "#AA78FD"
 }
