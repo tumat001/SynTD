@@ -227,7 +227,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.DOMSYN_RED_ORACLES_EYE_SHADOW:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
-		info.base_health = 47 #43 #65
+		info.base_health = 90 #47 #43 #65
 		info.base_movement_speed = 38 #25
 		#info.base_armor = 5
 		#info.base_toughness = 5

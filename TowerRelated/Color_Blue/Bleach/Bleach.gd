@@ -22,7 +22,9 @@ const Bleach_Explosion04 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_
 const Bleach_Explosion05 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_05.png")
 const Bleach_Explosion06 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_06.png")
 const Bleach_Explosion07 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_07.png")
-
+const Bleach_Explosion08 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_08.png")
+const Bleach_Explosion09 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_09.png")
+const Bleach_Explosion_AMI = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_AMI.png")
 
 const ArcingBaseBullet = preload("res://TowerRelated/DamageAndSpawnables/ArcingBaseBullet.gd")
 const ArcingBaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/ArcingBaseBullet.tscn")
@@ -187,6 +189,8 @@ func _construct_and_add_spell_burst_explosion(arg_y_shift_of_attk_module):
 	sprite_frames.add_frame("default", Bleach_Explosion05)
 	sprite_frames.add_frame("default", Bleach_Explosion06)
 	sprite_frames.add_frame("default", Bleach_Explosion07)
+	sprite_frames.add_frame("default", Bleach_Explosion09)
+	sprite_frames.add_frame("default", Bleach_Explosion08)
 	
 	explosion_attack_module.aoe_sprite_frames = sprite_frames
 	explosion_attack_module.sprite_frames_only_play_once = true
@@ -200,7 +204,7 @@ func _construct_and_add_spell_burst_explosion(arg_y_shift_of_attk_module):
 	
 	explosion_attack_module.can_be_commanded_by_tower = false
 	
-	explosion_attack_module.set_image_as_tracker_image(Bleach_Explosion04)
+	explosion_attack_module.set_image_as_tracker_image(Bleach_Explosion_AMI)
 	
 	bleach_burst_attk_module = explosion_attack_module
 	

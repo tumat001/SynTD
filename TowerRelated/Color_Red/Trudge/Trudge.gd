@@ -364,6 +364,7 @@ func _modify_bullet(bullet : ArcingBaseBullet):
 func _main_proj_hit_ground(arg_final_location : Vector2, bullet : ArcingBaseBullet):
 	var explosion = explosion_from_main__attack_module.construct_aoe(arg_final_location, arg_final_location)
 	
+	explosion.modulate.a = 0.75
 	explosion_from_main__attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
 
@@ -438,7 +439,6 @@ func _add_ap_scaled_slow_effect_to_dmg_instance(arg_dmg_instance):
 func _on_round_end_t():
 	_end_slam_state()
 	
-	# TODO new. Test this.
 	for pre_spurt in _summon_pre_spurt_summoning_area_arr.array_of_nodes:
 		if is_instance_valid(pre_spurt):
 			pre_spurt.visible = false

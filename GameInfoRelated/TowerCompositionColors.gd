@@ -133,13 +133,12 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_compo_compli_redgreen,
 	[
-		"Main attacks on hit apply a stack of Red or Green Technique, depending on the tower's color. Normal enemies receive 2 stacks instead.",
-		"Applying a Technique while a different colored Technique exists on an enemy erases all applied Technique stacks, and triggers Detonation effects of the pre-existing Technique.",
+		"Main attacks apply a stack of \"Red\" or \"Green\" based on the tower's color. Normal enemies receive 2 stacks instead. Breaking the color streak triggers effects.",
 		"",
-		"Red Detonation: Deal additional physical damage.",
+		"If Red streak is broken: Deal additional physical damage.",
 		"10+ stacks) Tantrum: Rapidly shoot (5 + 1/2 of total stacks) red bolts to random enemies in range. Bolts deal physical damage.",
 		"",
-		"Green Detonation: Gain a single use effect shield for a duration.",
+		"If Green streak is broken: Gain a single use effect shield for a duration.",
 		["10+ stacks) Pulse: Towers caught in the pulse receive healing, and have their next (3 + 1/5 of total stacks) attacks apply a |0| for 8 seconds. Number of stacks inceases healing, size of Pulse, and the slow's effectiveness.", [plain_fragment__slow]],
 		"",
 	],
@@ -152,12 +151,12 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE,
 	{},
 	[
-		"Main attacks apply a stack of \"Red\" or \"Green\" based on the tower's color. Breaking the single color streak triggers effects.",
+		"Main attacks apply a stack of \"Red\" or \"Green\" based on the tower's color. Breaking the color streak triggers effects.",
 		"If Red streak is broken: Deal additional damage.",
-		"If at 10+ stacks: shoot (5 + 1/2 of total stacks) red bolt to random enemies in range.",
+		"If at 10+ stacks: shoot (5 + 1/2 of total stacks) red bolts to random enemies in range.",
 		"",
 		"If Green streak is broken: Block the next enemy effect for a duration.",
-		["If at 10+ stacks: heal nearby towers, and |0| enemies hit. Stacks increase the heal, the slow, and the number of attacks that apply the slow.", [plain_fragment__slow]],
+		["If at 10+ stacks: heal nearby towers, and attacks |0| enemies on hit. Stacks increase the heal, the slow, and the number of attacks that apply the slow.", [plain_fragment__slow]],
 		""
 	],
 	ColorSynergy.Difficulty.DIFFICULT
@@ -437,7 +436,7 @@ func _init():
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_greenBY,
 	[
-		"Towers gain bonus elemental damage on hit per main attack, up to a limit. The bonus can be granted only once per second.",
+		"Main attacks grant towers stacking bonus elemental damage on hit, up to a limit. The bonus can be granted only once per second.",
 		""
 	],
 	[AnaSyn_GreenBY],
@@ -494,7 +493,7 @@ func _init():
 	interpreter_for_blueVG_ap_for_no_cd.array_of_instructions = ins_for_blueVG_ap_for_no_cd
 	
 	
-	
+	var plain_fragment__bluevg_ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "ability")
 	
 	var blue_vg_syn = ColorSynergy.new(SynergyId.BlueVG, synergy_id_to_syn_name_dictionary[SynergyId.BlueVG], [TowerColors.BLUE, TowerColors.VIOLET, TowerColors.GREEN], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
@@ -502,7 +501,7 @@ func _init():
 	[
 		"All abilities's cooldowns are reduced.",
 		"",
-		"Right before a tower casts an ability, the tower gains stacking ability potency for the round. AP gained scales on its cooldown.",
+		["Right before a tower casts an |0|, the tower gains stacking ability potency for the round. AP gained scales on its cooldown.", [plain_fragment__bluevg_ability]],
 		["Towers with abilities whose cooldowns are not time-based are granted |0| per cast instead.", [interpreter_for_blueVG_ap_for_no_cd]],
 		""
 	],
@@ -569,7 +568,7 @@ func _init():
 	[
 		"Main attacks cause towers to lose 4% of their max health.",
 		"Upon dying, towers split a percent of their total base damage and total ability potency equally to all other towers.",
-		"The last standing tower becomes invulenrable and immune to enemy effects, and gains 50% projectile speed for the rest of the round.",
+		"The last standing tower becomes invulenrable, immune to enemy effects, and gains 50% projectile speed for the rest of the round.",
 		""
 	],
 	[AnaSyn_VioletRB],
@@ -669,15 +668,18 @@ func _init():
 	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_3.array_of_instructions[0].num_val = 15
 	
 	var interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 25
+	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 20
 	var interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 25
+	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 20
 	
 	var interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 35
+	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 25
 	var interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 35
+	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 25
 	
+	
+	var plain_fragment__yelvio_on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
+	var plain_fragment__yelvio_self_ing_effect = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "self ingredient effect")
 	
 	# ------------------------------------------------------
 	
@@ -692,9 +694,9 @@ func _init():
 	[
 		"Summon Rift Axis that controls the division between the Yellow and Violet rifts. Towers receive effects based on their rift location.",
 		"",
-		"Violet rift: On round end, towers have their self ingredient effect upgraded by an amount.",
+		["Violet rift: |0|: towers have their |1| upgraded by an amount.", [plain_fragment__yelvio_on_round_end, plain_fragment__yelvio_self_ing_effect]],
 		"",
-		"Yellow rift: Every 15 seconds, all towers in the yellow rift fire a shell at the first enemy, exploding to deal damage to 3 enemies. Towers fire again if only 0 or 1 enemies is hit.",
+		"Yellow rift: Every 15 seconds, towers fire a shell at the first enemy, exploding to deal damage to 3 enemies. Towers fire again if 1 or 0 enemies are hit.",
 		"",
 	],
 	[CompliSyn_YellowViolet],

@@ -22,7 +22,7 @@ const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelate
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
-
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
 const AOEAttackModule = preload("res://TowerRelated/Modules/AOEAttackModule.gd")
 const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
@@ -307,9 +307,11 @@ func _initialize_descriptions():
 	
 	interpreter_for_capacitor_tier_2_cdr.array_of_instructions = ins_for_capacitor_tier_2_cdr
 	
+	var plain_fragment__stunning = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stunning")
+	var plain_fragment__abilities = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "abilities")
 	
 	var temp_capacitor_tier_2_desc = [
-		"After %s abilities are casted by black towers, summon a nova that explodes after %s seconds, stunning all enemies for %s seconds, and preventing new enemies from spawning for %s seconds. All tower abilities's ongoing cooldowns are reduced by %s%%." % [str(capacitor_ability_cast_count_requirement), str(capacitor_nova_ramp_up_time), str(capacitor_nova_stun_time), str(capacitor_nova_stop_enemy_spawn_time), str(capacitor_ongoing_cooldown_percent_reduction_tier_2 * 100)],
+		["After %s |0| are casted by black towers, summon a nova that explodes after %s seconds, |1| all enemies for %s seconds, and preventing new enemies from spawning for %s seconds. All tower abilities's ongoing cooldowns are reduced by %s%%." % [str(capacitor_ability_cast_count_requirement), str(capacitor_nova_ramp_up_time), str(capacitor_nova_stun_time), str(capacitor_nova_stop_enemy_spawn_time), str(capacitor_ongoing_cooldown_percent_reduction_tier_2 * 100)], [plain_fragment__abilities, plain_fragment__stunning]],
 		["For the next %s seconds, towers gain |0| and |1|." % [str(capacitor_buff_duration_tier_2)], [interpreter_for_capacitor_tier_2_ap, interpreter_for_capacitor_tier_2_cdr]]
 	]
 	for desc in temp_capacitor_tier_2_desc:

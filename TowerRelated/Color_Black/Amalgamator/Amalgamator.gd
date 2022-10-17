@@ -345,11 +345,6 @@ func _get_candidate_towers_from_ability():
 			else:
 				low_prio_bucket.append(tower)
 	
-	print(high_prio_bucket)
-	print(low_prio_bucket)
-	print("--------------")
-	
-	
 	var converted_counter : int = 0
 	for tower in high_prio_bucket:
 		return_bucket.append(tower)

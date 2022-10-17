@@ -146,6 +146,7 @@ func _make_arrow_follow_button(arg_button : Control, arg_do_setting : bool = fal
 func _on_game_result_decided():
 	stats_button.visible = true
 	
+	_on_SpeedButton01_on_button_released_with_button_left()
 #	var game_result = game_result_manager.game_result
 #
 #	if game_result == GameResultManager.GameResult.DEFEAT:

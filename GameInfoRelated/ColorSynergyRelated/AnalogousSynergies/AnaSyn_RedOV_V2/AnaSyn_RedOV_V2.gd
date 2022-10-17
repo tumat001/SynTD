@@ -5,11 +5,11 @@ const TowerEffect_AnaSyn_RedOV_V2 = preload("res://GameInfoRelated/ColorSynergyR
 var game_elements : GameElements
 var curr_tier : int
 
-const tier_1_dmg_amp_amount__initial : float = 1.35
-const tier_1_dmg_amp_amount__empowered_bonus : float = 1.35
+const tier_1_dmg_amp_amount__initial : float = 1.25
+const tier_1_dmg_amp_amount__empowered_bonus : float = 1.25
 
-const tier_2_dmg_amp_amount__initial : float = 1.25
-const tier_2_dmg_amp_amount__empowered_bonus : float = 1.25
+const tier_2_dmg_amp_amount__initial : float = 1.20
+const tier_2_dmg_amp_amount__empowered_bonus : float = 1.20
 
 const tier_3_dmg_amp_amount__initial : float = 1.15
 const tier_3_dmg_amp_amount__empowered_bonus : float = 1.15

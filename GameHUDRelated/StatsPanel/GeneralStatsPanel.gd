@@ -14,13 +14,13 @@ var stage_round_manager setget set_stage_round_manager
 var right_side_panel setget set_right_side_panel
 
 
-onready var gold_amount_label = $HBoxContainer/Middle/GoldPanel/MarginContainer3/MarginContainer2/GoldAmountLabel
+onready var gold_amount_label = $HBoxContainer/Middle/GoldPanel/MarginContainer3/HBoxContainer/MarginContainer2/GoldAmountLabel
 onready var gold_button = $HBoxContainer/Middle/GoldPanel/GoldButton
 
 onready var streak_panel = $HBoxContainer/Middle/StreakPanel
 
 onready var level_label = $HBoxContainer/LeftSide/LevelPanel/MarginContainer3/MarginContainer2/LevelLabel
-onready var relic_label = $HBoxContainer/Right/RelicPanel/MarginContainer3/MarginContainer2/RelicAmountLabel
+onready var relic_label = $HBoxContainer/Right/RelicPanel/MarginContainer3/HBoxContainer/MarginContainer2/RelicAmountLabel
 onready var shop_percentage_stat_panel = $HBoxContainer/LeftSide/ShopPercentStatsPanel
 
 onready var relic_panel = $HBoxContainer/Right/RelicPanel

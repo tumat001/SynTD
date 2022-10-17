@@ -1940,8 +1940,8 @@ func _remove_count_from_single_invulnerability_effect(arg_count_reduction : int 
 func calculate_invulnerability_status():
 	last_calculated_is_invulnerable = invulnerability_id_effect_map.size() > 0
 	
-	if is_ready_prepping:
-		last_calculated_is_invulnerable = true
+	#if is_ready_prepping:
+	#	last_calculated_is_invulnerable = true
 	
 	#
 	if last_calculated_is_invulnerable:

@@ -8,14 +8,13 @@ const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
-
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
 const tier_bronze_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Bronze.png")
 const tier_silver_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Silver.png")
 const tier_gold_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Gold.png")
 const tier_dia_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Diamond.png")
 const tier_prestigeW_pic = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Tier_Prestige_White.png")
-
 
 const syn_dom_red = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Red.png")
 const syn_dom_orange = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Orange.png")
@@ -78,13 +77,14 @@ func _init():
 	var interpreter_for_blue_ap_tier_3 : TextFragmentInterpreter = interpreter_for_blue_ap_tier_1.get_deep_copy()
 	interpreter_for_blue_ap_tier_3.array_of_instructions[0].num_val = 0.25
 	
+	var plain_fragment__blue_abilities = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Blue Abilities")
 	
 	
 	var blue_syn = ColorSynergy.new(SynergyId.BLUE, synergy_id_to_syn_name_dictionary[SynergyId.BLUE], [TowerColors.BLUE], [8, 5, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_blue,
 	[
-		"Gain access to Blue Abilities.",
+		["Gain access to |0|.", [plain_fragment__blue_abilities]],
 		"Additionally, all Blue towers gain ability potency.",
 		""
 	],
@@ -143,6 +143,12 @@ func _init():
 	
 	#
 	
+	var plain_fragment__red_on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
+	var plain_fragment__orange_abilities = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "abilities")
+	var plain_fragment__yellow_on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
+	var plain_fragment__yellow_gold_gain = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "gain 1 gold")
+	var plain_fragment__violet_ingredients = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredients")
+	
 	
 	# ------------------------------------------------------
 	
@@ -151,7 +157,7 @@ func _init():
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_dom_red,
 	[
-		"Opens the Pact shop, which shows a list of up to three unsworn pacts. At the end of each round, a new unsworn pact is added.",
+		["Opens the Pact shop, which shows a list of up to three unsworn pacts. |0|: a new unsworn pact is offered.", [plain_fragment__red_on_round_end]],
 		"Swearing a Pact activates its buffs and debuffs. Up to 3 pacts can be sworn at a time. Swearing a pact at the limit will remove the oldest sworn pact along with its effects unless stated otherwise.",
 		"Synergy level requirements must be met for a pact to take effect.",
 		"",
@@ -170,7 +176,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE,
 	{},
 	[
-		"Opens the Pact shop, which shows a list of up to three unsworn pacts.",
+		["Opens the Pact shop, which shows a list of up to three unsworn pacts. |0|: a new unsworn pact is offered.", [plain_fragment__red_on_round_end]],
 		"Swearing a pact activates its buffs and debuffs. Up to 3 pacts can be sworn at a time.",
 		"",
 	],
@@ -181,12 +187,12 @@ func _init():
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
 	[
-		"Orange towers gain Heat Modules. Main attacks increase the heat of Heat Modules by an amount (depends on tower).",
+		"Orange towers gain Heat Modules. Main attacks increase the heat of Heat Modules by an amount (amount varies per tower).",
 		"Heat Modules give an effect, which scale depending on the current heat. A maximum of 74 heat can be gained per round. Not attacking in a round reduces the current heat by 50.",
 		#"Upon reaching 100 heat, the tower becomes Overheated. At the end of the round, Overheated towers undergo Cooling, where they are unable to attack for the round. Cooling towers lose all heat at the end of the round.",
 		"Towers that reach 100 heat lose all heat by the end of the round.",
 		"",
-		"Gain abilities that give some control over Heat Modules.",
+		["Gain |0| that give some control over Heat Modules.", [plain_fragment__orange_abilities]],
 		"",
 		"Synergy level increases the effectiveness of the effect.",
 		"",
@@ -213,7 +219,7 @@ func _init():
 	syn_dom_yellow,
 	[
 		"ENERGIZE: Create an Energy Battery with 1 energy.",
-		"Energy Battery stores energy, up to a limit. Energy is gained per end of round.",
+		["Energy Battery stores energy, up to a limit. |0|: gain energy based on synergy tier.", [plain_fragment__yellow_on_round_end]],
 		"",
 		"All yellow towers gain an Energy Module. Energy Modules allow a tower to consume 1 energy to gain special effects.",
 		"",
@@ -222,10 +228,10 @@ func _init():
 	],
 	[DomSyn_Yellow_GoldIncome, DomSyn_Yellow_EnergyBattery],
 	[
-		"+1 gold per round.",
-		"Activates ENERGIZE. Battery has 2 energy capacity. Gain 1 energy per turn.",
-		"Activates ENERGIZE. Battery has 4 energy capacity. Gain 2 energy per turn.",
-		"Activates ENERGIZE. Battery has 9 energy capacity. Gain 3 energy per turn.",
+		["|0|: |1|.", [plain_fragment__yellow_on_round_end, plain_fragment__yellow_gold_gain]],
+		"Activates ENERGIZE. Battery has 2 energy capacity. Gain 1 energy per round.",
+		"Activates ENERGIZE. Battery has 4 energy capacity. Gain 2 energy per round.",
+		"Activates ENERGIZE. Battery has 9 energy capacity. Gain 3 energy per round.",
 	],
 	ColorSynergy.HighlightDeterminer.CUSTOM,
 	{
@@ -276,7 +282,7 @@ func _init():
 	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	[
-		"Violet towers can absorb more ingredients.",
+		["Violet towers can absorb more |0|.", [plain_fragment__violet_ingredients]],
 		"Violet towers can absorb ingredients regardless of color after being in the map for 1 round.",
 		"",
 		"These effects apply only when the limit of total and Violet towers in the map is satisfied.",

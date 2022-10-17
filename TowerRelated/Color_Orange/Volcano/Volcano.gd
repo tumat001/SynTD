@@ -110,7 +110,7 @@ func _ready():
 	explosion_attack_module.benefits_from_bonus_on_hit_damage = true
 	explosion_attack_module.benefits_from_bonus_on_hit_effect = true
 	
-	explosion_attack_module.on_hit_damage_scale = 5
+	explosion_attack_module.on_hit_damage_scale = 3
 	
 	var sprite_frames = SpriteFrames.new()
 	sprite_frames.add_frame("default", Volcano_Explosion_Pic01)
@@ -143,7 +143,8 @@ func _ready():
 	# CRATER/SCORCHED EARTH EXPLOSION AOE
 	
 	crater_attack_module = AOEAttackModule_Scene.instance()
-	crater_attack_module.base_damage = 1
+	crater_attack_module.base_damage_scale = 0.75
+	crater_attack_module.base_damage = 1 / crater_attack_module.base_damage_scale
 	crater_attack_module.base_damage_type = DamageType.ELEMENTAL
 	crater_attack_module.base_attack_speed = 0
 	crater_attack_module.base_attack_wind_up = 0

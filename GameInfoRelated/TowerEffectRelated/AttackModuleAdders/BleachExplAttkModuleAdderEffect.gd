@@ -26,6 +26,9 @@ const Bleach_Explosion04 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_
 const Bleach_Explosion05 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_05.png")
 const Bleach_Explosion06 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_06.png")
 const Bleach_Explosion07 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_07.png")
+const Bleach_Explosion08 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_08.png")
+const Bleach_Explosion09 = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_09.png")
+const Bleach_Explosion_AMI = preload("res://TowerRelated/Color_Blue/Bleach/Bleach_Attks/BleachExplosion/Bleach_Explosion_AMI.png")
 
 const Effect_Icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Bleach.png")
 
@@ -33,7 +36,7 @@ const base_attack_count_trigger : int = 5
 const toughness_reduc : float = 1.0
 const toughness_reduc_duration : float = 5.0
 
-var explosion_base_dmg : float = 1.0
+var explosion_base_dmg : float = 2.0
 const explosion_pierce : int = 3
 
 var _curr_num_of_attacks : int = 0
@@ -128,6 +131,8 @@ func _construct_spell_burst_explosion(arg_y_shift_of_attk_module):
 	sprite_frames.add_frame("default", Bleach_Explosion05)
 	sprite_frames.add_frame("default", Bleach_Explosion06)
 	sprite_frames.add_frame("default", Bleach_Explosion07)
+	sprite_frames.add_frame("default", Bleach_Explosion08)
+	sprite_frames.add_frame("default", Bleach_Explosion09)
 	
 	explosion_attack_module.aoe_sprite_frames = sprite_frames
 	explosion_attack_module.sprite_frames_only_play_once = true

@@ -68,11 +68,11 @@ func _update_displays():
 
 func _update_stage_round_graph__show_health():
 	stageround_linegraph_label.text = _game_stats_manager.health_graph_name
-	stageround_linegraph.set_stage_rounds_col_label_to_point_val_map({_game_stats_manager.health_line_label_of_col : _game_stats_manager.health_line_color}, _stat_overview.stage_round_data_points, _stat_overview.total_data_points_count)
+	stageround_linegraph.set_stage_rounds_col_label_to_point_val_map({_game_stats_manager.health_line_label_of_col : _game_stats_manager.health_line_color}, _stat_overview.stage_round_data_points, _stat_overview.total_data_points_count, _stat_overview.highest_player_health_amount)
 
 func _update_stage_round_graph__show_gold():
 	stageround_linegraph_label.text = _game_stats_manager.gold_graph_name
-	stageround_linegraph.set_stage_rounds_col_label_to_point_val_map({_game_stats_manager.gold_line_label_of_col : _game_stats_manager.gold_line_color}, _stat_overview.stage_round_data_points, _stat_overview.total_data_points_count)
+	stageround_linegraph.set_stage_rounds_col_label_to_point_val_map({_game_stats_manager.gold_line_label_of_col : _game_stats_manager.gold_line_color}, _stat_overview.stage_round_data_points, _stat_overview.total_data_points_count, _stat_overview.highest_player_gold_amount)
 
 
 

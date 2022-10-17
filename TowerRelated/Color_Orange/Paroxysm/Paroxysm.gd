@@ -386,7 +386,7 @@ func _on_rocket_hit_enemy(arg_bullet, arg_enemy):
 func _start_spew():
 	var spew_count = ceil(spew_base_count * outburst_ability.get_potency_to_use(last_calculated_final_ability_potency))
 	
-	_set_current_spew_count(spew_base_count)
+	_set_current_spew_count(spew_count)
 
 
 
@@ -410,7 +410,7 @@ func _on_spew_attk_module_before_bullet_is_shot(arg_bullet):
 	arg_bullet.decrease_life_duration = true
 	arg_bullet.current_life_duration = 4.0
 	arg_bullet.decrease_pierce = false
-	arg_bullet.modulate.a = 0.6
+	arg_bullet.modulate.a = 0.75
 	
 	arg_bullet.connect("tree_entered", self, "_on_bullet_tree_entered", [arg_bullet], CONNECT_ONESHOT)
 	arg_bullet.visible = false

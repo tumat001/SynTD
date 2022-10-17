@@ -36,11 +36,11 @@ const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelate
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
-
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
 const main_attack_trigger_count : int = 5
 const explosion_pierce : int = 3
-var explosion_base_damage_ratio : float = 2.5
+var explosion_base_damage_ratio : float = 2.0
 
 
 var _attached_tower
@@ -70,7 +70,10 @@ func _update_description():
 	
 	interpreter_for_sword_dmg.array_of_instructions = ins_for_sword_dmg
 	
-	description = ["After every ability cast or %s main attack, fire a beam that explodes at the current target, dealing |0| to %s enemies.%s" % [str(main_attack_trigger_count) + "th", str(explosion_pierce), _generate_desc_for_persisting_total_additive_scaling(true)], [interpreter_for_sword_dmg]]
+	var plain_fragment__ability_cast = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "ability cast")
+	
+	
+	description = ["After every |0| or %s main attack, fire a beam that explodes at the current target, dealing |1| to %s enemies.%s" % [str(main_attack_trigger_count) + "th", str(explosion_pierce), _generate_desc_for_persisting_total_additive_scaling(true)], [plain_fragment__ability_cast, interpreter_for_sword_dmg]]
 
 
 func _make_modifications_to_tower(tower):

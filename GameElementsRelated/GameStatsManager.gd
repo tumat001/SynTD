@@ -348,6 +348,11 @@ class StatOverview:
 	var total_elemental_damage_dealt : float
 	var total_physical_damage_dealt : float
 	
+	var highest_player_health_amount : float
+	var highest_player_gold_amount : float
+	
+	#
+	
 	var stage_round_data_points : Array
 	var total_data_points_count : int
 
@@ -436,6 +441,15 @@ func _configure_stat_overview__synergy_stats():
 		stat_overview.total_physical_damage_dealt = stat_sample.round_physical_damage_dealt
 		
 		#
+		
+		if stat_overview.highest_player_health_amount < stat_sample.player_health_at_end:
+			stat_overview.highest_player_health_amount = stat_sample.player_health_at_end
+		
+		if stat_overview.highest_player_gold_amount < stat_sample.gold_amount_at_end:
+			stat_overview.highest_player_gold_amount = stat_sample.gold_amount_at_end
+		
+		
+		# KEET AT 2ND TO BOTTOM
 		
 		var stage_round_data_point = StageRoundDataPoint.new()
 		stage_round_data_point.stage_num = stat_sample.stage_num

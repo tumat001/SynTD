@@ -611,12 +611,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = simplex_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 0.4 #0.45 #0.4
-		info.base_attk_speed = 4.5 #5 #5.5
+		info.base_damage = 0.5 #0.4
+		info.base_attk_speed = 4 #4.5
 		info.base_pierce = 0
 		info.base_range = 95
 		info.base_damage_type = DamageType.PURE
-		info.on_hit_multiplier = 0.2
+		info.on_hit_multiplier = 0.25 #0.3
 		
 		info.tower_descriptions = [
 			"Directs a constant pure energy beam at a single target.",
@@ -931,11 +931,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_normal_shot.display_body = true
 		
 		var ins_for_normal_shot = []
-		ins_for_normal_shot.append(NumericalTextFragment.new(4, false, DamageType.PHYSICAL))
+		ins_for_normal_shot.append(NumericalTextFragment.new(3, false, DamageType.PHYSICAL))
 		ins_for_normal_shot.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins_for_normal_shot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1.0, DamageType.PHYSICAL))
 		ins_for_normal_shot.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_normal_shot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 2.0))
+		ins_for_normal_shot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.5))
 		
 		interpreter_for_normal_shot.array_of_instructions = ins_for_normal_shot
 		
@@ -946,11 +946,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_emp_shot.display_body = true
 		
 		var ins_for_emp_shot = []
-		ins_for_emp_shot.append(NumericalTextFragment.new(10, false, DamageType.PHYSICAL))
+		ins_for_emp_shot.append(NumericalTextFragment.new(6, false, DamageType.PHYSICAL))
 		ins_for_emp_shot.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins_for_emp_shot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1.0, DamageType.PHYSICAL))
 		ins_for_emp_shot.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_emp_shot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 4.0))
+		ins_for_emp_shot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 3.0))
 		
 		interpreter_for_emp_shot.array_of_instructions = ins_for_emp_shot
 		
@@ -1593,7 +1593,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		ins_for_boulder.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins_for_boulder.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1, DamageType.PHYSICAL))
 		ins_for_boulder.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_boulder.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 5)) # stat basis does not matter here
+		ins_for_boulder.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 3)) # stat basis does not matter here
 		
 		interpreter_for_boulder.array_of_instructions = ins_for_boulder
 		
@@ -1606,7 +1606,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_crater = []
 		ins_for_crater.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
 		ins_for_crater.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_crater.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 1, DamageType.ELEMENTAL))
+		ins_for_crater.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.75, DamageType.ELEMENTAL))
 		
 		interpreter_for_crater.array_of_instructions = ins_for_crater
 		
@@ -5343,7 +5343,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			"Auto casts Outburst.",
 			["|0|: Paroxyxm chooses an attack based on its target.", [plain_fragment__ability_name]],
-			["If target has 100+ current health and is 100 range away from itself, fire a homing rocket that deals |0| to its target.", [interpreter_for_direct_rocket_dmg]],
+			["If target has 80+ current health and is 80 range away from itself, fire a homing rocket that deals |0| to its target.", [interpreter_for_direct_rocket_dmg]],
 			["Otherwise, spew out |0|, with each dealing |1| damage.", [interpreter_for_spew_count, interpreter_for_spew_dmg]],
 			["Cooldown: |0|.", [interpreter_for_cooldown]]
 		]
@@ -5811,7 +5811,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = wyvern_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 9
+		info.base_damage = 7
 		info.base_attk_speed = 0.4
 		info.base_pierce = 1
 		info.base_range = 185
@@ -5840,9 +5840,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_bonus_dmg.header_description = "damage"
 		
 		var ins_for_bonus_dmg = []
-		ins_for_bonus_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 3, DamageType.PHYSICAL))
+		ins_for_bonus_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 3.5, DamageType.PHYSICAL))
 		ins_for_bonus_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_bonus_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 4)) # stat basis does not matter here
+		ins_for_bonus_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 4.5)) # stat basis does not matter here
 		
 		interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
 		
@@ -5866,7 +5866,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Auto casts Fury when at least 1 enemy is in range.",
 			["|0|: Fury: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies or becomes untargetable.", [plain_fragment__ability]],
-			["Each bullet deals |0|, and benefits from bonus pierce. However, the damage is only 80% effective against boss enemies.", [interpreter_for_bonus_dmg]],
+			["Each bullet deals |0|, and benefits from bonus pierce. However, the damage is only 90% effective against boss enemies.", [interpreter_for_bonus_dmg]],
 			["Wyvern additionally gains |0| during Fury.", [interpreter_for_attk_speed]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
@@ -5874,7 +5874,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			"Auto casts Fury.",
 			["|0|: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies.", [plain_fragment__ability_name]],
-			["Each bullet deals |0|. However, the damage is only 80% effective against boss enemies.", [interpreter_for_bonus_dmg]],
+			["Each bullet deals |0|. However, the damage is only 90% effective against boss enemies.", [interpreter_for_bonus_dmg]],
 			["Wyvern additionally gains |0| during Fury.", [interpreter_for_attk_speed]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]

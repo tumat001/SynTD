@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/ActiveIngredientsPanel/ActiveIngredientsPanel_TowerNumberIndicator.png" type="Texture" id=2]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/ActiveIngredientsPanel/ActiveIngredientsPanel_Header.png" type="Texture" id=3]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/MultiIngredientPanel.tscn" type="PackedScene" id=4]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/ActiveIngredientsPanel/ActiveIngredientsPanel.gd" type="Script" id=5]
+[ext_resource path="res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Ingredient.png" type="Texture" id=6]
 
 [sub_resource type="DynamicFont" id=1]
 size = 8
@@ -31,30 +32,50 @@ margin_bottom = 12.0
 mouse_filter = 2
 
 [node name="HeaderMarginer" type="MarginContainer" parent="VBoxContainer/HeaderWholeMarginer"]
-margin_right = 58.0
+margin_right = 70.0
 margin_bottom = 12.0
 mouse_filter = 2
 size_flags_horizontal = 2
 
 [node name="Background" type="TextureRect" parent="VBoxContainer/HeaderWholeMarginer/HeaderMarginer"]
-margin_right = 58.0
+margin_right = 70.0
 margin_bottom = 12.0
 mouse_filter = 2
 texture = ExtResource( 3 )
 
 [node name="Marginer" type="MarginContainer" parent="VBoxContainer/HeaderWholeMarginer/HeaderMarginer"]
-margin_right = 58.0
+margin_right = 70.0
 margin_bottom = 12.0
 mouse_filter = 2
 custom_constants/margin_top = 2
+custom_constants/margin_left = 3
 
-[node name="HeaderLabel" type="Label" parent="VBoxContainer/HeaderWholeMarginer/HeaderMarginer/Marginer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HeaderWholeMarginer/HeaderMarginer/Marginer"]
+margin_left = 10.0
 margin_top = 2.0
-margin_right = 58.0
-margin_bottom = 11.0
+margin_right = 63.0
+margin_bottom = 12.0
+size_flags_horizontal = 6
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HeaderWholeMarginer/HeaderMarginer/Marginer/HBoxContainer"]
+margin_right = 40.0
+margin_bottom = 10.0
+custom_constants/margin_top = 1
+
+[node name="HeaderLabel" type="Label" parent="VBoxContainer/HeaderWholeMarginer/HeaderMarginer/Marginer/HBoxContainer/MarginContainer"]
+margin_top = 1.0
+margin_right = 40.0
+margin_bottom = 10.0
 custom_fonts/font = SubResource( 1 )
-text = "Active Ing:"
+text = "Active Ing"
 align = 1
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HeaderWholeMarginer/HeaderMarginer/Marginer/HBoxContainer"]
+margin_left = 44.0
+margin_right = 53.0
+margin_bottom = 9.0
+size_flags_vertical = 6
+texture = ExtResource( 6 )
 
 [node name="TowerCountMarginer" type="MarginContainer" parent="VBoxContainer/HeaderWholeMarginer"]
 margin_left = 76.0
@@ -82,8 +103,8 @@ margin_left = 1.0
 margin_top = 2.0
 margin_right = 23.0
 margin_bottom = 11.0
-custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 1 )
 text = "12/12"
 align = 1
 

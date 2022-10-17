@@ -3,7 +3,6 @@ extends Reference
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 #
-#TODO ADD TOWER
 
 enum STAT_TYPE {
 	BASE_DAMAGE = 100,
@@ -107,7 +106,7 @@ const type_to_for_dark_color_map : Dictionary = {
 	STAT_TYPE.TOWER_TIER_05 : "#FE9092",
 	STAT_TYPE.TOWER_TIER_06 : "#FEDD7C",
 	
-	STAT_TYPE.INGREDIENT : "#C48BFE",
+	STAT_TYPE.INGREDIENT : "#D99FFE",
 	STAT_TYPE.TOWER : "#9AFED8",
 	
 }
@@ -211,7 +210,7 @@ const dmg_type_to_for_dark_color_map : Dictionary = {
 	-1 : "#B8B8B8",
 	
 	DamageType.PHYSICAL : "#FEAC7C",
-	DamageType.ELEMENTAL : "#FF6DFF",
+	DamageType.ELEMENTAL : "#FF9DFF",
 	DamageType.PURE : "#FF8487",
 	
 	DamageType.MIXED : "#AA78FD"
