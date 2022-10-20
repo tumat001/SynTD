@@ -76,7 +76,7 @@ func _game_elements_unhandled_input(arg_event, arg_action_taken):
 	if !arg_action_taken:
 		if arg_event is InputEventMouseButton:
 			if arg_event.pressed and (arg_event.button_index == BUTTON_RIGHT or arg_event.button_index == BUTTON_LEFT):
-				if is_instance_valid(game_elements.tower_manager.get_tower_on_mouse_hover()):
+				if !is_instance_valid(game_elements.tower_manager.get_tower_on_mouse_hover()):
 					_player_requests_advance_to_next_transcript_message()
 
 
@@ -90,7 +90,10 @@ func _game_elements_unhandled_key_input(arg_event, arg_action_taken):
 
 func _player_requests_advance_to_next_transcript_message():
 	if _if_current_transcript_has_progress_mode(ProgressMode.CONTINUE):
-		advance_to_next_transcript_message()
+		if game_elements.tutotial_notif_panel.all_text_is_visible:
+			advance_to_next_transcript_message()
+		else:
+			game_elements.tutotial_notif_panel.show_all_text_and_icon()
 		
 	else:
 		if !game_elements.tutotial_notif_panel.all_text_is_visible or current_transcript_index != starting_curr_transcript_index:
@@ -102,28 +105,32 @@ func _if_current_transcript_has_progress_mode(arg_mode):
 	return _get_transcript()[curr_transcript] == arg_mode
 
 func advance_to_next_transcript_message():
-	if game_elements.tutotial_notif_panel.all_text_is_visible or current_transcript_index == starting_curr_transcript_index:
-		current_transcript_index += 1
+	#if game_elements.tutotial_notif_panel.all_text_is_visible or current_transcript_index == starting_curr_transcript_index:
+	current_transcript_index += 1
+	var transcript_size = _get_transcript().size()
+	
+	if transcript_size <= current_transcript_index:
+		if exit_scene_if_at_end_of_transcript:
+			CommsForBetweenScenes.goto_starting_screen(game_elements)
 		
-		if _get_transcript().size() <= current_transcript_index:
-			if exit_scene_if_at_end_of_transcript:
-				CommsForBetweenScenes.goto_starting_screen(game_elements)
-			else:
-				game_elements.disconnect("unhandled_input", self, "_game_elements_unhandled_input")
-				game_elements.disconnect("unhandled_key_input", self, "_game_elements_unhandled_key_input")
-				emit_signal("at_end_of_transcript")
+	else:
+		
+		if transcript_size <= current_transcript_index + 1 and !exit_scene_if_at_end_of_transcript:
+			_show_transcript_msg_at_index(current_transcript_index)
+			game_elements.disconnect("unhandled_input", self, "_game_elements_unhandled_input")
+			game_elements.disconnect("unhandled_key_input", self, "_game_elements_unhandled_key_input")
+			emit_signal("at_end_of_transcript")
+			
 		else:
 			_show_transcript_msg_at_index(current_transcript_index)
 			emit_signal("on_current_transcript_index_changed", current_transcript_index, _get_text_transcript_at_current_index())
-		
-		
-	else:
-		game_elements.tutotial_notif_panel.show_all_text_and_icon()
+	
+	
+	#else:
+	#	game_elements.tutotial_notif_panel.show_all_text_and_icon()
 
 
 func _show_transcript_msg_at_index(arg_index):
-	#todo
-	#game_elements.generic_notif_panel.push_notification(_get_text_transcript_at_current_index(), "", game_elements.GenericNotifPanel.INFINITE_DURATION)
 	var progress_mode = _get_progress_mode_of_transcript_at_current_index()
 	var img_of_progress_mode = progress_mode_to_icon_img[progress_mode]
 	var tooltip_for_img = progress_mode_to_default_tooltip_msg[progress_mode]
@@ -138,7 +145,6 @@ func _get_progress_mode_of_transcript_at_current_index():
 
 
 func hide_current_transcript_message():
-	#game_elements.generic_notif_panel.hide_notification()
 	game_elements.tutotial_notif_panel.hide_notif_panel()
 
 #

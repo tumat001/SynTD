@@ -1,0 +1,63 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/TowerTierButtonsPanel/TowerTierButtonsPanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/ImageToTextPanel/ImageToTextPanel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/Assets/CombinationIcon_20x20.png" type="Texture" id=3]
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/Assets/AbsorbIcon_20x20.png" type="Texture" id=4]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=5]
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/StatOverviewPanel/Subs/TierRelatedStatsPanel/TierRelatedStatsPanel.gd" type="Script" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+size = 24
+font_data = ExtResource( 5 )
+
+[node name="TierRelatedStatsPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 6 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 290.0
+margin_bottom = 164.0
+mouse_filter = 2
+custom_constants/separation = 8
+
+[node name="HeaderLabel" type="Label" parent="VBoxContainer"]
+margin_right = 290.0
+margin_bottom = 25.0
+custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Total stats:"
+align = 1
+
+[node name="TowerTierButtonsPanel" parent="VBoxContainer" instance=ExtResource( 1 )]
+margin_top = 33.0
+margin_right = 290.0
+margin_bottom = 88.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
+margin_top = 96.0
+margin_right = 290.0
+margin_bottom = 164.0
+mouse_filter = 2
+
+[node name="AbsorbPanel" parent="VBoxContainer/VBoxContainer" instance=ExtResource( 2 )]
+margin_right = 188.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 188, 0 )
+size_flags_horizontal = 2
+image = ExtResource( 4 )
+title = "Absorbed Ings"
+
+[node name="CombinationPanel" parent="VBoxContainer/VBoxContainer" instance=ExtResource( 2 )]
+margin_top = 36.0
+margin_right = 188.0
+margin_bottom = 68.0
+rect_min_size = Vector2( 188, 0 )
+size_flags_horizontal = 2
+image = ExtResource( 3 )
+text = "   "
+title = "Combinations "
+
+[connection signal="tiers_selected_changed" from="VBoxContainer/TowerTierButtonsPanel" to="." method="_on_TowerTierButtonsPanel_tiers_selected_changed"]

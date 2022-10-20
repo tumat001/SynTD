@@ -172,7 +172,7 @@ func _construct_and_add_spell_burst_explosion(arg_y_shift_of_attk_module):
 	explosion_attack_module.is_main_attack = false
 	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	explosion_attack_module.position.y -= arg_y_shift_of_attk_module
-	explosion_attack_module.base_explosion_scale = 2
+	explosion_attack_module.base_explosion_scale = 1.5
 	
 	explosion_attack_module.benefits_from_bonus_explosion_scale = true
 	explosion_attack_module.benefits_from_bonus_base_damage = false

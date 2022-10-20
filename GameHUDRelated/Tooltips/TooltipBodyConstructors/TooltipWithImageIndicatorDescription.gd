@@ -57,3 +57,18 @@ func get_info_from_self_class(self_class):
 
 func _get_bbc_modified_description(arg_desc : String) -> String:
 	return TextFragmentInterpreter.get_bbc_modified_description_as_string(arg_desc, _text_fragment_interpreters, _tower, _tower_info, font_size, color, _use_color_for_dark_background)
+
+#
+
+func get_visible_character_count():
+	return label.visible_characters
+
+func set_visible_character_count(arg_count):
+	label.visible_characters = arg_count
+
+func get_percent_visible_character_count():
+	return label.percent_visible
+
+func get_total_char_count():
+	return label.bbcode_text.length()
+

@@ -391,9 +391,9 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.SE_PROPAGER,
+			Towers.CHAOS,
 			Towers.VARIANCE,
-			Towers.PROMINENCE,
+			Towers.PROPEL,
 			Towers.BLEACH,
 			Towers.TRUDGE,
 			Towers.TIME_MACHINE,

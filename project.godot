@@ -34,6 +34,8 @@ _global_script_class_icons={
 
 config/name="SynergyTD"
 run/main_scene="res://PreGameHUDRelated/PreGameScreen.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="synergy_td"
 boot_splash/image="res://game_icon.png"
 boot_splash/fullsize=false
 boot_splash/use_filter=false

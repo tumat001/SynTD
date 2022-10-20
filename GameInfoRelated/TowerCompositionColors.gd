@@ -668,14 +668,14 @@ func _init():
 	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_3.array_of_instructions[0].num_val = 15
 	
 	var interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 20
+	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 22
 	var interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 20
+	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_2.array_of_instructions[0].num_val = 22
 	
 	var interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 25
+	interpreter_for_red_ov_initial_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 30
 	var interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1 = interpreter_for_red_ov_initial_bonus_dmg_amount_tier_3.get_deep_copy()
-	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 25
+	interpreter_for_red_ov_extra_empowered_bonus_dmg_amount_tier_1.array_of_instructions[0].num_val = 30
 	
 	
 	var plain_fragment__yelvio_on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")

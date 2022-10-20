@@ -1,5 +1,7 @@
 extends "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/BaseGameModi_Tutorial.gd"
 
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+
 
 var towers_offered_on_shop_refresh : Array = [
 	[Towers.PROMINENCE]
@@ -42,45 +44,61 @@ func _on_game_elements_before_game_start():
 	var tier_2_odds_at_level_3 = get_tower_tier_odds_at_player_level(2, 3)
 	var tier_1_odds_at_level_3 = get_tower_tier_odds_at_player_level(1, 3)
 	
+	
+	var plain_fragment__player_level = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.LEVEL_UP_ORANGE, "player level")
+	var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
+	var plain_fragment__shop = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "shop")
+	var plain_fragment__tier_1_tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_01, "tier 1 tower")
+	var plain_fragment__tier_2_tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_02, "tier 2 tower")
+	var plain_fragment__striker = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Striker")
+	var plain_fragment__tier_6_tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_06, "tier 6 tower")
+	var plain_fragment__prominence = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Prominence")
+	
+	var plain_fragment__Gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "Gold")
+	var plain_fragment__buying_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "buying towers")
+	var plain_fragment__refresh_the_shop = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "refreshing the shop")
+	var plain_fragment__leveling_up = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.LEVEL_UP_ORANGE, "leveling up")
+	var plain_fragment__end_of_the_round = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "end of the round")
+	
 	transcript_to_progress_mode = {
 		"Welcome to Synergy Tower Defense! Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
 		
 		
-		"First, lets talk about player levels." : ProgressMode.CONTINUE,
+		["First, lets talk about |0|.", [plain_fragment__player_level]] : ProgressMode.CONTINUE,
 		#2
-		"The player level dictates how many towers you can place.\nYour player level is indicated here." : ProgressMode.CONTINUE,
-		"The player level also dictates the tiers of towers that are offered in the shop." : ProgressMode.CONTINUE,
+		["The |0| dictates how many |1| you can place. Your player level is indicated here.", [plain_fragment__player_level, plain_fragment__towers]] : ProgressMode.CONTINUE,
+		["The player level also dictates the tiers of towers that are offered in the |0|.", [plain_fragment__shop]] : ProgressMode.CONTINUE,
 		#4
 		"This panel displays the chances of finding a specific tier of tower." : ProgressMode.CONTINUE,
-		"Right now, you have %s%% chance of finding a tier 1 tower,\nand a %s%% chance of finding a tier 2 tower." % [str(tier_1_odds_at_level_3), str(tier_2_odds_at_level_3)] : ProgressMode.CONTINUE,
+		["Right now, you have %s%% chance of finding a |0|, and a %s%% chance of finding a |1|." % [str(tier_1_odds_at_level_3), str(tier_2_odds_at_level_3)], [plain_fragment__tier_1_tower, plain_fragment__tier_2_tower]] : ProgressMode.CONTINUE,
 		
 		"In general, higher tier towers are more powerful than lower tier towers." : ProgressMode.CONTINUE,
 		#7
-		"Let's see how Striker, a tier 1 tower, holds against a powerful wave.\nPlease start the round (Press %s, or click this button)." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
-		"While the round is started, you can fast forward the game by pressing %s,\nor by pressing the speed buttons here." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.WAIT_FOR_EVENT,
+		["Let's see how |0|, a |1|, holds against a powerful wave. Please start the round (Press %s, or click this button)." % InputMap.get_action_list("game_round_toggle")[0].as_text(), [plain_fragment__striker, plain_fragment__tier_1_tower]] : ProgressMode.ACTION_FROM_PLAYER,
+		"While the round is started, you can fast forward the game by pressing %s, or by pressing the speed buttons here." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.WAIT_FOR_EVENT,
 		
 		"Looks like Striker didn't do so well. To be fair, the enemies were quite numerous." : ProgressMode.CONTINUE,
 		#10
-		"We need a better tower. Press %s or click this button to refresh the shop." % InputMap.get_action_list("game_shop_refresh")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
+		["We need a better tower. Press %s or click this button to refresh the |0|." % InputMap.get_action_list("game_shop_refresh")[0].as_text(), [plain_fragment__shop]] : ProgressMode.ACTION_FROM_PLAYER,
 		"Buy this tower." : ProgressMode.ACTION_FROM_PLAYER,
-		"Now behold, a tier 6 tower, Prominence, is at your bench. Tier 6 is the highest and most powerful tier.\n(You can right click it if you want to view its stats.)" : ProgressMode.CONTINUE,
+		["Now behold, a |0|, |1|, is at your bench. Tier 6 is the highest and most powerful tier. (You can right click it if you want to view its stats.)", [plain_fragment__tier_6_tower, plain_fragment__prominence]] : ProgressMode.CONTINUE,
 		#13
-		"Place Prominence in the map.\nNote: You can place Prominence over Striker to swap their positions." : ProgressMode.ACTION_FROM_PLAYER,
+		["Place |0| in the map. Note: You can place |0| over |1| to swap their positions.", [plain_fragment__prominence, plain_fragment__striker]] : ProgressMode.ACTION_FROM_PLAYER,
 		
-		"We now have the power of a tier 6 tower. Let's start the round.": ProgressMode.ACTION_FROM_PLAYER,
+		["We now have the power of a |0|. Let's start the round.", [plain_fragment__tier_6_tower]] : ProgressMode.ACTION_FROM_PLAYER,
 		"It did very well, as expected for a high tier tower." : ProgressMode.CONTINUE,
 		"Do note that this is a rather cherry picked example, since we are comparing a tier 1 to a tier 6." : ProgressMode.CONTINUE,
 		
 		#17
 		"Now we shift our focus to gold." : ProgressMode.CONTINUE,
-		"Gold is the main currency in this game. Gold is mainly used in buying towers,\nrefreshing the shop, and leveling up." : ProgressMode.CONTINUE,
-		"Higher tier towers cost more gold, so it is important to earn lots of gold!\nTo be precise, a tower costs as much as its tier." : ProgressMode.CONTINUE,
-		"Gold is gained at the end of the round.\nThe baseline amount increases as the game goes on." : ProgressMode.CONTINUE,
+		["|0| is the main currency in this game. |0| is mainly used in |1|, |2|, and |3|.", [plain_fragment__Gold, plain_fragment__buying_towers, plain_fragment__refresh_the_shop, plain_fragment__leveling_up]] : ProgressMode.CONTINUE,
+		"Higher tier towers cost more gold, so it is important to earn lots of gold! To be precise, a tower costs as much as its tier." : ProgressMode.CONTINUE,
+		["|0| is gained at the |1|. The baseline amount increases as the game goes on.", [plain_fragment__Gold, plain_fragment__end_of_the_round]] : ProgressMode.CONTINUE,
 		"The amount of gold you gain per round can be increased by other means." : ProgressMode.CONTINUE,
-		"You gain 1 extra gold for every 10 gold you have, up to 5.\nWhich means at 50 gold, you are making max interest." : ProgressMode.CONTINUE,
+		"You gain 1 extra gold for every 10 gold you have, up to 5. Which means at 50 gold, you are making max interest." : ProgressMode.CONTINUE,
 		"You gain 1 extra gold if you win the round." : ProgressMode.CONTINUE,
 		"And finally, you gain gold for win steaks and lose streaks." : ProgressMode.CONTINUE,
-		"If you're winning rounds, you gain more gold for winning more.\nSimilarly, if you're losing rounds, then you gain more gold for losing more." : ProgressMode.CONTINUE,
+		"If you're winning rounds, you gain more gold for winning more. Similarly, if you're losing rounds, then you gain more gold for losing more." : ProgressMode.CONTINUE,
 		#26
 		"Your current win streak (or lose streak) can be viewed here." : ProgressMode.CONTINUE,
 		"Also, you don't gain streaks for the first 3 rounds." : ProgressMode.CONTINUE,
@@ -89,7 +107,7 @@ func _on_game_elements_before_game_start():
 		"As for the last part of the tutorial, we shift our focus to the top right of the screen." : ProgressMode.CONTINUE,
 		#30
 		"Over here we can see whether we won or lost the previous round, the future rounds to come, and the current stage-round." : ProgressMode.CONTINUE,
-		"Enemies keep coming up until 9-4, which is the last round.\nIf you survive after that round, you win the game." : ProgressMode.CONTINUE,
+		"Enemies keep coming up until 9-4, which is the last round. If you survive after that round, you win the game." : ProgressMode.CONTINUE,
 		
 		"Over here is your player health. You lose the game if it reaches 0, so be careful." : ProgressMode.CONTINUE,
 		"You start the game with 150 health." : ProgressMode.CONTINUE,
@@ -136,7 +154,8 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		
 	elif arg_index == 7:
 		set_round_is_startable(true)
-		display_white_arrows_pointed_at_node(get_round_status_button(), 8)
+		var arrows = display_white_arrows_pointed_at_node(get_round_status_button(), 8)
+		arrows[1].y_offset = -20
 		listen_for_round_start__then_listen_for_round_end__call_func_for_both(self, "_on_transc_07__round_start", "_on_transc_07__round_end")
 		
 	elif arg_index == 8:
@@ -175,7 +194,8 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 	elif arg_index == 30:
 		var arrows = display_white_arrows_pointed_at_node(get_round_indicator_panel(), 31)
 		arrows[0].x_offset = 10
-		arrows[1].y_offset = 80
+		arrows[0].y_offset = -10
+		arrows[1].y_offset = 100
 		arrows[1].flip_h = true
 		
 	elif arg_index == 32:
@@ -188,7 +208,8 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 
 func _on_transc_07__round_start():
 	advance_to_next_transcript_message()
-	display_white_arrows_pointed_at_node(get_round_status_button(), 9, true, true)
+	var arrows = display_white_arrows_pointed_at_node(get_round_status_button(), 9, true, true)
+	arrows[1].y_offset = -20
 
 func _on_transc_07__round_end():
 	set_round_is_startable(false)

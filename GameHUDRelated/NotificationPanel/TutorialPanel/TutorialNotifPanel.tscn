@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://GameHUDRelated/NotificationPanel/TutorialPanel/TutorialNotifPanel.gd" type="Script" id=1]
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=2]
 [ext_resource path="res://GameHUDRelated/NotificationPanel/TutorialPanel/Assets/TutorialPanel_Border.png" type="Texture" id=3]
 [ext_resource path="res://GameHUDRelated/NotificationPanel/TutorialPanel/Assets/TutorialPanel_BodyBackground.png" type="Texture" id=4]
 [ext_resource path="res://GameHUDRelated/NotificationPanel/TutorialPanel/Assets/TutorialPanel_Indicator_Next.png" type="Texture" id=5]
+[ext_resource path="res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipBody.tscn" type="PackedScene" id=6]
 
 [sub_resource type="DynamicFont" id=1]
 size = 14
@@ -15,19 +16,16 @@ margin_right = 168.0
 margin_bottom = 28.0
 mouse_filter = 2
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-margin_right = 179.0
+margin_right = 168.0
 margin_bottom = 28.0
 mouse_filter = 2
-size_flags_horizontal = 6
+size_flags_horizontal = 3
 size_flags_vertical = 10
 
 [node name="Background" type="TextureRect" parent="MarginContainer"]
-margin_right = 179.0
+margin_right = 168.0
 margin_bottom = 28.0
 mouse_filter = 2
 texture = ExtResource( 4 )
@@ -42,8 +40,8 @@ texture = ExtResource( 3 )
 stretch_mode = 2
 
 [node name="RightBorder" type="TextureRect" parent="MarginContainer"]
-margin_left = 178.0
-margin_right = 179.0
+margin_left = 167.0
+margin_right = 168.0
 margin_bottom = 28.0
 mouse_filter = 2
 size_flags_horizontal = 10
@@ -51,7 +49,7 @@ texture = ExtResource( 3 )
 stretch_mode = 2
 
 [node name="TopBorder" type="TextureRect" parent="MarginContainer"]
-margin_right = 179.0
+margin_right = 168.0
 margin_bottom = 1.0
 mouse_filter = 2
 size_flags_vertical = 2
@@ -60,7 +58,7 @@ stretch_mode = 2
 
 [node name="BottomBorder" type="TextureRect" parent="MarginContainer"]
 margin_top = 27.0
-margin_right = 179.0
+margin_right = 168.0
 margin_bottom = 28.0
 mouse_filter = 2
 size_flags_vertical = 10
@@ -68,7 +66,7 @@ texture = ExtResource( 3 )
 stretch_mode = 2
 
 [node name="ContentPanel" type="MarginContainer" parent="MarginContainer"]
-margin_right = 179.0
+margin_right = 168.0
 margin_bottom = 28.0
 mouse_filter = 2
 custom_constants/margin_right = 4
@@ -79,23 +77,36 @@ custom_constants/margin_bottom = 4
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/ContentPanel"]
 margin_left = 4.0
 margin_top = 4.0
-margin_right = 175.0
+margin_right = 164.0
 margin_bottom = 24.0
 mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 custom_constants/separation = 15
 
 [node name="TextLabel" type="Label" parent="MarginContainer/ContentPanel/HBoxContainer"]
+visible = false
 margin_right = 136.0
 margin_bottom = 15.0
 size_flags_horizontal = 3
 size_flags_vertical = 2
-custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+custom_fonts/font = SubResource( 1 )
 text = "Test message here"
 
-[node name="StatusIcon" type="TextureRect" parent="MarginContainer/ContentPanel/HBoxContainer"]
-margin_left = 151.0
-margin_right = 171.0
+[node name="TooltipBody" parent="MarginContainer/ContentPanel/HBoxContainer" instance=ExtResource( 6 )]
+margin_right = 125.0
 margin_bottom = 20.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+default_font_color = Color( 1, 1, 1, 1 )
+default_font_size = 14
+
+[node name="StatusIcon" type="TextureRect" parent="MarginContainer/ContentPanel/HBoxContainer"]
+margin_left = 140.0
+margin_right = 160.0
+margin_bottom = 20.0
+size_flags_horizontal = 8
 texture = ExtResource( 5 )
+
 [connection signal="mouse_entered" from="MarginContainer/ContentPanel/HBoxContainer/StatusIcon" to="." method="_on_StatusIcon_mouse_entered"]

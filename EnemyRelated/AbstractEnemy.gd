@@ -42,7 +42,7 @@ const DuringReviveParticle_Scene = preload("res://EnemyRelated/CommonParticles/R
 const AnimFaceDirComponent = preload("res://MiscRelated/CommonComponents/AnimFaceDirComponent.gd")
 
 
-signal on_death_by_any_cause
+signal on_death_by_any_cause #queue free
 
 signal on_hit(me, damage_reg_id, damage_instance)
 signal on_hit_by_attack_module(me, damage_reg_id, damage_instance, attk_module) #emitted when attk module is not null, and after on_hit

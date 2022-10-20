@@ -95,13 +95,13 @@ const mana_blast_ability_cooldown : float = 55.0
 
 var mana_blast_module : AOEAttackModule
 
-const mana_blast_base_damage : float = 14.0
+const mana_blast_base_damage : float = 15.0
 #const mana_blast_extra_main_target_dmg_scale : float = 2.0
 
 var mana_blast_buff_aoe_module : TD_AOEAttackModule
 var mana_blast_buff_tower_effect : TowerAttributesEffect
 const mana_blast_ap_buff_amount : float = 0.75
-const mana_blast_buff_duration : float = 15.0
+const mana_blast_buff_duration : float = 10.0
 
 # Assigned at construct mana blast ability func
 const mana_blast_ability_descriptions = []

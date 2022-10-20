@@ -165,6 +165,9 @@ class StatSample:
 	var tower_ids_absorbed : Array = []
 	var tower_ids_combined : Array = []
 	
+	var tower_tiers_absorbed : Array = []
+	var tower_tiers_combined : Array = []
+	
 	# top and below should be the same order to work as intended
 	var synergy_dom_ids_active_at_round_start : Array = []
 	var synergy_dom_tiers_active_at_round_start : Array = []
@@ -246,6 +249,7 @@ func _end_tower_absorbed_listen():
 func _on_tower_absorbed_as_ing(arg_tower):
 	if _current_stat_sample != null:
 		_current_stat_sample.tower_ids_absorbed.append(arg_tower.tower_id)
+		_current_stat_sample.tower_tiers_absorbed.append(arg_tower.tower_type_info.tower_tier)
 
 # TOWER COMBINED
 
@@ -351,6 +355,9 @@ class StatOverview:
 	var highest_player_health_amount : float
 	var highest_player_gold_amount : float
 	
+	var ing_tier_to_total_count_map : Dictionary
+	var combi_tier_to_total_count_map : Dictionary
+	
 	#
 	
 	var stage_round_data_points : Array
@@ -392,6 +399,16 @@ func _configure_stat_overview__synergy_stats():
 	var total_ing_absorbed : int
 	var player_health_at_prev_end_round : float = game_elements.health_manager.starting_health
 	var stageround_id_where_most_health_lost : String
+	
+	var ing_tier_to_total_count_map : Dictionary = {
+		1 : 0,
+		2 : 0,
+		3 : 0,
+		4 : 0,
+		5 : 0,
+		6 : 0,
+	}
+	var combi_tier_to_total_count_map : Dictionary = ing_tier_to_total_count_map.duplicate()
 	
 	var stage_round_data_points : Array = []
 	var count = 0
@@ -448,8 +465,10 @@ func _configure_stat_overview__synergy_stats():
 		if stat_overview.highest_player_gold_amount < stat_sample.gold_amount_at_end:
 			stat_overview.highest_player_gold_amount = stat_sample.gold_amount_at_end
 		
+		for tier in stat_sample.tower_tiers_absorbed:
+			ing_tier_to_total_count_map[tier] += 1
 		
-		# KEET AT 2ND TO BOTTOM
+		# KEET AT 2ND TO BOTTOM OF FOR LOOP
 		
 		var stage_round_data_point = StageRoundDataPoint.new()
 		stage_round_data_point.stage_num = stat_sample.stage_num
@@ -460,7 +479,7 @@ func _configure_stat_overview__synergy_stats():
 		}
 		stage_round_data_points.append(stage_round_data_point)
 		
-		# KEEP AT BOTTOM
+		# KEEP AT BOTTOM OF FOR LOOP
 		player_health_at_prev_end_round = stat_sample.player_health_at_end
 		prev_stageround_id = stat_sample.stageround_id
 		count += 1
@@ -475,7 +494,16 @@ func _configure_stat_overview__synergy_stats():
 	stat_overview.stage_round_data_points = stage_round_data_points
 	stat_overview.total_data_points_count = count
 	
-	##########
+	#
+	stat_overview.ing_tier_to_total_count_map = ing_tier_to_total_count_map
+	
+	for id in combination_manager.all_combination_id_to_effect_map.keys():
+		var tier = Towers.get_tower_tier_from_tower_id(id)
+		combi_tier_to_total_count_map[tier] += 1
+	stat_overview.combi_tier_to_total_count_map = combi_tier_to_total_count_map
+	
+	
+	########## KEEP AT BOTTOM FOR ALL #############
 	is_stat_overview_construction_finished = true
 	emit_signal("stat_overview_construction_finished")
 

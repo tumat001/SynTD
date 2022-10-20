@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/StageRoundLineGraphPanel/StageRoundLineGraphPanel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://GameHUDRelated/GameStatsPanel/StatOverviewPanel/StatsOverviewPanel.gd" type="Script" id=2]
@@ -6,10 +6,8 @@
 [ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/Assets/GoldIcon_20x20.png" type="Texture" id=4]
 [ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/Assets/PlayerHealthHeart_20x20.png" type="Texture" id=5]
 [ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/ButtonToggleStandard/PlayerGUI_ButtonToggleStandard.tscn" type="PackedScene" id=6]
-
-[sub_resource type="DynamicFont" id=2]
-size = 30
-font_data = ExtResource( 3 )
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/StatOverviewPanel/Subs/TierRelatedStatsPanel/TierRelatedStatsPanel.tscn" type="PackedScene" id=7]
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/StatOverviewPanel/Subs/GameEndStatsPanel/GameEndStatsPanel.tscn" type="PackedScene" id=8]
 
 [sub_resource type="DynamicFont" id=1]
 size = 20
@@ -26,25 +24,29 @@ script = ExtResource( 2 )
 margin_right = 750.0
 margin_bottom = 450.0
 mouse_filter = 2
+custom_constants/separation = 30
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 41.0
 margin_right = 750.0
-mouse_filter = 2
+margin_bottom = 205.0
+size_flags_vertical = 10
+custom_constants/margin_left = 25
 
-[node name="WIPLabel" type="MarginContainer" parent="VBoxContainer"]
-margin_left = 171.0
-margin_top = 82.0
-margin_right = 579.0
-margin_bottom = 147.0
-size_flags_horizontal = 6
-size_flags_vertical = 6
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
+margin_left = 25.0
+margin_right = 750.0
+margin_bottom = 164.0
 
-[node name="Label" type="Label" parent="VBoxContainer/WIPLabel"]
-margin_right = 408.0
-margin_bottom = 65.0
-custom_fonts/font = SubResource( 2 )
-text = "Work In Progress (WIP).
-Other stats coming soon."
+[node name="GameEndStatsPanel" parent="VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource( 8 )]
+margin_right = 312.0
+margin_bottom = 164.0
+
+[node name="TierRelatedStatsPanel" parent="VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource( 7 )]
+margin_left = 435.0
+margin_right = 725.0
+margin_bottom = 164.0
+size_flags_horizontal = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 235.0

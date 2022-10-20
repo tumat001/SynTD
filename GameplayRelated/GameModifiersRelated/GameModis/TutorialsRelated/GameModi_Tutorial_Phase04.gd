@@ -1,9 +1,12 @@
 extends "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/BaseGameModi_Tutorial.gd"
 
-# start with 3 rebounds in the map, 1 sprinker, 1 cannon and flameburst
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+
+
+# start with x y in the map, 1 sprinker, 1 cannon and flameburst
 
 var towers_offered_on_shop_refresh : Array = [
-	[Towers.REBOUND],
+	[Towers.STRIKER],
 	[]
 ]
 
@@ -40,40 +43,63 @@ func _unapply_game_modifier_from_elements(arg_elements : GameElements):
 func _on_game_elements_before_game_start():
 	_same_towers_needed_for_combi = game_elements.combination_manager.base_combination_amount
 	
+	var plain_fragment__ingredient_effects = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredient effects")
+	var plain_fragment__ingredient_effect = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredient effect")
+	var plain_fragment__absorb = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABSORB, "absorb")
+	var plain_fragment__Combination = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "Combination")
+	var plain_fragment__identical_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "identical towers")
+	var plain_fragment__combine = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combine")
+	var plain_fragment__Strikers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Strikers")
+	var plain_fragment__Striker = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Striker")
+	var plain_fragment__combination = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combination")
+	
+	var plain_fragment__refresh_the_shop = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "refresh the shop")
+	var plain_fragment__combined = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combined")
+	var plain_fragment__Absorbing = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABSORB, "Absorbing")
+	var plain_fragment__1_ingredient_slot = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "1 ingredient slot")
+	var plain_fragment__no_ingredient_slots = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "no ingredient slots")
+	
+	var plain_fragment__Sprinkler = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Sprinker")
+	var plain_fragment__tier_1_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_01, "tier 1 towers")
+	var plain_fragment__Cannon = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Cannon")
+	var plain_fragment__Flameburst = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Flameburst")
+	var plain_fragment__combinations = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combinations")
+	
+	
 	transcript_to_progress_mode = {
 		"Welcome to the chapter 4 of the tutorial. Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
 		
-		"Recall ingredient effects: which is an effect that gives stats and special buffs." : ProgressMode.CONTINUE,
-		"Towers can \"absorb\" other towers, gaining the absorbed tower's ingredient effect.\nThis can be done under certain color-related conditions." : ProgressMode.CONTINUE,
-		"\"Combination\" is just another way of giving ingredient effects to towers, along with its own conditions." : ProgressMode.CONTINUE,
+		["Recall |0|: which is an effect that gives special buffs.", [plain_fragment__ingredient_effects]] : ProgressMode.CONTINUE,
+		["We have established that towers can |0| other towers, gaining the absorbed tower's |1|. This can be done under certain color-related conditions.", [plain_fragment__absorb, plain_fragment__ingredient_effect]] : ProgressMode.CONTINUE,
+		["|0| is just another way of giving |1| to towers, along with its own conditions.", [plain_fragment__Combination, plain_fragment__ingredient_effects]] : ProgressMode.CONTINUE,
 		
-		"In order to combine towers, you need %s identical towers." % str(_same_towers_needed_for_combi) : ProgressMode.CONTINUE,
-		"Right now we have %s Rebounds.\nWe only need one more Rebound to do a combination." % str(_same_towers_needed_for_combi - 1) : ProgressMode.CONTINUE,
+		["In order to |0| towers, you need %s |1|." % str(_same_towers_needed_for_combi), [plain_fragment__combine, plain_fragment__identical_towers]] : ProgressMode.CONTINUE,
+		["Right now we have %s |0|. We only need one more |1| to do a |2|." % str(_same_towers_needed_for_combi - 1), [plain_fragment__Strikers, plain_fragment__Striker, plain_fragment__combination]] : ProgressMode.CONTINUE,
 		#6
-		"Please Refresh the shop." : ProgressMode.ACTION_FROM_PLAYER,
-		"A Rebound! Did you catch that?\nA shine particle is shown if buying that tower can allow you to trigger combination." : ProgressMode.CONTINUE,
+		["Please |0|.", [plain_fragment__refresh_the_shop]] : ProgressMode.ACTION_FROM_PLAYER,
+		["A |0|! A shine particle is briefly shown if buying that tower allows you to trigger a |1|.", [plain_fragment__Striker, plain_fragment__combination]] : ProgressMode.CONTINUE,
 		#8
-		"Buy Rebound." : ProgressMode.ACTION_FROM_PLAYER,
-		"Now, an indicator is shown to the %s Rebounds that are going to be sacrificed for the Combination to take place." % str(_same_towers_needed_for_combi): ProgressMode.CONTINUE,
+		["Buy |0|.", [plain_fragment__Striker]] : ProgressMode.ACTION_FROM_PLAYER,
+		["Now, an indicator is shown to the %s |0| that are going to be sacrificed for the |1| to take place." % str(_same_towers_needed_for_combi), [plain_fragment__Strikers, plain_fragment__combination]] : ProgressMode.CONTINUE,
 		#10
-		"Press %s to combine the %s Rebounds." % [InputMap.get_action_list("game_combine_combinables")[0].as_text(), str(_same_towers_needed_for_combi)] : ProgressMode.ACTION_FROM_PLAYER,
+		["Press %s to |0| the %s |1|." % [InputMap.get_action_list("game_combine_combinables")[0].as_text(), str(_same_towers_needed_for_combi)], [plain_fragment__combine, plain_fragment__Strikers]] : ProgressMode.ACTION_FROM_PLAYER,
 		#11
-		"Nice! We can see here (this icon) that we have indeed combined the Rebounds." : ProgressMode.CONTINUE,
+		["Nice! We can see here (this icon) that we have indeed |0| the |1|.", [plain_fragment__combined, plain_fragment__Strikers]] : ProgressMode.CONTINUE,
 		
 		"But what does combining towers do? A comparison to absorbing will help clear things out." : ProgressMode.CONTINUE,
-		"Absorbing towers is color-based, affects only the recepient, and takes up 1 ingredient slot.\nCombinations are tier-based, can affect multiple towers, and takes no ingredient slots." : ProgressMode.CONTINUE,
-		"Combination applies the combined tower's ingredient effect\nto towers with tiers who are below, equal, and 1 tier above the combined tower." : ProgressMode.CONTINUE,
+		["|0| towers is color-based, affects only the recepient, and takes up |1|. |2| is tier-based, affects multiple towers, and takes |3|.", [plain_fragment__Absorbing, plain_fragment__1_ingredient_slot, plain_fragment__Combination, plain_fragment__no_ingredient_slots]] : ProgressMode.CONTINUE,
+		["|0| applies the combined tower's |1| to all towers with tiers who are below, equal, and 1 tier above the combined tower.", [plain_fragment__Combination, plain_fragment__ingredient_effect]] : ProgressMode.CONTINUE,
 		
-		"Sprinkler benefits from the combination effect of Rebound,\nsince Rebound and Sprinkler are tier 1 towers (they share tiers)." : ProgressMode.CONTINUE,
-		"Cannon benefits from the combination effect of Rebound,\nsince Cannon is only 1 tier above Rebound." : ProgressMode.CONTINUE,
-		"But Flameburst does not benefit from the combination effect of Rebound,\nsince Flameburst is 2 tiers above Rebound." : ProgressMode.CONTINUE,
-		"Future towers bought benefit from exising combination effects." : ProgressMode.CONTINUE,
+		["|0| benefits from the |1| of |2|, since |2| and |0| are |3| (they have the same tier).", [plain_fragment__Sprinkler, plain_fragment__combination, plain_fragment__Striker, plain_fragment__tier_1_towers]] : ProgressMode.CONTINUE,
+		["|0| benefits from the |1| of |2|, since |0| is only 1 tier above |2|.", [plain_fragment__Cannon, plain_fragment__combination, plain_fragment__Striker]] : ProgressMode.CONTINUE,
+		["But |0| does not benefit from the |1| of |2|, since |0| is 2 tiers above |2|.", [plain_fragment__Flameburst, plain_fragment__combination, plain_fragment__Striker]] : ProgressMode.CONTINUE,
+		["Future towers bought benefit from exising |0|.", [plain_fragment__combinations]] : ProgressMode.CONTINUE,
 		
 		#19
-		"Clicking this icon shows you all of your combination effects.\nIt also shows a description of combinations, and what combinations apply to the selected tier." : ProgressMode.CONTINUE,
+		["Clicking this icon shows you all of your |0|. It also shows a description of combinations, and what combinations apply to the selected tier.", [plain_fragment__combinations]] : ProgressMode.CONTINUE,
 		"..." : ProgressMode.CONTINUE,
-		"While finding %s of the same tower may be challenging and costly,\nit has its own upsides." % str(_same_towers_needed_for_combi): ProgressMode.CONTINUE,
-		"No ingredient slots are taken by the combinations, so the sky's the limit.\nAlso, it is not color dependent, so it can apply to a whole range of towers it normally would not." : ProgressMode.CONTINUE,
+		"While finding %s of the same tower may be challenging and costly, it has its own upsides." % str(_same_towers_needed_for_combi): ProgressMode.CONTINUE,
+		"No ingredient slots are taken by the combinations, so the sky's the limit. Also, it is not color dependent, so it can apply to a whole range of towers it normally would not." : ProgressMode.CONTINUE,
 		
 		"That concludes this chapter of the tutorial." : ProgressMode.CONTINUE,
 		
@@ -101,16 +127,16 @@ func _on_game_elements_before_game_start():
 	set_ingredient_limit_modi(9)
 	
 	
-#	var rebound_01 = create_tower_at_placable(Towers.REBOUND, get_map_area_05__from_glade())
-#	var rebound_02 = create_tower_at_placable(Towers.REBOUND, get_map_area_07__from_glade())
-#	var rebound_03 = create_tower_at_placable(Towers.REBOUND, get_map_area_09__from_glade())
+#	var Striker_01 = create_tower_at_placable(Towers.STRIKER, get_map_area_05__from_glade())
+#	var Striker_02 = create_tower_at_placable(Towers.STRIKER, get_map_area_07__from_glade())
+#	var Striker_03 = create_tower_at_placable(Towers.STRIKER, get_map_area_09__from_glade())
 #	var cannon_01 = create_tower_at_placable(Towers.CANNON, get_map_area_04__from_glade())
 #	var flameburst_01 = create_tower_at_placable(Towers.FLAMEBURST, get_map_area_06__from_glade())
 #	var sprinkler_01 = create_tower_at_placable(Towers.SPRINKLER, get_map_area_10__from_glade())
 #
-#	set_tower_is_sellable(rebound_01, false)
-#	set_tower_is_sellable(rebound_02, false)
-#	set_tower_is_sellable(rebound_03, false)
+#	set_tower_is_sellable(Striker_01, false)
+#	set_tower_is_sellable(Striker_02, false)
+#	set_tower_is_sellable(Striker_03, false)
 #	set_tower_is_sellable(cannon_01, false)
 #	set_tower_is_sellable(flameburst_01, false)
 #	set_tower_is_sellable(sprinkler_01, false)
@@ -130,8 +156,8 @@ func _on_game_elements_before_game_start():
 	set_tower_is_sellable(sprinkler_01, false)
 	
 	for i in _same_towers_needed_for_combi - 1:
-		var rebound = create_tower_at_placable(Towers.REBOUND, area_placables[i])
-		set_tower_is_sellable(rebound, false)
+		var Striker = create_tower_at_placable(Towers.STRIKER, area_placables[i])
+		set_tower_is_sellable(Striker, false)
 	
 	#exit_scene_if_at_end_of_transcript = false
 	#connect("at_end_of_transcript", self, "_on_end_of_transcript", [], CONNECT_ONESHOT)
@@ -147,14 +173,14 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		
 	elif arg_index == 8:
 		set_enabled_buy_slots([1])
-		listen_for_tower_with_id__bought__then_call_func(Towers.REBOUND, "_on_rebound_bought__08", self)
+		listen_for_tower_with_id__bought__then_call_func(Towers.STRIKER, "_on_Striker_bought__08", self)
 		
 	elif arg_index == 10:
 		set_can_do_combination(true)
-		listen_for_combination_effect_added(Towers.REBOUND, "_on_rebounds_combined", self)
+		listen_for_combination_effect_added(Towers.STRIKER, "_on_Strikers_combined", self)
 		
 	elif arg_index == 11:
-		display_white_circle_at_node(get_tower_icon_with_tower_id__on_combination_top_panel(Towers.REBOUND), 12)
+		display_white_circle_at_node(get_tower_icon_with_tower_id__on_combination_top_panel(Towers.STRIKER), 12)
 		
 	elif arg_index == 19:
 		display_white_circle_at_node(get_more_combination_info__on_combi_top_panel(), 20)
@@ -167,13 +193,13 @@ func _on_shop_refresh__06(arg_tower_ids):
 	advance_to_next_transcript_message()
 	
 #
-func _on_rebound_bought__08(arg_rebound):
-	set_tower_is_sellable(arg_rebound, false)
+func _on_Striker_bought__08(arg_Striker):
+	set_tower_is_sellable(arg_Striker, false)
 	advance_to_next_transcript_message()
 	
 
 #
-func _on_rebounds_combined():
+func _on_Strikers_combined():
 	advance_to_next_transcript_message()
 
 #

@@ -363,7 +363,8 @@ const tier_attk_speed_map : Dictionary = {
 	
 	4 : 50,
 	5 : 60,
-	6 : 70,
+	6 : 60,
+#	6 : 70,
 }
 
 const tier_base_dmg_map : Dictionary = {
@@ -371,9 +372,10 @@ const tier_base_dmg_map : Dictionary = {
 	2 : 1.0,
 	3 : 1.5,
 	
-	4 : 2.5,
-	5 : 2.75,
-	6 : 3.0,
+	4 : 2.25,
+	5 : 2.5,
+	6 : 2.5,
+#	6 : 3.0,
 	
 #	4 : 2.5,
 #	5 : 3.0,
@@ -385,9 +387,10 @@ const tier_on_hit_dmg_map : Dictionary = {
 	2 : 1.25,
 	3 : 1.75,
 	
-	4 : 2.75,
-	5 : 3.00,
-	6 : 3.25,
+	4 : 2.5,
+	5 : 2.75,
+	6 : 2.75,
+#	6 : 3.25,
 #	4 : 2.7,
 #	5 : 3.2,
 #	6 : 3.7,
@@ -400,7 +403,8 @@ const tier_flat_range_map : Dictionary = {
 	3 : 40,
 	4 : 60,
 	5 : 70,
-	6 : 80,
+	6 : 70,
+#	6 : 80,
 }
 
 const tier_ap_map : Dictionary = {
@@ -1448,7 +1452,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_perc_on_hit.display_body = false
 		
 		var ins_for_perc_on_hit = []
-		ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "max health damage", 25, true))
+		ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "enemy max health damage", 25, true))
 		
 		interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
 		
@@ -1543,7 +1547,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Campfire gains Rage equivalent to the post-mitigated damage taken by enemies within its range.",
 			["Upon reaching |0|, Campfire consumes all Rage to cast Heat Pact.", [interpreter_for_rage]],
 			"",
-			["|0|: Heat Pact: The next attack of a tower deals bonus |1|.", [plain_fragment__ability, interpreter_for_on_hit]],
+			["|0|: Heat Pact: The next attack of all towers in range deals bonus |1|.", [plain_fragment__ability, interpreter_for_on_hit]],
 			"",
 			"Campfire does not gain Rage from the damage its buff has dealt.",
 			["Campfire cannot gain Rage for |0| after casting Heat Pact.", [interpreter_for_cooldown]],
@@ -1553,7 +1557,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Campfire gains Rage when enemies take damage in its range.",
 			"Upon reaching enough Rage, Campfire consumes all Rage to cast Heat Pact.",
 			"",
-			["|0|: The next attack of a tower deals bonus |1|.", [plain_fragment__ability_heat_pact, interpreter_for_on_hit]],
+			["|0|: The next attack of all towers in range deals bonus |1|.", [plain_fragment__ability_heat_pact, interpreter_for_on_hit]],
 		]
 		
 		# Ingredient related
@@ -4395,6 +4399,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var plain_fragment__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Ability")
 		var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Chains")
+		var plain_fragment__stunning = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stunning")
 		
 		
 		#
@@ -4403,7 +4408,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Shackled's main attacks explode upon hitting an enemy, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]],
 			"",
 			"Shackled attempts to cast Chains after 18 main attacks or dealing 60 post-mitigated damage. This resets on round end.",
-			["|0|: Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and stunning them for 0.5 seconds. Targeting affects which enemies are pulled.", [plain_fragment__ability]],
+			["|0|: Chains: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and |1| them for 0.5 seconds. Targeting affects which enemies are pulled.", [plain_fragment__ability, plain_fragment__stunning]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
 			"After 3 rounds of being in the map, Shackled is able to pull 2 more enemies per cast."
@@ -4411,7 +4416,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_simple_descriptions = [
 			"Shackled attempts to cast Chains after 18 main attacks or dealing 60 post-mitigated damage.",
-			["|0|: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and stunning them for 0.5 seconds. Targeting affects which enemies are pulled.", [plain_fragment__ability_name]],
+			["|0|: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and |1| them for 0.5 seconds. Targeting affects which enemies are pulled.", [plain_fragment__ability_name, plain_fragment__stunning]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
 			"After 3 rounds of being in the map, Shackled is able to pull 2 more enemies per cast."
@@ -6658,4 +6663,3 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Outreach/Outreach.tscn")
 	elif tower_id == BLAST:
 		return load("res://TowerRelated/Color_Red/Blast/Blast.tscn")
-

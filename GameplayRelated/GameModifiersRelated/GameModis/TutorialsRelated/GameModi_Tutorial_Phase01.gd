@@ -1,5 +1,7 @@
 extends "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/BaseGameModi_Tutorial.gd"
 
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+
 
 # Shops:
 # 1) Spike*
@@ -34,15 +36,32 @@ func _get_custom_shop_towers():
 #
 
 func _apply_game_modifier_to_elements(arg_elements : GameElements):
+	var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
+	var plain_fragment__base_damage = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.BASE_DAMAGE, "base damage")
+	var plain_fragment__attack_speed = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ATTACK_SPEED, "attack speed")
+	var plain_fragment__range = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.RANGE, "range")
+	var plain_fragment__gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "gold")
+	var plain_fragment__end_of_the_round = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "end of the round")
+	var plain_fragment__level_up = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.LEVEL_UP_ORANGE, "level up")
+	var plain_fragment__refresh_or_reroll = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "refresh or reroll")
+	var plain_fragment__refresh = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "refresh")
+	var plain_fragment__refreshes = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "refreshes")
+	var plain_fragment__end_of_round = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "end of round")
+	var plain_fragment__tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "tower")
+	
+	var plain_fragment__leveling_up = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.LEVEL_UP_ORANGE, "leveling up")
+	var plain_fragment__rerolling_your_shop = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "rerolling your shop")
+	
+	
 	transcript_to_progress_mode = {
 		"Welcome to Synergy Tower Defense! Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
-		"In a tower defense game, you place towers to defeat the enemies." : ProgressMode.CONTINUE,
-		"Left click this \"tower card\" to buy the displayed tower." : ProgressMode.ACTION_FROM_PLAYER,
-		"When you buy towers, they appear in your bench.\nBenched towers do not attack; you need to place them in the map." : ProgressMode.CONTINUE,
+		["In a tower defense game, you place |0| to defeat the enemies.", [plain_fragment__towers]] : ProgressMode.CONTINUE,
+		["Left click this \"tower card\" to buy the displayed |0|.", [plain_fragment__tower]] : ProgressMode.ACTION_FROM_PLAYER,
+		"When you buy towers, they appear in your bench. Benched towers do not attack; you need to first place them in the map." : ProgressMode.CONTINUE,
 		"You can think of the bench as your inventory for towers." : ProgressMode.CONTINUE,
-		"Drag the tower to this tower slot to activate it." : ProgressMode.ACTION_FROM_PLAYER,
-		"Good job! Now this tower is ready to defend." : ProgressMode.CONTINUE,
-		"You can always drag the tower back to the bench, but not during the round.\n(Due to this being a tutorial, you can't do that just yet.)" : ProgressMode.CONTINUE,
+		["Drag the |0| to this tower slot to activate it.", [plain_fragment__tower]] : ProgressMode.ACTION_FROM_PLAYER,
+		["Good job! Now this |0| is ready to defend.", [plain_fragment__tower]] : ProgressMode.CONTINUE,
+		"You can always drag the tower back to the bench, but not during the round. (Due to this being a tutorial, you can't do that just yet.)" : ProgressMode.CONTINUE,
 		"Press %s to start the round, or click this button." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
 		
 		#9
@@ -51,40 +70,41 @@ func _apply_game_modifier_to_elements(arg_elements : GameElements):
 		"The number of towers you can place in the map is equal to your level. Since you are level 2, you can place 2 towers." : ProgressMode.CONTINUE,
 		"Let's start the round. (Press %s, or click this button)." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
 		#13
-		"While the round is started, you can fast forward the game by pressing %s,\nor by pressing the speed buttons here." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.WAIT_FOR_EVENT, #wait for round to end
+		"While the round is started, you can fast forward the game by pressing %s, or by pressing the speed buttons here." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.WAIT_FOR_EVENT, #wait for round to end
 		
 		#14 #Right click spike
-		"To view a tower's description and stats, just right click a tower.\nPlease right click this tower." : ProgressMode.ACTION_FROM_PLAYER,
-		"Over here you can see the tower's stats, such as base damage (red icon),\nattack speed (yellow icon), range (green icon), and more." : ProgressMode.CONTINUE,
+		"To view a tower's description and stats, just right click a tower. Please right click this tower." : ProgressMode.ACTION_FROM_PLAYER,
+		#"Over here you can see the tower's stats, such as base damage (red icon), attack speed (yellow icon), range (green icon), and more." : ProgressMode.CONTINUE,
+		["Over here you can see the tower's stats, such as |0|, |1|, |2|, and more.", [plain_fragment__base_damage, plain_fragment__attack_speed, plain_fragment__range]] : ProgressMode.CONTINUE,
 		#16
-		"Right click this little icon to view the tower's description." : ProgressMode.ACTION_FROM_PLAYER,
+		"Right click this little icon, or press %s, to view the tower's description." % InputMap.get_action_list("game_show_tower_extra_info_panel")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
 		"The tower's description shows what they do." : ProgressMode.CONTINUE,
-		"You don't have to buy a tower to view their stats and description.\nYou can also view those by right clicking a tower card (before it is bought)." : ProgressMode.CONTINUE,
+		"You don't have to buy a tower to view their stats and description. You can also view those by right clicking a tower card (before it is bought)." : ProgressMode.CONTINUE,
 		#19
 		"Right click this tower card to view its description and stats." : ProgressMode.ACTION_FROM_PLAYER,
-		"Going forward, it is important to emphasize that\nknowing a tower's description is much more important than knowing its stats." : ProgressMode.CONTINUE,
-		"Towers have their own unique strenghts and weaknesses.\nAs you play the game, you will learn their quirks and interactions." : ProgressMode.CONTINUE,
+		"Going forward, it is important to emphasize that knowing a tower's description is much more important than knowing its stats." : ProgressMode.CONTINUE,
+		"Towers have their own unique strenghts and weaknesses. As you play the game, you will learn their quirks and interactions." : ProgressMode.CONTINUE,
 		
 		#22
 		"Anyways, practice makes perfect. Buy this tower and place it in the map." : ProgressMode.ACTION_FROM_PLAYER,
 		#23
-		"Once again, let's start the round.\n(Press %s. or click this button)." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
+		"Once again, let's start the round. (Press %s. or click this button)." % InputMap.get_action_list("game_round_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
 		
-		"Buying towers cost gold. Gold is gained at the end of the round." : ProgressMode.CONTINUE,
-		"You also gain 1 extra gold for every 10 gold you have, up to 5.\nWhich means at 50 gold, you are making max interest." : ProgressMode.CONTINUE,
-		"Gold is also used for leveling up, for rerolling your shop, among other things." : ProgressMode.CONTINUE,
+		["Buying towers cost |0|. Gold is gained at the |1|.", [plain_fragment__gold, plain_fragment__end_of_the_round]] : ProgressMode.CONTINUE,
+		["You also gain 1 extra |0| for every 10 |0| you have, up to 5. Which means at 50 |0|, you are making max interest.", [plain_fragment__gold]] : ProgressMode.CONTINUE,
+		["Gold is also used for |0|, for |1|, and many more!", [plain_fragment__leveling_up, plain_fragment__rerolling_your_shop]] : ProgressMode.CONTINUE,
 		#27
-		"Player level determines how many towers you can place.\nLet's level up to place more towers by clicking this button." : ProgressMode.ACTION_FROM_PLAYER,
+		["Player level determines how many towers you can place. Let's |0| to place more |1| by clicking this button.", [plain_fragment__level_up, plain_fragment__towers]] : ProgressMode.ACTION_FROM_PLAYER,
 		"Now that we're level 4, we can place another tower!" : ProgressMode.CONTINUE,
-		"You can refresh the shop to get a new batch of towers, if you didn't like what was offered to you." : ProgressMode.CONTINUE,
+		["You can |0| the shop to get a new batch of towers, if you didn't like what was offered to you.", [plain_fragment__refresh_or_reroll]] : ProgressMode.CONTINUE,
 		#30
-		"Press %s or click this button to refresh the shop." % InputMap.get_action_list("game_shop_refresh")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
-		"Normally, you get 5 towers per shop. You only get one since this is a tutorial." : ProgressMode.CONTINUE,
-		"Also, the shop refreshes every end of round." : ProgressMode.CONTINUE,
+		["Press %s or click this button to |0| the shop." % InputMap.get_action_list("game_shop_refresh")[0].as_text(), [plain_fragment__refresh]] : ProgressMode.ACTION_FROM_PLAYER,
+		"Normally, you get 5 towers per shop. In this case, you only get one, since this is a tutorial." : ProgressMode.CONTINUE,
+		["Also, the shop |0| every |1| for free!", [plain_fragment__refreshes, plain_fragment__end_of_round]] : ProgressMode.CONTINUE,
 		
 		"To wrap up this tutorial, let's sell a tower." : ProgressMode.CONTINUE,
 		#34
-		"Please sell this tower by pressing %s while hovering the tower,\nor by dragging the tower to the bottom panel (where the shop is)." % InputMap.get_action_list("game_tower_sell")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
+		["Please sell this |0| by pressing %s while hovering the tower, or by dragging the tower to the bottom panel (where the shop is)." % InputMap.get_action_list("game_tower_sell")[0].as_text(), [plain_fragment__tower]] : ProgressMode.ACTION_FROM_PLAYER,
 		"Good job, as always!" : ProgressMode.CONTINUE,
 		
 		"That concludes this chapter of the tutorial." : ProgressMode.CONTINUE,
@@ -136,7 +156,8 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		
 	elif arg_index == 8: # round start prompt
 		set_round_is_startable(true)
-		display_white_arrows_pointed_at_node(get_round_status_button(), 9)
+		var arrows = display_white_arrows_pointed_at_node(get_round_status_button(), 9)
+		arrows[1].y_offset = -20
 		#display_white_circle_at_node(get_round_status_button(), 9)
 		listen_for_round_start__then_listen_for_round_end__call_func_for_both(self, "_on_transc_08__round_start", "_on_transc_08__round_end")
 		
@@ -149,7 +170,8 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		
 	elif arg_index == 12:
 		set_round_is_startable(true)
-		display_white_arrows_pointed_at_node(get_round_status_button(), 13)
+		var arrows = display_white_arrows_pointed_at_node(get_round_status_button(), 13)
+		arrows[1].y_offset = -20
 		listen_for_round_start__then_listen_for_round_end__call_func_for_both(self, "_on_transc_12__round_start", "_on_transc_12__round_end")
 		
 	elif arg_index == 13:
@@ -166,7 +188,13 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		display_white_arrows_pointed_at_node(get_tower_stats_panel_from_tower_info_panel(), 16)
 		
 	elif arg_index == 16:
-		display_white_circle_at_node(get_extra_info_button_from_tower_info_panel(), 17)
+		var button = get_extra_info_button_from_tower_info_panel()
+		display_white_circle_at_node(button, 17)
+		var arrows = display_white_arrows_pointed_at_node(button, 17)
+		arrows[0].x_offset = -55
+		arrows[1].y_offset = 70
+		arrows[1].flip_h = true
+		
 		listen_for_view_extra_info_panel(Towers.SPIKE, self, "_on_open_tower_extra_info_panel__for_16")
 		
 	elif arg_index == 19: #rightclick on tower card
@@ -184,6 +212,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 	elif arg_index == 23:
 		set_round_is_startable(true)
 		_arrows = display_white_arrows_pointed_at_node(get_round_status_button(), 13)
+		_arrows[1].y_offset = -20
 		listen_for_round_start__then_listen_for_round_end__call_func_for_both(self, "_on_transc_23__round_start", "_on_transc_23__round_end")
 		
 	elif arg_index == 27:

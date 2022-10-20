@@ -83,13 +83,14 @@ func update_display():
 		if desc_instance._tower_info == null:
 			desc_instance._tower_info = tower_info_for_text_fragment_interpreter
 		
+		desc_instance.mouse_filter = MOUSE_FILTER_IGNORE
 		
-		$RowContainer.add_child(desc_instance)
+		row_container.add_child(desc_instance)
 		index += 1
 	
 
 func _kill_all_desc():
-	for ch in $RowContainer.get_children():
+	for ch in row_container.get_children():
 		ch.queue_free()
 
 
@@ -110,3 +111,38 @@ func clear_descriptions_in_array():
 func set_spacing_per_string_line(arg_val):
 	row_container.add_constant_override("separation", arg_val)
 
+#
+
+func get_visible_character_count():
+	var count = 0
+	for ch in row_container.get_children():
+		count += ch.get_visible_character_count()
+	
+	return count
+
+func set_visible_character_count(arg_count):
+	var curr_arg_count = arg_count
+	
+	for ch in row_container.get_children():
+		ch.set_visible_character_count(curr_arg_count)
+		
+		var ch_count : int = ch.get_visible_character_count()
+		
+		curr_arg_count -= ch_count
+		if curr_arg_count < 0:
+			curr_arg_count = -1
+
+func get_percent_visible_character_count():
+	var percent_total : float = 0
+	for ch in row_container.get_children():
+		percent_total += ch.get_percent_visible_character_count()
+	
+	return percent_total /  row_container.get_child_count()
+
+func get_total_character_count():
+	var count : int = 0
+	
+	for ch in row_container.get_children():
+		count += ch.get_total_char_count()
+	
+	return count

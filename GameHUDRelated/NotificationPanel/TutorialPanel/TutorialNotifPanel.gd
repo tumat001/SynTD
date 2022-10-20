@@ -12,7 +12,8 @@ var all_text_is_visible : bool
 var _current_tooltip : BaseTowerSpecificTooltip
 var _current_text_for_tooltip : String
 
-onready var text_label = $MarginContainer/ContentPanel/HBoxContainer/TextLabel
+#onready var text_label = $MarginContainer/ContentPanel/HBoxContainer/TextLabel
+onready var tooltip_body = $MarginContainer/ContentPanel/HBoxContainer/TooltipBody
 onready var status_icon = $MarginContainer/ContentPanel/HBoxContainer/StatusIcon
 
 #
@@ -25,19 +26,32 @@ func initialize():
 
 #
 
-func set_text_and_icon(arg_text : String, arg_icon : Texture, arg_text_for_tooltip : String):
+func set_text_and_icon(arg_desc, arg_icon : Texture, arg_text_for_tooltip : String):
+	var desc = _convert_text_input(arg_desc)
+	
 	_reset_num_of_char_visible()
-	text_label.text = arg_text
+	tooltip_body.descriptions = desc
+	#text_label.text = arg_desc
 	status_icon.texture = arg_icon
 	_current_text_for_tooltip = arg_text_for_tooltip
 	
 	status_icon.modulate.a = 0
 	
+	tooltip_body.update_display()
+	
 	_start_char_timer()
 	visible = true
 
+func _convert_text_input(arg_desc):
+	return [arg_desc]
+#	if arg_desc is String:
+#		return [arg_desc]
+#	else:
+#		return [arg_desc]
+
 func _reset_num_of_char_visible():
-	text_label.visible_characters = 0
+	#text_label.visible_characters = 0
+	tooltip_body.set_visible_character_count(0)
 	all_text_is_visible = false
 
 func _start_char_timer():
@@ -49,9 +63,12 @@ func _on_char_timer_timeout():
 	
 
 func _turn_char_to_visible(var amount = char_appear_count_per_delta):
-	text_label.visible_characters += amount
+	#text_label.visible_characters += amount
+	var char_amount = tooltip_body.get_visible_character_count() + amount
+	tooltip_body.set_visible_character_count(char_amount)
 	
-	if text_label.percent_visible >= 1.0:
+	#if text_label.percent_visible >= 1.0:
+	if tooltip_body.get_percent_visible_character_count() >= 1.0:
 		timer_for_char_appear.stop()
 		status_icon.modulate.a = 1
 		all_text_is_visible = true
@@ -62,7 +79,9 @@ func hide_notif_panel():
 	visible = false
 
 func show_all_text_and_icon():
-	_turn_char_to_visible(text_label.text.length())
+	_turn_char_to_visible(tooltip_body.get_total_character_count())
+	#_turn_char_to_visible(text_label.text.length())
+
 
 ##
 

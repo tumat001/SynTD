@@ -1,6 +1,7 @@
 extends "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/BaseGameModi_Tutorial.gd"
 
-# NOTE TO DEV: Start at level 4.
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+
 # Towers in shop:
 # Shop 1: Simplex*, ember*, sprinkler*, striker*
 # Shop 2: Spike, sprinkler, simplex, rebound
@@ -56,91 +57,131 @@ func _on_game_elements_before_game_start():
 	var tier_3_odds_at_level_5 = get_tower_tier_odds_at_player_level(3, 5)
 	var tier_2_odds_at_level_5 = get_tower_tier_odds_at_player_level(2, 5)
 	
+	var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
+	var plain_fragment__shop = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "shop")
+	var plain_fragment__tier_1_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_01, "tier 1 towers")
+	var plain_fragment__Level_up = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.LEVEL_UP_ORANGE, "Level up")
+	var plain_fragment__tier_2_tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_02, "tier 2 tower")
+	var plain_fragment__tier_3_tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_03, "tier 3 tower")
+	var plain_fragment__refresh_the_shop = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "refresh the shop")
+	
+	var plain_fragment__orange_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_ORANGE, "orange towers")
+	var plain_fragment__synergies = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY, "synergies")
+	var plain_fragment__color_synergy_ies = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY, "color synergy(ies)")
+	var plain_fragment__Orange_synergy = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_DOMINANT, "Orange synergy")
+	
+	var plain_fragment__Sprinkler = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Sprinkler")
+	var plain_fragment__Scatter = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Scatter")
+	
+	var plain_fragment__Dominant_Synergy_quotes = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_DOMINANT, "\"Dominant Synergy\"")
+	var plain_fragment__dominant_synergy = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_DOMINANT, "dominant synergy")
+	var plain_fragment__Composite_Synergy_quotes = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_COMPOSITE, "\"Composite Synergy\"")
+	var plain_fragment__Group_Synergy_quotes = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_COMPOSITE, "\"Group Synergy\"")
+	var plain_fragment__OrangeYR_synergy = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_COMPOSITE, "OrangeYR synergy")
+	var plain_fragment__1_yellow_tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_YELLOW, "1 yellow tower")
+	
+	var plain_fragment__OrangeYR_whole_word_synergy = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_COMPOSITE, "OrangeYR (Orange Yellow Red) synergy")
+	var plain_fragment__Simplex = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Simplex")
+	var plain_fragment__Railgun = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Railgun")
+	
+	var plain_fragment__Synergies = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY, "Synergies")
+	var plain_fragment__level_up = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.LEVEL_UP_ORANGE, "level up")
+	
+	var plain_fragment__6_Orange = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_DOMINANT, "6 Orange")
+	var plain_fragment__3_Orange = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_DOMINANT, "3 Orange")
+	
+	var plain_fragment__2_OrangeYR = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_COMPOSITE, "2 OrangeYR")
+	var plain_fragment__2_orange_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_ORANGE, "2 orange towers")
+	var plain_fragment__2_yellow_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_YELLOW, "2 yellow towers")
+	var plain_fragment__2_red_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_RED, "2 red towers")
+	var plain_fragment__1_OrangeYR = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_COMPOSITE, "1 OrangeYR")
+	
 	transcript_to_progress_mode = {
 		"Welcome to the chapter 2 of the tutorial. Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
 		
 		#1
-		"First, buy all the towers in the shop." : ProgressMode.ACTION_FROM_PLAYER,
-		"Right now, you have tier 1 towers, which is the weakest tier." : ProgressMode.CONTINUE,
+		["First, buy all the |0| in the |1|.", [plain_fragment__towers, plain_fragment__shop]] : ProgressMode.ACTION_FROM_PLAYER,
+		["Right now, you have |0|, which is the weakest tier.", [plain_fragment__tier_1_towers]] : ProgressMode.CONTINUE,
 		"Leveling up allows you to gain higher tier towers." : ProgressMode.CONTINUE,
 		#4
-		"Level up by clicking this button." : ProgressMode.ACTION_FROM_PLAYER,
+		["|0| by clicking this button.", [plain_fragment__Level_up]] : ProgressMode.ACTION_FROM_PLAYER,
 		
 		"Now that you've leveled up, there is a higher chance to find better towers." : ProgressMode.CONTINUE,
 		#6
-		"As indicated by this panel, you now have a %s%% chance of finding a tier 2 tower, and a %s%% for a tier 3 tower." % [str(tier_2_odds_at_level_5), str(tier_3_odds_at_level_5)]: ProgressMode.CONTINUE,
-		"Let's refresh the shop to get a tier 2 or 3 tower. (Press %s or click this button.)" % InputMap.get_action_list("game_shop_refresh")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
+		["As indicated by this panel, you now have a %s%% chance of finding a |0|, and a %s%% for a |1|." % [str(tier_2_odds_at_level_5), str(tier_3_odds_at_level_5)], [plain_fragment__tier_2_tower, plain_fragment__tier_3_tower]]: ProgressMode.CONTINUE,
+		["Let's |0| to get a tier 2 or 3 tower. (Press %s or click this button.)" % InputMap.get_action_list("game_shop_refresh")[0].as_text(), [plain_fragment__refresh_the_shop]] : ProgressMode.ACTION_FROM_PLAYER,
 		#8
 		"Tough luck! We didn't get what we want. Refresh the shop again." : ProgressMode.ACTION_FROM_PLAYER,
-		"Nice! Buy that tier 3 tower." : ProgressMode.ACTION_FROM_PLAYER,
+		["Nice! Buy that |0|.", [plain_fragment__tier_3_tower]] : ProgressMode.ACTION_FROM_PLAYER,
 		"In general, higher tier towers are stronger than lower tier ones." : ProgressMode.CONTINUE,
 		#11
 		"Let's place all those towers in the map." : ProgressMode.ACTION_FROM_PLAYER,
 		"Let's start the round." : ProgressMode.ACTION_FROM_PLAYER,
 		
-		"Now we proceed to synergies. Take your time understanding the next passages." : ProgressMode.CONTINUE,
-		"Each tower has tower color(s).\nTowers contribute to their color synergy(ies) if placed in the map." : ProgressMode.CONTINUE,
+		["Now we proceed to |0|. Take your time understanding the next passages.", [plain_fragment__synergies]] : ProgressMode.CONTINUE,
+		["Each tower has tower color(s). Towers contribute to their |0| if placed in the map.", [plain_fragment__color_synergy_ies]] : ProgressMode.CONTINUE,
 		#15
-		"Right now, we have 2 orange towers.\nTo activate the orange synergy, we need 3, as stated here." : ProgressMode.CONTINUE,
+		["Right now, we have 2 |0|. To activate the |1|, we need 3 |0|, as stated here.", [plain_fragment__orange_towers, plain_fragment__Orange_synergy]] : ProgressMode.CONTINUE,
 		#16
 		"You can read the orange synergy's description by hovering this." : ProgressMode.CONTINUE,
 		#17
 		"Refresh the shop to hopefully find an orange tower." : ProgressMode.ACTION_FROM_PLAYER,
 		#18
-		"There's an orange tower! Sell sprinkler for space,\nthen buy Scatter and place it in the map." : ProgressMode.ACTION_FROM_PLAYER,
-		"The orange synergy is now activated since you have 3 orange towers." : ProgressMode.CONTINUE,
-		"A single colored synergy is called a \"Dominant Synergy\".\nYou can only have one active at a time." : ProgressMode.CONTINUE,
+		["There's an orange tower! Sell |0| for space, then buy |1| and place it in the map.", [plain_fragment__Sprinkler, plain_fragment__Scatter]] : ProgressMode.ACTION_FROM_PLAYER,
+		["The |0| is now activated since you have 3 |1|.", [plain_fragment__Orange_synergy, plain_fragment__orange_towers]] : ProgressMode.CONTINUE,
+		["A single colored synergy is called a |0|. You can only have one active at a time.", [plain_fragment__Dominant_Synergy_quotes]] : ProgressMode.CONTINUE,
 		"Attempting to play two dominant synergies kills you instantly!" : ProgressMode.CONTINUE,
-		"Just kidding. Attempting to play two dominant synergies cancels out the weaker synergy,\nor both of them if they are equal in number." : ProgressMode.CONTINUE,
-		"For example, having 3 orange towers and 3 yellow towers diables both synergies.\nbut having 4 orange instead of 3 allows orange to be active despite the 3 yellows." : ProgressMode.CONTINUE,
+		"Just kidding. Attempting to play two dominant synergies cancels out the weaker synergy, or both of them if they are equal in number." : ProgressMode.CONTINUE,
+		"For example, having 3 orange towers and 3 yellow towers diables both synergies. but having 4 orange instead of 3 allows orange to be active despite the 3 yellows." : ProgressMode.CONTINUE,
 		"Likewise, having 4 yellows against 3 oranges makes the yellow synergy active (instead of orange)." : ProgressMode.CONTINUE,
 		
 		# 25
-		"Recall that a single colored synergy is called a \"Dominant Synergy\"\n consisting of a singluar color.": ProgressMode.CONTINUE,
-		"Now, there is another type of synergy called a \"Composite Synergy\", or \"Group Synergy\".": ProgressMode.CONTINUE,
-		"\"Composite Synergies\" involve multiple colors.": ProgressMode.CONTINUE,
-		"Just like \"Dominant Synergies\", you can only have one of it at a time,\nand will deactivate other weaker \"Composite Synergies\"." : ProgressMode.CONTINUE,
-		"The catch is, \"Composite Synergies\" can work with \"Dominant Synergies\".\nThey do not cancel each other out.": ProgressMode.CONTINUE,
+		["Recall that a single colored synergy is called a |0| consisting of a singluar color.", [plain_fragment__Dominant_Synergy_quotes]]: ProgressMode.CONTINUE,
+		["Now, there is another type of synergy called a |0|, or |1|.", [plain_fragment__Composite_Synergy_quotes, plain_fragment__Group_Synergy_quotes]] : ProgressMode.CONTINUE,
+		["|0| involve multiple colors.", [plain_fragment__Composite_Synergy_quotes]] : ProgressMode.CONTINUE,
+		["Just like |0|, you can only have one |1| at a time, and will deactivate other weaker |1|.", [plain_fragment__Dominant_Synergy_quotes, plain_fragment__Composite_Synergy_quotes]] : ProgressMode.CONTINUE,
+		["The catch is, |0| can work with |1|. They do not cancel each other out.", [plain_fragment__Composite_Synergy_quotes, plain_fragment__Dominant_Synergy_quotes]] : ProgressMode.CONTINUE,
 		#30
-		"If we look here, we can see that we are 1 yellow tower off of activating OrangeYR synergy.": ProgressMode.CONTINUE,
+		["If we look here, we can see that we are |0| off of activating |1|.", [plain_fragment__1_yellow_tower, plain_fragment__OrangeYR_synergy]] : ProgressMode.CONTINUE,
 		# 31
 		"Refresh the shop to see if we get a yellow tower." : ProgressMode.ACTION_FROM_PLAYER,
 		# 32
 		"We got a yellow tower! Buy it!" : ProgressMode.ACTION_FROM_PLAYER,
 		# 33
-		"To activate the OrangeYR (Orange Yellow Red) synergy,\nlet's first put Simplex back to the bench." : ProgressMode.ACTION_FROM_PLAYER,
+		["To activate the |0|, let's first put |1| back to the bench.", [plain_fragment__OrangeYR_whole_word_synergy, plain_fragment__Simplex]] : ProgressMode.ACTION_FROM_PLAYER,
 		# 34
-		"Now that there is space, let's place Railgun in the map." : ProgressMode.ACTION_FROM_PLAYER,
-		"With this setup, we have both Orange synergy activated,\nand OrangeYR synergy activated." : ProgressMode.CONTINUE,
+		["Now that there is space, let's place |0| in the map.", [plain_fragment__Railgun]] : ProgressMode.ACTION_FROM_PLAYER,
+		["With this setup, we have both |0| and |1| activated.", [plain_fragment__Orange_synergy, plain_fragment__OrangeYR_synergy]] : ProgressMode.CONTINUE,
 		
-		"Synergies also have multiple tiers.\nThe more orange towers you place, the more powerful the Orange synergy becomes." : ProgressMode.CONTINUE,
-		"For the case of the Orange synergy: placing 6 Orange towers increases its power.\nOther synergies also have multiple tiers." : ProgressMode.CONTINUE,
+		["|0| also have multiple tiers. The more |1| you place, the more powerful the |2| becomes.", [plain_fragment__Synergies, plain_fragment__orange_towers, plain_fragment__Orange_synergy]] : ProgressMode.CONTINUE,
+		"For the case of the Orange synergy: placing 6 Orange towers increases its power. Other synergies also have multiple tiers." : ProgressMode.CONTINUE,
 		
-		# 38 #TODO everything above this is NEW
-		"Let's demonstrate activating 6 Orange instead of just 3 Orange." : ProgressMode.CONTINUE,
+		# 38
+		["Let's demonstrate activating |0| instead of just |1|.", [plain_fragment__6_Orange, plain_fragment__3_Orange]] : ProgressMode.CONTINUE,
 		#39
 		"Please refresh the shop." : ProgressMode.ACTION_FROM_PLAYER,
 		#40
 		"Buy the three orange towers" : ProgressMode.ACTION_FROM_PLAYER,
 		#41
-		"Since we only have 5 tower slots available, we need to level up.\nLet's level up for more tower slots!" : ProgressMode.ACTION_FROM_PLAYER,
-		"Please place the three orange towers, replacing the non-orange towers in the process.\nNote: you can swap two tower's positions by dragging one and dropping it to the other." : ProgressMode.ACTION_FROM_PLAYER,
-		"Good job! Orange 6 synergy allows your towers to be a lot more powerful than with Orange 3 synergy." : ProgressMode.CONTINUE,
+		["Since we only have 5 tower slots available, we need to level up. Let's |0| for more tower slots!", [plain_fragment__level_up]] : ProgressMode.ACTION_FROM_PLAYER,
+		"Please place the three orange towers, replacing the non-orange towers in the process. Note: you can swap two tower's positions by dragging one and dropping it to the other." : ProgressMode.ACTION_FROM_PLAYER,
+		"Good job! 6 Orange allows your orange towers to be a lot more powerful than with just 3 Orange." : ProgressMode.CONTINUE,
 		
 		# 44
-		"Now lets try putting OrangeYR 2." : ProgressMode.CONTINUE,
+		["Now lets try activating |0|.", [plain_fragment__2_OrangeYR]] : ProgressMode.CONTINUE,
 		# 45
 		"Please refresh the shop once more." : ProgressMode.ACTION_FROM_PLAYER,
 		"Buy every tower in the shop." : ProgressMode.ACTION_FROM_PLAYER,
 		#47
-		"Now activate OrangeYR 2 by placing 2 orange towers,\n2 yellow towers, and 2 red towers in the map." : ProgressMode.ACTION_FROM_PLAYER,
-		"Nice job! OrangeYR 2 allows your towers to be a lot more stronger than with OrangeYR 1." : ProgressMode.CONTINUE,
-		"But which is better? Orange 6 or OrangeYR2?\nThat's up to you to decide." : ProgressMode.CONTINUE,
+		["Now activate |0| by placing |1|, |2|, and |3| in the map.", [plain_fragment__2_OrangeYR, plain_fragment__2_orange_towers, plain_fragment__2_yellow_towers, plain_fragment__2_red_towers]] : ProgressMode.ACTION_FROM_PLAYER,
+		["Nice job! |0| allows your towers to be a lot more stronger than with |1|.", [plain_fragment__2_OrangeYR, plain_fragment__1_OrangeYR]] : ProgressMode.CONTINUE,
+		["But which is better? |0| or |1|? That's up to you to decide.", [plain_fragment__6_Orange, plain_fragment__2_OrangeYR]] : ProgressMode.CONTINUE,
 		
-		"That concludes this chapter of the tutorial.\nFeel free to tinker with the towers." : ProgressMode.CONTINUE,
+		"That concludes this chapter of the tutorial. Feel free to tinker with the towers." : ProgressMode.CONTINUE,
 		"(If you are new to the game, proceed to chapter 3.)" : ProgressMode.CONTINUE,
 		
-		"(Once you're done experimenting, you can exit the game by pressing ESC\n and quitting the game.)" : ProgressMode.WAIT_FOR_EVENT,
+		#52
+		"(Once you're done experimenting, you can exit the game by pressing ESC and quitting the game.)" : ProgressMode.WAIT_FOR_EVENT,
 	}
 	
 	clear_all_tower_cards_from_shop()
@@ -191,6 +232,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		listen_for_shop_refresh(self, "_on_shop_refresh__07")
 		
 	elif arg_index == 8:
+		set_can_refresh_shop__panel_based(true)
 		listen_for_shop_refresh(self, "_on_shop_refresh__08")
 		
 	elif arg_index == 9:
@@ -284,7 +326,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 			if is_instance_valid(tower):
 				set_tower_is_draggable(tower, true)
 		listen_for_synergy_to_be_activated(TowerCompositionColors.synergy_id_to_syn_name_dictionary[TowerCompositionColors.SynergyId.OrangeYR], 3, "_on_syn_met__47", self)
-		
+
 
 #
 func _on_towers_bought__for_01(arg_towers : Array):
@@ -306,6 +348,7 @@ func _on_player_lvl_changed(arg_player_lvl):
 
 #
 func _on_shop_refresh__07(arg_tower_ids : Array):
+	set_can_refresh_shop__panel_based(false)
 	advance_to_next_custom_towers_at_shop()
 	advance_to_next_transcript_message()
 	

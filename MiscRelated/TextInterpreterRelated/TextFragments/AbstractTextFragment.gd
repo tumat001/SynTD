@@ -39,6 +39,24 @@ enum STAT_TYPE {
 	
 	INGREDIENT = 1019
 	TOWER = 1020
+	LEVEL_UP_ORANGE = 1021 # level up arrow, but color orange
+	SHOP = 1022
+	
+	SYNERGY = 1023
+	SYNERGY_DOMINANT = 1024
+	SYNERGY_COMPOSITE = 1025
+	
+	#
+	COLOR_VIOLET = 1100
+	COLOR_BLUE = 1101
+	COLOR_GREEN = 1102
+	COLOR_YELLOW = 1103
+	COLOR_ORANGE = 1104
+	COLOR_RED = 1105
+	
+	#
+	COMBINATION = 1200
+	ABSORB = 1201
 }
 
 
@@ -73,6 +91,22 @@ const type_to_for_light_color_map : Dictionary = {
 	
 	STAT_TYPE.INGREDIENT : "#5102A2",
 	STAT_TYPE.TOWER : "#016F46",
+	STAT_TYPE.LEVEL_UP_ORANGE : "#804000",
+	STAT_TYPE.SHOP : "#4A2E1F",
+	
+	STAT_TYPE.SYNERGY : "#650273",
+	STAT_TYPE.SYNERGY_DOMINANT : "#650273",
+	STAT_TYPE.SYNERGY_COMPOSITE : "#650273",
+	
+	STAT_TYPE.COLOR_VIOLET : "#4F0051",
+	STAT_TYPE.COLOR_BLUE : "#011F74",
+	STAT_TYPE.COLOR_GREEN : "#0B5600",
+	STAT_TYPE.COLOR_YELLOW : "#464C00",
+	STAT_TYPE.COLOR_ORANGE : "#6B3600",
+	STAT_TYPE.COLOR_RED : "#5B0102",
+	
+	STAT_TYPE.COMBINATION : "#005151",
+	STAT_TYPE.ABSORB : "#38016F",
 	
 }
 
@@ -90,8 +124,8 @@ const type_to_for_dark_color_map : Dictionary = {
 	STAT_TYPE.DAMAGE_SCALE_AMP : "#FD4E51",
 	
 	STAT_TYPE.ABILITY : "#C7D6FE",
-	STAT_TYPE.EXECUTE : "#DA0205",
-	STAT_TYPE.GOLD : "#CC9222",
+	STAT_TYPE.EXECUTE : "#FA9295",
+	STAT_TYPE.GOLD : "#ECA242",
 	STAT_TYPE.KNOCK_BACK : "#F09294",
 	STAT_TYPE.KNOCK_UP : "#F09294",
 	STAT_TYPE.ON_ROUND_END : "#B8B8B8",
@@ -99,7 +133,7 @@ const type_to_for_dark_color_map : Dictionary = {
 	STAT_TYPE.SLOW : "#04BABC",
 	STAT_TYPE.STUN : "#F09294",
 	
-	STAT_TYPE.TOWER_TIER_01 : "#A3A3A3",
+	STAT_TYPE.TOWER_TIER_01 : "#BFBFBF",
 	STAT_TYPE.TOWER_TIER_02 : "#1FE302",
 	STAT_TYPE.TOWER_TIER_03 : "#3FB9FD",
 	STAT_TYPE.TOWER_TIER_04 : "#C690FE",
@@ -108,6 +142,22 @@ const type_to_for_dark_color_map : Dictionary = {
 	
 	STAT_TYPE.INGREDIENT : "#D99FFE",
 	STAT_TYPE.TOWER : "#9AFED8",
+	STAT_TYPE.LEVEL_UP_ORANGE : "#FFCF9E",
+	STAT_TYPE.SHOP : "#DBBEAD",
+	
+	STAT_TYPE.SYNERGY : "#F7C7FE",
+	STAT_TYPE.SYNERGY_DOMINANT : "#F7C7FE",
+	STAT_TYPE.SYNERGY_COMPOSITE : "#F7C7FE",
+	
+	STAT_TYPE.COLOR_VIOLET : "#F09AFE",
+	STAT_TYPE.COLOR_BLUE : "#9AB4FE",
+	STAT_TYPE.COLOR_GREEN : "#8CFE7C",
+	STAT_TYPE.COLOR_YELLOW : "#F7FF9E",
+	STAT_TYPE.COLOR_ORANGE : "#FFCC99",
+	STAT_TYPE.COLOR_RED : "#FF9EA0",
+	
+	STAT_TYPE.COMBINATION : "#C3FEFE",
+	STAT_TYPE.ABSORB : "#D1A4FE",
 	
 }
 
@@ -141,6 +191,22 @@ const type_to_name_map : Dictionary = {
 	
 	STAT_TYPE.INGREDIENT : "ingredient",
 	STAT_TYPE.TOWER : "tower",
+	STAT_TYPE.LEVEL_UP_ORANGE : "level up",
+	STAT_TYPE.SHOP : "shop",
+	
+	STAT_TYPE.SYNERGY : "synergy",
+	STAT_TYPE.SYNERGY_DOMINANT : "dominant synergy",
+	STAT_TYPE.SYNERGY_COMPOSITE : "composite synergy",
+	
+	STAT_TYPE.COLOR_VIOLET : "violet",
+	STAT_TYPE.COLOR_BLUE : "blue",
+	STAT_TYPE.COLOR_GREEN : "green",
+	STAT_TYPE.COLOR_YELLOW : "yellow",
+	STAT_TYPE.COLOR_ORANGE : "orange",
+	STAT_TYPE.COLOR_RED : "red",
+	
+	STAT_TYPE.COMBINATION : "combination",
+	STAT_TYPE.ABSORB : "absorb",
 	
 }
 
@@ -174,6 +240,23 @@ const type_to_img_map : Dictionary = {
 	
 	STAT_TYPE.INGREDIENT : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Ingredient.png",
 	STAT_TYPE.TOWER : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Tower.png",
+	STAT_TYPE.LEVEL_UP_ORANGE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_LevelUp_Orange.png",
+	STAT_TYPE.SHOP : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Shop.png",
+	
+	STAT_TYPE.SYNERGY : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Synergy.png",
+	STAT_TYPE.SYNERGY_DOMINANT : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_SynergyDominant.png",
+	STAT_TYPE.SYNERGY_COMPOSITE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_SynergyComposite.png",
+	
+	
+	STAT_TYPE.COLOR_VIOLET : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Violet.png",
+	STAT_TYPE.COLOR_BLUE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Blue.png",
+	STAT_TYPE.COLOR_GREEN : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Green.png",
+	STAT_TYPE.COLOR_YELLOW : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Yellow.png",
+	STAT_TYPE.COLOR_ORANGE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Orange.png",
+	STAT_TYPE.COLOR_RED : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Red.png",
+	
+	STAT_TYPE.COMBINATION : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Combination.png",
+	STAT_TYPE.ABSORB : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Absorb.png",
 	
 	
 }

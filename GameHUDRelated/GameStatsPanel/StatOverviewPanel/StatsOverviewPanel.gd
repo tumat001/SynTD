@@ -5,6 +5,8 @@ const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_R
 const BaseTowerSpecificTooltip_GreenHeader_Pic = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip_HeaderBackground_Green.png")
 const CustomButtonGroup = preload("res://MiscRelated/PlayerGUI_Category_Related/ButtonToggleStandard/ButtonGroup.gd")
 
+const HeartIcon = preload("res://GameHUDRelated/GameStatsPanel/shared/Assets/PlayerHealthHeart_20x20.png")
+const GoldIcon = preload("res://GameHUDRelated/GameStatsPanel/shared/Assets/GoldIcon_20x20.png")
 
 signal done_with_setup()
 
@@ -36,6 +38,8 @@ onready var stageround_linegraph_icon = $VBoxContainer/HBoxContainer/VBoxContain
 onready var stat_health_button = $VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/HBoxContainer/MarginContainer/VBoxContainer/Stat_HealthButton
 onready var stat_gold_button = $VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/HBoxContainer/MarginContainer/VBoxContainer/Stat_GoldButton
 
+onready var tier_related_stats_panel = $VBoxContainer/MarginContainer/HBoxContainer2/TierRelatedStatsPanel
+
 #
 
 func set_stat_overview__and_update(arg_game_stat_manager, arg_stat_overview):
@@ -54,6 +58,9 @@ func _update_displays__threaded(arg_userdata):
 	#_update_displays()
 	stat_health_button.set_is_toggle_mode_on(true)
 	
+	tier_related_stats_panel.stat_overview = _stat_overview
+	tier_related_stats_panel.update_display()
+	
 	is_done_with_setup = true
 	emit_signal("done_with_setup")
 
@@ -69,11 +76,12 @@ func _update_displays():
 func _update_stage_round_graph__show_health():
 	stageround_linegraph_label.text = _game_stats_manager.health_graph_name
 	stageround_linegraph.set_stage_rounds_col_label_to_point_val_map({_game_stats_manager.health_line_label_of_col : _game_stats_manager.health_line_color}, _stat_overview.stage_round_data_points, _stat_overview.total_data_points_count, _stat_overview.highest_player_health_amount)
+	stageround_linegraph_icon.texture = HeartIcon
 
 func _update_stage_round_graph__show_gold():
 	stageround_linegraph_label.text = _game_stats_manager.gold_graph_name
 	stageround_linegraph.set_stage_rounds_col_label_to_point_val_map({_game_stats_manager.gold_line_label_of_col : _game_stats_manager.gold_line_color}, _stat_overview.stage_round_data_points, _stat_overview.total_data_points_count, _stat_overview.highest_player_gold_amount)
-
+	stageround_linegraph_icon.texture = GoldIcon
 
 
 func _on_linegraph_point_hovered(key, val, other_data, sprite_node):
@@ -140,6 +148,7 @@ func set_current_stat_shown_at_graph(arg_stat):
 func _on_Stat_HealthButton_toggle_mode_changed(val):
 	if val:
 		set_current_stat_shown_at_graph(StatAtGraphShown.HEALTH)
+
 
 func _on_Stat_GoldButton_toggle_mode_changed(val):
 	if val:

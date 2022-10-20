@@ -1,5 +1,7 @@
 extends "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/BaseGameModi_Tutorial.gd"
-#TODO TEST THIS CHAPTER AGAIN (SHIFTED MESSEGES)
+
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+
 
 var towers_offered_on_shop_refresh : Array = [
 	[Towers.REBOUND, Towers.MINI_TESLA, Towers.EMBER, Towers.TIME_MACHINE, Towers.SHACKLED],
@@ -40,62 +42,90 @@ func _unapply_game_modifier_from_elements(arg_elements : GameElements):
 #
 
 func _on_game_elements_before_game_start():
+	var plain_fragment__Ingredient_Effect = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "Ingredient Effect")
+	var plain_fragment__Ingredient_Effects = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "Ingredient Effects")
+	var plain_fragment__ingredient_effects = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredient effects")
+	var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
+	var plain_fragment__Rebound = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Rebound")
+	var plain_fragment__tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "tower")
+	var plain_fragment__Striker = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Striker")
+	var plain_fragment__Rebounds = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Rebound's")
+	var plain_fragment__ingredient = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredient")
+	var plain_fragment__Mini_Tesla = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Mini Tesla")
+	
+	var plain_fragment__Red = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_RED, "Red")
+	var plain_fragment__Reds = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_RED, "Red's")
+	var plain_fragment__Orange = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_ORANGE, "Orange")
+	var plain_fragment__Violet = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_VIOLET, "Violet")
+	var plain_fragment__Yellow = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_YELLOW, "Yellow")
+	var plain_fragment__Ember = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Ember")
+	var plain_fragment__Orange_tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_ORANGE, "Orange tower")
+	
+	var plain_fragment__Time_Machine = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Time Machine")
+	var plain_fragment__Shackled = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Shackled")
+	var plain_fragment__Blue = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_BLUE, "Blue")
+	var plain_fragment__Green = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_GREEN, "Green")
+	
+	var plain_fragment__absorbed = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABSORB, "absorbed")
+	var plain_fragment__absorb = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABSORB, "absorb")
+	
+	
 	transcript_to_progress_mode = {
 		"Welcome to the chapter 3 of the tutorial. Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
 		
 		#1
 		"Right click this tower card to view its descriptions and stats." : ProgressMode.CONTINUE,
-		"Over here, you can see that tower's Ingredient Effect.\nRebound's ingredient effect allows bullets to pass through 1 extra times." : ProgressMode.CONTINUE,
-		"Ingredient Effects are bonus stats and special effects that a tower gives to its recepient when absorbed." : ProgressMode.CONTINUE,
-		"You can think of ingredient effects as tower upgrades.\nIn this game, the towers are the upgrades!" : ProgressMode.CONTINUE,
+		["Over here, you can see that tower's |0|. Rebound's ingredient effect allows bullets to pass through 1 extra times.", [plain_fragment__Ingredient_Effect]] : ProgressMode.CONTINUE,
+		["|0| are bonus stats and special effects that a tower gives to its recepient when |1|.", [plain_fragment__Ingredient_Effects, plain_fragment__absorbed]] : ProgressMode.CONTINUE,
+		["You can think of |0| as tower upgrades. In this game, the |1| are the upgrades!", [plain_fragment__ingredient_effects, plain_fragment__towers]] : ProgressMode.CONTINUE,
 		#5 buy rebound
-		"Let's demonstrate that. Buy Rebound." : ProgressMode.CONTINUE,
+		["Let's demonstrate that. Buy |0|.", [plain_fragment__Rebound]] : ProgressMode.CONTINUE,
 		#6
-		"Now, press %s or click this color wheel to toggle to Ingredient Mode." % InputMap.get_action_list("game_ingredient_toggle")[0].as_text() : ProgressMode.CONTINUE,
-		"You are now in the Ingredient Mode." : ProgressMode.CONTINUE,
-		"Normally, dragging a tower to another tower just switches their position." : ProgressMode.CONTINUE,
-		"But in the Ingredient Mode, the dragged tower gives its Ingredient Effect\nto the tower where it is dropped." : ProgressMode.CONTINUE,
+		"Now, press %s or click this color wheel to toggle to Absorb Mode." % InputMap.get_action_list("game_ingredient_toggle")[0].as_text() : ProgressMode.CONTINUE,
+		"You are now in the Absorb Mode." : ProgressMode.CONTINUE,
+		["Normally, dragging a |0| to another |0| just switches their positions.", [plain_fragment__tower]] : ProgressMode.CONTINUE,
+		["But in the Absorb Mode, the dragged |0| gives its |1| to the |0| where it is dropped.", [plain_fragment__tower, plain_fragment__Ingredient_Effect]] : ProgressMode.CONTINUE,
 		#10
-		"Let's try that. Drag Rebound and drop it to Striker." : ProgressMode.ACTION_FROM_PLAYER,
-		"Great! Striker absorbed Rebound's Ingredient Effect.\n(You can check this by right clicking Striker and looking at the right side panel.)" : ProgressMode.CONTINUE,
-		"Normally, towers can absorb only 1 ingredient. But this can be increased by other means." : ProgressMode.CONTINUE,
+		["Let's try that. Drag |0| and drop it to |1|.", [plain_fragment__Rebound, plain_fragment__Striker]] : ProgressMode.ACTION_FROM_PLAYER,
+		["Great! |0| |1| |2| |3|. (You can check this by right clicking Striker and looking at the right side panel.)", [plain_fragment__Striker, plain_fragment__absorbed, plain_fragment__Rebounds, plain_fragment__Ingredient_Effect]] : ProgressMode.CONTINUE,
+		["Normally, towers can |0| only 1 |1|. But this can be increased by other means.", [plain_fragment__absorb, plain_fragment__ingredient]] : ProgressMode.CONTINUE,
 		"(Also, since this is a tutorial, towers here can absorb many ingredients.)" : ProgressMode.CONTINUE,
 		
 		"..." : ProgressMode.CONTINUE,
-		"There are restrictions as to what towers can be absorbed.\nAllow the next situation to demonstrate that." : ProgressMode.CONTINUE,
+		["There are restrictions as to what towers can be |0| by another tower. Allow the next situation to demonstrate that.", [plain_fragment__absorbed]] : ProgressMode.CONTINUE,
 		#16
-		"Disable ingredient mode (by pressing %s or by clicking the color wheel),\nthen buy Mini Tesla from the shop." % InputMap.get_action_list("game_ingredient_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
-		"Notice that you can't offer Mini Tesla as an ingredient for Striker.\nIn other words, Striker cannot absorb Mini Tesla." : ProgressMode.CONTINUE,
-		"But why? That's because a tower only absorb towers of the same color and its 'neighbor' colors.\nRed's neighbor colors include Orange and Violet." : ProgressMode.CONTINUE,
-		"You can look at the color wheel to quickly see a tower's neighbor colors.\nRed has Orange and Violet beside it, but not Yellow." : ProgressMode.CONTINUE,
+		["Disable Absorb Mode (by pressing %s or by clicking the color wheel), then buy |0| from the shop." % InputMap.get_action_list("game_ingredient_toggle")[0].as_text(), [plain_fragment__Mini_Tesla]] : ProgressMode.ACTION_FROM_PLAYER,
+		["Notice that you can't offer |0| as an |1| for |2|. In other words, |2| cannot |3| |0|.", [plain_fragment__Mini_Tesla, plain_fragment__ingredient, plain_fragment__Striker, plain_fragment__absorb]] : ProgressMode.CONTINUE,
+		["But why? That's because a tower only |0| towers of the same color and its 'neighbor' colors. |1| neighbor colors include |2| and |3|.", [plain_fragment__absorb, plain_fragment__Reds, plain_fragment__Orange, plain_fragment__Violet]] : ProgressMode.CONTINUE,
+		["You can look at the color wheel to quickly see a tower's neighbor colors. |0| has |1| and |2| beside it, but not |3|.", [plain_fragment__Red, plain_fragment__Orange, plain_fragment__Violet, plain_fragment__Yellow]] : ProgressMode.CONTINUE,
 		#20
-		"Buy Ember from the shop." : ProgressMode.CONTINUE,
-		"Since Ember is an orange tower, Striker can absorb Ember.\nThe reverse is also true." : ProgressMode.CONTINUE,
+		["Buy |0| from the shop.", [plain_fragment__Ember]] : ProgressMode.CONTINUE,
+		["Since |0| is an |1|, |2| can absorb |0|. The reverse is also true.", [plain_fragment__Ember, plain_fragment__Orange_tower, plain_fragment__Striker]] : ProgressMode.CONTINUE,
 		
 		#22
-		"Buy Time Machine from the shop." : ProgressMode.ACTION_FROM_PLAYER,
+		["Buy |0| from the shop.", [plain_fragment__Time_Machine]] : ProgressMode.ACTION_FROM_PLAYER,
 		#23
-		"Also, buy Shackled from the shop" : ProgressMode.ACTION_FROM_PLAYER,
+		["Also, buy |0| from the shop", [plain_fragment__Shackled]] : ProgressMode.ACTION_FROM_PLAYER,
 		"Towers with two colors work exactly the same way." : ProgressMode.CONTINUE,
-		"Time machine can absorb yellow and blue towers since those are its colors,\nand can absorb green, orange and violet towers since those are its neighbors." : ProgressMode.CONTINUE,
-		"With that said, Time Machine can absorb Mini Tesla, Ember and Shackled.\nYou can check that right now." : ProgressMode.CONTINUE,
+		["|0| can |6| |1| and |2| towers since those are its colors, and can absorb |3|, |4| and |5| towers since those are its neighbor colors.", [plain_fragment__Time_Machine, plain_fragment__Yellow, plain_fragment__Blue, plain_fragment__Green, plain_fragment__Orange, plain_fragment__Violet, plain_fragment__absorb]] : ProgressMode.CONTINUE,
+		["With that said, |0| can |4| |1|, |2| and |3|. You can check that right now.", [plain_fragment__Time_Machine, plain_fragment__Mini_Tesla, plain_fragment__Ember, plain_fragment__Shackled, plain_fragment__absorb]] : ProgressMode.CONTINUE,
 		
 		#27
 		"...." : ProgressMode.CONTINUE,
-		"One last rule. Towers cannot absorb the same tower more than once." : ProgressMode.CONTINUE,
+		["One last rule. Towers cannot |0| the same tower more than once.", [plain_fragment__absorb]] : ProgressMode.CONTINUE,
 		#29
-		"Buy the Rebound from the shop." : ProgressMode.ACTION_FROM_PLAYER,
+		["Buy |0| from the shop.", [plain_fragment__Rebound]] : ProgressMode.ACTION_FROM_PLAYER,
 		#30
-		"Notice that Striker cannot absorb it, even if the colors are compatible.\nThat is because Striker already has absorbed a Rebound." : ProgressMode.CONTINUE,
+		["Notice that |0| cannot |1| it, even if the colors are compatible. That is because |0| already has absorbed a |2|.", [plain_fragment__Striker, plain_fragment__absorb, plain_fragment__Rebound]] : ProgressMode.CONTINUE,
 		
-		"Remember that by default, towers can only absorb 1 ingredient, so use that limit wisely." : ProgressMode.CONTINUE,
+		["Remember that by default, towers can only |0| 1 |1|, so use that limit wisely.", [plain_fragment__absorb, plain_fragment__ingredient]] : ProgressMode.CONTINUE,
 		
-		"That concludes this chapter of the tutorial.\nFeel free to tinker with the towers." : ProgressMode.CONTINUE,
-		"(If you are new to the game, and have played chapters 1 and 2,\nyou can now play the game. You now know the game's basics.)" : ProgressMode.CONTINUE,
-		"(You can proceed to chapter 4 once you have a bit of a feel for the game,\nor if you just want to.)" : ProgressMode.CONTINUE,
+		"That concludes this chapter of the tutorial. Feel free to tinker with the towers." : ProgressMode.CONTINUE,
+		"(If you are new to the game, and have played chapters 1 and 2, you can now play the game. You now know the game's basics.)" : ProgressMode.CONTINUE,
+		"(You can proceed to chapter 4 once you have a bit of a feel for the game, or if you just want to.)" : ProgressMode.CONTINUE,
 		
 		#35
-		"(Once you're done experimenting, you can exit the game by pressing ESC\n and quitting the game.)" : ProgressMode.WAIT_FOR_EVENT,
+		"(Once you're done experimenting, you can exit the game by pressing ESC and quitting the game.)" : ProgressMode.WAIT_FOR_EVENT,
 	}
 	
 	clear_all_tower_cards_from_shop()
@@ -184,7 +214,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 func _on_view_tower_card_desc_panel__01(arg_tower_id, arg_buy_slot):
 	advance_to_next_transcript_message()
 	
-	var tooltip_area = arg_buy_slot.get_current_tower_buy_card().current_tooltip.ingredient_tooltp_body
+	var tooltip_area = arg_buy_slot.get_current_tower_buy_card().current_tooltip.ing_info_body #ingredient_tooltip_body
 	var arrows = display_white_arrows_pointed_at_node(tooltip_area, 3, true, false)
 	arrows[0].x_offset = 25
 	#arrows[1].y_offset = -30

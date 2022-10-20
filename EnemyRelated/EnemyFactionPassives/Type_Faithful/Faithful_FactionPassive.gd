@@ -299,7 +299,7 @@ func _construct_deity_enemy_type_info() -> EnemyTypeInformation:
 	var info = EnemyTypeInformation.new(EnemyConstants.EnemyFactions.FAITHFUL, EnemyConstants.Enemies.DEITY)
 	info.enemy_type = EnemyTypeInformation.EnemyType.BOSS
 	info.base_movement_speed = 14
-	info.base_player_damage = 16
+	info.base_player_damage = 18
 	
 	info.base_armor = 13
 	info.base_toughness = 13
@@ -382,6 +382,6 @@ func _get_9_4_deity_stats():
 	
 	info.base_health = 1000
 	info.base_effect_vulnerability = 0.50
-	info.base_player_damage = 32
+	info.base_player_damage = 36
 	
 	return info

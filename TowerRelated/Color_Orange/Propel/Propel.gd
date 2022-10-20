@@ -359,11 +359,19 @@ func _on_tree_exiting():
 func _on_line_range_module_enemy_entered(enemy, arg_range_mod):
 	line_range_module_enemy_to_in_range_count_map[arg_range_mod] = arg_range_mod.get_enemy_in_range_count()
 	
+	if is_instance_valid(enemy) and !enemy.is_connected("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module"):
+		enemy.connect("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module", [arg_range_mod])
+	
 	_attempt_cast_plow()
 
 func _on_line_range_module_enemy_exited(enemy, arg_range_mod):
 	line_range_module_enemy_to_in_range_count_map[arg_range_mod] = arg_range_mod.get_enemy_in_range_count()
+	
+	if is_instance_valid(enemy) and enemy.is_connected("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module"):
+		enemy.disconnect("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module")
 
+func _on_enemy_killed__on_line_range_module(damage_instance_report, enemy, arg_line_range_module):
+	_on_line_range_module_enemy_exited(enemy, arg_line_range_module)
 
 #
 
@@ -438,10 +446,13 @@ func _transfer_to_placable_with_default_params(arg_placable):
 	transfer_to_placable(arg_placable, false, !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self))
 	
 
-
+# plow bullet
 func _on_bullet_hit_enemy(bullet, enemy):
 	var knock_up_effect = plow_knockup_effect._get_copy_scaled_by(plow_ability.get_potency_to_use(last_calculated_final_ability_potency))
 	var forced_mov_effect = plow_forced_path_mov_effect._get_copy_scaled_by(plow_ability.get_potency_to_use(last_calculated_final_ability_potency))
+	
+	if !is_enemy_facing_self(enemy):
+		forced_mov_effect.reverse_movements()
 	
 	enemy._add_effect(knock_up_effect)
 	enemy._add_effect(forced_mov_effect)
