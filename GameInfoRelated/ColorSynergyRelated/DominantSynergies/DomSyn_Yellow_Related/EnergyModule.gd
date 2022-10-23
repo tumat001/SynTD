@@ -89,7 +89,8 @@ func module_turn_off():
 		if effect != null:
 			tower_connected_to.remove_tower_effect(effect)
 	
-	energy_particle_spawn_timer.stop()
+	if is_instance_valid(energy_particle_spawn_timer):
+		energy_particle_spawn_timer.stop()
 
 # Call this when queue freeing the tower
 

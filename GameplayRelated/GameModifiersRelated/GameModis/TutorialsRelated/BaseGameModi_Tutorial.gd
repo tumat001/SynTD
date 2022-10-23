@@ -562,7 +562,8 @@ func _construct_tutorial_white_arrow(arg_node, arg_is_vertical : bool, arg_queue
 	arrow.queue_free_at_transcript_index = arg_queue_free_at_index
 	
 	connect("on_current_transcript_index_changed", arrow, "_on_current_transcript_index_changed__for_white_arrow_monitor")
-	game_elements.get_tree().get_root().add_child(arrow)
+	#game_elements.get_tree().get_root().add_child(arrow)
+	CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(arrow)
 	
 	return arrow
 
@@ -573,7 +574,8 @@ func display_white_circle_at_node(arg_node, arg_queue_free_at_index : int):
 	circle.queue_free_at_transcript_index = arg_queue_free_at_index
 	
 	connect("on_current_transcript_index_changed", circle, "_on_current_transcript_index_changed__for_white_arrow_monitor")
-	game_elements.get_tree().get_root().add_child(circle)
+	#game_elements.get_tree().get_root().add_child(circle)
+	CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(circle)
 	
 	return circle
 

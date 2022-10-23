@@ -80,6 +80,8 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	ins_for_ability_potency_reduction.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, -1, "ability potency", -_ability_potency_reduction_amount, false))
 	interpreter_for_ability_potency_reduction.array_of_instructions = ins_for_ability_potency_reduction
 	
+	var plain_fragment__on_round_start = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_START, "On round start")
+	
 	#
 	
 	good_descriptions = [
@@ -87,7 +89,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	]
 	
 	bad_descriptions = [
-		["At round start: all other towers lose |0| and |1|.", [interpreter_for_attk_speed_reduction, interpreter_for_ability_potency_reduction]]
+		["|0|: all other towers lose |1| and |2|.", [plain_fragment__on_round_start, interpreter_for_attk_speed_reduction, interpreter_for_ability_potency_reduction]]
 	]
 	
 	

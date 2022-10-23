@@ -27,8 +27,11 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		_healing_symbol_count = 1
 		_tower_max_health_reduc_percent = -20
 	
+	
+	var plain_fragment__healing_symbols = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "%s Healing Symbol(s)" % str(_healing_symbol_count))
+	
 	good_descriptions = [
-		"Gain %s healing symbol(s). Heals damaged towers in range. Heals you if no towers are healed. Does not take tower slots." % [str(_healing_symbol_count)]
+		["Gain |0|. Heals damaged towers in range. Heals you if no towers are healed. Does not take tower slots.", [plain_fragment__healing_symbols]]
 	]
 	
 	bad_descriptions = [

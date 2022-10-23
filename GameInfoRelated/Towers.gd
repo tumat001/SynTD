@@ -358,8 +358,8 @@ const TowerTiersMap : Dictionary = {
 
 const tier_attk_speed_map : Dictionary = {
 	1 : 15,
-	2 : 25,
-	3 : 35,
+	2 : 22, #25
+	3 : 30, #35
 	
 	4 : 50,
 	5 : 60,
@@ -372,7 +372,7 @@ const tier_base_dmg_map : Dictionary = {
 	2 : 1.0,
 	3 : 1.5,
 	
-	4 : 2.25,
+	4 : 2.2,
 	5 : 2.5,
 	6 : 2.5,
 #	6 : 3.0,
@@ -383,13 +383,13 @@ const tier_base_dmg_map : Dictionary = {
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
-	1 : 0.75,
-	2 : 1.25,
-	3 : 1.75,
+	1 : 0.7,
+	2 : 1.2,
+	3 : 1.7,
 	
 	4 : 2.5,
-	5 : 2.75,
-	6 : 2.75,
+	5 : 2.7,
+	6 : 2.7,
 #	6 : 3.25,
 #	4 : 2.7,
 #	5 : 3.2,
@@ -1480,7 +1480,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = campfire_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 4
+		info.base_damage = 5
 		info.base_attk_speed = 1
 		info.base_pierce = 0
 		info.base_range = 105
@@ -5782,7 +5782,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Casts Enchant every 10th main attack.",
-			["|0|: Enchant: Fire a crystal that lands behind Sophist's current target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 8 seconds.", [plain_fragment__ability]],
+			["|0|: Enchant: Sophist fires a crystal that lands behind its current target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 8 seconds.", [plain_fragment__ability]],
 			["Crystals give |0|, which increases by |1| per additional crystal in the map, up to |2|. Crystals have |3|.", [interpreter_for_base_amount, interpreter_for_extra_amount, interpreter_for_max_amount, interpreter_for_range]],
 			"Crystals cannot affect Sophist towers.",
 		]
@@ -5790,7 +5790,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# needed even if the same as above.
 		info.tower_simple_descriptions = [
 			"Casts Enchant every 10th main attack.",
-			["|0|: Fire a crystal that lands behind Sophist's current target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 8 seconds.", [plain_fragment__ability_name]],
+			["|0|: Fires a crystal that lands behind its target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 8 seconds.", [plain_fragment__ability_name]],
 			["Crystals give |0|, which increases by |1| per additional crystal in the map, up to |2|. Crystals have |3|.", [interpreter_for_base_amount, interpreter_for_extra_amount, interpreter_for_max_amount, interpreter_for_range]],
 			"Crystals cannot affect Sophist towers.",
 		]

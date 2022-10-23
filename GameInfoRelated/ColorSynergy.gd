@@ -36,7 +36,7 @@ var synergy_id : int
 var synergy_name : String
 var synergy_descriptions : Array = []
 var synergy_simple_descriptions : Array = []
-var synergy_picture
+var synergy_picture : Texture
 
 var synergy_effects : Array
 var synergy_effects_gd_script : Array
@@ -147,7 +147,7 @@ func check_if_color_requirements_met(arg_colors_active : Array) -> ColorSynergyC
 	
 	return ColorSynergyCheckResults.new(passed, final_towers_in_tier, final_exceed, 
 			colors_required.size(), _find_synergy_tier(final_towers_in_tier), self,
-			_get_tier_pic_to_use(final_towers_in_tier), _get_count_per_required_color(colors_active))
+			get_tier_pic_to_use(final_towers_in_tier), _get_count_per_required_color(colors_active))
 
 func _find_synergy_tier(final_towers_in_tier) -> int:
 	if final_towers_in_tier == -1:
@@ -157,7 +157,7 @@ func _find_synergy_tier(final_towers_in_tier) -> int:
 	return index + 1
 	#return number_of_towers_in_tier.size() - index
 
-func _get_tier_pic_to_use(final_towers_in_tier):
+func get_tier_pic_to_use(final_towers_in_tier):
 	var index = number_of_towers_in_tier.find(final_towers_in_tier)
 	if index == -1:
 		return tier_none_pic
@@ -276,3 +276,16 @@ func _update_current_highlighted_index_eff_as_all_below():
 func has_simple_description() -> bool:
 	return synergy_simple_descriptions != null and synergy_simple_descriptions.size() != 0
 
+###
+
+func get_tier_pic_to_use__from_syn_tier(arg_tier):
+	var index = arg_tier - 1
+	if index == -1:
+		return tier_none_pic
+	return tier_pic_per_tier[index]
+
+func get_tower_count_to_use__from_syn_tier(arg_tier):
+	var index = arg_tier - 1
+	if index == -1:
+		return 0
+	return number_of_towers_in_tier[index]

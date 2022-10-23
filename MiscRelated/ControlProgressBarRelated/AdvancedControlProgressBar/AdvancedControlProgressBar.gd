@@ -124,8 +124,8 @@ func _set_vals_deferred(ratio : float, rect, arg_id):
 		
 		#
 		var _curr_rect = _id_to_bar_foreground_map[id]
-		total_x_size_of_all += _curr_rect.rect_size.x * _curr_rect.rect_scale.x
-
+		#total_x_size_of_all += (_curr_rect.rect_size.x * _curr_rect.rect_scale.x)
+		total_x_size_of_all += (_curr_rect.texture.get_size().x * _curr_rect.rect_scale.x)
 
 
 

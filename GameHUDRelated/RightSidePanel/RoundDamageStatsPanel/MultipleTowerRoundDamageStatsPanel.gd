@@ -5,7 +5,7 @@ const SingleTowerRoundDamageStatsPanel_Scene = preload("res://GameHUDRelated/Rig
 
 
 signal on_tower_in_single_panel_left_clicked(tower)
-signal calculated_total_damage_of_all_towers(arg_total_val, arg_pure_val, arg_ele_val, arg_phy_val)
+#signal calculated_total_damage_of_all_towers(arg_total_val, arg_pure_val, arg_ele_val, arg_phy_val)
 
 const seconds_per_update : float = 0.2
 
@@ -95,13 +95,13 @@ func _pause_and_update_and_emit_calculations():
 	update_timer.paused = true
 	_update_display_of_all_single_damage_stats()
 	
-	prompt_calculation_of_total_damage_of_all_towers()
+	#prompt_calculation_of_total_damage_of_all_towers()
 
 
 
-func prompt_calculation_of_total_damage_of_all_towers():
-	var total_damages = _get_calculated_total_damages_of_all_panels()
-	emit_signal("calculated_total_damage_of_all_towers", total_damages[0], total_damages[1], total_damages[2], total_damages[3])
+#func prompt_calculation_of_total_damage_of_all_towers():
+#	var total_damages = _get_calculated_total_damages_of_all_panels()
+#	emit_signal("calculated_total_damage_of_all_towers", total_damages[0], total_damages[1], total_damages[2], total_damages[3])
 
 
 #
@@ -131,7 +131,7 @@ func _on_single_stat_panel_left_clicked(arg_tower, panel):
 
 #####
 
-func _get_calculated_total_damages_of_all_panels() -> Array:
+func get_calculated_total_damages_of_all_panels() -> Array:
 	var total_damage : float = 0
 	var total_pure_damage : float = 0
 	var total_ele_damage : float = 0

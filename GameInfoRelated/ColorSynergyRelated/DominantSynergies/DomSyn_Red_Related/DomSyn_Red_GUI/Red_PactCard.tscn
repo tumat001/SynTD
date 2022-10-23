@@ -73,6 +73,7 @@ margin_left = 8.0
 margin_top = 6.0
 margin_right = 292.0
 margin_bottom = 20.0
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 1 )
 text = "Name"
 
@@ -116,7 +117,7 @@ margin_bottom = 110.0
 rect_min_size = Vector2( 87, 100 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
-default_font_color = Color( 1, 1, 1, 1 )
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 
 [node name="PicMarginer" type="MarginContainer" parent="VBoxContainer/MarginContainer/HBoxContainer"]
 margin_left = 129.0
@@ -167,8 +168,8 @@ margin_left = 1.0
 margin_top = 10.0
 margin_right = 34.0
 margin_bottom = 26.0
-custom_fonts/font = SubResource( 8 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 8 )
 text = "III"
 align = 1
 valign = 1
@@ -197,5 +198,6 @@ margin_bottom = 110.0
 rect_min_size = Vector2( 87, 100 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
-default_font_color = Color( 1, 1, 1, 1 )
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+
 [connection signal="pressed_mouse_event" from="AdvancedButton" to="." method="_on_AdvancedButton_pressed_mouse_event"]

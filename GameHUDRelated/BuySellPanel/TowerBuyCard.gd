@@ -259,7 +259,7 @@ func _process(delta):
 		else:
 			modulate.a = 0.5
 		
-		_time_after_press += delta
+		_time_after_press += delta / Engine.time_scale
 		
 		if !_mouse_moved_after_press and mouse_pos != _mouse_pos_when_pressed:
 			_mouse_moved_after_press = true

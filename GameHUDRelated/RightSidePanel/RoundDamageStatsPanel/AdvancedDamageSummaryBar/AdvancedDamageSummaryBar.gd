@@ -7,12 +7,14 @@ const PureDamageFill_Texture = preload("res://GameHUDRelated/RightSidePanel/Roun
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 
+export(Texture) var physical_damage_bar_pic : Texture = PhysicalDamageFill_Texture
+export(Texture) var elemental_damage_bar_pic : Texture = ElementalDamageFill_Texture
+export(Texture) var pure_damage_bar_pic : Texture = PureDamageFill_Texture
+
 func _ready():
-	add_bar_foreground(DamageType.PHYSICAL, PhysicalDamageFill_Texture)
-	add_bar_foreground(DamageType.ELEMENTAL, ElementalDamageFill_Texture)
-	add_bar_foreground(DamageType.PURE, PureDamageFill_Texture)
-	
-	
+	add_bar_foreground(DamageType.PHYSICAL, physical_damage_bar_pic)
+	add_bar_foreground(DamageType.ELEMENTAL, elemental_damage_bar_pic)
+	add_bar_foreground(DamageType.PURE, pure_damage_bar_pic)
 
 
 func set_total_damage_val(arg_val : float):

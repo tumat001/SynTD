@@ -61,6 +61,13 @@ var synergies : Dictionary
 
 func _init():
 	#
+	var plain_fragment__violet_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_VIOLET, "Violet towers")
+	var plain_fragment__orange_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_ORANGE, "Orange towers")
+	var plain_fragment__orange_towers_apo = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_ORANGE, "Orange tower's")
+	var plain_fragment__yellow_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_YELLOW, "Yellow towers")
+	var plain_fragment__green_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_GREEN, "Green towers")
+	var plain_fragment__blue_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_BLUE, "Blue towers")
+	
 	
 	var interpreter_for_blue_ap_tier_1 = TextFragmentInterpreter.new()
 	interpreter_for_blue_ap_tier_1.display_body = false
@@ -85,7 +92,7 @@ func _init():
 	syn_dom_blue,
 	[
 		["Gain access to |0|.", [plain_fragment__blue_abilities]],
-		"Additionally, all Blue towers gain ability potency.",
+		["Additionally, all |0| gain ability potency.", [plain_fragment__blue_towers]],
 		""
 	],
 	[DomSyn_Blue],
@@ -187,7 +194,7 @@ func _init():
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_orange,
 	[
-		"Orange towers gain Heat Modules. Main attacks increase the heat of Heat Modules by an amount (amount varies per tower).",
+		["|0| gain Heat Modules. Main attacks increase the heat of Heat Modules by an amount (amount varies per tower).", [plain_fragment__orange_towers]],
 		"Heat Modules give an effect, which scale depending on the current heat. A maximum of 74 heat can be gained per round. Not attacking in a round reduces the current heat by 50.",
 		#"Upon reaching 100 heat, the tower becomes Overheated. At the end of the round, Overheated towers undergo Cooling, where they are unable to attack for the round. Cooling towers lose all heat at the end of the round.",
 		"Towers that reach 100 heat lose all heat by the end of the round.",
@@ -207,7 +214,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE,
 	{},
 	[
-		"Orange tower's main attacks increases its heat. Orange towers gain bonus stats that increase in power the more heat they have.",
+		["|0| main attacks increases its heat. |1| gain bonus stats that increase in power the more heat they have.", [plain_fragment__orange_towers_apo, plain_fragment__orange_towers]],
 		"Towers that reach max heat lose all heat by the end of the round.",
 		""
 	],
@@ -221,7 +228,7 @@ func _init():
 		"ENERGIZE: Create an Energy Battery with 1 energy.",
 		["Energy Battery stores energy, up to a limit. |0|: gain energy based on synergy tier.", [plain_fragment__yellow_on_round_end]],
 		"",
-		"All yellow towers gain an Energy Module. Energy Modules allow a tower to consume 1 energy to gain special effects.",
+		["All |0| gain an Energy Module. Energy Modules allow a tower to consume 1 energy to gain special effects.", [plain_fragment__yellow_towers]],
 		"",
 		"Energy Battery and attached Modules (and Module's effects) persist even when the synergy is lost.",
 		"",
@@ -243,7 +250,7 @@ func _init():
 	},
 	[
 		"ENERGIZE: Create an Energy Battery with 1 energy.",
-		"Yellow towers can consume 1 energy to gain special effects.",
+		["|0| can consume 1 energy to gain special effects.", [plain_fragment__yellow_towers]],
 		""
 	],
 	ColorSynergy.Difficulty.EASY
@@ -253,7 +260,7 @@ func _init():
 	[tier_prestigeW_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_dom_green,
 	[
-		"Gain access to Adaptations, which grant various effects for Green towers.",
+		["Gain access to Adaptations, which grant various effects to |0|.", [plain_fragment__green_towers]],
 		"New Adaptations are available per tier. Only one Adaptation can be selected per tier.",
 		"",
 		"Adaptations are active only when their tier requirement is met, unless otherwise stated.",
@@ -269,7 +276,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.ALL_BELOW,
 	{},
 	[
-		"Gain access to Adaptations, which grant various effects for Green towers.",
+		["Gain access to Adaptations, which grant various effects to |0|.", [plain_fragment__green_towers]],
 		"New Adaptations are available per tier. Only one Adaptation can be selected per tier.",
 		"",
 	],
@@ -282,8 +289,8 @@ func _init():
 	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet,
 	[
-		["Violet towers can absorb more |0|.", [plain_fragment__violet_ingredients]],
-		"Violet towers can absorb ingredients regardless of color after being in the map for 1 round.",
+		["|0| can absorb more |1|.", [plain_fragment__violet_towers, plain_fragment__violet_ingredients]],
+		["|0| can absorb ingredients regardless of color after being in the map for 1 round.", [plain_fragment__violet_towers]],
 		"",
 		"These effects apply only when the limit of total and Violet towers in the map is satisfied.",
 		""
@@ -327,3 +334,11 @@ func reset_synergies_instances():
 		syn.reset_synergy_effects_instances()
 
 
+func get_synergy_with_id(arg_id):
+	if synergy_id_to_syn_name_dictionary.has(arg_id):
+		var syn_name = synergy_id_to_syn_name_dictionary[arg_id]
+		
+		if synergies.has(syn_name):
+			return synergies[syn_name]
+	
+	return null

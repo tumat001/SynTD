@@ -87,7 +87,7 @@ var game_settings_manager
 var generic_notif_panel : GenericNotifPanel
 onready var sell_panel : SellPanel = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/SellPanel
 onready var color_wheel_sprite_button = $BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelSprite
-onready var tutotial_notif_panel = $NotificationNode/TutorialNotifPanel
+onready var tutotial_notif_panel = $TutorialNotifPanel#$NotificationNode/TutorialNotifPanel
 
 onready var top_left_coord_of_map = $TopLeft
 onready var bottom_right_coord_of_map = $BottomRight
@@ -358,6 +358,7 @@ func _ready():
 	game_stats_manager.game_elements = self
 	game_stats_manager.synergy_manager = synergy_manager
 	game_stats_manager.whole_screen_gui = whole_screen_gui
+	game_stats_manager.set_multiple_tower_damage_stats_container(right_side_panel.round_damage_stats_panel.multiple_tower_damage_stats_container)
 	
 	###
 	gold_manager.increase_gold_by(3, GoldManager.IncreaseGoldSource.START_OF_GAME)
@@ -373,9 +374,9 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
-	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_7
-	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+#	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+#	level_manager.current_level = LevelManager.LEVEL_6
+#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -387,27 +388,27 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHAOS,
-			Towers.VARIANCE,
-			Towers.PROPEL,
-			Towers.BLEACH,
-			Towers.TRUDGE,
-			Towers.TIME_MACHINE,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.LAVA_JET,
-			Towers.AMALGAMATOR,
-			Towers.ROYAL_FLAME,
-			Towers.COAL_LAUNCHER,
-			Towers.BREWD,
-			Towers.TRANSPORTER
-		])
-	even = !even
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.ADEPT,
+#			Towers.STRIKER,
+#			Towers.WYVERN,
+#			Towers.SHACKLED,
+#			Towers.PING,
+#			Towers.ADEPT,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.LAVA_JET,
+#			Towers._704,
+#			Towers.ROYAL_FLAME,
+#			Towers.COAL_LAUNCHER,
+#			Towers.BREWD,
+#			Towers.TRANSPORTER
+#		])
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):

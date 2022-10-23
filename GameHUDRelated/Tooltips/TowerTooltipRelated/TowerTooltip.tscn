@@ -32,9 +32,6 @@ margin_bottom = 40.0
 mouse_filter = 2
 size_flags_vertical = 10
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="RowsMainContainer" type="VBoxContainer" parent="."]
 margin_right = 210.0
@@ -73,6 +70,7 @@ mouse_filter = 2
 [node name="TowerName" type="Label" parent="RowsMainContainer/HeaderContainer/Marginer/HeaderColumns"]
 margin_bottom = 17.0
 size_flags_vertical = 1
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 1 )
 valign = 1
 
@@ -143,7 +141,7 @@ custom_constants/separation = 3
 [node name="IngInfoLabel" type="Label" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider/CombineAndPowerInfoPanel/InfoRow"]
 margin_right = 130.0
 margin_bottom = 10.0
-custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 2 )
 text = "Ingredient Effect:"
 
@@ -153,7 +151,7 @@ margin_right = 130.0
 margin_bottom = 18.0
 custom_constants/margin_left = 5
 custom_constants/margin_bottom = 5
-default_font_color = Color( 1, 1, 1, 1 )
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 
 [node name="TowerStatsPanel" type="MarginContainer" parent="RowsMainContainer/StatsContainer/StatsAndInfoDivider"]
 margin_left = 138.0
@@ -191,7 +189,7 @@ margin_left = 64.0
 margin_right = 64.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
-custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 4 )
 valign = 1
 
@@ -213,7 +211,7 @@ margin_left = 64.0
 margin_right = 64.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
-custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 4 )
 valign = 1
 
@@ -235,7 +233,7 @@ margin_left = 64.0
 margin_right = 64.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
-custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 4 )
 valign = 1
 
@@ -257,7 +255,7 @@ margin_left = 64.0
 margin_right = 64.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
-custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 4 )
 valign = 1
 
@@ -279,7 +277,7 @@ margin_left = 64.0
 margin_right = 64.0
 margin_bottom = 9.0
 size_flags_horizontal = 9
-custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 4 )
 valign = 1
 
@@ -318,7 +316,7 @@ margin_left = 5.0
 margin_top = 5.0
 margin_right = 205.0
 margin_bottom = 27.0
-default_font_color = Color( 1, 1, 1, 1 )
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 
 [node name="EndBorder" type="TextureRect" parent="RowsMainContainer"]
 margin_top = 121.0

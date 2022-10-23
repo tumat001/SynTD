@@ -8,6 +8,7 @@ const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
 
 signal on_activation_requirements_met(curr_tier)

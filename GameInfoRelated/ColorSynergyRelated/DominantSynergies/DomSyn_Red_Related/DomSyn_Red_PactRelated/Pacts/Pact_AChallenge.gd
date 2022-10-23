@@ -34,9 +34,12 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		health_gain_mod.flat_maximum = 4
 		gold_gain_val = 1
 	
+	var plain_fragment__gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "%s gold" % gold_gain_val)
+	var plain_fragment__on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
+	
 	
 	good_descriptions = [
-		"Gain additional %s gold at the end of the round." % gold_gain_val
+		["|0|: gain additional |1|.", [plain_fragment__on_round_end, plain_fragment__gold]]
 	]
 	
 	bad_descriptions = [

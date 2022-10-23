@@ -14,7 +14,7 @@ func set_tower_ids_to_display(arg_ids):
 
 
 func _clear_icons():
-	for child in hbox_container:
+	for child in hbox_container.get_children():
 		child.queue_free()
 
 func _construct_icon_panel_for_id(arg_id):

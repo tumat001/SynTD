@@ -39,6 +39,7 @@ onready var stat_health_button = $VBoxContainer/HBoxContainer/VBoxContainer/HBox
 onready var stat_gold_button = $VBoxContainer/HBoxContainer/VBoxContainer/HBoxContainer2/HBoxContainer/MarginContainer/VBoxContainer/Stat_GoldButton
 
 onready var tier_related_stats_panel = $VBoxContainer/MarginContainer/HBoxContainer2/TierRelatedStatsPanel
+onready var game_end_stats_panel = $VBoxContainer/MarginContainer/HBoxContainer2/GameEndStatsPanel
 
 #
 
@@ -50,7 +51,6 @@ func set_stat_overview__and_update(arg_game_stat_manager, arg_stat_overview):
 	if !_setup_thread_constructed:
 		_setup_thread = Thread.new()
 		_setup_thread_constructed = true
-		
 		_setup_thread.start(self, "_update_displays__threaded")
 
 
@@ -60,6 +60,9 @@ func _update_displays__threaded(arg_userdata):
 	
 	tier_related_stats_panel.stat_overview = _stat_overview
 	tier_related_stats_panel.update_display()
+	
+	game_end_stats_panel.stat_overview = _stat_overview
+	game_end_stats_panel.update_display()
 	
 	is_done_with_setup = true
 	emit_signal("done_with_setup")

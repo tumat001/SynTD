@@ -27,7 +27,7 @@ mouse_filter = 2
 custom_constants/separation = 30
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 41.0
+margin_top = 37.0
 margin_right = 750.0
 margin_bottom = 205.0
 size_flags_vertical = 10
@@ -36,16 +36,16 @@ custom_constants/margin_left = 25
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/MarginContainer"]
 margin_left = 25.0
 margin_right = 750.0
-margin_bottom = 164.0
+margin_bottom = 168.0
 
 [node name="GameEndStatsPanel" parent="VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource( 8 )]
 margin_right = 312.0
-margin_bottom = 164.0
+margin_bottom = 168.0
 
 [node name="TierRelatedStatsPanel" parent="VBoxContainer/MarginContainer/HBoxContainer2" instance=ExtResource( 7 )]
 margin_left = 435.0
 margin_right = 725.0
-margin_bottom = 164.0
+margin_bottom = 168.0
 size_flags_horizontal = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]

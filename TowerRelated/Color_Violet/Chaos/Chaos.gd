@@ -1199,12 +1199,13 @@ func _general_purpose_timer_timeout__for_big_bolt_delay():
 func _summon_big_bolt_at_enemy():
 	var target_enemy = _get_enemy_to_target_using_range_module__default_to_other_enemies(range_module, Targeting.HEALTHIEST)
 	
-	var bolt_particle = Chaos_BigBolt_Particle_Scene.instance()
-	bolt_particle.scale.y *= 2
-	bolt_particle.position = target_enemy.global_position
-	bolt_particle.connect("on_struck_ground", self, "_on_big_bolt_struck_ground", [target_enemy, target_enemy.global_position], CONNECT_ONESHOT)
-	
-	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(bolt_particle)
+	if is_instance_valid(target_enemy):
+		var bolt_particle = Chaos_BigBolt_Particle_Scene.instance()
+		bolt_particle.scale.y *= 2
+		bolt_particle.position = target_enemy.global_position
+		bolt_particle.connect("on_struck_ground", self, "_on_big_bolt_struck_ground", [target_enemy, target_enemy.global_position], CONNECT_ONESHOT)
+		
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(bolt_particle)
 
 func _on_big_bolt_struck_ground(arg_primary_target, arg_bolt_pos):
 	if is_instance_valid(arg_primary_target):

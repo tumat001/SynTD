@@ -72,6 +72,8 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	ins_for_range.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE, -1, "range", _range_amount_buff, false))
 	interpreter_for_range.array_of_instructions = ins_for_range
 	
+	var plain_fragment__on_round_start = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_START, "On round start")
+	
 	# INS END
 	
 	good_descriptions = [
@@ -79,7 +81,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	]
 	
 	bad_descriptions = [
-		"The [u]%s tower(s)[/u] that dealt the least damage last round is killed at the start of the round." % str(_amount_of_towers_to_kill_at_start)
+		["|0|: The [u]%s tower(s)[/u] that dealt the least damage last round is killed." % str(_amount_of_towers_to_kill_at_start), [plain_fragment__on_round_start]]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_SoloVictor.png")

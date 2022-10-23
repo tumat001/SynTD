@@ -98,7 +98,7 @@ func _on_game_elements_before_game_start():
 		"You gain 1 extra gold for every 10 gold you have, up to 5. Which means at 50 gold, you are making max interest." : ProgressMode.CONTINUE,
 		"You gain 1 extra gold if you win the round." : ProgressMode.CONTINUE,
 		"And finally, you gain gold for win steaks and lose streaks." : ProgressMode.CONTINUE,
-		"If you're winning rounds, you gain more gold for winning more. Similarly, if you're losing rounds, then you gain more gold for losing more." : ProgressMode.CONTINUE,
+		"If you're winning rounds, you gain more gold for winning more rounds. Similarly, if you're losing rounds, then you gain more gold for losing more rounds." : ProgressMode.CONTINUE,
 		#26
 		"Your current win streak (or lose streak) can be viewed here." : ProgressMode.CONTINUE,
 		"Also, you don't gain streaks for the first 3 rounds." : ProgressMode.CONTINUE,

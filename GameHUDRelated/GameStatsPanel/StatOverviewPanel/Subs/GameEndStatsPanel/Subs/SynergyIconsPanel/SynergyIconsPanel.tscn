@@ -1,0 +1,56 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/StatOverviewPanel/Subs/GameEndStatsPanel/Subs/SynergyIconsPanel/SynergyIconsPanel.gd" type="Script" id=1]
+[ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/Assets/Lines/BlackLine_4x4.png" type="Texture" id=2]
+
+[node name="SynergyIconsPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 1 )
+
+[node name="Left" type="TextureRect" parent="."]
+margin_right = 4.0
+margin_bottom = 40.0
+size_flags_horizontal = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="Right" type="TextureRect" parent="."]
+margin_left = 36.0
+margin_right = 40.0
+margin_bottom = 40.0
+size_flags_horizontal = 10
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="Top" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 4.0
+size_flags_vertical = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="Bottom" type="TextureRect" parent="."]
+margin_top = 36.0
+margin_right = 40.0
+margin_bottom = 40.0
+size_flags_vertical = 10
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+custom_constants/margin_right = 6
+custom_constants/margin_top = 6
+custom_constants/margin_left = 6
+custom_constants/margin_bottom = 6
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+margin_left = 6.0
+margin_top = 6.0
+margin_right = 34.0
+margin_bottom = 34.0
+mouse_filter = 2
+custom_constants/separation = 10

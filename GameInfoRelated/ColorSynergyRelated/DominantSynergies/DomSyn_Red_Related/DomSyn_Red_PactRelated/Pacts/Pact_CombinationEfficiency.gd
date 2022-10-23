@@ -42,9 +42,11 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	interpreter_for_attk_speed_reduc.array_of_instructions = ins_for_attk_speed_reduc
 	
 	
+	var plain_fragment__combinations = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combinations")
+	
 	#
 	good_descriptions = [
-		"%s less tower(s) are needed for combinations" % str(-less_towers_for_combination)
+		["%s less tower(s) are needed for |0|" % str(-less_towers_for_combination), [plain_fragment__combinations]]
 	]
 	
 	bad_descriptions = [

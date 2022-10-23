@@ -84,13 +84,14 @@ margin_left = 156.0
 margin_right = 156.0
 margin_bottom = 21.0
 size_flags_horizontal = 6
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 1 )
 
 [node name="TooltipBody" parent="HBoxContainer/VBoxContainer/ContentMargin/VBoxContainer" instance=ExtResource( 1 )]
 margin_top = 25.0
 margin_right = 312.0
 margin_bottom = 25.0
-default_font_color = Color( 1, 1, 1, 1 )
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 default_font_size = 14
 
 [node name="SideBorder2" type="TextureRect" parent="HBoxContainer/VBoxContainer"]

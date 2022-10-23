@@ -76,8 +76,9 @@ static func is_stage_round_equal_than_second_param(a_stage_num, a_round_num, b_s
 	return a_stage_num == b_stage_num and a_round_num == b_round_num
 
 static func is_stageround_id_equal_than_second_param(a_stageround_id, b_stageround_id):
-	var converted_a = convert_stageround_id_to_stage_and_round_num(a_stageround_id)
-	var converted_b = convert_stageround_id_to_stage_and_round_num(b_stageround_id)
+	return a_stageround_id == b_stageround_id
+	#var converted_a = convert_stageround_id_to_stage_and_round_num(a_stageround_id)
+	#var converted_b = convert_stageround_id_to_stage_and_round_num(b_stageround_id)
 	
-	return is_stage_round_equal_than_second_param(converted_a[0], converted_a[1], converted_b[0], converted_b[1])
+	#return is_stage_round_equal_than_second_param(converted_a[0], converted_a[1], converted_b[0], converted_b[1])
 

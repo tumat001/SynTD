@@ -23,12 +23,17 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		tier_affected_amount = 1
 		less_ingredient_amount = -2
 	
+	
+	var plain_fragment__combination_effects = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "Combination effects")
+	var plain_fragment__ingredients = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredients")
+	
+	
 	good_descriptions = [
-		"Combination effects can affect +%s tiers above." % str(tier_affected_amount)
+		["|0| can affect +%s tiers above." % str(tier_affected_amount), [plain_fragment__combination_effects]]
 	]
 	
 	bad_descriptions = [
-		"Towers can absorb %s less ingredients" % str(-less_ingredient_amount)
+		["Towers can absorb %s less |0|" % str(-less_ingredient_amount), [plain_fragment__ingredients]]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_CombinationExpertise_Icon.png")

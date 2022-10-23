@@ -350,4 +350,18 @@ func _configure_copy_to_match_self(arg_copy):
 	arg_copy.has_numerical_value = has_numerical_value
 	arg_copy.color_mode = color_mode
 
+#
 
+static func get_stat_type_based_on_tower_tier(arg_tower_tier : int):
+	if arg_tower_tier == 1:
+		return STAT_TYPE.TOWER_TIER_01
+	elif arg_tower_tier == 2:
+		return STAT_TYPE.TOWER_TIER_02
+	elif arg_tower_tier == 3:
+		return STAT_TYPE.TOWER_TIER_03
+	elif arg_tower_tier == 4:
+		return STAT_TYPE.TOWER_TIER_04
+	elif arg_tower_tier == 5:
+		return STAT_TYPE.TOWER_TIER_05
+	elif arg_tower_tier == 6:
+		return STAT_TYPE.TOWER_TIER_06

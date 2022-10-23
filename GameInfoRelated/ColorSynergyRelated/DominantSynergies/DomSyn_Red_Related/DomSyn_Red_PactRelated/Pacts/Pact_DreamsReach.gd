@@ -80,7 +80,7 @@ func _first_time_initialize():
 	_current_tier_to_count_map = _convert_given_arr_to_tier_to_count_map(_tier_map_to_use[curr_player_level])
 	
 	good_descriptions = [
-		_get_reward_as_description_string(),
+		_get_reward_as_description(),
 		""
 	]
 	
@@ -101,24 +101,35 @@ func _convert_given_arr_to_tier_to_count_map(arg_arr : Array) -> Dictionary:
 	
 	return map
 
-func _get_reward_as_description_string() -> String:
-	var result : String = "After winning %s rounds with this pact, gain " % str(_current_consecutive_wins_needed)
+func _get_reward_as_description():
+	var tier_desc_plain_fragments_arr = []
+	var result = ["After winning %s rounds with this pact, gain " % str(_current_consecutive_wins_needed), tier_desc_plain_fragments_arr]
 	
 	for i in _current_tier_to_count_map.size():
 		if i == _current_tier_to_count_map.size() - 1:
-			result += " and "
+			result[0] += " and "
 		elif i != 0:
-			result += ", "
+			result[0] += ", "
 		
-		result += "%s tier %s tower" % [str(_current_tier_to_count_map.values()[i]), str(_current_tier_to_count_map.keys()[i])]
+		#
+		var tier = _current_tier_to_count_map.keys()[i]
+		var tier_desc = "%s tier %s tower" % [str(_current_tier_to_count_map.values()[i]), str(tier)]
 		
 		if _current_tier_to_count_map.values()[i] > 1:
-			result += "s"
+			tier_desc += "s"
+		
+		tier_desc_plain_fragments_arr.append(PlainTextFragment.new(_get_plain_frag_stat_type_based_on_tier(tier), tier_desc))
+		#
+		
+		result[0] += "|%s|" % str(tier_desc_plain_fragments_arr.size() - 1)
 		
 		if i == _current_tier_to_count_map.size() - 1:
-			result += "."
+			result[0] += "."
 	
 	return result
+
+func _get_plain_frag_stat_type_based_on_tier(arg_tier):
+	return PlainTextFragment.get_stat_type_based_on_tower_tier(arg_tier)
 
 #
 

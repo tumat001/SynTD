@@ -18,15 +18,20 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		tower_per_shop_reduction = 3
 		shop_level_odds_modi = 1
 	elif tier == 3:
-		pass
+		tower_per_shop_reduction = 4
+		shop_level_odds_modi = 1
+	
+	
+	var plain_fragment__shop = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "shop")
+	var plain_fragment__shop_refresh = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHOP, "shop refresh")
 	
 	
 	good_descriptions = [
-		"Towers appear in your shop as if you were %s level higher." % str(shop_level_odds_modi)
+		["Towers appear in your |0| as if you were %s level higher." % str(shop_level_odds_modi), [plain_fragment__shop]]
 	]
 	
 	bad_descriptions = [
-		"%s less towers appear per shop refresh." % str(tower_per_shop_reduction)
+		["%s less towers appear per |0|." % str(tower_per_shop_reduction), [plain_fragment__shop_refresh]]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_Prestige_Icon.png")

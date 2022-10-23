@@ -29,7 +29,7 @@ var _explosion_timer : Timer
 var _explosion_base_damage : float
 var base_unit_time_per_explosion : float
 var explosion_scale : float
-var explosion_base_and_on_hit_damage_scale : float = 0.2
+var explosion_base_and_on_hit_damage_scale : float
 
 # When towers are overheating (100 heat)
 var _explosion_cooldown_lowered_ratio : float

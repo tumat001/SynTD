@@ -24,10 +24,15 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		_health_cost_per_cast = 3
 		_gold_gain_per_cast = 2
 	elif tier == 3:
-		pass
+		
+		_health_cost_per_cast = 2
+		_gold_gain_per_cast = 1
+	
+	
+	var plain_fragment__gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "%s gold" % str(_gold_gain_per_cast))
 	
 	good_descriptions = [
-		"Gain ability: Blood to Gold. Convert %s health to %s gold" % [str(_health_cost_per_cast), str(_gold_gain_per_cast)],
+		["Gain ability: Blood to Gold. Convert %s health to |0|" % [str(_health_cost_per_cast)], [plain_fragment__gold]],
 		""
 	]
 	

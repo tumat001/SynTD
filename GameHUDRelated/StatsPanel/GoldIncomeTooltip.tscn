@@ -58,13 +58,13 @@ margin_right = 91.0
 size_flags_horizontal = 3
 
 [node name="IncomeNameDescs" parent="VBoxContainer/BodyContainer/ContentMarginer/VBoxContainer/HBoxContainer" index="0" instance=ExtResource( 2 )]
-margin_right = 76.0
+margin_right = 75.0
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 7.0
+size_flags_stretch_ratio = 6.8
 default_font_color = Color( 1, 1, 1, 1 )
 
 [node name="IncomeValuesDescs" parent="VBoxContainer/BodyContainer/ContentMarginer/VBoxContainer/HBoxContainer" index="1" instance=ExtResource( 2 )]
-margin_left = 80.0
+margin_left = 79.0
 margin_right = 91.0
 size_flags_horizontal = 11
 default_font_color = Color( 1, 1, 1, 1 )
@@ -85,13 +85,13 @@ size_flags_horizontal = 3
 size_flags_vertical = 10
 
 [node name="TotalIncomeNameDescs" parent="VBoxContainer/BodyContainer/ContentMarginer/VBoxContainer/HBoxContainer2" index="0" instance=ExtResource( 2 )]
-margin_right = 76.0
+margin_right = 75.0
 size_flags_horizontal = 3
-size_flags_stretch_ratio = 7.0
+size_flags_stretch_ratio = 6.8
 default_font_color = Color( 1, 1, 1, 1 )
 
 [node name="TotalIncomeValueDescs" parent="VBoxContainer/BodyContainer/ContentMarginer/VBoxContainer/HBoxContainer2" index="1" instance=ExtResource( 2 )]
-margin_left = 80.0
+margin_left = 79.0
 margin_right = 91.0
 size_flags_horizontal = 11
 default_font_color = Color( 1, 1, 1, 1 )

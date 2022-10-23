@@ -41,10 +41,12 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	
 	interpreter_for_range_reduc.array_of_instructions = ins_for_range
 	
+	var plain_fragment__stunning = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stunning")
+	
 	# INS END
 	
 	good_descriptions = [
-		"Main attacks on hit against enemies within %s range cause towers to release an electical explosion around themselves, stunning enemies for %s seconds. Cooldown : %s s." % [str(_range_trigger_for_explosion), str(_current_explosion_stun_duration), str(_explosion_cooldown)]
+		["Main attacks on hit against enemies within %s range cause towers to release an electical explosion around themselves, |0| enemies for %s seconds. Cooldown : %s s." % [str(_range_trigger_for_explosion), str(_current_explosion_stun_duration), str(_explosion_cooldown)], [plain_fragment__stunning]]
 	]
 	
 	bad_descriptions = [

@@ -41,15 +41,16 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	
 	interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
 	
+	var plain_fragment__absorbed = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABSORB, "absorbed")
 	
 	#
 	
 	good_descriptions = [
-		["Towers with no absorbed ingredient effects gain |0|.", [interpreter_for_ap]]
+		["Towers with no |0| ingredient effects gain |1|.", [plain_fragment__absorbed, interpreter_for_ap]]
 	]
 	
 	bad_descriptions = [
-		["Towers with absorbed ingredient effects lose |0|.", [interpreter_for_attk_speed]]
+		["Towers with |0| ingredient effects lose |1|.", [plain_fragment__absorbed, interpreter_for_attk_speed]]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_AbilityProvisions_Icon.png")

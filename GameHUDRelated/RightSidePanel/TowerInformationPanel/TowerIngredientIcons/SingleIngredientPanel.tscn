@@ -12,9 +12,6 @@ font_data = ExtResource( 3 )
 margin_right = 65.0
 margin_bottom = 14.0
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_right = 65.0
@@ -36,7 +33,9 @@ margin_top = 2.0
 margin_right = 47.0
 margin_bottom = 14.0
 mouse_filter = 2
+custom_colors/default_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/normal_font = SubResource( 1 )
 fit_content_height = true
 scroll_active = false
+
 [connection signal="gui_input" from="." to="." method="_on_SingleIngredientPanel_gui_input"]

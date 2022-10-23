@@ -31,13 +31,16 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	
 	#
 	
+	var plain_fragment__dominant_synergies = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_DOMINANT, "+%s dominant synergies" % str(_additional_dom_syn_activatable))
+	var plain_fragment__less_composite_synergies = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_COMPOSITE, "%s less complementary synergies" % str(-_less_comple_syn_activatable))
+	
 	good_descriptions = [
-		"+%s dominant synergies can be activated. Synergies do not cancel each other out." % str(_additional_dom_syn_activatable),
-		"The next %s tower(s) you buy do not take tower slots, but cannot perform actions." % str(_curr_number_of_towers_that_cant_attack)
+		["|0| can be activated. Synergies do not cancel each other out.", [plain_fragment__dominant_synergies]],
+		"The next %s tower(s) you buy do not take tower slots, but cannot attack." % str(_curr_number_of_towers_that_cant_attack)
 	]
 	
 	bad_descriptions = [
-		"%s complementary synergies can be activated." % str(_less_comple_syn_activatable)
+		["|0| can be activated.", [plain_fragment__less_composite_synergies]]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_DominanceSupplement_Icon.png")

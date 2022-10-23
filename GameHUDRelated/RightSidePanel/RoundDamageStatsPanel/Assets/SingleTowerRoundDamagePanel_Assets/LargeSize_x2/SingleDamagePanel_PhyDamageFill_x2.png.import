@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/core.png-586b4459e11564216146a513e1c025d5.stex"
+path="res://.import/SingleDamagePanel_PhyDamageFill_x2.png-9f3bb777719f141a438450143ce73551.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://example_ChartGraph/core.png"
-dest_files=[ "res://.import/core.png-586b4459e11564216146a513e1c025d5.stex" ]
+source_file="res://GameHUDRelated/RightSidePanel/RoundDamageStatsPanel/Assets/SingleTowerRoundDamagePanel_Assets/LargeSize_x2/SingleDamagePanel_PhyDamageFill_x2.png"
+dest_files=[ "res://.import/SingleDamagePanel_PhyDamageFill_x2.png-9f3bb777719f141a438450143ce73551.stex" ]
 
 [params]
 

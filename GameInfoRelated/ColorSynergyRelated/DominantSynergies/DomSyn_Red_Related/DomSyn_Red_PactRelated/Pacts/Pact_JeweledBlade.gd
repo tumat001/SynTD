@@ -31,9 +31,10 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 		total_worth_per_100_to_base_dmg_ratio = 1
 		level_up_additional_cost_scale = 0.3
 	
+	var plain_fragment__total_worth_in_gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "total worth in gold")
 	
 	good_descriptions = [
-		"Towers gain base damage based on your total worth in gold.",
+		["Towers gain base damage based on your |0|.", [plain_fragment__total_worth_in_gold]],
 		""
 	]
 	
@@ -127,7 +128,10 @@ func _update_level_related_vars():
 	_current_additional_gold_cost_for_level_amount = _calculate_extra_cost_for_next_level()
 	
 	if game_elements.level_manager.base_level_up_costs[game_elements.level_manager.current_level][1] == game_elements.level_manager.Currency.GOLD:
-		bad_descriptions[0] = "Leveling up to %s costs %s more gold (irreversable)." % [str(_current_level_affected), str(_current_additional_gold_cost_for_level_amount)]
+		var plain_fragment__leveling_up = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.LEVEL_UP_ORANGE, "Leveling up")
+		var plain_fragment__total_worth_in_gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "%s more gold" % str(_current_additional_gold_cost_for_level_amount))
+		
+		bad_descriptions[0] = ["|0| to %s costs |1| (irreversible)." % str(_current_level_affected), [plain_fragment__leveling_up, plain_fragment__total_worth_in_gold]]
 		emit_signal("on_description_changed")
 	else:
 		bad_descriptions[0] = ""

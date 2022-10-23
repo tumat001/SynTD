@@ -16,9 +16,6 @@ margin_right = 808.0
 margin_bottom = 75.0
 mouse_filter = 2
 script = ExtResource( 6 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_right = 808.0
@@ -45,9 +42,9 @@ margin_left = 5.0
 margin_top = 5.0
 margin_right = 250.0
 margin_bottom = 21.0
-custom_fonts/font = SubResource( 1 )
 custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
 custom_colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+custom_fonts/font = SubResource( 1 )
 text = "Adapt: Placeholder"
 autowrap = true
 
@@ -149,6 +146,7 @@ margin_left = 5.0
 margin_top = 5.0
 margin_right = 300.0
 margin_bottom = 21.0
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 1 )
 text = "Placeholder Name"
 autowrap = true
@@ -176,5 +174,5 @@ margin_right = 300.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 size_flags_vertical = 6
-default_font_color = Color( 1, 1, 1, 1 )
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 default_font_size = 12

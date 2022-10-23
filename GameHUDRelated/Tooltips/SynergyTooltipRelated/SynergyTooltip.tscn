@@ -180,7 +180,7 @@ custom_constants/separation = 16
 
 [node name="TooltipBody" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/VBoxContainer" instance=ExtResource( 9 )]
 margin_right = 197.0
-default_font_color = Color( 1, 1, 1, 1 )
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 
 [node name="SynergyDifficultyPanel" parent="VBoxContainer/MainContentContainer/Marginer/VBoxContainer/DescContainer/VBoxContainer" instance=ExtResource( 1 )]
 margin_top = 16.0

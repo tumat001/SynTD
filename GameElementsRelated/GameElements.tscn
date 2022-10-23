@@ -307,7 +307,10 @@ margin_bottom = -160.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="TutorialNotifPanel" parent="NotificationNode" instance=ExtResource( 37 )]
+[node name="BelowScreenEffectsNodeHoster" type="Node" parent="."]
+script = ExtResource( 40 )
+
+[node name="TutorialNotifPanel" parent="." instance=ExtResource( 37 )]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -317,9 +320,6 @@ margin_right = -127.0
 margin_bottom = -160.0
 grow_horizontal = 2
 grow_vertical = 0
-
-[node name="BelowScreenEffectsNodeHoster" type="Node" parent="."]
-script = ExtResource( 40 )
 
 [node name="ScreenEffectsManager" type="Node" parent="."]
 script = ExtResource( 25 )

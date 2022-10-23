@@ -15,9 +15,6 @@ margin_right = 40.0
 margin_bottom = 40.0
 size_flags_vertical = 2
 script = ExtResource( 5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 132.0
@@ -45,6 +42,7 @@ custom_constants/margin_top = 3
 margin_top = 3.0
 margin_right = 92.0
 margin_bottom = 12.0
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 1 )
 text = "Self Ingredient"
 align = 1

@@ -42,6 +42,7 @@ var combination_manager setget set_combination_manager
 var game_result_manager setget set_game_result_manager
 var game_elements setget set_game_elements
 var synergy_manager setget set_synergy_manager
+var multiple_tower_damage_stats_container setget set_multiple_tower_damage_stats_container
 
 var stageround_id_to_stat_sample_map : Dictionary = {}
 var _current_stat_sample : StatSample
@@ -87,7 +88,8 @@ func set_synergy_manager(arg_manager):
 	synergy_manager = arg_manager
 
 func set_multiple_tower_damage_stats_container(arg_stats_container):
-	arg_stats_container.connect("calculated_total_damage_of_all_towers", self, "_on_calculated_total_damage_of_all_towers")
+	#arg_stats_container.connect("calculated_total_damage_of_all_towers", self, "_on_calculated_total_damage_of_all_towers")
+	multiple_tower_damage_stats_container = arg_stats_container
 
 #####
 
@@ -123,13 +125,12 @@ func _start_new_stat_sample():
 	_start_tower_sold_listen()
 
 func _take_stat_sample__start_of_round():
-	_current_stat_sample.tower_ids_active_at_round_start = _get_all_active_tower_ids()
+	#_current_stat_sample.tower_ids_active_at_round_start = _get_all_active_tower_ids()
 	
 	_current_stat_sample.gold_amount_at_start = game_elements.gold_manager.current_gold
 	_current_stat_sample.player_health_at_start = game_elements.health_manager.current_health
 	_current_stat_sample.player_level_at_start = game_elements.level_manager.current_level
 	
-	_set_curr_stat_sample_with_syn_info()
 	
 	_end_tower_sold_listen()
 	#
@@ -146,6 +147,12 @@ func _take_stat_sample__before_end_of_round():
 	_current_stat_sample.player_health_at_end = game_elements.health_manager.current_health
 	_current_stat_sample.gold_amount_at_end = game_elements.gold_manager.current_gold
 	
+	_current_stat_sample.tower_ids_active_at_round_end = _get_all_active_tower_ids()
+	
+	_calculate_total_damage_of_all_towers()
+	
+	_set_curr_stat_sample_with_syn_info()
+	
 	# Store _curr_sample.
 	stageround_id_to_stat_sample_map[_current_stat_sample.stageround_id] = _current_stat_sample
 	
@@ -159,8 +166,9 @@ class StatSample:
 	var round_num : int  # update at round end
 	var stageround_id : String
 	
-	var tower_ids_active_at_round_start : Array = []
+	#var tower_ids_active_at_round_start : Array = []
 	var tower_ids_sold_during_intermission : Array = []
+	var tower_ids_active_at_round_end : Array = []
 	
 	var tower_ids_absorbed : Array = []
 	var tower_ids_combined : Array = []
@@ -209,7 +217,7 @@ class StatSample:
 	#
 	
 	static func _custom_sort_descending(a, b):
-		return a > b
+		return a.tower_type_info.tower_tier > b.tower_type_info.tower_tier
 
 
 ######### UTILS
@@ -219,10 +227,16 @@ func _get_all_active_tower_ids():
 	var bucket = []
 	var all_active_towers = tower_manager.get_all_active_towers_except_in_queue_free()
 	for tower in all_active_towers:
-		bucket.append(tower.tower_id)
+		if !tower.is_a_summoned_tower:
+			bucket.append(tower)
 	
 	bucket.sort_custom(StatSample, "_custom_sort_descending")
-	return bucket
+	
+	var return_bucket = []
+	for tower in bucket:
+		return_bucket.append(tower.tower_id)
+	
+	return return_bucket
 
 # TOWER SOLD
 func _start_tower_sold_listen():
@@ -280,12 +294,14 @@ func _set_curr_stat_sample_with_total_damages_of_tower(arg_tower):
 	_current_stat_sample.THD_in_round_elemental_damage_dealt = arg_tower.in_round_elemental_damage_dealt
 	_current_stat_sample.THD_in_round_physical_damage_dealt = arg_tower.in_round_physical_damage_dealt
 
-func _on_calculated_total_damage_of_all_towers(arg_total, arg_pure, arg_ele, arg_phy):
+func _calculate_total_damage_of_all_towers():
+	var damages_arr = multiple_tower_damage_stats_container.get_calculated_total_damages_of_all_panels()
+	
 	if _current_stat_sample != null:
-		_current_stat_sample.round_total_damage_dealt = arg_total
-		_current_stat_sample.round_pure_damage_dealt = arg_pure
-		_current_stat_sample.round_elemental_damage_dealt = arg_ele
-		_current_stat_sample.round_physical_damage_dealt = arg_phy
+		_current_stat_sample.round_total_damage_dealt = damages_arr[0]
+		_current_stat_sample.round_pure_damage_dealt = damages_arr[1]
+		_current_stat_sample.round_elemental_damage_dealt = damages_arr[2]
+		_current_stat_sample.round_physical_damage_dealt = damages_arr[3]
 
 
 # returns tower instance is arg_amount == 1, returns arr otherwise
@@ -307,32 +323,43 @@ func _set_curr_stat_sample_with_syn_info():
 	
 	for res in active_dom_reses:
 		_current_stat_sample.synergy_dom_ids_active_at_round_start.append(res.synergy.synergy_id)
-		_current_stat_sample.synergy_dom_tiers_active_at_round_start.append(res.towers_in_tier)
+		_current_stat_sample.synergy_dom_tiers_active_at_round_start.append(res.synergy_tier)
 	
 	for res in active_compo_reses:
 		_current_stat_sample.synergy_compo_ids_active_at_round_start.append(res.synergy.synergy_id)
-		_current_stat_sample.synergy_compo_tiers_active_at_round_start.append(res.towers_in_tier)
+		_current_stat_sample.synergy_compo_tiers_active_at_round_start.append(res.synergy_tier)
 
 
 ################## STAT OVERVIEW ############################
 
 class StatOverview:
 	
-	const early_game_stageround_id_start_exclusive = "03"
-	const early_game_stageround_id_exclusive = "51"
-	const mid_game_stageround_id_exclusive = "91"
-	const last_round_end_game_stageround_id_exclusive = "94"
-	const first_round_of_game_stageround_id_exclusive = "01"
+	func _init(arg_stagerounds = null):
+		if arg_stagerounds != null:
+			early_game_stageround_id_start_exclusive = arg_stagerounds.early_game_stageround_id_start_exclusive
+			early_game_stageround_id_exclusive = arg_stagerounds.early_game_stageround_id_exclusive
+			mid_game_stageround_id_exclusive = arg_stagerounds.mid_game_stageround_id_exclusive
+			last_round_end_game_stageround_id_exclusive = arg_stagerounds.last_round_end_game_stageround_id_exclusive
+			first_round_of_game_stageround_id_exclusive = arg_stagerounds.first_round_of_game_stageround_id_exclusive
+	
+	var early_game_stageround_id_start_exclusive = "03"
+	var early_game_stageround_id_exclusive = "51"
+	var mid_game_stageround_id_exclusive = "91"
+	var last_round_end_game_stageround_id_exclusive = "94"
+	var first_round_of_game_stageround_id_exclusive = "01"
 	
 	#
 	
-	var synergy_dom_id_played_at_early_game : int
-	var synergy_dom_id_played_at_mid_game : int
-	var synergy_dom_id_played_at_end : int
+#	var synergy_dom_id_played_at_early_game : int
+#	var synergy_dom_id_played_at_mid_game : int
+#	var synergy_dom_id_played_at_end : int
+#
+#	var synergy_compo_id_played_at_early_game : int
+#	var synergy_compo_id_played_at_mid_game : int
+#	var synergy_compo_id_played_at_end : int
 	
-	var synergy_compo_id_played_at_early_game : int
-	var synergy_compo_id_played_at_mid_game : int
-	var synergy_compo_id_played_at_end : int
+	var synergy_ids_and_tiers_played_at_end : Array
+	var tower_ids_played_at_end : Array
 	
 	var highest_win_streak : int
 	var highest_lose_streak : int
@@ -374,7 +401,7 @@ func _construct_stat_overview():
 
 
 func _construct_stat_overview__method_for_thread(arg_userdata):
-	stat_overview = StatOverview.new()
+	stat_overview = StatOverview.new(stage_round_manager.stagerounds)
 	
 	_configure_stat_overview__synergy_stats()
 	
@@ -415,19 +442,8 @@ func _configure_stat_overview__synergy_stats():
 	
 	for stat_sample in stageround_id_to_stat_sample_map.values():
 		# stage round ids dependend stats
-		if StageRound.is_stageround_id_higher_than_second_param(StatOverview.early_game_stageround_id_exclusive, stat_sample.stageround_id):
-			for id in stat_sample.synergy_dom_ids_active_at_round_start:
-				list_of_dom_syn_ids_played_in_early.append(id)
-			for id in stat_sample.synergy_compo_ids_active_at_round_start:
-				list_of_compo_syn_ids_played_in_early.append(id)
-			
-		elif StageRound.is_stageround_id_higher_than_second_param(StatOverview.mid_game_stageround_id_exclusive, stat_sample.stageround_id):
-			for id in stat_sample.synergy_dom_ids_active_at_round_start:
-				list_of_dom_syn_ids_played_in_mid.append(id)
-			for id in stat_sample.synergy_compo_ids_active_at_round_start:
-				list_of_compo_syn_ids_played_in_mid.append(id)
-			
-		elif StageRound.is_stageround_id_equal_than_second_param(StatOverview.last_round_end_game_stageround_id_exclusive, stat_sample.stageround_id):
+		if StageRound.is_stageround_id_equal_than_second_param(stat_overview.last_round_end_game_stageround_id_exclusive, stat_sample.stageround_id) or stageround_id_to_stat_sample_map.size() == (count + 1):
+			# At last stage round
 			for id in stat_sample.synergy_dom_ids_active_at_round_start:
 				list_of_dom_syn_ids_played_at_end.append(id)
 			for tier in stat_sample.synergy_dom_tiers_active_at_round_start:
@@ -437,6 +453,21 @@ func _configure_stat_overview__synergy_stats():
 				list_of_compo_syn_ids_played_at_end.append(id)
 			for tier in stat_sample.synergy_compo_tiers_active_at_round_start:
 				list_of_compo_syn_tiers_played_at_end.append(tier)
+			
+			stat_overview.tower_ids_played_at_end = stat_sample.tower_ids_active_at_round_end
+			
+		elif StageRound.is_stageround_id_higher_than_second_param(stat_overview.early_game_stageround_id_exclusive, stat_sample.stageround_id):
+			for id in stat_sample.synergy_dom_ids_active_at_round_start:
+				list_of_dom_syn_ids_played_in_early.append(id)
+			for id in stat_sample.synergy_compo_ids_active_at_round_start:
+				list_of_compo_syn_ids_played_in_early.append(id)
+			
+		elif StageRound.is_stageround_id_higher_than_second_param(stat_overview.mid_game_stageround_id_exclusive, stat_sample.stageround_id):
+			for id in stat_sample.synergy_dom_ids_active_at_round_start:
+				list_of_dom_syn_ids_played_in_mid.append(id)
+			for id in stat_sample.synergy_compo_ids_active_at_round_start:
+				list_of_compo_syn_ids_played_in_mid.append(id)
+			
 		
 		
 		if stat_sample.win_streak > stat_overview.highest_win_streak:
@@ -452,10 +483,10 @@ func _configure_stat_overview__synergy_stats():
 		
 		total_ing_absorbed += stat_sample.tower_ids_absorbed.size()
 		
-		stat_overview.total_damage_dealt = stat_sample.round_total_damage_dealt
-		stat_overview.total_pure_damage_dealt = stat_sample.round_pure_damage_dealt
-		stat_overview.total_elemental_damage_dealt = stat_sample.round_elemental_damage_dealt
-		stat_overview.total_physical_damage_dealt = stat_sample.round_physical_damage_dealt
+		stat_overview.total_damage_dealt += stat_sample.round_total_damage_dealt
+		stat_overview.total_pure_damage_dealt += stat_sample.round_pure_damage_dealt
+		stat_overview.total_elemental_damage_dealt += stat_sample.round_elemental_damage_dealt
+		stat_overview.total_physical_damage_dealt += stat_sample.round_physical_damage_dealt
 		
 		#
 		
@@ -502,6 +533,13 @@ func _configure_stat_overview__synergy_stats():
 		combi_tier_to_total_count_map[tier] += 1
 	stat_overview.combi_tier_to_total_count_map = combi_tier_to_total_count_map
 	
+	#
+	for i in list_of_dom_syn_ids_played_at_end.size():
+		stat_overview.synergy_ids_and_tiers_played_at_end.append([list_of_dom_syn_ids_played_at_end[i], list_of_dom_syn_tiers_played_at_end[i]])
+	for i in list_of_compo_syn_ids_played_at_end.size():
+		stat_overview.synergy_ids_and_tiers_played_at_end.append([list_of_compo_syn_ids_played_at_end[i], list_of_compo_syn_tiers_played_at_end[i]])
+	
+	#
 	
 	########## KEEP AT BOTTOM FOR ALL #############
 	is_stat_overview_construction_finished = true

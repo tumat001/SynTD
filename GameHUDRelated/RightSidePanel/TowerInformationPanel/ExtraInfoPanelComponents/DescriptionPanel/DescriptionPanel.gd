@@ -16,7 +16,8 @@ var game_settings_manager : GameSettingsManager
 onready var tooltip_body : TooltipBody = $VBoxContainer/BodyMarginer/TooltipBody
 
 func _ready():
-	tooltip_body.default_font_color = Color(1, 1, 1, 1)
+	pass
+	#tooltip_body.default_font_color = Color(1, 1, 1, 1)
 
 
 func update_display():

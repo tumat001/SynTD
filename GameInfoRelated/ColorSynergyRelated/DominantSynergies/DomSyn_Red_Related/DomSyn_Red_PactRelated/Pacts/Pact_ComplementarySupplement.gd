@@ -12,7 +12,7 @@ var _is_unsworn : bool = false
 
 
 
-func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.COMPLEMENTARY_SUPPLEMENT, "Complementary Supplement", arg_tier, arg_tier_for_activation):
+func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.COMPLEMENTARY_SUPPLEMENT, "Composite Supplement", arg_tier, arg_tier_for_activation):
 	if tier == 0:
 		_additional_comple_syn_activatable = 2
 		_curr_number_of_towers_that_cant_attack = 2
@@ -26,13 +26,17 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	
 	#
 	
+	var plain_fragment__composite_synergies = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SYNERGY_COMPOSITE, "+%s composite synergies" % str(_additional_comple_syn_activatable))
+	var plain_fragment__on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
+	
+	
 	good_descriptions = [
-		"+%s complementary synergies can be activated. Synergies do not cancel each other out." % str(_additional_comple_syn_activatable),
-		"The next %s tower(s) you buy do not take tower slots, but cannot perform actions." % str(_curr_number_of_towers_that_cant_attack)
+		["|0| can be activated. Synergies do not cancel each other out.", [plain_fragment__composite_synergies]],
+		"The next %s tower(s) you buy do not take tower slots, but cannot attack." % str(_curr_number_of_towers_that_cant_attack)
 	]
 	
 	bad_descriptions = [
-		"On round end: a random non-red and non-disabled tower is sold."
+		["|0|: a random non-red and non-disabled tower is sold.", [plain_fragment__on_round_end]]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_ComplementSupplement_Icon.png")

@@ -9,56 +9,59 @@ func _init():
 		_get_stageround_0_1(),
 		_get_stageround_0_2(),
 		_get_stageround_0_3(),
-#
-#		_get_stageround_1_1(),
-#		_get_stageround_1_2(),
-#		_get_stageround_1_3(),
-#		_get_stageround_1_4(),
-#
-#		_get_stageround_2_1(),
-#		_get_stageround_2_2(),
-#		_get_stageround_2_3(),
-#		_get_stageround_2_4(),
-#
-#		_get_stageround_3_1(),
-#		_get_stageround_3_2(),
-#		_get_stageround_3_3(),
-#		_get_stageround_3_4(),
-#
-#		_get_stageround_4_1(),
-#		_get_stageround_4_2(),
-#		_get_stageround_4_3(),
-#		_get_stageround_4_4(),
-#
-#		_get_stageround_5_1(),
-#		_get_stageround_5_2(),
-#		_get_stageround_5_3(),
-#		_get_stageround_5_4(),
-#
-#		_get_stageround_6_1(),
-#		_get_stageround_6_2(),
-#		_get_stageround_6_3(),
-#		_get_stageround_6_4(),
-#
-#		_get_stageround_7_1(),
-#		_get_stageround_7_2(),
-#		_get_stageround_7_3(),
-#		_get_stageround_7_4(),
-#
-#		_get_stageround_8_1(),
-#		_get_stageround_8_2(),
-#		_get_stageround_8_3(),
-#		_get_stageround_8_4(),
-#
-#		_get_stageround_9_1(),
-#		_get_stageround_9_2(),
-#		_get_stageround_9_3(),
-#		_get_stageround_9_4(),
+
+		_get_stageround_1_1(),
+		_get_stageround_1_2(),
+		_get_stageround_1_3(),
+		_get_stageround_1_4(),
+
+		_get_stageround_2_1(),
+		_get_stageround_2_2(),
+		_get_stageround_2_3(),
+		_get_stageround_2_4(),
+
+		_get_stageround_3_1(),
+		_get_stageround_3_2(),
+		_get_stageround_3_3(),
+		_get_stageround_3_4(),
+
+		_get_stageround_4_1(),
+		_get_stageround_4_2(),
+		_get_stageround_4_3(),
+		_get_stageround_4_4(),
+
+		_get_stageround_5_1(),
+		_get_stageround_5_2(),
+		_get_stageround_5_3(),
+		_get_stageround_5_4(),
+
+		_get_stageround_6_1(),
+		_get_stageround_6_2(),
+		_get_stageround_6_3(),
+		_get_stageround_6_4(),
+
+		_get_stageround_7_1(),
+		_get_stageround_7_2(),
+		_get_stageround_7_3(),
+		_get_stageround_7_4(),
+
+		_get_stageround_8_1(),
+		_get_stageround_8_2(),
+		_get_stageround_8_3(),
+		_get_stageround_8_4(),
+
+		_get_stageround_9_1(),
+		_get_stageround_9_2(),
+		_get_stageround_9_3(),
+		_get_stageround_9_4(),
 	]
+	
+	set_early_mid_late_breakpoints()
 	
 	_decide_first_half_faction()
 	_decide_second_half_faction()
 	
+	#
 	_post_init()
 
 
@@ -89,6 +92,17 @@ func _decide_first_half_faction():
 
 func get_first_half_faction() -> int:
 	return first_half_faction
+
+
+# set stageround game breakpoints
+
+func set_early_mid_late_breakpoints():
+	early_game_stageround_id_start_exclusive = "03"
+	early_game_stageround_id_exclusive = "51"
+	mid_game_stageround_id_exclusive = "91"
+	last_round_end_game_stageround_id_exclusive = stage_rounds[stage_rounds.size() - 1].id
+	first_round_of_game_stageround_id_exclusive = stage_rounds[0].id
+
 
 
 # stagerounds

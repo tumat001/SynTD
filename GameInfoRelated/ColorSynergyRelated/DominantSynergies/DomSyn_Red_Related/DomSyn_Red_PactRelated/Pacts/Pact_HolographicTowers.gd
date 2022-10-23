@@ -35,11 +35,13 @@ var tower_amount_to_lose_after_pact_unsworn : int
 var _towers_created : Array = []
 
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.HOLOGRAPHIC_TOWERS, "Holographic Towers", arg_tier, arg_tier_for_activation):
-	tower_amount_to_lose_after_pact_unsworn = 1
+	tower_amount_to_lose_after_pact_unsworn = 2
 	
+	var plain_fragment__holographic_towers_paren = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Holographic tower(s)")
+	var plain_fragment__random_towers_paren = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "%s random tower(s)" % str(tower_amount_to_lose_after_pact_unsworn))
 	
 	bad_descriptions = [
-		"Sell all holographic tower(s) + %s random tower(s) when this pact is unsworn." % str(tower_amount_to_lose_after_pact_unsworn)
+		["Sell all |0| + |1| when this pact is unsworn.", [plain_fragment__holographic_towers_paren, plain_fragment__random_towers_paren]]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_HolographicTowers_Icon.png")
@@ -53,8 +55,14 @@ func _first_time_initialize():
 	var tower_amount_to_offer_based_on_player_lvl = player_level_to_tower_amount_map[player_level]
 	tower_count_to_offer = tower_amount_to_offer_based_on_syn + tower_amount_to_offer_based_on_player_lvl
 	
+	var plain_fragment_tier = PlainTextFragment.new(PlainTextFragment.get_stat_type_based_on_tower_tier(tower_tier_to_offer), "%s tier %s Holographic tower(s)" % [str(tower_count_to_offer), str(tower_tier_to_offer)])
+	var plain_fragment__holographic_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Holographic towers")
+	var plain_fragment__absorbed = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABSORB, "absorbed")
+	
+	
 	good_descriptions = [
-		"Gain %s tier %s tower(s). Holographic towers cannot be used as ingredients, and cannot be sold." % [str(tower_count_to_offer), str(tower_tier_to_offer)]
+		["Gain |0|. |1| cannot be |2|, and cannot be sold.", [plain_fragment_tier, plain_fragment__holographic_towers, plain_fragment__absorbed]],
+		["|0| have zero gold value.", [plain_fragment__holographic_towers]],
 	]
 	
 	#

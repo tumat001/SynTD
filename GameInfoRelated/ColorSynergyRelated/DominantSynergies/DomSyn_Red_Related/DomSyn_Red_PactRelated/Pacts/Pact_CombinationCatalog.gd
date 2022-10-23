@@ -39,14 +39,18 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	
 	interpreter_for_bonus_dmg.array_of_instructions = ins_for_bonus_dmg
 	
+	var plain_fragment__combination = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combination")
+	var plain_fragment__gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "%s gold" % str(gold_reduction_per_round))
+	var plain_fragment__on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
+	
 	#
 	good_descriptions = [
-		["Gain |0| for each combination you have.", [interpreter_for_bonus_dmg]],
+		["Gain |0| for each |1| you have.", [interpreter_for_bonus_dmg, plain_fragment__combination]],
 		""
 	]
 	
 	bad_descriptions = [
-		"Lose %s gold at the end of the round." % str(gold_reduction_per_round)
+		["|0|: lose |1|.", [plain_fragment__on_round_end, plain_fragment__gold]]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_CombinationCatalog_Icon.png")
