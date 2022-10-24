@@ -1,15 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://GameHUDRelated/NotificationPanel/TutorialPanel/TutorialNotifPanel.gd" type="Script" id=1]
-[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=2]
 [ext_resource path="res://GameHUDRelated/NotificationPanel/TutorialPanel/Assets/TutorialPanel_Border.png" type="Texture" id=3]
 [ext_resource path="res://GameHUDRelated/NotificationPanel/TutorialPanel/Assets/TutorialPanel_BodyBackground.png" type="Texture" id=4]
 [ext_resource path="res://GameHUDRelated/NotificationPanel/TutorialPanel/Assets/TutorialPanel_Indicator_Next.png" type="Texture" id=5]
 [ext_resource path="res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipBody.tscn" type="PackedScene" id=6]
-
-[sub_resource type="DynamicFont" id=1]
-size = 14
-font_data = ExtResource( 2 )
 
 [node name="TutorialNotifPanel" type="MarginContainer"]
 margin_right = 168.0
@@ -84,22 +79,12 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 15
 
-[node name="TextLabel" type="Label" parent="MarginContainer/ContentPanel/HBoxContainer"]
-visible = false
-margin_right = 136.0
-margin_bottom = 15.0
-size_flags_horizontal = 3
-size_flags_vertical = 2
-custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
-custom_fonts/font = SubResource( 1 )
-text = "Test message here"
-
 [node name="TooltipBody" parent="MarginContainer/ContentPanel/HBoxContainer" instance=ExtResource( 6 )]
 margin_right = 125.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-default_font_color = Color( 1, 1, 1, 1 )
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 default_font_size = 14
 
 [node name="StatusIcon" type="TextureRect" parent="MarginContainer/ContentPanel/HBoxContainer"]

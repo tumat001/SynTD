@@ -64,7 +64,7 @@ func _init():
 	first_half_faction_id_pool.append(EnemyFactions.BASIC)
 	
 	second_half_faction_id_pool.append(EnemyFactions.EXPERT)
-	second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
+	#second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
 	#second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
 
 
@@ -146,7 +146,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.GRANDMASTER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 75
+		info.base_health = 74.5#75
 		info.base_movement_speed = 60
 		info.base_effect_vulnerability = 0.2
 		#info.base_resistance = 25
@@ -227,7 +227,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.DOMSYN_RED_ORACLES_EYE_SHADOW:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
-		info.base_health = 120
+		info.base_health = 50
 		info.base_movement_speed = 35
 		#info.base_armor = 5
 		#info.base_toughness = 5

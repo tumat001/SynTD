@@ -26,6 +26,7 @@ var enervate_orb_reposition_rng := RandomNumberGenerator.new()
 var enervate_orb_choose_rng := RandomNumberGenerator.new()
 var trapper_trap_pos_rng := RandomNumberGenerator.new()
 var red_tower_randomizer_rng := RandomNumberGenerator.new()
+var enemy_strength_value_rng := RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -62,7 +63,12 @@ enum RNGSource {
 	BLACK_BUFF = 3000,
 	BLACK_CAPACITOR_NOVA_LIGHTNING_TOWER_OR_ENEMY_RNG = 3001,
 	
+	#
 	FAITHFUL_MOV_SPEED_DELAY = 10000
+	
+	
+	#
+	ENEMY_STRENGTH_VALUE_GENERATOR = -100
 }
 
 func _init():
@@ -122,5 +128,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return trapper_trap_pos_rng
 	elif rng_source == RNGSource.RED_TOWER_RANDOMIZER:
 		return red_tower_randomizer_rng
+	elif rng_source == RNGSource.ENEMY_STRENGTH_VALUE_GENERATOR:
+		return enemy_strength_value_rng
 	
 	return null

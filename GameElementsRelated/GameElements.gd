@@ -10,7 +10,6 @@ const TowerManager = preload("res://GameElementsRelated/TowerManager.gd")
 #const StageRoundManager = preload("res://GameElementsRelated/StageRoundManager.gd")
 const HealthManager = preload("res://GameElementsRelated/HealthManager.gd")
 const RoundStatusPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundStatusPanel.gd")
-const RoundInfoPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel.gd")
 const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
 const AbilityManager = preload("res://GameElementsRelated/AbilityManager.gd")
 const InputPromptManager = preload("res://GameElementsRelated/InputPromptManager.gd")
@@ -393,7 +392,7 @@ func _on_BuySellLevelRollPanel_reroll():
 #	if !even:
 #		panel_buy_sell_level_roll.update_new_rolled_towers([
 #			Towers.ADEPT,
-#			Towers.STRIKER,
+#			Towers.MAGNETIZER,
 #			Towers.WYVERN,
 #			Towers.SHACKLED,
 #			Towers.PING,

@@ -8,6 +8,9 @@ const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const EnemyPath = preload("res://EnemyRelated/EnemyPath.gd")
 const HealthManager = preload("res://GameElementsRelated/HealthManager.gd")
 const Targeting = preload("res://GameInfoRelated/Targeting.gd")
+const ConditionalClauses= preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
+
+const EnemySVGenerator = preload("res://EnemyRelated/EnemyStrengthValuesRelated/EnemySVGenerator.gd")
 
 const ENEMY_GROUP_TAG : String = "Enemies"
 const ENEMY_BLOCKING_NEXT_ROUND_ADVANCE_TAG : String = "EnemiesBlockingNextRoundAdvanceTag"
@@ -33,6 +36,7 @@ signal last_enemy_standing_killed_by_damage_no_revives(damage_instance_report, e
 signal last_enemy_standing_current_health_changed(arg_health_val, arg_enemy) # called when last standing, and when health has changed
 signal on_enemy_queue_freed(arg_enemy)
 
+signal enemy_strength_value_changed(arg_val)
 
 enum PathToSpawnPattern {
 	NO_CHANGE = 0,
@@ -86,6 +90,20 @@ var current_spawn_timepos_in_round : float
 
 #
 
+var _enemy_sv_generator : EnemySVGenerator
+var _stageround_id_to_sv_history_map : Dictionary = {}
+var _current_sv_total : float
+var _current_sv_average : float
+var current_strength_value : float setget set_current_strength_value
+
+enum GenerateEnemySVClauseIds {
+	FACTION_PASSIVE__CULTIST = 1
+}
+var generate_enemy_sv_on_round_end_clauses : ConditionalClauses
+var last_calculate_generate_enemy_sv_on_round_end : bool
+
+#
+
 func add_enemy_health_multiplier_percent_amount(arg_id : int, arg_amount : float):
 	_enemy_health_multiplier_id_to_percent_amount[arg_id] = arg_amount
 	_calculate_final_enemy_health_multiplier()
@@ -109,6 +127,23 @@ func set_stage_round_manager(arg_manager):
 	stage_round_manager = arg_manager
 	
 	stage_round_manager.connect("round_ended_game_start_aware", self, "_on_round_end", [], CONNECT_PERSIST)
+	
+	
+	###
+	_enemy_sv_generator = EnemySVGenerator.new()
+	_current_sv_average = _enemy_sv_generator.middle_sv_value
+	_current_sv_total = 0
+	
+	
+	# TEST
+#	print("-----------------------")
+#	var val_count : Dictionary = {1 : 0, 2 : 0, 3 : 0, 4 : 0}
+#	for i in 36:
+#		var val = _generate_sv_and_move_average(i, 36)
+#		val_count[val] += 1
+#		print("val: %s, curr_ave: %s, curr_total: %s" % [str(val), str(_current_sv_average), str(_current_sv_total)])
+#		print("")
+#	print(val_count)
 
 func set_map_manager(arg_manager):
 	map_manager = arg_manager
@@ -134,7 +169,11 @@ func _ready():
 	connect("on_enemy_queue_freed", self, "_on_enemy_queue_freed", [], CONNECT_PERSIST)
 	
 	#
-
+	
+	generate_enemy_sv_on_round_end_clauses = ConditionalClauses.new()
+	generate_enemy_sv_on_round_end_clauses.connect("clause_inserted", self, "_generate_enemy_sv_on_round_end_clause_ins_or_rem", [], CONNECT_PERSIST)
+	generate_enemy_sv_on_round_end_clauses.connect("clause_removed", self, "_generate_enemy_sv_on_round_end_clause_ins_or_rem", [], CONNECT_PERSIST)
+	_update_last_calculate_generate_enemy_sv_on_round_end()
 
 # Setting related
 
@@ -429,6 +468,7 @@ func _on_round_end(stage_round, is_game_start):
 	if !is_game_start:
 		if current_path_to_spawn_pattern == PathToSpawnPattern.SWITCH_PER_ROUND_END:
 			_switch_path_index_to_next()
+	
 
 
 #func _on_base_map_paths_changed(new_all_paths):
@@ -507,3 +547,40 @@ func get_last_standing_enemy():
 	return _last_standing_enemy 
 
 
+############# SV VALUES RELATED ############
+
+func randomize_current_strength_val__following_conditions():
+	if stage_round_manager.current_stageround != null and stage_round_manager.current_stageround.induce_enemy_strength_value_change:
+		if last_calculate_generate_enemy_sv_on_round_end:
+			randomize_current_strength_value()
+
+func _generate_sv_and_move_average(var curr_count = stage_round_manager.current_stageround_index, var max_count = stage_round_manager.stageround_total_count):
+	var val = _enemy_sv_generator.generate_strength_value(_current_sv_average, curr_count, max_count)
+	
+	_add_sv_to_stageround_to_sv_history(val, curr_count) #test todo
+	#_add_sv_to_stageround_to_sv_history(val)
+	
+	return val
+
+func _add_sv_to_stageround_to_sv_history(arg_sv_val, arg_stageround_id = stage_round_manager.current_stageround.id):
+	_stageround_id_to_sv_history_map[arg_stageround_id] = arg_sv_val
+	
+	_current_sv_total += arg_sv_val
+	_current_sv_average = _current_sv_total / _stageround_id_to_sv_history_map.size()
+
+#
+
+func randomize_current_strength_value():
+	set_current_strength_value(_generate_sv_and_move_average())
+
+func set_current_strength_value(arg_val):
+	current_strength_value = arg_val
+	emit_signal("enemy_strength_value_changed", current_strength_value)
+
+#
+
+func _generate_enemy_sv_on_round_end_clause_ins_or_rem(arg_clause_id):
+	_update_last_calculate_generate_enemy_sv_on_round_end()
+
+func _update_last_calculate_generate_enemy_sv_on_round_end():
+	last_calculate_generate_enemy_sv_on_round_end = generate_enemy_sv_on_round_end_clauses.is_passed

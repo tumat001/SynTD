@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/RoundInfoPanel_Background.png-aea3c8b165055bbd259e2b95ac37738c.stex"
+path="res://.import/StrengthValueBorder_02.png-9c05930429a9660c22ff8b8c63fed49d.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel_Background.png"
-dest_files=[ "res://.import/RoundInfoPanel_Background.png-aea3c8b165055bbd259e2b95ac37738c.stex" ]
+source_file="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/StrengthValueBorder_02.png"
+dest_files=[ "res://.import/StrengthValueBorder_02.png-9c05930429a9660c22ff8b8c63fed49d.stex" ]
 
 [params]
 
@@ -28,6 +28,7 @@ process/fix_alpha_border=true
 process/premult_alpha=false
 process/HDR_as_SRGB=false
 process/invert_color=false
+process/normal_map_invert_y=false
 stream=false
 size_limit=0
 detect_3d=true

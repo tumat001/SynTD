@@ -1,6 +1,5 @@
 extends MarginContainer
 
-const RoundInfoPanel = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel/RoundInfoPanel.gd")
 const AbilityPanel = preload("res://GameHUDRelated/AbilityPanel/AbilityPanel.gd")
 
 signal round_start_pressed()

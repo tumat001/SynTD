@@ -9,6 +9,8 @@ const LinearEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRel
 const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
 
 
+var enemy_strength_value_to_use : int
+
 func get_instructions_for_stageround(uuid : String):
 	pass
 

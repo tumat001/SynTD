@@ -33,6 +33,7 @@ _global_script_class_icons={
 [application]
 
 config/name="SynergyTD"
+config/description="SynergyTD"
 run/main_scene="res://PreGameHUDRelated/PreGameScreen.tscn"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="synergy_td"

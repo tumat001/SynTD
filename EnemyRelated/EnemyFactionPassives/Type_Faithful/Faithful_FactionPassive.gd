@@ -101,6 +101,8 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 		game_elements.enemy_manager.connect("enemy_spawned", self, "_on_enemy_spawned", [], CONNECT_PERSIST)
 	
 	
+	game_elements.enemy_manager.generate_enemy_sv_on_round_end_clauses.attempt_insert_clause(game_elements.enemy_manager.GenerateEnemySVClauseIds.FACTION_PASSIVE__CULTIST)
+	
 	._apply_faction_to_game_elements(arg_game_elements)
 
 
@@ -113,6 +115,8 @@ func _remove_faction_from_game_elements(arg_game_elements : GameElements):
 		game_elements.enemy_manager.disconnect("enemy_spawned", self, "_on_enemy_spawned")
 	
 	_destroy_current_cross()
+	
+	game_elements.enemy_manager.generate_enemy_sv_on_round_end_clauses.remove_clause(game_elements.enemy_manager.GenerateEnemySVClauseIds.FACTION_PASSIVE__CULTIST)
 	
 	._remove_faction_from_game_elements(arg_game_elements)
 
@@ -254,6 +258,8 @@ func _on_round_end(curr_stageround):
 	if _is_deity_round:
 		if is_instance_valid(_current_cross):
 			_destroy_current_cross()
+		
+		game_elements.enemy_manager.randomize_current_strength_value()
 
 func _destroy_current_cross():
 	_current_cross.queue_free()
@@ -319,7 +325,7 @@ func _get_default_deity_stats(): # for un predefined rounds
 func _get_4_3_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 400#365
+	info.base_health = 365
 	info.base_effect_vulnerability = 0.75
 	
 	return info
@@ -327,7 +333,7 @@ func _get_4_3_deity_stats():
 func _get_5_2_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 450#415
+	info.base_health = 415
 	info.base_effect_vulnerability = 0.75
 	
 	return info
@@ -336,7 +342,7 @@ func _get_5_2_deity_stats():
 func _get_6_1_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 510#465
+	info.base_health = 465
 	info.base_effect_vulnerability = 0.75
 	
 	return info
@@ -345,7 +351,7 @@ func _get_6_1_deity_stats():
 func _get_6_4_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 610#525
+	info.base_health = 525
 	info.base_effect_vulnerability = 0.70
 	
 	return info
@@ -354,7 +360,7 @@ func _get_6_4_deity_stats():
 func _get_7_3_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 710#625
+	info.base_health = 625
 	info.base_effect_vulnerability = 0.65
 	
 	return info
@@ -363,7 +369,7 @@ func _get_7_3_deity_stats():
 func _get_8_2_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 810 #725
+	info.base_health = 725
 	info.base_effect_vulnerability = 0.60
 	
 	return info
@@ -371,7 +377,7 @@ func _get_8_2_deity_stats():
 func _get_9_1_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 925 #825
+	info.base_health = 825
 	info.base_effect_vulnerability = 0.55
 	
 	return info
@@ -380,7 +386,7 @@ func _get_9_1_deity_stats():
 func _get_9_4_deity_stats():
 	var info = _construct_deity_enemy_type_info()
 	
-	info.base_health = 1100#1000
+	info.base_health = 1000
 	info.base_effect_vulnerability = 0.50
 	info.base_player_damage = 36
 	

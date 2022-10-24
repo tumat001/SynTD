@@ -6,6 +6,12 @@ const BaseTowerSpecificTooltip = preload("res://MiscRelated/GUI_Category_Related
 const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.tscn")
 const BaseTowerSpecificTooltip_GreenHeader_Pic = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip_HeaderBackground_Green.png")
 
+const SV_Border_Pic_01 = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/StrengthValueBorder_01.png")
+const SV_Border_Pic_02 = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/StrengthValueBorder_02.png")
+const SV_Border_Pic_03 = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/StrengthValueBorder_03.png")
+const SV_Border_Pic_04 = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/StrengthValueBorder_04.png")
+
+
 const modulate_lose := Color(218/255.0, 2/255.0, 5/255.0, 1)
 const modulate_win := Color(2/255.0, 218/255.0, 55/255.0, 1)
 const modulate_curr_round := Color(1, 1, 1, 1)
@@ -33,7 +39,7 @@ var _current_icon_slide_speed : float = 0
 var _base_icon_slide_x_amount : float
 var _current_icon_slide_total_amount : float = 0
 
-const round_count_left_base_string = "%s / %s"
+const round_count_left_base_string = "%s\n%s"
 
 var _current_tooltip : BaseTowerSpecificTooltip
 
@@ -53,6 +59,10 @@ onready var stageround_count_container = $VBoxContainer/HBoxContainer2/MarginCon
 
 onready var first_enemy_damage_label = $VBoxContainer/HBoxContainer2/MarginContainer3/MiddlePanel2/FirstEnemyDamageContainer/HBoxContainer/FirstEnemyDamageLabel
 onready var first_enemy_damage_container = $VBoxContainer/HBoxContainer2/MarginContainer3/MiddlePanel2/FirstEnemyDamageContainer
+
+onready var sv_texture_rect = $VBoxContainer/HBoxContainer2/MarginContainerSV/SVArt
+onready var sv_label = $VBoxContainer/HBoxContainer2/MarginContainerSV/TextMarginer/SVLabel
+onready var sv_container = $VBoxContainer/HBoxContainer2/MarginContainerSV
 
 #
 
@@ -76,6 +86,8 @@ func _ready():
 	
 	for arrow in _all_arrows:
 		arrow.rect_position.x = _get_arrow_to_be_pos_x_adjusted(_round_icon_local_positions_of_slot[0].x)
+	
+	sv_container.visible = false
 
 func _get_arrow_to_be_pos_x_adjusted(arg_intended_x):
 	return (arg_intended_x + (round_icon_01.texture.get_size().x / 2) - (arrow_top.texture.get_size().x / 4))
@@ -86,6 +98,7 @@ func _get_arrow_to_be_pos_x_adjusted(arg_intended_x):
 func set_enemy_manager(arg_manager):
 	enemy_manager = arg_manager
 	
+	enemy_manager.connect("enemy_strength_value_changed", self, "_on_enemy_strength_value_changed", [], CONNECT_PERSIST)
 
 func set_stage_round_manager(arg_manager):
 	stage_round_manager = arg_manager
@@ -251,6 +264,52 @@ func _on_RoundsCountContaner_mouse_exited():
 		_current_tooltip = null
 
 func _on_FirstEnemyDamageContainer_mouse_exited():
+	if is_instance_valid(_current_tooltip):
+		_current_tooltip.queue_free()
+		_current_tooltip = null
+
+########
+
+func _on_enemy_strength_value_changed(arg_val):
+	sv_container.visible = true
+	
+	if arg_val == 1:
+		sv_texture_rect.texture = SV_Border_Pic_01
+	elif arg_val == 2:
+		sv_texture_rect.texture = SV_Border_Pic_02
+	elif arg_val == 3:
+		sv_texture_rect.texture = SV_Border_Pic_03
+	elif arg_val == 4:
+		sv_texture_rect.texture = SV_Border_Pic_04
+	
+	sv_label.text = str(arg_val)
+
+
+
+func _on_SVArt_mouse_entered():
+	if !is_instance_valid(_current_tooltip):
+		_current_tooltip = BaseTowerSpecificTooltip_Scene.instance()
+		_current_tooltip.descriptions = _get_descriptions_based_on_sv()
+		_current_tooltip.custom_header_texture = BaseTowerSpecificTooltip_GreenHeader_Pic
+		_current_tooltip.visible = true
+		_current_tooltip.tooltip_owner = sv_texture_rect
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_current_tooltip)
+		_current_tooltip.update_display()
+	else:
+		_current_tooltip.queue_free()
+		_current_tooltip = null
+
+func _get_descriptions_based_on_sv():
+	if enemy_manager.current_strength_value == 1:
+		return ["The enemies sent in this round are rather weak."]
+	elif enemy_manager.current_strength_value == 2:
+		return ["The enemies sent in this round are standard in strength."]
+	elif enemy_manager.current_strength_value == 3:
+		return ["The enemies sent in this round are quite strong."]
+	elif enemy_manager.current_strength_value == 4:
+		return ["The enemies sent in this round are very powerful."]
+
+func _on_SVArt_mouse_exited():
 	if is_instance_valid(_current_tooltip):
 		_current_tooltip.queue_free()
 		_current_tooltip = null

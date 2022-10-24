@@ -11,19 +11,16 @@ margin_right = 17.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 114, 0 )
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Background" type="TextureRect" parent="."]
 margin_right = 118.0
-margin_bottom = 61.0
+margin_bottom = 90.0
 texture = ExtResource( 5 )
 stretch_mode = 2
 
 [node name="LeftBorder" type="TextureRect" parent="."]
 margin_right = 2.0
-margin_bottom = 61.0
+margin_bottom = 90.0
 size_flags_horizontal = 2
 texture = ExtResource( 4 )
 stretch_mode = 2
@@ -31,7 +28,7 @@ stretch_mode = 2
 [node name="RightBorder" type="TextureRect" parent="."]
 margin_left = 116.0
 margin_right = 118.0
-margin_bottom = 61.0
+margin_bottom = 90.0
 size_flags_horizontal = 10
 texture = ExtResource( 4 )
 stretch_mode = 2
@@ -44,16 +41,16 @@ texture = ExtResource( 4 )
 stretch_mode = 2
 
 [node name="BottomBorder" type="TextureRect" parent="."]
-margin_top = 59.0
+margin_top = 88.0
 margin_right = 118.0
-margin_bottom = 61.0
+margin_bottom = 90.0
 size_flags_vertical = 10
 texture = ExtResource( 4 )
 stretch_mode = 2
 
 [node name="ContentPanel" type="MarginContainer" parent="."]
 margin_right = 118.0
-margin_bottom = 61.0
+margin_bottom = 90.0
 custom_constants/margin_right = 4
 custom_constants/margin_top = 4
 custom_constants/margin_left = 4
@@ -63,7 +60,7 @@ custom_constants/margin_bottom = 4
 margin_left = 4.0
 margin_top = 4.0
 margin_right = 114.0
-margin_bottom = 57.0
+margin_bottom = 86.0
 
 [node name="PlayerHealthPanel" parent="ContentPanel/VBoxContainer" instance=ExtResource( 2 )]
 margin_left = 5.0
@@ -72,5 +69,5 @@ size_flags_horizontal = 6
 
 [node name="RoundIndicatorPanel" parent="ContentPanel/VBoxContainer" instance=ExtResource( 3 )]
 margin_top = 24.0
-margin_bottom = 53.0
+margin_bottom = 82.0
 size_flags_horizontal = 6

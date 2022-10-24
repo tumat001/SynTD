@@ -18,6 +18,9 @@ var enemy_first_damage : float = 1
 var give_relic_count_in_round : int = 0 setget set_give_relic_count_in_round
 var round_icon = RoundIcon_NormalRound
 
+var induce_enemy_strength_value_change : bool = true
+
+
 func _init(arg_stage_num : int, arg_round_num : int):
 	stage_num = arg_stage_num
 	round_num = arg_round_num

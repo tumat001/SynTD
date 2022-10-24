@@ -114,6 +114,7 @@ func _get_stageround_0_1():
 	stageround.enemy_health_multiplier = 0.30
 	stageround.enemy_first_damage = 0
 	stageround.can_gain_streak = false
+	stageround.induce_enemy_strength_value_change = false
 	
 	return stageround
 
@@ -124,6 +125,7 @@ func _get_stageround_0_2():
 	stageround.enemy_health_multiplier = 0.35
 	stageround.enemy_first_damage = 0
 	stageround.can_gain_streak = false
+	stageround.induce_enemy_strength_value_change = false
 	
 	return stageround
 
@@ -134,6 +136,7 @@ func _get_stageround_0_3():
 	stageround.enemy_health_multiplier = 0.40
 	stageround.enemy_first_damage = 0
 	stageround.can_gain_streak = false
+	stageround.induce_enemy_strength_value_change = false
 	
 	return stageround
 

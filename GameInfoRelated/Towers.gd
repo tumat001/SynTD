@@ -3561,8 +3561,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = hero_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 1.5#1.3
-		info.base_attk_speed = 0.85 #0.83
+		info.base_damage = 1.6 #1.5
+		info.base_attk_speed = 0.88 #0.85
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.PHYSICAL
