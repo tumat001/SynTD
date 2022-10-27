@@ -2,9 +2,9 @@ extends "res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWit
 
 const BaseTowerSpecificTooltip = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.gd")
 const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.tscn")
-const Hero = preload("res://TowerRelated/Color_White/Hero/Hero.gd")
+#const Hero = preload("res://TowerRelated/Color_White/Hero/Hero.gd")
 
-var hero : Hero setget set_hero
+var hero setget set_hero
 
 var func_name_of_if_can_level : String
 var func_name_of_attempt_level : String
@@ -13,7 +13,7 @@ var func_name_of_desc_of_leveling : String
 
 var _can_attempt_level : bool
 
-func set_hero(arg_hero : Hero):
+func set_hero(arg_hero):
 	if is_instance_valid(hero):
 		hero.disconnect(signal_name_of_can_spend_x_for_level, self, "update_if_can_upgrade")
 	

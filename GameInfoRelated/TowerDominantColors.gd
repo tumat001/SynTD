@@ -321,7 +321,7 @@ func _init():
 	ColorSynergy.HighlightDeterminer.SINGLE,
 	{},
 	[],
-	ColorSynergy.Difficulty.CHALLENGING
+	ColorSynergy.Difficulty.DIFFICULT
 	),
 	
 	synergy_id_to_syn_name_dictionary[SynergyId.BLACK] : black_syn,

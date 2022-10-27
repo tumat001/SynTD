@@ -50,14 +50,16 @@ signal all_stars_crash_to_target()
 signal all_stars_beam_to_target(arg_target)
 
 const star_base_lifetime : float = 30.0
-const star_beam_flat_dmg_amount : float = 0.40
-const star_beam_base_dmg_scale : float = 0.40
+const star_beam_flat_dmg_amount : float = 0.5
+const star_beam_base_dmg_scale : float = 0.5
 const star_beam_attack_speed : float = 4.0 # 4 times per sec (just like attack speed)
 
 const star_crash_flat_dmg_amount : float = 5.0
-const star_crash_on_hit_dmg_scale : float = 6.0
+const star_crash_on_hit_dmg_scale : float = 7.5
 
-const main_attacks_for_star_summon : int = 7
+const original_main_attacks_for_star_summon : int = 7
+const energy_module_main_attacks_for_star_summon : int = 5
+var main_attacks_for_star_summon : int = 7
 var _current_main_attack_count : int
 
 const star_last_enemy_curr_health_for_trigger_to_crash : float = 100.0
@@ -79,7 +81,7 @@ var current_star_at_beam_state_count
 
 
 var is_energy_module_on : bool = false
-var star_pierce_count_on_energy : int = 5
+#var star_pierce_count_on_energy : int = 5
 
 #
 
@@ -184,7 +186,7 @@ func _construct_and_add_star_bullet_attk_module():
 	attack_module.benefits_from_bonus_base_damage = false
 	attack_module.benefits_from_bonus_on_hit_damage = true
 	attack_module.benefits_from_bonus_on_hit_effect = false
-	attack_module.benefits_from_bonus_pierce = false
+	attack_module.benefits_from_bonus_pierce = true
 	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 7
@@ -281,8 +283,8 @@ func _shoot_star_towards_enemy(arg_enemy):
 	
 	star.iota_tower = self
 	
-	if is_energy_module_on:
-		star.pierce = star_pierce_count_on_energy
+	#if is_energy_module_on:
+	#	star.pierce = star_pierce_count_on_energy
 	
 	var bullet_homing_component : BulletHomingComponent = star_homing_component_pool.get_or_create_resource_from_pool()
 	bullet_homing_component.bullet = star
@@ -573,13 +575,18 @@ func set_energy_module(module):
 	
 	if module != null:
 		module.module_effect_descriptions = [
-			"Crashing stars can now hit its target up to %s times." % str(star_pierce_count_on_energy)
+			#"Crashing stars can now hit its target up to %s times." % str(star_pierce_count_on_energy)
+			"%s main attacks are needed to summon a star instead of %s" % [str(original_main_attacks_for_star_summon), str(energy_module_main_attacks_for_star_summon)]
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
 	is_energy_module_on = true
+	
+	main_attacks_for_star_summon = energy_module_main_attacks_for_star_summon
 
 
 func _module_turned_off():
 	is_energy_module_on = false
+	
+	main_attacks_for_star_summon = original_main_attacks_for_star_summon

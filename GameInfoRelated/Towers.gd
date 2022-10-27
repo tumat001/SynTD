@@ -1465,6 +1465,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["On its 5th main attack, Lava Jet releases a beam of lava that deals |0|, up to 40.", [interpreter_for_perc_on_hit]]
 		]
 		
+		info.tower_simple_descriptions = [
+			["On its 5th main attack, Lava Jet releases a beam of lava that deals |0|, up to 40.", [interpreter_for_perc_on_hit]]
+		]
+		
+		
 		var tower_effect = LavaJetModuleAdderEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
 		
@@ -2721,6 +2726,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Every 5th main attack, Bleach fires a blob that explodes, dealing |0| to 3 enemies and removing 3 toughness from enemies hit for 5 seconds. Does not stack.", [interpreter_for_explo]]
 		]
 		
+		info.tower_simple_descriptions = [
+			["Every 5th main attack, Bleach fires a blob that explodes, dealing |0| to 3 enemies.", [interpreter_for_explo]]
+		]
 		
 		var shred_effect = BleackAttkModAdderEffect.new()
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, shred_effect)
@@ -2767,7 +2775,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Automatically attempts to cast Rewind at its target upon main attacking.",
-			["|0|: Rewind: Time machine teleports its non-boss target a few paces backwards.", [plain_fragment__ability]],
+			["|0|: Rewind: Time machine teleports its non-boss target a few paces backwards. Ability potency increases the distance.", [plain_fragment__ability]],
 			["Cooldown: |0|", [interpreter_for_debuff_cooldown]],
 			"",
 			"Rewind also applies 3 stacks of Time Dust onto an enemy for 10 seconds. Time Machine’s main attacks onto an enemy consume a stack of Time Dust, reducing Rewind’s cooldown by 2 seconds."
@@ -2775,7 +2783,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_simple_descriptions = [
 			"Main attacks trigger Rewind.",
-			["|0|: Time machine teleports its non-boss target a few paces backwards. Main attacks against rewinded targets reduce this ability's cooldown by 2 seconds, up to 3 times.", [plain_fragment__ability_name]],
+			["|0|: Time machine teleports its non-boss target a few paces backwards.", [plain_fragment__ability_name]],
 			["Cooldown: |0|", [interpreter_for_debuff_cooldown]],
 		]
 		
@@ -2929,6 +2937,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["The explosion deals |0| to 3 enemies. The explosion applies on hit effects.", [interpreter]]
 		]
 		
+		info.tower_simple_descriptions = [
+			"Shoots an exploding fruit.",
+			["The explosion deals |0| to 3 enemies.", [interpreter]]
+		]
 		
 		var expl_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_CANNON)
 		expl_attr_mod.percent_amount = 60
@@ -3180,11 +3192,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_bolt.header_description = " damage"
 		
 		var ins_for_bolt = []
-		ins_for_bolt.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
+		ins_for_bolt.append(NumericalTextFragment.new(1.25, false, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.30, DamageType.ELEMENTAL))
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.40, DamageType.ELEMENTAL))
 		ins_for_bolt.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.30)) # stat basis does not matter here
+		ins_for_bolt.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.40)) # stat basis does not matter here
 		
 		interpreter_for_bolt.array_of_instructions = ins_for_bolt
 		
@@ -3196,7 +3208,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack. This event does not occur when the triggering attack is from another shocker ball.",
 			"The ball returns to Shocker when the enemy dies, exits the map, when the ball fails to stick to a target, or when the enemy is not hit after 5 seconds.",
 			"",
-			["Shocker ball has |0|. Its bolts deal |1|.", [interpreter_for_range, interpreter_for_bolt]],
+			["Shocker ball has |0|. Its bolts deal |1|. Only 15 bolts can be fired per second.", [interpreter_for_range, interpreter_for_bolt]],
 		]
 		
 		info.tower_simple_descriptions = [
@@ -3279,8 +3291,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"Adept's main attacks gain bonus effects based on its current target's distance from itself on hit.",
-			["Beyond 85% of range: Deal |0|, and |1| enemies hit by 30% for 0.75 seconds.", [interpreter_for_bonus_dmg, plain_fragment__slow]],
-			"Below 35% of range: Fire a secondary attack which seeks another target. This is also considered to be Adept's main attack, but cannot trigger from itself.",
+			["Beyond 75% of range: Deal |0|, and |1| enemies hit by 30% for 0.75 seconds.", [interpreter_for_bonus_dmg, plain_fragment__slow]],
+			"Below 40% of range: Fire a secondary attack which seeks another target. This is also considered to be Adept's main attack, but cannot trigger from itself.",
 			["The secondary attack deals |0| and applies on hit effects. ", [interpreter_for_snd_attk_dmg]],
 			"",
 			"After 3 rounds of being in the map, Adept gains Far and Close targeting options.",
@@ -3288,8 +3300,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_simple_descriptions = [
 			"Adept's main attacks gain bonus effects based on its current target's distance from itself on hit.",
-			["Beyond 85% of range: Deal |0|.", [interpreter_for_bonus_dmg]],
-			["Below 35% of range: Fire a secondary attack that deals |0| and applies on hit effects. This is also considered to be a main attack.", [interpreter_for_snd_attk_dmg]],
+			["Beyond 75% of range: Deal |0|.", [interpreter_for_bonus_dmg]],
+			["Below 40% of range: Fire a secondary attack that deals |0| and applies on hit effects. This is also considered to be a main attack.", [interpreter_for_snd_attk_dmg]],
 			"",
 			"After 3 rounds, Adept gains Far and Close targeting options.",
 		]
@@ -3868,7 +3880,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		#
 		
-		
 		var interpreter_for_stun_duration = TextFragmentInterpreter.new()
 		interpreter_for_stun_duration.tower_info_to_use_for_tower_stat_fragments = info
 		interpreter_for_stun_duration.display_body = true
@@ -3880,7 +3891,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		ins_for_stun_duration.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
 		
 		interpreter_for_stun_duration.array_of_instructions = ins_for_stun_duration
-		
 		
 		#
 		
@@ -5389,7 +5399,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var ins_for_crash_dmg = []
 		ins_for_crash_dmg.append(NumericalTextFragment.new(5.0, false, DamageType.PHYSICAL))
 		ins_for_crash_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_crash_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 6.0)) # stat basis does not matter here
+		ins_for_crash_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 7.5)) # stat basis does not matter here
 		
 		interpreter_for_crash_dmg.array_of_instructions = ins_for_crash_dmg
 		
@@ -5399,11 +5409,25 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_beam_dmg.display_body = true
 		
 		var ins_for_beam_dmg = []
-		ins_for_beam_dmg.append(NumericalTextFragment.new(0.4, false, DamageType.ELEMENTAL))
+		ins_for_beam_dmg.append(NumericalTextFragment.new(0.5, false, DamageType.ELEMENTAL))
 		ins_for_beam_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_beam_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.4, DamageType.ELEMENTAL))
+		ins_for_beam_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.5, DamageType.ELEMENTAL))
 		
 		interpreter_for_beam_dmg.array_of_instructions = ins_for_beam_dmg
+		
+		
+		var interpreter_for_pierce = TextFragmentInterpreter.new()
+		interpreter_for_pierce.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_pierce.display_body = true
+		interpreter_for_pierce.header_description = "enemies"
+		
+		var ins_for_pierce = []
+		ins_for_pierce.append(NumericalTextFragment.new(1, false, -1, "", false, TowerStatTextFragment.STAT_TYPE.PIERCE))
+		ins_for_pierce.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_pierce.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PIERCE, TowerStatTextFragment.STAT_BASIS.BONUS, 1.0, -1))
+		
+		interpreter_for_pierce.array_of_instructions = ins_for_pierce
+		
 		
 		#
 		
@@ -5411,8 +5435,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Every 7th main attack leaves a Star near the target's location for 30 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.", [interpreter_for_crash_dmg]],
 			"",
 			["When all enemies have spawned, all idle Stars focus a beam at a target, dealing |0| per 0.25 seconds.", [interpreter_for_beam_dmg]],
-			"When the last enemy remaining has 100 health or less, all Stars crash to that enemy.",
+			"All Stars crash to the last enemy standing once it has 100 health or less.",
 			"",
+			["Crashing stars can hit up to |0|.", [interpreter_for_pierce]],
 			"Targeting affects which enemies are targeted by the Stars."
 		]
 		
@@ -5420,7 +5445,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Every 7th main attack leaves a Star near the target's location for 30 seconds. When Stars expire, they crash to the nearest enemy, dealing |0|.", [interpreter_for_crash_dmg]],
 			"",
 			["When all enemies have spawned, all idle Stars focus a beam at a target, dealing |0| per 0.25 seconds.", [interpreter_for_beam_dmg]],
-			"When the last enemy remaining has 100 health or less, all Stars crash to that enemy.",
+			"All Stars crash to the last enemy standing once it has 100 health or less.",
 		]
 		
 		
@@ -6177,17 +6202,30 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
 		
+		
+		var interpreter_for_stun_duration = TextFragmentInterpreter.new()
+		interpreter_for_stun_duration.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_stun_duration.display_body = true
+		interpreter_for_stun_duration.header_description = "seconds"
+		
+		var ins_for_stun_duration = []
+		ins_for_stun_duration.append(NumericalTextFragment.new(1, false))
+		ins_for_stun_duration.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_stun_duration.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_stun_duration.array_of_instructions = ins_for_stun_duration
+		
+		
 		var plain_fragment__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Ability")
 		var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Isolation")
 		
 		var plain_fragment__stun = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stun")
 		
 		
-		
 		info.tower_descriptions = [
 			"Auto casts Isolation when at least 1 enemy is in range.",
 			["|0|: Isolation: For 8 seconds, main attacks on hit against isolated enemies deal |1|.", [plain_fragment__ability, interpreter_for_flat_on_hit]],
-			["Main attacks also gain |0|, and |1| enemies hit (except the first enemy) for 1 second.", [interpreter_for_pierce, plain_fragment__stun]],
+			["Main attacks also gain |0|, and |1| enemies hit (except the first enemy) for |2|.", [interpreter_for_pierce, plain_fragment__stun, ins_for_stun_duration]],
 			["Cooldown: |0|. Cooldown starts when Isolation ends.", [interpreter_for_cooldown]],
 			"",
 			"Enemies with no enemies in range within 30 units are considered isolated."
@@ -6196,7 +6234,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			"Auto casts Isolation.",
 			["|0|: For 8 seconds, main attacks on hit against isolated enemies deal |1|.", [plain_fragment__ability_name, interpreter_for_flat_on_hit]],
-			["Main attacks also gain |0|, and |1| enemies hit (except the first enemy) for 1 second.", [interpreter_for_pierce, plain_fragment__stun]],
+			["Main attacks also gain |0|, and |1| enemies hit (except the first enemy) for |2|.", [interpreter_for_pierce, plain_fragment__stun, ins_for_stun_duration]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
 		
@@ -6434,7 +6472,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_cooldown.header_description = "s"
 		
 		var ins_for_cooldown = []
-		ins_for_cooldown.append(NumericalTextFragment.new(22, false))
+		ins_for_cooldown.append(NumericalTextFragment.new(10, false))
 		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
 		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		

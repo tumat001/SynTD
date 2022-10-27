@@ -19,12 +19,21 @@ const ShockBolt_03 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/
 const ShockBolt_04 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt04.png")
 const ShockBolt_05 = preload("res://TowerRelated/Color_Red/Shocker/Shocker_Ball/Shocker_Ball_Bolt05.png")
 
-const shock_base_damage_and_on_hit_ratio : float = 0.30
+#
+const shock_flat_dmg : float = 1.25
+const shock_base_damage_and_on_hit_ratio : float = 0.40
+
 const shock_ball_range : float = 100.0
 const no_shock_ball_clause : int = AbstractAttackModule.CanBeCommandedByTower_ClauseId.SELF_DEFINED_CLAUSE_01
 
 const shock_ball_inactive_duration_queue_free : float = 5.0
 
+const shock_ball_number_of_shock_per_interval : int = 15
+const shock_ball_number_of_shock_time_interval : float = 1.0
+var _current_shock_ball_number_of_shocks : int = 0
+var _shock_ball_number_of_shock_timer : Timer
+
+#
 onready var ball_display_sprite : Sprite = $TowerBase/KnockUpLayer/BallDisplay
 
 var shock_attack_module : WithBeamInstantDamageAttackModule
@@ -91,7 +100,7 @@ func _ready():
 	
 	shock_attack_module = WithBeamInstantDamageAttackModule_Scene.instance()
 	shock_attack_module.base_damage_scale = shock_base_damage_and_on_hit_ratio
-	shock_attack_module.base_damage = 1 / shock_attack_module.base_damage_scale
+	shock_attack_module.base_damage = shock_flat_dmg / shock_attack_module.base_damage_scale
 	shock_attack_module.base_damage_type = DamageType.ELEMENTAL
 	shock_attack_module.base_attack_speed = 0
 	shock_attack_module.base_attack_wind_up = 0
@@ -123,7 +132,16 @@ func _ready():
 	shock_attack_module.can_be_commanded_by_tower = false
 	
 	add_attack_module(shock_attack_module)
+	#
 	
+	_shock_ball_number_of_shock_timer = Timer.new()
+	_shock_ball_number_of_shock_timer.one_shot = true
+	_shock_ball_number_of_shock_timer.connect("timeout", self, "_on_shock_ball_number_of_shock_timer_timeout", [], CONNECT_PERSIST)
+	add_child(_shock_ball_number_of_shock_timer)
+	
+	connect("on_round_end", self, "_on_round_end_s", [], CONNECT_PERSIST)
+	
+	#
 	_post_inherit_ready()
 
 
@@ -165,10 +183,30 @@ func _on_shock_ball_enemy_hit(enemy):
 	
 	for cand_enemy in enemies:
 		if cand_enemy != enemy and is_instance_valid(cand_enemy):
-			_shock_to_attack_enemy(cand_enemy)
-			break
+			if _current_shock_ball_number_of_shocks < shock_ball_number_of_shock_per_interval:
+				_add_current_shock_ball_number_of_shocks()
+				_shock_to_attack_enemy(cand_enemy)
+				break
 
 
 func _shock_to_attack_enemy(enemy):
 	shock_attack_module._attack_enemies([enemy])
+
+########
+
+func _add_current_shock_ball_number_of_shocks(arg_num : int = 1):
+	_current_shock_ball_number_of_shocks += arg_num
+	
+	if _shock_ball_number_of_shock_timer.time_left == 0:
+		_shock_ball_number_of_shock_timer.start(shock_ball_number_of_shock_time_interval)
+
+
+func _on_shock_ball_number_of_shock_timer_timeout():
+	_reset__current_shock_ball_number_of_shocks()
+
+func _reset__current_shock_ball_number_of_shocks():
+	_current_shock_ball_number_of_shocks = 0
+
+func _on_round_end_s():
+	_reset__current_shock_ball_number_of_shocks()
 

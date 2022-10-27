@@ -49,7 +49,9 @@ var tower_beam_connection_component : TowerBeamConnectionComponent
 var is_showing_partner_connection : bool setget ,is_showing_partner_connection
 
 
-# Called when the node enters the scene tree for the first time.
+var is_showing_select_partner_beam : bool = false
+
+
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.BLOSSOM)
 	
@@ -180,6 +182,8 @@ func assign_new_tower_partner(tower):
 			_on_partner_zero_health_reached()
 		
 		tower_beam_connection_component.attempt_add_connection_to_node(partner_tower)
+		
+		is_showing_select_partner_beam = false
 		
 		_partner_changed()
 
@@ -373,12 +377,28 @@ func _assign_ability_activated():
 	if is_instance_valid(mouse_hovered_tower):
 		assign_new_tower_partner(mouse_hovered_tower)
 		
+		if !input_prompt_manager.can_prompt():
+			input_prompt_manager.cancel_selection()
+			_assign_cancelled()
 	else:
 		if input_prompt_manager.can_prompt():
 			input_prompt_manager.prompt_select_tower(self, "assign_new_tower_partner", "_assign_cancelled", "_can_assign_tower_as_partner")
+			is_showing_select_partner_beam = true
 		else:
 			input_prompt_manager.cancel_selection()
+			_assign_cancelled()
 
 func _assign_cancelled():
-	pass
+	is_showing_select_partner_beam = false
 
+
+
+##########
+
+func _process(delta):
+	update()
+
+func _draw():
+	if is_showing_select_partner_beam:
+		var mouse_pos = get_global_mouse_position()
+		draw_line(Vector2(0, 0), mouse_pos - global_position, Color(19/255.0, 154/255.0, 51/255.0), 3)

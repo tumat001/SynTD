@@ -69,6 +69,11 @@ var stun_effect : EnemyStunEffect
 
 var _tower_info : TowerTypeInformation
 
+#
+
+var is_showing_add_member_beam : bool = false
+var is_showing_remove_member_beam : bool = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.LEADER)
@@ -227,11 +232,15 @@ func _ability_prompt_add_member():
 		
 		if !input_prompt_manager.can_prompt():
 			input_prompt_manager.cancel_selection()
+			_ability_prompt__add_member_cancelled()
 	else:
 		if input_prompt_manager.can_prompt():
-			input_prompt_manager.prompt_select_tower(self, "_ability_add_selected_member", "_ability_prompt_cancelled", "_can_add_tower_as_member")
+			is_showing_add_member_beam = true
+			input_prompt_manager.prompt_select_tower(self, "_ability_add_selected_member", "_ability_prompt__add_member_cancelled", "_can_add_tower_as_member")
+			
 		else:
 			input_prompt_manager.cancel_selection()
+			_ability_prompt__add_member_cancelled()
 
 func _ability_prompt_remove_member():
 	var mouse_hovered_tower = tower_manager.get_tower_on_mouse_hover()
@@ -240,15 +249,22 @@ func _ability_prompt_remove_member():
 		
 		if !input_prompt_manager.can_prompt():
 			input_prompt_manager.cancel_selection()
+			_ability_prompt__remove_member_cancelled()
 	else:
 		if input_prompt_manager.can_prompt():
-			input_prompt_manager.prompt_select_tower(self, "_ability_remove_selected_member", "_ability_prompt_cancelled", "_can_remove_member_tower")
+			is_showing_remove_member_beam = true
+			input_prompt_manager.prompt_select_tower(self, "_ability_remove_selected_member", "_ability_prompt__remove_member_cancelled", "_can_remove_member_tower")
+			
 		else:
 			input_prompt_manager.cancel_selection()
+			_ability_prompt__remove_member_cancelled()
 
 
-func _ability_prompt_cancelled():
-	pass
+func _ability_prompt__add_member_cancelled():
+	is_showing_add_member_beam = false
+
+func _ability_prompt__remove_member_cancelled():
+	is_showing_remove_member_beam = false
 
 # member adding/removing
 
@@ -274,6 +290,8 @@ func _ability_add_selected_member(tower):
 		_toggle_show_tower_info()
 		
 		call_deferred("_show_add_member_beam_to_tower", tower)
+		
+		is_showing_add_member_beam = false
 
 func _can_add_tower_as_member(tower) -> bool:
 	return !tower_members_beam_map.has(tower) and tower.is_current_placable_in_map() and !tower is get_script()
@@ -312,6 +330,8 @@ func _ability_remove_selected_member(tower):
 		_toggle_show_tower_info()
 		
 		call_deferred("_show_remove_member_beam_to_tower", tower)
+		
+		is_showing_remove_member_beam = false
 
 func _can_remove_member_tower(tower) -> bool:
 	return is_instance_valid(tower) and tower_members_beam_map.has(tower)
@@ -439,6 +459,19 @@ func _construct_mark_indicator():
 func _process(delta):
 	if is_instance_valid(marked_enemy):
 		mark_indicator.global_position = marked_enemy.global_position
+	
+	update()
+
+func _draw():
+	if is_showing_add_member_beam:
+		var mouse_pos = get_global_mouse_position()
+		draw_line(Vector2(0, 0), mouse_pos - global_position, Color(26/255.0, 2/255.0, 171/255.0), 3)
+	
+	if is_showing_remove_member_beam:
+		var mouse_pos = get_global_mouse_position()
+		draw_line(Vector2(0, 0), mouse_pos - global_position, Color(173/255.0, 46/255.0, 48/255.0), 3)
+
+
 
 
 func _marked_enemy_cancel_focus():
@@ -573,5 +606,6 @@ func _show_remove_member_beam_to_tower(arg_tower):
 		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 		beam.update_destination_position(arg_tower.global_position)
 
+#########
 
 

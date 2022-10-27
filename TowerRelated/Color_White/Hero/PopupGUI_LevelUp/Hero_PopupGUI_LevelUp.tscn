@@ -1,0 +1,92 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://TowerRelated/Color_White/Hero/HeroGUI_Related/GUIAssets/LevelButton_GoldXP.png" type="Texture" id=1]
+[ext_resource path="res://TowerRelated/Color_White/Hero/HeroGUI_Related/GUIAssets/LevelButton_Relic.png" type="Texture" id=2]
+[ext_resource path="res://TowerRelated/Color_White/Hero/HeroGUI_Related/GUIAssets/LevelButton_Relic_Highlighted.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color_White/Hero/HeroGUI_Related/GUIAssets/LevelButton_GoldXP_Highlighted.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_White/Hero/PopupGUI_LevelUp/Assets/WhiteLine_4x4.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_White/Hero/PopupGUI_LevelUp/Assets/GrayBackground_4x4.png" type="Texture" id=6]
+[ext_resource path="res://TowerRelated/Color_White/Hero/PopupGUI_LevelUp/Hero_PopupGUI_LevelUp.gd" type="Script" id=7]
+
+[node name="Hero_PopupGUI_LevelUp" type="MarginContainer"]
+margin_right = 51.0
+margin_bottom = 51.0
+mouse_filter = 2
+size_flags_horizontal = 2
+script = ExtResource( 7 )
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 94.0
+margin_bottom = 51.0
+mouse_filter = 2
+texture = ExtResource( 6 )
+stretch_mode = 2
+
+[node name="Left" type="TextureRect" parent="."]
+margin_right = 4.0
+margin_bottom = 51.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="Right" type="TextureRect" parent="."]
+margin_left = 90.0
+margin_right = 94.0
+margin_bottom = 51.0
+mouse_filter = 2
+size_flags_horizontal = 10
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="Top" type="TextureRect" parent="."]
+margin_right = 94.0
+margin_bottom = 4.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="Bottom" type="TextureRect" parent="."]
+margin_top = 47.0
+margin_right = 94.0
+margin_bottom = 51.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 5 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 94.0
+margin_bottom = 51.0
+mouse_filter = 2
+size_flags_horizontal = 2
+custom_constants/margin_right = 8
+custom_constants/margin_top = 8
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 86.0
+margin_bottom = 43.0
+mouse_filter = 2
+size_flags_horizontal = 2
+custom_constants/separation = 8
+
+[node name="LevelUp_Gold" type="TextureButton" parent="MarginContainer/HBoxContainer"]
+margin_right = 35.0
+margin_bottom = 35.0
+texture_normal = ExtResource( 1 )
+texture_hover = ExtResource( 4 )
+
+[node name="LevelUp_Relic" type="TextureButton" parent="MarginContainer/HBoxContainer"]
+margin_left = 43.0
+margin_right = 78.0
+margin_bottom = 35.0
+texture_normal = ExtResource( 2 )
+texture_hover = ExtResource( 3 )
+
+[connection signal="button_up" from="MarginContainer/HBoxContainer/LevelUp_Gold" to="." method="_on_LevelUp_Gold_button_up"]
+[connection signal="button_up" from="MarginContainer/HBoxContainer/LevelUp_Relic" to="." method="_on_LevelUp_Relic_button_up"]

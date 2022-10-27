@@ -90,6 +90,7 @@ onready var tutotial_notif_panel = $TutorialNotifPanel#$NotificationNode/Tutoria
 
 onready var top_left_coord_of_map = $TopLeft
 onready var bottom_right_coord_of_map = $BottomRight
+onready var fov_node = $FOVNode
 
 onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
 
@@ -373,9 +374,9 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
-#	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-#	level_manager.current_level = LevelManager.LEVEL_6
-#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	level_manager.current_level = LevelManager.LEVEL_6
+	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -389,25 +390,25 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	shop_manager.roll_towers_in_shop_with_cost()
 	
-#	if !even:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.ADEPT,
-#			Towers.MAGNETIZER,
-#			Towers.WYVERN,
-#			Towers.SHACKLED,
-#			Towers.PING,
-#			Towers.ADEPT,
-#		])
-#	else:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.LAVA_JET,
-#			Towers._704,
-#			Towers.ROYAL_FLAME,
-#			Towers.COAL_LAUNCHER,
-#			Towers.BREWD,
-#			Towers.TRANSPORTER
-#		])
-#	even = !even
+	if !even:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.HERO,
+			Towers.BLEACH,
+			Towers.LAVA_JET,
+			Towers.BLOSSOM,
+			Towers.PING,
+			Towers.ADEPT,
+		])
+	else:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.LAVA_JET,
+			Towers._704,
+			Towers.ROYAL_FLAME,
+			Towers.COAL_LAUNCHER,
+			Towers.BREWD,
+			Towers.TRANSPORTER
+		])
+	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -572,6 +573,9 @@ func get_middle_coordinates_of_playable_map() -> Vector2:
 
 func _get_average(arg_x : float, arg_y : float) -> float:
 	return (arg_x + arg_y) / 2
+
+func get_fov_node():
+	return fov_node
 
 ###
 

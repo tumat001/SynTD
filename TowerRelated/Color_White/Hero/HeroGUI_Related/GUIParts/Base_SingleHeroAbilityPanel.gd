@@ -2,10 +2,10 @@ extends MarginContainer
 
 const BaseTowerSpecificTooltip = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.gd")
 const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.tscn")
-const Hero = preload("res://TowerRelated/Color_White/Hero/Hero.gd")
+#const Hero = preload("res://TowerRelated/Color_White/Hero/Hero.gd")
 
 
-var hero : Hero setget set_hero
+var hero setget set_hero
 
 var func_name_of_ability_desc : String
 var func_name_of_ability_level_up_desc : String
@@ -34,7 +34,7 @@ func _ready():
 	if ability_image != null:
 		ability_texture_rect.texture = ability_image
 
-func set_hero(arg_hero : Hero):
+func set_hero(arg_hero):
 	if is_instance_valid(hero):
 		hero.disconnect("current_spendables_changed", self, "_hero_curr_spendables_changed")
 		hero.disconnect(signal_name_of_ability_level_changed, self, "_hero_ability_level_changed")

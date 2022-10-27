@@ -42,9 +42,9 @@ const Adept_HitMark03_Pic = preload("res://TowerRelated/Color_Red/Adept/Adept_At
 const Adept_HitMark04_Pic = preload("res://TowerRelated/Color_Red/Adept/Adept_Attks/Adept_Hit04.png")
 const Adept_HitMark05_Pic = preload("res://TowerRelated/Color_Red/Adept/Adept_Attks/Adept_Hit05.png")
 
-const base_beyond_range_threshold_ratio : float = 0.85
+const base_beyond_range_threshold_ratio : float = 0.75
 const color_beyond_range : Color = Color(0, 0, 1, 0.5)
-const base_below_range_threshold_ratio : float = 0.35
+const base_below_range_threshold_ratio : float = 0.40
 const color_below_range : Color = Color(1, 0, 0, 0.5)
 
 var current_beyond_range_threshold : float

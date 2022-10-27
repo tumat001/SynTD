@@ -2,14 +2,14 @@ extends "res://MiscRelated/GUI_Category_Related/BaseTowerSpecificInfoPanel/BaseT
 
 const BaseTowerSpecificTooltip = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.gd")
 const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.tscn")
-const Hero = preload("res://TowerRelated/Color_White/Hero/Hero.gd")
+#const Hero = preload("res://TowerRelated/Color_White/Hero/Hero.gd")
 const ControlProgressBar = preload("res://MiscRelated/ControlProgressBarRelated/ControlProgressBar.gd")
 
-var hero : Hero setget set_hero
+var hero setget set_hero
 
 onready var hero_xp_bar : ControlProgressBar = $VBoxContainer/BodyMarginer/HeroXPBar
 
-func set_hero(arg_hero : Hero):
+func set_hero(arg_hero):
 	if is_instance_valid(hero):
 		if hero.is_connected("current_xp_changed", self, "_hero_xp_changed"):
 			hero.disconnect("current_xp_changed", self, "_hero_xp_changed")

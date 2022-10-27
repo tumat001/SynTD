@@ -1006,7 +1006,7 @@ func _get_instructions_for_8_4():
 
 func _get_instructions_for_8_4__sv_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 26, 1.35, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0, 24, 1.4, EnemyConstants.Enemies.EXPERIENCED),
 		MultipleEnemySpawnInstruction.new(0.5, 13, 2.7, EnemyConstants.Enemies.ENCHANTRESS),
 		MultipleEnemySpawnInstruction.new(1, 4, 10, EnemyConstants.Enemies.GRANDMASTER),
 		
@@ -1017,7 +1017,7 @@ func _get_instructions_for_8_4__sv_1():
 
 func _get_instructions_for_8_4__sv_2():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 26, 1.35, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0, 25, 1.35, EnemyConstants.Enemies.EXPERIENCED),
 		MultipleEnemySpawnInstruction.new(0.5, 13, 2.7, EnemyConstants.Enemies.ENCHANTRESS),
 		MultipleEnemySpawnInstruction.new(1, 4, 10, EnemyConstants.Enemies.GRANDMASTER),
 		
@@ -1028,7 +1028,7 @@ func _get_instructions_for_8_4__sv_2():
 
 func _get_instructions_for_8_4__sv_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 30, 1.25, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0, 28, 1.35, EnemyConstants.Enemies.EXPERIENCED),
 		MultipleEnemySpawnInstruction.new(0.5, 15, 2.5, EnemyConstants.Enemies.ENCHANTRESS),
 		MultipleEnemySpawnInstruction.new(1, 4, 10, EnemyConstants.Enemies.GRANDMASTER),
 		
@@ -1039,14 +1039,12 @@ func _get_instructions_for_8_4__sv_3():
 
 func _get_instructions_for_8_4__sv_4():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 30, 1.25, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0, 28, 1.35, EnemyConstants.Enemies.EXPERIENCED),
 		MultipleEnemySpawnInstruction.new(0.5, 15, 2.5, EnemyConstants.Enemies.ENCHANTRESS),
 		MultipleEnemySpawnInstruction.new(1, 4, 10, EnemyConstants.Enemies.GRANDMASTER),
 		
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.FIEND),
 		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.FIEND),
-		
-		MultipleEnemySpawnInstruction.new(30, 3, 1.25, EnemyConstants.Enemies.ASSASSIN),
 	]
 
 ##################### 9-1

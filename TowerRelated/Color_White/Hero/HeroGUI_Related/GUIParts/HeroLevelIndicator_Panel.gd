@@ -2,16 +2,16 @@ extends MarginContainer
 
 const BaseTowerSpecificTooltip = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.gd")
 const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.tscn")
-const Hero = preload("res://TowerRelated/Color_White/Hero/Hero.gd")
+#const Hero = preload("res://TowerRelated/Color_White/Hero/Hero.gd")
 
 
-var hero : Hero setget set_hero
+var hero  setget set_hero
 
 onready var level_label = $HBoxContainer/MarginContainer/MarginContainer/VBoxContainer/MarginContainer2/LevelLabel
 onready var spendables_label = $HBoxContainer/MarginContainer2/MarginContainer/SpendablesLabel
 
 
-func set_hero(arg_hero : Hero):
+func set_hero(arg_hero):
 	if is_instance_valid(hero):
 		hero.disconnect("hero_level_changed", self, "_hero_level_changed")
 		hero.disconnect("current_spendables_changed", self, "_hero_spendables_changed")

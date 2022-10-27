@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Bleach_E.png-45030e354c868f36a07d5b7c938e0ca4.stex"
+path="res://.import/WhiteLine_4x4.png-3b44bbdbaa6e84237270b8a5306db208.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TowerRelated/Color_Blue/Bleach/Bleach_E.png"
-dest_files=[ "res://.import/Bleach_E.png-45030e354c868f36a07d5b7c938e0ca4.stex" ]
+source_file="res://TowerRelated/Color_White/Hero/PopupGUI_LevelUp/Assets/WhiteLine_4x4.png"
+dest_files=[ "res://.import/WhiteLine_4x4.png-3b44bbdbaa6e84237270b8a5306db208.stex" ]
 
 [params]
 

@@ -18,7 +18,6 @@ const Hero_VOLEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEff
 
 const Hero_LevelUpParticle_Scene = preload("res://TowerRelated/Color_White/Hero/Hero_OtherAssets/Hero_LevelUpParticle.tscn")
 const CommonAttackSpriteTemplater = preload("res://MiscRelated/AttackSpriteRelated/CommonTemplates/CommonAttackSpriteTemplater.gd")
-
 const ShowTowersWithParticleComponent = preload("res://MiscRelated/CommonComponents/ShowTowersWithParticleComponent.gd")
 
 const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
@@ -56,12 +55,15 @@ const Hero_VOLRobe03Pic = preload("res://TowerRelated/Color_White/Hero/HeroWeapo
 const Hero_VOLRobe04Pic = preload("res://TowerRelated/Color_White/Hero/HeroWeapons_Assets/Hero_VOLRobe04.png")
 
 const Hero_VOL_StatusBarIcon = preload("res://TowerRelated/Color_White/Hero/Hero_OtherAssets/VOL_StatusBarIcon.png")
-
 const Hero_LevelUp_StatusBarIcon = preload("res://TowerRelated/Color_White/Hero/Hero_OtherAssets/Hero_LevelUp_StatusBarIcon.png")
 
 const LightWave_AttackModuleIcon = preload("res://TowerRelated/Color_White/Hero/AttackModuleAssets/LightWave_AttackModuleIcon.png")
 const Judgement_AttackModuleIcon = preload("res://TowerRelated/Color_White/Hero/AttackModuleAssets/Judgement_AttackModuleIcon.png")
 const LightExplosion_AttackModuleIcon = preload("res://TowerRelated/Color_White/Hero/AttackModuleAssets/LightExplosion_AttackModuleIcon.png")
+
+const Hero_PopupGUI_LevelUp_Scene = preload("res://TowerRelated/Color_White/Hero/PopupGUI_LevelUp/Hero_PopupGUI_LevelUp.tscn")
+const Hero_PopupGUI_LevelUp = preload("res://TowerRelated/Color_White/Hero/PopupGUI_LevelUp/Hero_PopupGUI_LevelUp.gd")
+
 
 signal current_xp_changed(gained_amount, curr_xp)
 signal xp_needed_for_next_level_changed(new_req)
@@ -96,6 +98,7 @@ const xp_per_kill : float = 2.0
 #const xp_scale_on_boss_enemy : float = 2.0
 const xp_scale_if_not_white_dom_color : float = 0.7
 const max_hero_level : int = 6 # max hero natural level
+const max_hero_boosted_level : int = 12 # including lvl up from relics
 
 const xp_needed_per_level : Array = [97, 394, 1162, 2175, 2475, 2625] #[130, 525, 1550, 2900, 3300, 3500]
 const gold_needed_per_level : Array = [2, 4, 7, 9, 9, 10]
@@ -137,7 +140,7 @@ const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 8, 16]
 
 var white_dom_active : bool
 
-var current_hero_xp : float = 0
+var current_hero_xp : float = 0        #current_xp   #current_exp   #left these text for ctrl F purposes
 var current_hero_natural_level : int = 0
 var current_hero_effective_level : int = 0
 var current_spendables : int = 0
@@ -192,6 +195,14 @@ var _current_particle_showing_count : int = 0
 #
 
 var notify_xp_cap_of_level_reached : bool = false
+
+#
+
+var _can_spend_relic_for_level_up__for_popup_gui : bool
+var _can_spend_gold_for_level_up__for_popup_gui : bool
+var popup_gui : Hero_PopupGUI_LevelUp
+
+#
 
 onready var staff_proj_origin_pos2D : Position2D = $TowerBase/KnockUpLayer/StaffProjPosition
 onready var staff_sprite : Sprite = $TowerBase/KnockUpLayer/StaffSprite
@@ -249,10 +260,15 @@ func _ready():
 	connect("on_any_post_mitigation_damage_dealt", self, "_any_post_mitigation_dmg_dealt_h", [], CONNECT_PERSIST)
 	connect("on_main_attack", self, "_on_main_attack_h", [], CONNECT_PERSIST)
 	connect("on_round_end", self, "_on_round_end_h", [], CONNECT_PERSIST)
+	connect("on_round_start", self, "_on_round_start_h", [], CONNECT_PERSIST)
 	connect("on_main_attack_module_enemy_hit", self, "_on_main_attack_hit_h", [], CONNECT_PERSIST)
 	connect("on_any_attack_module_enemy_hit", self, "_on_any_attack_hit_h", [], CONNECT_PERSIST)
-	game_elements.synergy_manager.connect("synergies_updated", self, "_update_if_white_dom_active", [], CONNECT_PERSIST)
 	
+	connect("can_spend_relics_for_level_up_updated", self, "_can_spend_relics_for_level_up_updated", [], CONNECT_PERSIST)
+	connect("can_spend_gold_and_xp_for_level_up_updated", self, "_can_spend_gold_and_xp_for_level_up_updated", [], CONNECT_PERSIST)
+	connect("on_tower_transfered_to_placable", self , "_on_transfer_to_placable_h", [], CONNECT_PERSIST)
+	
+	game_elements.synergy_manager.connect("synergies_updated", self, "_update_if_white_dom_active", [], CONNECT_PERSIST)
 	game_elements.gold_manager.connect("current_gold_changed", self, "_gold_manager_gold_changed", [], CONNECT_PERSIST)
 	game_elements.relic_manager.connect("current_relic_count_changed", self, "_relic_manager_relic_count_changed", [], CONNECT_PERSIST)
 	
@@ -303,6 +319,8 @@ func _on_round_end_h():
 	current_attk_count_for_light_wave = current_attks_needed_for_light_wave
 	
 	current_attk_count_for_vol = current_attks_needed_for_vol
+	
+	call_deferred("_on_round_end__relic_gui_related")
 
 func _on_main_attack_h(attk_speed_delay, enemies, module):
 	current_attack_count_in_round += 1
@@ -886,7 +904,7 @@ func _max_natural_level_reached():
 func can_spend_gold_and_xp_for_level_up() -> bool:
 	var can = false
 	
-	if current_hero_natural_level < max_hero_level:
+	if current_hero_natural_level < max_hero_level and current_hero_effective_level != max_hero_boosted_level:
 		var xp_needed = xp_needed_per_level[current_hero_natural_level]
 		var gold_needed = gold_needed_per_level[current_hero_natural_level]
 		
@@ -904,7 +922,7 @@ func _attempt_spend_one_relic_for_level_up():
 		_increase_spendables(3)
 
 func can_spend_relics_for_level_up() -> bool:
-	var can = current_hero_natural_level >= max_hero_level and 1 <= game_elements.relic_manager.current_relic_count
+	var can = current_hero_natural_level >= max_hero_level and 1 <= game_elements.relic_manager.current_relic_count and current_hero_effective_level != max_hero_boosted_level
 	
 	emit_signal("can_spend_relics_for_level_up_updated", can)
 	return can
@@ -1429,4 +1447,63 @@ func _create_and_show_level_up_particle():
 	particle.position.y += non_essential_rng.randi_range(-16, 10)
 	
 	CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
+
+##########
+
+func _on_round_start_h():
+	_update_level_up_relic_popup_gui_visiblity()
+	_update_level_up_gold_popup_gui_visiblity()
+
+func _on_round_end__relic_gui_related():
+	_update_level_up_relic_popup_gui_visiblity()
+	_update_level_up_gold_popup_gui_visiblity()
+
+func _on_transfer_to_placable_h(arg_tower, arg_new_placable):
+	_update_level_up_relic_popup_gui_visiblity()
+	_update_level_up_gold_popup_gui_visiblity()
+
+
+func _can_spend_relics_for_level_up_updated(arg_val):
+	_can_spend_relic_for_level_up__for_popup_gui = arg_val
+	_update_level_up_relic_popup_gui_visiblity()
+
+
+func _update_level_up_relic_popup_gui_visiblity():
+	if !is_round_started and _can_spend_relic_for_level_up__for_popup_gui and is_current_placable_in_map():
+		_set_level_up_relic_popup_gui(true)
+	else:
+		_set_level_up_relic_popup_gui(false)
+
+func _set_level_up_relic_popup_gui(arg_val):
+	if arg_val:
+		if popup_gui == null:
+			_construct_popup_levelup_gui()
+	
+	if is_instance_valid(popup_gui):
+		popup_gui.set_spend_relics_for_level_up_visible(arg_val)
+
+func _construct_popup_levelup_gui():
+	popup_gui = Hero_PopupGUI_LevelUp_Scene.instance()
+	popup_gui.hero = self
+	
+	add_child(popup_gui)
+
+# gold
+func _can_spend_gold_and_xp_for_level_up_updated(arg_val):
+	_can_spend_gold_for_level_up__for_popup_gui = arg_val
+	_update_level_up_gold_popup_gui_visiblity()
+
+func _update_level_up_gold_popup_gui_visiblity():
+	if !is_round_started and _can_spend_gold_for_level_up__for_popup_gui and is_current_placable_in_map():
+		_set_level_up_gold_popup_gui(true)
+	else:
+		_set_level_up_gold_popup_gui(false)
+
+func _set_level_up_gold_popup_gui(arg_val):
+	if arg_val:
+		if popup_gui == null:
+			_construct_popup_levelup_gui()
+	
+	if is_instance_valid(popup_gui):
+		popup_gui.set_spend_gold_for_level_up_visible(arg_val)
 

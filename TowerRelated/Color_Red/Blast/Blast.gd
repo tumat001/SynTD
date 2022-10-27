@@ -25,7 +25,7 @@ var shockwave_forced_path_mov_effect : EnemyForcedPathOffsetMovementEffect
 const shockwave_base_slow_amount : float = -60.0
 const shockwave_slow_duration : float = 2.0
 var shockwave_slow_effect : EnemyAttributesEffect
-const shockwave_cooldown_duration : float = 22.0
+const shockwave_cooldown_duration : float = 10.0
 const shockwave_cooldown_duration_on_no_enemies_found : float = 2.0
 
 var shockwave_attack_module : BulletAttackModule
@@ -234,6 +234,7 @@ func _get_target_for_shockwave():
 func _send_shockwave_towards_target(arg_target):
 	var shockwave = shockwave_attack_module.construct_bullet(arg_target.global_position)
 	shockwave.modulate.a = 0.8
+	shockwave.scale.y *= 2
 	
 	shockwave_attack_module.set_up_bullet__add_child_and_emit_signals(shockwave)
 

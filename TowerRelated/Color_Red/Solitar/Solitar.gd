@@ -241,7 +241,7 @@ func _on_main_attk_bullet_hit_enemy(arg_bullet : BaseBullet, arg_enemy):
 			arg_enemy.connect("on_hit", self, "_on_main_attk_bullet_on_enemy_hit__during_isolation", [], CONNECT_ONESHOT)
 	
 	if arg_bullet.num_of_non_unique_enemy_hits >= 2 and !arg_bullet.damage_instance.on_hit_effects.has(_isolation_stun_effect.effect_uuid):
-		arg_bullet.damage_instance.on_hit_effects[_isolation_stun_effect.effect_uuid] = _isolation_stun_effect
+		arg_bullet.damage_instance.on_hit_effects[_isolation_stun_effect.effect_uuid] = _isolation_stun_effect._get_copy_scaled_by(isolation_ability.get_potency_to_use(last_calculated_final_ability_potency))
 
 func _if_enemy_is_isolated(arg_enemy):
 	var count : int = game_elements.enemy_manager.get_enemy_count_within_distance_of_enemy(arg_enemy, isolation_radius_seek, isolation_radius_seek_includes_invis_enemies)

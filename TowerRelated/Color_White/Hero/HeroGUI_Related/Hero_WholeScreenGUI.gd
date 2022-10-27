@@ -1,8 +1,8 @@
 extends MarginContainer
 
-const Hero = preload("res://TowerRelated/Color_White/Hero/Hero.gd")
+#const Hero = preload("res://TowerRelated/Color_White/Hero/Hero.gd")
 
-var hero : Hero setget set_hero
+var hero setget set_hero
 
 onready var hero_level_up_button_gold = $HBoxContainer/ContentMarginer/MarginContainer/VBoxContainer/TopPart/HeroLevelUpButton_Gold
 onready var hero_level_up_button_relic = $HBoxContainer/ContentMarginer/MarginContainer/VBoxContainer/TopPart/HeroLevelUpButton_Relic
@@ -13,7 +13,7 @@ onready var ability_vol_button = $HBoxContainer/ContentMarginer/MarginContainer/
 onready var hero_level_panel = $HBoxContainer/ContentMarginer/MarginContainer/VBoxContainer/MarginContainer/HeroLevelIndicator_Panel
 
 
-func set_hero(arg_hero : Hero):
+func set_hero(arg_hero):
 	hero = arg_hero
 	
 	# hero lvl up gold
