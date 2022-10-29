@@ -170,16 +170,18 @@ signal on_per_round_total_damage_changed(per_round_total_dmg)
 
 signal on_last_calculated_disabled_from_attacking_changed(arg_new_val)
 
-#
-signal on_heat_module_overheat()
-signal on_heat_module_overheat_cooldown()
+# Terrain related
 
+signal layer_on_terrain_changed(arg_old_layer, arg_new_layer)
 
 # syn signals
 
 signal energy_module_attached
 signal energy_module_detached
 
+#
+signal on_heat_module_overheat()
+signal on_heat_module_overheat_cooldown()
 signal heat_module_should_be_displayed_changed
 
 #
@@ -260,7 +262,7 @@ var current_power_level_used : int
 
 var all_attack_modules : Array = []
 var main_attack_module : AbstractAttackModule
-var range_module : RangeModule
+var range_module : RangeModule setget set_range_module
 
 
 var disabled_from_attacking_clauses : ConditionalClauses
@@ -503,6 +505,9 @@ const ing_tier_to_amount_of_particles_map : Dictionary = {
 }
 var absorb_ing_particle_pool_component : AttackSpritePoolComponent
 
+# terrain related
+
+var layer_on_terrain : int setget set_layer_on_terrain
 
 # SYN RELATED ---------------------------- #
 # Yellow
@@ -612,8 +617,7 @@ func _post_inherit_ready():
 		if range_module.get_parent() == null:
 			add_child(range_module)
 		
-		range_module.update_range() 
-		range_module.enemy_manager = game_elements.enemy_manager
+		configure_range_module_properties(range_module)
 	
 	_calculate_final_ability_potency()
 	_calculate_final_flat_ability_cdr()
@@ -653,10 +657,22 @@ func _post_inherit_ready():
 		
 
 
+func set_range_module(arg_module):
+	range_module = arg_module
+	
+	configure_range_module_properties(range_module)
+
+func configure_range_module_properties(arg_module):
+	range_module.update_range() 
+	range_module.enemy_manager = game_elements.enemy_manager
+	range_module.fov_node = game_elements.get_fov_node()
+	
+	if range_module.parent_tower != self:
+		range_module.set_parent_tower(self)
+
+
 func get_current_anim_size() -> Vector2:
 	return tower_base_sprites.frames.get_frame(tower_base_sprites.animation, tower_base_sprites.frame).get_size()
-
-
 
 func _emit_final_range_changed():
 	call_deferred("emit_signal", "final_range_changed")
@@ -724,7 +740,9 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 			attack_module.range_module.connect("current_enemy_left_range", self, "_emit_on_any_range_module_current_enemy_exited", [attack_module, attack_module.range_module], CONNECT_PERSIST)
 			attack_module.range_module.connect("current_enemies_acquired", self, "_emit_on_any_range_module_current_enemies_acquired", [attack_module, attack_module.range_module], CONNECT_PERSIST)
 		
-		attack_module.range_module.update_range()
+		#attack_module.range_module.update_range()
+		
+		configure_range_module_properties(attack_module.range_module)
 	
 	if attack_module.module_id == StoreOfAttackModuleID.MAIN:
 		# Pre-existing attack module
@@ -756,6 +774,8 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		if is_instance_valid(range_module):
 			if range_module.get_parent() == null:
 				add_child(range_module)
+				
+				configure_range_module_properties(range_module)
 			
 			if !range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):
 				range_module.connect("final_range_changed", self, "_emit_final_range_changed", [], CONNECT_PERSIST)
@@ -3444,6 +3464,15 @@ func _create_abosrb_ing_particle():
 
 func _set_absorb_ing_particle_properties_when_get_from_pool_after_add_child(arg_particle):
 	pass
+
+
+# Terrain related
+
+func set_layer_on_terrain(arg_val):
+	var old_layer = layer_on_terrain
+	layer_on_terrain = arg_val
+	
+	emit_signal("layer_on_terrain_changed", old_layer, layer_on_terrain)
 
 
 # SYNERGIES RELATED -----------------------------------------

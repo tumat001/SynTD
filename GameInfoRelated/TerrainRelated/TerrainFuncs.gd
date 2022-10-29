@@ -9,6 +9,27 @@ static func is_layer_in_sight_to(layer_a : int, layer_b : int):
 
 ##
 
+static func convert_areas_to_polygons(
+	arg_areas, 
+	arg_global_position,
+	arg_curr_terrain_layer = -1
+	):
+	var polygons := []
+	
+	for area in arg_areas:
+		for child in area.get_children():
+			if arg_curr_terrain_layer == -1 or area.should_block_vision_on_terrain_layer(arg_curr_terrain_layer):
+				if child is CollisionPolygon2D:
+					#polygons.append(child.polygon)
+					var points := []
+					for point in child.polygon:
+						
+						points.append(point + area.global_position - arg_global_position)
+					
+					polygons.append(PoolVector2Array(points))
+	
+	return polygons
+
 # returns polygon_of_vision
 static func get_polygon_resulting_from_vertices__circle(
 		arg_terrain_vertices_array : Array, #[[PoolVector2Array, a, b, c], [d, ... , g], [h, i, j]] # each array defines a shape

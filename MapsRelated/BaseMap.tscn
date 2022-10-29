@@ -10,3 +10,5 @@ script = ExtResource( 5 )
 [node name="InMapPlacables" type="Node" parent="."]
 
 [node name="EnemyPaths" type="Node" parent="."]
+
+[node name="Terrain" type="Node" parent="."]

@@ -18,6 +18,8 @@ var can_be_occupied_clauses : ConditionalClauses
 var last_calculated_can_be_occupied : bool
 var last_calculated_can_be_occupied__ignoring_has_tower_clause : bool
 
+export(int) var layer_on_terrain : int = 0 setget set_layer_on_terrain
+
 #
 
 func _init():
@@ -54,6 +56,9 @@ func set_tower_occupying(arg_tower):
 	
 	_update_is_tower_occupying_clause()
 	emit_signal("on_occupancy_changed", tower_occupying)
+	
+	if is_instance_valid(tower_occupying):
+		tower_occupying.layer_on_terrain = layer_on_terrain
 
 func _update_is_tower_occupying_clause():
 	if is_instance_valid(tower_occupying):
@@ -88,3 +93,11 @@ func get_area_shape():
 	new_rect.extents.y = $AreaShape.shape.extents.y
 	
 	return new_rect
+
+######
+
+func set_layer_on_terrain(arg_val):
+	layer_on_terrain = arg_val
+	
+	if is_instance_valid(tower_occupying):
+		tower_occupying.layer_on_terrain = layer_on_terrain

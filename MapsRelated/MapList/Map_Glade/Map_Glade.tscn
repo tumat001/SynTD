@@ -1,9 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.tscn" type="PackedScene" id=1]
 [ext_resource path="res://EnemyRelated/EnemyPath.tscn" type="PackedScene" id=2]
 [ext_resource path="res://MapsRelated/BaseMap.tscn" type="PackedScene" id=3]
 [ext_resource path="res://MapsRelated/MapList/TestMap/MapTemplate.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/TerrainRelated/BaseTerrain.gd" type="Script" id=5]
+[ext_resource path="res://TowerRelated/Color_Violet/Variance/Attks/RedExplosion/Variance_RedExplosion_06.png" type="Texture" id=6]
 
 [sub_resource type="Curve2D" id=1]
 _data = {
@@ -17,9 +19,6 @@ margin_right = 40.0
 margin_bottom = 40.0
 mouse_filter = 2
 texture = ExtResource( 4 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="InMapAreaPlacable" parent="InMapPlacables" index="0" instance=ExtResource( 1 )]
 position = Vector2( 401.48, 147.703 )
@@ -89,3 +88,19 @@ position = Vector2( 780.815, 104.095 )
 
 [node name="EnemyPath" parent="EnemyPaths" index="0" instance=ExtResource( 2 )]
 curve = SubResource( 1 )
+
+[node name="Area2D" type="Area2D" parent="Terrain" index="0"]
+position = Vector2( 377.332, 201.762 )
+collision_layer = 1024
+collision_mask = 0
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_group_": true
+}
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Terrain/Area2D" index="0"]
+polygon = PoolVector2Array( -4.71863, -12.3348, 4.41309, -12.3348, 8.64484, -8.9939, 12.2084, -4.09396, 11.5403, 3.7014, 9.0903, 8.37862, 3.7449, 11.9422, -3.60501, 11.9422, -8.05951, 8.37862, -11.6231, 4.14685, -12.0685, -4.31668, -8.50494, -8.54846 )
+
+[node name="Sprite" type="Sprite" parent="Terrain/Area2D" index="1"]
+texture = ExtResource( 6 )

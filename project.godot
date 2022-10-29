@@ -101,6 +101,7 @@ singletons=[ "res://git_api.gdnlib" ]
 "message queue"=false
 max_size=false
 max_size_kb=false
+layer=false
 
 [input]
 
@@ -224,6 +225,7 @@ game_show_tower_extra_info_panel={
 2d_physics/layer_8="EnemyBullets"
 2d_physics/layer_9="EnemyAuraToAllies"
 2d_physics/layer_10="EnemyAuraToTowers"
+2d_physics/layer_11="Terrain"
 2d_physics/layer_16="TowerPlacables"
 2d_physics/layer_17="TowerClickableArea"
 

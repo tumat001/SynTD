@@ -115,7 +115,8 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	
 	
 	fluctuated_tower = null
-	_track_for_first_attack()
+	call_deferred("_track_for_first_attack")
+	#_track_for_first_attack()
 	
 	._apply_syn_to_game_elements(arg_game_elements, tier)
 

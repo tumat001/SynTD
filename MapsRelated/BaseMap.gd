@@ -21,7 +21,7 @@ var _all_enemy_paths : Array = []
 onready var _in_map_placables = $InMapPlacables
 onready var _enemy_paths = $EnemyPaths
 onready var _environment = $Environment
-
+onready var _terrain_node_parent = $Terrain
 
 func _ready():
 	_environment.z_index = ZIndexStore.MAP_ENVIRONMENT
@@ -32,7 +32,9 @@ func _ready():
 	
 	for path in _enemy_paths.get_children():
 		_all_enemy_paths.append(path)
-
+	
+	for terrain in _terrain_node_parent.get_children():
+		add_terrain_node(terrain)
 
 # path related
 
@@ -159,4 +161,11 @@ func make_all_placables_not_hidden():
 func get_placable_with_node_name(arg_name):
 	return _in_map_placables.get_node(arg_name)
 
+################
 
+func add_terrain_node(arg_terrain, arg_z_index_to_use : int = ZIndexStore.TERRAIN_ABOVE_MAP_ENVIRONMENT):
+	if arg_terrain.get_parent() == null:
+		_terrain_node_parent.add_child(arg_terrain)
+	
+	if arg_terrain.get("z_index"):
+		arg_terrain.z_index = arg_z_index_to_use

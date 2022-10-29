@@ -393,7 +393,7 @@ func _on_BuySellLevelRollPanel_reroll():
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.HERO,
-			Towers.BLEACH,
+			Towers.AMALGAMATOR,
 			Towers.LAVA_JET,
 			Towers.BLOSSOM,
 			Towers.PING,
