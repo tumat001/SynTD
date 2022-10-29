@@ -79,7 +79,7 @@ func _construct_modules():
 	var orb_range_module = RangeModule_Scene.instance()
 	orb_range_module.base_range_radius = 135
 	#orb_range_module.all_targeting_options = [Targeting.RANDOM, Targeting.FIRST, Targeting.LAST]
-	orb_range_module.set_range_shape(CircleShape2D.new())
+	orb_range_module.set_terrain_scan_shape(CircleShape2D.new())
 	orb_range_module.position.y += 22
 	orb_range_module.add_targeting_option(Targeting.RANDOM)
 	orb_range_module.set_current_targeting(Targeting.RANDOM)
@@ -124,7 +124,7 @@ func _construct_modules():
 	# Diamond related
 	var dia_range_module = RangeModule_Scene.instance()
 	dia_range_module.base_range_radius = 135
-	dia_range_module.set_range_shape(CircleShape2D.new())
+	dia_range_module.set_terrain_scan_shape(CircleShape2D.new())
 	dia_range_module.position.y += 22
 	dia_range_module.can_display_range = false
 	dia_range_module.clear_all_targeting()
@@ -173,7 +173,7 @@ func _construct_modules():
 	# Bolt related
 	var bolt_range_module = RangeModule_Scene.instance()
 	bolt_range_module.base_range_radius = 135
-	bolt_range_module.set_range_shape(CircleShape2D.new())
+	bolt_range_module.set_terrain_scan_shape(CircleShape2D.new())
 	bolt_range_module.position.y += 22
 	bolt_range_module.can_display_range = false
 	bolt_range_module.clear_all_targeting()

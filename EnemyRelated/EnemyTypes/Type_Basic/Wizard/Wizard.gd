@@ -18,7 +18,7 @@ var _current_target_for_beam
 const _base_range : float = 80.0
 
 const _explosion_dmg : float = 2.05 / _base_beam_explosion_count
-const _explosion_cooldown : float = 4.62 #7.0
+const _explosion_cooldown : float = 6.0#4.62 #7.0
 const _explosion_cooldown_no_targets_in_range : float = 2.0 #3.0
 
 

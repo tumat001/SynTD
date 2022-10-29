@@ -41,7 +41,7 @@ func _ready():
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
-	range_module.set_range_shape(CircleShape2D.new())
+	range_module.set_terrain_scan_shape(CircleShape2D.new())
 	range_module.position.y += 6
 	
 	var attack_module : BulletAttackModule = BulletAttackModule_Scene.instance()

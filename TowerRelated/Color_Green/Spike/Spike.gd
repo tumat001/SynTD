@@ -31,7 +31,7 @@ func _ready():
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
-	range_module.set_range_shape(CircleShape2D.new())
+	range_module.set_terrain_scan_shape(CircleShape2D.new())
 	range_module.add_targeting_option(Targeting.EXECUTE)
 	range_module.set_current_targeting(Targeting.EXECUTE)
 	

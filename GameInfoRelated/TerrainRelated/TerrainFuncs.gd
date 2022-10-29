@@ -46,7 +46,7 @@ static func get_polygon_resulting_from_vertices__circle(
 ## circle vertices
 static func _get_radius_as_point_array(arg_radius : float):
 	var point_arr = []
-	var vertex_count : int = arg_radius 
+	var vertex_count : int = arg_radius / 100
 	
 	for i in vertex_count:
 		point_arr.append(_get_point_pos_using_radius_and_index(arg_radius, i))

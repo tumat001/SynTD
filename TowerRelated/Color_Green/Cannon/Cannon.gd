@@ -39,7 +39,7 @@ func _ready():
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
-	range_module.set_range_shape(CircleShape2D.new())
+	range_module.set_terrain_scan_shape(CircleShape2D.new())
 	range_module.position.y += 7
 	
 	var proj_attack_module : ArcingBulletAttackModule = ArcingBulletAttackModule_Scene.instance()

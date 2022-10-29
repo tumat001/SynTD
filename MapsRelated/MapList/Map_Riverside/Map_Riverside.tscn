@@ -1,0 +1,84 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://MapsRelated/BaseMap.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.tscn" type="PackedScene" id=2]
+[ext_resource path="res://MapsRelated/MapList/Map_Riverside/Map_Riverside_WithBorders.png" type="Texture" id=3]
+[ext_resource path="res://EnemyRelated/EnemyPath.tscn" type="PackedScene" id=4]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 572.534, 33.3983, 0, 0, 0, 0, 609.954, 60.7275, 0, 0, 0, 0, 636.862, 102.772, 0, 0, 0, 0, 667.135, 142.294, 0, 0, 0, 0, 687.316, 171.305, 0, 0, 0, 0, 684.794, 188.544, 0, 0, 0, 0, 671.76, 197.794, 0, 0, 0, 0, 646.533, 202.419, 0, 0, 0, 0, 597.34, 194.85, 0, 0, 0, 0, 497.274, 198.214, 0, 0, 0, 0, 417.388, 186.862, 0, 0, 0, 0, 385.855, 138.09, 0, 0, 0, 0, 374.923, 120.852, 0, 0, 0, 0, 341.287, 110.34, 0, 0, 0, 0, 306.39, 112.443, 0, 0, 0, 0, 278.22, 126.317, 0, 0, 0, 0, 257.198, 140.192, 0, 0, 0, 0, 245.846, 153.226, 0, 0, 0, 0, 237.437, 168.783, 0, 0, 0, 0, 201.278, 196.532, 0, 0, 0, 0, 199.596, 214.612, 0, 0, 0, 0, 214.227, 233.017, 0, 0, 0, 0, 235.936, 251.895, 0, 0, 0, 0, 265.196, 269.828, 0, 0, 0, 0, 307.198, 284.93, 0, 0, 0, 0, 360.527, 297.201, 0, 0, 0, 0, 434.581, 313.572, 0, 0, 0, 0, 492.949, 342.194, 0, 0, 0, 0, 561.572, 332.124, 0, 0, 0, 0, 646.049, 328.82, 0, 0, 0, 0, 727.222, 318.438, 0, 0, 0, 0, 805.092, 307.111, 0, 0, 0, 0, 844.734, 300.032 )
+}
+
+[node name="Map_Riverside" instance=ExtResource( 1 )]
+
+[node name="Environment" parent="." index="0"]
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Background" type="TextureRect" parent="Environment" index="0"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource( 3 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="InMapAreaPlacable" parent="InMapPlacables" index="0" instance=ExtResource( 2 )]
+position = Vector2( 261.15, 209.849 )
+
+[node name="InMapAreaPlacable2" parent="InMapPlacables" index="1" instance=ExtResource( 2 )]
+position = Vector2( 322.079, 248.891 )
+
+[node name="InMapAreaPlacable3" parent="InMapPlacables" index="2" instance=ExtResource( 2 )]
+position = Vector2( 605.724, 228.17 )
+
+[node name="InMapAreaPlacable4" parent="InMapPlacables" index="3" instance=ExtResource( 2 )]
+position = Vector2( 408.724, 343.67 )
+
+[node name="InMapAreaPlacable5" parent="InMapPlacables" index="4" instance=ExtResource( 2 )]
+position = Vector2( 449.138, 149.204 )
+
+[node name="InMapAreaPlacable6" parent="InMapPlacables" index="5" instance=ExtResource( 2 )]
+position = Vector2( 728.585, 191.279 )
+
+[node name="InMapAreaPlacable7" parent="InMapPlacables" index="6" instance=ExtResource( 2 )]
+position = Vector2( 579.636, 154.419 )
+
+[node name="InMapAreaPlacable8" parent="InMapPlacables" index="7" instance=ExtResource( 2 )]
+position = Vector2( 391.014, 71.9386 )
+
+[node name="InMapAreaPlacable9" parent="InMapPlacables" index="8" instance=ExtResource( 2 )]
+position = Vector2( 153.25, 187.113 )
+
+[node name="InMapAreaPlacable10" parent="InMapPlacables" index="9" instance=ExtResource( 2 )]
+position = Vector2( 760.532, 353.423 )
+
+[node name="InMapAreaPlacable11" parent="InMapPlacables" index="10" instance=ExtResource( 2 )]
+position = Vector2( 578.705, 358.893 )
+
+[node name="InMapAreaPlacable12" parent="InMapPlacables" index="11" instance=ExtResource( 2 )]
+position = Vector2( 279.242, 310.586 )
+
+[node name="InMapAreaPlacable16" parent="InMapPlacables" index="12" instance=ExtResource( 2 )]
+position = Vector2( 162.699, 255.779 )
+
+[node name="InMapAreaPlacable13" parent="InMapPlacables" index="13" instance=ExtResource( 2 )]
+position = Vector2( 267.273, 74.9803 )
+
+[node name="InMapAreaPlacable14" parent="InMapPlacables" index="14" instance=ExtResource( 2 )]
+position = Vector2( 528.393, 91.3778 )
+
+[node name="InMapAreaPlacable15" parent="InMapPlacables" index="15" instance=ExtResource( 2 )]
+position = Vector2( 687.456, 356.573 )
+
+[node name="InMapAreaPlacable17" parent="InMapPlacables" index="16" instance=ExtResource( 2 )]
+position = Vector2( 495.85, 305.603 )
+
+[node name="EnemyPath" parent="EnemyPaths" index="0" instance=ExtResource( 4 )]
+curve = SubResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
