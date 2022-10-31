@@ -171,7 +171,7 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 400
+	attack_module.base_proj_speed = 480#400
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
@@ -447,7 +447,7 @@ func _construct_and_add_potion_throwing_attk_module(info):
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = false
 	attack_module.base_pierce = 1
-	attack_module.base_proj_speed = 640
+	attack_module.base_proj_speed = 700#640
 	attack_module.base_proj_life_distance = info.base_range + 100
 	attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	attack_module.on_hit_damage_scale = 0

@@ -18,6 +18,10 @@ func _init(arg_internal_id : int).(arg_internal_id):
 func get_modification_to_value(value):
 	return flat_modifier
 
+func get_value():
+	return flat_modifier
+
+
 func get_description():
 	return str(flat_modifier)
 

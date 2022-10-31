@@ -26,10 +26,12 @@ var row_index_to_map_row_dict : Dictionary = {
 }
 
 
+const NO_MAP_SELECTED : int = -1
+
 var all_map_cards : Array = [] # does not change
 
 var current_map_ids_displayed : Array = []
-var current_map_id_selected : int = -1
+var current_map_id_selected : int = NO_MAP_SELECTED
 
 var button_group_for_map_cards : ButtonGroup_Custom
 
@@ -108,7 +110,7 @@ func _initialize_map_cards():
 		var container : HBoxContainer = row_index_to_map_row_dict[curr_row]
 		container.add_child(map_card)
 		
-		map_card.map_id = -1
+		map_card.map_id = NO_MAP_SELECTED
 		map_card.configure_self_with_button_group(button_group_for_map_cards)
 		map_card.connect("toggle_mode_changed", self, "_on_map_card_toggle_mode_changed", [map_card])
 		
@@ -153,7 +155,7 @@ func _get_map_ids_based_on_index():
 #
 
 func clear_current_map_id_selected():
-	set_current_map_id_selected(-1)
+	set_current_map_id_selected(NO_MAP_SELECTED)
 
 func set_current_map_id_selected(arg_id):
 	current_map_id_selected = arg_id
@@ -187,12 +189,15 @@ func _on_map_card_toggle_mode_changed(arg_val : bool, arg_map_card : MapCard):
 
 
 func select_map_card_with_id(arg_id):
+	if !StoreOfMaps.MapIdsAvailableFromMenu.has(arg_id):
+		arg_id = StoreOfMaps.default_map_id_for_empty
+	
 	var first_id_displayed = arg_id
 	set_current_map_id_selected(first_id_displayed)
 	
 	var first_card_displayed
 	for map_card in all_map_cards:
-		if map_card.map_id == first_id_displayed and first_id_displayed != -1:
+		if map_card.map_id == first_id_displayed and first_id_displayed != NO_MAP_SELECTED:
 			first_card_displayed = map_card
 			break
 	if first_card_displayed != null:

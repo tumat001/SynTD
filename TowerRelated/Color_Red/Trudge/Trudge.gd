@@ -82,7 +82,7 @@ var stampede_ability_activation_cond_clause : ConditionalClauses
 
 const stampede_is_casting_act_clause : int = -10
 const no_enemies_in_range_clause : int = -11
-const stampede_ability_base_cooldown : float = 90.0
+const stampede_ability_base_cooldown : float = 40.0
 const stampede_cd_reduc_on_spurt : float = 1.0
 
 

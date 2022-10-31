@@ -316,7 +316,7 @@ func _ready():
 	orb_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	orb_attack_module.is_main_attack = true
 	orb_attack_module.base_pierce = info.base_pierce
-	orb_attack_module.base_proj_speed = 550
+	orb_attack_module.base_proj_speed = 660 #550
 	orb_attack_module.base_proj_life_distance = info.base_range
 	orb_attack_module.module_id = StoreOfAttackModuleID.MAIN
 	orb_attack_module.position.y -= 22

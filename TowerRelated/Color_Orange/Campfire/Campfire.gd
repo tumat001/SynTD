@@ -20,6 +20,8 @@ const base_rage_threshold : float = 50.0
 var _current_rage : float = 0
 var last_calculated_rage_threshold : float = base_rage_threshold
 
+const rage_on_hit__base_dmg_scale : float = 1.5
+
 var cf_attack_module : InstantDamageAttackModule
 
 var physical_on_hit_effect : TowerOnHitDamageAdderEffect
@@ -62,7 +64,7 @@ func _ready():
 	
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
-	range_module.set_terrain_scan_shape(CircleShape2D.new())
+	range_module.set_range_shape(CircleShape2D.new())
 	range_module.clear_all_targeting()
 	
 	
@@ -150,7 +152,7 @@ func _enemy_damage_taken(damage_report, is_lethal, enemy):
 
 func _update_physical_on_hit_effect():
 	if is_instance_valid(main_attack_module):
-		physical_on_hit.damage_as_modifier.flat_modifier = (main_attack_module.last_calculated_final_damage) * last_calculated_final_ability_potency
+		physical_on_hit.damage_as_modifier.flat_modifier = (main_attack_module.last_calculated_final_damage * rage_on_hit__base_dmg_scale) * last_calculated_final_ability_potency
 		physical_on_hit_effect.on_hit_damage = physical_on_hit.duplicate()
 
 
@@ -261,7 +263,7 @@ func set_heat_module(module : HeatModule):
 
 func _construct_heat_effect():
 	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
-	base_dmg_attr_mod.flat_modifier = 2.5
+	base_dmg_attr_mod.flat_modifier = 1.25
 	
 	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
 

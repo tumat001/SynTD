@@ -221,6 +221,7 @@ func _construct_generic_orb_attk_module(arg_orb_pic, arg_beam_pic):
 	orb_range_module.base_range_radius = orb_range
 	orb_range_module.set_range_shape(CircleShape2D.new())
 	orb_range_module.can_display_range = false
+	#configure_range_module_properties(orb_range_module)
 	
 	var attack_module : EnervateOrbAttkModule = EnervateOrbAttkModule_Scene.instance()
 	attack_module.base_damage = orb_base_dmg

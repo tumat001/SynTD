@@ -12,6 +12,7 @@ signal on_all_enemy_paths_changed(new_all_paths)
 enum EnemyPathState {
 	USED_AND_ACTIVE = 0,
 	NOT_USED_AND_ACTIVE = 1,
+	
 	ANY = 2
 }
 
@@ -169,3 +170,11 @@ func add_terrain_node(arg_terrain, arg_z_index_to_use : int = ZIndexStore.TERRAI
 	
 	if arg_terrain.get("z_index"):
 		arg_terrain.z_index = arg_z_index_to_use
+
+#
+
+func _apply_map_specific_changes_to_game_elements(arg_game_elements):
+	pass
+	
+
+

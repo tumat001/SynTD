@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/704_Beam05.png-13954b1bc91a6c8ffd8222452049281a.stex"
+path="res://.import/Map_Ridged_WithBorders.png-88350152f15ca4b1cb74f83ff144fe42.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TowerRelated/Color_Orange/704/704_Beam/704_Beam05.png"
-dest_files=[ "res://.import/704_Beam05.png-13954b1bc91a6c8ffd8222452049281a.stex" ]
+source_file="res://MapsRelated/MapList/Map_Ridged/Map_Ridged_WithBorders.png"
+dest_files=[ "res://.import/Map_Ridged_WithBorders.png-88350152f15ca4b1cb74f83ff144fe42.stex" ]
 
 [params]
 

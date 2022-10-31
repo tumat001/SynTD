@@ -107,7 +107,7 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 250
+	attack_module.base_proj_speed = 400#250
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.position.y -= 10
@@ -331,7 +331,7 @@ func _create_range_module_for_line_detection(arg_placable_pos : Vector2):
 	line_range_module.set_range_shape(RectangleShape2D.new())
 	
 	line_range_module.connect("enemy_entered_range", self, "_on_line_range_module_enemy_entered", [line_range_module], CONNECT_PERSIST)
-	line_range_module.connect("enemy_left_range", self, "_on_line_range_module_enemy_exited", [line_range_module], CONNECT_PERSIST)
+	line_range_module.connect("enemy_left_range", self, "_on_line_range_module_enemy_exited", [line_range_module], CONNECT_PERSIST | CONNECT_DEFERRED)
 	
 	line_range_module_enemy_to_in_range_count_map[line_range_module] = 0
 	
@@ -360,7 +360,7 @@ func _on_line_range_module_enemy_entered(enemy, arg_range_mod):
 	line_range_module_enemy_to_in_range_count_map[arg_range_mod] = arg_range_mod.get_enemy_in_range_count()
 	
 	if is_instance_valid(enemy) and !enemy.is_connected("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module"):
-		enemy.connect("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module", [arg_range_mod])
+		enemy.connect("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module", [arg_range_mod], CONNECT_DEFERRED)
 	
 	_attempt_cast_plow()
 
@@ -469,7 +469,8 @@ func _on_round_end_p():
 	for range_module_i in line_range_module_to_in_map_placable_map.keys():
 		if is_instance_valid(range_module_i):
 			range_module_i.clear_all_detected_enemies()
-
+			
+			line_range_module_enemy_to_in_range_count_map[range_module_i] = 0
 
 func _on_round_start_p():
 	if is_current_placable_in_map():

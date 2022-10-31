@@ -56,7 +56,7 @@ const spew_disabled_from_attacking_custom_clause : int = -10
 
 const spew_base_count : int = 16
 const spew_on_hit_dmg_scale : float = 0.75
-const spew_flat_dmg_amount : float = 2.5
+const spew_flat_dmg_amount : float = 3.0
 
 var _current_spew_count : int
 var non_essential_rng : RandomNumberGenerator
@@ -93,7 +93,7 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 350
+	attack_module.base_proj_speed = 550#350
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.position.y -= attack_module_y_shift

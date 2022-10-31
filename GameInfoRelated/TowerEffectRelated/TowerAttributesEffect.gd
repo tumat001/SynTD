@@ -202,3 +202,7 @@ func _consume_current_additive_scaling_for_actual_scaling_in_stats():
 	attribute_as_modifier.scale_by(_current_additive_scale)
 	_current_additive_scale = 1
 
+func has_same_stats_to_effect_except_for_time(arg_other_effect):
+	return effect_uuid == arg_other_effect.effect_uuid and attribute_as_modifier.get_value() == arg_other_effect.attribute_as_modifier.get_value()
+
+

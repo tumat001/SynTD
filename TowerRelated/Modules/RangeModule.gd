@@ -65,16 +65,23 @@ var parent_tower setget set_parent_tower
 
 #
 
+var _range_shape_set_before_in_tree #shape
+var _terrain_shape_set_before_in_tree #shape
+
+var _update_range_polgyon_requested : bool = false
+var _changing_terrain_scan_shape : bool = false
+var _wait_one_physics_step : bool = false
+
+var _poly_calculating_thread : Thread # note: threads are single use
+var _wait_for_finish_called_from_thread : bool
+
+###
+
 onready var range_shape = $RangeShape
 onready var range_polygon = $RangePolygon
 
 onready var terrain_scan_area_2d = $TerrainScanArea2D
 onready var terrain_scan_shape = $TerrainScanArea2D/TerrainScanShape
-
-var _range_shape_set_before_in_tree
-var _terrain_shape_set_before_in_tree
-
-var _update_range_polgyon_requested : bool = false
 
 #
 func _ready():
@@ -87,18 +94,37 @@ func _ready():
 	
 	if _range_shape_set_before_in_tree != null:
 		set_range_shape(_range_shape_set_before_in_tree)
+	
+	#_terrain_shape_owner_id - terrain_scan_area_2d.shape_owner
+	
 	#connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
 	#connect("area_shape_exited" , self, "_on_Range_area_shape_exited", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
 #	connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_PERSIST)
 #	connect("area_shape_exited" , self, "_on_Range_area_shape_exited", [], CONNECT_PERSIST)
-	
-	
-#	if !terrain_scan_area_2d.is_connected("area_entered", self, "_on_area_entered_terrain_scan_area_2d"):
-#		terrain_scan_area_2d.connect("area_entered", self, "_on_area_entered_terrain_scan_area_2d", [], CONNECT_PERSIST)
-#
-#	if !terrain_scan_area_2d.is_connected("area_exited", self, "_on_area_exited_terrain_scan_area_2d"):
-#		terrain_scan_area_2d.connect("area_exited", self, "_on_area_exited_terrain_scan_area_2d", [], CONNECT_PERSIST)
 
+
+# Range effect
+
+func flat_range_effect_has_same_stats_to_current_except_time(arg_flat_range_effect):
+	if flat_range_effects.has(arg_flat_range_effect.effect_uuid):
+		var current = flat_range_effects[arg_flat_range_effect.effect_uuid]
+		
+		return current.has_same_stats_to_effect_except_for_time(arg_flat_range_effect)
+		
+	else:
+		return false
+
+func percent_range_effect_has_same_stats_to_current_except_time(arg_range_effect):
+	if percent_range_effects.has(arg_range_effect.effect_uuid):
+		var current = percent_range_effects[arg_range_effect.effect_uuid]
+		
+		return current.has_same_stats_to_effect_except_for_time(arg_range_effect)
+		
+	else:
+		return false
+
+
+#
 
 func _init():
 	_all_targeting_options = [Targeting.FIRST, Targeting.LAST]
@@ -245,7 +271,6 @@ func _draw():
 				
 			elif range_polygon_poly_points != null:
 				draw_polygon(range_polygon_poly_points, PoolColorArray([circle_range_color]))
-				#print("vision polygon: %s" % str(range_polygon_poly_points))
 		
 		if can_display_circle_arc:
 			draw_circle_arc(Vector2(0, 0), final_range, 0, 360, circle_arc_color)
@@ -280,15 +305,15 @@ func _change_range(final_range):
 	if is_connected("area_shape_exited", self, "_on_Range_area_shape_exited"):
 		disconnect("area_shape_exited", self, "_on_Range_area_shape_exited")
 	
-	#if range_shape.shape != null:
-	#	range_shape.shape.set_deferred("radius", final_range)
+	if range_shape != null and range_shape.shape != null:
+		range_shape.shape.set_deferred("radius", final_range)
+		update()
 	
-	if terrain_scan_shape.shape != null:
+	if terrain_scan_shape != null and terrain_scan_shape.shape != null:
 		_change_terrain_scan_shape__and_update_range_polygon(final_range)
 	
 	_connect_area_shape_entered_and_exit_signals()
 	
-	update()
 
 func _connect_area_shape_entered_and_exit_signals():
 	if !is_connected("area_shape_entered", self, "_on_Range_area_shape_entered"):
@@ -622,22 +647,48 @@ func set_terrain_scan_shape(arg_shape):
 		_terrain_shape_set_before_in_tree = arg_shape
 	else:
 		terrain_scan_shape.shape = arg_shape
+		
+		if !terrain_scan_area_2d.is_connected("area_exited", self, "_on_area_exited_terrain_scan_area_2d"):
+			terrain_scan_area_2d.connect("area_exited", self, "_on_area_exited_terrain_scan_area_2d", [], CONNECT_PERSIST)
+			
+		if !terrain_scan_area_2d.is_connected("area_entered", self, "_on_area_entered_terrain_scan_area_2d"):
+			terrain_scan_area_2d.connect("area_entered", self, "_on_area_entered_terrain_scan_area_2d", [], CONNECT_PERSIST)
+
 
 func get_terrain_scan_shape():
 	return terrain_scan_shape.shape
 
 func _change_terrain_scan_shape__and_update_range_polygon(arg_range):
 	_change_terrain_scan_range(arg_range)
-	_request_update_range_polgyon()
 
 func _change_terrain_scan_range(arg_range : float):
+	#_changing_terrain_scan_shape = true
+	
 	if terrain_scan_area_2d.is_connected("area_entered", self, "_on_area_entered_terrain_scan_area_2d"):
 		terrain_scan_area_2d.disconnect("area_entered", self, "_on_area_entered_terrain_scan_area_2d")
 	
 	if terrain_scan_area_2d.is_connected("area_exited", self, "_on_area_exited_terrain_scan_area_2d"):
 		terrain_scan_area_2d.disconnect("area_exited", self, "_on_area_exited_terrain_scan_area_2d")
 	
-	terrain_scan_shape.shape.set_deferred("radius", arg_range)
+	_wait_one_physics_step = true
+	call_deferred("_set_terrain_shape_deferred", arg_range)
+	#_set_terrain_shape_deferred(arg_range)
+
+func _set_terrain_shape_deferred(arg_range : float):
+	terrain_scan_shape.shape.radius = arg_range
+	#terrain_scan_shape.shape.set_deferred("radius", arg_range)
+	
+	if !terrain_scan_area_2d.is_connected("area_exited", self, "_on_area_exited_terrain_scan_area_2d"):
+		terrain_scan_area_2d.connect("area_exited", self, "_on_area_exited_terrain_scan_area_2d", [], CONNECT_PERSIST)
+	
+	if !terrain_scan_area_2d.is_connected("area_entered", self, "_on_area_entered_terrain_scan_area_2d"):
+		terrain_scan_area_2d.connect("area_entered", self, "_on_area_entered_terrain_scan_area_2d", [], CONNECT_PERSIST)
+	
+	
+	_request_update_range_polgyon()
+	
+	#_changing_terrain_scan_shape = false
+
 
 func _request_update_range_polgyon():
 	_update_range_polgyon_requested = true
@@ -646,35 +697,54 @@ func _request_update_range_polgyon():
 #
 
 func _physics_process(delta):
-	_update_range_polgyon()
+	if !_wait_one_physics_step:
+		_update_range_polgyon()
+	else:
+		_wait_one_physics_step = false
 
 func _update_range_polgyon():
-	_update_range_polgyon_requested = false
-	set_physics_process(false)
-	#
-	
-	#print("terrains: %s" % str(terrain_in_range))
-	var terrain_polygons = TerrainFuncs.convert_areas_to_polygons(terrain_in_range, global_position, layer_on_terrain)
-	var vision_polygon = TerrainFuncs.get_polygon_resulting_from_vertices__circle(terrain_polygons, last_calculated_final_range, fov_node)
-	
-	range_polygon_poly_points = vision_polygon
-	range_polygon.set_deferred("polygon", vision_polygon)
-	#print("range polygon updated")
-	
-	if !terrain_scan_area_2d.is_connected("area_entered", self, "_on_area_entered_terrain_scan_area_2d"):
-		terrain_scan_area_2d.connect("area_entered", self, "_on_area_entered_terrain_scan_area_2d", [], CONNECT_PERSIST)
-		#print("re-connect")
-	
-	if !terrain_scan_area_2d.is_connected("area_exited", self, "_on_area_exited_terrain_scan_area_2d"):
-		terrain_scan_area_2d.connect("area_exited", self, "_on_area_exited_terrain_scan_area_2d", [], CONNECT_PERSIST)
+	if _update_range_polgyon_requested:# and !_changing_terrain_scan_shape:
+		_update_range_polgyon_requested = false
+		set_physics_process(false)
+		
+		_update_polygon__start_thread()
+#		var terrain_polygons = TerrainFuncs.convert_areas_to_polygons(terrain_in_range, global_position, layer_on_terrain)
+#		var vision_polygon = TerrainFuncs.get_polygon_resulting_from_vertices__circle(terrain_polygons, last_calculated_final_range, fov_node)
+#
+#		range_polygon_poly_points = vision_polygon
+#		range_polygon.set_deferred("polygon", vision_polygon)
+#
+#		update()
 
+
+func _update_polygon__start_thread():
+	_wait_for_curr_poly_calc_thread_to_finish()
 	
+	if _poly_calculating_thread == null or !_poly_calculating_thread.is_active():
+		_poly_calculating_thread = Thread.new()
+		_poly_calculating_thread.start(self, "_update_polygon__in_thread", null)
+
+func _wait_for_curr_poly_calc_thread_to_finish():
+	if _poly_calculating_thread != null and _poly_calculating_thread.is_active():
+		_wait_for_finish_called_from_thread = true
+		_poly_calculating_thread.wait_to_finish()
+		_wait_for_finish_called_from_thread = false
+
+func _update_polygon__in_thread(_data):
+	if !_wait_for_finish_called_from_thread:
+		var terrain_polygons = TerrainFuncs.convert_areas_to_polygons(terrain_in_range, global_position, layer_on_terrain)
+		var vision_polygon = TerrainFuncs.get_polygon_resulting_from_vertices__circle(terrain_polygons, last_calculated_final_range, fov_node)
+		
+		range_polygon_poly_points = vision_polygon
+		range_polygon.set_deferred("polygon", vision_polygon)
+		
+		update()
 
 ###
 
 func _on_area_entered_terrain_scan_area_2d(area):
-	terrain_in_range.append(area)
-	#print("entered: %s" % area)
+	if !terrain_in_range.has(area):
+		terrain_in_range.append(area)
 	
 	if !area.is_connected("global_position_changed", self, "_on_terrain_changed_pos"):
 		area.connect("global_position_changed", self, "_on_terrain_changed_pos", [], CONNECT_PERSIST)
@@ -685,14 +755,12 @@ func _on_area_entered_terrain_scan_area_2d(area):
 
 func _on_area_exited_terrain_scan_area_2d(area):
 	terrain_in_range.erase(area)
-	#print("exited: %s" % area)
 	
 	if area.is_connected("global_position_changed", self, "_on_terrain_changed_pos"):
 		area.disconnect("global_position_changed", self, "_on_terrain_changed_pos")
 	
 	if area.is_connected("terrain_layer_changed", self, "_on_terrain_changed_terrain_layer"):
 		area.disconnect("terrain_layer_changed", self, "_on_terrain_changed_terrain_layer")
-
 
 
 func _on_terrain_changed_pos(arg_old, arg_new):
@@ -734,3 +802,8 @@ func _on_parent_tower_changed_terrain_layer(arg_old, arg_new):
 
 func _on_tower_transfered_to_placable(arg_tower, arg_placable):
 	_request_update_range_polgyon()
+
+######
+
+func _exit_tree():
+	_wait_for_curr_poly_calc_thread_to_finish()

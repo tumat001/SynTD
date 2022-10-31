@@ -112,7 +112,7 @@ func _ready():
 	buffing_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	buffing_attack_module.is_main_attack = false
 	buffing_attack_module.base_pierce = 2
-	buffing_attack_module.base_proj_speed = 400
+	buffing_attack_module.base_proj_speed = 480
 	buffing_attack_module.base_proj_life_distance = info.base_range
 	buffing_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	buffing_attack_module.on_hit_damage_scale = 0

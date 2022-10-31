@@ -115,7 +115,7 @@ const xp_about_descriptions = [
 ]
 
 
-const main_attack_proj_speed : float = 500.0
+const main_attack_proj_speed : float = 650.0 #500.0
 const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
 const attks_needed_for_light_explosion : int = 35
 const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3.5]

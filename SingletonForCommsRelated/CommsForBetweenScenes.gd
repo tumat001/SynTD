@@ -36,7 +36,7 @@ func _ready():
 
 
 func _load_defaults():
-	map_id = StoreOfMaps.MapsIds.RIVERSIDE
+	map_id = StoreOfMaps.default_map_id_for_empty
 	game_mode_id = StoreOfGameMode.Mode.STANDARD_NORMAL
 
 func _initialize_whole_loading_screen():

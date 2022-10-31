@@ -103,6 +103,7 @@ func _on_round_start_t():
 
 func _on_round_end_t():
 	_end_attempts_at_trap_placement()
+	_current_trap_count = 0
 	
 	if trap_attack_module.is_connected("on_enemy_hit", self, "_on_enemy_hit_by_trap__as_oneshot"):
 		trap_attack_module.disconnect("on_enemy_hit", self, "_on_enemy_hit_by_trap__as_oneshot")

@@ -37,6 +37,8 @@ func get_modification_to_value(value):
 	
 	return modification
 
+func get_value(): # used for comparison checks (range), but could be for others
+	return percent_amount
 
 # ex: 10% max ___ from lowerlimit up to upperlimit
 func get_description() -> Array:

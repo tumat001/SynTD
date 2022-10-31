@@ -30,7 +30,7 @@ __meta__ = {
 position = Vector2( 261.15, 209.849 )
 
 [node name="InMapAreaPlacable2" parent="InMapPlacables" index="1" instance=ExtResource( 2 )]
-position = Vector2( 322.079, 248.891 )
+position = Vector2( 330.988, 252.455 )
 
 [node name="InMapAreaPlacable3" parent="InMapPlacables" index="2" instance=ExtResource( 2 )]
 position = Vector2( 605.724, 228.17 )
@@ -42,13 +42,13 @@ position = Vector2( 408.724, 343.67 )
 position = Vector2( 449.138, 149.204 )
 
 [node name="InMapAreaPlacable6" parent="InMapPlacables" index="5" instance=ExtResource( 2 )]
-position = Vector2( 728.585, 191.279 )
+position = Vector2( 727.694, 191.279 )
 
 [node name="InMapAreaPlacable7" parent="InMapPlacables" index="6" instance=ExtResource( 2 )]
 position = Vector2( 579.636, 154.419 )
 
 [node name="InMapAreaPlacable8" parent="InMapPlacables" index="7" instance=ExtResource( 2 )]
-position = Vector2( 391.014, 71.9386 )
+position = Vector2( 367.85, 71.9386 )
 
 [node name="InMapAreaPlacable9" parent="InMapPlacables" index="8" instance=ExtResource( 2 )]
 position = Vector2( 153.25, 187.113 )
@@ -69,13 +69,22 @@ position = Vector2( 162.699, 255.779 )
 position = Vector2( 267.273, 74.9803 )
 
 [node name="InMapAreaPlacable14" parent="InMapPlacables" index="14" instance=ExtResource( 2 )]
-position = Vector2( 528.393, 91.3778 )
+position = Vector2( 525.72, 96.7232 )
 
 [node name="InMapAreaPlacable15" parent="InMapPlacables" index="15" instance=ExtResource( 2 )]
 position = Vector2( 687.456, 356.573 )
 
 [node name="InMapAreaPlacable17" parent="InMapPlacables" index="16" instance=ExtResource( 2 )]
 position = Vector2( 495.85, 305.603 )
+
+[node name="InMapAreaPlacable18" parent="InMapPlacables" index="17" instance=ExtResource( 2 )]
+position = Vector2( 747.975, 107.823 )
+
+[node name="InMapAreaPlacable19" parent="InMapPlacables" index="18" instance=ExtResource( 2 )]
+position = Vector2( 181.362, 326.985 )
+
+[node name="InMapAreaPlacable20" parent="InMapPlacables" index="19" instance=ExtResource( 2 )]
+position = Vector2( 135.035, 80.2051 )
 
 [node name="EnemyPath" parent="EnemyPaths" index="0" instance=ExtResource( 4 )]
 curve = SubResource( 1 )

@@ -1,8 +1,14 @@
 
 var internal_id : int
 
+
 func get_modification_to_value(value):
 	pass
+
+func get_value():
+	pass
+
+#
 
 func _init(arg_internal_id : int):
 	internal_id = arg_internal_id

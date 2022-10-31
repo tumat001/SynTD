@@ -70,7 +70,7 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 420
+	attack_module.base_proj_speed = 504#420
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
@@ -97,7 +97,7 @@ func _ready():
 	exploding_seed_am.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	exploding_seed_am.is_main_attack = false
 	exploding_seed_am.base_pierce = info.base_pierce
-	exploding_seed_am.base_proj_speed = 680
+	exploding_seed_am.base_proj_speed = 740#680
 	exploding_seed_am.base_proj_life_distance = info.base_range
 	exploding_seed_am.module_id = StoreOfAttackModuleID.PART_OF_SELF
 	exploding_seed_am.on_hit_damage_scale = info.on_hit_multiplier

@@ -48,11 +48,15 @@ func set_chosen_map_id(arg_id):
 			base_map = child
 			break
 
-
 func _assign_map_from_store_of_maps():
 	var chosen_map = StoreOfMaps.get_map_from_map_id(chosen_map_id).instance()
 	add_child(chosen_map)
 
+
+#
+
+func make_base_map_apply_changes_to_game_elements(arg_game_elements):
+	base_map._apply_map_specific_changes_to_game_elements(arg_game_elements)
 
 #
 

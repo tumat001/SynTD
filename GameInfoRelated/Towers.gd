@@ -1061,7 +1061,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 1.5
 		info.base_attk_speed = 0.6
 		info.base_pierce = 0
-		info.base_range = 130
+		info.base_range = 145#130
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
 		
@@ -1116,7 +1116,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var ins_for_range = []
 		ins_for_range.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE))
-		ins_for_range.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.RANGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.1))
+		ins_for_range.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.RANGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.15))
 		ins_for_range.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 		ins_for_range.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
@@ -1130,7 +1130,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# INS END
 		
 		info.tower_descriptions = [
-			["Does not attack, but instead |0| an aura that buffs towers in range every |1| for 4 seconds.", [plain_fragment__ability_casts, interpreter_for_cooldown]],
+			["Does not attack, but instead |0| an aura that buffs towers in range every |1| for 5 seconds.", [plain_fragment__ability_casts, interpreter_for_cooldown]],
 			["Grants |0| as an elemental on hit damage buff.", [interpreter_for_ele_on_hit]],
 			["Grants |0| as percent attack speed buff.", [interpreter_for_attk_speed]],
 			["Grants |0| as bonus range.", [interpreter_for_range]],
@@ -1485,10 +1485,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = campfire_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 5
+		info.base_damage = 6
 		info.base_attk_speed = 1
 		info.base_pierce = 0
-		info.base_range = 105
+		info.base_range = 115
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 0
 		
@@ -1522,7 +1522,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var ins_for_on_hit = []
 		ins_for_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL))
-		ins_for_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		ins_for_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.5))
 		
 		interpreter_for_on_hit.array_of_instructions = ins_for_on_hit
 		
@@ -5163,10 +5163,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = propel_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.75
+		info.base_damage = 2.5#2.75
 		info.base_attk_speed = 0.45
 		info.base_pierce = 1
-		info.base_range = 145
+		info.base_range = 155#145
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -5321,7 +5321,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_spew_dmg.display_body = true
 		
 		var ins_for_spew_dmg = []
-		ins_for_spew_dmg.append(NumericalTextFragment.new(2.5, false, DamageType.ELEMENTAL))
+		ins_for_spew_dmg.append(NumericalTextFragment.new(3, false, DamageType.ELEMENTAL))
 		ins_for_spew_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins_for_spew_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.75)) # stat basis does not matter here
 		
@@ -5550,7 +5550,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_damage = 3
 		info.base_attk_speed = 0.95
 		info.base_pierce = 1
-		info.base_range = 110
+		info.base_range = 120#110
 		info.base_damage_type = DamageType.PHYSICAL
 		info.on_hit_multiplier = 1
 		
@@ -5691,7 +5691,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_cooldown.header_description = "s"
 		
 		var ins_for_cooldown = []
-		ins_for_cooldown.append(NumericalTextFragment.new(90, false))
+		ins_for_cooldown.append(NumericalTextFragment.new(40, false))
 		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
 		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		

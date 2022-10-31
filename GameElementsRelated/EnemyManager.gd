@@ -361,6 +361,7 @@ func _enemy_reached_end(enemy : AbstractEnemy):
 # Enemy Queries
 
 func get_all_enemies() -> Array:
+	
 	var enemies = get_tree().get_nodes_in_group(ENEMY_GROUP_TAG)
 	var bucket = []
 	

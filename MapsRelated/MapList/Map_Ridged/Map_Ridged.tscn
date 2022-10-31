@@ -1,0 +1,156 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://MapsRelated/BaseMap.tscn" type="PackedScene" id=1]
+[ext_resource path="res://MapsRelated/MapList/Map_Ridged/Map_Ridged_WithBorders.png" type="Texture" id=2]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.tscn" type="PackedScene" id=3]
+[ext_resource path="res://EnemyRelated/EnemyPath.tscn" type="PackedScene" id=4]
+[ext_resource path="res://GameInfoRelated/TerrainRelated/BaseTerrain.tscn" type="PackedScene" id=5]
+[ext_resource path="res://MapsRelated/MapList/Map_Ridged/Map_Ridged.gd" type="Script" id=6]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 86.267, 100.038, 0, 0, 0, 0, 161.107, 100.879, 0, 0, 0, 0, 200.629, 87.425, 0, 0, 0, 0, 320.036, 83.2205, 0, 0, 0, 0, 382.573, 86.9659, 0, 0, 0, 0, 455.241, 124.424, 0, 0, 0, 0, 469.475, 150.644, 0, 0, 0, 0, 456.739, 162.63, 0, 0, 0, 0, 340.62, 177.613, 0, 0, 0, 0, 237.237, 219.566, 0, 0, 0, 0, 217.759, 265.264, 0, 0, 0, 0, 224.501, 292.983, 0, 0, 0, 0, 243.979, 315.458, 0, 0, 0, 0, 290.427, 337.932, 0, 0, 0, 0, 325.637, 346.922, 0, 0, 0, 0, 366.841, 349.919, 0, 0, 0, 0, 425.275, 349.919, 0, 0, 0, 0, 471.722, 336.434, 0, 0, 0, 0, 547.387, 299.725, 0, 0, 0, 0, 632.79, 197.841, 0, 0, 0, 0, 670.997, 186.603, 0, 0, 0, 0, 698.716, 191.098, 0, 0, 0, 0, 729.431, 216.569, 0, 0, 0, 0, 773.631, 274.254, 0, 0, 0, 0, 784.868, 276.502, 0, 0, 0, 0, 798.353, 263.766, 0, 0, 0, 0, 819.329, 211.325, 0, 0, 0, 0, 814.085, 157.386, 0, 0, 0, 0, 828.631, 129.368 )
+}
+
+[sub_resource type="Curve2D" id=2]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 617.723, 50.6255, 0, 0, 0, 0, 571.359, 72.7319, 0, 0, 0, 0, 516.671, 81.7218, 0, 0, 0, 0, 407.295, 65.2404, 0, 0, 0, 0, 382.573, 86.9659, 0, 0, 0, 0, 455.241, 124.424, 0, 0, 0, 0, 469.475, 150.644, 0, 0, 0, 0, 456.739, 162.63, 0, 0, 0, 0, 340.62, 177.613, 0, 0, 0, 0, 237.237, 219.566, 0, 0, 0, 0, 217.759, 265.264, 0, 0, 0, 0, 224.501, 292.983, 0, 0, 0, 0, 243.979, 315.458, 0, 0, 0, 0, 290.427, 337.932, 0, 0, 0, 0, 325.637, 346.922, 0, 0, 0, 0, 366.841, 349.919, 0, 0, 0, 0, 425.275, 349.919, 0, 0, 0, 0, 471.722, 336.434, 0, 0, 0, 0, 547.387, 299.725, 0, 0, 0, 0, 632.79, 197.841, 0, 0, 0, 0, 670.997, 186.603, 0, 0, 0, 0, 698.716, 191.098, 0, 0, 0, 0, 729.431, 216.569, 0, 0, 0, 0, 773.631, 274.254, 0, 0, 0, 0, 784.868, 276.502, 0, 0, 0, 0, 798.353, 263.766, 0, 0, 0, 0, 819.329, 211.325, 0, 0, 0, 0, 814.085, 157.386, 0, 0, 0, 0, 828.674, 129.313 )
+}
+
+[node name="Map_Ridged" instance=ExtResource( 1 )]
+script = ExtResource( 6 )
+
+[node name="TextureRect" type="TextureRect" parent="Environment" index="0"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="InMapAreaPlacable" parent="InMapPlacables" index="0" instance=ExtResource( 3 )]
+position = Vector2( 373.352, 212.469 )
+layer_on_terrain = 1
+
+[node name="InMapAreaPlacable2" parent="InMapPlacables" index="1" instance=ExtResource( 3 )]
+position = Vector2( 284.417, 244.74 )
+layer_on_terrain = 1
+
+[node name="InMapAreaPlacable3" parent="InMapPlacables" index="2" instance=ExtResource( 3 )]
+position = Vector2( 673.098, 234.311 )
+
+[node name="InMapAreaPlacable4" parent="InMapPlacables" index="3" instance=ExtResource( 3 )]
+position = Vector2( 235.335, 117.317 )
+layer_on_terrain = 2
+
+[node name="InMapAreaPlacable5" parent="InMapPlacables" index="4" instance=ExtResource( 3 )]
+position = Vector2( 541.589, 107.373 )
+layer_on_terrain = 2
+
+[node name="InMapAreaPlacable6" parent="InMapPlacables" index="5" instance=ExtResource( 3 )]
+position = Vector2( 398.225, 139.445 )
+layer_on_terrain = 1
+
+[node name="InMapAreaPlacable7" parent="InMapPlacables" index="6" instance=ExtResource( 3 )]
+position = Vector2( 469.275, 281.645 )
+
+[node name="InMapAreaPlacable8" parent="InMapPlacables" index="7" instance=ExtResource( 3 )]
+position = Vector2( 384.707, 311.941 )
+
+[node name="InMapAreaPlacable9" parent="InMapPlacables" index="8" instance=ExtResource( 3 )]
+position = Vector2( 670.983, 148.425 )
+
+[node name="InMapAreaPlacable10" parent="InMapPlacables" index="9" instance=ExtResource( 3 )]
+position = Vector2( 799.736, 326.157 )
+
+[node name="InMapAreaPlacable11" parent="InMapPlacables" index="10" instance=ExtResource( 3 )]
+position = Vector2( 637.706, 292.075 )
+
+[node name="InMapAreaPlacable12" parent="InMapPlacables" index="11" instance=ExtResource( 3 )]
+position = Vector2( 158.018, 235.977 )
+layer_on_terrain = 1
+
+[node name="InMapAreaPlacable13" parent="InMapPlacables" index="12" instance=ExtResource( 3 )]
+position = Vector2( 162.508, 312.304 )
+layer_on_terrain = 1
+
+[node name="InMapAreaPlacable14" parent="InMapPlacables" index="13" instance=ExtResource( 3 )]
+position = Vector2( 220.876, 356.08 )
+
+[node name="InMapAreaPlacable15" parent="InMapPlacables" index="14" instance=ExtResource( 3 )]
+position = Vector2( 534.771, 244.456 )
+
+[node name="InMapAreaPlacable16" parent="InMapPlacables" index="15" instance=ExtResource( 3 )]
+position = Vector2( 574.477, 345.592 )
+
+[node name="InMapAreaPlacable17" parent="InMapPlacables" index="16" instance=ExtResource( 3 )]
+position = Vector2( 720.562, 296.897 )
+
+[node name="InMapAreaPlacable18" parent="InMapPlacables" index="17" instance=ExtResource( 3 )]
+position = Vector2( 770.508, 121.489 )
+layer_on_terrain = 2
+
+[node name="InMapAreaPlacable19" parent="InMapPlacables" index="18" instance=ExtResource( 3 )]
+position = Vector2( 678.508, 352.489 )
+
+[node name="EnemyPath01" parent="EnemyPaths" index="0" instance=ExtResource( 4 )]
+curve = SubResource( 1 )
+
+[node name="EnemyPath02" parent="EnemyPaths" index="1" instance=ExtResource( 4 )]
+curve = SubResource( 2 )
+
+[node name="LeftLong" parent="Terrain" index="0" instance=ExtResource( 5 )]
+position = Vector2( 94.7559, 125.858 )
+__meta__ = {
+"_edit_lock_": true
+}
+terrain_layer = 2
+
+[node name="CollisionPolygon2D" parent="Terrain/LeftLong" index="0"]
+polygon = PoolVector2Array( -0.603661, 0.315979, 106.19, 14.1908, 167.576, 12.509, 211.302, -8.09298, 277.733, -10.6157, 215.588, 32.3112, 147.836, 54.1103, -1.02411, 81.8829 )
+
+[node name="MiddleCheck" parent="Terrain" index="1" instance=ExtResource( 5 )]
+position = Vector2( 459.064, 79.8232 )
+__meta__ = {
+"_edit_lock_": true
+}
+terrain_layer = 2
+
+[node name="CollisionPolygon2D" parent="Terrain/MiddleCheck" index="0"]
+polygon = PoolVector2Array( 107.089, 49.3573, 60.6535, 50.9398, 34.5101, 16.4495, 1.83936, 7.78239, -15.4846, 17.5468, 11.9187, 24.4763, 33.0849, 45.263, 50.1175, 78.33, 68.3002, 84.0076, 105.018, 98.2611, 149.368, 62.3019, 185.825, 22.8496, 218.763, -3.34256, 228.057, -24.7969, 212.355, -30.4207, 177.491, -6.12051, 147.84, 16.6735 )
+
+[node name="MiddleLongStraight" parent="Terrain" index="2" instance=ExtResource( 5 )]
+position = Vector2( 526.696, 164.085 )
+__meta__ = {
+"_edit_lock_": true
+}
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/MiddleLongStraight" index="0"]
+polygon = PoolVector2Array( -0.802795, -0.103775, -13.1051, 20.1356, -47.6311, 42.756, -195.656, 94.3466, -226.214, 112.602, -230.976, 126.888, -204.846, 137.415, -88.7672, 92.5708, 0.387756, 49.8994, 30.1026, 11.4832 )
+
+[node name="RightDown" parent="Terrain" index="3" instance=ExtResource( 5 )]
+position = Vector2( 694.984, 58.0157 )
+__meta__ = {
+"_edit_lock_": true
+}
+terrain_layer = 2
+
+[node name="CollisionPolygon2D" parent="Terrain/RightDown" index="0"]
+polygon = PoolVector2Array( 0.17334, 0.935307, 3.58612, 42.1059, 13.0157, 83.9843, 54.5157, 119.734, 79.6873, 157.729, 77.1646, 181.274, 95.7657, 133.984, 73.801, 103.912, 45.5157, 86.7343, 31.7657, 50.7343, 31.0157, 3.73425, 16.5288, -4.49444, 3.41791, 0.00827789 )
+
+[node name="MountainTops" parent="Terrain" index="4" instance=ExtResource( 5 )]
+__meta__ = {
+"_edit_lock_": true
+}
+terrain_layer = 1000
+
+[node name="CollisionPolygon2D" parent="Terrain/MountainTops" index="0"]
+polygon = PoolVector2Array( 93.6534, 34.4054, 93.6534, 83.1407, 247.276, 49.2378, 518.498, 50.2973, 543.78, 59.2937, 587.83, 50.7614, 648.548, 50.9598, 673.673, 49.2092, 687.482, 55, 686.145, 58.1181, 693.237, 59.3484, 711.536, 53.2182, 725.79, 60.7908, 811.517, 102.631, 841.028, 146.888, 841.919, 36.4163 )
+
+[editable path="Terrain/LeftLong"]
+[editable path="Terrain/MiddleCheck"]
+[editable path="Terrain/MiddleLongStraight"]
+[editable path="Terrain/RightDown"]
+[editable path="Terrain/MountainTops"]

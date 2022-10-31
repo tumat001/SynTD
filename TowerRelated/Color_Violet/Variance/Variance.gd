@@ -197,7 +197,7 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 420
+	attack_module.base_proj_speed = 504 #420
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
@@ -232,7 +232,7 @@ func _ready():
 	connect("on_round_start", self, "_on_round_start_v", [], CONNECT_PERSIST)
 	
 	_set_variance_state(VarianceState.INITIAL)
-	#_set_variance_state(VarianceState.YELLOW) #For testing
+	#_set_variance_state(VarianceState.BLUE) #For testing
 	
 	variance_frame_sprites.use_parent_material = false
 	
@@ -565,7 +565,7 @@ func _set_vairance_state_to_initial():
 	tower_type_info.tower_descriptions = descs_for_clear
 	
 	
-	#TODO Do this when needed (if revertable to clear)
+	#Do this when needed (if revertable to clear)
 	#variance_frame_sprites.texture = Variance_fra
 	#initialize_clear_ing
 
@@ -833,13 +833,15 @@ func _cast_specialize_as_blue_state():
 		
 		var curr_target
 		if is_instance_valid(range_module):
-			var enemies = range_module.get_enemies_in_range__not_affecting_curr_enemies_in_range()
+			#var enemies = range_module.get_enemies_in_range__not_affecting_curr_enemies_in_range()
+			var enemies = range_module.get_targets_without_affecting_self_current_targets(1, Targeting.STRONGEST)
 			if enemies.size() > 0:
 				curr_target = enemies[0]
 		
 		if is_instance_valid(curr_target):
 			blue_beam_attk_module.can_be_commanded_by_tower_other_clauses.remove_clause(blue_beam_disabled_from_attking_clause)
 			range_module.connect("enemy_left_range", self, "_on_enemy_exited_range_module", [range_module])
+			
 			#curr_target.connect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed", [curr_target, range_module])
 			
 			if !curr_target.is_connected("tree_exiting", self, "_on_enemy_killed"):
@@ -854,7 +856,7 @@ func _cast_specialize_as_blue_state():
 		
 		for i in 6:
 			blue_ap_inc_attk_sprite_pool.get_or_create_attack_sprite_from_pool()
-		is_casting_as_blue_type = false
+		_stop_blue_ability()
 
 
 func _on_dmg_instance_constructed__by_blue_beam(arg_dmg_instance, arg_module):
@@ -1108,7 +1110,7 @@ func _get_descriptions_for_blue_var():
 		_get_descriptions_header_01(),
 		"",
 		_get_descriptions_header_02(),
-		["|0|: Deal |1| per 0.25 seconds to its current target until it dies or leaves range. Afterwards, release an explosion at its target's location, dealing |2|. If this is casted while the beam is active, gain stacking |3|.", [plain_fragment__ability_name, interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg, interpreter_for_ap]],
+		["|0|: Deal |1| per 0.25 seconds to the Strongest target in range until it leaves Variance's range. Afterwards, release an explosion at its target's location, dealing |2|. If this is casted while the beam is active, gain stacking |3|.", [plain_fragment__ability_name, interpreter_for_blue_beam_dmg, interpreter_for_blue_explosion_dmg, interpreter_for_ap]],
 		"",
 		_get_descriptions_for_cooldown(),
 	]

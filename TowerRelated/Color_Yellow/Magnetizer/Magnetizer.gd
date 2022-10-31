@@ -135,8 +135,8 @@ func _ready():
 	beam_attack_module.base_aoe_scene = BaseAOE_Scene
 	beam_attack_module.aoe_sprite_frames = sprite_frames
 	beam_attack_module.sprite_frames_only_play_once = true
-	beam_attack_module.duration = 0.15
-	beam_attack_module.initial_delay = 0.10
+	beam_attack_module.duration = 0.15#0.15
+	beam_attack_module.initial_delay = 0.05 #0.10
 	beam_attack_module.is_decrease_duration = true
 	
 	beam_attack_module.aoe_default_coll_shape = BaseAOE.BaseAOEDefaultShapes.RECTANGLE

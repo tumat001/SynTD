@@ -663,12 +663,12 @@ func set_range_module(arg_module):
 	configure_range_module_properties(range_module)
 
 func configure_range_module_properties(arg_module):
-	range_module.update_range() 
-	range_module.enemy_manager = game_elements.enemy_manager
-	range_module.fov_node = game_elements.get_fov_node()
-	
-	if range_module.parent_tower != self:
-		range_module.set_parent_tower(self)
+	if arg_module != null:
+		arg_module.update_range()
+		arg_module.enemy_manager = game_elements.enemy_manager
+		arg_module.fov_node = game_elements.get_fov_node()
+		
+		arg_module.set_parent_tower(self)
 
 
 func get_current_anim_size() -> Vector2:
@@ -1441,15 +1441,33 @@ func _on_value_of_added_on_hit_damage_modified():
 
 
 func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Array):
+	var affected_range_module_list : Array = []
+	
 	for module in target_modules:
 		if is_instance_valid(module.range_module):
 			if module.parent_tower == self and (module.range_module.benefits_from_bonus_range or attr_effect.force_apply):
-				if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
-					module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
-				elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
-					module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
+				var update_range_of_module : bool = true
 				
-				module.range_module.update_range()
+				if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
+					update_range_of_module = !module.range_module.flat_range_effect_has_same_stats_to_current_except_time(attr_effect)
+					if update_range_of_module:
+						module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
+					else: #refresh time
+						module.range_module.flat_range_effects[attr_effect.effect_uuid].time_in_seconds = attr_effect.time_in_seconds
+					
+				elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
+					update_range_of_module = !module.range_module.percent_range_effect_has_same_stats_to_current_except_time(attr_effect)
+					
+					if update_range_of_module:
+						module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
+					else: #refresh time
+						module.range_module.percent_range_effects[attr_effect.effect_uuid].time_in_seconds = attr_effect.time_in_seconds
+				
+				if !affected_range_module_list.has(module.range_module):
+					if update_range_of_module:
+						module.range_module.update_range()
+					
+					affected_range_module_list.append(module.range_module)
 				
 				if module == main_attack_module:
 					_emit_final_range_changed()
@@ -1460,6 +1478,8 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 
 
 func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
+	var affected_range_module_list : Array = []
+	
 	var modules_to_remove_effect : Array = []
 	for module in target_modules:
 		if is_instance_valid(module.range_module):
@@ -1479,7 +1499,10 @@ func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
 			module.range_module.flat_range_effects.erase(attr_effect_uuid)
 			module.range_module.percent_range_effects.erase(attr_effect_uuid)
 			
-			module.range_module.update_range()
+			if !affected_range_module_list.has(module.range_module):
+					module.range_module.update_range()
+					affected_range_module_list.append(module.range_module)
+				
 			
 			if module._all_countbound_effects.has(attr_effect_uuid):
 				module._all_countbound_effects.erase(attr_effect_uuid)

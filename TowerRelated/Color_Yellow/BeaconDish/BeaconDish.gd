@@ -25,7 +25,7 @@ const beacon_dish_panel_about_descriptions : Array = [
 var tower_detecting_range_module : TowerDetectingRangeModule
 var refresh_cooldown : float = 5.0
 var _current_refresh_cooldown : float = 0
-var effect_duration : float = 4.0
+var effect_duration : float = 5.2 #4.0
 
 var elemental_on_hit_effect : TowerOnHitDamageAdderEffect
 var attack_speed_effect : TowerAttributesEffect
@@ -43,7 +43,7 @@ var buff_aura_ability : BaseAbility
 
 const original_ratio_elemental_on_hit : float = 0.20
 const original_ratio_attack_speed : float = 25.0
-const original_ratio_range : float = 0.1
+const original_ratio_range : float = 0.15
 
 var ratio_elemental_on_hit : float = original_ratio_elemental_on_hit
 var ratio_attack_speed : float = original_ratio_attack_speed
@@ -248,16 +248,16 @@ func set_energy_module(module):
 	if module != null:
 		module.module_effect_descriptions = [
 			"The ratio this tower's total stats compared to its given bonuses is increased.",
-			"50%% of its total base damage as a buff (from %s%%)." % str(original_ratio_elemental_on_hit * 100),
-			"50%% of its total attack speed as a buff (from %s%%)." % str(original_ratio_elemental_on_hit),
-			"20%% of its total range as a buff (from %s%%)." % str(original_ratio_range * 100)
+			"60%% of its total base damage as a buff (from %s%%)." % str(original_ratio_elemental_on_hit * 100),
+			"60%% of its total attack speed as a buff (from %s%%)." % str(original_ratio_elemental_on_hit),
+			"30%% of its total range as a buff (from %s%%)." % str(original_ratio_range * 100)
 		]
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	ratio_elemental_on_hit = 0.5
-	ratio_attack_speed = 50.0
-	ratio_range = 0.2
+	ratio_elemental_on_hit = 0.6
+	ratio_attack_speed = 60.0
+	ratio_range = 0.30
 	
 	_update_all_bd_effects()
 

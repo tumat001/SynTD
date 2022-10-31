@@ -743,7 +743,7 @@ func _get_instructions_for_7_2__sv_1():
 		SingleEnemySpawnInstruction.new(3, EnemyConstants.Enemies.FIEND),
 		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.FIEND),
 		
-		MultipleEnemySpawnInstruction.new(24, 5, 0.75, EnemyConstants.Enemies.FIEND),
+		MultipleEnemySpawnInstruction.new(24, 4, 0.75, EnemyConstants.Enemies.FIEND),
 	]
 
 func _get_instructions_for_7_2__sv_2():
@@ -752,7 +752,7 @@ func _get_instructions_for_7_2__sv_2():
 		SingleEnemySpawnInstruction.new(3, EnemyConstants.Enemies.FIEND),
 		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.FIEND),
 		
-		MultipleEnemySpawnInstruction.new(24, 6, 0.75, EnemyConstants.Enemies.FIEND),
+		MultipleEnemySpawnInstruction.new(24, 5, 0.75, EnemyConstants.Enemies.FIEND),
 	]
 
 func _get_instructions_for_7_2__sv_3():
@@ -762,7 +762,7 @@ func _get_instructions_for_7_2__sv_3():
 		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.FIEND),
 		MultipleEnemySpawnInstruction.new(9, 4, 1, EnemyConstants.Enemies.ASSASSIN),
 		
-		MultipleEnemySpawnInstruction.new(24, 6, 0.75, EnemyConstants.Enemies.FIEND),
+		MultipleEnemySpawnInstruction.new(24, 5, 0.75, EnemyConstants.Enemies.FIEND),
 		MultipleEnemySpawnInstruction.new(38, 2, 1.5, EnemyConstants.Enemies.EXPERIENCED),
 		
 	]
@@ -774,7 +774,7 @@ func _get_instructions_for_7_2__sv_4():
 		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.FIEND),
 		MultipleEnemySpawnInstruction.new(9, 4, 1, EnemyConstants.Enemies.ASSASSIN),
 		
-		MultipleEnemySpawnInstruction.new(24, 7, 0.75, EnemyConstants.Enemies.FIEND),
+		MultipleEnemySpawnInstruction.new(24, 6, 0.75, EnemyConstants.Enemies.FIEND),
 	]
 
 #################### 7-3
@@ -791,31 +791,31 @@ func _get_instructions_for_7_3():
 
 func _get_instructions_for_7_3__sv_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 35, 1.3, EnemyConstants.Enemies.EXPERIENCED),
-		MultipleEnemySpawnInstruction.new((1.3 * 5), 7, 2.6, EnemyConstants.Enemies.ENCHANTRESS),
+		MultipleEnemySpawnInstruction.new(0, 35, 1.35, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new((1.3 * 5), 6, 2.6, EnemyConstants.Enemies.ENCHANTRESS),
 		MultipleEnemySpawnInstruction.new((36 * 1.3), 4, 0.2, EnemyConstants.Enemies.ASSASSIN),
 	]
 
 func _get_instructions_for_7_3__sv_2():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 38, 1.3, EnemyConstants.Enemies.EXPERIENCED),
-		MultipleEnemySpawnInstruction.new((1.3 * 5), 9, 2.6, EnemyConstants.Enemies.ENCHANTRESS),
+		MultipleEnemySpawnInstruction.new(0, 38, 1.35, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new((1.3 * 5), 7, 2.6, EnemyConstants.Enemies.ENCHANTRESS),
 		MultipleEnemySpawnInstruction.new((39 * 1.3), 7, 0.2, EnemyConstants.Enemies.ASSASSIN),
 	]
 
 func _get_instructions_for_7_3__sv_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 38, 1.3, EnemyConstants.Enemies.EXPERIENCED),
-		MultipleEnemySpawnInstruction.new((1.3 * 5), 11, 2.6, EnemyConstants.Enemies.ENCHANTRESS),
-		MultipleEnemySpawnInstruction.new((39 * 1.3), 10, 0.2, EnemyConstants.Enemies.ASSASSIN),
+		MultipleEnemySpawnInstruction.new(0, 38, 1.35, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new((1.3 * 5), 8, 2.6, EnemyConstants.Enemies.ENCHANTRESS),
+		MultipleEnemySpawnInstruction.new((39 * 1.3), 9, 0.2, EnemyConstants.Enemies.ASSASSIN),
 	]
 
 func _get_instructions_for_7_3__sv_4():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 38, 1.3, EnemyConstants.Enemies.EXPERIENCED),
-		MultipleEnemySpawnInstruction.new((1.3 * 5), 11, 2.2, EnemyConstants.Enemies.ENCHANTRESS),
-		MultipleEnemySpawnInstruction.new((19 * 1.3), 4, 0.2, EnemyConstants.Enemies.ASSASSIN),
-		MultipleEnemySpawnInstruction.new((39 * 1.3), 10, 0.2, EnemyConstants.Enemies.ASSASSIN),
+		MultipleEnemySpawnInstruction.new(0, 38, 1.35, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new((1.3 * 5), 8, 2.2, EnemyConstants.Enemies.ENCHANTRESS),
+		MultipleEnemySpawnInstruction.new((19 * 1.3), 3, 0.2, EnemyConstants.Enemies.ASSASSIN),
+		MultipleEnemySpawnInstruction.new((39 * 1.3), 9, 0.2, EnemyConstants.Enemies.ASSASSIN),
 	]
 
 #################### 7-4
