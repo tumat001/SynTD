@@ -3,6 +3,8 @@ extends Node
 const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.gd")
 const EnemyPath = preload("res://EnemyRelated/EnemyPath.gd")
 
+const EnemySpawnLocIndicator_Flag_Scene = preload("res://MiscRelated/MapRelated/EnemySpawnLocIndicator/EnemySpawnLocIndicator_Flag.tscn")
+const EnemySpawnLocIndicator_Flag = preload("res://MiscRelated/MapRelated/EnemySpawnLocIndicator/EnemySpawnLocIndicator_Flag.gd")
 
 signal on_enemy_path_added(enemy_path)
 signal on_enemy_path_removed(enemy_path)
@@ -18,6 +20,9 @@ enum EnemyPathState {
 
 var all_in_map_placables : Array = []
 var _all_enemy_paths : Array = []
+
+var flag_to_path_map : Dictionary = {}
+
 
 onready var _in_map_placables = $InMapPlacables
 onready var _enemy_paths = $EnemyPaths
@@ -171,10 +176,32 @@ func add_terrain_node(arg_terrain, arg_z_index_to_use : int = ZIndexStore.TERRAI
 	if arg_terrain.get("z_index"):
 		arg_terrain.z_index = arg_z_index_to_use
 
-#
+###############
 
 func _apply_map_specific_changes_to_game_elements(arg_game_elements):
-	pass
+	for path in _all_enemy_paths:
+		_create_spawn_loc_flag_at_path(path)
 	
+	arg_game_elements.stage_round_manager.connect("round_started", self, "_on_round_started", [], CONNECT_PERSIST)
 
+
+################
+
+func _create_spawn_loc_flag_at_path(arg_enemy_path : EnemyPath, arg_offset_from_start : float = 30.0, arg_flag_texture_id : int = EnemySpawnLocIndicator_Flag.FlagTextureIds.ORANGE):
+	var flag = EnemySpawnLocIndicator_Flag_Scene.instance()
+	CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(flag)
+	
+	flag.set_flag_texture_id(arg_flag_texture_id)
+	
+	if arg_offset_from_start < 0:
+		arg_offset_from_start = arg_enemy_path.curve.get_baked_length() + arg_offset_from_start
+	flag.global_position = arg_enemy_path.curve.interpolate_baked(arg_offset_from_start)
+	
+	flag_to_path_map[flag] = arg_enemy_path
+	
+	return flag
+
+func _on_round_started(arg_stageround):
+	for flag in flag_to_path_map.keys():
+		flag.visible = false
 

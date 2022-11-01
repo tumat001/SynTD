@@ -90,10 +90,10 @@ func _on_EmblemButtonFire_emblem_button_right_pressed():
 			"704's attacks causes enemies to burn on hit. Burned enemies take elemental damage every 0.5 seconds for 5 seconds.",
 			"",
 			"Lvl 0: No burn.",
-			"Lvl 1: Burn damage = 0.2",
-			"Lvl 2: Burn damage = 0.5",
-			"Lvl 3: Burn damage = 0.8",
-			"Lvl 4: Burn damage = 1.0"
+			"Lvl 1: Burn damage = 0.4",
+			"Lvl 2: Burn damage = 0.7",
+			"Lvl 3: Burn damage = 1.0",
+			"Lvl 4: Burn damage = 1.3"
 		]
 		
 		get_tree().get_root().add_child(tower_tooltip)
@@ -133,9 +133,9 @@ func _on_EmblemButtonExplosive_emblem_button_right_pressed():
 			"",
 			"Lvl 0: No explosion.",
 			"Lvl 1: Small explosion.",
-			"Lvl 2: Small explosion. Applies on hit damages at 20% efficiency.",
-			"Lvl 3: Medium explosion. Applies on hit damages at 40% efficiency.",
-			"Lvl 4: Big explosion. Applies on hit damages at 60% efficiency, and applies on hit effects."
+			"Lvl 2: Small explosion. Applies on hit damages at 33% efficiency.",
+			"Lvl 3: Medium explosion. Applies on hit damages at 66% efficiency.",
+			"Lvl 4: Big explosion. Applies on hit damages at 100% efficiency, and applies on hit effects."
 		]
 		
 		get_tree().get_root().add_child(tower_tooltip)

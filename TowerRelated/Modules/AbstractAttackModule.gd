@@ -284,8 +284,8 @@ func _set_can_be_commanded_by_tower(val):
 	can_be_commanded_by_tower = val
 	_calculate_can_be_commanded_by_tower_clause()
 
-# Misc
 
+# Misc
 func reset_attack_timers():
 	_is_bursting = false
 	_current_burst_count = 0

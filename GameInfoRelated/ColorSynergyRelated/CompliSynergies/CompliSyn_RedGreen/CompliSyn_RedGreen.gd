@@ -69,13 +69,13 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 # Remove
 
 func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int):
-	if game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy"):
-		game_elements.tower_manager.disconnect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy")
-		game_elements.tower_manager.disconnect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy")
+	if arg_game_elements.tower_manager.is_connected("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy"):
+		arg_game_elements.tower_manager.disconnect("tower_to_benefit_from_synergy_buff", self, "_tower_to_benefit_from_synergy")
+		arg_game_elements.tower_manager.disconnect("tower_to_remove_from_synergy_buff", self, "_tower_to_remove_from_synergy")
 	
 	curr_tier = 0
 	
-	var all_towers = game_elements.tower_manager.get_all_active_towers()
+	var all_towers = arg_game_elements.tower_manager.get_all_active_towers()
 	for tower in all_towers:
 		_tower_to_remove_from_synergy(tower)
 	

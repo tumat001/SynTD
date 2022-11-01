@@ -19,8 +19,8 @@ const trap_count : int = 3
 var _current_trap_count : int = 0
 const trap_vector2_offset := Vector2(0, 3)
 
-const trap_base_dmg_scale_amount : float = 2.0
-const trap_base_dmg_amount : float = 2.0
+const trap_base_dmg_scale_amount : float = 2.5
+const trap_base_dmg_amount : float = 1.25
 
 var trap_placement_rng : RandomNumberGenerator
 

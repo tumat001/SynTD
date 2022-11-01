@@ -140,17 +140,27 @@ terrain_layer = 2
 [node name="CollisionPolygon2D" parent="Terrain/RightDown" index="0"]
 polygon = PoolVector2Array( 0.17334, 0.935307, 3.58612, 42.1059, 13.0157, 83.9843, 54.5157, 119.734, 79.6873, 157.729, 77.1646, 181.274, 95.7657, 133.984, 73.801, 103.912, 45.5157, 86.7343, 31.7657, 50.7343, 31.0157, 3.73425, 16.5288, -4.49444, 3.41791, 0.00827789 )
 
-[node name="MountainTops" parent="Terrain" index="4" instance=ExtResource( 5 )]
+[node name="MountainTopsLeft" parent="Terrain" index="4" instance=ExtResource( 5 )]
 __meta__ = {
 "_edit_lock_": true
 }
 terrain_layer = 1000
 
-[node name="CollisionPolygon2D" parent="Terrain/MountainTops" index="0"]
-polygon = PoolVector2Array( 93.6534, 34.4054, 93.6534, 83.1407, 247.276, 49.2378, 518.498, 50.2973, 543.78, 59.2937, 587.83, 50.7614, 648.548, 50.9598, 673.673, 49.2092, 687.482, 55, 686.145, 58.1181, 693.237, 59.3484, 711.536, 53.2182, 725.79, 60.7908, 811.517, 102.631, 841.028, 146.888, 841.919, 36.4163 )
+[node name="CollisionPolygon2D" parent="Terrain/MountainTopsLeft" index="0"]
+polygon = PoolVector2Array( 93.6534, 34.4054, 93.6534, 83.1407, 247.276, 49.2378, 518.498, 50.2973, 543.78, 59.2937, 587.83, 50.7614, 648.548, 50.9598, 693.568, 35.8465 )
+
+[node name="MontainTopsRight" parent="Terrain" index="5" instance=ExtResource( 5 )]
+__meta__ = {
+"_edit_lock_": true
+}
+terrain_layer = 1000
+
+[node name="CollisionPolygon2D" parent="Terrain/MontainTopsRight" index="0"]
+polygon = PoolVector2Array( 693.285, 35.9247, 648.79, 50.997, 671.191, 49.4248, 687.151, 54.9484, 695.251, 58.7897, 711.541, 53.4519, 726.141, 61.6949, 761.595, 82.3483, 807.973, 101.376, 841.716, 145.376, 841.122, 36.1179 )
 
 [editable path="Terrain/LeftLong"]
 [editable path="Terrain/MiddleCheck"]
 [editable path="Terrain/MiddleLongStraight"]
 [editable path="Terrain/RightDown"]
-[editable path="Terrain/MountainTops"]
+[editable path="Terrain/MountainTopsLeft"]
+[editable path="Terrain/MontainTopsRight"]

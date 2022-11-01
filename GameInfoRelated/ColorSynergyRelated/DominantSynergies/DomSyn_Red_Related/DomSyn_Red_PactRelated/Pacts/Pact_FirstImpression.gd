@@ -14,7 +14,7 @@ var armor_loss_effect : EnemyAttributesEffect
 var gain_val
 var loss_val
 
-const loss_duration : float = 12.0
+const loss_duration : float = 15.0
 
 
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.FIRST_IMPRESSION, "First Impression", arg_tier, arg_tier_for_activation):

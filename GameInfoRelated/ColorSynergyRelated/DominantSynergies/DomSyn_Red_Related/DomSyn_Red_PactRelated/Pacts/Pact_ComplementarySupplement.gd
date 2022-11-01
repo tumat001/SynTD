@@ -118,10 +118,11 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 			tower.contributing_to_synergy_clauses.attempt_insert_clause(tower.ContributingToSynergyClauses.DOM_SYN__RED__COMPLEMENTARY_SUPPLEMENT)
 	
 	#
-	game_elements.synergy_manager.remove_composite_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_COMPLEMENTARY_EXTRA_COMPLEMENTARY_SLOTS)
-	
-	if _is_unsworn:
-		game_elements.synergy_manager.dont_allow_same_total_conditonal_clause.remove_clause(game_elements.synergy_manager.DontAllowSameTotalsContionalClauseIds.SYN_RED__COMPLEMENTARY_SUPPLEMENT)
+#	game_elements.synergy_manager.remove_composite_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_COMPLEMENTARY_EXTRA_COMPLEMENTARY_SLOTS)
+#
+#	if _is_unsworn:
+#		game_elements.synergy_manager.dont_allow_same_total_conditonal_clause.remove_clause(game_elements.synergy_manager.DontAllowSameTotalsContionalClauseIds.SYN_RED__COMPLEMENTARY_SUPPLEMENT)
+
 
 func pact_unsworn():
 	.pact_unsworn()
@@ -132,6 +133,11 @@ func pact_unsworn():
 			tower.sell_tower()
 	
 	game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end")
+	
+	game_elements.synergy_manager.remove_composite_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_COMPLEMENTARY_EXTRA_COMPLEMENTARY_SLOTS)
+	
+	if _is_unsworn:
+		game_elements.synergy_manager.dont_allow_same_total_conditonal_clause.remove_clause(game_elements.synergy_manager.DontAllowSameTotalsContionalClauseIds.SYN_RED__COMPLEMENTARY_SUPPLEMENT)
 
 
 ##################

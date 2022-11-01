@@ -49,6 +49,8 @@ var available_points : int = 4
 var emblem_fire_points : int = 0 setget set_emblem_fire_level
 var emblem_explosive_points : int = 0 setget set_emblem_explosive_level
 var emblem_toughness_pierce_points : int = 0 setget set_emblem_toughness_pierce_level
+var _spent_points : int = 0
+const total_points_from_all_limit : int = 12 # 3 emblems * 4 levels
 
 var sky_attack_module : InstantDamageAttackModule
 var sky_attack_sprite_frames : SpriteFrames
@@ -310,13 +312,13 @@ func set_emblem_fire_level(level : int):
 	if level == 0:
 		pass
 	elif level == 1:
-		burn_per_tick = 0.2
+		burn_per_tick = 0.4
 	elif level == 2:
-		burn_per_tick = 0.5
+		burn_per_tick = 0.7
 	elif level == 3:
-		burn_per_tick = 0.8
-	elif level == 4:
 		burn_per_tick = 1.0
+	elif level == 4:
+		burn_per_tick = 1.3
 	
 	fire_burn_dmg_modifier.flat_modifier = burn_per_tick
 	emit_signal("fire_level_changed")
@@ -336,17 +338,17 @@ func set_emblem_explosive_level(level : int):
 	if level == 0:
 		pass
 	elif level == 1:
-		exp_base_scale = 0.66
+		exp_base_scale = 1#0.66
 	elif level == 2:
-		exp_on_hit_damage_scale = 0.2
-		exp_base_scale = 0.66
+		exp_on_hit_damage_scale = 0.33
+		exp_base_scale = 1#0.66
 	elif level == 3:
-		exp_on_hit_damage_scale = 0.4
-		exp_base_scale = 1
+		exp_on_hit_damage_scale = 0.66
+		exp_base_scale = 1.25#1
 	elif level == 4:
-		exp_on_hit_damage_scale = 0.6
+		exp_on_hit_damage_scale = 1
 		exp_on_hit_effect_scale = 1
-		exp_base_scale = 1.25
+		exp_base_scale = 1.5 #1.25
 	
 	explosion_attack_module.on_hit_damage_scale = exp_on_hit_damage_scale
 	explosion_attack_module.on_hit_effect_scale = exp_on_hit_effect_scale
@@ -402,19 +404,21 @@ func attempt_allocate_points_to_fire():
 		available_points -= 1
 		emit_signal("available_points_changed")
 		set_emblem_fire_level(emblem_fire_points + 1)
+		_spent_points += 1
 
 func attempt_allocate_points_to_explosive():
 	if can_give_points_to_explosive():
 		available_points -= 1
 		emit_signal("available_points_changed")
 		set_emblem_explosive_level(emblem_explosive_points + 1)
+		_spent_points += 1
 
 func attempt_allocate_points_to_toughness_pierce():
 	if can_give_points_to_toughness_pierce():
 		available_points -= 1
 		emit_signal("available_points_changed")
 		set_emblem_toughness_pierce_level(emblem_toughness_pierce_points + 1)
-
+		_spent_points += 1
 
 # Ing
 
@@ -424,7 +428,7 @@ func _special_case_tower_effect_added(effect : TowerBaseEffect):
 
 func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected) -> bool:
 	if ingredient_effect != null and ingredient_effect.tower_id == Towers._704 and tower_selected.last_calculated_can_be_used_as_ingredient:
-		return true
+		return _spent_points + available_points < total_points_from_all_limit
 	
 	return ._can_accept_ingredient(ingredient_effect, tower_selected)
 

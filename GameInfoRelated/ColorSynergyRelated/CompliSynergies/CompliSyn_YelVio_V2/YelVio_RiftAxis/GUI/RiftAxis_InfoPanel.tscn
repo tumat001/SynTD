@@ -46,6 +46,7 @@ margin_bottom = 38.0
 size_flags_horizontal = 6
 
 [node name="RiftSwapButton" parent="VBoxContainer/BodyMarginer/ContentMarginer/HBoxContainer" index="0" instance=ExtResource( 2 )]
+destroy_button_if_ability_lost = false
 
 [node name="BottomBorder" parent="VBoxContainer" index="3"]
 margin_top = 55.0

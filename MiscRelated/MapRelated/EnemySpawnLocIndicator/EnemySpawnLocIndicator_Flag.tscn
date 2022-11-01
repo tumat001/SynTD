@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://MiscRelated/MapRelated/EnemySpawnLocIndicator/Assets/EnemySpawnLoc_Flag_Orange.png" type="Texture" id=1]
+[ext_resource path="res://MiscRelated/MapRelated/EnemySpawnLocIndicator/EnemySpawnLocIndicator_Flag.gd" type="Script" id=2]
+
+[node name="EnemySpawnLocIndicator_Flat" type="Sprite"]
+texture = ExtResource( 1 )
+offset = Vector2( 0, -5 )
+script = ExtResource( 2 )

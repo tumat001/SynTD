@@ -248,15 +248,19 @@ func add_composite_syn_limit_modi(modi : FlatModifier):
 	calculate_final_composite_synergy_limit()
 	update_synergies(tower_manager.get_all_active_towers())
 
-func remove_dominant_syn_limit_modi(modi_id : int):
+func remove_dominant_syn_limit_modi(modi_id : int, update_syns : bool = true):
 	_flat_dominant_synergy_limit_modi.erase(modi_id)
 	calculate_final_dominant_synergy_limit()
-	update_synergies(tower_manager.get_all_active_towers())
+	
+	if update_syns:
+		update_synergies(tower_manager.get_all_active_towers())
 
-func remove_composite_syn_limit_modi(modi_id : int):
+func remove_composite_syn_limit_modi(modi_id : int, update_syns : bool = true):
 	_flat_composite_synergy_limit_modi.erase(modi_id)
 	calculate_final_composite_synergy_limit()
-	update_synergies(tower_manager.get_all_active_towers())
+	
+	if update_syns:
+		update_synergies(tower_manager.get_all_active_towers())
 
 
 func calculate_final_dominant_synergy_limit() -> int:

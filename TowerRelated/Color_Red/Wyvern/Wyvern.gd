@@ -30,7 +30,7 @@ var _is_in_fury : bool
 
 const fury_base_dmg_ratio : float = 3.5
 const fury_on_hit_dmg_ratio : float = 4.5
-const fury_final_dmg_multiplier_against_bosses : float = 0.9
+const fury_final_dmg_multiplier_against_bosses : float = 0.75
 
 var _attk_module_disabled_by_fury_clause : AbstractAttackModule
 

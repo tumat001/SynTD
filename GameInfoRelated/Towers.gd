@@ -1182,7 +1182,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["5 attacks against an enemy |0| them for 2 seconds.", [plain_fragment__stun]]
 		]
 		
-		var mini_tesla_ing_stun_duration : float = 0.65
+		var mini_tesla_ing_stun_duration : float = 0.35
 		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(mini_tesla_ing_stun_duration, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
 		var enemy_effect : EnemyStackEffect = EnemyStackEffect.new(enemy_final_effect, 1, 5, StoreOfEnemyEffectsUUID.ING_MINI_TESLA_STACK)
 		enemy_effect.is_timebound = true
@@ -1353,7 +1353,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = sunflower_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2
+		info.base_damage = 2.4
 		info.base_attk_speed = 0.375
 		info.base_pierce = 1
 		info.base_range = 110
@@ -1657,9 +1657,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.85
-		info.base_attk_speed = 0.785
+		info.base_attk_speed = 0.815 #0.785
 		info.base_pierce = 0
-		info.base_range = 120
+		info.base_range = 128 #120
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -5896,7 +5896,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Auto casts Fury when at least 1 enemy is in range.",
 			["|0|: Fury: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies or becomes untargetable.", [plain_fragment__ability]],
-			["Each bullet deals |0|, and benefits from bonus pierce. However, the damage is only 90% effective against boss enemies.", [interpreter_for_bonus_dmg]],
+			["Each bullet deals |0|, and benefits from bonus pierce. However, the damage is only 75% effective against boss enemies.", [interpreter_for_bonus_dmg]],
 			["Wyvern additionally gains |0| during Fury.", [interpreter_for_attk_speed]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
@@ -5904,7 +5904,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			"Auto casts Fury.",
 			["|0|: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies.", [plain_fragment__ability_name]],
-			["Each bullet deals |0|. However, the damage is only 90% effective against boss enemies.", [interpreter_for_bonus_dmg]],
+			["Each bullet deals |0|. However, the damage is only 75% effective against boss enemies.", [interpreter_for_bonus_dmg]],
 			["Wyvern additionally gains |0| during Fury.", [interpreter_for_attk_speed]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
@@ -6225,7 +6225,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Auto casts Isolation when at least 1 enemy is in range.",
 			["|0|: Isolation: For 8 seconds, main attacks on hit against isolated enemies deal |1|.", [plain_fragment__ability, interpreter_for_flat_on_hit]],
-			["Main attacks also gain |0|, and |1| enemies hit (except the first enemy) for |2|.", [interpreter_for_pierce, plain_fragment__stun, ins_for_stun_duration]],
+			["Main attacks also gain |0|, and |1| enemies hit (except the first enemy) for |2|.", [interpreter_for_pierce, plain_fragment__stun, interpreter_for_stun_duration]],
 			["Cooldown: |0|. Cooldown starts when Isolation ends.", [interpreter_for_cooldown]],
 			"",
 			"Enemies with no enemies in range within 30 units are considered isolated."
@@ -6234,7 +6234,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			"Auto casts Isolation.",
 			["|0|: For 8 seconds, main attacks on hit against isolated enemies deal |1|.", [plain_fragment__ability_name, interpreter_for_flat_on_hit]],
-			["Main attacks also gain |0|, and |1| enemies hit (except the first enemy) for |2|.", [interpreter_for_pierce, plain_fragment__stun, ins_for_stun_duration]],
+			["Main attacks also gain |0|, and |1| enemies hit (except the first enemy) for |2|.", [interpreter_for_pierce, plain_fragment__stun, interpreter_for_stun_duration]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
 		
@@ -6273,9 +6273,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter.header_description = "damage"
 		
 		var ins = []
-		ins.append(NumericalTextFragment.new(2.0, false, DamageType.PHYSICAL))
+		ins.append(NumericalTextFragment.new(1.25, false, DamageType.PHYSICAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 2, DamageType.PHYSICAL))
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 2.5, DamageType.PHYSICAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1)) # stat basis does not matter here
 		

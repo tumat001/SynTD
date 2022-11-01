@@ -194,18 +194,29 @@ func _is_tower_on_violet_side(arg_tower):
 	if !is_rift_sides_flipped:
 		var angle_01 = rad2deg(_rift_angle_point + (PI / 2)) 
 		var angle_02 = rad2deg(_rift_angle_point + (3 * PI / 2))
-		if angle_01 > angle_02:
-			return Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_01, angle_02)
+		
+		if _rift_angle_point < 0:#angle_01 > angle_02:
+			#return Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_01, angle_02)
+			return !Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_02, angle_01)
 		else:
 			return Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_02, angle_01)
+		
 		
 	else:
 		var angle_01 = rad2deg(_rift_angle_point + (PI / 2))
 		var angle_02 = rad2deg(_rift_angle_point + (3 * PI / 2))
-		if angle_01 > angle_02:
-			return !Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_01, angle_02)
+		
+		if _rift_angle_point < 0:#angle_01 > angle_02:
+			#return Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_01, angle_02)
+			return Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_02, angle_01)
 		else:
 			return !Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_02, angle_01)
+		
+		
+#		if angle_01 > angle_02:
+#			return !Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_01, angle_02)
+#		else:
+#			return !Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_02, angle_01)
 
 
 

@@ -102,6 +102,8 @@ singletons=[ "res://git_api.gdnlib" ]
 max_size=false
 max_size_kb=false
 layer=false
+"use gpu"=false
+wdw=false
 
 [input]
 
@@ -239,4 +241,5 @@ common/physics_fps=120
 
 [rendering]
 
+2d/snapping/use_gpu_pixel_snap=true
 environment/default_environment="res://default_env.tres"

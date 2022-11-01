@@ -111,12 +111,12 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 	
 	#
 	
-	if _is_unsworn:
-		
-		game_elements.synergy_manager.remove_dominant_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_EXTRA_DOMINANCE_SLOTS)
-		game_elements.synergy_manager.remove_composite_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_LESS_COMPLEMENTARY_SLOTS)
-		
-		game_elements.synergy_manager.dont_allow_same_total_conditonal_clause.remove_clause(game_elements.synergy_manager.DontAllowSameTotalsContionalClauseIds.SYN_RED__DOMINANCE_SUPPLEMENT)
+#	game_elements.synergy_manager.remove_dominant_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_EXTRA_DOMINANCE_SLOTS, false)
+#	game_elements.synergy_manager.remove_composite_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_LESS_COMPLEMENTARY_SLOTS)
+#
+#	if _is_unsworn:
+#		game_elements.synergy_manager.dont_allow_same_total_conditonal_clause.remove_clause(game_elements.synergy_manager.DontAllowSameTotalsContionalClauseIds.SYN_RED__DOMINANCE_SUPPLEMENT)
+
 
 func pact_unsworn():
 	.pact_unsworn()
@@ -125,6 +125,13 @@ func pact_unsworn():
 	for tower in _disabled_by_this_pact_towers:
 		if is_instance_valid(tower):
 			tower.sell_tower()
+	
+	
+	if _is_unsworn:
+		game_elements.synergy_manager.remove_dominant_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_EXTRA_DOMINANCE_SLOTS, false)
+		game_elements.synergy_manager.remove_composite_syn_limit_modi(StoreOfTowerEffectsUUID.RED_PACT_DOMINANCE_LESS_COMPLEMENTARY_SLOTS)
+		
+		game_elements.synergy_manager.dont_allow_same_total_conditonal_clause.remove_clause(game_elements.synergy_manager.DontAllowSameTotalsContionalClauseIds.SYN_RED__DOMINANCE_SUPPLEMENT)
 
 
 
