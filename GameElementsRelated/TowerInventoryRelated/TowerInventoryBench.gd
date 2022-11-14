@@ -48,6 +48,7 @@ func insert_tower(tower_id : int, arg_bench_slot = _find_empty_slot(), is_tower_
 	if is_instance_valid(bench_slot):
 		return create_tower_and_add_to_scene(tower_id, bench_slot, is_tower_bought)
 	else:
+		print("bench slot not valid (or null)")
 		return null
 
 func insert_tower_from_last(tower_id : int, is_tower_bought : bool = false) -> AbstractTower:
@@ -102,7 +103,7 @@ func _find_empty_slot() -> TowerBenchSlot:
 	return null
 
 func _find_empty_slot_from_last() -> TowerBenchSlot:
-	for i in range(all_bench_slots.size() - 1, 0, -1):
+	for i in range(all_bench_slots.size() - 1, -1, -1):
 		if !is_instance_valid(all_bench_slots[i].tower_occupying):
 			return all_bench_slots[i]
 	

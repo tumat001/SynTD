@@ -352,7 +352,7 @@ func _initialize_red_pact_whole_panel():
 	#red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.RANGE_PROVISIONS, 3, 3))
 	#red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.SOLO_VICTOR, 3, 3))
 	
-	#red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.ORACLES_EYE, 1, 1))
+	#red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS, 3, 3))
 
 
 ###

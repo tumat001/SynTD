@@ -8,7 +8,7 @@ var affected_range_module
 var armor_pierce_effect : TowerAttributesEffect
 var toughness_pierce_effect : TowerAttributesEffect
 
-var armor_and_toughness_pierce_amount : float = 5.0
+var armor_and_toughness_pierce_amount : float = 4.0
 
 
 func _init().(StoreOfTowerEffectsUUID.ING_LEADER):

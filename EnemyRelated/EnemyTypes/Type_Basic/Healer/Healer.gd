@@ -5,7 +5,7 @@ const RangeModule_Scene = preload("res://TowerRelated/Modules/RangeModule.tscn")
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const HealParticle_Scene = preload("res://EnemyRelated/CommonParticles/HealParticle/HealParticle.tscn")
 
-const _heal_cooldown : float = 10.0#7.5#10.0
+const _heal_cooldown : float = 10.0 #7.5#10.0
 const _heal_range : float = 140.0
 const _heal_amount : float = 6.0
 
@@ -48,7 +48,6 @@ func _ready():
 
 func _enemy_entered_range_h(enemy):
 	heal_activation_clause.remove_clause(no_enemies_in_range_clause)
-
 
 func _enemy_exited_range_h(enemy):
 	if range_module.enemies_in_range.size() == 0:

@@ -30,18 +30,18 @@ const Cosmic_Area05 = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blu
 const Cosmic_Area06 = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Cosmic/Cosmic_Area/Cosmic_Area06.png")
 const Cosmic_Area07 = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Cosmic/Cosmic_Area/Cosmic_Area07.png")
 
-const _shield_cooldown : float = 18.0
+const _shield_cooldown : float = 15.0
 const _shield_initial_cooldown : float = 10.0
 const _shield_refresh_cooldown : float = 2.0
 
-const _shield_flat_amount : float = 25.0
+const _shield_flat_amount : float = 35.0
 const _shield_duration : float = 10.0
 
 var shield_ability : BaseAbility
 var shield_effect : EnemyShieldEffect
 
 
-const _beam_single_duration : float = 0.4
+const _beam_single_duration : float = 0.3
 var _cosmic_beam_sprite_frames : SpriteFrames
 
 
@@ -49,12 +49,24 @@ var cosmic_aoe_module : AOEAttackModule
 const _cosmic_aoe_duration : float = 0.25
 const _cosmic_modulate : Color = Color(1, 1, 1, 0.6)
 
+const staff_w_position := Vector2(-10, -3)
+const staff_e_position := Vector2(10, -3)
+
+var shield_beam_targeting_rng : RandomNumberGenerator
+const shield_beam_targeting_i_min : int = 1
+const shield_beam_targeting_i_max : int = 6
+
+#
 onready var staff_center_2dposition_node = $SpriteLayer/KnockUpLayer/StaffCenterPosition
 
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.COSMIC))
+	
+	connect("anim_name_used_changed", self, "_on_anim_name_used_changed_c")
 
 func _ready():
+	shield_beam_targeting_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SKIRMISHER_GEN_PURPOSE)
+	
 	_construct_beam_sprite_frames()
 	
 	_construct_and_add_cosmic_attack_module()
@@ -125,7 +137,7 @@ func _construct_and_add_cosmic_attack_module():
 	cosmic_aoe_module.aoe_sprite_frames = sprite_frames
 	cosmic_aoe_module.sprite_frames_only_play_once = true
 	cosmic_aoe_module.pierce = -1
-	cosmic_aoe_module.duration = 0.3
+	cosmic_aoe_module.duration = 0.2
 	cosmic_aoe_module.damage_repeat_count = 1
 	
 	cosmic_aoe_module.absolute_z_index_of_aoe = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
@@ -147,7 +159,7 @@ func _shield_ready_for_activation_updated(is_ready):
 
 func _shield_ability_activated():
 	var enemies : Array = enemy_manager.get_all_enemies()
-	enemies = Targeting.enemies_to_target(enemies, Targeting.FIRST, 4, global_position, false)
+	enemies = Targeting.enemies_to_target(enemies, Targeting.FIRST, _get_rng_for_shield_beam_targeting(), global_position, false)
 	
 	if enemies.size() > 0:
 		var cd = _shield_cooldown
@@ -161,6 +173,9 @@ func _shield_ability_activated():
 	else:
 		shield_ability.start_time_cooldown(_shield_refresh_cooldown)
 
+func _get_rng_for_shield_beam_targeting() -> int:
+	return shield_beam_targeting_rng.randi_range(shield_beam_targeting_i_min, shield_beam_targeting_i_max)
+
 #
 
 func _target_enemy_with_cosmic_shield_beam(enemy):
@@ -170,7 +185,7 @@ func _target_enemy_with_cosmic_shield_beam(enemy):
 	
 	beam.play("default", false)
 	
-	game_elements.get_tree().get_root().add_child(beam)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 	
 	beam.visible = true
 	beam.global_position = staff_center_2dposition_node.global_position
@@ -218,9 +233,8 @@ func _construct_and_add_cosmic_shield_aoe(aoe_position : Vector2):
 	
 	aoe.connect("before_enemy_hit_aoe", self, "_on_aoe_hit_enemy")
 	aoe.modulate = _cosmic_modulate
-	aoe.scale *= 2.5
+	aoe.scale *= 2
 	
-	#game_elements.get_tree().get_root().add_child(aoe)
 	cosmic_aoe_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 func _on_aoe_hit_enemy(enemy_hit):
@@ -234,3 +248,13 @@ func _queue_free():
 	
 	if is_instance_valid(cosmic_aoe_module):
 		cosmic_aoe_module.queue_free()
+
+#
+
+func _on_anim_name_used_changed_c(arg_prev_name, arg_curr_name):
+	if arg_curr_name == "W":
+		staff_center_2dposition_node.position = staff_w_position
+	elif arg_curr_name == "E":
+		staff_center_2dposition_node.position = staff_e_position
+	
+

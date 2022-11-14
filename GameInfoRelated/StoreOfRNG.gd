@@ -27,6 +27,7 @@ var enervate_orb_choose_rng := RandomNumberGenerator.new()
 var trapper_trap_pos_rng := RandomNumberGenerator.new()
 var red_tower_randomizer_rng := RandomNumberGenerator.new()
 var enemy_strength_value_rng := RandomNumberGenerator.new()
+var skirmisher_general_purpose_rng := RandomNumberGenerator.new()
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
@@ -65,7 +66,7 @@ enum RNGSource {
 	
 	#
 	FAITHFUL_MOV_SPEED_DELAY = 10000
-	
+	SKIRMISHER_GEN_PURPOSE = 10001
 	
 	#
 	ENEMY_STRENGTH_VALUE_GENERATOR = -100
@@ -77,7 +78,6 @@ func _init():
 
 
 func get_rng(rng_source : int) -> RandomNumberGenerator:
-	
 	if rng_source == RNGSource.RANDOM_TARGETING:
 		return random_targeting_rng
 	elif rng_source == RNGSource.COIN:
@@ -130,5 +130,7 @@ func get_rng(rng_source : int) -> RandomNumberGenerator:
 		return red_tower_randomizer_rng
 	elif rng_source == RNGSource.ENEMY_STRENGTH_VALUE_GENERATOR:
 		return enemy_strength_value_rng
+	elif rng_source == RNGSource.SKIRMISHER_GEN_PURPOSE:
+		return skirmisher_general_purpose_rng
 	
 	return null

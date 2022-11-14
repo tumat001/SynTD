@@ -3466,7 +3466,7 @@ func _display_absorbed_ingredient_effects(arg_tier_of_ing : int):
 
 func _initialize_absorb_ing_particle_pool_component():
 	absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
-	absorb_ing_particle_pool_component.node_to_parent_attack_sprites = get_tree().get_root()
+	absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
 	absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
 	absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_abosrb_ing_particle"

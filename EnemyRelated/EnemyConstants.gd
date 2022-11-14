@@ -18,7 +18,7 @@ enum EnemyFactions {
 }
 
 enum Enemies {
-	# BASIC (100)
+	############## BASIC (100)
 	BASIC = 100,
 	BRUTE = 101,
 	DASH = 102,
@@ -26,7 +26,7 @@ enum Enemies {
 	WIZARD = 104,
 	PAIN = 105,
 	
-	# EXPERT (200)
+	############# EXPERT (200)
 	EXPERIENCED = 200,
 	FIEND = 201,
 	CHARGE = 202,
@@ -35,7 +35,7 @@ enum Enemies {
 	ASSASSIN = 205,
 	GRANDMASTER = 206,
 	
-	# FAITHFUL (300)
+	########### FAITHFUL (300)
 	DEITY = 300,
 	BELIEVER = 301,
 	PRIEST = 302,
@@ -45,9 +45,18 @@ enum Enemies {
 	DVARAPALA = 306,
 	PROVIDENCE = 307,
 	
-	# SKIRMISHERS (400)
+	########## SKIRMISHERS (400)
+	#BLUE (400)
 	COSMIC = 400,
+	SMOKE = 401,
+	RALLIER = 402,
+	PROXIMITY = 403,
+	BLESSER = 404,
 	
+	# RED (450)
+	
+	
+	############
 	
 	# OTHERS (10000)
 	TRIASYN_OGV_SOUL = 10000,
@@ -63,18 +72,18 @@ var second_half_faction_id_pool : Array
 func _init():
 	first_half_faction_id_pool.append(EnemyFactions.BASIC)
 	
-	second_half_faction_id_pool.append(EnemyFactions.EXPERT)
-	second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
-	#second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
+	#second_half_faction_id_pool.append(EnemyFactions.EXPERT)
+	#second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
+	second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
 
 
 static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	var info : EnemyTypeInformation
 	
-	# BASIC FACTION
+	############################### BASIC FACTION
 	if enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
-		info.base_health = 16#18
+		info.base_health = 700 #16#18
 		info.base_movement_speed = 60
 		
 	elif enemy_id == Enemies.BRUTE:
@@ -105,7 +114,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info.base_player_damage = 2
 		
 		
-	# EXPERT FACTION
+	################################# EXPERT FACTION
 	elif enemy_id == Enemies.EXPERIENCED:
 		info = EnemyTypeInformation.new(Enemies.EXPERIENCED, EnemyFactions.EXPERT)
 		info.base_health = 23 #25.5
@@ -155,7 +164,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info.enemy_type = info.EnemyType.ELITE
 		
 		
-	# FAITHFUL FACTION
+	################################# FAITHFUL FACTION
 	elif enemy_id == Enemies.DEITY:
 		# stats set by faction
 		pass
@@ -205,17 +214,39 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info.enemy_type = info.EnemyType.ELITE
 		
 		
-	# SKIRMISHER
+	########################### SKIRMISHER
 	elif enemy_id == Enemies.COSMIC:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 37 #41
+		info.base_health = 35
 		info.base_movement_speed = 35
 		info.enemy_type = info.EnemyType.NORMAL
 		
+	elif enemy_id == Enemies.SMOKE:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 32
+		info.base_movement_speed = 55
+		info.enemy_type = info.EnemyType.NORMAL
+		
+	elif enemy_id == Enemies.RALLIER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 30
+		info.base_movement_speed = 55
+		info.enemy_type = info.EnemyType.NORMAL
+		
+	elif enemy_id == Enemies.PROXIMITY:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 40
+		info.base_movement_speed = 45
+		info.enemy_type = info.EnemyType.NORMAL
+		
+	elif enemy_id == Enemies.BLESSER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 28
+		info.base_movement_speed = 40
+		info.enemy_type = info.EnemyType.NORMAL
 		
 		
-		
-	# OTHERS
+	############################# OTHERS
 	elif enemy_id == Enemies.TRIASYN_OGV_SOUL:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
 		info.base_health = 35 #39 
@@ -289,7 +320,14 @@ static func get_enemy_scene(enemy_id : int):
 	# SKIRMISHERS FACTION
 	elif enemy_id == Enemies.COSMIC:
 		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Cosmic/Cosmic.tscn")
-		
+	elif enemy_id == Enemies.SMOKE:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Smoke/Smoke.tscn")
+	elif enemy_id == Enemies.RALLIER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Rallier/Rallier.tscn")
+	elif enemy_id == Enemies.PROXIMITY:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Proximity/Proximity.tscn")
+	elif enemy_id == Enemies.BLESSER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Blesser/Blesser.tscn")
 		
 	# OTHERS
 	elif enemy_id == Enemies.TRIASYN_OGV_SOUL:

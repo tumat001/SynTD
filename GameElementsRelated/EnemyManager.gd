@@ -38,11 +38,14 @@ signal on_enemy_queue_freed(arg_enemy)
 
 signal enemy_strength_value_changed(arg_val)
 
+signal path_to_spawn_pattern_changed(arg_new_val)
+
 enum PathToSpawnPattern {
 	NO_CHANGE = 0,
 	SWITCH_PER_SPAWN = 1,
 	SWITCH_PER_ROUND_END = 2,
 }
+
 
 
 var health_manager : HealthManager
@@ -53,7 +56,11 @@ var game_elements
 var spawn_instruction_interpreter : SpawnInstructionInterpreter setget set_interpreter
 var spawn_paths : Array = [] setget set_spawn_paths
 var _spawn_path_index_to_take = 0
-var current_path_to_spawn_pattern : int = PathToSpawnPattern.NO_CHANGE
+var current_path_to_spawn_pattern : int = PathToSpawnPattern.NO_CHANGE setget set_current_path_to_spawn_pattern
+
+var custom_path_pattern_assignment_method : String
+var custom_path_pattern_source_obj : Object
+
 
 var _spawning_paused : bool = false
 var _spawn_pause_timer : Timer
@@ -318,7 +325,14 @@ func _on_enemy_finished_ready_prep(arg_enemy):
 
 
 func _get_path_based_on_current_index() -> EnemyPath:
-	return spawn_paths[_spawn_path_index_to_take]
+	if custom_path_pattern_source_obj != null:
+		var path = custom_path_pattern_source_obj.call("custom_path_pattern_assignment_method", [])
+		print(path)
+		print('-----------')
+		return path
+		
+	else:
+		return spawn_paths[_spawn_path_index_to_take]
 
 
 # Round over detectors
@@ -416,9 +430,12 @@ func get_all_targetable_enemy_positions_excluding(arg_blacklist : Array, arg_inc
 
 # result removes the arg_enemy from the initial params
 func get_enemy_count_within_distance_of_enemy(arg_enemy, arg_radius, arg_include_invis : bool = true):
+	return get_enemies_within_distance_of_enemy(arg_enemy, arg_radius, arg_include_invis).size()
+
+func get_enemies_within_distance_of_enemy(arg_enemy, arg_radius, arg_include_invis : bool = true):
 	var enemies = get_all_targetable_enemies(arg_include_invis)
 	
-	return Targeting.get_targets__based_on_range_from_center_as_circle(enemies, Targeting.CLOSE, enemies.size(), arg_enemy.global_position, arg_radius, Targeting.TargetingRangeState.IN_RANGE, arg_include_invis).size()
+	return Targeting.get_targets__based_on_range_from_center_as_circle(enemies, Targeting.CLOSE, enemies.size(), arg_enemy.global_position, arg_radius, Targeting.TargetingRangeState.IN_RANGE, arg_include_invis)
 
 
 # enemy count related
@@ -458,6 +475,14 @@ func _pause_timer_timeout():
 
 
 # Spawn path related
+
+func set_current_path_to_spawn_pattern(arg_pattern):
+	current_path_to_spawn_pattern = arg_pattern
+	
+	emit_signal("path_to_spawn_pattern_changed", arg_pattern)
+
+func get_spawn_path_index_to_take() -> int:
+	return _spawn_path_index_to_take
 
 func _switch_path_index_to_next():
 	_spawn_path_index_to_take += 1

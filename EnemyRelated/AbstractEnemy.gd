@@ -79,7 +79,7 @@ signal on_ability_after_cast_end(cooldown, ability)
 signal on_finished_ready_prep() # is now targetable, not invulnerable
 
 signal moved__from_process(arg_has_moved_from_natural_means, arg_prev_angle_dir, arg_curr_angle_dir)
-
+signal anim_name_used_changed(arg_prev_anim_name, arg_current_anim_name)
 
 # SHARED IN EnemyTypeInformation. Changes here must be
 # reflected in that class as well.
@@ -222,6 +222,8 @@ var current_path # EnemyPath
 var _position_at_previous_frame : Vector2
 var _rad_angle_at_previous_frame : float
 var current_rad_angle_of_movement : float # compares previous pos to curr pos
+
+var _anim_name_at_previous_time : String
 
 var no_movement_from_self_clauses : ConditionalClauses
 var last_calculated_no_movement_from_self : bool = false
@@ -525,7 +527,9 @@ func _change_animation_to_face_position(arg_position, pos_basis = global_positio
 func _change_animation_to_face_angle(arg_angle):
 	var anim_name = anim_face_dir_component.get_anim_name_to_use_based_on_angle(arg_angle)
 	anim_face_dir_component.set_animation_sprite_animation_using_anim_name(anim_sprite, anim_name)
-
+	
+	emit_signal("anim_name_used_changed", _anim_name_at_previous_time, anim_name)
+	_anim_name_at_previous_time = anim_name
 
 
 ##
@@ -1300,9 +1304,13 @@ func _process_effects(effects : Dictionary, multiplier : float = 1):
 		_add_effect(effect, multiplier)
 
 
-# WHEN ADDING NEW EFFECT, LOOK AT:
+
+func _add_effect__use_provided_effect(base_effect : EnemyBaseEffect):
+	_add_effect(base_effect, 1, false, false)
+
+# WHEN ADDING NEW EFFECT TYPE, LOOK AT:
 # _remove_effect(), copy_enemy_stats(), decrease_timebounds()
-func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_multiplier : bool = false) -> EnemyBaseEffect:
+func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_multiplier : bool = false, use_copy_of_arg : bool = true) -> EnemyBaseEffect:
 	
 	if base_effect.is_from_enemy:
 		if last_calculated_has_effect_shield_against_enemies:
@@ -1322,7 +1330,11 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 	if ignore_multiplier:
 		multiplier = 1
 	
-	var to_use_effect = base_effect._get_copy_scaled_by(multiplier)
+	var to_use_effect
+	if use_copy_of_arg:
+		to_use_effect = base_effect._get_copy_scaled_by(multiplier)
+	else:
+		to_use_effect = base_effect
 	
 	if to_use_effect.status_bar_icon != null:
 		statusbar.add_status_icon(to_use_effect.effect_uuid, to_use_effect.status_bar_icon)

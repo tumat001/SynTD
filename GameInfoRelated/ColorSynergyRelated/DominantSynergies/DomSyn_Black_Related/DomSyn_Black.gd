@@ -129,7 +129,7 @@ enum EntityType {
 	ENEMY = 2,
 }
 
-const capacitor_ability_cast_count_requirement : int = 15
+const capacitor_ability_cast_count_requirement : int = 25
 const capacitor_buff_duration_tier_2 : float = 90.0
 const capacitor_buff_duration_tier_1 : float = 90.0 # no desc is made. if this should be different, then change descs
 
@@ -814,6 +814,9 @@ func _unapply_capacitor_effects_from_game():
 	var all_towers = game_elements.tower_manager.get_all_active_towers()
 	for tower in all_towers:
 		_unapply_capacitor_effects_from_tower(tower)
+	
+	if is_instance_valid(black_syn_icon):
+		black_syn_icon.set_visibility_of_nova_counter(false)
 
 func _unapply_capacitor_effects_from_tower(arg_tower):
 	if arg_tower.is_connected("on_tower_ability_before_cast_start", self, "_on_tower_before_ability_casted"):

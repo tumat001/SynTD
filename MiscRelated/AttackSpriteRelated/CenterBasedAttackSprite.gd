@@ -7,6 +7,9 @@ export(float) var initial_speed_towards_center : float
 export(float) var speed_accel_towards_center : float
 var current_speed_towards_center : float
 
+export(float) var min_speed_towards_center : float = -9999.0
+export(float) var max_speed_towards_center : float = 9999.0
+
 export(float) var min_starting_distance_from_center : float
 export(float) var max_starting_distance_from_center : float
 
@@ -50,3 +53,7 @@ func _process(delta):
 		
 		current_speed_towards_center += speed_accel_towards_center * delta
 		
+		if current_speed_towards_center < min_speed_towards_center:
+			current_speed_towards_center = min_speed_towards_center
+		elif current_speed_towards_center > max_speed_towards_center:
+			current_speed_towards_center = max_speed_towards_center

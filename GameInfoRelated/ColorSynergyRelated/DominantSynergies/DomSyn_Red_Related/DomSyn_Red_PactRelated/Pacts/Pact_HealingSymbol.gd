@@ -78,7 +78,8 @@ func pact_sworn():
 	
 	for i in _healing_symbol_count:
 		var healing_symbol_tower = game_elements.tower_inventory_bench.insert_tower_from_last(Towers.HEALING_SYMBOL)
-		_current_healing_symbols.append(healing_symbol_tower)
+		if is_instance_valid(healing_symbol_tower):
+			_current_healing_symbols.append(healing_symbol_tower)
 	
 	if !if_tier_requirement_is_met():
 		_disable_all_created_healing_symbols()

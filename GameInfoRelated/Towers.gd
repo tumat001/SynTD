@@ -1182,16 +1182,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["5 attacks against an enemy |0| them for 2 seconds.", [plain_fragment__stun]]
 		]
 		
-		var mini_tesla_ing_stun_duration : float = 0.35
-		var enemy_final_effect : EnemyStunEffect = EnemyStunEffect.new(mini_tesla_ing_stun_duration, StoreOfEnemyEffectsUUID.ING_MINI_TELSA_STUN)
-		var enemy_effect : EnemyStackEffect = EnemyStackEffect.new(enemy_final_effect, 1, 5, StoreOfEnemyEffectsUUID.ING_MINI_TESLA_STACK)
-		enemy_effect.is_timebound = true
-		enemy_effect.time_in_seconds = 3
 		
-		var tower_effect : TowerOnHitEffectAdderEffect = TowerOnHitEffectAdderEffect.new(enemy_effect, StoreOfTowerEffectsUUID.ING_MINI_TESLA)
-		#tower_effect.description = "Applies a stack of \"mini static\" on enemies hit for 3 seconds, with this duration refreshing per hit. When an enemy reaches 5 stacks, all stacks get consumed and the enemy is stunned for %s seconds." % str(mini_tesla_ing_stun_duration)
-		tower_effect.description = "5 attacks within 3 seconds of the last attack against an enemy stuns them for %s seconds." % str(mini_tesla_ing_stun_duration)
-		tower_effect.effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Static.png")
+		var tower_effect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_MiniTesla_IngEffect.gd").new()
 		
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_effect)
 		
@@ -2298,7 +2290,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_cooldown.header_description = "s"
 		
 		var ins_for_cooldown = []
-		ins_for_cooldown.append(NumericalTextFragment.new(13, false))
+		ins_for_cooldown.append(NumericalTextFragment.new(17, false))
 		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
 		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
@@ -5992,7 +5984,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		
 		
-		
 	elif tower_id == ENERVATE:
 		info = TowerTypeInformation.new("Enervate", tower_id)
 		info.tower_tier = TowerTiersMap[tower_id]
@@ -6273,9 +6264,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter.header_description = "damage"
 		
 		var ins = []
-		ins.append(NumericalTextFragment.new(1.25, false, DamageType.PHYSICAL))
+		ins.append(NumericalTextFragment.new(1, false, DamageType.PHYSICAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 2.5, DamageType.PHYSICAL))
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 2, DamageType.PHYSICAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1)) # stat basis does not matter here
 		
@@ -6522,7 +6513,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ attk spd"
-		
 		
 	
 	return info

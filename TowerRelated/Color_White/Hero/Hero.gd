@@ -115,7 +115,7 @@ const xp_about_descriptions = [
 ]
 
 
-const main_attack_proj_speed : float = 650.0 #500.0
+const main_attack_proj_speed : float = 675.0 #500.0
 const attks_needed_for_light_wave_in_levels : Array = [3, 2, 2, 1]
 const attks_needed_for_light_explosion : int = 35
 const light_wave_base_damage_in_levels : Array = [1.5, 1.5, 2, 3.5]
@@ -949,11 +949,11 @@ func get_light_waves_ability_descriptions() -> Array:
 	if ability_light_waves_level != 0:
 		var every_attk_desc : String
 		if current_attks_needed_for_light_wave == 4:
-			every_attk_desc = "4th"
+			every_attk_desc = "4th "
 		elif current_attks_needed_for_light_wave == 3:
-			every_attk_desc = "3rd"
+			every_attk_desc = "3rd "
 		elif current_attks_needed_for_light_wave == 2:
-			every_attk_desc = "2nd"
+			every_attk_desc = "2nd "
 		elif current_attks_needed_for_light_wave == 1:
 			every_attk_desc = ""
 		
@@ -969,7 +969,7 @@ func get_light_waves_ability_descriptions() -> Array:
 		
 		
 		var descs = [
-			"Every %s main attack is followed by a light wave." % every_attk_desc,
+			"Every %smain attack is followed by a light wave." % every_attk_desc,
 			["Light waves deal |0|, and have 3 pierce", [interpreter_for_flat_on_hit]],
 		]
 		

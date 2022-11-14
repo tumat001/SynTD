@@ -300,8 +300,6 @@ func _attempt_cast_outburst():
 	if outburst_ability_is_ready and is_an_enemy_in_range:
 		_cast_outburst()
 
-
-
 func _cast_outburst():
 	var cd = _get_cd_to_use(outburst_base_cooldown)
 	outburst_ability.on_ability_before_cast_start(cd)

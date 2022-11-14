@@ -115,6 +115,9 @@ const chant_ap_per_cast_during_cast : float = 0.25
 var chant_ap_inc_attk_sprite_pool : AttackSpritePoolComponent
 var non_essential_rng : RandomNumberGenerator
 
+var _had_no_enemies_in_range : bool = false
+var _all_orb_attk_modules : Array = []
+
 #
 
 
@@ -258,6 +261,7 @@ func _construct_generic_orb_attk_module(arg_orb_pic, arg_beam_pic):
 
 func _construct_shrivel_orb_attk_module_and_relateds():
 	shrivel_orb_attk_module = _construct_generic_orb_attk_module(Enervate_Orb_Shrivel_Pic, Enervate_OrbBeam_Shrivel_Pic)
+	_all_orb_attk_modules.append(shrivel_orb_attk_module)
 	
 	#
 	
@@ -283,6 +287,7 @@ func _construct_shrivel_orb_attk_module_and_relateds():
 
 func _construct_stun_orb_attk_module_and_relateds():
 	stun_orb_attk_module = _construct_generic_orb_attk_module(Enervate_Orb_Stun_Pic, Enervate_OrbBeam_Stun_Pic)
+	_all_orb_attk_modules.append(stun_orb_attk_module)
 	
 	stun_orb__stun_effect = EnemyStunEffect.new(stun_orb__base_stun_duration, StoreOfEnemyEffectsUUID.ENERVATE_STUN_EFFECT)
 	
@@ -296,6 +301,7 @@ func _construct_stun_orb_attk_module_and_relateds():
 
 func _construct_slow_orb_attk_module_and_relateds():
 	slow_orb_attk_module = _construct_generic_orb_attk_module(Enervate_Orb_Slow_Pic, Enervate_OrbBeam_Slow_Pic)
+	_all_orb_attk_modules.append(slow_orb_attk_module)
 	
 	slow_orb__slow_modi = PercentModifier.new(StoreOfEnemyEffectsUUID.ENERVATE_SLOW_EFFECT)
 	slow_orb__slow_modi.percent_amount = slow_orb__base_slow_percent_amount
@@ -311,6 +317,8 @@ func _construct_slow_orb_attk_module_and_relateds():
 
 func _construct_death_orb_attk_module_and_relateds():
 	death_orb_attk_module = _construct_generic_orb_attk_module(Enervate_Orb_Death_Pic, Enervate_OrbBeam_Death_Pic)
+	_all_orb_attk_modules.append(death_orb_attk_module)
+	
 	death_orb_attk_module.connect("on_enemy_hit", self, "_on_death_orb_enemy_hit", [], CONNECT_PERSIST)
 	
 	death_orb__dmg_modi = FlatModifier.new(StoreOfEnemyEffectsUUID.ENERVATE_DEATH_ON_HIT_DMG)
@@ -366,6 +374,7 @@ func _construct_death_orb_attk_module_and_relateds():
 
 func _construct_decay_orb_attk_module_and_relateds():
 	decay_orb_attk_module = _construct_generic_orb_attk_module(Enervate_Orb_Decay_Pic, Enervate_OrbBeam_Decay_Pic)
+	_all_orb_attk_modules.append(decay_orb_attk_module)
 	
 	decay_orb__health_decay_modi = PercentModifier.new(StoreOfEnemyEffectsUUID.ENERVATE_HEAL_DECAY_EFFECT)
 	decay_orb__health_decay_modi.percent_amount = decay_orb__base_percent_amount
@@ -396,15 +405,23 @@ func _on_enemies_entered_range_module(enemy, module, arg_range_module):
 		chant_ability.activation_conditional_clauses.remove_clause(no_enemies_in_range_clause)
 		
 		if !enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives"):
-			enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives")
+			enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives", [], CONNECT_DEFERRED)
+		
+		if _had_no_enemies_in_range:
+			_had_no_enemies_in_range = false
+			for orb_attk_module in _all_orb_attk_modules:
+				if !is_instance_valid(orb_attk_module.assigned_target):
+					_give_orb_new_target_to_acquire(orb_attk_module)
 
 func _on_enemy_killed_with_no_more_revives(damage_instance_report, arg_enemy):
 	_on_enemies_exited_range_module(arg_enemy, null, range_module)
 
 
 func _on_enemies_exited_range_module(enemy, module, arg_range_module):
-	if range_module == arg_range_module and range_module.get_enemy_in_range_count() == 0:
-		chant_ability.activation_conditional_clauses.attempt_insert_clause(no_enemies_in_range_clause)
+	if range_module == arg_range_module:
+		if range_module.get_enemy_in_range_count() == 0:
+			chant_ability.activation_conditional_clauses.attempt_insert_clause(no_enemies_in_range_clause)
+			_had_no_enemies_in_range = true
 		
 		if enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives"):
 			enemy.disconnect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives")
@@ -513,6 +530,7 @@ func _on_round_start_e():
 func _on_round_end_e():
 	_summoned_orb_types.clear()
 	
+	_had_no_enemies_in_range = false
 
 func _on_final_ap_changed_e():
 	_update_effect_value_modis()
@@ -573,6 +591,9 @@ func _on_death_orb_enemy_killed_by_dmg(damage_instance_report, enemy):
 ######## orb summon and relateds
 
 func _on_orb_request_for_new_target_to_acquire(arg_orb):
+	_give_orb_new_target_to_acquire(arg_orb)
+
+func _give_orb_new_target_to_acquire(arg_orb):
 	var target = _get_target_to_acquire_for_orbs()
 	
 	arg_orb.assign_new_target_to_follow(target)

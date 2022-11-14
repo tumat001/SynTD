@@ -25,7 +25,7 @@ var max_distance_from_target_on_reposition : float = 60.0
 var enervate_orb_reposition_rng : RandomNumberGenerator
 
 var _current_pos_of_reposition : Vector2
-var _assigned_target
+var assigned_target
 
 var parent_enervate_tower setget set_parent_enervate_tower
 
@@ -50,7 +50,7 @@ func _ready():
 
 # used when first summoned, and when no enemies are in range anymore.
 func assign_new_target_to_follow(arg_target):
-	if !is_instance_valid(_assigned_target) and is_instance_valid(arg_target):
+	if !is_instance_valid(assigned_target) and is_instance_valid(arg_target):
 		_set_assigned_target__and_connect_signals_with_target(arg_target)
 		_move_towards_target(arg_target)
 
@@ -62,12 +62,12 @@ func _move_towards_target(arg_target):
 
 
 func _set_assigned_target__and_connect_signals_with_target(arg_target):
-	_assigned_target = arg_target
+	assigned_target = arg_target
 	
-	if !_assigned_target.is_connected("cancel_all_lockons", self, "_on_assigned_target_cancel_all_lockons"):
-		_assigned_target.connect("cancel_all_lockons", self, "_on_assigned_target_cancel_all_lockons")
-		_assigned_target.connect("on_killed_by_damage", self, "_on_assigned_target_killed")
-		_assigned_target.connect("tree_exiting", self, "_on_assigned_target_queue_freed")
+	if !assigned_target.is_connected("cancel_all_lockons", self, "_on_assigned_target_cancel_all_lockons"):
+		assigned_target.connect("cancel_all_lockons", self, "_on_assigned_target_cancel_all_lockons")
+		assigned_target.connect("on_killed_by_damage", self, "_on_assigned_target_killed")
+		assigned_target.connect("tree_exiting", self, "_on_assigned_target_queue_freed")
 
 func _on_assigned_target_cancel_all_lockons():
 	_drop_assigned_target___and_request_for_new()
@@ -79,13 +79,13 @@ func _on_assigned_target_queue_freed():
 	_drop_assigned_target___and_request_for_new()
 
 func _drop_assigned_target___and_request_for_new():
-	if is_instance_valid(_assigned_target):
-		if _assigned_target.is_connected("cancel_all_lockons", self, "_on_assigned_target_cancel_all_lockons"):
-			_assigned_target.disconnect("cancel_all_lockons", self, "_on_assigned_target_cancel_all_lockons")
-			_assigned_target.disconnect("on_killed_by_damage", self, "_on_assigned_target_killed")
-			_assigned_target.disconnect("tree_exiting", self, "_on_assigned_target_queue_freed")
+	if is_instance_valid(assigned_target):
+		if assigned_target.is_connected("cancel_all_lockons", self, "_on_assigned_target_cancel_all_lockons"):
+			assigned_target.disconnect("cancel_all_lockons", self, "_on_assigned_target_cancel_all_lockons")
+			assigned_target.disconnect("on_killed_by_damage", self, "_on_assigned_target_killed")
+			assigned_target.disconnect("tree_exiting", self, "_on_assigned_target_queue_freed")
 	
-	_assigned_target = null
+	assigned_target = null
 	emit_signal("request_for_new_target_to_acquire")
 
 
@@ -124,10 +124,10 @@ func _process(delta):
 #
 
 func _physics_process(delta):
-	if is_instance_valid(_assigned_target) and _current_speed_for_reposition <= _speed_to_consider_reposition:
-		var dist = global_position.distance_to(_assigned_target.global_position)
+	if is_instance_valid(assigned_target) and _current_speed_for_reposition <= _speed_to_consider_reposition:
+		var dist = global_position.distance_to(assigned_target.global_position)
 		if dist >= distance_to_current_target_for_reposition:
-			_move_towards_target(_assigned_target)
+			_move_towards_target(assigned_target)
 		
 	
 

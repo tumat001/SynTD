@@ -53,7 +53,7 @@ var coordinated_attack_activation_conditional_clauses : ConditionalClauses
 const ca_activation_clause_no_member : int = -10
 const ca_activation_clause_no_mark : int = -11
 
-const coordinated_attack_cooldown : float = 13.0
+const coordinated_attack_cooldown : float = 17.0 #13.0
 const attacked_marked_enemy_cd_reduction : float = 1.0
 
 const member_upper_limit : int = 5

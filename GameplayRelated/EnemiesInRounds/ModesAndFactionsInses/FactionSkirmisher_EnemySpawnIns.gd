@@ -19,7 +19,10 @@ func get_instructions_for_stageround(uuid : String):
 		return _get_instructions_for_0_1()
 	elif uuid == "02":
 		return _get_instructions_for_0_2()
-	
+		
+		
+	elif uuid == "41":
+		pass
 	
 	pass
 
@@ -29,9 +32,10 @@ func get_instructions_for_stageround(uuid : String):
 
 func _get_instructions_for_0_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 2, 2, EnemyConstants.Enemies.BASIC, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(1, 2, 2, EnemyConstants.Enemies.BASIC, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(1.5, 2, 2, EnemyConstants.Enemies.DASH),
+		#MultipleEnemySpawnInstruction.new(0, 2, 2, EnemyConstants.Enemies.BASIC, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(1, 1, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 10, 1, EnemyConstants.Enemies.WIZARD, spawn_at_blue_metadata),
+		#MultipleEnemySpawnInstruction.new(0, 10, 1, EnemyConstants.Enemies.DASH),
 	]
 
 func _get_instructions_for_0_2():
@@ -40,7 +44,8 @@ func _get_instructions_for_0_2():
 	]
 
 
-#
+
+################
 
 func get_faction_passive():
 	_faction_passive = Skirmisher_FactionPassive.new()

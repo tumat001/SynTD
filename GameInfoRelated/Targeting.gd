@@ -685,4 +685,3 @@ static func get_targets__based_on_range_from_center_as_circle(
 	#
 	
 	return enemies_to_target(bucket, targeting, arg_target_count, center_pos, arg_include_invis)
-
