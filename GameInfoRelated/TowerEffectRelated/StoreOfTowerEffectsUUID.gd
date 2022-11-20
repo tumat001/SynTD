@@ -3,6 +3,7 @@ extends Node
 enum {
 	# MISC ------------------------
 	TOWER_MAIN_DAMAGE = -100
+	STUN_ID_FOR_STATUS_BAR_ICON = -99
 	
 	# --TOWERS ING EFFECTS---------
 	# RED (100)
@@ -431,5 +432,6 @@ enum {
 	
 	# SKIRMISHER (10 300)
 	PROXIMITY_TAUNT_EFFECT = 10300
+	ARTILLERY_STUN_EFFECT = 10301
 	
 }

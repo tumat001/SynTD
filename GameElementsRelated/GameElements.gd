@@ -395,11 +395,11 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.VARIANCE,
-			Towers.ADEPT,
-			Towers.SHOCKER,
-			Towers.PESTILENCE,
 			Towers.SIMPLEX,
+			Towers.PROMINENCE,
+			Towers.SHOCKER,
+			Towers.VACUUM,
+			Towers.TRANSPORTER,
 			Towers.SHACKLED,
 		])
 	else:

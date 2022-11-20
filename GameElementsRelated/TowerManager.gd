@@ -609,6 +609,7 @@ func get_all_active_and_alive_towers_except_in_queue_free() -> Array:
 	
 	return bucket
 
+
 #
 
 func get_all_active_towers_with_color(color) -> Array:
@@ -684,6 +685,23 @@ func get_all_in_map_towers_except_in_queue_free() -> Array:
 	
 	return bucket
 
+func get_all_in_map_and_alive_towers_except_in_queue_free() -> Array:
+	var bucket : Array = []
+	
+	for tower in get_all_in_map_towers():
+		if !bucket.has(tower) and !tower.is_queued_for_deletion() and !tower.is_dead_for_the_round:
+			bucket.append(tower)
+	
+	return bucket
+
+#
+
+func get_towers_in_range_of_pos(arg_towers : Array, arg_global_center : Vector2, arg_range : float, arg_include_invis : bool = false) -> Array:
+	return Targeting.get_targets__based_on_range_from_center_as_circle(arg_towers, Targeting.CLOSE, arg_towers.size(), arg_global_center, arg_range, Targeting.TargetingRangeState.IN_RANGE, arg_include_invis)
+
+func get_random_towers_in_range_of_pos(arg_towers : Array, arg_global_center : Vector2, arg_range : float, arg_include_invis : bool = false, arg_count : int = 1) -> Array:
+	var towers = Targeting.get_targets__based_on_range_from_center_as_circle(arg_towers, Targeting.CLOSE, arg_towers.size(), arg_global_center, arg_range, Targeting.TargetingRangeState.IN_RANGE, arg_include_invis)
+	return Targeting._find_random_distinct_enemies(towers, arg_count)
 
 #
 

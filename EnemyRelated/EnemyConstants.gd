@@ -52,8 +52,14 @@ enum Enemies {
 	RALLIER = 402,
 	PROXIMITY = 403,
 	BLESSER = 404,
+	ASCENDER = 405,
 	
-	# RED (450)
+	# RED (440)
+	BLASTER = 450
+	ARTILLERY = 451
+	DANSEUR = 452
+	
+	# BOTH (480)
 	
 	
 	############
@@ -245,6 +251,31 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		info.base_movement_speed = 40
 		info.enemy_type = info.EnemyType.NORMAL
 		
+	elif enemy_id == Enemies.ASCENDER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 48
+		info.base_movement_speed = 55
+		info.enemy_type = info.EnemyType.ELITE
+		
+		
+	elif enemy_id == Enemies.BLASTER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 35
+		info.base_movement_speed = 50
+		info.enemy_type = info.EnemyType.NORMAL
+		
+	elif enemy_id == Enemies.ARTILLERY:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 30
+		info.base_movement_speed = 40
+		info.enemy_type = info.EnemyType.NORMAL
+		
+	elif enemy_id == Enemies.DANSEUR:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 26
+		info.base_movement_speed = 52
+		info.enemy_type = info.EnemyType.NORMAL
+		
 		
 	############################# OTHERS
 	elif enemy_id == Enemies.TRIASYN_OGV_SOUL:
@@ -328,6 +359,16 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Proximity/Proximity.tscn")
 	elif enemy_id == Enemies.BLESSER:
 		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Blesser/Blesser.tscn")
+	elif enemy_id == Enemies.ASCENDER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender.tscn")
+		
+	elif enemy_id == Enemies.BLASTER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Blaster/Blaster.tscn")
+	elif enemy_id == Enemies.ARTILLERY:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Artillery/Artillery.tscn")
+	elif enemy_id == Enemies.DANSEUR:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Danseur.tscn")
+		
 		
 	# OTHERS
 	elif enemy_id == Enemies.TRIASYN_OGV_SOUL:

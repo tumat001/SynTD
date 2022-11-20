@@ -40,7 +40,7 @@ const DuringReviveParticle = preload("res://EnemyRelated/CommonParticles/ReviveP
 const DuringReviveParticle_Scene = preload("res://EnemyRelated/CommonParticles/ReviveParticle/DuringReviveParticle.tscn")
 
 const AnimFaceDirComponent = preload("res://MiscRelated/CommonComponents/AnimFaceDirComponent.gd")
-
+const TimerForEnemy = preload("res://EnemyRelated/CommonBehaviorRelated/TimerForEnemy.gd")
 
 signal on_death_by_any_cause #queue free
 
@@ -80,6 +80,13 @@ signal on_finished_ready_prep() # is now targetable, not invulnerable
 
 signal moved__from_process(arg_has_moved_from_natural_means, arg_prev_angle_dir, arg_curr_angle_dir)
 signal anim_name_used_changed(arg_prev_anim_name, arg_current_anim_name)
+
+#
+
+signal last_calculated_is_stunned_changed(arg_val)
+signal last_calculated_no_action_from_self_changed(arg_val)
+
+#
 
 # SHARED IN EnemyTypeInformation. Changes here must be
 # reflected in that class as well.
@@ -266,6 +273,7 @@ var _current_forced_positional_movement_effect : EnemyForcedPositionalMovementEf
 var anim_face_dir_component : AnimFaceDirComponent
 var _anim_face__custom_anim_names_to_use
 var _anim_face__custom_dir_name_to_primary_rad_angle_map
+#var _anim_face__custom_initial_dir_hierarchy
 
 #
 
@@ -288,6 +296,8 @@ onready var knock_up_layer = $SpriteLayer/KnockUpLayer
 
 var _self_size : Vector2
 
+var sprite_shift_from_ground : float
+
 # Effects map
 
 var _stack_id_effects_map : Dictionary = {}
@@ -301,6 +311,7 @@ var _base_enemy_modifying_effects_map : Dictionary = {}
 
 var _all_effects_map : Dictionary = {}
 
+#
 
 func _init():
 	no_movement_from_self_clauses = ConditionalClauses.new()
@@ -342,10 +353,11 @@ func _no_movement_clause_removed(clause):
 
 func _no_action_clause_added(clause):
 	last_calculated_no_action_from_self = true
+	emit_signal("last_calculated_no_action_from_self_changed", last_calculated_no_action_from_self)
 
 func _no_action_clause_removed(clause):
 	last_calculated_no_action_from_self = !no_action_from_self_clauses.is_passed
-
+	emit_signal("last_calculated_no_action_from_self_changed", last_calculated_no_action_from_self)
 
 func _untargetability_clause_added(clause):
 	last_calculated_is_untargetable = true
@@ -375,6 +387,8 @@ func _ready():
 	sprite_layer.position.y -= shift
 	collision_area.position.y -= shift
 	$Layer.position.y -= shift
+	
+	sprite_shift_from_ground = shift
 	
 	connect("on_current_health_changed", lifebar, "set_current_health_value", [], CONNECT_PERSIST)
 	connect("on_current_shield_changed", lifebar, "set_current_shield_value", [], CONNECT_PERSIST)
@@ -410,6 +424,7 @@ func _post_inherit_ready():
 	var sprite_frames_of_base : SpriteFrames = anim_sprite.frames
 	if sprite_frames_of_base.animations.size() >= 2:
 		anim_face_dir_component.initialize_with_sprite_frame_to_monitor(sprite_frames_of_base, anim_sprite, _anim_face__custom_anim_names_to_use, _anim_face__custom_dir_name_to_primary_rad_angle_map)
+		anim_face_dir_component.set_animated_sprite_animation_to_default(anim_sprite)
 		connect("moved__from_process", self, "on_moved__from_process__change_anim_dir")
 	
 	
@@ -443,9 +458,14 @@ func _post_inherit_ready():
 	#
 	
 	emit_signal("on_finished_ready_prep")
+	_on_finished_ready_prep()
 	if is_queue_free_called_during_ready_prepping:
 		queue_free()
 	
+
+func _on_finished_ready_prep():
+	pass
+
 
 
 func get_current_anim_size() -> Vector2:
@@ -509,7 +529,8 @@ func _process(delta):
 	current_rad_angle_of_movement = _position_at_previous_frame.angle_to_point(global_position)
 	_position_at_previous_frame = global_position
 	
-	emit_signal("moved__from_process", has_moved_by_natural_means, _rad_angle_at_previous_frame, current_rad_angle_of_movement)
+	if !is_ready_prepping:
+		emit_signal("moved__from_process", has_moved_by_natural_means, _rad_angle_at_previous_frame, current_rad_angle_of_movement)
 	#
 	
 
@@ -1350,6 +1371,9 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 			_stun_id_effects_map[to_use_effect.effect_uuid]._reapply(to_use_effect)
 		no_action_from_self_clauses.attempt_insert_clause(NoActionClauses.IS_STUNNED)
 		
+		_is_stunned = true
+		emit_signal("last_calculated_is_stunned_changed", _is_stunned)
+		
 	elif to_use_effect is EnemyClearAllEffects:
 		_clear_effects_from_clear_effect()
 		
@@ -1519,6 +1543,9 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		if _stun_id_effects_map.size() == 0:
 			no_action_from_self_clauses.remove_clause(NoActionClauses.IS_STUNNED)
 		
+		_is_stunned = (_stun_id_effects_map.size() != 0)
+		emit_signal("last_calculated_is_stunned_changed", _is_stunned)
+		
 	elif base_effect is EnemyStackEffect:
 		_stack_id_effects_map.erase(base_effect.effect_uuid)
 		
@@ -1631,7 +1658,7 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		
 	elif base_effect is EnemyForcedPositionalMovementEffect:
 		if _current_forced_positional_movement_effect.effect_uuid == base_effect.effect_uuid:
-			remove_current_forced_positional_movement_effect()
+			remove_current_forced_positional_movement_effect(false)
 		
 	elif base_effect is EnemyInvulnerabilityEffect:
 		_remove_invulnerability_effect(base_effect)
@@ -1670,9 +1697,9 @@ func get_effect_with_uuid(arg_uuid : int) -> EnemyBaseEffect:
 # Timebounded related
 
 func _decrease_time_of_timebounds(delta):
-	
 	# Stun related
-	_is_stunned = _stun_id_effects_map.size() != 0
+	
+	#_is_stunned = _stun_id_effects_map.size() != 0
 	for stun_effect in _stun_id_effects_map.values():
 		_decrease_time_of_effect(stun_effect, delta)
 	
@@ -1806,8 +1833,6 @@ func _decrease_time_of_timebounds(delta):
 	for res_eff in _base_enemy_modifying_effects_map.values():
 		_decrease_time_of_effect(res_eff, delta)
 	
-
-
 
 func _decrease_time_of_effect(effect, delta : float):
 	if effect.is_timebound:
@@ -2091,7 +2116,7 @@ func _phy_process_knock_up(delta):
 
 func set_current_forced_offset_movement_effect(effect : EnemyForcedPathOffsetMovementEffect):
 	if _current_forced_positional_movement_effect != null:
-		remove_current_forced_positional_movement_effect()
+		remove_current_forced_positional_movement_effect(true)
 	
 	_current_forced_offset_movement_effect = effect
 
@@ -2117,10 +2142,13 @@ func set_current_forced_positional_movement_effect(effect : EnemyForcedPositiona
 	
 	no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.IS_IN_FORCED_POSITIONAL_MOVEMENT)
 
-func remove_current_forced_positional_movement_effect():
+func remove_current_forced_positional_movement_effect(arg_replaced_by_new_mov : bool):
+	var prev_effect = _current_forced_positional_movement_effect
+	
 	_current_forced_positional_movement_effect = null
 	no_movement_from_self_clauses.remove_clause(NoMovementClauses.IS_IN_FORCED_POSITIONAL_MOVEMENT)
-
+	
+	prev_effect._emit_movement_is_done(arg_replaced_by_new_mov)
 
 func _phy_process_forced_positional_movement(delta):
 	if _current_forced_positional_movement_effect != null:
@@ -2137,7 +2165,7 @@ func _phy_process_forced_positional_movement(delta):
 					distance_to_exit = current_path_length
 					unit_distance_to_exit = 1
 			
-			remove_current_forced_positional_movement_effect()
+			remove_current_forced_positional_movement_effect(false)
 
 
 func configure_path_move_offset_to_mov_self_backward_on_track(arg_effect : EnemyForcedPathOffsetMovementEffect):
@@ -2243,3 +2271,13 @@ func is_enemy_type_elite() -> bool:
 
 func set_enemy_type(new_type : int):
 	enemy_type = new_type
+
+##########
+
+func get_position_added_pos_and_offset_modifiers(arg_pos): # all
+	return arg_pos + Vector2(0, -sprite_shift_from_ground) + knock_up_layer.position
+
+func get_position_added_knockup_offset_modifiers(arg_pos): # only knockup
+	return arg_pos + knock_up_layer.position
+
+

@@ -157,7 +157,9 @@ func _on_any_post_miti_dmg_dealt(damage_instance_report, killed, enemy, damage_r
 			disconnect("on_any_post_mitigation_damage_dealt", self, "_on_any_post_miti_dmg_dealt")
 			call_deferred("emit_signal", "on_reached_golden_state")
 			
+			# initial set of anim
 			_transform_dir_name_from_normal_to_golden()
+			# updating anim map
 			anim_face_dir_component.update_dir_name_to_primary_rad_angle_map(golden_dir_name_to_primary_rad_angle_map.keys(), golden_dir_name_to_primary_rad_angle_map, golden_dir_name_initial_hierarchy)
 
 func _transform_dir_name_from_normal_to_golden():

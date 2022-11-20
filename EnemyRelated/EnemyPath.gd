@@ -72,4 +72,109 @@ func set_is_used_and_active(arg_val):
 	emit_signal("is_used_and_active_changed", is_used_and_active)
 
 
+#################
+
+class ClosestOffsetAdvParams:
+	var obj_func_source : Object
+	var func_predicate : String
+	
+	var metadata : Dictionary
+	
+	func test(arg_test_pos, arg_source_pos, arg_max_distance, arg_closest_pos, distance_of_closest_to_source) -> bool:
+		return obj_func_source.call(func_predicate, arg_test_pos, arg_source_pos, arg_max_distance, arg_closest_pos, distance_of_closest_to_source, metadata)
+
+
+# final offset's distance will never exceed arg_line_search_length distance from source_pos
+func get_closest_offset_and_pos_in_a_line__global_source_pos(arg_max_distance_to_candidate_offset : float, arg_line_search_length : float, arg_angle : float, arg_source_global_pos : Vector2, arg_closest_offset_adv_params : ClosestOffsetAdvParams = null):
+	return get_closest_offset_and_pos_in_a_line__local_source_pos(arg_max_distance_to_candidate_offset, arg_line_search_length, arg_angle, arg_source_global_pos - global_position, arg_closest_offset_adv_params)
+
+# final offset's distance will never exceed arg_line_search_length distance from source_pos
+func get_closest_offset_and_pos_in_a_line__local_source_pos(arg_max_distance_to_candidate_offset : float, arg_line_search_length : float, arg_angle : float, arg_source_local_pos : Vector2, arg_closest_offset_adv_params : ClosestOffsetAdvParams = null):
+	#var end_of_search_line_pos : Vector2 = arg_source_pos.move_toward((arg_source_local_pos + Vector2.LEFT).rotated(arg_angle), arg_line_search_length)
+	#var end_of_search_line_pos : Vector2 = Vector2(-arg_line_search_length, 0).rotated(arg_angle)# + arg_source_local_pos
+	
+	var skipping_dist : float = 0.0   # Used to "skip over" distance tests that most likely would not yield a valid offset. Triggered if distance of test pos to nearest offset is very "far"
+	var skipping_dist_threshold : float = arg_max_distance_to_candidate_offset * 2
+	
+	for curr_interval_dist in range(0, arg_line_search_length, arg_max_distance_to_candidate_offset):
+		var test_pos : Vector2 = arg_source_local_pos + Vector2(-(curr_interval_dist + skipping_dist), 0).rotated(arg_angle)
+		var test_pos_to_source_pos_distance = arg_source_local_pos.distance_to(test_pos)
+		
+		
+		#poses.append(test_pos)   # USED FOR DEBUG DRAW
+		
+		var valid_offset_and_pos = _get_offset_and_pos_within_distance_of_path(test_pos, arg_source_local_pos, arg_max_distance_to_candidate_offset, arg_line_search_length, arg_closest_offset_adv_params)
+		
+		if valid_offset_and_pos != null:
+			return valid_offset_and_pos
+		else:
+			if test_pos_to_source_pos_distance > skipping_dist_threshold:
+				skipping_dist += 0#skipping_dist_threshold
+		
+#		if curr_interval_dist + skipping_dist > arg_line_search_length:
+#			break
+	
+	#update()  # dor debug draw
+	
+	return null
+
+#DEBUG DRAW START
+#var poses : Array
+#var closest_poses : Array
+#var closest_pos_finals : Array
+#
+#func _draw():
+#	for pos in poses:
+#		draw_circle(pos, 3, Color(1, 0, 0))
+#
+#	for pos in closest_poses:
+#		draw_circle(pos, 2, Color(0, 0, 1))
+#
+#	for pos in closest_pos_finals:
+#		draw_circle(pos, 3, Color(1, 1, 0))
+
+#DEBUG DRAW END
+
+# OLD CODE HERE For failed binary style. This type is just not compatible to requirements.
+#	# USE AVERAGE/BINARY STYLE Kind of search
+#	var higher_bound_ratio : float = 2.0
+#	var lower_bound_ratio : float = 0.0
+#	var current_ratio : float = 0.0
+#
+#	var max_attempts : int = 100
+#
+#	for i in max_attempts:
+#		var test_pos : Vector2 = _get_sum_of_vectors(arg_source_local_pos, end_of_search_line_pos * current_ratio)
+#		var test_pos_to_source_pos_distance = arg_source_local_pos.distance_to(test_pos)
+#
+#		var valid_offset = _get_offset_within_distance_of_path(test_pos, arg_source_local_pos, test_pos_to_source_pos_distance, arg_max_distance_to_candidate_offset, arg_closest_offset_adv_params)
+#
+#		if valid_offset != null:
+#			return valid_offset
+#		else:
+#			pass
+#
+#func _get_sum_of_vectors(arg_vec_01 : Vector2, arg_vec_02 : Vector2):
+#	return (arg_vec_01 + arg_vec_02)
+
+
+func _get_offset_and_pos_within_distance_of_path(arg_test_pos, arg_source_pos : Vector2, arg_max_distance_to_test_offset : float, arg_line_search_length : float, arg_closest_offset_adv_params : ClosestOffsetAdvParams = null):
+	var closest_pos : Vector2 = curve.get_closest_point(arg_test_pos)
+	var distance_of_closest_to_test = closest_pos.distance_to(arg_test_pos)
+	var distance_of_closest_to_source = closest_pos.distance_to(arg_source_pos)
+	
+	#closest_poses.append(closest_pos)  #used to debug draw
+	
+	#if distance_of_closest_to_test <= arg_max_distance_to_test_offset and arg_line_search_length < distance_of_closest_to_source:
+	if distance_of_closest_to_test <= arg_max_distance_to_test_offset:
+		var passed : bool = true
+		
+		if arg_closest_offset_adv_params != null:
+			passed = arg_closest_offset_adv_params.test(arg_test_pos, arg_source_pos, arg_max_distance_to_test_offset, closest_pos, distance_of_closest_to_source)
+		
+		if passed:
+			#closest_pos_finals.append(closest_pos)    # used for debug draw
+			return [curve.get_closest_offset(closest_pos), closest_pos]
+	
+	return null
 

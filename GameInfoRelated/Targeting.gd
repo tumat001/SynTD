@@ -68,6 +68,7 @@ class TargetingParameters:
 
 #
 
+# used by other methods outside of this obj.
 static func _find_random_distinct_enemies(enemies : Array, count : int):
 	var orig_copy_count : int = enemies.size()
 	var copy : Array = enemies.duplicate(false)

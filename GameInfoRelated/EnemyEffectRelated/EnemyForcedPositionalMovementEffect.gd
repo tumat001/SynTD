@@ -1,6 +1,9 @@
 extends "res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd"
 
 
+signal movement_is_done(arg_replaced_by_new_mov)  # arg_replaced_by_new_mov is when a new forced pos mov effect is added over this one
+
+
 const TIME_BASED_MOVEMENT_SPEED : float = -1.0
 
 const default_mov_speed : float = 50.0
@@ -113,3 +116,8 @@ func _get_dir_mag_of_axis_with_surpass_adjustment(dir_mag_axis : float, arg_glob
 		
 	
 	return dir_mag_axis
+
+#
+
+func _emit_movement_is_done(arg_replaced_by_new_mov : bool):
+	emit_signal("movement_is_done", arg_replaced_by_new_mov)

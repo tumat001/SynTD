@@ -232,7 +232,7 @@ func set_up_bullet__add_child_and_emit_signals(bullet) -> BaseBullet:
 
 
 
-func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
+func construct_bullet(arg_enemy_pos : Vector2, arg_self_pos : Vector2 = global_position) -> BaseBullet:
 	var bullet : BaseBullet = bullet_scene.instance()
 	if bullet_script != null:
 		bullet.set_script(bullet_script)
@@ -255,10 +255,10 @@ func construct_bullet(arg_enemy_pos : Vector2) -> BaseBullet:
 	bullet.attack_module_source = self
 	bullet.damage_register_id = damage_register_id
 	
-	bullet.position.x = global_position.x
-	bullet.position.y = global_position.y
+	bullet.position.x = arg_self_pos.x
+	bullet.position.y = arg_self_pos.y
 	
-	_adjust_bullet_physics_settings(bullet, arg_enemy_pos)
+	_adjust_bullet_physics_settings(bullet, arg_enemy_pos, arg_self_pos)
 	
 	bullet.add_to_group(bullet_group_tag)
 	

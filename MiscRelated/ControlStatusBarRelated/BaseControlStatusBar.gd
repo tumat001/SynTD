@@ -24,7 +24,7 @@ func set_icons_per_row(value : int):
 # Status icon adding/removing
 
 func add_status_icon(identifier, status_icon : Texture):
-	if !id_status_texture_rect_map.has(identifier):
+	if !has_status_icon(identifier):
 		var textureRect = _construct_status_texture_rect(status_icon)
 		
 		id_status_texture_rect_map[identifier] = textureRect
@@ -33,6 +33,8 @@ func add_status_icon(identifier, status_icon : Texture):
 	else:
 		replace_status_icon(identifier, status_icon)
 
+func has_status_icon(identifier):
+	return id_status_texture_rect_map.has(identifier)
 
 func _construct_status_texture_rect(status_icon) -> TextureRect:
 	var textureRect := TextureRect.new()
@@ -42,7 +44,7 @@ func _construct_status_texture_rect(status_icon) -> TextureRect:
 
 
 func remove_status_icon(identifier):
-	if id_status_texture_rect_map.has(identifier):
+	if has_status_icon(identifier):
 		var textureRect = id_status_texture_rect_map[identifier]
 		
 		grid_container.remove_child(textureRect)

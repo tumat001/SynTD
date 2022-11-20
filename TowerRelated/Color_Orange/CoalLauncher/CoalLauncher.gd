@@ -58,8 +58,11 @@ func _ready():
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.position.y -= 6
 	
-	var bullet_shape = RectangleShape2D.new()
-	bullet_shape.extents = Vector2(7, 4)
+	#var bullet_shape = RectangleShape2D.new()
+	#bullet_shape.extents = Vector2(7, 4)
+	
+	var bullet_shape = CircleShape2D.new()
+	bullet_shape.radius = 4
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene

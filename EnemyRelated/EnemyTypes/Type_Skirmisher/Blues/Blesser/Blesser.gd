@@ -25,11 +25,16 @@ var heal_effect : EnemyHealEffect
 const _heal_amount : float = 0.5
 const _heal_cooldown : float = 0.25
 
-const _empowered_heal_amount : float = 3.0
-const _empowered_heal_duration : float = 4.0
+const _empowered_heal_amount : float = 5.0
+const _empowered_heal_duration : float = 2.0
+const _empowered_heal_target_health_threshold : float = 0.25
 var _empowered_heal_curr_duration : float
+var _empowered_heal_casted : bool = false
+var _is_heal_empowered : bool
 
 var _delta_before_next_heal_tick : float = _heal_cooldown
+
+#
 
 var _can_heal_target__is_ability_ready : bool
 
@@ -39,12 +44,15 @@ var _heal_beam : BeamAesthetic
 
 #
 
+var staff_w_position := Vector2(-9, -7)
+var staff_e_position := Vector2(8, -7)
 onready var staff_position2d = $SpriteLayer/KnockUpLayer/StaffCenterPos
 
 #
 
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.BLESSER))
+
 
 func _ready():
 	range_module = RangeModule_Scene.instance()
@@ -73,11 +81,20 @@ func _ready():
 	_construct_heal_effect()
 	_construct_and_connect_ability()
 	
+	_swap_heal_to_normal()
+	
 	#
 	
 	connect("on_current_health_changed", self, "_on_curr_health_changed")
+	connect("anim_name_used_changed", self, "_on_anim_name_used_changed_c")
+	connect("final_ability_potency_changed", self, "_on_final_ap_changed_b")
 	
 	connect("tree_exiting", self, "_on_tree_exiting_b")
+
+func _on_finished_ready_prep():
+	staff_w_position = get_position_added_pos_and_offset_modifiers(staff_w_position)
+	staff_e_position = get_position_added_pos_and_offset_modifiers(staff_e_position)
+
 
 #
 
@@ -122,6 +139,11 @@ func _assign_target_as_heal_target(arg_target):
 	if !_current_heal_target.is_connected("cancel_all_lockons", self, "_on_heal_target_cancel_all_lockons"):
 		_current_heal_target.connect("cancel_all_lockons", self, "_on_heal_target_cancel_all_lockons")
 	
+	if !_empowered_heal_casted:
+		if !_current_heal_target.is_connected("on_current_health_changed", self, "_on_heal_target_curr_health_changed"):
+			_current_heal_target.connect("on_current_health_changed", self, "_on_heal_target_curr_health_changed")
+	
+	
 	#
 	
 	set_physics_process(true)
@@ -133,6 +155,10 @@ func _untarget_current_heal_target_and_find_new():
 	if is_instance_valid(_current_heal_target):
 		if _current_heal_target.is_connected("cancel_all_lockons", self, "_on_heal_target_cancel_all_lockons"):
 			_current_heal_target.disconnect("cancel_all_lockons", self, "_on_heal_target_cancel_all_lockons")
+		
+		if _current_heal_target.is_connected("on_current_health_changed", self, "_on_heal_target_curr_health_changed"):
+			_current_heal_target.disconnect("on_current_health_changed", self, "_on_heal_target_curr_health_changed")
+	
 	
 	_current_heal_target = null
 	_heal_beam.visible = false
@@ -154,7 +180,6 @@ func _construct_and_connect_ability():
 
 func _construct_heal_effect():
 	var heal_modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.BLESSER_HEAL_EFFECT)
-	heal_modi.flat_modifier = _heal_amount
 	
 	heal_effect = EnemyHealEffect.new(heal_modi, StoreOfEnemyEffectsUUID.BLESSER_HEAL_EFFECT)
 	heal_effect.is_from_enemy = true
@@ -174,6 +199,12 @@ func _check_and_swap_if_curr_heal_target_has_full_health():
 func _process(delta):
 	_delta_before_next_heal_tick -= delta
 	
+	if _empowered_heal_curr_duration > 0:
+		_empowered_heal_curr_duration -= delta
+		
+		if _empowered_heal_curr_duration <= 0:
+			_swap_heal_to_normal()
+	
 	if _delta_before_next_heal_tick <= 0:
 		_attempt_heal_current_heal_target()
 		_delta_before_next_heal_tick += _heal_cooldown
@@ -187,15 +218,55 @@ func _attempt_heal_current_heal_target():
 
 func _physics_process(delta):
 	if is_instance_valid(_current_heal_target):
-		_heal_beam.global_position = global_position
-		_heal_beam.update_destination_position(_current_heal_target.global_position)
+		_heal_beam.global_position = global_position + get_position_added_knockup_offset_modifiers(staff_position2d.position)
+		_heal_beam.update_destination_position(_current_heal_target.get_position_added_knockup_offset_modifiers(_current_heal_target.global_position))
 		
 		_heal_beam.visible = true
 
 #
 
+func _on_heal_target_curr_health_changed(arg_curr_health):
+	if is_instance_valid(_current_heal_target) and arg_curr_health / _current_heal_target._last_calculated_max_health <= _empowered_heal_target_health_threshold:
+		_swap_heal_to_empowered()
+
+#
+
+func _swap_heal_to_empowered():
+	_empowered_heal_casted = true
+	_is_heal_empowered = true
+	
+	_empowered_heal_curr_duration = _empowered_heal_duration
+	_heal_beam.play("empowered")
+	
+	_update_heal_amount()
+
+func _swap_heal_to_normal():
+	_is_heal_empowered = false
+	_heal_beam.play("default")
+	
+	_update_heal_amount()
+
+
+func _on_final_ap_changed_b(arg_potency):
+	_update_heal_amount()
+
+func _update_heal_amount():
+	if _is_heal_empowered:
+		heal_effect.heal_as_modifier.flat_modifier = _empowered_heal_amount * last_calculated_final_ability_potency
+	else:
+		heal_effect.heal_as_modifier.flat_modifier = _heal_amount * last_calculated_final_ability_potency
+
+###############
+
 func _on_tree_exiting_b():
 	if is_instance_valid(_heal_beam):
 		_heal_beam.queue_free()
 	
+
+func _on_anim_name_used_changed_c(arg_prev_name, arg_curr_name):
+	if arg_curr_name == "W":
+		staff_position2d.position = staff_w_position
+	elif arg_curr_name == "E":
+		staff_position2d.position = staff_e_position
+
 

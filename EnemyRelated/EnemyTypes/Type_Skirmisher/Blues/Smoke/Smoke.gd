@@ -33,7 +33,7 @@ func _perform_invis():
 #
 
 func _construct_effect_and_give_to_enemy(arg_enemy):
-	var invis_effect = EnemyInvisibilityEffect.new(_invis_duration, StoreOfEnemyEffectsUUID.SMOKE_INVIS_EFFECT)
+	var invis_effect = EnemyInvisibilityEffect.new(_invis_duration * last_calculated_final_ability_potency, StoreOfEnemyEffectsUUID.SMOKE_INVIS_EFFECT)
 	invis_effect.is_from_enemy = true
 	
 	arg_enemy._add_effect__use_provided_effect(invis_effect)

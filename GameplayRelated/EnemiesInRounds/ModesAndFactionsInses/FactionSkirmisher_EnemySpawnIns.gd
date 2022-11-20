@@ -33,8 +33,8 @@ func get_instructions_for_stageround(uuid : String):
 func _get_instructions_for_0_1():
 	return [
 		#MultipleEnemySpawnInstruction.new(0, 2, 2, EnemyConstants.Enemies.BASIC, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(1, 1, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(0, 10, 1, EnemyConstants.Enemies.WIZARD, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 10, 0.75, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		#MultipleEnemySpawnInstruction.new(0, 1, 1, EnemyConstants.Enemies.WIZARD, spawn_at_blue_metadata),
 		#MultipleEnemySpawnInstruction.new(0, 10, 1, EnemyConstants.Enemies.DASH),
 	]
 

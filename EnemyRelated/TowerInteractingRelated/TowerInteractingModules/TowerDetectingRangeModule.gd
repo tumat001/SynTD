@@ -16,7 +16,13 @@ signal hiding_range()
 signal on_tower_entered_range_while_in_map_or_entered_map_while_in_range(tower)
 signal on_tower_exited_range_or_exited_map_while_in_range(tower)
 
+signal on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health(tower)
+signal on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health(tower)
+
+
 var _all_towers_in_range : Array = []
+
+var all_towers_in_range__in_map__with_non_zero_health : Array = []
 
 var _make_towers_glow : bool = false
 
@@ -96,7 +102,13 @@ func _on_TowerDetectingRangeModule_area_entered(area):
 			####
 			
 			if area.is_current_placable_in_map():
-				emit_signal("on_tower_entered_range_while_in_map_or_entered_map_while_in_range" , area)
+				emit_signal("on_tower_entered_range_while_in_map_or_entered_map_while_in_range", area)
+				
+				if area.current_health > 0:
+					_update_vars_and_emit_on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health(area)
+			
+			if !area.is_connected("on_current_health_changed", self, "_on_tower_current_health_changed"):
+				area.connect("on_current_health_changed", self, "_on_tower_current_health_changed", [area], CONNECT_PERSIST)
 
 func _on_TowerDetectingRangeModule_area_exited(area):
 	if area is AbstractTower:
@@ -115,6 +127,10 @@ func _on_TowerDetectingRangeModule_area_exited(area):
 		####
 		
 		emit_signal("on_tower_exited_range_or_exited_map_while_in_range", area)
+		_update_vars_and_emit_on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health(area)
+		
+		if !area.is_connected("on_current_health_changed", self, "_on_tower_current_health_changed"):
+			area.disconnect("on_current_health_changed", self, "_on_tower_current_health_changed")
 
 
 func get_all_towers_in_range() -> Array:
@@ -146,10 +162,33 @@ func _emit_tower_in_range_placed_in_map(tower):
 	
 	if tower.is_current_placable_in_map():
 		emit_signal("on_tower_entered_range_while_in_map_or_entered_map_while_in_range", tower)
+		
+		if tower.current_health > 0:
+			_update_vars_and_emit_on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health(tower)
 
 func _emit_tower_in_range_placed_not_in_map(tower):
 	emit_signal("on_tower_in_range_exited_map", tower)
 	emit_signal("on_tower_exited_range_or_exited_map_while_in_range", tower)
+	_update_vars_and_emit_on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health(tower)
+
+func _on_tower_current_health_changed(arg_health, arg_tower):
+	if arg_health <= 0:
+		_update_vars_and_emit_on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health(arg_tower)
+	else:
+		if !arg_tower.is_connected("on_current_health_changed", self, "_on_tower_current_health_changed"):
+			arg_tower.connect("on_current_health_changed", self, "_on_tower_current_health_changed", [arg_tower], CONNECT_PERSIST)
+		
+		_update_vars_and_emit_on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health(arg_tower)
+
+
+func _update_vars_and_emit_on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health(arg_tower):
+	if !all_towers_in_range__in_map__with_non_zero_health.has(arg_tower):
+		all_towers_in_range__in_map__with_non_zero_health.append(arg_tower)
+	emit_signal("on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health", arg_tower)
+
+func _update_vars_and_emit_on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health(arg_tower):
+	all_towers_in_range__in_map__with_non_zero_health.erase(arg_tower)
+	emit_signal("on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health", arg_tower)
 
 # Glow related
 
@@ -198,4 +237,12 @@ func mirror_tower_range_module_range_changes(arg_tower):
 func _mirrored_tower_range_module_range_changed(arg_tower):
 	if is_instance_valid(arg_tower.range_module):
 		update_range(arg_tower.range_module.last_calculated_final_range)
+
+#
+
+func get_targets_based_on_params(arg_towers : Array, arg_targeting : int,
+		arg_num_of_targets : int, arg_pos : Vector2, arg_include_invis : bool):
+	
+	return Targeting.enemies_to_target(arg_towers, arg_targeting, arg_num_of_targets, arg_pos, arg_include_invis)
+
 

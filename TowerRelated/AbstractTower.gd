@@ -56,6 +56,10 @@ const AnimFaceDirComponent = preload("res://MiscRelated/CommonComponents/AnimFac
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
 const AbsorbIngParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/AbsorbRelated/AbsorbIngParticle.tscn")
 
+const Stunned_StatusBarIcon_Pic = preload("res://MiscRelated/CommonTextures/CommonStatusBarIcons_ForTowers/StatusBarIcon_StunIcon.png")
+
+
+
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self) # use when listening for player input. Note: does not take into account the swapping of towers
 signal on_attempt_drop_tower_on_placable(tower_self, arg_placable, arg_move_success) # 3rd arg is if there is enough tower slots to put the tower
@@ -651,7 +655,7 @@ func _post_inherit_ready():
 	
 	var sprite_frames_of_base : SpriteFrames = tower_base_sprites.frames
 	if sprite_frames_of_base.animations.size() >= 2:
-		anim_face_dir_component.initialize_with_sprite_frame_to_monitor(sprite_frames_of_base, tower_base_sprites,_anim_face__custom_anim_names_to_use, _anim_face__custom_dir_name_to_primary_rad_angle_map, _anim_face__custom_initial_dir_hierarchy)
+		anim_face_dir_component.initialize_with_sprite_frame_to_monitor(sprite_frames_of_base, tower_base_sprites, _anim_face__custom_anim_names_to_use, _anim_face__custom_dir_name_to_primary_rad_angle_map, _anim_face__custom_initial_dir_hierarchy)
 		anim_face_dir_component.set_animated_sprite_animation_to_default(tower_base_sprites)
 		connect("on_main_attack_module_commanded_to_attack_enemies_or_poses", self, "_on_attk_module__commanded_to_attack_enemies_or_poses", [], CONNECT_PERSIST)
 		
@@ -1801,7 +1805,8 @@ func _add_stun_effect(effect : TowerStunEffect):
 	last_calculated_is_stunned = true
 	disabled_from_attacking_clauses.attempt_insert_clause(DisabledFromAttackingSourceClauses.IS_STUNNED)
 	_disable_modules(AbstractAttackModule.Disabled_ClauseId.IS_STUNNED)
-
+	
+	_update_display_of_stunned_status_bar_icon()
 
 func _remove_stun_effect(effect : TowerStunEffect):
 	_stun_id_effect_map.erase(effect.effect_uuid)
@@ -1813,6 +1818,15 @@ func _remove_stun_effect(effect : TowerStunEffect):
 	else:
 		disabled_from_attacking_clauses.remove_clause(DisabledFromAttackingSourceClauses.IS_STUNNED)
 		_enable_modules(AbstractAttackModule.Disabled_ClauseId.IS_STUNNED)
+	
+	_update_display_of_stunned_status_bar_icon()
+
+func _update_display_of_stunned_status_bar_icon():
+	if last_calculated_is_stunned:
+		if !status_bar.has_status_icon(StoreOfTowerEffectsUUID.STUN_ID_FOR_STATUS_BAR_ICON):
+			status_bar.add_status_icon(StoreOfTowerEffectsUUID.STUN_ID_FOR_STATUS_BAR_ICON, Stunned_StatusBarIcon_Pic)
+	else:
+		status_bar.remove_status_icon(StoreOfTowerEffectsUUID.STUN_ID_FOR_STATUS_BAR_ICON)
 
 
 func knock_up_from_effect(effect : TowerKnockUpEffect):

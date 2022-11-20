@@ -1,0 +1,27 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle_01.png.png" type="Texture" id=2]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle_02.png" type="Texture" id=3]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle_05.png" type="Texture" id=4]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle_03.png" type="Texture" id=5]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle_06.png" type="Texture" id=6]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle_07.png" type="Texture" id=7]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle_08.png" type="Texture" id=8]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle_04.png" type="Texture" id=9]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle_09.png" type="Texture" id=10]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 5 ), ExtResource( 9 ), ExtResource( 4 ), ExtResource( 6 ), ExtResource( 7 ), ExtResource( 8 ), ExtResource( 10 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
+
+[node name="Ascender_TransformParticle" instance=ExtResource( 1 )]
+frames = SubResource( 1 )
+frame = 8
+queue_free_at_end_of_lifetime = false
+lifetime = 0.3
+frames_based_on_lifetime = true

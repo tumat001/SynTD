@@ -49,8 +49,8 @@ var cosmic_aoe_module : AOEAttackModule
 const _cosmic_aoe_duration : float = 0.25
 const _cosmic_modulate : Color = Color(1, 1, 1, 0.6)
 
-const staff_w_position := Vector2(-10, -3)
-const staff_e_position := Vector2(10, -3)
+var staff_w_position := Vector2(-10, -3)
+var staff_e_position := Vector2(10, -3)
 
 var shield_beam_targeting_rng : RandomNumberGenerator
 const shield_beam_targeting_i_min : int = 1
@@ -64,6 +64,7 @@ func _init():
 	
 	connect("anim_name_used_changed", self, "_on_anim_name_used_changed_c")
 
+
 func _ready():
 	shield_beam_targeting_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SKIRMISHER_GEN_PURPOSE)
 	
@@ -72,6 +73,13 @@ func _ready():
 	_construct_and_add_cosmic_attack_module()
 	_construct_effects()
 	_construct_and_connect_ability()
+	
+	connect("final_ability_potency_changed", self, "_on_final_ap_changed_c")
+
+func _on_finished_ready_prep():
+	staff_w_position = get_position_added_pos_and_offset_modifiers(staff_w_position)
+	staff_e_position = get_position_added_pos_and_offset_modifiers(staff_e_position)
+
 
 func _construct_beam_sprite_frames():
 	_cosmic_beam_sprite_frames = SpriteFrames.new()
@@ -101,7 +109,7 @@ func _construct_and_connect_ability():
 
 func _construct_effects():
 	var modi : FlatModifier = FlatModifier.new(StoreOfEnemyEffectsUUID.COSMIC_SHIELD_EFFECT)
-	modi.flat_modifier = _shield_flat_amount
+	modi.flat_modifier = _shield_flat_amount * last_calculated_final_ability_potency
 	
 	shield_effect = EnemyShieldEffect.new(modi, StoreOfEnemyEffectsUUID.COSMIC_SHIELD_EFFECT)
 	shield_effect.is_timebound = true
@@ -148,8 +156,7 @@ func _construct_and_add_cosmic_attack_module():
 	
 	cosmic_aoe_module.can_be_commanded_by_tower = false
 	
-	game_elements.get_tree().get_root().add_child(cosmic_aoe_module)
-
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(cosmic_aoe_module)
 
 #
 
@@ -258,3 +265,8 @@ func _on_anim_name_used_changed_c(arg_prev_name, arg_curr_name):
 		staff_center_2dposition_node.position = staff_e_position
 	
 
+#
+
+func _on_final_ap_changed_c(arg_potency):
+	shield_effect.shield_as_modifier.flat_modifier = _shield_flat_amount * last_calculated_final_ability_potency
+	

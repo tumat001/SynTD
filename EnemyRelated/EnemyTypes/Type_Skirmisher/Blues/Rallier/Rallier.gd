@@ -32,7 +32,7 @@ func _perform_speed_boost():
 
 func _construct_effect_and_give_to_enemy(arg_enemy):
 	var speed_bonus_modi = FlatModifier.new(StoreOfEnemyEffectsUUID.RALLIER_SPEED_EFFECT)
-	speed_bonus_modi.flat_modifier = _speed_flat_amount
+	speed_bonus_modi.flat_modifier = _speed_flat_amount * last_calculated_final_ability_potency
 	
 	var speed_bonus_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_MOV_SPEED, speed_bonus_modi, StoreOfEnemyEffectsUUID.RALLIER_SPEED_EFFECT)
 	speed_bonus_effect.respect_scale = true
