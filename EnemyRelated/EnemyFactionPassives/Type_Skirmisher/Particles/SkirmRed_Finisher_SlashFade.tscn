@@ -1,0 +1,25 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn" type="PackedScene" id=1]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj_Fade/Finisher_SlashProj_Fade_03.png" type="Texture" id=2]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj_Fade/Finisher_SlashProj_Fade_06.png" type="Texture" id=3]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj_Fade/Finisher_SlashProj_Fade_01.png" type="Texture" id=4]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj_Fade/Finisher_SlashProj_Fade_05.png" type="Texture" id=5]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj_Fade/Finisher_SlashProj_Fade_04.png" type="Texture" id=6]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj_Fade/Finisher_SlashProj_Fade_02.png" type="Texture" id=7]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 4 ), ExtResource( 7 ), ExtResource( 2 ), ExtResource( 6 ), ExtResource( 5 ), ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 18.0
+} ]
+
+[node name="SkirmRed_Finisher_SlashFade" instance=ExtResource( 1 )]
+frames = SubResource( 1 )
+frame = 4
+queue_free_at_end_of_lifetime = false
+lifetime = 0.3
+lifetime_to_start_transparency = 0.3
+transparency_per_sec = 2.0

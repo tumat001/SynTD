@@ -1,9 +1,23 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=21 format=2]
 
 [ext_resource path="res://EnemyRelated/AbstractEnemy.tscn" type="PackedScene" id=1]
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Danseur.gd" type="Script" id=2]
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Danseur_W.png" type="Texture" id=3]
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Danseur_E.png" type="Texture" id=4]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_03.png" type="Texture" id=5]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_01.png" type="Texture" id=6]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_02.png" type="Texture" id=7]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_11.png" type="Texture" id=8]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_04.png" type="Texture" id=9]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_07.png" type="Texture" id=10]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_08.png" type="Texture" id=11]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_13.png" type="Texture" id=12]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_12.png" type="Texture" id=13]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_09.png" type="Texture" id=14]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_06.png" type="Texture" id=15]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_14.png" type="Texture" id=16]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_05.png" type="Texture" id=17]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_Spinning/Danseur_Spinning_10.png" type="Texture" id=18]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -11,6 +25,11 @@ animations = [ {
 "loop": true,
 "name": "E",
 "speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ), ExtResource( 7 ), ExtResource( 5 ), ExtResource( 9 ), ExtResource( 17 ), ExtResource( 15 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 14 ), ExtResource( 18 ), ExtResource( 8 ), ExtResource( 13 ), ExtResource( 12 ), ExtResource( 16 ) ],
+"loop": true,
+"name": "Spinning",
+"speed": 44.0
 }, {
 "frames": [ ExtResource( 3 ) ],
 "loop": true,
@@ -26,7 +45,7 @@ script = ExtResource( 2 )
 
 [node name="AnimatedSprite" parent="SpriteLayer/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
-animation = "E"
+animation = "Spinning"
 
 [node name="CollisionShape2D" parent="CollisionArea" index="0"]
 position = Vector2( -0.0712242, 1.04525 )

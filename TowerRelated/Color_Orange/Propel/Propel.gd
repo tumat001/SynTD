@@ -76,7 +76,7 @@ var line_range_module_enemy_to_in_range_count_map : Dictionary = {}
 
 #
 
-var _original_placable_at_round_start : InMapAreaPlacable
+#var _original_placable_at_round_start : InMapAreaPlacable
 
 #
 
@@ -291,8 +291,8 @@ func _on_tower_placable_changed(arg_tower, arg_placable):
 	if is_current_placable_in_map():
 		_update_line_range_modules_state()
 		
-		if is_round_started and !is_instance_valid(_original_placable_at_round_start):
-			_original_placable_at_round_start = current_placable
+		#if is_round_started and !is_instance_valid(_original_placable_at_round_start):
+		#	_original_placable_at_round_start = current_placable
 
 
 func _update_line_range_modules_state():
@@ -431,7 +431,7 @@ func _construct_plow_bullet(arg_placable):
 
 
 func _on_plow_bullet_tree_exiting(arg_placable):
-	if is_instance_valid(arg_placable) and arg_placable.tower_occupying == null:
+	if is_instance_valid(arg_placable) and arg_placable.tower_occupying == null and is_round_started:
 		_transfer_to_placable_with_default_params(arg_placable)
 	
 	plow_ability.activation_conditional_clauses.remove_clause(plow_is_during_cast_clause_id)
@@ -444,7 +444,7 @@ func _on_plow_bullet_tree_exiting(arg_placable):
 
 func _transfer_to_placable_with_default_params(arg_placable):
 	transfer_to_placable(arg_placable, false, !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self))
-	
+
 
 # plow bullet
 func _on_bullet_hit_enemy(bullet, enemy):
@@ -461,10 +461,10 @@ func _on_bullet_hit_enemy(bullet, enemy):
 #
 
 func _on_round_end_p():
-	if is_instance_valid(_original_placable_at_round_start):
-		if _original_placable_at_round_start.tower_occupying == null:
-			_transfer_to_placable_with_default_params(_original_placable_at_round_start)
-		_original_placable_at_round_start = null
+#	if is_instance_valid(_original_placable_at_round_start):
+#		if _original_placable_at_round_start.tower_occupying == null:
+#			_transfer_to_placable_with_default_params(_original_placable_at_round_start)
+#		_original_placable_at_round_start = null
 	
 	for range_module_i in line_range_module_to_in_map_placable_map.keys():
 		if is_instance_valid(range_module_i):
@@ -473,8 +473,9 @@ func _on_round_end_p():
 			line_range_module_enemy_to_in_range_count_map[range_module_i] = 0
 
 func _on_round_start_p():
-	if is_current_placable_in_map():
-		_original_placable_at_round_start = current_placable
+	pass
+#	if is_current_placable_in_map():
+#		_original_placable_at_round_start = current_placable
 
 
 #

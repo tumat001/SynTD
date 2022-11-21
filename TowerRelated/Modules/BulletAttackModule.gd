@@ -23,7 +23,8 @@ var flat_pierce_effects = {}
 var percent_pierce_effects = {}
 var last_calculated_final_pierce : float
 
-var base_proj_speed : float = 500
+const default_proj_speed : float = 500.0
+var base_proj_speed : float = default_proj_speed
 var flat_proj_speed_effects = {}
 var percent_proj_speed_effects = {}
 var last_calculated_final_proj_speed : float

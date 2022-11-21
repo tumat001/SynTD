@@ -275,6 +275,17 @@ var _anim_face__custom_anim_names_to_use
 var _anim_face__custom_dir_name_to_primary_rad_angle_map
 #var _anim_face__custom_initial_dir_hierarchy
 
+enum EnemyModulateIds {
+	GENERIC_INVIS = 10
+	
+	#
+	
+	FINISHER_DURING_DASH = 100
+}
+
+var all_id_to_sprite_layer_modulate : Dictionary = {}
+var last_calculated_sprite_layer_modulate : Color
+
 #
 
 var game_elements
@@ -1046,11 +1057,13 @@ func calculate_invisibility_status() -> bool:
 	#
 	
 	if last_calculated_invisibility_status:
-		modulate.a = 0.4
+		#modulate.a = 0.4
+		set_sprite_layer_modulate(EnemyModulateIds.GENERIC_INVIS, Color(1, 1, 1, 0.4))
 		emit_signal("cancel_all_lockons")
 		untargetable_clauses.attempt_insert_clause(UntargetabilityClauses.IS_INVISIBLE)
 	else:
-		modulate.a = 1
+		#modulate.a = 1
+		remove_sprite_layer_modulate(EnemyModulateIds.GENERIC_INVIS)
 		untargetable_clauses.remove_clause(UntargetabilityClauses.IS_INVISIBLE)
 	
 	emit_signal("on_invisibility_status_changed", last_calculated_invisibility_status)
@@ -1881,6 +1894,47 @@ func get_enemy_parent():
 	return self
 
 
+# Modulate related
+
+func set_sprite_layer_modulate(arg_id : int, arg_mod : Color):
+	all_id_to_sprite_layer_modulate[arg_id] = arg_mod
+	
+	_update_sprite_layer_current_modulate()
+
+func remove_sprite_layer_modulate(arg_id : int):
+	all_id_to_sprite_layer_modulate.erase(arg_id)
+	
+	_update_sprite_layer_current_modulate()
+
+
+func _update_sprite_layer_current_modulate():
+	_calculate_sprite_layer_modulate()
+	
+	sprite_layer.modulate = last_calculated_sprite_layer_modulate
+	layer_infobar.modulate.a = last_calculated_sprite_layer_modulate.a
+
+func _calculate_sprite_layer_modulate():
+	var lowest_mod_a : float = 1.0
+	var total_r : float
+	var total_g : float
+	var total_b : float
+	
+	for mod in all_id_to_sprite_layer_modulate.values():
+		if mod.a < lowest_mod_a:
+			lowest_mod_a = mod.a
+		
+		total_r += mod.r
+		total_g += mod.g
+		total_b += mod.b
+	
+	var total_mod_count : int = all_id_to_sprite_layer_modulate.size()
+	
+	if total_mod_count == 0:
+		last_calculated_sprite_layer_modulate = Color(1, 1, 1, 1)
+	else:
+		last_calculated_sprite_layer_modulate = Color(total_r / total_mod_count, total_g / total_mod_count, total_b / total_mod_count, lowest_mod_a)
+
+
 # ability related
 
 func register_ability(ability : BaseAbility):
@@ -2276,6 +2330,11 @@ func set_enemy_type(new_type : int):
 
 func get_position_added_pos_and_offset_modifiers(arg_pos): # all
 	return arg_pos + Vector2(0, -sprite_shift_from_ground) + knock_up_layer.position
+
+func get_position_subtracted_pos_and_offset_modifiers(arg_pos): # all
+	return arg_pos - (Vector2(0, -sprite_shift_from_ground) + knock_up_layer.position)
+
+
 
 func get_position_added_knockup_offset_modifiers(arg_pos): # only knockup
 	return arg_pos + knock_up_layer.position

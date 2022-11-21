@@ -209,8 +209,8 @@ func _on_round_start_l():
 
 func _on_round_end_l():
 	if is_current_placable_in_map():
-		if is_instance_valid(initial_placable_at_round_start) and initial_placable_at_round_start.tower_occupying == null:
-			_transfer_to_placable_with_default_params(initial_placable_at_round_start)
+		#if is_instance_valid(initial_placable_at_round_start) and initial_placable_at_round_start.tower_occupying == null:
+		#	_transfer_to_placable_with_default_params(initial_placable_at_round_start)
 		
 		_check_if_round_won_or_lost()
 

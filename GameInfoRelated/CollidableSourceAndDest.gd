@@ -18,6 +18,8 @@ const enemy_air_mask : int = 64
 const enemy_bullets_layer : int = 128
 const tower_bullets_layer : int = 4
 
+const terrain_layer : int = 1024
+
 
 func set_coll_layer_source(coll, source : int):
 	var final_layer : int

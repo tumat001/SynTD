@@ -101,7 +101,7 @@ var left_panel setget set_left_panel
 var relic_manager : RelicManager
 
 var synergy_manager
-var stage_round_manager
+var stage_round_manager setget set_stage_round_manager
 var ability_manager : AbilityManager
 var input_prompt_manager : InputPromptManager setget set_input_prompt_manager
 var game_elements setget set_game_elements
@@ -135,6 +135,9 @@ enum CanTowersSwapPositionsClauses {
 var can_towers_swap_positions_clauses : ConditionalClauses
 var last_calculated_can_towers_swap_position : bool
 
+# restore pos related
+
+var tower_to_original_placable_map : Dictionary = {}
 
 # NOTIF for player desc
 
@@ -170,6 +173,12 @@ func set_left_panel(arg_panel):
 	
 	left_panel.connect("on_single_syn_tooltip_shown", self, "_glow_placables_of_towers_with_color_of_syn", [], CONNECT_PERSIST)
 	left_panel.connect("on_single_syn_tooltip_hidden", self, "_unglow_all_placables", [], CONNECT_PERSIST)
+
+func set_stage_round_manager(arg_manager):
+	stage_round_manager = arg_manager
+	
+	arg_manager.connect("round_started", self, "_on_round_start__for_restore_position", [], CONNECT_PERSIST)
+	arg_manager.connect("round_ended", self, "_on_round_end__to_restore_position", [], CONNECT_PERSIST)
 
 
 # Called when the node enters the scene tree for the first time.
@@ -210,6 +219,9 @@ func _tower_in_queue_free(tower):
 	
 	if tower == tower_being_shown_in_info:
 		_show_round_panel()
+	
+	#
+	_on_tower_in_queue_free__for_restore_position(tower)
 
 # Called after potentially updating synergy
 func _tower_active_in_map(tower : AbstractTower):
@@ -277,6 +289,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("on_sellback_value_changed", self, "_emit_tower_sellback_value_changed", [tower_instance], CONNECT_PERSIST)
 	
 	tower_instance.connect("on_is_contributing_to_synergy_color_count_changed", self, "_tower_can_contribute_to_synergy_color_count_changed", [tower_instance], CONNECT_PERSIST)
+	tower_instance.connect("on_tower_transfered_in_map_from_bench", self, "_on_tower_placed_in_map_from_bench", [], CONNECT_PERSIST)
 	
 	connect("ingredient_mode_turned_into", tower_instance, "_set_is_in_ingredient_mode", [], CONNECT_PERSIST)
 	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient", [], CONNECT_PERSIST)
@@ -880,7 +893,54 @@ func _update_can_towers_swap_positions_clauses():
 	last_calculated_can_towers_swap_position = can_towers_swap_positions_clauses.is_passed
 
 
+################### RESTORE POSITION RELATED
 
+func _on_round_start__for_restore_position(arg_curr_stageround):
+	for tower in get_all_in_map_towers_except_in_queue_free():
+		_record_tower_for_restore_position(tower, tower.current_placable)
 
+func _on_round_end__to_restore_position(arg_curr_stageround):
+	_restore_tower_positions()
+	
+	tower_to_original_placable_map.clear()
+	#call_deferred("_clear_tower_to_original_placable_map__deferred")
 
+#func _clear_tower_to_original_placable_map__deferred():
+#	tower_to_original_placable_map.clear()
+
+func _on_tower_placed_in_map_from_bench(arg_tower, arg_in_map_placable, arg_bench_placable):
+	if stage_round_manager.round_started:
+		_record_tower_for_restore_position(arg_tower, arg_in_map_placable)
+
+func _on_tower_in_queue_free__for_restore_position(arg_tower):
+	if stage_round_manager.round_started:
+		_unrecord_tower_for_restore_position(arg_tower)
+
+#
+
+func _record_tower_for_restore_position(arg_tower, arg_placable_to_mark_as_origin):
+	tower_to_original_placable_map[arg_tower] = arg_placable_to_mark_as_origin
+
+func _unrecord_tower_for_restore_position(arg_tower):
+	tower_to_original_placable_map.erase(arg_tower)
+
+#
+
+func _restore_tower_positions():
+	var towers_with_changed_placables : Array = []
+	for tower in get_all_in_map_towers_except_in_queue_free():
+		if is_instance_valid(tower.current_placable) and is_instance_valid(tower_to_original_placable_map[tower]):
+			if !is_tower_original_placable_same_as_current(tower):
+				towers_with_changed_placables.append(tower)
+				tower.remove_self_from_current_placable__for_restore_to_position()
+	
+	for tower in towers_with_changed_placables:
+		var orig_placable = tower_to_original_placable_map[tower]
+		var curr_tower_in_orig_placable = orig_placable.tower_occupying
+		
+		if !is_instance_valid(curr_tower_in_orig_placable) or towers_with_changed_placables.has(curr_tower_in_orig_placable):
+			tower.transfer_to_placable(orig_placable)
+
+func is_tower_original_placable_same_as_current(tower):
+	return tower.current_placable == tower_to_original_placable_map[tower]
 

@@ -103,15 +103,16 @@ func get_anim_name_to_use_based_on_angle(arg_angle):
 	var anim_count : int = anim_names.size()
 	
 	for anim_name in anim_names:
-		var angle_range = _current_dir_name_to_rad_angle_range[anim_name]
-		#print("anim name: %s, range: %s" % [anim_name, angle_range])
-		if Targeting.is_angle_between_angles__do_no_correction(arg_angle, angle_range[0], angle_range[1]):
-			#print(anim_name)
-			return anim_name
-		
-		if index == anim_count - 1: # guarantee to return last anim name
-			#print(anim_name)
-			return anim_name
+		if _current_dir_name_to_rad_angle_range.has(anim_name):
+			var angle_range = _current_dir_name_to_rad_angle_range[anim_name]
+			#print("anim name: %s, range: %s" % [anim_name, angle_range])
+			if Targeting.is_angle_between_angles__do_no_correction(arg_angle, angle_range[0], angle_range[1]):
+				#print(anim_name)
+				return anim_name
+			
+			if index == anim_count - 1: # guarantee to return last anim name
+				#print(anim_name)
+				return anim_name
 		
 		index += 1
 	

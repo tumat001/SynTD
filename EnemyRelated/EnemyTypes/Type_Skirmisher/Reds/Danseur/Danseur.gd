@@ -8,8 +8,8 @@ var _curr_dash_left : int
 
 const base_chance_for_dashing_at_next_offset : float = 0.33 
 var _curr_chance_for_dashing_at_next_offset : float = base_chance_for_dashing_at_next_offset
-var _chance_multiplier_per_next_entry_offset_passed : float = 1.5
-var _chance_multiplier_per_successful_dash : float = 0.75
+var _chance_multiplier_per_next_entry_offset_skipped : float = 1.5
+var _chance_multiplier_per_successful_dash : float = 0.8
 
 #const tower_min_inc_count_at_exit_pos_for_trigger : int = 2
 
@@ -28,6 +28,10 @@ var _is_during_dash_or_dance : bool
 
 #
 
+const spinning_animation_name : String = "Spinning"
+
+#
+
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.DANSEUR))
 
@@ -39,7 +43,6 @@ func _ready():
 	_dance_timer.pauses_when_stunned = false
 	_dance_timer.connect("timeout_and_cleared_prevention", self, "_on_dance_timer_timeout_and_cleared_prevention")
 	_dance_timer.set_enemy(self)
-	
 	add_child(_dance_timer)
 	
 	#
@@ -55,14 +58,13 @@ func _set_curr_dash_left(arg_val):
 	_curr_dash_left = arg_val
 	
 	if _curr_dash_left > 0:
-		register_self_to_offset_checkpoints_of_through_placable_data("_on_next_entry_offset_reached")
+		register_self_to_offset_checkpoints_of_through_placable_data__as_danseur("_on_next_entry_offset_reached")
 	else:
-		unregister_self_to_offset_checkpoints_of_through_placable_data()
+		unregister_self_to_offset_checkpoints_of_through_placable_data__as_danseur()
 
 #
 
 func _on_next_entry_offset_reached(arg_through_placable_data):
-	#if _if_chance_passed():
 	if !arg_through_placable_data.entry_higher_than_exit and !_is_during_dash_or_dance and _if_chance_passed():
 		_perform_dash(arg_through_placable_data)
 		
@@ -80,7 +82,7 @@ func _if_chance_passed() -> bool:
 	return skirmisher_gen_purpose_rng.randi_range(0, 100) < _curr_chance_for_dashing_at_next_offset * 100
 
 func _increase_curr_chance_for_next():
-	_curr_chance_for_dashing_at_next_offset *= _chance_multiplier_per_next_entry_offset_passed
+	_curr_chance_for_dashing_at_next_offset *= _chance_multiplier_per_next_entry_offset_skipped
 
 #
 
@@ -112,7 +114,8 @@ func _perform_dance():
 	_dance_timer.start(delta_per_bullet)
 	
 	no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.CUSTOM_CLAUSE_01)
-
+	
+	anim_sprite.play(spinning_animation_name)
 
 func _on_dance_timer_timeout_and_cleared_prevention():
 	_fire_dance_bullet_at_tower_in_range()
@@ -124,7 +127,7 @@ func _fire_dance_bullet_at_tower_in_range():
 		var rand_tower = _get_random_tower_in_range()
 		if is_instance_valid(rand_tower):
 			skirmisher_faction_passive.request_danseur_proj_to_shoot(self, global_position, rand_tower.global_position)
-			_change_animation_to_face_position(rand_tower.global_position)
+			#_change_animation_to_face_position(rand_tower.global_position)
 		
 	else:
 		_end_dance()
@@ -150,7 +153,7 @@ func _end_dance():
 
 func _give_self_slow():
 	var slow_modifier : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.DANSEUR_SELF_SLOW_EFFECT)
-	slow_modifier.percent_amount = -50
+	slow_modifier.percent_amount = -75
 	slow_modifier.percent_based_on = PercentType.CURRENT
 	
 	var enemy_attr_eff : EnemyAttributesEffect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_BASE_MOV_SPEED, slow_modifier, StoreOfEnemyEffectsUUID.DANSEUR_SELF_SLOW_EFFECT)

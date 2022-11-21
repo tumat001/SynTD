@@ -58,6 +58,8 @@ enum Enemies {
 	BLASTER = 450
 	ARTILLERY = 451
 	DANSEUR = 452
+	FINISHER = 453
+	TOSSER = 454
 	
 	# BOTH (480)
 	
@@ -272,8 +274,20 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.DANSEUR:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 26
+		info.base_health = 28
 		info.base_movement_speed = 52
+		info.enemy_type = info.EnemyType.NORMAL
+		
+	elif enemy_id == Enemies.FINISHER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 35
+		info.base_movement_speed = 60
+		info.enemy_type = info.EnemyType.ELITE
+		
+	elif enemy_id == Enemies.TOSSER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
+		info.base_health = 25
+		info.base_movement_speed = 55
 		info.enemy_type = info.EnemyType.NORMAL
 		
 		
@@ -368,6 +382,10 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Artillery/Artillery.tscn")
 	elif enemy_id == Enemies.DANSEUR:
 		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Danseur.tscn")
+	elif enemy_id == Enemies.FINISHER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Finisher.tscn")
+	elif enemy_id == Enemies.TOSSER:
+		return load("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Tosser.tscn")
 		
 		
 	# OTHERS

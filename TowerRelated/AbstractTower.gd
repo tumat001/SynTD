@@ -64,6 +64,7 @@ signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self) # use when listening for player input. Note: does not take into account the swapping of towers
 signal on_attempt_drop_tower_on_placable(tower_self, arg_placable, arg_move_success) # 3rd arg is if there is enough tower slots to put the tower
 signal on_tower_transfered_to_placable(tower_self, arg_placable) # called regardless transfer was due to player input or other means
+signal on_tower_transfered_in_map_from_bench(tower_self, arg_map_placable, arg_bench_placable)
 
 signal tower_toggle_show_info
 signal on_tower_toggle_showing_range(is_showing_ranges)
@@ -2785,6 +2786,9 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 	if new_area_placable is InMapAreaPlacable and always_snap_back_to_orignal_pos and !transferred_tower:
 		new_area_placable = null
 	
+	######
+	var prev_placable = current_placable
+	
 	# The "new" one
 	if is_instance_valid(new_area_placable):
 		current_placable = new_area_placable
@@ -2827,6 +2831,9 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 				emit_signal("update_active_synergy")
 	
 	emit_signal("on_tower_transfered_to_placable", self, current_placable)
+	if is_instance_valid(prev_placable) and is_instance_valid(new_area_placable):
+		if !prev_placable is InMapAreaPlacable and current_placable is InMapAreaPlacable:
+			emit_signal("on_tower_transfered_in_map_from_bench", self, current_placable, prev_placable)
 	
 	return is_instance_valid(new_area_placable)
 
@@ -2842,6 +2849,14 @@ func _on_PlacableDetector_area_exited(area):
 		area.set_tower_highlight_sprite(null)
 		if hovering_over_placable == area:
 			hovering_over_placable = null
+
+# restore to position specific funcs
+
+func remove_self_from_current_placable__for_restore_to_position():
+	if is_instance_valid(current_placable):
+		if current_placable.tower_occupying == self:
+			current_placable.tower_occupying = null
+	
 
 
 # Mov to in map related
@@ -2930,10 +2945,6 @@ func _calculate_sellback_of_ingredients() -> int:
 
 # Modulate related
 
-#func set_tower_sprite_modulate(color : Color):
-#	$TowerBase.modulate = color
-
-
 func set_tower_base_modulate(arg_id : int, arg_mod : Color):
 	all_id_to_tower_base_modulate[arg_id] = arg_mod
 	
@@ -2971,9 +2982,6 @@ func _calculate_tower_base_modulate():
 		last_calculated_tower_base_modulate = Color(1, 1, 1, 1)
 	else:
 		last_calculated_tower_base_modulate = Color(total_r / total_mod_count, total_g / total_mod_count, total_b / total_mod_count, lowest_mod_a)
-
-
-
 
 
 # Combination related
@@ -3146,6 +3154,9 @@ func _calculate_max_health() -> float:
 	
 	return max_health
 
+
+func execute_self(enemy_source = null):
+	take_damage(current_health, enemy_source)
 
 func take_damage(damage_mod, enemy_source = null):
 	var amount : float = _get_amount_from_arg(damage_mod)
@@ -3578,7 +3589,7 @@ func set_heat_module(arg_heat_module):
 			tower_heat_module_bar.heat_module = heat_module
 			
 			add_infobar_control(tower_heat_module_bar)
-
+			
 
 func _construct_heat_effect():
 	pass

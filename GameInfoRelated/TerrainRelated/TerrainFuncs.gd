@@ -8,6 +8,9 @@ const FOV = preload("res://GameInfoRelated/TerrainRelated/FOV.gd")
 static func is_layer_in_sight_to(layer_a : int, layer_b : int):
 	return layer_a >= layer_b
 
+static func is_layer_between_layers_min_and_max_incl(layer_a : int, layer_min : int, layer_max : int):
+	return layer_a >= layer_min and layer_a <= layer_max
+
 ##
 
 static func convert_areas_to_polygons(

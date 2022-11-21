@@ -198,7 +198,7 @@ func _ready():
 	#round_info_panel = round_status_panel.round_info_panel
 	
 	# map manager
-	
+	map_manager.fov_node = fov_node
 	
 	# tower manager
 	tower_manager.right_side_panel = right_side_panel
@@ -395,9 +395,9 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.SIMPLEX,
-			Towers.PROMINENCE,
-			Towers.SHOCKER,
+			Towers.PROPEL,
+			Towers.L_ASSAUT,
+			Towers.TRANSPORTER,
 			Towers.VACUUM,
 			Towers.TRANSPORTER,
 			Towers.SHACKLED,

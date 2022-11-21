@@ -1,6 +1,7 @@
 extends Node
 
 const BaseMap = preload("res://MapsRelated/BaseMap.gd")
+const TerrainFuncs = preload("res://GameInfoRelated/TerrainRelated/TerrainFuncs.gd")
 
 #
 
@@ -30,13 +31,14 @@ var chosen_map_id : int setget set_chosen_map_id
 
 var base_map : BaseMap
 
-#
-
-func _ready():
-	pass
+var fov_node : Node2D setget set_fov_node
 
 #
 
+func set_fov_node(arg_node):
+	fov_node = arg_node
+
+#
 
 func set_chosen_map_id(arg_id):
 	chosen_map_id = arg_id
@@ -200,3 +202,39 @@ static func _find_random_distinct_placables(placables : Array, count : int):
 		copy.remove(rand_index)
 	
 	return bucket
+
+
+######### LOS related - USE DURING PHYSICS PROCESS ONLY #########
+
+func is_line_of_sight_unobstructed(arg_source_pos : Vector2, arg_dest_pos : Vector2, arg_source_layer : int):
+	var all_terrains = get_all_terrains_obstructing_los__except_in_queue_free(arg_source_layer)
+	
+	var space_state = fov_node.get_world_2d().direct_space_state
+	var result : Dictionary = space_state.intersect_ray(arg_source_pos, arg_dest_pos, all_terrains, CollidableSourceAndDest.terrain_layer, false, true)
+	
+	return result.size() == 0
+
+
+func get_all_terrains_obstructing_los__except_in_queue_free(arg_layer : int):
+	var bucket = []
+	for terrain in get_all_terrains():
+		if is_instance_valid(terrain) and !terrain.is_queued_for_deletion() and TerrainFuncs.is_layer_in_sight_to(terrain.terrain_layer, arg_layer):
+			bucket.append(terrain)
+	
+	return bucket
+
+func get_all_terrains_within_terrain_layer__except_in_queue_free(arg_max_layer_incl : int, arg_min_layer_incl : int = -1):
+	var bucket = []
+	for terrain in get_all_terrains():
+		if is_instance_valid(terrain) and !terrain.is_queued_for_deletion() and TerrainFuncs.is_layer_between_layers_min_and_max_incl(terrain.terrain_layer, arg_min_layer_incl, arg_max_layer_incl):
+			bucket.append(terrain)
+	
+	return bucket
+
+func get_all_terrains():
+	return base_map.get_all_terrains()
+
+######
+
+
+

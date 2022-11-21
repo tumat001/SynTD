@@ -403,7 +403,6 @@ class LineTargetParameters:
 	
 	var circle_slice_count : int = 120
 	
-	
 	#
 	
 	func get_line_width_with_forgiveness():

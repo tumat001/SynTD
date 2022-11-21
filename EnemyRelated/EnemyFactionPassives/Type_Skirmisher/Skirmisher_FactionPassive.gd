@@ -15,6 +15,7 @@ const SkirmBlue_Smoke_Particle_Scene = preload("res://EnemyRelated/EnemyFactionP
 const SkirmBlue_Rallier_Particle_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/Particles/SkirmBlue_Rallier_Particle.tscn")
 const SkirmBlue_Ascender_Particle_Scene = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle.tscn")
 const SkirmRed_ArtilleryExplosion_Particle_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/Particles/SkirmRed_Artillery_AestheticExplosion.tscn")
+const SkirmRed_Finisher_SlashFade_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/Particles/SkirmRed_Finisher_SlashFade.tscn")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
@@ -33,7 +34,10 @@ const TowerStunEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerS
 const Blaster_Bullet_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Blaster/Assets/Blaster_Bullet.png")
 const Artillery_Bullet_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Artillery/Assets/Artillery_ArcBullet.png")
 const Danseur_Bullet_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_BulletProj.png")
+const Finisher_Bullet_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj.png")
+const Finisher_BulletSmall_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj_Small.png")
 
+#
 
 enum PathType {
 	BLUE_PATH = 0,
@@ -67,6 +71,10 @@ var trail_component_for_artillery_bullet : MultipleTrailsForNodeComponent
 
 var danseur_bullet_attk_module : BulletAttackModule
 
+var finisher_execute_bullet_attk_module : BulletAttackModule
+var finisher_normal_bullet_attk_module : BulletAttackModule
+var trail_component_for_finisher_proj : MultipleTrailsForNodeComponent
+var finisher_execute_fade_particle_pool_component : AttackSpritePoolComponent
 
 const blaster_range : float = 120.0
 const blaster_damage_per_bullet : float = 0.5
@@ -77,21 +85,41 @@ const artillery_stun_duration_on_shot_hit : float = 2.0
 const danseur_proj_and_detection_range : float = 130.0
 const danseur_damage_per_proj : float = 0.3
 
-#
+const finisher_execute_damage_per_bullet : float = 0.5
+const finisher_normal_damage_per_bullet : float = 0.5
 
-const starting_side_point_distance_from_placable : float = 30.0
-const distance_max_from_starting_placable_pos_to_offset : float = 70.0
-const distance_max_from_placable_center_to_ending_offset : float = 110.0
-const distance_min_of_ending_offset_to_entry_offset = 40.0
+# DANSEUR SPECIFIC
 
-const min_entry_unit_offset : float = 0.05
-const max_exit_unit_offset : float = 0.95
+const danseur__starting_side_point_distance_from_placable : float = 30.0
 
-var enemy_path_to_through_placable_datas : Dictionary
-#var through_placable_data : Array
+const danseur__distance_max_from_starting_placable_pos_to_offset : float = 70.0
+const danseur__distance_max_from_placable_center_to_ending_offset : float = 110.0
+const danseur__distance_min_of_ending_offset_to_entry_offset = 30.0
+const danseur__interval_magnitude : float = 15.0
+
+const danseur__min_entry_unit_offset : float = 0.05
+const danseur__max_exit_unit_offset : float = 0.95
+
+var danseur__enemy_path_to_through_placable_datas : Dictionary
+
+# FINISHER SPECIFIC
+
+const finisher__starting_side_point_distance_from_placable : float = 40.0
+
+const finisher__distance_max_from_starting_placable_pos_to_offset : float = 130.0
+const finisher__distance_max_from_placable_center_to_ending_offset : float = 140.0
+const finisher__distance_min_of_ending_offset_to_entry_offset = 30.0
+const finisher__interval_magnitude : float = 15.0
+
+const finisher__min_entry_unit_offset : float = 0.05
+const finisher__max_exit_unit_offset : float = 0.95
+
+var finisher__enemy_path_to_through_placable_datas : Dictionary
+
+
+# SHARED BY FINISHER AND DANSEUR
 
 var through_placable_datas_thread : Thread
-
 const closest_offset_adv_param_metadata_name__entry_offset_pos = "entry_offset_pos"
 
 ###############
@@ -124,8 +152,14 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 		_initialize_artillery_trail_for_node_component()
 		
 		_initialize_and_generate_through_placable_data__threaded()
+		#_initialize_and_generate_through_placable_data([])
 		
 		_initialize_danseur_bullet_attk_module()
+		
+		_initialize_finisher_execute_bullet_attk_module()
+		_initialize_finisher_normal_bullet_attk_module()
+		_initialize_finisher_trail_for_node_component()
+		_initialize_finisher_execute_fade_particle_pool_component()
 	
 	#_initialize_enemy_manager_spawn_pattern()
 	#if !enemy_manager.is_connected("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed"):
@@ -172,8 +206,9 @@ func _set_blue_and_red_paths():
 		
 		map_manager.base_map.add_enemy_path(red_path)
 		
-		# for danseur/finisher
-		enemy_path_to_through_placable_datas[red_path] = []
+		# for danseur/finisher pathings
+		danseur__enemy_path_to_through_placable_datas[red_path] = []
+		finisher__enemy_path_to_through_placable_datas[red_path] = []
 
 func _reverse_actions_on_path_generation():
 	var all_paths = map_manager.base_map.all_enemy_paths.duplicate(false)
@@ -318,8 +353,6 @@ func request_rallier_speed_particle_to_play(arg_position : Vector2):
 	particle.lifetime = 0.35
 	particle.frame = 0
 	particle.set_anim_speed_based_on_lifetime()
-	
-	particle.has_lifetime = false #TOOO
 	
 	particle.visible = true
 	particle.modulate.a = 0.75
@@ -545,6 +578,162 @@ func request_remove_enemy_effect_shield_on_self__as_danseur(arg_enemy):
 	if eff_shield_effect != null:
 		arg_enemy._remove_effect(eff_shield_effect)
 
+#################### FINISHER RELATED
+
+
+func _initialize_finisher_execute_bullet_attk_module():
+	finisher_execute_bullet_attk_module = BulletAttackModule_Scene.instance()
+	
+	var bullet_shape = RectangleShape2D.new()
+	bullet_shape.extents.x = 35
+	bullet_shape.extents.y = 8
+	
+	finisher_execute_bullet_attk_module.bullet_shape = bullet_shape
+	finisher_execute_bullet_attk_module.bullet_scene = BaseBullet_Scene
+	finisher_execute_bullet_attk_module.set_texture_as_sprite_frame(Finisher_Bullet_Pic)
+	
+	finisher_execute_bullet_attk_module.base_proj_speed = 750
+	
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(finisher_execute_bullet_attk_module)
+
+
+func request_finisher_execute_bullet_to_shoot(arg_enemy_source, arg_source_pos, arg_dest_pos, arg_bullet_life_distance):
+	var bullet = finisher_execute_bullet_attk_module.construct_bullet(arg_dest_pos, arg_source_pos)
+	
+	bullet.can_hit_towers = true
+	bullet.life_distance = arg_bullet_life_distance - 10 # for allowance
+	
+	bullet.decrease_pierce = false
+	bullet.pierce = 1
+	
+	bullet.connect("hit_a_tower", self, "_on_finisher_execute_bullet_hit_tower")
+	bullet.connect("tree_exiting", self, "_on_finisher_execute_bullet_tree_exiting", [bullet])
+	
+	bullet.coll_source_layer = CollidableSourceAndDest.Source.FROM_ENEMY
+	bullet.coll_destination_mask = CollidableSourceAndDest.Destination.TO_TOWER
+	
+	finisher_execute_bullet_attk_module.set_up_bullet__add_child_and_emit_signals(bullet)
+	trail_component_for_finisher_proj.create_trail_for_node(bullet)
+	
+	return bullet
+
+func _on_finisher_execute_bullet_hit_tower(bullet, arg_tower):
+	arg_tower.take_damage(finisher_execute_damage_per_bullet)
+	
+
+func _on_finisher_execute_bullet_tree_exiting(arg_bullet):
+	request_finisher_execute_fade_particle_to_play(arg_bullet.global_position, arg_bullet.rotation)
+	
+
+
+func _initialize_finisher_execute_fade_particle_pool_component():
+	finisher_execute_fade_particle_pool_component = AttackSpritePoolComponent.new()
+	finisher_execute_fade_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	finisher_execute_fade_particle_pool_component.node_to_listen_for_queue_free = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	finisher_execute_fade_particle_pool_component.source_for_funcs_for_attk_sprite = self
+	finisher_execute_fade_particle_pool_component.func_name_for_creating_attack_sprite = "_create_finisher_execute_fade_particle"
+
+func _create_finisher_execute_fade_particle():
+	var particle = SkirmRed_Finisher_SlashFade_Scene.instance()
+	
+	particle.queue_free_at_end_of_lifetime = false
+	
+	particle.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
+	
+	return particle
+
+func request_finisher_execute_fade_particle_to_play(arg_position : Vector2, arg_rotation : float):
+	var particle = finisher_execute_fade_particle_pool_component.get_or_create_attack_sprite_from_pool()
+	
+	particle.global_position = arg_position
+	particle.lifetime = 0.3
+	particle.frame = 0
+	particle.set_anim_speed_based_on_lifetime()
+	particle.rotation = arg_rotation
+	
+	particle.visible = true
+	particle.modulate.a = 0.75
+	
+	
+	var disp := Vector2(100, 0)
+	disp = disp.rotated(arg_rotation)
+	particle.x_displacement_per_sec = disp.x
+	particle.y_displacement_per_sec = disp.y
+	
+	particle.upper_limit_x_displacement_per_sec = disp.x
+	particle.upper_limit_y_displacement_per_sec = disp.y
+
+##
+
+func _initialize_finisher_normal_bullet_attk_module():
+	finisher_normal_bullet_attk_module = BulletAttackModule_Scene.instance()
+	
+	var bullet_shape = RectangleShape2D.new()
+	bullet_shape.extents.x = 12
+	bullet_shape.extents.y = 8
+	
+	finisher_normal_bullet_attk_module.bullet_shape = bullet_shape
+	finisher_normal_bullet_attk_module.bullet_scene = BaseBullet_Scene
+	finisher_normal_bullet_attk_module.set_texture_as_sprite_frame(Finisher_BulletSmall_Pic)
+	
+	finisher_normal_bullet_attk_module.base_proj_speed = 450
+	
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(finisher_normal_bullet_attk_module)
+
+
+func request_finisher_normal_bullet_to_shoot(arg_enemy_source, arg_source_pos, arg_dest_pos, arg_bullet_life_distance):
+	var bullet = finisher_normal_bullet_attk_module.construct_bullet(arg_dest_pos, arg_source_pos)
+	
+	bullet.can_hit_towers = true
+	bullet.life_distance = arg_bullet_life_distance - 10 # for allowance
+	
+	bullet.decrease_pierce = false
+	bullet.pierce = 1
+	
+	bullet.connect("hit_a_tower", self, "_on_finisher_normal_bullet_hit_tower")
+	
+	bullet.coll_source_layer = CollidableSourceAndDest.Source.FROM_ENEMY
+	bullet.coll_destination_mask = CollidableSourceAndDest.Destination.TO_TOWER
+	
+	finisher_normal_bullet_attk_module.set_up_bullet__add_child_and_emit_signals(bullet)
+	trail_component_for_finisher_proj.create_trail_for_node(bullet)
+	
+	return bullet
+
+func _on_finisher_normal_bullet_hit_tower(bullet, arg_tower):
+	arg_tower.take_damage(finisher_normal_damage_per_bullet)
+
+
+#
+
+func request_add_enemy_effect_shield_on_self__as_finisher(arg_enemy):
+	var self_effect_shield = EnemyEffectShieldEffect.new(StoreOfEnemyEffectsUUID.FINISHER_EFFECT_SHIELD_EFFECT)
+	self_effect_shield.is_from_enemy = true
+	self_effect_shield.status_bar_icon = preload("res://EnemyRelated/CommonStatusBarIcons/EffectShieldEffect/EffectShieldEffect_StatusBarIcon.png")
+	
+	arg_enemy._add_effect(self_effect_shield)
+
+func request_remove_enemy_effect_shield_on_self__as_finisher(arg_enemy):
+	var eff_shield_effect = arg_enemy.get_effect_with_uuid(StoreOfEnemyEffectsUUID.FINISHER_EFFECT_SHIELD_EFFECT)
+	if eff_shield_effect != null:
+		arg_enemy._remove_effect(eff_shield_effect)
+
+#
+
+func _initialize_finisher_trail_for_node_component():
+	trail_component_for_finisher_proj = MultipleTrailsForNodeComponent.new()
+	trail_component_for_finisher_proj.node_to_host_trails = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	trail_component_for_finisher_proj.trail_type_id = StoreOfTrailType.BASIC_TRAIL
+	trail_component_for_finisher_proj.connect("on_trail_before_attached_to_node", self, "_trail_before_attached_to_finisher_bullet", [], CONNECT_PERSIST)
+	
+
+func _trail_before_attached_to_finisher_bullet(arg_trail, node):
+	arg_trail.max_trail_length = 8
+	arg_trail.trail_color = Color(244/255.0, 0, 2/255.0)
+	arg_trail.width = 4
+	
+	arg_trail.set_to_idle_and_available_if_node_is_not_visible = true
+
 
 ########################## DANSUER AND FINISHER THROUGH PLACABLE PATHS
 
@@ -564,22 +753,28 @@ func _initialize_and_generate_through_placable_data__threaded():
 	
 	through_placable_datas_thread = Thread.new()
 	through_placable_datas_thread.start(self, "_initialize_and_generate_through_placable_data")
-	
 
 func _initialize_and_generate_through_placable_data(arg_data):
+	_generate_through_placable_data__for_danseur()
+	_generate_through_placable_data__for_finisher()
+
+
+## DANSEUR SPECIFIC
+
+func _generate_through_placable_data__for_danseur():
 	for placable in game_elements.map_manager.get_all_placables():
 		if placable.visible:
-			_generate_through_placable_data_of_placable__using_default_starting_poses(placable)
+			_generate_through_placable_data_of_placable__using_default_starting_poses__as_danseur(placable)
 	
-	for datas in enemy_path_to_through_placable_datas.values():
+	for datas in danseur__enemy_path_to_through_placable_datas.values():
 		datas.sort_custom(self, "_sort_based_on_entry_offset")
 
-func _generate_through_placable_data_of_placable__using_default_starting_poses(arg_placable):
+func _generate_through_placable_data_of_placable__using_default_starting_poses__as_danseur(arg_placable):
 	var all_poses := []
-	var top_pos = arg_placable.global_position + Vector2(0, -starting_side_point_distance_from_placable)
-	var bot_pos = arg_placable.global_position + Vector2(0, starting_side_point_distance_from_placable)
-	var left_pos = arg_placable.global_position + Vector2(-starting_side_point_distance_from_placable, 0)
-	var right_pos = arg_placable.global_position + Vector2(starting_side_point_distance_from_placable, 0)
+	var top_pos = arg_placable.global_position + Vector2(0, -danseur__starting_side_point_distance_from_placable)
+	var bot_pos = arg_placable.global_position + Vector2(0, danseur__starting_side_point_distance_from_placable)
+	var left_pos = arg_placable.global_position + Vector2(-danseur__starting_side_point_distance_from_placable, 0)
+	var right_pos = arg_placable.global_position + Vector2(danseur__starting_side_point_distance_from_placable, 0)
 	
 	all_poses.append(top_pos)
 	all_poses.append(bot_pos)
@@ -590,37 +785,36 @@ func _generate_through_placable_data_of_placable__using_default_starting_poses(a
 		var path_length = path.curve.get_baked_length()
 		
 		for pos in all_poses:
-			var data = _generate_through_placable_data_of_placable__using_given_pos(arg_placable, path, pos, path_length)
+			var data = _generate_through_placable_data_of_placable__using_given_pos__as_danseur(arg_placable, path, pos, path_length)
 			if data != null:
-				enemy_path_to_through_placable_datas[path].append(data)
+				danseur__enemy_path_to_through_placable_datas[path].append(data)
 
 
-func _generate_through_placable_data_of_placable__using_given_pos(arg_placable, arg_enemy_path : EnemyPath, arg_starting_global_pos : Vector2, arg_path_length : float):
+func _generate_through_placable_data_of_placable__using_given_pos__as_danseur(arg_placable, arg_enemy_path : EnemyPath, arg_starting_global_pos : Vector2, arg_path_length : float):
 	# poses of in path as ENTRY
 	var nearest_pos : Vector2 = arg_enemy_path.curve.get_closest_point(arg_starting_global_pos - arg_enemy_path.global_position)
 	var nearest_global_pos = nearest_pos + arg_enemy_path.global_position
 	
-	if nearest_global_pos.distance_to(arg_placable.global_position) <= distance_max_from_starting_placable_pos_to_offset:
+	if nearest_global_pos.distance_to(arg_placable.global_position) <= danseur__distance_max_from_starting_placable_pos_to_offset:
 		var dict = {
 			closest_offset_adv_param_metadata_name__entry_offset_pos : nearest_pos
 		}
 
 		var closest_offset_adv_param = EnemyPath.ClosestOffsetAdvParams.new()
 		closest_offset_adv_param.obj_func_source = self
-		closest_offset_adv_param.func_predicate = "_test_on_closest_offset_adv_params"
+		closest_offset_adv_param.func_predicate = "_test_on_closest_offset_adv_params__as_danseur"
 		closest_offset_adv_param.metadata = dict
 		
 		#
 		
 		var angle : float = nearest_global_pos.angle_to_point(arg_placable.global_position)
-		#var valid_offset_and_pos = arg_enemy_path.get_closest_offset_and_pos_in_a_line__global_source_pos(15, distance_max_from_placable_center_to_ending_offset, angle, arg_placable.global_position)
-		var valid_offset_and_pos = arg_enemy_path.get_closest_offset_and_pos_in_a_line__global_source_pos(15, distance_max_from_placable_center_to_ending_offset, angle, arg_placable.global_position, closest_offset_adv_param)
+		var valid_offset_and_pos = arg_enemy_path.get_closest_offset_and_pos_in_a_line__global_source_pos(danseur__interval_magnitude, danseur__distance_max_from_placable_center_to_ending_offset, angle, arg_placable.global_position, closest_offset_adv_param)
 		
 		if valid_offset_and_pos != null:
 			var valid_offset = valid_offset_and_pos[0]
 			var valid_pos = valid_offset_and_pos[1]
 			
-			if _check_if_valid_offset_meets_requirements(valid_offset, arg_path_length):
+			if _check_if_valid_offset_meets_requirements__as_danseur(valid_offset, arg_path_length):
 				var through_placable_data = ThroughPlacableData.new()
 				through_placable_data.placable = arg_placable
 				through_placable_data.entry_offset = arg_enemy_path.curve.get_closest_offset(nearest_pos)
@@ -633,35 +827,117 @@ func _generate_through_placable_data_of_placable__using_given_pos(arg_placable, 
 	return null
 
 # closest_pos = closest pos of path from test pos. same in meaning to candidate_pos
-func _test_on_closest_offset_adv_params(arg_test_pos, arg_source_pos, arg_max_distance_of_test_to_source, arg_closest_pos : Vector2, arg_test_to_source_dist, arg_metadata):
-	return arg_closest_pos.distance_to(arg_metadata[closest_offset_adv_param_metadata_name__entry_offset_pos]) >= distance_min_of_ending_offset_to_entry_offset
+func _test_on_closest_offset_adv_params__as_danseur(arg_test_pos, arg_source_pos, arg_max_distance_of_test_to_source, arg_closest_pos : Vector2, arg_test_to_source_dist, arg_metadata):
+	return arg_closest_pos.distance_to(arg_metadata[closest_offset_adv_param_metadata_name__entry_offset_pos]) >= danseur__distance_min_of_ending_offset_to_entry_offset
 
-func _check_if_valid_offset_meets_requirements(arg_offset : float, arg_enemy_path_length : float):
-	return arg_offset > (arg_enemy_path_length * min_entry_unit_offset) and arg_offset < (arg_enemy_path_length * max_exit_unit_offset)
+func _check_if_valid_offset_meets_requirements__as_danseur(arg_offset : float, arg_enemy_path_length : float):
+	return arg_offset > (arg_enemy_path_length * danseur__min_entry_unit_offset) and arg_offset < (arg_enemy_path_length * danseur__max_exit_unit_offset)
 
 
-func _sort_based_on_entry_offset(a : ThroughPlacableData, b : ThroughPlacableData):
-	return a.entry_offset < b.entry_offset
-
-#
-func _on_game_elements_exit_tree():
-	through_placable_datas_thread.wait_to_finish()
-
-#
-
-#func register_enemy_to_offset_checkpoints_of_through_placable_data(arg_enemy):
-#	var path_of_enemy = arg_enemy.current_path
-#	var curr_enemy_offset = arg_enemy.offset
-#
-
-func get_next_through_placable_data_based_on_curr(arg_curr_offset, arg_path):
-	var datas : Array = enemy_path_to_through_placable_datas[arg_path]
+func get_next_through_placable_data_based_on_curr__as_danseur(arg_curr_offset, arg_path):
+	var datas : Array = danseur__enemy_path_to_through_placable_datas[arg_path]
 	var i = datas.bsearch_custom(arg_curr_offset, self, "_bsearch_compare_for_entry_offset")
 	
 	if datas.size() > i:
 		return datas[i]
 	else:
 		return null
+
+
+
+## FINISHER SPECIFIC
+
+func _generate_through_placable_data__for_finisher():
+	for placable in game_elements.map_manager.get_all_placables():
+		if placable.visible:
+			_generate_through_placable_data_of_placable__using_default_starting_poses__as_finisher(placable)
+	
+	for datas in finisher__enemy_path_to_through_placable_datas.values():
+		datas.sort_custom(self, "_sort_based_on_entry_offset")
+
+func _generate_through_placable_data_of_placable__using_default_starting_poses__as_finisher(arg_placable):
+	var all_poses := []
+	var top_pos = arg_placable.global_position + Vector2(0, -finisher__starting_side_point_distance_from_placable)
+	var bot_pos = arg_placable.global_position + Vector2(0, finisher__starting_side_point_distance_from_placable)
+	var left_pos = arg_placable.global_position + Vector2(-finisher__starting_side_point_distance_from_placable, 0)
+	var right_pos = arg_placable.global_position + Vector2(finisher__starting_side_point_distance_from_placable, 0)
+	
+	all_poses.append(top_pos)
+	all_poses.append(bot_pos)
+	all_poses.append(left_pos)
+	all_poses.append(right_pos)
+	
+	for path in paths_for_reds:
+		var path_length = path.curve.get_baked_length()
+		
+		for pos in all_poses:
+			var data = _generate_through_placable_data_of_placable__using_given_pos__as_finisher(arg_placable, path, pos, path_length)
+			if data != null:
+				finisher__enemy_path_to_through_placable_datas[path].append(data)
+
+
+func _generate_through_placable_data_of_placable__using_given_pos__as_finisher(arg_placable, arg_enemy_path : EnemyPath, arg_starting_global_pos : Vector2, arg_path_length : float):
+	# poses of in path as ENTRY
+	var nearest_pos : Vector2 = arg_enemy_path.curve.get_closest_point(arg_starting_global_pos - arg_enemy_path.global_position)
+	var nearest_global_pos = nearest_pos + arg_enemy_path.global_position
+	
+	if nearest_global_pos.distance_to(arg_placable.global_position) <= finisher__distance_max_from_starting_placable_pos_to_offset:
+		var dict = {
+			closest_offset_adv_param_metadata_name__entry_offset_pos : nearest_pos
+		}
+
+		var closest_offset_adv_param = EnemyPath.ClosestOffsetAdvParams.new()
+		closest_offset_adv_param.obj_func_source = self
+		closest_offset_adv_param.func_predicate = "_test_on_closest_offset_adv_params__as_finisher"
+		closest_offset_adv_param.metadata = dict
+		
+		#
+		
+		var angle : float = nearest_global_pos.angle_to_point(arg_placable.global_position)
+		var valid_offset_and_pos = arg_enemy_path.get_closest_offset_and_pos_in_a_line__global_source_pos(finisher__interval_magnitude, finisher__distance_max_from_placable_center_to_ending_offset, angle, arg_placable.global_position, closest_offset_adv_param)
+		
+		if valid_offset_and_pos != null:
+			var valid_offset = valid_offset_and_pos[0]
+			var valid_pos = valid_offset_and_pos[1]
+			
+			if _check_if_valid_offset_meets_requirements__as_finisher(valid_offset, arg_path_length):
+				var through_placable_data = ThroughPlacableData.new()
+				through_placable_data.placable = arg_placable
+				through_placable_data.entry_offset = arg_enemy_path.curve.get_closest_offset(nearest_pos)
+				through_placable_data.exit_offset = valid_offset
+				through_placable_data.exit_position = valid_pos
+				through_placable_data.entry_higher_than_exit = through_placable_data.entry_offset > valid_offset
+				
+				return through_placable_data
+	
+	return null
+
+# closest_pos = closest pos of path from test pos. same in meaning to candidate_pos
+func _test_on_closest_offset_adv_params__as_finisher(arg_test_pos, arg_source_pos, arg_max_distance_of_test_to_source, arg_closest_pos : Vector2, arg_test_to_source_dist, arg_metadata):
+	return arg_closest_pos.distance_to(arg_metadata[closest_offset_adv_param_metadata_name__entry_offset_pos]) >= finisher__distance_min_of_ending_offset_to_entry_offset
+
+func _check_if_valid_offset_meets_requirements__as_finisher(arg_offset : float, arg_enemy_path_length : float):
+	return arg_offset > (arg_enemy_path_length * finisher__min_entry_unit_offset) and arg_offset < (arg_enemy_path_length * finisher__max_exit_unit_offset)
+
+
+func get_next_through_placable_data_based_on_curr__as_finisher(arg_curr_offset, arg_path):
+	var allowance = 10.0
+	
+	var datas : Array = finisher__enemy_path_to_through_placable_datas[arg_path]
+	var i = datas.bsearch_custom(arg_curr_offset + allowance, self, "_bsearch_compare_for_entry_offset")
+	
+	if datas.size() > i:
+		return datas[i]
+	else:
+		return null
+
+
+# SHARED BY DANSEUR/FINISHER Pathing/Dashing
+func _on_game_elements_exit_tree():
+	through_placable_datas_thread.wait_to_finish()
+
+func _sort_based_on_entry_offset(a : ThroughPlacableData, b : ThroughPlacableData):
+	return a.entry_offset < b.entry_offset
 
 func _bsearch_compare_for_entry_offset(a : ThroughPlacableData, b : float):
 	return a.entry_offset < b
@@ -673,4 +949,7 @@ func _on_round_end(arg_stagerounds):
 	blaster_bullet_attk_module.on_round_end()
 	artillery_arc_bullet_attk_module.on_round_end()
 	danseur_bullet_attk_module.on_round_end()
+	
+	finisher_execute_bullet_attk_module.on_round_end()
+	finisher_normal_bullet_attk_module.on_round_end()
 

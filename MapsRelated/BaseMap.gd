@@ -176,6 +176,10 @@ func add_terrain_node(arg_terrain, arg_z_index_to_use : int = ZIndexStore.TERRAI
 	if arg_terrain.get("z_index"):
 		arg_terrain.z_index = arg_z_index_to_use
 
+func get_all_terrains():
+	return _terrain_node_parent.get_children()
+
+
 ###############
 
 func _apply_map_specific_changes_to_game_elements(arg_game_elements):
