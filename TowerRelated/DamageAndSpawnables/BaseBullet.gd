@@ -6,6 +6,7 @@ const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageIns
 signal hit_an_enemy(me, enemy)
 signal on_zero_pierce(me)
 signal on_current_life_distance_expire()
+signal on_current_life_duration_expire()
 
 signal hit_a_tower(me, tower)
 signal before_mov_is_executed(me, arg_delta)
@@ -78,7 +79,13 @@ func _process(delta):
 	
 	if !_is_in_queue_free:
 		_move(delta)
-
+		
+		# dont put this in _move, or it wont work for ArcingBaseBullet class
+		if decrease_life_duration:
+			current_life_duration -= delta
+		if current_life_duration <= 0:
+			emit_signal("on_current_life_duration_expire")
+			trigger_on_death_events()
 
 # Movement
 
@@ -111,13 +118,6 @@ func _move(delta):
 		speed = 0
 	if speed > speed_max:
 		speed = speed_max
-	
-	
-	if decrease_life_duration:
-		current_life_duration -= delta
-	
-	if current_life_duration < 0:
-		trigger_on_death_events()
 
 
 

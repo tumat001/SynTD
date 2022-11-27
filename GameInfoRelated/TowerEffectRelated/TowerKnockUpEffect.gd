@@ -1,7 +1,8 @@
 extends "res://GameInfoRelated/TowerEffectRelated/TowerBaseEffect.gd"
 
-
 const TowerStunEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerStunEffect.gd")
+
+
 
 var knock_up_y_acceleration : float
 

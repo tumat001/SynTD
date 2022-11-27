@@ -104,6 +104,7 @@ fill_foreground_margin_top = 2.0
 fill_foreground_margin_left = 2.0
 current_health_value = 0
 current_shield_value = 0
+
 [connection signal="body_entered" from="." to="." method="_on_AbstractTower_body_entered"]
 [connection signal="area_entered" from="PlacableDetector" to="." method="_on_PlacableDetector_area_entered"]
 [connection signal="area_exited" from="PlacableDetector" to="." method="_on_PlacableDetector_area_exited"]

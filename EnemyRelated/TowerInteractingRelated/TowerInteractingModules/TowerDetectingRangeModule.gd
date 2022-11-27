@@ -129,7 +129,7 @@ func _on_TowerDetectingRangeModule_area_exited(area):
 		emit_signal("on_tower_exited_range_or_exited_map_while_in_range", area)
 		_update_vars_and_emit_on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health(area)
 		
-		if !area.is_connected("on_current_health_changed", self, "_on_tower_current_health_changed"):
+		if area.is_connected("on_current_health_changed", self, "_on_tower_current_health_changed"):
 			area.disconnect("on_current_health_changed", self, "_on_tower_current_health_changed")
 
 

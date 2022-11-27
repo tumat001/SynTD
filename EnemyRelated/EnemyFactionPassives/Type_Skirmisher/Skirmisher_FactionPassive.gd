@@ -4,6 +4,8 @@ const MapManager = preload("res://GameElementsRelated/MapManager.gd")
 const EnemyPath = preload("res://EnemyRelated/EnemyPath.gd")
 const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
 const EnemyEffectShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyEffectShieldEffect.gd")
+const TowerKnockUpEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerKnockUpEffect.gd")
+const TowerForcedPlacableMovementEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerForcedPlacableMovementEffect.gd")
 
 const AbstractSkirmisherEnemy = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/AbstractSkirmisherEnemy.gd")
 
@@ -16,6 +18,7 @@ const SkirmBlue_Rallier_Particle_Scene = preload("res://EnemyRelated/EnemyFactio
 const SkirmBlue_Ascender_Particle_Scene = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_TransformParticle/Ascender_TransformParticle.tscn")
 const SkirmRed_ArtilleryExplosion_Particle_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/Particles/SkirmRed_Artillery_AestheticExplosion.tscn")
 const SkirmRed_Finisher_SlashFade_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/Particles/SkirmRed_Finisher_SlashFade.tscn")
+const SkirmRed_Tosser_Explosion_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/Particles/SkirmRed_Tosser_Explosion.tscn")
 
 const BulletAttackModule = preload("res://TowerRelated/Modules/BulletAttackModule.gd")
 const BulletAttackModule_Scene = preload("res://TowerRelated/Modules/BulletAttackModule.tscn")
@@ -36,6 +39,8 @@ const Artillery_Bullet_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmis
 const Danseur_Bullet_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Danseur/Assets/Danseur_BulletProj.png")
 const Finisher_Bullet_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj.png")
 const Finisher_BulletSmall_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj_Small.png")
+const Tosser_Bomb_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_Bomb.png")
+const Tosser_Empowered_Bomb_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_Bomb_Empowered.png")
 
 #
 
@@ -76,6 +81,9 @@ var finisher_normal_bullet_attk_module : BulletAttackModule
 var trail_component_for_finisher_proj : MultipleTrailsForNodeComponent
 var finisher_execute_fade_particle_pool_component : AttackSpritePoolComponent
 
+var tosser_arc_bullet_attk_module : ArcingBulletAttackModule
+
+
 const blaster_range : float = 120.0
 const blaster_damage_per_bullet : float = 0.5
 
@@ -87,6 +95,14 @@ const danseur_damage_per_proj : float = 0.3
 
 const finisher_execute_damage_per_bullet : float = 0.5
 const finisher_normal_damage_per_bullet : float = 0.5
+
+
+const tosser_flight_duration : float = 1.125
+const tosser_bomb_detonation_delay_on_landing : float = 1.5
+
+const tosser_angle_deviation : float = PI / 10    # dev of 90 covers 180 deg (semicircle)
+const tosser_distance_for_finding_placables : float = 100.0
+
 
 # DANSEUR SPECIFIC
 
@@ -102,6 +118,7 @@ const danseur__max_exit_unit_offset : float = 0.95
 
 var danseur__enemy_path_to_through_placable_datas : Dictionary
 
+
 # FINISHER SPECIFIC
 
 const finisher__starting_side_point_distance_from_placable : float = 40.0
@@ -115,6 +132,20 @@ const finisher__min_entry_unit_offset : float = 0.05
 const finisher__max_exit_unit_offset : float = 0.95
 
 var finisher__enemy_path_to_through_placable_datas : Dictionary
+
+
+# TOSSER SPECIFIC
+
+var tosser__plain_knock_up_effect : TowerKnockUpEffect
+var tosser__forced_mov_knock_up_effect : TowerKnockUpEffect
+
+const tosser_plain_knock_up_duration : float = 1.1
+const tosser_plain_knock_up_stun_duration : float = 2.5
+const tosser_plain_knock_up_y_accel_amount : float = 200.0
+
+const tosser_forced_mov_knock_up_duration : float = 1.25
+const tosser_forced_mov_up_y_accel_amount : float = 250.0
+const tosser_forced_mov_to_placable_duration : float = tosser_forced_mov_knock_up_duration
 
 
 # SHARED BY FINISHER AND DANSEUR
@@ -160,6 +191,9 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 		_initialize_finisher_normal_bullet_attk_module()
 		_initialize_finisher_trail_for_node_component()
 		_initialize_finisher_execute_fade_particle_pool_component()
+		
+		_initialize_tosser_arc_bullet_attk_module()
+		_initialize_tosser_tower_effects()
 	
 	#_initialize_enemy_manager_spawn_pattern()
 	#if !enemy_manager.is_connected("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed"):
@@ -733,6 +767,129 @@ func _trail_before_attached_to_finisher_bullet(arg_trail, node):
 	arg_trail.width = 4
 	
 	arg_trail.set_to_idle_and_available_if_node_is_not_visible = true
+
+
+################ TOSSER SPECIFIC
+
+func _initialize_tosser_arc_bullet_attk_module():
+	tosser_arc_bullet_attk_module = ArcingBulletAttackModule_Scene.instance()
+	
+	tosser_arc_bullet_attk_module.base_proj_speed = tosser_flight_duration
+	tosser_arc_bullet_attk_module.max_height = 300
+	tosser_arc_bullet_attk_module.bullet_rotation_per_second = 0
+	
+	tosser_arc_bullet_attk_module.bullet_scene = ArcingBaseBullet_Scene
+	#tosser_arc_bullet_attk_module.set_texture_as_sprite_frame(Tosser_Bomb_Pic)
+	
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(tosser_arc_bullet_attk_module)
+
+func _initialize_tosser_tower_effects():
+	tosser__plain_knock_up_effect = TowerKnockUpEffect.new(tosser_plain_knock_up_duration, tosser_plain_knock_up_y_accel_amount, StoreOfTowerEffectsUUID.TOSSER_KNOCK_UP_EFFECT)
+	tosser__plain_knock_up_effect.custom_stun_duration = tosser_plain_knock_up_stun_duration
+	tosser__plain_knock_up_effect.is_from_enemy = true
+	tosser__plain_knock_up_effect.is_timebound = true
+	 
+	tosser__forced_mov_knock_up_effect = TowerKnockUpEffect.new(tosser_forced_mov_knock_up_duration, tosser_forced_mov_up_y_accel_amount, StoreOfTowerEffectsUUID.TOSSER_FORCED_MOV_KNOCK_UP_EFFECT)
+	tosser__forced_mov_knock_up_effect.is_from_enemy = true
+	tosser__forced_mov_knock_up_effect.is_timebound = true
+
+
+# calls enemy source method once, with params (placable)
+func request_tosser_bomb_cluster_to_shoot(arg_enemy_source, arg_source_pos, arg_dest_pos : Vector2, arg_target_placable, arg_enemy_source_method):
+	var angle_of_enemy_to_placable = arg_enemy_source.global_position.angle_to_point(arg_target_placable.global_position)
+	var placable_to_displace_to = _get_nearest_placable_between_angles_and_distance_of_source_placable(arg_target_placable, angle_of_enemy_to_placable)
+	var will_bombs_displace : bool = is_instance_valid(placable_to_displace_to)
+	
+	var texture_to_use : Texture
+	
+	if will_bombs_displace:
+		texture_to_use = Tosser_Empowered_Bomb_Pic
+	else:
+		texture_to_use = Tosser_Bomb_Pic
+	
+	#
+	var bomb_count : int = 4
+	var offset_from_center_distance : float = 20.0
+	var _first_bomb
+	var all_bombs : Array
+	
+	for i in bomb_count:
+		var final_dest_pos = arg_target_placable.global_position + Vector2(offset_from_center_distance, 0).rotated(2*PI * (float(i) / bomb_count))
+		var bullet = tosser_arc_bullet_attk_module.construct_bullet(final_dest_pos, arg_source_pos)
+		
+		bullet.set_texture_as_sprite_frames(texture_to_use)
+		bullet.decrease_life_duration = false
+		bullet.life_duration = tosser_bomb_detonation_delay_on_landing
+		bullet.destroy_self_after_zero_life_distance = false
+		
+		if _first_bomb == null:
+			_first_bomb = bullet
+		
+		all_bombs.append(bullet)
+		tosser_arc_bullet_attk_module.set_up_bullet__add_child_and_emit_signals(bullet)
+	
+	if is_instance_valid(_first_bomb):
+		_first_bomb.connect("on_final_location_reached", self, "_on_final_location_reached__tosser_bullet", [arg_target_placable, placable_to_displace_to, arg_enemy_source, arg_enemy_source_method, will_bombs_displace, all_bombs])
+
+
+
+func _on_final_location_reached__tosser_bullet(arg_final_location, bullet, target_placable, placable_to_displace_to, arg_enemy_source, arg_enemy_source_method, arg_is_empowered, arg_all_bombs):
+	if is_instance_valid(bullet):
+		bullet.connect("on_current_life_duration_expire", self, "_on_tosser_bullet__current_duration_expired", [bullet, target_placable, placable_to_displace_to, arg_enemy_source, arg_enemy_source_method, arg_is_empowered], CONNECT_ONESHOT)
+	
+	for bomb in arg_all_bombs:
+		if is_instance_valid(bomb):
+			bomb.decrease_life_duration = true
+			bomb.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_TOWERS
+
+func _on_tosser_bullet__current_duration_expired(arg_bullet, target_placable, arg_placable_to_displace_to, arg_enemy_source, arg_enemy_source_method, arg_is_empowered):
+	if is_instance_valid(arg_enemy_source) and is_instance_valid(target_placable) and is_instance_valid(target_placable.tower_occupying):
+		arg_enemy_source.call(arg_enemy_source_method, arg_placable_to_displace_to)
+		
+		if is_instance_valid(arg_placable_to_displace_to):
+			_knock_tower_to_target_placable_and_knockup_stun(target_placable.tower_occupying, arg_placable_to_displace_to)
+		else:
+			_knock_up_tower_and_stun(target_placable.tower_occupying)
+
+
+# toss related funcs:
+
+func _get_nearest_placable_between_angles_and_distance_of_source_placable(arg_source_placable, arg_angle_of_enemy_to_placable):
+	#var angle_01 = arg_angle_of_enemy_to_placable - tosser_angle_deviation
+	#var angle_02 = arg_angle_of_enemy_to_placable + tosser_angle_deviation
+	
+	var angle_01 = arg_angle_of_enemy_to_placable + tosser_angle_deviation
+	var angle_02 = arg_angle_of_enemy_to_placable + (2*PI - tosser_angle_deviation)
+	
+	#
+	var all_placables = map_manager.get_all_placables_based_on_targeting_params(arg_source_placable.global_position, 100, MapManager.PlacableState.UNOCCUPIED, MapManager.SortOrder.CLOSEST, MapManager.RangeState.ANY)
+	var angle_param = Targeting.AngleTargetParameters.new()
+	angle_param.target_node_2ds = all_placables
+	angle_param.source_position = arg_source_placable.global_position
+	angle_param.angle_a = angle_01
+	angle_param.angle_b = angle_02
+	angle_param.max_distance_incl = tosser_distance_for_finding_placables
+	
+	#
+	var placables_between_angles_and_distance = Targeting.get_nodes_within_angle(angle_param)
+	var nearest = Targeting.enemies_to_target(placables_between_angles_and_distance, Targeting.CLOSE, 1, arg_source_placable.global_position)
+	
+	if nearest.size() > 0:
+		return nearest[0]
+	else:
+		return null
+
+func _knock_up_tower_and_stun(arg_tower):
+	arg_tower.add_tower_effect(tosser__plain_knock_up_effect)
+
+func _knock_tower_to_target_placable_and_knockup_stun(arg_tower, arg_destination_placable):
+	var forced_placable_mov_effect = TowerForcedPlacableMovementEffect.new(arg_destination_placable, arg_tower.current_placable, TowerForcedPlacableMovementEffect.TIME_BASED_MOVEMENT_SPEED, StoreOfTowerEffectsUUID.TOSSER_FORCED_MOV_EFFECT)
+	forced_placable_mov_effect.is_from_enemy = true
+	forced_placable_mov_effect.time_in_seconds = tosser_forced_mov_to_placable_duration
+	
+	arg_tower.add_tower_effect(forced_placable_mov_effect)
+	arg_tower.add_tower_effect(tosser__forced_mov_knock_up_effect)
+
 
 
 ########################## DANSUER AND FINISHER THROUGH PLACABLE PATHS

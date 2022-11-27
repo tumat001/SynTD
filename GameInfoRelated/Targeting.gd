@@ -93,7 +93,7 @@ static func _find_random_distinct_enemies(enemies : Array, count : int):
 	return bucket
 
 
-# Also shared by towers
+# Also shared by towers (and other nodes: placables)
 # Random, Close and Far will be shared for tower detection as well
 static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemies : int, pos : Vector2,
 		 include_invis_enemies : bool = false, targeting_parameters : TargetingParameters = null):
@@ -685,3 +685,48 @@ static func get_targets__based_on_range_from_center_as_circle(
 	#
 	
 	return enemies_to_target(bucket, targeting, arg_target_count, center_pos, arg_include_invis)
+
+#################
+
+
+class AngleTargetParameters:
+	
+	# use either based on use case
+	var target_node_2ds : Array
+	var target_positions : Array
+	
+	var source_position : Vector2
+	
+	var angle_a : float
+	var angle_b : float
+	
+	var max_distance_incl : float
+	
+	#
+
+func get_nodes_within_angle(arg_angle_target_params : AngleTargetParameters):
+	var bucket := []
+	
+	for node in arg_angle_target_params.target_node_2ds:
+		var node_pos = node.global_position
+		var angle_to_node = arg_angle_target_params.source_position.angle_to_point(node_pos)
+		
+		var is_node_within_angle : bool
+		#if angle_to_node < 0:
+		if ((arg_angle_target_params.angle_a + arg_angle_target_params.angle_b) / 2 < 0):
+			#return Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_tower), angle_01, angle_02)
+			is_node_within_angle = !Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_node), rad2deg(arg_angle_target_params.angle_b), rad2deg(arg_angle_target_params.angle_a))
+			#is_node_within_angle = Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_node), arg_angle_target_params.angle_a, arg_angle_target_params.angle_b)
+		else:
+			is_node_within_angle = Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_node), rad2deg(arg_angle_target_params.angle_b), rad2deg(arg_angle_target_params.angle_a))
+			#is_node_within_angle = !Targeting.is_angle_between_angles__do_no_correction(rad2deg(angle_to_node), arg_angle_target_params.angle_a, arg_angle_target_params.angle_b)
+		
+		if is_node_within_angle:
+			var dist = arg_angle_target_params.source_position.distance_to(node_pos)
+			if dist <= arg_angle_target_params.max_distance_incl:
+				bucket.append(node)
+	
+	return bucket
+
+
+

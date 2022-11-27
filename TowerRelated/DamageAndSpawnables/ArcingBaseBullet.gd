@@ -19,6 +19,9 @@ var _y_speed : float
 
 onready var coll_shape_2d = $CollisionShape2D
 
+var _reached_final_location : bool = false
+
+
 func _ready():
 	original_location = global_position
 	decrease_life_distance = false
@@ -70,7 +73,9 @@ func _move(delta):
 	current_life_distance -= delta
 	
 	if current_life_distance <= 0:
-		emit_signal("on_final_location_reached", final_location, self)
+		if !_reached_final_location:
+			_reached_final_location = true
+			emit_signal("on_final_location_reached", final_location, self)
 		
 		if destroy_self_after_zero_life_distance:
 			.trigger_on_death_events()

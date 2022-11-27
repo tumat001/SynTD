@@ -39,21 +39,22 @@ separator_text = "Non-active Dominants"
 [node name="NonActiveDominantSynergies" parent="." instance=ExtResource( 2 )]
 margin_top = 48.0
 margin_right = 94.0
-margin_bottom = 48.0
+margin_bottom = 54.0
 custom_constants/margin_left = 3
+custom_constants/margin_bottom = 6
 
 [node name="ActivePanel" type="MarginContainer" parent="."]
-margin_top = 52.0
+margin_top = 58.0
 margin_right = 94.0
-margin_bottom = 77.0
+margin_bottom = 86.0
 
 [node name="MarginContainer" type="MarginContainer" parent="ActivePanel"]
 margin_right = 94.0
-margin_bottom = 25.0
+margin_bottom = 28.0
 
 [node name="Background" type="TextureRect" parent="ActivePanel/MarginContainer"]
 margin_right = 94.0
-margin_bottom = 25.0
+margin_bottom = 28.0
 mouse_filter = 2
 size_flags_horizontal = 3
 texture = ExtResource( 4 )
@@ -62,7 +63,7 @@ stretch_mode = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ActivePanel"]
 margin_right = 94.0
-margin_bottom = 25.0
+margin_bottom = 28.0
 
 [node name="ActiveSeparator" parent="ActivePanel/VBoxContainer" instance=ExtResource( 3 )]
 margin_right = 94.0
@@ -74,6 +75,6 @@ separator_text = "Active Synergies:"
 [node name="ActiveSynergies" parent="ActivePanel/VBoxContainer" instance=ExtResource( 2 )]
 margin_top = 22.0
 margin_right = 94.0
-margin_bottom = 25.0
+margin_bottom = 28.0
 custom_constants/margin_left = 3
-custom_constants/margin_bottom = 3
+custom_constants/margin_bottom = 6

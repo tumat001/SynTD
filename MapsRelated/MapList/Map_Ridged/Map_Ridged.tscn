@@ -59,9 +59,11 @@ position = Vector2( 469.275, 281.645 )
 position = Vector2( 384.707, 311.941 )
 
 [node name="InMapAreaPlacable9" parent="InMapPlacables" index="8" instance=ExtResource( 3 )]
+visible = false
 position = Vector2( 670.983, 148.425 )
 
 [node name="InMapAreaPlacable10" parent="InMapPlacables" index="9" instance=ExtResource( 3 )]
+visible = false
 position = Vector2( 799.736, 326.157 )
 
 [node name="InMapAreaPlacable11" parent="InMapPlacables" index="10" instance=ExtResource( 3 )]
@@ -85,6 +87,7 @@ position = Vector2( 534.771, 244.456 )
 position = Vector2( 574.477, 345.592 )
 
 [node name="InMapAreaPlacable17" parent="InMapPlacables" index="16" instance=ExtResource( 3 )]
+visible = false
 position = Vector2( 720.562, 296.897 )
 
 [node name="InMapAreaPlacable18" parent="InMapPlacables" index="17" instance=ExtResource( 3 )]
@@ -92,6 +95,7 @@ position = Vector2( 770.508, 121.489 )
 layer_on_terrain = 2
 
 [node name="InMapAreaPlacable19" parent="InMapPlacables" index="18" instance=ExtResource( 3 )]
+visible = false
 position = Vector2( 678.508, 352.489 )
 
 [node name="EnemyPath01" parent="EnemyPaths" index="0" instance=ExtResource( 4 )]

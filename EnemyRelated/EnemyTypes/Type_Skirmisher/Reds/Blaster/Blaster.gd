@@ -89,7 +89,7 @@ func _cast_barrage():
 
 func _start_barrage_against_target(arg_target):
 	var cd = _barrage_cooldown
-	barrage_ability.on_ability_before_cast_start(_barrage_cooldown)
+	barrage_ability.on_ability_before_cast_start(cd)
 	
 	_current_barrage_target = arg_target
 	
@@ -98,7 +98,7 @@ func _start_barrage_against_target(arg_target):
 	barrage_ability.counter_decrease_clauses.attempt_insert_clause(in_barrage_clause)
 	
 	barrage_ability.start_time_cooldown(cd)
-	barrage_ability.on_ability_after_cast_ended(_barrage_cooldown)
+	barrage_ability.on_ability_after_cast_ended(cd)
 	no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.CUSTOM_CLAUSE_01)
 	
 	#

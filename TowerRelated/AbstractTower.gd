@@ -33,6 +33,7 @@ const TowerStunEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerS
 const TowerKnockUpEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerKnockUpEffect.gd")
 const TowerEffectShieldEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerEffectShieldEffect.gd")
 const TowerInvulnerabilityEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerInvulnerabilityEffect.gd")
+const TowerForcedPlacableMovementEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerForcedPlacableMovementEffect.gd")
 
 const BaseBullet = preload("res://TowerRelated/DamageAndSpawnables/BaseBullet.gd")
 const BaseTowerDetectingBullet = preload("res://EnemyRelated/TowerInteractingRelated/Spawnables/BaseTowerDetectingBullet.gd")
@@ -462,6 +463,8 @@ var anim_face_dir_component : AnimFaceDirComponent
 
 var old_global_position : Vector2
 
+var info_bar_layer_base_position : Vector2
+
 # Damage tracker
 
 var in_round_total_damage_dealt : float# setget ,get_in_round_total_damage_dealt
@@ -482,6 +485,10 @@ var distance_to_exit : float = 0 # this is here for Targeting purposes
 var _knock_up_current_acceleration : float
 var _knock_up_current_acceleration_deceleration : float
 
+# forced placable mov effect
+# makes use of the tower's (global) position
+var _current_forced_placable_mov_effect : TowerForcedPlacableMovementEffect
+
 # managers
 
 var tower_manager
@@ -490,7 +497,6 @@ var input_prompt_manager
 var ability_manager
 var synergy_manager
 var game_elements
-
 
 # anim related
 
@@ -642,6 +648,8 @@ func _post_inherit_ready():
 	#info_bar_layer.position.x -= round(life_bar.get_bar_fill_foreground_size().x / 3)
 	info_bar_layer.position.y -= round((_self_size.y) + 15)
 	info_bar_layer.position.x -= round(life_bar.get_bar_fill_foreground_size().x / 4)
+	info_bar_layer_base_position = info_bar_layer.position
+	
 	info_bar.rect_size.x = life_bar.rect_size.x
 	life_bar.update_first_time()
 	
@@ -1030,6 +1038,9 @@ func _on_round_end():
 	
 	anim_face_dir_component.set_animated_sprite_animation_to_default(tower_base_sprites)
 	
+	if _current_forced_placable_mov_effect != null:
+		_request_remove_current_forced_placable_mov_effect()
+	
 	emit_signal("on_round_end")
 
 
@@ -1056,7 +1067,7 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect,
 		target_modules : Array = all_attack_modules, 
 		register_to_buff_map : bool = true, 
 		include_non_module_effects : bool = true, 
-		ing_effect : IngredientEffect = null):
+		ing_effect : IngredientEffect = null) -> TowerBaseEffect:
 	
 	if tower_base_effect.is_from_enemy:
 		# right now, only TowerAttrEffect is supported by this
@@ -1203,6 +1214,9 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect,
 		if include_non_module_effects:
 			_add_invulnerability_effect(tower_base_effect)
 		
+	elif tower_base_effect is TowerForcedPlacableMovementEffect:
+		if include_non_module_effects:
+			_add_forced_placable_mov_effect(tower_base_effect)
 		
 	elif tower_base_effect is TowerResetEffects:
 		if include_non_module_effects:
@@ -1216,7 +1230,8 @@ func add_tower_effect(tower_base_effect : TowerBaseEffect,
 	
 	if ing_effect != null and ing_effect.discard_after_absorb:
 		remove_tower_effect(ing_effect.tower_base_effect)
-
+	
+	return tower_base_effect
 
 func remove_tower_effect(tower_base_effect : TowerBaseEffect, 
 		target_modules : Array = all_attack_modules, erase_from_buff_map : bool = true, include_non_module_effects : bool = true):
@@ -2610,6 +2625,34 @@ func calculate_invulnerability_status():
 #
 
 
+# Forced placable mov related
+
+func _add_forced_placable_mov_effect(arg_effect : TowerForcedPlacableMovementEffect):
+	if _current_forced_placable_mov_effect == null:
+		_attempt_configure_forced_placable_mov_on_self(arg_effect)
+		
+	else:
+		_current_forced_placable_mov_effect.end_mov_due_to_replace()
+		_remove_current_forced_placable_mov_effect()
+		_attempt_configure_forced_placable_mov_on_self(arg_effect)
+
+func _attempt_configure_forced_placable_mov_on_self(arg_effect : TowerForcedPlacableMovementEffect):
+	if arg_effect.can_initialize_mov():
+		_current_forced_placable_mov_effect = arg_effect
+		
+		_current_forced_placable_mov_effect.connect("end_reached", self, "_on_current_forced_placable_mov_effect_end_reached", [], CONNECT_ONESHOT)
+		_current_forced_placable_mov_effect.initialize_mov(self)
+
+
+func _on_current_forced_placable_mov_effect_end_reached(arg_ended_from_replaced):
+	_remove_current_forced_placable_mov_effect()
+
+# dont use this by itself. instead use method below "_request_remove_current_forced_placable_mov_effect"
+func _remove_current_forced_placable_mov_effect():
+	_current_forced_placable_mov_effect = null
+
+func _request_remove_current_forced_placable_mov_effect():
+	_current_forced_placable_mov_effect.end_mov_due_to_replace()
 
 # Inputs related
 
@@ -2737,8 +2780,14 @@ func _get_placable_to_use_for_move(arg_is_from_ready : bool = false) -> BaseArea
 	return null
 
 
-
-func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_update : bool = false, always_snap_back_to_orignal_pos : bool = false, ignore_is_round_started : bool = false, ignore_ing_mode : bool = false):
+func transfer_to_placable(
+	new_area_placable: BaseAreaTowerPlacable, 
+	do_not_update : bool = false, 
+	always_snap_back_to_orignal_pos : bool = false, 
+	ignore_is_round_started : bool = false, 
+	ignore_ing_mode : bool = false,
+	snap_position_to_new_placable : bool = true):
+	
 	if !last_calculated_can_be_placed_in_map and new_area_placable is InMapAreaPlacable:
 		if !is_in_ingredient_mode or ignore_ing_mode:
 			new_area_placable = null
@@ -2800,9 +2849,10 @@ func transfer_to_placable(new_area_placable: BaseAreaTowerPlacable, do_not_updat
 	is_being_dragged = false
 	
 	if is_instance_valid(current_placable):
-		var pos = current_placable.get_tower_center_position()
-		position.x = pos.x
-		position.y = pos.y
+		if snap_position_to_new_placable:
+			var pos = current_placable.get_tower_center_position()
+			position.x = pos.x
+			position.y = pos.y
 		
 		if current_placable is TowerBenchSlot:
 			set_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_IN_BENCH)
@@ -3101,18 +3151,24 @@ func _physics_process(delta):
 	old_global_position = global_position
 	
 	_phy_knock_up_process(delta)
+	_phy_forced_mov_process(delta)
 
 
 func _phy_knock_up_process(delta):
 	if _knock_up_current_acceleration != 0:
 		knock_up_layer.position.y -= _knock_up_current_acceleration * delta
+		info_bar_layer.position.y -= _knock_up_current_acceleration * delta
 		_knock_up_current_acceleration -= _knock_up_current_acceleration_deceleration * delta
 		
 		if knock_up_layer.position.y >= 0:
 			_knock_up_current_acceleration = 0
 			_knock_up_current_acceleration_deceleration = 0
 			knock_up_layer.position.y = 0
+			info_bar_layer.position = info_bar_layer_base_position
 
+func _phy_forced_mov_process(delta):
+	if _current_forced_placable_mov_effect != null:
+		_current_forced_placable_mov_effect.mov_process(delta)
 
 # Synergy related
 

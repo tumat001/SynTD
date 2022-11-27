@@ -20,6 +20,7 @@ onready var non_active_compo_separator = $NonActiveCompositionSeparator
 onready var active_separator = $ActivePanel/VBoxContainer/ActiveSeparator
 
 onready var active_background = $ActivePanel/MarginContainer/Background
+onready var active_panel = $ActivePanel
 
 func set_game_settings_manager(arg_manager):
 	game_settings_manager = arg_manager
@@ -57,11 +58,13 @@ func update_display():
 	active_synergies_disp.synergy_results = active_synergies_res
 	active_synergies_disp.update_display()
 	if active_synergies_res.size() == 0:
-		active_separator.visible = false
-		active_background.visible = false
+		#active_separator.visible = false
+		#active_background.visible = false
+		active_panel.visible = false
 	else:
-		active_separator.visible = true
-		active_background.visible = true
+		#active_separator.visible = true
+		#active_background.visible = true
+		active_panel.visible = true
 	
 	non_active_dominant_syn_disp.synergy_results = non_active_dominant_synergies_res
 	non_active_dominant_syn_disp.update_display()

@@ -20,6 +20,9 @@ var last_calculated_can_be_occupied__ignoring_has_tower_clause : bool
 
 export(int) var layer_on_terrain : int = 0 setget set_layer_on_terrain
 
+
+var last_calculated_is_untargetable : bool = false    # used by targeting
+
 #
 
 func _init():

@@ -18,6 +18,5 @@ animations = [ {
 
 [node name="SkirmRed_Tosser_Explosion" instance=ExtResource( 1 )]
 frames = SubResource( 1 )
-frame = 4
 queue_free_at_end_of_lifetime = false
 lifetime = 0.3
