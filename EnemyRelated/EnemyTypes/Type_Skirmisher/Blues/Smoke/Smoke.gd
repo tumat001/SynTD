@@ -10,6 +10,8 @@ const _invis_range : float = 60.0
 
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.SMOKE))
+	
+	is_blue_and_benefits_from_ap = true
 
 func _ready():
 	connect("on_current_health_changed", self, "_on_curr_health_changed")

@@ -44,19 +44,21 @@ func _ready():
 
 # path related
 
-func add_enemy_path(path : EnemyPath):
+func add_enemy_path(path : EnemyPath, emit_signals : bool = true):
 	if is_instance_valid(path):
 		_all_enemy_paths.append(path)
-		emit_signal("on_enemy_path_added", path)
-		emit_signal("on_all_enemy_paths_changed", get_all_enemy_paths())
+		if emit_signals:
+			emit_signal("on_enemy_path_added", path)
+			emit_signal("on_all_enemy_paths_changed", get_all_enemy_paths())
 		
 		add_child(path)
 
-func remove_enemy_path(path : EnemyPath):
+func remove_enemy_path(path : EnemyPath, emit_signals : bool = true):
 	if is_instance_valid(path):
 		_all_enemy_paths.erase(path)
-		emit_signal("on_enemy_path_removed", path)
-		emit_signal("on_all_enemy_paths_changed", get_all_enemy_paths())
+		if emit_signals:
+			emit_signal("on_enemy_path_removed", path)
+			emit_signal("on_all_enemy_paths_changed", get_all_enemy_paths())
 		
 		remove_child(path)
 

@@ -4,11 +4,13 @@ extends "res://EnemyRelated/EnemyTypes/Type_Skirmisher/AbstractSkirmisherEnemy.g
 const _health_ratio_threshold = 0.5
 
 const _speed_range : float = 60.0
-const _speed_duration : float = 1.35
-const _speed_flat_amount : float = 60.0
+const _speed_duration : float = 0.75
+const _speed_flat_amount : float = 50.0
 
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.RALLIER))
+	
+	is_blue_and_benefits_from_ap = true
 
 func _ready():
 	connect("on_current_health_changed", self, "_on_curr_health_changed")

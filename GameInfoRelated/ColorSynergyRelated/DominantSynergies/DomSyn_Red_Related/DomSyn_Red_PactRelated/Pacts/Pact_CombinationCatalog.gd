@@ -142,8 +142,8 @@ func _remove_effect_from_tower(tower : AbstractTower):
 		tower.remove_tower_effect(effect)
 
 
-func pact_unsworn():
-	.pact_unsworn()
+func pact_unsworn(arg_replacing_pact):
+	.pact_unsworn(arg_replacing_pact)
 	
 	game_elements.combination_manager.disconnect("on_combination_effect_added", self, "_on_combination_effect_added")
 

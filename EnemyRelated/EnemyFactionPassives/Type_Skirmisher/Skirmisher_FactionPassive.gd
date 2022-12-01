@@ -6,12 +6,21 @@ const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
 const EnemyEffectShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyEffectShieldEffect.gd")
 const TowerKnockUpEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerKnockUpEffect.gd")
 const TowerForcedPlacableMovementEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerForcedPlacableMovementEffect.gd")
+const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
+const EnemyReviveEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyReviveEffect.gd")
+const PercentType = preload("res://GameInfoRelated/PercentType.gd")
+const EnemyHealEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyHealEffect.gd")
+const SkirmisherNodeDrawer = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/SkirmisherNodeDrawer.gd")
+const SkirmisherNodeDrawer_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/SkirmisherNodeDrawer.tscn")
+const EnemyShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyShieldEffect.gd")
 
 const AbstractSkirmisherEnemy = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/AbstractSkirmisherEnemy.gd")
 
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const AttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn")
+const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
+const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 
 const SkirmBlue_Smoke_Particle_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/Particles/SkrimBlue_Smoke_Particle.tscn")
 const SkirmBlue_Rallier_Particle_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/Particles/SkirmBlue_Rallier_Particle.tscn")
@@ -41,6 +50,11 @@ const Finisher_Bullet_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmish
 const Finisher_BulletSmall_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Finisher/Assets/Finisher_SlashProj_Small.png")
 const Tosser_Bomb_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_Bomb.png")
 const Tosser_Empowered_Bomb_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_Bomb_Empowered.png")
+
+const Homerunner_BlueFlag_E_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Homerunner/Flag/Homerunner_BlueFlag_ForE.png")
+const Homerunner_BlueFlag_W_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Homerunner/Flag/Homerunner_BlueFlag_ForW.png")
+const Homerunner_RedFlag_E_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Homerunner/Flag/Homerunner_RedFlag_ForE.png")
+const Homerunner_RedFlag_W_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Homerunner/Flag/Homerunner_RedFlag_ForW.png")
 
 #
 
@@ -82,26 +96,35 @@ var trail_component_for_finisher_proj : MultipleTrailsForNodeComponent
 var finisher_execute_fade_particle_pool_component : AttackSpritePoolComponent
 
 var tosser_arc_bullet_attk_module : ArcingBulletAttackModule
+var tosser_bomb_explosion_particle_pool_component : AttackSpritePoolComponent
+const tosser_bomb_normal_animation_name : String = "default"
+const tosser_bomb_empowered_animation_name : String = "empowered"
 
 
 const blaster_range : float = 120.0
-const blaster_damage_per_bullet : float = 0.5
+const blaster_damage_per_bullet : float = 0.65 #0.5
 
 const artillery_damage_per_shot : float = 3.5
 const artillery_stun_duration_on_shot_hit : float = 2.0
 
 const danseur_proj_and_detection_range : float = 130.0
-const danseur_damage_per_proj : float = 0.3
+const danseur_damage_per_proj : float = 0.5 #0.3
 
-const finisher_execute_damage_per_bullet : float = 0.5
-const finisher_normal_damage_per_bullet : float = 0.5
+const finisher_execute_damage_per_bullet : float = 2.0
+const finisher_normal_damage_per_bullet : float = 2.0
 
 
 const tosser_flight_duration : float = 1.125
 const tosser_bomb_detonation_delay_on_landing : float = 1.5
 
 const tosser_angle_deviation : float = PI / 10    # dev of 90 covers 180 deg (semicircle)
-const tosser_distance_for_finding_placables : float = 100.0
+const tosser_distance_for_finding_placables : float = 150.0
+
+const homerunner_blue_active_ap_bonus : float = 1.5
+const homerunner_blue_shield_health_ratio_for_no_ap_used : float = 20.0
+
+const homerunner_red_active_revive_delay : float = 3.0
+const homerunner_red_active_revive_heal_health_max_percent : float = 15.0
 
 
 # DANSEUR SPECIFIC
@@ -148,6 +171,29 @@ const tosser_forced_mov_up_y_accel_amount : float = 250.0
 const tosser_forced_mov_to_placable_duration : float = tosser_forced_mov_knock_up_duration
 
 
+# HOMERUNNER SPECIFIC
+
+var _current_active_blue_homerunner_flag : Sprite
+var _is_blue_flag_active : bool
+
+var _current_active_red_homerunner_flag : Sprite
+var _is_red_flag_active : bool
+
+var homerunner_ap_effect : EnemyAttributesEffect
+var homerunner_shield_effect : EnemyShieldEffect
+var homerunner_revive_effect : EnemyReviveEffect
+
+#var homerunner_blue_effects : Array
+
+var homerunner_blue_effects__for_with_abilities : Array
+var homerunner_blue_effects__for_none : Array
+var homerunner_red_effects : Array
+
+
+# General misc stuffs
+
+var skirmisher_node_draw : SkirmisherNodeDrawer
+
 # SHARED BY FINISHER AND DANSEUR
 
 var through_placable_datas_thread : Thread
@@ -165,6 +211,7 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 	
 	if !enemy_manager.is_connected("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path"):
 		enemy_manager.connect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path", [], CONNECT_PERSIST)
+	
 	
 	if !_initialized_at_least_once:
 		_initialized_at_least_once = true
@@ -194,6 +241,11 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 		
 		_initialize_tosser_arc_bullet_attk_module()
 		_initialize_tosser_tower_effects()
+		_initialize_tosser_bomb_explosion_particle_pool_component()
+		
+		_initialize_homerunner_effects()
+		
+		_initialize_skirmisher_node_draw()
 	
 	#_initialize_enemy_manager_spawn_pattern()
 	#if !enemy_manager.is_connected("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed"):
@@ -210,10 +262,11 @@ func _remove_faction_from_game_elements(arg_game_elements : GameElements):
 	
 	_reverse_actions_on_path_generation()
 	
-	#
+
+		#
+	#if enemy_manager.is_connected("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path"):
+	#	enemy_manager.disconnect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path")
 	
-	if enemy_manager.is_connected("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path"):
-		enemy_manager.disconnect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path")
 	
 	if enemy_manager.is_connected("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed"):
 		enemy_manager.disconnect("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed")
@@ -230,6 +283,7 @@ func _set_blue_and_red_paths():
 		if !path.marker_id_to_value_map.has(EnemyPath.MarkerIds.SKIRMISHER_CLONE_OF_BASE_PATH) and !path.marker_id_to_value_map.has(EnemyPath.MarkerIds.SKIRMISHER_BASE_PATH_ALREADY_CLONED):
 			paths_for_blues.append(path)
 	
+	var i = 0
 	for blue_path in paths_for_blues:
 		var red_path = blue_path.get_copy_of_path(true)
 		red_path.marker_id_to_value_map[EnemyPath.MarkerIds.SKIRMISHER_CLONE_OF_BASE_PATH] = blue_path #Storing pair path
@@ -238,11 +292,13 @@ func _set_blue_and_red_paths():
 		
 		blue_path.marker_id_to_value_map[EnemyPath.MarkerIds.SKIRMISHER_BASE_PATH_ALREADY_CLONED] = red_path #storing pair path
 		
-		map_manager.base_map.add_enemy_path(red_path)
+		var emit_signal_on_add_path : bool = paths_for_blues.size() <= (i + 1)
+		map_manager.base_map.add_enemy_path(red_path, emit_signal_on_add_path)
 		
 		# for danseur/finisher pathings
 		danseur__enemy_path_to_through_placable_datas[red_path] = []
 		finisher__enemy_path_to_through_placable_datas[red_path] = []
+		i += 1
 
 func _reverse_actions_on_path_generation():
 	var all_paths = map_manager.base_map.all_enemy_paths.duplicate(false)
@@ -264,6 +320,9 @@ func _reverse_actions_on_path_generation():
 func _before_enemy_is_added_to_path(enemy, path):
 	if enemy is AbstractSkirmisherEnemy:
 		enemy.skirmisher_faction_passive = self
+		
+		if enemy.enemy_id == EnemyConstants.Enemies.HOMERUNNER:
+			enemy.connect("flag_implanted", self, "_on_flag_implanted_by_homerunner", [], CONNECT_ONESHOT)
 	
 	#
 	
@@ -272,13 +331,30 @@ func _before_enemy_is_added_to_path(enemy, path):
 	if enemy.enemy_spawn_metadata_from_ins != null and enemy.enemy_spawn_metadata_from_ins.has(StoreOfEnemyMetadataIdsFromIns.SKIRMISHER_SPAWN_AT_PATH_TYPE):
 		var path_type = enemy.enemy_spawn_metadata_from_ins[StoreOfEnemyMetadataIdsFromIns.SKIRMISHER_SPAWN_AT_PATH_TYPE]
 		
-		if enemy.get("skirmisher_path_color_type"):
-			enemy.skirmisher_path_color_type = path_type
+		#if enemy.get("skirmisher_path_color_type"):
+		#	enemy.skirmisher_path_color_type = path_type
+		
+		var is_enemy_abstract_skirmisher : bool = enemy is AbstractSkirmisherEnemy
 		
 		if path_type == PathType.RED_PATH:
+			
+			if is_enemy_abstract_skirmisher:
+				enemy.skirmisher_path_color_type = AbstractSkirmisherEnemy.ColorType.RED
+				#enemy.set_show_emp_particle_layer(_is_red_flag_active)
+			
 			_add_enemy_to_red_path(enemy, path_index)
+			
+			if _is_red_flag_active and is_enemy_abstract_skirmisher:
+				_add_effects_to_enemy(homerunner_red_effects, enemy)
 		else:
+			if is_enemy_abstract_skirmisher:
+				enemy.skirmisher_path_color_type = AbstractSkirmisherEnemy.ColorType.BLUE
+				#enemy.set_show_emp_particle_layer(_is_blue_flag_active)
+			
 			_add_enemy_to_blue_path(enemy, path_index)
+			
+			if _is_blue_flag_active and is_enemy_abstract_skirmisher:
+				_add_blue_effects_to_blue_skirmisher(enemy)
 		
 	else:
 		_add_enemy_to_blue_path(enemy, path_index)
@@ -302,6 +378,7 @@ func _add_enemy_to_red_path(enemy, path_index):
 
 
 # path spawn pattern related
+# removed because it is not needed (job already done by above)
 
 #func _on_path_to_spawn_pattern_changed(arg_pattern):
 #	_initialize_enemy_manager_spawn_pattern()
@@ -794,6 +871,40 @@ func _initialize_tosser_tower_effects():
 	tosser__forced_mov_knock_up_effect.is_timebound = true
 
 
+func _initialize_tosser_bomb_explosion_particle_pool_component():
+	tosser_bomb_explosion_particle_pool_component = AttackSpritePoolComponent.new()
+	tosser_bomb_explosion_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	tosser_bomb_explosion_particle_pool_component.node_to_listen_for_queue_free = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	tosser_bomb_explosion_particle_pool_component.source_for_funcs_for_attk_sprite = self
+	tosser_bomb_explosion_particle_pool_component.func_name_for_creating_attack_sprite = "_create_tosser_bomb_particle"
+
+func _create_tosser_bomb_particle():
+	var particle = SkirmRed_Tosser_Explosion_Scene.instance()
+	
+	particle.queue_free_at_end_of_lifetime = false
+	
+	particle.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_TOWERS
+	particle.scale *= 1.0
+	
+	particle.lifetime = 0.275
+	particle.set_anim_speed_based_on_lifetime()
+	
+	return particle
+
+func request_tosser_bomb_explosion_particle_to_play(arg_position : Vector2, arg_anim_name_to_play : String):
+	var particle = tosser_bomb_explosion_particle_pool_component.get_or_create_attack_sprite_from_pool()
+	
+	particle.global_position = arg_position
+	particle.lifetime = 0.25
+	particle.frame = 0
+	particle.set_anim_speed_based_on_lifetime()
+	particle.play(arg_anim_name_to_play)
+	
+	particle.visible = true
+	particle.modulate.a = 0.6
+
+##
+
 # calls enemy source method once, with params (placable)
 func request_tosser_bomb_cluster_to_shoot(arg_enemy_source, arg_source_pos, arg_dest_pos : Vector2, arg_target_placable, arg_enemy_source_method):
 	var angle_of_enemy_to_placable = arg_enemy_source.global_position.angle_to_point(arg_target_placable.global_position)
@@ -835,22 +946,28 @@ func request_tosser_bomb_cluster_to_shoot(arg_enemy_source, arg_source_pos, arg_
 
 func _on_final_location_reached__tosser_bullet(arg_final_location, bullet, target_placable, placable_to_displace_to, arg_enemy_source, arg_enemy_source_method, arg_is_empowered, arg_all_bombs):
 	if is_instance_valid(bullet):
-		bullet.connect("on_current_life_duration_expire", self, "_on_tosser_bullet__current_duration_expired", [bullet, target_placable, placable_to_displace_to, arg_enemy_source, arg_enemy_source_method, arg_is_empowered], CONNECT_ONESHOT)
+		bullet.connect("on_current_life_duration_expire", self, "_on_tosser_bullet__current_duration_expired", [bullet, target_placable, placable_to_displace_to, arg_enemy_source, arg_enemy_source_method, arg_is_empowered, arg_all_bombs], CONNECT_ONESHOT)
 	
 	for bomb in arg_all_bombs:
 		if is_instance_valid(bomb):
 			bomb.decrease_life_duration = true
 			bomb.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_TOWERS
 
-func _on_tosser_bullet__current_duration_expired(arg_bullet, target_placable, arg_placable_to_displace_to, arg_enemy_source, arg_enemy_source_method, arg_is_empowered):
-	if is_instance_valid(arg_enemy_source) and is_instance_valid(target_placable) and is_instance_valid(target_placable.tower_occupying):
-		arg_enemy_source.call(arg_enemy_source_method, arg_placable_to_displace_to)
+func _on_tosser_bullet__current_duration_expired(arg_bullet, target_placable, arg_placable_to_displace_to, arg_enemy_source, arg_enemy_source_method, arg_is_empowered, arg_all_bombs):
+	if is_instance_valid(target_placable) and is_instance_valid(target_placable.tower_occupying):
+		#arg_enemy_source.call(arg_enemy_source_method, arg_placable_to_displace_to)
+		var anim_name_to_play : String
 		
 		if is_instance_valid(arg_placable_to_displace_to):
 			_knock_tower_to_target_placable_and_knockup_stun(target_placable.tower_occupying, arg_placable_to_displace_to)
+			anim_name_to_play = tosser_bomb_empowered_animation_name
 		else:
 			_knock_up_tower_and_stun(target_placable.tower_occupying)
-
+			anim_name_to_play = tosser_bomb_normal_animation_name
+		
+		for bomb in arg_all_bombs:
+			if is_instance_valid(bomb):
+				request_tosser_bomb_explosion_particle_to_play(bomb.global_position, anim_name_to_play)
 
 # toss related funcs:
 
@@ -1100,6 +1217,135 @@ func _bsearch_compare_for_entry_offset(a : ThroughPlacableData, b : float):
 	return a.entry_offset < b
 
 
+########## HOMERUNNER SPECIFIC
+
+func _initialize_homerunner_effects():
+	var ap_modi_uuid = StoreOfEnemyEffectsUUID.HOMERUNNER_BLUE_AP_EFFECT
+	var ap_modi = FlatModifier.new(ap_modi_uuid)
+	ap_modi.flat_modifier = homerunner_blue_active_ap_bonus
+	
+	homerunner_ap_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.FLAT_ABILITY_POTENCY, ap_modi, ap_modi_uuid)
+	homerunner_ap_effect.is_from_enemy = true
+	homerunner_ap_effect.is_clearable = false
+	
+	#homerunner_blue_effects.append(homerunner_ap_effect)
+	homerunner_blue_effects__for_with_abilities.append(homerunner_ap_effect)
+	#
+	
+	var shield_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.HOMERUNNER_BLUE_SHIELD_EFFECT)
+	shield_modi.percent_amount = homerunner_blue_shield_health_ratio_for_no_ap_used
+	shield_modi.percent_based_on = PercentType.MAX
+	
+	homerunner_shield_effect = EnemyShieldEffect.new(shield_modi, StoreOfEnemyEffectsUUID.HOMERUNNER_BLUE_SHIELD_EFFECT)
+	homerunner_shield_effect.is_timebound = false
+	homerunner_shield_effect.is_from_enemy = true
+	
+	#homerunner_blue_effects.append(homerunner_shield_effect)
+	homerunner_blue_effects__for_none.append(homerunner_shield_effect)
+	
+	#
+	var rev_heal_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.HOMERUNNER_RED_GRANTED_REVIVE_HEAL_EFFECT)
+	rev_heal_modi.percent_amount = homerunner_red_active_revive_heal_health_max_percent
+	rev_heal_modi.percent_based_on = PercentType.MAX
+	
+	var rev_heal_effect = EnemyHealEffect.new(rev_heal_modi, StoreOfEnemyEffectsUUID.HOMERUNNER_RED_GRANTED_REVIVE_HEAL_EFFECT)
+	
+	homerunner_revive_effect = EnemyReviveEffect.new(rev_heal_effect, StoreOfEnemyEffectsUUID.HOMERUNNER_RED_GRANTED_REVIVE_EFFECT, homerunner_red_active_revive_delay)
+	homerunner_revive_effect.is_timebound = false
+	homerunner_revive_effect.is_from_enemy = true
+	
+	homerunner_red_effects.append(homerunner_revive_effect)
+
+
+func _on_flag_implanted_by_homerunner(arg_flag_pos_plus_offset : Vector2, arg_flag_facing_w : bool, arg_color_type : int):
+	if arg_color_type == AbstractSkirmisherEnemy.ColorType.BLUE:
+		_on_blue_flag_implanted_by_homerunner(arg_flag_pos_plus_offset, arg_flag_facing_w)
+	elif arg_color_type == AbstractSkirmisherEnemy.ColorType.RED:
+		_on_red_flag_implanted_by_homerunner(arg_flag_pos_plus_offset, arg_flag_facing_w)
+
+func _on_blue_flag_implanted_by_homerunner(arg_flag_pos_plus_offset : Vector2, arg_flag_facing_w : bool):
+	if game_elements.stage_round_manager.round_started:
+		_current_active_blue_homerunner_flag = _create_flag_at_pos(arg_flag_pos_plus_offset, arg_flag_facing_w, true)
+		_is_blue_flag_active = true
+		_create_and_add_blue_effect_to_enemies_and_enemy_manager()
+		skirmisher_node_draw.show_blue_flag_aura(arg_flag_pos_plus_offset)
+
+func _create_and_add_blue_effect_to_enemies_and_enemy_manager():
+	_add_blue_effects_to_blue_skirmishers()
+	#_add_effects_to_all_skirmishers_with_color_type(homerunner_blue_effects, AbstractSkirmisherEnemy.ColorType.BLUE)
+	
+#
+
+func _on_red_flag_implanted_by_homerunner(arg_flag_pos_plus_offset : Vector2, arg_flag_facing_w : bool):
+	if game_elements.stage_round_manager.round_started:
+		_current_active_red_homerunner_flag = _create_flag_at_pos(arg_flag_pos_plus_offset, arg_flag_facing_w, false)
+		_is_red_flag_active = true
+		
+		_create_and_add_red_effect_to_enemies_and_enemy_manager()
+		skirmisher_node_draw.show_red_flag_aura(arg_flag_pos_plus_offset)
+
+func _create_and_add_red_effect_to_enemies_and_enemy_manager():
+	_add_effects_to_all_skirmishers_with_color_type(homerunner_red_effects, AbstractSkirmisherEnemy.ColorType.RED)
+
+# commons
+
+func _create_flag_at_pos(arg_flag_pos : Vector2, arg_flag_facing_w : bool, arg_flag_is_blue : bool):
+	var flag_sprite = Sprite.new()
+	
+	if arg_flag_is_blue:
+		if arg_flag_facing_w:
+			flag_sprite.texture = Homerunner_BlueFlag_W_Pic
+		else:
+			flag_sprite.texture = Homerunner_BlueFlag_E_Pic
+	else:
+		if arg_flag_facing_w:
+			flag_sprite.texture = Homerunner_RedFlag_W_Pic
+		else:
+			flag_sprite.texture = Homerunner_RedFlag_E_Pic
+	
+	flag_sprite.z_index = ZIndexStore.PARTICLE_EFFECTS
+	flag_sprite.global_position = arg_flag_pos
+	CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(flag_sprite)
+	
+	return flag_sprite
+
+func _add_effects_to_all_skirmishers_with_color_type(arg_effects : Array, arg_color_type : int):
+	for enemy in enemy_manager.get_all_enemies():
+		if enemy is AbstractSkirmisherEnemy and enemy.skirmisher_path_color_type == arg_color_type:
+			_add_effects_to_enemy(arg_effects, enemy)
+
+func _add_effects_to_enemy(arg_effects, arg_enemy : AbstractSkirmisherEnemy):
+	for effect in arg_effects:
+		arg_enemy._add_effect(effect)
+	
+	arg_enemy.set_show_emp_particle_layer(true)
+
+
+func _add_blue_effects_to_blue_skirmishers():
+	for enemy in enemy_manager.get_all_enemies():
+		if enemy is AbstractSkirmisherEnemy and enemy.skirmisher_path_color_type == AbstractSkirmisherEnemy.ColorType.BLUE:
+			_add_blue_effects_to_blue_skirmisher(enemy)
+
+func _add_blue_effects_to_blue_skirmisher(arg_enemy : AbstractSkirmisherEnemy):
+	if arg_enemy.is_blue_and_benefits_from_ap:
+		for effect in homerunner_blue_effects__for_with_abilities:
+			arg_enemy._add_effect(effect)
+		
+	else:
+		for effect in homerunner_blue_effects__for_none:
+			arg_enemy._add_effect(effect)
+	
+	arg_enemy.set_show_emp_particle_layer(true)
+
+
+#### Node draw related
+
+func _initialize_skirmisher_node_draw():
+	skirmisher_node_draw = SkirmisherNodeDrawer_Scene.instance()
+	skirmisher_node_draw.z_index = ZIndexStore.ABOVE_MAP_ENVIRONMENT
+	
+	CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(skirmisher_node_draw)
+
 ##########
 
 func _on_round_end(arg_stagerounds):
@@ -1109,4 +1355,18 @@ func _on_round_end(arg_stagerounds):
 	
 	finisher_execute_bullet_attk_module.on_round_end()
 	finisher_normal_bullet_attk_module.on_round_end()
+	
+	tosser_arc_bullet_attk_module.on_round_end()
+	
+	#
+	if is_instance_valid(_current_active_blue_homerunner_flag):
+		_current_active_blue_homerunner_flag.queue_free()
+	_is_blue_flag_active = false
+	
+	if is_instance_valid(_current_active_red_homerunner_flag):
+		_current_active_red_homerunner_flag.queue_free()
+	_is_red_flag_active = false
+	
+	skirmisher_node_draw.hide_blue_flag_aura()
+	skirmisher_node_draw.hide_red_flag_aura()
 

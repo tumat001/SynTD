@@ -80,6 +80,7 @@ func _ready():
 	connect("global_position_changed", self, "_on_global_pos_changed", [], CONNECT_PERSIST)
 	rift_layer.connect("draw", self, "_draw_on_rift_layer", [], CONNECT_PERSIST)
 	game_elements.tower_manager.connect("tower_added", self, "_connect_signals_for_tower_on_dropped_to_placable", [], CONNECT_PERSIST)
+	game_elements.map_manager.connect("all_enemy_paths_of_base_map_changed", self, "_on_enemy_paths_in_map_changed", [], CONNECT_PERSIST)
 	
 	#
 	_update_rift_angle_point()
@@ -263,6 +264,10 @@ func _on_global_pos_changed(arg_old_pos, arg_new_pos):
 	
 
 func _on_transfered_to_new_placable(arg_self, arg_placable):
+	_update_rift_poses__and_draw_rift()
+	_give_tower_effects_based_on_rift_side_pos()
+
+func _on_enemy_paths_in_map_changed(arg_base_map, arg_paths):
 	_update_rift_poses__and_draw_rift()
 	_give_tower_effects_based_on_rift_side_pos()
 

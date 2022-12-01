@@ -157,8 +157,8 @@ func _remove_effect_from_tower(tower : AbstractTower):
 
 
 
-func pact_unsworn():
-	.pact_unsworn()
+func pact_unsworn(arg_replacing_pact):
+	.pact_unsworn(arg_replacing_pact)
 	
 	game_elements.tower_inventory_bench.disconnect("tower_entered_bench_slot", self, "_on_tower_entered_bench_space")
 	

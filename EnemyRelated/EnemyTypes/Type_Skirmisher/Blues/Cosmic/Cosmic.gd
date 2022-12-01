@@ -63,7 +63,7 @@ func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.COSMIC))
 	
 	connect("anim_name_used_changed", self, "_on_anim_name_used_changed_c")
-
+	is_blue_and_benefits_from_ap = true
 
 func _ready():
 	shield_beam_targeting_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SKIRMISHER_GEN_PURPOSE)

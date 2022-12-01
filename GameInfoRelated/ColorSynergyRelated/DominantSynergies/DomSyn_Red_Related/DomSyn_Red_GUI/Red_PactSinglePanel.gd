@@ -8,7 +8,7 @@ const BaseTooltip = preload("res://GameHUDRelated/Tooltips/BaseTooltip.gd")
 const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_Related/BaseTowerSpecificTooltip/BaseTowerSpecificTooltip.tscn")
 
 signal pact_card_clicked(pact)
-signal pact_card_removed(pact)
+signal pact_card_removed(pact, replacing_pact)
 
 
 var card_limit : int setget set_card_limit
@@ -61,8 +61,8 @@ func add_pact(pact : Red_BasePact):
 	var pact_card := _create_pact_card(pact)
 	
 	var card_count = pact_card_container.get_children().size()
-	if  card_count >= card_limit:
-		remove_pact(pact_card_container.get_children()[card_count - 1].base_pact)
+	if card_count >= card_limit:
+		remove_pact(pact_card_container.get_children()[card_count - 1].base_pact, pact)
 	
 	pact_card.connect("pact_card_pressed", self, "_emit_pact_card_clicked", [], CONNECT_PERSIST)
 	pact_card_container.add_child(pact_card)
@@ -79,16 +79,16 @@ func _create_pact_card(pact : Red_BasePact) -> Red_PactCard:
 func _emit_pact_card_clicked(pact):
 	emit_signal("pact_card_clicked", pact)
 
-func _emit_pact_card_removed(pact):
-	emit_signal("pact_card_removed", pact)
+func _emit_pact_card_removed(pact, replacing_pact):
+	emit_signal("pact_card_removed", pact, replacing_pact)
 
 
 
-func remove_pact(pact : Red_BasePact):
+func remove_pact(pact : Red_BasePact, replacing_pact : Red_BasePact = null):
 	for card in pact_card_container.get_children():
 		if card.base_pact == pact:
 			pact_card_container.remove_child(card)
-			_emit_pact_card_removed(card.base_pact)
+			_emit_pact_card_removed(card.base_pact, replacing_pact)
 			card.queue_free()
 			return
 

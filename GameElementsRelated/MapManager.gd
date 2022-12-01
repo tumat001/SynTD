@@ -3,6 +3,9 @@ extends Node
 const BaseMap = preload("res://MapsRelated/BaseMap.gd")
 const TerrainFuncs = preload("res://GameInfoRelated/TerrainRelated/TerrainFuncs.gd")
 
+
+signal all_enemy_paths_of_base_map_changed(arg_paths, arg_base_map)
+
 #
 
 enum SortOrder {
@@ -45,14 +48,20 @@ func set_chosen_map_id(arg_id):
 	
 	_assign_map_from_store_of_maps()
 	
-	for child in get_children():
-		if child is BaseMap:
-			base_map = child
-			break
+#	for child in get_children():
+#		if child is BaseMap:
+#			base_map = child
+#			break
 
 func _assign_map_from_store_of_maps():
 	var chosen_map = StoreOfMaps.get_map_from_map_id(chosen_map_id).instance()
+	
 	add_child(chosen_map)
+	base_map = chosen_map
+	
+	#
+	
+	base_map.connect("on_all_enemy_paths_changed", self, "_on_all_enemy_paths_changed", [], CONNECT_PERSIST)
 
 
 #
@@ -236,5 +245,6 @@ func get_all_terrains():
 
 ######
 
-
+func _on_all_enemy_paths_changed(arg_all_paths):
+	emit_signal("all_enemy_paths_of_base_map_changed", base_map, arg_all_paths)
 

@@ -46,7 +46,8 @@ func _ready():
 
 
 func set_anim_speed_based_on_lifetime():
-	frames.set_animation_speed("default", _calculate_fps_of_sprite_frames(frames.get_frame_count(animation)))
+	for anim_name in frames.get_animation_names():
+		frames.set_animation_speed(anim_name, _calculate_fps_of_sprite_frames(frames.get_frame_count(animation)))
 
 func _calculate_fps_of_sprite_frames(frame_count : int) -> int:
 	return int(ceil(frame_count / lifetime))

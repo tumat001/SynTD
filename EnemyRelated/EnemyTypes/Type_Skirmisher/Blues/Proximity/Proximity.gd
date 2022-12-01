@@ -13,7 +13,8 @@ var tower_detecting_range_module : TowerDetectingRangeModule
 
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.PROXIMITY))
-
+	
+	is_blue_and_benefits_from_ap = true
 
 func _ready():
 	connect("on_finished_ready_prep", self, "_on_finish_ready_prep", [], CONNECT_ONESHOT)

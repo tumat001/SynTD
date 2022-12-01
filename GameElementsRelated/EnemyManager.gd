@@ -40,6 +40,9 @@ signal enemy_strength_value_changed(arg_val)
 
 signal path_to_spawn_pattern_changed(arg_new_val)
 
+signal enemy_effect_apply_on_spawn_cleared()
+
+
 enum PathToSpawnPattern {
 	NO_CHANGE = 0,
 	SWITCH_PER_SPAWN = 1,
@@ -69,6 +72,11 @@ var _is_interpreter_done_spawning : bool
 
 var _is_running : bool
 
+
+# effects
+
+var _effects_to_apply_on_spawn__regular : Dictionary   # clears itself on round end
+var _effects_to_apply_on_spawn__time_reduced_by_process : Dictionary
 
 #
 
@@ -274,6 +282,10 @@ func _process(delta):
 		spawn_instruction_interpreter.time_passed(delta)
 		
 		current_spawn_timepos_in_round = spawn_instruction_interpreter._current_time
+		
+		_process__for_effect_apply(delta)
+		
+		#
 		emit_signal("round_time_passed", delta, current_spawn_timepos_in_round)
 
 
@@ -375,7 +387,6 @@ func _enemy_reached_end(enemy : AbstractEnemy):
 # Enemy Queries
 
 func get_all_enemies() -> Array:
-	
 	var enemies = get_tree().get_nodes_in_group(ENEMY_GROUP_TAG)
 	var bucket = []
 	
@@ -495,6 +506,7 @@ func _on_round_end(stage_round, is_game_start):
 		if current_path_to_spawn_pattern == PathToSpawnPattern.SWITCH_PER_ROUND_END:
 			_switch_path_index_to_next()
 	
+	_on_round_end__for_effect_apply()
 
 
 #func _on_base_map_paths_changed(new_all_paths):
@@ -531,6 +543,7 @@ func _on_enemy_queue_freed(arg_enemy):
 	_emit_number_of_enemies_remaining()
 
 func _on_enemy_spawned(arg_enemy):
+	_on_enemy_spawned__for_effect_apply(arg_enemy)
 	_emit_number_of_enemies_remaining()
 
 func _emit_number_of_enemies_remaining():
@@ -610,3 +623,40 @@ func _generate_enemy_sv_on_round_end_clause_ins_or_rem(arg_clause_id):
 
 func _update_last_calculate_generate_enemy_sv_on_round_end():
 	last_calculate_generate_enemy_sv_on_round_end = generate_enemy_sv_on_round_end_clauses.is_passed
+
+
+################### EFFECTS RELATED
+
+func add_effect_to_apply_on_enemy_spawn__regular(arg_effect):
+	_effects_to_apply_on_spawn__regular[arg_effect.effect_uuid] = arg_effect
+
+func add_effect_to_apply_on_enemy_spawn__time_reduced_by_process(arg_effect):
+	_effects_to_apply_on_spawn__time_reduced_by_process[arg_effect.effect_uuid] = arg_effect
+
+
+func _on_enemy_spawned__for_effect_apply(arg_enemy):
+	for effect in _effects_to_apply_on_spawn__regular.values():
+		arg_enemy._add_effect(effect)
+	
+	for effect in _effects_to_apply_on_spawn__time_reduced_by_process.values():
+		arg_enemy._add_effect(effect)
+
+func _on_round_end__for_effect_apply():
+	_effects_to_apply_on_spawn__regular.clear()
+	_effects_to_apply_on_spawn__time_reduced_by_process.clear()
+	
+	emit_signal("enemy_effect_apply_on_spawn_cleared")
+
+func _process__for_effect_apply(delta):
+	var to_remove : Array = []
+	for effect in _effects_to_apply_on_spawn__time_reduced_by_process.values():
+		if effect.is_timebound:
+			effect.time_in_seconds -= delta
+			
+			if effect.time_in_seconds <= 0:
+				to_remove.append(effect.effect_uuid)
+	
+	for effect_uuid in to_remove:
+		_effects_to_apply_on_spawn__time_reduced_by_process.erase(effect_uuid)
+
+

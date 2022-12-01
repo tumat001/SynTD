@@ -1,9 +1,9 @@
 extends "res://EnemyRelated/AbstractEnemy.gd"
 
 enum ColorType {
-	GRAY = 0,
-	BLUE = 1,
-	RED = 2
+	#GRAY = 0,
+	BLUE = 0,
+	RED = 1
 }
 
 var skirmisher_faction_passive setget set_skirmisher_faction_passive
@@ -19,10 +19,31 @@ var _method_name_to_call_on_entry_offset_passed   # accepts through_placable_dat
 var _is_registed_to_listen_for_next_entry_offset__as_danseur : bool = false
 var _is_registed_to_listen_for_next_entry_offset__as_finisher : bool = false
 
+
+onready var emp_particle_layer : Node2D = $SpriteLayer/KnockUpLayer/EmpParticleLayer
+var show_emp_particle_layer : bool setget set_show_emp_particle_layer
+
+
+# for emp particle layer
+var custom_anim_dir_w_name : String
+var custom_anim_dir_e_name : String
+
+var _all_emp_particle_to_poses_in_layer_for_dir_e_map : Dictionary
+
+
+#
+
+var is_blue_and_benefits_from_ap : bool
+
 #
 
 func _ready():
+	emp_particle_layer.modulate.a = 0.65
+	
 	cd_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SKIRMISHER_RANDOM_CD)
+	set_show_emp_particle_layer(show_emp_particle_layer)
+	_store_dir_e_poses_of_emp_particle_layer()
+	connect("anim_name_used_changed", self, "_anim_name_used_changed_skirm_enemy_base_class")
 
 func get_random_cd(arg_min_starting : float, arg_max_starting : float) -> float:
 	return cd_rng.randf_range(arg_min_starting, arg_max_starting)
@@ -31,9 +52,24 @@ func get_random_cd(arg_min_starting : float, arg_max_starting : float) -> float:
 
 func set_skirm_path_color_type(color_type : int):
 	skirmisher_path_color_type = color_type
+	
+	_on_skirm_path_color_determined()
+
+func _on_skirm_path_color_determined(): # to be overriden if needed by inheriting class
+	pass
+
+
 
 func set_skirmisher_faction_passive(arg_passive):
 	skirmisher_faction_passive = arg_passive
+
+
+
+func set_show_emp_particle_layer(arg_val):
+	show_emp_particle_layer = arg_val
+	
+	if is_inside_tree() and is_instance_valid(emp_particle_layer):
+		emp_particle_layer.visible = show_emp_particle_layer
 
 #
 
@@ -89,4 +125,30 @@ func unregister_self_to_offset_checkpoints_of_through_placable_data__as_finisher
 		
 		disconnect("moved__from_process", self, "_on_moved__from_process__as_finisher")
 
+############
 
+func _store_dir_e_poses_of_emp_particle_layer():
+	for emp_particle in emp_particle_layer.get_children():
+		_all_emp_particle_to_poses_in_layer_for_dir_e_map[emp_particle] = emp_particle.position
+
+
+func _anim_name_used_changed_skirm_enemy_base_class(arg_prev_name, arg_curr_name):
+	_update_poses_of_emp_particles(arg_curr_name)
+
+func _update_poses_of_emp_particles(arg_curr_name):
+	if arg_curr_name == AnimFaceDirComponent.dir_west_name or arg_curr_name == custom_anim_dir_w_name:
+		for emp_particle in emp_particle_layer.get_children():
+			var pos = _all_emp_particle_to_poses_in_layer_for_dir_e_map[emp_particle]
+			pos.x *= -1
+			emp_particle.position = pos
+			emp_particle.visible = true
+		
+	elif arg_curr_name == AnimFaceDirComponent.dir_east_name or arg_curr_name == custom_anim_dir_e_name:
+		for emp_particle in emp_particle_layer.get_children():
+			var pos = _all_emp_particle_to_poses_in_layer_for_dir_e_map[emp_particle]
+			emp_particle.position = pos
+			emp_particle.visible = true
+		
+	else:
+		for emp_particle in emp_particle_layer.get_children():
+			emp_particle.visible = false

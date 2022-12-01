@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Cosmic/Cosmic_E.png" type="Texture" id=1]
 [ext_resource path="res://EnemyRelated/AbstractEnemy.tscn" type="PackedScene" id=2]
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Cosmic/Cosmic.gd" type="Script" id=3]
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Cosmic/Cosmic_W.png" type="Texture" id=4]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/_FactionAssets/Textures/FactionEmpowerParticle_Blue.png" type="Texture" id=5]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -30,6 +31,20 @@ animation = "E"
 
 [node name="StaffCenterPosition" type="Position2D" parent="SpriteLayer/KnockUpLayer" index="1"]
 position = Vector2( 10, -3 )
+
+[node name="EmpParticleLayer" type="Node2D" parent="SpriteLayer/KnockUpLayer" index="2"]
+
+[node name="Sprite" type="Sprite" parent="SpriteLayer/KnockUpLayer/EmpParticleLayer" index="0"]
+position = Vector2( 10.5, -3 )
+texture = ExtResource( 5 )
+
+[node name="Sprite2" type="Sprite" parent="SpriteLayer/KnockUpLayer/EmpParticleLayer" index="1"]
+position = Vector2( 0.5, 6.5 )
+texture = ExtResource( 5 )
+
+[node name="Sprite3" type="Sprite" parent="SpriteLayer/KnockUpLayer/EmpParticleLayer" index="2"]
+position = Vector2( -6.5, -12 )
+texture = ExtResource( 5 )
 
 [node name="CollisionShape2D" parent="CollisionArea" index="0"]
 position = Vector2( 0, 1.5017 )

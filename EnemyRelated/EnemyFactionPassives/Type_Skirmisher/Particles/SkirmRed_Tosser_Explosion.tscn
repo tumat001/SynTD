@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn" type="PackedScene" id=1]
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_BombExplosion/Tosser_BombExplosion_03.png" type="Texture" id=2]
@@ -7,6 +7,12 @@
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_BombExplosion/Tosser_BombExplosion_02.png" type="Texture" id=5]
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_BombExplosion/Tosser_BombExplosion_01.png" type="Texture" id=6]
 [ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_BombExplosion/Tosser_BombExplosion_04.png" type="Texture" id=7]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_BombExplosion/Tosser_BombExplosion_Empowered_01.png" type="Texture" id=8]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_BombExplosion/Tosser_BombExplosion_Empowered_02.png" type="Texture" id=9]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_BombExplosion/Tosser_BombExplosion_Empowered_03.png" type="Texture" id=10]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_BombExplosion/Tosser_BombExplosion_Empowered_05.png" type="Texture" id=11]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_BombExplosion/Tosser_BombExplosion_Empowered_06.png" type="Texture" id=12]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Assets/Tosser_BombExplosion/Tosser_BombExplosion_Empowered_04.png" type="Texture" id=13]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -14,9 +20,15 @@ animations = [ {
 "loop": true,
 "name": "default",
 "speed": 5.0
+}, {
+"frames": [ ExtResource( 8 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 13 ), ExtResource( 11 ), ExtResource( 12 ) ],
+"loop": true,
+"name": "empowered",
+"speed": 5.0
 } ]
 
 [node name="SkirmRed_Tosser_Explosion" instance=ExtResource( 1 )]
 frames = SubResource( 1 )
+frame = 2
 queue_free_at_end_of_lifetime = false
 lifetime = 0.3

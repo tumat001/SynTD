@@ -7,17 +7,15 @@ var tower_detecting_range_module : TowerDetectingRangeModule
 
 
 var toss_ability : BaseAbility
-const _toss_cooldown : float = 1.0#25.0
+const _toss_cooldown : float = 14.0
 const no_valid_targets_in_range_clause : int = -10
-const during_toss_clause : int = -11
 
 var targeting_for_toss : int = Targeting.CLOSE
 
 var _atomic_cd_to_use : float
-const bombs_active_clause : int = -10
+const bombs_active_clause : int = -12
 
 #
-
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.TOSSER))
 

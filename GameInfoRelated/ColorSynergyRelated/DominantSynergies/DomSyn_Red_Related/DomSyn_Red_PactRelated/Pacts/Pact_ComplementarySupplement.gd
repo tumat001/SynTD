@@ -124,8 +124,8 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 #		game_elements.synergy_manager.dont_allow_same_total_conditonal_clause.remove_clause(game_elements.synergy_manager.DontAllowSameTotalsContionalClauseIds.SYN_RED__COMPLEMENTARY_SUPPLEMENT)
 
 
-func pact_unsworn():
-	.pact_unsworn()
+func pact_unsworn(arg_replacing_pact):
+	.pact_unsworn(arg_replacing_pact)
 	_is_unsworn = true
 	
 	for tower in _disabled_by_this_pact_towers:

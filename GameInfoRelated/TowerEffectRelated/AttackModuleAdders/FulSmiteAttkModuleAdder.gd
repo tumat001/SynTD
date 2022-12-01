@@ -177,12 +177,13 @@ func _undo_modifications_to_tower(arg_tower):
 #
 
 func _on_smite_timer_timeout():
-	var targets = _get_targets_for_smite()
-	if targets.size() > 0:
-		_summon_smite_launch_particle(targets[0].global_position)
+	if is_instance_valid(_attached_tower) and _attached_tower.is_current_placable_in_map():
+		var targets = _get_targets_for_smite()
+		if targets.size() > 0:
+			_summon_smite_launch_particle(targets[0].global_position)
 
 func _get_targets_for_smite():
-	if is_instance_valid(_attached_tower) and is_instance_valid(_attached_tower.range_module):
+	if is_instance_valid(_attached_tower.range_module):
 		return _attached_tower.range_module.get_all_targetable_enemies_outside_of_range(Targeting.RANDOM, 1, false)
 	else:
 		return []

@@ -211,26 +211,28 @@ func _initialize_pact_singletons():
 
 
 #
-func _generate_random_untaken_tier_3_pact(arg_tier_for_activation : int = 3) -> Red_BasePact:
-	return _generate_random_untaken_pact_from_source(tier_3_pacts_uuids, 3, arg_tier_for_activation)
+func _generate_random_untaken_tier_3_pact(arg_tier_for_activation : int = 3, arg_ids_to_exclude : Array = []) -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_3_pacts_uuids, 3, arg_tier_for_activation, arg_ids_to_exclude)
 
-func _generate_random_untaken_tier_2_pact(arg_tier_for_activation : int = 2) -> Red_BasePact:
-	return _generate_random_untaken_pact_from_source(tier_2_pacts_uuids, 2, arg_tier_for_activation)
+func _generate_random_untaken_tier_2_pact(arg_tier_for_activation : int = 2, arg_ids_to_exclude : Array = []) -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_2_pacts_uuids, 2, arg_tier_for_activation, arg_ids_to_exclude)
 
-func _generate_random_untaken_tier_1_pact(arg_tier_for_activation : int = 1) -> Red_BasePact:
-	return _generate_random_untaken_pact_from_source(tier_1_pacts_uuids, 1, arg_tier_for_activation)
+func _generate_random_untaken_tier_1_pact(arg_tier_for_activation : int = 1, arg_ids_to_exclude : Array = []) -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_1_pacts_uuids, 1, arg_tier_for_activation, arg_ids_to_exclude)
 
-func _generate_random_untaken_tier_0_pact(arg_tier_for_activation : int = 0) -> Red_BasePact:
-	return _generate_random_untaken_pact_from_source(tier_0_pacts_uuids, 0, arg_tier_for_activation)
+func _generate_random_untaken_tier_0_pact(arg_tier_for_activation : int = 0, arg_ids_to_exclude : Array = []) -> Red_BasePact:
+	return _generate_random_untaken_pact_from_source(tier_0_pacts_uuids, 0, arg_tier_for_activation, arg_ids_to_exclude)
 
 
 # code for deciding what pact to offer
-func _generate_random_untaken_pact_from_source(source : Array, tier : int, tier_for_activation : int) -> Red_BasePact:
+func _generate_random_untaken_pact_from_source(source : Array, tier : int, tier_for_activation : int, arg_ids_to_exclude : Array = []) -> Red_BasePact:
 	if is_instance_valid(red_pact_whole_panel) and is_instance_valid(red_pact_whole_panel.unsworn_pact_list):
 		var copy = source.duplicate()
 		for pact_uuid in red_pact_whole_panel.unsworn_pact_list.get_all_pact_uuids():
 			copy.erase(pact_uuid)
 		for pact_uuid in red_pact_whole_panel.sworn_pact_list.get_all_pact_uuids():
+			copy.erase(pact_uuid)
+		for pact_uuid in arg_ids_to_exclude:
 			copy.erase(pact_uuid)
 		
 		#
@@ -306,8 +308,8 @@ func _on_unsworn_pact_to_be_sworn(pact):
 	pact.pact_sworn()
 	#pact._apply_pact_to_game_elements(game_elements)
 
-func _on_sworn_pact_card_removed(pact):
-	pact.pact_unsworn()
+func _on_sworn_pact_card_removed(pact, replacing_pact):
+	pact.pact_unsworn(replacing_pact)
 	#pact._remove_pact_from_game_elements(game_elements)
 
 #

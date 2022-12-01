@@ -376,6 +376,7 @@ func _get_instructions_for_5_2__sv_4():
 		MultipleEnemySpawnInstruction.new(48, 6, 0.5, EnemyConstants.Enemies.ASSASSIN),
 	]
 
+
 ############ 5-3
 func _get_instructions_for_5_3():
 	if enemy_strength_value_to_use == 1:
@@ -776,6 +777,7 @@ func _get_instructions_for_7_2__sv_4():
 		
 		MultipleEnemySpawnInstruction.new(24, 6, 0.75, EnemyConstants.Enemies.FIEND),
 	]
+
 
 #################### 7-3
 func _get_instructions_for_7_3():

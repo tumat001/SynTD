@@ -105,8 +105,8 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 	._remove_pact_from_game_elements(arg_game_elements)
 	
 
-func pact_unsworn():
-	.pact_unsworn()
+func pact_unsworn(arg_replacing_pact):
+	.pact_unsworn(arg_replacing_pact)
 	
 	_blood_to_gold_ability.destroy_self()
 	game_elements.health_manager.disconnect("current_health_changed", self, "_on_health_changed")

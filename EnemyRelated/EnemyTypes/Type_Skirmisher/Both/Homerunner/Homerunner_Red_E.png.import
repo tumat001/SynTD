@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Aegis_Shield_03.png-6828a824633d602b5090d1a50dfdd7e6.stex"
+path="res://.import/Homerunner_Red_E.png-dea38c1a04401c4d0b937c8be2abbd54.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Aegis/Assets/Aegis_Shield_03.png"
-dest_files=[ "res://.import/Aegis_Shield_03.png-6828a824633d602b5090d1a50dfdd7e6.stex" ]
+source_file="res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Homerunner/Homerunner_Red_E.png"
+dest_files=[ "res://.import/Homerunner_Red_E.png-dea38c1a04401c4d0b937c8be2abbd54.stex" ]
 
 [params]
 

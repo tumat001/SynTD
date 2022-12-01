@@ -113,7 +113,7 @@ func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 
 #
 
-func pact_unsworn():
+func pact_unsworn(arg_replacing_pact):
 	is_sworn = false
 	_remove_pact_from_game_elements(game_elements)
 

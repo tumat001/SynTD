@@ -929,7 +929,7 @@ func _unrecord_tower_for_restore_position(arg_tower):
 func _restore_tower_positions():
 	var towers_with_changed_placables : Array = []
 	for tower in get_all_in_map_towers_except_in_queue_free():
-		if is_instance_valid(tower.current_placable) and is_instance_valid(tower_to_original_placable_map[tower]):
+		if is_instance_valid(tower.current_placable) and tower_to_original_placable_map.has(tower) and is_instance_valid(tower_to_original_placable_map[tower]):
 			if !is_tower_original_placable_same_as_current(tower):
 				towers_with_changed_placables.append(tower)
 				tower.remove_self_from_current_placable__for_restore_to_position()

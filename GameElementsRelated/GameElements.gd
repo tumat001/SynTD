@@ -377,9 +377,9 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
-	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_6
-	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+#	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+#	level_manager.current_level = LevelManager.LEVEL_6
+#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -391,27 +391,27 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.PING,
-			Towers.LEADER,
-			Towers.ACCUMULAE,
-			Towers.WAVE,
-			Towers.SHOCKER,
-			Towers.SHACKLED,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.IOTA,
-			Towers.TESLA,
-			Towers.SHACKLED,
-			Towers.REAPER,
-			Towers.BREWD,
-			Towers.TRANSPORTER
-		])
-	even = !even
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.PING,
+#			Towers.LEADER,
+#			Towers.ACCUMULAE,
+#			Towers.WAVE,
+#			Towers.SHOCKER,
+#			Towers.SHACKLED,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.IOTA,
+#			Towers.TESLA,
+#			Towers.SHACKLED,
+#			Towers.REAPER,
+#			Towers.BREWD,
+#			Towers.TRANSPORTER
+#		])
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):

@@ -26,8 +26,9 @@ const _heal_amount : float = 0.5
 const _heal_cooldown : float = 0.25
 
 const _empowered_heal_amount : float = 5.0
-const _empowered_heal_duration : float = 2.0
+const _empowered_heal_duration : float = 1.1
 const _empowered_heal_target_health_threshold : float = 0.25
+
 var _empowered_heal_curr_duration : float
 var _empowered_heal_casted : bool = false
 var _is_heal_empowered : bool
@@ -52,7 +53,8 @@ onready var staff_position2d = $SpriteLayer/KnockUpLayer/StaffCenterPos
 
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.BLESSER))
-
+	
+	is_blue_and_benefits_from_ap = true
 
 func _ready():
 	range_module = RangeModule_Scene.instance()

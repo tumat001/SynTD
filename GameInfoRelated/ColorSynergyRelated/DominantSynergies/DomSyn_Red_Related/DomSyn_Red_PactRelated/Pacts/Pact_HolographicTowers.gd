@@ -145,8 +145,8 @@ func _disable_all_created_holographic_towers():
 			tower.add_tower_effect(effect)
 
 
-func pact_unsworn():
-	.pact_unsworn()
+func pact_unsworn(arg_replacing_pact):
+	.pact_unsworn(arg_replacing_pact)
 	
 	game_elements.tower_inventory_bench.disconnect("tower_entered_bench_slot", self, "_on_tower_entered_bench_space")
 	

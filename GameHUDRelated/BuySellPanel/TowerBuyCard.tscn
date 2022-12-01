@@ -27,13 +27,11 @@ margin_right = 104.0
 margin_bottom = 75.0
 mouse_filter = 2
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="BuyCard" type="TextureButton" parent="."]
 margin_right = 104.0
 margin_bottom = 75.0
+focus_mode = 0
 texture_normal = ExtResource( 2 )
 __meta__ = {
 "_edit_use_anchors_": false

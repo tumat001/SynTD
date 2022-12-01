@@ -14,7 +14,7 @@ var skirmisher_gen_purpose_rng : RandomNumberGenerator
 var _is_during_windup_or_dash : bool
 
 
-const finisher_execute_health_ratio : float = 0.2
+const finisher_execute_health_ratio : float = 0.35
 
 #
 

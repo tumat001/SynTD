@@ -442,7 +442,7 @@ func _on_round_end_t():
 	for pre_spurt in _summon_pre_spurt_summoning_area_arr.array_of_nodes:
 		if is_instance_valid(pre_spurt):
 			pre_spurt.visible = false
-			pre_spurt.deactivate
+			pre_spurt.deactivate()
 
 #
 

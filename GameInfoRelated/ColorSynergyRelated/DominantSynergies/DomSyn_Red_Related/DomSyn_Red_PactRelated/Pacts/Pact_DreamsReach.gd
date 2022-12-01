@@ -173,8 +173,8 @@ func _create_and_add_random_tower(arg_tier : int):
 
 #
 
-func pact_unsworn():
-	.pact_unsworn()
+func pact_unsworn(arg_replacing_pact):
+	.pact_unsworn(arg_replacing_pact)
 	
 	game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end")
 
