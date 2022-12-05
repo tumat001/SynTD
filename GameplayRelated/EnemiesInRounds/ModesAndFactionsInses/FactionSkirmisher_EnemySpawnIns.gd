@@ -19,8 +19,8 @@ func get_instructions_for_stageround(uuid : String):
 #		return _get_instructions_for_0_1()
 #	elif uuid == "02":
 #		return _get_instructions_for_0_2()
-#
-#
+
+
 	if uuid == "41":
 		return _get_instructions_for_4_1()
 	elif uuid == "42":
@@ -81,16 +81,12 @@ func get_instructions_for_stageround(uuid : String):
 
 
 
-#
+
 #func _get_instructions_for_0_1():
 #	return [
 #		#MultipleEnemySpawnInstruction.new(0, 2, 2, EnemyConstants.Enemies.BASIC, spawn_at_red_metadata),
-#		MultipleEnemySpawnInstruction.new(0, 1, 0.75, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
-#		MultipleEnemySpawnInstruction.new(1, 1, 0.75, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-#		MultipleEnemySpawnInstruction.new(2, 1, 0.75, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
-#		MultipleEnemySpawnInstruction.new(3, 3, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-#		MultipleEnemySpawnInstruction.new(5, 3, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-#
+#		MultipleEnemySpawnInstruction.new(0, 1, 0.75, EnemyConstants.Enemies.BLESSER, spawn_at_red_metadata),
+#		MultipleEnemySpawnInstruction.new(0.75, 1, 0.75, EnemyConstants.Enemies.BLESSER, spawn_at_red_metadata),
 #		#MultipleEnemySpawnInstruction.new(20, 1, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 #		#MultipleEnemySpawnInstruction.new(20, 1, 1, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 #	]
@@ -162,50 +158,53 @@ func _get_instructions_for_4_2__sv_1():
 		
 		MultipleEnemySpawnInstruction.new(4, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(10, 1, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(10, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(11.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(16, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(16, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(18.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(22, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(22, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(24.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]
 
 func _get_instructions_for_4_2__sv_2():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(4, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(4, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(10, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(11.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(16, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(16, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(18.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(22, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(22, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(24.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]
 
 func _get_instructions_for_4_2__sv_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(4, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(4, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(10, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(11.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(16, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(16, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(18.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(22, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(22, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(24.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]
 
 func _get_instructions_for_4_2__sv_4():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(4, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(4, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(5.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(10, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
@@ -214,7 +213,8 @@ func _get_instructions_for_4_2__sv_4():
 		MultipleEnemySpawnInstruction.new(16, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(18.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(22, 2, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(22, 3, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(24.3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]
 
 
@@ -232,34 +232,34 @@ func _get_instructions_for_4_3():
 
 func _get_instructions_for_4_3__sv_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 10, 2.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(3, 4, 4, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		
-		MultipleEnemySpawnInstruction.new(19.5, 1, 0.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-	]
-
-func _get_instructions_for_4_3__sv_2():
-	return [
-		MultipleEnemySpawnInstruction.new(0, 11, 2.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 10, 2.15, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(3, 4, 4, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(19.5, 2, 0.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 	]
 
-func _get_instructions_for_4_3__sv_3():
+func _get_instructions_for_4_3__sv_2():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 12, 2.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 11, 2.15, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(3, 4, 4, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(19.5, 3, 0.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 	]
 
-func _get_instructions_for_4_3__sv_4():
+func _get_instructions_for_4_3__sv_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 14, 2.15, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 12, 2.15, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(3, 4, 4, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(19.5, 4, 0.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+	]
+
+func _get_instructions_for_4_3__sv_4():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 14, 2.05, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(3, 4, 4, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		
+		MultipleEnemySpawnInstruction.new(19.5, 5, 0.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 	]
 
 
@@ -280,14 +280,14 @@ func _get_instructions_for_4_4__sv_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 9, 3.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(3, 3, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(8, 4, 3, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(8, 3, 3, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]
 
 func _get_instructions_for_4_4__sv_2():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(3, 4, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(3, 3, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(7, 4, 3, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]
@@ -295,7 +295,7 @@ func _get_instructions_for_4_4__sv_2():
 func _get_instructions_for_4_4__sv_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 12, 2.8, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(3, 4, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(3, 3, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(6, 4, 3, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(9, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
@@ -304,8 +304,8 @@ func _get_instructions_for_4_4__sv_3():
 func _get_instructions_for_4_4__sv_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 13, 2.7, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(3, 5, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(6, 5, 3, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(3, 4, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(6, 4, 3, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(9, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]
@@ -365,31 +365,31 @@ func _get_instructions_for_5_2():
 func _get_instructions_for_5_2__sv_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 13, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(4, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(12, 1, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(4, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(12, 2, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		
 	]
 
 func _get_instructions_for_5_2__sv_2():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 13, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(4, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(12, 2, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(4, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(12, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		
 	]
 
 func _get_instructions_for_5_2__sv_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 14, 2.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(4, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(12, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(4, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(12, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_5_2__sv_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 15, 2.15, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(4, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(12, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(4, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(12, 5, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 	]
 
 
@@ -411,6 +411,7 @@ func _get_instructions_for_5_3__sv_1():
 		MultipleEnemySpawnInstruction.new(0, 5, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(6, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		
 		MultipleEnemySpawnInstruction.new(18, 4, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
@@ -422,7 +423,8 @@ func _get_instructions_for_5_3__sv_2():
 		MultipleEnemySpawnInstruction.new(0, 5, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(6, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
-		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		
 		MultipleEnemySpawnInstruction.new(18, 5, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
@@ -434,7 +436,8 @@ func _get_instructions_for_5_3__sv_3():
 		MultipleEnemySpawnInstruction.new(0, 5, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(6, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
-		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		
 		MultipleEnemySpawnInstruction.new(18, 6, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
@@ -447,6 +450,7 @@ func _get_instructions_for_5_3__sv_4():
 		MultipleEnemySpawnInstruction.new(0, 5, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(6, 5, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(11, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		
 		MultipleEnemySpawnInstruction.new(18, 6, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
@@ -473,32 +477,32 @@ func _get_instructions_for_5_4__sv_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 12, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(1, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(2, 4, 4, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(10, 1, 5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(2, 5, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(10, 2, 5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_5_4__sv_2():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 12, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(1, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(2, 5, 4, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(10, 1, 5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(2, 6, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(10, 2, 5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_5_4__sv_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 13, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(1, 4, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(2, 5, 4, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(10, 2, 5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(2, 6, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(5, 3, 5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_5_4__sv_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 14, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(1, 5, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(2, 5, 4, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(10, 2, 5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(2, 6, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(5, 3, 5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 	]
 
 
@@ -517,38 +521,38 @@ func _get_instructions_for_6_1():
 
 func _get_instructions_for_6_1__sv_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 5, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(10, 3, 2.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 7, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(10, 5, 1.75, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(20, 4, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(30, 4, 2.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(20, 6, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(26, 5, 2.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_6_1__sv_2():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 6, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(10, 4, 2.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 7, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(10, 6, 1.75, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(20, 4, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(30, 4, 2.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(20, 6, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(26, 5, 2.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_6_1__sv_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 6, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(10, 4, 2.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 7, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(10, 6, 1.75, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(20, 5, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(30, 5, 2.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(20, 7, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(26, 6, 2.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_6_1__sv_4():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 7, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(10, 4, 2.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 8, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(10, 6, 1.75, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(20, 6, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(30, 5, 2.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(20, 8, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(26, 6, 2.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 	]
 
 
@@ -567,45 +571,45 @@ func _get_instructions_for_6_2():
 func _get_instructions_for_6_2__sv_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 7, 3.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 2, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 3, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(15, 3, 2, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 7, 3.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(7, 2, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(8, 3, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(7, 3, 3.5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(8, 4, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_6_2__sv_2():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 7, 3.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 3, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 4, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(15, 3, 2, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 7, 3.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(7, 3, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(8, 3, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
-	]
-
-func _get_instructions_for_6_2__sv_3():
-	return [
-		MultipleEnemySpawnInstruction.new(0, 7, 3.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 3, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(15, 4, 2, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
-		
-		MultipleEnemySpawnInstruction.new(0, 7, 3.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(7, 3, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(7, 4, 3.5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(8, 4, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
-func _get_instructions_for_6_2__sv_4():
+func _get_instructions_for_6_2__sv_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 7, 3.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(7, 4, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(15, 4, 2, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 7, 3.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(7, 4, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(8, 4, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(7, 4, 3.5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(8, 5, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+	]
+
+func _get_instructions_for_6_2__sv_4():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 7, 3.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 5, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(15, 4, 2, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		
+		MultipleEnemySpawnInstruction.new(0, 7, 3.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(7, 5, 3.5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(8, 5, 3, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 
@@ -630,8 +634,8 @@ func _get_instructions_for_6_3__sv_1():
 		MultipleEnemySpawnInstruction.new(14, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		
 		MultipleEnemySpawnInstruction.new(15, 6, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(18.5, 4, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(30, 2, 1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(18.5, 5, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(30, 3, 1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 	]
 
@@ -643,8 +647,8 @@ func _get_instructions_for_6_3__sv_2():
 		MultipleEnemySpawnInstruction.new(14, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		
 		MultipleEnemySpawnInstruction.new(15, 6, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(18.5, 5, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(30, 2, 1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(18.5, 6, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(30, 3, 1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 	]
 
@@ -656,8 +660,8 @@ func _get_instructions_for_6_3__sv_3():
 		MultipleEnemySpawnInstruction.new(14, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		
 		MultipleEnemySpawnInstruction.new(15, 7, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(18.5, 5, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(30, 2, 1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(18.5, 6, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(30, 3, 1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 	]
 
@@ -669,8 +673,8 @@ func _get_instructions_for_6_3__sv_4():
 		MultipleEnemySpawnInstruction.new(14, 3, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		
 		MultipleEnemySpawnInstruction.new(14, 7, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(17.5, 5, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(29, 3, 1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(17.5, 6, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(29, 4, 1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 	]
 
@@ -692,27 +696,15 @@ func _get_instructions_for_6_4__sv_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 8, 3.5, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(12, 4, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(26, 4, 1.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(26, 5, 1.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 9, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 3, 8, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 3, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(34, 2, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(34, 3, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_6_4__sv_2():
-	return [
-		MultipleEnemySpawnInstruction.new(0, 8, 3.5, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(12, 5, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(26, 4, 1.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		
-		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(4, 3, 8, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(10, 3, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(34, 2, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
-	]
-
-func _get_instructions_for_6_4__sv_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 8, 3.5, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(12, 5, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
@@ -720,8 +712,20 @@ func _get_instructions_for_6_4__sv_3():
 		
 		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 3, 8, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(10, 3, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(34, 3, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+	]
+
+func _get_instructions_for_6_4__sv_3():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 8, 3.5, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(12, 5, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(26, 6, 1.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		
+		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(4, 3, 8, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 4, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(34, 2, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(34, 3, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_6_4__sv_4():
@@ -729,12 +733,12 @@ func _get_instructions_for_6_4__sv_4():
 		MultipleEnemySpawnInstruction.new(0, 8, 3.5, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(12, 5, 2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(26, 5, 1.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(26, 6, 1.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 4, 8, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 4, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(34, 2, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(34, 3, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		
 	]
 
@@ -754,40 +758,8 @@ func _get_instructions_for_7_1():
 
 func _get_instructions_for_7_1__sv_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(14, 3, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(21, 3, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(21, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
-		
-		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(10, 2, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(25, 2, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
-		
-	]
-
-func _get_instructions_for_7_1__sv_2():
-	return [
-		MultipleEnemySpawnInstruction.new(0, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(14, 4, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(21, 4, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(21, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
-		
-		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(10, 2, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(25, 2, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
-		
-	]
-
-func _get_instructions_for_7_1__sv_3():
-	return [
-		MultipleEnemySpawnInstruction.new(0, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 6, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 6, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(14, 4, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
@@ -796,23 +768,55 @@ func _get_instructions_for_7_1__sv_3():
 		
 		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 3, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(25, 2, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		
+	]
+
+func _get_instructions_for_7_1__sv_2():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 6, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 6, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(14, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(21, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(21, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		
+		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(10, 3, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(25, 2, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		
+	]
+
+func _get_instructions_for_7_1__sv_3():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 6, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 6, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(14, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(21, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(21, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		
+		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(10, 4, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(25, 3, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		
 	]
 
 func _get_instructions_for_7_1__sv_4():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 6, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 6, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(14, 4, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(14, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(21, 4, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(21, 5, 1.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(21, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(28, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(10, 4, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(10, 5, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(25, 3, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		
 	]
@@ -834,11 +838,11 @@ func _get_instructions_for_7_2():
 func _get_instructions_for_7_2__sv_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 12, 2.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(5, 2, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(5, 3, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(17, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(22, 2, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(22, 3, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(2, 8, 3.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 3, 3.25, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
@@ -848,11 +852,11 @@ func _get_instructions_for_7_2__sv_1():
 func _get_instructions_for_7_2__sv_2():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 12, 2.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(5, 2, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(5, 3, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(17, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(22, 3, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(22, 4, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(2, 8, 3.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 3, 3.25, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
@@ -863,11 +867,11 @@ func _get_instructions_for_7_2__sv_2():
 func _get_instructions_for_7_2__sv_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 12, 2.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(5, 3, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(5, 4, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(17, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(22, 3, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(22, 4, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(2, 8, 3.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 4, 3.25, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
@@ -878,11 +882,11 @@ func _get_instructions_for_7_2__sv_3():
 func _get_instructions_for_7_2__sv_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 12, 2.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(5, 4, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(5, 5, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(17, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(22, 4, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(22, 5, 0.7, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(2, 8, 3.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 4, 3.25, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
@@ -906,48 +910,47 @@ func _get_instructions_for_7_3():
 
 func _get_instructions_for_7_3__sv_1():
 	return [
-		LinearEnemySpawnInstruction.new(0, 19, 1.25, 0.050, EnemyConstants.Enemies.RUFFIAN, 0.5, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(0, 4, 3.5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		LinearEnemySpawnInstruction.new(0, 24, 1.25, 0.075, EnemyConstants.Enemies.RUFFIAN, 0.5, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 5, 3.5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(12.5, 2, 1, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(12.5, 5, 1, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 4, 5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 7, 4, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(21, 3, 2.75, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
-		
 	]
 
 func _get_instructions_for_7_3__sv_2():
 	return [
-		LinearEnemySpawnInstruction.new(0, 21, 1.25, 0.050, EnemyConstants.Enemies.RUFFIAN, 0.5, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(0, 4, 3.5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		LinearEnemySpawnInstruction.new(0, 26, 1.25, 0.075, EnemyConstants.Enemies.RUFFIAN, 0.5, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 6, 3.5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(12.5, 2, 1, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(12.5, 5, 1, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 5, 5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 7, 4, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(21, 3, 2.75, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		
 	]
 
 func _get_instructions_for_7_3__sv_3():
 	return [
-		LinearEnemySpawnInstruction.new(0, 21, 1.25, 0.050, EnemyConstants.Enemies.RUFFIAN, 0.5, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(0, 5, 2.5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		LinearEnemySpawnInstruction.new(0, 27, 1.25, 0.075, EnemyConstants.Enemies.RUFFIAN, 0.5, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 6, 2.5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(12.5, 2, 1, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(12.5, 6, 1, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 6, 5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 7, 4, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(21, 3, 2.75, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		
 	]
 
 func _get_instructions_for_7_3__sv_4():
 	return [
-		LinearEnemySpawnInstruction.new(0, 23, 1.25, 0.050, EnemyConstants.Enemies.RUFFIAN, 0.5, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(0, 5, 2.5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		LinearEnemySpawnInstruction.new(0, 28, 1.25, 0.075, EnemyConstants.Enemies.RUFFIAN, 0.5, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 7, 2.5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(12.5, 2, 1, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(12.5, 6, 1, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 6, 5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 7, 4, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(21, 3, 2.75, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		
 	]
@@ -970,7 +973,7 @@ func _get_instructions_for_7_4__sv_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 14, 2.275, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(6, 3, 6, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 3, 6, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 4, 4, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(3.2, 7, 3.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
@@ -981,7 +984,7 @@ func _get_instructions_for_7_4__sv_2():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 14, 2.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(6, 3, 6, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 3, 6, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 4, 4, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 8, 3.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
@@ -992,7 +995,7 @@ func _get_instructions_for_7_4__sv_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 15, 2.15, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(6, 3, 6, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 4, 5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 5, 4, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 8, 3.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
@@ -1003,9 +1006,9 @@ func _get_instructions_for_7_4__sv_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 15, 2.15, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(6, 3, 6, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 4, 5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 5, 4, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(13.5, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 8, 3.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(1.6, 6, 3.2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
@@ -1027,13 +1030,13 @@ func _get_instructions_for_8_1():
 
 func _get_instructions_for_8_1__sv_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 6, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 7, 0.33, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(9, 7, 0.33, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 15, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(6.5, 8, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 16, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(4.5, 9, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(13, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(21, 3, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(21, 5, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_8_1__sv_2():
@@ -1042,9 +1045,9 @@ func _get_instructions_for_8_1__sv_2():
 		MultipleEnemySpawnInstruction.new(9, 8, 0.33, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 17, 1.9, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(6.5, 8, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(4.5, 9, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(13, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(21, 3, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(21, 5, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_8_1__sv_3():
@@ -1053,9 +1056,9 @@ func _get_instructions_for_8_1__sv_3():
 		MultipleEnemySpawnInstruction.new(9, 8, 0.33, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 17, 1.9, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(6.5, 8, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(4.5, 9, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(13, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(21, 4, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(21, 6, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_8_1__sv_4():
@@ -1064,9 +1067,9 @@ func _get_instructions_for_8_1__sv_4():
 		MultipleEnemySpawnInstruction.new(9, 9, 0.33, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new(0, 17, 1.9, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(6.5, 8, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(4.5, 9, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(13, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(21, 6, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(21, 7, 2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 
@@ -1089,7 +1092,7 @@ func _get_instructions_for_8_2__sv_1():
 		MultipleEnemySpawnInstruction.new(12, 3, 2.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(30, 3, 2.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 16, 1.9, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 16, 1.8, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(6.5, 3, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 4, 6, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(13, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
@@ -1102,7 +1105,7 @@ func _get_instructions_for_8_2__sv_2():
 		MultipleEnemySpawnInstruction.new(12, 3, 2.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(30, 4, 2.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 17, 1.9, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 17, 1.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(6.5, 4, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 4, 6, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(13, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
@@ -1114,7 +1117,7 @@ func _get_instructions_for_8_2__sv_3():
 		MultipleEnemySpawnInstruction.new(12, 4, 2.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(30, 4, 2.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 17, 1.8, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 17, 1.7, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(6.5, 4, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 5, 5, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(13, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
@@ -1126,7 +1129,7 @@ func _get_instructions_for_8_2__sv_4():
 		MultipleEnemySpawnInstruction.new(12, 4, 2, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(30, 5, 2, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 18, 1.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 18, 1.65, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(6.5, 5, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 5, 5, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(13, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
@@ -1157,6 +1160,7 @@ func _get_instructions_for_8_3__sv_1():
 		MultipleEnemySpawnInstruction.new(23, 5, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(27, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(31, 4, 0.33, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_8_3__sv_2():
@@ -1170,6 +1174,7 @@ func _get_instructions_for_8_3__sv_2():
 		MultipleEnemySpawnInstruction.new(23, 6, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(27, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(31, 4, 0.33, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_8_3__sv_3():
@@ -1183,6 +1188,7 @@ func _get_instructions_for_8_3__sv_3():
 		MultipleEnemySpawnInstruction.new(23, 6, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(27, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(31, 4, 0.33, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_8_3__sv_4():
@@ -1197,6 +1203,7 @@ func _get_instructions_for_8_3__sv_4():
 		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(27, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(31, 4, 0.33, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 
@@ -1272,7 +1279,6 @@ func _get_instructions_for_8_4__sv_4():
 		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(22.5, 3, 1.5, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(26.5, 4, 1.5, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
-		
 	]
 
 
@@ -1292,12 +1298,14 @@ func _get_instructions_for_9_1():
 func _get_instructions_for_9_1__sv_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 20, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(9, 3, 4, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(12, 2, 4, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(1, 2, 4, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(9, 4, 3, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(12, 3, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(27, 2, 4, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new((2 / 2), 20, 2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(2, 2, 4, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 4, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(16, 5, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
@@ -1308,12 +1316,14 @@ func _get_instructions_for_9_1__sv_1():
 func _get_instructions_for_9_1__sv_2():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 21, 1.9, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(9, 3, 4, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(12, 3, 4, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(1, 2, 4, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(9, 4, 3, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(12, 4, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(27, 2, 4, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new((1.9 / 2), 21, 1.9, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(2, 2, 4, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 4, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(16, 5, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
@@ -1324,12 +1334,14 @@ func _get_instructions_for_9_1__sv_2():
 func _get_instructions_for_9_1__sv_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 21, 1.8, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(9, 4, 4, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(12, 3, 4, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(1, 2, 4, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(9, 5, 3, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(12, 4, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(27, 2, 4, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new((1.8 / 2), 21, 1.8, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(2, 2, 4, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 4, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(16, 5, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
@@ -1340,12 +1352,14 @@ func _get_instructions_for_9_1__sv_3():
 func _get_instructions_for_9_1__sv_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 22, 1.7, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(9, 4, 4, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(12, 4, 4, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(1, 2, 4, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(9, 5, 3, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(12, 5, 3, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(27, 2, 4, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		
 		MultipleEnemySpawnInstruction.new((1.7 / 2), 22, 1.7, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(2, 2, 4, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(4, 5, 4, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(16, 5, 1, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
@@ -1369,72 +1383,72 @@ func _get_instructions_for_9_2():
 
 func _get_instructions_for_9_2__sv_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 12, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(4, 6, 0.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 16, 0.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(4, 8, 0.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(24, 9, 1.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(28, 7, 1.2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(32, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(43, 7, 1.2, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(34, 7, 2.4, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
 		
-		MultipleEnemySpawnInstruction.new(12, 12, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(12, 16, 0.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(16, 6, 0.5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(36, 9, 1.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(40, 7, 0.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(40, 8, 0.4, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(44, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(55, 7, 1.2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_9_2__sv_2():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 12, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(4, 7, 0.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 16, 0.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(4, 9, 0.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(24, 10, 1.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(28, 7, 1.2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(32, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(43, 7, 1.2, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(34, 7, 2.4, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
 		
-		MultipleEnemySpawnInstruction.new(12, 12, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(12, 16, 0.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(16, 7, 0.5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(36, 10, 1.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(40, 7, 0.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(40, 8, 0.4, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(44, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(55, 7, 1.2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_9_2__sv_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 12, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(4, 7, 0.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 16, 0.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(4, 9, 0.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(24, 10, 1.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(28, 8, 1.2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(32, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(43, 7, 1.2, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(34, 7, 2.4, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
 		
-		MultipleEnemySpawnInstruction.new(12, 12, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(12, 16, 0.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(16, 8, 0.5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(36, 10, 1.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(40, 8, 0.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(40, 10, 0.4, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(44, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(55, 7, 1.2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_9_2__sv_4():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 12, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(4, 8, 0.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 16, 0.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(4, 10, 0.5, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(24, 10, 1.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(28, 8, 1.2, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(32, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(43, 8, 1.2, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(34, 8, 2.4, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		
 		
-		MultipleEnemySpawnInstruction.new(12, 12, 1, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(12, 16, 0.75, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(16, 8, 0.5, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(36, 10, 1.2, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(40, 8, 0.5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(40, 10, 0.4, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(44, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(55, 8, 1.2, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 	]
@@ -1459,12 +1473,12 @@ func _get_instructions_for_9_3__sv_1():
 		MultipleEnemySpawnInstruction.new(5, 15, 1.1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(5, 6, 3.3, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(13, 4, 3, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(16, 4, 3, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		
 		LinearEnemySpawnInstruction.new(0, 24, 1.75, 0.050, EnemyConstants.Enemies.RUFFIAN, 0.2, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 4, 3, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(14, 5, 2.2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(16, 5, 2.2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_9_3__sv_2():
@@ -1473,12 +1487,12 @@ func _get_instructions_for_9_3__sv_2():
 		MultipleEnemySpawnInstruction.new(5, 16, 1.1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(5, 6, 3.3, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(13, 4, 3, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(16, 4, 3, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		
 		LinearEnemySpawnInstruction.new(0, 24, 1.75, 0.050, EnemyConstants.Enemies.RUFFIAN, 0.2, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 5, 3, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(14, 5, 2.2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(16, 5, 2.2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_9_3__sv_3():
@@ -1487,12 +1501,12 @@ func _get_instructions_for_9_3__sv_3():
 		MultipleEnemySpawnInstruction.new(5, 18, 1.1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(5, 6, 3.3, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(13, 4, 3, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(16, 4, 3, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		
 		LinearEnemySpawnInstruction.new(0, 25, 1.75, 0.050, EnemyConstants.Enemies.RUFFIAN, 0.2, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 5, 3, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(14, 5, 2.2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(16, 5, 2.2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 	]
 
 func _get_instructions_for_9_3__sv_4():
@@ -1501,12 +1515,12 @@ func _get_instructions_for_9_3__sv_4():
 		MultipleEnemySpawnInstruction.new(5, 18, 1.1, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(5, 6, 3.3, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(13, 4, 3, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(16, 4, 3, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		
 		LinearEnemySpawnInstruction.new(0, 25, 1.75, 0.050, EnemyConstants.Enemies.RUFFIAN, 0.2, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 5, 3, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(14, 6, 2.2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(16, 6, 2.2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 		
 	]
 
@@ -1526,81 +1540,81 @@ func _get_instructions_for_9_4():
 
 func _get_instructions_for_9_4__sv_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 21, 2.55, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(5, 7, 2.75, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(6, 7, 2.75, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 21, 2.35, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(5, 8, 2.25, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(6, 8, 2.25, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(20, 4, 5, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(20, 4, 5, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(30, 4, 1, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(24, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(25, 6, 1, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 21, 2.55, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 21, 2.35, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(3, 5, 7, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 6, 6, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(20, 5, 5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(24, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(30, 5, 3, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(40, 5, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(35, 6, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		
 	]
 
 func _get_instructions_for_9_4__sv_2():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 21, 2.55, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(5, 8, 2.75, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(6, 8, 2.75, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 21, 2.30, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(5, 9, 2.25, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(6, 9, 2.25, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(20, 4, 5, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(20, 4, 5, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(30, 4, 1, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(24, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(25, 6, 1, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 21, 2.55, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 21, 2.30, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(3, 5, 7, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 6, 6, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(20, 6, 5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(24, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(30, 5, 3, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(40, 5, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(35, 6, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		
 	]
 
 func _get_instructions_for_9_4__sv_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 22, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(5, 8, 2.75, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(6, 8, 2.75, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 22, 2.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(5, 9, 2.25, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(6, 9, 2.25, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(20, 4, 5, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(20, 5, 5, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(30, 4, 1, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(24, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(25, 6, 1, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 22, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 22, 2.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(3, 5, 7, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 6, 6, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(20, 7, 5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(24, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(30, 5, 3, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(40, 5, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(35, 6, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		
 	]
 
 func _get_instructions_for_9_4__sv_4():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 22, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(5, 8, 2.75, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(6, 8, 2.75, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
-		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(0, 22, 2.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(5, 9, 2.25, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(6, 9, 2.25, EnemyConstants.Enemies.RALLIER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(20, 4, 5, EnemyConstants.Enemies.ASCENDER, spawn_at_blue_metadata),
 		MultipleEnemySpawnInstruction.new(20, 6, 5, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(30, 4, 1, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
+		SingleEnemySpawnInstruction.new(24, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(25, 6, 1, EnemyConstants.Enemies.COSMIC, spawn_at_blue_metadata),
 		
-		MultipleEnemySpawnInstruction.new(0, 22, 2.5, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(0, 22, 2.25, EnemyConstants.Enemies.RUFFIAN, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(3, 5, 7, EnemyConstants.Enemies.TOSSER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(10, 6, 6, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(20, 7, 5, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 		SingleEnemySpawnInstruction.new(24, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 		MultipleEnemySpawnInstruction.new(30, 5, 3, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
-		MultipleEnemySpawnInstruction.new(40, 7, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
+		MultipleEnemySpawnInstruction.new(35, 8, 1, EnemyConstants.Enemies.DANSEUR, spawn_at_red_metadata),
 		
 	]
 

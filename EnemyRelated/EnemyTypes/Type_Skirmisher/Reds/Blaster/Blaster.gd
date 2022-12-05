@@ -15,7 +15,7 @@ var tower_detecting_range_module : TowerDetectingRangeModule
 
 
 var barrage_ability : BaseAbility
-const _barrage_cooldown : float = 5.0 #stars on barrage end
+const _barrage_cooldown : float = 10.0#5.0
 const no_valid_targets_in_range_clause : int = -10
 const in_barrage_clause : int = -11
 
@@ -69,7 +69,7 @@ func _construct_and_connect_ability():
 	barrage_ability = BaseAbility.new()
 	
 	barrage_ability.is_timebound = true
-	barrage_ability._time_current_cooldown = get_random_cd(0, _barrage_cooldown / 2.0)
+	barrage_ability._time_current_cooldown = get_random_cd(0, _barrage_cooldown / 8.0)
 	barrage_ability.connect("updated_is_ready_for_activation", self, "_barrage_ready_for_activation_updated")
 	
 	register_ability(barrage_ability)

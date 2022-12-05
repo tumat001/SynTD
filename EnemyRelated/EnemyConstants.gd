@@ -226,31 +226,32 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 	########################### SKIRMISHER
 	elif enemy_id == Enemies.COSMIC:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 32
+		info.base_health = 34 #32
 		info.base_movement_speed = 35
 		info.enemy_type = info.EnemyType.NORMAL
 		
 	elif enemy_id == Enemies.SMOKE:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 29
+		info.base_health = 31 #29
 		info.base_movement_speed = 55
 		info.enemy_type = info.EnemyType.NORMAL
 		
 	elif enemy_id == Enemies.RALLIER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 28
+		info.base_health = 30 #28
 		info.base_movement_speed = 55
 		info.enemy_type = info.EnemyType.NORMAL
 		
 	elif enemy_id == Enemies.PROXIMITY:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 35
+		info.base_health = 38 #35
 		info.base_movement_speed = 45
+		info.base_toughness = 3
 		info.enemy_type = info.EnemyType.NORMAL
 		
 	elif enemy_id == Enemies.BLESSER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 26
+		info.base_health = 28 #26
 		info.base_movement_speed = 40
 		info.enemy_type = info.EnemyType.NORMAL
 		
@@ -263,13 +264,13 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.BLASTER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 30
+		info.base_health = 35 #30
 		info.base_movement_speed = 50
 		info.enemy_type = info.EnemyType.NORMAL
 		
 	elif enemy_id == Enemies.ARTILLERY:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 26
+		info.base_health = 28 #26
 		info.base_movement_speed = 40
 		info.enemy_type = info.EnemyType.NORMAL
 		
@@ -281,20 +282,20 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.FINISHER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 35
+		info.base_health = 38#35
 		info.base_movement_speed = 60
 		info.enemy_type = info.EnemyType.ELITE
 		
 	elif enemy_id == Enemies.TOSSER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 24
+		info.base_health = 26 #24
 		info.base_movement_speed = 55
 		info.enemy_type = info.EnemyType.NORMAL
 		
 		
 	elif enemy_id == Enemies.HOMERUNNER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 45
+		info.base_health = 50#45
 		info.base_movement_speed = 60
 		info.enemy_type = info.EnemyType.ELITE
 		

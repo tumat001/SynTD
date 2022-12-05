@@ -66,7 +66,7 @@ func _on_next_entry_offset_reached(arg_through_placable_data):
 		placable_has_tower = true
 		is_within_execute_range = is_tower_within_execute_range(tower)
 	
-	if !_is_during_windup_or_dash and placable_has_tower and (is_within_execute_range or _if_chance_passed()):
+	if !_is_during_windup_or_dash and placable_has_tower and is_tower_alive(tower) and (is_within_execute_range or _if_chance_passed()):
 		_perform_windup_before_dash(arg_through_placable_data, !is_within_execute_range)
 		
 	else:
@@ -114,7 +114,10 @@ func _on_windup_before_dash_timer_timeout_and_cleared_prevention():
 		_end_dash_or_windup()
 
 func is_tower_within_execute_range(tower):
-	return (tower.current_health / tower.last_calculated_max_health) <= finisher_execute_health_ratio and !tower.is_dead_for_the_round
+	return (tower.current_health / tower.last_calculated_max_health) <= finisher_execute_health_ratio
+
+func is_tower_alive(tower):
+	return !tower.is_dead_for_the_round
 
 
 #

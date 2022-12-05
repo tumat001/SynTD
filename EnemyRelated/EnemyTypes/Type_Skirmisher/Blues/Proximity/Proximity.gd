@@ -17,11 +17,6 @@ func _init():
 	is_blue_and_benefits_from_ap = true
 
 func _ready():
-	connect("on_finished_ready_prep", self, "_on_finish_ready_prep", [], CONNECT_ONESHOT)
-	
-	connect("final_ability_potency_changed", self, "_on_final_ap_changed_p")
-
-func _on_finish_ready_prep():
 	tower_detecting_range_module = TowerDetectingRangeModule_Scene.instance()
 	tower_detecting_range_module.can_display_range = false
 	tower_detecting_range_module.detection_range = _base_taunt_range * last_calculated_final_ability_potency
@@ -31,6 +26,13 @@ func _on_finish_ready_prep():
 	
 	add_child(tower_detecting_range_module)
 
+	#connect("on_finished_ready_prep", self, "_on_finish_ready_prep", [], CONNECT_ONESHOT)
+	
+	connect("final_ability_potency_changed", self, "_on_final_ap_changed_p")
+	
+
+#func _on_finish_ready_prep():
+#
 
 func _on_tower_entered_range(arg_tower):
 	if is_instance_valid(arg_tower):

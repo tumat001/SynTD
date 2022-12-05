@@ -19,6 +19,7 @@ const AbstractSkirmisherEnemy = preload("res://EnemyRelated/EnemyTypes/Type_Skir
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
 const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
 const AttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn")
+const CenterBasedAttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/CenterBasedAttackSprite.tscn")
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 
@@ -55,6 +56,10 @@ const Homerunner_BlueFlag_E_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Sk
 const Homerunner_BlueFlag_W_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Homerunner/Flag/Homerunner_BlueFlag_ForW.png")
 const Homerunner_RedFlag_E_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Homerunner/Flag/Homerunner_RedFlag_ForE.png")
 const Homerunner_RedFlag_W_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Homerunner/Flag/Homerunner_RedFlag_ForW.png")
+
+const EnemySpawnLocIndicator_Flag = preload("res://MiscRelated/MapRelated/EnemySpawnLocIndicator/EnemySpawnLocIndicator_Flag.gd")
+const BlueFlagEmpParticle_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/_FactionAssets/Textures/Faction_FlagPathIndicatorEmp_Blue_Particle.png")
+const RedFlagEmpParticle_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/_FactionAssets/Textures/Faction_FlagPathIndicatorEmp_Red_Particle.png")
 
 #
 
@@ -194,6 +199,19 @@ var homerunner_red_effects : Array
 
 var skirmisher_node_draw : SkirmisherNodeDrawer
 
+var blue_spawn_loc_flags : Array
+var red_spawn_loc_flags : Array
+var blue_flag_emp_particle_pool_compo : AttackSpritePoolComponent
+var red_flag_emp_particle_pool_compo : AttackSpritePoolComponent
+var spawn_loc_flags_emp_particle_timer : Timer
+
+var _is_showing_spawn_loc_flags : bool
+var _is_spawn_loc_blue_flags_empowered : bool
+var _is_spawn_loc_red_flags_empowered : bool
+
+const delay_delta_per_particle : float = 0.3#0.65
+const particle_count_per_flag_per_show : int = 3
+
 # SHARED BY FINISHER AND DANSEUR
 
 var through_placable_datas_thread : Thread
@@ -246,12 +264,16 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 		_initialize_homerunner_effects()
 		
 		_initialize_skirmisher_node_draw()
+		_initialize_skirmisher_spawn_loc_flags()
 	
 	#_initialize_enemy_manager_spawn_pattern()
 	#if !enemy_manager.is_connected("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed"):
 	#	enemy_manager.connect("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed", [], CONNECT_PERSIST)
 	
 	game_elements.stage_round_manager.connect("round_ended", self, "_on_round_end", [], CONNECT_PERSIST)
+	game_elements.stage_round_manager.connect("round_started", self ,"_on_round_start", [], CONNECT_PERSIST)
+	
+	_show_flags_if_curr_stageround_is_appropriate(game_elements.stage_round_manager.current_stageround)
 	
 	._apply_faction_to_game_elements(arg_game_elements)
 
@@ -277,6 +299,11 @@ func _remove_faction_from_game_elements(arg_game_elements : GameElements):
 #
 
 func _set_blue_and_red_paths():
+	#
+	_clear_all_flags()
+	
+	#
+	
 	var all_paths = map_manager.base_map.get_all_enemy_paths()
 	
 	for path in all_paths:
@@ -299,6 +326,14 @@ func _set_blue_and_red_paths():
 		danseur__enemy_path_to_through_placable_datas[red_path] = []
 		finisher__enemy_path_to_through_placable_datas[red_path] = []
 		i += 1
+		
+		# flag related
+		var blue_flag = _create_flag_for_path(blue_path, EnemySpawnLocIndicator_Flag.FlagTextureIds.BLUE)
+		blue_flag.visible = false
+		blue_spawn_loc_flags.append(blue_flag)
+		var red_flag = _create_flag_for_path(red_path, EnemySpawnLocIndicator_Flag.FlagTextureIds.RED)
+		red_flag.visible = false
+		red_spawn_loc_flags.append(red_flag)
 
 func _reverse_actions_on_path_generation():
 	var all_paths = map_manager.base_map.all_enemy_paths.duplicate(false)
@@ -314,6 +349,19 @@ func _reverse_actions_on_path_generation():
 	for path in paths_to_remove:
 		paths_for_reds.erase(path)
 		path.queue_free()
+
+
+func _clear_all_flags():
+	for flag in blue_spawn_loc_flags:
+		flag.queue_free()
+	for flag in red_spawn_loc_flags:
+		flag.queue_free()
+	
+	blue_spawn_loc_flags.clear()
+	red_spawn_loc_flags.clear()
+
+func _create_flag_for_path(arg_path, arg_flag_texture_id) -> EnemySpawnLocIndicator_Flag:
+	return game_elements.map_manager.base_map.create_spawn_loc_flag_at_path(arg_path, game_elements.map_manager.base_map.default_flag_offset_from_path, arg_flag_texture_id)
 
 #
 
@@ -1050,10 +1098,20 @@ func _generate_through_placable_data_of_placable__using_default_starting_poses__
 	var left_pos = arg_placable.global_position + Vector2(-danseur__starting_side_point_distance_from_placable, 0)
 	var right_pos = arg_placable.global_position + Vector2(danseur__starting_side_point_distance_from_placable, 0)
 	
+	var NW_pos = arg_placable.global_position + Vector2(-danseur__starting_side_point_distance_from_placable, 0).rotated(PI / 4)
+	var NE_pos = arg_placable.global_position + Vector2(-danseur__starting_side_point_distance_from_placable, 0).rotated(3 * PI / 4)
+	var SE_pos = arg_placable.global_position + Vector2(-danseur__starting_side_point_distance_from_placable, 0).rotated(5 * PI / 4)
+	var SW_pos = arg_placable.global_position + Vector2(-danseur__starting_side_point_distance_from_placable, 0).rotated(7 * PI / 4)
+	
 	all_poses.append(top_pos)
 	all_poses.append(bot_pos)
 	all_poses.append(left_pos)
 	all_poses.append(right_pos)
+	
+	all_poses.append(NW_pos)
+	all_poses.append(NE_pos)
+	all_poses.append(SE_pos)
+	all_poses.append(SW_pos)
 	
 	for path in paths_for_reds:
 		var path_length = path.curve.get_baked_length()
@@ -1136,10 +1194,20 @@ func _generate_through_placable_data_of_placable__using_default_starting_poses__
 	var left_pos = arg_placable.global_position + Vector2(-finisher__starting_side_point_distance_from_placable, 0)
 	var right_pos = arg_placable.global_position + Vector2(finisher__starting_side_point_distance_from_placable, 0)
 	
+	var NW_pos = arg_placable.global_position + Vector2(-finisher__starting_side_point_distance_from_placable, 0).rotated(PI / 4)
+	var NE_pos = arg_placable.global_position + Vector2(-finisher__starting_side_point_distance_from_placable, 0).rotated(3 * PI / 4)
+	var SE_pos = arg_placable.global_position + Vector2(-finisher__starting_side_point_distance_from_placable, 0).rotated(5 * PI / 4)
+	var SW_pos = arg_placable.global_position + Vector2(-finisher__starting_side_point_distance_from_placable, 0).rotated(7 * PI / 4)
+	
 	all_poses.append(top_pos)
 	all_poses.append(bot_pos)
 	all_poses.append(left_pos)
 	all_poses.append(right_pos)
+	
+	all_poses.append(NW_pos)
+	all_poses.append(NE_pos)
+	all_poses.append(SE_pos)
+	all_poses.append(SW_pos)
 	
 	for path in paths_for_reds:
 		var path_length = path.curve.get_baked_length()
@@ -1346,9 +1414,94 @@ func _initialize_skirmisher_node_draw():
 	
 	CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(skirmisher_node_draw)
 
+
+#### Spawn flag loc related
+
+func _initialize_skirmisher_spawn_loc_flags():
+	_initialize_blue_flag_emp_particle_pool_component()
+	_initialize_red_flag_emp_particle_pool_component()
+	
+	spawn_loc_flags_emp_particle_timer = Timer.new()
+	spawn_loc_flags_emp_particle_timer.connect("timeout", self, "_on_particle_for_spawn_loc_flags_timeout", [], CONNECT_PERSIST)
+	spawn_loc_flags_emp_particle_timer.one_shot = false
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(spawn_loc_flags_emp_particle_timer)
+
+func _initialize_blue_flag_emp_particle_pool_component():
+	blue_flag_emp_particle_pool_compo = AttackSpritePoolComponent.new()
+	blue_flag_emp_particle_pool_compo.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	blue_flag_emp_particle_pool_compo.node_to_listen_for_queue_free = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	blue_flag_emp_particle_pool_compo.source_for_funcs_for_attk_sprite = self
+	blue_flag_emp_particle_pool_compo.func_name_for_creating_attack_sprite = "_create_blue_flag_emp_particle"
+
+func _create_blue_flag_emp_particle():
+	var particle = CenterBasedAttackSprite_Scene.instance()
+	
+	particle.texture_to_use = BlueFlagEmpParticle_Pic
+	
+	particle.speed_accel_towards_center = 100
+	particle.initial_speed_towards_center = -50
+	particle.max_speed_towards_center = -20
+	
+	particle.min_starting_distance_from_center = 15
+	particle.max_starting_distance_from_center = 15
+	
+	particle.queue_free_at_end_of_lifetime = false
+	
+	particle.modulate.a = 0.75
+	
+	return particle
+
+func request_blue_flag_particles_to_play(arg_position : Vector2, arg_count : int = particle_count_per_flag_per_show):
+	for i in arg_count:
+		var particle = blue_flag_emp_particle_pool_compo.get_or_create_attack_sprite_from_pool()
+		
+		particle.center_pos_of_basis = arg_position
+		particle.lifetime = 0.85
+		
+		particle.visible = true
+		particle.reset_for_another_use()
+
+
+
+func _initialize_red_flag_emp_particle_pool_component():
+	red_flag_emp_particle_pool_compo = AttackSpritePoolComponent.new()
+	red_flag_emp_particle_pool_compo.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	red_flag_emp_particle_pool_compo.node_to_listen_for_queue_free = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	red_flag_emp_particle_pool_compo.source_for_funcs_for_attk_sprite = self
+	red_flag_emp_particle_pool_compo.func_name_for_creating_attack_sprite = "_create_red_flag_emp_particle"
+
+func _create_red_flag_emp_particle():
+	var particle = CenterBasedAttackSprite_Scene.instance()
+	
+	particle.texture_to_use = RedFlagEmpParticle_Pic
+	
+	particle.speed_accel_towards_center = 100
+	particle.initial_speed_towards_center = -50
+	particle.max_speed_towards_center = -20
+	
+	particle.min_starting_distance_from_center = 15
+	particle.max_starting_distance_from_center = 15
+	
+	particle.queue_free_at_end_of_lifetime = false
+	
+	particle.modulate.a = 0.75
+	
+	return particle
+
+func request_red_flag_particles_to_play(arg_position : Vector2, arg_count : int = particle_count_per_flag_per_show):
+	for i in arg_count:
+		var particle = red_flag_emp_particle_pool_compo.get_or_create_attack_sprite_from_pool()
+		
+		particle.center_pos_of_basis = arg_position
+		particle.lifetime = 0.85
+		
+		particle.visible = true
+		particle.reset_for_another_use()
+	
+
 ##########
 
-func _on_round_end(arg_stagerounds):
+func _on_round_end(arg_stageround):
 	blaster_bullet_attk_module.on_round_end()
 	artillery_arc_bullet_attk_module.on_round_end()
 	danseur_bullet_attk_module.on_round_end()
@@ -1369,4 +1522,92 @@ func _on_round_end(arg_stagerounds):
 	
 	skirmisher_node_draw.hide_blue_flag_aura()
 	skirmisher_node_draw.hide_red_flag_aura()
+	
+	#
+	
+	_show_flags_if_curr_stageround_is_appropriate(arg_stageround)
+
+
+func _on_round_start(arg_stageround):
+	if _is_showing_spawn_loc_flags:
+		_is_showing_spawn_loc_flags = false
+		_is_spawn_loc_blue_flags_empowered = false
+		_is_spawn_loc_red_flags_empowered = false
+		
+		spawn_loc_flags_emp_particle_timer.stop()
+
+
+func _show_flags_if_curr_stageround_is_appropriate(arg_stageround):
+	_is_showing_spawn_loc_flags = true
+	
+	
+#	if arg_stageround.is_stageround_id_equal_than_second_param("01", arg_stageround.id):
+#		#temp
+#		_show_blue_flags__emp()
+#		#_show_red_flags__emp()
+#
+#	elif arg_stageround.is_stageround_id_equal_than_second_param("02", arg_stageround.id):
+#		#temp
+#		#_show_blue_flags__normal()
+#		_show_red_flags__normal()
+#
+	if arg_stageround.is_stageround_id_equal_than_second_param("41", arg_stageround.id):
+		_show_blue_flags__normal()
+		
+	elif arg_stageround.is_stageround_id_equal_than_second_param("51", arg_stageround.id):
+		_show_red_flags__normal()
+		
+	elif arg_stageround.is_stageround_id_equal_than_second_param("61", arg_stageround.id):
+		_show_blue_flags__normal()
+		_show_red_flags__normal()
+		
+	elif arg_stageround.is_stageround_id_equal_than_second_param("71", arg_stageround.id):
+		_show_blue_flags__emp()
+		_show_red_flags__normal()
+		
+	elif arg_stageround.is_stageround_id_equal_than_second_param("81", arg_stageround.id):
+		_show_blue_flags__normal()
+		_show_red_flags__emp()
+		
+	elif arg_stageround.is_stageround_id_equal_than_second_param("91", arg_stageround.id):
+		_show_blue_flags__emp()
+		_show_red_flags__emp()
+		
+	else:
+		_is_showing_spawn_loc_flags = false
+
+
+func _show_blue_flags__normal():
+	for flag in blue_spawn_loc_flags:
+		flag.visible = true
+
+func _show_red_flags__normal():
+	for flag in red_spawn_loc_flags:
+		flag.visible = true
+
+
+func _show_blue_flags__emp():
+	_is_spawn_loc_blue_flags_empowered = true
+	_show_blue_flags__normal()
+	_start_particle_for_spawn_loc_flag_timer()
+
+func _show_red_flags__emp():
+	_is_spawn_loc_red_flags_empowered = true
+	_show_red_flags__normal()
+	_start_particle_for_spawn_loc_flag_timer()
+
+
+
+func _start_particle_for_spawn_loc_flag_timer():
+	if spawn_loc_flags_emp_particle_timer.time_left == 0:
+		spawn_loc_flags_emp_particle_timer.start(delay_delta_per_particle)
+
+func _on_particle_for_spawn_loc_flags_timeout():
+	if _is_spawn_loc_blue_flags_empowered:
+		for flag in blue_spawn_loc_flags:
+			request_blue_flag_particles_to_play(flag.global_position)
+	
+	if _is_spawn_loc_red_flags_empowered:
+		for flag in red_spawn_loc_flags:
+			request_red_flag_particles_to_play(flag.global_position)
 

@@ -3,7 +3,7 @@ extends "res://EnemyRelated/EnemyTypes/Type_Skirmisher/AbstractSkirmisherEnemy.g
 
 
 var artillery_ability : BaseAbility
-const _artillery_cooldown : float = 14.0
+const _artillery_cooldown : float = 18.0 #14.0
 const _artillery_no_target_cooldown : float = 3.0
 
 
@@ -30,7 +30,7 @@ func _construct_and_connect_ability():
 	artillery_ability = BaseAbility.new()
 	
 	artillery_ability.is_timebound = true
-	artillery_ability._time_current_cooldown = get_random_cd(0, _artillery_cooldown / 2.0)
+	artillery_ability._time_current_cooldown = get_random_cd(0, _artillery_cooldown / 8.0)
 	artillery_ability.connect("updated_is_ready_for_activation", self, "_artillery_ready_for_activation_updated")
 	
 	register_ability(artillery_ability)

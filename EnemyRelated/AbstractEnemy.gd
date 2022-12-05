@@ -185,6 +185,12 @@ var flat_percent_health_hit_scale_id_effect_map : Dictionary = {}
 var percent_percent_health_hit_scale_id_effect_map : Dictionary = {}
 var last_calculated_percent_health_hit_scale : float = base_percent_health_hit_scale
 
+# how effective aoe dmg to this enemy is
+var base_aoe_dmg_receive_scale : float = 1
+var flat_aoe_dmg_receive_scale_id_effect_map : Dictionary = {}
+var percent_aoe_dmg_receive_scale_id_effect_map : Dictionary = {}
+var last_calculated_aoe_dmg_receive_scale : float = base_aoe_dmg_receive_scale
+
 
 var base_flat_heal_modifier_amount : float = 0
 var flat_heal_modifier_id_effect_map : Dictionary = {}
@@ -419,6 +425,7 @@ func _post_inherit_ready():
 	calculate_max_health()
 	calculate_effect_vulnerability()
 	calculate_percent_health_hit_scale()
+	calculate_aoe_dmg_receive_scale()
 	calculate_current_shield()
 	calculate_final_ability_potency()
 	calculate_final_has_effect_shield()
@@ -790,9 +797,10 @@ func _destroy_self():
 func queue_free():
 	if !is_ready_prepping:
 		if !is_queued_for_deletion():
-			emit_signal("cancel_all_lockons")
+			#emit_signal("cancel_all_lockons")
 			
 			.queue_free()
+			emit_signal("cancel_all_lockons")
 			emit_signal("on_death_by_any_cause")
 	else:
 		is_queue_free_called_during_ready_prepping = true
@@ -1012,6 +1020,21 @@ func calculate_percent_health_hit_scale() -> float:
 	return final_scale
 
 
+func calculate_aoe_dmg_receive_scale() -> float:
+	#All percent modifiers here are to BASE values only
+	var final_scale = base_aoe_dmg_receive_scale
+	for effect in percent_aoe_dmg_receive_scale_id_effect_map.values():
+		final_scale += effect.attribute_as_modifier.get_modification_to_value(base_aoe_dmg_receive_scale)
+	
+	for effect in flat_aoe_dmg_receive_scale_id_effect_map.values():
+		final_scale += effect.attribute_as_modifier.flat_modifier
+	
+	if final_scale < 0:
+		final_scale = 0
+	
+	last_calculated_aoe_dmg_receive_scale = final_scale
+	return final_scale
+
 func calculate_flat_heal_modifier_amount() -> float:
 	var final_amount = base_flat_heal_modifier_amount
 	
@@ -1230,6 +1253,8 @@ func hit_by_aoe(base_aoe):
 			if !is_connected("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt"):
 				connect("on_post_mitigated_damage_taken", base_aoe.attack_module_source, "on_post_mitigation_damage_dealt", [base_aoe.damage_register_id], CONNECT_ONESHOT)
 		
+		base_aoe.damage_instance.scale_only_damage_by(last_calculated_aoe_dmg_receive_scale)
+		
 		hit_by_damage_instance(base_aoe.damage_instance, base_aoe.damage_register_id, true, base_aoe.attack_module_source)
 
 
@@ -1343,7 +1368,7 @@ func _add_effect__use_provided_effect(base_effect : EnemyBaseEffect):
 	_add_effect(base_effect, 1, false, false)
 
 # WHEN ADDING NEW EFFECT TYPE, LOOK AT:
-# _remove_effect(), copy_enemy_stats(), decrease_timebounds()
+# _remove_effect(), copy_enemy_stats(), _decrease_time_of_timebounds()
 func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_multiplier : bool = false, use_copy_of_arg : bool = true) -> EnemyBaseEffect:
 	
 	if base_effect.is_from_enemy:
@@ -1475,6 +1500,14 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_PERCENT_HEALTH_HIT_SCALE:
 			percent_percent_health_hit_scale_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
 			calculate_percent_health_hit_scale()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_AOE_DMG_RECEIVE_SCALE:
+			flat_aoe_dmg_receive_scale_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_aoe_dmg_receive_scale()
+			
+		elif to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_AOE_DMG_RECEIVE_SCALE:
+			percent_aoe_dmg_receive_scale_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_aoe_dmg_receive_scale()
 			
 		elif to_use_effect.attribute_type == EnemyAttributesEffect.FLAT_ABILITY_POTENCY or to_use_effect.attribute_type == EnemyAttributesEffect.PERCENT_ABILITY_POTENCY:
 			_add_ability_potency_effect(to_use_effect)
@@ -1622,6 +1655,14 @@ func _remove_effect(base_effect : EnemyBaseEffect):
 		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_BASE_PERCENT_HEALTH_HIT_SCALE:
 			percent_percent_health_hit_scale_id_effect_map.erase(base_effect.effect_uuid)
 			calculate_percent_health_hit_scale()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_AOE_DMG_RECEIVE_SCALE:
+			flat_aoe_dmg_receive_scale_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_aoe_dmg_receive_scale()
+			
+		elif base_effect.attribute_type == EnemyAttributesEffect.PERCENT_AOE_DMG_RECEIVE_SCALE:
+			percent_aoe_dmg_receive_scale_id_effect_map.erase(base_effect.effect_uuid)
+			calculate_aoe_dmg_receive_scale()
 			
 		elif base_effect.attribute_type == EnemyAttributesEffect.FLAT_ABILITY_POTENCY or base_effect.attribute_type == EnemyAttributesEffect.PERCENT_ABILITY_POTENCY:
 			_remove_ability_potency_effect(base_effect.effect_uuid)
@@ -1785,6 +1826,14 @@ func _decrease_time_of_timebounds(delta):
 	
 	for res_eff in percent_percent_health_hit_scale_id_effect_map.values():
 		_decrease_time_of_effect(res_eff, delta)
+	
+	
+	for res_eff in flat_aoe_dmg_receive_scale_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
+	for res_eff in percent_aoe_dmg_receive_scale_id_effect_map.values():
+		_decrease_time_of_effect(res_eff, delta)
+	
 	
 	for res_eff in _flat_base_ability_potency_effects.values():
 		_decrease_time_of_effect(res_eff, delta)
@@ -2251,6 +2300,7 @@ func copy_enemy_stats(arg_enemy,
 	base_movement_speed = arg_enemy.base_movement_speed
 	base_effect_vulnerability = arg_enemy.base_effect_vulnerability
 	base_percent_health_hit_scale = arg_enemy.base_percent_health_hit_scale
+	base_aoe_dmg_receive_scale = arg_enemy.base_aoe_dmg_receive_scale
 	base_ability_potency = arg_enemy.base_ability_potency
 	base_flat_heal_modifier_amount = arg_enemy.base_flat_heal_modifier_amount
 	base_percent_heal_modifier_amount = arg_enemy.base_percent_heal_modifier_amount
@@ -2267,6 +2317,7 @@ func copy_enemy_stats(arg_enemy,
 		calculate_final_movement_speed()
 		calculate_effect_vulnerability()
 		calculate_percent_health_hit_scale()
+		calculate_aoe_dmg_receive_scale()
 		calculate_final_ability_potency()
 		calculate_flat_heal_modifier_amount()
 		calculate_percent_heal_modifier_amount()

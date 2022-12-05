@@ -1,7 +1,7 @@
 extends MarginContainer
 
 signal unsworn_pact_to_be_sworn(pact)
-signal sworn_pact_card_removed(pact)
+signal sworn_pact_card_removed(pact, new_replacing_pact)
 signal auto_open_shop_checkbox_val_changed(arg_val)
 
 const Red_PactSinglePanel = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_GUI/Red_PactSinglePanel.gd")
@@ -37,8 +37,8 @@ func _on_UnswornPactList_pact_card_clicked(pact):
 	emit_signal("unsworn_pact_to_be_sworn", pact)
 
 
-func _on_SwornPactList_pact_card_removed(pact):
-	emit_signal("sworn_pact_card_removed", pact)
+func _on_SwornPactList_pact_card_removed(pact, new_replacing_pact):
+	emit_signal("sworn_pact_card_removed", pact, new_replacing_pact)
 
 
 #

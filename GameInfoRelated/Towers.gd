@@ -150,7 +150,7 @@ enum {
 	NONE = 0,
 	
 	# GRAY (100)
-	MONO = 100,
+	MONO = 100,  # NOT IN POOL
 	SIMPLEX = 101,
 	ASHEND = 102,
 	
@@ -239,7 +239,7 @@ enum {
 	SIMPLE_OBELISK = 700, # REMOVED FROM POOL
 	RE = 701, # REMOVED FROM POOL
 	TESLA = 702,
-	CHAOS = 703,
+	CHAOS = 703,  # WHEN CHANGING CHAOS's tower id, change/look at the takeover effect as well
 	PING = 704,
 	PROMINENCE = 705,
 	SHACKLED = 706,
@@ -3565,8 +3565,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = hero_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 1.6 #1.5
-		info.base_attk_speed = 0.88 #0.85
+		info.base_damage = 1.7 #1.6
+		info.base_attk_speed = 0.9 #0.88
 		info.base_pierce = 1
 		info.base_range = 140
 		info.base_damage_type = DamageType.PHYSICAL
@@ -5429,8 +5429,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["When all enemies have spawned, all idle Stars focus a beam at a target, dealing |0| per 0.25 seconds.", [interpreter_for_beam_dmg]],
 			"All Stars crash to the last enemy standing once it has 100 health or less.",
 			"",
-			["Crashing stars can hit up to |0|.", [interpreter_for_pierce]],
-			"Targeting affects which enemies are targeted by the Stars."
+			["Crashing Stars can hit up to |0|.", [interpreter_for_pierce]],
+			"Targeting affects which enemies are targeted by the Stars.",
+			"\"The Stars see all.\""
 		]
 		
 		info.tower_simple_descriptions = [
@@ -6436,10 +6437,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = blast_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
 		
-		info.base_damage = 4
-		info.base_attk_speed = 0.6
+		info.base_damage = 3.5
+		info.base_attk_speed = 0.55#0.6
 		info.base_pierce = 1
-		info.base_range = 120
+		info.base_range = 115
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		

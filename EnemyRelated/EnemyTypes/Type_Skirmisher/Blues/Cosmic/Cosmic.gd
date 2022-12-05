@@ -30,16 +30,23 @@ const Cosmic_Area05 = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blu
 const Cosmic_Area06 = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Cosmic/Cosmic_Area/Cosmic_Area06.png")
 const Cosmic_Area07 = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Cosmic/Cosmic_Area/Cosmic_Area07.png")
 
-const _shield_cooldown : float = 15.0
-const _shield_initial_cooldown : float = 10.0
+
+const _shield_cooldown : float = 12.0#15.0
+const _shield_initial_cooldown : float = 7.0#10.0  # a range is used instead of just this value. this val is still used (indirectly) tho.
 const _shield_refresh_cooldown : float = 2.0
 
-const _shield_flat_amount : float = 35.0
+const _shield_flat_amount : float = 40.0 #35.0
 const _shield_duration : float = 10.0
 
 var shield_ability : BaseAbility
 var shield_effect : EnemyShieldEffect
 
+#
+
+const _aoe_dmg_receive_percent_amount : float = -50.0
+const _aoe_dmg_receive_scale_duration : float = _shield_duration
+
+#
 
 const _beam_single_duration : float = 0.3
 var _cosmic_beam_sprite_frames : SpriteFrames
@@ -53,11 +60,13 @@ var staff_w_position := Vector2(-10, -3)
 var staff_e_position := Vector2(10, -3)
 
 var shield_beam_targeting_rng : RandomNumberGenerator
-const shield_beam_targeting_i_min : int = 1
-const shield_beam_targeting_i_max : int = 6
+const shield_beam_targeting_i_min : int = 1  # starting from 1, so don't make this 0
+const shield_beam_targeting_i_max : int = 8
 
 #
 onready var staff_center_2dposition_node = $SpriteLayer/KnockUpLayer/StaffCenterPosition
+
+#
 
 func _init():
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.COSMIC))
@@ -102,7 +111,7 @@ func _construct_and_connect_ability():
 	shield_ability = BaseAbility.new()
 	
 	shield_ability.is_timebound = true
-	shield_ability._time_current_cooldown = _shield_initial_cooldown
+	shield_ability._time_current_cooldown = get_random_cd(_shield_initial_cooldown / 5.0, _shield_initial_cooldown)
 	shield_ability.connect("updated_is_ready_for_activation", self, "_shield_ready_for_activation_updated")
 	
 	register_ability(shield_ability)
@@ -240,12 +249,26 @@ func _construct_and_add_cosmic_shield_aoe(aoe_position : Vector2):
 	
 	aoe.connect("before_enemy_hit_aoe", self, "_on_aoe_hit_enemy")
 	aoe.modulate = _cosmic_modulate
-	aoe.scale *= 2
+	aoe.scale *= 2.5
 	
 	cosmic_aoe_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 func _on_aoe_hit_enemy(enemy_hit):
 	enemy_hit._add_effect(shield_effect)
+	_construct_aoe_dmg_receive_scale_effect_and_give_to_enemy(enemy_hit)
+
+func _construct_aoe_dmg_receive_scale_effect_and_give_to_enemy(arg_enemy):
+	var dmg_receive_modi = PercentModifier.new(StoreOfEnemyEffectsUUID.COSMIC_AOE_DMG_RECEIVE_SCALE_EFFECT)
+	dmg_receive_modi.percent_amount = _aoe_dmg_receive_percent_amount * last_calculated_final_ability_potency
+	
+	var aoe_dmg_receive_scale_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_AOE_DMG_RECEIVE_SCALE, dmg_receive_modi, StoreOfEnemyEffectsUUID.COSMIC_AOE_DMG_RECEIVE_SCALE_EFFECT)
+	aoe_dmg_receive_scale_effect.respect_scale = true
+	aoe_dmg_receive_scale_effect.is_timebound = true
+	aoe_dmg_receive_scale_effect.time_in_seconds = _aoe_dmg_receive_scale_duration
+	aoe_dmg_receive_scale_effect.is_from_enemy = true
+	aoe_dmg_receive_scale_effect.status_bar_icon = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/_FactionAssets/StatusBarIcons/Cosmic_AOEReducIcon.png")
+	
+	arg_enemy._add_effect__use_provided_effect(aoe_dmg_receive_scale_effect)
 
 
 #

@@ -11,6 +11,8 @@ signal on_enemy_path_removed(enemy_path)
 signal on_all_enemy_paths_changed(new_all_paths)
 
 
+const default_flag_offset_from_path : float = 30.0
+
 enum EnemyPathState {
 	USED_AND_ACTIVE = 0,
 	NOT_USED_AND_ACTIVE = 1,
@@ -186,14 +188,14 @@ func get_all_terrains():
 
 func _apply_map_specific_changes_to_game_elements(arg_game_elements):
 	for path in _all_enemy_paths:
-		_create_spawn_loc_flag_at_path(path)
+		create_spawn_loc_flag_at_path(path)
 	
 	arg_game_elements.stage_round_manager.connect("round_started", self, "_on_round_started", [], CONNECT_PERSIST)
 
 
 ################
 
-func _create_spawn_loc_flag_at_path(arg_enemy_path : EnemyPath, arg_offset_from_start : float = 30.0, arg_flag_texture_id : int = EnemySpawnLocIndicator_Flag.FlagTextureIds.ORANGE):
+func create_spawn_loc_flag_at_path(arg_enemy_path : EnemyPath, arg_offset_from_start : float = default_flag_offset_from_path, arg_flag_texture_id : int = EnemySpawnLocIndicator_Flag.FlagTextureIds.ORANGE) -> EnemySpawnLocIndicator_Flag:
 	var flag = EnemySpawnLocIndicator_Flag_Scene.instance()
 	CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(flag)
 	

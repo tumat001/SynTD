@@ -98,7 +98,7 @@ var pursue_range_effect : TowerAttributesEffect
 
 const pursue_burrow_cast_time : float = 0.35
 const pursue_surface_cast_time : float = 0.35
-const base_pursue_cooldown : float = 0.8
+const base_pursue_cooldown : float = pursue_buff_duration + pursue_burrow_cast_time + pursue_surface_cast_time #0.8
 
 const pursue_range_of_new_placable_to_enemy_buffer : float = 10.0
 

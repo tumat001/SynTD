@@ -26,7 +26,7 @@ const _heal_amount : float = 0.5
 const _heal_cooldown : float = 0.25
 
 const _empowered_heal_amount : float = 5.0
-const _empowered_heal_duration : float = 1.1
+const _empowered_heal_duration : float = 1.3 #1.1
 const _empowered_heal_target_health_threshold : float = 0.25
 
 var _empowered_heal_curr_duration : float
@@ -124,7 +124,6 @@ func _assign_heal_target_to_target_in_range():
 	
 	if is_instance_valid(target):
 		_assign_target_as_heal_target(target)
-
 
 
 func _get_target_valid_for_assignment():
@@ -228,7 +227,7 @@ func _physics_process(delta):
 #
 
 func _on_heal_target_curr_health_changed(arg_curr_health):
-	if is_instance_valid(_current_heal_target) and arg_curr_health / _current_heal_target._last_calculated_max_health <= _empowered_heal_target_health_threshold:
+	if !_empowered_heal_casted and is_instance_valid(_current_heal_target) and arg_curr_health / _current_heal_target._last_calculated_max_health <= _empowered_heal_target_health_threshold:
 		_swap_heal_to_empowered()
 
 #
@@ -262,6 +261,7 @@ func _update_heal_amount():
 
 func _on_tree_exiting_b():
 	if is_instance_valid(_heal_beam):
+		_heal_beam.visible = false
 		_heal_beam.queue_free()
 	
 

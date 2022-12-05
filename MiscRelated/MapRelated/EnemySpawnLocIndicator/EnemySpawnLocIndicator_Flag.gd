@@ -9,7 +9,7 @@ const Flag_Red_Pic = preload("res://MiscRelated/MapRelated/EnemySpawnLocIndicato
 enum FlagTextureIds {
 	ORANGE,
 	BLUE,
-	RED
+	RED,
 }
 
 

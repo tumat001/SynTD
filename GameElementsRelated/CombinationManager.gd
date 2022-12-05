@@ -36,7 +36,7 @@ enum AmountForCombinationModifiers {
 	DOMSYN_RED__COMBINATION_EFFICIENCY = 1
 }
 
-const base_combination_amount : int = 5 # amount of copies needed for combination
+const base_combination_amount : int = 6 # amount of copies needed for combination
 var _flat_combination_amount_modifier_map : Dictionary = {}
 var last_calculated_combination_amount : int
 
