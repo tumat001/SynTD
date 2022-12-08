@@ -1,0 +1,125 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Subs/RelicCounterPanel/RelicCounterPanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Subs/RelicStorePanel/RelicStorePanel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Subs/RelicNextStageroundOfferedPanel/RelicNextStageroundOfferedPanel.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/StorePanel/StorePanel_MainIcon.png" type="Texture" id=4]
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Subs/RelicHistoryPanel/RelicHistoryPanel.tscn" type="PackedScene" id=5]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/ButtonStandard/PlayerGUI_ButtonStandard.tscn" type="PackedScene" id=6]
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/StorePanel/GreenDivider_23x5.png" type="Texture" id=7]
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/WholeScreenRelicGeneralStorePanel.gd" type="Script" id=8]
+
+[node name="RelicGeneralStorePanel" type="MarginContainer"]
+margin_right = 960.0
+margin_bottom = 537.0
+rect_min_size = Vector2( 960, 540 )
+mouse_filter = 2
+script = ExtResource( 8 )
+
+[node name="ContentPanel" type="MarginContainer" parent="."]
+margin_left = 151.0
+margin_top = 40.0
+margin_right = 808.0
+margin_bottom = 499.0
+mouse_filter = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+custom_constants/margin_right = 20
+custom_constants/margin_top = 20
+custom_constants/margin_left = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ContentPanel"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 637.0
+margin_bottom = 459.0
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ContentPanel/VBoxContainer"]
+margin_right = 617.0
+margin_bottom = 374.0
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ContentPanel/VBoxContainer/HBoxContainer"]
+margin_right = 450.0
+margin_bottom = 374.0
+mouse_filter = 2
+
+[node name="StoreHeaderPanel" type="HBoxContainer" parent="ContentPanel/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_left = 175.0
+margin_right = 275.0
+margin_bottom = 100.0
+size_flags_horizontal = 6
+
+[node name="TextureRect" type="TextureRect" parent="ContentPanel/VBoxContainer/HBoxContainer/VBoxContainer/StoreHeaderPanel"]
+margin_right = 100.0
+margin_bottom = 100.0
+texture = ExtResource( 4 )
+
+[node name="StoreHeaderPanel2" type="HBoxContainer" parent="ContentPanel/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_left = 67.0
+margin_top = 104.0
+margin_right = 383.0
+margin_bottom = 150.0
+size_flags_horizontal = 6
+custom_constants/separation = 20
+
+[node name="RelicCounterPanel" parent="ContentPanel/VBoxContainer/HBoxContainer/VBoxContainer/StoreHeaderPanel2" instance=ExtResource( 1 )]
+margin_right = 76.0
+margin_bottom = 46.0
+size_flags_vertical = 10
+
+[node name="RelicNextStageroundOfferedPanel" parent="ContentPanel/VBoxContainer/HBoxContainer/VBoxContainer/StoreHeaderPanel2" instance=ExtResource( 3 )]
+margin_left = 96.0
+margin_right = 316.0
+margin_bottom = 46.0
+size_flags_vertical = 10
+
+[node name="StorePanel" type="MarginContainer" parent="ContentPanel/VBoxContainer/HBoxContainer/VBoxContainer"]
+margin_top = 154.0
+margin_right = 450.0
+margin_bottom = 374.0
+custom_constants/margin_top = 20
+
+[node name="RelicStorePanel" parent="ContentPanel/VBoxContainer/HBoxContainer/VBoxContainer/StorePanel" instance=ExtResource( 2 )]
+margin_top = 20.0
+margin_right = 450.0
+margin_bottom = 220.0
+rect_min_size = Vector2( 450, 200 )
+
+[node name="DividerPanel" type="MarginContainer" parent="ContentPanel/VBoxContainer/HBoxContainer"]
+margin_left = 454.0
+margin_right = 517.0
+margin_bottom = 374.0
+mouse_filter = 2
+custom_constants/margin_right = 20
+custom_constants/margin_left = 20
+
+[node name="Divider" type="TextureRect" parent="ContentPanel/VBoxContainer/HBoxContainer/DividerPanel"]
+margin_left = 20.0
+margin_right = 43.0
+margin_bottom = 374.0
+mouse_filter = 2
+texture = ExtResource( 7 )
+stretch_mode = 2
+
+[node name="RelicHistoryPanel" parent="ContentPanel/VBoxContainer/HBoxContainer" instance=ExtResource( 5 )]
+margin_left = 521.0
+margin_right = 617.0
+margin_bottom = 374.0
+
+[node name="BottomExitPanel" type="MarginContainer" parent="ContentPanel/VBoxContainer"]
+margin_top = 378.0
+margin_right = 617.0
+margin_bottom = 439.0
+mouse_filter = 2
+size_flags_vertical = 10
+custom_constants/margin_top = 30
+
+[node name="CloseButton" parent="ContentPanel/VBoxContainer/BottomExitPanel" instance=ExtResource( 6 )]
+margin_left = 283.0
+margin_top = 30.0
+margin_right = 333.0
+margin_bottom = 61.0
+size_flags_horizontal = 6
+text_for_label = "Close"

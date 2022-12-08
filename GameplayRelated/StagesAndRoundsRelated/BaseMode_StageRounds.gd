@@ -32,4 +32,9 @@ func _post_init():
 		if curr_stage_round.give_relic_count_in_round > 0:
 			stage_rounds_with_relic.append(curr_stage_round)
 
+func get_next_relic_giving_round_from_current(arg_curr_stage_round : StageRound):
+	for relic_stage_round in stage_rounds_with_relic:
+		if StageRound.is_stageround_id_higher_than_second_param(relic_stage_round, arg_curr_stage_round):
+			return relic_stage_round
+
 

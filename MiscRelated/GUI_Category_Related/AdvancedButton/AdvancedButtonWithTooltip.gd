@@ -65,6 +65,7 @@ func display_requested_about_tooltip(arg_about_tooltip : BaseTooltip):
 		about_tooltip = arg_about_tooltip
 		about_tooltip.visible = true
 		about_tooltip.tooltip_owner = self
-		get_tree().get_root().add_child(about_tooltip)
+		#get_tree().get_root().add_child(about_tooltip)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(about_tooltip)
 		about_tooltip.update_display()
 
