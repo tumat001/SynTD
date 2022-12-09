@@ -127,6 +127,8 @@ func _get_stageround_0_2():
 	stageround.can_gain_streak = false
 	stageround.induce_enemy_strength_value_change = false
 	
+	#stageround.give_relic_count_in_round = 1
+	
 	return stageround
 
 func _get_stageround_0_3():

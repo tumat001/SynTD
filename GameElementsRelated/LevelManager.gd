@@ -7,6 +7,16 @@ const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalC
 const gold_currency_icon = preload("res://GameHUDRelated/BuySellPanel/GoldPic.png")
 const relic_currency_icon = preload("res://GameHUDRelated/BuySellPanel/RelicPic.png")
 
+const RelicStoreOfferOption = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Classes/RelicStoreOfferOption.gd")
+const LevelUp_ToLevel10_Normal_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/LevelUp_ToLevel10_Normal.png")
+const LevelUp_ToLevel10_Highlighted_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/LevelUp_ToLevel10_Highlighted.png")
+
+const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
+const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
+const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
+const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+
 
 signal on_current_level_up_cost_amount_changed(new_cost)
 signal on_current_level_up_cost_currency_changed(new_currency)
@@ -85,12 +95,17 @@ var current_level_up_cost : int = 0 setget set_level_up_cost
 var current_level_up_currency : int
 
 
+# relic shop offer
+
+var level_up_to_10_shop_offer_id : int
+
 #
 
 var game_elements
 var stage_round_manager setget set_stage_round_manager
 var gold_manager : GoldManager setget set_gold_manager
 var relic_manager : RelicManager setget set_relic_manager
+var whole_screen_relic_general_store_panel setget set_whole_screen_relic_general_store_panel
 
 # clauses
 
@@ -120,6 +135,8 @@ func set_relic_manager(arg_manager : RelicManager):
 	
 	relic_manager.connect("current_relic_count_changed", self, "_relic_count_changed", [], CONNECT_PERSIST)
 
+func set_whole_screen_relic_general_store_panel(arg_manager):
+	whole_screen_relic_general_store_panel = arg_manager
 
 #
 
@@ -178,6 +195,14 @@ func can_level_up():
 	
 	return false
 
+
+func level_up_with_spend_currency__from_game_elements():
+	if current_level == LEVEL_9 and whole_screen_relic_general_store_panel.is_shop_offer_id_exists(level_up_to_10_shop_offer_id):
+		whole_screen_relic_general_store_panel.trigger_relic_store_offer_option(level_up_to_10_shop_offer_id)
+		
+	else:
+		level_up_with_spend_currency()
+
 func level_up_with_spend_currency():
 	if can_level_up():
 		if current_level_up_currency == Currency.GOLD:
@@ -186,7 +211,9 @@ func level_up_with_spend_currency():
 			relic_manager.decrease_relic_count_by(current_level_up_cost, RelicManager.DecreaseRelicSource.LEVEL_UP)
 		
 		set_current_level(current_level + 1)
-
+		return true
+	
+	return false
 
 
 
@@ -198,6 +225,8 @@ func set_current_level(new_level):
 		
 		set_level_up_cost(base_level_up_costs[current_level][0])
 		set_level_up_cost_currency(base_level_up_costs[current_level][1])
+		
+		_on_current_level_changed__for_store_purposes()
 
 
 func _gold_amount_changed(gold_amount):
@@ -245,4 +274,37 @@ func _update_if_can_level_up():
 #			return relic_manager.current_relic_count >= current_level_up_cost
 #
 #	return false
+
+
+
+########## RELIC offer
+
+func _on_current_level_changed__for_store_purposes():
+	if current_level == LEVEL_9:
+		_create_relic_store_offer_options()
+	elif current_level == LEVEL_10:
+		_remove_level_up_to_10_relic_store_offer_option()
+
+func _create_relic_store_offer_options():
+	var plain_fragment__level_up = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.LEVEL_UP_GREEN, "Level up")
+	var plain_fragment__tier_6_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_06, "tier 6 towers")
+	
+	
+	var level_up_desc = [
+		["|0| to 10, gaining access to |1|.", [plain_fragment__level_up, plain_fragment__tier_6_towers]],
+		"However, you do not gain an additional tower slot."
+	]
+	
+	var level_up_shop_offer := RelicStoreOfferOption.new(self, "_on_level_up_to_10_shop_offer_selected", LevelUp_ToLevel10_Normal_Pic, LevelUp_ToLevel10_Highlighted_Pic)
+	level_up_shop_offer.descriptions = level_up_desc
+	level_up_shop_offer.header_left_text = "Level Up To 10"
+	
+	level_up_to_10_shop_offer_id = whole_screen_relic_general_store_panel.add_relic_store_offer_option(level_up_shop_offer)
+
+func _on_level_up_to_10_shop_offer_selected():
+	return level_up_with_spend_currency()
+
+
+func _remove_level_up_to_10_relic_store_offer_option():
+	whole_screen_relic_general_store_panel.remove_relic_store_offer_option(level_up_to_10_shop_offer_id)
 

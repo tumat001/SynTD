@@ -31,7 +31,8 @@ func set_tower_manager(arg_manager):
 #
 
 func _on_relic_amount_changed(new_amount):
-	visible = (new_amount >= 1)
+	visible = false
+	#visible = (new_amount >= 1)
 
 
 # Tower Limit related

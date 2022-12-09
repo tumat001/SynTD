@@ -20,6 +20,16 @@ const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const AttemptCountTrigger = preload("res://MiscRelated/AttemptCountTriggerRelated/AttemptCountTrigger.gd")
 const InMapAreaPlacable = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.gd")
 
+const RelicStoreOfferOption = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Classes/RelicStoreOfferOption.gd")
+const IncreaseIngredientLimit_Normal_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/IncreaseIngredientLimit_Normal.png")
+const IncreaseIngredientLimit_Highlighted_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/IncreaseIngredientLimit_Highlighted.png")
+const IncreaseTowerLimit_Normal_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/IncreaseTowerLimit_Normal.png")
+const IncreaseTowerLimit_Highlighted_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/IncreaseTowerLimit_Highlighted.png")
+
+
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+
+
 enum StoreOfTowerLimitIncId {
 	NATURAL_LEVEL = 10,
 	RELIC = 11,
@@ -105,6 +115,7 @@ var stage_round_manager setget set_stage_round_manager
 var ability_manager : AbilityManager
 var input_prompt_manager : InputPromptManager setget set_input_prompt_manager
 var game_elements setget set_game_elements
+var whole_screen_relic_general_store_panel setget set_whole_screen_relic_general_store_panel
 
 var _color_groups : Array
 const TOWER_GROUP_ID : String = "All_Towers"
@@ -139,6 +150,13 @@ var last_calculated_can_towers_swap_position : bool
 
 var tower_to_original_placable_map : Dictionary = {}
 
+
+# relic store related
+
+var ing_limit_shop_offer_id : int
+var tower_limit_shop_offer_id : int
+
+
 # NOTIF for player desc
 
 const level_up_to_place_more_towers_content_desc : String = "Level up to place more towers."
@@ -160,6 +178,8 @@ func set_game_elements(arg_elements):
 	attempt_count_trigger_for_level_up_to_place_more.count_for_trigger = level_up_to_place_more__count_for_trigger
 	attempt_count_trigger_for_level_up_to_place_more.connect("on_reached_trigger_count", self, "_attempt_place_tower_but_not_enought_slot_limit_count_reached", [], CONNECT_PERSIST)
 	attempt_count_trigger_for_level_up_to_place_more.count_for_trigger = 2
+	
+	game_elements.connect("before_game_start", self, "_on_before_game_starts", [], CONNECT_ONESHOT)
 
 
 func set_level_manager(arg_manager : LevelManager):
@@ -179,6 +199,9 @@ func set_stage_round_manager(arg_manager):
 	
 	arg_manager.connect("round_started", self, "_on_round_start__for_restore_position", [], CONNECT_PERSIST)
 	arg_manager.connect("round_ended", self, "_on_round_end__to_restore_position", [], CONNECT_PERSIST)
+
+func set_whole_screen_relic_general_store_panel(arg_panel):
+	whole_screen_relic_general_store_panel = arg_panel
 
 
 # Called when the node enters the scene tree for the first time.
@@ -817,7 +840,9 @@ func attempt_spend_relic_for_ing_cap_increase():
 			set_ing_cap_changer(StoreOfIngredientLimitModifierID.RELIC, ing_cap_per_relic)
 		
 		relic_manager.decrease_relic_count_by(1, RelicManager.DecreaseRelicSource.ING_CAP_INCREASE)
-
+		return true
+	
+	return false
 
 func attempt_spend_relic_for_tower_lim_increase():
 	if relic_manager.current_relic_count >= 1:
@@ -827,7 +852,9 @@ func attempt_spend_relic_for_tower_lim_increase():
 			set_tower_limit_id_amount(StoreOfTowerLimitIncId.RELIC, tower_limit_per_relic)
 		
 		relic_manager.decrease_relic_count_by(1, RelicManager.DecreaseRelicSource.TOWER_CAP_INCREASE)
-
+		return true
+	
+	return false
 
 #
 
@@ -943,4 +970,49 @@ func _restore_tower_positions():
 
 func is_tower_original_placable_same_as_current(tower):
 	return tower.current_placable == tower_to_original_placable_map[tower]
+
+
+############ 
+
+func _on_before_game_starts():
+	_create_relic_store_offer_options()
+	
+
+func _create_relic_store_offer_options():
+	var plain_fragment__ingredients = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredients")
+	var plain_fragment__absorb = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABSORB, "absorb")
+	
+	var ing_limit_desc = [
+		["Increase the number of |0| a tower can |1| by %s" % (str(ing_cap_per_relic) + "."), [plain_fragment__ingredients, plain_fragment__absorb]]
+	]
+	
+	var ing_limit_shop_offer := RelicStoreOfferOption.new(self, "_on_ing_limit_shop_offer_selected", IncreaseIngredientLimit_Normal_Pic, IncreaseIngredientLimit_Highlighted_Pic)
+	ing_limit_shop_offer.descriptions = ing_limit_desc
+	ing_limit_shop_offer.header_left_text = "Absorb Limit Increase"
+	
+	whole_screen_relic_general_store_panel.add_relic_store_offer_option(ing_limit_shop_offer)
+	
+	######
+	
+	var plain_fragment__tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
+	
+	var tower_limit_desc = [
+		["Increase the number of |0| you can place in the map by %s" % (str(tower_limit_per_relic) + "."), [plain_fragment__tower]]
+	]
+	
+	var tower_limit_shop_offer := RelicStoreOfferOption.new(self, "_on_tower_limit_shop_offer_selected", IncreaseTowerLimit_Normal_Pic, IncreaseTowerLimit_Highlighted_Pic)
+	tower_limit_shop_offer.descriptions = tower_limit_desc
+	tower_limit_shop_offer.header_left_text = "Tower Limit Increase"
+	
+	whole_screen_relic_general_store_panel.add_relic_store_offer_option(tower_limit_shop_offer)
+	
+
+func _on_ing_limit_shop_offer_selected():
+	return attempt_spend_relic_for_ing_cap_increase()
+	
+
+
+func _on_tower_limit_shop_offer_selected():
+	return attempt_spend_relic_for_tower_lim_increase()
+	
 

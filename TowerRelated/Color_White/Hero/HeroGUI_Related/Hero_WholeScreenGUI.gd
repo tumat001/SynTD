@@ -24,7 +24,7 @@ func set_hero(arg_hero):
 	
 	# hero lvl up relic
 	hero_level_up_button_relic.func_name_of_if_can_level = "can_spend_relics_for_level_up"
-	hero_level_up_button_relic.func_name_of_attempt_level = "_attempt_spend_one_relic_for_level_up"
+	hero_level_up_button_relic.func_name_of_attempt_level = "_attempt_spend_one_relic_for_level_up__from_hero_gui"
 	hero_level_up_button_relic.func_name_of_desc_of_leveling = "get_relic_level_up_desc"
 	hero_level_up_button_relic.signal_name_of_can_spend_x_for_level = "can_spend_relics_for_level_up_updated"
 	

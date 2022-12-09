@@ -18,8 +18,9 @@ func _on_relic_count_changed(arg_new_count):
 
 
 func _ready():
-	_update_relic_count()
+	if relic_manager != null:
+		_update_relic_count()
 
 func _update_relic_count():
-	relic_count_label = str(relic_manager.current_relic_count)
+	relic_count_label.text = str(relic_manager.current_relic_count)
 

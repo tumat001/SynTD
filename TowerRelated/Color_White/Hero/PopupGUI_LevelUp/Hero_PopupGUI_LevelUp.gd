@@ -64,7 +64,7 @@ func _on_LevelUp_Gold_button_up():
 
 func _on_LevelUp_Relic_button_up():
 	show_whole_screen_gui(hero)
-	hero._attempt_spend_one_relic_for_level_up()
+	hero._attempt_spend_one_relic_for_level_up__from_hero_gui()
 
 
 # shared with HeroInfoPanel # if this method is changed, change the one in specified as well

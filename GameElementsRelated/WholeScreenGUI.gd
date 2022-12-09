@@ -15,6 +15,8 @@ func _ready():
 	visible = false
 
 
+#
+
 func show_control(control : Control, make_background_dark : bool = true):
 	if current_showing_control != null:
 		hide_control(current_showing_control)#, false)
@@ -37,7 +39,7 @@ func show_control(control : Control, make_background_dark : bool = true):
 		screen_effect.custom_z_index = ZIndexStore.SCREEN_EFFECTS_ABOVE_ALL
 		screen_effect_manager.add_screen_tint_effect(screen_effect)
 
-func hide_control(control : Control):  #, update_vis : bool = true):
+func hide_control(control : Control, update_vis : bool = true):
 	if is_instance_valid(control):
 		control.visible = false
 		screen_effect_manager.destroy_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
@@ -45,6 +47,13 @@ func hide_control(control : Control):  #, update_vis : bool = true):
 		
 		visible = false
 
+func add_control_but_dont_show(control : Control):
+	if !has_control(control):
+		add_child(control)
+		
+		control.visible = false
+
+#
 
 func has_control(control : Control) -> bool:
 	return get_children().has(control)

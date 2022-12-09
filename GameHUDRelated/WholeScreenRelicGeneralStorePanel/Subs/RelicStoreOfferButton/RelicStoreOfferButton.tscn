@@ -5,5 +5,5 @@
 
 [node name="RelicStoreOfferButton" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
-about_button_index_trigger = 2
+about_button_index_trigger = -1001
 define_tooltip_construction_in_button = true

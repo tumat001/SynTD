@@ -34,7 +34,7 @@ func _post_init():
 
 func get_next_relic_giving_round_from_current(arg_curr_stage_round : StageRound):
 	for relic_stage_round in stage_rounds_with_relic:
-		if StageRound.is_stageround_id_higher_than_second_param(relic_stage_round, arg_curr_stage_round):
+		if StageRound.is_stageround_id_higher_than_second_param(relic_stage_round.id, arg_curr_stage_round.id):
 			return relic_stage_round
 
 

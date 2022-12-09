@@ -31,6 +31,9 @@ const GenericNotifPanel = preload("res://GameHUDRelated/NotificationPanel/Generi
 const PauseManager = preload("res://GameElementsRelated/PauseManager.gd")
 const SellPanel = preload("res://GameHUDRelated/BuySellPanel/SellPanel.gd")
 const GameResultManager = preload("res://GameElementsRelated/GameResultManager.gd")
+const WholeScreenRelicGeneralStorePanel = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/WholeScreenRelicGeneralStorePanel.gd")
+const WholeScreenRelicGeneralStorePanel_Scene = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/WholeScreenRelicGeneralStorePanel.tscn")
+
 
 const CommonTexture_GoldCoin = preload("res://MiscRelated/CommonTextures/CommonTexture_GoldCoin/CommonTexture_GoldCoin.gd")
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
@@ -84,6 +87,7 @@ var map_manager : MapManager
 #var game_settings_manager : GameSettingsManager
 var game_settings_manager
 var generic_notif_panel : GenericNotifPanel
+var whole_screen_relic_general_store_panel : WholeScreenRelicGeneralStorePanel
 onready var sell_panel : SellPanel = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/SellPanel
 onready var color_wheel_sprite_button = $BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelSprite
 onready var tutotial_notif_panel = $TutorialNotifPanel#$NotificationNode/TutorialNotifPanel
@@ -316,6 +320,19 @@ func _ready():
 	panel_buy_sell_level_roll.combination_manager = combination_manager
 	panel_buy_sell_level_roll.game_settings_manager = game_settings_manager
 	
+	
+	# whole screen relic general store panel
+	whole_screen_relic_general_store_panel = WholeScreenRelicGeneralStorePanel_Scene.instance()
+	whole_screen_gui.add_control_but_dont_show(whole_screen_relic_general_store_panel)
+	whole_screen_relic_general_store_panel.set_managers_using_game_elements(self)
+	
+	relic_manager.whole_screen_relic_general_store_panel = whole_screen_relic_general_store_panel
+	relic_manager.whole_screen_gui = whole_screen_gui
+	
+	tower_manager.whole_screen_relic_general_store_panel = whole_screen_relic_general_store_panel
+	
+	level_manager.whole_screen_relic_general_store_panel = whole_screen_relic_general_store_panel
+	
 	# tower empty slot notif panel
 	tower_empty_slot_notif_panel.tower_manager = tower_manager
 	tower_empty_slot_notif_panel.synergy_manager = synergy_manager
@@ -330,6 +347,8 @@ func _ready():
 	combination_manager.tower_manager = tower_manager
 	combination_manager.combination_top_panel = combination_top_panel
 	combination_manager.game_elements = self
+	combination_manager.whole_screen_relic_general_store_panel = whole_screen_relic_general_store_panel
+	combination_manager.relic_manager = relic_manager
 	
 	# shared passive manager
 	shared_passive_manager.game_elements = self
@@ -385,7 +404,8 @@ func _ready():
 
 # From bottom panel
 func _on_BuySellLevelRollPanel_level_up():
-	level_manager.level_up_with_spend_currency()
+	#level_manager.level_up_with_spend_currency()
+	level_manager.level_up_with_spend_currency__from_game_elements()
 
 
 var even : bool = false
@@ -395,12 +415,12 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.HERO,
+			Towers.SHOCKER,
+			Towers.ENERVATE,
 			Towers.WYVERN,
-			Towers.SHOCKER,
-			Towers.PROPEL,
-			Towers.WAVE,
-			Towers.SHOCKER,
-			Towers.SHACKLED,
+			Towers.BLOSSOM,
+			Towers.OUTREACH,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([

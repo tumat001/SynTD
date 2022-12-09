@@ -6,6 +6,7 @@ const LevelManager = preload("res://GameElementsRelated/LevelManager.gd")
 const GoldManager = preload("res://GameElementsRelated/GoldManager.gd")
 const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
+
 signal on_effective_shop_odds_level_changed(new_level)
 signal on_cost_per_roll_changed(new_cost)
 signal can_roll_changed(can_roll)

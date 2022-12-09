@@ -7,11 +7,11 @@
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=5]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/BuySlot.tscn" type="PackedScene" id=6]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/BuySellLevelRollPanel.gd" type="Script" id=7]
-[ext_resource path="res://GameHUDRelated/RelicBuyEtcPanel/RelicBuyEtcPanel.tscn" type="PackedScene" id=8]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/AdditionalIcons/ShopRefreshIcon_20x20.png" type="Texture" id=9]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/ButtonAssets/LevelUpButton_Normal.png" type="Texture" id=10]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/ButtonAssets/LevelUpButton_Highlighted.png" type="Texture" id=11]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/ButtonAssets/RerollShopButton_Normal.png" type="Texture" id=12]
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/RelicGeneralStoreShowButton.tscn" type="PackedScene" id=13]
 
 [sub_resource type="DynamicFont" id=1]
 size = 10
@@ -269,9 +269,10 @@ margin_left = 520.0
 margin_right = 624.0
 margin_bottom = 80.0
 
-[node name="RelicBuyEtcPanel" parent="." instance=ExtResource( 8 )]
-margin_left = 647.0
+[node name="RelicGeneralStoreShowButton" parent="." instance=ExtResource( 13 )]
+margin_left = 671.0
 margin_right = 751.0
+margin_bottom = 80.0
 size_flags_horizontal = 10
 
 [connection signal="pressed" from="HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel/LevelUpButton" to="." method="_on_LevelUpButton_pressed"]
@@ -288,3 +289,4 @@ size_flags_horizontal = 10
 [connection signal="viewing_tower_description_tooltip" from="HBoxContainer/BuySlotContainer/BuySlot05" to="." method="_on_viewing_tower_description_tooltip"]
 [connection signal="tower_bought" from="HBoxContainer/BuySlotContainer/BuySlot06" to="." method="_on_tower_bought"]
 [connection signal="viewing_tower_description_tooltip" from="HBoxContainer/BuySlotContainer/BuySlot06" to="." method="_on_viewing_tower_description_tooltip"]
+[connection signal="released_mouse_event" from="RelicGeneralStoreShowButton" to="." method="_on_RelicGeneralStoreShowButton_released_mouse_event"]

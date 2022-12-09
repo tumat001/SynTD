@@ -1,0 +1,13 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWithTooltip.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/ButtonToRelicGeneralStore_Highlighted.png" type="Texture" id=2]
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/ButtonToRelicGeneralStore_Normal.png" type="Texture" id=3]
+[ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/RelicGeneralStoreShowButton.gd" type="Script" id=4]
+
+[node name="RelicGeneralStoreShowButton" instance=ExtResource( 1 )]
+texture_normal = ExtResource( 3 )
+texture_hover = ExtResource( 2 )
+script = ExtResource( 4 )
+about_button_index_trigger = 2
+define_tooltip_construction_in_button = true

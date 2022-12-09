@@ -41,10 +41,10 @@ enum STAT_TYPE {
 	TOWER = 1020
 	LEVEL_UP_ORANGE = 1021 # level up arrow, but color orange
 	SHOP = 1022
-	
 	SYNERGY = 1023
 	SYNERGY_DOMINANT = 1024
 	SYNERGY_COMPOSITE = 1025
+	LEVEL_UP_GREEN = 1026 # level up arrow, but color green
 	
 	#
 	COLOR_VIOLET = 1100
@@ -98,6 +98,8 @@ const type_to_for_light_color_map : Dictionary = {
 	STAT_TYPE.SYNERGY_DOMINANT : "#650273",
 	STAT_TYPE.SYNERGY_COMPOSITE : "#650273",
 	
+	STAT_TYPE.LEVEL_UP_GREEN : "#264C01",
+	
 	STAT_TYPE.COLOR_VIOLET : "#4F0051",
 	STAT_TYPE.COLOR_BLUE : "#011F74",
 	STAT_TYPE.COLOR_GREEN : "#0B5600",
@@ -149,6 +151,8 @@ const type_to_for_dark_color_map : Dictionary = {
 	STAT_TYPE.SYNERGY_DOMINANT : "#F7C7FE",
 	STAT_TYPE.SYNERGY_COMPOSITE : "#F7C7FE",
 	
+	STAT_TYPE.LEVEL_UP_GREEN : "#64FD4D",
+	
 	STAT_TYPE.COLOR_VIOLET : "#F09AFE",
 	STAT_TYPE.COLOR_BLUE : "#9AB4FE",
 	STAT_TYPE.COLOR_GREEN : "#8CFE7C",
@@ -197,6 +201,8 @@ const type_to_name_map : Dictionary = {
 	STAT_TYPE.SYNERGY : "synergy",
 	STAT_TYPE.SYNERGY_DOMINANT : "dominant synergy",
 	STAT_TYPE.SYNERGY_COMPOSITE : "composite synergy",
+	
+	STAT_TYPE.LEVEL_UP_GREEN : "level up",
 	
 	STAT_TYPE.COLOR_VIOLET : "violet",
 	STAT_TYPE.COLOR_BLUE : "blue",
@@ -247,6 +253,7 @@ const type_to_img_map : Dictionary = {
 	STAT_TYPE.SYNERGY_DOMINANT : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_SynergyDominant.png",
 	STAT_TYPE.SYNERGY_COMPOSITE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_SynergyComposite.png",
 	
+	STAT_TYPE.LEVEL_UP_GREEN : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_LevelUp_Green.png",
 	
 	STAT_TYPE.COLOR_VIOLET : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Violet.png",
 	STAT_TYPE.COLOR_BLUE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Blue.png",

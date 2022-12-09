@@ -10,7 +10,7 @@ signal before_call_obj_source_on_click_on_button(arg_relic_store_offer_option, a
 signal after_call_obj_source_on_click_on_button(arg_relic_store_offer_option, arg_success, arg_button_id)
 
 
-const default_grid_column_count : int = 3
+const default_grid_column_count : int = 4
 
 var _id_to_relic_offer_button_map : Dictionary
 var _next_id : int = 0
@@ -54,6 +54,17 @@ func remove_relic_store_offer_option(arg_offer_id):
 			button.queue_free()
 			_id_to_relic_offer_button_map.erase(arg_offer_id)
 
+func trigger_relic_store_offer_option(arg_offer_id):
+	if _id_to_relic_offer_button_map.has(arg_offer_id):
+		var button = _id_to_relic_offer_button_map[arg_offer_id]
+		
+		if is_instance_valid(button) and !button.is_queued_for_deletion():
+			button.trigger_button()
+
+
+func is_shop_offer_id_exists(arg_offer_id):
+	return _id_to_relic_offer_button_map.has(arg_offer_id)
+
 #
 
 func set_grid_column_count(arg_count : int):
@@ -61,10 +72,10 @@ func set_grid_column_count(arg_count : int):
 
 ####
 
-
 func _on_before_call_obj_source_on_click(arg_relic_store_offer_option, arg_button_id):
 	emit_signal("before_call_obj_source_on_click_on_button", arg_relic_store_offer_option, arg_button_id)
 
 func _on_after_call_obj_source_on_click(arg_relic_store_offer_option, arg_success, arg_button_id):
 	emit_signal("after_call_obj_source_on_click_on_button", arg_relic_store_offer_option, arg_success, arg_button_id)
+
 

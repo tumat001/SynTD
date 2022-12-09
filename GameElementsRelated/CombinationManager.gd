@@ -21,6 +21,12 @@ const CombinationIndicator_Pic08 = preload("res://GameInfoRelated/CombinationRel
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
 const OnCombiParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/CombinationRelated/OnCombiParticles/OnCombiParticle.tscn")
 
+const RelicStoreOfferOption = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Classes/RelicStoreOfferOption.gd")
+const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+const Combination_DecreaseTowersNeeded_Normal_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/Combination_DecreaseTowersNeeded_Normal.png")
+const Combination_DecreaseTowersNeeded_Highlighted_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/Combination_DecreaseTowersNeeded_Highlighted.png")
+const Combination_IncreaseTiersAffected_Normal_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/Combination_IncreaseTiersAffected_Normal.png")
+const Combination_IncreaseTiersAffected_Highlighted_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/Combination_IncreaseTiersAffected_Highlight.png")
 
 signal on_combination_effect_added(arg_new_effect_id) # id is equal to tower id
 signal on_combination_amount_needed_changed(new_val)
@@ -29,18 +35,28 @@ signal on_can_do_combination_changed(arg_val)
 
 signal updated_applicable_combinations_on_towers()
 
+signal is_tier_1_combinable_changed(arg_val)
+signal is_tier_2_combinable_changed(arg_val)
+signal is_tier_3_combinable_changed(arg_val)
+signal is_tier_4_combinable_changed(arg_val)
+signal is_tier_5_combinable_changed(arg_val)
+signal is_tier_6_combinable_changed(arg_val)
+
+signal is_any_tier_combinable_changed() # emitted if any of the tiers 1-6 combinable changed signal is emitted
+
 
 var _is_doing_combination : bool
 
 enum AmountForCombinationModifiers {
 	DOMSYN_RED__COMBINATION_EFFICIENCY = 1
+	
+	RELIC_DECREASE_AMOUNT_NEEDED_FOR_COMBI = 2
 }
 
 const base_combination_amount : int = 6 # amount of copies needed for combination
 var _flat_combination_amount_modifier_map : Dictionary = {}
 var last_calculated_combination_amount : int
 
-const combination_indicator_fps : int = 25
 
 #
 
@@ -69,6 +85,28 @@ const highest_tower_tier : int = 6
 #	5 : [1, 2, 3, 4, 5, 6],
 #	6 : [1, 2, 3, 4, 5, 6]
 #}
+
+enum IsTierLevelNotCombinableClauses {
+	RELIC_OR_NATURAL__NOT_COMBINABLE = 1
+}
+
+var is_tier_1_combinable_clauses : ConditionalClauses
+var last_calculated_is_tier_1_combinable : bool
+
+var is_tier_2_combinable_clauses : ConditionalClauses
+var last_calculated_is_tier_2_combinable : bool
+
+var is_tier_3_combinable_clauses : ConditionalClauses
+var last_calculated_is_tier_3_combinable : bool
+
+var is_tier_4_combinable_clauses : ConditionalClauses
+var last_calculated_is_tier_4_combinable : bool
+
+var is_tier_5_combinable_clauses : ConditionalClauses
+var last_calculated_is_tier_5_combinable : bool
+
+var is_tier_6_combinable_clauses : ConditionalClauses
+var last_calculated_is_tier_6_combinable : bool
 
 
 #
@@ -100,10 +138,15 @@ var last_calculated_can_do_combination : bool
 
 #
 
+var _requested_update_applicable_combinations_on_towers : bool = false
+
+#
 
 var tower_manager : TowerManager setget set_tower_manager
 var combination_top_panel : CombinationTopPanel setget set_combination_top_panel
-var game_elements
+var game_elements setget set_game_elements
+var whole_screen_relic_general_store_panel
+var relic_manager
 
 #
 
@@ -115,6 +158,17 @@ var current_combination_candidates : Array
 # combi/tower id -> combi effect (Array) # DONT GIVE THE EFFECT IN THIS MAP TO THE TOWERS, it is meant to be a singleton.
 var all_combination_id_to_effect_map : Dictionary
 
+
+# relic offer related
+
+const tower_needed_for_combination_reduc_per_relic_offer_buy : int = 1
+var tower_needed_reduc_shop_offer_id : int
+
+var _current_tower_needed_reduc_from_offer : int = 0
+const max_tower_needed_reduc_from_offer : int = 2
+
+
+var tier_include_for_combi_shop_offer_id : int
 
 # Particles related
 
@@ -131,6 +185,7 @@ var on_combi_particle_timer : Timer
 const _delay_per_on_combi_particle__as_delta : float = 0.15
 var combi_det_class_arr : Array
 
+const combination_indicator_fps : int = 25
 
 # init
 
@@ -139,6 +194,8 @@ func _ready():
 	can_do_combination_clauses.connect("clause_inserted", self, "_on_can_do_combination_clause_ins_or_rem", [], CONNECT_PERSIST)
 	can_do_combination_clauses.connect("clause_removed", self, "_on_can_do_combination_clause_ins_or_rem", [], CONNECT_PERSIST)
 	connect("on_can_do_combination_changed", self, "_on_can_do_combination_changed", [], CONNECT_PERSIST)
+	
+	_construct_is_tier_level_combinable_clauses()
 	
 	_construct_tower_indicator_shower()
 	
@@ -182,6 +239,11 @@ func set_tower_manager(arg_tower_manager):
 
 func set_combination_top_panel(arg_combi_top_panel):
 	combination_top_panel = arg_combi_top_panel
+
+func set_game_elements(arg_elements):
+	game_elements = arg_elements
+	
+	arg_elements.connect("before_game_start", self, "_on_before_game_starts", [], CONNECT_ONESHOT)
 
 # tier affected
 
@@ -246,12 +308,12 @@ func _update_combination_amount(arg_emit_signal : bool = true):
 	if arg_emit_signal:
 		emit_signal("on_combination_amount_needed_changed", last_calculated_combination_amount)
 	
-	call_deferred("_update_applicable_combinations_on_towers")
+	_request_update_applicable_combinations_on_towers()
 
 # signals
 
 func _on_tower_added(tower_added):
-	call_deferred("_update_applicable_combinations_on_towers")
+	_request_update_applicable_combinations_on_towers()
 	
 	for combi_effect in all_combination_id_to_effect_map.values():
 		_attempt_apply_all_combination_effects_to_tower(tower_added)
@@ -260,13 +322,20 @@ func _on_tower_added(tower_added):
 # destroyed, in queued free
 func _on_tower_in_queue_free(tower_destroyed):
 	if !_is_doing_combination:
+		_request_update_applicable_combinations_on_towers()
+
+
+
+func _request_update_applicable_combinations_on_towers():
+	if !_requested_update_applicable_combinations_on_towers:
+		_requested_update_applicable_combinations_on_towers = true
 		call_deferred("_update_applicable_combinations_on_towers")
 
-
-# the main method that does it all
+# the main method that does it all. To be called only thru request method above.
 func _update_applicable_combinations_on_towers():
+	_requested_update_applicable_combinations_on_towers = false
 	
-	var towers_combination_candidates : Array = _get_towers_with_tower_combination_amount_met()
+	var towers_combination_candidates : Array = _get_towers_with_tower_combination_requirements_met()
 	current_combination_candidates = towers_combination_candidates
 	
 	if (towers_combination_candidates.size() > 0):
@@ -297,7 +366,7 @@ func _if_previous_candidates_are_equal_to_new_candidates(prev_candidates : Array
 
 #
 
-func _get_towers_with_tower_combination_amount_met(arg_combination_amount : int = last_calculated_combination_amount, give_only_one_type_of_tower : bool = true) -> Array:
+func _get_towers_with_tower_combination_requirements_met(arg_combination_amount : int = last_calculated_combination_amount, give_only_one_type_of_tower : bool = true) -> Array:
 	var all_towers : Array = tower_manager.get_all_towers_except_in_queue_free()
 	
 	#var all_tower_ids : Array = tower_manager.get_all_ids_of_towers()
@@ -307,7 +376,7 @@ func _get_towers_with_tower_combination_amount_met(arg_combination_amount : int 
 	
 	
 	for tower in all_towers:
-		if tower.originally_has_ingredient and !tower.is_queued_for_deletion() and !blacklisted_tower_ids_from_combining.has(tower.tower_id) and !all_combination_id_to_effect_map.keys().has(tower.tower_id):
+		if tower.originally_has_ingredient and !tower.is_queued_for_deletion() and !blacklisted_tower_ids_from_combining.has(tower.tower_id) and !all_combination_id_to_effect_map.keys().has(tower.tower_id) and _is_tower_combinable_based_on_is_tier_combinable_clauses(tower):
 			if (tower_id_map.has(tower.tower_id)):
 				tower_id_map[tower.tower_id] += 1
 				
@@ -373,7 +442,7 @@ func _get_towers_towards_progress(arg_tower_id_arr_from_cards) -> Array:
 func _get_towers_immediately_ready_to_combine(arg_tower_id_arr_from_cards : Array) -> Array:
 	var tower_ids_ready_to_combine : Array = []
 	
-	var towers_one_off_from_combining = _get_towers_with_tower_combination_amount_met(last_calculated_combination_amount - 1, false)
+	var towers_one_off_from_combining = _get_towers_with_tower_combination_requirements_met(last_calculated_combination_amount - 1, false)
 	
 	for tower_id_card in arg_tower_id_arr_from_cards:
 		#var is_one_off : bool = false
@@ -433,7 +502,7 @@ func on_combination_activated():
 		
 		
 		#
-		call_deferred("_update_applicable_combinations_on_towers")
+		_request_update_applicable_combinations_on_towers()
 
 
 
@@ -547,7 +616,7 @@ func _update_can_do_combinations():
 
 
 func _on_can_do_combination_changed(arg_val):
-	call_deferred("_update_applicable_combinations_on_towers")
+	_request_update_applicable_combinations_on_towers()
 
 
 # ------ Particle related --------
@@ -642,5 +711,186 @@ class CombiParticlesDetClass extends Reference:
 	var tower_tier : int
 	var curr_amount_of_repeats : int
 	
+
+
+###### -- IS TIER LEVEL COMBINABLE --
+
+func _construct_is_tier_level_combinable_clauses():
+	is_tier_1_combinable_clauses = ConditionalClauses.new()
+	is_tier_1_combinable_clauses.connect("clause_inserted", self, "_on_is_tier_1_combinable_clauses_updated", [], CONNECT_PERSIST)
+	is_tier_1_combinable_clauses.connect("clause_removed", self, "_on_is_tier_1_combinable_clauses_updated", [], CONNECT_PERSIST)
+	_on_is_tier_1_combinable_clauses_updated(null)  # null doesn't matter. arg is not gonna be used
+	
+	#
+	is_tier_2_combinable_clauses = ConditionalClauses.new()
+	is_tier_2_combinable_clauses.connect("clause_inserted", self, "_on_is_tier_2_combinable_clauses_updated", [], CONNECT_PERSIST)
+	is_tier_2_combinable_clauses.connect("clause_removed", self, "_on_is_tier_2_combinable_clauses_updated", [], CONNECT_PERSIST)
+	_on_is_tier_2_combinable_clauses_updated(null)  # null doesn't matter. arg is not gonna be used
+	
+	#
+	is_tier_3_combinable_clauses = ConditionalClauses.new()
+	is_tier_3_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+	
+	is_tier_3_combinable_clauses.connect("clause_inserted", self, "_on_is_tier_3_combinable_clauses_updated", [], CONNECT_PERSIST)
+	is_tier_3_combinable_clauses.connect("clause_removed", self, "_on_is_tier_3_combinable_clauses_updated", [], CONNECT_PERSIST)
+	_on_is_tier_3_combinable_clauses_updated(null)  # null doesn't matter. arg is not gonna be used
+	
+	#
+	is_tier_4_combinable_clauses = ConditionalClauses.new()
+	is_tier_4_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+	
+	is_tier_4_combinable_clauses.connect("clause_inserted", self, "_on_is_tier_4_combinable_clauses_updated", [], CONNECT_PERSIST)
+	is_tier_4_combinable_clauses.connect("clause_removed", self, "_on_is_tier_4_combinable_clauses_updated", [], CONNECT_PERSIST)
+	_on_is_tier_4_combinable_clauses_updated(null)  # null doesn't matter. arg is not gonna be used
+	
+	#
+	is_tier_5_combinable_clauses = ConditionalClauses.new()
+	is_tier_5_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+	
+	is_tier_5_combinable_clauses.connect("clause_inserted", self, "_on_is_tier_5_combinable_clauses_updated", [], CONNECT_PERSIST)
+	is_tier_5_combinable_clauses.connect("clause_removed", self, "_on_is_tier_5_combinable_clauses_updated", [], CONNECT_PERSIST)
+	_on_is_tier_5_combinable_clauses_updated(null)  # null doesn't matter. arg is not gonna be used
+	
+	#
+	is_tier_6_combinable_clauses = ConditionalClauses.new()
+	is_tier_6_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+	
+	is_tier_6_combinable_clauses.connect("clause_inserted", self, "_on_is_tier_6_combinable_clauses_updated", [], CONNECT_PERSIST)
+	is_tier_6_combinable_clauses.connect("clause_removed", self, "_on_is_tier_6_combinable_clauses_updated", [], CONNECT_PERSIST)
+	_on_is_tier_6_combinable_clauses_updated(null)  # null doesn't matter. arg is not gonna be used
+	
+	
+	###
+	connect("is_any_tier_combinable_changed", self, "_on_is_any_tier_combinable_changed", [], CONNECT_PERSIST)
+
+func _on_is_tier_1_combinable_clauses_updated(_arg_clause_id):
+	last_calculated_is_tier_1_combinable = is_tier_1_combinable_clauses.is_passed
+	emit_signal("is_tier_1_combinable_changed", is_tier_1_combinable_clauses)
+	emit_signal("is_any_tier_combinable_changed")
+
+func _on_is_tier_2_combinable_clauses_updated(_arg_clause_id):
+	last_calculated_is_tier_2_combinable = is_tier_2_combinable_clauses.is_passed
+	emit_signal("is_tier_2_combinable_changed", is_tier_2_combinable_clauses)
+	emit_signal("is_any_tier_combinable_changed")
+
+func _on_is_tier_3_combinable_clauses_updated(_arg_clause_id):
+	last_calculated_is_tier_3_combinable = is_tier_3_combinable_clauses.is_passed
+	emit_signal("is_tier_3_combinable_changed", is_tier_3_combinable_clauses)
+	emit_signal("is_any_tier_combinable_changed")
+
+func _on_is_tier_4_combinable_clauses_updated(_arg_clause_id):
+	last_calculated_is_tier_4_combinable = is_tier_4_combinable_clauses.is_passed
+	emit_signal("is_tier_4_combinable_changed", is_tier_4_combinable_clauses)
+	emit_signal("is_any_tier_combinable_changed")
+
+func _on_is_tier_5_combinable_clauses_updated(_arg_clause_id):
+	last_calculated_is_tier_5_combinable = is_tier_5_combinable_clauses.is_passed
+	emit_signal("is_tier_5_combinable_changed", is_tier_5_combinable_clauses)
+	emit_signal("is_any_tier_combinable_changed")
+
+func _on_is_tier_6_combinable_clauses_updated(_arg_clause_id):
+	last_calculated_is_tier_6_combinable = is_tier_6_combinable_clauses.is_passed
+	emit_signal("is_tier_6_combinable_changed", is_tier_6_combinable_clauses)
+	emit_signal("is_any_tier_combinable_changed")
+
+
+func _on_is_any_tier_combinable_changed():
+	_request_update_applicable_combinations_on_towers()
+
+func _is_tower_combinable_based_on_is_tier_combinable_clauses(arg_tower):
+	var tower_tier = arg_tower.tower_type_info.tower_tier
+	
+	if tower_tier == 1:
+		return last_calculated_is_tier_1_combinable
+	elif tower_tier == 2:
+		return last_calculated_is_tier_2_combinable
+	elif tower_tier == 3:
+		return last_calculated_is_tier_3_combinable
+	elif tower_tier == 4:
+		return last_calculated_is_tier_4_combinable
+	elif tower_tier == 5:
+		return last_calculated_is_tier_5_combinable
+	elif tower_tier == 6:
+		return last_calculated_is_tier_6_combinable
+	
+
+
+####### RELIC OFFER RELATED
+
+
+func _on_before_game_starts():
+	_create_relic_store_offer_options()
+	
+
+func _create_relic_store_offer_options():
+	var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
+	var plain_fragment__combinations = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combinations")
+	
+	var towers_dec_for_combi_desc = [
+		["Decrease the number of |0| needed to trigger |1| by %s." % str(tower_needed_for_combination_reduc_per_relic_offer_buy), [plain_fragment__towers, plain_fragment__combinations]],
+		"Can only be bought twice."
+	]
+	
+	var tower_dec_for_combi_shop_offer := RelicStoreOfferOption.new(self, "_on_tower_reduc_for_combi_shop_offer_selected", Combination_DecreaseTowersNeeded_Normal_Pic, Combination_DecreaseTowersNeeded_Highlighted_Pic)
+	tower_dec_for_combi_shop_offer.descriptions = towers_dec_for_combi_desc
+	tower_dec_for_combi_shop_offer.header_left_text = "Tower Needed Reduc"
+	
+	tower_needed_reduc_shop_offer_id = whole_screen_relic_general_store_panel.add_relic_store_offer_option(tower_dec_for_combi_shop_offer)
+	
+	
+	#
+	var plain_fragment__tier_3 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_03, "3")
+	var plain_fragment__tier_4 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_04, "4")
+	var plain_fragment__tier_5 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_05, "5")
+	var plain_fragment__tier_6 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_06, "6")
+	var plain_fragment__combination = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combination")
+	
+	
+	var tier_affected_inc_for_combi_desc = [
+		["Towers that are tiers |0|, |1|, |2|, and |3| are now eligible for |4|.", [plain_fragment__tier_3, plain_fragment__tier_4, plain_fragment__tier_5, plain_fragment__tier_6, plain_fragment__combination]]
+	]
+	
+	var tier_include_for_combi_shop_offer := RelicStoreOfferOption.new(self, "_on_tier_include_inc_for_combi_shop_offer_selected", Combination_IncreaseTiersAffected_Normal_Pic, Combination_IncreaseTiersAffected_Highlighted_Pic)
+	tier_include_for_combi_shop_offer.descriptions = tier_affected_inc_for_combi_desc
+	tier_include_for_combi_shop_offer.header_left_text = "Inclusive Tier Inc"
+	
+	tier_include_for_combi_shop_offer_id = whole_screen_relic_general_store_panel.add_relic_store_offer_option(tier_include_for_combi_shop_offer)
+	
+
+
+func _on_tower_reduc_for_combi_shop_offer_selected():
+	if relic_manager.current_relic_count >= 1:
+		_current_tower_needed_reduc_from_offer += 1
+		
+		if _current_tower_needed_reduc_from_offer >= max_tower_needed_reduc_from_offer:
+			whole_screen_relic_general_store_panel.remove_relic_store_offer_option(tower_needed_reduc_shop_offer_id)
+		
+		set_combination_amount_modi(AmountForCombinationModifiers.RELIC_DECREASE_AMOUNT_NEEDED_FOR_COMBI, -_current_tower_needed_reduc_from_offer)
+		
+		relic_manager.decrease_relic_count_by(1, relic_manager.DecreaseRelicSource.COMBI_TOWER_REDUC_FOR_COMBI)
+		
+		return true
+	
+	return false
+
+
+#
+
+func _on_tier_include_inc_for_combi_shop_offer_selected():
+	if relic_manager.current_relic_count >= 1:
+		is_tier_3_combinable_clauses.remove_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+		is_tier_4_combinable_clauses.remove_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+		is_tier_5_combinable_clauses.remove_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+		is_tier_6_combinable_clauses.remove_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+		
+		whole_screen_relic_general_store_panel.remove_relic_store_offer_option(tier_include_for_combi_shop_offer_id)
+		
+		relic_manager.decrease_relic_count_by(1, relic_manager.DecreaseRelicSource.COMBI_TIER_INCLUDE_INC)
+		
+		return true
+	
+	return false
+	
+
 
 

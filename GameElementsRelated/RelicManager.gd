@@ -1,5 +1,6 @@
 extends Node
 
+
 enum IncreaseRelicSource {
 	
 	ROUND,
@@ -13,6 +14,9 @@ enum DecreaseRelicSource {
 	TOWER_CAP_INCREASE,
 	ING_CAP_INCREASE,
 	LEVEL_UP,
+	
+	COMBI_TOWER_REDUC_FOR_COMBI,
+	COMBI_TIER_INCLUDE_INC,
 	
 }
 
@@ -30,6 +34,9 @@ signal current_relic_count_changed(new_amount)
 var current_relic_count : int setget set_relic_count
 var stage_round_manager setget set_stage_round_manager
 
+var whole_screen_relic_general_store_panel
+var whole_screen_gui
+
 #
 
 func set_stage_round_manager(arg_manager):
@@ -41,7 +48,6 @@ func set_stage_round_manager(arg_manager):
 		stage_round_manager.connect("stage_rounds_set", self, "_on_stagerounds_set", [], CONNECT_ONESHOT)
 	else:
 		_on_stagerounds_set(stage_round_manager.stagerounds)
-
 
 #
 
@@ -68,4 +74,15 @@ func _on_stagerounds_set(arg_stagerounds):
 	for stage_round in arg_stagerounds.stage_rounds:
 		if stage_round.give_relic_count_in_round > 0:
 			relic_give_at_stageround[stage_round.id] = stage_round.give_relic_count_in_round
+
+
+###################
+
+func show_whole_screen_relic_general_store_panel():
+	whole_screen_gui.show_control(whole_screen_relic_general_store_panel)
+	
+
+func hide_whole_screen_relic_general_store_panel():
+	whole_screen_gui.hide_control(whole_screen_relic_general_store_panel)
+	
 

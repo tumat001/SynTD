@@ -9,7 +9,7 @@ var header_left_text : String
 var texture_to_use : Texture
 
 
-func init(arg_stageround_id_when_bought : String,
+func _init(arg_stageround_id_when_bought : String,
 		arg_descriptions : Array,
 		arg_texture_to_use : Texture):
 	

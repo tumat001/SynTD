@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://GameHUDRelated/TowerIconCollectionPanel/TowerIconCollectionPanel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=2]
 [ext_resource path="res://GameHUDRelated/CombinationRelatedPanels/CombinationWholeScreenPanel/CombinationWholeScreenPanel.gd" type="Script" id=3]
 [ext_resource path="res://GameHUDRelated/CombinationRelatedPanels/CombinationWholeScreenPanel/CombinationTierSelectionPanel/TierHSelectionPanel.tscn" type="PackedScene" id=4]
 [ext_resource path="res://GameHUDRelated/WholeScreenTowerShowPanel/Assets/PanelContentBackground.png" type="Texture" id=5]
+[ext_resource path="res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipBody.tscn" type="PackedScene" id=6]
 
 [sub_resource type="DynamicFont" id=1]
 size = 26
@@ -35,13 +36,13 @@ __meta__ = {
 
 [node name="Background" type="TextureRect" parent="."]
 margin_right = 626.0
-margin_bottom = 233.0
+margin_bottom = 266.0
 texture = ExtResource( 5 )
 stretch_mode = 2
 
 [node name="ContentContainer" type="MarginContainer" parent="."]
 margin_right = 626.0
-margin_bottom = 233.0
+margin_bottom = 266.0
 custom_constants/margin_right = 5
 custom_constants/margin_top = 5
 custom_constants/margin_left = 5
@@ -51,7 +52,7 @@ custom_constants/margin_bottom = 5
 margin_left = 5.0
 margin_top = 5.0
 margin_right = 621.0
-margin_bottom = 228.0
+margin_bottom = 261.0
 mouse_filter = 2
 custom_constants/separation = 6
 
@@ -82,10 +83,37 @@ text = "Getting %s of the same tower allows you to
 sacrifice them and gain their ingredient effect."
 align = 1
 
-[node name="TierApplyDescLabel" type="Label" parent="ContentContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="ContentContainer/VBoxContainer"]
+margin_left = 132.0
 margin_top = 85.0
+margin_right = 484.0
+margin_bottom = 101.0
+size_flags_horizontal = 6
+custom_constants/separation = 0
+
+[node name="CombinableTierLabelTitle" type="Label" parent="ContentContainer/VBoxContainer/VBoxContainer"]
+margin_right = 352.0
+margin_bottom = 16.0
+size_flags_horizontal = 6
+size_flags_vertical = 1
+custom_fonts/font = SubResource( 3 )
+text = "Only towers with these tiers are combinable:"
+align = 1
+
+[node name="CombinableTierTooltipBody" parent="ContentContainer/VBoxContainer/VBoxContainer" instance=ExtResource( 6 )]
+margin_left = 31.0
+margin_top = 16.0
+margin_right = 321.0
+margin_bottom = 16.0
+rect_min_size = Vector2( 290, 0 )
+size_flags_horizontal = 6
+default_font_color = Color( 1, 1, 1, 1 )
+default_font_size = 15
+
+[node name="TierApplyDescLabel" type="Label" parent="ContentContainer/VBoxContainer"]
+margin_top = 107.0
 margin_right = 616.0
-margin_bottom = 120.0
+margin_bottom = 142.0
 size_flags_horizontal = 6
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 3 )
@@ -93,11 +121,18 @@ text = "Combinations apply the ingredient effect of the combined towers
  to all towers of their tier (%s) and below, without taking ingredient slots."
 align = 1
 
+[node name="Spacer2" type="MarginContainer" parent="ContentContainer/VBoxContainer"]
+margin_top = 148.0
+margin_right = 616.0
+margin_bottom = 153.0
+mouse_filter = 2
+custom_constants/margin_top = 5
+
 [node name="TierSelectionPanel" parent="ContentContainer/VBoxContainer" instance=ExtResource( 4 )]
 margin_left = 288.0
-margin_top = 126.0
+margin_top = 159.0
 margin_right = 328.0
-margin_bottom = 149.0
+margin_bottom = 182.0
 mouse_filter = 0
 size_flags_horizontal = 6
 custom_constants/margin_right = 20
@@ -107,34 +142,34 @@ custom_constants/margin_bottom = 8
 
 [node name="SelectedTierDescLabel" type="Label" parent="ContentContainer/VBoxContainer"]
 margin_left = 140.0
-margin_top = 155.0
+margin_top = 188.0
 margin_right = 476.0
-margin_bottom = 171.0
+margin_bottom = 204.0
 size_flags_horizontal = 6
 custom_fonts/font = SubResource( 4 )
 text = "Tier %s towers benefit from these effects:"
 
 [node name="TowerIconCollectionPanelForApplied" parent="ContentContainer/VBoxContainer" instance=ExtResource( 1 )]
 margin_left = 308.0
-margin_top = 177.0
+margin_top = 210.0
 margin_right = 308.0
-margin_bottom = 195.0
+margin_bottom = 228.0
 mouse_filter = 2
 size_flags_horizontal = 6
 custom_constants/margin_bottom = 18
 
 [node name="SelectedTierDescNotApplyLevel" type="Label" parent="ContentContainer/VBoxContainer"]
 margin_left = 112.0
-margin_top = 201.0
+margin_top = 234.0
 margin_right = 504.0
-margin_bottom = 217.0
+margin_bottom = 250.0
 size_flags_horizontal = 6
 custom_fonts/font = SubResource( 4 )
 text = "Tier %s towers DO NOT benefit from these effects:"
 
 [node name="TowerIconCollectionPanelForNotApplied" parent="ContentContainer/VBoxContainer" instance=ExtResource( 1 )]
 margin_left = 308.0
-margin_top = 223.0
+margin_top = 256.0
 margin_right = 308.0
-margin_bottom = 223.0
+margin_bottom = 256.0
 size_flags_horizontal = 6

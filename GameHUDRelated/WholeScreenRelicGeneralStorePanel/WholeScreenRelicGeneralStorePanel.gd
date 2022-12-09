@@ -33,7 +33,7 @@ func set_managers_using_game_elements(arg_game_elements):
 #
 
 func _ready():
-	relic_store_panel.connect("after_call_obj_source_on_click_on_shop_button", self, "_on_after_call_obj_source_on_click_on_shop_button", [], CONNECT_PERSIST)
+	relic_store_panel.connect("after_call_obj_source_on_click_on_button", self, "_on_after_call_obj_source_on_click_on_shop_button", [], CONNECT_PERSIST)
 	close_button.connect("on_button_released_with_button_left", self, "_on_button_released_with_button_left", [], CONNECT_PERSIST)
 
 #
@@ -44,6 +44,13 @@ func add_relic_store_offer_option(arg_relic_store_offer_option : RelicStoreOffer
 func remove_relic_store_offer_option(arg_offer_id):
 	return relic_store_panel.remove_relic_store_offer_option(arg_offer_id)
 
+
+func trigger_relic_store_offer_option(arg_offer_id):
+	relic_store_panel.trigger_relic_store_offer_option(arg_offer_id)
+
+func is_shop_offer_id_exists(arg_offer_id):
+	return relic_store_panel.is_shop_offer_id_exists(arg_offer_id)
+
 #
 
 func _on_after_call_obj_source_on_click_on_shop_button(arg_relic_store_offer_option : RelicStoreOfferOption, arg_success : bool, arg_button_id):
@@ -53,10 +60,6 @@ func _on_after_call_obj_source_on_click_on_shop_button(arg_relic_store_offer_opt
 
 
 func _create_store_buy_history_from_offer_option(arg_relic_store_offer_option : RelicStoreOfferOption):
-	var buy_history := RelicStoreBuyHistory.new()
-	buy_history.texture_to_use = arg_relic_store_offer_option.button_texture_normal
-	buy_history.header_left_text = arg_relic_store_offer_option.header_left_text
-	
 	var descs = arg_relic_store_offer_option.get_descriptions_to_use__duplicate()
 	var stage_and_round : Array = Stageround.convert_stageround_id_to_stage_and_round_num(stage_round_manager.current_stageround.id)
 	var extra_desc = EXTRA_DESC_TEMPLTE % stage_and_round
@@ -64,7 +67,8 @@ func _create_store_buy_history_from_offer_option(arg_relic_store_offer_option : 
 	descs.append("")
 	descs.append(extra_desc)
 	
-	buy_history.descriptions = descs
+	var buy_history := RelicStoreBuyHistory.new(stage_round_manager.current_stageround.id, descs, arg_relic_store_offer_option.button_texture_normal)
+	buy_history.header_left_text = arg_relic_store_offer_option.header_left_text
 	
 	return buy_history
 
@@ -72,6 +76,5 @@ func _create_store_buy_history_from_offer_option(arg_relic_store_offer_option : 
 
 func _on_button_released_with_button_left():
 	whole_screen_gui.hide_control(self)
-
 
 

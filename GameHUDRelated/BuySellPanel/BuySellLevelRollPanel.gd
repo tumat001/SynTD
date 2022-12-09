@@ -45,7 +45,8 @@ onready var level_up_button = $HBoxContainer/LevelRerollContainer/HBoxContainer/
 onready var reroll_button = $HBoxContainer/LevelRerollContainer/RerollPanel/RerollButton
 onready var level_up_panel = $HBoxContainer/LevelRerollContainer/HBoxContainer/LevelUpPanel
 onready var reroll_panel = $HBoxContainer/LevelRerollContainer/RerollPanel
-onready var relic_buy_etc_panel = $RelicBuyEtcPanel
+#onready var relic_buy_etc_panel = $RelicBuyEtcPanel
+onready var relic_general_store_show_button = $RelicGeneralStoreShowButton
 
 var gold_manager : GoldManager
 var relic_manager : RelicManager setget set_relic_manager
@@ -127,12 +128,13 @@ func set_shop_manager(arg_manager):
 func set_tower_manager(arg_manager):
 	tower_manager = arg_manager
 	
-	relic_buy_etc_panel.tower_manager = arg_manager
+	#relic_buy_etc_panel.tower_manager = arg_manager
 
 func set_relic_manager(arg_manager):
 	relic_manager = arg_manager
 	
-	relic_buy_etc_panel.relic_manager = arg_manager
+	relic_general_store_show_button.set_relic_manager(relic_manager)
+	#relic_buy_etc_panel.relic_manager = arg_manager
 
 func set_tower_inventory_bench(arg_bench):
 	tower_inventory_bench = arg_bench
@@ -490,4 +492,10 @@ func _on_buy_slot__card_pressed_down(arg_card, arg_buy_slot):
 
 #func _on_buy_slot__card_released_up_and_not_queue_freed(arg_card, arg_buy_slot):
 #	pass
+
+
+
+func _on_RelicGeneralStoreShowButton_released_mouse_event(event):
+	relic_manager.show_whole_screen_relic_general_store_panel()
+	
 

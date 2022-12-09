@@ -16,6 +16,9 @@ export(bool)var override_color_of_descs : bool = true
 export(int) var default_font_size : int = 10
 export(bool) var uses_bbcode : bool = true
 
+var use_custom_size_flags_for_descs : bool = false
+var custom_horizontal_size_flags_for_descs : int = SIZE_FILL
+
 #
 
 onready var row_container = $RowContainer
@@ -74,6 +77,10 @@ func update_display():
 		
 		if desc_instance.get("font_size"):
 			desc_instance.font_size = default_font_size
+		
+		if use_custom_size_flags_for_descs:
+			desc_instance.size_flags_horizontal = custom_horizontal_size_flags_for_descs
+			
 		
 		desc_instance.uses_bbcode = uses_bbcode
 		

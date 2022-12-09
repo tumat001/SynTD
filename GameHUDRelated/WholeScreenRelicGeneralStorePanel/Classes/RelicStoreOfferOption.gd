@@ -8,6 +8,8 @@ var obj_method_for_duplicate_of_descriptions : String
 
 var header_left_text : String
 
+
+#####
 var button_texture_normal : Texture
 var button_texture_highlighted : Texture
 
@@ -19,7 +21,7 @@ var obj_method_for_on_click : String  # expects return of bool (true if success,
 var relic_count_requirement : int = 1
 
 
-func init(arg_obj_source_for_on_click : Object,
+func _init(arg_obj_source_for_on_click : Object,
 		arg_obj_method_for_on_click : String,
 		arg_button_texture_normal : Texture,
 		arg_button_texture_highlighted : Texture):

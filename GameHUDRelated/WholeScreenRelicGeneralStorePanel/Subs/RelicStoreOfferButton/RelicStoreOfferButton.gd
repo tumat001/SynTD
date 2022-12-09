@@ -34,6 +34,8 @@ func _ready():
 	_update_display()
 	connect("about_tooltip_construction_requested", self, "_on_about_tooltip_construction_requested", [], CONNECT_PERSIST)
 	connect("released_mouse_event", self, "_on_released_mouse_event", [], CONNECT_PERSIST)
+	
+	
 
 func _update_display():
 	if relic_store_offer_option != null:
@@ -61,18 +63,26 @@ func _construct_about_tooltip() -> BaseTooltip:
 func _on_released_mouse_event(arg_event : InputEventMouseButton):
 	if _relic_count_met:
 		if arg_event.button_index == BUTTON_LEFT:
-			if relic_store_offer_option.obj_source_for_on_click != null:
-				emit_signal("before_call_obj_source_on_click", relic_store_offer_option)
-				var success : bool = relic_store_offer_option.obj_source_for_on_click.call(relic_store_offer_option.obj_method_for_on_click)
-				emit_signal("after_call_obj_source_on_click", relic_store_offer_option, success)
+			trigger_button()
+
+func trigger_button():
+	if relic_store_offer_option.obj_source_for_on_click != null:
+		emit_signal("before_call_obj_source_on_click", relic_store_offer_option)
+		var success : bool = relic_store_offer_option.obj_source_for_on_click.call(relic_store_offer_option.obj_method_for_on_click)
+		emit_signal("after_call_obj_source_on_click", relic_store_offer_option, success)
+
+
 
 #
 
 func _on_current_relic_count_changed(arg_curr_relic_count):
-	_relic_count_met = relic_store_offer_option.relic_count_requirement >= arg_curr_relic_count
+	_relic_count_met = relic_store_offer_option.relic_count_requirement <= arg_curr_relic_count
+	disabled = !_relic_count_met
 	
 	if _relic_count_met:
 		modulate = Color(1, 1, 1)
+		
 	else:
 		modulate = modulate_on_relic_req_not_met
+		
 

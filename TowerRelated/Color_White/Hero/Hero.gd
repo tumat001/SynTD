@@ -64,6 +64,10 @@ const LightExplosion_AttackModuleIcon = preload("res://TowerRelated/Color_White/
 const Hero_PopupGUI_LevelUp_Scene = preload("res://TowerRelated/Color_White/Hero/PopupGUI_LevelUp/Hero_PopupGUI_LevelUp.tscn")
 const Hero_PopupGUI_LevelUp = preload("res://TowerRelated/Color_White/Hero/PopupGUI_LevelUp/Hero_PopupGUI_LevelUp.gd")
 
+const RelicStoreOfferOption = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Classes/RelicStoreOfferOption.gd")
+const Hero_IncreaseLevels_Normal_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/Hero_IncreaseLevels_Normal.png")
+const Hero_IncreaseLevels_Highlighted_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/Hero_IncreaseLevels_Highlighted.png")
+
 
 signal current_xp_changed(gained_amount, curr_xp)
 signal xp_needed_for_next_level_changed(new_req)
@@ -140,7 +144,7 @@ const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 8, 16]
 
 var white_dom_active : bool
 
-var current_hero_xp : float = 0        #current_xp   #current_exp   #left these text for ctrl F purposes
+var current_hero_xp : float = 0      #current_xp   #current_exp   #left these text for ctrl F purposes
 var current_hero_natural_level : int = 0
 var current_hero_effective_level : int = 0
 var current_spendables : int = 0
@@ -201,6 +205,10 @@ var notify_xp_cap_of_level_reached : bool = false
 var _can_spend_relic_for_level_up__for_popup_gui : bool
 var _can_spend_gold_for_level_up__for_popup_gui : bool
 var popup_gui : Hero_PopupGUI_LevelUp
+
+## relic offer related
+
+var hero_level_up_with_relic_shop_offer_id : int = -1 #initually unavailable
 
 #
 
@@ -913,13 +921,6 @@ func can_spend_gold_and_xp_for_level_up() -> bool:
 	emit_signal("can_spend_gold_and_xp_for_level_up_updated", can)
 	return can
 
-func _attempt_spend_one_relic_for_level_up():
-	if can_spend_relics_for_level_up():
-		game_elements.relic_manager.decrease_relic_count_by(1, game_elements.RelicManager.DecreaseRelicSource.TOWER_USE)
-		current_hero_effective_level += 3
-		
-		emit_signal("hero_level_changed", current_hero_effective_level)
-		_increase_spendables(3)
 
 func can_spend_relics_for_level_up() -> bool:
 	var can = current_hero_natural_level >= max_hero_level and 1 <= game_elements.relic_manager.current_relic_count and current_hero_effective_level != max_hero_boosted_level
@@ -1402,6 +1403,12 @@ func get_relic_level_up_desc() -> Array:
 		"Hero needs to be level %s or above to use this option." % str(max_hero_level)
 	]
 
+func get_relic_level_up_desc__for_relic_shop_option() -> Array:
+	return [
+		"Spend 1 relic to level hero up trice.",
+	]
+
+
 
 func get_self_description_in_info_panel() -> Array:
 	var last_part : String = "you"
@@ -1466,7 +1473,7 @@ func _on_transfer_to_placable_h(arg_tower, arg_new_placable):
 func _can_spend_relics_for_level_up_updated(arg_val):
 	_can_spend_relic_for_level_up__for_popup_gui = arg_val
 	_update_level_up_relic_popup_gui_visiblity()
-
+	_update_hero_relic_store_options(arg_val)
 
 func _update_level_up_relic_popup_gui_visiblity():
 	if !is_round_started and _can_spend_relic_for_level_up__for_popup_gui and is_current_placable_in_map():
@@ -1507,3 +1514,42 @@ func _set_level_up_gold_popup_gui(arg_val):
 	if is_instance_valid(popup_gui):
 		popup_gui.set_spend_gold_for_level_up_visible(arg_val)
 
+
+### RELIC STORE OFFER
+
+
+func _create_relic_store_offer_options():
+	var hero_level_up_with_relic_shop_offer := RelicStoreOfferOption.new(self, "_on_hero_level_up_with_relic_shop_offer_selected", Hero_IncreaseLevels_Normal_Pic, Hero_IncreaseLevels_Highlighted_Pic)
+	hero_level_up_with_relic_shop_offer.descriptions = get_relic_level_up_desc__for_relic_shop_option()
+	hero_level_up_with_relic_shop_offer.header_left_text = "Hero Level Up"
+	
+	hero_level_up_with_relic_shop_offer_id = game_elements.whole_screen_relic_general_store_panel.add_relic_store_offer_option(hero_level_up_with_relic_shop_offer)
+
+func _on_hero_level_up_with_relic_shop_offer_selected():
+	return _attempt_spend_one_relic_for_level_up__from_relic_shop()
+
+func _attempt_spend_one_relic_for_level_up__from_relic_shop() -> bool:
+	if can_spend_relics_for_level_up():
+		game_elements.relic_manager.decrease_relic_count_by(1, game_elements.RelicManager.DecreaseRelicSource.TOWER_USE)
+		current_hero_effective_level += 3
+		
+		emit_signal("hero_level_changed", current_hero_effective_level)
+		_increase_spendables(3)
+		
+		return true
+	
+	return false
+
+func _attempt_spend_one_relic_for_level_up__from_hero_gui():
+	game_elements.whole_screen_relic_general_store_panel.trigger_relic_store_offer_option(hero_level_up_with_relic_shop_offer_id)
+
+
+func _update_hero_relic_store_options(arg_can_show):
+	if arg_can_show:
+		if !game_elements.whole_screen_relic_general_store_panel.is_shop_offer_id_exists(hero_level_up_with_relic_shop_offer_id):
+			_create_relic_store_offer_options()
+		
+	else:
+		if game_elements.whole_screen_relic_general_store_panel.is_shop_offer_id_exists(hero_level_up_with_relic_shop_offer_id):
+			game_elements.whole_screen_relic_general_store_panel.remove_relic_store_offer_option(hero_level_up_with_relic_shop_offer_id)
+			hero_level_up_with_relic_shop_offer_id = -1
