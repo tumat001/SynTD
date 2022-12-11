@@ -42,6 +42,13 @@ signal path_to_spawn_pattern_changed(arg_new_val)
 
 signal enemy_effect_apply_on_spawn_cleared()
 
+# special query requests
+# DO NOT CONNECT TO THESE manually. Use special methods
+signal requested__get_next_targetable_enemy(arg_enemy)
+signal requested__get_next_targetable_enemy__cancelled()
+
+# end of special query requests
+
 
 enum PathToSpawnPattern {
 	NO_CHANGE = 0,
@@ -116,6 +123,12 @@ enum GenerateEnemySVClauseIds {
 }
 var generate_enemy_sv_on_round_end_clauses : ConditionalClauses
 var last_calculate_generate_enemy_sv_on_round_end : bool
+
+
+# special query request
+
+var _requested__get_next_targetable_enemy : bool = false
+var _all_enemies_in_request__get_next_targetable_enemy : Array
 
 #
 
@@ -265,6 +278,8 @@ func end_run():
 	current_enemy_spawned_from_ins_count = 0
 	current_spawn_timepos_in_round = 0
 	highest_enemy_spawn_timepos_in_round = 0
+	
+	emit_signal("requested__get_next_targetable_enemy__cancelled")
 
 func reset_path_index():
 	_spawn_path_index_to_take = 0
@@ -457,7 +472,69 @@ func get_percent_of_enemies_spawned_to_total_from_ins():
 	else:
 		return 0.0
 
-# Faction passive related
+
+# special enemy queries
+
+func request__get_next_targetable_enemy(arg_obj_source : Object, arg_obj_method_for_signal : String, arg_obj_method_for_signal_cancel : String):
+	if !is_connected("requested__get_next_targetable_enemy", arg_obj_source, arg_obj_method_for_signal):
+		connect("requested__get_next_targetable_enemy", arg_obj_source, arg_obj_method_for_signal)
+	
+	if !is_connected("requested__get_next_targetable_enemy__cancelled", arg_obj_source, arg_obj_method_for_signal_cancel):
+		connect("requested__get_next_targetable_enemy__cancelled", arg_obj_source, arg_obj_method_for_signal_cancel)
+	
+	_monitor_all_valid_enemies_for_targetability_change()
+
+func disconnect_request_get_next_targetable_enemy(arg_obj_source : Object, arg_obj_method_for_signal : String, arg_obj_method_for_signal_cancel : String):
+	if is_connected("requested__get_next_targetable_enemy", arg_obj_source, arg_obj_method_for_signal):
+		disconnect("requested__get_next_targetable_enemy", arg_obj_source, arg_obj_method_for_signal)
+	
+	if is_connected("requested__get_next_targetable_enemy__cancelled", arg_obj_source, arg_obj_method_for_signal_cancel):
+		disconnect("requested__get_next_targetable_enemy__cancelled", arg_obj_source, arg_obj_method_for_signal_cancel)
+
+
+
+func _monitor_all_valid_enemies_for_targetability_change():
+	if !_requested__get_next_targetable_enemy:
+		_requested__get_next_targetable_enemy = true
+		
+		for enemy in get_all_enemies():
+			_connect_enemy_for_targetability_change__for_request(enemy)
+			_all_enemies_in_request__get_next_targetable_enemy.append(enemy)
+		
+		connect("on_enemy_spawned_and_finished_ready_prep", self, "_on_enemy_finished_ready_prep__for_request__get_next_targetable_enemy", [], CONNECT_PERSIST)
+
+func _connect_enemy_for_targetability_change__for_request(arg_enemy):
+	if !arg_enemy.is_connected("last_calculated_is_untargetable_changed", self, "_on_enemy_untargetability_changed__for_request"):
+		arg_enemy.connect("last_calculated_is_untargetable_changed", self, "_on_enemy_untargetability_changed__for_request", [arg_enemy])
+
+func _on_enemy_untargetability_changed__for_request(arg_is_untargetable, arg_enemy):
+	if !arg_is_untargetable:
+		_requested__get_next_targetable_enemy = false
+		disconnect("on_enemy_spawned_and_finished_ready_prep", self, "_on_enemy_finished_ready_prep__for_request__get_next_targetable_enemy")
+		
+		for enemy in _all_enemies_in_request__get_next_targetable_enemy:
+			if is_instance_valid(enemy):
+				_disconnect_enemy_for_targetability_change__for_request(enemy)
+		_all_enemies_in_request__get_next_targetable_enemy.clear()
+		
+		#
+		emit_signal("requested__get_next_targetable_enemy", arg_enemy)
+
+
+func _disconnect_enemy_for_targetability_change__for_request(arg_enemy):
+	if arg_enemy.is_connected("last_calculated_is_untargetable_changed", self, "_on_enemy_untargetability_changed__for_request"):
+		arg_enemy.disconnect("last_calculated_is_untargetable_changed", self, "_on_enemy_untargetability_changed__for_request")
+
+
+func _on_enemy_finished_ready_prep__for_request__get_next_targetable_enemy(arg_enemy):
+	if !arg_enemy.last_calculated_is_untargetable:
+		_on_enemy_untargetability_changed__for_request(arg_enemy.last_calculated_is_untargetable, arg_enemy)
+	else:
+		_connect_enemy_for_targetability_change__for_request(arg_enemy)
+		_all_enemies_in_request__get_next_targetable_enemy.append(arg_enemy)
+
+
+############# Faction passive related
 
 func apply_faction_passive(passive):
 	if passive != null:
@@ -596,7 +673,7 @@ func randomize_current_strength_val__following_conditions():
 func _generate_sv_and_move_average(var curr_count = stage_round_manager.current_stageround_index, var max_count = stage_round_manager.stageround_total_count):
 	var val = _enemy_sv_generator.generate_strength_value(_current_sv_average, curr_count, max_count)
 	
-	_add_sv_to_stageround_to_sv_history(val, curr_count) #test todo
+	_add_sv_to_stageround_to_sv_history(val, curr_count)
 	#_add_sv_to_stageround_to_sv_history(val)
 	
 	return val

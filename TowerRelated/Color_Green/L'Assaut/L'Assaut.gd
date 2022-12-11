@@ -189,6 +189,10 @@ func _ready():
 	var dir_name_to_texture_get_method_map : Dictionary = AnimFaceDirComponent.AuxSpritesParameters.construct_empty_texture_dir_name_to_get_methods_map__for_W_and_E()
 	dir_name_to_texture_get_method_map[AnimFaceDirComponent.dir_east_name] = "_get_petal_texture__at_E_and_W_dir"
 	dir_name_to_texture_get_method_map[AnimFaceDirComponent.dir_west_name] = "_get_petal_texture__at_E_and_W_dir"
+	
+	dir_name_to_texture_get_method_map[AnimFaceDirComponent.get_name_of_dir_with_no_health_modifier(AnimFaceDirComponent.dir_east_name)] = "_get_petal_texture__at_E_and_W_dir"
+	dir_name_to_texture_get_method_map[AnimFaceDirComponent.get_name_of_dir_with_no_health_modifier(AnimFaceDirComponent.dir_west_name)] = "_get_petal_texture__at_E_and_W_dir"
+	
 	aux_sprite_param__for_petal.configure_param_with__E_pos__E_texture_get_method__E_flip__for_W_and_E(petal_head_sprite.position, dir_name_to_texture_get_method_map, self, false)
 	aux_sprite_param__for_petal.sprite = petal_head_sprite
 	anim_face_dir_component.set__and_update_auxilliary_sprites_on_anim_change(aux_sprite_param__for_petal)

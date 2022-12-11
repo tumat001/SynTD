@@ -1,16 +1,22 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
 [ext_resource path="res://TowerRelated/Color_Violet/Variance/Variance_Frame_Violet.png" type="Texture" id=2]
 [ext_resource path="res://TowerRelated/Color_Violet/Variance/Variance_BaseSprite.png" type="Texture" id=3]
 [ext_resource path="res://TowerRelated/Color_Violet/Variance/Variance.gd" type="Script" id=4]
 [ext_resource path="res://TowerRelated/Color_Violet/Variance/Variance_Chain.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_Violet/Variance/Variance_BaseSprite_NoHealth.png" type="Texture" id=6]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ ExtResource( 3 ) ],
 "loop": true,
-"name": "default",
+"name": "Omni",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "Omni_NoHealth",
 "speed": 5.0
 } ]
 
@@ -25,6 +31,7 @@ position = Vector2( 0, -9 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
+animation = "Omni_NoHealth"
 
 [node name="FrameSprites" type="Sprite" parent="TowerBase/KnockUpLayer" index="1"]
 texture = ExtResource( 2 )

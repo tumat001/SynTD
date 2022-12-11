@@ -1,20 +1,32 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
 [ext_resource path="res://TowerRelated/Color_Red/Striker/Striker_E.png" type="Texture" id=2]
 [ext_resource path="res://TowerRelated/Color_Red/Striker/Striker.gd" type="Script" id=3]
 [ext_resource path="res://TowerRelated/Color_Red/Striker/Striker_W.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_Red/Striker/Striker_E_NoHealth.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_Red/Striker/Striker_W_NoHealth.png" type="Texture" id=6]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "E",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "E_NoHealth",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 4 ) ],
 "loop": true,
 "name": "W",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 2 ) ],
+"frames": [ ExtResource( 6 ) ],
 "loop": true,
-"name": "E",
+"name": "W_NoHealth",
 "speed": 5.0
 } ]
 
@@ -29,7 +41,7 @@ position = Vector2( 0, -4 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
-animation = "W"
+animation = "W_NoHealth"
 
 [node name="CollisionShape" parent="." index="1"]
 position = Vector2( -0.5, -3 )

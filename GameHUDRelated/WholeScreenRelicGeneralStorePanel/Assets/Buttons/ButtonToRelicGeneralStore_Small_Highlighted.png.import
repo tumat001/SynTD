@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/RelicBuyEtcButton_Violet_Highlighted.png-38dbaa8648f6b0acce1710027ad7a4a6.stex"
+path="res://.import/ButtonToRelicGeneralStore_Small_Highlighted.png-28790118b0e763e2d2c4bb89f67d545b.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/RelicBuyEtcPanel/RelicBuyEtcButton_Violet_Highlighted.png"
-dest_files=[ "res://.import/RelicBuyEtcButton_Violet_Highlighted.png-38dbaa8648f6b0acce1710027ad7a4a6.stex" ]
+source_file="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/ButtonToRelicGeneralStore_Small_Highlighted.png"
+dest_files=[ "res://.import/ButtonToRelicGeneralStore_Small_Highlighted.png-28790118b0e763e2d2c4bb89f67d545b.stex" ]
 
 [params]
 

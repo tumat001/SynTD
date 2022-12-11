@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/RelicBuyEtcButton_Green_Highlighted.png-f766378bb06d35f2bb913aceb3cd36ee.stex"
+path="res://.import/Entropy_Omni_NoHealth.png-15cd05e9007df79d229e15c559f16fef.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GameHUDRelated/RelicBuyEtcPanel/RelicBuyEtcButton_Green_Highlighted.png"
-dest_files=[ "res://.import/RelicBuyEtcButton_Green_Highlighted.png-f766378bb06d35f2bb913aceb3cd36ee.stex" ]
+source_file="res://TowerRelated/Color_Orange/Entropy/Entropy_Omni_NoHealth.png"
+dest_files=[ "res://.import/Entropy_Omni_NoHealth.png-15cd05e9007df79d229e15c559f16fef.stex" ]
 
 [params]
 

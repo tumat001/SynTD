@@ -229,7 +229,8 @@ func _attempt_shoot_buffing_bullet():
 		
 		#bullet.collision_layer = 4
 		
-		get_tree().get_root().add_child(bullet)
+		#get_tree().get_root().add_child(bullet)
+		CommsForBetweenScenes.ge_add_child_to_proj_hoster(bullet)
 		
 		current_attack_count = 0
 		

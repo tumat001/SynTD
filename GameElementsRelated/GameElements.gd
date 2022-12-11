@@ -404,7 +404,6 @@ func _ready():
 
 # From bottom panel
 func _on_BuySellLevelRollPanel_level_up():
-	#level_manager.level_up_with_spend_currency()
 	level_manager.level_up_with_spend_currency__from_game_elements()
 
 
@@ -415,12 +414,12 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.HERO,
-			Towers.SHOCKER,
+			Towers.CHARGE,
+			Towers.COIN,
+			Towers.IOTA,
 			Towers.ENERVATE,
-			Towers.WYVERN,
 			Towers.BLOSSOM,
-			Towers.OUTREACH,
+			#Towers.LEADER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([

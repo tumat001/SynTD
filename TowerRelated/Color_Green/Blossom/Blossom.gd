@@ -183,9 +183,10 @@ func assign_new_tower_partner(tower):
 		
 		tower_beam_connection_component.attempt_add_connection_to_node(partner_tower)
 		
-		is_showing_select_partner_beam = false
-		
 		_partner_changed()
+	
+	
+	is_showing_select_partner_beam = false
 
 func _can_assign_tower_as_partner(tower) -> bool:
 	return is_instance_valid(tower) and partner_tower != tower and tower.is_current_placable_in_map() and !tower is get_script() and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLOSSOM_MARK_EFFECT)
@@ -379,14 +380,16 @@ func _assign_ability_activated():
 		
 		if !input_prompt_manager.can_prompt():
 			input_prompt_manager.cancel_selection()
-			_assign_cancelled()
+		
+		_assign_cancelled()
 	else:
 		if input_prompt_manager.can_prompt():
 			input_prompt_manager.prompt_select_tower(self, "assign_new_tower_partner", "_assign_cancelled", "_can_assign_tower_as_partner")
 			is_showing_select_partner_beam = true
 		else:
-			input_prompt_manager.cancel_selection()
 			_assign_cancelled()
+			input_prompt_manager.cancel_selection()
+			
 
 func _assign_cancelled():
 	is_showing_select_partner_beam = false

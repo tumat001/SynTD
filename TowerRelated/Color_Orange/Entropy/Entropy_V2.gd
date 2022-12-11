@@ -17,6 +17,11 @@ const BeamAesthetic_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic
 
 const DamageInstance = preload("res://TowerRelated/DamageAndSpawnables/DamageInstance.gd")
 
+const Entropy_Frame_Normal_Pic = preload("res://TowerRelated/Color_Orange/Entropy/Entropy_Omni.png")
+const Entropy_Frame_NoHealth_Pic = preload("res://TowerRelated/Color_Orange/Entropy/Entropy_Omni_NoHealth.png")
+
+
+
 var first_attack_speed_effect : TowerAttributesEffect
 var second_attack_speed_effect : TowerAttributesEffect
 
@@ -29,6 +34,8 @@ var first_speed_is_gone : bool = false
 var curr_second_attack_speed_amount : int = second_attack_speed_starting_amount
 var second_speed_is_gone : bool = false
 
+
+onready var frame_sprite = $TowerBase/KnockUpLayer/Sprite
 onready var body_sprite : AnimatedSprite = $TowerBase/KnockUpLayer/BaseSprites
 
 # Called when the node enters the scene tree for the first time.
@@ -78,6 +85,10 @@ func _ready():
 	
 	connect("on_main_attack_finished", self, "_on_main_attack_finished_e", [], CONNECT_PERSIST)
 	attack_module.connect("before_attack_sprite_is_shown", self, "_on_attack_sprite_constructed_e", [], CONNECT_PERSIST)
+	
+	connect("changed_anim_from_alive_to_dead", self, "_on_changed_anim_from_alive_to_dead", [], CONNECT_PERSIST)
+	connect("changed_anim_from_dead_to_alive", self, "_on_changed_anim_from_dead_to_alive", [], CONNECT_PERSIST)
+	
 	
 	add_attack_module(attack_module)
 	
@@ -133,6 +144,15 @@ func _on_attack_sprite_constructed_e(attack_sprite):
 	
 	attack_sprite.modulate = modul
 
+#
+
+func _on_changed_anim_from_alive_to_dead():
+	frame_sprite.texture = Entropy_Frame_NoHealth_Pic
+	body_sprite.visible = false
+
+func _on_changed_anim_from_dead_to_alive():
+	frame_sprite.texture = Entropy_Frame_Normal_Pic
+	body_sprite.visible = true
 
 
 # Heat Module

@@ -316,6 +316,7 @@ func _set_range_module(new_module):
 	if is_instance_valid(new_module):
 		if !is_instance_valid(new_module.get_parent()):
 			add_child(new_module)
+			#call_deferred("add_child", new_module)
 		new_module.attack_modules_using_this.append(self)
 	
 	range_module = new_module

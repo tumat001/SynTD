@@ -41,9 +41,10 @@ func get_instructions_for_stageround(uuid : String):
 
 
 func is_transition_time_in_stageround(uuid : String) -> bool:
-	return uuid == "41"
+	#return uuid == "41"
 	
-	#return uuid == "01"  # to transfer to other factions
+	#todo
+	return uuid == "01"  # to transfer to other factions
 
 
 func _get_instructions_for_0_1():
@@ -51,7 +52,8 @@ func _get_instructions_for_0_1():
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BASIC),
 		
 		#MultipleEnemySpawnInstruction.new(0, 10, 0.5, EnemyConstants.Enemies.BASIC),
-		#SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.COSMIC),
+		
+		#SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BLASTER), 
 	]
 
 func _get_instructions_for_0_2():

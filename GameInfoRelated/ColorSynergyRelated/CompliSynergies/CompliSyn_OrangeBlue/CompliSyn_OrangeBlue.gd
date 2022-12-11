@@ -14,7 +14,8 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 #var tower_ap_modi : FlatModifier
 
 const explosion_damage : float = 3.8
-const explosion_base_and_on_hit_damage_scale : float = 0.22
+const explosion_on_hit_damage_scale : float = 0.5#0.22
+
 
 const expl_scale_tier_1 : float = 2.0
 const expl_scale_tier_2 : float = 1.75
@@ -103,7 +104,7 @@ func _attempt_add_effect_to_tower(tower : AbstractTower):
 			expl_module_adder.explosion_scale = expl_scale_tier_4
 			expl_module_adder.base_unit_time_per_explosion = expl_unit_time_tier_4
 		
-		expl_module_adder.explosion_base_and_on_hit_damage_scale = explosion_base_and_on_hit_damage_scale
+		expl_module_adder.explosion_base_and_on_hit_damage_scale = explosion_on_hit_damage_scale
 		
 		tower.add_tower_effect(expl_module_adder)
 		#tower.add_tower_effect(tower_ap_effect._shallow_duplicate())

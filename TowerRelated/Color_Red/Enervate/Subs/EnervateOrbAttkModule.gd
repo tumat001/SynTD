@@ -54,6 +54,7 @@ func assign_new_target_to_follow(arg_target):
 		_set_assigned_target__and_connect_signals_with_target(arg_target)
 		_move_towards_target(arg_target)
 
+
 func _move_towards_target(arg_target):
 	_current_pos_of_reposition = _get_postion_of_reposition(arg_target.global_position)
 	_current_speed_for_reposition = _get_speed_for_reposition(arg_target.global_position)

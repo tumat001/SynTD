@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/Animations/LesSemis_E.png" type="Texture" id=1]
 [ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=2]
@@ -6,6 +6,10 @@
 [ext_resource path="res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/Animations/Golden/LesSemis_Golden_E.png" type="Texture" id=4]
 [ext_resource path="res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/Animations/LesSemis_W.png" type="Texture" id=5]
 [ext_resource path="res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/Animations/Golden/LesSemis_Golden_W.png" type="Texture" id=6]
+[ext_resource path="res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/Animations/Golden/LesSemis_Golden_E_NoHealth.png" type="Texture" id=7]
+[ext_resource path="res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/Animations/Golden/LesSemis_Golden_W_NoHealth.png" type="Texture" id=8]
+[ext_resource path="res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/Animations/LesSemis_E_NoHealth.png" type="Texture" id=9]
+[ext_resource path="res://TowerRelated/Color_Green/SePropager_LesSemis/Assets/Animations/LesSemis_W_NoHealth.png" type="Texture" id=10]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
@@ -14,9 +18,29 @@ animations = [ {
 "name": "golden_E",
 "speed": 5.0
 }, {
+"frames": [ ExtResource( 7 ) ],
+"loop": true,
+"name": "golden_E_NoHealth",
+"speed": 5.0
+}, {
 "frames": [ ExtResource( 6 ) ],
 "loop": true,
 "name": "golden_W",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 8 ) ],
+"loop": true,
+"name": "golden_W_NoHealth",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "normal_E",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 9 ) ],
+"loop": true,
+"name": "normal_E_NoHealth",
 "speed": 5.0
 }, {
 "frames": [ ExtResource( 5 ) ],
@@ -24,9 +48,9 @@ animations = [ {
 "name": "normal_W",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 1 ) ],
+"frames": [ ExtResource( 10 ) ],
 "loop": true,
-"name": "normal_E",
+"name": "normal_W_NoHealth",
 "speed": 5.0
 } ]
 
@@ -41,7 +65,7 @@ position = Vector2( 0, -7 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
 frames = SubResource( 1 )
-animation = "normal_E"
+animation = "normal_W_NoHealth"
 
 [node name="CollisionShape" parent="." index="1"]
 position = Vector2( 0, -5 )

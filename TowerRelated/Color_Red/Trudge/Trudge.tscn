@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
 [ext_resource path="res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Column_Pic.png" type="Texture" id=2]
@@ -8,12 +8,18 @@
 [ext_resource path="res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_BasePlatform_Front_Pic.png" type="Texture" id=6]
 [ext_resource path="res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Indicator_Glowing_Pic.png" type="Texture" id=7]
 [ext_resource path="res://TowerRelated/Color_Red/Trudge/Trudge.gd" type="Script" id=8]
+[ext_resource path="res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Column_Pic_NoHealth.png" type="Texture" id=9]
 
 [sub_resource type="SpriteFrames" id=1]
 animations = [ {
 "frames": [ ExtResource( 2 ) ],
 "loop": true,
-"name": "default",
+"name": "Omni",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 9 ) ],
+"loop": true,
+"name": "Omni_NoHealth",
 "speed": 5.0
 } ]
 
@@ -36,6 +42,7 @@ texture = ExtResource( 4 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="2"]
 frames = SubResource( 1 )
+animation = "Omni_NoHealth"
 
 [node name="WeightsFront" type="Sprite" parent="TowerBase/KnockUpLayer" index="3"]
 position = Vector2( 0, -8 )

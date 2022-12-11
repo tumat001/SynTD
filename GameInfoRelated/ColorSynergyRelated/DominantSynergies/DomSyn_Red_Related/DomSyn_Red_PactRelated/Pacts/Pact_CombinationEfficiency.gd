@@ -18,7 +18,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	
 	if tier == 0:
 		less_towers_for_combination = -2
-		total_attk_speed_reduction_percent = -50
+		total_attk_speed_reduction_percent = -10
 		
 	elif tier == 1:
 		less_towers_for_combination = -1
@@ -42,11 +42,10 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	interpreter_for_attk_speed_reduc.array_of_instructions = ins_for_attk_speed_reduc
 	
 	
-	var plain_fragment__combinations = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combinations")
 	
 	#
 	good_descriptions = [
-		["%s less tower(s) are needed for |0|" % str(-less_towers_for_combination), [plain_fragment__combinations]]
+		
 	]
 	
 	bad_descriptions = [
@@ -55,6 +54,24 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_CombinationEfficiency_Icon.png")
 
+
+#
+
+func _first_time_initialize():
+	_update_good_descriptions()
+
+func _update_good_descriptions():
+	good_descriptions.clear()
+	
+	
+	var plain_fragment__combinations = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combinations")
+	
+	good_descriptions.append(["%s less tower(s) are needed for |0|." % str(-less_towers_for_combination), [plain_fragment__combinations]])
+	good_descriptions.append("Towers needed for combinations cannot go lower than: %s." % game_elements.combination_manager.minimum_combination_amount)
+	
+	emit_signal("on_description_changed")
+
+#
 
 func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	._apply_pact_to_game_elements(arg_game_elements)

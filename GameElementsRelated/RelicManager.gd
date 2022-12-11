@@ -37,6 +37,9 @@ var stage_round_manager setget set_stage_round_manager
 var whole_screen_relic_general_store_panel
 var whole_screen_gui
 
+
+var _has_received_at_least_one_relic : bool = false
+
 #
 
 func set_stage_round_manager(arg_manager):
@@ -59,6 +62,10 @@ func decrease_relic_count_by(decrease : int, decrease_source : int):
 
 func set_relic_count(val : int):
 	current_relic_count = val
+	
+	if current_relic_count > 0:
+		_has_received_at_least_one_relic = true
+	
 	call_deferred("emit_signal", "current_relic_count_changed", current_relic_count)
 
 

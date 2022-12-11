@@ -79,6 +79,7 @@ var _last_calculated_pull_amount : int
 const rounds_before_stage2_pull : int = 3
 var _current_round_count : int = 0
 
+var _current_index_of_sframes_to_use : int = 0
 
 #
 
@@ -90,6 +91,7 @@ var chains_ability_is_ready : bool = false
 var chains_pos_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SHACKLED_PULL_POSITION)
 const chains_upper_pos_limit : float = 25.0 # adjust higher for more random positions
 
+#
 
 func _ready():
 	var info = Towers.get_tower_info(Towers.SHACKLED)
@@ -236,6 +238,9 @@ func _ready():
 	connect("on_round_end", self, "_on_round_end_s", [], CONNECT_PERSIST)
 	connect("on_main_attack_finished", self, "_on_main_attack_finished_s", [], CONNECT_PERSIST)
 	
+	connect("changed_anim_from_alive_to_dead", self, "_on_changed_anim_from_alive_to_dead", [], CONNECT_PERSIST)
+	connect("changed_anim_from_dead_to_alive", self, "_on_changed_anim_from_dead_to_alive", [], CONNECT_PERSIST)
+	
 	set_pull_amount(chains_base_pull_modi_id, chains_base_pull_amount)
 	
 	#
@@ -269,12 +274,18 @@ func _on_round_end_s():
 		_current_round_count += 1
 		
 		if _current_round_count >= rounds_before_stage2_pull:
-			set_pull_amount(chains_stage2_pull_modi_id, chains_stage2_pull_amount)
-			tower_base_sprites.frame = 1
-			disconnect("on_round_end", self, "_on_round_end_s")
+			_ascend()
 	
 	_current_attk_count = 0
 	_current_post_mitigated_dmg_total = 0
+
+
+func _ascend():
+	set_pull_amount(chains_stage2_pull_modi_id, chains_stage2_pull_amount)
+	tower_base_sprites.frame = 1
+	disconnect("on_round_end", self, "_on_round_end_s")
+	
+	_current_index_of_sframes_to_use = 1
 
 # pull amount
 
@@ -378,7 +389,13 @@ func _determine_random_source_location() -> Vector2:
 	
 	return new_pos
 
+#
 
+func _on_changed_anim_from_alive_to_dead():
+	tower_base_sprites.frame = _current_index_of_sframes_to_use
+
+func _on_changed_anim_from_dead_to_alive():
+	tower_base_sprites.frame = _current_index_of_sframes_to_use
 
 # energy module related
 
@@ -396,3 +413,4 @@ func _module_turned_on(_first_time_per_round : bool):
 
 func _module_turned_off():
 	set_pull_amount(chains_energy_module_modi_id, 0)
+

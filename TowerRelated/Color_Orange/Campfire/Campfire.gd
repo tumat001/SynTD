@@ -13,6 +13,9 @@ const CampfireParticle_Scene = preload("res://TowerRelated/Color_Orange/Campfire
 
 const HeatModule = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Orange_Related/HeatModule.gd")
 
+const Campfire_Base_Normal_Pic = preload("res://TowerRelated/Color_Orange/Campfire/Campfire_Base.png")
+const Campfire_Base_NoHealth_Pic = preload("res://TowerRelated/Color_Orange/Campfire/Campfire_Base_NoHealth.png")
+
 
 var tower_detecting_range_module : TowerDetectingRangeModule
 
@@ -36,9 +39,12 @@ var rage_ability : BaseAbility
 
 #
 
+onready var campfire_wood_base_sprite = $TowerBase/KnockUpLayer/Sprite
 onready var flame_anim_sprite = $TowerBase/KnockUpLayer/BaseSprites
 const base_frame_rate : int = 5
 const original_flame_y_pos : float = -13.0
+
+const flame_anim_name := "Omni"
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.CAMPFIRE)
@@ -93,6 +99,9 @@ func _ready():
 	connect("attack_module_added", self, "_on_main_attack_module_changed", [], CONNECT_PERSIST)
 	connect("attack_module_removed", self, "_on_main_attack_module_changed", [], CONNECT_PERSIST)
 	connect("final_base_damage_changed", self, "_final_base_damage_changed", [], CONNECT_PERSIST)
+	
+	connect("changed_anim_from_alive_to_dead", self, "_on_changed_anim_from_alive_to_dead", [], CONNECT_PERSIST)
+	connect("changed_anim_from_dead_to_alive", self, "_on_changed_anim_from_dead_to_alive", [], CONNECT_PERSIST)
 	
 	_construct_on_hit_and_modifiers()
 	_construct_effects()
@@ -189,13 +198,13 @@ func _on_main_attack_module_changed(attack_module):
 # Aesthetics
 
 func _match_fire_fps_to_attack_speed(total_atk_speed):
-	flame_anim_sprite.frames.set_animation_speed("default", 5 * total_atk_speed)
+	flame_anim_sprite.frames.set_animation_speed(flame_anim_name, 5 * total_atk_speed)
 
 func _match_fire_size_to_base_dmg(total_base_dmg):
 	flame_anim_sprite.scale = Vector2(1, 1) # original scale
 	flame_anim_sprite.scale *= 1 + ((total_base_dmg - campfire_base_damage) / 5)
 	
-	var sprite_height : float = flame_anim_sprite.frames.get_frame("default", 0).get_size().y
+	var sprite_height : float = flame_anim_sprite.frames.get_frame(flame_anim_name, 0).get_size().y
 	var height_change = ((flame_anim_sprite.scale.y * sprite_height) - sprite_height) / 2
 	
 	flame_anim_sprite.position.y = original_flame_y_pos # original height
@@ -253,6 +262,16 @@ func _on_round_end():
 		initial_cd_timer.wait_time = 0.1
 		initial_cd_timer.start()
 
+
+#
+
+func _on_changed_anim_from_alive_to_dead():
+	campfire_wood_base_sprite.texture = Campfire_Base_NoHealth_Pic
+	flame_anim_sprite.visible = false
+
+func _on_changed_anim_from_dead_to_alive():
+	campfire_wood_base_sprite.texture = Campfire_Base_Normal_Pic
+	flame_anim_sprite.visible = true
 
 # Heat Module
 

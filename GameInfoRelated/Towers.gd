@@ -3546,7 +3546,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var base_health_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_TRANSMUTATOR)
-		base_health_mod.percent_amount = 100
+		base_health_mod.percent_amount = 50
 		base_health_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_HEALTH , base_health_mod, StoreOfTowerEffectsUUID.ING_TRANSMUTATOR)
@@ -3728,7 +3728,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var base_health_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_BLOSSOM)
-		base_health_mod.percent_amount = 250
+		base_health_mod.percent_amount = 200
 		base_health_mod.percent_based_on = PercentType.BASE
 		
 		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_HEALTH , base_health_mod, StoreOfTowerEffectsUUID.ING_BLOSSOM)
@@ -4722,7 +4722,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Cooldown : |0|.", [interpreter_for_cooldown]],
 			"",
 			"Les Semis: a tower that inherits 100% of its parents base damage on creation.",
-			["Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by |0|.", [plain_fragment__sell_value]],
+			["Les Semis becomes Golden on killing 3 enemies, increasing its sell value by |0|.", [plain_fragment__sell_value]],
 			["Les Semis gains |0| per 1 gold it is worth selling for.", [interpreter_for_base_dmg]],
 			"Les Semis does not contribute to the color synergy, but benefits from it. Does not take a tower slot.",
 			"",
@@ -4735,7 +4735,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Cooldown : |0|.", [interpreter_for_cooldown]],
 			"",
 			"Les Semis: a tower that inherits 100% of its parent's base damage on creation.",
-			["Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by |0|.", [plain_fragment__sell_value]],
+			["Les Semis becomes Golden on killing 3 enemies, increasing its sell value by |0|.", [plain_fragment__sell_value]],
 			"Does not take a tower slot.",
 		]
 		
@@ -4786,14 +4786,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		#Se Propager description also uses this. Change se prop desc if changing this
 		info.tower_descriptions = [
 			"Inherits 100% of its parent's base damage upon creation.",
-			["Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by |0|.", [plain_fragment__sell_value]],
+			["Les Semis becomes Golden on killing 3 enemies, increasing its sell value by |0|.", [plain_fragment__sell_value]],
 			["Les Semis gains |0| per 1 gold it is worth selling for.", [interpreter_for_base_dmg]],
 			"Les Semis does not contribute to the color synergy, but benefits from it. Does not take a tower slot.",
 		]
 		
 		info.tower_simple_descriptions = [
 			"Inherits 100% of its parents base damage on creation.",
-			["Once Les Semis kills 3 enemies, it becomes Golden, increasing its sell value by |0|.", [plain_fragment__sell_value]],
+			["Les Semis becomes Golden on killing 3 enemies, increasing its sell value by |0|.", [plain_fragment__sell_value]],
 			"Does not take a tower slot.",
 		]
 		
@@ -5431,7 +5431,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			["Crashing Stars can hit up to |0|.", [interpreter_for_pierce]],
 			"Targeting affects which enemies are targeted by the Stars.",
-			"\"The Stars see all.\""
 		]
 		
 		info.tower_simple_descriptions = [

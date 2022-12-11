@@ -55,6 +55,20 @@ const Trudge_SlamCircle_Pic = preload("res://TowerRelated/Color_Red/Trudge/Asset
 const Trudge_IndicatorOn_Pic = preload("res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Indicator_Glowing_Pic.png")
 const Trudge_IndicatorOff_Pic = preload("res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Indicator_NotGlowing_Pic.png")
 
+#
+const BasePlatform_Back_Normal_Pic = preload("res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_BasePlatform_Back_Pic.png")
+const BasePlatform_Back_NoHealth_Pic = preload("res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_BasePlatform_Back_Pic_NoHealth.png")
+
+const BasePlatform_Front_Normal_Pic = preload("res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_BasePlatform_Front_Pic.png")
+const BasePlatform_Front_NoHealth_Pic = preload("res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_BasePlatform_Front_Pic_NoHealth.png")
+
+const Weight_Back_Normal_Pic = preload("res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Weight_Back_Pic.png")
+const Weight_Back_NoHealth_Pic = preload("res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Weight_Back_Pic_NoHealth.png")
+
+const Weight_Front_Normal_Pic = preload("res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Weight_Front_Pic.png")
+const Weight_Front_NoHealth_Pic = preload("res://TowerRelated/Color_Red/Trudge/PartsAssets/Trudge_Weight_Front_Pic_NoHealth.png")
+
+#
 
 const slow_duration : float = 3.0
 const slow_amount : float = -25.0
@@ -85,6 +99,8 @@ const no_enemies_in_range_clause : int = -11
 const stampede_ability_base_cooldown : float = 40.0
 const stampede_cd_reduc_on_spurt : float = 1.0
 
+const stampede_cd_ratio_reduc_per_slam : float = 1 / 3.0
+var _current_stampede_cd_ratio_scale : float
 
 const slam_downward_velocity : float = 175.0
 const slam_upward_velocity : float = -35.0
@@ -113,6 +129,9 @@ const slam_big_knock_up_base_stun_duration : float = 2.0
 
 onready var weights_back =  $TowerBase/KnockUpLayer/WeightsBack
 onready var weights_front = $TowerBase/KnockUpLayer/WeightsFront
+
+onready var base_platform_front = $TowerBase/KnockUpLayer/BasePlatformFront
+onready var base_platform_back = $TowerBase/KnockUpLayer/BasePlatformBack
 
 onready var indicator_left = $TowerBase/KnockUpLayer/IndicatorLeft
 onready var indicator_middle = $TowerBase/KnockUpLayer/IndicatorMiddle
@@ -258,6 +277,10 @@ func _ready():
 	connect("on_any_attack_module_enemy_hit", self, "_on_any_attack_hit_enemy_t", [], CONNECT_PERSIST)
 	connect("on_range_module_enemy_entered", self, "_on_enemies_entered_range_module", [], CONNECT_PERSIST)
 	connect("on_range_module_enemy_exited", self, "_on_enemies_exited_range_module", [], CONNECT_PERSIST)
+	
+	connect("changed_anim_from_alive_to_dead", self, "_on_changed_anim_from_alive_to_dead", [], CONNECT_PERSIST)
+	connect("changed_anim_from_dead_to_alive", self, "_on_changed_anim_from_dead_to_alive", [], CONNECT_PERSIST)
+	
 	
 	_post_inherit_ready()
 
@@ -480,6 +503,8 @@ func _attempt_cast_stampede_ability():
 		_cast_stampede_ability()
 
 func _cast_stampede_ability():
+	_current_stampede_cd_ratio_scale = 0
+	
 	stampede_ability_activation_cond_clause.attempt_insert_clause(stampede_is_casting_act_clause)
 	_set_weights_to_lifted_pos()
 	set_slam_state(1)
@@ -511,17 +536,18 @@ func _set_weight_velocity(arg_y_velo):
 
 
 func _process(delta):
-	_add_weights_y_shift(_current_slam_velocity * delta)
-	
-	if _current_slam_velocity > 0: # going down
-		if _is_weight_y_shift_on_or_below_ground():
-			_set_weights_to_ground_pos()
-			_on_weights_reached_ground()
+	if !is_dead_for_the_round:
+		_add_weights_y_shift(_current_slam_velocity * delta)
 		
-	elif _current_slam_velocity < 0:
-		if _is_weight_y_shift_at_or_above_lift():
-			_set_weights_to_lifted_pos()
-			_on_weights_reached_lift()
+		if _current_slam_velocity > 0: # going down
+			if _is_weight_y_shift_on_or_below_ground():
+				_set_weights_to_ground_pos()
+				_on_weights_reached_ground()
+			
+		elif _current_slam_velocity < 0:
+			if _is_weight_y_shift_at_or_above_lift():
+				_set_weights_to_lifted_pos()
+				_on_weights_reached_lift()
 
 func _on_weights_reached_ground():
 	var dmg_instance_modi_method : String
@@ -538,6 +564,7 @@ func _on_weights_reached_ground():
 		dmg_instance_modi_method = "_add_big_knockup_effect_to_dmg_instance"
 		_set_weight_velocity(slam_upward_velocity)
 	
+	_current_stampede_cd_ratio_scale += stampede_cd_ratio_reduc_per_slam
 	_execute_slam(dmg_instance_modi_method)
 
 func _on_weights_reached_lift():
@@ -556,8 +583,11 @@ func _on_weights_reached_lift():
 func _end_slam_state():
 	set_slam_state(0)
 	
+	if is_equal_approx(_current_stampede_cd_ratio_scale, 1):
+		_current_stampede_cd_ratio_scale = 1
+	
 	if stampede_ability_activation_cond_clause.has_clause(stampede_is_casting_act_clause):
-		var cd = _get_cd_to_use(stampede_ability_base_cooldown)
+		var cd = _get_cd_to_use(stampede_ability_base_cooldown * _current_stampede_cd_ratio_scale)
 		stampede_ability.on_ability_before_cast_start(cd)
 		
 		stampede_ability.start_time_cooldown(cd)
@@ -565,6 +595,8 @@ func _end_slam_state():
 		stampede_ability.on_ability_after_cast_ended(cd)
 		stampede_ability_activation_cond_clause.remove_clause(stampede_is_casting_act_clause)
 	
+	
+	_current_stampede_cd_ratio_scale = 0
 	_set_weight_velocity(0)
 	_set_weights_to_lifted_pos()
 
@@ -632,5 +664,24 @@ func _on_stampede_ability_time_remaining_changed(arg_curr_time_cd):
 		indicator_left.texture = Trudge_IndicatorOff_Pic
 		indicator_middle.texture = Trudge_IndicatorOff_Pic
 		indicator_right.texture = Trudge_IndicatorOff_Pic
+
+###
+
+func _on_changed_anim_from_alive_to_dead():
+	weights_back.texture = Weight_Back_NoHealth_Pic
+	weights_front.texture = Weight_Front_NoHealth_Pic
+	
+	base_platform_back.texture = BasePlatform_Back_NoHealth_Pic
+	base_platform_front.texture = BasePlatform_Front_NoHealth_Pic
+
+
+func _on_changed_anim_from_dead_to_alive():
+	weights_back.texture = Weight_Back_Normal_Pic
+	weights_front.texture = Weight_Front_Normal_Pic
+	
+	base_platform_back.texture = BasePlatform_Back_Normal_Pic
+	base_platform_front.texture = BasePlatform_Front_Normal_Pic
+
+
 
 

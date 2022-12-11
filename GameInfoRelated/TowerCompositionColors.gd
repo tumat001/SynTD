@@ -172,10 +172,10 @@ func _init():
 	var outer_ins_for_orange_blue_explosion_dmg = []
 	var ins_for_orange_blue_explosion_dmg = []
 	ins_for_orange_blue_explosion_dmg.append(NumericalTextFragment.new(3.8, false, DamageType.ELEMENTAL))
+	#ins_for_orange_blue_explosion_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+	#ins_for_orange_blue_explosion_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.22, DamageType.ELEMENTAL))
 	ins_for_orange_blue_explosion_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-	ins_for_orange_blue_explosion_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.22, DamageType.ELEMENTAL))
-	ins_for_orange_blue_explosion_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-	ins_for_orange_blue_explosion_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.22)) # stat basis does not matter here
+	ins_for_orange_blue_explosion_dmg.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.50)) # stat basis does not matter here
 	
 	outer_ins_for_orange_blue_explosion_dmg.append(ins_for_orange_blue_explosion_dmg)
 	

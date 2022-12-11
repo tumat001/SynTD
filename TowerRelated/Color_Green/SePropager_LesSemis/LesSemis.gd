@@ -138,6 +138,7 @@ func _post_inherit_ready():
 	add_tower_effect(base_damage_effect)
 
 
+
 func _construct_and_add_base_dmg_effect():
 	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.LES_SEMIS_BONUS_BASE_DAMAGE_EFFECT)
 	base_dmg_attr_mod.flat_modifier = 0
@@ -152,15 +153,20 @@ func _on_any_post_miti_dmg_dealt(damage_instance_report, killed, enemy, damage_r
 		total_kill_count += 1
 		
 		if (total_kill_count >= kill_count_needed):
-			is_golden = true
-			set_base_gold_cost(_base_gold_cost + gold_worth_increase_on_kill_count_achieved)
-			disconnect("on_any_post_mitigation_damage_dealt", self, "_on_any_post_miti_dmg_dealt")
-			call_deferred("emit_signal", "on_reached_golden_state")
-			
-			# initial set of anim
-			_transform_dir_name_from_normal_to_golden()
-			# updating anim map
-			anim_face_dir_component.update_dir_name_to_primary_rad_angle_map(golden_dir_name_to_primary_rad_angle_map.keys(), golden_dir_name_to_primary_rad_angle_map, golden_dir_name_initial_hierarchy)
+			_turn_golden()
+
+func _turn_golden():
+	is_golden = true
+	set_base_gold_cost(_base_gold_cost + gold_worth_increase_on_kill_count_achieved)
+	disconnect("on_any_post_mitigation_damage_dealt", self, "_on_any_post_miti_dmg_dealt")
+	call_deferred("emit_signal", "on_reached_golden_state")
+	
+	# initial set of anim
+	_transform_dir_name_from_normal_to_golden()
+	# updating anim map
+	anim_face_dir_component.update_dir_name_to_primary_rad_angle_map(golden_dir_name_to_primary_rad_angle_map.keys(), golden_dir_name_to_primary_rad_angle_map, golden_dir_name_initial_hierarchy)
+
+
 
 func _transform_dir_name_from_normal_to_golden():
 	var current_dir_as_name = anim_face_dir_component.get_current_dir_as_name()

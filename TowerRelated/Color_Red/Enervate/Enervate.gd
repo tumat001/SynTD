@@ -118,6 +118,10 @@ var non_essential_rng : RandomNumberGenerator
 var _had_no_enemies_in_range : bool = false
 var _all_orb_attk_modules : Array = []
 
+
+var _requested_enemy_manager_to_get_next_targetable_enemy : bool
+var _requesting_orb_attk_modules : Array = []
+
 #
 
 
@@ -596,7 +600,14 @@ func _on_orb_request_for_new_target_to_acquire(arg_orb):
 func _give_orb_new_target_to_acquire(arg_orb):
 	var target = _get_target_to_acquire_for_orbs()
 	
-	arg_orb.assign_new_target_to_follow(target)
+	if is_instance_valid(target):
+		arg_orb.assign_new_target_to_follow(target)
+		
+	else:
+		game_elements.enemy_manager.request__get_next_targetable_enemy(self, "_on_requested__get_next_targetable_enemy__fulfilled", "_on_requested__get_next_targetable_enemy__cancelled")
+		_requested_enemy_manager_to_get_next_targetable_enemy = true
+		if !_requesting_orb_attk_modules.has(arg_orb):
+			_requesting_orb_attk_modules.append(arg_orb)
 
 func _summon_shrivel_orb(arg_target):
 	shrivel_orb_attk_module.show_and_activate__as_summoned()
@@ -620,3 +631,17 @@ func _summon_decay_orb(arg_target):
 	decay_orb_attk_module.show_and_activate__as_summoned()
 	decay_orb_attk_module.call_deferred("assign_new_target_to_follow", arg_target)
 
+
+###
+
+func _on_requested__get_next_targetable_enemy__fulfilled(arg_enemy):
+	game_elements.enemy_manager.disconnect_request_get_next_targetable_enemy(self, "_on_requested__get_next_targetable_enemy__fulfilled", "_on_requested__get_next_targetable_enemy__cancelled")
+	_requested_enemy_manager_to_get_next_targetable_enemy = false
+	for orb_module in _requesting_orb_attk_modules:
+		_give_orb_new_target_to_acquire(orb_module)
+	_requesting_orb_attk_modules.clear()
+
+func _on_requested__get_next_targetable_enemy__cancelled():
+	game_elements.enemy_manager.disconnect_request_get_next_targetable_enemy(self, "_on_requested__get_next_targetable_enemy__fulfilled", "_on_requested__get_next_targetable_enemy__cancelled")
+	_requested_enemy_manager_to_get_next_targetable_enemy = false
+	_requesting_orb_attk_modules.clear()

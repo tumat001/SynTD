@@ -291,7 +291,8 @@ func _ability_add_selected_member(tower):
 		
 		call_deferred("_show_add_member_beam_to_tower", tower)
 		
-		is_showing_add_member_beam = false
+	
+	is_showing_add_member_beam = false
 
 func _can_add_tower_as_member(tower) -> bool:
 	return !tower_members_beam_map.has(tower) and tower.is_current_placable_in_map() and !tower is get_script()
@@ -331,7 +332,8 @@ func _ability_remove_selected_member(tower):
 		
 		call_deferred("_show_remove_member_beam_to_tower", tower)
 		
-		is_showing_remove_member_beam = false
+	
+	is_showing_remove_member_beam = false
 
 func _can_remove_member_tower(tower) -> bool:
 	return is_instance_valid(tower) and tower_members_beam_map.has(tower)

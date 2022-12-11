@@ -85,6 +85,7 @@ signal anim_name_used_changed(arg_prev_anim_name, arg_current_anim_name)
 
 signal last_calculated_is_stunned_changed(arg_val)
 signal last_calculated_no_action_from_self_changed(arg_val)
+signal last_calculated_is_untargetable_changed(arg_val)  # including invis
 
 #
 
@@ -376,11 +377,15 @@ func _no_action_clause_removed(clause):
 	last_calculated_no_action_from_self = !no_action_from_self_clauses.is_passed
 	emit_signal("last_calculated_no_action_from_self_changed", last_calculated_no_action_from_self)
 
+
 func _untargetability_clause_added(clause):
 	last_calculated_is_untargetable = true
+	emit_signal("last_calculated_is_untargetable_changed", last_calculated_is_untargetable)
 
 func _untargetability_clause_removed(clause):
 	last_calculated_is_untargetable = !untargetable_clauses.is_passed
+	emit_signal("last_calculated_is_untargetable_changed", last_calculated_is_untargetable)
+
 
 func is_untargetable_only_from_invisibility():
 	return untargetable_clauses.has_clause(UntargetabilityClauses.IS_INVISIBLE) and untargetable_clauses._clauses.size() == 1
@@ -445,6 +450,20 @@ func _post_inherit_ready():
 		anim_face_dir_component.set_animated_sprite_animation_to_default(anim_sprite)
 		connect("moved__from_process", self, "on_moved__from_process__change_anim_dir")
 	
+#	#revive test #todo  ##########################
+#	var rev_heal_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.HOMERUNNER_RED_GRANTED_REVIVE_HEAL_EFFECT)
+#	rev_heal_modi.percent_amount = 50
+#	rev_heal_modi.percent_based_on = PercentType.MAX
+#
+#	var rev_heal_effect = EnemyHealEffect.new(rev_heal_modi, StoreOfEnemyEffectsUUID.HOMERUNNER_RED_GRANTED_REVIVE_HEAL_EFFECT)
+#
+#	var revive_delay : float = 6
+#	var homerunner_revive_effect = EnemyReviveEffect.new(rev_heal_effect, StoreOfEnemyEffectsUUID.HOMERUNNER_RED_GRANTED_REVIVE_EFFECT, revive_delay)
+#	homerunner_revive_effect.is_timebound = false
+#	homerunner_revive_effect.is_from_enemy = true
+#
+#	_add_effect__use_provided_effect(homerunner_revive_effect)
+#	#end of revive test#########################
 	
 	#
 	

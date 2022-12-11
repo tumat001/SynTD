@@ -40,6 +40,13 @@ const PingEye_sleep_pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_Eye
 
 const Ping_ShotAttackModule_Icon = preload("res://TowerRelated/Color_Violet/Ping/AttackModule_Assets/Ping_ShotAttackModule_Icon.png")
 
+#
+
+const Ping_TopHalf_Normal_Pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_TopHalf.png")
+const Ping_TopHalf_NoHealth_Pic = preload("res://TowerRelated/Color_Violet/Ping/Ping_TopHalf_NoHealth.png")
+
+#
+
 const Ping_seek_register_id : int = Towers.PING
 
 var arrow_attack_module : AbstractAttackModule
@@ -50,6 +57,7 @@ var seek_attack_module : AOEAttackModule
 # Eye
 
 onready var ping_eye_sprite = $TowerBase/KnockUpLayer/PingEye
+onready var top_half_sprite = $TowerBase/KnockUpLayer/TopHalf
 
 # Mark and hit related
 
@@ -223,6 +231,10 @@ func _ready():
 	
 	connect("final_ability_potency_changed", self, "_on_final_ap_changed_p", [], CONNECT_PERSIST)
 	
+	connect("changed_anim_from_alive_to_dead", self, "_on_changed_anim_from_alive_to_dead", [], CONNECT_PERSIST)
+	connect("changed_anim_from_dead_to_alive", self, "_on_changed_anim_from_dead_to_alive", [], CONNECT_PERSIST)
+	
+	
 	_post_inherit_ready()
 
 func _post_inherit_ready():
@@ -336,6 +348,16 @@ func _set_mark_amount_amount(arg_pierce : int):
 	current_mark_count_limit = int(round(arg_pierce + ((last_calculated_final_ability_potency - base_ability_potency) * 2)))
 	
 	seek_attack_module.pierce = current_mark_count_limit
+
+
+#
+
+func _on_changed_anim_from_alive_to_dead():
+	top_half_sprite.texture = Ping_TopHalf_NoHealth_Pic
+	ping_eye_sprite.texture = PingEye_sleep_pic
+
+func _on_changed_anim_from_dead_to_alive():
+	top_half_sprite.texture = Ping_TopHalf_Normal_Pic
 
 
 # energy module related

@@ -26,6 +26,7 @@ onready var shop_percentage_stat_panel = $HBoxContainer/LeftSide/ShopPercentStat
 onready var relic_panel = $HBoxContainer/Right/RelicPanel
 onready var round_damage_stats_button = $HBoxContainer/Right/RoundDamageStatsButton
 
+onready var relic_general_store_button = $HBoxContainer/Right/RelicGeneralStoreButton
 
 # setters
 
@@ -38,8 +39,9 @@ func set_gold_manager(arg_manager):
 func set_relic_manager(arg_manager):
 	relic_manager = arg_manager
 	
-	relic_manager.connect("current_relic_count_changed", self, "set_relic_amount_label", [], CONNECT_PERSIST)
-	set_relic_amount_label(relic_manager.current_relic_count)
+	relic_manager.connect("current_relic_count_changed", self, "_on_current_relic_amount_changed", [], CONNECT_PERSIST)
+	_on_current_relic_amount_changed(relic_manager.current_relic_count)
+	#set_relic_amount_label(relic_manager.current_relic_count)
 
 func set_shop_manager(arg_manager):
 	shop_manager = arg_manager
@@ -71,9 +73,17 @@ func set_gold_amount_label(new_amount):
 func set_level_label(new_level):
 	level_label.text = str(new_level)
 
+
+func _on_current_relic_amount_changed(arg_new_amount):
+	set_relic_amount_label(arg_new_amount)
+	set_relic_general_store_button_visibility(arg_new_amount)
+
 func set_relic_amount_label(new_amount):
 	relic_panel.visible = new_amount != 0
 	relic_label.text = str(new_amount)
+
+func set_relic_general_store_button_visibility(arg_relic_amount):
+	relic_general_store_button.visible = relic_manager._has_received_at_least_one_relic and arg_relic_amount <= 0
 
 
 # gold income tooltip
@@ -85,5 +95,12 @@ func _on_GoldButton_about_tooltip_construction_requested():
 	
 	gold_button.display_requested_about_tooltip(tooltip)
 
+
+
+###
+
+
+func _on_RelicGeneralStoreButton_pressed_mouse_event(event):
+	relic_manager.show_whole_screen_relic_general_store_panel()
 
 

@@ -29,7 +29,9 @@ const MagnetizerMagnet_AttackModule_Icon = preload("res://TowerRelated/Color_Yel
 const MagnetizerBeam_AttackModule_Icon = preload("res://TowerRelated/Color_Yellow/Magnetizer/AMAssets/MagnetizerBeam_AttackModule_Icon.png")
 
 const BasePic_Blue = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Blue.png")
+const BasePic_Blue_NoHealth = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Blue_NoHealth.png")
 const BasePic_Red = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Red.png")
+const BasePic_Red_NoHealth = preload("res://TowerRelated/Color_Yellow/Magnetizer/Magnetizer_Base_Red_NoHealth.png")
 
 
 const use_count_energy_module_on : int = 3
@@ -149,6 +151,11 @@ func _ready():
 	add_attack_module(beam_attack_module)
 	
 	
+	
+	connect("changed_anim_from_alive_to_dead", self, "_on_changed_anim_from_alive_to_dead", [], CONNECT_PERSIST)
+	connect("changed_anim_from_dead_to_alive", self, "_on_changed_anim_from_dead_to_alive", [], CONNECT_PERSIST)
+	
+	
 	_construct_and_connect_ability()
 	
 	_post_inherit_ready()
@@ -214,9 +221,16 @@ func set_next_magnet_type_and_update_others(type : int):
 	next_magnet_type = type
 	
 	if next_magnet_type == MagnetizerMagnetBall.BLUE:
-		tower_base_sprite.texture = BasePic_Red
+		if !is_dead_for_the_round:
+			tower_base_sprite.texture = BasePic_Red
+		else:
+			tower_base_sprite.texture = BasePic_Red_NoHealth
 	else:
-		tower_base_sprite.texture = BasePic_Blue
+		if !is_dead_for_the_round:
+			tower_base_sprite.texture = BasePic_Blue
+		else:
+			tower_base_sprite.texture = BasePic_Blue_NoHealth
+
 
 func _on_round_end():
 	._on_round_end()
@@ -283,8 +297,16 @@ func _get_extended_position_away_from_position(var base_pos : Vector2, var pos_t
 	return base_pos.move_toward(pos_to_expand_away_from, -beam_position_offset_from_ball)
 
 
-# energy module rel
+#
 
+func _on_changed_anim_from_alive_to_dead():
+	set_next_magnet_type_and_update_others(next_magnet_type)  # update anim
+
+func _on_changed_anim_from_dead_to_alive():
+	set_next_magnet_type_and_update_others(next_magnet_type)  # update anim
+
+
+# energy module rel
 
 func set_energy_module(module):
 	.set_energy_module(module)

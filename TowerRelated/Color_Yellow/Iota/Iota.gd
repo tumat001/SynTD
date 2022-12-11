@@ -9,14 +9,17 @@ const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBul
 const Core_Yellow_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Core_Yellow.png")
 const Core_Orange_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Core_Orange.png")
 const Core_Blue_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Core_Blue.png")
+const Core_Gray_NoHealth_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Core_Gray_NoHealth.png")
 
 const MiddleTube_Yellow_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Tube_Middle_Yellow.png")
 const MiddleTube_Orange_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Tube_Middle_Orange.png")
 const MiddleTube_Blue_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Tube_Middle_Blue.png")
+const MiddleTube_Gray_NoHealth_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Tube_Middle_Gray_NoHealth.png")
 
 const LeftRightTube_Yellow_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Tube_LeftRight_Yellow.png")
 const LeftRightTube_Orange_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Tube_LeftRight_Orange.png")
 const LeftRightTube_Blue_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Tube_LeftRight_Blue.png")
+const LeftRightTube_Gray_NoHealth_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Iota_Tube_LeftRight_Gray_NoHealth.png")
 
 const Iota_MainProj_Pic = preload("res://TowerRelated/Color_Yellow/Iota/Attks/Iota_NormalProj.png")
 
@@ -59,7 +62,7 @@ const star_crash_on_hit_dmg_scale : float = 7.5
 
 const original_main_attacks_for_star_summon : int = 7
 const energy_module_main_attacks_for_star_summon : int = 5
-var main_attacks_for_star_summon : int = 7
+var main_attacks_for_star_summon : int = original_main_attacks_for_star_summon
 var _current_main_attack_count : int
 
 const star_last_enemy_curr_health_for_trigger_to_crash : float = 100.0
@@ -79,6 +82,7 @@ const not_at_beam_state_can_be_commanded_clause : int = -10
 var current_star_target
 var current_star_at_beam_state_count
 
+var _requested_enemy_manager_to_get_next_targetable_enemy : bool
 
 var is_energy_module_on : bool = false
 #var star_pierce_count_on_energy : int = 5
@@ -155,7 +159,11 @@ func _ready():
 	
 	connect("on_round_end", self, "_on_round_end_i", [], CONNECT_PERSIST)
 	connect("targeting_changed", self, "_on_range_module_current_targeting_changed", [], CONNECT_PERSIST)
-	game_elements.enemy_manager.connect("enemy_spawned", self, "_on_enemy_spawned", [], CONNECT_PERSIST)
+	game_elements.enemy_manager.connect("on_enemy_spawned_and_finished_ready_prep", self, "_on_enemy_spawned_and_finished_ready_prep", [], CONNECT_PERSIST)
+	
+	connect("changed_anim_from_alive_to_dead", self, "_on_changed_anim_from_alive_to_dead", [], CONNECT_PERSIST)
+	connect("changed_anim_from_dead_to_alive", self, "_on_changed_anim_from_dead_to_alive", [], CONNECT_PERSIST)
+	
 	
 	info_bar_layer.position.y -= 31
 	
@@ -420,15 +428,34 @@ func get_current_star_target():
 
 func set_current_star_target(arg_target):
 	if is_instance_valid(current_star_target):
-		if current_star_target.is_connected("tree_exiting", self, "_on_current_star_target_tree_exiting"):
-			current_star_target.disconnect("tree_exiting", self, "_on_current_star_target_tree_exiting")
+		if current_star_target.is_connected("cancel_all_lockons", self, "_on_current_star_target_cancel_all_lockons"):
+			current_star_target.disconnect("cancel_all_lockons", self, "_on_current_star_target_cancel_all_lockons")
 	
 	current_star_target = arg_target
 	
 	if is_instance_valid(current_star_target):
-		if !current_star_target.is_connected("tree_exiting", self, "_on_current_star_target_tree_exiting"):
-			current_star_target.connect("tree_exiting", self, "_on_current_star_target_tree_exiting")
+		if !current_star_target.is_connected("cancel_all_lockons", self, "_on_current_star_target_cancel_all_lockons"):
+			current_star_target.connect("cancel_all_lockons", self, "_on_current_star_target_cancel_all_lockons")
+		
+	else:
+		game_elements.enemy_manager.request__get_next_targetable_enemy(self, "_on_requested__get_next_targetable_enemy__fulfilled", "_on_requested__get_next_targetable_enemy__cancelled")
+		_requested_enemy_manager_to_get_next_targetable_enemy = true
+	
+	emit_signal("on_current_target_for_stars_changed", current_star_target)
 
+#
+
+func _on_requested__get_next_targetable_enemy__fulfilled(arg_enemy):
+	game_elements.enemy_manager.disconnect_request_get_next_targetable_enemy(self, "_on_requested__get_next_targetable_enemy__fulfilled", "_on_requested__get_next_targetable_enemy__cancelled")
+	#set_current_star_target(arg_enemy)
+	call_deferred("set_current_star_target", arg_enemy)
+	_requested_enemy_manager_to_get_next_targetable_enemy = false
+
+func _on_requested__get_next_targetable_enemy__cancelled():
+	game_elements.enemy_manager.disconnect_request_get_next_targetable_enemy(self, "_on_requested__get_next_targetable_enemy__fulfilled", "_on_requested__get_next_targetable_enemy__cancelled")
+	_requested_enemy_manager_to_get_next_targetable_enemy = false
+
+#
 
 func _update_current_star_target():
 	var all_enemies = game_elements.enemy_manager.get_all_enemies()
@@ -443,8 +470,7 @@ func _update_current_star_target():
 		set_current_star_target(enemies[0])
 	else:
 		set_current_star_target(null)
-	
-	emit_signal("on_current_target_for_stars_changed", current_star_target)
+
 
 
 #
@@ -466,76 +492,104 @@ func _on_last_enemy_standing_current_health_changed(arg_health_val, arg_enemy):
 		
 
 
-func _on_enemy_spawned(arg_enemy):
-	call_deferred("_update_current_star_target")
+func _on_enemy_spawned_and_finished_ready_prep(arg_enemy):
+	if !_requested_enemy_manager_to_get_next_targetable_enemy:
+		call_deferred("_update_current_star_target")
 	
-	_check_enemies_spawned_ratio_from_ins()
+	_update_anims_based_on_enemies_spawned_ratio_from_ins__and_other_states()
 
-func _on_current_star_target_tree_exiting():
-	call_deferred("_update_current_star_target")
-	#_update_current_star_target()
+#func _on_current_star_target_tree_exiting():
+#	call_deferred("_update_current_star_target")
+#	#_update_current_star_target()
 
 func _on_range_module_current_targeting_changed():
 	call_deferred("_update_current_star_target")
 	#_update_current_star_target()
 
+func _on_current_star_target_cancel_all_lockons():
+	call_deferred("_update_current_star_target")
 
 #
 
-func set_iota_state(arg_state):
+func set_iota_state(arg_state, arg_only_update_anim : bool = false):
 	current_iota_state = arg_state
 	
-	if current_iota_state == IotaState.AllCrash:
-		emit_signal("all_stars_crash_to_target")
+	if !is_dead_for_the_round:
+		if current_iota_state == IotaState.AllCrash:
+			if !arg_only_update_anim:
+				emit_signal("all_stars_crash_to_target")
+			
+			core_sprite.texture = Core_Orange_Pic
+			middle_tube_sprite.texture = MiddleTube_Orange_Pic
+			left_tube_sprite.texture = LeftRightTube_Orange_Pic
+			right_tube_sprite.texture = LeftRightTube_Orange_Pic
+			#star_beam_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(not_at_beam_state_can_be_commanded_clause)
+			
+		elif current_iota_state == IotaState.Normal:
+			_update_anims_based_on_enemies_spawned_ratio_from_ins__and_other_states()
+#			core_sprite.texture = Core_Yellow_Pic
+#			middle_tube_sprite.texture = MiddleTube_Yellow_Pic
+#			left_tube_sprite.texture = LeftRightTube_Yellow_Pic
+#			right_tube_sprite.texture = LeftRightTube_Yellow_Pic
+			
+			#star_beam_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(not_at_beam_state_can_be_commanded_clause)
+			
+		elif current_iota_state == IotaState.Beam:
+			core_sprite.texture = Core_Blue_Pic
+			middle_tube_sprite.texture = MiddleTube_Blue_Pic
+			left_tube_sprite.texture = LeftRightTube_Blue_Pic
+			right_tube_sprite.texture = LeftRightTube_Blue_Pic
+			#star_beam_attack_module.can_be_commanded_by_tower_other_clauses.remove_clause(not_at_beam_state_can_be_commanded_clause)
+			
+			if !arg_only_update_anim:
+				_star_beam_attk_module_ready_to_attack(current_star_target)
+				
+				_update_current_star_target()
+				emit_signal("all_stars_beam_to_target", current_star_target)
 		
-		core_sprite.texture = Core_Orange_Pic
-		middle_tube_sprite.texture = MiddleTube_Orange_Pic
-		left_tube_sprite.texture = LeftRightTube_Orange_Pic
-		right_tube_sprite.texture = LeftRightTube_Orange_Pic
-		#star_beam_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(not_at_beam_state_can_be_commanded_clause)
 		
-	elif current_iota_state == IotaState.Normal:
-		core_sprite.texture = Core_Yellow_Pic
-		middle_tube_sprite.texture = MiddleTube_Yellow_Pic
-		left_tube_sprite.texture = LeftRightTube_Yellow_Pic
-		right_tube_sprite.texture = LeftRightTube_Yellow_Pic
-		#star_beam_attack_module.can_be_commanded_by_tower_other_clauses.attempt_insert_clause(not_at_beam_state_can_be_commanded_clause)
-		
-	elif current_iota_state == IotaState.Beam:
-		core_sprite.texture = Core_Blue_Pic
-		middle_tube_sprite.texture = MiddleTube_Blue_Pic
-		left_tube_sprite.texture = LeftRightTube_Blue_Pic
-		right_tube_sprite.texture = LeftRightTube_Blue_Pic
-		#star_beam_attack_module.can_be_commanded_by_tower_other_clauses.remove_clause(not_at_beam_state_can_be_commanded_clause)
-		_star_beam_attk_module_ready_to_attack(current_star_target)
-		
-		_update_current_star_target()
-		emit_signal("all_stars_beam_to_target", current_star_target)
+	else:
+		middle_tube_sprite.texture = MiddleTube_Gray_NoHealth_Pic
+		left_tube_sprite.texture = LeftRightTube_Gray_NoHealth_Pic
+		right_tube_sprite.texture = LeftRightTube_Gray_NoHealth_Pic
+		core_sprite.texture = Core_Gray_NoHealth_Pic
+
 
 ################
 
 
-func _check_enemies_spawned_ratio_from_ins():
-	var ratio = game_elements.enemy_manager.get_percent_of_enemies_spawned_to_total_from_ins()
-	
-	if current_iota_state == IotaState.Normal:
-		if ratio > 0.75:
-			middle_tube_sprite.texture = MiddleTube_Blue_Pic
-			left_tube_sprite.texture = LeftRightTube_Blue_Pic
-			right_tube_sprite.texture = LeftRightTube_Blue_Pic
-		elif ratio > 0.5:
-			middle_tube_sprite.texture = MiddleTube_Yellow_Pic
-			left_tube_sprite.texture = LeftRightTube_Blue_Pic
-			right_tube_sprite.texture = LeftRightTube_Blue_Pic
-		elif ratio > 0.25:
-			middle_tube_sprite.texture = MiddleTube_Yellow_Pic
-			left_tube_sprite.texture = LeftRightTube_Blue_Pic
-			right_tube_sprite.texture = LeftRightTube_Yellow_Pic
-	
-	if is_equal_approx(ratio, 1.0):
-		if current_iota_state != IotaState.AllCrash:
-			set_iota_state(IotaState.Beam)
-			
+func _update_anims_based_on_enemies_spawned_ratio_from_ins__and_other_states():
+	if !is_dead_for_the_round:
+		var ratio = game_elements.enemy_manager.get_percent_of_enemies_spawned_to_total_from_ins()
+		
+		if current_iota_state == IotaState.Normal:
+			if ratio > 0.75:
+				middle_tube_sprite.texture = MiddleTube_Blue_Pic
+				left_tube_sprite.texture = LeftRightTube_Blue_Pic
+				right_tube_sprite.texture = LeftRightTube_Blue_Pic
+			elif ratio > 0.5:
+				middle_tube_sprite.texture = MiddleTube_Yellow_Pic
+				left_tube_sprite.texture = LeftRightTube_Blue_Pic
+				right_tube_sprite.texture = LeftRightTube_Blue_Pic
+			elif ratio > 0.25:
+				middle_tube_sprite.texture = MiddleTube_Yellow_Pic
+				left_tube_sprite.texture = LeftRightTube_Blue_Pic
+				right_tube_sprite.texture = LeftRightTube_Yellow_Pic
+			else:
+				core_sprite.texture = Core_Yellow_Pic
+				middle_tube_sprite.texture = MiddleTube_Yellow_Pic
+				left_tube_sprite.texture = LeftRightTube_Yellow_Pic
+				right_tube_sprite.texture = LeftRightTube_Yellow_Pic
+		
+		if is_equal_approx(ratio, 1.0):
+			if current_iota_state != IotaState.AllCrash:
+				set_iota_state(IotaState.Beam)
+		
+	else:
+		middle_tube_sprite.texture = MiddleTube_Gray_NoHealth_Pic
+		left_tube_sprite.texture = LeftRightTube_Gray_NoHealth_Pic
+		right_tube_sprite.texture = LeftRightTube_Gray_NoHealth_Pic
+		core_sprite.texture = Core_Gray_NoHealth_Pic
 
 
 #
@@ -565,6 +619,18 @@ func _star_beam_attk_module_ready_to_attack(arg_target):
 func _on_star_beam_damage_instance_constructed(arg_dmg_instance, arg_module):
 	if current_star_at_beam_state_count > 0:
 		arg_dmg_instance.scale_only_damage_by(current_star_at_beam_state_count)
+
+
+
+#
+
+func _on_changed_anim_from_alive_to_dead():
+	set_iota_state(current_iota_state, true)
+
+func _on_changed_anim_from_dead_to_alive():
+	set_iota_state(current_iota_state)
+	#set_iota_state(current_iota_state)
+	#_update_anims_based_on_enemies_spawned_ratio_from_ins__and_other_states()
 
 
 #

@@ -104,7 +104,7 @@ signal on_sellback_value_changed(new_value)
 signal on_max_health_changed(new_max)
 signal on_current_health_changed(new_curr)
 signal on_tower_no_health()
-
+signal on_tower_healed_from_no_health()
 
 signal on_main_attack_in_attack_windup(wind_up_time, enemies, module)
 signal on_main_attack_finished(module)
@@ -163,6 +163,11 @@ signal on_effect_removed(effect)
 signal before_effect_is_removed(effect)
 
 signal on_taken_damage_from_enemy(arg_enemy, arg_dmg_amount)
+
+# anim change related
+
+signal changed_anim_from_alive_to_dead()
+signal changed_anim_from_dead_to_alive()
 
 #
 
@@ -457,7 +462,6 @@ var last_calculated_has_commandable_attack_modules : bool
 
 var all_tower_abiltiies : Array
 
-var anim_face_dir_component : AnimFaceDirComponent
 
 # tracker
 
@@ -499,6 +503,8 @@ var synergy_manager
 var game_elements
 
 # anim related
+
+var anim_face_dir_component : AnimFaceDirComponent
 
 var _anim_face__custom_anim_names_to_use
 var _anim_face__custom_dir_name_to_primary_rad_angle_map
@@ -616,6 +622,9 @@ func _ready():
 	connect("on_current_health_changed", life_bar, "set_current_health_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 	connect("on_max_health_changed", life_bar, "set_max_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 	
+	connect("on_tower_no_health", self, "_on_tower_no_health__for_anim_change", [], CONNECT_PERSIST)
+	connect("on_tower_healed_from_no_health", self, "_on_tower_healed_from_no_health__for_anim_change", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+	
 	for child in knock_up_layer.get_children():
 		child.use_parent_material = true
 	tower_base.material = ShaderMaterial.new()
@@ -721,6 +730,10 @@ func _emit_current_health_changed():
 
 func _emit_tower_no_health():
 	emit_signal("on_tower_no_health")
+
+func _emit_tower_healed_from_no_health():
+	emit_signal("on_tower_healed_from_no_health")
+
 
 # Adding Attack modules related
 
@@ -3267,7 +3280,9 @@ func _set_health(val : float):
 		erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_NO_HEALTH)
 		erase_untargetability_clause(UntargetabilityClauses.TOWER_NO_HEALTH)
 		
-		is_dead_for_the_round = false
+		if is_dead_for_the_round:
+			is_dead_for_the_round = false
+			_emit_tower_healed_from_no_health()
 		
 		life_bar.visible = current_health < last_calculated_max_health
 		#life_bar.visible = true
@@ -3495,12 +3510,13 @@ func _conv_angle_to_positive_val(arg_angle):
 
 # also used by method "configure_self_to_change_direction_on_attack_module_when_commanded"
 func _on_attk_module__commanded_to_attack_enemies_or_poses(arg_enemies_or_poses, module):
-	if arg_enemies_or_poses.size() > 0:
-		var ent = arg_enemies_or_poses[0]
-		if ent is Vector2:
-			_change_animation_to_face_position(ent)
-		else:
-			_change_animation_to_face_position(ent.global_position)
+	if !is_dead_for_the_round:
+		if arg_enemies_or_poses.size() > 0:
+			var ent = arg_enemies_or_poses[0]
+			if ent is Vector2:
+				_change_animation_to_face_position(ent)
+			else:
+				_change_animation_to_face_position(ent.global_position)
 
 
 func _change_animation_to_face_position(arg_position, pos_basis = global_position):
@@ -3516,6 +3532,15 @@ func configure_self_to_change_direction_on_attack_module_when_commanded(arg_atta
 	arg_attack_module.connect("on_commanded_to_attack_enemies_or_poses", self, "_on_attk_module__commanded_to_attack_enemies_or_poses", [arg_attack_module], CONNECT_PERSIST)
 
 
+func _on_tower_no_health__for_anim_change():
+	var anim_name = anim_face_dir_component.get_anim_name_to_use_on_no_health_based_on_current_name()
+	anim_face_dir_component.set_animation_sprite_animation_using_anim_name(tower_base_sprites, anim_name)
+	emit_signal("changed_anim_from_alive_to_dead")
+
+func _on_tower_healed_from_no_health__for_anim_change():
+	var anim_name = anim_face_dir_component.get_anim_name_to_use_on_normal_based_on_current_no_health_name()
+	anim_face_dir_component.set_animation_sprite_animation_using_anim_name(tower_base_sprites, anim_name)
+	emit_signal("changed_anim_from_dead_to_alive")
 
 
 ####### Particle related

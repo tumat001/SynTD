@@ -29,7 +29,7 @@ var _explosion_timer : Timer
 var _explosion_base_damage : float
 var base_unit_time_per_explosion : float
 var explosion_scale : float
-var explosion_base_and_on_hit_damage_scale : float
+var explosion_on_hit_damage_scale : float
 
 # When towers are overheating (100 heat)
 var _explosion_cooldown_lowered_ratio : float
@@ -64,7 +64,7 @@ func _make_modifications_to_tower(tower):
 
 func _construct_attk_module():
 	explosion_attack_module = AOEAttackModule_Scene.instance()
-	explosion_attack_module.base_damage_scale = explosion_base_and_on_hit_damage_scale
+	explosion_attack_module.base_damage_scale = 1 #explosion_base_and_on_hit_damage_scale
 	explosion_attack_module.base_damage = _explosion_base_damage / explosion_attack_module.base_damage_scale
 	explosion_attack_module.base_damage_type = DamageType.ELEMENTAL
 	explosion_attack_module.base_attack_speed = 0
@@ -72,7 +72,7 @@ func _construct_attk_module():
 	explosion_attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	explosion_attack_module.is_main_attack = false
 	explosion_attack_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
-	explosion_attack_module.on_hit_damage_scale = explosion_base_and_on_hit_damage_scale
+	explosion_attack_module.on_hit_damage_scale = explosion_on_hit_damage_scale
 	
 	explosion_attack_module.benefits_from_bonus_explosion_scale = true
 	explosion_attack_module.benefits_from_bonus_base_damage = true

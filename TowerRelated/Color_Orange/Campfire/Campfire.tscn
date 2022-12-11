@@ -13,7 +13,7 @@
 animations = [ {
 "frames": [ ExtResource( 4 ), ExtResource( 2 ), ExtResource( 3 ), ExtResource( 7 ), ExtResource( 5 ) ],
 "loop": true,
-"name": "default",
+"name": "Omni",
 "speed": 5.0
 } ]
 
@@ -28,6 +28,7 @@ texture = ExtResource( 6 )
 
 [node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="1"]
 frames = SubResource( 1 )
+animation = "Omni"
 frame = 1
 playing = true
 
