@@ -10,11 +10,15 @@ const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/Te
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 signal on_activation_requirements_met(curr_tier)
 signal on_activation_requirements_unmet(curr_tier)
 
 signal on_description_changed()
+
+signal pact_sworn()
+
 
 var game_elements : GameElements
 var red_dom_syn
@@ -35,6 +39,16 @@ var is_activation_requirements_met : bool
 
 var pact_mag_rng : RandomNumberGenerator
 
+#
+
+enum PactCanBeSwornClauseId {
+	HEALING_SYMBOL_BENCH_STATUS = 1
+}
+var pact_can_be_sworn_conditional_clauses : ConditionalClauses
+var last_calculated_can_be_sworn : bool
+
+#
+
 func _init(arg_uuid : int, arg_name : String, arg_tier : int,
 		arg_tier_needed_for_activation : int):
 	pact_uuid = arg_uuid
@@ -43,6 +57,13 @@ func _init(arg_uuid : int, arg_name : String, arg_tier : int,
 	pact_name = arg_name
 	
 	pact_mag_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.DOMSYN_RED_PACT_MAGNITUDE)
+	
+	#
+	
+	pact_can_be_sworn_conditional_clauses = ConditionalClauses.new()
+	pact_can_be_sworn_conditional_clauses.connect("clause_inserted", self, "_on_pact_can_be_sworn_conditional_clauses_updated", [], CONNECT_PERSIST)
+	pact_can_be_sworn_conditional_clauses.connect("clause_removed", self ,"_on_pact_can_be_sworn_conditional_clauses_updated", [], CONNECT_PERSIST)
+	_on_pact_can_be_sworn_conditional_clauses_updated(null) # arg does not matter
 
 #
 
@@ -103,6 +124,7 @@ func pact_sworn():
 	is_sworn = true
 	#_apply_pact_to_game_elements(game_elements)
 	_check_requirement_status_and_do_appropriate_action()
+	emit_signal("pact_sworn")
 
 func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	if game_elements == null:
@@ -124,5 +146,29 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 ###########
 
 func is_pact_offerable(arg_game_elements : GameElements, dom_syn_red, tier_to_be_offered) -> bool:
-	return true
+	#return true
+	return last_calculated_can_be_sworn
+
+
+###########
+
+func _on_pact_can_be_sworn_conditional_clauses_updated(arg_clause_id):
+	last_calculated_can_be_sworn = pact_can_be_sworn_conditional_clauses.is_passed
+
+########## COMMON METHODS ###########
+
+func common__make_pact_untakable_during_round():
+	game_elements.stage_round_manager.connect("round_ended", self, "_on_round_end__make_pact_untakable_during_round", [], CONNECT_PERSIST)
+	game_elements.stage_round_manager.connect("round_started", self, "_on_round_start__make_pact_untakable_during_round", [], CONNECT_PERSIST)
+	
+	connect("pact_sworn", self, "")
+
+func _on_round_end__make_pact_untakable_during_round(arg_stageround):
+	pass
+
+func _on_round_start__make_pact_untakable_during_round(arg_stageround):
+	pass
+
+func _on_pact_sworn__make_pact_untakable_during_round():
+	pass
 

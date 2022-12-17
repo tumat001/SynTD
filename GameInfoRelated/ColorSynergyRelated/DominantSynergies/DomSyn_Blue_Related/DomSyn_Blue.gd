@@ -783,7 +783,7 @@ func _tower_to_benefit_from_synergy(tower : AbstractTower):
 	_attempt_add_effect_to_tower(tower)
 
 func _attempt_add_effect_to_tower(tower : AbstractTower):
-	if tower._tower_colors.has(TowerColors.BLUE) and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLUE_AP_EFFECT):
+	if tower.is_benefit_from_syn_having_or_as_if_having_color(TowerColors.BLUE) and !tower.has_tower_effect_uuid_in_buff_map(StoreOfTowerEffectsUUID.BLUE_AP_EFFECT):
 		
 		if curr_tier == 1:
 			tower_ap_modi.flat_modifier = tower_ap_tier_1

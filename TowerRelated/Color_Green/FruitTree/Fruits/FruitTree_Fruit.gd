@@ -27,7 +27,7 @@ enum {
 }
 
 
-var fruit_type : int = BLUE
+var fruit_type : int = BLUE  #can be anything, as it is overriden by fruit tree
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.FRUIT_TREE_FRUIT)

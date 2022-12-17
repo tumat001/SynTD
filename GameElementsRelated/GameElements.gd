@@ -397,7 +397,7 @@ func _ready():
 	
 	# FOR TESTING ------------------------------------
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_6
+	level_manager.current_level = LevelManager.LEVEL_8
 	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
@@ -414,21 +414,21 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.CHARGE,
-			Towers.COIN,
-			Towers.IOTA,
-			Towers.ENERVATE,
-			Towers.BLOSSOM,
-			#Towers.LEADER,
+			Towers.WYVERN,
+			Towers.ADEPT,
+			Towers.TRUDGE,
+			Towers.CHAOS,
+			Towers.SHACKLED,
+			Towers.TESLA,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.IOTA,
-			Towers.TESLA,
-			Towers.SHACKLED,
-			Towers.REAPER,
-			Towers.BREWD,
-			Towers.TRANSPORTER
+			Towers.BLOSSOM,
+			Towers.CHARGE,
+			Towers.PING,
+			Towers.ENERVATE,
+			Towers.PAROXYSM
 		])
 	even = !even
 

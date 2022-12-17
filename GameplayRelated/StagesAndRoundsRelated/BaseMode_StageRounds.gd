@@ -32,9 +32,27 @@ func _post_init():
 		if curr_stage_round.give_relic_count_in_round > 0:
 			stage_rounds_with_relic.append(curr_stage_round)
 
+
+# queries
+
 func get_next_relic_giving_round_from_current(arg_curr_stage_round : StageRound):
 	for relic_stage_round in stage_rounds_with_relic:
 		if StageRound.is_stageround_id_higher_than_second_param(relic_stage_round.id, arg_curr_stage_round.id):
 			return relic_stage_round
 
+
+func get_stage_round_after_x_rounds_from_current(arg_curr_stage_round : StageRound, arg_x_count : int):
+	var index_of_curr = stage_rounds.find(arg_curr_stage_round)
+	return get_stage_round_after_x_rounds_from_current_index(index_of_curr, arg_x_count)
+
+func get_stage_round_after_x_rounds_from_current_index(arg_index : int, arg_x_count : int):
+	var stage_round_size : int = stage_rounds.size()
+	arg_index += arg_x_count
+	if arg_index >= stage_round_size:
+		arg_index = stage_round_size - 1
+	
+	if arg_index < 0:
+		arg_index = 0
+	
+	return stage_rounds[arg_index]
 

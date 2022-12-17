@@ -28,10 +28,10 @@ var weights_at_ave_ave_value : Dictionary = {
 	4 : 25,
 }
 
-#func set_min_sv_value(arg_val):
+#func set_min_sv_value(arg_val : int):
 #	min_sv_value = arg_val
 #
-#func set_max_sv_value(arg_val):
+#func set_max_sv_value(arg_val : int):
 #	max_sv_value = arg_val
 
 ##
@@ -143,3 +143,5 @@ func _randomly_select_val_in_map_based_on_weight(weight_map):
 	
 	print("enemysvgenerator error - no weight selected. defaulting to 3")
 	return 3
+
+

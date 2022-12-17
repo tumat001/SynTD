@@ -296,3 +296,28 @@ func _on_round_ended_a():
 			particle.position.y -= 10
 			
 			CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(particle)
+
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 1
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var base_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_attr_mod.percent_amount = 50
+	base_attr_mod.percent_based_on = PercentType.BASE
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	for module in all_attack_modules:
+		if module.benefits_from_bonus_attack_speed:
+			module.calculate_all_speed_related_attributes()
+	
+	emit_signal("final_attack_speed_changed")
+

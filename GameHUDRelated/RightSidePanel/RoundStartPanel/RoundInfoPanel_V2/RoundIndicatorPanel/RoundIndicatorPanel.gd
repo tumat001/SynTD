@@ -10,6 +10,7 @@ const SV_Border_Pic_01 = preload("res://GameHUDRelated/RightSidePanel/RoundStart
 const SV_Border_Pic_02 = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/StrengthValueBorder_02.png")
 const SV_Border_Pic_03 = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/StrengthValueBorder_03.png")
 const SV_Border_Pic_04 = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/StrengthValueBorder_04.png")
+const SV_Border_Pic_05 = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/StrengthValueBorder_05.png")
 
 
 const modulate_lose := Color(218/255.0, 2/255.0, 5/255.0, 1)
@@ -281,6 +282,8 @@ func _on_enemy_strength_value_changed(arg_val):
 		sv_texture_rect.texture = SV_Border_Pic_03
 	elif arg_val == 4:
 		sv_texture_rect.texture = SV_Border_Pic_04
+	elif arg_val == 5:
+		sv_texture_rect.texture = SV_Border_Pic_05
 	
 	sv_label.text = str(arg_val)
 
@@ -300,14 +303,18 @@ func _on_SVArt_mouse_entered():
 		_current_tooltip = null
 
 func _get_descriptions_based_on_sv():
-	if enemy_manager.current_strength_value == 1:
+	var sv = enemy_manager.get_current_strength_value()
+	
+	if sv == 1:
 		return ["The enemies sent in this round are rather weak."]
-	elif enemy_manager.current_strength_value == 2:
+	elif sv == 2:
 		return ["The enemies sent in this round are standard in strength."]
-	elif enemy_manager.current_strength_value == 3:
+	elif sv == 3:
 		return ["The enemies sent in this round are quite strong."]
-	elif enemy_manager.current_strength_value == 4:
+	elif sv == 4:
 		return ["The enemies sent in this round are very powerful."]
+	elif sv == 5:
+		return ["The enemies sent is this round are overwhelming."]
 
 func _on_SVArt_mouse_exited():
 	if is_instance_valid(_current_tooltip):

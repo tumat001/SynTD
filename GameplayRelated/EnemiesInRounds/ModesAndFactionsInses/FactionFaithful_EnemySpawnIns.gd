@@ -114,6 +114,9 @@ func _get_instructions_for_4_1():
 		return _get_instructions_for_4_1__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_4_1__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_4_1__sv_5()
+
 
 func _get_instructions_for_4_1__sv_1():
 	return [
@@ -139,6 +142,13 @@ func _get_instructions_for_4_1__sv_4():
 		MultipleEnemySpawnInstruction.new(4, 7, 4, EnemyConstants.Enemies.BELIEVER),
 	]
 
+func _get_instructions_for_4_1__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 13, 1.8, EnemyConstants.Enemies.BASIC),
+		MultipleEnemySpawnInstruction.new(4, 8, 3.5, EnemyConstants.Enemies.BELIEVER),
+	]
+
+
 ############## 4-2
 func _get_instructions_for_4_2():
 	if enemy_strength_value_to_use == 1:
@@ -149,6 +159,9 @@ func _get_instructions_for_4_2():
 		return _get_instructions_for_4_2__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_4_2__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_4_2__sv_5()
+
 
 func _get_instructions_for_4_2__sv_1():
 	return [
@@ -170,7 +183,13 @@ func _get_instructions_for_4_2__sv_3():
 
 func _get_instructions_for_4_2__sv_4():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 7, 4.25, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(0, 8, 4.25, EnemyConstants.Enemies.BELIEVER),
+		SingleEnemySpawnInstruction.new(14.5, EnemyConstants.Enemies.CROSS_BEARER)
+	]
+
+func _get_instructions_for_4_2__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 9, 4, EnemyConstants.Enemies.BELIEVER),
 		SingleEnemySpawnInstruction.new(14.5, EnemyConstants.Enemies.CROSS_BEARER)
 	]
 
@@ -184,6 +203,9 @@ func _get_instructions_for_4_3():
 		return _get_instructions_for_4_3__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_4_3__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_4_3__sv_5()
+
 
 func _get_instructions_for_4_3__sv_1():
 	return [
@@ -217,6 +239,15 @@ func _get_instructions_for_4_3__sv_4():
 		SingleEnemySpawnInstruction.new(4.5, EnemyConstants.Enemies.BELIEVER),
 	]
 
+func _get_instructions_for_4_3__sv_5():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(2, 8, 5, EnemyConstants.Enemies.BELIEVER),
+		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.BELIEVER),
+		SingleEnemySpawnInstruction.new(4.5, EnemyConstants.Enemies.BELIEVER),
+		
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.BELIEVER),
+	]
 
 ################# 4-4
 func _get_instructions_for_4_4():
@@ -228,6 +259,8 @@ func _get_instructions_for_4_4():
 		return _get_instructions_for_4_4__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_4_4__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_4_4__sv_5()
 
 
 func _get_instructions_for_4_4__sv_1():
@@ -255,6 +288,14 @@ func _get_instructions_for_4_4__sv_4():
 		SingleEnemySpawnInstruction.new(29, EnemyConstants.Enemies.BELIEVER),
 	]
 
+func _get_instructions_for_4_4__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 8, 3.5, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(8.5, 4, 0.5, EnemyConstants.Enemies.BELIEVER),
+		SingleEnemySpawnInstruction.new(29, EnemyConstants.Enemies.BELIEVER),
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.BELIEVER),
+	]
+
 ################ 5-1
 func _get_instructions_for_5_1():
 	if enemy_strength_value_to_use == 1:
@@ -265,6 +306,8 @@ func _get_instructions_for_5_1():
 		return _get_instructions_for_5_1__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_5_1__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_5_1__sv_5()
 
 
 func _get_instructions_for_5_1__sv_1():
@@ -296,6 +339,13 @@ func _get_instructions_for_5_1__sv_4():
 		SingleEnemySpawnInstruction.new(14.5, EnemyConstants.Enemies.CROSS_BEARER)
 	]
 
+func _get_instructions_for_5_1__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 9, 3, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(2, 4, 6, EnemyConstants.Enemies.PRIEST),
+		SingleEnemySpawnInstruction.new(12.5, EnemyConstants.Enemies.BELIEVER),
+		SingleEnemySpawnInstruction.new(14.5, EnemyConstants.Enemies.CROSS_BEARER)
+	]
 
 ############## 5-2 DEITY ROUND
 func _get_instructions_for_5_2():
@@ -307,6 +357,9 @@ func _get_instructions_for_5_2():
 		return _get_instructions_for_5_2__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_5_2__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_5_2__sv_5()
+
 
 func _get_instructions_for_5_2__sv_1():
 	return [
@@ -335,6 +388,16 @@ func _get_instructions_for_5_2__sv_4():
 		SingleEnemySpawnInstruction.new(40, EnemyConstants.Enemies.BELIEVER),
 	]
 
+func _get_instructions_for_5_2__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 10, 2, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(13, 9, 3, EnemyConstants.Enemies.PRIEST),
+		
+		SingleEnemySpawnInstruction.new(38, EnemyConstants.Enemies.BELIEVER),
+		SingleEnemySpawnInstruction.new(40, EnemyConstants.Enemies.BELIEVER),
+	]
+
+
 ############## 5-3
 func _get_instructions_for_5_3():
 	if enemy_strength_value_to_use == 1:
@@ -345,6 +408,9 @@ func _get_instructions_for_5_3():
 		return _get_instructions_for_5_3__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_5_3__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_5_3__sv_5()
+
 
 func _get_instructions_for_5_3__sv_1():
 	return [
@@ -366,6 +432,10 @@ func _get_instructions_for_5_3__sv_4():
 		LinearEnemySpawnInstruction.new(0, 27, 3, 0.02, EnemyConstants.Enemies.BELIEVER, 0.25),
 	]
 
+func _get_instructions_for_5_3__sv_5():
+	return [
+		LinearEnemySpawnInstruction.new(0, 31, 3, 0.02, EnemyConstants.Enemies.BELIEVER, 0.25),
+	]
 
 ############### 5-4
 func _get_instructions_for_5_4():
@@ -410,6 +480,13 @@ func _get_instructions_for_5_4__sv_4():
 		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.CROSS_BEARER)
 	]
 
+func _get_instructions_for_5_4__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 9, 6, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(3.25, 9, 5.5, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(8, 7, 1, EnemyConstants.Enemies.PRIEST),
+		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.CROSS_BEARER)
+	]
 
 ################ 6-1 DEITY ROUND
 func _get_instructions_for_6_1():
@@ -421,6 +498,8 @@ func _get_instructions_for_6_1():
 		return _get_instructions_for_6_1__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_6_1__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_6_1__sv_5()
 
 
 func _get_instructions_for_6_1__sv_1():
@@ -449,9 +528,15 @@ func _get_instructions_for_6_1__sv_4():
 		MultipleEnemySpawnInstruction.new(0, 8, 0.75, EnemyConstants.Enemies.BELIEVER),
 		MultipleEnemySpawnInstruction.new(12, 7, 3, EnemyConstants.Enemies.SACRIFICER),
 		MultipleEnemySpawnInstruction.new(14.5, 7, 3, EnemyConstants.Enemies.PRIEST),
-		
 	]
 
+func _get_instructions_for_6_1__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 8, 0.75, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(12, 9, 2.5, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(14.5, 9, 2.5, EnemyConstants.Enemies.PRIEST),
+		
+	]
 
 
 ################## 6-2
@@ -464,6 +549,8 @@ func _get_instructions_for_6_2():
 		return _get_instructions_for_6_2__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_6_2__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_6_2__sv_5()
 
 
 func _get_instructions_for_6_2__sv_1():
@@ -491,6 +578,11 @@ func _get_instructions_for_6_2__sv_4():
 		MultipleEnemySpawnInstruction.new(3, 3, 9, EnemyConstants.Enemies.DVARAPALA),
 	]
 
+func _get_instructions_for_6_2__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 16, 2.9, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(3, 4, 7, EnemyConstants.Enemies.DVARAPALA),
+	]
 
 ############## 6-3
 func _get_instructions_for_6_3():
@@ -502,6 +594,9 @@ func _get_instructions_for_6_3():
 		return _get_instructions_for_6_3__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_6_3__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_6_3__sv_5()
+
 
 func _get_instructions_for_6_3__sv_1():
 	return [
@@ -532,6 +627,15 @@ func _get_instructions_for_6_3__sv_4():
 		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.BELIEVER)
 	]
 
+func _get_instructions_for_6_3__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 16, 1.8, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(2, 7, 2, EnemyConstants.Enemies.SEER),
+		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.CROSS_BEARER),
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.BELIEVER)
+	]
+
+
 ############## 6-4 DEITY ROUND
 func _get_instructions_for_6_4():
 	if enemy_strength_value_to_use == 1:
@@ -542,33 +646,42 @@ func _get_instructions_for_6_4():
 		return _get_instructions_for_6_4__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_6_4__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_6_4__sv_5()
+
 
 func _get_instructions_for_6_4__sv_1():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 13, 2, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(0, 15, 2, EnemyConstants.Enemies.BELIEVER),
 		MultipleEnemySpawnInstruction.new(8, 5, 4, EnemyConstants.Enemies.SEER),
 	]
 
 func _get_instructions_for_6_4__sv_2():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 15, 2, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(0, 17, 2, EnemyConstants.Enemies.BELIEVER),
 		MultipleEnemySpawnInstruction.new(8, 6, 4, EnemyConstants.Enemies.SEER),
 	]
 
 func _get_instructions_for_6_4__sv_3():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 16, 1.92, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(0, 19, 1.92, EnemyConstants.Enemies.BELIEVER),
 		MultipleEnemySpawnInstruction.new(8, 7, 4, EnemyConstants.Enemies.SEER),
 	]
 
 func _get_instructions_for_6_4__sv_4():
 	return [
-		MultipleEnemySpawnInstruction.new(0, 16, 1.85, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(0, 21, 1.85, EnemyConstants.Enemies.BELIEVER),
 		MultipleEnemySpawnInstruction.new(8, 7, 4, EnemyConstants.Enemies.SEER),
 		SingleEnemySpawnInstruction.new(33, EnemyConstants.Enemies.SEER),
 	]
 
-
+func _get_instructions_for_6_4__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 18, 1.75, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(4, 9, 4, EnemyConstants.Enemies.SEER),
+		SingleEnemySpawnInstruction.new(23, EnemyConstants.Enemies.SEER),
+		SingleEnemySpawnInstruction.new(33, EnemyConstants.Enemies.SEER),
+	]
 
 ############# 7-1
 func _get_instructions_for_7_1():
@@ -580,6 +693,8 @@ func _get_instructions_for_7_1():
 		return _get_instructions_for_7_1__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_7_1__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_7_1__sv_5()
 
 
 func _get_instructions_for_7_1__sv_1():
@@ -615,6 +730,15 @@ func _get_instructions_for_7_1__sv_4():
 		MultipleEnemySpawnInstruction.new(40, 3, 1.5, EnemyConstants.Enemies.DVARAPALA)
 	]
 
+func _get_instructions_for_7_1__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 20, 2.95, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(0, 3, 1.5, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(20, 3, 1.5, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(40, 3, 1.5, EnemyConstants.Enemies.DVARAPALA)
+	]
+
+
 ################## 7-2
 func _get_instructions_for_7_2():
 	if enemy_strength_value_to_use == 1:
@@ -625,6 +749,8 @@ func _get_instructions_for_7_2():
 		return _get_instructions_for_7_2__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_7_2__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_7_2__sv_5()
 
 
 func _get_instructions_for_7_2__sv_1():
@@ -663,6 +789,15 @@ func _get_instructions_for_7_2__sv_4():
 		MultipleEnemySpawnInstruction.new(24, 7, 1, EnemyConstants.Enemies.BELIEVER),
 	]
 
+func _get_instructions_for_7_2__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 6, 6, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(7.5, 8, 2.5, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(8.5, 7, 5, EnemyConstants.Enemies.SEER),
+		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.CROSS_BEARER),
+		MultipleEnemySpawnInstruction.new(24, 7, 1, EnemyConstants.Enemies.BELIEVER),
+	]
+
 ##################### 7-3 DEITY ROUND
 func _get_instructions_for_7_3():
 	if enemy_strength_value_to_use == 1:
@@ -673,6 +808,8 @@ func _get_instructions_for_7_3():
 		return _get_instructions_for_7_3__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_7_3__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_7_3__sv_5()
 
 
 func _get_instructions_for_7_3__sv_1():
@@ -710,6 +847,17 @@ func _get_instructions_for_7_3__sv_4():
 		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.DVARAPALA)
 	]
 
+func _get_instructions_for_7_3__sv_5():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(6, 4, 1, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(7.5, 8, 2, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(8.5, 6, 4, EnemyConstants.Enemies.SEER),
+		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.DVARAPALA),
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.DVARAPALA)
+	]
+
+
 ###################### 7-4
 func _get_instructions_for_7_4():
 	if enemy_strength_value_to_use == 1:
@@ -720,6 +868,9 @@ func _get_instructions_for_7_4():
 		return _get_instructions_for_7_4__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_7_4__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_7_4__sv_5()
+
 
 func _get_instructions_for_7_4__sv_1():
 	return [
@@ -755,6 +906,17 @@ func _get_instructions_for_7_4__sv_4():
 		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.PROVIDENCE),
 	]
 
+func _get_instructions_for_7_4__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 14, 2.9, EnemyConstants.Enemies.BELIEVER),
+		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(7.5, 3, 9, EnemyConstants.Enemies.DVARAPALA),
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.PROVIDENCE),
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.PROVIDENCE),
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.PROVIDENCE),
+		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.PROVIDENCE),
+	]
+
 ##################### 8-1
 func _get_instructions_for_8_1():
 	if enemy_strength_value_to_use == 1:
@@ -765,6 +927,9 @@ func _get_instructions_for_8_1():
 		return _get_instructions_for_8_1__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_8_1__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_8_1__sv_5()
+
 
 func _get_instructions_for_8_1__sv_1():
 	return [
@@ -798,6 +963,15 @@ func _get_instructions_for_8_1__sv_4():
 		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.CROSS_BEARER),
 	]
 
+func _get_instructions_for_8_1__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 23, 1.5, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(1.25, 23, 1.5, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(2.5, 8, 3, EnemyConstants.Enemies.SEER),
+		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.CROSS_BEARER),
+	]
+
+
 ################# 8-2 DEITY ROUND
 func _get_instructions_for_8_2():
 	if enemy_strength_value_to_use == 1:
@@ -808,6 +982,8 @@ func _get_instructions_for_8_2():
 		return _get_instructions_for_8_2__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_8_2__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_8_2__sv_5()
 
 
 func _get_instructions_for_8_2__sv_1():
@@ -845,6 +1021,16 @@ func _get_instructions_for_8_2__sv_4():
 		SingleEnemySpawnInstruction.new(11, EnemyConstants.Enemies.BELIEVER),
 	]
 
+func _get_instructions_for_8_2__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 17, 2, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(1, 17, 2, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(2, 6, 4, EnemyConstants.Enemies.SEER),
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.BELIEVER),
+		SingleEnemySpawnInstruction.new(11, EnemyConstants.Enemies.BELIEVER),
+	]
+
+
 ################ 8-3
 func _get_instructions_for_8_3():
 	if enemy_strength_value_to_use == 1:
@@ -855,6 +1041,8 @@ func _get_instructions_for_8_3():
 		return _get_instructions_for_8_3__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_8_3__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_8_3__sv_5()
 
 func _get_instructions_for_8_3__sv_1():
 	return [
@@ -880,6 +1068,13 @@ func _get_instructions_for_8_3__sv_4():
 		MultipleEnemySpawnInstruction.new(8, 26, 0.35, EnemyConstants.Enemies.BELIEVER)
 	]
 
+func _get_instructions_for_8_3__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 30, 1.055, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(8, 30, 0.35, EnemyConstants.Enemies.BELIEVER)
+	]
+
+
 ################# 8-4
 func _get_instructions_for_8_4():
 	if enemy_strength_value_to_use == 1:
@@ -890,6 +1085,8 @@ func _get_instructions_for_8_4():
 		return _get_instructions_for_8_4__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_8_4__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_8_4__sv_5()
 
 
 func _get_instructions_for_8_4__sv_1():
@@ -932,6 +1129,16 @@ func _get_instructions_for_8_4__sv_4():
 		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.CROSS_BEARER),
 	]
 
+func _get_instructions_for_8_4__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 16, 3.25, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(0, 16, 3.25, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(1, 16, 3.25, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(2, 5, 8, EnemyConstants.Enemies.SEER),
+		MultipleEnemySpawnInstruction.new(4, 7, 5, EnemyConstants.Enemies.DVARAPALA),
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.CROSS_BEARER),
+	]
+
 #################### 9-1 DEITY ROUND
 func _get_instructions_for_9_1():
 	if enemy_strength_value_to_use == 1:
@@ -942,6 +1149,8 @@ func _get_instructions_for_9_1():
 		return _get_instructions_for_9_1__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_9_1__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_9_1__sv_5()
 
 
 func _get_instructions_for_9_1__sv_1():
@@ -986,6 +1195,18 @@ func _get_instructions_for_9_1__sv_4():
 		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.DVARAPALA),
 	]
 
+func _get_instructions_for_9_1__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 14, 4, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(1, 14, 4, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(2, 14, 4, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(3, 6, 7, EnemyConstants.Enemies.SEER),
+		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(13, 7, 0.5, EnemyConstants.Enemies.PRIEST),
+		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.DVARAPALA),
+		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.DVARAPALA),
+	]
+
 
 ############### 9-2
 func _get_instructions_for_9_2():
@@ -997,6 +1218,9 @@ func _get_instructions_for_9_2():
 		return _get_instructions_for_9_2__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_9_2__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_9_2__sv_5()
+
 
 func _get_instructions_for_9_2__sv_1():
 	return [
@@ -1034,6 +1258,16 @@ func _get_instructions_for_9_2__sv_4():
 		MultipleEnemySpawnInstruction.new(4, 7, 6, EnemyConstants.Enemies.SEER),
 	]
 
+func _get_instructions_for_9_2__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 8, 5, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(1, 7, 6, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(2, 14, 3, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(3, 14, 3, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(4, 7, 6, EnemyConstants.Enemies.SEER),
+	]
+
+
 ################## 9-3
 func _get_instructions_for_9_3():
 	if enemy_strength_value_to_use == 1:
@@ -1044,6 +1278,8 @@ func _get_instructions_for_9_3():
 		return _get_instructions_for_9_3__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_9_3__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_9_3__sv_5()
 
 
 func _get_instructions_for_9_3__sv_1():
@@ -1094,6 +1330,19 @@ func _get_instructions_for_9_3__sv_4():
 		LinearEnemySpawnInstruction.new(18, 20, 0.5, 0.030, EnemyConstants.Enemies.BELIEVER, 0.1),
 	]
 
+func _get_instructions_for_9_3__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 4, 10, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(1, 5, 8, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(2, 14, 3, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(3, 14, 3, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(4, 7, 6, EnemyConstants.Enemies.SEER),
+		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.CROSS_BEARER),
+		
+		LinearEnemySpawnInstruction.new(18, 35, 0.4, 0.040, EnemyConstants.Enemies.BELIEVER, 0.075),
+	]
+
+
 #################### 9-4 DEITY ROUND
 func _get_instructions_for_9_4():
 	if enemy_strength_value_to_use == 1:
@@ -1104,6 +1353,8 @@ func _get_instructions_for_9_4():
 		return _get_instructions_for_9_4__sv_3()
 	elif enemy_strength_value_to_use == 4:
 		return _get_instructions_for_9_4__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_9_4__sv_5()
 
 
 func _get_instructions_for_9_4__sv_1():
@@ -1150,6 +1401,18 @@ func _get_instructions_for_9_4__sv_4():
 		MultipleEnemySpawnInstruction.new(13, 6, 4, EnemyConstants.Enemies.SEER),
 		MultipleEnemySpawnInstruction.new(14, 6, 4, EnemyConstants.Enemies.PROVIDENCE)
 	]
+
+func _get_instructions_for_9_4__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 25, 1.25, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(8, 3, 14, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(11, 16, 2.25, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(12, 16, 2.25, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(13, 6, 4, EnemyConstants.Enemies.SEER),
+		MultipleEnemySpawnInstruction.new(10, 8, 4, EnemyConstants.Enemies.PROVIDENCE)
+	]
+
 
 #
 

@@ -6,7 +6,9 @@ extends "res://MiscRelated/TextInterpreterRelated/TextFragments/AbstractTextFrag
 enum STAT_BASIS {
 	BASE,
 	BONUS,
-	TOTAL
+	TOTAL,  #BASE_PLUS_BONUS
+	
+	BASE_PLUS_MODIFIED_BONUS_SCALING, # unused
 }
 
 #
@@ -60,7 +62,8 @@ const type_to_stat__all__property_of_tower_info_map : Dictionary = {
 const basis_to_name_map : Dictionary = {
 	STAT_BASIS.BASE : "base",
 	STAT_BASIS.BONUS : "bonus",
-	STAT_BASIS.TOTAL : "total"
+	STAT_BASIS.TOTAL : "total",
+	STAT_BASIS.BASE_PLUS_MODIFIED_BONUS_SCALING : "proportional total"
 }
 
 #
@@ -73,6 +76,8 @@ var _scale
 var _damage_type
 var _is_percent
 
+#for BASE_PLUS_MODIFIED_BONUS_SCALING
+var modified_bonus_scaling : float
 
 # UPDATE DEEP COPY IF ARGS HAS CHANGED
 func _init(arg_tower, 
@@ -120,9 +125,14 @@ func _get_as_numerical_value() -> float:
 			val = _tower.call(type_to_stat__base__get_method_of_tower_map[_stat_type])
 		elif _stat_basis == STAT_BASIS.BONUS:
 			val = _tower.call(type_to_stat__bonus__get_method_of_tower_map[_stat_type])
+		elif _stat_basis == STAT_BASIS.BASE_PLUS_MODIFIED_BONUS_SCALING:
+			var base_val = _tower.call(type_to_stat__base__get_method_of_tower_map[_stat_type])
+			var bonus_val = _tower.call(type_to_stat__bonus__get_method_of_tower_map[_stat_type])
+			
+			val = base_val + (bonus_val * modified_bonus_scaling)
 		
 	elif _tower_info != null and _tower_info.get_ref() != null:
-		if _stat_basis != STAT_BASIS.BONUS:
+		if _stat_basis != STAT_BASIS.BONUS or _stat_basis != STAT_BASIS.BASE_PLUS_MODIFIED_BONUS_SCALING:
 			if type_to_stat__all__property_of_tower_info_map.has(_stat_type):
 				val = _tower_info.get_ref().get(type_to_stat__all__property_of_tower_info_map[_stat_type])
 		else:

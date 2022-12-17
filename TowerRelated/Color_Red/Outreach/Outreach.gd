@@ -464,3 +464,24 @@ func _trail_before_attached_to_node(arg_trail, node):
 	arg_trail.trail_color = trail_color
 	arg_trail.width = base_trail_width
 
+
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 1
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	attr_mod.flat_modifier = 0.5
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	_calculate_final_ability_potency()
+
+

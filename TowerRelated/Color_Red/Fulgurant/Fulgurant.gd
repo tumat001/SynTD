@@ -306,3 +306,29 @@ func _on_smite_lightning_animation_ended(arg_lightning):
 	explosion.damage_instance.scale_only_damage_by(smite_ability.get_potency_to_use(last_calculated_final_ability_potency))
 	
 	explosion_attack_module.set_up_aoe__add_child_and_emit_signals(explosion)
+
+
+##
+
+
+func set_heat_module(module):
+	module.heat_per_attack = 1
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_dmg_attr_mod.flat_modifier = 2.5
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	for module in all_attack_modules:
+		if module.benefits_from_bonus_base_damage:
+			module.calculate_final_base_damage()
+	
+	emit_signal("final_base_damage_changed")
+
+

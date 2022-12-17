@@ -40,7 +40,7 @@ func _construct_and_connect_ability():
 	toss_ability = BaseAbility.new()
 	
 	toss_ability.is_timebound = true
-	toss_ability._time_current_cooldown = get_random_cd(_toss_cooldown / 3, _toss_cooldown / 1.5)
+	toss_ability._time_current_cooldown = get_random_cd(_toss_cooldown, _toss_cooldown / 1.5)
 	toss_ability.connect("updated_is_ready_for_activation", self, "_toss_ready_for_activation_updated")
 	
 	register_ability(toss_ability)

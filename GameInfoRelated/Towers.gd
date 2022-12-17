@@ -1058,12 +1058,19 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = beacon_dish_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 1.5
-		info.base_attk_speed = 0.6
+		info.base_damage = 1.0 #1.5
+		info.base_attk_speed = 0.5 #0.6
 		info.base_pierce = 0
-		info.base_range = 145#130
+		info.base_range = 140 #145
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 0
+		
+		#
+		var beacon_dish_ap_ratio : float = 1
+		
+		var beacon_dish_on_hit__base_dmg_scale : float = 0.3
+		var beacon_dish_attkspeed__attkspeed_scale : float = 35.0
+		var beacon_dish_range__range_scale : float = 0.2
 		
 		# INS START
 		
@@ -1085,11 +1092,12 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_ele_on_hit.tower_info_to_use_for_tower_stat_fragments = info
 		interpreter_for_ele_on_hit.display_body = true
 		
+		
 		var ins_for_ele_on_hit = []
 		ins_for_ele_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL))
-		ins_for_ele_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.2))
-		ins_for_ele_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
-		ins_for_ele_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		ins_for_ele_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, beacon_dish_on_hit__base_dmg_scale))
+		#ins_for_ele_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		#ins_for_ele_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, beacon_dish_ap_ratio))
 		
 		interpreter_for_ele_on_hit.array_of_instructions = ins_for_ele_on_hit
 		
@@ -1101,9 +1109,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var ins_for_attk_speed = []
 		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1, "", 0, true))
-		ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, TowerStatTextFragment.STAT_BASIS.TOTAL, 25, -1, true))
-		ins_for_attk_speed.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
-		ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, TowerStatTextFragment.STAT_BASIS.TOTAL, beacon_dish_attkspeed__attkspeed_scale, -1, true))
+		#ins_for_attk_speed.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		#ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, beacon_dish_ap_ratio))
 		
 		
 		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
@@ -1116,9 +1124,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var ins_for_range = []
 		ins_for_range.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE))
-		ins_for_range.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.RANGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.15))
-		ins_for_range.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
-		ins_for_range.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		ins_for_range.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.RANGE, TowerStatTextFragment.STAT_BASIS.TOTAL, beacon_dish_range__range_scale))
+		#ins_for_range.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		#ins_for_range.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, beacon_dish_ap_ratio))
 		
 		
 		interpreter_for_range.array_of_instructions = ins_for_range

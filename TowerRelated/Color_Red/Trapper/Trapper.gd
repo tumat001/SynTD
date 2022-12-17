@@ -195,3 +195,25 @@ func _on_enemy_hit_by_trap__as_oneshot(enemy, damage_register_id, damage_instanc
 		enemy.execute_self_by(0, trap_attack_module)
 
 
+#
+
+func set_heat_module(module):
+	module.heat_per_attack = 12
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var base_dmg_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_dmg_attr_mod.flat_modifier = 1.5
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_BASE_DAMAGE_BONUS , base_dmg_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	for module in all_attack_modules:
+		if module.benefits_from_bonus_base_damage:
+			module.calculate_final_base_damage()
+	
+	emit_signal("final_base_damage_changed")
+

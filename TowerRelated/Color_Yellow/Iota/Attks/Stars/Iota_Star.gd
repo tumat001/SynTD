@@ -34,7 +34,10 @@ func set_iota_tower(arg_tower):
 	
 	iota_tower.connect("all_stars_crash_to_target", self, "_on_iota_tower_command_all_to_turn_to_crash", [], CONNECT_ONESHOT)
 	iota_tower.connect("all_stars_beam_to_target", self, "_on_iota_tower_command_all_to_turn_to_beam")
-
+	
+	iota_tower.connect("on_tower_no_health", self, "_on_tower_no_health_i", [], CONNECT_DEFERRED)
+	iota_tower.connect("on_tower_healed_from_no_health", self, "_on_tower_healed_from_no_health_i", [], CONNECT_DEFERRED)
+	
 
 func set_current_star_state(arg_state):
 	var old_state = current_star_state
@@ -73,6 +76,8 @@ func set_current_target_for_beam(arg_target):
 		if current_star_state == StarState.Beam:
 			if !is_instance_valid(star_beam):
 				_construct_star_beam()
+			else:
+				star_beam.visible = iota_tower.is_dead_for_the_round
 
 func _construct_star_beam():
 	star_beam = BeamAesthetic_Scene.instance()
@@ -114,9 +119,11 @@ func _process(delta):
 
 func _update_beam_pos_and_dest():
 	if is_instance_valid(star_beam):
-		star_beam.visible = true
+		#star_beam.visible = true
 		star_beam.global_position = global_position
-		star_beam.update_destination_position(current_target_for_beam.global_position)
+		
+		if !iota_tower.is_dead_for_the_round:
+			star_beam.update_destination_position(current_target_for_beam.global_position)
 
 
 func queue_free():
@@ -143,5 +150,17 @@ func _curr_star_target_changed(arg_target):
 		
 		set_current_target_for_beam(arg_target)
 
+
+#
+
+func _on_tower_no_health_i():
+	_hide_star_beam()
+
+func _on_tower_healed_from_no_health_i():
+	if current_star_state != StarState.Beam:
+		_hide_star_beam()
+	else:
+		if is_instance_valid(star_beam):
+			star_beam.visible = true
 
 

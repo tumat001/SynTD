@@ -120,7 +120,8 @@ func _towers_to_benefit_from_syn(towers : Array):
 		_tower_to_benefit_from_synergy(tower)
 
 func _tower_to_benefit_from_synergy(tower : AbstractTower):
-	if tower._tower_colors.has(TowerColors.ORANGE):
+	#if tower._tower_colors.has(TowerColors.ORANGE):
+	if tower.is_benefit_from_syn_having_or_as_if_having_color(TowerColors.ORANGE):
 		if tower.heat_module == null:
 			tower.heat_module = construct_heat_module()
 			tower.heat_module.set_tower(tower)

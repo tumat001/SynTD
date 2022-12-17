@@ -253,8 +253,16 @@ func _tower_active_in_map(tower : AbstractTower):
 		tower.add_to_group(TOWER_IN_MAP_GROUP_ID)
 	
 	emit_signal("tower_to_benefit_from_synergy_buff", tower)
+	#emit_tower_to_benefit_from_synergy_buff(tower)
 	
 	call_deferred("calculate_current_tower_limit_taken")
+
+#func emit_tower_to_benefit_from_synergy_buff(tower):
+#	emit_signal("tower_to_benefit_from_synergy_buff", tower)
+#
+#func emit_tower_to_benefit_from_synergy_buff__called_from_misc(tower):
+#	emit_tower_to_benefit_from_synergy_buff(tower)
+
 
 # Called after potentially updating synergy
 func _tower_inactivated_from_map(tower : AbstractTower):
@@ -268,7 +276,7 @@ func _tower_inactivated_from_map(tower : AbstractTower):
 
 func _tower_can_contribute_to_synergy_color_count_changed(arg_val, arg_tower):
 	_update_active_synergy()
-
+	
 
 
 # Adding tower as child of this to monitor it
@@ -450,6 +458,12 @@ func _emit_tower_sellback_value_changed(arg_new_val, arg_tower):
 	emit_signal("tower_sellback_value_changed", arg_new_val, arg_tower)
 
 # Synergy Related
+
+func update_active_synergy__called_from_syn_manager():
+	_update_active_synergy()
+
+func update_active_synergy__called_from_misc():   #right now, it is used in: Pact_XIdentity(s)
+	_update_active_synergy()
 
 func _update_active_synergy():
 	#synergy_manager.update_synergies(_get_all_synergy_contributing_towers())
@@ -730,7 +744,22 @@ func get_all_in_map_and_alive_towers_except_in_queue_free() -> Array:
 	
 	return bucket
 
-#
+
+## Synergy queries related
+
+func get_all_in_map_towers_to_benefit_from_syn_with_color(color):
+	if color is int:
+		color = str(color)
+	
+	var bucket : Array = []
+	for child in get_children():
+		if child.is_in_group(color) and child.is_benefit_from_syn_having_or_as_if_having_color(int(color)):
+			bucket.append(child)
+	
+	return bucket
+
+
+#########
 
 func get_towers_in_range_of_pos(arg_towers : Array, arg_global_center : Vector2, arg_range : float, arg_include_invis : bool = false) -> Array:
 	return Targeting.get_targets__based_on_range_from_center_as_circle(arg_towers, Targeting.CLOSE, arg_towers.size(), arg_global_center, arg_range, Targeting.TargetingRangeState.IN_RANGE, arg_include_invis)

@@ -645,3 +645,25 @@ func _on_requested__get_next_targetable_enemy__cancelled():
 	game_elements.enemy_manager.disconnect_request_get_next_targetable_enemy(self, "_on_requested__get_next_targetable_enemy__fulfilled", "_on_requested__get_next_targetable_enemy__cancelled")
 	_requested_enemy_manager_to_get_next_targetable_enemy = false
 	_requesting_orb_attk_modules.clear()
+
+
+
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 1
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	attr_mod.flat_modifier = 0.5
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	_calculate_final_ability_potency()
+

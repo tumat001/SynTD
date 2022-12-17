@@ -120,6 +120,7 @@ func _ready():
 	connect("on_range_module_enemy_entered", self, "_on_enemies_entered_range_module", [], CONNECT_PERSIST)
 	connect("on_range_module_enemy_exited", self, "_on_enemies_exited_range_module", [], CONNECT_PERSIST)
 	
+	connect("on_tower_no_health", self, "_on_tower_no_health_w", [], CONNECT_PERSIST)
 	
 	_post_inherit_ready()
 
@@ -359,7 +360,7 @@ func _process(delta):
 		update()
 
 func _draw():
-	if is_instance_valid(_current_fury_locked_on_target):
+	if is_instance_valid(_current_fury_locked_on_target) and !is_dead_for_the_round:
 		draw_line(empowered_proj_attk_module.global_position - global_position, _current_fury_locked_on_target.global_position - global_position, beam_to_target_color, beam_to_target_width)
 
 
@@ -377,4 +378,33 @@ func queue_free():
 		mark_indicator.queue_free()
 	
 	.queue_free()
+
+#
+
+func _on_tower_no_health_w():
+	_set_marker_visible_status(false)
+
+# HeatModule
+
+func set_heat_module(module):
+	module.heat_per_attack = 1
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var base_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_attr_mod.percent_amount = 50
+	base_attr_mod.percent_based_on = PercentType.BASE
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	for module in all_attack_modules:
+		if module.benefits_from_bonus_attack_speed:
+			module.calculate_all_speed_related_attributes()
+	
+	emit_signal("final_attack_speed_changed")
+
 

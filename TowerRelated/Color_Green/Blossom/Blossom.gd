@@ -405,3 +405,23 @@ func _draw():
 	if is_showing_select_partner_beam:
 		var mouse_pos = get_global_mouse_position()
 		draw_line(Vector2(0, 0), mouse_pos - global_position, Color(19/255.0, 154/255.0, 51/255.0), 3)
+
+
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 1
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	attr_mod.flat_modifier = 10
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_HEALTH , attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	_calculate_max_health()

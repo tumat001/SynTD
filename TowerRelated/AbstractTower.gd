@@ -261,6 +261,7 @@ var _is_in_select_tower_prompt : bool = false
 
 var is_showing_ranges : bool
 
+# used when tower is in map, disabled by other clauses, etc
 var contributing_to_synergy_clauses : ConditionalClauses
 var last_calculated_is_contributing_to_synergy : bool
 
@@ -339,7 +340,15 @@ var _tower_colors : Array = []
 
 # Synergy related
 
-var can_contribute_to_synergy_color_count : bool = true setget set_contribute_to_synergy_color_count# tower can still gain benefits of synergy, but does not contribute to syngergy progress
+var can_contribute_to_synergy_color_count : bool = true setget set_contribute_to_synergy_color_count    # tower can gain benefits of synergy, but does not contribute to syngergy progress (if false)
+
+
+enum BenefitFromSynAsIfHavingColorsModiIds {
+	DOM_SYN_RED__ORANGE_SYNERGY__ORANGE = 10
+	DOM_SYN_RED__BLUE_SYNERGY__BLUE = 11
+	DOM_SYN_RED__VIOLET_SYNERGY__VIOLET = 10
+}
+var _modi_id_to_benefit_from_syn_as_if_having_colors : Dictionary = {}
 
 # Gold related
 
@@ -2319,6 +2328,51 @@ func remove_all_colors_from_tower(emit_change_signals : bool = true):
 	_update_ingredient_compatible_colors()
 
 
+# Synergy related
+
+func set_contribute_to_synergy_color_count(arg_val):
+	can_contribute_to_synergy_color_count = arg_val
+	
+	emit_signal("on_is_contributing_to_synergy_color_count_changed", arg_val)
+	#emit_signal()
+
+
+func add_benefit_from_syn_as_if_having_color(arg_modi_id, arg_color_id, arg_emit_update_signal : bool = true):
+	_modi_id_to_benefit_from_syn_as_if_having_colors[arg_modi_id] = arg_color_id
+	
+	if arg_emit_update_signal:
+		#todo temporary fix
+		_emit_active_or_not_active_signals_based_on_last_calc_is_contributing()
+		#tower_manager.emit_tower_to_benefit_from_synergy_buff(self)
+		#emit_signal("update_active_synergy")
+		#call_deferred("emit_signal", "update_active_synergy")
+
+func remove_benefit_from_syn_as_if_having_color(arg_modi_id, arg_emit_update_signal : bool = true):
+	_modi_id_to_benefit_from_syn_as_if_having_colors.erase(arg_modi_id)
+	
+	if arg_emit_update_signal:
+		#todo temporary fix
+		_emit_active_or_not_active_signals_based_on_last_calc_is_contributing()
+		#tower_manager.emit_tower_to_benefit_from_synergy_buff(self)
+		#emit_signal("update_active_synergy")
+		#call_deferred("emit_signal", "update_active_synergy")
+
+func has_modi_id_benefit_from_syn_as_if_having_color(arg_modi_id):
+	return _modi_id_to_benefit_from_syn_as_if_having_colors.has(arg_modi_id)
+	
+
+func is_benefit_from_syn_having_or_as_if_having_color(arg_color) -> bool:
+	for color in _tower_colors:
+		if color == arg_color:
+			return true
+	
+	for color in _modi_id_to_benefit_from_syn_as_if_having_colors.values():
+		if color == arg_color:
+			return true
+	
+	return false
+
+
 # Abiliy reg and cdr related
 
 func register_ability_to_manager(ability : BaseAbility, add_to_panel : bool = true):
@@ -2458,8 +2512,6 @@ func get_bonus_bullet_pierce() -> float:
 		return main_attack_module.last_calculated_final_pierce - main_attack_module.base_pierce
 	else:
 		return 0.0
-
-
 
 
 func get_last_calculated_total_flat_on_hit_damages() -> float:
@@ -3122,6 +3174,9 @@ func _contributing_to_synergy_clause_added_or_removed(id):
 func _update_last_calculated_contributing_to_synergy():
 	last_calculated_is_contributing_to_synergy = contributing_to_synergy_clauses.is_passed
 	#emit_signal("tower_can_contribute_to_synergy_changed", last_calculated_is_contributing_to_synergy)
+	_emit_active_or_not_active_signals_based_on_last_calc_is_contributing()
+
+func _emit_active_or_not_active_signals_based_on_last_calc_is_contributing():
 	if last_calculated_is_contributing_to_synergy:
 		emit_signal("tower_active_in_map")
 	else:
@@ -3182,15 +3237,6 @@ func _phy_knock_up_process(delta):
 func _phy_forced_mov_process(delta):
 	if _current_forced_placable_mov_effect != null:
 		_current_forced_placable_mov_effect.mov_process(delta)
-
-# Synergy related
-
-func set_contribute_to_synergy_color_count(arg_val):
-	can_contribute_to_synergy_color_count = arg_val
-	
-	emit_signal("on_is_contributing_to_synergy_color_count_changed", arg_val)
-	#emit_signal()
-
 
 # Detecting tower interacting stuffs
 

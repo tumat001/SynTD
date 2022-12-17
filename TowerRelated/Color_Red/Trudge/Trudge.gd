@@ -684,4 +684,21 @@ func _on_changed_anim_from_dead_to_alive():
 
 
 
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 3
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var base_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	base_attr_mod.percent_amount = 12
+	base_attr_mod.percent_based_on = PercentType.BASE
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_ABILITY_CDR , base_attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	_calculate_final_ability_potency()
 

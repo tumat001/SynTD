@@ -299,8 +299,8 @@ func _init():
 	[
 		"+50 ingredients. 3 total tower limit, 2 violet tower limit.",
 		"+5 ingredients. 6 total tower limit, 3 violet tower limit.",
-		"+3 ingredients. 9 total tower limit, 4 violet tower limit.",
-		"+2 ingredients. 14 total tower limit, 6 violet tower limit.",
+		"+2 ingredients. 9 total tower limit, 4 violet tower limit.",
+		"+1 ingredient. 14 total tower limit, 6 violet tower limit.",
 	],
 	ColorSynergy.HighlightDeterminer.SINGLE,
 	{},

@@ -40,6 +40,31 @@ func _on_UnswornPactList_pact_card_clicked(pact):
 func _on_SwornPactList_pact_card_removed(pact, new_replacing_pact):
 	emit_signal("sworn_pact_card_removed", pact, new_replacing_pact)
 
+#
+
+func has_pact_in_sworn_list(arg_pact_uuid : int):
+	for pact in sworn_pact_list.get_all_pact_uuids():
+		if pact.pact_uuid == arg_pact_uuid:
+			return true
+	
+	for pact in unsworn_pact_list.get_all_pact_uuids():
+		if pact.pact_uuid == arg_pact_uuid:
+			return true
+	
+	return false
+
+func has_at_least_one_of_pact_in_list(arg_pact_uuids : Array):
+	for pact in sworn_pact_list.get_all_pact_uuids():
+		for arg_pact_uuid in arg_pact_uuids:
+			if pact.pact_uuid == arg_pact_uuid:
+				return true
+	
+	for pact in unsworn_pact_list.get_all_pact_uuids():
+		for arg_pact_uuid in arg_pact_uuids:
+			if pact.pact_uuid == arg_pact_uuid:
+				return true
+	
+	return false
 
 #
 

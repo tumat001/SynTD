@@ -320,3 +320,23 @@ func _construct_interpreter_for_energy_module():
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 	
 
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 3
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	attr_mod.flat_modifier = 0.5
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	_calculate_final_ability_potency()
+
+

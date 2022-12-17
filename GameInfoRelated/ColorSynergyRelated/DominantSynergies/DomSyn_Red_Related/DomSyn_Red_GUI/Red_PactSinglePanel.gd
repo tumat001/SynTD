@@ -69,6 +69,7 @@ func add_pact(pact : Red_BasePact):
 	pact_card_container.move_child(pact_card, 0)
 	
 	pact_card.set_button_disabled(disable_card_pact_button)
+	
 
 func _create_pact_card(pact : Red_BasePact) -> Red_PactCard:
 	var card = Red_PactCard_Scene.instance()
@@ -90,6 +91,7 @@ func remove_pact(pact : Red_BasePact, replacing_pact : Red_BasePact = null):
 			pact_card_container.remove_child(card)
 			_emit_pact_card_removed(card.base_pact, replacing_pact)
 			card.queue_free()
+			
 			return
 
 

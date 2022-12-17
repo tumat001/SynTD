@@ -32,6 +32,10 @@ const Pact_RangeProvisions = preload("res://GameInfoRelated/ColorSynergyRelated/
 const Pact_HealingSymbols = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_HealingSymbol.gd")
 const Pact_DreamsReach = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_DreamsReach.gd")
 const Pact_BloodToGold = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_BloodToGold.gd")
+const Pact_OrangeIdentity = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_OrangeIdentity.gd")
+const Pact_BlueIdentity = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_BlueIdentity.gd")
+const Pact_VioletIdentity = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_VioletIdentity.gd")
+
 
 enum PactUUIDs {
 	FIRST_IMPRESSION = 100,
@@ -65,7 +69,18 @@ enum PactUUIDs {
 	HEALING_SYMBOLS = 126,
 	DREAMS_REACH = 127,
 	BLOOD_TO_GOLD = 128,
+	
+	ORANGE_IDENTITY = 129,
+	BLUE_IDENTITY = 130,
+	VIOLET_IDENTITY = 131,
+	
 }
+
+const all_identity_pacts : Array = [
+	PactUUIDs.ORANGE_IDENTITY,
+	PactUUIDs.BLUE_IDENTITY,
+	PactUUIDs.VIOLET_IDENTITY,
+]
 
 
 func construct_pact(pact_uuid : int, tier : int,
@@ -160,6 +175,14 @@ func construct_pact(pact_uuid : int, tier : int,
 	elif pact_uuid == PactUUIDs.BLOOD_TO_GOLD:
 		pact = Pact_BloodToGold.new(tier, arg_tier_for_activation)
 		
-	
+	elif pact_uuid == PactUUIDs.ORANGE_IDENTITY:
+		pact = Pact_OrangeIdentity.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.BLUE_IDENTITY:
+		pact = Pact_BlueIdentity.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.VIOLET_IDENTITY:
+		pact = Pact_VioletIdentity.new(tier, arg_tier_for_activation)
+		
 	
 	return pact

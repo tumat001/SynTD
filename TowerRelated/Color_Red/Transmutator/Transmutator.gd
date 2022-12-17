@@ -132,3 +132,22 @@ func _on_main_attack_hit_enemy_t(enemy, damage_register_id, damage_instance, mod
 		#	pass
 		
 		damage_instance.on_hit_effects[StoreOfEnemyEffectsUUID.TRANSMUTATOR_SLOW_EFFECT] = enemy_slow_effect._get_copy_scaled_by(1)
+
+
+# Heat Module
+
+func set_heat_module(module):
+	module.heat_per_attack = 1
+	.set_heat_module(module)
+
+func _construct_heat_effect():
+	var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+	attr_mod.flat_modifier = 0.5
+	
+	base_heat_effect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_ABILITY_POTENCY , attr_mod, StoreOfTowerEffectsUUID.HEAT_MODULE_CURRENT_EFFECT)
+
+
+func _heat_module_current_heat_effect_changed():
+	._heat_module_current_heat_effect_changed()
+	
+	_calculate_final_ability_potency()

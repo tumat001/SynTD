@@ -263,7 +263,8 @@ func _attempt_damage_entity(entity):
 
 func queue_free():
 	if collision_shape != null:
-		collision_shape.disabled = true
+		#collision_shape.disabled = true
+		collision_shape.set_deferred("disabled", true)
 	.queue_free()
 
 #

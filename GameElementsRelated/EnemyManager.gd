@@ -36,7 +36,12 @@ signal last_enemy_standing_killed_by_damage_no_revives(damage_instance_report, e
 signal last_enemy_standing_current_health_changed(arg_health_val, arg_enemy) # called when last standing, and when health has changed
 signal on_enemy_queue_freed(arg_enemy)
 
+#
 signal enemy_strength_value_changed(arg_val)
+
+signal sv_flat_value_modi_map__average_moving_changed(arg_val)
+signal sv_flat_value_modi_map__non_average_moving_changed(arg_val)
+
 
 signal path_to_spawn_pattern_changed(arg_new_val)
 
@@ -116,7 +121,8 @@ var _enemy_sv_generator : EnemySVGenerator
 var _stageround_id_to_sv_history_map : Dictionary = {}
 var _current_sv_total : float
 var _current_sv_average : float
-var current_strength_value : float setget set_current_strength_value
+var _base_strength_value_before_modis : float
+var _current_strength_value : int #setget set_current_strength_value
 
 enum GenerateEnemySVClauseIds {
 	FACTION_PASSIVE__CULTIST = 1
@@ -124,6 +130,26 @@ enum GenerateEnemySVClauseIds {
 var generate_enemy_sv_on_round_end_clauses : ConditionalClauses
 var last_calculate_generate_enemy_sv_on_round_end : bool
 
+#
+
+enum SVModiferIds {
+	DOM_SYN_RED__ORANGE_IDENTITY = 1
+	DOM_SYN_RED__BLUE_IDENTITY = 2
+	DOM_SYN_RED__VIOLET_IDENTITY = 3
+}
+
+var _sv_id_to_flat_value_modi_map__average_moving : Dictionary = {}
+var last_calculated_sv_flat_value_modi_map__average_moving : int
+
+var _sv_id_to_flat_value_modi_map__non_average_moving : Dictionary = {}
+var last_calculated_sv_flat_value_modi_map__non_average_moving : int
+
+var _applied_sv_on_round_on_no_calc_gen_enemy_sv : bool  # used in conjunction with last_calculate_generate_enemy_sv_on_round_end
+var _applied_sv_modi_during_round : bool
+
+# sv val limiters/boundaries for final result, not for sv genertor internal vals
+const highest_final_sv : int = 5
+const lowest_final_sv : int = 1
 
 # special query request
 
@@ -584,6 +610,9 @@ func _on_round_end(stage_round, is_game_start):
 			_switch_path_index_to_next()
 	
 	_on_round_end__for_effect_apply()
+	
+	if _applied_sv_modi_during_round:
+		update__current_strength_value()
 
 
 #func _on_base_map_paths_changed(new_all_paths):
@@ -668,15 +697,23 @@ func get_last_standing_enemy():
 func randomize_current_strength_val__following_conditions():
 	if stage_round_manager.current_stageround != null and stage_round_manager.current_stageround.induce_enemy_strength_value_change:
 		if last_calculate_generate_enemy_sv_on_round_end:
-			randomize_current_strength_value()
+			randomize__current_strength_value()
+			_applied_sv_on_round_on_no_calc_gen_enemy_sv = false
+			
+		elif !_applied_sv_on_round_on_no_calc_gen_enemy_sv:
+			_applied_sv_on_round_on_no_calc_gen_enemy_sv = true
+			
+			update__current_strength_value()
 
-func _generate_sv_and_move_average(var curr_count = stage_round_manager.current_stageround_index, var max_count = stage_round_manager.stageround_total_count):
+func _generate_sv_and_move_average(var curr_count = stage_round_manager.current_stageround_index, var max_count = stage_round_manager.stageround_total_count) -> Array:
 	var val = _enemy_sv_generator.generate_strength_value(_current_sv_average, curr_count, max_count)
+	var orig_val = val
 	
+	val = _get_added_sv_val_to_val__limit_to_boundaries(last_calculated_sv_flat_value_modi_map__average_moving, val)
 	_add_sv_to_stageround_to_sv_history(val, curr_count)
-	#_add_sv_to_stageround_to_sv_history(val)
+	val = _get_added_sv_val_to_val__limit_to_boundaries(last_calculated_sv_flat_value_modi_map__non_average_moving, val)
 	
-	return val
+	return [val, orig_val]
 
 func _add_sv_to_stageround_to_sv_history(arg_sv_val, arg_stageround_id = stage_round_manager.current_stageround.id):
 	_stageround_id_to_sv_history_map[arg_stageround_id] = arg_sv_val
@@ -686,20 +723,96 @@ func _add_sv_to_stageround_to_sv_history(arg_sv_val, arg_stageround_id = stage_r
 
 #
 
-func randomize_current_strength_value():
-	set_current_strength_value(_generate_sv_and_move_average())
+func randomize__current_strength_value():
+	var vals = _generate_sv_and_move_average()
+	_base_strength_value_before_modis = vals[1]
+	set_current_strength_value(vals[0])
 
 func set_current_strength_value(arg_val):
-	current_strength_value = arg_val
-	emit_signal("enemy_strength_value_changed", current_strength_value)
+	_current_strength_value = arg_val
+	emit_signal("enemy_strength_value_changed", _current_strength_value)
+
+func update__current_strength_value():
+	var val = _base_strength_value_before_modis
+	val = _get_added_sv_val_to_val__limit_to_boundaries(last_calculated_sv_flat_value_modi_map__average_moving, val)
+	val = _get_added_sv_val_to_val__limit_to_boundaries(last_calculated_sv_flat_value_modi_map__non_average_moving, val)
+	
+	if stage_round_manager.current_stageround.induce_enemy_strength_value_change:
+		set_current_strength_value(val)
+
+func get_current_strength_value() -> int:
+	return _current_strength_value
 
 #
+
+func _get_added_sv_val_to_val__limit_to_boundaries(arg_val, arg_val_2):
+	var total = arg_val + arg_val_2
+	if total > highest_final_sv:
+		total = highest_final_sv
+	
+	if total < lowest_final_sv:
+		total = lowest_final_sv
+	
+	return total
 
 func _generate_enemy_sv_on_round_end_clause_ins_or_rem(arg_clause_id):
 	_update_last_calculate_generate_enemy_sv_on_round_end()
 
 func _update_last_calculate_generate_enemy_sv_on_round_end():
 	last_calculate_generate_enemy_sv_on_round_end = generate_enemy_sv_on_round_end_clauses.is_passed
+
+
+## sv val modification related
+
+func add_sv_flat_value_modi_map__average_moving(arg_id, arg_val : int):
+	_sv_id_to_flat_value_modi_map__average_moving[arg_id] = arg_val
+	_update_sv_flat_value_modi_map__average_moving()
+	
+	_update_current_sv__considering_round_started()
+
+func remove_sv_flat_value_modi_map__average_moving(arg_id):
+	_sv_id_to_flat_value_modi_map__average_moving.erase(arg_id)
+	_update_sv_flat_value_modi_map__average_moving()
+	
+	_update_current_sv__considering_round_started()
+
+
+func _update_current_sv__considering_round_started():
+	if stage_round_manager.round_started:
+		_applied_sv_modi_during_round = true
+	else:
+		update__current_strength_value()
+
+func _update_sv_flat_value_modi_map__average_moving():
+	var total = 0
+	for val in _sv_id_to_flat_value_modi_map__average_moving.values():
+		total += val
+	
+	last_calculated_sv_flat_value_modi_map__average_moving = total
+	emit_signal("sv_flat_value_modi_map__average_moving_changed")
+
+#
+
+func add_sv_flat_value_modi_map__non_average_moving(arg_id, arg_val : int):
+	_sv_id_to_flat_value_modi_map__non_average_moving[arg_id] = arg_val
+	_update_sv_flat_value_modi_map__non_average_moving()
+	
+	_update_current_sv__considering_round_started()
+
+func remove_sv_flat_value_modi_map__non_average_moving(arg_id):
+	_sv_id_to_flat_value_modi_map__non_average_moving.erase(arg_id)
+	_update_sv_flat_value_modi_map__non_average_moving()
+	
+	_update_current_sv__considering_round_started()
+
+
+func _update_sv_flat_value_modi_map__non_average_moving():
+	var total = 0
+	for val in _sv_id_to_flat_value_modi_map__non_average_moving.values():
+		total += val
+	
+	last_calculated_sv_flat_value_modi_map__non_average_moving = total
+	emit_signal("sv_flat_value_modi_map__non_average_moving_changed")
 
 
 ################### EFFECTS RELATED

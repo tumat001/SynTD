@@ -168,12 +168,12 @@ func end_round(from_game_start : bool = false):
 		
 		if !spawn_ins_of_faction_mode.is_transition_time_in_stageround(current_stageround.id):
 			
-			spawn_ins_of_faction_mode.enemy_strength_value_to_use = enemy_manager.current_strength_value
+			spawn_ins_of_faction_mode.enemy_strength_value_to_use = enemy_manager.get_current_strength_value()
 			spawn_ins_in_stageround = spawn_ins_of_faction_mode.get_instructions_for_stageround(current_stageround.id)
 		else:
 			_replace_current_spawn_ins_to_second_half(stagerounds.get_second_half_faction())
 			
-			spawn_ins_of_faction_mode.enemy_strength_value_to_use = enemy_manager.current_strength_value
+			spawn_ins_of_faction_mode.enemy_strength_value_to_use = enemy_manager.get_current_strength_value()
 			spawn_ins_in_stageround = spawn_ins_of_faction_mode.get_instructions_for_stageround(current_stageround.id)
 			enemy_manager.apply_faction_passive(spawn_ins_of_faction_mode.get_faction_passive())
 		

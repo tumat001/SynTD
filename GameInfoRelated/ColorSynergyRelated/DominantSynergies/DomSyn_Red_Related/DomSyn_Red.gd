@@ -34,6 +34,12 @@ var pact_uuid_to_pact_map_singleton : Dictionary = {}
 
 var auto_open_pact_shop_at_round_end : bool = true
 
+
+# pact specific vars. accessed by pacts
+
+var _x_identity_stage_round_index_used_for_cals__8_rounds : int = -10  #any number but -1. Preferrably below -2 to avoid index collisions
+var _x_identity_first_bool_check_status__8_rounds : bool = false
+
 #
 
 func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
@@ -104,6 +110,8 @@ func _initialize_tier_3_pacts():
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RANGE_PROVISIONS)
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS)
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORANGE_IDENTITY)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.BLUE_IDENTITY)
 	
 
 func _initialize_tier_2_pacts():
@@ -130,11 +138,14 @@ func _initialize_tier_2_pacts():
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RANGE_PROVISIONS)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORANGE_IDENTITY)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.BLUE_IDENTITY)
 	
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PRESTIGE)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.BLOOD_TO_GOLD)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.VIOLET_IDENTITY)
 	
 
 func _initialize_tier_1_pacts():
@@ -161,11 +172,13 @@ func _initialize_tier_1_pacts():
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RANGE_PROVISIONS)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
+	#tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORANGE_IDENTITY)
 	
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.PRESTIGE)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.BLOOD_TO_GOLD)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.VIOLET_IDENTITY)
 	
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.COMPLEMENTARY_SUPPLEMENT)
 	
@@ -194,6 +207,7 @@ func _initialize_tier_0_pacts():
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.RANGE_PROVISIONS)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
+	#tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORANGE_IDENTITY)
 	
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
@@ -326,7 +340,16 @@ func _on_round_end_red_inactive(curr_stageround):
 #			#game_elements.health_manager.decrease_health_by(red_inactive_health_deduct, game_elements.HealthManager.DecreaseHealthSource.SYNERGY)
 #			pass
 
-#
+
+#### queries
+
+func has_pact_in_sworn_or_unsworn_list(arg_pact_id):
+	return red_pact_whole_panel.has_pact_in_sworn_list(arg_pact_id)
+
+func has_at_least_one_of_pact_in_sworn_or_unsworn_list(arg_pact_ids : Array):
+	return red_pact_whole_panel.has_at_least_one_of_pact_in_list(arg_pact_ids)
+
+####
 
 func _on_show_syn_shop():
 	game_elements.whole_screen_gui.show_control(red_pact_whole_panel)
@@ -351,8 +374,8 @@ func _initialize_red_pact_whole_panel():
 			red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 	
 	# for debugging only ############
-#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.COMBINATION_EFFICIENCY, 3, 3))
-#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.DREAMS_REACH, 3, 3))
+#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS, 3, 3))
+#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.VIOLET_IDENTITY, 2, 3))
 #
 #	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS, 3, 3))
 

@@ -13,11 +13,11 @@ const tier_3_tower_ing_boost : int = 5
 const tier_3_tower_limit : int = 6
 const tier_3_tower_violet_limit : int = 3
 
-const tier_2_tower_ing_boost : int = 3
+const tier_2_tower_ing_boost : int = 2
 const tier_2_tower_limit : int = 9
 const tier_2_tower_violet_limit : int = 4
 
-const tier_1_tower_ing_boost : int = 2
+const tier_1_tower_ing_boost : int = 1
 const tier_1_tower_limit : int = 14
 const tier_1_tower_violet_limit : int = 6
 
@@ -43,44 +43,46 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 
 func _attempt_apply_synergy_to_add_or_remove(tier : int):
 	var towers : Array = game_elements.tower_manager.get_all_active_towers()
-	var violet_towers : Array = game_elements.tower_manager.get_all_active_towers_with_color(TowerColors.VIOLET)
+	#var violet_towers : Array = game_elements.tower_manager.get_all_active_towers_with_color(TowerColors.VIOLET)
+	var violet_towers : Array = game_elements.tower_manager.get_all_in_map_towers_to_benefit_from_syn_with_color(TowerColors.VIOLET)
 	
 	if tier == 4:
 		if towers.size() <= tier_4_tower_limit and violet_towers.size() <= tier_4_tower_violet_limit:
 			current_ing_boost = tier_4_tower_ing_boost
-			_add_towers_to_benefit_from_synergy(violet_towers)
+			_add_towers_to_benefit_from_synergy(towers)
 		else:
 			_remove_towers_from_synergy(towers)
 		
 	elif tier == 3:
 		if towers.size() <= tier_3_tower_limit and violet_towers.size() <= tier_3_tower_violet_limit:
 			current_ing_boost = tier_3_tower_ing_boost
-			_add_towers_to_benefit_from_synergy(violet_towers)
+			_add_towers_to_benefit_from_synergy(towers)
 		else:
 			_remove_towers_from_synergy(towers)
 		
 	elif tier == 2:
 		if towers.size() <= tier_2_tower_limit and violet_towers.size() <= tier_2_tower_violet_limit:
 			current_ing_boost = tier_2_tower_ing_boost
-			_add_towers_to_benefit_from_synergy(violet_towers)
+			_add_towers_to_benefit_from_synergy(towers)
 		else:
 			_remove_towers_from_synergy(towers)
 		
 	elif tier == 1:
 		if towers.size() <= tier_1_tower_limit and violet_towers.size() <= tier_1_tower_violet_limit:
 			current_ing_boost = tier_1_tower_ing_boost
-			_add_towers_to_benefit_from_synergy(violet_towers)
+			_add_towers_to_benefit_from_synergy(towers)
 		else:
 			_remove_towers_from_synergy(towers)
 
 
 
-func _add_towers_to_benefit_from_synergy(violet_towers : Array):
-	for tower in violet_towers:
+func _add_towers_to_benefit_from_synergy(towers : Array):
+	for tower in towers:
 		_tower_to_benefit_from_synergy(tower)
 
 func _tower_to_benefit_from_synergy(tower : AbstractTower):
-	if tower._tower_colors.has(TowerColors.VIOLET):
+	#if tower._tower_colors.has(TowerColors.VIOLET):
+	if tower.is_benefit_from_syn_having_or_as_if_having_color(TowerColors.VIOLET):
 		tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.VIOLET_SYNERGY, current_ing_boost)
 		
 		var giver_effect := TowerEffect_DomSyn_VioletColorMasteryGiver.new(rounds_before_color_mastery)

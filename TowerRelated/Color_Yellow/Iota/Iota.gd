@@ -164,7 +164,6 @@ func _ready():
 	connect("changed_anim_from_alive_to_dead", self, "_on_changed_anim_from_alive_to_dead", [], CONNECT_PERSIST)
 	connect("changed_anim_from_dead_to_alive", self, "_on_changed_anim_from_dead_to_alive", [], CONNECT_PERSIST)
 	
-	
 	info_bar_layer.position.y -= 31
 	
 	core_sprite.use_parent_material = false
@@ -631,6 +630,8 @@ func _on_changed_anim_from_dead_to_alive():
 	set_iota_state(current_iota_state)
 	#set_iota_state(current_iota_state)
 	#_update_anims_based_on_enemies_spawned_ratio_from_ins__and_other_states()
+
+#
 
 
 #

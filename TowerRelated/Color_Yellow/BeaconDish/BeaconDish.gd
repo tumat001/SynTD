@@ -41,9 +41,15 @@ var buff_aura_ability : BaseAbility
 
 # ratios
 
-const original_ratio_elemental_on_hit : float = 0.20
-const original_ratio_attack_speed : float = 25.0
-const original_ratio_range : float = 0.15
+
+const original_ratio_elemental_on_hit : float = 0.3#0.20 
+const original_ratio_attack_speed : float = 35.0 #25.0 
+const original_ratio_range : float = 0.20 #0.15
+
+const empowered_ratio_elemental_on_hit : float = 0.55 #0.45 
+const empowered_ratio_attack_speed : float = 60.0 #45.0
+const empowered_ratio_range : float = 0.25 #0.20
+
 
 var ratio_elemental_on_hit : float = original_ratio_elemental_on_hit
 var ratio_attack_speed : float = original_ratio_attack_speed
@@ -100,7 +106,7 @@ func _ready():
 	connect("final_range_changed", self, "_update_flat_range_effect", [], CONNECT_PERSIST)
 	connect("final_attack_speed_changed", self, "_update_flat_attk_speed_effect", [], CONNECT_PERSIST)
 	connect("final_base_damage_changed", self, "_update_elemental_on_hit_effect", [], CONNECT_PERSIST)
-	connect("final_ability_potency_changed", self, "_update_all_bd_effects", [], CONNECT_PERSIST)
+	#connect("final_ability_potency_changed", self, "_on_last_calculated_ap_changed_b", [], CONNECT_PERSIST)
 	
 	_construct_on_hit_and_modifiers()
 	_construct_effects()
@@ -213,6 +219,9 @@ func _show_signal_particle():
 
 #
 
+#func _on_last_calculated_ap_changed_b():
+#	_update_all_bd_effects()
+
 func _update_all_bd_effects():
 	_update_elemental_on_hit_effect()
 	_update_flat_attk_speed_effect()
@@ -220,13 +229,13 @@ func _update_all_bd_effects():
 
 func _update_elemental_on_hit_effect():
 	if is_instance_valid(main_attack_module):
-		elemental_on_hit.damage_as_modifier.flat_modifier = (main_attack_module.last_calculated_final_damage * ratio_elemental_on_hit) * last_calculated_final_ability_potency
+		elemental_on_hit.damage_as_modifier.flat_modifier = (main_attack_module.last_calculated_final_damage * ratio_elemental_on_hit) #* last_calculated_final_ability_potency
 		elemental_on_hit_effect.on_hit_damage = elemental_on_hit.duplicate()
 		emit_signal("elemental_buff_changed")
 
 func _update_flat_attk_speed_effect():
 	if is_instance_valid(main_attack_module):
-		attack_speed_modifier.percent_amount = (main_attack_module.last_calculated_final_attk_speed * ratio_attack_speed) * last_calculated_final_ability_potency
+		attack_speed_modifier.percent_amount = (main_attack_module.last_calculated_final_attk_speed * ratio_attack_speed) #* last_calculated_final_ability_potency
 		attack_speed_effect.attribute_as_modifier = attack_speed_modifier.get_copy_scaled_by(1)
 		emit_signal("attk_speed_buff_changed")
 
@@ -234,7 +243,7 @@ func _update_flat_range_effect():
 	if is_instance_valid(main_attack_module):
 		main_attack_module.range_module.calculate_final_range_radius()
 		
-		range_modifier.flat_modifier = (main_attack_module.range_module.last_calculated_final_range * ratio_range) * last_calculated_final_ability_potency
+		range_modifier.flat_modifier = (main_attack_module.range_module.last_calculated_final_range * ratio_range) #* last_calculated_final_ability_potency
 		range_effect.attribute_as_modifier = range_modifier.get_copy_scaled_by(1)
 		emit_signal("range_buff_changed")
 
@@ -255,9 +264,9 @@ func set_energy_module(module):
 
 
 func _module_turned_on(_first_time_per_round : bool):
-	ratio_elemental_on_hit = 0.45
-	ratio_attack_speed = 45.0
-	ratio_range = 0.20
+	ratio_elemental_on_hit = empowered_ratio_elemental_on_hit
+	ratio_attack_speed = empowered_ratio_attack_speed
+	ratio_range = empowered_ratio_range
 	
 	_update_all_bd_effects()
 
