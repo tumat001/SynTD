@@ -1,7 +1,6 @@
 extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Red_BasePact.gd"
 
 
-
 const round_count_of_extra_difficulty = 4
 
 const sv_inc__tier_1 = 2
@@ -61,6 +60,8 @@ func _first_time_initialize():
 	game_elements.stage_round_manager.connect("before_round_ends", self, "_before_round_end", [], CONNECT_PERSIST)
 	
 	_update_description_o()
+	
+	common__make_pact_untakable_during_round()
 
 
 func _update_stage_and_round_of_end():

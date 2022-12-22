@@ -2,6 +2,7 @@ extends "res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_
 
 const TowerEffect_Red_AbilityProvisionsEffect = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/PactEffects/TowerEffect_Red_AbilityProvisionsEffect.gd")
 
+
 var _ability_potency_amount : float
 
 var _attk_speed_reduc_percent : float

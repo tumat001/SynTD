@@ -30,6 +30,7 @@ func set_base_pact(arg_pact : Red_BasePact):
 			base_pact.disconnect("on_activation_requirements_met", self, "_on_base_pact_activation_requirements_met")
 			base_pact.disconnect("on_activation_requirements_unmet", self, "_on_base_pact_activation_requirements_unmet")
 			base_pact.disconnect("on_description_changed", self, "_on_base_pact_description_changed")
+			base_pact.disconnect("last_calculated_can_be_sworn_changed", self, "_on_last_calculated_can_be_sworn_changed")
 	
 	base_pact = arg_pact
 	
@@ -38,6 +39,7 @@ func set_base_pact(arg_pact : Red_BasePact):
 			base_pact.connect("on_activation_requirements_met", self, "_on_base_pact_activation_requirements_met", [], CONNECT_PERSIST)
 			base_pact.connect("on_activation_requirements_unmet", self, "_on_base_pact_activation_requirements_unmet", [], CONNECT_PERSIST)
 			base_pact.connect("on_description_changed", self, "_on_base_pact_description_changed", [], CONNECT_PERSIST)
+			base_pact.connect("last_calculated_can_be_sworn_changed", self, "_on_last_calculated_can_be_sworn_changed", [], CONNECT_PERSIST)
 	
 	if is_instance_valid(name_label):
 		update_display()
@@ -46,13 +48,20 @@ func set_base_pact(arg_pact : Red_BasePact):
 #
 
 func _on_base_pact_activation_requirements_met(red_dom_syn_curr_tier : int):
-	update_display()
+	#update_display()
+	_update_req_met_or_unmet_modulate()
 
 func _on_base_pact_activation_requirements_unmet(red_dom_syn_curr_tier : int):
-	update_display()
+	#update_display()
+	_update_req_met_or_unmet_modulate()
 
 func _on_base_pact_description_changed():
-	update_display()
+	#update_display()
+	_update_descriptions()
+
+func _on_last_calculated_can_be_sworn_changed(arg_val):
+	_update_req_met_or_unmet_modulate()
+
 
 #
 
@@ -64,20 +73,28 @@ func update_display():
 		name_label.text = base_pact.pact_name
 		pact_icon.texture = base_pact.pact_icon
 		
-		good_descriptions.descriptions = base_pact.good_descriptions
-		good_descriptions.update_display()
-		
-		bad_descriptions.descriptions = base_pact.bad_descriptions
-		bad_descriptions.update_display()
+		_update_descriptions()
 		
 		tier_label.text = _convert_number_to_roman_numeral(base_pact.tier)
 		_set_tier_pic_to_appropriate_pic(base_pact.tier)
 		
-		if base_pact.is_activation_requirements_met:
-			modulate = requirements_met_modulate
-		else:
-			modulate = requirements_unmet_modulate
+		_update_req_met_or_unmet_modulate()
 
+func _update_descriptions():
+	good_descriptions.descriptions = base_pact.good_descriptions
+	good_descriptions.update_display()
+	
+	bad_descriptions.descriptions = base_pact.bad_descriptions
+	bad_descriptions.update_display()
+
+func _update_req_met_or_unmet_modulate():
+	if base_pact.is_activation_requirements_met and (base_pact.last_calculated_can_be_sworn or base_pact.is_sworn):
+		modulate = requirements_met_modulate
+	else:
+		modulate = requirements_unmet_modulate
+
+
+#
 
 func _convert_number_to_roman_numeral(number : int) -> String:
 	var return_val : String = ""
@@ -115,7 +132,8 @@ func _set_tier_pic_to_appropriate_pic(arg_tier):
 func _on_AdvancedButton_pressed_mouse_event(event):
 	if event is InputEventMouseButton:
 		if event.is_pressed() and event.button_index == BUTTON_LEFT:
-			if base_pact._if_pact_can_be_sworn():
+			#if base_pact._if_pact_can_be_sworn():
+			if base_pact.last_calculated_can_be_sworn:
 				emit_signal("pact_card_pressed", base_pact)
 
 

@@ -43,7 +43,7 @@ func get_instructions_for_stageround(uuid : String):
 func is_transition_time_in_stageround(uuid : String) -> bool:
 	return uuid == "41"
 	
-	#todo
+	
 	#return uuid == "01"  # to transfer to other factions
 
 

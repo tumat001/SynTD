@@ -533,7 +533,18 @@ var absorb_ing_particle_pool_component : AttackSpritePoolComponent
 
 # terrain related
 
-var layer_on_terrain : int setget set_layer_on_terrain
+#var layer_on_terrain : int setget set_layer_on_terrain
+
+
+enum LayerOnTerrainModiIds {
+	PLACABLE_LAYER = 0
+	
+	DOM_SYN_RED__XRAY_CYCLE = 1
+}
+
+var _layer_on_terrain_modi_to_val_map : Dictionary = {}
+var last_calculated_layer_on_terrain : int
+
 
 # SYN RELATED ---------------------------- #
 # Yellow
@@ -3643,11 +3654,32 @@ func _set_absorb_ing_particle_properties_when_get_from_pool_after_add_child(arg_
 
 # Terrain related
 
-func set_layer_on_terrain(arg_val):
-	var old_layer = layer_on_terrain
-	layer_on_terrain = arg_val
+#func set_layer_on_terrain(arg_val):
+#	var old_layer = layer_on_terrain
+#	layer_on_terrain = arg_val
+#
+#	emit_signal("layer_on_terrain_changed", old_layer, layer_on_terrain)
+
+func set_placable_layer_on_terrain_modi(arg_val):
+	set_layer_on_terrain_modi(LayerOnTerrainModiIds.PLACABLE_LAYER, arg_val)
+
+func set_layer_on_terrain_modi(arg_id, arg_val):
+	_layer_on_terrain_modi_to_val_map[arg_id] = arg_val
+	_calculate_and_emit_last_calc_layer_on_terrain()
+
+func remove_layer_on_terrain_modi(arg_id):
+	_layer_on_terrain_modi_to_val_map.erase(arg_id)
+	_calculate_and_emit_last_calc_layer_on_terrain()
+
+func _calculate_and_emit_last_calc_layer_on_terrain():
+	var old_layer = last_calculated_layer_on_terrain
 	
-	emit_signal("layer_on_terrain_changed", old_layer, layer_on_terrain)
+	var base_val = 0
+	for val in _layer_on_terrain_modi_to_val_map.values():
+		base_val += val
+	
+	last_calculated_layer_on_terrain = base_val
+	emit_signal("layer_on_terrain_changed", old_layer, last_calculated_layer_on_terrain)
 
 
 # SYNERGIES RELATED -----------------------------------------

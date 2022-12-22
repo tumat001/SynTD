@@ -19,6 +19,8 @@ signal on_description_changed()
 
 signal pact_sworn()
 
+signal last_calculated_can_be_sworn_changed(arg_val)
+
 
 var game_elements : GameElements
 var red_dom_syn
@@ -42,7 +44,10 @@ var pact_mag_rng : RandomNumberGenerator
 #
 
 enum PactCanBeSwornClauseId {
-	HEALING_SYMBOL_BENCH_STATUS = 1
+	GENERIC__CANNOT_BE_SWORN_DURING_ROUND = 0
+	
+	HEALING_SYMBOL_BENCH_STATUS = 100
+	COMBINATION_EFFICIENCY_AMOUNT_MIN_REACHED = 101
 }
 var pact_can_be_sworn_conditional_clauses : ConditionalClauses
 var last_calculated_can_be_sworn : bool
@@ -105,7 +110,7 @@ func _if_other_requirements_are_met() -> bool:
 #
 
 func _if_pact_can_be_sworn() -> bool:
-	return true
+	return last_calculated_can_be_sworn
 
 #
 
@@ -146,14 +151,14 @@ func _remove_pact_from_game_elements(arg_game_elements : GameElements):
 ###########
 
 func is_pact_offerable(arg_game_elements : GameElements, dom_syn_red, tier_to_be_offered) -> bool:
-	#return true
-	return last_calculated_can_be_sworn
+	return true
 
 
 ###########
 
 func _on_pact_can_be_sworn_conditional_clauses_updated(arg_clause_id):
 	last_calculated_can_be_sworn = pact_can_be_sworn_conditional_clauses.is_passed
+	emit_signal("last_calculated_can_be_sworn_changed", last_calculated_can_be_sworn)
 
 ########## COMMON METHODS ###########
 
@@ -161,14 +166,18 @@ func common__make_pact_untakable_during_round():
 	game_elements.stage_round_manager.connect("round_ended", self, "_on_round_end__make_pact_untakable_during_round", [], CONNECT_PERSIST)
 	game_elements.stage_round_manager.connect("round_started", self, "_on_round_start__make_pact_untakable_during_round", [], CONNECT_PERSIST)
 	
-	connect("pact_sworn", self, "")
+	connect("pact_sworn", self, "_on_pact_sworn__make_pact_untakable_during_round", [], CONNECT_PERSIST)
 
 func _on_round_end__make_pact_untakable_during_round(arg_stageround):
-	pass
+	pact_can_be_sworn_conditional_clauses.remove_clause(PactCanBeSwornClauseId.GENERIC__CANNOT_BE_SWORN_DURING_ROUND)
 
 func _on_round_start__make_pact_untakable_during_round(arg_stageround):
-	pass
+	pact_can_be_sworn_conditional_clauses.attempt_insert_clause(PactCanBeSwornClauseId.GENERIC__CANNOT_BE_SWORN_DURING_ROUND)
 
 func _on_pact_sworn__make_pact_untakable_during_round():
-	pass
-
+	game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end__make_pact_untakable_during_round")
+	game_elements.stage_round_manager.disconnect("round_started", self, "_on_round_start__make_pact_untakable_during_round")
+	
+	disconnect("pact_sworn", self, "_on_pact_sworn__make_pact_untakable_during_round")
+	
+	pact_can_be_sworn_conditional_clauses.remove_clause(PactCanBeSwornClauseId.GENERIC__CANNOT_BE_SWORN_DURING_ROUND)

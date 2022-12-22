@@ -51,7 +51,6 @@ func _init(arg_pact_parent).(StoreOfTowerEffectsUUID.RED_PACT_CLOSE_COMBAT_EFFEC
 	_pact_parent = arg_pact_parent 
 
 
-
 func _make_modifications_to_tower(tower):
 	_tower = tower
 	

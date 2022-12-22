@@ -128,7 +128,7 @@ func _ready():
 	
 	# TEST HERE
 	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
-	map_id = StoreOfMaps.MapsIds.RIDGED
+	map_id = StoreOfMaps.MapsIds.MESA
 	#
 	
 	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
@@ -396,9 +396,9 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
-	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_8
-	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+#	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+#	level_manager.current_level = LevelManager.LEVEL_8
+#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -410,27 +410,27 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.WYVERN,
-			Towers.ADEPT,
-			Towers.TRUDGE,
-			Towers.CHAOS,
-			Towers.SHACKLED,
-			Towers.TESLA,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.IOTA,
-			Towers.BLOSSOM,
-			Towers.CHARGE,
-			Towers.PING,
-			Towers.ENERVATE,
-			Towers.PAROXYSM
-		])
-	even = !even
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.WYVERN,
+#			Towers.ADEPT,
+#			Towers.TRUDGE,
+#			Towers.CHAOS,
+#			Towers.PINECONE,
+#			Towers.TESLA,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.IOTA,
+#			Towers.OUTREACH,
+#			Towers.CHARGE,
+#			Towers.VARIANCE,
+#			Towers.ENERVATE,
+#			Towers.PAROXYSM
+#		])
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):

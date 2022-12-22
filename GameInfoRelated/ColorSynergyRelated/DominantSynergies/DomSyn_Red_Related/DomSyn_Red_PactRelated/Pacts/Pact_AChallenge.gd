@@ -20,18 +20,22 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	if tier == 0:
 		health_gain_mod.percent_amount = 10
 		health_gain_mod.flat_maximum = 50
+		health_gain_mod.flat_minimum = 3.0
 		gold_gain_val = 5
 	elif tier == 1:
 		health_gain_mod.percent_amount = 8
 		health_gain_mod.flat_maximum = 25
+		health_gain_mod.flat_minimum = 2.0
 		gold_gain_val = 3
 	elif tier == 2:
 		health_gain_mod.percent_amount = 6
 		health_gain_mod.flat_maximum = 10
+		health_gain_mod.flat_minimum = 1.5
 		gold_gain_val = 2
 	elif tier == 3:
 		health_gain_mod.percent_amount = 4
 		health_gain_mod.flat_maximum = 4
+		health_gain_mod.flat_minimum = 1.0
 		gold_gain_val = 1
 	
 	var plain_fragment__gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "%s gold" % gold_gain_val)
@@ -43,11 +47,15 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	]
 	
 	bad_descriptions = [
-		"Enemies gain %s more max health, up to %s." % [str(health_gain_mod.percent_amount) + "%", health_gain_mod.flat_maximum]
+		"Enemies gain %s more max health, minimum of %s, maximum of %s." % [str(health_gain_mod.percent_amount) + "%", health_gain_mod.flat_minimum, health_gain_mod.flat_maximum]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_AChallenge_Icon.png")
+	
 
+func _first_time_initialize():
+	common__make_pact_untakable_during_round()
+	 
 
 func _apply_pact_to_game_elements(arg_game_elements : GameElements):
 	._apply_pact_to_game_elements(arg_game_elements)

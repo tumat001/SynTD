@@ -112,6 +112,9 @@ func _initialize_tier_3_pacts():
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORANGE_IDENTITY)
 	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.BLUE_IDENTITY)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DAMAGE_IMPLANTS)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.FROST_IMPLANTS)
+	tier_3_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.XRAY_CYCLE)
 	
 
 func _initialize_tier_2_pacts():
@@ -140,6 +143,9 @@ func _initialize_tier_2_pacts():
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORANGE_IDENTITY)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.BLUE_IDENTITY)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DAMAGE_IMPLANTS)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.FROST_IMPLANTS)
+	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.XRAY_CYCLE)
 	
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_2_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
@@ -173,6 +179,9 @@ func _initialize_tier_1_pacts():
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
 	#tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORANGE_IDENTITY)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DAMAGE_IMPLANTS)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.FROST_IMPLANTS)
+	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.XRAY_CYCLE)
 	
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_1_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
@@ -208,6 +217,9 @@ func _initialize_tier_0_pacts():
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DREAMS_REACH)
 	#tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.ORANGE_IDENTITY)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DAMAGE_IMPLANTS)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.FROST_IMPLANTS)
+	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.XRAY_CYCLE)
 	
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.DRAGON_SOUL)
 	tier_0_pacts_uuids.append(StoreOfPactUUID.PactUUIDs.TIGER_SOUL)
@@ -374,10 +386,10 @@ func _initialize_red_pact_whole_panel():
 			red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 	
 	# for debugging only ############
-#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS, 3, 3))
+#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.XRAY_CYCLE, 3, 3))
 #	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.VIOLET_IDENTITY, 2, 3))
 #
-#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.HEALING_SYMBOLS, 3, 3))
+#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.FROST_IMPLANTS, 3, 3))
 
 
 ###

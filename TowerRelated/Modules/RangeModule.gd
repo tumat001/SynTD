@@ -57,11 +57,14 @@ var fov_node
 
 #
 
+var parent_tower setget set_parent_tower
+
+#
+
 var terrain_in_range : Array = []
-var layer_on_terrain : int 
 var range_polygon_poly_points : PoolVector2Array
 
-var parent_tower setget set_parent_tower
+var layer_on_terrain : int 
 
 #
 
@@ -790,7 +793,8 @@ func set_parent_tower(arg_tower):
 		if !arg_tower.is_connected("on_tower_transfered_to_placable", self, "_on_tower_transfered_to_placable"):
 			arg_tower.connect("on_tower_transfered_to_placable", self, "_on_tower_transfered_to_placable", [], CONNECT_PERSIST)
 		
-		layer_on_terrain = arg_tower.layer_on_terrain
+		#layer_on_terrain = arg_tower.layer_on_terrain
+		layer_on_terrain = arg_tower.last_calculated_layer_on_terrain
 		_request_update_range_polgyon()
 
 func _on_parent_tower_changed_terrain_layer(arg_old, arg_new):

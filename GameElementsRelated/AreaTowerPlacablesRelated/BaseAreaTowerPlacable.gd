@@ -61,7 +61,9 @@ func set_tower_occupying(arg_tower):
 	emit_signal("on_occupancy_changed", tower_occupying)
 	
 	if is_instance_valid(tower_occupying):
-		tower_occupying.layer_on_terrain = layer_on_terrain
+		#tower_occupying.layer_on_terrain = layer_on_terrain
+		tower_occupying.set_placable_layer_on_terrain_modi(layer_on_terrain)
+
 
 func _update_is_tower_occupying_clause():
 	if is_instance_valid(tower_occupying):
@@ -103,4 +105,6 @@ func set_layer_on_terrain(arg_val):
 	layer_on_terrain = arg_val
 	
 	if is_instance_valid(tower_occupying):
-		tower_occupying.layer_on_terrain = layer_on_terrain
+		#tower_occupying.layer_on_terrain = layer_on_terrain
+		tower_occupying.set_placable_layer_on_terrain_modi(layer_on_terrain)
+

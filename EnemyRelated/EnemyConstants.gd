@@ -264,7 +264,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.BLASTER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 500 #todo #35 #30
+		info.base_health = 35
 		info.base_movement_speed = 50
 		info.enemy_type = info.EnemyType.NORMAL
 		

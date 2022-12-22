@@ -66,6 +66,8 @@ func _first_time_initialize():
 	game_elements.stage_round_manager.connect("before_round_ends", self, "_before_round_end", [], CONNECT_PERSIST)
 	
 	_update_description_o()
+	
+	common__make_pact_untakable_during_round()
 
 
 func _update_stage_and_round_of_end():

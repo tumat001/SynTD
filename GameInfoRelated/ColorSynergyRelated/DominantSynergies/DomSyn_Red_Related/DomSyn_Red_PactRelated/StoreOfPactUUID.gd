@@ -35,6 +35,9 @@ const Pact_BloodToGold = preload("res://GameInfoRelated/ColorSynergyRelated/Domi
 const Pact_OrangeIdentity = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_OrangeIdentity.gd")
 const Pact_BlueIdentity = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_BlueIdentity.gd")
 const Pact_VioletIdentity = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_VioletIdentity.gd")
+const Pact_DamageImplants = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_DamageImplants.gd")
+const Pact_FrostImplants = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_FrostImplants.gd")
+const Pact_XrayCycle = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Pacts/Pact_XrayCycle.gd")
 
 
 enum PactUUIDs {
@@ -73,6 +76,10 @@ enum PactUUIDs {
 	ORANGE_IDENTITY = 129,
 	BLUE_IDENTITY = 130,
 	VIOLET_IDENTITY = 131,
+	
+	DAMAGE_IMPLANTS = 132,
+	FROST_IMPLANTS = 133,
+	XRAY_CYCLE = 134,
 	
 }
 
@@ -183,6 +190,15 @@ func construct_pact(pact_uuid : int, tier : int,
 		
 	elif pact_uuid == PactUUIDs.VIOLET_IDENTITY:
 		pact = Pact_VioletIdentity.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.DAMAGE_IMPLANTS:
+		pact = Pact_DamageImplants.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.FROST_IMPLANTS:
+		pact = Pact_FrostImplants.new(tier, arg_tier_for_activation)
+		
+	elif pact_uuid == PactUUIDs.XRAY_CYCLE:
+		pact = Pact_XrayCycle.new(tier, arg_tier_for_activation)
 		
 	
 	return pact

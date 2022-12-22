@@ -61,14 +61,21 @@ func _on_tower_exited_bench_space(tower, bench_slot):
 
 
 func _update_bench_space_status():
+	if _if_enough_bench_space_is_available():
+		pact_can_be_sworn_conditional_clauses.remove_clause(PactCanBeSwornClauseId.HEALING_SYMBOL_BENCH_STATUS)
+	else:
+		pact_can_be_sworn_conditional_clauses.attempt_insert_clause(PactCanBeSwornClauseId.HEALING_SYMBOL_BENCH_STATUS)
+	
 	_check_requirement_status_and_do_appropriate_action()
 
 func _if_other_requirements_are_met() -> bool:
-	return game_elements.tower_inventory_bench._find_number_of_empty_slots() >= _healing_symbol_count or is_sworn
+	return _if_enough_bench_space_is_available() or is_sworn
 
+func _if_enough_bench_space_is_available():
+	return game_elements.tower_inventory_bench._find_number_of_empty_slots() >= _healing_symbol_count
 
-func _if_pact_can_be_sworn() -> bool:
-	return _if_other_requirements_are_met()
+#func _if_pact_can_be_sworn() -> bool:
+#	return _if_other_requirements_are_met()
 
 #
 

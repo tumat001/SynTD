@@ -619,6 +619,15 @@ func get_all_towers_except_in_queue_free() -> Array:
 	
 	return bucket
 
+func get_all_towers_except_summonables_and_unsellables_in_queue_free() -> Array:
+	var bucket : Array = []
+	for child in get_children():
+		if child.is_in_group(TOWER_GROUP_ID) and !child.is_queued_for_deletion() and !child.is_a_summoned_tower and child.last_calculated_can_be_sold:
+			bucket.append(child)
+	
+	return bucket
+
+
 func get_all_ids_of_towers_except_in_queue_free() -> Array:
 	var bucket : Array = []
 	for child in get_children():

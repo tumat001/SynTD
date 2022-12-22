@@ -59,6 +59,8 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 
 func _first_time_initialize():
 	_update_good_descriptions()
+	
+	game_elements.combination_manager.connect("on_combination_amount_needed_changed", self, "_on_combination_amount_needed_changed", [], CONNECT_PERSIST)
 
 func _update_good_descriptions():
 	good_descriptions.clear()
@@ -70,6 +72,13 @@ func _update_good_descriptions():
 	good_descriptions.append("Towers needed for combinations cannot go lower than: %s." % game_elements.combination_manager.minimum_combination_amount)
 	
 	emit_signal("on_description_changed")
+
+
+func _on_combination_amount_needed_changed(arg_val):
+	if _is_comb_amount_after_reduction_at_or_above_minimum(game_elements):
+		pact_can_be_sworn_conditional_clauses.remove_clause(PactCanBeSwornClauseId.COMBINATION_EFFICIENCY_AMOUNT_MIN_REACHED)
+	else:
+		pact_can_be_sworn_conditional_clauses.attempt_insert_clause(PactCanBeSwornClauseId.COMBINATION_EFFICIENCY_AMOUNT_MIN_REACHED)
 
 #
 
@@ -132,4 +141,8 @@ func _remove_effect_from_tower(tower : AbstractTower):
 #
 
 func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
-	return arg_game_elements.combination_manager.all_combination_id_to_effect_map.size() >= combinations_required_for_offerable_inclusive and arg_game_elements.gold_manager.current_gold >= gold_requirement_for_offerable_inclusive
+	return arg_game_elements.combination_manager.all_combination_id_to_effect_map.size() >= combinations_required_for_offerable_inclusive and arg_game_elements.gold_manager.current_gold >= gold_requirement_for_offerable_inclusive and _is_comb_amount_after_reduction_at_or_above_minimum(arg_game_elements)
+
+func _is_comb_amount_after_reduction_at_or_above_minimum(arg_game_elements : GameElements):
+	return arg_game_elements.combination_manager.last_calculated_combination_amount + less_towers_for_combination >= arg_game_elements.combination_manager.minimum_combination_amount
+

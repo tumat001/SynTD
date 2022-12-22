@@ -156,12 +156,13 @@ func pact_unsworn(arg_replacing_pact):
 			tower.sell_tower()
 	
 	var random_tower = _get_random_tower()
-	if is_instance_valid(random_tower) and random_tower.last_calculated_can_be_sold:
+	if is_instance_valid(random_tower):
 		random_tower.sell_tower()
 
 
 func _get_random_tower():
-	var all_towers = game_elements.tower_manager.get_all_active_towers_except_in_queue_free()
+	#var all_towers = game_elements.tower_manager.get_all_active_towers_except_in_queue_free()
+	var all_towers = game_elements.tower_manager.get_all_towers_except_summonables_and_unsellables_in_queue_free()
 	var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.RANDOM_TOWER_DECIDER)
 	var rng_i = rng.randi_range(0, all_towers.size() - 1)
 	

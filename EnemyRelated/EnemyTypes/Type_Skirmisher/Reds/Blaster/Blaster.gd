@@ -15,7 +15,7 @@ var tower_detecting_range_module : TowerDetectingRangeModule
 
 
 var barrage_ability : BaseAbility
-const _barrage_cooldown : float = 2.0 #9.0  #TODO
+const _barrage_cooldown : float = 9.0
 const no_valid_targets_in_range_clause : int = -10
 const in_barrage_clause : int = -11
 

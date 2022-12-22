@@ -596,6 +596,106 @@ func _connect_attack_enemies_in_range_when_ready(arg_enemies, num_of_targets):
 
 #
 
+func on_command_attack_enemies_in_range_and_attack_when_ready__wait_for_in_range(num_of_targets : int = number_of_unique_targets, attack_count : int = 1, reset_attk_count : bool = true):
+	var success = false
+	var enemies : Array
+	
+	#if !_is_bursting:
+	enemies = _get_enemies_found_by_range_module(num_of_targets)
+	success = on_command_attack_enemies(enemies, num_of_targets)
+	
+	if !reset_attk_count:
+		queued_attack_count += attack_count
+	else:
+		queued_attack_count = attack_count
+	
+	if enemies.size() <= 0:
+		# wait for new enemies to enter range
+		# check if round ended
+		# check if removed from tower
+		_connect_attack_enemies_in_range_when_ready__wait_in_range__for_no_enemies_in_range(num_of_targets)
+		_disconnect_attack_enemies_in_range_when_ready__wait_in_range()
+		
+		return
+	
+	if !success:
+		_connect_attack_enemies_in_range_when_ready__wait_in_range(enemies, num_of_targets)
+	else:
+		queued_attack_count -= 1
+		
+		if queued_attack_count <= 0:
+			queued_attack_count = 0
+			_disconnect_attack_enemies_in_range_when_ready__wait_in_range()
+		else:
+			_connect_attack_enemies_in_range_when_ready__wait_in_range(enemies, num_of_targets)
+
+
+func _connect_attack_enemies_in_range_when_ready__wait_in_range(arg_enemies, num_of_targets):
+	if !is_connected("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready__wait_for_in_range"):
+		connect("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready__wait_for_in_range", [num_of_targets, 0, false])
+
+func _disconnect_attack_enemies_in_range_when_ready__wait_in_range():
+	if is_connected("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready__wait_for_in_range"):
+		disconnect("ready_to_attack", self, "on_command_attack_enemies_in_range_and_attack_when_ready__wait_for_in_range")
+
+
+func _connect_attack_enemies_in_range_when_ready__wait_in_range__for_no_enemies_in_range(num_of_targets):
+	#if is_instance_valid(range_module):
+	#	if !range_module.is_connected("enemy_entered_range", self, "_on_enemy_entered_range__monitor_for_AEIRWR__wait_in_range"):
+	#		range_module.connect("enemy_entered_range", self, "_on_enemy_entered_range__monitor_for_AEIRWR__wait_in_range", [num_of_targets], CONNECT_PERSIST)
+	
+	if is_instance_valid(parent_tower):
+		if !parent_tower.is_connected("on_round_end", self, "_on_round_end__monitor_for_AEIRWR__wait_in_range"):
+			parent_tower.connect("on_round_end", self, "_on_round_end__monitor_for_AEIRWR__wait_in_range", [num_of_targets], CONNECT_PERSIST)
+		
+		if !parent_tower.is_connected("attack_module_removed", self, "_on_attk_module_removed__monitor_for_AEIRWR__wait_in_range"):
+			parent_tower.connect("attack_module_removed", self, "_on_attk_module_removed__monitor_for_AEIRWR__wait_in_range", [num_of_targets], CONNECT_PERSIST)
+		
+		if !parent_tower.is_connected("on_range_module_enemy_entered", self, "_on_tower_any_range_module_enemy_entered__monitor_for_AEIRWR__wait_in_range"):
+			parent_tower.connect("on_range_module_enemy_entered", self, "_on_tower_any_range_module_enemy_entered__monitor_for_AEIRWR__wait_in_range", [num_of_targets], CONNECT_PERSIST)
+
+
+func _disconnect_attack_enemies_in_range_when_ready__wait_in_range__for_no_enemies_in_range():
+	#if is_instance_valid(range_module):
+	#	if range_module.is_connected("enemy_entered_range", self, "_on_enemy_entered_range__monitor_for_AEIRWR__wait_in_range"):
+	#		range_module.disconnect("enemy_entered_range", self, "_on_enemy_entered_range__monitor_for_AEIRWR__wait_in_range")
+	
+	if is_instance_valid(parent_tower):
+		if parent_tower.is_connected("on_round_end", self, "_on_round_end__monitor_for_AEIRWR__wait_in_range"):
+			parent_tower.disconnect("on_round_end", self, "_on_round_end__monitor_for_AEIRWR__wait_in_range")
+		
+		if parent_tower.is_connected("attack_module_removed", self, "_on_attk_module_removed__monitor_for_AEIRWR__wait_in_range"):
+			parent_tower.disconnect("attack_module_removed", self, "_on_attk_module_removed__monitor_for_AEIRWR__wait_in_range")
+		
+		if parent_tower.is_connected("on_range_module_enemy_entered", self, "_on_tower_any_range_module_enemy_entered__monitor_for_AEIRWR__wait_in_range"):
+			parent_tower.disconnect("on_range_module_enemy_entered", self, "_on_tower_any_range_module_enemy_entered__monitor_for_AEIRWR__wait_in_range")
+
+#func _on_enemy_entered_range__monitor_for_AEIRWR__wait_in_range(arg_enemy, arg_num_of_targets):
+#	_disconnect_attack_enemies_in_range_when_ready__wait_in_range__for_no_enemies_in_range()
+#
+#	on_command_attack_enemies_in_range_and_attack_when_ready__wait_for_in_range(arg_num_of_targets, 0, false)
+
+
+func _on_tower_any_range_module_enemy_entered__monitor_for_AEIRWR__wait_in_range(enemy, module, arg_range_module, arg_num_of_targets):
+	if is_instance_valid(parent_tower) and range_module == arg_range_module:
+		_disconnect_attack_enemies_in_range_when_ready__wait_in_range__for_no_enemies_in_range()
+		
+		on_command_attack_enemies_in_range_and_attack_when_ready__wait_for_in_range(arg_num_of_targets, 0, false)
+
+func _on_round_end__monitor_for_AEIRWR__wait_in_range(arg_num_of_targets):
+	queued_attack_count = 0
+	_disconnect_attack_enemies_in_range_when_ready__wait_in_range()
+	_disconnect_attack_enemies_in_range_when_ready__wait_in_range__for_no_enemies_in_range()
+
+func _on_attk_module_removed__monitor_for_AEIRWR__wait_in_range(arg_attk_module, arg_num_of_targets):
+	if arg_attk_module == self:
+		queued_attack_count = 0
+	_disconnect_attack_enemies_in_range_when_ready__wait_in_range()
+	_disconnect_attack_enemies_in_range_when_ready__wait_in_range__for_no_enemies_in_range()
+
+
+#
+
 func on_command_attack_enemies(arg_enemies : Array, num_of_targets : int = number_of_unique_targets) -> bool:
 	var enemies : Array
 	
