@@ -10,6 +10,8 @@ const CombinationWholeScreenPanel_Scene = preload("res://GameHUDRelated/Combinat
 
 const CombinationEffect = preload("res://GameInfoRelated/CombinationRelated/CombinationEffect.gd")
 
+const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
+
 
 onready var combination_more_details_button = $HBoxContainer/MiddleFill/MainContainer/HBoxContainer/CombinationMoreDetailsButton
 onready var combination_icons_hbox = $HBoxContainer/MiddleFill/MainContainer/HBoxContainer/ComboTowerIconsPanel
@@ -30,8 +32,23 @@ var per_tier_index_position : Dictionary = {
 	6 : 0,
 }
 
+
+# queue related
+
+var reservation_for_whole_screen_gui
+
 #
 
+func _ready():
+	_initialize_queue_reservation()
+
+func _initialize_queue_reservation():
+	reservation_for_whole_screen_gui = AdvancedQueue.Reservation.new(self)
+	#reservation_for_whole_screen_gui.on_entertained_method = "_on_queue_reservation_entertained"
+	#reservation_for_whole_screen_gui.on_removed_method
+
+
+#
 
 func add_combination_effect(arg_combi_effect : CombinationEffect):
 	var tower_icon_scene = TowerIconPanel_Scene.instance()
@@ -96,7 +113,8 @@ func _bring_up_combination_whole_screen_gui():
 		combination_whole_screen_panel = CombinationWholeScreenPanel_Scene.instance()
 		combination_whole_screen_panel.combination_manager = combination_manager
 	
-	whole_screen_gui.show_control(combination_whole_screen_panel)
+	#whole_screen_gui.show_control(combination_whole_screen_panel)
+	whole_screen_gui.queue_control(combination_whole_screen_panel, reservation_for_whole_screen_gui)
 
 ##
 

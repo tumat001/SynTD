@@ -11,6 +11,8 @@ enum IncreaseGoldSource {
 	START_OF_GAME,
 	
 	GAME_MODIFIER,
+	
+	MAP_SPECIFIC_BEHAVIOR,
 }
 
 enum DecreaseGoldSource {

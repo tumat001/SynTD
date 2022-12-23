@@ -276,4 +276,14 @@ enum {
 	# RGB (-4100)
 	
 	# ROYGBV(-4200)
+	
+	
+	
+	#########
+	
+	# MISC (-5000)
+	
+	MAP_MESA__SANDSTORM_SLOW = -5000
+	
+	
 }

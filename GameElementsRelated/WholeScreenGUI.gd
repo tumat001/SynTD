@@ -5,12 +5,16 @@ const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
 
 
 const reservation_control_metadata := "WHOLE_SCREEN_GUI__CONTROL"
+const reservation_make_background_dark_metadata := "WHOLE_SCREEN_GUI__MAKE_BACKGROUND_DARK"
+const reservation_escapable_by_game_elements_metadata := "WHOLE_SCREEN_GUI__ESCAPABLE_BY_GAME_ELEMENTS"
+
 const background_color : Color = Color(0, 0, 0, 0.8)
 
 var game_elements
 var screen_effect_manager
 
 var current_showing_control : Control
+var currently_escapable_from_game_elements : bool = true
 
 #
 
@@ -22,50 +26,82 @@ func _ready():
 	visible = false
 	
 	advanced_queue = AdvancedQueue.new()
-	advanced_queue.connect("entertained_reservation", self, "")
-
+	advanced_queue.connect("entertained_reservation", self, "_on_queue_entertained_reservation", [], CONNECT_PERSIST)
+	advanced_queue.connect("no_reservations_left", self, "_on_queue_no_reservations_left", [], CONNECT_PERSIST)
+	advanced_queue.connect("reservation_removed_or_deferred", self, "_on_queue_reservation_removed_or_deferred", [], CONNECT_PERSIST)
 
 #
 
-func queue_control(control : Control, reservation : AdvancedQueue.Reservation, make_background_dark : bool = true):
-	
-	reservation.metadata_map[reservation_control_metadata] = control
-	
-#	if current_showing_control != null:
-#		hide_control(current_showing_control)
-#
-#	#
-#	if !has_control(control):
-#		add_child(control)
-#
-#	current_showing_control = control
-#	control.visible = true
-	
-	
-	visible = true
-	
-	if make_background_dark:
-		var screen_effect = ScreenTintEffect.new()
-		screen_effect.is_timebounded = false
-		#screen_effect.fade_in_duration = 0.05
-		#screen_effect.fade_out_duration = 0.05
-		screen_effect.tint_color = background_color
-		screen_effect.ins_uuid = StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI
-		screen_effect.custom_z_index = ZIndexStore.SCREEN_EFFECTS_ABOVE_ALL
-		screen_effect_manager.add_screen_tint_effect(screen_effect)
-	
-	advanced_queue.queue_reservation(reservation)
+func queue_control(control : Control, reservation : AdvancedQueue.Reservation, make_background_dark : bool = true, escapable_by_esc : bool = true):
+	if current_showing_control != control:
+		reservation.metadata_map[reservation_control_metadata] = control
+		reservation.metadata_map[reservation_make_background_dark_metadata] = make_background_dark
+		reservation.metadata_map[reservation_escapable_by_game_elements_metadata] = escapable_by_esc
+		
+	#	if current_showing_control != null:
+	#		hide_control(current_showing_control)
+	#
+	#	#
+		if !has_control(control):
+			add_child(control)
+	#
+	#	current_showing_control = control
+		control.visible = false
+		
+		
+		advanced_queue.queue_reservation(reservation)
 
 
 
-func _on_queue_entertained_reservation(arg_reservation):
-	pass
+func _on_queue_entertained_reservation(arg_reservation : AdvancedQueue.Reservation):
+	var control = arg_reservation.metadata_map[reservation_control_metadata]
+	
+	if is_instance_valid(control):
+		if current_showing_control != null:
+			hide_control(current_showing_control, true, false)
+		
+		#
+		if !has_control(control):
+			add_child(control)
+		
+		current_showing_control = control
+		control.visible = true
+		currently_escapable_from_game_elements = arg_reservation.metadata_map[reservation_escapable_by_game_elements_metadata]
+		
+		#
+		visible = true
+		
+		if arg_reservation.metadata_map[reservation_make_background_dark_metadata]:
+			var screen_effect = ScreenTintEffect.new()
+			screen_effect.is_timebounded = false
+			#screen_effect.fade_in_duration = 0.05
+			#screen_effect.fade_out_duration = 0.05
+			screen_effect.tint_color = background_color
+			screen_effect.ins_uuid = StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI
+			screen_effect.custom_z_index = ZIndexStore.SCREEN_EFFECTS_ABOVE_ALL
+			screen_effect_manager.add_screen_tint_effect(screen_effect)
+			
+		else:
+			screen_effect_manager.destroy_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
+		
+	else:
+		advanced_queue.entertain_next_reservation_in_line()
 
 func _on_queue_no_reservations_left():
-	pass
+	screen_effect_manager.destroy_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
+	current_showing_control = null
+	currently_escapable_from_game_elements = true
+	
+	visible = false
 
-func _on_queue_reservation_removed_or_deferred(arg_res):
-	pass
+func _on_queue_reservation_removed_or_deferred(arg_res : AdvancedQueue.Reservation):
+	current_showing_control.visible = false
+	current_showing_control = null
+	currently_escapable_from_game_elements = true
+	
+	#
+	
+	#advanced_queue.entertain_next_reservation_in_line()
 
 
 #############
@@ -93,13 +129,22 @@ func _on_queue_reservation_removed_or_deferred(arg_res):
 #		screen_effect_manager.add_screen_tint_effect(screen_effect)
 
 
-func hide_control(control : Control, update_vis : bool = true):
+func hide_control(control : Control, update_vis : bool = true, can_advance_queue_reservation_line : bool = true):
 	if is_instance_valid(control):
-		control.visible = false
-		screen_effect_manager.destroy_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
-		current_showing_control = null
+		var current_control_is_to_hide : bool = control == current_showing_control
 		
-		visible = false
+		control.visible = false
+		#screen_effect_manager.destroy_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
+		current_showing_control = null
+		currently_escapable_from_game_elements = true
+		
+		#visible = false
+		
+		if current_control_is_to_hide and can_advance_queue_reservation_line:
+			advanced_queue.complete_reservation_status_of_current()
+			
+			#advanced_queue.entertain_next_reservation_in_line()
+
 
 func add_control_but_dont_show(control : Control):
 	if !has_control(control):

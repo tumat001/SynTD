@@ -146,6 +146,9 @@ const nightwatcher_image = preload("res://TowerRelated/Color_Violet/Chaos/Abilit
 const variance_vessel_image = preload("res://TowerRelated/Color_Violet/Variance_Vessel/Variance_Vessel_Omni.png")
 const yelvio_riftaxis_image = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/YelVio_RiftAxis/RiftAxis_Omni.png")
 
+const duned_image = preload("res://TowerRelated/Color__Others/Duned/Duned_Omni.png")
+
+
 enum {
 	NONE = 0,
 	
@@ -258,6 +261,8 @@ enum {
 	VARIANCE_VESSEL = 2003,
 	YELVIO_RIFT_AXIS = 2004,
 	
+	DUNED = 2005,
+	
 }
 
 # Can be used as official list of all towers
@@ -265,6 +270,7 @@ const TowerTiersMap : Dictionary = {
 	HEALING_SYMBOL : 1,
 	NIGHTWATCHER : 6,
 	YELVIO_RIFT_AXIS : 3,
+	DUNED : 2,
 	
 	#MONO : 1,
 	SPRINKLER : 1,
@@ -6522,6 +6528,30 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect = ing_effect
 		info.ingredient_effect_simple_description = "+ attk spd"
 		
+		
+	elif tower_id == DUNED:
+		info = TowerTypeInformation.new("Duned", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.base_tower_image = duned_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0.45
+		info.base_pierce = 1
+		info.base_range = 155
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		
+		var plain_fragment__bonus_base_damage = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.BASE_DAMAGE, "bonus base damage")
+		
+		info.tower_descriptions = [
+			["Duned gains |0| based on the current stage.", [plain_fragment__bonus_base_damage]],
+			"Duned can shoot over terrain."
+		]
+		
+		
 	
 	return info
 
@@ -6699,3 +6729,5 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Outreach/Outreach.tscn")
 	elif tower_id == BLAST:
 		return load("res://TowerRelated/Color_Red/Blast/Blast.tscn")
+	elif tower_id == DUNED:
+		return load("res://TowerRelated/Color__Others/Duned/Duned.tscn")

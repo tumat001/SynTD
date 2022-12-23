@@ -6,6 +6,9 @@ const WholeScreenGameStatsPanel = preload("res://GameHUDRelated/GameStatsPanel/W
 const WholeScreenGameStatsPanel_Scene = preload("res://GameHUDRelated/GameStatsPanel/WholeScreenGameStatsPanel/WholeScreenGameStatsPanel.tscn")
 const WholeScreenGUI = preload("res://GameElementsRelated/WholeScreenGUI.gd")
 
+const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
+
+
 signal stat_overview_construction_finished()
 
 
@@ -57,6 +60,23 @@ var _stat_overview_thread_constructor : Thread
 var whole_screen_gui : WholeScreenGUI
 
 var whole_screen_game_stats_panel : WholeScreenGameStatsPanel
+
+# queue related
+
+var reservation_for_whole_screen_gui
+
+#
+
+func _ready():
+	_initialize_queue_reservation()
+
+func _initialize_queue_reservation():
+	reservation_for_whole_screen_gui = AdvancedQueue.Reservation.new(self)
+	reservation_for_whole_screen_gui.on_entertained_method = "_on_queue_reservation_entertained"
+	#reservation_for_whole_screen_gui.on_removed_method
+
+
+
 
 #
 
@@ -555,10 +575,15 @@ func show_game_stats_panel():
 		whole_screen_game_stats_panel.whole_screen_gui = whole_screen_gui
 	
 	whole_screen_game_stats_panel.visible = false
-	whole_screen_gui.show_control(whole_screen_game_stats_panel)
+	#whole_screen_gui.show_control(whole_screen_game_stats_panel)
+	whole_screen_gui.queue_control(whole_screen_game_stats_panel, reservation_for_whole_screen_gui)
+	
+
+func _on_queue_reservation_entertained():
 	whole_screen_game_stats_panel.initialize_display()
 	whole_screen_game_stats_panel.visible = true
-	
+
+
 
 ####
 

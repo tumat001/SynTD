@@ -45,6 +45,7 @@ enum STAT_TYPE {
 	SYNERGY_DOMINANT = 1024
 	SYNERGY_COMPOSITE = 1025
 	LEVEL_UP_GREEN = 1026 # level up arrow, but color green
+	RELIC = 1027
 	
 	#
 	COLOR_VIOLET = 1100
@@ -99,6 +100,7 @@ const type_to_for_light_color_map : Dictionary = {
 	STAT_TYPE.SYNERGY_COMPOSITE : "#650273",
 	
 	STAT_TYPE.LEVEL_UP_GREEN : "#264C01",
+	STAT_TYPE.RELIC : "#0A4701",
 	
 	STAT_TYPE.COLOR_VIOLET : "#4F0051",
 	STAT_TYPE.COLOR_BLUE : "#011F74",
@@ -152,6 +154,7 @@ const type_to_for_dark_color_map : Dictionary = {
 	STAT_TYPE.SYNERGY_COMPOSITE : "#F7C7FE",
 	
 	STAT_TYPE.LEVEL_UP_GREEN : "#64FD4D",
+	STAT_TYPE.RELIC : "#9AFE8B",
 	
 	STAT_TYPE.COLOR_VIOLET : "#F09AFE",
 	STAT_TYPE.COLOR_BLUE : "#9AB4FE",
@@ -203,6 +206,7 @@ const type_to_name_map : Dictionary = {
 	STAT_TYPE.SYNERGY_COMPOSITE : "composite synergy",
 	
 	STAT_TYPE.LEVEL_UP_GREEN : "level up",
+	STAT_TYPE.RELIC : "relic",
 	
 	STAT_TYPE.COLOR_VIOLET : "violet",
 	STAT_TYPE.COLOR_BLUE : "blue",
@@ -254,6 +258,7 @@ const type_to_img_map : Dictionary = {
 	STAT_TYPE.SYNERGY_COMPOSITE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_SynergyComposite.png",
 	
 	STAT_TYPE.LEVEL_UP_GREEN : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_LevelUp_Green.png",
+	STAT_TYPE.RELIC : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Relic.png",
 	
 	STAT_TYPE.COLOR_VIOLET : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Violet.png",
 	STAT_TYPE.COLOR_BLUE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Blue.png",

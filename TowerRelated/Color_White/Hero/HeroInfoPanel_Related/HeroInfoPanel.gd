@@ -77,14 +77,15 @@ func _on_ShowHeroGUI_pressed_mouse_event(event):
 		#_show_whole_screen_gui()
 
 
-# shared with Hero_PopupGUI_LevelUp # if this method is changed, change the one in specified as well
+# shared with HeroInfoPanel # if this method is changed, change the one in specified as well
 static func show_whole_screen_gui(hero):
 	if is_instance_valid(hero):
-		var whole_screen_gui : WholeScreenGUI = hero.game_elements.whole_screen_gui
+		var whole_screen_gui = hero.game_elements.whole_screen_gui
 		var hero_gui = whole_screen_gui.get_control_with_script(Hero_WholeScreenGUI)
 		if !is_instance_valid(hero_gui):
 			hero_gui = Hero_WholeScreenGUI_Scene.instance()
 		
-		whole_screen_gui.show_control(hero_gui)
+		#whole_screen_gui.show_control(hero_gui)
+		whole_screen_gui.queue_control(hero_gui, hero.reservation_for_whole_screen_gui)
 		hero_gui.hero = hero
 

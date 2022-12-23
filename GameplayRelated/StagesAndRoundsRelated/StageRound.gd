@@ -44,6 +44,11 @@ static func convert_stageround_id_to_stage_and_round_num(arg_text_id : String) -
 	
 	return [first, second]
 
+static func convert_stageround_id_to_stage_and_round_string_with_dash(arg_text_id : String) -> String:
+	var nums = convert_stageround_id_to_stage_and_round_num(arg_text_id)
+	
+	return "%s-%s" % nums
+
 
 static func is_stage_round_higher_than_second_param(a_stage_num, a_round_num, b_stage_num, b_round_num):
 	if a_stage_num > b_stage_num:

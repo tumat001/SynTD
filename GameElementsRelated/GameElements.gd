@@ -396,8 +396,8 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
-#	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-#	level_manager.current_level = LevelManager.LEVEL_8
+	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	level_manager.current_level = LevelManager.LEVEL_8
 #	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
@@ -410,27 +410,27 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	shop_manager.roll_towers_in_shop_with_cost()
+	#shop_manager.roll_towers_in_shop_with_cost()
 	
-#	if !even:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.WYVERN,
-#			Towers.ADEPT,
-#			Towers.TRUDGE,
-#			Towers.CHAOS,
-#			Towers.PINECONE,
-#			Towers.TESLA,
-#		])
-#	else:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.IOTA,
-#			Towers.OUTREACH,
-#			Towers.CHARGE,
-#			Towers.VARIANCE,
-#			Towers.ENERVATE,
-#			Towers.PAROXYSM
-#		])
-#	even = !even
+	if !even:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.WYVERN,
+			Towers.ADEPT,
+			Towers.TRUDGE,
+			Towers.AMALGAMATOR,
+			Towers.DUNED,
+			Towers.SEEDER,
+		])
+	else:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.PESTILENCE,
+			Towers.PINECONE,
+			Towers.ACCUMULAE,
+			Towers.WAVE,
+			Towers.ROYAL_FLAME,
+			Towers.PAROXYSM
+		])
+	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -582,7 +582,8 @@ func _on_WholeScreenGUI_gui_input(event):
 			_hide_current_control_from_whole_screen_gui()
 
 func _hide_current_control_from_whole_screen_gui():
-	whole_screen_gui.hide_control(whole_screen_gui.current_showing_control)
+	if whole_screen_gui.currently_escapable_from_game_elements:
+		whole_screen_gui.hide_control(whole_screen_gui.current_showing_control)
 
 
 

@@ -75,7 +75,8 @@ static func show_whole_screen_gui(hero):
 		if !is_instance_valid(hero_gui):
 			hero_gui = Hero_WholeScreenGUI_Scene.instance()
 		
-		whole_screen_gui.show_control(hero_gui)
+		#whole_screen_gui.show_control(hero_gui)
+		whole_screen_gui.queue_control(hero_gui, hero.reservation_for_whole_screen_gui)
 		hero_gui.hero = hero
 
 #

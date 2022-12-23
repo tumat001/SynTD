@@ -431,6 +431,10 @@ enum {
 	# ROYGBV(4200)
 	
 	
+	# MISC (5000)
+	DUNED_BONUS_BASE_DMG_EFFECT = 5000
+	MAP_MESA__SANDSTORM_DMG = 5001
+	
 	# --------
 	# EXPERT (10 100)
 	

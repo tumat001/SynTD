@@ -17,6 +17,7 @@ const EnemyStunEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyS
 const OnHitDamage = preload("res://GameInfoRelated/OnHitDamage.gd")
 const TowerOnHitDamageAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitDamageAdderEffect.gd")
 const TowerOnHitEffectAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerOnHitEffectAdderEffect.gd")
+const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
 
 const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
@@ -231,11 +232,15 @@ const overflow_descriptions_tier_1_simple : Array = [
 
 var overflow_path : BaseBlackPath
 
+#
+
+var reservation_for_whole_screen_gui #: AdvancedQueue.Reservation
+
 ####
 
 func _init():
 	_initialize_descriptions()
-
+	_initialize_queue_reservation()
 
 func _initialize_descriptions():
 	
@@ -386,7 +391,12 @@ func _initialize_descriptions():
 	]
 	for desc in temp_overflow_tier_2_desc:
 		overflow_descriptions_tier_2_simple.append(desc)
-	
+
+
+func _initialize_queue_reservation():
+	reservation_for_whole_screen_gui = AdvancedQueue.Reservation.new(self)
+	reservation_for_whole_screen_gui.on_entertained_method = "_on_queue_reservation_entertained"
+	#reservation_for_whole_screen_gui.on_removed_method
 	
 
 
@@ -556,8 +566,14 @@ func _initialize_whole_screen_black_panel():
 
 func _mouse_input_event_on_syn_interactable_icon(event):
 	if event.button_index == BUTTON_LEFT:
-		game_elements.whole_screen_gui.show_control(black_whole_screen_gui)
-		black_whole_screen_gui.update_display()
+		#game_elements.whole_screen_gui.show_control(black_whole_screen_gui)
+		
+		game_elements.whole_screen_gui.queue_control(black_whole_screen_gui, reservation_for_whole_screen_gui)
+
+
+func _on_queue_reservation_entertained():
+	black_whole_screen_gui.update_display()
+
 
 
 func _path_selected(arg_path):

@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://TowerRelated/Color__Others/Duned/Duned_Omni.png" type="Texture" id=1]
+[ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=2]
+[ext_resource path="res://TowerRelated/Color__Others/Duned/Duned_Omni_NoHealth.png" type="Texture" id=3]
+[ext_resource path="res://TowerRelated/Color__Others/Duned/Duned.gd" type="Script" id=4]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "Omni",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "Omni_NoHealth",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 11.2659, 23.522 )
+
+[node name="Duned" instance=ExtResource( 2 )]
+position = Vector2( 0, 0 )
+script = ExtResource( 4 )
+
+[node name="TowerBase" parent="." index="0"]
+position = Vector2( 1, -10 )
+
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
+frames = SubResource( 1 )
+animation = "Omni"
+
+[node name="CollisionShape" parent="." index="1"]
+position = Vector2( 0.52269, -10.103 )
+shape = SubResource( 2 )

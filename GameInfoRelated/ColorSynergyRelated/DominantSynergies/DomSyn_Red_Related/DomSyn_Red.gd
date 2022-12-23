@@ -7,6 +7,9 @@ const Red_SynergyIconInteractable_Scene = preload("res://GameInfoRelated/ColorSy
 
 const Red_BasePact = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_PactRelated/Red_BasePact.gd")
 
+const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
+
+
 const red_inactive_health_deduct : float = 10.0
 
 
@@ -34,11 +37,27 @@ var pact_uuid_to_pact_map_singleton : Dictionary = {}
 
 var auto_open_pact_shop_at_round_end : bool = true
 
+# queue related
+
+var reservation_for_whole_screen_gui
 
 # pact specific vars. accessed by pacts
 
 var _x_identity_stage_round_index_used_for_cals__8_rounds : int = -10  #any number but -1. Preferrably below -2 to avoid index collisions
 var _x_identity_first_bool_check_status__8_rounds : bool = false
+
+#
+
+func _init():
+	_initialize_queue_reservation()
+
+func _initialize_queue_reservation():
+	reservation_for_whole_screen_gui = AdvancedQueue.Reservation.new(self)
+	reservation_for_whole_screen_gui.on_entertained_method = "_on_queue_reservation_entertained"
+	
+	#reservation_for_whole_screen_gui.queue_mode = AdvancedQueue.QueueMode.FORCED__REMOVE_ALL_AND_FLUSH_NEW_WHILE_ACTIVE
+	#reservation_for_whole_screen_gui.on_removed_method
+	
 
 #
 
@@ -364,11 +383,15 @@ func has_at_least_one_of_pact_in_sworn_or_unsworn_list(arg_pact_ids : Array):
 ####
 
 func _on_show_syn_shop():
-	game_elements.whole_screen_gui.show_control(red_pact_whole_panel)
+	#game_elements.whole_screen_gui.show_control(red_pact_whole_panel)
+	game_elements.whole_screen_gui.queue_control(red_pact_whole_panel, reservation_for_whole_screen_gui)
 	
+
+func _on_queue_reservation_entertained():
 	if !_added_red_pact_whole_panel_to_whole_screen:
 		_added_red_pact_whole_panel_to_whole_screen = true
 		_initialize_red_pact_whole_panel()
+
 
 func _initialize_red_pact_whole_panel():
 	red_pact_whole_panel.unsworn_pact_list.card_limit = 3

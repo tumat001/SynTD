@@ -15,6 +15,7 @@ const TowerDetectingRangeModule = preload("res://EnemyRelated/TowerInteractingRe
 const TowerDetectingRangeModule_Scene = preload("res://EnemyRelated/TowerInteractingRelated/TowerInteractingModules/TowerDetectingRangeModule.tscn")
 const EnemyStackEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyStackEffect.gd")
 const Hero_VOLEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/Hero_VOLEffect.gd")
+const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
 
 const Hero_LevelUpParticle_Scene = preload("res://TowerRelated/Color_White/Hero/Hero_OtherAssets/Hero_LevelUpParticle.tscn")
 const CommonAttackSpriteTemplater = preload("res://MiscRelated/AttackSpriteRelated/CommonTemplates/CommonAttackSpriteTemplater.gd")
@@ -210,6 +211,11 @@ var popup_gui : Hero_PopupGUI_LevelUp
 
 var hero_level_up_with_relic_shop_offer_id : int = -1 #initually unavailable
 
+
+# gui reservation
+
+var reservation_for_whole_screen_gui #: AdvancedQueue.Reservation
+
 #
 
 onready var staff_proj_origin_pos2D : Position2D = $TowerBase/KnockUpLayer/StaffProjPosition
@@ -290,6 +296,7 @@ func _ready():
 	#current_hero_on_hit_effect_scale = 1
 	
 	_construct_vol_tower_indicator_shower()
+	_initialize_queue_reservation()
 	
 	_post_inherit_ready()
 
@@ -300,6 +307,11 @@ func _construct_vol_tower_indicator_shower():
 	vol_candidate_tower_indicator_shower.set_tower_particle_indicator_to_usual_properties()
 	vol_candidate_tower_indicator_shower.set_source_and_provider_func_name(self, "_get_vol_target_towers")
 
+func _initialize_queue_reservation():
+	reservation_for_whole_screen_gui = AdvancedQueue.Reservation.new(self)
+	#reservation_for_whole_screen_gui.on_entertained_method = "_on_queue_reservation_entertained"
+	#reservation_for_whole_screen_gui.on_removed_method
+	
 
 # Xp gain
 

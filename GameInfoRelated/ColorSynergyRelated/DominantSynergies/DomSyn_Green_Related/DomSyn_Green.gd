@@ -28,6 +28,9 @@ const Path_QuickRoot = preload("res://GameInfoRelated/ColorSynergyRelated/Domina
 const Path_DeepRoot = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GreenAdaptationRelated/GreenPaths/Foundation/Path_DeepRoot.gd")
 
 
+const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
+
+
 const SYN_INACTIVE : int = -1
 
 
@@ -46,6 +49,20 @@ var _all_layers : Array = []
 var green_whole_screen_gui : Green_WholeScreenGUI_V2
 var green_syn_interactable_icon : Green_SynInteractableIcon
 
+# queue related
+
+var reservation_for_whole_screen_gui
+
+#
+
+func _init():
+	_initialize_queue_reservation()
+
+func _initialize_queue_reservation():
+	reservation_for_whole_screen_gui = AdvancedQueue.Reservation.new(self)
+	reservation_for_whole_screen_gui.on_entertained_method = "_on_queue_reservation_entertained"
+	#reservation_for_whole_screen_gui.on_removed_method
+	
 
 func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 	if game_elements == null:
@@ -123,4 +140,9 @@ func _remove_syn_from_game_elements(arg_game_elements : GameElements, tier : int
 #
 
 func _on_request_open_green_panel():
-	game_elements.whole_screen_gui.show_control(green_whole_screen_gui)
+	#game_elements.whole_screen_gui.show_control(green_whole_screen_gui)
+	game_elements.whole_screen_gui.queue_control(green_whole_screen_gui, reservation_for_whole_screen_gui)
+
+func _on_queue_reservation_entertained():
+	pass
+

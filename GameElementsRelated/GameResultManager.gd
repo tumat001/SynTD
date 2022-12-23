@@ -3,8 +3,11 @@ extends Node
 const GameResultPanel = preload("res://GameHUDRelated/GameResult_VicDefPanel/GameResultPanel.gd")
 const GameResultPanel_Scene = preload("res://GameHUDRelated/GameResult_VicDefPanel/GameResultPanel.tscn")
 
+const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
+
 
 signal game_result_decided()
+
 
 enum GameResult {
 	ONGOING = 0, # not decided yet
@@ -19,8 +22,24 @@ var whole_screen_gui
 var game_elements
 
 
+# queue related
+
+var reservation_for_whole_screen_gui
+
+#
+
 func _ready():
 	game_result = GameResult.ONGOING
+	
+	_initialize_queue_reservation()
+
+func _initialize_queue_reservation():
+	reservation_for_whole_screen_gui = AdvancedQueue.Reservation.new(self)
+	#reservation_for_whole_screen_gui.on_entertained_method = "_on_queue_reservation_entertained"
+	#reservation_for_whole_screen_gui.on_removed_method
+	
+	reservation_for_whole_screen_gui.queue_mode = AdvancedQueue.QueueMode.FORCED__REMOVE_ALL_AND_FLUSH_NEW_WHILE_ACTIVE
+
 
 #
 
@@ -58,7 +77,8 @@ func _set_game_result(arg_result : int):
 func _initialize_game_result_panel():
 	if game_result_panel == null:
 		game_result_panel = GameResultPanel_Scene.instance()
-		whole_screen_gui.show_control(game_result_panel)
+		#whole_screen_gui.show_control(game_result_panel)
+		whole_screen_gui.queue_control(game_result_panel, reservation_for_whole_screen_gui)
 		
 		if game_result == GameResult.VICTORY:
 			game_result_panel.display_as_victory()
@@ -67,6 +87,7 @@ func _initialize_game_result_panel():
 		
 		game_result_panel.connect("option_view_battlefield_selected", self, "_game_result_panel__view_battlefield_selected")
 		game_result_panel.connect("option_main_menu_selected", self, "_game_result_panel__main_menu_selected")
+
 
 
 func _set_properties_of_game_elements_to_post_battle():

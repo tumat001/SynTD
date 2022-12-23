@@ -1,10 +1,14 @@
 extends Node
 
+const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
+
 
 enum IncreaseRelicSource {
 	
 	ROUND,
 	SYNERGY,
+	
+	MAP_SPECIFIC_BEHAVIOR,
 	
 }
 
@@ -39,6 +43,21 @@ var whole_screen_gui
 
 
 var _has_received_at_least_one_relic : bool = false
+
+# queue related
+
+var reservation_for_whole_screen_gui
+
+#
+
+func _ready():
+	_initialize_queue_reservation()
+
+func _initialize_queue_reservation():
+	reservation_for_whole_screen_gui = AdvancedQueue.Reservation.new(self)
+	#reservation_for_whole_screen_gui.on_entertained_method = "_on_queue_reservation_entertained"
+	#reservation_for_whole_screen_gui.on_removed_method
+
 
 #
 
@@ -86,8 +105,8 @@ func _on_stagerounds_set(arg_stagerounds):
 ###################
 
 func show_whole_screen_relic_general_store_panel():
-	whole_screen_gui.show_control(whole_screen_relic_general_store_panel)
-	
+	#whole_screen_gui.show_control(whole_screen_relic_general_store_panel)
+	whole_screen_gui.queue_control(whole_screen_relic_general_store_panel, reservation_for_whole_screen_gui)
 
 func hide_whole_screen_relic_general_store_panel():
 	whole_screen_gui.hide_control(whole_screen_relic_general_store_panel)
