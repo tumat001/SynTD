@@ -186,10 +186,13 @@ func _on_treasure_choice_selected():
 
 
 func _on_any_choice_selected():
+	game_elements.whole_screen_gui.connect("hide_process_of_control_complete", self, "_on_hide_process_of_control_complete", [], CONNECT_PERSIST)
 	game_elements.whole_screen_gui.hide_control(mesa_whole_screen_choices)
 	
-	mesa_whole_screen_choices.call_deferred("queue_free")
 
+func _on_hide_process_of_control_complete(arg_control):
+	if arg_control == mesa_whole_screen_choices:
+		mesa_whole_screen_choices.call_deferred("queue_free")
 
 ###
 
@@ -205,8 +208,8 @@ func _construct_and_add_sandstorm_ability():
 	sandstorm_ability.icon = Sandstorm_AbilityPic
 	
 	
-	var plain_fragment__sandstorm = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Sandstorm")
-	var plain_fragment__slow = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SLOW, "slow")
+	#var plain_fragment__sandstorm = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Sandstorm")
+	var plain_fragment__slow = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SLOW, "Slow")
 	
 	var interpreter_for_sandstorm_dmg = TextFragmentInterpreter.new()
 	interpreter_for_sandstorm_dmg.display_body = false
@@ -216,9 +219,9 @@ func _construct_and_add_sandstorm_ability():
 	
 	interpreter_for_sandstorm_dmg.array_of_instructions = ins_for_sandstorm_dmg
 	
-	
+	sandstorm_ability.display_name = "Sandstorm"
 	sandstorm_ability.descriptions = [
-		["|0|: |1| all enemies by %s%% for %s seconds, and deal |2|." % [-sandstorm_slow_amount, sandstorm_slow_duration], [plain_fragment__sandstorm, plain_fragment__slow, interpreter_for_sandstorm_dmg]],
+		["|0| all enemies by %s%% for %s seconds, and deal |1|." % [-sandstorm_slow_amount, sandstorm_slow_duration], [plain_fragment__slow, interpreter_for_sandstorm_dmg]],
 		"Cooldown: %s s." % sandstorm_base_cooldown
 	]
 	

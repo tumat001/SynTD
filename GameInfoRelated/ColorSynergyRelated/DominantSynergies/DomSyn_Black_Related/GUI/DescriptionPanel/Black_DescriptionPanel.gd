@@ -17,7 +17,7 @@ func display_description_and_name_of_path(arg_black_path, arg_tier : int = dom_s
 		is_tier_met = false
 	
 	if arg_black_path != null:
-		tooltip_body.descriptions = arg_black_path.black_path_tier_to_descriptions_map[arg_tier].duplicate()
+		tooltip_body.descriptions = arg_black_path.black_path_tier_to_descriptions_map[arg_tier].duplicate(true)
 		
 		if !is_tier_met:
 			tooltip_body.descriptions.append("")

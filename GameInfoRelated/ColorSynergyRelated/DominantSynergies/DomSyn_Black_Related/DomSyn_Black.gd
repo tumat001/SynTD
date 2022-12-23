@@ -217,7 +217,7 @@ const overflow_overkill_can_summon_overkill_explosion_tier_2 : bool = false
 const overflow_overkill_can_summon_overkill_explosion_tier_1 : bool = true
 
 const overflow_name : String = "Overflow"
-const overflow_descriptions_tier_2_simple : Array = [	]
+const overflow_descriptions_tier_2_simple : Array = []
 
 #const overflow_descriptions_tier_2_simple : Array = [
 #	"After %s seconds of not dealing damage, the next damage instance deals +%s%% more damage, increasing by %s%% every second, up to %s%%." % [str(overflow_idle_time_for_scale_to_start), str(overflow_damage_scale_base_amount * 100), str(overflow_damage_scale_per_second * 100), str(overflow_total_max_damage_scale * 100)],

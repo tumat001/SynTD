@@ -5,8 +5,14 @@ signal no_reservations_left()
 
 signal reservation_removed(arg_reservation_removed, arg_incomming_reservation)
 signal reservation_deferred(arg_deferred_reservation, arg_incomming_reservation)
-
 signal reservation_removed_or_deferred(arg_removed_or_def_res)
+
+signal before_reservation_completed(arg_reservation_completed)
+
+signal request_advance_queue_reservation()
+
+
+const reservation_ignore_new_reservations_metadata := "ADVANCED_QUEUE__IGNORE_NEW_RESERVATIONS"
 
 enum QueueMode {
 	
@@ -67,12 +73,20 @@ class Reservation:
 
 ##
 
+var _auto_entertain_next_in_queue : bool = true  # false if you want to do actions before entertaining next (or manually control when to do it next)
+var _requested_queue_advance : bool = false
+
 var _current_reservation : Reservation
 var _reservations : Array  # implement this as reverse
 
 var _current_id_to_give_to_next : int = 1
 
 var _ignore_new_reservations : bool = false
+
+##
+
+func _init(arg_auto_entertain_next_in_queue : bool):
+	_auto_entertain_next_in_queue = arg_auto_entertain_next_in_queue
 
 ##
 
@@ -84,11 +98,16 @@ func queue_reservation(arg_reservation : Reservation):
 			_current_id_to_give_to_next += 1
 			
 			#print("accepted reservation: %s, id: %s, mode: %s" % [arg_reservation, arg_reservation._queue_id, arg_reservation.queue_mode])
-			_ignore_new_reservations = false
+			#_ignore_new_reservations = false
+			arg_reservation.metadata_map[reservation_ignore_new_reservations_metadata] = false
 			
 			if arg_reservation.queue_mode == QueueMode.WAIT_FOR_NEXT:
 				if _current_reservation == null:
-					_entertain_reservation_and_make_it_current(arg_reservation)
+					if _auto_entertain_next_in_queue:
+						_entertain_reservation_and_make_it_current(arg_reservation)
+					else:
+						_reservations.insert(0, arg_reservation)
+						attempt_request_reservation_queue_advance()
 				else:
 					_reservations.insert(0, arg_reservation)
 				
@@ -97,21 +116,32 @@ func queue_reservation(arg_reservation : Reservation):
 				_reservations.clear()
 				_remove_current_reservation_via_force(arg_reservation)
 				
-				_entertain_reservation_and_make_it_current(arg_reservation)
+				if _auto_entertain_next_in_queue:
+					_entertain_reservation_and_make_it_current(arg_reservation)
+				else:
+					_reservations.append(arg_reservation)
+					attempt_request_reservation_queue_advance()
 				
 			elif arg_reservation.queue_mode == QueueMode.FORCED__REMOVE_ALL_AND_FLUSH_NEW_WHILE_ACTIVE:
 				_reservations.clear()
 				_remove_current_reservation_via_force(arg_reservation)
 				
-				_ignore_new_reservations = true
-				_entertain_reservation_and_make_it_current(arg_reservation)
+				arg_reservation.metadata_map[reservation_ignore_new_reservations_metadata] = true
+				if _auto_entertain_next_in_queue:
+					#_ignore_new_reservations = true
+					_entertain_reservation_and_make_it_current(arg_reservation)
+				else:
+					_reservations.append(arg_reservation)
+					attempt_request_reservation_queue_advance()
 				
 			elif arg_reservation.queue_mode == QueueMode.FORCED__REMOVE_CURRENT:
 				_remove_current_reservation_via_force(arg_reservation)
 				
-				_entertain_reservation_and_make_it_current(arg_reservation)
-				
-			
+				if _auto_entertain_next_in_queue:
+					_entertain_reservation_and_make_it_current(arg_reservation)
+				else:
+					_reservations.append(arg_reservation)
+					attempt_request_reservation_queue_advance()
 
 
 func _remove_current_reservation_via_force(arg_incoming_res : Reservation):
@@ -123,6 +153,9 @@ func _remove_current_reservation_via_force(arg_incoming_res : Reservation):
 
 func _entertain_reservation_and_make_it_current(arg_res : Reservation):
 	_current_reservation = arg_res
+	
+	_ignore_new_reservations = arg_res.metadata_map[reservation_ignore_new_reservations_metadata]
+	
 	if _current_reservation.is_obj_have_method(_current_reservation.on_entertained_method):
 		_current_reservation.call_method_on_obj(_current_reservation.on_entertained_method)
 	emit_signal("entertained_reservation", _current_reservation)
@@ -135,9 +168,14 @@ func _on_current_reservation_completed():
 	_current_reservation = null
 	_ignore_new_reservations = false
 	
-	entertain_next_reservation_in_line()
+	if _auto_entertain_next_in_queue:
+		entertain_next_reservation_in_line()
+	else:
+		attempt_request_reservation_queue_advance()
 
 func entertain_next_reservation_in_line():
+	_requested_queue_advance = false
+	
 	if _reservations.size() > 0:
 		var latest_reservation = _consume_reservation_stack()
 		
@@ -164,11 +202,20 @@ func is_reservation_id_exists(arg_id) -> bool:
 		if res._queue_id == arg_id:
 			return true
 	
-	return false
 
+	return false
 #
 
 func complete_reservation_status_of_current():
 	if _current_reservation != null:
+		emit_signal("before_reservation_completed", _current_reservation)
 		_current_reservation.reservation_completed()
+		
+
+############
+
+func attempt_request_reservation_queue_advance():
+	if !_requested_queue_advance:
+		_requested_queue_advance = true
+		emit_signal("request_advance_queue_reservation")
 

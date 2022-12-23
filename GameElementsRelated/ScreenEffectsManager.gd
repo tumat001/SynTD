@@ -22,3 +22,10 @@ func destroy_screen_tint_effect(ins_uuid : int):
 		_effect_ins_id_map[ins_uuid].queue_free()
 		_effect_ins_id_map.erase(ins_uuid)
 
+
+func force_fade_out_screen_tint_effect(ins_uuid : int, arg_fade_out_duration : float = 0.25):
+	if _effect_ins_id_map.has(ins_uuid):
+		var effect : ScreenTintEffect = _effect_ins_id_map[ins_uuid]
+		
+		effect.force_fade_out(arg_fade_out_duration)
+

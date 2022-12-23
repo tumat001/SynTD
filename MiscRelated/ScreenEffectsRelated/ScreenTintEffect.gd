@@ -26,8 +26,10 @@ var _tint_a_fade_out_rate : float = -1
 
 var _viewport_rect : Rect2
 
+
+##
+
 func _ready():
-	
 	z_as_relative = false
 	z_index = custom_z_index
 	
@@ -37,14 +39,17 @@ func _ready():
 	if fade_in_duration != 0:
 		_tint_a_fade_in_rate = tint_color.a / fade_in_duration
 	
-	if fade_out_duration != 0:
-		_tint_a_fade_out_rate = tint_color.a / fade_out_duration
+	_calculate_fade_out_rate()
 	
 	_viewport_rect = get_viewport_rect()
 	
 	
 	if !is_timebounded:
 		_current_tint_color.a = tint_color.a
+
+func _calculate_fade_out_rate():
+	if fade_out_duration != 0:
+		_tint_a_fade_out_rate = tint_color.a / fade_out_duration
 
 
 func _process(delta):
@@ -69,4 +74,15 @@ func _process(delta):
 func _draw():
 	draw_rect(_viewport_rect, _current_tint_color, true)
 
+########
+
+func force_fade_out(arg_fade_out_duration : float):
+	fade_out_duration = arg_fade_out_duration
+	
+	_calculate_fade_out_rate()
+	
+	_total_duration = arg_fade_out_duration + 0.1  # this 0.1 is arbitrary/doesnt matter
+	_current_duration = 0.1  # also does not matter
+	
+	is_timebounded = true
 
