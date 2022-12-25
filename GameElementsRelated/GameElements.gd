@@ -128,7 +128,7 @@ func _ready():
 	
 	# TEST HERE
 	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
-	map_id = StoreOfMaps.MapsIds.MESA
+	map_id = StoreOfMaps.MapsIds.RIDGED
 	#
 	
 	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
@@ -398,7 +398,7 @@ func _ready():
 	# FOR TESTING ------------------------------------
 	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 	level_manager.current_level = LevelManager.LEVEL_8
-#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -410,22 +410,22 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.WYVERN,
 			Towers.ADEPT,
-			Towers.TRUDGE,
-			Towers.AMALGAMATOR,
+			Towers.VACUUM,
+			Towers.SHACKLED,
 			Towers.DUNED,
 			Towers.SEEDER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.PESTILENCE,
-			Towers.PINECONE,
-			Towers.ACCUMULAE,
+			Towers.CHARGE,
+			Towers.BEACON_DISH,
 			Towers.WAVE,
 			Towers.ROYAL_FLAME,
 			Towers.PAROXYSM

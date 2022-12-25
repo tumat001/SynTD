@@ -695,6 +695,8 @@ func _set_terrain_shape_deferred(arg_range : float):
 
 func _request_update_range_polgyon():
 	_update_range_polgyon_requested = true
+	
+	#_wait_one_physics_step = true
 	set_physics_process(true)
 
 #
@@ -710,7 +712,9 @@ func _update_range_polgyon():
 		_update_range_polgyon_requested = false
 		set_physics_process(false)
 		
-		_update_polygon__start_thread()
+		#_update_polygon__start_thread()
+		call_deferred("_update_polygon__start_thread")
+		
 #		var terrain_polygons = TerrainFuncs.convert_areas_to_polygons(terrain_in_range, global_position, layer_on_terrain)
 #		var vision_polygon = TerrainFuncs.get_polygon_resulting_from_vertices__circle(terrain_polygons, last_calculated_final_range, fov_node)
 #
@@ -735,6 +739,9 @@ func _wait_for_curr_poly_calc_thread_to_finish():
 
 func _update_polygon__in_thread(_data):
 	if !_wait_for_finish_called_from_thread:
+		#print(terrain_in_range)
+		#print("----------")
+		
 		var terrain_polygons = TerrainFuncs.convert_areas_to_polygons(terrain_in_range, global_position, layer_on_terrain)
 		var vision_polygon = TerrainFuncs.get_polygon_resulting_from_vertices__circle(terrain_polygons, last_calculated_final_range, fov_node)
 		
@@ -754,7 +761,8 @@ func _on_area_entered_terrain_scan_area_2d(area):
 	
 	if !area.is_connected("terrain_layer_changed", self, "_on_terrain_changed_terrain_layer"):
 		area.connect("terrain_layer_changed", self, "_on_terrain_changed_terrain_layer", [], CONNECT_PERSIST)
-
+	
+	#_request_update_range_polgyon()
 
 func _on_area_exited_terrain_scan_area_2d(area):
 	terrain_in_range.erase(area)
@@ -764,7 +772,8 @@ func _on_area_exited_terrain_scan_area_2d(area):
 	
 	if area.is_connected("terrain_layer_changed", self, "_on_terrain_changed_terrain_layer"):
 		area.disconnect("terrain_layer_changed", self, "_on_terrain_changed_terrain_layer")
-
+	
+	#_request_update_range_polgyon()
 
 func _on_terrain_changed_pos(arg_old, arg_new):
 	_request_update_range_polgyon()
@@ -811,3 +820,4 @@ func _on_tower_transfered_to_placable(arg_tower, arg_placable):
 
 func _exit_tree():
 	_wait_for_curr_poly_calc_thread_to_finish()
+

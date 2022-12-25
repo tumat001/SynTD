@@ -282,7 +282,7 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.FINISHER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 38#35
+		info.base_health = 800#38#35 #todo
 		info.base_movement_speed = 60
 		info.enemy_type = info.EnemyType.ELITE
 		

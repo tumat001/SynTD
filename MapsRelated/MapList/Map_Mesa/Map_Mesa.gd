@@ -34,14 +34,14 @@ var choice_details__treasure : Mesa_ChoiceDetails
 
 var all_choice_details : Array
 
-var choice_prompt_stageround_id : String = "02" #todo #"11"
+var choice_prompt_stageround_id : String = "11"
 
 var reservation_for_whole_screen_gui
 var mesa_whole_screen_choices : Mesa_WholeScreenChoices
 
 #
 
-const sandstorm_damage : float = 2.0
+const sandstorm_damage : float = 0.75
 const sandstorm_base_cooldown : float = 40.0
 const sandstorm_slow_amount : float = -35.0
 const sandstorm_slow_duration : float = 5.0

@@ -2256,8 +2256,12 @@ func _phy_process_forced_offset_movement(delta):
 
 
 func set_current_forced_positional_movement_effect(effect : EnemyForcedPositionalMovementEffect):
-	if _current_forced_offset_movement_effect != null:
+	if _current_forced_offset_movement_effect != null: # yup. remove forced mov offset
 		remove_current_forced_offset_movement_effect()
+	
+	# new todo
+	if _current_forced_positional_movement_effect != null:
+		remove_current_forced_positional_movement_effect(true)
 	
 	_current_forced_positional_movement_effect = effect
 	effect.set_up_movements_and_direction(global_position)

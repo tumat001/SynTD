@@ -54,6 +54,7 @@ const blacklisted_towers_to_inventory : Array = [
 	Towers.NIGHTWATCHER,
 	Towers.VARIANCE_VESSEL,
 	Towers.YELVIO_RIFT_AXIS,
+	Towers.DUNED,
 	
 	#red towers
 	Towers.OUTREACH, #6
@@ -94,6 +95,7 @@ const towers_not_initially_in_inventory : Array = [
 	Towers.NIGHTWATCHER,
 	Towers.VARIANCE_VESSEL,
 	Towers.YELVIO_RIFT_AXIS,
+	Towers.DUNED,
 	
 	# red towers
 	Towers.OUTREACH, #6

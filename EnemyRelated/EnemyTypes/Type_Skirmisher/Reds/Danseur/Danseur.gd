@@ -6,7 +6,7 @@ var skirmisher_gen_purpose_rng : RandomNumberGenerator
 const initial_dash_count : int = 2
 var _curr_dash_left : int
 
-const base_chance_for_dashing_at_next_offset : float = 0.33 
+const base_chance_for_dashing_at_next_offset : float = 0.33
 var _curr_chance_for_dashing_at_next_offset : float = base_chance_for_dashing_at_next_offset
 var _chance_multiplier_per_next_entry_offset_skipped : float = 1.5
 var _chance_multiplier_per_successful_dash : float = 0.8

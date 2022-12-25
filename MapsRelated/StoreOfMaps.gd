@@ -22,7 +22,7 @@ const MapIdsAvailableFromMenu : Array = [
 	#MapsIds.GLADE,
 	MapsIds.RIVERSIDE,
 	MapsIds.RIDGED,
-	MapsIds.MESA
+	#MapsIds.MESA  #todo enable again if FOV algo is improved/changed.
 ]
 
 const default_map_id_for_empty : int = MapsIds.RIVERSIDE

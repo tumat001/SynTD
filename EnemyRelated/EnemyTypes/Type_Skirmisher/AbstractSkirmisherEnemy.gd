@@ -116,6 +116,7 @@ func _update_next_through_placable_data__entry_offset_for_dash__as_finisher():
 	if _next_through_placable_data != null and offset >= _next_through_placable_data.entry_offset:
 		var prev_data = _next_through_placable_data
 		_next_through_placable_data = skirmisher_faction_passive.get_next_through_placable_data_based_on_curr__as_finisher(offset, current_path)
+		
 		call(_method_name_to_call_on_entry_offset_passed, prev_data)
 
 

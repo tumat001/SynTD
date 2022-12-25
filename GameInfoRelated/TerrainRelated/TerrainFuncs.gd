@@ -63,6 +63,8 @@ static func get_polygon_resulting_from_vertices__circle(
 	var circle_vertex_arr = _get_radius_as_point_array(arg_radius)
 	var vertices_array : Array = arg_terrain_vertices_array.duplicate()
 	vertices_array.append(circle_vertex_arr)
+	#vertices_array.insert(0, circle_vertex_arr)
+	
 	
 	#return _slide_points_of_array_to_in_range(arg_fov_node.get_fov_from_polygons(vertices_array, Vector2(0, 0)), arg_radius)
 	return arg_fov_node.get_fov_from_polygons(vertices_array, Vector2(0, 0))
@@ -94,22 +96,22 @@ static func _slide_points_of_vertices_array_to_in_range(
 		arg_radius : float
 		):
 	
-	return arg_terrain_vertices_array
+	#return arg_terrain_vertices_array
 	
-#	var origin : Vector2 = Vector2.ZERO
-#
-#	var slid_points_pool_array := []
-#	for pool_vector2_array in arg_terrain_vertices_array:
-#		var point_arr := []
-#
-#		for point in pool_vector2_array:
-#			point_arr.append(point.limit_length(arg_radius))
-#
-#
-#		var slid_pvector2_arr = PoolVector2Array(point_arr)
-#		slid_points_pool_array.append(slid_pvector2_arr)
-#
-#	return slid_points_pool_array
+	var origin : Vector2 = Vector2.ZERO
+
+	var slid_points_pool_array := []
+	for pool_vector2_array in arg_terrain_vertices_array:
+		var point_arr := []
+
+		for point in pool_vector2_array:
+			point_arr.append(point.limit_length(arg_radius))
+
+
+		var slid_pvector2_arr = PoolVector2Array(point_arr)
+		slid_points_pool_array.append(slid_pvector2_arr)
+
+	return slid_points_pool_array
 	
 ############
 #	var origin : Vector2 = Vector2.ZERO

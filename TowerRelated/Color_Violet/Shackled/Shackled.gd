@@ -243,6 +243,8 @@ func _ready():
 	
 	set_pull_amount(chains_base_pull_modi_id, chains_base_pull_amount)
 	
+	#connect("on_tower_transfered_in_map_from_bench", self, "_todo_test_pull", [], CONNECT_PERSIST)
+	
 	#
 	
 	_construct_and_register_ability()
@@ -397,6 +399,7 @@ func _on_changed_anim_from_alive_to_dead():
 func _on_changed_anim_from_dead_to_alive():
 	tower_base_sprites.frame = _current_index_of_sframes_to_use
 
+
 # energy module related
 
 func set_energy_module(module):
@@ -414,3 +417,7 @@ func _module_turned_on(_first_time_per_round : bool):
 func _module_turned_off():
 	set_pull_amount(chains_energy_module_modi_id, 0)
 
+#########################
+
+#func _todo_test_pull(tower, arg_new_placable, arg_bench):
+#	_cast_chains_ability()

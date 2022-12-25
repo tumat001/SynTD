@@ -1,11 +1,17 @@
 extends Path2D
 
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 signal on_enemy_death(enemy)
 signal on_enemy_reached_end(enemy)
 
 signal is_used_and_active_changed(arg_val)
+
+signal curve_changed(arg_new_curve, arg_curve_id)
+signal before_curve_changed_from_deferred_set(arg_new_curve, arg_curve_id)
+signal after_curve_changed_from_deferred_set(arg_new_curve, arg_curve_id)
+
 
 enum MarkerIds {
 	SKIRMISHER_CLONE_OF_BASE_PATH = 1,
@@ -19,9 +25,35 @@ var is_used_and_active : bool = true setget set_is_used_and_active# if true, the
 
 var marker_id_to_value_map : Dictionary = {}
 
+#
 
+enum CurveChangeDeferClauseIds {
+	SKIRMISHER_CALCULATING_CURVE_THROUGH_PLACABLES = 1
+}
+var curve_change_defer_conditional_clauses : ConditionalClauses
+var last_calculated_curve_change_defer : bool
+
+
+#
+# USED to distinguish between different curves. This is used in cases where computations are made per different curves (and to re-use those computed vals for the same ids/curve)
+const default_curve_id : int = 0
+var current_curve_id : int
+
+var _deferred_new_curve : Curve2D
+var _deferred_new_curve_id : int
+
+#
+
+func _init():
+	curve_change_defer_conditional_clauses = ConditionalClauses.new()
+	curve_change_defer_conditional_clauses.connect("clause_inserted", self, "_on_curve_change_defer_conditional_clauses_updated", [], CONNECT_PERSIST)
+	curve_change_defer_conditional_clauses.connect("clause_removed", self, "_on_curve_change_defer_conditional_clauses_updated", [], CONNECT_PERSIST)
+	_update_curve_change_defer_state()
+
+#
 func _ready():
-	path_length = curve.get_baked_length()
+	#path_length = curve.get_baked_length()
+	set_curve_and_id(curve, default_curve_id)
 	
 
 func add_child(node : Node, legible_unique_name : bool = false):
@@ -48,22 +80,30 @@ func _emit_enemy_reached_end(enemy):
 func get_copy_of_path(reversed : bool):
 	var copy = self.duplicate()
 	
-	copy.curve = curve.duplicate()
-	copy.curve.clear_points()
+	copy.curve = get_copy_of_curve(reversed)
 	
-	
-	var pos_index = -1
-	if reversed:
-		pos_index = 0
-	
-	for point in curve.get_baked_points():
-		copy.curve.add_point(point, Vector2(0, 0), Vector2(0, 0), pos_index)
 	
 	#
 	
 	copy.marker_id_to_value_map = marker_id_to_value_map.duplicate(true)
 	
 	return copy
+
+
+func get_copy_of_curve(reversed : bool):
+	var curve_copy = curve.duplicate()
+	
+	curve_copy.clear_points()
+	
+	var pos_index = -1
+	if reversed:
+		pos_index = 0
+	
+	for point in curve.get_baked_points():
+		curve_copy.add_point(point, Vector2(0, 0), Vector2(0, 0), pos_index)
+	
+	return curve_copy
+
 
 ##
 
@@ -132,8 +172,8 @@ func get_closest_offset_and_pos_in_a_line__local_source_pos(arg_max_distance_to_
 #
 #	for pos in closest_pos_finals:
 #		draw_circle(pos, 3, Color(1, 1, 0))
-
 #DEBUG DRAW END
+
 
 # OLD CODE HERE For failed binary style. This type is just not compatible to requirements.
 #	# USE AVERAGE/BINARY STYLE Kind of search
@@ -173,8 +213,38 @@ func _get_offset_and_pos_within_distance_of_path(arg_test_pos, arg_source_pos : 
 			passed = arg_closest_offset_adv_params.test(arg_test_pos, arg_source_pos, arg_max_distance_to_test_offset, closest_pos, distance_of_closest_to_source)
 		
 		if passed:
-			#closest_pos_finals.append(closest_pos)    # used for debug draw
+			#closest_pos_finals.append(closest_pos)  # used for debug draw
 			return [curve.get_closest_offset(closest_pos), closest_pos]
 	
 	return null
+
+#########
+
+func set_curve_and_id(arg_curve_2d : Curve2D, arg_curve_id : int):
+	if !last_calculated_curve_change_defer:
+		_deferred_new_curve = null
+		_deferred_new_curve_id = 0
+		
+		curve = arg_curve_2d
+		path_length = curve.get_baked_length()
+		current_curve_id = arg_curve_id
+		
+		emit_signal("curve_changed", curve)
+	else:
+		
+		_deferred_new_curve = arg_curve_2d
+		_deferred_new_curve_id = arg_curve_id
+
+
+func _on_curve_change_defer_conditional_clauses_updated(arg_clause_id):
+	_update_curve_change_defer_state()
+
+func _update_curve_change_defer_state():
+	last_calculated_curve_change_defer = !curve_change_defer_conditional_clauses.is_passed
+	
+	if _deferred_new_curve != null and !last_calculated_curve_change_defer:
+		emit_signal("before_curve_changed_from_deferred_set", _deferred_new_curve, _deferred_new_curve_id)
+		set_curve_and_id(_deferred_new_curve, _deferred_new_curve_id)
+		emit_signal("after_curve_changed_from_deferred_set", _deferred_new_curve, _deferred_new_curve_id)
+
 

@@ -231,6 +231,7 @@ func _start_fade_out_of_current_control():
 
 func _end_of_fade_out_of_current_control():
 	_current_fade_a_per_sec = 0
+	current_showing_control.visible = false
 	set_process(false)
 	
 	emit_signal("hide_process_of_control_complete", current_showing_control)

@@ -22,6 +22,7 @@ const AttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/Attack
 const CenterBasedAttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/CenterBasedAttackSprite.tscn")
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
+const EnemyPathsArray = preload("res://MiscRelated/DataCollectionRelated/EnemyPathsArray.gd")
 
 const SkirmBlue_Smoke_Particle_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/Particles/SkrimBlue_Smoke_Particle.tscn")
 const SkirmBlue_Rallier_Particle_Scene = preload("res://EnemyRelated/EnemyFactionPassives/Type_Skirmisher/Particles/SkirmBlue_Rallier_Particle.tscn")
@@ -61,6 +62,7 @@ const EnemySpawnLocIndicator_Flag = preload("res://MiscRelated/MapRelated/EnemyS
 const BlueFlagEmpParticle_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/_FactionAssets/Textures/Faction_FlagPathIndicatorEmp_Blue_Particle.png")
 const RedFlagEmpParticle_Pic = preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/_FactionAssets/Textures/Faction_FlagPathIndicatorEmp_Red_Particle.png")
 
+
 #
 
 enum PathType {
@@ -76,9 +78,13 @@ var enemy_manager : EnemyManager
 
 var skirmisher_gen_purpose_rng : RandomNumberGenerator
 
-var paths_for_blues : Array = []
-var paths_for_reds : Array = []
+#var paths_for_blues : Array = []
+#var paths_for_reds : Array = []
 
+var blue_path_array : EnemyPathsArray = EnemyPathsArray.new()
+var red_path_array : EnemyPathsArray = EnemyPathsArray.new()
+
+##############
 
 var smoke_particle_pool_component : AttackSpritePoolComponent
 var rallier_speed_particle_pool_component : AttackSpritePoolComponent
@@ -144,8 +150,8 @@ const danseur__interval_magnitude : float = 15.0
 const danseur__min_entry_unit_offset : float = 0.05
 const danseur__max_exit_unit_offset : float = 0.95
 
-var danseur__enemy_path_to_through_placable_datas : Dictionary
-
+var danseur__enemy_path_to__id_to_through_placable_datas : Dictionary
+var danseur__enemy_path_to_curve_ids_already_calculated : Dictionary = {}
 
 # FINISHER SPECIFIC
 
@@ -159,7 +165,8 @@ const finisher__interval_magnitude : float = 15.0
 const finisher__min_entry_unit_offset : float = 0.05
 const finisher__max_exit_unit_offset : float = 0.95
 
-var finisher__enemy_path_to_through_placable_datas : Dictionary
+var finisher__enemy_path_to__id_to_through_placable_datas : Dictionary
+var finisher__enemy_path_to_curve_ids_already_calculated : Dictionary = {}
 
 
 # TOSSER SPECIFIC
@@ -247,8 +254,9 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 		_initialize_artillery_arc_bullet_attk_module()
 		_initialize_artillery_trail_for_node_component()
 		
-		_initialize_and_generate_through_placable_data__threaded()
-		#_initialize_and_generate_through_placable_data([])
+		#_initialize_and_generate_through_placable_data__threaded()
+		#todo
+		_initialize_and_generate_through_placable_data([])
 		
 		_initialize_danseur_bullet_attk_module()
 		
@@ -272,6 +280,9 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 	
 	game_elements.stage_round_manager.connect("round_ended", self, "_on_round_end", [], CONNECT_PERSIST)
 	game_elements.stage_round_manager.connect("round_started", self ,"_on_round_start", [], CONNECT_PERSIST)
+	game_elements.enemy_manager.connect("path_to_spawn_pattern_changed", self, "_on_enemy_manager_spawn_pattern_changed", [], CONNECT_PERSIST)
+	
+	_update_spawn_pattern_based_on_enemy_mngr_pattern()
 	
 	_show_flags_if_curr_stageround_is_appropriate(game_elements.stage_round_manager.current_stageround)
 	
@@ -290,8 +301,11 @@ func _remove_faction_from_game_elements(arg_game_elements : GameElements):
 	#	enemy_manager.disconnect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path")
 	
 	
-	if enemy_manager.is_connected("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed"):
-		enemy_manager.disconnect("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed")
+	#if enemy_manager.is_connected("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed"):
+		#enemy_manager.disconnect("path_to_spawn_pattern_changed", self, "_on_path_to_spawn_pattern_changed")
+	
+	if game_elements.enemy_manager.is_connected("path_to_spawn_pattern_changed", self, "_on_enemy_manager_spawn_pattern_changed"):
+		game_elements.enemy_manager.connect("path_to_spawn_pattern_changed", self, "_on_enemy_manager_spawn_pattern_changed")
 	
 	._remove_faction_from_game_elements(arg_game_elements)
 
@@ -308,23 +322,35 @@ func _set_blue_and_red_paths():
 	
 	for path in all_paths:
 		if !path.marker_id_to_value_map.has(EnemyPath.MarkerIds.SKIRMISHER_CLONE_OF_BASE_PATH) and !path.marker_id_to_value_map.has(EnemyPath.MarkerIds.SKIRMISHER_BASE_PATH_ALREADY_CLONED):
-			paths_for_blues.append(path)
+			#paths_for_blues.append(path)
+			blue_path_array.add_enemy_spawn_path(path)
 	
 	var i = 0
-	for blue_path in paths_for_blues:
+	for blue_path in blue_path_array.get_spawn_paths__not_copy():
 		var red_path = blue_path.get_copy_of_path(true)
 		red_path.marker_id_to_value_map[EnemyPath.MarkerIds.SKIRMISHER_CLONE_OF_BASE_PATH] = blue_path #Storing pair path
 		
-		paths_for_reds.append(red_path)
+		#paths_for_reds.append(red_path)
+		red_path_array.add_enemy_spawn_path(red_path)
 		
 		blue_path.marker_id_to_value_map[EnemyPath.MarkerIds.SKIRMISHER_BASE_PATH_ALREADY_CLONED] = red_path #storing pair path
 		
-		var emit_signal_on_add_path : bool = paths_for_blues.size() <= (i + 1)
+		var emit_signal_on_add_path : bool = blue_path_array.get_spawn_paths__not_copy().size() <= (i + 1) #paths_for_blues.size() <= (i + 1)
 		map_manager.base_map.add_enemy_path(red_path, emit_signal_on_add_path)
 		
+		# signals related
+		blue_path.connect("curve_changed", self, "_on_curve_of_original_path_changed", [blue_path, red_path], CONNECT_PERSIST)
+		blue_path.connect("is_used_and_active_changed", self, "_on_enemy_path_is_used_and_active_changed", [blue_path, red_path], CONNECT_PERSIST)
+		
+		red_path.connect("curve_changed", self, "_on_curve_of_red_path_changed", [red_path], CONNECT_PERSIST)
+		
 		# for danseur/finisher pathings
-		danseur__enemy_path_to_through_placable_datas[red_path] = []
-		finisher__enemy_path_to_through_placable_datas[red_path] = []
+		danseur__enemy_path_to__id_to_through_placable_datas[red_path] = {}
+		danseur__enemy_path_to_curve_ids_already_calculated[red_path] = []
+
+		finisher__enemy_path_to__id_to_through_placable_datas[red_path] = {}
+		finisher__enemy_path_to_curve_ids_already_calculated[red_path] = []
+		
 		i += 1
 		
 		# flag related
@@ -338,16 +364,17 @@ func _set_blue_and_red_paths():
 func _reverse_actions_on_path_generation():
 	var all_paths = map_manager.base_map.all_enemy_paths.duplicate(false)
 	
-	for path in paths_for_blues:
+	for path in blue_path_array.get_spawn_paths__not_copy(): #paths_for_blues:
 		path.marker_id_to_value_map.erase(EnemyPath.MarkerIds.SKIRMISHER_BASE_PATH_ALREADY_CLONED)
 	
 	var paths_to_remove : Array = []
-	for path in paths_for_reds:
+	for path in red_path_array.get_spawn_paths__not_copy(): #paths_for_reds:
 		map_manager.base_map.remove_enemy_path(path)
 		paths_to_remove.append(path)
 	
 	for path in paths_to_remove:
-		paths_for_reds.erase(path)
+		#paths_for_reds.erase(path)
+		red_path_array.remove_enemy_spawn_path(path)
 		path.queue_free()
 
 
@@ -374,7 +401,7 @@ func _before_enemy_is_added_to_path(enemy, path):
 	
 	#
 	
-	var path_index = enemy_manager.get_spawn_path_to_take_index() % paths_for_blues.size()
+	#var path_index = enemy_manager.get_spawn_path_to_take_index() % blue_path_array.get_spawn_paths__not_copy().size() #paths_for_blues.size()
 	
 	if enemy.enemy_spawn_metadata_from_ins != null and enemy.enemy_spawn_metadata_from_ins.has(StoreOfEnemyMetadataIdsFromIns.SKIRMISHER_SPAWN_AT_PATH_TYPE):
 		var path_type = enemy.enemy_spawn_metadata_from_ins[StoreOfEnemyMetadataIdsFromIns.SKIRMISHER_SPAWN_AT_PATH_TYPE]
@@ -384,32 +411,41 @@ func _before_enemy_is_added_to_path(enemy, path):
 		
 		var is_enemy_abstract_skirmisher : bool = enemy is AbstractSkirmisherEnemy
 		
-		if path_type == PathType.RED_PATH:
+		if path_type == PathType.RED_PATH: #FOR RED ENEMIES
 			
 			if is_enemy_abstract_skirmisher:
 				enemy.skirmisher_path_color_type = AbstractSkirmisherEnemy.ColorType.RED
 				#enemy.set_show_emp_particle_layer(_is_red_flag_active)
 			
+			var path_index = red_path_array.get_spawn_path_index_to_take()
 			_add_enemy_to_red_path(enemy, path_index)
+			red_path_array.switch_path_index_to_next()
 			
 			if _is_red_flag_active and is_enemy_abstract_skirmisher:
 				_add_effects_to_enemy(homerunner_red_effects, enemy)
-		else:
+			
+		else: #FOR BLUE ENEMIES
+			
 			if is_enemy_abstract_skirmisher:
 				enemy.skirmisher_path_color_type = AbstractSkirmisherEnemy.ColorType.BLUE
 				#enemy.set_show_emp_particle_layer(_is_blue_flag_active)
 			
+			var path_index = blue_path_array.get_spawn_path_index_to_take()
 			_add_enemy_to_blue_path(enemy, path_index)
+			blue_path_array.switch_path_index_to_next()
 			
 			if _is_blue_flag_active and is_enemy_abstract_skirmisher:
 				_add_blue_effects_to_blue_skirmisher(enemy)
 		
 	else:
+		var path_index = blue_path_array.get_spawn_path_index_to_take()
 		_add_enemy_to_blue_path(enemy, path_index)
-	
+		blue_path_array.switch_path_index_to_next()
+
 
 func _add_enemy_to_blue_path(enemy, path_index):
-	var path = _get_path_to_use(path_index, paths_for_blues)
+	#var path = _get_path_to_use(path_index, blue_path_array.get_spawn_paths__not_copy())#paths_for_blues)
+	var path = blue_path_array.get_path_based_on_current_index()
 	
 	path.add_child(enemy)
 
@@ -420,7 +456,8 @@ func _get_path_to_use(path_index, paths):
 
 
 func _add_enemy_to_red_path(enemy, path_index):
-	var path = _get_path_to_use(path_index, paths_for_reds)
+	#var path = _get_path_to_use(path_index, red_path_array.get_spawn_paths__not_copy())#paths_for_reds)
+	var path = red_path_array.get_path_based_on_current_index()
 	
 	path.add_child(enemy)
 
@@ -1067,6 +1104,9 @@ class ThroughPlacableData:
 	var exit_position : Vector2
 	
 	var entry_higher_than_exit : bool
+	
+	
+	var enemy_path_state_id
 
 
 func _initialize_and_generate_through_placable_data__threaded():
@@ -1077,19 +1117,44 @@ func _initialize_and_generate_through_placable_data__threaded():
 	through_placable_datas_thread.start(self, "_initialize_and_generate_through_placable_data")
 
 func _initialize_and_generate_through_placable_data(arg_data):
-	_generate_through_placable_data__for_danseur()
-	_generate_through_placable_data__for_finisher()
+	_defer_curve_changes_for_all_paths()
+	
+	_generate_through_placable_data__using_current_path_id__for_danseur()
+	_generate_through_placable_data__using_current_path_id__for_finisher()
+	
+	_remove_defer_curve_changes_for_all_paths()
 
+func _defer_curve_changes_for_all_paths():
+	for path in blue_path_array.get_spawn_paths__not_copy():
+		path.curve_change_defer_conditional_clauses.attempt_insert_clause(path.CurveChangeDeferClauseIds.SKIRMISHER_CALCULATING_CURVE_THROUGH_PLACABLES)
+	
+	for path in red_path_array.get_spawn_paths__not_copy():
+		path.curve_change_defer_conditional_clauses.attempt_insert_clause(path.CurveChangeDeferClauseIds.SKIRMISHER_CALCULATING_CURVE_THROUGH_PLACABLES)
+	
+
+func _remove_defer_curve_changes_for_all_paths():
+	for path in blue_path_array.get_spawn_paths__not_copy():
+		path.curve_change_defer_conditional_clauses.remove_clause(path.CurveChangeDeferClauseIds.SKIRMISHER_CALCULATING_CURVE_THROUGH_PLACABLES)
+	
+	for path in red_path_array.get_spawn_paths__not_copy():
+		path.curve_change_defer_conditional_clauses.remove_clause(path.CurveChangeDeferClauseIds.SKIRMISHER_CALCULATING_CURVE_THROUGH_PLACABLES)
+	
 
 ## DANSEUR SPECIFIC
 
-func _generate_through_placable_data__for_danseur():
+func _generate_through_placable_data__using_current_path_id__for_danseur():
 	for placable in game_elements.map_manager.get_all_placables():
 		if placable.visible:
 			_generate_through_placable_data_of_placable__using_default_starting_poses__as_danseur(placable)
 	
-	for datas in danseur__enemy_path_to_through_placable_datas.values():
-		datas.sort_custom(self, "_sort_based_on_entry_offset")
+	for enemy_path in danseur__enemy_path_to__id_to_through_placable_datas.keys():
+		
+		var id_to_datas_map = danseur__enemy_path_to__id_to_through_placable_datas[enemy_path]
+		for datas in id_to_datas_map.values():
+			datas.sort_custom(self, "_sort_based_on_entry_offset")
+		
+		if !danseur__enemy_path_to_curve_ids_already_calculated[enemy_path].has(enemy_path.current_curve_id):
+			danseur__enemy_path_to_curve_ids_already_calculated[enemy_path].append(enemy_path.current_curve_id)
 
 func _generate_through_placable_data_of_placable__using_default_starting_poses__as_danseur(arg_placable):
 	var all_poses := []
@@ -1113,13 +1178,25 @@ func _generate_through_placable_data_of_placable__using_default_starting_poses__
 	all_poses.append(SE_pos)
 	all_poses.append(SW_pos)
 	
-	for path in paths_for_reds:
-		var path_length = path.curve.get_baked_length()
-		
-		for pos in all_poses:
-			var data = _generate_through_placable_data_of_placable__using_given_pos__as_danseur(arg_placable, path, pos, path_length)
-			if data != null:
-				danseur__enemy_path_to_through_placable_datas[path].append(data)
+	for path in red_path_array.get_spawn_paths__not_copy(): #paths_for_reds:
+		if !_is_id_to_through_placable_data_map__has_current_curve_id__as_danseur(path):
+			_create_id_to_through_placable_data_map_using__path_current_curve_id__as_danseur(path, all_poses, arg_placable)
+
+
+func _is_id_to_through_placable_data_map__has_current_curve_id__as_danseur(path):
+	return danseur__enemy_path_to_curve_ids_already_calculated[path].has(path.current_curve_id)
+
+func _create_id_to_through_placable_data_map_using__path_current_curve_id__as_danseur(path, all_poses, arg_placable):
+	
+	if !danseur__enemy_path_to__id_to_through_placable_datas[path].has(path.current_curve_id):
+		danseur__enemy_path_to__id_to_through_placable_datas[path][path.current_curve_id] = []
+	
+	var path_length = path.curve.get_baked_length()
+	
+	for pos in all_poses:
+		var data = _generate_through_placable_data_of_placable__using_given_pos__as_danseur(arg_placable, path, pos, path_length)
+		if data != null:
+			danseur__enemy_path_to__id_to_through_placable_datas[path][path.current_curve_id].append(data)
 
 
 func _generate_through_placable_data_of_placable__using_given_pos__as_danseur(arg_placable, arg_enemy_path : EnemyPath, arg_starting_global_pos : Vector2, arg_path_length : float):
@@ -1167,7 +1244,7 @@ func _check_if_valid_offset_meets_requirements__as_danseur(arg_offset : float, a
 
 
 func get_next_through_placable_data_based_on_curr__as_danseur(arg_curr_offset, arg_path):
-	var datas : Array = danseur__enemy_path_to_through_placable_datas[arg_path]
+	var datas : Array = danseur__enemy_path_to__id_to_through_placable_datas[arg_path][arg_path.current_curve_id]
 	var i = datas.bsearch_custom(arg_curr_offset, self, "_bsearch_compare_for_entry_offset")
 	
 	if datas.size() > i:
@@ -1179,13 +1256,20 @@ func get_next_through_placable_data_based_on_curr__as_danseur(arg_curr_offset, a
 
 ## FINISHER SPECIFIC
 
-func _generate_through_placable_data__for_finisher():
+func _generate_through_placable_data__using_current_path_id__for_finisher():
 	for placable in game_elements.map_manager.get_all_placables():
 		if placable.visible:
 			_generate_through_placable_data_of_placable__using_default_starting_poses__as_finisher(placable)
 	
-	for datas in finisher__enemy_path_to_through_placable_datas.values():
-		datas.sort_custom(self, "_sort_based_on_entry_offset")
+	for enemy_path in finisher__enemy_path_to__id_to_through_placable_datas.keys():
+		
+		var id_to_datas_map = finisher__enemy_path_to__id_to_through_placable_datas[enemy_path]
+		for datas in id_to_datas_map.values():
+			datas.sort_custom(self, "_sort_based_on_entry_offset")
+		
+		if !finisher__enemy_path_to_curve_ids_already_calculated[enemy_path].has(enemy_path.current_curve_id):
+			finisher__enemy_path_to_curve_ids_already_calculated[enemy_path].append(enemy_path.current_curve_id)
+
 
 func _generate_through_placable_data_of_placable__using_default_starting_poses__as_finisher(arg_placable):
 	var all_poses := []
@@ -1209,13 +1293,23 @@ func _generate_through_placable_data_of_placable__using_default_starting_poses__
 	all_poses.append(SE_pos)
 	all_poses.append(SW_pos)
 	
-	for path in paths_for_reds:
-		var path_length = path.curve.get_baked_length()
-		
-		for pos in all_poses:
-			var data = _generate_through_placable_data_of_placable__using_given_pos__as_finisher(arg_placable, path, pos, path_length)
-			if data != null:
-				finisher__enemy_path_to_through_placable_datas[path].append(data)
+	for path in red_path_array.get_spawn_paths__not_copy(): #paths_for_reds:
+		if !_is_id_to_through_placable_data_map__has_current_curve_id__as_finisher(path):
+			_create_id_to_through_placable_data_map_using__path_current_curve_id__as_finisher(path, all_poses, arg_placable)
+
+func _is_id_to_through_placable_data_map__has_current_curve_id__as_finisher(path):
+	return finisher__enemy_path_to_curve_ids_already_calculated[path].has(path.current_curve_id)
+
+func _create_id_to_through_placable_data_map_using__path_current_curve_id__as_finisher(path, all_poses, arg_placable):
+	if !finisher__enemy_path_to__id_to_through_placable_datas[path].has(path.current_curve_id):
+		finisher__enemy_path_to__id_to_through_placable_datas[path][path.current_curve_id] = []
+	
+	var path_length = path.curve.get_baked_length()
+	
+	for pos in all_poses:
+		var data = _generate_through_placable_data_of_placable__using_given_pos__as_finisher(arg_placable, path, pos, path_length)
+		if data != null:
+			finisher__enemy_path_to__id_to_through_placable_datas[path][path.current_curve_id].append(data)
 
 
 func _generate_through_placable_data_of_placable__using_given_pos__as_finisher(arg_placable, arg_enemy_path : EnemyPath, arg_starting_global_pos : Vector2, arg_path_length : float):
@@ -1262,17 +1356,27 @@ func _check_if_valid_offset_meets_requirements__as_finisher(arg_offset : float, 
 	return arg_offset > (arg_enemy_path_length * finisher__min_entry_unit_offset) and arg_offset < (arg_enemy_path_length * finisher__max_exit_unit_offset)
 
 
+#func get_next_through_placable_data_based_on_curr__as_finisher(arg_curr_offset, arg_path):
+#	var allowance = 10.0
+#
+#	var datas : Array = finisher__enemy_path_to_through_placable_datas[arg_path]
+#	var i = datas.bsearch_custom(arg_curr_offset + allowance, self, "_bsearch_compare_for_entry_offset")
+#
+#	if datas.size() > i:
+#		return datas[i]
+#	else:
+#		return null
+
 func get_next_through_placable_data_based_on_curr__as_finisher(arg_curr_offset, arg_path):
-	var allowance = 10.0
+	var allowance = 35.0
 	
-	var datas : Array = finisher__enemy_path_to_through_placable_datas[arg_path]
+	var datas : Array = finisher__enemy_path_to__id_to_through_placable_datas[arg_path][arg_path.current_curve_id]
 	var i = datas.bsearch_custom(arg_curr_offset + allowance, self, "_bsearch_compare_for_entry_offset")
 	
 	if datas.size() > i:
 		return datas[i]
 	else:
 		return null
-
 
 # SHARED BY DANSEUR/FINISHER Pathing/Dashing
 func _on_game_elements_exit_tree():
@@ -1526,7 +1630,11 @@ func _on_round_end(arg_stageround):
 	#
 	
 	_show_flags_if_curr_stageround_is_appropriate(arg_stageround)
-
+	
+	#
+	
+	blue_path_array.reset_path_indices()
+	red_path_array.reset_path_indices()
 
 func _on_round_start(arg_stageround):
 	if _is_showing_spawn_loc_flags:
@@ -1610,4 +1718,33 @@ func _on_particle_for_spawn_loc_flags_timeout():
 	if _is_spawn_loc_red_flags_empowered:
 		for flag in red_spawn_loc_flags:
 			request_red_flag_particles_to_play(flag.global_position)
+
+
+###########################################
+
+func _on_curve_of_original_path_changed(arg_new_curve, arg_curve_id, arg_original_path, arg_red_version_of_path):
+	var reversed_curve = arg_original_path.get_copy_of_curve(true)
+	arg_red_version_of_path.set_curve(reversed_curve)
+
+func _on_enemy_path_is_used_and_active_changed(arg_val, arg_original_path, arg_red_version_path):
+	arg_red_version_path.is_used_and_active = arg_val
+
+
+
+func _on_enemy_manager_spawn_pattern_changed(arg_pattern_type_id):
+	_update_spawn_pattern_based_on_enemy_mngr_pattern()
+
+func _update_spawn_pattern_based_on_enemy_mngr_pattern():
+	if enemy_manager.current_path_to_spawn_pattern == game_elements.EnemyManager.PathToSpawnPattern.SWITCH_PER_SPAWN:
+		enemy_manager.current_path_to_spawn_pattern= game_elements.EnemyManager.PathToSpawnPattern.NO_CHANGE
+
+func _on_curve_of_red_path_changed(arg_new_curve, arg_curve_id, arg_red_path):
+	_defer_curve_changes_for_all_paths()
+	if !_is_id_to_through_placable_data_map__has_current_curve_id__as_danseur(arg_red_path):
+		_generate_through_placable_data__using_current_path_id__for_danseur()
+	
+	if !_is_id_to_through_placable_data_map__has_current_curve_id__as_finisher(arg_red_path):
+		_generate_through_placable_data__using_current_path_id__for_finisher()
+	
+	_remove_defer_curve_changes_for_all_paths()
 

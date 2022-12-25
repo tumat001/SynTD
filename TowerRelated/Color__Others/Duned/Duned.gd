@@ -11,16 +11,16 @@ const Duned_ProjPic = preload("res://TowerRelated/Color__Others/Duned/Attks/Dune
 
 
 const stage_to_bonus_base_damage_map : Dictionary = {
-	0 : 1,
-	1 : 1.5,
-	2 : 2.0,
-	3 : 2.5,
-	4 : 3.0,
-	5 : 3.5,
-	6 : 4.0,
-	7 : 4.5,
-	8 : 5.0,
-	9 : 5.5
+	0 : 1.5,
+	1 : 2.0,
+	2 : 2.5,
+	3 : 3.0,
+	4 : 3.5,
+	5 : 4.0,
+	6 : 4.5,
+	7 : 5.0,
+	8 : 5.5,
+	9 : 6.0,
 }
 
 var base_dmg_effect : TowerAttributesEffect

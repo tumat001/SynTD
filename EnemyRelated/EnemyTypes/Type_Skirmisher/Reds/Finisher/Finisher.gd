@@ -4,10 +4,10 @@ extends "res://EnemyRelated/EnemyTypes/Type_Skirmisher/AbstractSkirmisherEnemy.g
 const initial_dash_count : int = 10
 var _curr_dash_left : int
 
-const base_chance_for_dashing_at_next_offset : float = 0.20
+const base_chance_for_dashing_at_next_offset : float = 1.0 #todo #0.20
 var _curr_chance_for_dashing_at_next_offset : float = base_chance_for_dashing_at_next_offset
 var _chance_multiplier_per_next_entry_offset_skipped : float = 1.3
-var _chance_multiplier_per_successful_dash : float = 0.75
+var _chance_multiplier_per_successful_dash : float = 1.0 #todo #0.75
 
 var skirmisher_gen_purpose_rng : RandomNumberGenerator
 

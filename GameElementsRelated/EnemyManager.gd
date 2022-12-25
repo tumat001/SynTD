@@ -11,6 +11,7 @@ const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const ConditionalClauses= preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const EnemySVGenerator = preload("res://EnemyRelated/EnemyStrengthValuesRelated/EnemySVGenerator.gd")
+const EnemyPathsArray = preload("res://MiscRelated/DataCollectionRelated/EnemyPathsArray.gd")
 
 const ENEMY_GROUP_TAG : String = "Enemies"
 const ENEMY_BLOCKING_NEXT_ROUND_ADVANCE_TAG : String = "EnemiesBlockingNextRoundAdvanceTag"
@@ -69,8 +70,11 @@ var map_manager setget set_map_manager
 var game_elements
 
 var spawn_instruction_interpreter : SpawnInstructionInterpreter setget set_interpreter
-var spawn_paths : Array = [] setget set_spawn_paths
-var _spawn_path_index_to_take = 0
+var _enemy_paths_array : EnemyPathsArray
+#var spawn_paths : Array = [] setget set_spawn_paths
+#var _active_spawn_path_to_path_index_map : Dictionary = {}
+#var _spawn_path_index_to_take : int = 0
+#var _active_spawn_path_index_to_take : int = 0
 var current_path_to_spawn_pattern : int = PathToSpawnPattern.NO_CHANGE setget set_current_path_to_spawn_pattern
 
 var custom_path_pattern_assignment_method : String
@@ -193,7 +197,7 @@ func set_stage_round_manager(arg_manager):
 #	print("-----------------------")
 #	var val_count : Dictionary = {1 : 0, 2 : 0, 3 : 0, 4 : 0}
 #	for i in 36:
-#		var val = _generate_sv_and_move_average(i, 36)
+#		var val = _generate_sv_and_move_average(i, 36)[0]
 #		val_count[val] += 1
 #		print("val: %s, curr_ave: %s, curr_total: %s" % [str(val), str(_current_sv_average), str(_current_sv_total)])
 #		print("")
@@ -206,10 +210,14 @@ func set_map_manager(arg_manager):
 		#map_manager.base_map.connect("on_all_enemy_paths_changed", self, "_on_base_map_paths_changed", [], CONNECT_PERSIST)
 		map_manager.base_map.connect("on_enemy_path_added", self, "_on_base_map_path_added", [], CONNECT_PERSIST)
 		map_manager.base_map.connect("on_enemy_path_removed", self, "_on_base_map_path_removed", [], CONNECT_PERSIST)
+		
+		
 
 #
 
 func _ready():
+	_enemy_paths_array = EnemyPathsArray.new()
+	
 	set_interpreter(SpawnInstructionInterpreter.new())
 	
 	_spawn_pause_timer = Timer.new()
@@ -241,36 +249,58 @@ func _signal_spawn_enemy_from_interpreter(enemy_id : int, ins_enemy_metadata_map
 	spawn_enemy(enemy_id, _get_path_based_on_current_index(), true, ins_enemy_metadata_map)
 
 func set_spawn_paths(paths : Array):
-	remove_all_spawn_paths()
+	_enemy_paths_array.remove_all_enemy_spawn_paths()
 	
 	for path in paths:
 		add_spawn_path(path)
+		#_enemy_paths_array.add_enemy_spawn_path(path)
+#	remove_all_spawn_paths()
+#
+#	for path in paths:
+#		add_spawn_path(path)
 
 func add_spawn_path(path):
-	if !spawn_paths.has(path):
+	if !_enemy_paths_array.has_enemy_spawn_path(path):
+		_enemy_paths_array.add_enemy_spawn_path(path)
+		
 		if !path.is_connected("on_enemy_death", self, "_on_enemy_death"):
 			path.connect("on_enemy_death", self, "_on_enemy_death", [], CONNECT_PERSIST)
 			path.connect("on_enemy_reached_end", self, "_enemy_reached_end", [], CONNECT_PERSIST)
-		
-		spawn_paths.append(path)
+
+#	if !spawn_paths.has(path):
+#		if !path.is_connected("on_enemy_death", self, "_on_enemy_death"):
+#			path.connect("on_enemy_death", self, "_on_enemy_death", [], CONNECT_PERSIST)
+#			path.connect("on_enemy_reached_end", self, "_enemy_reached_end", [], CONNECT_PERSIST)
+#			#path.connect("is_used_and_active_changed", self, "_on_path_is_used_and_active_changed", [path], CONNECT_PERSIST)
+#
+#
+#		spawn_paths.append(path)
+#
+#		if path.is_used_and_active:
+#			_active_spawn_path_to_path_index_map[path] = spawn_paths.size() - 1
 
 
 func remove_all_spawn_paths():
 	var to_remove : Array = []
 	
-	for path in spawn_paths:
+	for path in _enemy_paths_array.get_spawn_paths__not_copy():
 		to_remove.append(path)
 	
 	for path in to_remove:
 		remove_spawn_path(path)
 
 func remove_spawn_path(path):
-	if spawn_paths.has(path):
+	var removed = _enemy_paths_array.remove_enemy_spawn_path(path)
+	
+	if removed:
 		if path.is_connected("on_enemy_death", self, "_on_enemy_death"):
 			path.disconnect("on_enemy_death", self, "_on_enemy_death")
 			path.disconnect("on_enemy_reached_end", self, "_enemy_reached_end")
-		
-		spawn_paths.erase(path)
+
+#			path.disconnect("is_used_and_active_changed", self, "_on_path_is_used_and_active_changed")
+#
+#		spawn_paths.erase(path)
+#		_active_spawn_path_to_path_index_map.erase(path)
 
 
 func set_instructions_of_interpreter(inses : Array):
@@ -308,7 +338,9 @@ func end_run():
 	emit_signal("requested__get_next_targetable_enemy__cancelled")
 
 func reset_path_index():
-	_spawn_path_index_to_take = 0
+	_enemy_paths_array.reset_path_indices()
+	#_spawn_path_index_to_take = 0
+	#_active_spawn_path_index_to_take = 0
 
 
 func kill_all_enemies():
@@ -380,13 +412,11 @@ func _on_enemy_finished_ready_prep(arg_enemy):
 func _get_path_based_on_current_index() -> EnemyPath:
 	if custom_path_pattern_source_obj != null:
 		var path = custom_path_pattern_source_obj.call("custom_path_pattern_assignment_method", [])
-		print(path)
-		print('-----------')
 		return path
 		
 	else:
-		return spawn_paths[_spawn_path_index_to_take]
-
+		return _enemy_paths_array.get_path_based_on_current_index()
+#		return spawn_paths[_spawn_path_index_to_take]
 
 # Round over detectors
 
@@ -457,11 +487,12 @@ func get_random_targetable_enemies(arg_num_of_enemies : int, arg_pos_of_referenc
 
 
 func get_path_of_enemy(arg_enemy) -> EnemyPath:
-	for path in spawn_paths:
-		if path.get_children().has(arg_enemy):
-			return path
-	
-	return null
+	return _enemy_paths_array.get_path_of_enemy(arg_enemy)
+#	for path in spawn_paths:
+#		if path.get_children().has(arg_enemy):
+#			return path
+#
+#	return null
 
 #
 
@@ -596,12 +627,33 @@ func set_current_path_to_spawn_pattern(arg_pattern):
 	emit_signal("path_to_spawn_pattern_changed", arg_pattern)
 
 func get_spawn_path_index_to_take() -> int:
-	return _spawn_path_index_to_take
+	return _enemy_paths_array.get_spawn_path_index_to_take()
+	#return _spawn_path_index_to_take
+
 
 func _switch_path_index_to_next():
-	_spawn_path_index_to_take += 1
-	if _spawn_path_index_to_take >= spawn_paths.size():
-		_spawn_path_index_to_take = 0
+	_enemy_paths_array.switch_path_index_to_next()
+#	_active_spawn_path_index_to_take += 1
+#
+#	if _active_spawn_path_index_to_take >= _active_spawn_path_to_path_index_map.values().size() - 1:
+#		_active_spawn_path_index_to_take = 0
+#
+#	_spawn_path_index_to_take = _active_spawn_path_to_path_index_map.values()[_active_spawn_path_index_to_take]
+#	#############
+#	#print("spawn index to take: %s" % _spawn_path_index_to_take)
+#	_spawn_path_index_to_take += 1
+#
+#	if _spawn_path_index_to_take >= spawn_paths.size():
+#		_spawn_path_index_to_take = 0
+
+#func _switch_path_index_to_previous():
+#	_active_spawn_path_index_to_take -= 1
+#
+#	if _active_spawn_path_index_to_take < 0:
+#		_active_spawn_path_index_to_take = _active_spawn_path_to_path_index_map.values()[_active_spawn_path_to_path_index_map.size() - 1]
+#
+#	_spawn_path_index_to_take = _active_spawn_path_to_path_index_map.values()[_active_spawn_path_index_to_take]
+
 
 
 func _on_round_end(stage_round, is_game_start):
@@ -629,7 +681,19 @@ func _on_base_map_path_removed(removed_path):
 
 
 func get_spawn_path_to_take_index() -> int:
-	return _spawn_path_index_to_take
+	return _enemy_paths_array.get_spawn_path_index_to_take()
+#	return _spawn_path_index_to_take
+
+
+######### path properties change
+
+#func _on_path_is_used_and_active_changed(arg_val, arg_path):
+#	if arg_val:
+#		if !_active_spawn_path_to_path_index_map.has(arg_path):
+#			_active_spawn_path_to_path_index_map[arg_path] = spawn_paths.size() - 1
+#
+#	else:
+#		_active_spawn_path_to_path_index_map.erase(arg_path)
 
 
 ## enemy count

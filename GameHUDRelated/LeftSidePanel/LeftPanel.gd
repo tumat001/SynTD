@@ -9,6 +9,10 @@ const TowerWithColorShowPanel_Scene = preload("res://GameHUDRelated/WholeScreenT
 
 const WholeScreenGUI = preload("res://GameElementsRelated/WholeScreenGUI.gd")
 
+const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
+
+
+
 signal on_single_syn_tooltip_shown(synergy)
 signal on_single_syn_tooltip_hidden(synergy)
 
@@ -24,10 +28,30 @@ var tower_manager
 
 var _tower_with_color_show_panel
 
+
+# queue related
+
+var reservation_for_whole_screen_gui
+
+
 #
 
 onready var active_and_nonactive_syn_displayer = $VBoxContainer/ScrollContainer/ActiveAndNonActiveSynergyDisplayer
 onready var scroll_container = $VBoxContainer/ScrollContainer
+
+
+#
+
+func _init():
+	_initialize_queue_reservation()
+
+func _initialize_queue_reservation():
+	reservation_for_whole_screen_gui = AdvancedQueue.Reservation.new(self)
+	#reservation_for_whole_screen_gui.on_entertained_method = "_on_queue_reservation_entertained"
+	#reservation_for_whole_screen_gui.on_removed_method
+
+
+#####
 
 
 func set_game_settings_manager(arg_manager):
@@ -75,7 +99,8 @@ func _on_single_syn_displayer_pressed(event, syn_check_result):
 			_tower_with_color_show_panel.tower_manager = tower_manager
 			_tower_with_color_show_panel.game_settings_manager = game_settings_manager
 		
-		whole_screen_gui.show_control(_tower_with_color_show_panel)
+		#whole_screen_gui.show_control(_tower_with_color_show_panel)
+		whole_screen_gui.queue_control(_tower_with_color_show_panel, reservation_for_whole_screen_gui)
 		_tower_with_color_show_panel.show_towers_with_colors(syn_check_result.synergy.colors_required)
 
 #
