@@ -87,6 +87,7 @@ func update_destination_position(destination_pos : Vector2):
 	else:
 		visible = true
 		scale.x = _get_needed_x_scaling(destination_pos)
+		
 		rotation_degrees = _get_angle(destination_pos)
 		offset.y = -(_get_current_size().y / 2)
 	

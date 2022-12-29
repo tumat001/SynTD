@@ -6,6 +6,8 @@ const TerrainFuncs = preload("res://GameInfoRelated/TerrainRelated/TerrainFuncs.
 
 signal all_enemy_paths_of_base_map_changed(arg_paths, arg_base_map)
 
+signal base_map_last_calculated_any_enemy_path_is_curve_deferred_changed(arg_val)
+
 #
 
 enum SortOrder {
@@ -34,9 +36,16 @@ var chosen_map_id : int setget set_chosen_map_id
 
 var base_map : BaseMap
 
+var stage_round_manager setget set_stage_round_manager
+
 var fov_node : Node2D setget set_fov_node
 
 #
+
+func set_stage_round_manager(arg_manager):
+	stage_round_manager = arg_manager
+	
+	_on_base_map_last_calculated_any_enemy_path_is_curve_deferred_changed(null) # param does not matter
 
 func set_fov_node(arg_node):
 	fov_node = arg_node
@@ -247,4 +256,15 @@ func get_all_terrains():
 
 func _on_all_enemy_paths_changed(arg_all_paths):
 	emit_signal("all_enemy_paths_of_base_map_changed", base_map, arg_all_paths)
+
+
+func _on_base_map_last_calculated_any_enemy_path_is_curve_deferred_changed(_arg_val): #val is unused here
+	if base_map.last_calculated_any_path_is_curve_deferred:
+		stage_round_manager.block_start_round_conditional_clauses.attempt_insert_clause(stage_round_manager.BlockStartRoundClauseIds.MAP_MANAGER__ENEMY_PATH_CURVE_DEFER)
+	else:
+		stage_round_manager.block_start_round_conditional_clauses.remove_clause(stage_round_manager.BlockStartRoundClauseIds.MAP_MANAGER__ENEMY_PATH_CURVE_DEFER)
+	
+	emit_signal("base_map_last_calculated_any_enemy_path_is_curve_deferred_changed", base_map.last_calculated_any_path_is_curve_deferred)
+
+
 

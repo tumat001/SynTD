@@ -42,6 +42,8 @@ var shift_x : bool = false
 
 var absolute_z_index_of_aoe : int = ZIndexStore.PARTICLE_EFFECTS
 
+var kill_all_created_aoe_at_round_end : bool = true
+
 # constants
 
 const aoe_group_tag : String = "AOEGroupTag"
@@ -219,7 +221,8 @@ func _get_origin_distance(origin_pos : Vector2, destination_pos : Vector2):
 func on_round_end():
 	.on_round_end()
 	
-	kill_all_created_aoe()
+	if kill_all_created_aoe_at_round_end:
+		kill_all_created_aoe()
 
 func kill_all_created_aoe():
 	emit_signal("kill_all_spawned_aoe")

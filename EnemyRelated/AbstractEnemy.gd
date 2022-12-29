@@ -450,7 +450,7 @@ func _post_inherit_ready():
 		anim_face_dir_component.set_animated_sprite_animation_to_default(anim_sprite)
 		connect("moved__from_process", self, "on_moved__from_process__change_anim_dir")
 	
-#	#revive test #todo  ##########################
+#	#revive test  ##########################
 #	var rev_heal_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.HOMERUNNER_RED_GRANTED_REVIVE_HEAL_EFFECT)
 #	rev_heal_modi.percent_amount = 50
 #	rev_heal_modi.percent_based_on = PercentType.MAX
@@ -2259,7 +2259,6 @@ func set_current_forced_positional_movement_effect(effect : EnemyForcedPositiona
 	if _current_forced_offset_movement_effect != null: # yup. remove forced mov offset
 		remove_current_forced_offset_movement_effect()
 	
-	# new todo
 	if _current_forced_positional_movement_effect != null:
 		remove_current_forced_positional_movement_effect(true)
 	

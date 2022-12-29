@@ -254,8 +254,8 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 		_initialize_artillery_arc_bullet_attk_module()
 		_initialize_artillery_trail_for_node_component()
 		
-		#_initialize_and_generate_through_placable_data__threaded()
 		#todo
+		#_initialize_and_generate_through_placable_data__threaded()
 		_initialize_and_generate_through_placable_data([])
 		
 		_initialize_danseur_bullet_attk_module()
@@ -1244,8 +1244,10 @@ func _check_if_valid_offset_meets_requirements__as_danseur(arg_offset : float, a
 
 
 func get_next_through_placable_data_based_on_curr__as_danseur(arg_curr_offset, arg_path):
+	var allowance = 35.0
+	
 	var datas : Array = danseur__enemy_path_to__id_to_through_placable_datas[arg_path][arg_path.current_curve_id]
-	var i = datas.bsearch_custom(arg_curr_offset, self, "_bsearch_compare_for_entry_offset")
+	var i = datas.bsearch_custom(arg_curr_offset + allowance, self, "_bsearch_compare_for_entry_offset")
 	
 	if datas.size() > i:
 		return datas[i]
@@ -1264,8 +1266,10 @@ func _generate_through_placable_data__using_current_path_id__for_finisher():
 	for enemy_path in finisher__enemy_path_to__id_to_through_placable_datas.keys():
 		
 		var id_to_datas_map = finisher__enemy_path_to__id_to_through_placable_datas[enemy_path]
-		for datas in id_to_datas_map.values():
-			datas.sort_custom(self, "_sort_based_on_entry_offset")
+		#for datas in id_to_datas_map.values():
+		#	datas.sort_custom(self, "_sort_based_on_entry_offset")
+		var datas = id_to_datas_map[enemy_path.current_curve_id]
+		datas.sort_custom(self, "_sort_based_on_entry_offset")
 		
 		if !finisher__enemy_path_to_curve_ids_already_calculated[enemy_path].has(enemy_path.current_curve_id):
 			finisher__enemy_path_to_curve_ids_already_calculated[enemy_path].append(enemy_path.current_curve_id)
@@ -1724,7 +1728,7 @@ func _on_particle_for_spawn_loc_flags_timeout():
 
 func _on_curve_of_original_path_changed(arg_new_curve, arg_curve_id, arg_original_path, arg_red_version_of_path):
 	var reversed_curve = arg_original_path.get_copy_of_curve(true)
-	arg_red_version_of_path.set_curve(reversed_curve)
+	arg_red_version_of_path.set_curve_and_id(reversed_curve, arg_curve_id)
 
 func _on_enemy_path_is_used_and_active_changed(arg_val, arg_original_path, arg_red_version_path):
 	arg_red_version_path.is_used_and_active = arg_val
@@ -1740,6 +1744,7 @@ func _update_spawn_pattern_based_on_enemy_mngr_pattern():
 
 func _on_curve_of_red_path_changed(arg_new_curve, arg_curve_id, arg_red_path):
 	_defer_curve_changes_for_all_paths()
+	
 	if !_is_id_to_through_placable_data_map__has_current_curve_id__as_danseur(arg_red_path):
 		_generate_through_placable_data__using_current_path_id__for_danseur()
 	

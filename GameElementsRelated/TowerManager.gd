@@ -120,6 +120,7 @@ var whole_screen_relic_general_store_panel setget set_whole_screen_relic_general
 var _color_groups : Array
 const TOWER_GROUP_ID : String = "All_Towers"
 const TOWER_IN_MAP_GROUP_ID : String = "All_Towers_In_Map"
+const HIDDEN_TOWERS_GROUP_ID : String = "Hidden_Towers"
 
 var _is_round_on_going : bool
 
@@ -279,6 +280,8 @@ func _tower_can_contribute_to_synergy_color_count_changed(arg_val, arg_tower):
 	
 
 
+
+
 # Adding tower as child of this to monitor it
 func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("register_ability", self, "_register_ability_from_tower", [], CONNECT_PERSIST)
@@ -334,17 +337,21 @@ func add_tower(tower_instance : AbstractTower):
 	
 	tower_instance.connect("tower_selected_in_selection_mode", self, "_tower_selected", [], CONNECT_PERSIST)
 	
-	tower_instance.add_to_group(TOWER_GROUP_ID, true)
+	if !tower_instance.is_tower_hidden:
+		tower_instance.add_to_group(TOWER_GROUP_ID, true)
+	else:
+		tower_instance.add_to_group(HIDDEN_TOWERS_GROUP_ID, true)
 	
 	tower_instance._set_round_started(_is_round_on_going)
 	
 	for lim_id in _tower_ing_cap_amount_map:
 		tower_instance.set_ingredient_limit_modifier(lim_id, _tower_ing_cap_amount_map[lim_id])
 	
-	# if something broke, then this might be the cause
-	tower_instance.transfer_to_placable(tower_instance.hovering_over_placable, false, !can_place_tower_based_on_limit_and_curr_placement(tower_instance))
+	if !tower_instance.is_tower_hidden:
+		tower_instance.transfer_to_placable(tower_instance.hovering_over_placable, false, !can_place_tower_based_on_limit_and_curr_placement(tower_instance))
 	
 	emit_signal("tower_added", tower_instance)
+
 
 # Color and grouping related
 
@@ -576,7 +583,7 @@ func _show_round_panel():
 # Round related
 
 func _round_started(_stageround):
-	for tower in get_all_towers():
+	for tower in get_all_towers_including_hidden():
 		tower.is_round_started = true
 	
 	_is_round_on_going = true
@@ -586,13 +593,15 @@ func _round_started(_stageround):
 
 
 func _round_ended(_stageround):
-	for tower in get_all_towers():
+	#for tower in get_all_towers():
+	for tower in get_all_towers_including_hidden():
 		tower.is_round_started = false
 	
 	_is_round_on_going = false
 
 
 # Towers related
+# all, except for hidden ones
 func get_all_towers() -> Array:
 	var bucket : Array = []
 	for child in get_children():
@@ -601,6 +610,13 @@ func get_all_towers() -> Array:
 	
 	return bucket
 
+func get_all_towers_including_hidden() -> Array:
+	var bucket : Array = []
+	for child in get_children():
+		if child.is_in_group(TOWER_GROUP_ID) or child.is_in_group(HIDDEN_TOWERS_GROUP_ID):
+			bucket.append(child)
+	
+	return bucket
 
 func get_all_ids_of_towers() -> Array:
 	var bucket : Array = []
@@ -750,6 +766,16 @@ func get_all_in_map_and_alive_towers_except_in_queue_free() -> Array:
 	for tower in get_all_in_map_towers():
 		if !bucket.has(tower) and !tower.is_queued_for_deletion() and !tower.is_dead_for_the_round:
 			bucket.append(tower)
+	
+	return bucket
+
+
+# currently used for damage display (right side panel)
+func get_all_in_map_and_hidden_towers_except_in_queue_free() -> Array:
+	var bucket : Array = []
+	for child in get_children():
+		if (child.is_in_group(HIDDEN_TOWERS_GROUP_ID) or child.is_in_group(TOWER_IN_MAP_GROUP_ID)) and !child.is_queued_for_deletion():
+			bucket.append(child)
 	
 	return bucket
 

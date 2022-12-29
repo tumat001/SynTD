@@ -262,6 +262,7 @@ enum {
 	YELVIO_RIFT_AXIS = 2004,
 	
 	DUNED = 2005,
+	MAP_PASSAGE__FIRE_PATH = 2006
 	
 }
 
@@ -271,6 +272,7 @@ const TowerTiersMap : Dictionary = {
 	NIGHTWATCHER : 6,
 	YELVIO_RIFT_AXIS : 3,
 	DUNED : 2,
+	MAP_PASSAGE__FIRE_PATH : 1,
 	
 	#MONO : 1,
 	SPRINKLER : 1,
@@ -6552,6 +6554,25 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
+	elif tower_id == MAP_PASSAGE__FIRE_PATH:
+		info = TowerTypeInformation.new("MapPassageFirePath", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.base_tower_image = preload("res://MapsRelated/MapList/Map_Passage/Assets/DamageTrackerIcon_PathFire.png")
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0
+		info.base_pierce = 0
+		info.base_range = 10
+		info.base_damage_type = DamageType.PURE
+		info.on_hit_multiplier = 1
+		
+		info.tower_descriptions = [
+			"If you see this, something has gone wrong...",
+			"Hello world"
+		]
+		
 	
 	return info
 
@@ -6731,3 +6752,6 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Blast/Blast.tscn")
 	elif tower_id == DUNED:
 		return load("res://TowerRelated/Color__Others/Duned/Duned.tscn")
+	elif tower_id == MAP_PASSAGE__FIRE_PATH:
+		return load("res://TowerRelated/Color__Others/MapPassage_FirePath/MapPassage_PathFire.tscn")
+

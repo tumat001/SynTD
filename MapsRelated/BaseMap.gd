@@ -10,6 +10,11 @@ signal on_enemy_path_added(enemy_path)
 signal on_enemy_path_removed(enemy_path)
 signal on_all_enemy_paths_changed(new_all_paths)
 
+signal any_enemy_path_is_curve_defer_changed(enemy_path, curve_defer_status_of_path, arg_last_calculated_any_path_is_curve_deferred) 
+signal last_calculated_any_enemy_path_is_curve_deferred_changed(arg_val)
+
+signal in_map_placable_added(arg_placable)
+
 
 const default_flag_offset_from_path : float = 30.0
 
@@ -23,7 +28,13 @@ enum EnemyPathState {
 var all_in_map_placables : Array = []
 var _all_enemy_paths : Array = []
 
+
+var _all_paths_with_last_calc_curve_deferred : Array = []
+var last_calculated_any_path_is_curve_deferred : bool
+
+
 var flag_to_path_map : Dictionary = {}
+var path_to_flags_map : Dictionary = {}
 
 
 onready var _in_map_placables = $InMapPlacables
@@ -31,24 +42,44 @@ onready var _enemy_paths = $EnemyPaths
 onready var _environment = $Environment
 onready var _terrain_node_parent = $Terrain
 
+#
+
 func _ready():
 	_environment.z_index = ZIndexStore.MAP_ENVIRONMENT
 	
 	for placables in _in_map_placables.get_children():
 		if placables is InMapAreaPlacable:
-			all_in_map_placables.append(placables)
+			#all_in_map_placables.append(placables)
+			add_in_map_placable(placables, placables.global_position)
 	
 	for path in _enemy_paths.get_children():
-		_all_enemy_paths.append(path)
+		_add_enemy_path_and_register_connections(path)
 	
 	for terrain in _terrain_node_parent.get_children():
 		add_terrain_node(terrain)
 
-# path related
+
+func _add_enemy_path_and_register_connections(path : EnemyPath):
+	if !_all_enemy_paths.has(path):
+		_all_enemy_paths.append(path)
+		
+		if !path.is_connected("last_calculated_curve_change_defer_changed", self, "_on_path_last_calculated_curve_change_defer_changed"):
+			path.connect("last_calculated_curve_change_defer_changed", self, "_on_path_last_calculated_curve_change_defer_changed", [path], CONNECT_PERSIST)
+
+func _remove_enemy_path_and_unregister_connections(path : EnemyPath):
+	if _all_enemy_paths.has(path):
+		_all_enemy_paths.erase(path)
+		
+		if path.is_connected("last_calculated_curve_change_defer_changed", self, "_on_path_last_calculated_curve_change_defer_changed"):
+			path.disconnect("last_calculated_curve_change_defer_changed", self, "_on_path_last_calculated_curve_change_defer_changed")
+	
+	_attempt_remove_path_to_curve_change_deferred_arr(path)
+
+# path related -- for public
 
 func add_enemy_path(path : EnemyPath, emit_signals : bool = true):
 	if is_instance_valid(path):
-		_all_enemy_paths.append(path)
+		_add_enemy_path_and_register_connections(path)
 		if emit_signals:
 			emit_signal("on_enemy_path_added", path)
 			emit_signal("on_all_enemy_paths_changed", get_all_enemy_paths())
@@ -57,7 +88,7 @@ func add_enemy_path(path : EnemyPath, emit_signals : bool = true):
 
 func remove_enemy_path(path : EnemyPath, emit_signals : bool = true):
 	if is_instance_valid(path):
-		_all_enemy_paths.erase(path)
+		_remove_enemy_path_and_unregister_connections(path)
 		if emit_signals:
 			emit_signal("on_enemy_path_removed", path)
 			emit_signal("on_all_enemy_paths_changed", get_all_enemy_paths())
@@ -171,6 +202,29 @@ func make_all_placables_not_hidden():
 func get_placable_with_node_name(arg_name):
 	return _in_map_placables.get_node(arg_name)
 
+
+####### placable related
+
+
+func get_all_placables():
+	return all_in_map_placables
+
+func get_all_placables__copy():
+	return all_in_map_placables.duplicate(true)
+
+func add_in_map_placable(arg_placable, arg_custom_pos : Vector2, arg_emit_signal : bool = true):
+	if !all_in_map_placables.has(arg_placable):
+		all_in_map_placables.append(arg_placable)
+		
+		arg_placable.global_position = arg_custom_pos
+		
+		if arg_placable.get_parent() == null:
+			_in_map_placables.add_child(arg_placable)
+		
+		if arg_emit_signal:
+			emit_signal("in_map_placable_added", arg_placable)
+
+
 ################
 
 func add_terrain_node(arg_terrain, arg_z_index_to_use : int = ZIndexStore.TERRAIN_ABOVE_MAP_ENVIRONMENT):
@@ -195,21 +249,92 @@ func _apply_map_specific_changes_to_game_elements(arg_game_elements):
 
 ################
 
-func create_spawn_loc_flag_at_path(arg_enemy_path : EnemyPath, arg_offset_from_start : float = default_flag_offset_from_path, arg_flag_texture_id : int = EnemySpawnLocIndicator_Flag.FlagTextureIds.ORANGE) -> EnemySpawnLocIndicator_Flag:
-	var flag = EnemySpawnLocIndicator_Flag_Scene.instance()
-	CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(flag)
+# if changing params, change "_listen_for_path_curve_change__for_flag_placement" params as well
+func create_spawn_loc_flag_at_path(arg_enemy_path : EnemyPath, 
+		arg_offset_from_start : float = default_flag_offset_from_path, 
+		arg_flag_texture_id : int = EnemySpawnLocIndicator_Flag.FlagTextureIds.ORANGE) -> EnemySpawnLocIndicator_Flag:
 	
-	flag.set_flag_texture_id(arg_flag_texture_id)
+	if arg_enemy_path.curve != null:
+		var flag = EnemySpawnLocIndicator_Flag_Scene.instance()
+		CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(flag)
+		
+		flag.set_flag_texture_id(arg_flag_texture_id)
+		
+		if arg_offset_from_start < 0:
+			arg_offset_from_start = arg_enemy_path.curve.get_baked_length() + arg_offset_from_start
+		
+		flag.offset_from_path_start = arg_offset_from_start
+		_set_flag_global_position_based(flag, arg_enemy_path)
+		
+		flag_to_path_map[flag] = arg_enemy_path
+		if !path_to_flags_map.has(arg_enemy_path):
+			path_to_flags_map[arg_enemy_path] = []
+		path_to_flags_map[arg_enemy_path].append(flag)
+		
+		
+		if !arg_enemy_path.is_connected("curve_changed", self, "_on_curve_path_changed__for_flag_relocation"):
+			arg_enemy_path.connect("curve_changed", self, "_on_curve_path_changed__for_flag_relocation", [arg_enemy_path], CONNECT_PERSIST)
+		
+		return flag
+		
+	else:
+		_listen_for_path_curve_change__for_flag_placement(arg_enemy_path, arg_offset_from_start, arg_flag_texture_id)
+		
+		return null
+
+func _set_flag_global_position_based(flag, arg_enemy_path):
+	flag.global_position = arg_enemy_path.curve.interpolate_baked(flag.offset_from_path_start)
 	
-	if arg_offset_from_start < 0:
-		arg_offset_from_start = arg_enemy_path.curve.get_baked_length() + arg_offset_from_start
-	flag.global_position = arg_enemy_path.curve.interpolate_baked(arg_offset_from_start)
-	
-	flag_to_path_map[flag] = arg_enemy_path
-	
-	return flag
+
+
+func _listen_for_path_curve_change__for_flag_placement(arg_path : EnemyPath, arg_offset_from_start, arg_flag_texture_id):
+	if !arg_path.is_connected("curve_changed", self, "_on_curve_path_changed__for_flag_placement"):
+		arg_path.connect("curve_changed", self, "_on_curve_path_changed__for_flag_placement", [arg_path, arg_offset_from_start, arg_flag_texture_id], CONNECT_PERSIST)
+
+func _on_curve_path_changed__for_flag_placement(arg_curve, arg_curve_id, arg_path, arg_offset_from_start, arg_flag_texture_id):
+	if arg_curve != null:
+		if arg_path.is_connected("curve_changed", self, "_on_curve_path_changed__for_flag_placement"):
+			arg_path.disconnect("curve_changed", self, "_on_curve_path_changed__for_flag_placement")
+		
+		create_spawn_loc_flag_at_path(arg_path, arg_offset_from_start, arg_flag_texture_id)
+
+
+func _on_curve_path_changed__for_flag_relocation(arg_curve, arg_curve_id, arg_enemy_path):
+	for flag in path_to_flags_map[arg_enemy_path]:
+		if is_instance_valid(flag):
+			_set_flag_global_position_based(flag, arg_enemy_path)
+			flag.visible = true
+
+
+##
 
 func _on_round_started(arg_stageround):
 	for flag in flag_to_path_map.keys():
 		flag.visible = false
+
+
+#############
+
+func _on_path_last_calculated_curve_change_defer_changed(arg_val, arg_path):
+	if arg_val:
+		_attempt_add_path_to_curve_change_deferred_arr(arg_path)
+		
+	else:
+		_attempt_remove_path_to_curve_change_deferred_arr(arg_path)
+
+func _attempt_add_path_to_curve_change_deferred_arr(path : EnemyPath):
+	if !_all_paths_with_last_calc_curve_deferred.has(path):
+		_all_paths_with_last_calc_curve_deferred.append(path)
+		
+		last_calculated_any_path_is_curve_deferred = true
+		emit_signal("any_enemy_path_is_curve_defer_changed", path, true, last_calculated_any_path_is_curve_deferred)
+		emit_signal("last_calculated_any_enemy_path_is_curve_deferred_changed", last_calculated_any_path_is_curve_deferred)
+
+func _attempt_remove_path_to_curve_change_deferred_arr(path : EnemyPath):
+	if _all_paths_with_last_calc_curve_deferred.has(path):
+		_all_paths_with_last_calc_curve_deferred.erase(path)
+		
+		last_calculated_any_path_is_curve_deferred = _all_paths_with_last_calc_curve_deferred.size() == 0
+		emit_signal("any_enemy_path_is_curve_defer_changed", path, false, last_calculated_any_path_is_curve_deferred)
+		emit_signal("last_calculated_any_enemy_path_is_curve_deferred_changed", last_calculated_any_path_is_curve_deferred)
 

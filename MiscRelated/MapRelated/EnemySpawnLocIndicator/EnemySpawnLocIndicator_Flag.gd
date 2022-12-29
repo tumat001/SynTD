@@ -13,6 +13,8 @@ enum FlagTextureIds {
 }
 
 
+var offset_from_path_start : float
+
 func set_flag_texture_id(arg_id):
 	if arg_id == FlagTextureIds.ORANGE:
 		texture = Flag_Orange_Pic

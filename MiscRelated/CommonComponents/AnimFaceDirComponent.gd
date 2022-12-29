@@ -133,7 +133,7 @@ func get_anim_name_to_use_based_on_angle(arg_angle):
 				#print(anim_name)
 				return anim_name
 			
-			if index == anim_count - 1: # guarantee to return last anim name
+			if index == anim_count - 1: # guarantee to return last/previous anim name
 				#print(anim_name)
 				return anim_name
 		

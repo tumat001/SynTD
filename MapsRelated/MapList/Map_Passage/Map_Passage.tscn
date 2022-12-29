@@ -1,0 +1,149 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://MapsRelated/BaseMap.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.tscn" type="PackedScene" id=2]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Map_Passage.gd" type="Script" id=3]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Map_Passage_WithBorders.png" type="Texture" id=4]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/MapComponents/PathButton/MapPassage_PathButton.tscn" type="PackedScene" id=5]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/MapComponents/PathDescriptionPanel/MapPassage_PathDescriptionPanel.tscn" type="PackedScene" id=6]
+[ext_resource path="res://EnemyRelated/EnemyPath.tscn" type="PackedScene" id=7]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/MapComponents/PathLaserBarrier/PathLaserBarrier.tscn" type="PackedScene" id=8]
+
+[node name="Map_Passage" instance=ExtResource( 1 )]
+script = ExtResource( 3 )
+
+[node name="Background" type="TextureRect" parent="Environment" index="0"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource( 4 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="PathButton_Fire" parent="Environment" index="1" instance=ExtResource( 5 )]
+margin_left = 180.0
+margin_top = 46.0
+margin_right = 207.0
+margin_bottom = 86.0
+
+[node name="PathButton_Water" parent="Environment" index="2" instance=ExtResource( 5 )]
+margin_left = 730.0
+margin_top = 46.0
+margin_right = 757.0
+margin_bottom = 86.0
+
+[node name="PathDescriptionPanel_Fire" parent="Environment" index="3" instance=ExtResource( 6 )]
+margin_left = 213.0
+margin_top = 41.0
+margin_right = 385.0
+margin_bottom = 90.0
+rect_min_size = Vector2( 172, 49 )
+
+[node name="PathDescriptionPanel_Water" parent="Environment" index="4" instance=ExtResource( 6 )]
+margin_left = 551.0
+margin_top = 41.0
+margin_right = 723.0
+margin_bottom = 90.0
+rect_min_size = Vector2( 172, 49 )
+
+[node name="PathBarrier_Fire_Top" parent="Environment" index="5" instance=ExtResource( 8 )]
+
+[node name="LaserPoint01" parent="Environment/PathBarrier_Fire_Top" index="0"]
+position = Vector2( 193, 106 )
+
+[node name="LaserPoint02" parent="Environment/PathBarrier_Fire_Top" index="1"]
+position = Vector2( 193, 174 )
+
+[node name="PathBarrier_Water_Top" parent="Environment" index="6" instance=ExtResource( 8 )]
+
+[node name="LaserPoint01" parent="Environment/PathBarrier_Water_Top" index="0"]
+position = Vector2( 743, 106 )
+
+[node name="LaserPoint02" parent="Environment/PathBarrier_Water_Top" index="1"]
+position = Vector2( 743, 174 )
+
+[node name="PathBarrier_Fire_Bottom" parent="Environment" index="7" instance=ExtResource( 8 )]
+
+[node name="LaserPoint01" parent="Environment/PathBarrier_Fire_Bottom" index="0"]
+position = Vector2( 193, 302 )
+
+[node name="LaserPoint02" parent="Environment/PathBarrier_Fire_Bottom" index="1"]
+position = Vector2( 193, 370 )
+
+[node name="PathBarrier_Water_Bottom" parent="Environment" index="8" instance=ExtResource( 8 )]
+
+[node name="LaserPoint01" parent="Environment/PathBarrier_Water_Bottom" index="0"]
+position = Vector2( 743, 302 )
+
+[node name="LaserPoint02" parent="Environment/PathBarrier_Water_Bottom" index="1"]
+position = Vector2( 743, 370 )
+
+[node name="PathBarrier_Middle_Right" parent="Environment" index="9" instance=ExtResource( 8 )]
+
+[node name="LaserPoint01" parent="Environment/PathBarrier_Middle_Right" index="0"]
+position = Vector2( 742, 302 )
+
+[node name="LaserPoint02" parent="Environment/PathBarrier_Middle_Right" index="1"]
+position = Vector2( 742, 174 )
+
+[node name="PathBarrier_Middle_Left" parent="Environment" index="10" instance=ExtResource( 8 )]
+
+[node name="LaserPoint01" parent="Environment/PathBarrier_Middle_Left" index="0"]
+position = Vector2( 192, 302 )
+
+[node name="LaserPoint02" parent="Environment/PathBarrier_Middle_Left" index="1"]
+position = Vector2( 192, 174 )
+
+[node name="Placable01" parent="InMapPlacables" index="0" instance=ExtResource( 2 )]
+position = Vector2( 130, 267 )
+
+[node name="Placable02" parent="InMapPlacables" index="1" instance=ExtResource( 2 )]
+position = Vector2( 427, 288 )
+
+[node name="Placable03" parent="InMapPlacables" index="2" instance=ExtResource( 2 )]
+position = Vector2( 230, 267 )
+
+[node name="Placable04" parent="InMapPlacables" index="3" instance=ExtResource( 2 )]
+position = Vector2( 325, 267 )
+
+[node name="Placable05" parent="InMapPlacables" index="4" instance=ExtResource( 2 )]
+position = Vector2( 427, 361 )
+
+[node name="Placable06" parent="InMapPlacables" index="5" instance=ExtResource( 2 )]
+position = Vector2( 130, 361 )
+
+[node name="EnemyPathBottom" parent="EnemyPaths" index="0" instance=ExtResource( 7 )]
+
+[node name="EnemyPathTop" parent="EnemyPaths" index="1" instance=ExtResource( 7 )]
+
+[node name="MarkerTemplates" type="Node" parent="." index="4"]
+
+[node name="CenterOfMap" type="Position2D" parent="MarkerTemplates" index="0"]
+position = Vector2( 468, 238.5 )
+
+[node name="SpecialPathVectors" type="Polygon2D" parent="MarkerTemplates" index="1"]
+color = Color( 1, 1, 1, 0 )
+polygon = PoolVector2Array( 94, 337, 180.364, 337, 258.706, 344, 304.484, 344, 383.297, 337, 468, 337 )
+
+[node name="NormalPathVectors" type="Polygon2D" parent="MarkerTemplates" index="2"]
+color = Color( 1, 1, 1, 0 )
+polygon = PoolVector2Array( 94, 238.5, 446, 238.5, 468, 238.5 )
+
+[node name="DownToUpVectors" type="Polygon2D" parent="MarkerTemplates" index="3"]
+color = Color( 1, 1, 1, 0 )
+polygon = PoolVector2Array( 468, 337, 468, 288.5, 468, 238.5 )
+
+[node name="PathAOEBasis" type="Polygon2D" parent="MarkerTemplates" index="4"]
+color = Color( 1, 1, 1, 0 )
+polygon = PoolVector2Array( 189, 317, 189, 356, 373, 356, 373, 317 )
+
+[connection signal="button_on_state_changed" from="Environment/PathButton_Fire" to="." method="_on_PathButton_Fire_button_on_state_changed"]
+[connection signal="button_on_state_changed" from="Environment/PathButton_Water" to="." method="_on_PathButton_Water_button_on_state_changed"]
+
+[editable path="Environment/PathBarrier_Fire_Top"]
+[editable path="Environment/PathBarrier_Water_Top"]
+[editable path="Environment/PathBarrier_Fire_Bottom"]
+[editable path="Environment/PathBarrier_Water_Bottom"]
+[editable path="Environment/PathBarrier_Middle_Right"]
+[editable path="Environment/PathBarrier_Middle_Left"]

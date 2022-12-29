@@ -3,6 +3,7 @@ extends MarginContainer
 const CustomButtonGroup = preload("res://MiscRelated/PlayerGUI_Category_Related/ButtonToggleStandard/ButtonGroup.gd")
 const GameResultManager = preload("res://GameElementsRelated/GameResultManager.gd")
 
+
 signal round_start_pressed()
 
 
@@ -59,7 +60,9 @@ func set_stage_round_manager(arg_manager):
 	stage_round_manager.connect("round_started", self, "_on_round_started", [], CONNECT_PERSIST)
 	
 	_make_arrow_follow_button(all_speed_buttons[0], true)
-
+	
+	stage_round_manager.connect("last_calculated_block_start_of_round_changed", self, "_on_SRM_last_calculated_block_start_of_round_changed", [], CONNECT_PERSIST)
+	_on_SRM_last_calculated_block_start_of_round_changed(null) # val doesnt matter
 
 func set_game_result_manager(arg_manager):
 	#NOTE, manager is not yet initalized at this time, so don't do any calling of methods/vars of that manager. But connecting signals is fine.
@@ -114,13 +117,13 @@ func _on_ReadyButton_on_button_released_with_button_left():
 
 
 func _start_round():
-	if !stage_round_manager.round_started and can_start_round:
+	if !stage_round_manager.round_started and can_start_round and !stage_round_manager.last_calculated_block_start_of_round:
 		emit_signal("round_start_pressed")
 		return true
 	
 	return false
 
-
+# activated by game elements when [space] is pressed
 func start_round_or_speed_toggle():
 	var started = _start_round()
 	if !started:
@@ -162,3 +165,9 @@ func _on_StatsButton_on_button_released_with_button_left():
 	if game_stats_manager != null:
 		game_stats_manager.show_game_stats_panel()
 
+
+###########
+
+func _on_SRM_last_calculated_block_start_of_round_changed(_arg_val):  # val is unused
+	start_button.is_button_enabled = !stage_round_manager.last_calculated_block_start_of_round
+	

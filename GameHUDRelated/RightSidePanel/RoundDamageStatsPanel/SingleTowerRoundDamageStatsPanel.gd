@@ -31,15 +31,18 @@ func _ready():
 func set_tower(arg_tower : AbstractTower):
 	if is_instance_valid(_tower):
 		_tower.disconnect("on_per_round_total_damage_changed", self, "_on_tower_in_round_total_damage_changed")
+		_tower.disconnect("displayable_in_damage_stats_panel_changed", self, "_on_tower_displayable_in_damage_stats_panel_changed")
 	
 	_tower = arg_tower
 	
 	if is_instance_valid(_tower):
 		_tower.connect("on_per_round_total_damage_changed", self, "_on_tower_in_round_total_damage_changed", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+		_tower.connect("displayable_in_damage_stats_panel_changed", self, "_on_tower_displayable_in_damage_stats_panel_changed", [], CONNECT_PERSIST)
 		
 		if is_instance_valid(tower_icon_panel):
 			tower_icon_panel.tower_type_info = _tower.tower_type_info
-
+		
+		_update_visibility_based_on_factors()
 
 
 #
@@ -81,3 +84,12 @@ func _on_SingleTowerRoundDamageStatsPanel_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == BUTTON_LEFT:
 			emit_signal("on_left_clicked", _tower, self)
+
+#
+
+func _on_tower_displayable_in_damage_stats_panel_changed(arg_val):
+	_update_visibility_based_on_factors()
+
+func _update_visibility_based_on_factors():
+	visible = _tower.displayable_in_damage_stats_panel
+

@@ -12,6 +12,7 @@ signal curve_changed(arg_new_curve, arg_curve_id)
 signal before_curve_changed_from_deferred_set(arg_new_curve, arg_curve_id)
 signal after_curve_changed_from_deferred_set(arg_new_curve, arg_curve_id)
 
+signal last_calculated_curve_change_defer_changed(arg_val)
 
 enum MarkerIds {
 	SKIRMISHER_CLONE_OF_BASE_PATH = 1,
@@ -53,7 +54,8 @@ func _init():
 #
 func _ready():
 	#path_length = curve.get_baked_length()
-	set_curve_and_id(curve, default_curve_id)
+	if curve != null:
+		set_curve_and_id(curve, default_curve_id)
 	
 
 func add_child(node : Node, legible_unique_name : bool = false):
@@ -229,7 +231,7 @@ func set_curve_and_id(arg_curve_2d : Curve2D, arg_curve_id : int):
 		path_length = curve.get_baked_length()
 		current_curve_id = arg_curve_id
 		
-		emit_signal("curve_changed", curve)
+		emit_signal("curve_changed", curve, current_curve_id)
 	else:
 		
 		_deferred_new_curve = arg_curve_2d
@@ -242,9 +244,23 @@ func _on_curve_change_defer_conditional_clauses_updated(arg_clause_id):
 func _update_curve_change_defer_state():
 	last_calculated_curve_change_defer = !curve_change_defer_conditional_clauses.is_passed
 	
+	emit_signal("last_calculated_curve_change_defer_changed", last_calculated_curve_change_defer)
+	
 	if _deferred_new_curve != null and !last_calculated_curve_change_defer:
 		emit_signal("before_curve_changed_from_deferred_set", _deferred_new_curve, _deferred_new_curve_id)
 		set_curve_and_id(_deferred_new_curve, _deferred_new_curve_id)
 		emit_signal("after_curve_changed_from_deferred_set", _deferred_new_curve, _deferred_new_curve_id)
 
 
+func set_curve_and_id__using_vector_points(arg_points : Array, arg_curve_id : int):
+	set_curve_and_id(_construct_curve_2d_using_points(arg_points), arg_curve_id)
+	
+	
+
+func _construct_curve_2d_using_points(arg_points : Array) -> Curve2D:
+	var curve_2d = Curve2D.new()
+	
+	for pos in arg_points:
+		curve_2d.add_point(pos)
+	
+	return curve_2d

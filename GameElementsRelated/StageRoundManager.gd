@@ -7,7 +7,7 @@ const StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/StageRo
 
 #const ModeNormal_StageRounds = preload("res://GameplayRelated/StagesAndRoundsRelated/ModeNormal_StageRounds.gd")
 #const FactionBasic_EnemySpawnIns = preload("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionBasic_EnemySpawnIns.gd")
-
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 const BaseMode_EnemySpawnIns = preload("res://GameplayRelated/EnemiesInRounds/BaseMode_EnemySpawnIns.gd")
 
@@ -32,6 +32,8 @@ signal life_lost_from_enemy_first_time_in_round(enemy)
 signal life_lost_from_enemy(enemy)
 
 signal end_of_stagerounds()
+
+signal last_calculated_block_start_of_round_changed(arg_val)
 
 
 const gold_gain_on_win : int = 1
@@ -60,6 +62,28 @@ var can_gain_streak : bool
 var current_win_streak : int
 var current_lose_streak : int
 
+#
+
+enum BlockStartRoundClauseIds {
+	MAP_MANAGER__ENEMY_PATH_CURVE_DEFER = 1   # when the enemy path curve is prevented from chaning (due to other operations that must be completed first).
+	
+}
+
+var block_start_round_conditional_clauses : ConditionalClauses
+var last_calculated_block_start_of_round : bool
+
+
+#
+
+func _init():
+	block_start_round_conditional_clauses = ConditionalClauses.new()
+	block_start_round_conditional_clauses.connect("clause_inserted", self, "_on_block_start_round_conditional_clauses_updated", [], CONNECT_PERSIST)
+	block_start_round_conditional_clauses.connect("clause_removed", self, "_on_block_start_round_conditional_clauses_updated", [], CONNECT_PERSIST)
+	
+	_update_last_calculated_block_start_round()
+
+
+#
 
 func set_game_mode_to_normal():
 	set_game_mode(StoreOfGameMode.Mode.STANDARD_NORMAL)
@@ -241,5 +265,16 @@ func _replace_current_spawn_ins_to_second_half(new_faction_id : int):
 #		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionFaithful_EnemySpawnIns.gd").new()
 #	elif new_faction_id == EnemyConstants.EnemyFactions.SKIRMISHERS:
 #		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionSkirmisher_EnemySpawnIns.gd").new()
+
+
+
+###########################
+
+func _on_block_start_round_conditional_clauses_updated(arg_clause_id):
+	_update_last_calculated_block_start_round()
+
+func _update_last_calculated_block_start_round():
+	last_calculated_block_start_of_round = !block_start_round_conditional_clauses.is_passed
+	emit_signal("last_calculated_block_start_of_round_changed", last_calculated_block_start_of_round)
 
 

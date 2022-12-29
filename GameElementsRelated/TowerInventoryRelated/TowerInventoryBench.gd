@@ -82,6 +82,22 @@ func add_tower_to_scene(arg_tower_instance, is_tower_bought : bool = false):
 	tower_manager.add_tower(arg_tower_instance)
 
 
+
+func create_hidden_tower_and_add_to_scene(tower_id : int, is_tower_bought : bool = false) -> AbstractTower:
+	var tower_as_instance := create_hidden_tower(tower_id)
+	
+	add_tower_to_scene(tower_as_instance, is_tower_bought)
+	
+	return tower_as_instance
+
+func create_hidden_tower(tower_id : int) -> AbstractTower:
+	# if it says "called instance on nil", you probably did not give the GDScript in Towers's get_tower_scene function
+	var tower_as_instance : AbstractTower = Towers.get_tower_scene(tower_id).instance()
+	
+	tower_as_instance.is_tower_hidden = true
+	
+	return tower_as_instance
+
 #
 
 func _find_number_of_empty_slots() -> int:

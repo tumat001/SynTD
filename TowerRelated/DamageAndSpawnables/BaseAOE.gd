@@ -27,6 +27,9 @@ var aoe_texture : Texture setget set_texture_as_sf
 var aoe_sprite_frames : SpriteFrames setget set_aoe_sprite_frames
 var sprite_frames_play_only_once : bool = true setget set_sprite_frames_play_only_once
 
+var aoe_shape_to_set_on_ready
+
+
 var aoe_default_coll_shape : int = BaseAOEDefaultShapes.CIRCLE
 var shift_x : bool = false
 
@@ -101,10 +104,13 @@ func _ready():
 	
 	
 	if collision_shape.shape == null:
-		if aoe_default_coll_shape == BaseAOEDefaultShapes.CIRCLE:
+		if aoe_shape_to_set_on_ready != null:
+			set_coll_shape(aoe_shape_to_set_on_ready)
+		elif aoe_default_coll_shape == BaseAOEDefaultShapes.CIRCLE:
 			_set_default_circle_shape()
 		elif aoe_default_coll_shape == BaseAOEDefaultShapes.RECTANGLE:
 			_set_default_rectangle_shape()
+		
 	
 	if shift_x:
 		position.x += _get_first_anim_size().x
@@ -131,6 +137,7 @@ func _process(delta):
 			if _current_collision_duration < collision_duration:
 				if _enemies_inside_damage_cd_map.size() != 0:
 					#_current_damage_repeat_count += 1
+					
 					_attempt_damage_entities_inside(delta)
 		
 	else:
@@ -231,6 +238,7 @@ func _set_default_rectangle_shape():
 		coll_shape.extents.y = size_of_sprite.y / 2
 		
 		collision_shape.shape = coll_shape
+
 
 #
 

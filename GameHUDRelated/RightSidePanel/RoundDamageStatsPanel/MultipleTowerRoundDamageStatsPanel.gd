@@ -55,14 +55,14 @@ func _on_tower_placed_in_map(tower):
 
 func _on_round_start(curr_stageround):
 	for single_stat_panel in single_tower_stats_panel_container.get_children():
-		if !is_instance_valid(single_stat_panel._tower) or !single_stat_panel._tower.is_current_placable_in_map() or single_stat_panel._tower.is_queued_for_deletion():
+		if !is_instance_valid(single_stat_panel._tower) or (!single_stat_panel._tower.is_current_placable_in_map() and !single_stat_panel._tower.is_tower_hidden) or single_stat_panel._tower.is_queued_for_deletion(): #or single_stat_panel._tower.displayable_in_damage_stats_panel:
 			single_stat_panel.queue_free()
 	
 	yield(get_tree(), "idle_frame")
 	
-	for active_tower in tower_manager.get_all_in_map_towers():
-		if !active_tower.is_queued_for_deletion():
-			_attempt_create_single_stat_panel_for_tower(active_tower)
+	for tower in tower_manager.get_all_in_map_and_hidden_towers_except_in_queue_free():
+		if !tower.is_queued_for_deletion():
+			_attempt_create_single_stat_panel_for_tower(tower)
 	
 	update_timer.paused = false
 	_update_display_of_all_single_damage_stats()

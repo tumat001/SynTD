@@ -128,7 +128,7 @@ func _ready():
 	
 	# TEST HERE
 	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
-	map_id = StoreOfMaps.MapsIds.RIDGED
+	map_id = StoreOfMaps.MapsIds.PASSAGE
 	#
 	
 	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
@@ -247,6 +247,8 @@ func _ready():
 	#stage_round_manager.connect("round_ended", round_info_panel, "set_stageround")
 	stage_round_manager.enemy_manager = enemy_manager
 	stage_round_manager.gold_manager = gold_manager
+	
+	map_manager.stage_round_manager = stage_round_manager
 	
 	# health manager
 	#health_manager.round_info_panel = round_info_panel
@@ -416,7 +418,7 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.WYVERN,
 			Towers.ADEPT,
-			Towers.VACUUM,
+			Towers.CANNON,
 			Towers.SHACKLED,
 			Towers.DUNED,
 			Towers.SEEDER,
@@ -590,6 +592,9 @@ func _hide_current_control_from_whole_screen_gui():
 
 
 ####
+
+func get_top_left_coordinates_of_playable_map() -> Vector2:
+	return top_left_coord_of_map.global_position
 
 func get_middle_coordinates_of_playable_map() -> Vector2:
 	return Vector2(_get_average(top_left_coord_of_map.global_position.x, bottom_right_coord_of_map.global_position.x), _get_average(top_left_coord_of_map.global_position.y, bottom_right_coord_of_map.global_position.y))

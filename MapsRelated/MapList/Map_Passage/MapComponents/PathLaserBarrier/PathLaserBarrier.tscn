@@ -1,0 +1,60 @@
+[gd_scene load_steps=17 format=2]
+
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/MapComponents/PathLaserBarrier/PathLaserBarrier.gd" type="Script" id=1]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Starting_3.png" type="Texture" id=2]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Ending_04.png" type="Texture" id=3]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Ending_03.png" type="Texture" id=4]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Ending_01.png" type="Texture" id=5]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Ending_06.png" type="Texture" id=6]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Starting_6.png" type="Texture" id=7]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Starting_0_and_2.png" type="Texture" id=8]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Starting_1.png" type="Texture" id=9]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Starting_4.png" type="Texture" id=10]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Ending_08.png" type="Texture" id=11]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Ending_07.png" type="Texture" id=12]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Starting_5_and_7.png" type="Texture" id=13]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Ending_02.png" type="Texture" id=14]
+[ext_resource path="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathLaserBeam/MapPassage_LaserBeam_Ending_05.png" type="Texture" id=15]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 12 ) ],
+"loop": false,
+"name": "Ended",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ), ExtResource( 14 ), ExtResource( 4 ), ExtResource( 3 ), ExtResource( 15 ), ExtResource( 6 ), ExtResource( 12 ), ExtResource( 11 ) ],
+"loop": false,
+"name": "Ending",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 13 ) ],
+"loop": false,
+"name": "Started",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 8 ), ExtResource( 9 ), ExtResource( 8 ), ExtResource( 2 ), ExtResource( 10 ), ExtResource( 13 ), ExtResource( 7 ), ExtResource( 13 ) ],
+"loop": false,
+"name": "Starting",
+"speed": 5.0
+} ]
+
+[node name="PathLaserBarrier" type="Node"]
+script = ExtResource( 1 )
+
+[node name="LaserPoint01" type="Position2D" parent="."]
+
+[node name="LaserPoint02" type="Position2D" parent="."]
+
+[node name="Laser01" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+animation = "Starting"
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Laser02" type="AnimatedSprite" parent="."]
+frames = SubResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}

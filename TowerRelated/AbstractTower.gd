@@ -176,6 +176,7 @@ signal on_is_contributing_to_synergy_color_count_changed(new_val)
 #
 
 signal on_per_round_total_damage_changed(per_round_total_dmg)
+signal displayable_in_damage_stats_panel_changed(arg_val)
 
 # Clause related
 
@@ -196,6 +197,9 @@ signal on_heat_module_overheat_cooldown()
 signal heat_module_should_be_displayed_changed
 
 #
+
+# needs to be set in _init to work
+var is_tower_hidden : bool = false
 
 # the sprite shown indicating that the tower will be placed there
 var tower_highlight_sprite : Texture
@@ -270,7 +274,7 @@ var last_calculated_is_contributing_to_synergy : bool
 
 var collision_shape
 
-var current_power_level_used : int
+#var current_power_level_used : int  # old var used for old energy effect
 
 var all_attack_modules : Array = []
 var main_attack_module : AbstractAttackModule
@@ -485,7 +489,8 @@ var in_round_pure_damage_dealt : float
 var in_round_elemental_damage_dealt : float
 var in_round_physical_damage_dealt : float
 
-#var displayable_in_damage_stats_panel : bool = true #
+var displayable_in_damage_stats_panel : bool = true setget set_displayable_in_damage_stats_panel
+
 
 # compatibility stuffs
 var distance_to_exit : float = 0 # this is here for Targeting purposes
@@ -637,7 +642,11 @@ func _init():
 func _ready():
 	$IngredientDeclinePic.visible = false
 	cannot_apply_pic.visible = false
+	
 	_end_drag(true)
+	
+	if is_tower_hidden:
+		visible = false
 	
 	connect("on_current_health_changed", life_bar, "set_current_health_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 	connect("on_max_health_changed", life_bar, "set_max_value", [], CONNECT_PERSIST | CONNECT_DEFERRED)
@@ -2824,18 +2833,20 @@ func _start_drag():
 
 
 func _end_drag(arg_is_from_ready : bool = false):
-	z_index = ZIndexStore.TOWERS
-	if !is_queued_for_deletion():
-		var cannot_drop_to_placable = !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self)
-		#var intent_placable = hovering_over_placable
-		var intent_placable = _get_placable_to_use_for_move(arg_is_from_ready)
-		var move_success = transfer_to_placable(intent_placable, false, cannot_drop_to_placable)
+	if !is_tower_hidden:
 		
-		emit_signal("on_attempt_drop_tower_on_placable", self, intent_placable, move_success)
-	
-	erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
-	emit_signal("tower_dropped_from_dragged", self)
-	
+		z_index = ZIndexStore.TOWERS
+		if !is_queued_for_deletion():
+			var cannot_drop_to_placable = !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self)
+			#var intent_placable = hovering_over_placable
+			var intent_placable = _get_placable_to_use_for_move(arg_is_from_ready)
+			var move_success = transfer_to_placable(intent_placable, false, cannot_drop_to_placable)
+			
+			emit_signal("on_attempt_drop_tower_on_placable", self, intent_placable, move_success)
+		
+		erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
+		emit_signal("tower_dropped_from_dragged", self)
+
 
 func _get_placable_to_use_for_move(arg_is_from_ready : bool = false) -> BaseAreaTowerPlacable:
 	var drag_mode = game_elements.game_settings_manager.tower_drag_mode
@@ -3454,6 +3465,12 @@ func _on_tower_any_post_mitigation_damage_dealt(damage_instance_report, _killed,
 	
 	
 	emit_signal("on_per_round_total_damage_changed", in_round_total_damage_dealt)
+
+
+func set_displayable_in_damage_stats_panel(arg_val):
+	displayable_in_damage_stats_panel = arg_val
+	
+	emit_signal("displayable_in_damage_stats_panel_changed", displayable_in_damage_stats_panel)
 
 
 # Tower Infobar related

@@ -1,0 +1,35 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/PathToggleButton_Border_Activatable.png-6ec22ca4fa320d07d338196c512aa2a8.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://MapsRelated/MapList/Map_Passage/Assets_MapComponents/PathButton/PathToggleButton_Border_Activatable.png"
+dest_files=[ "res://.import/PathToggleButton_Border_Activatable.png-6ec22ca4fa320d07d338196c512aa2a8.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+process/normal_map_invert_y=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

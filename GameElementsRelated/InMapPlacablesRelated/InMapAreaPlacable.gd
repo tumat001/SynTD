@@ -33,3 +33,13 @@ func set_hidden(hidden : bool):
 
 func get_placable_type_name() -> String:
 	return "InMapAreaPlacable"
+
+
+############
+
+func configure_placable_to_copy_own_properties(arg_placable):
+	arg_placable.global_position = global_position
+	arg_placable.is_hidden = is_hidden
+	arg_placable.layer_on_terrain = layer_on_terrain
+
+

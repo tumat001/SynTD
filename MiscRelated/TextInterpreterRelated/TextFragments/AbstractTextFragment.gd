@@ -46,6 +46,7 @@ enum STAT_TYPE {
 	SYNERGY_COMPOSITE = 1025
 	LEVEL_UP_GREEN = 1026 # level up arrow, but color green
 	RELIC = 1027
+	ENEMY = 1028
 	
 	#
 	COLOR_VIOLET = 1100
@@ -74,6 +75,7 @@ const type_to_for_light_color_map : Dictionary = {
 	STAT_TYPE.DAMAGE_SCALE_AMP : "#C00205",
 	
 	STAT_TYPE.ABILITY : "#022897",
+	STAT_TYPE.BURN : "#4FAA01",
 	STAT_TYPE.EXECUTE : "#6F0103",
 	STAT_TYPE.GOLD : "#715D21",
 	STAT_TYPE.KNOCK_BACK : "#821719",
@@ -101,6 +103,7 @@ const type_to_for_light_color_map : Dictionary = {
 	
 	STAT_TYPE.LEVEL_UP_GREEN : "#264C01",
 	STAT_TYPE.RELIC : "#0A4701",
+	STAT_TYPE.ENEMY : "#4B1600",
 	
 	STAT_TYPE.COLOR_VIOLET : "#4F0051",
 	STAT_TYPE.COLOR_BLUE : "#011F74",
@@ -128,6 +131,7 @@ const type_to_for_dark_color_map : Dictionary = {
 	STAT_TYPE.DAMAGE_SCALE_AMP : "#FD4E51",
 	
 	STAT_TYPE.ABILITY : "#C7D6FE",
+	STAT_TYPE.BURN : "#FEA572",
 	STAT_TYPE.EXECUTE : "#FA9295",
 	STAT_TYPE.GOLD : "#ECA242",
 	STAT_TYPE.KNOCK_BACK : "#F09294",
@@ -155,6 +159,7 @@ const type_to_for_dark_color_map : Dictionary = {
 	
 	STAT_TYPE.LEVEL_UP_GREEN : "#64FD4D",
 	STAT_TYPE.RELIC : "#9AFE8B",
+	STAT_TYPE.ENEMY : "#FFB56B",
 	
 	STAT_TYPE.COLOR_VIOLET : "#F09AFE",
 	STAT_TYPE.COLOR_BLUE : "#9AB4FE",
@@ -180,6 +185,7 @@ const type_to_name_map : Dictionary = {
 	STAT_TYPE.DAMAGE_SCALE_AMP : "more damage",
 	
 	STAT_TYPE.ABILITY : "ability",
+	STAT_TYPE.BURN : "burn",
 	STAT_TYPE.EXECUTE : "execute",
 	STAT_TYPE.GOLD : "gold",
 	STAT_TYPE.KNOCK_BACK : "knock back",
@@ -207,6 +213,7 @@ const type_to_name_map : Dictionary = {
 	
 	STAT_TYPE.LEVEL_UP_GREEN : "level up",
 	STAT_TYPE.RELIC : "relic",
+	STAT_TYPE.ENEMY : "enemy",
 	
 	STAT_TYPE.COLOR_VIOLET : "violet",
 	STAT_TYPE.COLOR_BLUE : "blue",
@@ -231,6 +238,7 @@ const type_to_img_map : Dictionary = {
 	STAT_TYPE.DAMAGE_SCALE_AMP : "res://GameInfoRelated/TowerStatsIcons/StatIcon_BonusDamageScale.png",
 	
 	STAT_TYPE.ABILITY : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Ability.png",
+	STAT_TYPE.BURN : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Burn.png",
 	STAT_TYPE.EXECUTE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Execute.png",
 	STAT_TYPE.GOLD : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Gold.png",
 	STAT_TYPE.KNOCK_BACK : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Knockback.png",
@@ -259,6 +267,7 @@ const type_to_img_map : Dictionary = {
 	
 	STAT_TYPE.LEVEL_UP_GREEN : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_LevelUp_Green.png",
 	STAT_TYPE.RELIC : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Relic.png",
+	STAT_TYPE.ENEMY : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Enemy.png",
 	
 	STAT_TYPE.COLOR_VIOLET : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Violet.png",
 	STAT_TYPE.COLOR_BLUE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Blue.png",
