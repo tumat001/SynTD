@@ -8,10 +8,10 @@ signal yel_side_fire_shell(arg_enemy, arg_shell_fire_id, arg_is_refire)
 signal on_round_end()
 
 
-const vio_side_ing_upgrade_amount__tier_4 : float = 0.10
-const vio_side_ing_upgrade_amount__tier_3 : float = 0.15
-const vio_side_ing_upgrade_amount__tier_2 : float = 0.30
-const vio_side_ing_upgrade_amount__tier_1 : float = 0.45
+const vio_side_ing_upgrade_amount__tier_4 : float = 0.15
+const vio_side_ing_upgrade_amount__tier_3 : float = 0.20
+const vio_side_ing_upgrade_amount__tier_2 : float = 0.50
+const vio_side_ing_upgrade_amount__tier_1 : float = 0.65
 var current_vio_side_ing_upgrade_amount : float
 
 const yel_side_shell_cooldown : float = 15.0

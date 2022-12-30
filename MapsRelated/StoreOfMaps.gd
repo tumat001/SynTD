@@ -20,10 +20,11 @@ enum MapsIds {
 }
 
 const MapIdsAvailableFromMenu : Array = [
-	#MapsIds.GLADE,
+	#MapsIds.GLADE, # completely remove this soon
 	MapsIds.RIVERSIDE,
+	
 	MapsIds.RIDGED,
-	#MapsIds.MESA  #todo enable again if FOV algo is improved/changed.
+	#MapsIds.MESA,  #todo enable again if FOV algo is improved/changed.
 	MapsIds.PASSAGE,
 ]
 
@@ -58,6 +59,7 @@ static func get_map_type_information_from_id(id : int):
 		
 		info.map_name = "Glade"
 		info.map_display_texture = Map_Glade_PreviewImage
+		info.map_tier = 1
 		#info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
 		return info
 		
@@ -66,6 +68,7 @@ static func get_map_type_information_from_id(id : int):
 		info.map_name = "Riverside"
 		info.map_display_texture = preload("res://MapsRelated/MapList/Map_Riverside/Map_Riverside_PreviewImage.png")
 		info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
+		info.map_tier = 1
 		return info
 		
 	elif id == MapsIds.RIDGED:
@@ -73,6 +76,7 @@ static func get_map_type_information_from_id(id : int):
 		info.map_name = "Ridged"
 		info.map_display_texture = preload("res://MapsRelated/MapList/Map_Ridged/Map_Ridged_ImagePreview.png")
 		info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
+		info.map_tier = 2
 		return info
 		
 	elif id == MapsIds.MESA:
@@ -80,6 +84,7 @@ static func get_map_type_information_from_id(id : int):
 		info.map_name = "Mesa"
 		info.map_display_texture = Map_WIP_PreviewImage #todo
 		info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
+		info.map_tier = 3
 		return info
 		
 	elif id == MapsIds.PASSAGE:
@@ -87,6 +92,7 @@ static func get_map_type_information_from_id(id : int):
 		info.map_name = "Passage"
 		info.map_display_texture = preload("res://MapsRelated/MapList/Map_Passage/Map_Passage_PreviewImage.png")
 		info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
+		info.map_tier = 3
 		return info
 		
 	

@@ -609,16 +609,20 @@ func get_map_area_09__from_glade():
 	return get_map_area_with_name__from_glade("InMapAreaPlacable9")
 
 func get_map_area_04__from_glade():
-	return get_map_area_with_name__from_glade("InMapAreaPlacable4")
+	return get_map_area_with_name__from_glade("InMapAreaPlacable2")
 
 func get_map_area_06__from_glade():
 	return get_map_area_with_name__from_glade("InMapAreaPlacable6")
 
 func get_map_area_10__from_glade():
-	return get_map_area_with_name__from_glade("InMapAreaPlacable10")
+	return get_map_area_with_name__from_glade("InMapAreaPlacable")
 
 func get_map_area_11__from_glade():
-	return get_map_area_with_name__from_glade("InMapAreaPlacable11")
+	return get_map_area_with_name__from_glade("InMapAreaPlacable8")
+
+func get_map_area_14__from_glade():
+	return get_map_area_with_name__from_glade("InMapAreaPlacable14")
+
 
 func get_map_area__for_defaults__from_glade():
 	var bucket = []
@@ -629,6 +633,7 @@ func get_map_area__for_defaults__from_glade():
 	bucket.append(get_map_area_06__from_glade())
 	bucket.append(get_map_area_10__from_glade())
 	bucket.append(get_map_area_11__from_glade())
+	bucket.append(get_map_area_14__from_glade())
 	
 	return bucket
 

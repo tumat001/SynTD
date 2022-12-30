@@ -20,8 +20,8 @@ const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalC
 
 #
 
-const initial_path_water_on_state : bool = true
-const initial_path_fire_on_state : bool = false
+const initial_path_water_on_state : bool = false
+const initial_path_fire_on_state : bool = true
 
 const enemy_path_id__edge_to__edge = 0
 const enemy_path_id__edge_to__middle = 1
@@ -32,7 +32,7 @@ const enemy_path_id__middle_to__middle = 3
 
 const fire_percent_health_dmg_per_sec : float = 3.0
 const fire_percent_type : int = PercentType.MAX  # if changing this, change description as well
-const fire_dmg_type : int = DamageType.ELEMENTAL
+const fire_dmg_type : int = DamageType.PURE
 const fire_dmg_minimum : float = 0.25
 
 const water_slow_amount_percent : float = -40.0
@@ -239,7 +239,7 @@ func _initialize_path_descriptions__and_buttons():
 	interpreter_for_flat_on_hit.display_body = false
 	
 	var ins_for_flat_on_hit = []
-	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "max health", fire_percent_health_dmg_per_sec, true))
+	ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, fire_dmg_type, "max health", fire_percent_health_dmg_per_sec, true))
 	
 	interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
 	

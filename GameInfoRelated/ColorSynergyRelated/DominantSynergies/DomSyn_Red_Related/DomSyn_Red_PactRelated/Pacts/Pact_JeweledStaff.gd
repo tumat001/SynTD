@@ -35,7 +35,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	var plain_fragment__total_worth_in_gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "total worth in gold")
 	
 	good_descriptions = [
-		["Towers gain ability based on your |0|.", [plain_fragment__total_worth_in_gold]],
+		["Towers gain ability potency based on your |0|.", [plain_fragment__total_worth_in_gold]],
 		""
 	]
 	

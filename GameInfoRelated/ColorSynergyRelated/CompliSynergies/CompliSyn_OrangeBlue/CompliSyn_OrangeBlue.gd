@@ -104,7 +104,7 @@ func _attempt_add_effect_to_tower(tower : AbstractTower):
 			expl_module_adder.explosion_scale = expl_scale_tier_4
 			expl_module_adder.base_unit_time_per_explosion = expl_unit_time_tier_4
 		
-		expl_module_adder.explosion_base_and_on_hit_damage_scale = explosion_on_hit_damage_scale
+		expl_module_adder.explosion_on_hit_damage_scale = explosion_on_hit_damage_scale
 		
 		tower.add_tower_effect(expl_module_adder)
 		#tower.add_tower_effect(tower_ap_effect._shallow_duplicate())

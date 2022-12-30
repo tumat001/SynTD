@@ -65,6 +65,10 @@ func _on_game_elements_before_game_start():
 	var plain_fragment__Flameburst = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Flameburst")
 	var plain_fragment__combinations = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combinations")
 	
+	var plain_fragment__tier_1 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_01, "tier 1")
+	var plain_fragment__tier_2 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER_TIER_02, "tier 2")
+	var plain_fragment__combinable = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combinable")
+	
 	
 	transcript_to_progress_mode = {
 		"Welcome to the chapter 4 of the tutorial. Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
@@ -96,6 +100,11 @@ func _on_game_elements_before_game_start():
 		["Future towers bought benefit from exising |0|.", [plain_fragment__combinations]] : ProgressMode.CONTINUE,
 		
 		#19
+		"There is one more rule about combinations." : ProgressMode.CONTINUE,
+		["By default, only |0| and |1| towers are |2|.", [plain_fragment__tier_1, plain_fragment__tier_2, plain_fragment__combinable]] : ProgressMode.CONTINUE,
+		"When the time comes, you are able to break that limitation, if you want to." : ProgressMode.CONTINUE,
+		
+		#22
 		["Clicking this icon shows you all of your |0|. It also shows a description of combinations, and what combinations apply to the selected tier.", [plain_fragment__combinations]] : ProgressMode.CONTINUE,
 		"..." : ProgressMode.CONTINUE,
 		"While finding %s of the same tower may be challenging and costly, it has its own upsides." % str(_same_towers_needed_for_combi): ProgressMode.CONTINUE,
@@ -182,7 +191,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 	elif arg_index == 11:
 		display_white_circle_at_node(get_tower_icon_with_tower_id__on_combination_top_panel(Towers.STRIKER), 12)
 		
-	elif arg_index == 19:
+	elif arg_index == 22:
 		display_white_circle_at_node(get_more_combination_info__on_combi_top_panel(), 20)
 
 

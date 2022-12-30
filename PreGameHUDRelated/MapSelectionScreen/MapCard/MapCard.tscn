@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/MapCard/MapCard.gd" type="Script" id=1]
 [ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/Assets/GrayLine_7x7.png" type="Texture" id=2]
 [ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/Assets/DarkLine_7x7.png" type="Texture" id=3]
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=4]
 [ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWithTooltip.tscn" type="PackedScene" id=5]
+[ext_resource path="res://PreGameHUDRelated/MapSelectionScreen/Assets/MapCardAssets/MapCard_OuterBorder_GrayLine_3x3.png" type="Texture" id=6]
 
 [sub_resource type="DynamicFont" id=1]
 font_data = ExtResource( 4 )
@@ -14,72 +15,118 @@ margin_right = 180.0
 margin_bottom = 111.0
 rect_min_size = Vector2( 180, 111 )
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
-[node name="MapImageContainer" type="MarginContainer" parent="."]
+[node name="OuterLeftBorder" type="TextureRect" parent="."]
+margin_right = 3.0
+margin_bottom = 111.0
+size_flags_horizontal = 2
+texture = ExtResource( 6 )
+stretch_mode = 2
+
+[node name="OuterRightBorder" type="TextureRect" parent="."]
+margin_left = 177.0
 margin_right = 180.0
 margin_bottom = 111.0
+size_flags_horizontal = 10
+texture = ExtResource( 6 )
+stretch_mode = 2
+
+[node name="OuterTopBorder" type="TextureRect" parent="."]
+margin_right = 180.0
+margin_bottom = 3.0
+size_flags_vertical = 2
+texture = ExtResource( 6 )
+stretch_mode = 2
+
+[node name="OuterBottomBorder" type="TextureRect" parent="."]
+margin_top = 108.0
+margin_right = 180.0
+margin_bottom = 111.0
+size_flags_vertical = 10
+texture = ExtResource( 6 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 180.0
+margin_bottom = 111.0
+mouse_filter = 2
+custom_constants/margin_right = 3
+custom_constants/margin_top = 3
+custom_constants/margin_left = 3
+custom_constants/margin_bottom = 3
+
+[node name="MapImageContainer" type="MarginContainer" parent="MarginContainer"]
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 177.0
+margin_bottom = 108.0
 custom_constants/margin_right = 7
 custom_constants/margin_top = 7
 custom_constants/margin_left = 7
 custom_constants/margin_bottom = 7
 
-[node name="MapImage" type="TextureRect" parent="MapImageContainer"]
+[node name="MapImage" type="TextureRect" parent="MarginContainer/MapImageContainer"]
 margin_left = 7.0
 margin_top = 7.0
-margin_right = 173.0
-margin_bottom = 104.0
+margin_right = 167.0
+margin_bottom = 98.0
 
-[node name="LeftBorder" type="TextureRect" parent="."]
-margin_right = 7.0
-margin_bottom = 111.0
+[node name="LeftBorder" type="TextureRect" parent="MarginContainer"]
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 10.0
+margin_bottom = 108.0
 size_flags_horizontal = 2
 texture = ExtResource( 3 )
 stretch_mode = 2
 
-[node name="RightBorder" type="TextureRect" parent="."]
-margin_left = 173.0
-margin_right = 180.0
-margin_bottom = 111.0
+[node name="RightBorder" type="TextureRect" parent="MarginContainer"]
+margin_left = 170.0
+margin_top = 3.0
+margin_right = 177.0
+margin_bottom = 108.0
 size_flags_horizontal = 10
 texture = ExtResource( 3 )
 stretch_mode = 2
 
-[node name="TopBorder" type="TextureRect" parent="."]
-margin_right = 180.0
-margin_bottom = 7.0
+[node name="TopBorder" type="TextureRect" parent="MarginContainer"]
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 177.0
+margin_bottom = 10.0
 size_flags_vertical = 2
 texture = ExtResource( 3 )
 stretch_mode = 2
 
-[node name="BottomBorder" type="TextureRect" parent="."]
-margin_top = 104.0
-margin_right = 180.0
-margin_bottom = 111.0
+[node name="BottomBorder" type="TextureRect" parent="MarginContainer"]
+margin_left = 3.0
+margin_top = 101.0
+margin_right = 177.0
+margin_bottom = 108.0
 size_flags_vertical = 10
 texture = ExtResource( 3 )
 stretch_mode = 2
 
-[node name="ContentContainer" type="MarginContainer" parent="."]
-margin_right = 180.0
-margin_bottom = 111.0
+[node name="ContentContainer" type="MarginContainer" parent="MarginContainer"]
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 177.0
+margin_bottom = 108.0
 custom_constants/margin_right = 7
 custom_constants/margin_top = 7
 custom_constants/margin_left = 7
 custom_constants/margin_bottom = 7
 
-[node name="NameContainer" type="MarginContainer" parent="ContentContainer"]
+[node name="NameContainer" type="MarginContainer" parent="MarginContainer/ContentContainer"]
 margin_left = 7.0
-margin_top = 76.0
+margin_top = 70.0
 margin_right = 99.0
-margin_bottom = 104.0
+margin_bottom = 98.0
 rect_min_size = Vector2( 0, 24 )
 size_flags_horizontal = 2
 size_flags_vertical = 10
 
-[node name="BodyBackground" type="TextureRect" parent="ContentContainer/NameContainer"]
+[node name="BodyBackground" type="TextureRect" parent="MarginContainer/ContentContainer/NameContainer"]
 margin_right = 92.0
 margin_bottom = 28.0
 size_flags_horizontal = 3
@@ -87,7 +134,7 @@ size_flags_vertical = 3
 texture = ExtResource( 2 )
 stretch_mode = 2
 
-[node name="TopBorder" type="TextureRect" parent="ContentContainer/NameContainer"]
+[node name="TopBorder" type="TextureRect" parent="MarginContainer/ContentContainer/NameContainer"]
 margin_right = 92.0
 margin_bottom = 7.0
 size_flags_horizontal = 3
@@ -95,7 +142,7 @@ size_flags_vertical = 2
 texture = ExtResource( 3 )
 stretch_mode = 2
 
-[node name="RightBorder" type="TextureRect" parent="ContentContainer/NameContainer"]
+[node name="RightBorder" type="TextureRect" parent="MarginContainer/ContentContainer/NameContainer"]
 margin_left = 85.0
 margin_right = 92.0
 margin_bottom = 28.0
@@ -104,7 +151,7 @@ size_flags_vertical = 3
 texture = ExtResource( 3 )
 stretch_mode = 2
 
-[node name="NameContainer" type="MarginContainer" parent="ContentContainer/NameContainer"]
+[node name="NameContainer" type="MarginContainer" parent="MarginContainer/ContentContainer/NameContainer"]
 margin_right = 92.0
 margin_bottom = 28.0
 custom_constants/margin_right = 9
@@ -112,7 +159,7 @@ custom_constants/margin_top = 9
 custom_constants/margin_left = 2
 custom_constants/margin_bottom = 2
 
-[node name="MapNameLabel" type="Label" parent="ContentContainer/NameContainer/NameContainer"]
+[node name="MapNameLabel" type="Label" parent="MarginContainer/ContentContainer/NameContainer/NameContainer"]
 margin_left = 2.0
 margin_top = 9.0
 margin_right = 83.0
@@ -123,3 +170,5 @@ text = "Name Text"
 [node name="Button" parent="." instance=ExtResource( 5 )]
 margin_right = 180.0
 margin_bottom = 111.0
+about_button_index_trigger = 2
+define_tooltip_construction_in_button = true

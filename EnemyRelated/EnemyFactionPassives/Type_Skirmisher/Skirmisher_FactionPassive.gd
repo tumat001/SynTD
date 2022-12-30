@@ -254,9 +254,8 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 		_initialize_artillery_arc_bullet_attk_module()
 		_initialize_artillery_trail_for_node_component()
 		
-		#todo
-		#_initialize_and_generate_through_placable_data__threaded()
-		_initialize_and_generate_through_placable_data([])
+		_initialize_and_generate_through_placable_data__threaded()
+		#_initialize_and_generate_through_placable_data([])
 		
 		_initialize_danseur_bullet_attk_module()
 		

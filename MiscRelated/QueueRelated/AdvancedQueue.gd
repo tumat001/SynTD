@@ -145,7 +145,7 @@ func queue_reservation(arg_reservation : Reservation):
 
 
 func _remove_current_reservation_via_force(arg_incoming_res : Reservation):
-	if _current_reservation.is_obj_have_method(_current_reservation.on_removed_method):
+	if _current_reservation != null and _current_reservation.is_obj_have_method(_current_reservation.on_removed_method):
 		_current_reservation.call_method_on_obj(_current_reservation.on_removed_method)
 	emit_signal("reservation_removed", _current_reservation, arg_incoming_res)
 	emit_signal("reservation_removed_or_deferred", _current_reservation)

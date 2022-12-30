@@ -25,7 +25,7 @@ func set_game_mode_id_of_play_button(arg_mode_id : int):
 
 func _on_PlayButton_on_button_released_with_button_left():
 	if mode_id != -1:
-		CommsForBetweenScenes.map_id = StoreOfMaps.MapsIds.GLADE
+		CommsForBetweenScenes.map_id = StoreOfMaps.MapsIds.RIVERSIDE
 		CommsForBetweenScenes.game_mode_id = mode_id
 		
 		CommsForBetweenScenes.goto_game_elements(pre_game_screen)
