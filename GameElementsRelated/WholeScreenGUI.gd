@@ -123,7 +123,8 @@ func _on_queue_no_reservations_left():
 	visible = false
 
 func _on_queue_reservation_removed_or_deferred(arg_res : AdvancedQueue.Reservation):
-	current_showing_control.visible = false
+	if is_instance_valid(current_showing_control):
+		current_showing_control.visible = false
 	current_showing_control = null
 	currently_escapable_from_game_elements = true
 	

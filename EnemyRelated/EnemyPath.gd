@@ -7,6 +7,7 @@ signal on_enemy_death(enemy)
 signal on_enemy_reached_end(enemy)
 
 signal is_used_and_active_changed(arg_val)
+signal is_used_for_natural_spawning_changed(arg_val)
 
 signal curve_changed(arg_new_curve, arg_curve_id)
 signal before_curve_changed_from_deferred_set(arg_new_curve, arg_curve_id)
@@ -22,7 +23,8 @@ enum MarkerIds {
 
 
 var path_length : float
-var is_used_and_active : bool = true setget set_is_used_and_active# if true, then this signifies that enemies will use this path during the round.
+var is_used_and_active : bool = true setget set_is_used_and_active# if true, then this signifies that enemies can/will use this path during the round. Can be true even if "is_used_for_natural_spawning" is false, when spawning enemies in path manually. Set this to false if path should be totally unusable (for the round)
+var is_used_for_natural_spawning : bool = true setget set_is_used_for_natural_spawning # if true, then this signifies that enemies found in the Ins can/will spawn here. Make this false if enemies should not be spawned here by EnemyManager.
 
 var marker_id_to_value_map : Dictionary = {}
 
@@ -113,6 +115,9 @@ func set_is_used_and_active(arg_val):
 	is_used_and_active = arg_val
 	emit_signal("is_used_and_active_changed", is_used_and_active)
 
+func set_is_used_for_natural_spawning(arg_val):
+	is_used_for_natural_spawning = arg_val
+	emit_signal("is_used_for_natural_spawning_changed", is_used_for_natural_spawning)
 
 #################
 

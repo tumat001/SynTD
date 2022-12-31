@@ -75,17 +75,18 @@ func get_instructions_for_stageround(uuid : String):
 
 # TEST
 
+#
 #func _get_instructions_for_0_1():
 #	return [
-#		MultipleEnemySpawnInstruction.new(0, 12, 1, EnemyConstants.Enemies.SACRIFICER),
+#		MultipleEnemySpawnInstruction.new(0, 1, 1, EnemyConstants.Enemies.CROSS_BEARER),
 #	]
-
+#
 #func _get_instructions_for_0_2():
 #	return [
 #		MultipleEnemySpawnInstruction.new(0, 4, 8, EnemyConstants.Enemies.SEER),
 #		MultipleEnemySpawnInstruction.new(1, 4, 8, EnemyConstants.Enemies.PRIEST),
 #	]
-#
+
 #func _get_instructions_for_0_3():
 #	return [
 #		MultipleEnemySpawnInstruction.new(0, 4, 6, EnemyConstants.Enemies.BELIEVER),

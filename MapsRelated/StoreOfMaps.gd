@@ -17,14 +17,19 @@ enum MapsIds {
 	RIDGED = 1,
 	MESA = 2,
 	PASSAGE = 3,
+	ENCHANT = 4,
 }
 
+# Maps appear at the order specified here. First in array is first in list.
 const MapIdsAvailableFromMenu : Array = [
 	#MapsIds.GLADE, # completely remove this soon
 	MapsIds.RIVERSIDE,
 	
 	MapsIds.RIDGED,
 	#MapsIds.MESA,  #todo enable again if FOV algo is improved/changed.
+	
+	MapsIds.ENCHANT,
+	
 	MapsIds.PASSAGE,
 ]
 
@@ -91,6 +96,14 @@ static func get_map_type_information_from_id(id : int):
 		
 		info.map_name = "Passage"
 		info.map_display_texture = preload("res://MapsRelated/MapList/Map_Passage/Map_Passage_PreviewImage.png")
+		info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
+		info.map_tier = 4
+		return info
+		
+	elif id == MapsIds.ENCHANT:
+		
+		info.map_name = "Enchant"
+		info.map_display_texture = Map_WIP_PreviewImage
 		info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
 		info.map_tier = 3
 		return info

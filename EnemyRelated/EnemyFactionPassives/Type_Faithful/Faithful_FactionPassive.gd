@@ -54,6 +54,7 @@ var _is_deity_round : bool
 
 var _current_cross
 var _current_cross_unit_offset : float
+var _current_cross_enemy_path
 
 #
 
@@ -192,10 +193,10 @@ func _set_up_deity_for_round(round_id):
 
 
 func _deity_spawn_timer_timeout(round_id):
-	if game_elements.stage_round_manager.round_started and game_elements.stage_round_manager.current_stageround.id == round_id:
+	if game_elements.stage_round_manager.round_started and game_elements.stage_round_manager.current_stageround.id == round_id and is_instance_valid(_current_cross_enemy_path):
 		game_elements.enemy_manager.connect("before_enemy_stats_are_set", self, "_on_deity_before_stats_initialized", [round_id], CONNECT_ONESHOT)
 		game_elements.enemy_manager.connect("enemy_spawned", self, "_on_deity_spawned", [], CONNECT_ONESHOT)
-		game_elements.enemy_manager.spawn_enemy(EnemyConstants.Enemies.DEITY)
+		game_elements.enemy_manager.spawn_enemy(EnemyConstants.Enemies.DEITY, _current_cross_enemy_path)
 
 
 # before deity stats initialized and before added to scene
@@ -259,12 +260,20 @@ func _on_round_end(curr_stageround):
 		if is_instance_valid(_current_cross):
 			_destroy_current_cross()
 		
-		game_elements.enemy_manager.randomize_current_strength_value()
+		game_elements.enemy_manager.randomize__current_strength_value()
 
 func _destroy_current_cross():
 	_current_cross.queue_free()
 	
 	_current_cross_unit_offset = 0
+	
+	if is_instance_valid(_current_cross_enemy_path):
+		if !_current_cross_enemy_path.is_connected("curve_changed", self, "_on_current_cross_path_curve_changed"):
+			_current_cross_enemy_path.disconnect("curve_changed", self, "_on_current_cross_path_curve_changed")
+		
+		if !_current_cross_enemy_path.is_connected("is_used_and_active_changed", self, "_on_current_cross_path_is_used_and_active_changed"):
+			_current_cross_enemy_path.disconnect("is_used_and_active_changed", self, "_on_current_cross_path_is_used_and_active_changed")
+		
 
 #
 
@@ -277,8 +286,15 @@ func _on_cross_bearer_dies(cross_bearer):
 			_current_cross.position = cross_bearer.global_position
 		
 		_current_cross_unit_offset = cross_bearer.unit_offset
-
-
+		
+		_current_cross_enemy_path = cross_bearer.current_path
+		
+		if !_current_cross_enemy_path.is_connected("curve_changed", self, "_on_current_cross_path_curve_changed"):
+			_current_cross_enemy_path.connect("curve_changed", self, "_on_current_cross_path_curve_changed", [], CONNECT_PERSIST)
+		
+		if !_current_cross_enemy_path.is_connected("is_used_and_active_changed", self, "_on_current_cross_path_is_used_and_active_changed"):
+			_current_cross_enemy_path.connect("is_used_and_active_changed", self, "_on_current_cross_path_is_used_and_active_changed", [], CONNECT_PERSIST)
+		
 
 func _get_current_cross_or_construct():
 	if is_instance_valid(_current_cross):
@@ -289,6 +305,26 @@ func _get_current_cross_or_construct():
 		CommsForBetweenScenes.deferred_ge_add_child_to_other_node_hoster(_current_cross)
 		
 		return _current_cross
+
+
+
+func _on_current_cross_path_curve_changed(arg_curve : Curve2D, arg_curve_id):
+	_update_cross_pos(arg_curve)
+
+func _update_cross_pos(arg_curve):
+	var rel_pos = arg_curve.interpolate_baked(_current_cross_unit_offset * arg_curve.get_baked_length())
+	var global_pos = rel_pos + _current_cross_enemy_path.global_position
+	
+	_current_cross.global_position = global_pos
+
+func _on_current_cross_path_is_used_and_active_changed(arg_val):
+	if !arg_val:
+		var new_path = game_elements.map_manager.base_map.get_random_enemy_path__with_params(game_elements.map_manager.BaseMap.EnemyPathState.USED_AND_ACTIVE)
+		
+		if is_instance_valid(new_path):
+			_current_cross_enemy_path = new_path
+			
+			_update_cross_pos(new_path.curve)
 
 
 

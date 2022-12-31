@@ -82,8 +82,8 @@ func _init():
 	first_half_faction_id_pool.append(EnemyFactions.BASIC)
 	
 	#second_half_faction_id_pool.append(EnemyFactions.EXPERT)
-	#second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
-	second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
+	second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
+	#second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
 
 
 static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
@@ -244,14 +244,14 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		
 	elif enemy_id == Enemies.PROXIMITY:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 38 #35
+		info.base_health = 36.5
 		info.base_movement_speed = 45
 		info.base_toughness = 3
 		info.enemy_type = info.EnemyType.NORMAL
 		
 	elif enemy_id == Enemies.BLESSER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 28 #26
+		info.base_health = 27
 		info.base_movement_speed = 40
 		info.enemy_type = info.EnemyType.NORMAL
 		
