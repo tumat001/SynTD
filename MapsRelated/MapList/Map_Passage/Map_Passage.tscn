@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://MapsRelated/BaseMap.tscn" type="PackedScene" id=1]
 [ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.tscn" type="PackedScene" id=2]
@@ -8,6 +8,9 @@
 [ext_resource path="res://MapsRelated/MapList/Map_Passage/MapComponents/PathDescriptionPanel/MapPassage_PathDescriptionPanel.tscn" type="PackedScene" id=6]
 [ext_resource path="res://EnemyRelated/EnemyPath.tscn" type="PackedScene" id=7]
 [ext_resource path="res://MapsRelated/MapList/Map_Passage/MapComponents/PathLaserBarrier/PathLaserBarrier.tscn" type="PackedScene" id=8]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Glowing.png" type="Texture" id=9]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Hidden.png" type="Texture" id=10]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Normal.png" type="Texture" id=11]
 
 [node name="Map_Passage" instance=ExtResource( 1 )]
 script = ExtResource( 3 )
@@ -97,21 +100,39 @@ position = Vector2( 192, 174 )
 
 [node name="Placable01" parent="InMapPlacables" index="0" instance=ExtResource( 2 )]
 position = Vector2( 130, 267 )
+current_glowing_texture = ExtResource( 9 )
+current_normal_texture = ExtResource( 11 )
+current_hidden_texture = ExtResource( 10 )
 
 [node name="Placable02" parent="InMapPlacables" index="1" instance=ExtResource( 2 )]
 position = Vector2( 427, 288 )
+current_glowing_texture = ExtResource( 9 )
+current_normal_texture = ExtResource( 11 )
+current_hidden_texture = ExtResource( 10 )
 
 [node name="Placable03" parent="InMapPlacables" index="2" instance=ExtResource( 2 )]
 position = Vector2( 230, 267 )
+current_glowing_texture = ExtResource( 9 )
+current_normal_texture = ExtResource( 11 )
+current_hidden_texture = ExtResource( 10 )
 
 [node name="Placable04" parent="InMapPlacables" index="3" instance=ExtResource( 2 )]
 position = Vector2( 325, 267 )
+current_glowing_texture = ExtResource( 9 )
+current_normal_texture = ExtResource( 11 )
+current_hidden_texture = ExtResource( 10 )
 
 [node name="Placable05" parent="InMapPlacables" index="4" instance=ExtResource( 2 )]
 position = Vector2( 427, 361 )
+current_glowing_texture = ExtResource( 9 )
+current_normal_texture = ExtResource( 11 )
+current_hidden_texture = ExtResource( 10 )
 
 [node name="Placable06" parent="InMapPlacables" index="5" instance=ExtResource( 2 )]
 position = Vector2( 130, 361 )
+current_glowing_texture = ExtResource( 9 )
+current_normal_texture = ExtResource( 11 )
+current_hidden_texture = ExtResource( 10 )
 
 [node name="EnemyPathBottom" parent="EnemyPaths" index="0" instance=ExtResource( 7 )]
 

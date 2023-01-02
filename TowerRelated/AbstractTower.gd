@@ -207,7 +207,7 @@ var tower_image_icon_atlas_texture : AtlasTexture
 
 
 var tower_id : int
-var tower_type_info : TowerTypeInformation
+var tower_type_info : TowerTypeInformation   # dont change this name, since its being used to check if obj is tower (by some codes: ex: Enchant_Pillar from Map_Enchant)
 
 enum DisabledFromAttackingSourceClauses {
 	

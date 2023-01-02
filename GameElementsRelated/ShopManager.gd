@@ -56,6 +56,7 @@ const blacklisted_towers_to_inventory : Array = [
 	Towers.YELVIO_RIFT_AXIS,
 	Towers.DUNED,
 	Towers.MAP_PASSAGE__FIRE_PATH,
+	Towers.MAP_ENCHANT__ATTACKS,
 	
 	#red towers
 	Towers.OUTREACH, #6
@@ -98,6 +99,7 @@ const towers_not_initially_in_inventory : Array = [
 	Towers.YELVIO_RIFT_AXIS,
 	Towers.DUNED,
 	Towers.MAP_PASSAGE__FIRE_PATH,
+	Towers.MAP_ENCHANT__ATTACKS,
 	
 	# red towers
 	Towers.OUTREACH, #6

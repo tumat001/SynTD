@@ -252,19 +252,22 @@ func _apply_map_specific_changes_to_game_elements(arg_game_elements):
 # if changing params, change "_listen_for_path_curve_change__for_flag_placement" params as well
 func create_spawn_loc_flag_at_path(arg_enemy_path : EnemyPath, 
 		arg_offset_from_start : float = default_flag_offset_from_path, 
-		arg_flag_texture_id : int = EnemySpawnLocIndicator_Flag.FlagTextureIds.ORANGE) -> EnemySpawnLocIndicator_Flag:
+		arg_flag_texture_id : int = EnemySpawnLocIndicator_Flag.FlagTextureIds.ORANGE,
+		arg_hide_if_path_is_not_used_for_natural_spawning : bool = true) -> EnemySpawnLocIndicator_Flag:
 	
 	if arg_enemy_path.curve != null:
 		var flag = EnemySpawnLocIndicator_Flag_Scene.instance()
 		CommsForBetweenScenes.ge_add_child_to_below_screen_effects_node_hoster(flag)
 		
 		flag.set_flag_texture_id(arg_flag_texture_id)
+		flag.hide_if_path_is_not_used_for_natural_spawning = arg_hide_if_path_is_not_used_for_natural_spawning
 		
 		if arg_offset_from_start < 0:
 			arg_offset_from_start = arg_enemy_path.curve.get_baked_length() + arg_offset_from_start
 		
 		flag.offset_from_path_start = arg_offset_from_start
 		_set_flag_global_position_based(flag, arg_enemy_path)
+		_update_flag_visibility(flag, arg_enemy_path, true)
 		
 		flag_to_path_map[flag] = arg_enemy_path
 		if !path_to_flags_map.has(arg_enemy_path):
@@ -275,10 +278,13 @@ func create_spawn_loc_flag_at_path(arg_enemy_path : EnemyPath,
 		if !arg_enemy_path.is_connected("curve_changed", self, "_on_curve_path_changed__for_flag_relocation"):
 			arg_enemy_path.connect("curve_changed", self, "_on_curve_path_changed__for_flag_relocation", [arg_enemy_path], CONNECT_PERSIST)
 		
+		if !arg_enemy_path.is_connected("is_used_for_natural_spawning_changed", self, "_on_path_is_used_for_natural_spawning_changed"):
+			arg_enemy_path.connect("is_used_for_natural_spawning_changed", self, "_on_path_is_used_for_natural_spawning_changed", [arg_enemy_path], CONNECT_PERSIST)
+		
 		return flag
 		
 	else:
-		_listen_for_path_curve_change__for_flag_placement(arg_enemy_path, arg_offset_from_start, arg_flag_texture_id)
+		_listen_for_path_curve_change__for_flag_placement(arg_enemy_path, arg_offset_from_start, arg_flag_texture_id, arg_hide_if_path_is_not_used_for_natural_spawning)
 		
 		return null
 
@@ -287,30 +293,44 @@ func _set_flag_global_position_based(flag, arg_enemy_path):
 	
 
 
-func _listen_for_path_curve_change__for_flag_placement(arg_path : EnemyPath, arg_offset_from_start, arg_flag_texture_id):
+func _listen_for_path_curve_change__for_flag_placement(arg_path : EnemyPath, arg_offset_from_start, arg_flag_texture_id, arg_hide_if_path_is_not_used_for_natural_spawning):
 	if !arg_path.is_connected("curve_changed", self, "_on_curve_path_changed__for_flag_placement"):
-		arg_path.connect("curve_changed", self, "_on_curve_path_changed__for_flag_placement", [arg_path, arg_offset_from_start, arg_flag_texture_id], CONNECT_PERSIST)
+		arg_path.connect("curve_changed", self, "_on_curve_path_changed__for_flag_placement", [arg_path, arg_offset_from_start, arg_flag_texture_id, arg_hide_if_path_is_not_used_for_natural_spawning], CONNECT_PERSIST)
 
-func _on_curve_path_changed__for_flag_placement(arg_curve, arg_curve_id, arg_path, arg_offset_from_start, arg_flag_texture_id):
+func _on_curve_path_changed__for_flag_placement(arg_curve, arg_curve_id, arg_path, arg_offset_from_start, arg_flag_texture_id, arg_hide_if_path_is_not_used_for_natural_spawning):
 	if arg_curve != null:
 		if arg_path.is_connected("curve_changed", self, "_on_curve_path_changed__for_flag_placement"):
 			arg_path.disconnect("curve_changed", self, "_on_curve_path_changed__for_flag_placement")
 		
-		create_spawn_loc_flag_at_path(arg_path, arg_offset_from_start, arg_flag_texture_id)
+		create_spawn_loc_flag_at_path(arg_path, arg_offset_from_start, arg_flag_texture_id, arg_hide_if_path_is_not_used_for_natural_spawning)
 
 
 func _on_curve_path_changed__for_flag_relocation(arg_curve, arg_curve_id, arg_enemy_path):
 	for flag in path_to_flags_map[arg_enemy_path]:
 		if is_instance_valid(flag):
 			_set_flag_global_position_based(flag, arg_enemy_path)
-			flag.visible = true
+			
+			_update_flag_visibility(flag, arg_enemy_path, true)
 
+
+func _on_path_is_used_for_natural_spawning_changed(arg_val, arg_enemy_path):
+	for flag in path_to_flags_map[arg_enemy_path]:
+		if is_instance_valid(flag):
+			_update_flag_visibility(flag, arg_enemy_path, arg_enemy_path.is_used_for_natural_spawning)
+
+func _update_flag_visibility(arg_flag, arg_enemy_path, arg_attempted_val):
+	if arg_flag.hide_if_path_is_not_used_for_natural_spawning and !arg_enemy_path.is_used_for_natural_spawning:
+		arg_flag.visible = false
+		return
+	
+	arg_flag.visible = arg_attempted_val
 
 ##
 
 func _on_round_started(arg_stageround):
 	for flag in flag_to_path_map.keys():
 		flag.visible = false
+		
 
 
 #############

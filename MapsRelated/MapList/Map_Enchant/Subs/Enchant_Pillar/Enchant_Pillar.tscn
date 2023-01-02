@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/Subs/Enchant_Pillar/Enchant_Pillar.gd" type="Script" id=1]
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/MapAssets/Enchant_Pillar/Enchant_Pillar_Gray_Inactive.png" type="Texture" id=2]
+
+[node name="Enchant_Pillar" type="Sprite"]
+texture = ExtResource( 2 )
+offset = Vector2( 0, -15 )
+script = ExtResource( 1 )

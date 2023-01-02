@@ -17,7 +17,6 @@ const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/
 
 const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
-
 #
 
 const initial_path_water_on_state : bool = false
@@ -79,6 +78,7 @@ var _path_to_water_on : bool
 var _path_to_fire_on : bool
 
 var _do_not_update_path_curve : bool = true  # true only at the very start to avoid 1 unneeded calc
+
 
 #
 

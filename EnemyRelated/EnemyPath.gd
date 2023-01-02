@@ -119,6 +119,7 @@ func set_is_used_for_natural_spawning(arg_val):
 	is_used_for_natural_spawning = arg_val
 	emit_signal("is_used_for_natural_spawning_changed", is_used_for_natural_spawning)
 
+
 #################
 
 class ClosestOffsetAdvParams:

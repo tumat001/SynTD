@@ -18,7 +18,7 @@ func add_enemy_spawn_path(arg_enemy_path):
 		if !arg_enemy_path.is_connected("is_used_for_natural_spawning_changed", self, "_on_path_is_used_for_natural_spawning_changed"):
 			arg_enemy_path.connect("is_used_for_natural_spawning_changed", self, "_on_path_is_used_for_natural_spawning_changed", [arg_enemy_path], CONNECT_PERSIST)
 		
-		if arg_enemy_path.is_used_and_active:
+		if arg_enemy_path.is_used_for_natural_spawning:
 			_natural_spawn_path_to_path_index_map[arg_enemy_path] = _spawn_paths.size() - 1
 
 
@@ -93,4 +93,5 @@ func _on_path_is_used_for_natural_spawning_changed(arg_val, arg_path):
 		
 	else:
 		_natural_spawn_path_to_path_index_map.erase(arg_path)
+
 

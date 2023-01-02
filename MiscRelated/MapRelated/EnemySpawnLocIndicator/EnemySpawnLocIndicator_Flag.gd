@@ -14,6 +14,7 @@ enum FlagTextureIds {
 
 
 var offset_from_path_start : float
+var hide_if_path_is_not_used_for_natural_spawning : bool = true
 
 func set_flag_texture_id(arg_id):
 	if arg_id == FlagTextureIds.ORANGE:

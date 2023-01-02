@@ -52,6 +52,9 @@ static func get_map_from_map_id(id : int):
 	elif id == MapsIds.PASSAGE:
 		return load("res://MapsRelated/MapList/Map_Passage/Map_Passage.tscn")
 		
+	elif id == MapsIds.ENCHANT:
+		return load("res://MapsRelated/MapList/Map_Enchant/Map_Enchant.tscn")
+		
 	else:
 		return load("res://MapsRelated/MapList/Map_Riverside/Map_Riverside.tscn")
 

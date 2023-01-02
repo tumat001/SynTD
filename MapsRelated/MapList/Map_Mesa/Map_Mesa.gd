@@ -205,6 +205,7 @@ func _construct_and_add_sandstorm_ability():
 	
 	sandstorm_ability.is_timebound = true
 	sandstorm_ability.connect("ability_activated", self, "_on_sandstorm_ability_activated", [], CONNECT_PERSIST)
+	
 	sandstorm_ability.icon = Sandstorm_AbilityPic
 	
 	

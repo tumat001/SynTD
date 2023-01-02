@@ -67,8 +67,12 @@ static func get_polygon_resulting_from_vertices__circle(
 	
 	
 	#return _slide_points_of_array_to_in_range(arg_fov_node.get_fov_from_polygons(vertices_array, Vector2(0, 0)), arg_radius)
-	return arg_fov_node.get_fov_from_polygons(vertices_array, Vector2(0, 0))
-	
+	var vision_polygon = arg_fov_node.get_fov_from_polygons(vertices_array, Vector2(0, 0))
+	if !Geometry.triangulate_polygon(vision_polygon).empty():
+		return vision_polygon
+	else:
+		print("ERROR TRIANGULATION FAILED -- TerrainFuncs")
+		return circle_vertex_arr
 #	var circle_vertex_arr = _get_radius_as_point_array(arg_radius)
 #	var vertices_array : Array = _slide_points_of_vertices_array_to_in_range(arg_terrain_vertices_array, arg_radius)
 #	vertices_array.append(circle_vertex_arr)

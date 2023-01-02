@@ -1,9 +1,36 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://MapsRelated/BaseMap.tscn" type="PackedScene" id=1]
 [ext_resource path="res://MapsRelated/MapList/Map_Enchant/Map_Enchant_WithBorders.png" type="Texture" id=2]
 [ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.tscn" type="PackedScene" id=3]
 [ext_resource path="res://MapsRelated/MapList/Map_Enchant/Map_Enchant.gd" type="Script" id=4]
+[ext_resource path="res://EnemyRelated/EnemyPath.tscn" type="PackedScene" id=5]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Glowing.png" type="Texture" id=6]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Hidden.png" type="Texture" id=7]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Normal.png" type="Texture" id=8]
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/Subs/Enchant_Pillar/Enchant_Pillar.tscn" type="PackedScene" id=9]
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/MapAssets/Enchant_Altar/Enchant_Altar_01.png" type="Texture" id=10]
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/MapAssets/Enchant_AltarColorIndicator/Enchant_AltarColorIndicator_Gray.png" type="Texture" id=11]
+[ext_resource path="res://GameInfoRelated/TerrainRelated/BaseTerrain.tscn" type="PackedScene" id=12]
+[ext_resource path="res://MiscRelated/ControlProgressBarRelated/ControlProgressBar.tscn" type="PackedScene" id=13]
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/MapAssets/Enchant_ProgressBar/Enchant_ProgressBar_Fill01.png" type="Texture" id=14]
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/MapAssets/Enchant_ProgressBar/Enchant_ProgressBar_Separator.png" type="Texture" id=15]
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/MapAssets/Enchant_ProgressBar/Enchant_ProgressBar_Background.png" type="Texture" id=16]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 90.5768, 320.389, 0, 0, 0, 0, 552, 320, 0, 0, 0, 0, 594.383, 218.13, 0, 0, 0, 0, 548.792, 130.26, 0, 0, 0, 0, 382.154, 131.003, 0, 0, 0, 0, 290.044, 35.2713 )
+}
+
+[sub_resource type="Curve2D" id=2]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 482.489, 380.497, 0, 0, 0, 0, 452.285, 320.561, 0, 0, 0, 0, 197.911, 320.561, 0, 0, 0, 0, 111.075, 129.427, 0, 0, 0, 0, 321.087, 129.899, 0, 0, 0, 0, 408.867, 35.0393 )
+}
+
+[sub_resource type="Curve2D" id=3]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 843.071, 349.161, 0, 0, 0, 0, 712.817, 284.505, 0, 0, 0, 0, 815.699, 137.733 )
+}
 
 [node name="Map_Enchant" instance=ExtResource( 1 )]
 script = ExtResource( 4 )
@@ -17,62 +44,228 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="InMapAreaPlacable" parent="InMapPlacables" index="0" instance=ExtResource( 3 )]
+[node name="Enchant_Pillar_Q1" parent="Environment" index="1" instance=ExtResource( 9 )]
+position = Vector2( 451.517, 164.049 )
+
+[node name="Enchant_Pillar_Q2" parent="Environment" index="2" instance=ExtResource( 9 )]
+position = Vector2( 230.517, 164.049 )
+
+[node name="Enchant_Pillar_Q3" parent="Environment" index="3" instance=ExtResource( 9 )]
+position = Vector2( 255.208, 283.55 )
+
+[node name="Enchant_Pillar_Q4" parent="Environment" index="4" instance=ExtResource( 9 )]
+position = Vector2( 455.221, 251.802 )
+
+[node name="Enchant_Altar" type="Sprite" parent="Environment" index="5"]
+position = Vector2( 754, 97 )
+texture = ExtResource( 10 )
+
+[node name="Enchant_ColorPanel" type="Sprite" parent="Environment" index="6"]
+position = Vector2( 754, 52 )
+texture = ExtResource( 11 )
+
+[node name="EnchantAbilityProgressBar" parent="Environment" index="7" instance=ExtResource( 13 )]
+margin_left = 677.0
+margin_top = 129.0
+margin_right = 757.0
+margin_bottom = 154.0
+rect_rotation = 270.0
+display_chunks = true
+chunk_separator_pic = ExtResource( 15 )
+bar_background_pic = ExtResource( 16 )
+fill_foreground_pic = ExtResource( 14 )
+scale_of_bars_scale = Vector2( 1, 1 )
+yield_before_update = true
+
+[node name="InMapAreaPlacable_Q2_01" parent="InMapPlacables" index="0" instance=ExtResource( 3 )]
 position = Vector2( 280.611, 167.066 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable2" parent="InMapPlacables" index="1" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q3_02" parent="InMapPlacables" index="1" instance=ExtResource( 3 )]
 position = Vector2( 293.545, 256.734 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable3" parent="InMapPlacables" index="2" instance=ExtResource( 3 )]
-position = Vector2( 226.53, 280.331 )
+[node name="InMapAreaPlacable_Q3_03" parent="InMapPlacables" index="2" instance=ExtResource( 3 )]
+position = Vector2( 217.212, 268.632 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable4" parent="InMapPlacables" index="3" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q4_04" parent="InMapPlacables" index="3" instance=ExtResource( 3 )]
 position = Vector2( 474.769, 288.826 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable5" parent="InMapPlacables" index="4" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q4_05" parent="InMapPlacables" index="4" instance=ExtResource( 3 )]
 position = Vector2( 404.922, 262.397 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable6" parent="InMapPlacables" index="5" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q4_06" parent="InMapPlacables" index="5" instance=ExtResource( 3 )]
 position = Vector2( 533.289, 247.295 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable7" parent="InMapPlacables" index="6" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q4_07" parent="InMapPlacables" index="6" instance=ExtResource( 3 )]
 position = Vector2( 411.529, 351.121 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable8" parent="InMapPlacables" index="7" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q4_08" parent="InMapPlacables" index="7" instance=ExtResource( 3 )]
 position = Vector2( 529.513, 356.785 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable9" parent="InMapPlacables" index="8" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q3_09" parent="InMapPlacables" index="8" instance=ExtResource( 3 )]
 position = Vector2( 281.274, 353.953 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable10" parent="InMapPlacables" index="9" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q3_10" parent="InMapPlacables" index="9" instance=ExtResource( 3 )]
 position = Vector2( 131.198, 283.162 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable11" parent="InMapPlacables" index="10" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q3_11" parent="InMapPlacables" index="10" instance=ExtResource( 3 )]
 position = Vector2( 200.101, 353.009 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable12" parent="InMapPlacables" index="11" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q2_12" parent="InMapPlacables" index="11" instance=ExtResource( 3 )]
 position = Vector2( 183.606, 168.953 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable13" parent="InMapPlacables" index="12" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q2_13" parent="InMapPlacables" index="12" instance=ExtResource( 3 )]
 position = Vector2( 133.086, 94.3874 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable14" parent="InMapPlacables" index="13" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q2_14" parent="InMapPlacables" index="13" instance=ExtResource( 3 )]
 position = Vector2( 210.147, 96.2752 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable15" parent="InMapPlacables" index="14" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q2_15" parent="InMapPlacables" index="14" instance=ExtResource( 3 )]
 position = Vector2( 282.218, 96.2752 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable16" parent="InMapPlacables" index="15" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q1_16" parent="InMapPlacables" index="15" instance=ExtResource( 3 )]
 position = Vector2( 406.81, 170.841 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable17" parent="InMapPlacables" index="16" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q1_17" parent="InMapPlacables" index="16" instance=ExtResource( 3 )]
 position = Vector2( 499.095, 169.897 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable18" parent="InMapPlacables" index="17" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q1_18" parent="InMapPlacables" index="17" instance=ExtResource( 3 )]
 position = Vector2( 569.156, 93.4435 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable19" parent="InMapPlacables" index="18" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q1_19" parent="InMapPlacables" index="18" instance=ExtResource( 3 )]
 position = Vector2( 497.422, 93.4435 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
 
-[node name="InMapAreaPlacable20" parent="InMapPlacables" index="19" instance=ExtResource( 3 )]
+[node name="InMapAreaPlacable_Q1_20" parent="InMapPlacables" index="19" instance=ExtResource( 3 )]
 position = Vector2( 420.968, 94.3874 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
+
+[node name="InMapAreaPlacable_Special_21" parent="InMapPlacables" index="20" instance=ExtResource( 3 )]
+position = Vector2( 774.144, 267.612 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
+
+[node name="InMapAreaPlacable_Special_22" parent="InMapPlacables" index="21" instance=ExtResource( 3 )]
+position = Vector2( 691.737, 318.066 )
+current_glowing_texture = ExtResource( 6 )
+current_normal_texture = ExtResource( 8 )
+current_hidden_texture = ExtResource( 7 )
+
+[node name="EnemyPath01" parent="EnemyPaths" index="0" instance=ExtResource( 5 )]
+curve = SubResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="EnemyPath02" parent="EnemyPaths" index="1" instance=ExtResource( 5 )]
+curve = SubResource( 2 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="SpecialEnemyPath" parent="EnemyPaths" index="2" instance=ExtResource( 5 )]
+curve = SubResource( 3 )
+
+[node name="BaseTerrain" parent="Terrain" index="0" instance=ExtResource( 12 )]
+position = Vector2( 362.871, 194.62 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain" index="0"]
+polygon = PoolVector2Array( 0, -1, 0, 29, 185, 29, 185, -1 )
+
+[node name="BaseTerrain2" parent="Terrain" index="1" instance=ExtResource( 12 )]
+position = Vector2( 608.468, 37.0841 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain2" index="0"]
+polygon = PoolVector2Array( 0.668152, -2.49248, 48.7767, -1.15613, 49.937, 343.479, 1.20166, 343.479 )
+
+[node name="BaseTerrain3" parent="Terrain" index="2" instance=ExtResource( 12 )]
+position = Vector2( 325.313, 145.353 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain3" index="0"]
+polygon = PoolVector2Array( 0, 0, 37, 0, 37, 128, 0, 128 )
+
+[node name="BaseTerrain4" parent="Terrain" index="3" instance=ExtResource( 12 )]
+position = Vector2( 185.776, 194.49 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain4" index="0"]
+polygon = PoolVector2Array( -1, -1, 107, -1, 107, 29, -1, 29 )
+
+[node name="BaseTerrain5" parent="Terrain" index="4" instance=ExtResource( 12 )]
+position = Vector2( 327.146, 335.077 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain5" index="0"]
+polygon = PoolVector2Array( 0, 0, 33, 0, 33, 46, 0, 46 )
+
+[node name="Markers" type="Node" parent="." index="4"]
+
+[node name="PosForHiddenTower" type="Position2D" parent="Markers" index="0"]
+position = Vector2( 754, 97 )
+
+[editable path="Terrain/BaseTerrain"]
+[editable path="Terrain/BaseTerrain2"]
+[editable path="Terrain/BaseTerrain3"]
+[editable path="Terrain/BaseTerrain4"]
+[editable path="Terrain/BaseTerrain5"]
