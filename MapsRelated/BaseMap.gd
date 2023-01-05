@@ -261,6 +261,7 @@ func create_spawn_loc_flag_at_path(arg_enemy_path : EnemyPath,
 		
 		flag.set_flag_texture_id(arg_flag_texture_id)
 		flag.hide_if_path_is_not_used_for_natural_spawning = arg_hide_if_path_is_not_used_for_natural_spawning
+		flag.enemy_path_associated = arg_enemy_path
 		
 		if arg_offset_from_start < 0:
 			arg_offset_from_start = arg_enemy_path.curve.get_baked_length() + arg_offset_from_start
@@ -319,11 +320,19 @@ func _on_path_is_used_for_natural_spawning_changed(arg_val, arg_enemy_path):
 			_update_flag_visibility(flag, arg_enemy_path, arg_enemy_path.is_used_for_natural_spawning)
 
 func _update_flag_visibility(arg_flag, arg_enemy_path, arg_attempted_val):
-	if arg_flag.hide_if_path_is_not_used_for_natural_spawning and !arg_enemy_path.is_used_for_natural_spawning:
+	if is_instance_valid(arg_enemy_path):
+		if arg_flag.hide_if_path_is_not_used_for_natural_spawning and !arg_enemy_path.is_used_for_natural_spawning:
+			arg_flag.visible = false
+			return
+		
+		arg_flag.visible = arg_attempted_val
+		
+	else:
 		arg_flag.visible = false
-		return
 	
-	arg_flag.visible = arg_attempted_val
+
+func attempt_make_flag_visible_following_conditions(arg_flag):
+	_update_flag_visibility(arg_flag, arg_flag.enemy_path_associated, true)
 
 ##
 

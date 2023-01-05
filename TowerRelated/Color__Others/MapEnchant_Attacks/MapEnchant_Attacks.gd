@@ -79,7 +79,6 @@ func _ready():
 	purple_proj_bullet_attk_module.module_id = StoreOfAttackModuleID.MAIN
 	purple_proj_bullet_attk_module.on_hit_damage_scale = 1
 	
-	
 	var bullet_shape = RectangleShape2D.new()
 	bullet_shape.extents = Vector2(7, 8)
 	
@@ -153,6 +152,8 @@ func _ready():
 	barrage_timer.set_tower_and_properties(self)
 	add_child(barrage_timer)
 	
+	visible = false
+	
 	_post_inherit_ready()
 
 
@@ -182,7 +183,7 @@ func set_purple_bolt_delay_per_fire(arg_val):
 ######
 
 func execute_attacks():
-	_current_purple_proj_amount_for_barrage_left = _purple_proj_amount_per_barrage
+	set_current_purple_proj_amount_for_barrage_left(_purple_proj_amount_per_barrage)
 	_fire_and_decrease_barrage_counter()
 	
 	if _current_purple_proj_amount_for_barrage_left > 0:
@@ -194,12 +195,13 @@ func _on_barrage_activation_timer_timeout():
 	
 
 func _fire_and_decrease_barrage_counter():
-	var target = _get_target_for_purple_proj()
+	var candidate_targets = _get_targets_for_purple_proj()
+	var target
+	
+	if candidate_targets.size() > 0:
+		target = candidate_targets[0]
 	
 	if is_instance_valid(target):
-		_current_purple_proj_amount_for_barrage_left -= 1
-		
-		#
 		var purple_proj = purple_proj_bullet_attk_module.construct_bullet(target.global_position)
 		purple_proj.speed_inc_per_sec = 40
 		
@@ -213,18 +215,23 @@ func _fire_and_decrease_barrage_counter():
 		
 		
 		purple_proj.connect("hit_an_enemy", self, "_on_purple_proj_hit_enemy", [], CONNECT_ONESHOT)
-		purple_proj.connect("tree_entered", self, "_purple_proj_tree_entered", [], CONNECT_ONESHOT)
+		purple_proj.connect("tree_entered", self, "_purple_proj_tree_entered", [purple_proj], CONNECT_ONESHOT)
 		
 		purple_proj_bullet_attk_module.set_up_bullet__add_child_and_emit_signals(purple_proj)
 		
 		#
 		
-		if _current_purple_proj_amount_for_barrage_left <= 0:
-			barrage_timer.stop()
-			emit_signal("attack_execution_completed")
+		set_current_purple_proj_amount_for_barrage_left(_current_purple_proj_amount_for_barrage_left - 1)
+
+func set_current_purple_proj_amount_for_barrage_left(arg_val):
+	_current_purple_proj_amount_for_barrage_left = arg_val
+	
+	if _current_purple_proj_amount_for_barrage_left <= 0:
+		barrage_timer.stop()
+		emit_signal("attack_execution_completed")
 
 
-func _get_target_for_purple_proj():
+func _get_targets_for_purple_proj():
 	return game_elements.enemy_manager.get_random_targetable_enemies(1)
 
 

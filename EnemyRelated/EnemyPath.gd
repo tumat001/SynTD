@@ -91,6 +91,9 @@ func get_copy_of_path(reversed : bool):
 	
 	copy.marker_id_to_value_map = marker_id_to_value_map.duplicate(true)
 	
+	copy.is_used_and_active = is_used_and_active
+	copy.is_used_for_natural_spawning = is_used_for_natural_spawning
+	
 	return copy
 
 

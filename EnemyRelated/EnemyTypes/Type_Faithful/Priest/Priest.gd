@@ -1,7 +1,7 @@
 extends "res://EnemyRelated/EnemyTypes/Type_Faithful/AbstractFaithfulEnemy.gd"
 
-const invul_cooldown : float = 12.0
-const invul_base_duration : float = 2.0
+const invul_cooldown : float = 14.0#12.0
+const invul_base_duration : float = 1.75#2.0
 const invul_no_movement_duration : float = 1.5
 
 const no_diety_in_range_clause : int = -10

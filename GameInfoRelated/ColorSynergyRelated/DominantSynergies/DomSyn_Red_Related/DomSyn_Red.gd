@@ -340,6 +340,9 @@ func _on_round_end(curr_stageround):
 	elif curr_tier == 3:
 		pact = _generate_random_untaken_tier_3_pact()
 	
+	# FOR TEST
+	#pact = _generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.JEWELED_BLADE, 3, 3)
+	
 	if pact != null:
 		red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 	
@@ -409,10 +412,9 @@ func _initialize_red_pact_whole_panel():
 			red_pact_whole_panel.unsworn_pact_list.add_pact(pact)
 	
 	# for debugging only ############
-#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.XRAY_CYCLE, 3, 3))
-#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.VIOLET_IDENTITY, 2, 3))
-#
-#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.FROST_IMPLANTS, 3, 3))
+#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS, 3, 3))
+#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.FROST_IMPLANTS, 0, 3))
+#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.DAMAGE_IMPLANTS, 3, 3))
 
 
 ###

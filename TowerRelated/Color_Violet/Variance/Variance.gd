@@ -923,7 +923,7 @@ func _on_blue_beam_attk_module_hit_enemy(enemy, damage_register_id, damage_insta
 	var particle = blue_particle_attk_sprite_pool.get_or_create_attack_sprite_from_pool()
 	
 	var pos_of_center = global_position + position_offset_for_center_of_blue_particle
-	var distance_to_enemy = pos_of_center.distance_to(enemy.global_position)
+	#var distance_to_enemy = pos_of_center.distance_to(enemy.global_position)
 	particle.center_pos_of_basis = pos_of_center
 	
 	particle.reset_for_another_use()

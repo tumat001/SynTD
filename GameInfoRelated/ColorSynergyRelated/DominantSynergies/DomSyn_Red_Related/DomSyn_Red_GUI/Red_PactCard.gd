@@ -81,11 +81,12 @@ func update_display():
 		_update_req_met_or_unmet_modulate()
 
 func _update_descriptions():
-	good_descriptions.descriptions = base_pact.good_descriptions
-	good_descriptions.update_display()
-	
-	bad_descriptions.descriptions = base_pact.bad_descriptions
-	bad_descriptions.update_display()
+	if is_inside_tree() and !is_queued_for_deletion():
+		good_descriptions.descriptions = base_pact.good_descriptions
+		good_descriptions.update_display()
+		
+		bad_descriptions.descriptions = base_pact.bad_descriptions
+		bad_descriptions.update_display()
 
 func _update_req_met_or_unmet_modulate():
 	if base_pact.is_activation_requirements_met and (base_pact.last_calculated_can_be_sworn or base_pact.is_sworn):

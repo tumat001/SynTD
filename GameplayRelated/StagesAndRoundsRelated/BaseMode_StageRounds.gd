@@ -56,3 +56,25 @@ func get_stage_round_after_x_rounds_from_current_index(arg_index : int, arg_x_co
 	
 	return stage_rounds[arg_index]
 
+# returns null if either id is invalid
+func get_number_of_rounds_from_x_to_y__using_ids(arg_stageround_x : String, arg_stageround_y : String):
+	var index_of_x = _get_index_of_stageround_using_id(arg_stageround_x)
+	var index_of_y = _get_index_of_stageround_using_id(arg_stageround_y)
+	
+	if index_of_x != -1 and index_of_y != -1:
+		return index_of_y - index_of_x
+	else:
+		return null
+
+
+func _get_index_of_stageround_using_id(arg_id : String):
+	var index = 0
+	for stage_round in stage_rounds:
+		if stage_round.id == arg_id:
+			return index
+		
+		index += 1
+	
+	return -1
+
+

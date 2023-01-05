@@ -246,7 +246,11 @@ func set_interpreter(interpreter : SpawnInstructionInterpreter):
 
 
 func _signal_spawn_enemy_from_interpreter(enemy_id : int, ins_enemy_metadata_map):
-	spawn_enemy(enemy_id, _get_path_based_on_current_index(), true, ins_enemy_metadata_map)
+	var spawned_from_ins : bool = true
+	if ins_enemy_metadata_map != null and ins_enemy_metadata_map.has(StoreOfEnemyMetadataIdsFromIns.NOT_SPAWNED_FROM_INS):
+		spawned_from_ins = false
+	
+	spawn_enemy(enemy_id, _get_path_based_on_current_index(), spawned_from_ins, ins_enemy_metadata_map)
 
 func set_spawn_paths(paths : Array):
 	_enemy_paths_array.remove_all_enemy_spawn_paths()
@@ -311,7 +315,8 @@ func set_instructions_of_interpreter(inses : Array):
 
 func append_instructions_to_interpreter(inses : Array):
 	_is_interpreter_done_spawning = false
-	var count = spawn_instruction_interpreter.set_instructions(inses)
+	#var count = spawn_instruction_interpreter.set_instructions(inses)
+	var count = spawn_instruction_interpreter.append_instructions(inses)
 	enemy_count_in_round += count
 	highest_enemy_spawn_timepos_in_round = spawn_instruction_interpreter.highest_timepos_of_instructions
 
@@ -399,7 +404,7 @@ func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _get_path_based
 	
 	emit_signal("before_enemy_spawned", enemy_instance)
 	emit_signal("before_enemy_is_added_to_path", enemy_instance, path)
-	if enemy_instance.get_parent() == null:
+	if !is_instance_valid(enemy_instance.get_parent()):
 		path.add_child(enemy_instance)
 	
 	emit_signal("enemy_spawned", enemy_instance)

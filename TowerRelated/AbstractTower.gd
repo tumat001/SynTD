@@ -66,6 +66,8 @@ signal tower_dropped_from_dragged(tower_self) # use when listening for player in
 signal on_attempt_drop_tower_on_placable(tower_self, arg_placable, arg_move_success) # 3rd arg is if there is enough tower slots to put the tower
 signal on_tower_transfered_to_placable(tower_self, arg_placable) # called regardless transfer was due to player input or other means
 signal on_tower_transfered_in_map_from_bench(tower_self, arg_map_placable, arg_bench_placable)
+signal on_tower_transfered_on_bench_from_in_map(tower_self, arg_bench_placable, arg_map_placable)
+
 
 signal tower_toggle_show_info
 signal on_tower_toggle_showing_range(is_showing_ranges)
@@ -2971,6 +2973,8 @@ func transfer_to_placable(
 	if is_instance_valid(prev_placable) and is_instance_valid(new_area_placable):
 		if !prev_placable is InMapAreaPlacable and current_placable is InMapAreaPlacable:
 			emit_signal("on_tower_transfered_in_map_from_bench", self, current_placable, prev_placable)
+		elif prev_placable is InMapAreaPlacable and !current_placable is InMapAreaPlacable:
+			emit_signal("on_tower_transfered_on_bench_from_in_map", self, current_placable, prev_placable)
 	
 	return is_instance_valid(new_area_placable)
 

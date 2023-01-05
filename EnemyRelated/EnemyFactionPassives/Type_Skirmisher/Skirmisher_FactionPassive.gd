@@ -353,6 +353,7 @@ func _set_blue_and_red_paths():
 		i += 1
 		
 		# flag related
+		
 		var blue_flag = _create_flag_for_path(blue_path, EnemySpawnLocIndicator_Flag.FlagTextureIds.BLUE)
 		blue_flag.visible = false
 		blue_spawn_loc_flags.append(blue_flag)
@@ -437,9 +438,11 @@ func _before_enemy_is_added_to_path(enemy, path):
 				_add_blue_effects_to_blue_skirmisher(enemy)
 		
 	else:
-		var path_index = blue_path_array.get_spawn_path_index_to_take()
-		_add_enemy_to_blue_path(enemy, path_index)
-		blue_path_array.switch_path_index_to_next()
+		
+		if StoreOfEnemyMetadataIdsFromIns.is_enemy_metadata_free_from_reserved_paths_metadata(enemy.enemy_spawn_metadata_from_ins, []):
+			var path_index = blue_path_array.get_spawn_path_index_to_take()
+			_add_enemy_to_blue_path(enemy, path_index)
+			blue_path_array.switch_path_index_to_next()
 
 
 func _add_enemy_to_blue_path(enemy, path_index):
@@ -1690,11 +1693,13 @@ func _show_flags_if_curr_stageround_is_appropriate(arg_stageround):
 
 func _show_blue_flags__normal():
 	for flag in blue_spawn_loc_flags:
-		flag.visible = true
+		#flag.visible = true
+		game_elements.map_manager.base_map.attempt_make_flag_visible_following_conditions(flag)
 
 func _show_red_flags__normal():
 	for flag in red_spawn_loc_flags:
-		flag.visible = true
+		#flag.visible = true
+		game_elements.map_manager.base_map.attempt_make_flag_visible_following_conditions(flag)
 
 
 func _show_blue_flags__emp():
@@ -1716,11 +1721,13 @@ func _start_particle_for_spawn_loc_flag_timer():
 func _on_particle_for_spawn_loc_flags_timeout():
 	if _is_spawn_loc_blue_flags_empowered:
 		for flag in blue_spawn_loc_flags:
-			request_blue_flag_particles_to_play(flag.global_position)
+			if flag.visible:
+				request_blue_flag_particles_to_play(flag.global_position)
 	
 	if _is_spawn_loc_red_flags_empowered:
 		for flag in red_spawn_loc_flags:
-			request_red_flag_particles_to_play(flag.global_position)
+			if flag.visible:
+				request_red_flag_particles_to_play(flag.global_position)
 
 
 ###########################################

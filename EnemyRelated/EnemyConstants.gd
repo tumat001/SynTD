@@ -70,6 +70,7 @@ enum Enemies {
 	# OTHERS (10000)
 	TRIASYN_OGV_SOUL = 10000,
 	DOMSYN_RED_ORACLES_EYE_SHADOW = 10001,
+	MAP_ENCHANT_ANTI_MAGIK = 10002,
 	
 }
 
@@ -324,6 +325,15 @@ static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:
 		#info.base_toughness = 5
 		info.enemy_type = info.EnemyType.ELITE
 		
+	elif enemy_id == Enemies.MAP_ENCHANT_ANTI_MAGIK:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
+		info.base_health = 25
+		info.base_movement_speed = 38
+		#info.base_armor = 5
+		#info.base_toughness = 5
+		info.enemy_type = info.EnemyType.NORMAL
+		
+	
 	
 	return info
 
@@ -412,4 +422,6 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Others/TriaSyn_OGV_Soul/TriaSyn_OGV_Soul.tscn")
 	elif enemy_id == Enemies.DOMSYN_RED_ORACLES_EYE_SHADOW:
 		return load("res://EnemyRelated/EnemyTypes/Type_Others/DomSyn_Red_Pact_OraclesEye_Shadow/DomSyn_Red_Pact_OraclesEye_Shadow.tscn")
+	elif enemy_id == Enemies.MAP_ENCHANT_ANTI_MAGIK:
+		return load("res://EnemyRelated/EnemyTypes/Type_Others/MapEnchant_AntiMagik/MapEnchant_AntiMagik.tscn")
 	

@@ -8,8 +8,11 @@ var current_texture
 var is_hidden : bool
 var is_glowing : bool
 
+
+const default_normal_texture : Texture = normal
+
 export (Texture) var current_glowing_texture : Texture = glowing setget set_current_glowing_texture
-export(Texture) var current_normal_texture : Texture = normal setget set_current_normal_texture
+export(Texture) var current_normal_texture : Texture = default_normal_texture setget set_current_normal_texture
 export(Texture) var current_hidden_texture : Texture = hidden setget set_current_hidden_texture
 
 onready var area_sprite = $AreaSprite
@@ -25,25 +28,25 @@ func _ready():
 
 func set_area_texture_to_glow():
 	if is_inside_tree():
-		area_sprite.texture = glowing
+		area_sprite.texture = current_glowing_texture
 	
-	current_texture = glowing
+	current_texture = current_glowing_texture
 	is_glowing = true
 
 func set_area_texture_to_not_glow():
 	if is_inside_tree():
 		if !is_hidden:
-			area_sprite.texture = normal
+			area_sprite.texture = current_normal_texture
 		else:
-			area_sprite.texture = hidden
+			area_sprite.texture = current_hidden_texture
 	
-	current_texture = normal
+	current_texture = current_normal_texture
 	is_glowing = false
 
-func set_hidden(hidden : bool):
-	is_hidden = hidden
-	if hidden:
-		area_sprite.texture = hidden
+func set_hidden(arg_hidden : bool):
+	is_hidden = arg_hidden
+	if arg_hidden:
+		area_sprite.texture = current_hidden_texture
 	else:
 		area_sprite.texture = current_texture
 

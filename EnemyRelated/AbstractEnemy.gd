@@ -81,11 +81,15 @@ signal on_finished_ready_prep() # is now targetable, not invulnerable
 signal moved__from_process(arg_has_moved_from_natural_means, arg_prev_angle_dir, arg_curr_angle_dir)
 signal anim_name_used_changed(arg_prev_anim_name, arg_current_anim_name)
 
+signal attempted_exit_map_but_prevented_by_clause()
+signal relieved_from__attempted_exit_map_but_prevented_by_clause()  # if last calc is false, and when unit offset was at 1 but changed to not 1.
+
 #
 
 signal last_calculated_is_stunned_changed(arg_val)
 signal last_calculated_no_action_from_self_changed(arg_val)
 signal last_calculated_is_untargetable_changed(arg_val)  # including invis
+signal last_calculated_exits_when_at_map_end_changed(arg_val)
 
 #
 
@@ -259,7 +263,13 @@ var all_abilities : Array = []
 # makes the round not end when there is at least one of these enemies with this property on.
 # does not update in real time (only before enemy is added to manager)
 var blocks_from_round_ending : bool = true
-var exits_when_at_map_end : bool = true
+
+enum ExitsWhenAtEndClauseIds {
+	MAP_ENCHANT__SPECIAL_ENEMIES = 0
+}
+var exits_when_at_map_end_clauses : ConditionalClauses
+var last_calculated_exits_when_at_map_end : bool
+var _attempted_exit_when_prevented_by_clause_at_prev_frame : bool = false
 
 var respect_stage_round_health_scale : bool = true
 
@@ -344,7 +354,11 @@ func _init():
 	untargetable_clauses.connect("clause_inserted", self, "_untargetability_clause_added")
 	untargetable_clauses.connect("clause_removed", self, "_untargetability_clause_removed")
 	untargetable_clauses.attempt_insert_clause(UntargetabilityClauses.IS_READY_PREPPING)
-
+	
+	exits_when_at_map_end_clauses = ConditionalClauses.new()
+	exits_when_at_map_end_clauses.connect("clause_inserted", self, "_exits_when_at_map_end_clauses_updated")
+	exits_when_at_map_end_clauses.connect("clause_removed", self, "_exits_when_at_map_end_clauses_updated")
+	_exits_when_at_map_end_clauses_updated(null)
 
 func _stats_initialize(info):
 	base_health = info.base_health
@@ -390,6 +404,12 @@ func _untargetability_clause_removed(clause):
 func is_untargetable_only_from_invisibility():
 	return untargetable_clauses.has_clause(UntargetabilityClauses.IS_INVISIBLE) and untargetable_clauses._clauses.size() == 1
 
+
+func _exits_when_at_map_end_clauses_updated(_arg_clause_id): # arg does not matter
+	last_calculated_exits_when_at_map_end = exits_when_at_map_end_clauses.is_passed
+	emit_signal("last_calculated_exits_when_at_map_end_changed", last_calculated_exits_when_at_map_end)
+
+######
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -542,23 +562,33 @@ func _process(delta):
 		unit_distance_to_exit -= distance_traveled / current_path_length
 		has_moved_by_natural_means = true
 	
-	if unit_offset == 1 and exits_when_at_map_end:
-		var exit_prevented : bool = false
-		var effects_consumed : Array = []
-		for effect in _before_reaching_end_path_effects_map.values():
-			if effect.prevent_exit:
-				exit_prevented = true
+	if unit_offset == 1:
+		if last_calculated_exits_when_at_map_end:
+			var exit_prevented : bool = false
+			var effects_consumed : Array = []
+			for effect in _before_reaching_end_path_effects_map.values():
+				if effect.prevent_exit:
+					exit_prevented = true
+				
+				effect.before_enemy_reached_exit(self)
+				#effect.call_deferred("before_enemy_reached_exit", self)
+				
+				effects_consumed.append(effect)
 			
-			effect.before_enemy_reached_exit(self)
-			#effect.call_deferred("before_enemy_reached_exit", self)
+			for effect in effects_consumed:
+				_remove_effect(effect)
 			
-			effects_consumed.append(effect)
+			if !exit_prevented:
+				call_deferred("emit_signal", "reached_end_of_path", self)
+		else:
+			if !_attempted_exit_when_prevented_by_clause_at_prev_frame:
+				_attempted_exit_when_prevented_by_clause_at_prev_frame = true
+				emit_signal("attempted_exit_map_but_prevented_by_clause")
 		
-		for effect in effects_consumed:
-			_remove_effect(effect)
-		
-		if !exit_prevented:
-			call_deferred("emit_signal", "reached_end_of_path", self)
+	else:
+		if _attempted_exit_when_prevented_by_clause_at_prev_frame:
+			_attempted_exit_when_prevented_by_clause_at_prev_frame = false
+			emit_signal("relieved_from__attempted_exit_map_but_prevented_by_clause")
 	
 	#
 	

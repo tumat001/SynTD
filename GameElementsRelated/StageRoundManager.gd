@@ -215,7 +215,6 @@ func end_round(from_game_start : bool = false):
 		
 	else: # end of stagerounds. end the game.
 		emit_signal("end_of_stagerounds")
-		
 
 
 func _before_round_end(arg_from_game_start):
@@ -266,6 +265,12 @@ func _replace_current_spawn_ins_to_second_half(new_faction_id : int):
 #	elif new_faction_id == EnemyConstants.EnemyFactions.SKIRMISHERS:
 #		spawn_ins_of_faction_mode = load("res://GameplayRelated/EnemiesInRounds/ModesAndFactionsInses/FactionSkirmisher_EnemySpawnIns.gd").new()
 
+
+## round query
+
+func get_number_of_rounds_before_stageround_id_reached(arg_target_stageround_id):
+	return stagerounds.get_number_of_rounds_from_x_to_y__using_ids(current_stageround.id, arg_target_stageround_id)
+	
 
 
 ###########################

@@ -55,12 +55,22 @@ func set_instructions(inses : Array) -> int:
 	return enemy_count
 
 func append_instructions(inses : Array) -> int:
-	var bucket = _get_interpreted_spawn_instructions(inses)[0]
+	var _ins_and_highest_timepos = _get_interpreted_spawn_instructions(inses)
+	var bucket = _ins_and_highest_timepos[0]
 	
 	for ins in bucket:
 		_instructions_far_from_exe.append(ins)
 	
-	return bucket.size()
+	var enemy_count : int = _instructions_far_from_exe.size()
+	
+	_segragate_instructions_to_near_or_far_from_exe()
+	
+	
+	highest_timepos_of_instructions = _ins_and_highest_timepos[1]
+	
+	
+	return enemy_count
+	#return bucket.size()
 
 
 # Gives an array with:

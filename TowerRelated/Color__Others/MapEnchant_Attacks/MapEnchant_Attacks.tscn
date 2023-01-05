@@ -1,7 +1,19 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
 [ext_resource path="res://TowerRelated/Color__Others/MapEnchant_Attacks/MapEnchant_Attacks.gd" type="Script" id=2]
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/Assets/Enchant_DamageTracker_Icons/Enchant_DamageTracker_Icon.png" type="Texture" id=3]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "default",
+"speed": 5.0
+} ]
 
 [node name="MapEnchant_Attacks" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
+
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
+frames = SubResource( 1 )

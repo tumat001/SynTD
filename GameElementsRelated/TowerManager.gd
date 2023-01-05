@@ -73,6 +73,10 @@ signal tower_current_health_changed(tower, new_val)
 signal tower_being_dragged(tower)
 signal tower_dropped_from_dragged(tower)
 signal tower_transfered_to_placable(tower, arg_placable)
+signal tower_transfered_in_map_from_bench(tower_self, arg_map_placable, arg_bench_placable)
+signal tower_transfered_on_bench_from_in_map(tower_self, arg_bench_placable, arg_map_placable)
+
+signal tower_absorbed_ingredients_changed(tower)
 
 signal tower_max_limit_changed(new_limit)
 signal tower_current_limit_taken_changed(curr_slots_taken)
@@ -305,6 +309,8 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("tower_dropped_from_dragged", self, "_tower_dropped_from_dragged", [], CONNECT_PERSIST)
 	tower_instance.connect("on_attempt_drop_tower_on_placable", self, "_on_attempt_drop_tower_on_placable", [], CONNECT_PERSIST)
 	tower_instance.connect("on_tower_transfered_to_placable", self, "_tower_transfered_to_placable", [], CONNECT_PERSIST)
+	tower_instance.connect("on_tower_transfered_in_map_from_bench", self, "_on_tower_transfered_in_map_from_bench", [], CONNECT_PERSIST)
+	tower_instance.connect("on_tower_transfered_on_bench_from_in_map", self, "_on_tower_transfered_on_bench_from_in_map", [], CONNECT_PERSIST)
 	
 	tower_instance.connect("tower_toggle_show_info", self, "_tower_toggle_show_info", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_in_queue_free", self, "_tower_in_queue_free", [], CONNECT_PERSIST)
@@ -324,6 +330,8 @@ func add_tower(tower_instance : AbstractTower):
 	
 	tower_instance.connect("on_is_contributing_to_synergy_color_count_changed", self, "_tower_can_contribute_to_synergy_color_count_changed", [tower_instance], CONNECT_PERSIST)
 	tower_instance.connect("on_tower_transfered_in_map_from_bench", self, "_on_tower_placed_in_map_from_bench", [], CONNECT_PERSIST)
+	
+	tower_instance.connect("ingredients_absorbed_changed", self, "_emit_tower_ingredients_absorbed_changed", [tower_instance], CONNECT_PERSIST)
 	
 	connect("ingredient_mode_turned_into", tower_instance, "_set_is_in_ingredient_mode", [], CONNECT_PERSIST)
 	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient", [], CONNECT_PERSIST)
@@ -415,6 +423,12 @@ func _tower_dropped_from_dragged(tower_released : AbstractTower):
 
 func _tower_transfered_to_placable(arg_tower, arg_placable):
 	emit_signal("tower_transfered_to_placable", arg_tower, arg_placable)
+
+func _on_tower_transfered_in_map_from_bench(arg_tower, arg_map_pla, arg_bench_pla):
+	emit_signal("tower_transfered_in_map_from_bench", arg_tower, arg_map_pla, arg_bench_pla)
+
+func _on_tower_transfered_on_bench_from_in_map(arg_tower, arg_bench_pla, arg_map_pla):
+	emit_signal("tower_transfered_on_bench_from_in_map", arg_tower, arg_bench_pla, arg_map_pla)
 
 
 func can_place_tower_based_on_limit_and_curr_placement(tower : AbstractTower) -> bool:
@@ -1006,6 +1020,10 @@ func _on_tower_placed_in_map_from_bench(arg_tower, arg_in_map_placable, arg_benc
 func _on_tower_in_queue_free__for_restore_position(arg_tower):
 	if stage_round_manager.round_started:
 		_unrecord_tower_for_restore_position(arg_tower)
+
+
+func _emit_tower_ingredients_absorbed_changed(arg_tower):
+	emit_signal("tower_absorbed_ingredients_changed", arg_tower)
 
 #
 

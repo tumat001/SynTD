@@ -18,6 +18,12 @@ func _init():
 	z_index = ZIndexStore.PARTICLE_EFFECTS
 	z_as_relative = false
 
+func _ready():
+	if texture != null:
+		_current_texture_size = texture.get_size()
+	
+	set_physics_process(false)
+
 #
 
 func reset():
@@ -42,6 +48,7 @@ func start_stretch(arg_destination_pos : Vector2, arg_duration : float):
 		#
 		
 		rotation = global_position.angle_to_point(arg_destination_pos)
+		#rotation = _get_angle(arg_destination_pos)
 		
 		visible = true
 		
@@ -49,6 +56,36 @@ func start_stretch(arg_destination_pos : Vector2, arg_duration : float):
 		
 		set_physics_process(true)
 
+
+func start_stretch__V2(arg_destination_pos : Vector2, arg_duration : float):
+	if !is_during_stretch:
+		is_during_stretch = true
+		_destination_pos = arg_destination_pos + Vector2(0, _current_texture_size.y)
+		
+		_current_scale_target = (global_position.distance_to(_destination_pos) / _current_texture_size.x)
+		_current_scale_per_sec = _current_scale_target / arg_duration
+		
+		#offset.y = _current_texture_size.y
+		#offset.x = _current_texture_size.x / 2
+		
+		#
+		
+		#rotation = global_position.angle_to_point(arg_destination_pos)
+		rotation = _get_angle(arg_destination_pos)
+		
+		visible = true
+		
+		#
+		
+		set_physics_process(true)
+
+
+
+func _get_angle(destination_pos : Vector2):
+	var dx = destination_pos.x - global_position.x
+	var dy = destination_pos.y - global_position.y
+	
+	return atan2(dy, dx)
 
 
 func _physics_process(delta):

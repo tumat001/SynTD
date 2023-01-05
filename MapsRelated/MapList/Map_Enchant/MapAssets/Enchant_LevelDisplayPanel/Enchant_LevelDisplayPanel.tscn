@@ -1,0 +1,90 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/MapAssets/Enchant_LevelDisplayPanel/Enchant_LevelDisplayPanel_5x5_Green.png" type="Texture" id=1]
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/MapAssets/Enchant_LevelDisplayPanel/Enchant_LevelDisplayPanel_5x5_Brown.png" type="Texture" id=2]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=3]
+[ext_resource path="res://MapsRelated/MapList/Map_Enchant/MapAssets/Enchant_LevelDisplayPanel/Enchant_LevelDisplayPanel.gd" type="Script" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 12
+font_data = ExtResource( 3 )
+
+[node name="Enchant_LevelDisplayPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 4 )
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 43.0
+margin_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="Left" type="TextureRect" parent="."]
+margin_right = 3.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="Right" type="TextureRect" parent="."]
+margin_left = 40.0
+margin_right = 43.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_horizontal = 10
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="Top" type="TextureRect" parent="."]
+margin_right = 43.0
+margin_bottom = 3.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="Bottom" type="TextureRect" parent="."]
+margin_top = 37.0
+margin_right = 43.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 43.0
+margin_bottom = 40.0
+custom_constants/margin_right = 4
+custom_constants/margin_top = 5
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 4.0
+margin_top = 7.0
+margin_right = 39.0
+margin_bottom = 33.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
+custom_constants/separation = 0
+
+[node name="LevelInsLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+margin_right = 35.0
+margin_bottom = 13.0
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Level"
+
+[node name="LevelLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+margin_left = 7.0
+margin_top = 13.0
+margin_right = 28.0
+margin_bottom = 26.0
+size_flags_horizontal = 6
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "x/x"

@@ -127,3 +127,11 @@ func get_source_for_funcs_for_attk_sprite():
 	else:
 		return source_for_funcs_for_attk_sprite.get_ref()
 
+#####
+
+func clear_pool():
+	for attack_sprite in _attack_sprite_pool_to_available_state.keys():
+		attack_sprite.queue_free()
+	
+	_attack_sprite_pool_to_available_state.clear()
+	

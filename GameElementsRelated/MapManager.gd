@@ -126,6 +126,9 @@ func get_average_exit_position_of_all_paths():
 func get_all_placables(): #in map
 	return base_map.all_in_map_placables
 
+func get_all_placables__copy():
+	return base_map.get_all_placables__copy()
+
 func get_all_placables_in_range_from_mouse(radius : float, 
 		placable_state : int = PlacableState.ANY, sort_order : int = SortOrder.CLOSEST) -> Array:
 	
