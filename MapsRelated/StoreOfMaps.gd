@@ -106,7 +106,7 @@ static func get_map_type_information_from_id(id : int):
 	elif id == MapsIds.ENCHANT:
 		
 		info.map_name = "Enchant"
-		info.map_display_texture = Map_WIP_PreviewImage
+		info.map_display_texture = preload("res://MapsRelated/MapList/Map_Enchant/Map_Enchant_PreviewImage.png")
 		info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
 		info.map_tier = 3
 		return info

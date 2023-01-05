@@ -45,7 +45,7 @@ _data = {
 
 [sub_resource type="Curve2D" id=2]
 _data = {
-"points": PoolVector2Array( 0, 0, 0, 0, 553.821, 380.91, 0, 0, 0, 0, 523.92, 319.845, 0, 0, 0, 0, 197.911, 320.561, 0, 0, 0, 0, 111.075, 129.427, 0, 0, 0, 0, 321.087, 129.899, 0, 0, 0, 0, 387.768, 58.4063, 0, 0, 0, 0, 496.231, 59.4106, 0, 0, 0, 0, 517.322, 35.6423 )
+"points": PoolVector2Array( 0, 0, 0, 0, 553.821, 380.91, 0, 0, 0, 0, 523.92, 319.845, 0, 0, 0, 0, 197.911, 320.561, 0, 0, 0, 0, 111.075, 129.427, 0, 0, 0, 0, 322.641, 130.554, 0, 0, 0, 0, 387.768, 58.4063, 0, 0, 0, 0, 496.231, 59.4106, 0, 0, 0, 0, 517.322, 35.6423 )
 }
 
 [sub_resource type="Curve2D" id=3]
@@ -153,6 +153,7 @@ __meta__ = {
 [node name="Enchant_AboutToUpgradeParticle" type="AnimatedSprite" parent="Environment" index="13"]
 position = Vector2( 796, 65 )
 frames = SubResource( 4 )
+frame = 2
 playing = true
 
 [node name="Enchant_WholeScreenInfoButton" parent="Environment" index="14" instance=ExtResource( 25 )]

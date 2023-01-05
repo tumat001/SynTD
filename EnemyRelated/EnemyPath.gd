@@ -36,6 +36,17 @@ enum CurveChangeDeferClauseIds {
 var curve_change_defer_conditional_clauses : ConditionalClauses
 var last_calculated_curve_change_defer : bool
 
+#
+
+enum ShowCurveClauseIds {
+	HOVERED_OVER_FLAG = 1
+	HOVERED_OVER_CULTIST_CROSS = 2
+}
+var show_curve_conditional_clauses : ConditionalClauses
+var last_calculated_is_showing_curve : bool
+
+var showing_curve_color : Color = Color(183/255.0, 114/255.0, 254/255.0, 0.65)
+
 
 #
 # USED to distinguish between different curves. This is used in cases where computations are made per different curves (and to re-use those computed vals for the same ids/curve)
@@ -52,6 +63,11 @@ func _init():
 	curve_change_defer_conditional_clauses.connect("clause_inserted", self, "_on_curve_change_defer_conditional_clauses_updated", [], CONNECT_PERSIST)
 	curve_change_defer_conditional_clauses.connect("clause_removed", self, "_on_curve_change_defer_conditional_clauses_updated", [], CONNECT_PERSIST)
 	_update_curve_change_defer_state()
+	
+	show_curve_conditional_clauses = ConditionalClauses.new()
+	show_curve_conditional_clauses.connect("clause_inserted", self, "_on_show_curve_conditional_clauses_updated", [], CONNECT_PERSIST)
+	show_curve_conditional_clauses.connect("clause_removed", self, "_on_show_curve_conditional_clauses_updated", [], CONNECT_PERSIST)
+	_update_show_curve_state()
 
 #
 func _ready():
@@ -240,6 +256,7 @@ func set_curve_and_id(arg_curve_2d : Curve2D, arg_curve_id : int):
 		path_length = curve.get_baked_length()
 		current_curve_id = arg_curve_id
 		
+		update()
 		emit_signal("curve_changed", curve, current_curve_id)
 	else:
 		
@@ -273,3 +290,20 @@ func _construct_curve_2d_using_points(arg_points : Array) -> Curve2D:
 		curve_2d.add_point(pos)
 	
 	return curve_2d
+
+
+###
+
+
+func _on_show_curve_conditional_clauses_updated(arg_clause_id):
+	_update_show_curve_state()
+
+func _update_show_curve_state():
+	last_calculated_is_showing_curve = !show_curve_conditional_clauses.is_passed
+	
+	update()
+
+func _draw():
+	if last_calculated_is_showing_curve:
+		#draw_multiline(curve.get_baked_points(), showing_curve_color, 8, false)
+		draw_polyline(curve.get_baked_points(), showing_curve_color, 6)

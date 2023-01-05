@@ -7,3 +7,14 @@
 texture = ExtResource( 1 )
 offset = Vector2( 0, -5 )
 script = ExtResource( 2 )
+
+[node name="MouseDetector" type="MarginContainer" parent="."]
+margin_left = -7.42462
+margin_top = -14.8492
+margin_right = 5.57538
+margin_bottom = 6.15076
+
+[connection signal="tree_exiting" from="." to="." method="_on_EnemySpawnLocIndicator_Flat_tree_exiting"]
+[connection signal="visibility_changed" from="." to="." method="_on_EnemySpawnLocIndicator_Flat_visibility_changed"]
+[connection signal="mouse_entered" from="MouseDetector" to="." method="_on_MouseDetector_mouse_entered"]
+[connection signal="mouse_exited" from="MouseDetector" to="." method="_on_MouseDetector_mouse_exited"]

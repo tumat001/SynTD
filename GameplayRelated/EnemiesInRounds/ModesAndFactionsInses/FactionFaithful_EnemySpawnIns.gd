@@ -86,12 +86,12 @@ func get_instructions_for_stageround(uuid : String):
 #		MultipleEnemySpawnInstruction.new(0, 4, 8, EnemyConstants.Enemies.SEER),
 #		MultipleEnemySpawnInstruction.new(1, 4, 8, EnemyConstants.Enemies.PRIEST),
 #	]
-
+#
 #func _get_instructions_for_0_3():
 #	return [
 #		MultipleEnemySpawnInstruction.new(0, 4, 6, EnemyConstants.Enemies.BELIEVER),
 #	]
-#
+
 #func _get_instructions_for_0_4():
 #	return [
 #		MultipleEnemySpawnInstruction.new(0, 4, 6, EnemyConstants.Enemies.BELIEVER),

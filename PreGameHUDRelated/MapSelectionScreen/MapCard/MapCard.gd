@@ -53,6 +53,10 @@ var map_tier : int setget set_map_tier
 var map_tier_border_normal : Texture
 var map_tier_border_selected : Texture
 
+
+export(bool) var can_be_untoggled_if_is_toggled : bool = false
+
+
 #
 
 func _ready():
@@ -66,7 +70,8 @@ func _ready():
 
 func _on_advanced_button_released_mouse_event(arg_event : InputEventMouseButton):
 	if arg_event.button_index == BUTTON_LEFT:
-		set_is_toggle_mode_on(!is_toggle_mode_on)
+		if can_be_untoggled_if_is_toggled or (!is_toggle_mode_on and !can_be_untoggled_if_is_toggled):
+			set_is_toggle_mode_on(!is_toggle_mode_on)
 
 func _on_advanced_button_tooltip_requested():
 	emit_signal("on_button_tooltip_requested")

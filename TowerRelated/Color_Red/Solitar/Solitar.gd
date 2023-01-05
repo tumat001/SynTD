@@ -190,7 +190,8 @@ func _on_enemies_entered_range_module(enemy, module, arg_range_module):
 			enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives", [], CONNECT_DEFERRED)
 
 func _on_enemy_killed_with_no_more_revives(damage_instance_report, arg_enemy):
-	_on_enemies_exited_range_module(arg_enemy, null, range_module)
+	if is_instance_valid(arg_enemy):
+		_on_enemies_exited_range_module(arg_enemy, null, range_module)
 
 
 func _on_enemies_exited_range_module(enemy, module, arg_range_module):

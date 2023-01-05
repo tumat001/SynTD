@@ -128,7 +128,7 @@ func _ready():
 	
 	# TEST HERE
 	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
-	map_id = StoreOfMaps.MapsIds.ENCHANT  #todo
+	#map_id = StoreOfMaps.MapsIds.PASSAGE
 	#
 	
 	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)

@@ -282,6 +282,7 @@ func create_spawn_loc_flag_at_path(arg_enemy_path : EnemyPath,
 		if !arg_enemy_path.is_connected("is_used_for_natural_spawning_changed", self, "_on_path_is_used_for_natural_spawning_changed"):
 			arg_enemy_path.connect("is_used_for_natural_spawning_changed", self, "_on_path_is_used_for_natural_spawning_changed", [arg_enemy_path], CONNECT_PERSIST)
 		
+		
 		return flag
 		
 	else:
@@ -323,9 +324,8 @@ func _update_flag_visibility(arg_flag, arg_enemy_path, arg_attempted_val):
 	if is_instance_valid(arg_enemy_path):
 		if arg_flag.hide_if_path_is_not_used_for_natural_spawning and !arg_enemy_path.is_used_for_natural_spawning:
 			arg_flag.visible = false
-			return
-		
-		arg_flag.visible = arg_attempted_val
+		else:
+			arg_flag.visible = arg_attempted_val
 		
 	else:
 		arg_flag.visible = false

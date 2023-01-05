@@ -288,6 +288,7 @@ func _on_cross_bearer_dies(cross_bearer):
 		_current_cross_unit_offset = cross_bearer.unit_offset
 		
 		_current_cross_enemy_path = cross_bearer.current_path
+		_current_cross.enemy_path_associated = cross_bearer.current_path
 		
 		if !_current_cross_enemy_path.is_connected("curve_changed", self, "_on_current_cross_path_curve_changed"):
 			_current_cross_enemy_path.connect("curve_changed", self, "_on_current_cross_path_curve_changed", [], CONNECT_PERSIST)
@@ -312,10 +313,11 @@ func _on_current_cross_path_curve_changed(arg_curve : Curve2D, arg_curve_id):
 	_update_cross_pos(arg_curve)
 
 func _update_cross_pos(arg_curve):
-	var rel_pos = arg_curve.interpolate_baked(_current_cross_unit_offset * arg_curve.get_baked_length())
-	var global_pos = rel_pos + _current_cross_enemy_path.global_position
-	
-	_current_cross.global_position = global_pos
+	if is_instance_valid(_current_cross):
+		var rel_pos = arg_curve.interpolate_baked(_current_cross_unit_offset * arg_curve.get_baked_length())
+		var global_pos = rel_pos + _current_cross_enemy_path.global_position
+		
+		_current_cross.global_position = global_pos
 
 func _on_current_cross_path_is_used_and_active_changed(arg_val):
 	if !arg_val:
