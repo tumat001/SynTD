@@ -4705,7 +4705,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_base_dmg.display_body = false
 		
 		var ins_for_base_dmg = []
-		ins_for_base_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, -1, "base damage", 0.75))
+		ins_for_base_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, -1, "base damage", 0.25))
 		
 		interpreter_for_base_dmg.array_of_instructions = ins_for_base_dmg
 		
@@ -4738,7 +4738,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["|0|: Production. Se Propager attempts to plant a |1| in an unoccupied in-range tower slot.", [plain_fragment__ability, plain_fragment__tower_les_semis]],
 			["Cooldown : |0|.", [interpreter_for_cooldown]],
 			"",
-			"Les Semis: a tower that inherits 100% of its parents base damage on creation.",
+			"Les Semis: a tower that inherits 40% of its parents base damage on creation.",
 			["Les Semis becomes Golden on killing 3 enemies, increasing its sell value by |0|.", [plain_fragment__sell_value]],
 			["Les Semis gains |0| per 1 gold it is worth selling for.", [interpreter_for_base_dmg]],
 			"Les Semis does not contribute to the color synergy, but benefits from it. Does not take a tower slot.",
@@ -4751,7 +4751,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["|0|: Se Propager plants a |1| in an unoccupied in-range tower slot.", [plain_fragment__ability_name, plain_fragment__tower_les_semis]],
 			["Cooldown : |0|.", [interpreter_for_cooldown]],
 			"",
-			"Les Semis: a tower that inherits 100% of its parent's base damage on creation.",
+			"Les Semis: a tower that inherits 40% of its parent's base damage on creation.",
 			["Les Semis becomes Golden on killing 3 enemies, increasing its sell value by |0|.", [plain_fragment__sell_value]],
 			"Does not take a tower slot.",
 		]
@@ -4791,7 +4791,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_base_dmg.display_body = false
 		
 		var ins_for_base_dmg = []
-		ins_for_base_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, -1, "base damage", 0.75))
+		ins_for_base_dmg.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, -1, "base damage", 0.25))
 		
 		interpreter_for_base_dmg.array_of_instructions = ins_for_base_dmg
 		
@@ -4802,14 +4802,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		#Se Propager description also uses this. Change se prop desc if changing this
 		info.tower_descriptions = [
-			"Inherits 100% of its parent's base damage upon creation.",
+			"Inherits 40% of its parent's base damage upon creation.",
 			["Les Semis becomes Golden on killing 3 enemies, increasing its sell value by |0|.", [plain_fragment__sell_value]],
 			["Les Semis gains |0| per 1 gold it is worth selling for.", [interpreter_for_base_dmg]],
 			"Les Semis does not contribute to the color synergy, but benefits from it. Does not take a tower slot.",
 		]
 		
 		info.tower_simple_descriptions = [
-			"Inherits 100% of its parents base damage on creation.",
+			"Inherits 40% of its parents base damage on creation.",
 			["Les Semis becomes Golden on killing 3 enemies, increasing its sell value by |0|.", [plain_fragment__sell_value]],
 			"Does not take a tower slot.",
 		]

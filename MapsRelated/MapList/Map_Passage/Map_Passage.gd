@@ -29,12 +29,12 @@ const enemy_path_id__middle_to__middle = 3
 
 #
 
-const fire_percent_health_dmg_per_sec : float = 5.0
+const fire_percent_health_dmg_per_sec : float = 4.0
 const fire_percent_type : int = PercentType.MAX  # if changing this, change description as well
 const fire_dmg_type : int = DamageType.ELEMENTAL
-const fire_dmg_minimum : float = 0.25
+const fire_dmg_minimum : float = 0.20
 
-const water_slow_amount_percent : float = -50.0
+const water_slow_amount_percent : float = -65.0
 var water_slow_effect : EnemyAttributesEffect
 
 var map_passage__aoe_creator__hidden_tower

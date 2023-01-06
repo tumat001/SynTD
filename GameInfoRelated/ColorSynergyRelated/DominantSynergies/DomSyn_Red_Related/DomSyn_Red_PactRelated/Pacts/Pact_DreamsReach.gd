@@ -89,6 +89,13 @@ func _first_time_initialize():
 	]
 	
 	_update_description_based_on_curr_win_count()
+	
+	#
+	
+	game_elements.stage_round_manager.connect("round_started", self, "_on_round_started__d", [], CONNECT_PERSIST)
+	game_elements.stage_round_manager.connect("round_ended", self, "_on_round_ended__d", [], CONNECT_PERSIST)
+	
+
 
 func _convert_given_arr_to_tier_to_count_map(arg_arr : Array) -> Dictionary:
 	var map : Dictionary = {}
@@ -137,7 +144,8 @@ func pact_sworn():
 	.pact_sworn()
 	
 	game_elements.stage_round_manager.connect("round_ended", self, "_on_round_end", [], CONNECT_PERSIST)
-
+	
+	pact_can_be_sworn_conditional_clauses.remove_clause(PactCanBeSwornClauseId.DREAMS_REACH__DURING_ROUND)
 
 func _on_round_end(curr_stageround):
 	if game_elements.stage_round_manager.current_round_lost:
@@ -177,6 +185,23 @@ func pact_unsworn(arg_replacing_pact):
 	.pact_unsworn(arg_replacing_pact)
 	
 	game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end")
+	
+	game_elements.stage_round_manager.disconnect("round_started", self, "_on_round_started__d")
+	game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_ended__d")
+
+
+
+#
+
+func _on_round_started__d(curr_stageround):
+	if !is_sworn:
+		pact_can_be_sworn_conditional_clauses.attempt_insert_clause(PactCanBeSwornClauseId.DREAMS_REACH__DURING_ROUND)
+
+func _on_round_ended__d(arg_stageround):
+	if !is_sworn:
+		pact_can_be_sworn_conditional_clauses.remove_clause(PactCanBeSwornClauseId.DREAMS_REACH__DURING_ROUND)
+
+
 
 #########
 

@@ -365,6 +365,10 @@ func _on_sworn_pact_card_removed(pact, replacing_pact):
 func remove_pact_from_sworn_list(pact):
 	red_pact_whole_panel.sworn_pact_list.remove_pact(pact)
 
+func remove_pact_from_unsworn_list(pact):
+	red_pact_whole_panel.unsworn_pact_list.remove_pact(pact)
+
+
 #
 
 func _on_round_end_red_inactive(curr_stageround):
@@ -413,8 +417,8 @@ func _initialize_red_pact_whole_panel():
 	
 	# for debugging only ############
 #	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.ABILITY_PROVISIONS, 3, 3))
-#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.FROST_IMPLANTS, 0, 3))
-#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.DAMAGE_IMPLANTS, 3, 3))
+#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.JEWELED_BLADE, 3, 3))
+#	red_pact_whole_panel.unsworn_pact_list.add_pact(_generate_pact_with_tier(StoreOfPactUUID.PactUUIDs.JEWELED_STAFF, 3, 3))
 
 
 ###

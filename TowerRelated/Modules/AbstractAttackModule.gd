@@ -314,12 +314,20 @@ func _set_range_module(new_module):
 		range_module.attack_modules_using_this.erase(self)
 	
 	if is_instance_valid(new_module):
-		if !is_instance_valid(new_module.get_parent()):
+		if !is_instance_valid(new_module.get_parent()): #and !new_module.is_deferred_add_child_by_attack_module:
 			add_child(new_module)
-			#call_deferred("add_child", new_module)
+			
+			#new_module.is_deferred_add_child_by_attack_module = true
+			#call_deferred("_add_range_module_as_child", new_module)
+			
 		new_module.attack_modules_using_this.append(self)
 	
 	range_module = new_module
+
+#func _add_range_module_as_child(arg_module):
+#	arg_module.is_deferred_add_child_by_attack_module = false
+#	add_child(arg_module)
+#
 
 # Time passed
 

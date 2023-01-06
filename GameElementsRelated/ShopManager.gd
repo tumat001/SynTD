@@ -19,7 +19,7 @@ const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_4 : [55, 43, 2, 0, 0, 0],
 	LevelManager.LEVEL_5 : [45, 35, 20, 0, 0, 0],
 	LevelManager.LEVEL_6 : [23, 40, 35, 2, 0, 0],
-	LevelManager.LEVEL_7 : [20, 27, 40, 12, 1, 0],
+	LevelManager.LEVEL_7 : [20, 29, 40, 10, 1, 0],
 	LevelManager.LEVEL_8 : [15, 20, 33, 30, 2, 0],
 	LevelManager.LEVEL_9 : [10, 15, 20, 35, 20, 0],
 	LevelManager.LEVEL_10 : [5, 10, 10, 25, 25, 25],
@@ -57,6 +57,9 @@ const blacklisted_towers_to_inventory : Array = [
 	Towers.DUNED,
 	Towers.MAP_PASSAGE__FIRE_PATH,
 	Towers.MAP_ENCHANT__ATTACKS,
+	
+	#temporarily. enable it where it is fitting.
+	Towers.HERO,
 	
 	#red towers
 	Towers.OUTREACH, #6
@@ -100,6 +103,9 @@ const towers_not_initially_in_inventory : Array = [
 	Towers.DUNED,
 	Towers.MAP_PASSAGE__FIRE_PATH,
 	Towers.MAP_ENCHANT__ATTACKS,
+	
+	#temporarily.
+	Towers.HERO,
 	
 	# red towers
 	Towers.OUTREACH, #6

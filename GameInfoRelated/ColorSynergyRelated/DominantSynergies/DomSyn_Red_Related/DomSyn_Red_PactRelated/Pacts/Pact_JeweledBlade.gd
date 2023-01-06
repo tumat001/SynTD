@@ -15,6 +15,8 @@ var _current_level_affected : int
 var _current_additional_gold_cost_for_level_amount : int
 
 const player_worth_for_offerable : int = 60
+const player_level_max_inc : int = 8
+
 
 func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactUUIDs.JEWELED_BLADE, "Jeweled Blade", arg_tier, arg_tier_for_activation):
 	
@@ -39,6 +41,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	]
 	
 	bad_descriptions = [
+		"",
 		""
 	]
 	
@@ -121,7 +124,13 @@ func _calculate_extra_cost_for_next_level() -> int:
 
 
 func _on_player_level_changed(new_val): # disconnected when swearing this pact
-	_update_level_related_vars()
+	
+	if !is_sworn and new_val == player_level_max_inc + 1:
+		red_dom_syn.remove_pact_from_unsworn_list(self)
+		
+	else:
+		_update_level_related_vars()
+
 
 func _update_level_related_vars():
 	_current_level_affected = _get_next_level_after_current()
@@ -131,10 +140,17 @@ func _update_level_related_vars():
 		var plain_fragment__leveling_up = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.LEVEL_UP_ORANGE, "Leveling up")
 		var plain_fragment__total_worth_in_gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "%s more gold" % str(_current_additional_gold_cost_for_level_amount))
 		
+		var plain_fragment__level_9 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.LEVEL_UP_ORANGE, "level 9")
+		
+		
 		bad_descriptions[0] = ["|0| to %s costs |1| (irreversible)." % str(_current_level_affected), [plain_fragment__leveling_up, plain_fragment__total_worth_in_gold]]
+		bad_descriptions[1] = ["This pact removes itself when |0| is reached while this is unsworn.", [plain_fragment__level_9]]
+		
 		emit_signal("on_description_changed")
 	else:
+		
 		bad_descriptions[0] = ""
+		
 		emit_signal("on_description_changed")
 		_current_additional_gold_cost_for_level_amount = 0
 
@@ -151,6 +167,7 @@ func pact_sworn():
 	
 	
 	bad_descriptions[0] = ""
+	bad_descriptions.remove(1)
 	emit_signal("on_description_changed")
 
 
@@ -201,4 +218,4 @@ func _remove_effect_from_tower(tower : AbstractTower):
 #
 
 func is_pact_offerable(arg_game_elements : GameElements, arg_dom_syn_red, arg_tier_to_be_offered : int) -> bool:
-	return _calculate_total_player_worth(arg_game_elements) >= player_worth_for_offerable
+	return _calculate_total_player_worth(arg_game_elements) >= player_worth_for_offerable and arg_game_elements.level_manager.current_level <= player_level_max_inc

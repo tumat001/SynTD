@@ -13,10 +13,10 @@ const BulletProj_Pic = preload("res://TowerRelated/Color_Green/SePropager_LesSem
 signal on_reached_golden_state()
 
 
-const ratio_of_parent_ad_to_inherit : float = 1.0
+const ratio_of_parent_ad_to_inherit : float = 0.4
 const gold_worth_increase_on_kill_count_achieved : int = 2
 const kill_count_needed : int = 3
-const ad_increase_per_gold_worth : float = 0.75
+const ad_increase_per_gold_worth : float = 0.25
 
 
 const animation_normal_E_name : String = "normal_E"

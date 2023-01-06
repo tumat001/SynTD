@@ -665,7 +665,7 @@ func _post_inherit_ready():
 	_update_ingredient_compatible_colors()
 	
 	if is_instance_valid(range_module):
-		if range_module.get_parent() == null:
+		if range_module.get_parent() == null: #and !range_module.is_deferred_add_child_by_attack_module:
 			add_child(range_module)
 		
 		configure_range_module_properties(range_module)
@@ -721,7 +721,15 @@ func configure_range_module_properties(arg_module):
 		arg_module.enemy_manager = game_elements.enemy_manager
 		arg_module.fov_node = game_elements.get_fov_node()
 		
-		arg_module.set_parent_tower(self)
+		if arg_module.is_inside_tree():
+			arg_module.set_parent_tower(self)
+		else:
+			if !arg_module.is_connected("after_ready", self, "_on_range_module_after_ready"):
+				arg_module.connect("after_ready", self, "_on_range_module_after_ready", [arg_module], CONNECT_ONESHOT)
+
+func _on_range_module_after_ready(arg_module):
+	arg_module.set_parent_tower(self)
+	
 
 
 func get_current_anim_size() -> Vector2:
@@ -830,8 +838,10 @@ func add_attack_module(attack_module : AbstractAttackModule, benefit_from_existi
 		
 		if is_instance_valid(range_module):
 			if range_module.get_parent() == null:
-				add_child(range_module)
+				#if !range_module.is_deferred_add_child_by_attack_module:
+				#	add_child(range_module)
 				
+				add_child(range_module)
 				configure_range_module_properties(range_module)
 			
 			if !range_module.is_connected("final_range_changed", self, "_emit_final_range_changed"):

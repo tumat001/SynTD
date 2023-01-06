@@ -145,7 +145,7 @@ const VOL_xp_gain_per_tower_affected_in_levels : Array = [5, 7, 8, 16]
 
 var white_dom_active : bool
 
-var current_hero_xp : float = 0      #current_xp   #current_exp   #left these text for ctrl F purposes
+var current_hero_xp : float = 0  #current_xp   #current_exp   #left these text for ctrl F purposes
 var current_hero_natural_level : int = 0
 var current_hero_effective_level : int = 0
 var current_spendables : int = 0

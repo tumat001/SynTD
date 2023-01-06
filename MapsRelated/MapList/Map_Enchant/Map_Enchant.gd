@@ -1564,20 +1564,21 @@ func _before_enemy_is_added_to_path(enemy, path):
 			enemy.configure_properties_to_behave_at_special_path()
 
 # for testing
-func get_spawn_ins_for_special_round__02():
-	return [
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
-
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK, _special_enemy_spawn_metadata),
-
-		SingleEnemySpawnInstruction.new(3, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK, _special_enemy_spawn_metadata),
-	]
+#func get_spawn_ins_for_special_round__02():
+#	return [
+#		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
+#
+#		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK, _special_enemy_spawn_metadata),
+#
+#		SingleEnemySpawnInstruction.new(3, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK, _special_enemy_spawn_metadata),
+#	]
 
 
 func get_spawn_ins_for_special_round__33():
 	return [
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
 		
 		
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK, _special_enemy_spawn_metadata),
@@ -1588,6 +1589,7 @@ func get_spawn_ins_for_special_round__43():
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
 		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
 		
 		
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK, _special_enemy_spawn_metadata),
@@ -1600,6 +1602,7 @@ func get_spawn_ins_for_special_round__53():
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
 		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK),
 		
 		
 		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_ENCHANT_ANTI_MAGIK, _special_enemy_spawn_metadata),

@@ -128,7 +128,8 @@ func _ready():
 	
 	# TEST HERE
 	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
-	#map_id = StoreOfMaps.MapsIds.PASSAGE
+	
+	#map_id = StoreOfMaps.MapsIds.ENCHANT
 	#
 	
 	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
@@ -417,7 +418,7 @@ func _on_BuySellLevelRollPanel_reroll():
 #	if !even:
 #		panel_buy_sell_level_roll.update_new_rolled_towers([
 #			Towers.WYVERN,
-#			Towers.REAPER,
+#			Towers.HERO,
 #			Towers.STRIKER,
 #			Towers.SHACKLED,
 #			Towers.TRANSPORTER,

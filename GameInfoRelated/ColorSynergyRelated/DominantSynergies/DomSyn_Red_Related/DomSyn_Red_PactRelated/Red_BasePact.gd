@@ -48,6 +48,8 @@ enum PactCanBeSwornClauseId {
 	
 	HEALING_SYMBOL_BENCH_STATUS = 100
 	COMBINATION_EFFICIENCY_AMOUNT_MIN_REACHED = 101
+	
+	DREAMS_REACH__DURING_ROUND = 102
 }
 var pact_can_be_sworn_conditional_clauses : ConditionalClauses
 var last_calculated_can_be_sworn : bool

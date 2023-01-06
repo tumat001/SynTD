@@ -14,6 +14,9 @@ signal current_enemies_acquired()
 signal targeting_changed
 signal targeting_options_modified
 
+signal after_ready()
+
+
 var benefits_from_bonus_range : bool = true
 
 var base_range_radius : float
@@ -49,6 +52,7 @@ var last_calculated_final_range : float
 # tracker
 
 var attack_modules_using_this : Array = []
+#var is_deferred_add_child_by_attack_module : bool
 
 # managers and relateds
 
@@ -97,6 +101,8 @@ func _ready():
 	
 	if _range_shape_set_before_in_tree != null:
 		set_range_shape(_range_shape_set_before_in_tree)
+	
+	emit_signal("after_ready")
 	
 	#_terrain_shape_owner_id - terrain_scan_area_2d.shape_owner
 	
@@ -295,11 +301,21 @@ func draw_circle_arc(center, radius, angle_from, angle_to, color):
 ########
 
 func update_range():
-	var final_range = calculate_final_range_radius()
-	call_deferred("emit_signal", "final_range_changed")
-	
-	_change_range(final_range)
-	#call_deferred("_change_range", final_range)
+	if is_inside_tree():
+		var final_range = calculate_final_range_radius()
+		call_deferred("emit_signal", "final_range_changed")
+		
+		_change_range(final_range)
+		#call_deferred("_change_range", final_range)
+		
+	else:
+		if !is_connected("after_ready", self, "_on_self_after_ready__update_range"):
+			connect("after_ready", self, "_on_self_after_ready__update_range", [], CONNECT_ONESHOT)
+
+
+func _on_self_after_ready__update_range():
+	update_range()
+
 
 func _change_range(final_range):
 	if is_connected("area_shape_entered", self, "_on_Range_area_shape_entered"):
@@ -653,10 +669,12 @@ func set_terrain_scan_shape(arg_shape):
 		
 		if !terrain_scan_area_2d.is_connected("area_exited", self, "_on_area_exited_terrain_scan_area_2d"):
 			terrain_scan_area_2d.connect("area_exited", self, "_on_area_exited_terrain_scan_area_2d", [], CONNECT_PERSIST)
-			
+		
+		
 		if !terrain_scan_area_2d.is_connected("area_entered", self, "_on_area_entered_terrain_scan_area_2d"):
 			terrain_scan_area_2d.connect("area_entered", self, "_on_area_entered_terrain_scan_area_2d", [], CONNECT_PERSIST)
-
+		
+		#_request_update_range_polgyon()
 
 func get_terrain_scan_shape():
 	return terrain_scan_shape.shape
@@ -739,7 +757,6 @@ func _wait_for_curr_poly_calc_thread_to_finish():
 
 func _update_polygon__in_thread(_data):
 	if !_wait_for_finish_called_from_thread:
-		#print(terrain_in_range)
 		#print("----------")
 		
 		var terrain_polygons = TerrainFuncs.convert_areas_to_polygons(terrain_in_range, global_position, layer_on_terrain)
