@@ -9,6 +9,17 @@ const TutorialHubScreen_Scene = preload("res://PreGameHUDRelated/TutorialHubScre
 const AboutPanel = preload("res://PreGameHUDRelated/AboutPanel/AboutPanel.gd")
 const AboutPanel_Scene = preload("res://PreGameHUDRelated/AboutPanel/AboutPanel.tscn")
 
+const StartingScreen_WholeScreen_Phase_02_01 = preload("res://PreGameHUDRelated/StartingScreen/Assets/StartingScreen_WholeScreen_Phase02_01.png")
+const StartingScreen_WholeScreen_Phase_02_02 = preload("res://PreGameHUDRelated/StartingScreen/Assets/StartingScreen_WholeScreen_Phase02_02.png")
+
+#
+
+const background_selection : Array = [
+	StartingScreen_WholeScreen_Phase_02_01,
+	StartingScreen_WholeScreen_Phase_02_02
+]
+
+#
 
 var pre_game_screen setget set_pre_game_screen
 
@@ -19,11 +30,24 @@ var about_panel : AboutPanel
 
 onready var general_container = $GeneralContainer
 
+onready var whole_screen_texture_rect = $Aesthetics/WholeScreen
+
 #
 
 func _ready():
 	connect("visibility_changed", self, "_on_visibility_changed")
+	
+	_set_background_to_random_wholescreen_background()
+	
 	_on_visibility_changed()
+
+
+func _set_background_to_random_wholescreen_background():
+	var texture = StoreOfRNG.randomly_select_one_element(background_selection, StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL))
+	whole_screen_texture_rect.texture = texture
+
+
+#
 
 func _on_visibility_changed():
 	set_process_unhandled_key_input(visible)

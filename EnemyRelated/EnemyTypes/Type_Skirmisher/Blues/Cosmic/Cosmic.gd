@@ -43,7 +43,7 @@ var shield_effect : EnemyShieldEffect
 
 #
 
-const _aoe_dmg_receive_percent_amount : float = -50.0
+const _aoe_dmg_receive_percent_amount : float = -30.0#-50.0
 const _aoe_dmg_receive_scale_duration : float = _shield_duration
 
 #
