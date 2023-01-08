@@ -27,6 +27,10 @@ enum Mode {
 
 #
 
+const default_game_mode : int = Mode.STANDARD_BEGINNER
+
+#
+
 ###### 01
 static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 	var info = GameModeTypeInformation.new()
@@ -47,7 +51,7 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 		return info
 		
 		
-	elif arg_id == Mode.STANDARD_BEGINNER or arg_id == -1:
+	elif arg_id == Mode.STANDARD_BEGINNER:
 		
 		info.mode_name = "Beginner"
 		info.mode_descriptions = [

@@ -150,6 +150,9 @@ func set_active_mode_using_game_settings_params():
 	
 
 func set_active_mode_using_id(arg_id):
+	if arg_id == -1:
+		arg_id = StoreOfGameMode.default_game_mode
+	
 	var mode_type_info : GameModeTypeInformation = StoreOfGameMode.get_mode_type_info_from_id(arg_id)
 	set_active_mode(mode_type_info)
 
