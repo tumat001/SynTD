@@ -145,7 +145,8 @@ func set_active_mode_using_game_settings_params():
 	if GameSettingsManager.map_id_to_last_chosen_mode_id_map.has(last_chosen_map_id):
 		set_active_mode_using_id(GameSettingsManager.map_id_to_last_chosen_mode_id_map[last_chosen_map_id])
 	else:
-		print("ERROR: NO DEFAULT last chosen mode")
+		set_first_valid_mode()
+		#print("ERROR: NO DEFAULT last chosen mode")
 	
 
 func set_active_mode_using_id(arg_id):

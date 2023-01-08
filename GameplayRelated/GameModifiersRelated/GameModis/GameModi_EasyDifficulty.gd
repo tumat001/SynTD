@@ -1,7 +1,7 @@
 extends "res://GameplayRelated/GameModifiersRelated/BaseGameModifier.gd"
 
 
-const enemy_health_multiplier : float = 0.6
+const enemy_health_multiplier : float = 0.85
 
 func _init().(StoreOfGameModifiers.GameModiIds.EASY_DIFFICULTY, 
 		BreakpointActivation.BEFORE_GAME_START, "Easy Difficulty Modifiers"):

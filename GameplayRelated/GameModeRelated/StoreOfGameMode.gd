@@ -47,7 +47,7 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 		return info
 		
 		
-	elif arg_id == Mode.STANDARD_BEGINNER:
+	elif arg_id == Mode.STANDARD_BEGINNER or arg_id == -1:
 		
 		info.mode_name = "Beginner"
 		info.mode_descriptions = [

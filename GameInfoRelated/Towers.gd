@@ -367,8 +367,8 @@ const TowerTiersMap : Dictionary = {
 
 const tier_attk_speed_map : Dictionary = {
 	1 : 15,
-	2 : 22, #25
-	3 : 30, #35
+	2 : 25,
+	3 : 35,
 	
 	4 : 50,
 	5 : 60,
@@ -392,13 +392,13 @@ const tier_base_dmg_map : Dictionary = {
 }
 
 const tier_on_hit_dmg_map : Dictionary = {
-	1 : 0.7,
-	2 : 1.2,
-	3 : 1.7,
+	1 : 0.75,
+	2 : 1.25,
+	3 : 1.75,
 	
 	4 : 2.5,
-	5 : 2.7,
-	6 : 2.7,
+	5 : 2.75,
+	6 : 2.75,
 #	6 : 3.25,
 #	4 : 2.7,
 #	5 : 3.2,
