@@ -17,6 +17,10 @@ const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
+const MeshScreenTintEffect = preload("res://MiscRelated/ScreenEffectsRelated/SpecialEffects/MeshScreenTintEffect.gd")
+const MeshScreenTintEffect_Scene = preload("res://MiscRelated/ScreenEffectsRelated/SpecialEffects/MeshScreenTintEffect.tscn")
+
+
 
 signal on_current_level_up_cost_amount_changed(new_cost)
 signal on_current_level_up_cost_currency_changed(new_currency)
@@ -98,6 +102,16 @@ var current_level_up_currency : int
 # relic shop offer
 
 var level_up_to_10_shop_offer_id : int
+
+
+# screen tint related
+
+const level_up_screen_tint_modulate__orange := Color(1, 128/255.0, 0, 0.5)
+const level_up_screen_tint_modulate__green := Color(30/255.0, 218/255.0, 2/255.0, 0.5)
+
+const level_up_screen_tint_modulate_transparent := Color(0, 0, 0, 0)
+#const level_up_screen_tint_modulate_transparent := level_up_screen_tint_modulate__orange
+
 
 #
 
@@ -210,14 +224,14 @@ func level_up_with_spend_currency():
 		elif current_level_up_currency == Currency.RELIC:
 			relic_manager.decrease_relic_count_by(current_level_up_cost, RelicManager.DecreaseRelicSource.LEVEL_UP)
 		
-		set_current_level(current_level + 1)
+		set_current_level(current_level + 1, true)
 		return true
 	
 	return false
 
 
 
-func set_current_level(new_level):
+func set_current_level(new_level, arg_play_tint : bool = false):
 	if max_level >= new_level:
 		current_level = new_level
 		
@@ -227,7 +241,9 @@ func set_current_level(new_level):
 		set_level_up_cost_currency(base_level_up_costs[current_level][1])
 		
 		_on_current_level_changed__for_store_purposes()
-
+		
+		if arg_play_tint:
+			_on_current_level_changed__for_tint_purposes()
 
 func _gold_amount_changed(gold_amount):
 	#emit_signal("on_can_level_up_changed", can_level_up())
@@ -307,4 +323,30 @@ func _on_level_up_to_10_shop_offer_selected():
 
 func _remove_level_up_to_10_relic_store_offer_option():
 	whole_screen_relic_general_store_panel.remove_relic_store_offer_option(level_up_to_10_shop_offer_id)
+
+
+#####
+
+func _on_current_level_changed__for_tint_purposes():
+	if current_level != LEVEL_1 and is_instance_valid(game_elements):
+		
+		var gradient_texture : GradientTexture2D = game_elements.get_rect_gradient_texture__based_on_play_map()
+		
+		if current_level == LEVEL_10:
+			gradient_texture.gradient = game_elements.construct_gradient_two_color(level_up_screen_tint_modulate_transparent, level_up_screen_tint_modulate__green)
+		else:
+			gradient_texture.gradient = game_elements.construct_gradient_two_color(level_up_screen_tint_modulate_transparent, level_up_screen_tint_modulate__orange)
+		
+		var tint_effect = MeshScreenTintEffect_Scene.instance()
+		tint_effect.main_duration = 1.0
+		tint_effect.fade_in_duration = 0.5
+		tint_effect.fade_out_duration = 0.5
+		tint_effect.ins_uuid = StoreOfScreenEffectsUUID.PLAYER_LEVEL_UP
+		tint_effect.custom_z_index = ZIndexStore.SCREEN_EFFECTS
+		tint_effect.initial_modulate_a = 1
+		tint_effect.configure_self_to_gradient_texture_2d(game_elements.get_playable_map_size(), game_elements.get_middle_coordinates_of_playable_map(), gradient_texture)
+		
+		game_elements.screen_effect_manager.add_screen_tint_effect(tint_effect)
+
+
 

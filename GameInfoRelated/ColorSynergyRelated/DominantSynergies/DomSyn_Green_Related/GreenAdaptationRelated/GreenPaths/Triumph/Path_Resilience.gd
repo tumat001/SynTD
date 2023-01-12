@@ -19,7 +19,7 @@ var game_elements
 
 #
 
-func _init().(path_name, path_descs, path_small_icon):
+func _init(arg_tier).(path_name, path_descs, path_small_icon, arg_tier):
 	pass
 
 #
@@ -37,8 +37,8 @@ func _apply_path_tier_to_game_elements(tier : int, arg_game_elements : GameEleme
 		var all_towers = game_elements.tower_manager.get_all_active_towers()
 		for tower in all_towers:
 			_tower_to_benefit_from_path(tower)
-		
-		._apply_path_tier_to_game_elements(tier, arg_game_elements)
+	
+	._apply_path_tier_to_game_elements(tier, arg_game_elements)
 
 
 func _remove_path_from_game_elements(tier : int, arg_game_elements : GameElements):

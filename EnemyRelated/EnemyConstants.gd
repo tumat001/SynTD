@@ -82,7 +82,6 @@ var second_half_faction_id_pool : Array
 func _init():
 	first_half_faction_id_pool.append(EnemyFactions.BASIC)
 	
-	
 	second_half_faction_id_pool.append(EnemyFactions.EXPERT)
 	second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
 	second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)

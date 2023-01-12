@@ -88,6 +88,10 @@ signal tower_sellback_value_changed(arg_new_val, arg_tower)
 
 signal tower_info_panel_shown(arg_tower_associated)
 
+signal tower_last_calculated_untargetability_changed(arg_val, arg_tower)
+
+#
+
 const base_ing_limit_of_tower : int = 1
 
 const ing_cap_per_relic : int = 1
@@ -332,6 +336,8 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("on_tower_transfered_in_map_from_bench", self, "_on_tower_placed_in_map_from_bench", [], CONNECT_PERSIST)
 	
 	tower_instance.connect("ingredients_absorbed_changed", self, "_emit_tower_ingredients_absorbed_changed", [tower_instance], CONNECT_PERSIST)
+	
+	tower_instance.connect("last_calculated_untargetability_changed", self, "_emit_last_calculated_untargetability_changed", [tower_instance], CONNECT_PERSIST)
 	
 	connect("ingredient_mode_turned_into", tower_instance, "_set_is_in_ingredient_mode", [], CONNECT_PERSIST)
 	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient", [], CONNECT_PERSIST)
@@ -1024,6 +1030,10 @@ func _on_tower_in_queue_free__for_restore_position(arg_tower):
 
 func _emit_tower_ingredients_absorbed_changed(arg_tower):
 	emit_signal("tower_absorbed_ingredients_changed", arg_tower)
+
+func _emit_last_calculated_untargetability_changed(arg_val, arg_tower):
+	emit_signal("tower_last_calculated_untargetability_changed", arg_val, arg_tower)
+
 
 #
 

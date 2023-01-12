@@ -25,7 +25,7 @@ const beacon_dish_panel_about_descriptions : Array = [
 var tower_detecting_range_module : TowerDetectingRangeModule
 var refresh_cooldown : float = 5.0
 var _current_refresh_cooldown : float = 0
-var effect_duration : float = 5.2 #4.0
+var effect_duration : float = 5.2
 
 var elemental_on_hit_effect : TowerOnHitDamageAdderEffect
 var attack_speed_effect : TowerAttributesEffect
@@ -182,14 +182,13 @@ func _on_tower_hide_range():
 # Giving of effects related
 
 func _process(delta):
-	
 	if is_round_started:
 		_current_refresh_cooldown -= delta
 		
 		if _current_refresh_cooldown <= 0:
 			if current_placable is InMapAreaPlacable and !last_calculated_disabled_from_attacking:
 				var cd = _get_cd_to_use(refresh_cooldown)
-				_current_refresh_cooldown += cd
+				_current_refresh_cooldown = cd 
 				
 				buff_aura_ability.on_ability_before_cast_start(cd)
 				#_update_elemental_on_hit_effect()
@@ -197,6 +196,7 @@ func _process(delta):
 				#_update_flat_range_effect()
 				
 				_give_buffs_to_active_towers_in_range()
+				
 				_show_signal_particle()
 				
 				_decrease_count_of_countbounded(bd_attack_module)

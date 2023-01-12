@@ -5,7 +5,6 @@
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=3]
 [ext_resource path="res://GameHUDRelated/BuySellPanel/BuySellLevelRollPanel.tscn" type="PackedScene" id=4]
 [ext_resource path="res://GameElementsRelated/GameElements.gd" type="Script" id=5]
-[ext_resource path="res://GameHUDRelated/ColorWheelPanel/Whole_ColorWheel_CenterPlain.png" type="Texture" id=6]
 [ext_resource path="res://GameElementsRelated/TowerInventoryRelated/TowerInventoryBench.tscn" type="PackedScene" id=7]
 [ext_resource path="res://GameElementsRelated/TowerManager.gd" type="Script" id=8]
 [ext_resource path="res://GameElementsRelated/CombinationManager.gd" type="Script" id=9]
@@ -43,6 +42,7 @@
 [ext_resource path="res://GameElementsRelated/GameStatsManager.gd" type="Script" id=41]
 [ext_resource path="res://GameHUDRelated/GameStatsPanel/shared/Assets/AbsorbIcon_20x20.png" type="Texture" id=42]
 [ext_resource path="res://GameInfoRelated/TerrainRelated/FOV.gd" type="Script" id=43]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/ColorWheelGUI/ColorWheelGUI.tscn" type="PackedScene" id=44]
 
 [sub_resource type="DynamicFont" id=1]
 size = 24
@@ -134,24 +134,18 @@ margin_right = 960.0
 margin_bottom = 100.0
 
 [node name="ColorWheelPanel" type="MarginContainer" parent="BottomPanel/HBoxContainer"]
-margin_top = 10.0
-margin_right = 90.0
-margin_bottom = 90.0
+margin_top = 50.0
+margin_right = 10.0
+margin_bottom = 50.0
 mouse_filter = 2
 size_flags_horizontal = 2
 size_flags_vertical = 6
 custom_constants/margin_left = 10
 
-[node name="ColorWheelSprite" type="TextureButton" parent="BottomPanel/HBoxContainer/ColorWheelPanel"]
+[node name="ColorWheelGUI" parent="BottomPanel/HBoxContainer/ColorWheelPanel" instance=ExtResource( 44 )]
 margin_left = 10.0
-margin_right = 90.0
-margin_bottom = 80.0
-focus_mode = 0
-size_flags_horizontal = 6
-size_flags_vertical = 6
-action_mode = 0
-enabled_focus_mode = 0
-texture_normal = ExtResource( 6 )
+margin_right = 10.0
+margin_bottom = 0.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="BottomPanel/HBoxContainer"]
 margin_left = 104.0
@@ -355,7 +349,7 @@ script = ExtResource( 39 )
 [node name="OtherNodeHoster" type="Node" parent="."]
 script = ExtResource( 38 )
 
-[connection signal="pressed" from="BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelSprite" to="." method="_on_ColorWheelSprite_pressed"]
+[connection signal="color_wheel_left_mouse_released" from="BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelGUI" to="." method="_on_ColorWheelGUI_color_wheel_left_mouse_released"]
 [connection signal="level_up" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_level_up"]
 [connection signal="reroll" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_reroll"]
 [connection signal="tower_bought" from="BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/BuySellLevelRollPanel" to="." method="_on_BuySellLevelRollPanel_tower_bought"]

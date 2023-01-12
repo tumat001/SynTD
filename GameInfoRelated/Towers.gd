@@ -182,7 +182,7 @@ enum {
 	LAVA_JET = 301,
 	CAMPFIRE = 302,
 	VOLCANO = 303,
-	_704 = 304,
+	_704 = 304,   # VALUE HARDCODED IN AbstractTower.
 	FLAMEBURST = 305,
 	SCATTER = 306,
 	COAL_LAUNCHER = 307,
@@ -638,6 +638,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"\"First Iteration\""
 		]
 		
+		info.tower_simple_descriptions = [
+			"Directs a constant pure energy beam at a single target.",
+		]
+		
 		# Ingredient related
 		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_SIMPLEX)
 		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
@@ -803,7 +807,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			["Tesla's attacks |0| its target for 0.25 seconds on hit.", [plain_fragment__stun]],
 			"",
-			"Gain a stack per main attack, increased to 2 stacks against stunned enemies. On 20 stacks, cast Amp Up.",
+			"After attacking enough times, cast Amp Up.",
 			["|0|: Amp Up: Summon an Amp that orbits around Tesla, dealing |1| to enemies hit. Applies on hit effects.", [plain_fragment__ability, interpreter_for_flat_on_hit]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			#"",
@@ -893,8 +897,6 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			info.tower_descriptions[0],
 			["Upon dealing 80 damage with the orbs, diamonds and bolts, CHAOS erupts a dark sword to stab the orb's target, dealing |0|.", [interpreter_for_sword]],
-			"",
-			"\"What happens when Chaos absorbs a Chaos?\""
 		]
 		
 		#
@@ -972,7 +974,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			#"Stats shown are for the arrow.",
-			["Shoots an arrow that releases a ring. The ring marks up to |0|.", [interpreter_for_mark_count]],
+			["Fire an arrow that releases a ring. The ring marks up to |0|.", [interpreter_for_mark_count]],
 			"After a brief delay, Ping shoots all marked enemies, consuming all marks in the process.",
 			"Ping can shoot the next arrow immediately when it kills at least one enemy with its shots.",
 			"",
@@ -981,8 +983,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			["Shoots an arrow that marks up to |0|.", [interpreter_for_mark_count]],
-			["After a brief delay, Ping shoots all marked enemies, dealing |0| to each enemy.", [interpreter_for_normal_shot]],
+			["Fire an arrow that marks up to |0|.", [interpreter_for_mark_count]],
+			["After a brief delay, deal |0| to each marked enemy.", [interpreter_for_normal_shot]],
 			["If only 1 enemy is marked, the shot instead deals |0|.", [interpreter_for_emp_shot]],
 		]
 		
@@ -1257,7 +1259,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_descriptions = [
 			"When idle, Charge accumulates energy. Charge's energy is set to 50% when the round starts.",
-			"Upon main attacking, Charge expends all energy to deal bonus physical on hit damage based on expended energy.",
+			"Main attacks expend all energy to deal bonus physical on hit damage based on expended energy.",
 			["Max flat physical on hit damage portion: |0|", [interpreter_for_flat_on_hit]],
 			["Max percent enemy health physical on hit damage portion: |0|", [interpreter_for_perc_on_hit]],
 			"",
@@ -1265,7 +1267,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			"When idle, Charge accumulates energy. Upon main attacking, Charge expends all energy to deal bonus physical on hit damage based on expended energy.",
+			"Charge empowers its next main attack over a duration.",
 			["Max flat physical on hit damage portion: |0|", [interpreter_for_flat_on_hit]],
 			["Max percent enemy health physical on hit damage portion: |0|", [interpreter_for_perc_on_hit]],
 		]
@@ -1338,7 +1340,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			"When shooting, Magnetizer alterates between blue magnet and red magnet. Magnetizer switches to the next targeting option after shooting a magnet.",
 			["Beams |0| between blue and red magnets, consuming them in the process.", [plain_fragment__ability_form]],
-			["Beams deal |0|. Applies on hit effects", [interpreter]],
+			["Beams deal |0|.", [interpreter]],
 		]
 		
 		
@@ -1568,8 +1570,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			"Campfire gains Rage when enemies take damage in its range.",
-			"Upon reaching enough Rage, Campfire consumes all Rage to cast Heat Pact.",
+			"Dealing enough damage to enemies in range triggers Heat Pact.",
 			"",
 			["|0|: The next attack of all towers in range deals bonus |1|.", [plain_fragment__ability_heat_pact, interpreter_for_on_hit]],
 		]
@@ -1699,7 +1700,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = flameburst_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 2.50
+		info.base_damage = 2.75 #2.50
 		info.base_attk_speed = 0.8
 		info.base_pierce = 1
 		info.base_range = 115
@@ -2132,14 +2133,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Does not attack",
 			"Gives a fruit at the end of every 3rd round of being in the map.",
-			"Fruits do not attack, but have an ingredient effect. Fruits can be given to any tower regardless of tower color.",
+			"Fruits possess a special ingredient effect. Fruits can be given to any tower regardless of tower color.",
 			"",
 			["Fruits appear in the tower bench, and will be converted into |0| when no space is available.", [plain_fragment__gold]],
 		]
 		
 		info.tower_simple_descriptions = [
 			"Gives a fruit at the end of every 3rd round of being in the map.",
-			"Fruits do not attack, but have an ingredient effect. Fruits can be given to any tower regardless of tower color.",
+			"Fruits possess a special ingredient effect. Fruits can be given to any tower regardless of tower color.",
 		]
 		
 		
@@ -2213,7 +2214,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = impale_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 11
+		info.base_damage = 15 #11
 		info.base_attk_speed = 0.24
 		info.base_pierce = 0
 		info.base_range = 105
@@ -2257,7 +2258,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			["Impale shoots up a spike that stabs an enemy, |0| them for 2.2 seconds.", [plain_fragment__stunning]],
 			["When the stun expires, Impale retracts the spike, dealing damage again. The retract damage deals |0| when the enemy has less than 75% of their max health.", [interpreter_for_retract_bonus_dmg_on_threshold]],
-			["Normal type enemies take additional |0| from the rectact damage.", [interpreter_for_retract_on_normals]],
+			#["Normal type enemies take additional |0| from the rectact damage.", [interpreter_for_retract_on_normals]],
 		]
 		
 		var imp_dmg_effect = ImpaleBonusDamageEffect.new()
@@ -2343,7 +2344,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var simple_ability_descs = [
 			["|0|: Orders all members to attack the marked enemy once, regardless of range.", [plain_fragment__ability_name]],
-			["Member's damage in Coordinated Attack deal |0|.", [interpreter_for_bonus_dmg]],
+			#["Member's damage in Coordinated Attack deal |0|.", [interpreter_for_bonus_dmg]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 		]
 		
@@ -2553,8 +2554,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			["Douser casts Buffing Waters after every |0|.", [interpreter_for_attk_count]],
 			"",
-			["|0|: Douser shoots a water ball at the closest tower and itself.", [plain_fragment__ability_name]],
-			["Towers hit by Buffing Waters gain |0| for the next 4 attacks within 10 seconds.", [interpreter_for_buff]],
+			["|0|: Douser and the closest tower gain |1| for the next 4 attacks.", [plain_fragment__ability_name, interpreter_for_buff]],
 		]
 		
 		# Ingredient related
@@ -2894,7 +2894,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_simple_descriptions = [
 			"Main attacks on hit trigger Seed Bomb.",
-			["|0|: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed to gain a stack of Fragile.", [plain_fragment__ability_name]],
+			["|0|: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed deal more damage.", [plain_fragment__ability_name]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
 			["Each Fragile stack allows the explosion to deal |0| (up to |1|).", [interpreter_for_bonus_dmg_per_stack, interpreter_for_bonus_dmg_total]],
@@ -3133,11 +3133,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			["Reaper's attacks deal additional |0|, up to 8.", [interpreter_for_perc_on_hit]],
-			"",
+			#["Reaper's attacks deal additional |0|, up to 8.", [interpreter_for_perc_on_hit]],
+			#"",
 			"Killing an enemy triggers Slash.",
 			["|0|: Slashes the area of the closest enemy, dealing |1| to each enemy hit.", [plain_fragment__ability_name, interpreter_for_slash]],
-			"Subsequent slashes within 0.5 seconds deal only 50%.",
+			#"Subsequent slashes within 0.5 seconds deal only 50%.",
 			["Cooldown: |0|.", [interpreter_for_cooldown]]
 		]
 		
@@ -3222,19 +3222,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_simple_descriptions = [
 			"Shocker possesses one shocker ball which sticks to the first enemy it hits.",
-			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack.",
+			"The ball zaps the closest enemy every time the enemy it is stuck to is hit by an attack.",
 			"",
 			["Shocker ball has |0|. Its bolts deal |1|.", [interpreter_for_range, interpreter_for_bolt]],
 		]
 		
-		
-#		info.tower_descriptions = [
-#			"Shocker possesses one shocker ball, which is shot when an enemy is in range. The shocker ball sticks to the first enemy it hits.",
-#			"The ball zaps the closest enemy within its range every time the enemy it is stuck to is hit by an attack. This event does not occur when the triggering attack is from another shocker ball.",
-#			"The ball returns to Shocker when the enemy dies, exits the map, when the ball fails to stick to a target, or when the enemy is not hit after 5 seconds.",
-#			"",
-#			"Shocker ball has 100 range. Its bolts deal 2 elemental damage. Bolts benefit from base damage buffs and on hit damages at 50% efficiency. Applies on hit effects.",
-#		]
 		
 		var attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_SHOCKER)
 		attr_mod.flat_modifier = tier_on_hit_dmg_map[info.tower_tier]
@@ -3311,8 +3303,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Adept's main attacks gain bonus effects based on its current target's distance from itself on hit.",
 			["Beyond 75% of range: Deal |0|.", [interpreter_for_bonus_dmg]],
 			["Below 40% of range: Fire a secondary attack that deals |0| and applies on hit effects. This is also considered to be a main attack.", [interpreter_for_snd_attk_dmg]],
-			"",
-			"After 3 rounds, Adept gains Far and Close targeting options.",
+			#"",
+			#"After 3 rounds, Adept gains Far and Close targeting options.",
 		]
 		
 		var tower_base_effect : AdeptModuleAdderEffect = AdeptModuleAdderEffect.new()
@@ -3971,7 +3963,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var simple_ability_desc = [
 			["|0|: Prominence smashes the ground, |1| and |2| nearby enemies for |3|, and dealing |4|.", [plain_fragment__ability_name, plain_fragment__knocking_up, plain_fragment__stunning, interpreter_for_stun_duration, interpreter_for_smash_damage]],
 			"Regards also applies to the furthest tower.",
-			["Prominece also gains 3 attacks with its sword, with each attack exploding, dealing |0| to enemies hit.", [interpreter_for_sword_dmg]],
+			#["Prominece also gains 3 attacks with its sword, with each attack exploding, dealing |0| to enemies hit.", [interpreter_for_sword_dmg]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 		]
 		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_SIMPLE_DESCRIPTION] = simple_ability_desc
@@ -4192,9 +4184,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			"Main attacks mark enemies for 7 seconds. Accumulae gains 1 Siphon stack when marking enemies.",
-			"",
-			"Reaching 15 stacks triggers Salvo.",
+			#"Main attacks mark enemies for 7 seconds. Accumulae gains 1 Siphon stack when marking enemies.",
+			#"",
+			#"Reaching 15 stacks triggers Salvo.",
+			"Main attacks against 15 unique enemies triggers Salvo.",
 			["|0|: Fire a Spell Burst at a random enemy's location for 15 times.", [plain_fragment__ability_name]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			
@@ -4353,8 +4346,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			"Brewd can brew multiple types of potions that have different effects.",
-			"",
+			#"Brewd can brew multiple types of potions that have different effects.",
+			#"",
 			"Auto casts Concoct.",
 			["|0|: Throws the selected potion type at its current target.", [plain_fragment__ability_name]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
@@ -4437,8 +4430,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Shackled attempts to cast Chains after 18 main attacks or dealing 60 post-mitigated damage.",
 			["|0|: After a brief delay, Shackled pulls 2 non-elite enemies towards its location and |1| them for 0.5 seconds. Targeting affects which enemies are pulled.", [plain_fragment__ability_name, plain_fragment__stunning]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
-			"",
-			"After 3 rounds of being in the map, Shackled is able to pull 2 more enemies per cast."
+			#"",
+			#"After 3 rounds of being in the map, Shackled is able to pull 2 more enemies per cast."
 		]
 		
 		
@@ -4565,10 +4558,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_SIMPLE_DESCRIPTION] = simple_ability_desc
 		
 		info.tower_simple_descriptions = [
-			"Nucleus shuffles phases every 5 main attacks.",
-			["Alpha Phase: Nucleus's main attacks's base damage is increased by |0|.", [interpreter_for_bonus_dmg]],
-			["Beta Phase: Nucleus's main attacks pierce through |0|.", [interpreter_for_pierce]],
-			"",
+			#"Nucleus shuffles phases every 5 main attacks.",
+			#["Alpha Phase: Nucleus's main attacks's base damage is increased by |0|.", [interpreter_for_bonus_dmg]],
+			#["Beta Phase: Nucleus's main attacks pierce through |0|.", [interpreter_for_pierce]],
+			#"",
 		]
 		
 		for desc in simple_ability_desc:
@@ -4987,7 +4980,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			"Hunt Down is automatically casted twice; once when half of all enemies have been spawned, and once when all enemies have been spawned.",
+			"Hunt Down is automatically casted twice per round.",
 			["|0|: Rapidly fire 4 shots at its current target, each dealing |1|.", [plain_fragment__ability_name, interpreter_for_hunt_down]],
 			["If the last shot kills an enemy, La Chasseur permanently gains stacking |0|. Also, gain |1|.", [interpreter_for_flat_on_hit, plain_fragment__gold]],
 		]
@@ -5147,7 +5140,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		#
 		
 		info.tower_descriptions = [
-			["Attacks apply Smolder to enemies hit, burning them for |0| every second, for 10 seconds.", [interpreter_for_flat_on_hit]],
+			["Attacks apply Smolder to enemies hit, burning them for |0| every second for 10 seconds.", [interpreter_for_flat_on_hit]],
 			"",
 			"Cast Efflux after 16 main attacks.",
 			["|0|: Efflux. Ashen'd fires a firery wave to the largest line of enemies, applying on hit effects (and Smolder). The firery wave's life distance is equal to trice this tower's range.", [plain_fragment__ability]],
@@ -5155,7 +5148,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			["Attacks apply Smolder to enemies hit, burning them for |0| every second, for 10 seconds.", [interpreter_for_flat_on_hit]],
+			["Attacks apply Smolder to enemies hit, burning them for |0| every second for 10 seconds.", [interpreter_for_flat_on_hit]],
 			"",
 			"Cast Efflux after 16 main attacks.",
 			["|0|: Ashen'd fires a firery wave to the largest line of enemies, applying on hit effects (and Smolder).", [plain_fragment__ability_name]],
@@ -5249,7 +5242,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["Main attacks's bullets explode upon losing all pierce, dealing |0| to 3 enemies.", [interpreter_for_flat_on_hit]],
 			"",
 			"Auto casts Plow:",
-			["|0|: Propel charges towards the (in range) tower slot with the most enemies between itself and its destination. Enemies hit are dealt |1| and are |2| for |3|.", [plain_fragment__ability_name, interpreter_for_flat_on_hit_for_ability, plain_fragment__stunned, interpreter_for_stun_duration]],
+			["|0|: Propel charges towards the (in range) tower slot with the most enemies in the way. Enemies hit are dealt |1| and are |2| for |3|.", [plain_fragment__ability_name, interpreter_for_flat_on_hit_for_ability, plain_fragment__stunned, interpreter_for_stun_duration]],
 			["Cooldown: |0|.", [interpreter_for_cooldown]]
 		]
 		
@@ -5288,7 +5281,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var outer_ins_for_direct_rocket_dmg = []
 		var ins_for_direct_rocket_dmg = []
-		ins_for_direct_rocket_dmg.append(NumericalTextFragment.new(50, false, DamageType.PHYSICAL))
+		ins_for_direct_rocket_dmg.append(NumericalTextFragment.new(70, false, DamageType.PHYSICAL))
 		ins_for_direct_rocket_dmg.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins_for_direct_rocket_dmg.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 15, DamageType.PHYSICAL))
 		
@@ -5305,7 +5298,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_rocket_dmg_splash.display_body = false
 		
 		var ins_for_rocket_dmg_splash = []
-		ins_for_rocket_dmg_splash.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "damage", 4))
+		ins_for_rocket_dmg_splash.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "damage", 15))
 		
 		interpreter_for_rocket_dmg_splash.array_of_instructions = ins_for_rocket_dmg_splash
 		#
@@ -5824,8 +5817,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# needed even if the same as above.
 		info.tower_simple_descriptions = [
 			"Casts Enchant every 10th main attack.",
-			["|0|: Fires a crystal that lands behind its target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 8 seconds.", [plain_fragment__ability_name]],
-			["Crystals give |0|, which increases by |1| per additional crystal in the map, up to |2|. Crystals have |3|.", [interpreter_for_base_amount, interpreter_for_extra_amount, interpreter_for_max_amount, interpreter_for_range]],
+			["|0|: Fires a crystal that lands behind its target. After a brief delay, all crystals emit an aura, giving all towers in its range an attack speed buff for 8 seconds based on the number of crystals.", [plain_fragment__ability_name]],
+			#["Crystals give |0|, which increases by |1| per additional crystal in the map, up to |2|. Crystals have |3|.", [interpreter_for_base_amount, interpreter_for_extra_amount, interpreter_for_max_amount, interpreter_for_range]],
 			"Crystals cannot affect Sophist towers.",
 		]
 		
@@ -5914,7 +5907,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Auto casts Fury.",
 			["|0|: Wyvern locks onto the healthiest target in range, continuously firing at that target with modified bullets until the target dies.", [plain_fragment__ability_name]],
 			["Each bullet deals |0|. However, the damage is only 75% effective against boss enemies.", [interpreter_for_bonus_dmg]],
-			["Wyvern additionally gains |0| during Fury.", [interpreter_for_attk_speed]],
+			#["Wyvern additionally gains |0| during Fury.", [interpreter_for_attk_speed]],
 			["Cooldown: |0|", [interpreter_for_cooldown]]
 		]
 		
@@ -5939,7 +5932,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.95
+		info.base_attk_speed = 0.925 #0.95
 		info.base_pierce = 1
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -6131,7 +6124,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		info.tower_simple_descriptions = [
 			"Auto casts Chant.",
-			["|0|: Create an orb that curses an enemy based on Enervate's targeting. Duplicate orbs are avoided.", [plain_fragment__ability_name]],
+			["|0|: Create an orb that curses an enemy. Duplicate orbs are avoided.", [plain_fragment__ability_name]],
 			"Each orb has its own unique effect.",
 			["Orbs deal |0| per 0.5 seconds.", [interpreter_for_flat_on_hit]],
 			["Cooldown : |0|", [interpreter_for_cooldown]]
@@ -6509,7 +6502,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["|0|: Shockwave: Send a wave that |1| 5 enemies when facing Blast, or |2| them by |3| for 2 seconds when not. Ability potency increases knockback.", [plain_fragment__ability, plain_fragment__knock_back, plain_fragment__slows, interpreter_for_slow]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
-			["Blast gains |0| on main attacks against stunned or slowed enemies.", [interpreter_for_attk_speed]]
+			["Blast gains |0| against stunned or slowed enemies.", [interpreter_for_attk_speed]]
 		]
 		
 		info.tower_simple_descriptions = [
@@ -6517,7 +6510,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			["|0|: Send a wave that |1| 5 enemies when facing Blast, or |2| them by |3| for 2 seconds when not.", [plain_fragment__ability_name, plain_fragment__knock_back, plain_fragment__slows, interpreter_for_slow]],
 			["Cooldown: |0|", [interpreter_for_cooldown]],
 			"",
-			["Blast gains |0| on main attacks against stunned or slowed enemies.", [interpreter_for_attk_speed]]
+			["Blast gains |0| against stunned or slowed enemies.", [interpreter_for_attk_speed]]
 		]
 		
 		# Ingredient related

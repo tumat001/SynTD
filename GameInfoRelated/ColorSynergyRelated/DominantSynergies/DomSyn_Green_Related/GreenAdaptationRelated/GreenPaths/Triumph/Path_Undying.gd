@@ -21,7 +21,7 @@ var _given_one_time_heath : bool = false
 
 #
 
-func _init().(path_name, path_descs, path_small_icon):
+func _init(arg_tier).(path_name, path_descs, path_small_icon, arg_tier):
 	pass
 
 #
@@ -37,8 +37,8 @@ func _apply_path_tier_to_game_elements(tier : int, arg_game_elements : GameEleme
 		if !_given_one_time_heath:
 			game_elements.health_manager.increase_health_by(health_one_time_give_amount, HealthManager.IncreaseHealthSource.SYNERGY)
 			_given_one_time_heath = true
-		
-		._apply_path_tier_to_game_elements(tier, arg_game_elements)
+	
+	._apply_path_tier_to_game_elements(tier, arg_game_elements)
 
 func _remove_path_from_game_elements(tier : int, arg_game_elements : GameElements):
 	if game_elements.stage_round_manager.is_connected("round_ended", self, "_on_round_end"):

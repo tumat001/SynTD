@@ -26,7 +26,7 @@ var dmg_instance_boost_effect : TowerDamageInstanceBoostEffect
 
 #
 
-func _init().(path_name, path_descs, path_small_icon):
+func _init(arg_tier).(path_name, path_descs, path_small_icon, arg_tier):
 	var interpreter_for_bonus_dmg_base = TextFragmentInterpreter.new()
 	interpreter_for_bonus_dmg_base.display_body = false
 	
@@ -51,6 +51,7 @@ func _init().(path_name, path_descs, path_small_icon):
 		["All Green tower's attacks deal |0|.", [interpreter_for_bonus_dmg_base]],
 		["This bonus is increased by another |0| for each higher tier attained.", [interpreter_for_bonus_dmg_per_stack]]
 	]
+	path_descs.clear()
 	for desc in temp_path_descs:
 		path_descs.append(desc)
 	

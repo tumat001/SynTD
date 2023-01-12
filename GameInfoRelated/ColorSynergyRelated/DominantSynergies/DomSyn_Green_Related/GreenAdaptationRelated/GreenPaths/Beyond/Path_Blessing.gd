@@ -13,7 +13,7 @@ var _applied_blessing : bool = false
 
 #
 
-func _init().(path_name, path_descs, path_small_icon):
+func _init(arg_tier).(path_name, path_descs, path_small_icon, arg_tier):
 	pass
 
 #

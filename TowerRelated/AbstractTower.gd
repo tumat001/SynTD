@@ -183,6 +183,7 @@ signal displayable_in_damage_stats_panel_changed(arg_val)
 # Clause related
 
 signal on_last_calculated_disabled_from_attacking_changed(arg_new_val)
+signal last_calculated_untargetability_changed(arg_val)
 
 # Terrain related
 
@@ -1520,28 +1521,37 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 	for module in target_modules:
 		if is_instance_valid(module.range_module):
 			if module.parent_tower == self and (module.range_module.benefits_from_bonus_range or attr_effect.force_apply):
-				var update_range_of_module : bool = true
-				
-				if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
-					update_range_of_module = !module.range_module.flat_range_effect_has_same_stats_to_current_except_time(attr_effect)
-					if update_range_of_module:
-						module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
-					else: #refresh time
-						module.range_module.flat_range_effects[attr_effect.effect_uuid].time_in_seconds = attr_effect.time_in_seconds
-					
-				elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
-					update_range_of_module = !module.range_module.percent_range_effect_has_same_stats_to_current_except_time(attr_effect)
-					
-					if update_range_of_module:
-						module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
-					else: #refresh time
-						module.range_module.percent_range_effects[attr_effect.effect_uuid].time_in_seconds = attr_effect.time_in_seconds
-				
 				if !affected_range_module_list.has(module.range_module):
-					if update_range_of_module:
-						module.range_module.update_range()
+					# do these codes only once per range module
+					var update_range_of_module : bool = true
+					
+					if attr_effect.attribute_type == TowerAttributesEffect.FLAT_RANGE:
+						update_range_of_module = !module.range_module.flat_range_effect_has_same_stats_to_current_except_time(attr_effect)
+						if update_range_of_module:
+							module.range_module.flat_range_effects[attr_effect.effect_uuid] = attr_effect
+						else: #refresh time
+							module.range_module.flat_range_effects[attr_effect.effect_uuid].time_in_seconds = attr_effect.time_in_seconds
+						
+					elif attr_effect.attribute_type == TowerAttributesEffect.PERCENT_BASE_RANGE:
+						update_range_of_module = !module.range_module.percent_range_effect_has_same_stats_to_current_except_time(attr_effect)
+						
+						if update_range_of_module:
+							module.range_module.percent_range_effects[attr_effect.effect_uuid] = attr_effect
+						else: #refresh time
+							module.range_module.percent_range_effects[attr_effect.effect_uuid].time_in_seconds = attr_effect.time_in_seconds
+					
+					#if update_range_of_module:   # NOTE: apparently remove this causes Variance Blue to work properly with BeaconDish?????? THIS makes our code less optimized.
+					module.range_module.update_range()
 					
 					affected_range_module_list.append(module.range_module)
+					
+				
+				
+#				if !affected_range_module_list.has(module.range_module):
+#					if update_range_of_module:
+#						module.range_module.update_range()
+#
+#					affected_range_module_list.append(module.range_module)
 				
 				if module == main_attack_module:
 					_emit_final_range_changed()
@@ -1574,9 +1584,9 @@ func _remove_range_effect(attr_effect_uuid : int, target_modules : Array):
 			module.range_module.percent_range_effects.erase(attr_effect_uuid)
 			
 			if !affected_range_module_list.has(module.range_module):
-					module.range_module.update_range()
-					affected_range_module_list.append(module.range_module)
-				
+				module.range_module.update_range()
+				affected_range_module_list.append(module.range_module)
+			
 			
 			if module._all_countbound_effects.has(attr_effect_uuid):
 				module._all_countbound_effects.erase(attr_effect_uuid)
@@ -2154,6 +2164,9 @@ func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected
 		
 		if tower_selected.tower_id == 2000:
 			return true
+		
+		if tower_selected.tower_id == 304:
+			return false
 		
 		return _can_accept_ingredient_color(tower_selected)
 	
@@ -3191,6 +3204,7 @@ func _untargetability_clause_added_or_removed(id):
 
 func _update_untargetability_state():
 	last_calculated_is_untargetable = !untargetability_clauses.is_passed
+	emit_signal("last_calculated_untargetability_changed", last_calculated_is_untargetable)
 
 func is_untargetable_only_from_invisibility():
 	return untargetability_clauses.has_clause(UntargetabilityClauses.IS_INVISIBLE) and untargetability_clauses._clauses.size() == 1

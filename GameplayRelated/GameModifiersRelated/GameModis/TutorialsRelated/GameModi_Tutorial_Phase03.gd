@@ -74,14 +74,14 @@ func _on_game_elements_before_game_start():
 		"Welcome to the chapter 3 of the tutorial. Click anywhere or press Enter to continue." : ProgressMode.CONTINUE,
 		
 		#1
-		"Right click this tower card to view its descriptions and stats." : ProgressMode.CONTINUE,
+		"Right click this tower card to view its descriptions and stats." : ProgressMode.ACTION_FROM_PLAYER,
 		["Over here, you can see that tower's |0|. Rebound's ingredient effect allows bullets to pass through 1 extra times.", [plain_fragment__Ingredient_Effect]] : ProgressMode.CONTINUE,
 		["|0| are bonus stats and special effects that a tower gives to its recepient when |1|.", [plain_fragment__Ingredient_Effects, plain_fragment__absorbed]] : ProgressMode.CONTINUE,
 		["You can think of |0| as tower upgrades. In this game, the |1| are the upgrades!", [plain_fragment__ingredient_effects, plain_fragment__towers]] : ProgressMode.CONTINUE,
 		#5 buy rebound
-		["Let's demonstrate that. Buy |0|.", [plain_fragment__Rebound]] : ProgressMode.CONTINUE,
+		["Let's demonstrate that. Buy |0|.", [plain_fragment__Rebound]] : ProgressMode.ACTION_FROM_PLAYER,
 		#6
-		"Now, press %s or click this color wheel to toggle to Absorb Mode." % InputMap.get_action_list("game_ingredient_toggle")[0].as_text() : ProgressMode.CONTINUE,
+		"Now, press %s or click this color wheel to toggle to Absorb Mode." % InputMap.get_action_list("game_ingredient_toggle")[0].as_text() : ProgressMode.ACTION_FROM_PLAYER,
 		"You are now in the Absorb Mode." : ProgressMode.CONTINUE,
 		["Normally, dragging a |0| to another |0| just switches their positions.", [plain_fragment__tower]] : ProgressMode.CONTINUE,
 		["But in the Absorb Mode, the dragged |0| gives its |1| to the |0| where it is dropped.", [plain_fragment__tower, plain_fragment__Ingredient_Effect]] : ProgressMode.CONTINUE,
@@ -99,7 +99,7 @@ func _on_game_elements_before_game_start():
 		["But why? That's because a tower only |0| towers of the same color and its 'neighbor' colors. |1| neighbor colors include |2| and |3|.", [plain_fragment__absorb, plain_fragment__Reds, plain_fragment__Orange, plain_fragment__Violet]] : ProgressMode.CONTINUE,
 		["You can look at the color wheel to quickly see a tower's neighbor colors. |0| has |1| and |2| beside it, but not |3|.", [plain_fragment__Red, plain_fragment__Orange, plain_fragment__Violet, plain_fragment__Yellow]] : ProgressMode.CONTINUE,
 		#20
-		["Buy |0| from the shop.", [plain_fragment__Ember]] : ProgressMode.CONTINUE,
+		["Buy |0| from the shop.", [plain_fragment__Ember]] : ProgressMode.ACTION_FROM_PLAYER,
 		["Since |0| is an |1|, |2| can absorb |0|. The reverse is also true.", [plain_fragment__Ember, plain_fragment__Orange_tower, plain_fragment__Striker]] : ProgressMode.CONTINUE,
 		
 		#22

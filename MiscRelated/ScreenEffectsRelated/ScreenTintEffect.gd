@@ -24,6 +24,8 @@ var _current_tint_color : Color
 var _tint_a_fade_in_rate : float = -1
 var _tint_a_fade_out_rate : float = -1
 
+#
+
 var _viewport_rect : Rect2
 
 

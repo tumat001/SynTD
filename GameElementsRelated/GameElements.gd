@@ -89,7 +89,7 @@ var game_settings_manager
 var generic_notif_panel : GenericNotifPanel
 var whole_screen_relic_general_store_panel : WholeScreenRelicGeneralStorePanel
 onready var sell_panel : SellPanel = $BottomPanel/HBoxContainer/VBoxContainer/HBoxContainer/InnerBottomPanel/SellPanel
-onready var color_wheel_sprite_button = $BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelSprite
+onready var color_wheel_gui = $BottomPanel/HBoxContainer/ColorWheelPanel/ColorWheelGUI
 onready var tutotial_notif_panel = $TutorialNotifPanel#$NotificationNode/TutorialNotifPanel
 
 onready var top_left_coord_of_map = $TopLeft
@@ -97,6 +97,10 @@ onready var bottom_right_coord_of_map = $BottomRight
 onready var fov_node = $FOVNode
 
 onready var synergy_interactable_panel : SynergyInteractablePanel = $BottomPanel/HBoxContainer/SynergyInteractablePanel
+
+#
+
+var _middle_coord_of_map : Vector2
 
 # Tutorial related
 
@@ -120,6 +124,10 @@ var game_modi_ids : Array
 #
 
 func _ready():
+	#
+	
+	_calculate_middle_coordinates_of_playable_map()
+	
 	#
 	game_modifiers_manager.game_elements = self
 	
@@ -399,9 +407,9 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
-#	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-#	level_manager.current_level = LevelManager.LEVEL_8
-#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	level_manager.current_level = LevelManager.LEVEL_7
+	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -413,27 +421,27 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	shop_manager.roll_towers_in_shop_with_cost()
+	#shop_manager.roll_towers_in_shop_with_cost()
 	
-#	if !even:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.WYVERN,
-#			Towers.HERO,
-#			Towers.STRIKER,
-#			Towers.SHACKLED,
-#			Towers.TRANSPORTER,
-#			Towers.SEEDER,
-#		])
-#	else:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.PESTILENCE,
-#			Towers.CHARGE,
-#			Towers.BEACON_DISH,
-#			Towers.IOTA,
-#			Towers.PING,
-#			Towers.PAROXYSM
-#		])
-#	even = !even
+	if !even:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.VARIANCE,
+			Towers.BEACON_DISH,
+			Towers.TIME_MACHINE,
+			Towers.SHACKLED,
+			Towers.TRANSPORTER,
+			Towers.SEEDER,
+		])
+	else:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.PESTILENCE,
+			Towers.CHARGE,
+			Towers.BEACON_DISH,
+			Towers.IOTA,
+			Towers.PING,
+			Towers.PAROXYSM
+		])
+	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -443,8 +451,13 @@ func _on_BuySellLevelRollPanel_tower_bought(tower_id):
 
 # Inputs related
 
-func _on_ColorWheelSprite_pressed():
+#func _on_ColorWheelSprite_pressed():
+#	tower_manager._toggle_ingredient_combine_mode()
+
+func _on_ColorWheelGUI_color_wheel_left_mouse_released():
 	tower_manager._toggle_ingredient_combine_mode()
+
+
 
 func _unhandled_input(event):
 	var any_action_taken : bool = false
@@ -597,14 +610,55 @@ func _hide_current_control_from_whole_screen_gui():
 func get_top_left_coordinates_of_playable_map() -> Vector2:
 	return top_left_coord_of_map.global_position
 
+func get_bot_right_coordinates_of_playable_map() -> Vector2:
+	return bottom_right_coord_of_map.global_position
+
+func get_playable_map_size() -> Vector2:
+	return get_bot_right_coordinates_of_playable_map() - get_top_left_coordinates_of_playable_map()
+
+
 func get_middle_coordinates_of_playable_map() -> Vector2:
-	return Vector2(_get_average(top_left_coord_of_map.global_position.x, bottom_right_coord_of_map.global_position.x), _get_average(top_left_coord_of_map.global_position.y, bottom_right_coord_of_map.global_position.y))
+	return _middle_coord_of_map
+
+func _calculate_middle_coordinates_of_playable_map():
+	_middle_coord_of_map = Vector2(_get_average(top_left_coord_of_map.global_position.x, bottom_right_coord_of_map.global_position.x), _get_average(top_left_coord_of_map.global_position.y, bottom_right_coord_of_map.global_position.y))
+
 
 func _get_average(arg_x : float, arg_y : float) -> float:
 	return (arg_x + arg_y) / 2
 
+#
+
 func get_fov_node():
 	return fov_node
+
+#
+
+func get_rect_gradient_texture__based_on_play_map() -> GradientTexture2D:
+	var texture = GradientTexture2D.new()
+	
+	texture.fill = GradientTexture2D.FILL_RADIAL
+	texture.fill_from = Vector2(0.5, 0.5)
+	texture.fill_to = Vector2(1.2, 1.2)
+	
+	texture.flags = GradientTexture2D.FLAG_MIPMAPS | GradientTexture2D.FLAG_FILTER
+	
+	var playable_map_size : Vector2 = get_playable_map_size()
+	texture.width = playable_map_size.x
+	texture.height = playable_map_size.y
+	
+	return texture
+
+
+func construct_gradient_two_color(arg_color_start_center, arg_color_end):
+	var gradient = Gradient.new()
+	# we use set_color because default starts with two colors
+	gradient.set_color(0, arg_color_start_center)
+	gradient.set_color(1, arg_color_end)
+	
+	gradient.interpolation_mode = Gradient.GRADIENT_INTERPOLATE_LINEAR
+	
+	return gradient
 
 ###
 

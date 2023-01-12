@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MiscRelated/ScreenEffectsRelated/SpecialEffects/MeshScreenTintEffect.gd" type="Script" id=1]
+
+[node name="MeshScreenTintEffect" type="MeshInstance2D"]
+script = ExtResource( 1 )

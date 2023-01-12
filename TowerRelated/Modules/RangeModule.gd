@@ -4,6 +4,8 @@ const Targeting = preload("res://GameInfoRelated/Targeting.gd")
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
 const TowerPriorityTargetEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerPriorityTargetEffect.gd")
 const TerrainFuncs = preload("res://GameInfoRelated/TerrainRelated/TerrainFuncs.gd")
+const NullErasingArray = preload("res://MiscRelated/DataCollectionRelated/NullErasingArray.gd")
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
 signal final_range_changed
 signal enemy_entered_range(enemy)
@@ -72,6 +74,16 @@ var layer_on_terrain : int
 
 #
 
+enum PhysicsProcessEnableClauseIds {
+	UPDATE_RANGE_POLYGON = 0
+	PROCESS_ENEMY_ENTER_EXIT_STATES_DURING_UPDATE = 1
+	CONNECT_AREA_2D_SIGNALS = 2
+}
+var physics_process_enable_cond_clause : ConditionalClauses
+var last_calc_physics_process_enable : bool
+
+#
+
 var _range_shape_set_before_in_tree #shape
 var _terrain_shape_set_before_in_tree #shape
 
@@ -82,6 +94,15 @@ var _wait_one_physics_step : bool = false
 var _poly_calculating_thread : Thread # note: threads are single use
 var _wait_for_finish_called_from_thread : bool
 
+
+var _is_updating_range__prevent_area_signals : bool
+var _enemies_attempting_exit_during_update_range : NullErasingArray
+var _enemies_attempting_enter_during_update_range : NullErasingArray
+
+var _process_enemies_attempting_escape_during_update_range__phy_process : bool
+
+var _connect_area_2d_signals_on_phy_process : bool
+
 ###
 
 onready var range_shape = $RangeShape
@@ -91,8 +112,19 @@ onready var terrain_scan_area_2d = $TerrainScanArea2D
 onready var terrain_scan_shape = $TerrainScanArea2D/TerrainScanShape
 
 #
+
+func _on_physics_process_enable_cond_clause_updated(_arg_clause_id):
+	_updated_physics_process_enable_cond_clause()
+
+func _updated_physics_process_enable_cond_clause():
+	last_calc_physics_process_enable = !physics_process_enable_cond_clause.is_passed
+	set_physics_process(last_calc_physics_process_enable)
+
+
+#
+
 func _ready():
-	set_physics_process(false)
+	_updated_physics_process_enable_cond_clause()
 	
 	_connect_area_shape_entered_and_exit_signals()
 	
@@ -136,11 +168,20 @@ func percent_range_effect_has_same_stats_to_current_except_time(arg_range_effect
 #
 
 func _init():
+	_enemies_attempting_enter_during_update_range = NullErasingArray.new()
+	_enemies_attempting_exit_during_update_range = NullErasingArray.new()
+	
 	_all_targeting_options = [Targeting.FIRST, Targeting.LAST]
 	all_distinct_targeting_options = [Targeting.FIRST, Targeting.LAST]
 	
 	_current_targeting_option_index = 0
 	_last_used_targeting_option_index = 0
+	
+	#
+	
+	physics_process_enable_cond_clause = ConditionalClauses.new()
+	physics_process_enable_cond_clause.connect("clause_inserted", self, "_on_physics_process_enable_cond_clause_updated", [], CONNECT_PERSIST)
+	physics_process_enable_cond_clause.connect("clause_removed", self, "_on_physics_process_enable_cond_clause_updated", [], CONNECT_PERSIST)
 
 
 func targeting_cycle_left():
@@ -318,28 +359,99 @@ func _on_self_after_ready__update_range():
 
 
 func _change_range(final_range):
+	_disconnect_area_shape_entered_and_exit_signals()
+	
+	var has_terrain_shape = terrain_scan_shape != null and terrain_scan_shape.shape != null
+	
+	if range_shape != null and range_shape.shape != null:
+		range_shape.shape.set_deferred("radius", final_range)
+		update()
+		
+		#if *2 is enabled, remove this
+		if !has_terrain_shape:
+			_connect_area_shape_entered_and_exit_signals()
+	
+	if has_terrain_shape:
+		_change_terrain_scan_shape__and_update_range_polygon(final_range)
+	
+	#originally not a comment -- *2
+	#_connect_area_shape_entered_and_exit_signals()
+	
+	
+	#call_deferred("_connect_area_shape_entered_and_exit_signals")
+
+func _disconnect_area_shape_entered_and_exit_signals():
 	if is_connected("area_shape_entered", self, "_on_Range_area_shape_entered"):
 		disconnect("area_shape_entered", self, "_on_Range_area_shape_entered")
 	
 	if is_connected("area_shape_exited", self, "_on_Range_area_shape_exited"):
 		disconnect("area_shape_exited", self, "_on_Range_area_shape_exited")
 	
-	if range_shape != null and range_shape.shape != null:
-		range_shape.shape.set_deferred("radius", final_range)
-		update()
+	_is_updating_range__prevent_area_signals = true
+	_connect_area_2d_signals_on_phy_process = true
 	
-	if terrain_scan_shape != null and terrain_scan_shape.shape != null:
-		_change_terrain_scan_shape__and_update_range_polygon(final_range)
-	
-	_connect_area_shape_entered_and_exit_signals()
-	
+	physics_process_enable_cond_clause.attempt_insert_clause(PhysicsProcessEnableClauseIds.CONNECT_AREA_2D_SIGNALS)
 
-func _connect_area_shape_entered_and_exit_signals():
+
+func _connect_area_shape_entered_and_exit_signals(arg_allow_process_enemies_attempt : bool = true):
 	if !is_connected("area_shape_entered", self, "_on_Range_area_shape_entered"):
-		connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_DEFERRED | CONNECT_PERSIST)
+		connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_PERSIST | CONNECT_DEFERRED)
 	
 	if !is_connected("area_shape_exited", self, "_on_Range_area_shape_exited"):
-		connect("area_shape_exited", self, "_on_Range_area_shape_exited", [], CONNECT_DEFERRED | CONNECT_PERSIST)
+		connect("area_shape_exited", self, "_on_Range_area_shape_exited", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+	
+	#_is_updating_range__prevent_area_signals = false
+	
+	_connect_area_2d_signals_on_phy_process = false
+	physics_process_enable_cond_clause.remove_clause(PhysicsProcessEnableClauseIds.CONNECT_AREA_2D_SIGNALS)
+	
+	if arg_allow_process_enemies_attempt:
+		_process_enemies_attempting_escape_during_update_range__phy_process = true
+		physics_process_enable_cond_clause.attempt_insert_clause(PhysicsProcessEnableClauseIds.PROCESS_ENEMY_ENTER_EXIT_STATES_DURING_UPDATE)
+
+
+func _process_enemies_attempting_enter_or_exit_during_update_range():
+	var exited_enemies : Array = []
+	var entered_enemies : Array = []
+	var overlapping_areas = get_overlapping_areas()
+	
+	
+	#print("overlapping areas: %s, tower: %s" % [overlapping_areas, parent_tower])
+	
+	for enemy in _enemies_attempting_exit_during_update_range.array_of_nodes:
+		if !overlapping_areas.has(enemy):
+			
+			#print("enemy not in overlapping areas -- exited")
+			exited_enemies.append(enemy.get_parent())
+	
+	for enemy in _enemies_attempting_enter_during_update_range.array_of_nodes:
+		if overlapping_areas.has(enemy):
+			entered_enemies.append(enemy.get_parent())
+	
+	_enemies_attempting_exit_during_update_range.array_of_nodes.clear()
+	_enemies_attempting_enter_during_update_range.array_of_nodes.clear()
+	
+	_process_enemies_attempting_escape_during_update_range__phy_process = false
+	physics_process_enable_cond_clause.remove_clause(PhysicsProcessEnableClauseIds.PROCESS_ENEMY_ENTER_EXIT_STATES_DURING_UPDATE)
+	
+	#
+	
+	#call_deferred("_deferred_call_enter_exit_methods_on_enemies", entered_enemies, exited_enemies)
+	_call_enter_exit_methods_on_enemies(entered_enemies, exited_enemies)
+	
+	call_deferred("_connect_area_shape_entered_and_exit_signals", false)
+
+func _call_enter_exit_methods_on_enemies(arg_entered_enemies : Array, arg_exited_enemies : Array):
+	for enemy in arg_entered_enemies:
+		#if is_instance_valid(enemy):
+			_on_enemy_enter_range(enemy)
+	
+	for enemy in arg_exited_enemies:
+		#if is_instance_valid(enemy):
+			_on_enemy_leave_range(enemy)
+	
+	_is_updating_range__prevent_area_signals = false
+	
 
 
 #Enemy Detection Related
@@ -347,14 +459,27 @@ func _connect_area_shape_entered_and_exit_signals():
 func _on_Range_area_shape_entered(area_id, area, area_shape, self_shape):
 	if is_instance_valid(area):
 		if area.get_parent() is AbstractEnemy:
-			_on_enemy_enter_range(area.get_parent())
+			if !_is_updating_range__prevent_area_signals:
+				_on_enemy_enter_range(area.get_parent())
+			else:
+				if !_enemies_attempting_enter_during_update_range.array_of_nodes.has(area):
+					_enemies_attempting_enter_during_update_range.append_node_and_listen_for_tree_exiting(area)
 	
 	#connect("area_shape_entered", self, "_on_Range_area_shape_entered", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
 
 func _on_Range_area_shape_exited(area_id, area, area_shape, self_shape):
 	if is_instance_valid(area):
 		if area.get_parent() is AbstractEnemy:
-			_on_enemy_leave_range(area.get_parent())
+			if !_is_updating_range__prevent_area_signals:
+				
+				#print("enemy leave range. tower: %s" % parent_tower)
+				_on_enemy_leave_range(area.get_parent())
+			else:
+				
+				if !_enemies_attempting_exit_during_update_range.array_of_nodes.has(area):
+					
+					#print("placed enemy in attempt exit during update. tower: %s" % parent_tower)
+					_enemies_attempting_exit_during_update_range.append_node_and_listen_for_tree_exiting(area)
 	
 	#connect("area_shape_exited", self, "_on_Range_area_shape_exited", [], CONNECT_ONESHOT | CONNECT_DEFERRED | CONNECT_PERSIST)
 
@@ -715,20 +840,35 @@ func _request_update_range_polgyon():
 	_update_range_polgyon_requested = true
 	
 	#_wait_one_physics_step = true
-	set_physics_process(true)
+	#set_physics_process(true)
+	physics_process_enable_cond_clause.attempt_insert_clause(PhysicsProcessEnableClauseIds.UPDATE_RANGE_POLYGON)
 
 #
 
 func _physics_process(delta):
-	if !_wait_one_physics_step:
-		_update_range_polgyon()
-	else:
-		_wait_one_physics_step = false
+	
+	#if _connect_area_2d_signals_on_phy_process:
+	if _connect_area_2d_signals_on_phy_process and !_process_enemies_attempting_escape_during_update_range__phy_process:
+		#_connect_area_shape_entered_and_exit_signals()
+		call_deferred("_connect_area_shape_entered_and_exit_signals")
+		
+	
+	if _update_range_polgyon_requested:
+		if !_wait_one_physics_step:
+			_update_range_polgyon()
+		else:
+			_wait_one_physics_step = false
+	
+	if _process_enemies_attempting_escape_during_update_range__phy_process:
+		#_process_enemies_attempting_enter_or_exit_during_update_range()
+		call_deferred("_process_enemies_attempting_enter_or_exit_during_update_range")
+
 
 func _update_range_polgyon():
 	if _update_range_polgyon_requested:# and !_changing_terrain_scan_shape:
 		_update_range_polgyon_requested = false
-		set_physics_process(false)
+		#set_physics_process(false)
+		physics_process_enable_cond_clause.remove_clause(PhysicsProcessEnableClauseIds.UPDATE_RANGE_POLYGON)
 		
 		#_update_polygon__start_thread()
 		call_deferred("_update_polygon__start_thread")

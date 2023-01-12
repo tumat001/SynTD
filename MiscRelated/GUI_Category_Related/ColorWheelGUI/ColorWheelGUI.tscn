@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButton.tscn" type="PackedScene" id=1]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/ColorWheelGUI/ColorWheelGUI.gd" type="Script" id=2]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/ColorWheelGUI/Subs/ColorWheelSliceGUI.tscn" type="PackedScene" id=3]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/ColorWheelGUI/Subs/ColorWheelBordersGUI.tscn" type="PackedScene" id=4]
+[ext_resource path="res://MiscRelated/GUI_Category_Related/ColorWheelGUI/Subs/ColorWheelCircleCenter.tscn" type="PackedScene" id=5]
+
+[node name="ColorWheelGUI" type="Control"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 2 )
+
+[node name="AdvancedButton" parent="." instance=ExtResource( 1 )]
+
+[node name="RedSliceGUI" parent="." instance=ExtResource( 3 )]
+
+[node name="OrangeSliceGUI" parent="." instance=ExtResource( 3 )]
+
+[node name="YellowSliceGUI" parent="." instance=ExtResource( 3 )]
+
+[node name="GreenSliceGUI" parent="." instance=ExtResource( 3 )]
+
+[node name="BlueSliceGUI" parent="." instance=ExtResource( 3 )]
+
+[node name="VioletSliceGUI" parent="." instance=ExtResource( 3 )]
+
+[node name="ColorWheelBordersGUI" parent="." instance=ExtResource( 4 )]
+
+[node name="ColorWheelCircleCenter" parent="." instance=ExtResource( 5 )]
+
+[connection signal="released_mouse_event" from="AdvancedButton" to="." method="_on_AdvancedButton_released_mouse_event"]

@@ -106,7 +106,7 @@ margin_right = 450.0
 margin_bottom = 85.0
 size_flags_vertical = 1
 custom_fonts/font = SubResource( 1 )
-text = "SynergyTD (Version 0.4)"
+text = "SynergyTD (Version 0.4.0.1)"
 align = 1
 
 [node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/ContentContainer/VBoxContainer"]

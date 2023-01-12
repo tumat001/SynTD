@@ -25,7 +25,7 @@ var on_hit_damage_effect : TowerOnHitDamageAdderEffect
 
 #
 
-func _init().(path_name, path_descs, path_small_icon):
+func _init(arg_tier).(path_name, path_descs, path_small_icon, arg_tier):
 	
 	var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
 	interpreter_for_flat_on_hit.display_body = false
@@ -39,6 +39,7 @@ func _init().(path_name, path_descs, path_small_icon):
 	var temp_path_descs = [
 		["All Green tower's main attacks deal bonus |0|.", [interpreter_for_flat_on_hit]]
 	]
+	path_descs.clear()
 	for desc in temp_path_descs:
 		path_descs.append(desc)
 	

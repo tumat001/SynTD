@@ -27,7 +27,7 @@ var game_elements
 
 #
 
-func _init().(path_name, path_descs, path_small_icon):
+func _init(arg_tier).(path_name, path_descs, path_small_icon, arg_tier):
 	
 	var interpreter_for_attk_speed = TextFragmentInterpreter.new()
 	interpreter_for_attk_speed.display_body = false
@@ -41,6 +41,7 @@ func _init().(path_name, path_descs, path_small_icon):
 	var temp_path_desc = [
 		["For each green tower: After dealing 40 damage or attacking 12 times, gain |0|.", [interpreter_for_attk_speed]]
 	]
+	path_descs.clear()
 	for desc in temp_path_desc:
 		path_descs.append(desc)
 	

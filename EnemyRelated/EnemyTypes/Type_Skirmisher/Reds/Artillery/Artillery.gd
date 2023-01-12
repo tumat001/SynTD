@@ -9,7 +9,7 @@ const _artillery_no_target_cooldown : float = 3.0
 
 var skirmisher_gen_purpose_rng : RandomNumberGenerator
 
-var center_pos_of_map : Vector2
+#var center_pos_of_map : Vector2
 
 #
 
@@ -18,7 +18,7 @@ func _init():
 
 func _ready():
 	skirmisher_gen_purpose_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SKIRMISHER_GEN_PURPOSE)
-	center_pos_of_map = game_elements.get_middle_coordinates_of_playable_map()
+	#center_pos_of_map = game_elements.get_middle_coordinates_of_playable_map()
 	
 	#
 	
@@ -40,7 +40,7 @@ func _artillery_ready_for_activation_updated(arg_val):
 		_cast_artillery_ability()
 
 func _cast_artillery_ability():
-	var target = get_target_for_artillery(center_pos_of_map)
+	var target = get_target_for_artillery()
 	
 	if is_instance_valid(target):
 		var placable = target.current_placable
@@ -62,15 +62,6 @@ func _cast_artillery_ability():
 
 ##########
 
-func get_target_for_artillery(arg_source_pos):
-	var alive_towers = game_elements.tower_manager.get_all_in_map_and_alive_towers_except_in_queue_free()
-	
-	# this take one of the 4 closest towers from the arg_source_pos
-	var targets = Targeting.enemies_to_target(alive_towers, Targeting.CLOSE, 4, arg_source_pos)
-	if targets.size() > 0:
-		var rand_int = skirmisher_gen_purpose_rng.randi_range(0, targets.size() - 1)
-		
-		return targets[rand_int]
-	
-	return null
+func get_target_for_artillery():
+	return skirmisher_faction_passive.get_target_for_artillery()
 

@@ -41,11 +41,11 @@ const enemy_min_flat_health_needed_for_big_missle_cast : float = 80.0
 const enemy_min_distance_needed_for_big_missle_cast : float = 80.0
 
 var big_missle_bullet_attk_module : BulletAttackModule
-const big_missle__direct_hit__flat_dmg : float = 50.0
+const big_missle__direct_hit__flat_dmg : float = 70.0
 const big_missle__direct_hit__base_damage_ratio : float = 15.0
 
 var big_missle_small_explosion_attk_module : AOEAttackModule
-const big_missle__small_aoe__flat_dmg : float = 4.0
+const big_missle__small_aoe__flat_dmg : float = 15.0
 const big_missle__small_aoe__pierce : int = 3
 
 var bullet_homing_component_pool : BulletHomingComponentPool

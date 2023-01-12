@@ -183,6 +183,12 @@ const tosser_forced_mov_up_y_accel_amount : float = 250.0
 const tosser_forced_mov_to_placable_duration : float = tosser_forced_mov_knock_up_duration
 
 
+# ARTILLERY SPECIFIC
+var pos_basis_for_artillery_targeting : Vector2
+var artillery_tower_targets : Array
+
+var _queued_request_for_artillery_target_update : bool
+
 # HOMERUNNER SPECIFIC
 
 var _current_active_blue_homerunner_flag : Sprite
@@ -689,6 +695,11 @@ func _initialize_artillery_arc_bullet_attk_module():
 	artillery_arc_bullet_attk_module.set_texture_as_sprite_frame(Artillery_Bullet_Pic)
 	
 	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(artillery_arc_bullet_attk_module)
+	
+	#
+	
+	pos_basis_for_artillery_targeting = game_elements.get_middle_coordinates_of_playable_map()
+
 
 func request_artillery_bullet_to_shoot(arg_enemy_source, arg_source_pos, arg_dest_pos, arg_target_placable):
 	var bullet = artillery_arc_bullet_attk_module.construct_bullet(arg_dest_pos, arg_source_pos)
@@ -696,6 +707,8 @@ func request_artillery_bullet_to_shoot(arg_enemy_source, arg_source_pos, arg_des
 	bullet.connect("on_final_location_reached", self, "_on_final_location_reached__artillery_bullet", [arg_target_placable])
 	
 	artillery_arc_bullet_attk_module.set_up_bullet__add_child_and_emit_signals(bullet)
+	
+	trail_component_for_artillery_bullet.create_trail_for_node(bullet)
 	
 	return bullet
 
@@ -725,6 +738,69 @@ func _trail_before_attached_to_artillery_bullet(arg_trail, node):
 	arg_trail.width = 3
 	
 	arg_trail.set_to_idle_and_available_if_node_is_not_visible = true
+
+
+# 
+
+func _on_round_start__for_artillery_targets_purpose():
+	_clear_queue_for_req__and_update_targets_for_artillery()
+	
+	if !game_elements.tower_manager.is_connected("tower_transfered_to_placable", self, "_on_tower_transfered_to_placable"):
+		game_elements.tower_manager.connect("tower_transfered_to_placable", self, "_on_tower_transfered_to_placable")
+		game_elements.tower_manager.connect("tower_in_queue_free", self, "_on_tower_in_queue_free")
+		game_elements.tower_manager.connect("tower_last_calculated_untargetability_changed", self, "_on_tower_last_calculated_untargetability_changed")
+
+func _on_round_end__for_artillery_targets_purpose():
+	if game_elements.tower_manager.is_connected("tower_transfered_to_placable", self, "_on_tower_transfered_to_placable"):
+		game_elements.tower_manager.disconnect("tower_transfered_to_placable", self, "_on_tower_transfered_to_placable")
+		game_elements.tower_manager.disconnect("tower_in_queue_free", self, "_on_tower_in_queue_free")
+		game_elements.tower_manager.disconnect("tower_last_calculated_untargetability_changed", self, "_on_tower_last_calculated_untargetability_changed")
+
+
+
+func _on_tower_transfered_to_placable(arg_tower, arg_placable):
+	_queue_request_update_targets_for_artillery__if_tower_is_in_curr_targets(arg_tower)
+
+func _on_tower_in_queue_free(arg_tower):
+	_queue_request_update_targets_for_artillery__if_tower_is_in_curr_targets(arg_tower)
+
+func _on_tower_last_calculated_untargetability_changed(arg_val, arg_tower):
+	_queue_request_update_targets_for_artillery__if_tower_is_in_curr_targets(arg_tower)
+
+
+func _queue_request_update_targets_for_artillery__if_tower_is_in_curr_targets(arg_tower):
+	if artillery_tower_targets.has(arg_tower):
+		_queue_request_update_targets_for_artillery()
+
+
+#
+
+func _queue_request_update_targets_for_artillery():
+	if !_queued_request_for_artillery_target_update:
+		_queued_request_for_artillery_target_update = true
+		call_deferred("_clear_queue_for_req__and_update_targets_for_artillery")
+
+func _clear_queue_for_req__and_update_targets_for_artillery():
+	_queued_request_for_artillery_target_update = false
+	update_targets_for_artillery()
+
+#
+
+func update_targets_for_artillery():
+	var alive_towers = game_elements.tower_manager.get_all_in_map_and_alive_towers_except_in_queue_free()
+	
+	# this take one of the 4 closest towers from the arg_source_pos
+	var center_tower_count : int = 4
+	artillery_tower_targets = Targeting.enemies_to_target(alive_towers, Targeting.CLOSE, center_tower_count, pos_basis_for_artillery_targeting)
+	
+
+func get_target_for_artillery():
+	if artillery_tower_targets.size() > 0:
+		var rand_int = skirmisher_gen_purpose_rng.randi_range(0, artillery_tower_targets.size() - 1)
+		
+		return artillery_tower_targets[rand_int]
+	
+	return null
 
 ############### DANSEUR RELATED
 
@@ -1641,6 +1717,10 @@ func _on_round_end(arg_stageround):
 	
 	blue_path_array.reset_path_indices()
 	red_path_array.reset_path_indices()
+	
+	#
+	
+	_on_round_end__for_artillery_targets_purpose()
 
 func _on_round_start(arg_stageround):
 	if _is_showing_spawn_loc_flags:
@@ -1649,7 +1729,8 @@ func _on_round_start(arg_stageround):
 		_is_spawn_loc_red_flags_empowered = false
 		
 		spawn_loc_flags_emp_particle_timer.stop()
-
+	
+	_on_round_start__for_artillery_targets_purpose()
 
 func _show_flags_if_curr_stageround_is_appropriate(arg_stageround):
 	_is_showing_spawn_loc_flags = true

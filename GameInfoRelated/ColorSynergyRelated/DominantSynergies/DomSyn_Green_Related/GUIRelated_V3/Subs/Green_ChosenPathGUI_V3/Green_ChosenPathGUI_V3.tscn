@@ -1,0 +1,116 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated_V3/Subs/Green_ChosenPathGUI_V3/Green_ChosenPathGUI_V3.gd" type="Script" id=1]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=2]
+[ext_resource path="res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipBody.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated/Assets/ResilienceFruit_Icon.png" type="Texture" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated_V3/AssetsV3/TierIcons/DomSynGreen_Tier04_Icon.png" type="Texture" id=5]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated_V3/AssetsV3/ChosenPanel_Borders/DomSynGreen_ChosenBorder_Tier04.png" type="Texture" id=6]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/GUIRelated_V3/AssetsV3/BrownBackground_3x3_ForDescriptions.png" type="Texture" id=7]
+
+[sub_resource type="DynamicFont" id=1]
+size = 15
+font_data = ExtResource( 2 )
+
+[node name="Green_ChosenPathGUI_V3" type="MarginContainer"]
+margin_right = 400.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 450, 100 )
+mouse_filter = 2
+script = ExtResource( 1 )
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 508.0
+margin_bottom = 100.0
+mouse_filter = 2
+texture = ExtResource( 7 )
+stretch_mode = 2
+
+[node name="OuterBorder_Left" type="TextureRect" parent="."]
+margin_right = 7.0
+margin_bottom = 100.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 6 )
+stretch_mode = 2
+
+[node name="OuterBorder_Right" type="TextureRect" parent="."]
+margin_left = 501.0
+margin_right = 508.0
+margin_bottom = 100.0
+mouse_filter = 2
+size_flags_horizontal = 10
+texture = ExtResource( 6 )
+stretch_mode = 2
+
+[node name="OuterBorder_Top" type="TextureRect" parent="."]
+margin_right = 508.0
+margin_bottom = 7.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 6 )
+stretch_mode = 2
+
+[node name="OuterBorder_Bottom" type="TextureRect" parent="."]
+margin_top = 93.0
+margin_right = 508.0
+margin_bottom = 100.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 6 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 508.0
+margin_bottom = 100.0
+mouse_filter = 2
+custom_constants/margin_right = 15
+custom_constants/margin_top = 15
+custom_constants/margin_left = 15
+custom_constants/margin_bottom = 15
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+margin_left = 15.0
+margin_top = 15.0
+margin_right = 493.0
+margin_bottom = 85.0
+mouse_filter = 2
+
+[node name="TierIcon" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+margin_top = 18.0
+margin_right = 34.0
+margin_bottom = 52.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 5 )
+
+[node name="PathIcon" type="TextureRect" parent="MarginContainer/HBoxContainer"]
+margin_left = 38.0
+margin_top = 13.0
+margin_right = 82.0
+margin_bottom = 57.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 4 )
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/HBoxContainer"]
+margin_left = 86.0
+margin_top = 27.0
+margin_right = 214.0
+margin_bottom = 43.0
+size_flags_vertical = 6
+custom_colors/font_color = Color( 0.992157, 0.752941, 0.0313726, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Path: Resilience"
+
+[node name="PathDescriptionTooltip" parent="MarginContainer/HBoxContainer" instance=ExtResource( 3 )]
+margin_left = 218.0
+margin_top = 35.0
+margin_right = 478.0
+margin_bottom = 35.0
+rect_min_size = Vector2( 260, 0 )
+size_flags_horizontal = 10
+size_flags_vertical = 6
+custom_constants/margin_left = 15
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+default_font_size = 14

@@ -4,6 +4,7 @@ const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalC
 
 signal on_current_active_green_paths_changed(new_paths)
 signal on_available_green_paths_changed(new_paths)
+
 signal on_current_active_limit_changed(new_limit)
 signal on_path_activated(activated_path)
 signal on_tier_of_syn_changed(new_tier)
@@ -48,6 +49,7 @@ func _init(arg_tier_to_activate : int, arg_limit : int, arg_name : String,
 	for path in _original_green_paths:
 		_current_untaken_green_paths.append(path)
 		path.connect("on_path_activated", self, "_on_path_activated", [path], CONNECT_PERSIST)
+		
 	
 	green_layer_activation_clauses = ConditionalClauses.new()
 	green_layer_activation_clauses.connect("clause_inserted", self, "_activation_clauses_clause_inserted", [], CONNECT_PERSIST)
@@ -102,10 +104,11 @@ func _update_available_path_state(tier):
 			call_deferred("emit_signal", "on_available_green_paths_changed", available_green_paths)
 			
 			return
-	
-	# else
-	available_green_paths.clear()
-	call_deferred("emit_signal", "on_available_green_paths_changed", available_green_paths)
+		
+	else:
+		
+		available_green_paths.clear()
+		call_deferred("emit_signal", "on_available_green_paths_changed", available_green_paths)
 
 
 #

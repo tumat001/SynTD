@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/ColorWheelGUI/Subs/ColorWheelCircleCenter.gd" type="Script" id=1]
+
+[node name="ColorWheelCircleCenter" type="Control"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 1 )

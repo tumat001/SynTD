@@ -517,7 +517,8 @@ func get_single_syn_displayer_with_synergy_name__from_left_panel(arg_syn_name):
 	return game_elements.left_panel.get_single_syn_displayer_with_synergy_name(arg_syn_name)
 
 func get_color_wheel_on_bottom_panel_side():
-	return game_elements.color_wheel_sprite_button
+	#return game_elements.color_wheel_sprite_button
+	return game_elements.color_wheel_gui
 
 func get_tower_icon_with_tower_id__on_combination_top_panel(arg_id):
 	return game_elements.combination_top_panel.get_tower_icon_with_tower_id(arg_id)
