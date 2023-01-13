@@ -54,8 +54,7 @@ const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
 const AnimFaceDirComponent = preload("res://MiscRelated/CommonComponents/AnimFaceDirComponent.gd")
-const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
-const AbsorbIngParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/AbsorbRelated/AbsorbIngParticle.tscn")
+const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")  # dont remove since others are using it
 
 const Stunned_StatusBarIcon_Pic = preload("res://MiscRelated/CommonTextures/CommonStatusBarIcons_ForTowers/StatusBarIcon_StunIcon.png")
 
@@ -526,18 +525,6 @@ var anim_face_dir_component : AnimFaceDirComponent
 var _anim_face__custom_anim_names_to_use
 var _anim_face__custom_dir_name_to_primary_rad_angle_map
 var _anim_face__custom_initial_dir_hierarchy
-
-# particle related
-
-const ing_tier_to_amount_of_particles_map : Dictionary = {
-	1 : 3,
-	2 : 3,
-	3 : 3,
-	4 : 4,
-	5 : 5,
-	6 : 6
-}
-var absorb_ing_particle_pool_component : AttackSpritePoolComponent
 
 # terrain related
 
@@ -2084,8 +2071,8 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 		_calculate_sellback_value()
 		
 		emit_signal("on_ingredient_absorbed", ingredient_effect)
-		_display_absorbed_ingredient_effects(Towers.get_tower_tier_from_tower_id(ingredient_effect.tower_id))
-
+		#_display_absorbed_ingredient_effects(Towers.get_tower_tier_from_tower_id(ingredient_effect.tower_id))
+		tower_manager.display_absorbed_ingredient_effects(Towers.get_tower_tier_from_tower_id(ingredient_effect.tower_id), global_position)
 
 func remove_ingredient(ingredient_effect : IngredientEffect, refund_gold : bool = false):
 	if ingredient_effect != null:
@@ -3643,58 +3630,6 @@ func _on_tower_healed_from_no_health__for_anim_change():
 	var anim_name = anim_face_dir_component.get_anim_name_to_use_on_normal_based_on_current_no_health_name()
 	anim_face_dir_component.set_animation_sprite_animation_using_anim_name(tower_base_sprites, anim_name)
 	emit_signal("changed_anim_from_dead_to_alive")
-
-
-####### Particle related
-
-func _display_absorbed_ingredient_effects(arg_tier_of_ing : int): 
-	if absorb_ing_particle_pool_component == null:
-		_initialize_absorb_ing_particle_pool_component()
-	
-	var max_i = 3 #default
-	
-	if ing_tier_to_amount_of_particles_map.has(arg_tier_of_ing):
-		max_i = ing_tier_to_amount_of_particles_map[arg_tier_of_ing]
-	else:
-		max_i = 3
-		arg_tier_of_ing = 1
-	
-	for i in max_i:
-		var particle = absorb_ing_particle_pool_component.get_or_create_attack_sprite_from_pool()
-		particle.center_pos_of_basis = global_position
-		particle.tier = arg_tier_of_ing
-		particle.particle_i_val = i
-		particle.particle_max_i_val = max_i
-		particle.lifetime = 0.6
-		
-		particle.visible = true
-		particle.reset_for_another_use__absorb_ing_specific()
-		particle.reset_for_another_use()
-	
-
-func _initialize_absorb_ing_particle_pool_component():
-	absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
-	absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
-	absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
-	absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
-	absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_abosrb_ing_particle"
-	absorb_ing_particle_pool_component.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_absorb_ing_particle_properties_when_get_from_pool_after_add_child"
-
-
-func _create_abosrb_ing_particle():
-	var particle = AbsorbIngParticle_Scene.instance()
-	particle.speed_accel_towards_center = 450
-	particle.initial_speed_towards_center = -100
-	
-	particle.min_starting_distance_from_center = 35
-	particle.max_starting_distance_from_center = 35
-	
-	particle.queue_free_at_end_of_lifetime = false
-	
-	return particle
-
-func _set_absorb_ing_particle_properties_when_get_from_pool_after_add_child(arg_particle):
-	pass
 
 
 # Terrain related

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://MapsRelated/BaseMap.tscn" type="PackedScene" id=1]
 [ext_resource path="res://GameInfoRelated/TerrainRelated/BaseTerrain.tscn" type="PackedScene" id=2]
@@ -6,6 +6,9 @@
 [ext_resource path="res://EnemyRelated/EnemyPath.tscn" type="PackedScene" id=4]
 [ext_resource path="res://MapsRelated/MapList/Map_Mesa/Map_Mesa_WithBorders.png" type="Texture" id=5]
 [ext_resource path="res://MapsRelated/MapList/Map_Mesa/Map_Mesa.gd" type="Script" id=6]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Hidden.png" type="Texture" id=7]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Glowing.png" type="Texture" id=8]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Normal.png" type="Texture" id=9]
 
 [sub_resource type="Curve2D" id=1]
 _data = {
@@ -32,81 +35,144 @@ __meta__ = {
 [node name="Placable01" parent="InMapPlacables" index="0" instance=ExtResource( 3 )]
 position = Vector2( 221.599, 146.072 )
 layer_on_terrain = 2
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable02" parent="InMapPlacables" index="1" instance=ExtResource( 3 )]
 position = Vector2( 254.826, 96.8221 )
 layer_on_terrain = 2
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable03" parent="InMapPlacables" index="2" instance=ExtResource( 3 )]
 position = Vector2( 304.379, 185.546 )
 layer_on_terrain = 2
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable04" parent="InMapPlacables" index="3" instance=ExtResource( 3 )]
 position = Vector2( 362.428, 239.347 )
 layer_on_terrain = 2
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable05" parent="InMapPlacables" index="4" instance=ExtResource( 3 )]
 position = Vector2( 372.236, 360.171 )
 layer_on_terrain = 2
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable06" parent="InMapPlacables" index="5" instance=ExtResource( 3 )]
 position = Vector2( 561.585, 250.202 )
 layer_on_terrain = 3
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable07" parent="InMapPlacables" index="6" instance=ExtResource( 3 )]
 position = Vector2( 653.141, 278.99 )
 layer_on_terrain = 1
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable08" parent="InMapPlacables" index="7" instance=ExtResource( 3 )]
 position = Vector2( 701.468, 333.734 )
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable09" parent="InMapPlacables" index="8" instance=ExtResource( 3 )]
 position = Vector2( 734.514, 293.249 )
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable10" parent="InMapPlacables" index="9" instance=ExtResource( 3 )]
 position = Vector2( 701.511, 112.595 )
 layer_on_terrain = 2
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable11" parent="InMapPlacables" index="10" instance=ExtResource( 3 )]
 position = Vector2( 771.844, 140.32 )
 layer_on_terrain = 3
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable12" parent="InMapPlacables" index="11" instance=ExtResource( 3 )]
 position = Vector2( 618.69, 160.062 )
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable13" parent="InMapPlacables" index="12" instance=ExtResource( 3 )]
 position = Vector2( 450.208, 138.824 )
 layer_on_terrain = 3
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable14" parent="InMapPlacables" index="13" instance=ExtResource( 3 )]
 position = Vector2( 143.862, 353.066 )
 layer_on_terrain = 1
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable15" parent="InMapPlacables" index="14" instance=ExtResource( 3 )]
 position = Vector2( 252.652, 335.046 )
 layer_on_terrain = 2
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable16" parent="InMapPlacables" index="15" instance=ExtResource( 3 )]
 position = Vector2( 123.172, 65.4083 )
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable17" parent="InMapPlacables" index="16" instance=ExtResource( 3 )]
 position = Vector2( 434.15, 60.6515 )
 layer_on_terrain = 3
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable18" parent="InMapPlacables" index="17" instance=ExtResource( 3 )]
 position = Vector2( 399.663, 287.79 )
 layer_on_terrain = 2
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable19" parent="InMapPlacables" index="18" instance=ExtResource( 3 )]
 position = Vector2( 567.185, 331.172 )
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable20" parent="InMapPlacables" index="19" instance=ExtResource( 3 )]
 position = Vector2( 379.64, 142.96 )
 layer_on_terrain = 2
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="Placable21" parent="InMapPlacables" index="20" instance=ExtResource( 3 )]
 position = Vector2( 802.993, 182.886 )
 layer_on_terrain = 3
+current_glowing_texture = ExtResource( 8 )
+current_normal_texture = ExtResource( 9 )
+current_hidden_texture = ExtResource( 7 )
 
 [node name="EnemyPath01" parent="EnemyPaths" index="0" instance=ExtResource( 4 )]
 curve = SubResource( 1 )
@@ -121,371 +187,190 @@ __meta__ = {
 }
 
 [node name="BaseTerrain" parent="Terrain" index="0" instance=ExtResource( 2 )]
-position = Vector2( 252.546, 212.233 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 3
+position = Vector2( 314.657, 44.1904 )
+terrain_layer = 4
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain" index="0"]
-polygon = PoolVector2Array( -0.471588, 1.30901, -25.5682, 20.0378, -33.8089, 44.3853, -22.0765, 23.2773, -2.2327, 6.5833, 7.53169, 4.06346, 26.1155, 1.8586, 67.3268, 42.1379, 55.3404, 16.2921, 27.2471, -1.68761 )
+polygon = PoolVector2Array( -0.776947, -0.909088, 9.52393, -4.65486, 31.0621, -5.5913, 45.1087, -0.159935, 48.1053, 2.83668, 72.6401, 2.83668, 75.824, 15.1977, 87.0613, 22.8765, 88.9342, 31.4918, 66.085, 42.7291, 45.1087, 44.9766, 28.2527, 50.2206, 12.5205, 48.3477, 3.5307, 41.6054, -3.39899, 21.7528, -2.8371, 3.02396 )
 
-[node name="BaseTerrain30" parent="Terrain" index="1" instance=ExtResource( 2 )]
-position = Vector2( 317.747, 255.07 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 3
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain30" index="0"]
-polygon = PoolVector2Array( 0.26889, -1.73288, 1.45944, 18.5065, 9.59485, 33.3884, 37.5728, 55.4136, 18.1271, 59.1837, -41.202, 59.7789, -81.8791, 49.064, -98.3484, 37.7537, -101.523, 10.5695, -98.834, 2.23563, -96.4529, 33.9836, -80.1821, 45.8892, -39.9018, 57.001, 18.2368, 56.8026, 9.30768, 37.1584, -2.20099, 20.4908, -1.21167, -3.48154 )
-
-[node name="BaseTerrain2" parent="Terrain" index="2" instance=ExtResource( 2 )]
-position = Vector2( 252.546, 212.233 )
-__meta__ = {
-"_edit_lock_": true
-}
+[node name="BaseTerrain2" parent="Terrain" index="1" instance=ExtResource( 2 )]
+position = Vector2( 436.331, 170.903 )
 terrain_layer = 4
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain2" index="0"]
-polygon = PoolVector2Array( -2.23012, 8.03871, -15.419, 22.6307, -26.6437, 49.2892, -26.6437, 62.7587, 8.99451, 88.0141, 22.7447, 91.6621, 49.6837, 91.9427, 46.8776, 84.3661, 48.8419, 52.9372, 42.6684, 26.84, 20.7804, 6.35503 )
+polygon = PoolVector2Array( -4.33142, 2.84654, 15.1686, -5.90346, 40.6686, -6.65346, 87.6686, 13.8465, 112.919, 29.8465, 113.919, 38.3465, 107.169, 44.3465, 59.6686, 54.0965, 27.1686, 53.8465, 4.66858, 42.8465, -2.58142, 29.5965 )
 
-[node name="BaseTerrain3" parent="Terrain" index="3" instance=ExtResource( 2 )]
-position = Vector2( 277.172, 36.3244 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 3
+[node name="BaseTerrain3" parent="Terrain" index="2" instance=ExtResource( 2 )]
+position = Vector2( 225.951, 259.239 )
+terrain_layer = 4
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain3" index="0"]
-polygon = PoolVector2Array( -0.497345, 0.0927391, 22.6273, 36.6717, 38.1839, 73.6712, 97.0466, 74.0916, 95.3648, 69.8871, 40.7066, 68.6258, 25.9909, 34.5695, 6.328, -0.0744019 )
+polygon = PoolVector2Array( 0.579712, 0.355499, 16.9313, -29.672, 23.7693, -40.0775, 43.6885, -42.4559, 59.7428, -29.0774, 73.4186, -6.77974, 75.4998, 43.167, 46.9588, 44.9507, 21.9854, 33.356, -0.312195, 17.0044 )
 
-[node name="BaseTerrain31" parent="Terrain" index="4" instance=ExtResource( 2 )]
-position = Vector2( 277.172, 36.3244 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 3
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain31" index="0"]
-polygon = PoolVector2Array( 97.4884, 74.0802, 129.842, 85.7566, 132.685, 112.697, 136.927, 122.95, 119.33, 133.795, 113.444, 151.875, 147.859, 126.414, 131.329, 78.9186, 94.7063, 67.92 )
-
-[node name="BaseTerrain4" parent="Terrain" index="5" instance=ExtResource( 2 )]
-position = Vector2( 389.15, 203.396 )
-__meta__ = {
-"_edit_lock_": true
-}
+[node name="BaseTerrain4" parent="Terrain" index="3" instance=ExtResource( 2 )]
+position = Vector2( 226.451, 234.739 )
 terrain_layer = 3
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain4" index="0"]
-polygon = PoolVector2Array( -0.223511, 1.76132, 14.3685, 25.333, 43.5525, 50.0272, 90.0132, 73.6761, 115.016, 80.4312, 109.311, 67.641 )
+polygon = PoolVector2Array( 1.63069, -0.603333, 15.9421, -15.7566, 31.6566, -23.0526, 57.7538, -23.6138, 77.9581, -6.21564, 93.9532, 20.4428, 93.6726, 40.6472, 105.178, 57.6208, 129.872, 75.8607, 107.423, 80.3506, 51.2996, 80.07, 13.9778, 70.8097, -7.62962, 57.3401, -10.1552, 32.3654 )
 
-[node name="BaseTerrain33" parent="Terrain" index="6" instance=ExtResource( 2 )]
-position = Vector2( 389.15, 203.396 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 3
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain33" index="0"]
-polygon = PoolVector2Array( 115.804, 80.7462, 165.901, 92.6808, 199.013, 87.0685, 221.463, 76.9663, 188.769, 79.4146, 110.108, 67.8027 )
-
-[node name="BaseTerrain25" parent="Terrain" index="7" instance=ExtResource( 2 )]
-position = Vector2( 389.15, 203.396 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 3
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain25" index="0"]
-polygon = PoolVector2Array( 222.725, 76.729, 230.442, 57.8844, 229.144, 26.6875, 203.082, -9.17546, 182.969, -25.9475, 153.436, -31.12, 205.055, -0.635468, 225.852, 54.6926, 189.475, 78.854 )
-
-[node name="BaseTerrain26" parent="Terrain" index="8" instance=ExtResource( 2 )]
-position = Vector2( 389.15, 203.396 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 3
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain26" index="0"]
-polygon = PoolVector2Array( 183.86, -26.3002, 133.911, -54.3618, 117.074, -68.3925, 98.5531, -99.8215, 110.482, -54.6839, 152.101, -31.7874 )
-
-[node name="BaseTerrain5" parent="Terrain" index="9" instance=ExtResource( 2 )]
-position = Vector2( 486.65, 102.896 )
-__meta__ = {
-"_edit_lock_": true
-}
+[node name="BaseTerrain5" parent="Terrain" index="4" instance=ExtResource( 2 )]
+position = Vector2( 282.598, 37.6287 )
 terrain_layer = 3
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain5" index="0"]
-polygon = PoolVector2Array( 262.35, 70.6035, 281.13, 102.75, 354.35, 136.104, 355.477, 129.776, 285.993, 95.8769, 260.369, 58.1877, 246.596, 48.2552 )
+polygon = PoolVector2Array( -3.64337, -0.955544, 15.6812, 27.5854, 33.8167, 72.478, 76.6281, 73.3699, 125.683, 79.0186, 127.764, 75.1537, 36.4924, 68.6131, 18.0597, 26.3962 )
 
-[node name="BaseTerrain28" parent="Terrain" index="10" instance=ExtResource( 2 )]
-position = Vector2( 486.65, 102.896 )
-__meta__ = {
-"_edit_lock_": true
-}
+[node name="BaseTerrain6" parent="Terrain" index="5" instance=ExtResource( 2 )]
+position = Vector2( 410.231, 113.996 )
 terrain_layer = 3
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain28" index="0"]
-polygon = PoolVector2Array( 240.85, -12.8965, 254.85, 2.10352, 253.85, 27.6035, 246.35, 47.1035, 260.522, 57.2955, 258.043, -6.28115, 239.659, -19.0408 )
-
-[node name="BaseTerrain22" parent="Terrain" index="11" instance=ExtResource( 2 )]
-position = Vector2( 486.65, 102.896 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 3
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain22" index="0"]
-polygon = PoolVector2Array( 1.34976, 0.103516, 15.2315, -19.4982, 55.9208, -32.9677, 140.386, -32.1259, 177.35, -29.8965, 202.963, -23.988, 240.657, -13.1235, 215.569, -32.2377, 140.667, -43.0699, 7.19345, -39.8005, -1.28, 4.06881 )
-
-[node name="BaseTerrain6" parent="Terrain" index="12" instance=ExtResource( 2 )]
-position = Vector2( 486.65, 102.896 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 4
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain6" index="0"]
-polygon = PoolVector2Array( 101.35, -68.8965, 136.85, -59.3965, 189.35, -48.3965, 239.35, -50.3965, 276.35, -57.3965 )
-disabled = true
+polygon = PoolVector2Array( 0.321228, -0.538918, 4.15891, 24.823, 1.48923, 34.6675, 6.66171, 44.3451, -10.0238, 54.8569, -20.3536, 75.416, -16.1062, 78.4836, 11.2661, 46.1559, 0.785675, -4.13042 )
 
-[node name="BaseTerrain27" parent="Terrain" index="13" instance=ExtResource( 2 )]
-visible = false
-position = Vector2( 486.65, 102.896 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 4
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain27" index="0"]
-polygon = PoolVector2Array( 277.081, -57.167, 314.35, -40.8965, 345.85, -4.39648, 344.049, 30.6422, 354.981, 40.1023, 354.85, -67.3965 )
-disabled = true
-
-[node name="BaseTerrain7" parent="Terrain" index="14" instance=ExtResource( 2 )]
-position = Vector2( 309.318, 46.3661 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 4
+[node name="BaseTerrain7" parent="Terrain" index="6" instance=ExtResource( 2 )]
+position = Vector2( 387.552, 197.466 )
+terrain_layer = 3
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain7" index="0"]
-polygon = PoolVector2Array( 3.94345, -2.7813, 1.60748, 13.2368, 12.6199, 43.6044, 32.3088, 49.2775, 48.6606, 41.9358, 70.018, 42.6033, 94.3789, 28.9212, 93.3777, 22.2469, 80.0293, 10.2334, 77.6934, 0.222095, 52.9988, 0.222095, 37.9819, -7.11953 )
+polygon = PoolVector2Array( -0.94043, 0.415039, 8.065, 21.6043, 31.6381, 46.5017, 99.1788, 86.2316, 160.052, 97.8856, 160.582, 92.0586, 103.371, 81.1991 )
 
-[node name="BaseTerrain8" parent="Terrain" index="15" instance=ExtResource( 2 )]
-position = Vector2( 251.296, 36.2753 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 2
+[node name="BaseTerrain8" parent="Terrain" index="7" instance=ExtResource( 2 )]
+position = Vector2( 548.36, 293.683 )
+terrain_layer = 3
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain8" index="0"]
-polygon = PoolVector2Array( -83.8801, 79.1363, -70.8462, 118.238, -70.0053, 143.885, -80.096, 165.749, -80.096, 179.203, -62.4372, 179.203, -39.6828, 161.37, -57.6625, 156.501, -64.0303, 102.562 )
+polygon = PoolVector2Array( -0.765869, 1.57562, 29.113, 1.27832, 60.3297, -9.27591, 70.7352, -25.3302, 70.9842, -64.2995, 56.6132, -91.5492, 32.5317, -109.982, 65.5322, -60.3325, 58.397, -13.3588, 1.31506, -2.95325 )
 
-[node name="BaseTerrain29" parent="Terrain" index="16" instance=ExtResource( 2 )]
-position = Vector2( 251.296, 36.2753 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 2
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain29" index="0"]
-polygon = PoolVector2Array( 3.99362, -0.328369, 17.0275, 15.2282, 17.448, 22.7963, -13.1797, 34.0445, -77.5733, 57.6935, -83.671, 78.8497, -63.6882, 102.452, -75.046, 62.7247, -27.3167, 44.2971, 30.3631, 22.0278 )
-
-[node name="BaseTerrain9" parent="Terrain" index="17" instance=ExtResource( 2 )]
-visible = false
-position = Vector2( 624.125, 73.2028 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 2
+[node name="BaseTerrain9" parent="Terrain" index="8" instance=ExtResource( 2 )]
+position = Vector2( 581.388, 184.896 )
+terrain_layer = 3
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain9" index="0"]
-polygon = PoolVector2Array( 109.875, 146.797, 165.275, 186.323, 217.375, 208.797, 218.125, 199.297, 166.125, 179.047 )
-disabled = true
+polygon = PoolVector2Array( -0.906799, -0.924026, -38.2067, -23.5515, -74.6652, -49.8784, -93.3741, -84.178, -88.4741, -110.46, -93.8195, -112.241, -99.6104, -79.2781, -79.5651, -44.5331, 5.5014, 9.20114 )
 
-[node name="BaseTerrain23" parent="Terrain" index="18" instance=ExtResource( 2 )]
-visible = false
-position = Vector2( 624.125, 73.2028 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 2
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain23" index="0"]
-polygon = PoolVector2Array( 5.2124, -0.965584, 19.6138, 28.4768, 33.3749, 58.2972, 60.3749, 72.2972, 108.931, 146.417, 112.375, 145.547, 72.375, 81.5472 )
-disabled = true
-
-[node name="BaseTerrain10" parent="Terrain" index="19" instance=ExtResource( 2 )]
-visible = false
-position = Vector2( 622.343, 71.8664 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 2
+[node name="BaseTerrain10" parent="Terrain" index="9" instance=ExtResource( 2 )]
+position = Vector2( 488.046, 72.6345 )
+terrain_layer = 3
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain10" index="0"]
-polygon = PoolVector2Array( 9.90698, 8.3836, 15.2525, 18.0723, -8.92188, 12.575, -45.843, 8.6336, -71.6594, 12.575, -106.699, 24.2549, -113.736, 33.6298, -126.975, 33.3619, -76.343, 8.6336 )
-disabled = true
+polygon = PoolVector2Array( 0.204102, -0.134491, 8.4541, 3.61551, 52.7041, -5.13449, 133.704, -8.13449, 178.752, 2.11551, 198.252, 1.36551, 198.252, -4.63449, 100.002, -13.8845 )
 
-[node name="BaseTerrain24" parent="Terrain" index="20" instance=ExtResource( 2 )]
-visible = false
-position = Vector2( 622.343, 71.8664 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 2
-
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain24" index="0"]
-polygon = PoolVector2Array( -127.245, 33.7727, -113.716, 33.9571, -92.5318, 51.6354, -38.0806, 98.0485, -8.75964, 130.7, 5.40674, 148.009, -3.17596, 157.651, -3.84302, 148.384, -14.843, 129.134, -64.343, 80.8836, -99.843, 50.8836 )
-disabled = true
-
-[node name="BaseTerrain11" parent="Terrain" index="21" instance=ExtResource( 2 )]
-visible = false
-position = Vector2( 627.265, 220.875 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 2
+[node name="BaseTerrain11" parent="Terrain" index="10" instance=ExtResource( 2 )]
+position = Vector2( 686.155, 68.4931 )
+terrain_layer = 3
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain11" index="0"]
-polygon = PoolVector2Array( 0.506714, -0.787842, 1.76758, 20.1748, -1.53967, 46.0032, -8.78424, 69.6267, -28.2089, 81.4037, -58.175, 84.7749, -109.867, 84.0257, -165.404, 67.9189, -190.14, 45.2497, -182.424, 40.1677, -147.799, 61.5511, -73.2578, 78.4071, -15.5729, 65.6715, -6.95764, 47.3172 )
-disabled = true
+polygon = PoolVector2Array( 0.286621, 5.50813, 25.5657, 14.8773, 48.5467, 26.3678, 56.1481, 41.0403, 52.022, 67.3365, 45.6542, 83.6306, 50.5237, 83.3496, 57.3597, 53.2898, 56.1481, 23.1858, 0.993713, -0.679047 )
 
-[node name="BaseTerrain12" parent="Terrain" index="22" instance=ExtResource( 2 )]
-position = Vector2( 437.152, 266.193 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 2
+[node name="BaseTerrain12" parent="Terrain" index="11" instance=ExtResource( 2 )]
+position = Vector2( 732.049, 152.565 )
+terrain_layer = 3
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain12" index="0"]
-polygon = PoolVector2Array( -8.89032, -16.2437, -1.64249, -3.86938, 1.36566, 23.9933, -8.30466, 59.9417, -13.5603, 59.7314, -6.41266, 42.7033, -1.78772, 23.7831 )
+polygon = PoolVector2Array( 0.0464478, 0.143555, 28.7844, 34.1788, 30.9512, 48.6848, 45.9512, 56.9348, 70.0713, 61.0872, 108.963, 86.0888, 108.963, 76.9612, 6.03308, -0.488708 )
 
-[node name="BaseTerrain13" parent="Terrain" index="23" instance=ExtResource( 2 )]
-position = Vector2( 422.268, 339.095 )
-__meta__ = {
-"_edit_lock_": true
-}
+[node name="BaseTerrain13" parent="Terrain" index="12" instance=ExtResource( 2 )]
+position = Vector2( 709.6, 152.565 )
 terrain_layer = 2
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain13" index="0"]
-polygon = PoolVector2Array( 0.114197, -0.19873, -13.1379, 36.7736, -10.6879, 41.5621, -15.8106, 41.5621, -18.4833, 36.4395 )
+polygon = PoolVector2Array( 0.164185, 0.714569, 12.6368, 28.3324, 46.4909, 61.2957, 132.017, 109.404, 132.463, 130.34, 35.8001, 78.2228, -2.95398, 35.4596 )
 
-[node name="BaseTerrain14" parent="Terrain" index="24" instance=ExtResource( 2 )]
-position = Vector2( 207.092, 380.45 )
-__meta__ = {
-"_edit_lock_": true
-}
+[node name="BaseTerrain14" parent="Terrain" index="13" instance=ExtResource( 2 )]
+position = Vector2( 708.892, 152.329 )
 terrain_layer = 2
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain14" index="0"]
-polygon = PoolVector2Array( 0.0405121, 0.260651, 7.58919, -17.3529, 4.14594, -18.8097, -1.94598, -7.81775, -4.06491, 0.260651 )
+polygon = PoolVector2Array( -0.323059, 0.345673, -3.15472, 34.3251, -32.4149, -7.91324, -56.2476, -22.7793, -72.2935, -58.1745, -117.237, -73.9596, -116.817, -81.9481, -64.6812, -60.9257 )
 
-[node name="BaseTerrain15" parent="Terrain" index="25" instance=ExtResource( 2 )]
-visible = false
-position = Vector2( 218.601, 351.679 )
-__meta__ = {
-"_edit_lock_": true
-}
+[node name="BaseTerrain15" parent="Terrain" index="14" instance=ExtResource( 2 )]
+position = Vector2( 592.007, 70.3416 )
 terrain_layer = 2
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain15" index="0"]
-polygon = PoolVector2Array( -1.32941, 1.30872, 2.79092, -11.8015, 4.10196, -29.7812, -8.63367, -67.6134, 7.28586, -118.748, 17.2121, -135.206, 4.10196, -147.754, -0.205688, -144.008, 11.7808, -134.269, 11.2189, -130.898, 5.03839, -127.714, -3.01501, -114.604, -8.44637, -101.494, -13.8777, -78.9959, -12.3794, -62.14, -3.2023, -41.9128, -1.14212, -30.4882, -0.767548, -16.067, -4.70061, -0.147522 )
-disabled = true
+polygon = PoolVector2Array( -0.684814, 0.151321, -0.684814, 7.75272, -41.1667, 8.99016, -81.1182, 28.4356, -83.7699, 38.5119, -35.7449, 76.2098, -49.2531, 83.3612, -93.7506, 34.8908, -78.1235, 8.93392 )
 
-[node name="BaseTerrain16" parent="Terrain" index="26" instance=ExtResource( 2 )]
-position = Vector2( 179.846, 169.713 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 1
+[node name="BaseTerrain16" parent="Terrain" index="15" instance=ExtResource( 2 )]
+position = Vector2( 544.067, 154.039 )
+terrain_layer = 2
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain16" index="0"]
-polygon = PoolVector2Array( 0.529114, -1.51053, -15.2279, 9.19234, -24.4442, 22.5709, -40.3499, 32.3819, -53.2825, 38.9225, -51.4987, 45.4631, -20.8766, 26.8818 )
+polygon = PoolVector2Array( -0.816711, 0.210785, 61.6833, 38.9608, 77.4725, 75.8879, 77.4333, 112.461, 80.9333, 112.961, 86.11, 69.373, 66.9333, 38.4608, 11.4333, -5.53922 )
 
-[node name="BaseTerrain17" parent="Terrain" index="27" instance=ExtResource( 2 )]
-position = Vector2( 113.34, 212.534 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 1
+[node name="BaseTerrain17" parent="Terrain" index="16" instance=ExtResource( 2 )]
+position = Vector2( 621.232, 267.276 )
+terrain_layer = 2
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain17" index="0"]
-polygon = PoolVector2Array( -0.121185, -0.103241, -7.90826, 0.387833, -19.0627, 5.50906, -19.0627, 12.5244, 2.12375, 5.22845 )
+polygon = PoolVector2Array( 0.0978394, 0.077301, 4.22333, 0.29184, -4.39587, 23.6267, -20.3575, 34.0988, -48.683, 41.8102, -99.2416, 39.1375, -97.3015, 31.566, -15.7535, 26.9409 )
 
-[node name="BaseTerrain18" parent="Terrain" index="28" instance=ExtResource( 2 )]
-position = Vector2( 450.05, 380.48 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 1
+[node name="BaseTerrain18" parent="Terrain" index="17" instance=ExtResource( 2 )]
+position = Vector2( 523.679, 298.458 )
+terrain_layer = 2
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain18" index="0"]
-polygon = PoolVector2Array( -0.299988, 0.0199585, 7.45001, -32.48, 11.45, -30.98, 11.325, -22.105, 4.95001, -12.105, 3.82501, -4.23004, 5.07501, 0.394958 )
+polygon = PoolVector2Array( -0.168579, 1.55176, -56.8309, -12.489, -85.1982, -27.0861, -90.3247, 6.50153, -101.59, 28.0473, -93.9892, 28.0473, -86.3887, 5.24564, -82.4476, -22.9046, -56.9139, -6.04965, -2.1131, 8.6228 )
 
-[node name="BaseTerrain19" parent="Terrain" index="29" instance=ExtResource( 2 )]
-position = Vector2( 464.899, 334.165 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 1
+[node name="BaseTerrain19" parent="Terrain" index="18" instance=ExtResource( 2 )]
+position = Vector2( 417.326, 338.586 )
+terrain_layer = 2
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain19" index="0"]
-polygon = PoolVector2Array( -0.244232, -0.187317, 52.7642, -26.4688, 97.5319, -27.137, 169.793, -23.3507, 221.802, -40.3909, 222.889, -35.8232, 216.652, -28.4733, 191.707, -20.9007, 168.099, -19.7871, 163.199, -17.3371, 128.454, -18.6735, 83.683, -24.9098, 58.0696, -22.6825, 17.0883, -5.97815, 8.8475, 1.8172 )
+polygon = PoolVector2Array( 1.53009, 0.69989, -13.8079, 36.0952, -10.9763, 41.5225, -4.84106, 42.7023, -7.43674, 37.275, 6.01349, 1.40781 )
 
-[node name="BaseTerrain20" parent="Terrain" index="30" instance=ExtResource( 2 )]
-position = Vector2( 687.284, 294.92 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 1
+[node name="BaseTerrain20" parent="Terrain" index="19" instance=ExtResource( 2 )]
+position = Vector2( 209.439, 362.839 )
+terrain_layer = 2
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain20" index="0"]
-polygon = PoolVector2Array( 0.919495, 3.32318, 0.432983, -19.6125, -5.51978, -39.6534, -25.7592, -59.8928, -47.3875, -74.9731, -59.6899, -92.5419, -100.757, -120.054, -66.2379, -84.8034, -8.0993, -37.975, -1.19641, -4.24945 )
+polygon = PoolVector2Array( 1.31113, -0.339233, -4.31387, 9.03577, -7.31387, 17.6608, -2.18887, 17.7858, 5.68613, 0.660767 )
 
-[node name="BaseTerrain21" parent="Terrain" index="31" instance=ExtResource( 2 )]
-position = Vector2( 433.41, 174.237 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 4
+[node name="BaseTerrain21" parent="Terrain" index="20" instance=ExtResource( 2 )]
+position = Vector2( 214.796, 351.132 )
+terrain_layer = 2
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain21" index="0"]
-polygon = PoolVector2Array( -1.05511, 0.281525, -1.05511, 16.9492, 3.11182, 32.0296, 8.27087, 40.165, 2.3002, 2.52959, 39.2252, -10.6319, 19.1843, -10.0366, 4.30237, -3.88539 )
+polygon = PoolVector2Array( -0.206253, -0.299835, 3.16698, 2.08127, 8.12759, -23.9124, -4.57161, -70.8904, -0.603104, -93.3125, -4.77003, -93.9077, -9.73065, -71.2873, -7.34956, -58.1912, 2.17485, -35.9676, 4.1591, -18.5062 )
 
-[node name="BaseTerrain32" parent="Terrain" index="32" instance=ExtResource( 2 )]
-position = Vector2( 433.41, 174.237 )
-__meta__ = {
-"_edit_lock_": true
-}
-terrain_layer = 4
+[node name="BaseTerrain22" parent="Terrain" index="21" instance=ExtResource( 2 )]
+position = Vector2( 213.904, 257.185 )
+terrain_layer = 2
 
-[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain32" index="0"]
-polygon = PoolVector2Array( 8.5466, 40.9346, 31.6851, 50.6815, 62.4409, 50.2847, 110.658, 41.1571, 117.206, 35.4028, 115.619, 26.2752, 93.3953, 13.576, 89.0299, 8.41696, 39.1656, -9.65979, 36.2211, -9.17686, 109.329, 26.611, 57.301, 47.7195, 8.215, 37.513 )
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain22" index="0"]
+polygon = PoolVector2Array( 0.175629, 0.663727, 21.5943, -39.4962, 8.52261, -53.3554, 4.90033, -49.5756, 16.5546, -38.7088, 12.9323, -34.4566, 3.16794, -22.9598, -2.65918, -9.25815, -3.76163, -0.281219 )
+
+[node name="BaseTerrain23" parent="Terrain" index="22" instance=ExtResource( 2 )]
+position = Vector2( 213.484, 195.799 )
+terrain_layer = 2
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain23" index="0"]
+polygon = PoolVector2Array( -0.109009, 0.0755615, -1.73401, 2.95056, -15.359, 14.9506, -26.984, 19.8256, -38.609, 19.9506, -42.609, 17.2006, -42.109, 3.32556, -30.234, -19.2994, -28.4662, -35.215 )
+
+[node name="BaseTerrain24" parent="Terrain" index="23" instance=ExtResource( 2 )]
+position = Vector2( 185.24, 160.123 )
+terrain_layer = 2
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain24" index="0"]
+polygon = PoolVector2Array( -0.240356, 0.31427, -1.93681, -12.0111, -10.6359, -29.1286, -13.9995, -43.1564, -7.90298, -60.8152, 17.5341, -73.4286, 18.7955, -67.9628, -8.11322, -50.0938, 0.926422, -10.1512, 3.44714, 4.65802 )
+
+[node name="BaseTerrain25" parent="Terrain" index="24" instance=ExtResource( 2 )]
+position = Vector2( 204.322, 91.653 )
+terrain_layer = 2
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain25" index="0"]
+polygon = PoolVector2Array( 0.0754242, 0.580162, 34.3492, -14.5902, 77.9874, -24.1419, 76.8053, -40.99, 63.6164, -55.8626, 58.2847, -56.1432, 71.7542, -38.7451, 73.7185, -28.9235, 40.0447, -19.9438, -0.925171, -5.63243 )
 
 [editable path="Terrain/BaseTerrain"]
-[editable path="Terrain/BaseTerrain30"]
 [editable path="Terrain/BaseTerrain2"]
 [editable path="Terrain/BaseTerrain3"]
-[editable path="Terrain/BaseTerrain31"]
 [editable path="Terrain/BaseTerrain4"]
-[editable path="Terrain/BaseTerrain33"]
-[editable path="Terrain/BaseTerrain25"]
-[editable path="Terrain/BaseTerrain26"]
 [editable path="Terrain/BaseTerrain5"]
-[editable path="Terrain/BaseTerrain28"]
-[editable path="Terrain/BaseTerrain22"]
 [editable path="Terrain/BaseTerrain6"]
-[editable path="Terrain/BaseTerrain27"]
 [editable path="Terrain/BaseTerrain7"]
 [editable path="Terrain/BaseTerrain8"]
-[editable path="Terrain/BaseTerrain29"]
 [editable path="Terrain/BaseTerrain9"]
-[editable path="Terrain/BaseTerrain23"]
 [editable path="Terrain/BaseTerrain10"]
-[editable path="Terrain/BaseTerrain24"]
 [editable path="Terrain/BaseTerrain11"]
 [editable path="Terrain/BaseTerrain12"]
 [editable path="Terrain/BaseTerrain13"]
@@ -497,4 +382,7 @@ polygon = PoolVector2Array( 8.5466, 40.9346, 31.6851, 50.6815, 62.4409, 50.2847,
 [editable path="Terrain/BaseTerrain19"]
 [editable path="Terrain/BaseTerrain20"]
 [editable path="Terrain/BaseTerrain21"]
-[editable path="Terrain/BaseTerrain32"]
+[editable path="Terrain/BaseTerrain22"]
+[editable path="Terrain/BaseTerrain23"]
+[editable path="Terrain/BaseTerrain24"]
+[editable path="Terrain/BaseTerrain25"]

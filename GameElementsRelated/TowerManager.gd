@@ -26,9 +26,14 @@ const IncreaseIngredientLimit_Highlighted_Pic = preload("res://GameHUDRelated/Wh
 const IncreaseTowerLimit_Normal_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/IncreaseTowerLimit_Normal.png")
 const IncreaseTowerLimit_Highlighted_Pic = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/IncreaseTowerLimit_Highlighted.png")
 
-
 const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
+const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
+const AbsorbIngParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/AbsorbRelated/AbsorbIngParticle.tscn")
+const CentralAbsorbParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/AbsorbRelated/CentralAbsorbParticle/CentralAbsorbParticle.tscn")
+const FirstTimeAbsorbParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/AbsorbRelated/FirstTimeAbsorbParticle/FirstTimeAbsorbParticle.tscn")
+
+#
 
 enum StoreOfTowerLimitIncId {
 	NATURAL_LEVEL = 10,
@@ -178,7 +183,30 @@ const tower_takes_more_than_1_slot_content_desc : String = "%s takes %s tower sl
 var can_show_player_desc_of_level_required : bool = true
 
 
-# setters
+### particle related
+
+const ing_tier_to_amount_of_particles_map : Dictionary = {
+	1 : 3,
+	2 : 3,
+	3 : 3,
+	4 : 4,
+	5 : 5,
+	6 : 6
+}
+var mini_orb_absorb_ing_particle_pool_component : AttackSpritePoolComponent
+var central_absorb_ing_particle_pool_component : AttackSpritePoolComponent
+var first_time_absorb_ing_particle_pool_component : AttackSpritePoolComponent
+
+var _first_time_absorb_ing_tier_displayed_status : Dictionary = {
+	1 : true,
+	2 : true,
+	3 : true,
+	4 : true,
+	5 : true,
+	6 : true,
+}
+
+################ setters
 
 func set_game_elements(arg_elements):
 	game_elements = arg_elements
@@ -232,7 +260,9 @@ func _ready():
 	for color in TowerColors.get_all_colors():
 		_color_groups.append(str(color))
 	
+	#
 	
+	_initialize_absorb_ing_particle_pool_components()
 
 # Generic things that can branch out to other resp.
 
@@ -1107,4 +1137,192 @@ func _on_ing_limit_shop_offer_selected():
 func _on_tower_limit_shop_offer_selected():
 	return attempt_spend_relic_for_tower_lim_increase()
 	
+
+######## PARTICLE RELATED
+
+func display_absorbed_ingredient_effects(arg_tier_of_ing : int, arg_pos : Vector2): 
+	if mini_orb_absorb_ing_particle_pool_component == null:
+		_initialize_absorb_ing_particle_pool_components()
+	
+	var max_i = 3 #default
+	
+	if ing_tier_to_amount_of_particles_map.has(arg_tier_of_ing):
+		max_i = ing_tier_to_amount_of_particles_map[arg_tier_of_ing]
+	else:
+		max_i = 3
+		arg_tier_of_ing = 1
+	
+	for i in max_i:
+		var particle = mini_orb_absorb_ing_particle_pool_component.get_or_create_attack_sprite_from_pool()
+		particle.center_pos_of_basis = arg_pos
+		particle.tier = arg_tier_of_ing
+		particle.particle_i_val = i
+		particle.particle_max_i_val = max_i
+		particle.lifetime = 0.6
+		
+		particle.visible = true
+		particle.reset_for_another_use__absorb_ing_specific()
+		particle.reset_for_another_use()
+	
+	##
+	
+	var central_particle = central_absorb_ing_particle_pool_component.get_or_create_attack_sprite_from_pool()
+	central_particle.lifetime = 0.6  #if changing this, change val at _create_central_abosrb_ing_particle
+	central_particle.tier = arg_tier_of_ing
+	central_particle.frame = 0
+	
+	central_particle.visible = true
+	central_particle.global_position = arg_pos
+	
+	##
+	
+	if _first_time_absorb_ing_tier_displayed_status[arg_tier_of_ing]:
+		_first_time_absorb_ing_tier_displayed_status[arg_tier_of_ing] = false
+		
+		_display_first_time_absorb_ing_particle_effects(arg_tier_of_ing, arg_pos)
+
+
+func _initialize_absorb_ing_particle_pool_components():
+	mini_orb_absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
+	mini_orb_absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	mini_orb_absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
+	mini_orb_absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
+	mini_orb_absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_mini_orb_abosrb_ing_particle"
+	mini_orb_absorb_ing_particle_pool_component.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_absorb_ing_particle_properties_when_get_from_pool_after_add_child"
+	
+	central_absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
+	central_absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	central_absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
+	central_absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
+	central_absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_central_abosrb_ing_particle"
+	
+	first_time_absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
+	first_time_absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	first_time_absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
+	first_time_absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
+	first_time_absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_first_time_ing_particle"
+	
+
+func _create_mini_orb_abosrb_ing_particle():
+	var particle = AbsorbIngParticle_Scene.instance()
+	particle.speed_accel_towards_center = 450
+	particle.initial_speed_towards_center = -100
+	
+	particle.min_starting_distance_from_center = 35
+	particle.max_starting_distance_from_center = 35
+	
+	particle.queue_free_at_end_of_lifetime = false
+	
+	return particle
+
+func _set_absorb_ing_particle_properties_when_get_from_pool_after_add_child(arg_particle):
+	pass
+
+
+func _create_central_abosrb_ing_particle():
+	var particle = CentralAbsorbParticle_Scene.instance()
+	
+	particle.lifetime = 0.6
+	particle.rotation_degrees = 45
+	particle.set_anim_speed_based_on_lifetime()
+	particle.scale = Vector2(2.5, 2.5)
+	
+	return particle
+
+
+func _create_first_time_ing_particle():
+	var particle = FirstTimeAbsorbParticle_Scene.instance()
+	
+	particle.speed_accel_towards_center = 450
+	particle.initial_speed_towards_center = -170
+	
+	particle.max_speed_towards_center = -5
+	
+	particle.min_starting_distance_from_center = 35
+	particle.max_starting_distance_from_center = 35
+	
+	particle.queue_free_at_end_of_lifetime = false
+	
+	particle.lifetime_to_start_transparency = 1
+	particle.transparency_per_sec = 1 / 0.25
+	
+	return particle
+
+func _display_first_time_absorb_ing_particle_effects(arg_tier, arg_pos):
+	var particle_count : int
+	var show_beams : bool
+	
+	if arg_tier == 1:
+		particle_count = 3
+		show_beams = false
+		
+	elif arg_tier == 2:
+		particle_count = 3
+		show_beams = false
+		
+	elif arg_tier == 3:
+		particle_count = 3
+		show_beams = true
+		
+	elif arg_tier == 4:
+		particle_count = 4
+		show_beams = true
+		
+	elif arg_tier == 5:
+		particle_count = 5
+		show_beams = true
+		
+	elif arg_tier == 6:
+		particle_count = 6
+		show_beams = true
+	
+	
+	var particle_angle_arr : Array = _get_particle_angle_arr_with_particle_count(particle_count)
+	var previous_particle
+	var first_particle
+	
+	for i in particle_count:
+		var particle = first_time_absorb_ing_particle_pool_component.get_or_create_attack_sprite_from_pool()
+		
+		particle.set_tier__to_set_particle_color(arg_tier)
+		
+		particle.min_starting_angle = particle_angle_arr[i]
+		particle.max_starting_angle = particle_angle_arr[i]
+		
+		particle.center_pos_of_basis = arg_pos
+		
+		
+		particle.reset_for_another_use()
+		particle.is_enabled_mov_toward_center = true
+		
+		
+		particle.lifetime = 1.25
+		particle.visible = true
+		particle.modulate.a = 1
+		
+		if show_beams:
+			if previous_particle != null:
+				particle.set_beam_target(previous_particle)
+				particle.start_beam_display()
+			
+		else:
+			particle.set_beam_target(null)
+		
+		previous_particle = particle
+		
+		if first_particle == null:
+			first_particle = particle
+	
+	#
+	if show_beams:
+		if first_particle != null and previous_particle != null:
+			first_particle.set_beam_target(previous_particle)
+			first_particle.start_beam_display()
+
+func _get_particle_angle_arr_with_particle_count(arg_count):
+	var bucket = []
+	for i in arg_count:
+		bucket.append(360 * (i / float(arg_count)) - 90)
+	
+	return bucket
 

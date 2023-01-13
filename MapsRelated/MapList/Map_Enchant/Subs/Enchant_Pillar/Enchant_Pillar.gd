@@ -40,7 +40,7 @@ var _associated_placables : Array
 #
 
 func _ready():
-	z_index = ZIndexStore.MAP_ENVIRONMENT_BELOW_PARTICLE_EFFECTS
+	z_index = ZIndexStore.ABOVE_MAP_ENVIRONMENT
 	z_as_relative = false
 
 #
