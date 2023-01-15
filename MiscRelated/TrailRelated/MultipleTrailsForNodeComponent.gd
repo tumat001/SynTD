@@ -52,7 +52,8 @@ func _construct_trail():
 	
 	all_associated_trails.append(trail_instance)
 	
-	node_to_host_trails.get_tree().get_root().add_child(trail_instance)
+	#node_to_host_trails.get_tree().get_root().add_child(trail_instance)
+	node_to_host_trails.add_child(trail_instance)
 	
 	return trail_instance
 

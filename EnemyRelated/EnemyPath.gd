@@ -28,6 +28,9 @@ var is_used_for_natural_spawning : bool = true setget set_is_used_for_natural_sp
 
 var marker_id_to_value_map : Dictionary = {}
 
+var path_end_global_pos : Vector2
+
+
 #
 
 enum CurveChangeDeferClauseIds {
@@ -255,6 +258,8 @@ func set_curve_and_id(arg_curve_2d : Curve2D, arg_curve_id : int):
 		curve = arg_curve_2d
 		path_length = curve.get_baked_length()
 		current_curve_id = arg_curve_id
+		
+		path_end_global_pos = curve.get_point_position(curve.get_point_count() - 1) + global_position
 		
 		update()
 		emit_signal("curve_changed", curve, current_curve_id)

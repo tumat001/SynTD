@@ -11,6 +11,8 @@ var is_idle_and_available : bool = true
 
 var set_to_idle_and_available_if_node_is_not_visible : bool = false
 
+var z_index_modifier : int = -1
+
 
 func set_node_to_trail(arg_node : Node2D):
 	if is_instance_valid(node_to_trail):
@@ -25,7 +27,7 @@ func set_node_to_trail(arg_node : Node2D):
 		emit_signal("on_idle_and_available_state_changed", is_idle_and_available)
 	
 	z_as_relative = false
-	z_index = node_to_trail.z_index - 1
+	z_index = node_to_trail.z_index + z_index_modifier
 	
 
 

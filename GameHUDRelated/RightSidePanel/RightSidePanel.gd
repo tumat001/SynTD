@@ -19,8 +19,6 @@ onready var tower_info_panel : TowerInfoPanel = $TowerInfoPanel
 onready var round_status_panel : RoundStatusPanel = $RoundStatusPanel
 onready var round_damage_stats_panel : RoundDamageStatsPanel = $RoundDamageStatsPanel
 
-
-
 #
 
 func set_game_settings_manager(arg_manager):
@@ -93,3 +91,10 @@ func show_round_damage_stats_panel():
 
 func show_default_panel():
 	show_round_panel()
+
+
+#
+
+func get_heart_icon_global_pos_of_round_info_panel():
+	return round_status_panel.get_heart_icon_global_pos()
+

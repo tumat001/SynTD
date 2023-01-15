@@ -114,6 +114,16 @@ var gold_sprite_particle_timer : Timer
 const _delay_per_gold_particle__as_delta : float = 0.15
 var gold_det_class_arr : Array
 
+#
+
+const distance_for_angle_range_for_facing_towards_inside_map : float = 50.0
+var pos_to_angle_range_for_facing_towards_inside_map : Dictionary   # vector to array map. Array [angle_from, angle_to]
+
+
+#
+
+var non_essential_rng : RandomNumberGenerator
+
 # Vars to be set by outside of game elements
 
 var game_mode_id : int
@@ -142,6 +152,8 @@ func _ready():
 	
 	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
 	game_modi_ids = game_mode_type_info.game_modi_ids.duplicate()
+	
+	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
 	
 	# TEMPORARY HERE. MAKE IT BE EDITABLE IN MAP SELECTION
 	game_modi_ids.append(StoreOfGameModifiers.GameModiIds.RED_TOWER_RANDOMIZER)
@@ -261,6 +273,7 @@ func _ready():
 	
 	# health manager
 	#health_manager.round_info_panel = round_info_panel
+	health_manager.game_elements = self
 	
 	# Enemy manager
 	enemy_manager.stage_round_manager = stage_round_manager
@@ -627,6 +640,7 @@ func _calculate_middle_coordinates_of_playable_map():
 func _get_average(arg_x : float, arg_y : float) -> float:
 	return (arg_x + arg_y) / 2
 
+
 #
 
 func get_fov_node():
@@ -736,4 +750,198 @@ func _display_gold_particle_on_pos(arg_pos : Vector2):
 	particle.visible = true
 	
 	particle.reset_for_another_use()
+
+##
+
+
+func is_pos_inside_of_playable_map(arg_pos : Vector2):
+	var top_left = get_top_left_coordinates_of_playable_map()
+	var bot_right = get_bot_right_coordinates_of_playable_map()
+	
+	return (arg_pos.x >= top_left.x and arg_pos.x <= bot_right.x) and (arg_pos.y >= top_left.y and arg_pos.y <= bot_right.y)
+
+
+func get_rand_rad_angle_facing_towards_inside_of_playable_map(arg_source_pos : Vector2, arg_rng_to_use : RandomNumberGenerator = non_essential_rng):
+	var angle_range = calculate_and_store_angle_range_for_facing_towards_inside_of_playable_map(arg_source_pos)
+	
+	return non_essential_rng.randf_range(angle_range[0], angle_range[1])
+
+func calculate_and_store_angle_range_for_facing_towards_inside_of_playable_map(arg_source_pos : Vector2):
+	var angle_range : Array = _calculate_angle_range_for_facing_towards_inside_of_playable_map(arg_source_pos)
+	pos_to_angle_range_for_facing_towards_inside_map[arg_source_pos] = angle_range
+	
+	return angle_range
+
+func _calculate_angle_range_for_facing_towards_inside_of_playable_map(arg_source_pos : Vector2) -> Array:
+	var from_angle : float = 0
+	var to_angle : float = 2 * PI
+	
+	if is_pos_inside_of_playable_map(arg_source_pos):
+		
+		# top
+		if !is_pos_inside_of_playable_map(arg_source_pos + Vector2(0, -distance_for_angle_range_for_facing_towards_inside_map)):
+			var dist_to_top = arg_source_pos.distance_to(Vector2(0, get_top_left_coordinates_of_playable_map().y))
+			var left_dist = sqrt(_num_squared(distance_for_angle_range_for_facing_towards_inside_map) + _num_squared(dist_to_top))
+			
+			var left_pos = arg_source_pos + Vector2(left_dist, dist_to_top)
+			var right_pos = arg_source_pos + Vector2(-left_dist, dist_to_top)
+			
+			var angle_to_left = arg_source_pos.angle_to_point(left_pos)
+			var angle_to_right = arg_source_pos.angle_to_point(right_pos)
+			
+			#bucket = [angle_to_right, angle_to_left]
+			
+			from_angle = _get_highest_from_angle(from_angle, angle_to_right)
+			to_angle = _get_lowest_from_angle(to_angle, angle_to_left)
+			
+		# bottom
+		if !is_pos_inside_of_playable_map(arg_source_pos + Vector2(0, distance_for_angle_range_for_facing_towards_inside_map)):
+			var dist_to_bot = arg_source_pos.distance_to(Vector2(0, get_bot_right_coordinates_of_playable_map().y))
+			var left_dist = sqrt(_num_squared(distance_for_angle_range_for_facing_towards_inside_map) + _num_squared(dist_to_bot))
+			
+			var left_pos = arg_source_pos + Vector2(left_dist, dist_to_bot)
+			var right_pos = arg_source_pos + Vector2(-left_dist, dist_to_bot)
+			
+			var angle_to_left = arg_source_pos.angle_to_point(left_pos)
+			var angle_to_right = arg_source_pos.angle_to_point(right_pos)
+			
+			#bucket = [angle_to_left, angle_to_right]
+			
+			from_angle = _get_highest_from_angle(from_angle, angle_to_left)
+			to_angle = _get_lowest_from_angle(to_angle, angle_to_right)
+			
+		# left
+		if !is_pos_inside_of_playable_map(arg_source_pos + Vector2(-distance_for_angle_range_for_facing_towards_inside_map, 0)):
+			var dist_to_left = arg_source_pos.distance_to(Vector2(0, get_top_left_coordinates_of_playable_map().x))
+			var top_dist = sqrt(_num_squared(distance_for_angle_range_for_facing_towards_inside_map) + _num_squared(dist_to_left))
+			
+			var top_pos = arg_source_pos + Vector2(dist_to_left, top_dist)
+			var bot_pos = arg_source_pos + Vector2(dist_to_left, -top_dist)
+			
+			var angle_to_top = arg_source_pos.angle_to_point(top_pos)
+			var angle_to_bot = arg_source_pos.angle_to_point(bot_pos)
+			
+			#bucket = [angle_to_top, angle_to_bot]
+			
+			from_angle = _get_highest_from_angle(from_angle, angle_to_top)
+			to_angle = _get_lowest_from_angle(to_angle, angle_to_bot)
+			
+		# right
+		if !is_pos_inside_of_playable_map(arg_source_pos + Vector2(distance_for_angle_range_for_facing_towards_inside_map, 0)):
+			var dist_to_right = arg_source_pos.distance_to(Vector2(0, get_bot_right_coordinates_of_playable_map().x))
+			var top_dist = sqrt(_num_squared(distance_for_angle_range_for_facing_towards_inside_map) + _num_squared(dist_to_right))
+			
+			var top_pos = arg_source_pos + Vector2(dist_to_right, top_dist)
+			var bot_pos = arg_source_pos + Vector2(dist_to_right, -top_dist)
+			
+			var angle_to_top = arg_source_pos.angle_to_point(top_pos)
+			var angle_to_bot = arg_source_pos.angle_to_point(bot_pos)
+			
+			#bucket = [angle_to_bot, angle_to_top]
+			
+			from_angle = _get_highest_from_angle(from_angle, angle_to_bot)
+			to_angle = _get_lowest_from_angle(to_angle, angle_to_top)
+		
+		
+		
+	# if pos is already outside of playable map
+	else:
+		
+		# top
+		if is_pos_inside_of_playable_map(arg_source_pos + Vector2(0, distance_for_angle_range_for_facing_towards_inside_map)):
+			var dist_to_top = arg_source_pos.distance_to(Vector2(0, get_top_left_coordinates_of_playable_map().y))
+			var left_dist = sqrt(_num_squared(distance_for_angle_range_for_facing_towards_inside_map) + _num_squared(dist_to_top))
+			
+			var left_pos = arg_source_pos + Vector2(left_dist, dist_to_top)
+			var right_pos = arg_source_pos + Vector2(-left_dist, dist_to_top)
+			
+			var angle_to_left = arg_source_pos.angle_to_point(left_pos)
+			var angle_to_right = arg_source_pos.angle_to_point(right_pos)
+			
+			#bucket = [angle_to_right, angle_to_left]
+			
+			from_angle = _get_highest_from_angle(from_angle, angle_to_right)
+			to_angle = _get_lowest_from_angle(to_angle, angle_to_left)
+			
+		# bottom
+		if is_pos_inside_of_playable_map(arg_source_pos + Vector2(0, -distance_for_angle_range_for_facing_towards_inside_map)):
+			var dist_to_bot = arg_source_pos.distance_to(Vector2(0, get_bot_right_coordinates_of_playable_map().y))
+			var left_dist = sqrt(_num_squared(distance_for_angle_range_for_facing_towards_inside_map) + _num_squared(dist_to_bot))
+			
+			var left_pos = arg_source_pos + Vector2(left_dist, dist_to_bot)
+			var right_pos = arg_source_pos + Vector2(-left_dist, dist_to_bot)
+			
+			var angle_to_left = arg_source_pos.angle_to_point(left_pos)
+			var angle_to_right = arg_source_pos.angle_to_point(right_pos)
+			
+			#bucket = [angle_to_left, angle_to_right]
+			
+			from_angle = _get_highest_from_angle(from_angle, angle_to_left)
+			to_angle = _get_lowest_from_angle(to_angle, angle_to_right)
+			
+		# left
+		if is_pos_inside_of_playable_map(arg_source_pos + Vector2(distance_for_angle_range_for_facing_towards_inside_map, 0)):
+			var dist_to_left = arg_source_pos.distance_to(Vector2(0, get_top_left_coordinates_of_playable_map().x))
+			var top_dist = sqrt(_num_squared(distance_for_angle_range_for_facing_towards_inside_map) + _num_squared(dist_to_left))
+			
+			var top_pos = arg_source_pos + Vector2(dist_to_left, top_dist)
+			var bot_pos = arg_source_pos + Vector2(dist_to_left, -top_dist)
+			
+			var angle_to_top = arg_source_pos.angle_to_point(top_pos)
+			var angle_to_bot = arg_source_pos.angle_to_point(bot_pos)
+			
+			#bucket = [angle_to_top, angle_to_bot]
+			
+			from_angle = _get_highest_from_angle(from_angle, angle_to_top)
+			to_angle = _get_lowest_from_angle(to_angle, angle_to_bot)
+			
+		# right
+		if is_pos_inside_of_playable_map(arg_source_pos + Vector2(-distance_for_angle_range_for_facing_towards_inside_map, 0)):
+			var dist_to_right = arg_source_pos.distance_to(Vector2(0, get_bot_right_coordinates_of_playable_map().x))
+			var top_dist = sqrt(_num_squared(distance_for_angle_range_for_facing_towards_inside_map) + _num_squared(dist_to_right))
+			
+			var top_pos = arg_source_pos + Vector2(dist_to_right, top_dist)
+			var bot_pos = arg_source_pos + Vector2(dist_to_right, -top_dist)
+			
+			var angle_to_top = arg_source_pos.angle_to_point(top_pos)
+			var angle_to_bot = arg_source_pos.angle_to_point(bot_pos)
+			
+			#bucket = [angle_to_bot, angle_to_top]
+			
+			from_angle = _get_highest_from_angle(from_angle, angle_to_bot)
+			to_angle = _get_lowest_from_angle(to_angle, angle_to_top)
+		
+	
+	
+	var bucket = [from_angle, to_angle]
+	return bucket
+
+
+func _num_squared(arg_num) -> float:
+	return arg_num * arg_num
+
+func _convert_rad_angle_to_angle_with_negative(arg_angle : float):
+	if arg_angle > 0:
+		return arg_angle - (2 * PI)
+	
+	return arg_angle
+
+func _convert_rad_angle_to_angle_with_positive(arg_angle : float):
+	if arg_angle < 0:
+		return arg_angle + (2 * PI)
+	
+	return arg_angle
+
+
+func _get_lowest_from_angle(arg_curr_lowest : float, arg_candidate_angle : float):
+	if arg_curr_lowest < arg_candidate_angle:
+		return arg_curr_lowest
+	else:
+		return arg_candidate_angle
+
+func _get_highest_from_angle(arg_curr_highest : float, arg_candidate_angle : float):
+	if arg_curr_highest > arg_candidate_angle:
+		return arg_curr_highest
+	else:
+		return arg_candidate_angle
 

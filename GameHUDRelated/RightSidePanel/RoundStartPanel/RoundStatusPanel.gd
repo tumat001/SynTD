@@ -117,4 +117,7 @@ func _on_MainMenuButton_released_mouse_event(event : InputEventMouseButton):
 	if event.button_index == BUTTON_LEFT:
 		game_elements._esc_no_wholescreen_gui_pressed()
 
+#
 
+func get_heart_icon_global_pos():
+	return round_info_panel_v2.get_heart_icon_global_pos()

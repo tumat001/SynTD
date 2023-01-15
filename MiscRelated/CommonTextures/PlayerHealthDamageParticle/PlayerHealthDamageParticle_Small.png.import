@@ -1,0 +1,35 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/PlayerHealthDamageParticle_Small.png-c4d2cef640fbd32be7673cc3d734a951.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://MiscRelated/CommonTextures/PlayerHealthDamageParticle/PlayerHealthDamageParticle_Small.png"
+dest_files=[ "res://.import/PlayerHealthDamageParticle_Small.png-c4d2cef640fbd32be7673cc3d734a951.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+process/normal_map_invert_y=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

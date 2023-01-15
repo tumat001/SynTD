@@ -17,6 +17,9 @@ var health_manager : HealthManager setget set_health_manager
 onready var health_bar = $HealthBar
 onready var health_label = $LabelAndImgContainer/HBoxContainer/MarginContainer/HealthLabel
 
+onready var heart_icon = $LabelAndImgContainer/HBoxContainer/HeartIcon
+
+#
 
 func set_health_manager(arg_manager):
 	health_manager = arg_manager
@@ -43,5 +46,10 @@ func _current_player_health_changed(arg_val):
 		if curr_health / starting_health > ratio:
 			health_bar.fill_foreground_pic = health_ratio_to_pic_map[ratio]
 			break
+
+#
+
+func get_heart_icon_global_pos():
+	return heart_icon.rect_global_position + (heart_icon.rect_size / 2)
 
 

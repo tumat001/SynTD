@@ -34,6 +34,7 @@ signal life_lost_from_enemy(enemy)
 signal end_of_stagerounds()
 
 signal last_calculated_block_start_of_round_changed(arg_val)
+signal last_calculated_block_end_of_round_changed(arg_val)
 
 
 const gold_gain_on_win : int = 1
@@ -73,6 +74,15 @@ var block_start_round_conditional_clauses : ConditionalClauses
 var last_calculated_block_start_of_round : bool
 
 
+enum BlockEndRoundClauseIds {
+	ENEMIES_PRESENT_IN_MAP = 1
+	PLAYER_HEALTH_DMG_PROJ_IN_FLIGHT = 2
+}
+# dont access this var normally. use provided methods instead
+var _block_end_round_conditional_clauses : ConditionalClauses
+var last_calculated_block_end_of_round : bool
+
+
 #
 
 func _init():
@@ -81,7 +91,11 @@ func _init():
 	block_start_round_conditional_clauses.connect("clause_removed", self, "_on_block_start_round_conditional_clauses_updated", [], CONNECT_PERSIST)
 	
 	_update_last_calculated_block_start_round()
-
+	
+	
+	_block_end_round_conditional_clauses = ConditionalClauses.new()
+	
+	_update_last_calculated_block_end_round(false)
 
 #
 
@@ -111,7 +125,8 @@ func _set_round_status_panel(panel : RoundStatusPanel):
 func _set_enemy_manager(manager : EnemyManager):
 	enemy_manager = manager
 	
-	enemy_manager.connect("no_enemies_left", self, "end_round", [], CONNECT_DEFERRED | CONNECT_PERSIST)
+	#enemy_manager.connect("no_enemies_left", self, "end_round", [], CONNECT_DEFERRED | CONNECT_PERSIST)
+	enemy_manager.connect("no_enemies_left", self, "_on_no_enemies_left", [], CONNECT_DEFERRED | CONNECT_PERSIST)
 	enemy_manager.connect("enemy_escaped", self, "_life_lost_from_enemy", [], CONNECT_PERSIST)
 
 
@@ -137,7 +152,9 @@ func _at_round_start():
 	pass
 
 func _after_round_start():
+	add_clause_to_block_end_round_conditional_clauses(BlockEndRoundClauseIds.ENEMIES_PRESENT_IN_MAP)
 	enemy_manager.start_run()
+	
 
 
 # Round end related
@@ -272,6 +289,11 @@ func get_number_of_rounds_before_stageround_id_reached(arg_target_stageround_id)
 	return stagerounds.get_number_of_rounds_from_x_to_y__using_ids(current_stageround.id, arg_target_stageround_id)
 	
 
+#
+
+func _on_no_enemies_left():
+	remove_clause_to_block_end_round_conditional_clauses(BlockEndRoundClauseIds.ENEMIES_PRESENT_IN_MAP, true)
+
 
 ###########################
 
@@ -283,3 +305,19 @@ func _update_last_calculated_block_start_round():
 	emit_signal("last_calculated_block_start_of_round_changed", last_calculated_block_start_of_round)
 
 
+
+func add_clause_to_block_end_round_conditional_clauses(arg_clause_id):
+	_block_end_round_conditional_clauses.attempt_insert_clause(arg_clause_id)
+	_update_last_calculated_block_end_round(false)
+
+func remove_clause_to_block_end_round_conditional_clauses(arg_clause_id, attempt_end_round : bool):
+	_block_end_round_conditional_clauses.remove_clause(arg_clause_id)
+	_update_last_calculated_block_end_round(attempt_end_round)
+
+
+func _update_last_calculated_block_end_round(attempt_end_round : bool):
+	last_calculated_block_end_of_round = !_block_end_round_conditional_clauses.is_passed
+	emit_signal("last_calculated_block_end_of_round_changed", last_calculated_block_start_of_round)
+	
+	if !last_calculated_block_end_of_round and attempt_end_round:
+		end_round()

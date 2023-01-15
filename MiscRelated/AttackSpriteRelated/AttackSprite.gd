@@ -59,13 +59,7 @@ func _process(delta):
 		lifetime -= delta
 		
 		if lifetime <= 0:
-			if queue_free_at_end_of_lifetime: 
-				queue_free()
-			elif turn_invisible_at_end_of_lifetime:
-				if visible:
-					visible = false
-					emit_signal("turned_invisible_from_lifetime_end")
-	
+			configure_self_on_reached_end_of_lifetime()
 	
 	global_position.y += y_displacement_per_sec * delta
 	global_position.x += x_displacement_per_sec * delta
@@ -81,7 +75,16 @@ func _process(delta):
 	
 	if lifetime_to_start_transparency >= lifetime:
 		modulate.a -= transparency_per_sec * delta
-	
+
+
+func configure_self_on_reached_end_of_lifetime():
+	if queue_free_at_end_of_lifetime: 
+		queue_free()
+	elif turn_invisible_at_end_of_lifetime:
+		if visible:
+			visible = false
+			emit_signal("turned_invisible_from_lifetime_end")
+
 
 
 func set_lifetime(arg_val):

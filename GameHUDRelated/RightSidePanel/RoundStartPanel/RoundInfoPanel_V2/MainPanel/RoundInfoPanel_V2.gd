@@ -19,3 +19,6 @@ func set_enemy_manager(arg_manager):
 func _ready():
 	pass
 
+
+func get_heart_icon_global_pos():
+	return player_health_panel.get_heart_icon_global_pos()

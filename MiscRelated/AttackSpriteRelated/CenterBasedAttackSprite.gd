@@ -1,6 +1,9 @@
 extends "res://MiscRelated/AttackSpriteRelated/AttackSprite.gd"
 
 
+signal reached_center_pos_of_basis()
+
+
 var center_pos_of_basis : Vector2
 
 export(float) var initial_speed_towards_center : float
@@ -20,6 +23,8 @@ export(bool) var is_enabled_mov_toward_center : bool = true
 
 var non_essential_rng : RandomNumberGenerator
 
+var _emitted_reached_center_pos_of_basis : bool = false
+
 
 func _init():
 	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
@@ -32,6 +37,7 @@ func _ready():
 
 func reset_for_another_use():
 	current_speed_towards_center = initial_speed_towards_center
+	_emitted_reached_center_pos_of_basis = false
 	
 	randomize_position_based_on_properties()
 
@@ -57,3 +63,8 @@ func _process(delta):
 			current_speed_towards_center = min_speed_towards_center
 		elif current_speed_towards_center > max_speed_towards_center:
 			current_speed_towards_center = max_speed_towards_center
+		
+		if !_emitted_reached_center_pos_of_basis and global_position == center_pos_of_basis:
+			emit_signal("reached_center_pos_of_basis")
+			_emitted_reached_center_pos_of_basis = true
+		

@@ -27,6 +27,7 @@ signal on_enemy_spawned_and_finished_ready_prep(enemy)
 
 signal enemy_escaped(enemy)
 signal first_enemy_escaped(enemy, first_damage)
+signal enemy_escaped_dealing_x_damage(enemy, damage)
 
 signal round_time_passed(delta, current_timepos)
 
@@ -161,6 +162,7 @@ var _requested__get_next_targetable_enemy : bool = false
 var _all_enemies_in_request__get_next_targetable_enemy : Array
 
 #
+
 
 func add_enemy_health_multiplier_percent_amount(arg_id : int, arg_amount : float):
 	_enemy_health_multiplier_id_to_percent_amount[arg_id] = arg_amount
@@ -453,9 +455,11 @@ func _enemy_reached_end(enemy : AbstractEnemy):
 		
 		emit_signal("first_enemy_escaped", enemy, enemy_first_damage)
 	
-	health_manager.decrease_health_by(total_damage, HealthManager.DecreaseHealthSource.ENEMY)
+	#health_manager.decrease_health_by(total_damage, HealthManager.DecreaseHealthSource.ENEMY, enemy.current_path.path_end_global_pos)
+	health_manager.decrease_health_by__using_player_dmg_particle(total_damage, HealthManager.DecreaseHealthSource.ENEMY, enemy.current_path.path_end_global_pos)
 	
 	emit_signal("enemy_escaped", enemy)
+	emit_signal("enemy_escaped_dealing_x_damage", enemy, total_damage)
 	enemy.queue_free()
 
 
