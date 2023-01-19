@@ -25,6 +25,10 @@ export(bool) var stop_process_at_invisible : bool = false
 
 var texture_to_use : Texture
 
+var node_to_follow_to__override_disp_per_sec : Node2D
+var node_to_follow_to__override_disp_per_sec__offset : Vector2
+
+#
 
 func _init():
 	z_index = ZIndexStore.PARTICLE_EFFECTS
@@ -61,8 +65,12 @@ func _process(delta):
 		if lifetime <= 0:
 			configure_self_on_reached_end_of_lifetime()
 	
-	global_position.y += y_displacement_per_sec * delta
-	global_position.x += x_displacement_per_sec * delta
+	if is_instance_valid(node_to_follow_to__override_disp_per_sec):
+		global_position = node_to_follow_to__override_disp_per_sec.global_position + node_to_follow_to__override_disp_per_sec__offset
+	else:
+		global_position.y += y_displacement_per_sec * delta
+		global_position.x += x_displacement_per_sec * delta
+	
 	
 	x_displacement_per_sec += inc_in_x_displacement_per_sec * delta
 	y_displacement_per_sec += inc_in_y_displacement_per_sec * delta
@@ -101,4 +109,4 @@ func _on_visiblity_changed():
 func get_sprite_size() -> Vector2:
 	return frames.get_frame(animation, frame).get_size()
 
-
+#

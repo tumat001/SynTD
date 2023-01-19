@@ -3,6 +3,7 @@ extends MarginContainer
 const ScreenTintEffect = preload("res://MiscRelated/ScreenEffectsRelated/ScreenTintEffect.gd")
 const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
 
+
 const reservation_control_metadata := "WHOLE_SCREEN_GUI__CONTROL"
 const reservation_make_background_dark_metadata := "WHOLE_SCREEN_GUI__MAKE_BACKGROUND_DARK"
 const reservation_escapable_by_game_elements_metadata := "WHOLE_SCREEN_GUI__ESCAPABLE_BY_GAME_ELEMENTS"
@@ -108,6 +109,8 @@ func _on_queue_entertained_reservation(arg_reservation : AdvancedQueue.Reservati
 		else:
 			screen_effect_manager.destroy_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
 		
+		game_elements.synergy_manager.allow_start_color_aesthetic_display_clauses.attempt_insert_clause(game_elements.synergy_manager.AllowStartColorAestheticDisplay.WHOLE_SCREEN_GUI_IS_OPEN)
+		
 		_start_fade_in_of_current_control()
 		
 	else:
@@ -116,6 +119,8 @@ func _on_queue_entertained_reservation(arg_reservation : AdvancedQueue.Reservati
 func _on_queue_no_reservations_left():
 	#screen_effect_manager.destroy_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
 	screen_effect_manager.force_fade_out_screen_tint_effect(StoreOfScreenEffectsUUID.WHOLE_SCREEN_GUI)
+	
+	game_elements.synergy_manager.allow_start_color_aesthetic_display_clauses.remove_clause(game_elements.synergy_manager.AllowStartColorAestheticDisplay.WHOLE_SCREEN_GUI_IS_OPEN)
 	
 	current_showing_control = null
 	currently_escapable_from_game_elements = true

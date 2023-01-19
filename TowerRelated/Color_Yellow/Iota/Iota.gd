@@ -80,7 +80,7 @@ var star_beam_attack_module : InstantDamageAttackModule
 const not_at_beam_state_can_be_commanded_clause : int = -10
 
 var current_star_target
-var current_star_at_beam_state_count
+var current_star_at_beam_state_count : int
 
 var _requested_enemy_manager_to_get_next_targetable_enemy : bool
 

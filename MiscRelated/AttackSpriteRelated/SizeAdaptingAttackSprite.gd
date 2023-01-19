@@ -10,11 +10,18 @@ var keep_aspect : bool = true
 
 func set_size_adapting_to(arg : Node2D):
 	size_adapting_to = arg
+	
+	#if is_inside_tree():
+	#	change_config_based_on_size_adapting_to()
 
 
 #
 
 func _ready():
+	if is_instance_valid(size_adapting_to):
+		change_config_based_on_size_adapting_to()
+
+func change_config_based_on_size_adapting_to():
 	var curr_ratio = _get_self_anim_size() / _get_adapting_to_anim_size()
 	var final_ratio : Vector2
 	
@@ -28,7 +35,6 @@ func _ready():
 	
 	if size_adapting_to.get("tower_base"):
 		position += size_adapting_to.tower_base.position
-
 
 
 func _get_adjustment_of_ratio_to_second_ratio(ratio_x : float, ratio_y : float) -> Vector2:

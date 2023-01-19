@@ -82,9 +82,10 @@ var second_half_faction_id_pool : Array
 func _init():
 	first_half_faction_id_pool.append(EnemyFactions.BASIC)
 	
+	#todo
 	second_half_faction_id_pool.append(EnemyFactions.EXPERT)
-	second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
-	second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
+	#second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
+	#second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
 
 
 static func get_enemy_info(enemy_id : int) -> EnemyTypeInformation:

@@ -1,13 +1,13 @@
 extends Node
 
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
+const MultipleTrailsForNodeComponent = preload("res://MiscRelated/TrailRelated/MultipleTrailsForNodeComponent.gd")
 
 const CenterBasedAttackParticle = preload("res://MiscRelated/AttackSpriteRelated/CenterBasedAttackSprite.gd")
 const PlayerHealthDamageParticle_Scene = preload("res://MiscRelated/CommonTextures/PlayerHealthDamageParticle/Imp/PlayerHealthDamageParticle.tscn")
 const PlayerHealthDamageParticle = preload("res://MiscRelated/CommonTextures/PlayerHealthDamageParticle/Imp/PlayerHealthDamageParticle.gd")
-
-const MultipleTrailsForNodeComponent = preload("res://MiscRelated/TrailRelated/MultipleTrailsForNodeComponent.gd")
-
+const PlayerHeartHitParticle = preload("res://MiscRelated/CommonTextures/PlayerHealthDamageParticle/HeartHitParticle/PlayerHeartHitParticle.gd")
+const PlayerHeartHitParticle_Scene = preload("res://MiscRelated/CommonTextures/PlayerHealthDamageParticle/HeartHitParticle/PlayerHeartHitParticle.tscn")
 
 
 enum IncreaseHealthSource {
@@ -38,16 +38,31 @@ var current_health : float setget set_health
 
 #
 
+var non_essential_rng : RandomNumberGenerator
+
+#
+
+const dmg_num_for__very_small : float = 1.0
+const dmg_num_for__small : float = 2.0
+const dmg_num_for__medium : float = 19.0
+
+
+
 var player_health_dmg_particle_pool_component : AttackSpritePoolComponent
 var _player_health_dmg_particle_destination_pos : Vector2
 
 var _player_health_dmg_particles_in_flight : int
 
-var non_essential_rng : RandomNumberGenerator
+var multiple_trail_component_for_player_health_dmg_particle : MultipleTrailsForNodeComponent
 
 #
 
-var multiple_trail_component_for_player_health_dmg_particle : MultipleTrailsForNodeComponent
+var player_heart_hit_particle_pool_component : AttackSpritePoolComponent
+
+const particle_count_for_dmg_very_small : int = 0
+const particle_count_for_dmg_small : int = 3
+const particle_count_for_dmg_medium : int = 6
+const particle_count_for_dmg_large : int = 10
 
 
 #
@@ -93,7 +108,7 @@ func decrease_health_by(decrease : float, decrease_source : int):
 
 func decrease_health_by__using_player_dmg_particle(decrease: float, decrease_source : int, arg_source_pos_for_particle : Vector2):
 	create_player_health_damage_particle(arg_source_pos_for_particle, decrease, decrease_source)
-
+	
 
 #
 
@@ -121,18 +136,26 @@ func _initialize_particle_pool_components():
 	player_health_dmg_particle_pool_component.source_for_funcs_for_attk_sprite = self
 	player_health_dmg_particle_pool_component.func_name_for_creating_attack_sprite = "_create_player_health_dmg_particle__for_pool_compo"
 	
+	#
+	
+	player_heart_hit_particle_pool_component = AttackSpritePoolComponent.new()
+	player_heart_hit_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__node_hoster_below_screen_effects_mngr
+	player_heart_hit_particle_pool_component.node_to_listen_for_queue_free = self
+	player_heart_hit_particle_pool_component.source_for_funcs_for_attk_sprite = self
+	player_heart_hit_particle_pool_component.func_name_for_creating_attack_sprite = "_create_player_heart_hit_particle__for_pool_compo"
+	
 
 func _create_player_health_dmg_particle__for_pool_compo():
 	var particle = PlayerHealthDamageParticle_Scene.instance()
 	
-	#particle.queue_free_at_end_of_lifetime = false
+	particle.queue_free_at_end_of_lifetime = false
 	
-	#particle.speed_accel_towards_center = 450
-	#particle.initial_speed_towards_center = -170
-	
-	#particle.max_speed_towards_center = -5
 	particle.connect("reached_final_destination", self, "_on_player_health_dmg_particle_reached_final_destination", [particle], CONNECT_PERSIST)
 	particle.connect("request_beam_attachment", self, "_on_player_health_dmg_particle_request_beam_attachment", [particle], CONNECT_PERSIST)
+	
+	particle.dmg_num_for__very_small = dmg_num_for__very_small
+	particle.dmg_num_for__small = dmg_num_for__small
+	particle.dmg_num_for__medium = dmg_num_for__medium
 	
 	return particle
 
@@ -160,19 +183,27 @@ func create_player_health_damage_particle(arg_source_pos : Vector2, arg_dmg_amou
 	
 	particle.visible = true
 	
-	
-	var modulate_magnitude : float = non_essential_rng.randf_range(0.7, 1.3)
-	particle.modulate = Color(modulate_magnitude, modulate_magnitude, modulate_magnitude, 1)
+	set_any_particle_random_modulate(particle)
 	
 	#particle.connect("request_beam_detachment", self, "_on_player_health_dmg_particle_request_beam_detachment", [particle], CONNECT_PERSIST)
 	
 	_inc_player_health_dmg_particles_in_flight()
+
+func set_any_particle_random_modulate(particle):
+	var modulate_magnitude : float = non_essential_rng.randf_range(0.7, 1.3)
+	particle.modulate = Color(modulate_magnitude, modulate_magnitude, modulate_magnitude, 1)
+	
+
+
 
 #
 
 func _on_player_health_dmg_particle_reached_final_destination(arg_particle):
 	decrease_health_by(arg_particle.get_dmg_amount(), arg_particle.dmg_source_id)
 	_dec_player_health_dmg_particles_in_flight()
+	
+	#create_player_heart_hit_particles(arg_particle.get_dmg_amount())
+	call_deferred("create_player_heart_hit_particles", arg_particle.get_dmg_amount())
 
 func _inc_player_health_dmg_particles_in_flight():
 	_player_health_dmg_particles_in_flight += 1
@@ -213,5 +244,53 @@ func _on_player_health_dmg_particle_request_beam_attachment(arg_particle):
 #func _on_player_health_dmg_particle_request_beam_detachment(arg_particle):
 #	multiple_trail_component_for_player_health_dmg_particle.
 
+
+##
+
+func _create_player_heart_hit_particle__for_pool_compo():
+	var particle = PlayerHeartHitParticle_Scene.instance()
+	
+	particle.queue_free_at_end_of_lifetime = false
+	particle.stop_process_at_invisible = true
+	particle.rng_to_use = non_essential_rng
+	particle.has_lifetime = true
+	
+	return particle
+
+func create_player_heart_hit_particles(arg_dmg_amount : float):
+	var count : int
+	
+	if dmg_num_for__very_small >= arg_dmg_amount:
+		count = particle_count_for_dmg_very_small
+	elif dmg_num_for__small >= arg_dmg_amount:
+		count = particle_count_for_dmg_small
+	elif dmg_num_for__medium >= arg_dmg_amount:
+		count = particle_count_for_dmg_medium
+	else:
+		count = particle_count_for_dmg_large
+	
+	
+	for i in count:
+		var particle : PlayerHeartHitParticle = player_heart_hit_particle_pool_component.get_or_create_attack_sprite_from_pool()
+		
+		particle.speed_accel_towards_center = 290
+		particle.initial_speed_towards_center = non_essential_rng.randf_range(-60, -110)
+		
+		particle.max_speed_towards_center = -5
+		
+		particle.lifetime = 1.1
+		particle.lifetime_to_start_transparency = 0.55
+		particle.transparency_per_sec = 1 / 0.5
+		
+		particle.center_pos_of_basis = _player_health_dmg_particle_destination_pos
+		
+		particle.randomize_texture_properties()
+		particle.reset_for_another_use()
+		particle.is_enabled_mov_toward_center = true
+		particle.rotation = particle.global_position.angle_to_point(_player_health_dmg_particle_destination_pos)
+		
+		particle.visible = true
+		particle.modulate.a = 0.6
+	
 
 

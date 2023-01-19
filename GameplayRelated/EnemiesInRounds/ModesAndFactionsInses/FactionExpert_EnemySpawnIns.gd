@@ -1,7 +1,16 @@
 extends "res://GameplayRelated/EnemiesInRounds/BaseMode_EnemySpawnIns.gd"
 
+const Expert_FactionPassive = preload("res://EnemyRelated/EnemyFactionPassives/Type_Expert/Expert_FactionPassive.gd")
+
+var _faction_passive
+
+#
 
 func get_instructions_for_stageround(uuid : String):
+	#todo
+	if uuid == "01":
+		return _get_instructions_for_0_1()
+	
 	if uuid == "41":
 		return _get_instructions_for_4_1()
 	elif uuid == "42":
@@ -57,6 +66,13 @@ func get_instructions_for_stageround(uuid : String):
 		return _get_instructions_for_9_4()
 	
 	return null
+
+
+
+func _get_instructions_for_0_1():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 19, 1.5, EnemyConstants.Enemies.GRANDMASTER),
+	]
 
 
 ########## 4-1
@@ -1624,4 +1640,11 @@ func _get_instructions_for_9_4__sv_5():
 		MultipleEnemySpawnInstruction.new(41, 10, 1, EnemyConstants.Enemies.ENCHANTRESS),
 		MultipleEnemySpawnInstruction.new(46, 5, 1, EnemyConstants.Enemies.ASSASSIN),
 	]
+
+
+################
+
+func get_faction_passive():
+	_faction_passive = Expert_FactionPassive.new()
+	return _faction_passive
 

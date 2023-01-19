@@ -34,18 +34,21 @@ func create_trail_for_node(arg_node):
 	trail.set_node_to_trail(arg_node)
 	emit_signal("on_trail_after_attached_to_node", trail, arg_node)
 	
+	return trail
 
 #
 
 func _get_idle_and_available_trail():
 	for trail in all_associated_trails:
 		if is_instance_valid(trail) and !trail.is_queued_for_deletion() and trail.is_idle_and_available:
+			trail.enable_one_time__set_by_trail_compo()
 			return trail
 	
 	return null
 
 func _construct_trail():
 	var trail_instance = StoreOfTrailType.create_trail_type_instance(trail_type_id)
+	trail_instance.enable_one_time__set_by_trail_compo()
 	emit_signal("on_trail_constructed", trail_instance)
 	
 	trail_instance.connect("tree_exiting", self, "_on_trail_queue_free", [trail_instance], CONNECT_ONESHOT)

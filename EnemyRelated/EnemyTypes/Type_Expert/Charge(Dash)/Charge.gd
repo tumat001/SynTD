@@ -1,6 +1,9 @@
 extends "res://EnemyRelated/AbstractEnemy.gd"
 
 
+signal speed_boost_started()
+signal speed_boost_ended()
+
 const _health_ratio_threshold_01 : float = 0.75
 const _health_ratio_threshold_02 : float = 0.25
 const _starting_boost_amount : float = 100.0
@@ -82,9 +85,12 @@ func _speed_effect_added(effect_added, me):
 	if effect_added.effect_uuid == StoreOfEnemyEffectsUUID.CHARGE_SPEED_BOOST:
 		speed_bonus_modi = effect_added.attribute_as_modifier
 		disconnect("effect_added", self, "_speed_effect_added")
-
+		emit_signal("speed_boost_started")
 
 func _on_speed_effect_removed(effect_removed, me):
 	if effect_removed.effect_uuid == StoreOfEnemyEffectsUUID.CHARGE_SPEED_BOOST:
 		_is_dashing = false
 		disconnect("effect_removed", self, "_on_speed_effect_removed")
+		emit_signal("speed_boost_ended")
+
+

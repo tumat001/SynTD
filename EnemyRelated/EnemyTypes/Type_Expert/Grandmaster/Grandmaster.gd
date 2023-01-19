@@ -1,5 +1,12 @@
 extends "res://EnemyRelated/AbstractEnemy.gd"
 
+signal speed_boost_started()
+signal speed_boost_ended()
+
+signal shield_effect_added()
+signal shield_effect_removed()
+signal shield_effect_broken()
+
 const _health_ratio_threshold_01 : float = 0.75
 const _health_ratio_threshold_02 : float = 0.25
 const _starting_boost_amount : float = 100.0
@@ -79,15 +86,24 @@ func _perform_dash():
 		grandmaster_ability.on_ability_before_cast_start(grandmaster_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 		
 		connect("effect_added", self, "_speed_effect_added")
-		_add_effect(shield_effect._get_copy_scaled_by(grandmaster_ability.get_potency_to_use(last_calculated_final_ability_potency)))
+		var speed_effect = _add_effect(speed_bonus_effect._get_copy_scaled_by(grandmaster_ability.get_potency_to_use(last_calculated_final_ability_potency)))
 		
-		var effect = _add_effect(speed_bonus_effect._get_copy_scaled_by(grandmaster_ability.get_potency_to_use(last_calculated_final_ability_potency)))
-		
-		if effect != null:
+		if speed_effect != null:
 			connect("effect_removed", self, "_on_speed_effect_removed")
 			_is_dashing = true
 		else:
 			disconnect("effect_added", self, "_speed_effect_added")
+		
+		###
+		
+		connect("effect_added", self, "_shield_effect_added")
+		var shield_effect = _add_effect(shield_effect._get_copy_scaled_by(grandmaster_ability.get_potency_to_use(last_calculated_final_ability_potency)))
+		
+		if shield_effect != null:
+			connect("effect_removed", self, "_on_shield_effect_removed")
+			connect("shield_broken")
+		else:
+			disconnect("effect_added", self, "_shield_effect_added")
 		
 		grandmaster_ability.on_ability_after_cast_ended(grandmaster_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 
@@ -103,17 +119,16 @@ func _speed_effect_added(effect_added, me):
 	if effect_added.effect_uuid == StoreOfEnemyEffectsUUID.GRANDMASTER_SPEED_BOOST:
 		speed_bonus_modi = effect_added.attribute_as_modifier
 		disconnect("effect_added", self, "_speed_effect_added")
-
+		emit_signal("speed_boost_started")
 
 func _on_speed_effect_removed(effect_removed, me):
 	if effect_removed.effect_uuid == StoreOfEnemyEffectsUUID.GRANDMASTER_SPEED_BOOST:
 		_is_dashing = false
 		disconnect("effect_removed", self, "_on_speed_effect_removed")
-
+		emit_signal("speed_boost_ended")
 
 
 # INVIS RELATED
-
 
 func _construct_invis_effect_g():
 	invis_effect = EnemyInvisibilityEffect.new(_invis_duration, StoreOfEnemyEffectsUUID.GRANDMASTER_INVIS_EFFECT)
@@ -163,3 +178,12 @@ func _construct_shield_effect():
 	shield_effect.time_in_seconds = 2
 	shield_effect.is_timebound = true
 	shield_effect.is_from_enemy = true
+
+
+func _shield_effect_added(arg_effect, me):
+	pass
+	
+
+func _on_shield_effect_removed(arg_effect, me):
+	pass
+	

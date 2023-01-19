@@ -1527,8 +1527,8 @@ func _add_range_effect(attr_effect : TowerAttributesEffect, target_modules : Arr
 						else: #refresh time
 							module.range_module.percent_range_effects[attr_effect.effect_uuid].time_in_seconds = attr_effect.time_in_seconds
 					
-					#if update_range_of_module:   # NOTE: apparently remove this causes Variance Blue to work properly with BeaconDish?????? THIS makes our code less optimized.
-					module.range_module.update_range()
+					if update_range_of_module:   # NOTE: apparently removing this causes Variance Blue to work properly with BeaconDish?????? THIS makes our code less optimized.
+						module.range_module.update_range()
 					
 					affected_range_module_list.append(module.range_module)
 					
@@ -2074,6 +2074,8 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 		#_display_absorbed_ingredient_effects(Towers.get_tower_tier_from_tower_id(ingredient_effect.tower_id))
 		tower_manager.display_absorbed_ingredient_effects(Towers.get_tower_tier_from_tower_id(ingredient_effect.tower_id), global_position)
 
+
+
 func remove_ingredient(ingredient_effect : IngredientEffect, refund_gold : bool = false):
 	if ingredient_effect != null:
 		remove_tower_effect(ingredients_absorbed[ingredient_effect.tower_id].tower_base_effect)
@@ -2359,6 +2361,11 @@ func remove_all_colors_from_tower(emit_change_signals : bool = true):
 		call_deferred("emit_signal", "update_active_synergy")
 	_update_ingredient_compatible_colors()
 
+func get_all_tower_colors(arg_copy : bool = true):
+	if arg_copy:
+		return _tower_colors.duplicate()
+	else:
+		return _tower_colors
 
 # Synergy related
 

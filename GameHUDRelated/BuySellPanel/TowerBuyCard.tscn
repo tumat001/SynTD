@@ -88,6 +88,7 @@ margin_bottom = 55.0
 mouse_filter = 2
 size_flags_vertical = 11
 custom_constants/margin_top = 0
+custom_constants/margin_bottom = 0
 
 [node name="Upper" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginerUpper"]
 margin_right = 94.0
@@ -108,7 +109,7 @@ custom_constants/separation = 0
 
 [node name="IngredientInfo" type="MarginContainer" parent="MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer"]
 margin_right = 28.0
-margin_bottom = 19.0
+margin_bottom = 17.0
 mouse_filter = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
@@ -122,19 +123,19 @@ __meta__ = {
 margin_left = 1.0
 margin_top = 1.0
 margin_right = 28.0
-margin_bottom = 19.0
+margin_bottom = 17.0
 mouse_filter = 2
 
 [node name="IngredientIcon" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer/IngredientInfo/HBoxContainer"]
 margin_right = 8.0
-margin_bottom = 18.0
+margin_bottom = 16.0
 mouse_filter = 2
 texture = ExtResource( 3 )
 
 [node name="ColorInfo2" type="MarginContainer" parent="MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer"]
-margin_top = 19.0
+margin_top = 17.0
 margin_right = 28.0
-margin_bottom = 30.0
+margin_bottom = 28.0
 mouse_filter = 2
 size_flags_vertical = 10
 __meta__ = {
@@ -168,11 +169,12 @@ text = "Temp"
 valign = 1
 
 [node name="ColorInfo1" type="MarginContainer" parent="MarginContainer/VBoxContainer/MarginerUpper/Upper/TowerAttrContainer"]
-margin_top = 30.0
+margin_top = 28.0
 margin_right = 28.0
 margin_bottom = 41.0
 mouse_filter = 2
 size_flags_vertical = 10
+custom_constants/margin_bottom = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }

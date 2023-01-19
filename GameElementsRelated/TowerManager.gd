@@ -33,6 +33,12 @@ const AbsorbIngParticle_Scene = preload("res://TowerRelated/CommonTowerParticles
 const CentralAbsorbParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/AbsorbRelated/CentralAbsorbParticle/CentralAbsorbParticle.tscn")
 const FirstTimeAbsorbParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/AbsorbRelated/FirstTimeAbsorbParticle/FirstTimeAbsorbParticle.tscn")
 
+const FirstTimeTierBuyAesthPool = preload("res://MiscRelated/PoolRelated/Implementations/FirstTimeTierBuyAesthDrawerPool.gd")
+const FirstTimeTierBuyAesth_Scene = preload("res://TowerRelated/CommonTowerParticles/FirstTimeTierBuyRelated/FirstTimeTierBuyAesth.tscn")
+const FirstTimeTierBuyAesth = preload("res://TowerRelated/CommonTowerParticles/FirstTimeTierBuyRelated/FirstTimeTierBuyAesth.gd")
+const FTTBA_ShowerParticle = preload("res://TowerRelated/CommonTowerParticles/FirstTimeTierBuyRelated/Particles/FTTBA_ShowerParticle.gd")
+const FTTBA_ShowerParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/FirstTimeTierBuyRelated/Particles/FTTBA_ShowerParticle.tscn")
+
 #
 
 enum StoreOfTowerLimitIncId {
@@ -206,6 +212,87 @@ var _first_time_absorb_ing_tier_displayed_status : Dictionary = {
 	6 : true,
 }
 
+#
+
+var _tier_shower_particle_pool_component : AttackSpritePoolComponent
+
+const tier_to_tier_shower_particle_color_map : Dictionary = {
+	1 : Color(122/255.0, 122/255.0, 122/255.0, 0.5),
+	2 : Color(21/255.0, 151/255.0, 2/255.0, 0.5),
+	3 : Color(2/255.0, 58/255.0, 218/255.0, 0.5),
+	4 : Color(108/255.0, 2/255.0, 218/255.0, 0.5),
+	5 : Color(218/255.0, 2/255.0, 5/255.0, 0.5),
+	6 : Color(252/255.0, 190/255.0, 3/255.0, 0.5)
+}
+
+const shower_particle_duration : float = 1.3
+const tier_to_shower_particle_count_map : Dictionary = {
+	1 : 5,
+	2 : 6,
+	3 : 8,
+	4 : 10,
+	5 : 12,
+	6 : 16,
+}
+
+
+
+const tier_to_ray_middle_color_map : Dictionary = {
+	1 : Color(189/255.0, 189/255.0, 189/255.0),
+	2 : Color(21/255.0, 227/255.0, 2/255.0),
+	3 : Color(63/255.0, 185/255.0, 253/255.0),
+	4 : Color(198/255.0, 144/255.0, 254/255.0),
+	5 : Color(254/255.0, 144/255.0, 146/255.0),
+	6 : Color(254/255.0, 221/255.0, 124/255.0)
+}
+
+const tier_to_ray_top_width_color_map : Dictionary = {
+	1 : 15,
+	2 : 15,
+	3 : 15,
+	4 : 17,
+	5 : 19,
+	6 : 21,
+}
+
+const tier_to_ray_bottom_width_color_map : Dictionary = {
+	1 : 25,
+	2 : 25,
+	3 : 25,
+	4 : 28,
+	5 : 31,
+	6 : 34,
+}
+
+var _first_time_tower_tier_acquired_status : Dictionary = {
+	1 : true,
+	2 : true,
+	3 : true,
+	4 : true,
+	5 : true,
+	6 : true,
+}
+
+var _first_time_tier_aesth_pool : FirstTimeTierBuyAesthPool
+
+#
+
+enum AllowStartTierAestheticDisplay {
+	WHOLE_SCREEN_GUI_IS_OPEN = 3,
+	
+	
+}
+var allow_start_tier_aesthetic_display_clauses : ConditionalClauses
+var last_calculated_allow_start_tier_aesthetic_display : bool
+
+var _attempted_start_tier_aesthetic_display : bool
+var _tier_aesthetic_queue_arr : Array = []
+var _pos_aesthetic_queue_arr : Array = []
+
+#
+
+var non_essential_rng : RandomNumberGenerator
+
 ################ setters
 
 func set_game_elements(arg_elements):
@@ -253,9 +340,18 @@ func _ready():
 	can_towers_swap_positions_clauses.connect("clause_removed", self, "_on_can_towers_swap_positions_clause_ins_or_rem", [], CONNECT_PERSIST)
 	_update_can_towers_swap_positions_clauses()
 	
+	allow_start_tier_aesthetic_display_clauses = ConditionalClauses.new()
+	allow_start_tier_aesthetic_display_clauses.connect("clause_inserted", self, "_on_allow_start_tier_aesthetic_display_clauses_updated", [], CONNECT_PERSIST)
+	allow_start_tier_aesthetic_display_clauses.connect("clause_removed", self, "_on_allow_start_tier_aesthetic_display_clauses_updated", [], CONNECT_PERSIST)
+	_update_allow_start_tier_aesth_display()
+	
+	_initialize_tier_shower_particle_pool()
+	_initialize_first_time_tier_aesth_pool()
+	
 	calculate_tower_limit()
 	set_ing_cap_changer(StoreOfIngredientLimitModifierID.LEVEL, base_ing_limit_of_tower)
 	
+	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
 	
 	for color in TowerColors.get_all_colors():
 		_color_groups.append(str(color))
@@ -395,6 +491,18 @@ func add_tower(tower_instance : AbstractTower):
 		tower_instance.transfer_to_placable(tower_instance.hovering_over_placable, false, !can_place_tower_based_on_limit_and_curr_placement(tower_instance))
 	
 	emit_signal("tower_added", tower_instance)
+	
+	call_deferred("_on_after_tower_added", tower_instance)
+
+func _on_after_tower_added(tower_instance : AbstractTower):
+	if is_instance_valid(tower_instance):
+		
+		var tower_tier = tower_instance.tower_type_info.tower_tier
+		var first_time = _first_time_tower_tier_acquired_status[tower_tier]
+		if first_time:
+			_first_time_tower_tier_acquired_status[tower_tier] = false
+			
+			_add_to_tier_aesth_queue__and_attempt_start_display(tower_tier, tower_instance.global_position)
 
 
 # Color and grouping related
@@ -749,6 +857,34 @@ func get_all_active_towers_with_color(color) -> Array:
 	
 	return bucket
 
+func get_all_active_towers_with_colors(colors : Array) -> Array:
+	var converted_colors : Array = []
+	
+	for color in colors:
+		var converted : String
+		
+		if color is int:
+			converted = str(color)
+		else:
+			converted = color
+		
+		converted_colors.append(converted)
+	
+	var bucket : Array = []
+	for child in get_children():
+		if child.is_current_placable_in_map():
+			var to_add : bool = false
+			
+			for color in converted_colors:
+				if child.is_in_group(color):
+					to_add = true
+					break
+			
+			if to_add:
+				bucket.append(child)
+	
+	return bucket
+
 
 
 func get_all_active_towers_without_color(color) -> Array:
@@ -1034,6 +1170,16 @@ func _update_can_towers_swap_positions_clauses():
 	last_calculated_can_towers_swap_position = can_towers_swap_positions_clauses.is_passed
 
 
+func _on_allow_start_tier_aesthetic_display_clauses_updated(arg_clause):
+	_update_allow_start_tier_aesth_display()
+
+func _update_allow_start_tier_aesth_display():
+	last_calculated_allow_start_tier_aesthetic_display = allow_start_tier_aesthetic_display_clauses.is_passed
+	if _attempted_start_tier_aesthetic_display:
+		call_deferred("_attempt_start_tier_aesthetic_display")
+
+
+
 ################### RESTORE POSITION RELATED
 
 func _on_round_start__for_restore_position(arg_curr_stageround):
@@ -1296,7 +1442,7 @@ func _display_first_time_absorb_ing_particle_effects(arg_tier, arg_pos):
 		particle.is_enabled_mov_toward_center = true
 		
 		
-		particle.lifetime = 1.25
+		particle.lifetime = 1.75 #1.25
 		particle.visible = true
 		particle.modulate.a = 1
 		
@@ -1325,4 +1471,114 @@ func _get_particle_angle_arr_with_particle_count(arg_count):
 		bucket.append(360 * (i / float(arg_count)) - 90)
 	
 	return bucket
+
+
+########
+
+func _initialize_tier_shower_particle_pool():
+	_tier_shower_particle_pool_component = AttackSpritePoolComponent.new()
+	_tier_shower_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	_tier_shower_particle_pool_component.node_to_listen_for_queue_free = self
+	_tier_shower_particle_pool_component.source_for_funcs_for_attk_sprite = self
+	_tier_shower_particle_pool_component.func_name_for_creating_attack_sprite = "_create_tier_shower_particle"
+
+func _create_tier_shower_particle():
+	var particle = FTTBA_ShowerParticle_Scene.instance()
+	
+	#particle.max_speed_towards_center = 0
+	
+	#particle.initial_speed_towards_center = -200 #rng_to_use.randf_range(-190, -220)
+	#particle.speed_accel_towards_center = 150
+	
+	particle.queue_free_at_end_of_lifetime = false
+	
+	particle.lifetime_to_start_transparency = 0.5
+	particle.transparency_per_sec = 2
+	
+	particle.stop_process_at_invisible = true
+	
+	particle.min_starting_distance_from_center = 15
+	particle.max_starting_distance_from_center = 15
+	
+	
+	return particle
+
+
+func _initialize_first_time_tier_aesth_pool():
+	_first_time_tier_aesth_pool = FirstTimeTierBuyAesthPool.new()
+	_first_time_tier_aesth_pool.node_to_parent = CommsForBetweenScenes.current_game_elements__node_hoster_below_screen_effects_mngr
+	_first_time_tier_aesth_pool.source_of_create_resource = self
+	_first_time_tier_aesth_pool.func_name_for_create_resource = "_create_first_time_aesth__for_pool"
+
+func _create_first_time_aesth__for_pool():
+	var aesth = FirstTimeTierBuyAesth_Scene.instance()
+	
+	aesth.rng_to_use = non_essential_rng
+	aesth.shower_particle_compo_pool = _tier_shower_particle_pool_component
+	
+	return aesth
+
+#
+
+func _add_to_tier_aesth_queue__and_attempt_start_display(arg_tier, arg_pos):
+	if arg_tier >= 3:
+		_tier_aesthetic_queue_arr.append(arg_tier)
+		_pos_aesthetic_queue_arr.append(arg_pos)
+		
+		_attempt_start_tier_aesthetic_display()
+
+func _attempt_start_tier_aesthetic_display():
+	if last_calculated_allow_start_tier_aesthetic_display:
+		_attempted_start_tier_aesthetic_display = false
+		_start_tier_aesthetic_display()
+		
+	else:
+		_attempted_start_tier_aesthetic_display = true
+
+func _start_tier_aesthetic_display():
+	for i in _tier_aesthetic_queue_arr.size():
+		var tier = _tier_aesthetic_queue_arr[i]
+		var pos = _pos_aesthetic_queue_arr[i]
+		
+		_display_tier_aesthetic_with_tier_at_pos(tier, pos)
+	
+	_tier_aesthetic_queue_arr.clear()
+	_pos_aesthetic_queue_arr.clear()
+
+func _display_tier_aesthetic_with_tier_at_pos(arg_tier, arg_pos):
+	var aesth : FirstTimeTierBuyAesth = _first_time_tier_aesth_pool.get_or_create_resource_from_pool()
+	
+	aesth.main_single_ray.ray_main_color = tier_to_ray_middle_color_map[arg_tier]
+	#aesth.main_single_ray.ray_edge_color = tier_to_ray_edge_color_map[arg_tier]
+	aesth.main_single_ray.ray_upper_ray_total_width = tier_to_ray_top_width_color_map[arg_tier]
+	aesth.main_single_ray.ray_lower_ray_total_width = tier_to_ray_bottom_width_color_map[arg_tier]
+	
+	aesth.global_position = arg_pos + Vector2(0, 7)
+	aesth.main_single_ray.ray_length = 120
+	
+	aesth.main_single_ray.initial_mod_a_val_at_start = 0.05
+	aesth.main_single_ray.initial_mod_a_inc_per_sec_at_start = non_essential_rng.randf_range(1.3, 1.6)
+	aesth.main_single_ray.initial_mod_a_inc_lifetime_to_start = 0
+	aesth.main_single_ray.initial_mod_a_inc_lifetime_to_end = 0.5
+	
+	aesth.main_single_ray.mod_a_dec_lifetime_to_start = non_essential_rng.randf_range(0.75, 1.25)
+	aesth.main_single_ray.mod_a_dec_per_sec = non_essential_rng.randf_range(0.25, 0.35)
+	
+	aesth.main_single_ray.update_ray_properties_based_on_properies()
+	
+	aesth.shower_particle_count = tier_to_shower_particle_count_map[arg_tier]
+	aesth.shower_particle_delta = shower_particle_duration / aesth.shower_particle_count
+	aesth.shower_particle_color = tier_to_tier_shower_particle_color_map[arg_tier]
+	aesth.visible = true
+	aesth.start_display()
+	
+#	if arg_tier == 1:
+#		aesth.main_single_ray.ray_main_color = Color
+#
+#	elif arg_tier == 2:
+#		pass
+
+
+
+
 

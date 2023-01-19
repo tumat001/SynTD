@@ -10,10 +10,10 @@ const animation_name__medium = "medium"
 const animation_name__small = "small"
 const animation_name__very_small = "very_small"
 
-const dmg_num_for__very_small : float = 1.0
-const dmg_num_for__small : float = 2.0
-const dmg_num_for__medium : float = 19.0
-#const dmg_num_for__big : float = 20.0
+
+var dmg_num_for__very_small : float
+var dmg_num_for__small : float
+var dmg_num_for__medium : float
 
 
 enum TextureToUseId {
@@ -64,6 +64,7 @@ var dmg_source_id : int
 
 func _ready():
 	z_index = ZIndexStore.SCREEN_EFFECTS_ABOVE_ALL
+	z_as_relative = false
 	
 	has_lifetime = false
 	queue_free_at_end_of_lifetime = false

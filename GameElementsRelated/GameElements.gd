@@ -434,25 +434,25 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.VARIANCE,
+			Towers.GRAND,
 			Towers.BEACON_DISH,
-			Towers.TIME_MACHINE,
-			Towers.SHACKLED,
-			Towers.TRANSPORTER,
+			Towers.VACUUM,
+			Towers.ORB,
 			Towers.SEEDER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.PESTILENCE,
 			Towers.CHARGE,
-			Towers.BEACON_DISH,
+			Towers.NUCLEUS,
 			Towers.IOTA,
 			Towers.PING,
-			Towers.PAROXYSM
+			Towers.SPIKE
 		])
 	even = !even
 

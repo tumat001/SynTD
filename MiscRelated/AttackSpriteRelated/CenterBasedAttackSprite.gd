@@ -68,3 +68,5 @@ func _process(delta):
 			emit_signal("reached_center_pos_of_basis")
 			_emitted_reached_center_pos_of_basis = true
 		
+		
+		#print("curr_speed : %s. speed accel: %s" % [current_speed_towards_center, speed_accel_towards_center])

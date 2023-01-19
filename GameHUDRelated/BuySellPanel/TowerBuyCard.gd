@@ -13,6 +13,21 @@ const tier04_crown = preload("res://GameHUDRelated/BuySellPanel/Tier04_Crown.png
 const tier05_crown = preload("res://GameHUDRelated/BuySellPanel/Tier05_Crown.png")
 const tier06_crown = preload("res://GameHUDRelated/BuySellPanel/Tier06_Crown.png")
 
+const BuyCard_Normal_Tier01 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier01_Normal.png")
+const BuyCard_Normal_Tier02 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier02_Normal.png")
+const BuyCard_Normal_Tier03 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier03_Normal.png")
+const BuyCard_Normal_Tier04 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier04_Normal.png")
+const BuyCard_Normal_Tier05 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier05_Normal.png")
+const BuyCard_Normal_Tier06 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier06_Normal.png")
+
+const BuyCard_Highlighted_Tier01 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier01_Highlighted.png")
+const BuyCard_Highlighted_Tier02 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier02_Highlighted.png")
+const BuyCard_Highlighted_Tier03 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier03_Highlighted.png")
+const BuyCard_Highlighted_Tier04 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier04_Highlighted.png")
+const BuyCard_Highlighted_Tier05 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier05_Highlighted.png")
+const BuyCard_Highlighted_Tier06 = preload("res://GameHUDRelated/BuySellPanel/TowerBuyCardAssets/BuyAndInfoTowerBackground_Tier06_Highlighted.png")
+
+
 
 signal viewing_tower_description_tooltip(tower_type_id)
 signal tower_bought(tower_type_id, tower_cost)
@@ -53,6 +68,12 @@ var _mouse_offset_from_top_left_pos : Vector2
 var _mouse_moved_after_press : bool = false
 const time_after_press_threshold_for_buy : float = 0.15
 var _time_after_press : float
+
+#
+
+var _is_hovered_over : bool
+var _current_normal_texture : Texture
+var _current_highlighted_texture : Texture
 
 #
 
@@ -144,6 +165,9 @@ func update_display():
 			tier_crown_rect.texture = tier05_crown
 		elif tower_information.tower_tier == 6:
 			tier_crown_rect.texture = tier06_crown
+		
+		# tower card related
+		_set_buy_card_texture_based_on_tier()
 		
 		#
 		_update_can_buy_card()
@@ -326,3 +350,58 @@ func _on_BuyCard_released():
 	
 	_mouse_moved_after_press = false
 	_time_after_press = 0
+
+
+#
+
+func _set_buy_card_texture_based_on_tier():
+	if tower_information.tower_tier == 1:
+		_current_normal_texture = BuyCard_Normal_Tier01
+		_current_highlighted_texture = BuyCard_Highlighted_Tier01
+		
+	elif tower_information.tower_tier == 2:
+		_current_normal_texture = BuyCard_Normal_Tier02
+		_current_highlighted_texture = BuyCard_Highlighted_Tier02
+		
+	elif tower_information.tower_tier == 3:
+		_current_normal_texture = BuyCard_Normal_Tier03
+		_current_highlighted_texture = BuyCard_Highlighted_Tier03
+		
+	elif tower_information.tower_tier == 4:
+		_current_normal_texture = BuyCard_Normal_Tier04
+		_current_highlighted_texture = BuyCard_Highlighted_Tier04
+		
+	elif tower_information.tower_tier == 5:
+		_current_normal_texture = BuyCard_Normal_Tier05
+		_current_highlighted_texture = BuyCard_Highlighted_Tier05
+		
+	elif tower_information.tower_tier == 6:
+		_current_normal_texture = BuyCard_Normal_Tier06
+		_current_highlighted_texture = BuyCard_Highlighted_Tier06
+	
+	_update_buy_card_texture()
+
+
+#func _on_BuyCard_mouse_entered():
+#	_is_hovered_over = true
+#	_update_buy_card_texture()
+#
+#
+#func _on_BuyCard_mouse_exited():
+#	_is_hovered_over = false
+#	_update_buy_card_texture()
+#
+#
+#func _on_BuyCardContainer_visibility_changed():
+#	if !visible:
+#		_is_hovered_over = false
+#		_update_buy_card_texture()
+
+
+func _update_buy_card_texture():
+	
+	buy_card.texture_normal = _current_normal_texture
+	buy_card.texture_hover = _current_highlighted_texture
+	
+
+

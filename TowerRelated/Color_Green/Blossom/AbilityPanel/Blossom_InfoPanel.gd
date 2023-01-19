@@ -40,14 +40,14 @@ func _ready():
 #
 
 func set_blossom(arg_blossom):
-	if blossom != null:
+	if is_instance_valid(blossom): #blossom != null:
 		blossom.disconnect("showing_partner_connection_status_changed", self, "_blossom_showing_partner_changed")
 		assign_partner_button.ability = null
 		unassign_partner_button.ability = null
 	
 	blossom = arg_blossom
 	
-	if blossom != null:
+	if is_instance_valid(blossom):#blossom != null:
 		if !blossom.is_connected("showing_partner_connection_status_changed", self, "_blossom_showing_partner_changed"):
 			blossom.connect("showing_partner_connection_status_changed", self, "_blossom_showing_partner_changed", [], CONNECT_PERSIST)
 			assign_partner_button.ability = blossom.partner_assign_ability

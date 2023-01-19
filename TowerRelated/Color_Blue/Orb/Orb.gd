@@ -460,7 +460,8 @@ func _gain_bonus_from_orb_absorbed():
 	ap_from_orbs_effect.attribute_as_modifier.flat_modifier += ap_amount_per_orb_absorbed
 	_calculate_final_ability_potency()
 	
-	_display_absorbed_ingredient_effects(tower_type_info.tower_tier)
+	#_display_absorbed_ingredient_effects(tower_type_info.tower_tier)
+	tower_manager.display_absorbed_ingredient_effects(tower_type_info.tower_tier, global_position)
 
 #
 
