@@ -5352,7 +5352,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Auto casts Outburst.",
 			["|0|: Outburst: Paroxyxm chooses an attack based on its target.", [plain_fragment__ability]],
-			["If target has 80+ current health and is 80 range away from itself, fire a homing rocket that deals |0| to its intended target, and explodes to deal |1| to 3 enemies.", [interpreter_for_direct_rocket_dmg, interpreter_for_rocket_dmg_splash]],
+			["If target has 50+ current health and is 60 range away from itself, fire a homing rocket that deals |0| to its intended target, and explodes to deal |1| to 3 enemies.", [interpreter_for_direct_rocket_dmg, interpreter_for_rocket_dmg_splash]],
 			["Otherwise, spew out |0|, with each dealing |1| damage.", [interpreter_for_spew_count, interpreter_for_spew_dmg]],
 			["Cooldown: |0|.", [interpreter_for_cooldown]]
 		]
@@ -5360,7 +5360,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_simple_descriptions = [
 			"Auto casts Outburst.",
 			["|0|: Paroxyxm chooses an attack based on its target.", [plain_fragment__ability_name]],
-			["If target has 80+ current health and is 80 range away from itself, fire a homing rocket that deals |0| to its target.", [interpreter_for_direct_rocket_dmg]],
+			["If target has 50+ current health and is 60 range away from itself, fire a homing rocket that deals |0| to its target.", [interpreter_for_direct_rocket_dmg]],
 			["Otherwise, spew out |0|, with each dealing |1| damage.", [interpreter_for_spew_count, interpreter_for_spew_dmg]],
 			["Cooldown: |0|.", [interpreter_for_cooldown]]
 		]

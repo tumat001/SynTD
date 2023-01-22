@@ -57,8 +57,11 @@ signal on_current_health_changed(current_health)
 signal on_current_shield_changed(current_shield)
 signal on_max_health_changed(max_health)
 
+signal shield_added_but_not_refreshed(shield_effect)
+signal shield_removed(shield_id)
 signal shield_broken(shield_id)
-signal all_shields_broken()
+signal shield_removed_but_not_broken(shield_id)
+signal all_shields_removed()
 
 signal on_invisibility_status_changed(arg_val)
 
@@ -132,6 +135,7 @@ var is_queue_free_called_during_ready_prepping : bool = false
 
 var enemy_type : int = EnemyType.NORMAL
 var enemy_id : int
+var enemy_type_info
 
 var enemy_spawn_metadata_from_ins # normally a dictionary
 
@@ -235,7 +239,7 @@ var last_calculated_has_effect_shield_against_enemies : bool
 var distance_to_exit : float
 var unit_distance_to_exit : float
 var current_path_length : float
-var current_path # EnemyPath
+var current_path setget set_current_path # EnemyPath
 
 var _position_at_previous_frame : Vector2
 var _rad_angle_at_previous_frame : float
@@ -371,6 +375,8 @@ func _stats_initialize(info):
 	
 	enemy_id = info.enemy_id
 	enemy_type = info.enemy_type
+	
+	enemy_type_info = info
 
 
 
@@ -469,6 +475,9 @@ func _post_inherit_ready():
 		anim_face_dir_component.initialize_with_sprite_frame_to_monitor(sprite_frames_of_base, anim_sprite, _anim_face__custom_anim_names_to_use, _anim_face__custom_dir_name_to_primary_rad_angle_map)
 		anim_face_dir_component.set_animated_sprite_animation_to_default(anim_sprite)
 		connect("moved__from_process", self, "on_moved__from_process__change_anim_dir")
+		
+		#var anim_name = anim_face_dir_component.get_anim_name_to_use_based_on_angle(current_rad_angle_of_movement)
+		#emit_signal("anim_name_used_changed", _anim_name_at_previous_time, anim_name)
 	
 #	#revive test  ##########################
 #	var rev_heal_modi : PercentModifier = PercentModifier.new(StoreOfEnemyEffectsUUID.HOMERUNNER_RED_GRANTED_REVIVE_HEAL_EFFECT)
@@ -537,6 +546,13 @@ func _get_scale_for_layer_lifebar() -> float:
 	return base_scale
 
 
+func set_current_path(arg_path):
+	current_path = arg_path
+	
+	current_rad_angle_of_movement = global_position.angle_to_point(current_path.curve.interpolate_baked(offset + 1))
+	_position_at_previous_frame = global_position
+	_change_animation_to_face_angle(current_rad_angle_of_movement)
+
 #
 
 func _process(delta):
@@ -596,10 +612,11 @@ func _process(delta):
 	current_rad_angle_of_movement = _position_at_previous_frame.angle_to_point(global_position)
 	_position_at_previous_frame = global_position
 	
+	
 	if !is_ready_prepping:
 		emit_signal("moved__from_process", has_moved_by_natural_means, _rad_angle_at_previous_frame, current_rad_angle_of_movement)
-	#
 	
+	#
 
 ##
 
@@ -821,7 +838,7 @@ func _take_unmitigated_damage_to_life(damage_amount : float):
 	
 	
 	for shield_uuid in shield_effects_id_to_remove:
-		remove_shield_effect(shield_uuid, false)
+		remove_shield_effect(shield_uuid, false, true)
 	
 	if had_shields:
 		calculate_current_shield()
@@ -920,6 +937,8 @@ func calculate_current_shield() -> float:
 
 
 func add_shield_effect(shield_effect : EnemyShieldEffect):
+	var has_same_shield_as_before : bool = shield_id_effect_map.has(shield_effect.effect_uuid)
+	
 	shield_id_effect_map[shield_effect.effect_uuid] = shield_effect
 	var mod = shield_effect.shield_as_modifier
 	var curr_shield : float
@@ -942,11 +961,28 @@ func add_shield_effect(shield_effect : EnemyShieldEffect):
 	shield_effect._current_shield = curr_shield
 	
 	calculate_current_shield()
+	
+	if !has_same_shield_as_before:
+		#shield_effect.shield_added_to_enemy__not_refresh(self)
+		emit_signal("shield_added_but_not_refreshed", shield_effect)
 
-
-func remove_shield_effect(effect_uuid : int, cause_calculate : bool = true):
+func remove_shield_effect(effect_uuid : int, cause_calculate : bool = true, broken_from_dmg : bool = false):
+	var shield_effect = shield_id_effect_map[effect_uuid]
 	shield_id_effect_map.erase(effect_uuid)
-	emit_signal("shield_broken", effect_uuid)
+	
+	###
+	emit_signal("shield_removed", effect_uuid)
+	if shield_id_effect_map.size() == 0:
+		emit_signal("all_shields_removed")
+	
+	if broken_from_dmg:
+		emit_signal("shield_broken", effect_uuid)
+		#shield_effect.shield_broken_by_dmg_and_removed_from_enemy(self)
+		
+	else:
+		emit_signal("shield_removed_but_not_broken", effect_uuid)
+		#shield_effect.shield_removed_from_enemy(self)
+	
 	
 	if cause_calculate:
 		calculate_current_shield()
@@ -2437,6 +2473,8 @@ func get_position_added_pos_and_offset_modifiers(arg_pos): # all
 func get_position_subtracted_pos_and_offset_modifiers(arg_pos): # all
 	return arg_pos - (Vector2(0, -sprite_shift_from_ground) + knock_up_layer.position)
 
+func get_offset_modifiers():
+	return (Vector2(0, -sprite_shift_from_ground) + knock_up_layer.position)
 
 
 func get_position_added_knockup_offset_modifiers(arg_pos): # only knockup

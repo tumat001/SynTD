@@ -28,5 +28,8 @@ script = ExtResource( 3 )
 frames = SubResource( 1 )
 animation = "W"
 
+[node name="InvulBeamPosition2D" type="Position2D" parent="SpriteLayer/KnockUpLayer" index="1"]
+position = Vector2( -10, -8 )
+
 [node name="CollisionShape2D" parent="CollisionArea" index="0"]
 shape = SubResource( 2 )

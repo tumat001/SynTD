@@ -746,9 +746,7 @@ func _round_started(_stageround):
 	
 	_is_round_on_going = true
 	
-	if is_instance_valid(tower_being_dragged) and tower_being_dragged.is_current_placable_in_map():
-		tower_being_dragged._end_drag()
-
+	drop_currently_dragged_tower_from_the_map_if_any()
 
 func _round_ended(_stageround):
 	#for tower in get_all_towers():
@@ -756,6 +754,17 @@ func _round_ended(_stageround):
 		tower.is_round_started = false
 	
 	_is_round_on_going = false
+
+
+#
+
+func drop_currently_dragged_tower_from_the_map_if_any():
+	if is_instance_valid(tower_being_dragged) and tower_being_dragged.is_current_placable_in_map():
+		tower_being_dragged._end_drag()
+
+func drop_currently_dragged_tower_if_any():
+	if is_instance_valid(tower_being_dragged):
+		tower_being_dragged._end_drag()
 
 
 # Towers related

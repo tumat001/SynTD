@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Deity_W.png-1e981165f7f6741fe4c71565723d23d0.stex"
+path="res://.import/Enchantress_ShieldParticle_Break.png-73251b5511451b131d1adfc5edb08f1e.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity_W.png"
-dest_files=[ "res://.import/Deity_W.png-1e981165f7f6741fe4c71565723d23d0.stex" ]
+source_file="res://EnemyRelated/EnemyTypes/Type_Expert/Enchantress(Healer)/Assets/Enchantress_ShieldParticle_Break.png"
+dest_files=[ "res://.import/Enchantress_ShieldParticle_Break.png-73251b5511451b131d1adfc5edb08f1e.stex" ]
 
 [params]
 

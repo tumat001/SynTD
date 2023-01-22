@@ -16,6 +16,11 @@ const AbstractFaithfulEnemy = preload("res://EnemyRelated/EnemyTypes/Type_Faithf
 const Faithful_SummoningPortal_Scene = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/SummoningPortal/Faithful_SummoningPortal.tscn")
 const CrossMarker_Scene = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/CrossMarker/CrossMarker.tscn")
 
+const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
+const CommonAttackSpriteTemplater = preload("res://MiscRelated/AttackSpriteRelated/CommonTemplates/CommonAttackSpriteTemplater.gd")
+const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
+const AttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn")
+
 
 signal on_deity_being_summoned(summon_duration, stun_effect_to_use, deity)
 signal on_deity_summoning_delay_finished()
@@ -25,8 +30,9 @@ signal on_deity_tree_exiting()
 
 
 var _round_deity_stats_map : Dictionary = {
+	#todo
 #	"01" : _get_4_3_deity_stats(),
-#	"02" : _get_4_3_deity_stats(),
+	"02" : _get_4_3_deity_stats(),
 #	"03" : _get_4_3_deity_stats(),
 #	"04" : _get_4_3_deity_stats(),
 #	"05" : _get_4_3_deity_stats(),
@@ -59,6 +65,10 @@ var _current_cross_enemy_path
 #
 
 var game_elements : GameElements
+var non_essential_rng : RandomNumberGenerator
+
+#
+
 var deity_spawn_timer : Timer
 
 var deity_stun_effect_while_summoning : EnemyStunEffect
@@ -71,12 +81,19 @@ var _inc_move_speed_amount : float = 20.0
 var _faithful_dec_mov_speed_effect : EnemyAttributesEffect
 var _dec_mov_speed_amount : float = -20.0
 
+#
+
+var heal_particle_from_sacrificers_attk_sprite_pool : AttackSpritePoolComponent
+
 
 #
 
 func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 	if game_elements == null:
 		game_elements = arg_game_elements
+		non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
+		
+		_initialize_heal_particle_from_sacrificers_attk_sprite_pool()
 	
 	if !is_instance_valid(deity_spawn_timer):
 		deity_spawn_timer = Timer.new()
@@ -206,6 +223,7 @@ func _on_deity_before_stats_initialized(deity : Deity, round_id):
 	deity._stats_initialize(deity_info)
 	
 	deity._current_cross_marker_unit_offset = _current_cross_unit_offset
+	deity.faithful_faction_passive = self
 
 # after deity's ready
 func _on_deity_spawned(deity):
@@ -328,6 +346,37 @@ func _on_current_cross_path_is_used_and_active_changed(arg_val):
 			
 			_update_cross_pos(new_path.curve)
 
+# particle related
+
+func _initialize_heal_particle_from_sacrificers_attk_sprite_pool():
+	heal_particle_from_sacrificers_attk_sprite_pool = AttackSpritePoolComponent.new()
+	heal_particle_from_sacrificers_attk_sprite_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	heal_particle_from_sacrificers_attk_sprite_pool.node_to_listen_for_queue_free = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	heal_particle_from_sacrificers_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
+	heal_particle_from_sacrificers_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_heal_particle_from_sacrificers_particle"
+
+func _create_heal_particle_from_sacrificers_particle():
+	var particle = AttackSprite_Scene.instance()
+	
+	particle.texture_to_use = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/DeityAbilityAssets/HealParticleFromSacrificers.png")
+	
+	particle.queue_free_at_end_of_lifetime = false
+	particle.stop_process_at_invisible = true
+	
+	return particle
+
+func request_play_heal_particle_from_sacrificers(arg_pos):
+	var particle = heal_particle_from_sacrificers_attk_sprite_pool.get_or_create_attack_sprite_from_pool()
+	
+	CommonAttackSpriteTemplater.configure_properties_of_attk_sprite(particle, CommonAttackSpriteTemplater.TemplateIDs.COMMON_UPWARD_DECELERATING_PARTICLE)
+	particle.position = arg_pos
+	
+	particle.position.x += non_essential_rng.randi_range(-17, 17)
+	particle.position.y += non_essential_rng.randi_range(-16, 10)
+	
+	particle.modulate.a = 0.65
+	particle.visible = true
+
 
 
 # deity INFO PER ROUND
@@ -337,7 +386,7 @@ func has_deity_for_round(arg_round_id : String):
 
 func get_deity_stats_for_round(arg_round_id : String):
 	return _round_deity_stats_map.get(arg_round_id, _get_default_deity_stats())
-
+	
 
 func _construct_deity_enemy_type_info() -> EnemyTypeInformation:
 	var info = EnemyTypeInformation.new(EnemyConstants.EnemyFactions.FAITHFUL, EnemyConstants.Enemies.DEITY)
@@ -356,6 +405,8 @@ func _get_default_deity_stats(): # for un predefined rounds
 	
 	info.base_health = 200
 	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_01
+	
 	return info
 
 
@@ -366,6 +417,8 @@ func _get_4_3_deity_stats():
 	info.base_health = 328 #365
 	info.base_effect_vulnerability = 0.75
 	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_01
+	
 	return info
 
 func _get_5_2_deity_stats():
@@ -373,6 +426,8 @@ func _get_5_2_deity_stats():
 	
 	info.base_health = 373 #415
 	info.base_effect_vulnerability = 0.75
+	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_01
 	
 	return info
 
@@ -383,6 +438,8 @@ func _get_6_1_deity_stats():
 	info.base_health = 418 #465
 	info.base_effect_vulnerability = 0.75
 	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_01
+	
 	return info
 
 
@@ -391,6 +448,8 @@ func _get_6_4_deity_stats():
 	
 	info.base_health = 472 #525
 	info.base_effect_vulnerability = 0.70
+	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_02
 	
 	return info
 
@@ -401,6 +460,8 @@ func _get_7_3_deity_stats():
 	info.base_health = 562 #625
 	info.base_effect_vulnerability = 0.65
 	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_02
+	
 	return info
 
 
@@ -410,6 +471,8 @@ func _get_8_2_deity_stats():
 	info.base_health = 652 #725
 	info.base_effect_vulnerability = 0.60
 	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_02
+	
 	return info
 
 func _get_9_1_deity_stats():
@@ -417,6 +480,8 @@ func _get_9_1_deity_stats():
 	
 	info.base_health = 740 #825
 	info.base_effect_vulnerability = 0.55
+	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_03
 	
 	return info
 
@@ -427,5 +492,7 @@ func _get_9_4_deity_stats():
 	info.base_health = 900 #1000
 	info.base_effect_vulnerability = 0.50
 	info.base_player_damage = 36
+	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_03
 	
 	return info

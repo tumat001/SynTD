@@ -1,5 +1,10 @@
 extends "res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd"
 
+#signal shield_effect_added__not_refresh(enemy)
+#signal shield_effect_removed(enemy)
+#signal shield_effect_broken_and_removed(enemy)
+
+
 # percent mod is based on health
 var shield_as_modifier
 var _current_shield
@@ -32,3 +37,21 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 	_configure_copy_to_match_self(copy)
 	
 	return copy
+
+############
+
+#func shield_added_to_enemy__not_refresh(arg_enemy):
+#	emit_signal("shield_effect_added__not_refresh", arg_enemy)
+#
+#
+#func shield_removed_from_enemy(arg_enemy):
+#	print("shield effect -- removed")
+#	emit_signal("shield_effect_removed", arg_enemy)
+#
+#
+#func shield_broken_by_dmg_and_removed_from_enemy(arg_enemy):
+#	emit_signal("shield_effect_broken_and_removed", arg_enemy)
+#
+
+
+

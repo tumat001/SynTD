@@ -19,6 +19,15 @@ const MaxHealhGain_StatusBarIcon = preload("res://EnemyRelated/EnemyTypes/Type_F
 const KnockUp_CircleParticle = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/DeityAbilityAssets/Deity_KnockUp_Sprite.tscn")
 const Taunt_CircleParticle = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/DeityAbilityAssets/Deity_Taunt_Sprite.tscn")
 
+const DeitySprite_Form01_W = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity_W.png")
+const DeitySprite_Form01_E = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity_E.png")
+
+const DeitySprite_Form02_W = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity_W_02.png")
+const DeitySprite_Form02_E = preload("res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity_E_02.png")
+
+#onready var Shader_DeityArmorToughness = preload("res://MiscRelated/ShadersRelated/Shader_DeityArmorToughness.shader")
+
+
 #
 
 enum PeriodicAbilities {
@@ -59,6 +68,9 @@ var ap_modi_uuid : int
 
 var _heal_timer : Timer
 var _first_time_sacrificer_went_to_range : bool = false
+
+var _heal_particle_from_sacrificer_timer : Timer
+var _current_delta_per_heal_particle
 
 #
 
@@ -122,6 +134,49 @@ var below_percent_health_threshold_clause_id : int = -12
 
 #
 
+#var current_armor_toughness_shader
+#const shader_max_transparency : float = 0.7
+#var _current_shader_transparency : float = 0
+#
+#const shader_blue_color := Color(0.1, 0, 0.85, 1)
+#const shader_orange_color := Color(0.85, 0.32, 0, 1)
+
+const _blue_eyes_max_mod_a : float = 0.5
+var _blue_eyes_current_mod_a : float = 0
+
+const _blue_eyes_max_scale : float = 2.4
+var _blue_eyes_current_scale : float = 1.0
+
+var _blue_eyes_w_pos : Vector2
+var _blue_eyes_e_pos : Vector2
+
+
+var _backhorn_w_pos : Vector2
+var _backhorn_e_pos : Vector2
+
+var _backhorn_w_h_flip : bool
+var _backhorn_e_h_flip : bool
+
+
+enum DeityFormId {
+	FORM_01 = 1,
+	FORM_02 = 2,
+	FORM_03 = 3,
+}
+
+var current_deity_form : int setget set_current_deity_form
+
+#
+
+var faithful_faction_passive
+
+#
+
+onready var blue_eyes = $SpriteLayer/KnockUpLayer/BlueEyes
+onready var back_horn = $SpriteLayer/KnockUpLayer/BackHorn
+
+#
+
 func _ready():
 	#
 	
@@ -151,11 +206,31 @@ func _ready():
 	
 	#
 	
+	#current_armor_toughness_shader = Shader_DeityArmorToughness
+	#sprite_layer.material.shader = current_armor_toughness_shader
+	
+	blue_eyes.modulate.a = _blue_eyes_current_mod_a
+	
 	z_index = ZIndexStore.ENEMIES_ABOVE_TOWERS
 	
 	_construct_and_register_abilities()
 	connect("final_ability_potency_changed", self, "_on_ability_potency_changed_d")
 	connect("on_current_health_changed", self, "_on_curr_health_changed_d")
+	
+	connect("anim_name_used_changed", self, "_on_anim_name_used_changed_d")
+	
+	#
+	
+	_blue_eyes_w_pos = blue_eyes.position
+	_blue_eyes_e_pos = Vector2(-blue_eyes.position.x, blue_eyes.position.y)
+	_update_blue_eyes_properties()
+	
+	_backhorn_w_pos = back_horn.position
+	_backhorn_e_pos = Vector2(-back_horn.position.x, back_horn.position.y)
+	_backhorn_w_h_flip = back_horn.flip_h
+	_backhorn_e_h_flip = !back_horn.flip_h
+	
+	set_current_deity_form(enemy_type_info.type_info_metadata[enemy_type_info.TypeInfoMetadata.DEITY_FORM])
 
 
 func _post_inherit_ready():
@@ -196,6 +271,11 @@ func _construct_and_add_effects():
 	_heal_timer.one_shot = true
 	add_child(_heal_timer)
 	_heal_timer.connect("timeout", self, "_heal_timer_expired")
+	
+	_heal_particle_from_sacrificer_timer = Timer.new()
+	_heal_particle_from_sacrificer_timer.one_shot = true
+	add_child(_heal_particle_from_sacrificer_timer)
+	_heal_particle_from_sacrificer_timer.connect("timeout", self, "_on_heal_particle_from_sacrificer_timer_timeout")
 	
 	#
 	
@@ -370,6 +450,7 @@ func _on_enemy_left_range_d(enemy):
 
 func _increment_faithfuls_in_range_by(arg_amount : int):
 	faithfuls_in_range += arg_amount
+	#_update_armor_toughness_shader()
 	
 	_update_armor_toughness_effect_from_faithfuls()
 
@@ -397,6 +478,13 @@ func _increment_sacrificers_in_range_by(arg_amount : int):
 	if !_first_time_sacrificer_went_to_range:
 		_first_time_sacrificer_went_to_range = true
 		_heal_timer_expired()
+	
+	if sacrificers_in_range > 0:
+		_current_delta_per_heal_particle = 3 / sacrificers_in_range
+		if _heal_particle_from_sacrificer_timer.time_left == 0:
+			_heal_particle_from_sacrificer_timer.start(_current_delta_per_heal_particle)
+	else:
+		_heal_particle_from_sacrificer_timer.stop()
 
 func _update_heal_effect_from_sacrificers():
 	var amounts : float = base_health_regen_per_sec_per_sacrificer * sacrificers_in_range * last_calculated_final_ability_potency
@@ -413,6 +501,7 @@ func _increment_seers_in_range_by(arg_amount : int):
 	seers_in_range += arg_amount
 	
 	_update_ap_effect_from_seers()
+	_update_blue_eyes_properties()
 
 func _update_ap_effect_from_seers():
 	var amounts : float = base_ap_per_seer * seers_in_range
@@ -602,3 +691,85 @@ func _construct_self_effect_shield() :
 	_self_effect_shield = EnemyEffectShieldEffect.new(StoreOfEnemyEffectsUUID.DEITY_SELF_EFFECT_SHIELD_EFFECT, _base_effect_immunity_duration)
 	_self_effect_shield.is_from_enemy = true
 	_self_effect_shield.status_bar_icon = preload("res://EnemyRelated/CommonStatusBarIcons/EffectShieldEffect/EffectShieldEffect_StatusBarIcon.png")
+
+
+##############
+
+func _on_anim_name_used_changed_d(arg_prev_name, arg_curr_name):
+	if arg_curr_name != arg_prev_name:
+		if arg_curr_name == "W":
+			blue_eyes.position = _blue_eyes_w_pos
+			back_horn.position = _backhorn_w_pos
+			back_horn.flip_h = _backhorn_w_h_flip
+			
+		elif arg_curr_name == "E":
+			blue_eyes.position = _blue_eyes_e_pos
+			back_horn.position = _backhorn_e_pos
+			back_horn.flip_h = _backhorn_e_h_flip
+			
+
+##
+
+func _on_heal_particle_from_sacrificer_timer_timeout():
+	if sacrificers_in_range > 0:
+		_heal_particle_from_sacrificer_timer.start(_current_delta_per_heal_particle)
+		faithful_faction_passive.request_play_heal_particle_from_sacrificers(global_position)
+		
+
+##
+
+#func _update_armor_toughness_shader():
+#	var ratio = (faithfuls_in_range / 1) #40)
+#	if ratio > 1:
+#		ratio = 1
+#
+#	_current_shader_transparency = shader_max_transparency * ratio
+#
+#	var blob_blue_color = shader_blue_color
+#	blob_blue_color.a = _current_shader_transparency
+#
+#	var blob_orange_color = shader_orange_color
+#	blob_orange_color.a = _current_shader_transparency
+#
+#	sprite_layer.material.set_shader_param("blob_top", blob_blue_color)
+#	sprite_layer.material.set_shader_param("blob_bottom", blob_orange_color)
+#
+#	#sprite_layer.material.set_shader_param("background_edge", bg_color)
+#	#sprite_layer.material.set_shader_param("background_center", bg_color)
+
+
+func _update_blue_eyes_properties():
+	var ratio : float = seers_in_range / 7.0
+	if ratio > 1:
+		ratio = 1
+	
+	_blue_eyes_current_mod_a = _blue_eyes_max_mod_a * ratio
+	_blue_eyes_current_scale = _blue_eyes_max_scale * ratio
+	
+	blue_eyes.modulate.a = _blue_eyes_current_mod_a
+	blue_eyes.scale = Vector2(_blue_eyes_current_scale, _blue_eyes_current_scale)
+
+#
+
+func set_current_deity_form(arg_id):
+	current_deity_form = arg_id
+	
+	var w_anim_name : String = AnimFaceDirComponent.dir_west_name
+	var e_anim_name : String = AnimFaceDirComponent.dir_east_name
+	
+	if current_deity_form == DeityFormId.FORM_01:
+		anim_sprite.frames.set_frame(w_anim_name, 0, DeitySprite_Form01_W)
+		anim_sprite.frames.set_frame(e_anim_name, 0, DeitySprite_Form01_E)
+		back_horn.visible = false
+		
+	elif current_deity_form == DeityFormId.FORM_02:
+		anim_sprite.frames.set_frame(w_anim_name, 0, DeitySprite_Form02_W)
+		anim_sprite.frames.set_frame(e_anim_name, 0, DeitySprite_Form02_E)
+		back_horn.visible = false
+		
+	elif current_deity_form == DeityFormId.FORM_03:
+		anim_sprite.frames.set_frame(w_anim_name, 0, DeitySprite_Form02_W)
+		anim_sprite.frames.set_frame(e_anim_name, 0, DeitySprite_Form02_E)
+		back_horn.visible = true
+		
+

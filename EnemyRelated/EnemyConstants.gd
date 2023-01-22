@@ -83,8 +83,8 @@ func _init():
 	first_half_faction_id_pool.append(EnemyFactions.BASIC)
 	
 	#todo
-	second_half_faction_id_pool.append(EnemyFactions.EXPERT)
-	#second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
+	#second_half_faction_id_pool.append(EnemyFactions.EXPERT)
+	second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
 	#second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
 
 

@@ -26,7 +26,17 @@ export(bool) var stop_process_at_invisible : bool = false
 var texture_to_use : Texture
 
 var node_to_follow_to__override_disp_per_sec : Node2D
-var node_to_follow_to__override_disp_per_sec__offset : Vector2
+var node_to_follow_to__override_disp_per_sec__offset : Vector2 setget set_node_to_follow_to__override_disp_per_sec__offset
+
+var node_to_listen_for_queue_free__turn_invis : Node2D setget set_node_to_listen_for_queue_free__turn_invis
+
+#
+
+func set_node_to_follow_to__override_disp_per_sec__offset(arg_vector):
+	node_to_follow_to__override_disp_per_sec__offset = arg_vector
+	
+	if is_inside_tree() and is_instance_valid(node_to_follow_to__override_disp_per_sec):
+		global_position = node_to_follow_to__override_disp_per_sec.global_position + node_to_follow_to__override_disp_per_sec__offset
 
 #
 
@@ -90,8 +100,12 @@ func configure_self_on_reached_end_of_lifetime():
 		queue_free()
 	elif turn_invisible_at_end_of_lifetime:
 		if visible:
-			visible = false
-			emit_signal("turned_invisible_from_lifetime_end")
+			_turn_invisible_from_lifetime_end()
+
+func _turn_invisible_from_lifetime_end():
+	visible = false
+	emit_signal("turned_invisible_from_lifetime_end")
+
 
 
 
@@ -110,3 +124,22 @@ func get_sprite_size() -> Vector2:
 	return frames.get_frame(animation, frame).get_size()
 
 #
+
+func set_node_to_listen_for_queue_free__turn_invis(arg_node):
+	if is_instance_valid(node_to_listen_for_queue_free__turn_invis):
+		node_to_listen_for_queue_free__turn_invis.disconnect("tree_exiting", self, "_on_node_to_listen_for_queue_free__turn_invis_queued_free")
+	
+	node_to_listen_for_queue_free__turn_invis = arg_node
+	
+	if is_instance_valid(node_to_listen_for_queue_free__turn_invis):
+		node_to_listen_for_queue_free__turn_invis.connect("tree_exiting", self, "_on_node_to_listen_for_queue_free__turn_invis_queued_free", [arg_node])
+
+func _on_node_to_listen_for_queue_free__turn_invis_queued_free(arg_node):
+	_turn_invisible_from_lifetime_end()
+
+
+func turn_invisible_from_lifetime_end__from_outside():
+	_turn_invisible_from_lifetime_end()
+	
+	
+

@@ -37,8 +37,8 @@ var is_an_enemy_in_range : bool = false
 
 
 #
-const enemy_min_flat_health_needed_for_big_missle_cast : float = 80.0
-const enemy_min_distance_needed_for_big_missle_cast : float = 80.0
+const enemy_min_flat_health_needed_for_big_missle_cast : float = 50.0
+const enemy_min_distance_needed_for_big_missle_cast : float = 60.0
 
 var big_missle_bullet_attk_module : BulletAttackModule
 const big_missle__direct_hit__flat_dmg : float = 70.0

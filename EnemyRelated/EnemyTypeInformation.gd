@@ -9,6 +9,10 @@ enum EnemyType {
 	BOSS = 700,
 }
 
+enum TypeInfoMetadata {
+	DEITY_FORM = 1,
+}
+
 # 
 var enemy_id : int
 var faction
@@ -30,6 +34,7 @@ var base_effect_vulnerability : float = 1
 
 var enemy_type : int = EnemyType.NORMAL
 
+var type_info_metadata : Dictionary
 
 func _init(arg_id : int, arg_faction):
 	enemy_id = arg_id

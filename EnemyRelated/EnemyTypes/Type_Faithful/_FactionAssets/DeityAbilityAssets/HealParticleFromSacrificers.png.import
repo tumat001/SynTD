@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Deity_W.png-1e981165f7f6741fe4c71565723d23d0.stex"
+path="res://.import/HealParticleFromSacrificers.png-69665addc2ff149c7b9890980e5badb9.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity_W.png"
-dest_files=[ "res://.import/Deity_W.png-1e981165f7f6741fe4c71565723d23d0.stex" ]
+source_file="res://EnemyRelated/EnemyTypes/Type_Faithful/_FactionAssets/DeityAbilityAssets/HealParticleFromSacrificers.png"
+dest_files=[ "res://.import/HealParticleFromSacrificers.png-69665addc2ff149c7b9890980e5badb9.stex" ]
 
 [params]
 

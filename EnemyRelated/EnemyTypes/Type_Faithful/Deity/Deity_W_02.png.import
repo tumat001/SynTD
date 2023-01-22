@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Deity_W.png-1e981165f7f6741fe4c71565723d23d0.stex"
+path="res://.import/Deity_W_02.png-648cf93b9d9ca8d21a1c39d03b68fbfa.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity_W.png"
-dest_files=[ "res://.import/Deity_W.png-1e981165f7f6741fe4c71565723d23d0.stex" ]
+source_file="res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity_W_02.png"
+dest_files=[ "res://.import/Deity_W_02.png-648cf93b9d9ca8d21a1c39d03b68fbfa.stex" ]
 
 [params]
 

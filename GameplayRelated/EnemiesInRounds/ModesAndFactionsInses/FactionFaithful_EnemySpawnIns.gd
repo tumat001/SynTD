@@ -1,6 +1,5 @@
 extends "res://GameplayRelated/EnemiesInRounds/BaseMode_EnemySpawnIns.gd"
 
-
 var _faction_passive
 
 func get_instructions_for_stageround(uuid : String):
@@ -75,16 +74,15 @@ func get_instructions_for_stageround(uuid : String):
 
 # TEST
 
-#
+
 #func _get_instructions_for_0_1():
 #	return [
-#		MultipleEnemySpawnInstruction.new(0, 1, 1, EnemyConstants.Enemies.CROSS_BEARER),
+#		MultipleEnemySpawnInstruction.new(0, 1, 10, EnemyConstants.Enemies.CROSS_BEARER),
 #	]
 #
 #func _get_instructions_for_0_2():
 #	return [
-#		MultipleEnemySpawnInstruction.new(0, 4, 8, EnemyConstants.Enemies.SEER),
-#		MultipleEnemySpawnInstruction.new(1, 4, 8, EnemyConstants.Enemies.PRIEST),
+#		MultipleEnemySpawnInstruction.new(0, 7, 2, EnemyConstants.Enemies.SEER),
 #	]
 #
 #func _get_instructions_for_0_3():

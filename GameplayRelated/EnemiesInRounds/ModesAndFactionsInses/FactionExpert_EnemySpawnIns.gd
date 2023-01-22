@@ -7,9 +7,8 @@ var _faction_passive
 #
 
 func get_instructions_for_stageround(uuid : String):
-	#todo
-	if uuid == "01":
-		return _get_instructions_for_0_1()
+#	if uuid == "01":
+#		return _get_instructions_for_0_1()
 	
 	if uuid == "41":
 		return _get_instructions_for_4_1()
@@ -69,10 +68,10 @@ func get_instructions_for_stageround(uuid : String):
 
 
 
-func _get_instructions_for_0_1():
-	return [
-		MultipleEnemySpawnInstruction.new(0, 19, 1.5, EnemyConstants.Enemies.GRANDMASTER),
-	]
+#func _get_instructions_for_0_1():
+#	return [
+#		MultipleEnemySpawnInstruction.new(0, 2, 1.5, EnemyConstants.Enemies.ENCHANTRESS),
+#	]
 
 
 ########## 4-1

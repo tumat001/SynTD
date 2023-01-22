@@ -3,9 +3,9 @@ extends "res://EnemyRelated/AbstractEnemy.gd"
 signal speed_boost_started()
 signal speed_boost_ended()
 
-signal shield_effect_added()
-signal shield_effect_removed()
-signal shield_effect_broken()
+signal grandmaster_shield_effect_added()
+signal grandmaster_shield_effect_removed()
+signal grandmaster_shield_effect_broken()
 
 const _health_ratio_threshold_01 : float = 0.75
 const _health_ratio_threshold_02 : float = 0.25
@@ -97,11 +97,12 @@ func _perform_dash():
 		###
 		
 		connect("effect_added", self, "_shield_effect_added")
-		var shield_effect = _add_effect(shield_effect._get_copy_scaled_by(grandmaster_ability.get_potency_to_use(last_calculated_final_ability_potency)))
+		var _shield_effect_to_use = shield_effect._get_copy_scaled_by(grandmaster_ability.get_potency_to_use(last_calculated_final_ability_potency))
+		_add_effect__use_provided_effect(_shield_effect_to_use)
 		
-		if shield_effect != null:
+		if _shield_effect_to_use != null:
 			connect("effect_removed", self, "_on_shield_effect_removed")
-			connect("shield_broken")
+			connect("shield_broken", self, "_on_shield_effect_broken")
 		else:
 			disconnect("effect_added", self, "_shield_effect_added")
 		
@@ -181,9 +182,29 @@ func _construct_shield_effect():
 
 
 func _shield_effect_added(arg_effect, me):
-	pass
-	
+	if arg_effect.effect_uuid == shield_effect.effect_uuid:
+		emit_signal("grandmaster_shield_effect_added")
+		disconnect("effect_added", self, "_shield_effect_added")
 
 func _on_shield_effect_removed(arg_effect, me):
-	pass
-	
+	if arg_effect.effect_uuid == shield_effect.effect_uuid:
+		emit_signal("grandmaster_shield_effect_removed")
+		
+		if is_connected("shield_broken", self, "_on_shield_effect_broken"):
+			disconnect("shield_broken", self, "_on_shield_effect_broken")
+		
+		if is_connected("effect_removed", self, "_on_shield_effect_removed"):
+			disconnect("effect_removed", self, "_on_shield_effect_removed")
+
+
+func _on_shield_effect_broken(arg_id):
+	if arg_id == shield_effect.effect_uuid:
+		emit_signal("grandmaster_shield_effect_broken")
+		
+		if is_connected("shield_broken", self, "_on_shield_effect_broken"):
+			disconnect("shield_broken", self, "_on_shield_effect_broken")
+		
+		if is_connected("effect_removed", self, "_on_shield_effect_removed"):
+			disconnect("effect_removed", self, "_on_shield_effect_removed")
+		
+

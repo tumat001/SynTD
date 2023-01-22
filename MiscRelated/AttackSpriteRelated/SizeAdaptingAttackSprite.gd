@@ -30,8 +30,8 @@ func change_config_based_on_size_adapting_to():
 	else:
 		final_ratio = Vector2((1 / adapt_ratio) / curr_ratio.x, (1 / adapt_ratio) / curr_ratio.y)
 	
-	scale.x /= final_ratio.x
-	scale.y /= final_ratio.y
+	scale.x = 1 / final_ratio.x
+	scale.y = 1 / final_ratio.y
 	
 	if size_adapting_to.get("tower_base"):
 		position += size_adapting_to.tower_base.position

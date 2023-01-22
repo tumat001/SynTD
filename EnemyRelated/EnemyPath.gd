@@ -71,6 +71,8 @@ func _init():
 	show_curve_conditional_clauses.connect("clause_inserted", self, "_on_show_curve_conditional_clauses_updated", [], CONNECT_PERSIST)
 	show_curve_conditional_clauses.connect("clause_removed", self, "_on_show_curve_conditional_clauses_updated", [], CONNECT_PERSIST)
 	_update_show_curve_state()
+	
+	
 
 #
 func _ready():
