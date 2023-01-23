@@ -46,7 +46,7 @@ const tower_interaction_range_amount : float = 160.0
 const base_armor_toughness_amount_per_faithful : float = 1.0
 const base_health_regen_per_sec_per_sacrificer : float = 3.0#5.0
 const base_ap_per_seer : float = 0.5
-const base_health_gain_percent_from_cross_marker : float = 20.0
+const base_health_gain_percent_from_cross_marker : float = 15.0
 
 var faithfuls_in_range : int
 var sacrificers_in_range : int
@@ -230,7 +230,7 @@ func _ready():
 	_backhorn_w_h_flip = back_horn.flip_h
 	_backhorn_e_h_flip = !back_horn.flip_h
 	
-	set_current_deity_form(enemy_type_info.type_info_metadata[enemy_type_info.TypeInfoMetadata.DEITY_FORM])
+	set_current_deity_form(enemy_type_info_metadata[EnemyTypeInformation.TypeInfoMetadata.DEITY_FORM])
 
 
 func _post_inherit_ready():
@@ -480,7 +480,7 @@ func _increment_sacrificers_in_range_by(arg_amount : int):
 		_heal_timer_expired()
 	
 	if sacrificers_in_range > 0:
-		_current_delta_per_heal_particle = 3 / sacrificers_in_range
+		_current_delta_per_heal_particle = 2 / sacrificers_in_range
 		if _heal_particle_from_sacrificer_timer.time_left == 0:
 			_heal_particle_from_sacrificer_timer.start(_current_delta_per_heal_particle)
 	else:
@@ -617,7 +617,7 @@ func _cast_grant_revive_ability(cooldown_amount : float):
 	var enemies = range_module.get_targets_without_affecting_self_current_targets(int(revive_target_count * last_calculated_final_ability_potency) + 1)
 	
 	for enemy in enemies:
-		if enemy != self:
+		if enemy is AbstractFaithfulEnemy and enemy != self:
 			enemy._add_effect(revive_effect)
 	
 	grant_revive_ability.on_ability_after_cast_ended(cooldown_amount)

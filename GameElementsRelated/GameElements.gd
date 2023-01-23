@@ -158,8 +158,8 @@ func _ready():
 	# TEMPORARY HERE. MAKE IT BE EDITABLE IN MAP SELECTION
 	game_modi_ids.append(StoreOfGameModifiers.GameModiIds.RED_TOWER_RANDOMIZER)
 	
-	TowerCompositionColors.reset_synergies_instances()
-	TowerDominantColors.reset_synergies_instances()
+	TowerCompositionColors.reset_synergies_instances_and_curr_tier()
+	TowerDominantColors.reset_synergies_instances_and_curr_tier()
 	
 	
 	game_modifiers_manager.add_game_modi_ids(game_modi_ids)
@@ -420,6 +420,7 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
+	
 #	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 #	level_manager.current_level = LevelManager.LEVEL_7
 #	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
@@ -435,14 +436,14 @@ var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
 	shop_manager.roll_towers_in_shop_with_cost()
-#
+	
 #	if !even:
 #		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.VARIANCE,
-#			Towers.GRAND,
-#			Towers.PAROXYSM,
-#			Towers.VACUUM,
-#			Towers.ORB,
+#			Towers.SPIKE,
+#			Towers.PINECONE,
+#			Towers.IMPALE,
+#			Towers.PESTILENCE,
+#			Towers.BURGEON,
 #			Towers.SEEDER,
 #		])
 #	else:

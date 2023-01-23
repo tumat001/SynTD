@@ -298,14 +298,18 @@ func _destroy_current_cross():
 func _on_cross_bearer_dies(cross_bearer):
 	if cross_bearer.unit_offset > _current_cross_unit_offset:
 		_get_current_cross_or_construct()
-		if _current_cross.is_inside_tree():
-			_current_cross.global_position = cross_bearer.global_position
-		else:
-			_current_cross.position = cross_bearer.global_position
+#		if _current_cross.is_inside_tree():
+#			_update_cross_pos(cross_bearer.current_path)
+#		else:
+#			_current_cross.position = cross_bearer.global_position
+#
+		_current_cross_enemy_path = cross_bearer.current_path
+		#_update_cross_pos(cross_bearer.current_path.curve)
+		call_deferred("_update_cross_pos", cross_bearer.current_path.curve)
 		
 		_current_cross_unit_offset = cross_bearer.unit_offset
+		#_current_cross_enemy_path = cross_bearer.current_path
 		
-		_current_cross_enemy_path = cross_bearer.current_path
 		_current_cross.enemy_path_associated = cross_bearer.current_path
 		
 		if !_current_cross_enemy_path.is_connected("curve_changed", self, "_on_current_cross_path_curve_changed"):
@@ -332,10 +336,17 @@ func _on_current_cross_path_curve_changed(arg_curve : Curve2D, arg_curve_id):
 
 func _update_cross_pos(arg_curve):
 	if is_instance_valid(_current_cross):
-		var rel_pos = arg_curve.interpolate_baked(_current_cross_unit_offset * arg_curve.get_baked_length())
-		var global_pos = rel_pos + _current_cross_enemy_path.global_position
-		
-		_current_cross.global_position = global_pos
+		if _current_cross.is_inside_tree():
+			var rel_pos = arg_curve.interpolate_baked(_current_cross_unit_offset * arg_curve.get_baked_length())
+			var global_pos = rel_pos + _current_cross_enemy_path.global_position
+			
+			_current_cross.global_position = global_pos
+		else:
+			var rel_pos = arg_curve.interpolate_baked(_current_cross_unit_offset * arg_curve.get_baked_length())
+			var global_pos = rel_pos + _current_cross_enemy_path.global_position
+			
+			_current_cross.position = global_pos
+
 
 func _on_current_cross_path_is_used_and_active_changed(arg_val):
 	if !arg_val:
@@ -374,7 +385,7 @@ func request_play_heal_particle_from_sacrificers(arg_pos):
 	particle.position.x += non_essential_rng.randi_range(-17, 17)
 	particle.position.y += non_essential_rng.randi_range(-16, 10)
 	
-	particle.modulate.a = 0.65
+	particle.modulate.a = 0.85
 	particle.visible = true
 
 
@@ -389,15 +400,18 @@ func get_deity_stats_for_round(arg_round_id : String):
 	
 
 func _construct_deity_enemy_type_info() -> EnemyTypeInformation:
-	var info = EnemyTypeInformation.new(EnemyConstants.EnemyFactions.FAITHFUL, EnemyConstants.Enemies.DEITY)
-	info.enemy_type = EnemyTypeInformation.EnemyType.BOSS
-	info.base_movement_speed = 14
-	info.base_player_damage = 18
-	
-	info.base_armor = 13
-	info.base_toughness = 13
-	
-	return info
+	return EnemyConstants.get_enemy_info(EnemyConstants.Enemies.DEITY)
+#	var info = EnemyTypeInformation.new(EnemyConstants.EnemyFactions.FAITHFUL, EnemyConstants.Enemies.DEITY)
+#	info.enemy_type = EnemyTypeInformation.EnemyType.BOSS
+#	info.base_movement_speed = 14
+#	info.base_player_damage = 18
+#
+#	info.base_armor = 13
+#	info.base_toughness = 13
+#
+#	info.enemy_name = "Deity"
+#
+#	return info
 
 
 func _get_default_deity_stats(): # for un predefined rounds

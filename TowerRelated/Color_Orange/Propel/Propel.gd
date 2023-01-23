@@ -359,18 +359,18 @@ func _on_tree_exiting():
 func _on_line_range_module_enemy_entered(enemy, arg_range_mod):
 	line_range_module_enemy_to_in_range_count_map[arg_range_mod] = arg_range_mod.get_enemy_in_range_count()
 	
-	if is_instance_valid(enemy) and !enemy.is_connected("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module"):
-		enemy.connect("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module", [arg_range_mod], CONNECT_DEFERRED)
+	if is_instance_valid(enemy) and !enemy.is_connected("on_death_by_any_cause", self, "_on_enemy_death_by_any_cause__on_line_range_module"):
+		enemy.connect("on_death_by_any_cause", self, "_on_enemy_death_by_any_cause__on_line_range_module", [enemy, arg_range_mod], CONNECT_DEFERRED)
 	
 	_attempt_cast_plow()
 
 func _on_line_range_module_enemy_exited(enemy, arg_range_mod):
 	line_range_module_enemy_to_in_range_count_map[arg_range_mod] = arg_range_mod.get_enemy_in_range_count()
 	
-	if is_instance_valid(enemy) and enemy.is_connected("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module"):
-		enemy.disconnect("on_killed_by_damage", self, "_on_enemy_killed__on_line_range_module")
+	if is_instance_valid(enemy) and enemy.is_connected("on_death_by_any_cause", self, "_on_enemy_death_by_any_cause__on_line_range_module"):
+		enemy.disconnect("on_death_by_any_cause", self, "_on_enemy_death_by_any_cause__on_line_range_module")
 
-func _on_enemy_killed__on_line_range_module(damage_instance_report, enemy, arg_line_range_module):
+func _on_enemy_death_by_any_cause__on_line_range_module(enemy, arg_line_range_module):
 	_on_line_range_module_enemy_exited(enemy, arg_line_range_module)
 
 #

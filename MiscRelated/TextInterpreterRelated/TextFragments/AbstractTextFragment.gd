@@ -9,7 +9,7 @@ enum STAT_TYPE {
 	ON_HIT_DAMAGE = 101,
 	ATTACK_SPEED = 102,
 	RANGE = 103,
-	ABILITY_POTENCY = 104,
+	ABILITY_POTENCY = 104,  # if changing this val, change ENEMY_STAT__ABILITY_POTENCY as well
 	PERCENT_COOLDOWN_REDUCTION = 105,
 	PIERCE = 106,
 	
@@ -48,6 +48,16 @@ enum STAT_TYPE {
 	RELIC = 1027
 	ENEMY = 1028
 	
+	HEALTH = 1029 # if changing this, change ENEMY_STAT__HEALTH as well
+	SHIELD = 1030 
+	ARMOR = 1031 # change ENEMY_STAT__ARMOR if changing this
+	TOUGHNESS = 1032 # change ENEMY_STAT__TOUGHNESS if changing this
+	MOV_SPEED = 1033 # change ENEMY_STAT__MOV_SPEED if change this
+	INVISIBLE = 1034
+	RESISTANCE = 1035 # change ENEMY_STAT__RESISTANCE if change this
+	PLAYER_DMG = 1036 # change ENEMY_STAT__PLAYER_DMG if changing this
+	EFFECT_VUL = 1037 # change ENEMY_STAT__EFFECT_VUL if chaning this
+	
 	#
 	COLOR_VIOLET = 1100
 	COLOR_BLUE = 1101
@@ -59,6 +69,19 @@ enum STAT_TYPE {
 	#
 	COMBINATION = 1200
 	ABSORB = 1201
+	
+	
+	####
+	
+	ENEMY_STAT__HEALTH = 1029
+	ENEMY_STAT__MOV_SPEED = 1033
+	ENEMY_STAT__ARMOR = 1031
+	ENEMY_STAT__TOUGHNESS = 1032
+	ENEMY_STAT__RESISTANCE = 1035
+	ENEMY_STAT__PLAYER_DMG = 1036
+	ENEMY_STAT__EFFECT_VUL = 1037
+	ENEMY_STAT__ABILITY_POTENCY = 104
+	
 }
 
 
@@ -104,6 +127,16 @@ const type_to_for_light_color_map : Dictionary = {
 	STAT_TYPE.LEVEL_UP_GREEN : "#264C01",
 	STAT_TYPE.RELIC : "#0A4701",
 	STAT_TYPE.ENEMY : "#4B1600",
+	
+	STAT_TYPE.HEALTH : "#274C01",
+	STAT_TYPE.SHIELD : "#2E2E2E",
+	STAT_TYPE.ARMOR : "#562001",
+	STAT_TYPE.TOUGHNESS : "#0C0165",
+	STAT_TYPE.MOV_SPEED : "#025455",
+	STAT_TYPE.INVISIBLE : "#025455",
+	STAT_TYPE.RESISTANCE : "#6F0103",
+	STAT_TYPE.PLAYER_DMG : "#6F2A01",
+	STAT_TYPE.EFFECT_VUL : "#323232",
 	
 	STAT_TYPE.COLOR_VIOLET : "#4F0051",
 	STAT_TYPE.COLOR_BLUE : "#011F74",
@@ -161,6 +194,16 @@ const type_to_for_dark_color_map : Dictionary = {
 	STAT_TYPE.RELIC : "#9AFE8B",
 	STAT_TYPE.ENEMY : "#FFB56B",
 	
+	STAT_TYPE.HEALTH : "#B9FE72",
+	STAT_TYPE.SHIELD : "#CFCFCF",
+	STAT_TYPE.ARMOR : "#FEA572",
+	STAT_TYPE.TOUGHNESS : "#B3A9FE",
+	STAT_TYPE.MOV_SPEED : "#B4FCFE",
+	STAT_TYPE.INVISIBLE : "#83FAFB",
+	STAT_TYPE.RESISTANCE : "#FE9FA1",
+	STAT_TYPE.PLAYER_DMG : "#FEB58B",
+	STAT_TYPE.EFFECT_VUL : "#DFDFDF",
+	
 	STAT_TYPE.COLOR_VIOLET : "#F09AFE",
 	STAT_TYPE.COLOR_BLUE : "#9AB4FE",
 	STAT_TYPE.COLOR_GREEN : "#8CFE7C",
@@ -215,6 +258,16 @@ const type_to_name_map : Dictionary = {
 	STAT_TYPE.RELIC : "relic",
 	STAT_TYPE.ENEMY : "enemy",
 	
+	STAT_TYPE.HEALTH : "health",
+	STAT_TYPE.SHIELD : "shield",
+	STAT_TYPE.ARMOR : "armor",
+	STAT_TYPE.TOUGHNESS : "toughness",
+	STAT_TYPE.MOV_SPEED : "movement speed",
+	STAT_TYPE.INVISIBLE : "invisible",
+	STAT_TYPE.RESISTANCE : "resistance",
+	STAT_TYPE.PLAYER_DMG : "player damage",
+	STAT_TYPE.EFFECT_VUL : "effect vulnerability",
+	
 	STAT_TYPE.COLOR_VIOLET : "violet",
 	STAT_TYPE.COLOR_BLUE : "blue",
 	STAT_TYPE.COLOR_GREEN : "green",
@@ -268,6 +321,16 @@ const type_to_img_map : Dictionary = {
 	STAT_TYPE.LEVEL_UP_GREEN : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_LevelUp_Green.png",
 	STAT_TYPE.RELIC : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Relic.png",
 	STAT_TYPE.ENEMY : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Enemy.png",
+	
+	STAT_TYPE.HEALTH : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Health.png",
+	STAT_TYPE.SHIELD : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Shield.png",
+	STAT_TYPE.ARMOR : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Armor.png",
+	STAT_TYPE.TOUGHNESS : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Toughness.png",
+	STAT_TYPE.MOV_SPEED : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_MovSpeed.png",
+	STAT_TYPE.INVISIBLE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Invisible.png",
+	STAT_TYPE.RESISTANCE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Resistance.png",
+	STAT_TYPE.PLAYER_DMG : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_PlayerDmg.png",
+	STAT_TYPE.EFFECT_VUL : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_EffectVulnerability.png",
 	
 	STAT_TYPE.COLOR_VIOLET : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Violet.png",
 	STAT_TYPE.COLOR_BLUE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Blue.png",

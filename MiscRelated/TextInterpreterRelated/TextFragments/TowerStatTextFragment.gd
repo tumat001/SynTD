@@ -77,7 +77,7 @@ var _damage_type
 var _is_percent
 
 #for BASE_PLUS_MODIFIED_BONUS_SCALING
-var modified_bonus_scaling : float
+#var modified_bonus_scaling : float
 
 # UPDATE DEEP COPY IF ARGS HAS CHANGED
 func _init(arg_tower, 

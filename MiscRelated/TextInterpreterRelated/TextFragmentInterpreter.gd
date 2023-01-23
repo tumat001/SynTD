@@ -5,6 +5,7 @@ const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+const EnemyStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/EnemyStatTextFragment.gd")
 
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const BaseAbility = preload("res://GameInfoRelated/AbilityRelated/BaseAbility.gd")
@@ -44,12 +45,16 @@ var display_body : bool
 var display_header : bool = true
 var header_description : String = ""
 
-var tower_to_use_for_tower_stat_fragments
-var tower_info_to_use_for_tower_stat_fragments setget set_tower_info_to_use_for_tower_stat_fragments, get_tower_info_to_use_for_tower_stat_fragments
-
 var use_color_for_dark_background : bool
 
 var estimate_method_for_final_num_val : int = ESTIMATE_METHOD.NONE
+
+
+var tower_to_use_for_tower_stat_fragments
+var tower_info_to_use_for_tower_stat_fragments setget set_tower_info_to_use_for_tower_stat_fragments, get_tower_info_to_use_for_tower_stat_fragments
+
+var enemy_to_use_for_enemy_stat_fragments
+var enemy_info_to_use_for_enemy_stat_fragments setget set_enemy_info_to_use_for_enemy_stat_fragments, get_enemy_info_to_use_for_enemy_stat_fragments
 
 #
 
@@ -64,6 +69,20 @@ func get_tower_info_to_use_for_tower_stat_fragments():
 		return tower_info_to_use_for_tower_stat_fragments.get_ref()
 	else:
 		return null
+
+
+func set_enemy_info_to_use_for_enemy_stat_fragments(arg_info):
+	if !arg_info is WeakRef:
+		enemy_info_to_use_for_enemy_stat_fragments = weakref(arg_info)
+	else:
+		enemy_info_to_use_for_enemy_stat_fragments = arg_info
+
+func get_enemy_info_to_use_for_enemy_stat_fragments():
+	if enemy_info_to_use_for_enemy_stat_fragments != null:
+		return enemy_info_to_use_for_enemy_stat_fragments.get_ref()
+	else:
+		return null
+
 
 #
 
@@ -81,18 +100,25 @@ func get_deep_copy():
 	copy.display_header = display_header
 	copy.header_description = header_description
 	
-	copy.tower_to_use_for_tower_stat_fragments = tower_to_use_for_tower_stat_fragments
-	copy.tower_info_to_use_for_tower_stat_fragments = tower_info_to_use_for_tower_stat_fragments
-	
 	copy.use_color_for_dark_background = use_color_for_dark_background
 	
 	copy.estimate_method_for_final_num_val = estimate_method_for_final_num_val
+	
+	copy.tower_to_use_for_tower_stat_fragments = tower_to_use_for_tower_stat_fragments
+	copy.tower_info_to_use_for_tower_stat_fragments = tower_info_to_use_for_tower_stat_fragments
+	
+	copy.enemy_to_use_for_enemy_stat_fragments = enemy_to_use_for_enemy_stat_fragments
+	copy.enemy_info_to_use_for_enemy_stat_fragments = enemy_info_to_use_for_enemy_stat_fragments
 	
 	return copy
 
 
 func interpret_array_of_instructions_to_final_text():
-	return interpret_arr_to_final_text(array_of_instructions, header_description, display_body, tower_to_use_for_tower_stat_fragments, use_color_for_dark_background, estimate_method_for_final_num_val, display_header)
+	var x_to_use = tower_to_use_for_tower_stat_fragments
+	if !is_instance_valid(tower_to_use_for_tower_stat_fragments) and is_instance_valid(enemy_to_use_for_enemy_stat_fragments):
+		x_to_use = enemy_to_use_for_enemy_stat_fragments
+	
+	return interpret_arr_to_final_text(array_of_instructions, header_description, display_body, x_to_use, use_color_for_dark_background, estimate_method_for_final_num_val, display_header)
 
 
 #
@@ -112,8 +138,8 @@ func interpret_array_of_instructions_to_final_text():
 # [NumericalTextFragment(25, true, DamageType.PHY), STAT_OPERATION.MULTIPLICATION, TowerStatTextFragment(x, x, ability potency, total)]
 # "of max health" comes from header_desc argument
 #
-static func interpret_arr_to_final_text(arg_arr : Array, arg_header_desc : String = "", arg_display_body : bool = true, arg_tower_to_use_for_tower_stat_fragments = null, arg_use_color_for_dark_background = false, arg_estimate_method_for_final_num_val = ESTIMATE_METHOD.NONE, arg_display_header : bool = true) -> String:
-	var portions = _interpret_arr_to_portions(arg_arr, arg_header_desc, arg_tower_to_use_for_tower_stat_fragments, arg_use_color_for_dark_background, arg_estimate_method_for_final_num_val)
+static func interpret_arr_to_final_text(arg_arr : Array, arg_header_desc : String = "", arg_display_body : bool = true, arg_tower_or_enemy_to_use_for_tower_stat_fragments = null, arg_use_color_for_dark_background = false, arg_estimate_method_for_final_num_val = ESTIMATE_METHOD.NONE, arg_display_header : bool = true) -> String:
+	var portions = _interpret_arr_to_portions(arg_arr, arg_header_desc, arg_tower_or_enemy_to_use_for_tower_stat_fragments, arg_use_color_for_dark_background, arg_estimate_method_for_final_num_val)
 	
 	if !portions[6]:
 		return "%s" % portions[2]
@@ -124,6 +150,7 @@ static func interpret_arr_to_final_text(arg_arr : Array, arg_header_desc : Strin
 		else:
 			if portions[3]: # if outcome text fragment is not the only ins
 				return "%s (%s)" % [portions[1], portions[2]]
+				
 			else: # outcome text fragment is the only ins 
 				if portions[2].length() > 0: # is there is base string
 					return "%s %s" % [portions[1], portions[2]]
@@ -142,7 +169,7 @@ static func interpret_arr_to_final_text(arg_arr : Array, arg_header_desc : Strin
 
 
 # returns an array with [(num_val in header), (header), (body)]
-static func _interpret_arr_to_portions(arg_arr : Array, arg_header_desc : String = "", arg_tower_to_use_for_tower_stat_fragments = null, 
+static func _interpret_arr_to_portions(arg_arr : Array, arg_header_desc : String = "", arg_tower_or_enemy_to_use_for_stat_fragments = null, 
 		arg_use_color_for_dark_background : bool = false, arg_estimate_method_for_final_num_val : int = ESTIMATE_METHOD.NONE) -> Array:
 	
 	var base_string = ""
@@ -155,11 +182,16 @@ static func _interpret_arr_to_portions(arg_arr : Array, arg_header_desc : String
 	
 	var only_outcome_text_fragment_in_ins : int = -1 # -1 is unset, 1 = yes, 0 = no
 	
-	var no_tower_info_or_tower_provided : bool = arg_tower_to_use_for_tower_stat_fragments == null
-	var at_least_one_is_tower_stat_fragment : bool = false
+	var no_tower_or_enemy_info_or_tower_or_enemy_provided : bool = arg_tower_or_enemy_to_use_for_stat_fragments == null
+	var at_least_one_is_tower_or_enemy_stat_fragment : bool = false
+	
+	#var no_enemy_info_or_tower_provided : bool = arg_enemy_to_use_for_enemy_stat_fragments == null
 	
 	var has_numerical_val : bool = true
 	var plain_text_fragment : PlainTextFragment
+	
+	
+	#
 	
 	for item in arg_arr:
 		if item is PlainTextFragment:
@@ -184,16 +216,29 @@ static func _interpret_arr_to_portions(arg_arr : Array, arg_header_desc : String
 			
 			base_string += "%s" % _interpret_AFT_to_text(item)
 			
-			if item is TowerStatTextFragment:
-				if arg_tower_to_use_for_tower_stat_fragments != null:
-					item._tower = arg_tower_to_use_for_tower_stat_fragments
+			if item is TowerStatTextFragment:  # for towers
+				if arg_tower_or_enemy_to_use_for_stat_fragments != null:
+					item._tower = arg_tower_or_enemy_to_use_for_stat_fragments
 					item.update_damage_type_based_on_args()
 				
-				at_least_one_is_tower_stat_fragment = true
+				at_least_one_is_tower_or_enemy_stat_fragment = true
 				
-				if no_tower_info_or_tower_provided:
+				if no_tower_or_enemy_info_or_tower_or_enemy_provided:
 					if is_instance_valid(item._tower) or item._tower_info != null:
-						no_tower_info_or_tower_provided = false
+						no_tower_or_enemy_info_or_tower_or_enemy_provided = false
+				
+				
+			elif item is EnemyStatTextFragment:  # for enemies
+				if arg_tower_or_enemy_to_use_for_stat_fragments != null:
+					item._enemy = arg_tower_or_enemy_to_use_for_stat_fragments
+					
+				at_least_one_is_tower_or_enemy_stat_fragment = true
+				
+				if no_tower_or_enemy_info_or_tower_or_enemy_provided:
+					if is_instance_valid(item._enemy) or item._enemy_info != null:
+						no_tower_or_enemy_info_or_tower_or_enemy_provided = false
+				
+			
 			
 			if item is NumericalTextFragment or item is TowerStatTextFragment:
 				if is_percent == -1:
@@ -228,7 +273,7 @@ static func _interpret_arr_to_portions(arg_arr : Array, arg_header_desc : String
 			base_string += " %s" % item
 			
 		elif typeof(item) == TYPE_ARRAY:
-			var portions = _interpret_arr_to_portions(item, "", arg_tower_to_use_for_tower_stat_fragments, arg_use_color_for_dark_background, arg_estimate_method_for_final_num_val)
+			var portions = _interpret_arr_to_portions(item, "", arg_tower_or_enemy_to_use_for_stat_fragments, arg_use_color_for_dark_background, arg_estimate_method_for_final_num_val)
 			
 			base_string += "(%s)" % portions[2]
 			
@@ -288,8 +333,7 @@ static func _interpret_arr_to_portions(arg_arr : Array, arg_header_desc : String
 	
 	#
 	
-	var num_val_is_backed_by_tower_stats_but_no_stats_provided : bool = !no_tower_info_or_tower_provided and at_least_one_is_tower_stat_fragment
-	
+	var num_val_is_backed_by_tower_stats_but_no_stats_provided : bool = !no_tower_or_enemy_info_or_tower_or_enemy_provided and at_least_one_is_tower_or_enemy_stat_fragment
 	
 	return [num_val, _interpret_AFT_to_text(frag_header), base_string, !only_outcome_text_fragment_in_ins, [is_percent, curr_damage_type], num_val_is_backed_by_tower_stats_but_no_stats_provided, has_numerical_val] #6
 
@@ -308,7 +352,7 @@ static func _interpret_AFT_to_num(arg_aft : AbstractTextFragment) -> float:
 
 
 static func get_bbc_modified_description_as_string(arg_desc : String, arg_text_fragment_interpreters : Array, arg_tower, arg_tower_info,
-		arg_font_size : int, arg_color_for_common_text : Color, arg_use_color_for_dark_background : bool) -> String:
+		arg_font_size : int, arg_color_for_common_text : Color, arg_use_color_for_dark_background : bool, arg_enemy = null, arg_enemy_info = null) -> String:
 	
 	var index = 0
 	
@@ -331,10 +375,17 @@ static func get_bbc_modified_description_as_string(arg_desc : String, arg_text_f
 			
 			if !is_instance_valid(interpreter.tower_to_use_for_tower_stat_fragments):
 				interpreter.tower_to_use_for_tower_stat_fragments = arg_tower
-			
 			if interpreter.get_tower_info_to_use_for_tower_stat_fragments() == null:
 				interpreter.set_tower_info_to_use_for_tower_stat_fragments(arg_tower_info)
 			
+			#
+			
+			if !is_instance_valid(interpreter.enemy_to_use_for_enemy_stat_fragments):
+				interpreter.enemy_to_use_for_enemy_stat_fragments = arg_enemy
+			if interpreter.get_enemy_info_to_use_for_enemy_stat_fragments() == null:
+				interpreter.set_enemy_info_to_use_for_enemy_stat_fragments(arg_enemy_info)
+			
+			#
 			
 			var interpreted_text = interpreter.interpret_array_of_instructions_to_final_text()
 			arg_desc = arg_desc.replace("|%s|" % str(index), interpreted_text)

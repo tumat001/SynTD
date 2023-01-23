@@ -107,6 +107,13 @@ func reset_synergy_effects_instances():
 	for script in synergy_effects_gd_script:
 		synergy_effects.append(script.new())
 
+func reset_synergy_effects_instances_and_curr_tier():
+	reset_synergy_effects_instances()
+	
+	current_tier = 0
+	current_highlighted_index_effects_descriptions.clear()
+
+
 
 
 # A quick eliminator of non-candidates

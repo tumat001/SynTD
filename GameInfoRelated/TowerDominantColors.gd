@@ -329,9 +329,9 @@ func _init():
 }
 
 
-func reset_synergies_instances():
+func reset_synergies_instances_and_curr_tier():
 	for syn in synergies.values():
-		syn.reset_synergy_effects_instances()
+		syn.reset_synergy_effects_instances_and_curr_tier()
 
 
 func get_synergy_with_id(arg_id):

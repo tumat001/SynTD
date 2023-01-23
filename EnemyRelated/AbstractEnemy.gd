@@ -28,6 +28,7 @@ const EnemyForcedPositionalMovementEffect = preload("res://GameInfoRelated/Enemy
 const EnemyInvulnerabilityEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyInvulnerabilityEffect.gd")
 const EnemyEffectShieldEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyEffectShieldEffect.gd")
 const BaseEnemyModifyingEffect = preload("res://GameInfoRelated/EnemyEffectRelated/BaseEnemyModifyingEffect.gd")
+const EnemyTypeInformation = preload("res://EnemyRelated/EnemyTypeInformation.gd")
 
 const OnHitDamageReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/OnHitDamageReport.gd")
 const DamageInstanceReport = preload("res://TowerRelated/DamageAndSpawnables/ReportsRelated/DamageInstanceReport.gd")
@@ -135,7 +136,7 @@ var is_queue_free_called_during_ready_prepping : bool = false
 
 var enemy_type : int = EnemyType.NORMAL
 var enemy_id : int
-var enemy_type_info
+var enemy_type_info_metadata
 
 var enemy_spawn_metadata_from_ins # normally a dictionary
 
@@ -372,11 +373,12 @@ func _stats_initialize(info):
 	base_resistance = info.base_resistance
 	base_player_damage = info.base_player_damage
 	base_effect_vulnerability = info.base_effect_vulnerability
+	base_ability_potency = info.base_ability_potency
 	
 	enemy_id = info.enemy_id
 	enemy_type = info.enemy_type
 	
-	enemy_type_info = info
+	enemy_type_info_metadata = info.type_info_metadata
 
 
 
@@ -898,11 +900,12 @@ func remove_flat_base_health_effect_preserve_percent(effect_uuid : int):
 		var flat_remove = flat_mod.flat_modifier
 		
 		var old_max = _last_calculated_max_health
+		var old_health = current_health
 		_flat_base_health_id_effect_map.erase(effect_uuid)
 		calculate_max_health()
 		var new_max = _last_calculated_max_health
 		
-		_set_current_health_to(preserve_percent(old_max, new_max, current_health))
+		_set_current_health_to(preserve_percent(old_max, new_max, old_health, current_health))
 
 
 func remove_percent_base_health_effect_preserve_percent(effect_uuid : int):
@@ -910,16 +913,21 @@ func remove_percent_base_health_effect_preserve_percent(effect_uuid : int):
 		var percent_mod : PercentModifier = _percent_base_health_id_effect_map[effect_uuid].attribute_as_modifier
 		
 		var old_max = _last_calculated_max_health
+		var old_health = current_health
 		_percent_base_health_id_effect_map.erase(effect_uuid)
 		calculate_max_health()
 		var new_max = _last_calculated_max_health
 		
-		_set_current_health_to(preserve_percent(old_max, new_max, current_health))
+		_set_current_health_to(preserve_percent(old_max, new_max, old_health, current_health))
 
 
-static func preserve_percent(old_max : float, new_max : float, current : float) -> float:
-	var old_ratio = current / old_max
+static func preserve_percent(old_max : float, new_max : float, arg_old_curr : float, current : float) -> float:
+	var old_ratio = arg_old_curr / old_max
+	var curr_ratio = current / new_max
+	
 	return new_max * old_ratio
+	#var old_ratio = current / old_max
+	#return new_max * old_ratio
 
 
 # Calc of shield
@@ -2479,5 +2487,12 @@ func get_offset_modifiers():
 
 func get_position_added_knockup_offset_modifiers(arg_pos): # only knockup
 	return arg_pos + knock_up_layer.position
+
+
+### For TextFragments
+
+func get_last_calculated_max_health():
+	return _last_calculated_max_health
+
 
 
