@@ -614,7 +614,11 @@ func _on_curr_health_changed_d(curr_health):
 func _cast_grant_revive_ability(cooldown_amount : float):
 	grant_revive_ability.on_ability_before_cast_start(cooldown_amount)
 	
-	var enemies = range_module.get_targets_without_affecting_self_current_targets(int(revive_target_count * last_calculated_final_ability_potency) + 1)
+	var count = int(revive_target_count * last_calculated_final_ability_potency)
+	if count <= 0:
+		count = 1
+	
+	var enemies = range_module.get_targets_without_affecting_self_current_targets(count)
 	
 	for enemy in enemies:
 		if enemy is AbstractFaithfulEnemy and enemy != self:

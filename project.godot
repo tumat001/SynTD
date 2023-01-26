@@ -70,6 +70,7 @@ CommsForBetweenScenes="*res://SingletonForCommsRelated/CommsForBetweenScenes.gd"
 StoreOfGameModifiers="*res://GameplayRelated/GameModifiersRelated/StoreOfGameModifiers.gd"
 GameSettingsManager="*res://GameElementsRelated/GameSettingsManager.gd"
 GameSaveManager="*res://GameSaveRelated/GameSaveManager.gd"
+AlmanacManager="*res://GeneralGUIRelated/AlmanacGUI/Subs/Singletons/AlmanacManager.gd"
 
 [debug]
 

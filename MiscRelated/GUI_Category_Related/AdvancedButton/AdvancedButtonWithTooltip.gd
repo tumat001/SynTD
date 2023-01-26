@@ -69,3 +69,7 @@ func display_requested_about_tooltip(arg_about_tooltip : BaseTooltip):
 		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(about_tooltip)
 		about_tooltip.update_display()
 
+
+
+func _on_Button_released_mouse_event(event):
+	pass # Replace with function body.

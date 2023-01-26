@@ -49,6 +49,7 @@ var simple_descriptions : Array
 var descriptions : Array
 
 var enemy_atlased_image : AtlasTexture
+var enemy_atlased_images_list : Array
 
 #
 
@@ -61,4 +62,22 @@ func _init(arg_id : int, arg_faction):
 func has_simple_description() -> bool:
 	return simple_descriptions != null and simple_descriptions.size() != 0
 
+##
 
+func get_description__for_almanac_use():
+	return descriptions
+
+func get_simple_description__for_almanac_use():
+	return simple_descriptions
+
+func get_atlased_image_as_list__for_almanac_use():
+	if enemy_atlased_images_list.size() == 0:
+		return [enemy_atlased_image]
+	else:
+		return enemy_atlased_images_list
+
+func get_altasted_image_list_size():
+	return enemy_atlased_images_list.size()
+
+func get_name__for_almanac_use():
+	return enemy_name

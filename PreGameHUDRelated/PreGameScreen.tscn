@@ -26,4 +26,5 @@ size_flags_horizontal = 10
 size_flags_vertical = 2
 custom_constants/margin_right = 6
 custom_constants/margin_top = 6
+
 [connection signal="on_button_released_with_button_left" from="BackButton" to="." method="_on_BackButton_on_button_released_with_button_left"]

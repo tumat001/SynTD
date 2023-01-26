@@ -1,0 +1,35 @@
+[remap]
+
+importer="texture"
+type="StreamTexture"
+path="res://.import/EnemyFacExpertOption_FactionsPage_Icon_40x40.png-e83a02b27081f5fb6fa73413f1f02221.stex"
+metadata={
+"vram_texture": false
+}
+
+[deps]
+
+source_file="res://GeneralGUIRelated/AlmanacGUI/Assets/EnemyFactionPage/EnemyFacExpertOption_FactionsPage_Icon_40x40.png"
+dest_files=[ "res://.import/EnemyFacExpertOption_FactionsPage_Icon_40x40.png-e83a02b27081f5fb6fa73413f1f02221.stex" ]
+
+[params]
+
+compress/mode=0
+compress/lossy_quality=0.7
+compress/hdr_mode=0
+compress/bptc_ldr=0
+compress/normal_map=0
+flags/repeat=0
+flags/filter=true
+flags/mipmaps=false
+flags/anisotropic=false
+flags/srgb=2
+process/fix_alpha_border=true
+process/premult_alpha=false
+process/HDR_as_SRGB=false
+process/invert_color=false
+process/normal_map_invert_y=false
+stream=false
+size_limit=0
+detect_3d=true
+svg/scale=1.0

@@ -8,6 +8,8 @@ const TutorialHubScreen = preload("res://PreGameHUDRelated/TutorialHubScreen/Tut
 const TutorialHubScreen_Scene = preload("res://PreGameHUDRelated/TutorialHubScreen/TutorialHubScreen.tscn")
 const AboutPanel = preload("res://PreGameHUDRelated/AboutPanel/AboutPanel.gd")
 const AboutPanel_Scene = preload("res://PreGameHUDRelated/AboutPanel/AboutPanel.tscn")
+const Almanac_Page = preload("res://GeneralGUIRelated/AlmanacGUI/Subs/Almanac_Page/Almanac_Page.gd")
+const Almanac_Page_Scene = preload("res://GeneralGUIRelated/AlmanacGUI/Subs/Almanac_Page/Almanac_Page.tscn")
 
 const StartingScreen_WholeScreen_Phase_02_01 = preload("res://PreGameHUDRelated/StartingScreen/Assets/StartingScreen_WholeScreen_Phase02_01.png")
 const StartingScreen_WholeScreen_Phase_02_02 = preload("res://PreGameHUDRelated/StartingScreen/Assets/StartingScreen_WholeScreen_Phase02_02.png")
@@ -27,6 +29,7 @@ var quit_game_general_dialog : GeneralDialog
 var whole_map_selection_screen : WholeMapSelectionScreen
 var tutorial_hub_screen : TutorialHubScreen
 var about_panel : AboutPanel
+var almanac_page : Almanac_Page
 
 onready var general_container = $GeneralContainer
 
@@ -80,6 +83,22 @@ func _on_TutorialButton_on_button_released_with_button_left():
 	
 	pre_game_screen.show_control(tutorial_hub_screen)
 
+#
+
+func _on_AlmanacButton_on_button_released_with_button_left():
+	if !is_instance_valid(almanac_page):
+		almanac_page = Almanac_Page_Scene.instance()
+		if !AlmanacManager.is_connected("requested_exit_almanac", self, "_on_requested_exit_almanac"):
+			AlmanacManager.connect("requested_exit_almanac", self, "_on_requested_exit_almanac", [], CONNECT_PERSIST)
+	
+	pre_game_screen.show_control(almanac_page)
+	AlmanacManager.set_almanac_page_gui(almanac_page)
+	
+	pre_game_screen.set_should_show_back_button(false)
+
+func _on_requested_exit_almanac():
+	pre_game_screen.hide_control(almanac_page)
+	pre_game_screen.set_should_show_back_button(false)
 
 
 #

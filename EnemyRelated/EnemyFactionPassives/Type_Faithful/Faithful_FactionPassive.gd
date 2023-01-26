@@ -30,9 +30,8 @@ signal on_deity_tree_exiting()
 
 
 var _round_deity_stats_map : Dictionary = {
-	#todo
 #	"01" : _get_4_3_deity_stats(),
-	"02" : _get_4_3_deity_stats(),
+#	"02" : _get_4_3_deity_stats(),
 #	"03" : _get_4_3_deity_stats(),
 #	"04" : _get_4_3_deity_stats(),
 #	"05" : _get_4_3_deity_stats(),

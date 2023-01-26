@@ -259,7 +259,7 @@ func _on_aoe_hit_enemy(enemy_hit):
 
 func _construct_aoe_dmg_receive_scale_effect_and_give_to_enemy(arg_enemy):
 	var dmg_receive_modi = PercentModifier.new(StoreOfEnemyEffectsUUID.COSMIC_AOE_DMG_RECEIVE_SCALE_EFFECT)
-	dmg_receive_modi.percent_amount = _aoe_dmg_receive_percent_amount * last_calculated_final_ability_potency
+	dmg_receive_modi.percent_amount = _aoe_dmg_receive_percent_amount
 	
 	var aoe_dmg_receive_scale_effect = EnemyAttributesEffect.new(EnemyAttributesEffect.PERCENT_AOE_DMG_RECEIVE_SCALE, dmg_receive_modi, StoreOfEnemyEffectsUUID.COSMIC_AOE_DMG_RECEIVE_SCALE_EFFECT)
 	aoe_dmg_receive_scale_effect.respect_scale = true

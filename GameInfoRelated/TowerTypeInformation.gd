@@ -20,6 +20,7 @@ var base_tower_image : Texture setget set_base_tower_image
 
 var tower_image_in_buy_card : AtlasTexture
 var tower_atlased_image : AtlasTexture
+var tower_atlased_images_list : Array
 
 var tower_descriptions : Array = []
 var tower_simple_descriptions : Array
@@ -94,3 +95,23 @@ static func _get_default_region_size_for_atlas(tower_sprite) -> Vector2:
 	
 	return Vector2(width_to_use, length_to_use)
 
+#
+
+func get_description__for_almanac_use():
+	return tower_descriptions
+
+func get_simple_description__for_almanac_use():
+	return tower_simple_descriptions
+
+
+func get_atlased_image_as_list__for_almanac_use():
+	if tower_atlased_images_list.size() == 0:
+		return [tower_atlased_image]
+	else:
+		return tower_atlased_images_list
+
+func get_altasted_image_list_size():
+	return tower_atlased_images_list.size()
+
+func get_name__for_almanac_use():
+	return tower_name
