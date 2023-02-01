@@ -1,0 +1,96 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/Almanac_DarkGrayBorder_ForDescriptions_4x4.png" type="Texture" id=1]
+[ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/Almanac_BrownBackground_ForDescriptions_3x3.png" type="Texture" id=2]
+[ext_resource path="res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipBody.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Subs/Almanac_XTypeInfoPanel/Shared/Almanac_XTypeInfo_Description/Almanac_XTypeInfo_Descriptions.gd" type="Script" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=1]
+
+[sub_resource type="StyleBoxEmpty" id=2]
+
+[sub_resource type="StyleBoxEmpty" id=3]
+
+[sub_resource type="StyleBoxEmpty" id=4]
+
+[sub_resource type="StyleBoxEmpty" id=5]
+
+[sub_resource type="Theme" id=6]
+VScrollBar/icons/decrement = null
+VScrollBar/icons/decrement_highlight = null
+VScrollBar/icons/increment = null
+VScrollBar/icons/increment_highlight = null
+VScrollBar/styles/grabber = SubResource( 1 )
+VScrollBar/styles/grabber_highlight = SubResource( 2 )
+VScrollBar/styles/grabber_pressed = SubResource( 3 )
+VScrollBar/styles/scroll = SubResource( 4 )
+VScrollBar/styles/scroll_focus = SubResource( 5 )
+
+[node name="Almanac_XTypeInfo_Descriptions" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 4 )
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="LeftBorder" type="TextureRect" parent="."]
+margin_right = 4.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="RightBorder" type="TextureRect" parent="."]
+margin_left = 36.0
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_horizontal = 10
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="TopBorder" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 4.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="BottomBorder" type="TextureRect" parent="."]
+margin_top = 36.0
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+custom_constants/margin_right = 6
+custom_constants/margin_top = 6
+custom_constants/margin_left = 6
+custom_constants/margin_bottom = 6
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+margin_left = 6.0
+margin_top = 6.0
+margin_right = 34.0
+margin_bottom = 34.0
+theme = SubResource( 6 )
+
+[node name="Descs" parent="MarginContainer/ScrollContainer" instance=ExtResource( 3 )]
+margin_right = 28.0
+margin_bottom = 28.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+default_font_size = 12

@@ -82,6 +82,9 @@ const synergy_id_to_syn_name_dictionary := {
 	SynergyId.RedOV : "RedOV",
 }
 
+# ex: "1-3" signifies RedGreen tier 3
+var all_syn_id_tier_compos : Array = []
+
 
 func _init():
 	#inst_complesyn_yelvio_energymodule = CompleSyn_YelVio_EnergyModule.new(TowerDominantColors.inst_domsyn_yellow_energybattery)
@@ -817,7 +820,16 @@ func _init():
 #	syn_compo_special_RGB,
 #	["RGB description"]),
 	
-}
+	}
+	
+	
+	############
+	
+	
+	for syn in synergies.values():
+		for syn_id_tier_compo in syn.construct_all_possible_synergy_tier_ids():
+			all_syn_id_tier_compos.append(syn_id_tier_compo)
+
 
 var synergies : Dictionary
 

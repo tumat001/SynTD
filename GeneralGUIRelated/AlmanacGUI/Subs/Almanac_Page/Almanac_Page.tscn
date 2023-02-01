@@ -1,8 +1,11 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Subs/Almanac_Page/Almanac_Page.gd" type="Script" id=1]
 [ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/Background_Gray_3x3.png" type="Texture" id=2]
 [ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/BackButtonStandard/PlayerGUI_BackButtonStandard.tscn" type="PackedScene" id=3]
+[ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/Almanac_RightSideSeparator_WhiteLine_7x7.png" type="Texture" id=4]
+[ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Subs/Almanac_XTypeInfoPanel/Almanac_XTypeInfoPanel/Almanac_XTypeInfoPanel.tscn" type="PackedScene" id=5]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/CheckboxStandard/PlayerGUI_CheckboxStandard.tscn" type="PackedScene" id=6]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
@@ -26,8 +29,8 @@ VScrollBar/styles/scroll = SubResource( 4 )
 VScrollBar/styles/scroll_focus = SubResource( 5 )
 
 [node name="Almanac_Page" type="MarginContainer"]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_right = 960.0
+margin_bottom = 540.0
 rect_min_size = Vector2( 960, 540 )
 mouse_filter = 2
 script = ExtResource( 1 )
@@ -65,13 +68,13 @@ margin_bottom = 510.0
 mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
-margin_right = 896.0
+margin_right = 579.0
 margin_bottom = 480.0
 mouse_filter = 2
 size_flags_horizontal = 3
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer/MarginContainer"]
-margin_right = 896.0
+margin_right = 579.0
 margin_bottom = 480.0
 theme = SubResource( 6 )
 
@@ -79,11 +82,48 @@ theme = SubResource( 6 )
 mouse_filter = 2
 
 [node name="RightSideContainer" type="MarginContainer" parent="MarginContainer/HBoxContainer"]
-margin_left = 900.0
+margin_left = 583.0
 margin_right = 900.0
 margin_bottom = 480.0
 
-[node name="ScrlContainerForSideData" type="ScrollContainer" parent="MarginContainer/HBoxContainer/RightSideContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/RightSideContainer"]
+margin_right = 317.0
 margin_bottom = 480.0
+custom_constants/separation = 10
+
+[node name="Sepa" type="TextureRect" parent="MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer"]
+margin_right = 7.0
+margin_bottom = 480.0
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer"]
+margin_left = 17.0
+margin_right = 317.0
+margin_bottom = 480.0
+size_flags_vertical = 3
+custom_constants/separation = 10
+
+[node name="ScrlContainerForSideData" type="ScrollContainer" parent="MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer"]
+margin_right = 300.0
+margin_bottom = 440.0
+rect_min_size = Vector2( 300, 440 )
+theme = SubResource( 6 )
+
+[node name="Almanac_XTypeInfoPanel" parent="MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer/ScrlContainerForSideData" instance=ExtResource( 5 )]
+margin_right = 300.0
+margin_bottom = 440.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ToggleDescriptiveMode" parent="MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer" instance=ExtResource( 6 )]
+margin_top = 450.0
+margin_right = 300.0
+margin_bottom = 480.0
+
+[node name="TooltipContainer" type="Control" parent="."]
+margin_right = 960.0
+margin_bottom = 540.0
+mouse_filter = 2
 
 [connection signal="on_button_released_with_button_left" from="PlayerGUI_BackButtonStandard" to="." method="_on_PlayerGUI_BackButtonStandard_on_button_released_with_button_left"]

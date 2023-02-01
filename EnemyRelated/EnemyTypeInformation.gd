@@ -81,3 +81,6 @@ func get_altasted_image_list_size():
 
 func get_name__for_almanac_use():
 	return enemy_name
+
+func get_id__for_almanac_use():
+	return enemy_id

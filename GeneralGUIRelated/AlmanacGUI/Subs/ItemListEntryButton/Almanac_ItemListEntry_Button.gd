@@ -48,19 +48,32 @@ func _ready():
 #
 
 func set_almanac_item_list_entry_data(arg_data):
+	if almanac_item_list_entry_data != null:
+		almanac_item_list_entry_data.disconnect("is_obscured_changed", self, "_on_data_is_obscured_changed")
+	
 	almanac_item_list_entry_data = arg_data
 	
-	#almanac_item_list_entry_data.connect("button_associated_pressed", self, "_on_button_associated_pressed", [], CONNECT_PERSIST)
-	
-	icon_texture_rect.texture = almanac_item_list_entry_data.get_texture_to_use_based_on_properties()
-	update_border_texture_based_on_properties()
-	
+	if almanac_item_list_entry_data != null:
+		arg_data.button_associated = self
+		
+		#almanac_item_list_entry_data.connect("button_associated_pressed", self, "_on_button_associated_pressed", [], CONNECT_PERSIST)
+		
+		icon_texture_rect.texture = almanac_item_list_entry_data.get_texture_to_use_based_on_properties()
+		update_border_texture_based_on_properties()
+		
+		icon_texture_rect.modulate = almanac_item_list_entry_data.get_modulate_to_use_based_on_properties()
+		
+		almanac_item_list_entry_data.connect("is_obscured_changed", self, "_on_data_is_obscured_changed")
+
+
+func _on_data_is_obscured_changed(_arg_data : Almanac_ItemListEntry_Data):
+	icon_texture_rect.modulate = almanac_item_list_entry_data.get_modulate_to_use_based_on_properties()
 
 #
 
 func _on_Button_released_mouse_event(event : InputEventMouseButton):
 	if event.button_index == BUTTON_LEFT:
-		almanac_item_list_entry_data.button_associated_pressed__called_by_button()
+		almanac_item_list_entry_data.button_associated_pressed__called_by_button(self)
 		
 	
 
@@ -99,6 +112,8 @@ func _set_texture_of_outer_borders(arg_texture):
 
 
 func set_is_selected(arg_val):
+	_is_selected = arg_val
+	
 	if arg_val:
 		_set_texture_of_outer_borders(YellowLine_3x3)
 	else:

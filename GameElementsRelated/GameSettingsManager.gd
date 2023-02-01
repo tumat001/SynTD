@@ -176,6 +176,21 @@ static func get_descriptions_to_use_based_on_color_synergy(arg_color_synergy,
 			else:
 				return arg_color_synergy.synergy_descriptions
 
+static func get_descriptions_to_use_based_on_x_type_info(arg_x_type_info,
+		arg_game_settings_manager_from_source) -> Array:
+	
+	if arg_game_settings_manager_from_source == null:
+		return arg_x_type_info.get_description__for_almanac_use()
+	else:
+		if arg_game_settings_manager_from_source.descriptions_mode == DescriptionsMode.COMPLEX:
+			return arg_x_type_info.get_description__for_almanac_use()
+		else:
+			if arg_x_type_info.has_simple_description():
+				return arg_x_type_info.get_simple_description__for_almanac_use()
+			else:
+				return arg_x_type_info.get_description__for_almanac_use()
+
+
 
 ######### TOWER DRAG MODE
 

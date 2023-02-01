@@ -20,6 +20,8 @@ var is_ready = false
 
 var enemy_info_panel_for_right_side
 
+var curr_selected_button
+
 #
 
 var _all_page_categories : Array
@@ -27,9 +29,14 @@ var _all_page_categories : Array
 #
 
 onready var page_category_container = $MarginContainer/HBoxContainer/MarginContainer/ScrollContainer/PageCategoryContainer
-onready var scrl_container_for_metadata = $MarginContainer/HBoxContainer/RightSideContainer/ScrlContainerForSideData
+onready var scrl_container_for_metadata = $MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer/ScrlContainerForSideData
 
 onready var right_side_container = $MarginContainer/HBoxContainer/RightSideContainer
+onready var x_type_info_panel = $MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer/ScrlContainerForSideData/Almanac_XTypeInfoPanel
+
+onready var tooltip_container = $TooltipContainer
+
+onready var descriptive_mode_checkbox = $MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer/ToggleDescriptiveMode
 
 #
 
@@ -39,9 +46,21 @@ func _ready():
 	
 	connect("visibility_changed", self, "_on_visibility_changed")
 	_on_visibility_changed()
+	
+	hide_right_side_container()
+	
+	#
+	
+	descriptive_mode_checkbox.connect("on_checkbox_val_changed", self, "_on_ToggleDescriptiveMode_on_checkbox_val_changed")
+	descriptive_mode_checkbox.set_label_text("Descriptive Mode (Press T to toggle)")
+	_update_descriptive_mode_checkbox_based_on_properties()
 
 func _on_visibility_changed():
 	set_process_unhandled_key_input(visible)
+	
+	if visible:
+		if AlmanacManager != null:
+			AlmanacManager._update_is_obscured_state_of__all_options()
 
 #
 
@@ -95,23 +114,54 @@ func _unhandled_key_input(event : InputEventKey):
 	if !event.echo and event.pressed:
 		if event.is_action_pressed("ui_cancel"):
 			_page_request_return_to_assigned_page_id()
+			
+		elif event.is_action("game_description_mode_toggle"):
+			descriptive_mode_checkbox.set_is_checked(!descriptive_mode_checkbox.is_checked)
+			
 	
 	accept_event()
 
 func _page_request_return_to_assigned_page_id():
 	almanac_item_list_page_data.request_return_to_assigned_page_id()
 
+#
+
+func _on_ToggleDescriptiveMode_on_checkbox_val_changed(_arg_new_val):
+	_toggle_desc_mode()
+
+func _toggle_desc_mode():
+	if is_inside_tree():
+		GameSettingsManager.toggle_descriptions_mode()
+		if right_side_container != null and right_side_container.visible:
+			x_type_info_panel.update_descriptions_panel()
+		
+		_update_descriptive_mode_checkbox_based_on_properties()
+		
+
+func _update_descriptive_mode_checkbox_based_on_properties():
+	descriptive_mode_checkbox.set_is_checked__do_not_emit_signal(GameSettingsManager.descriptions_mode == GameSettingsManager.DescriptionsMode.COMPLEX)
 
 ###############
 
-func show_control_to_right_side__and_hide_others(arg_control_to_show):
-	
+func configure_almanac_x_type_info_panel(arg_item_list_entry : Almanac_ItemListEntry_Data,
+		arg_x_type_info_multi_stats_data,
+		arg_x_type_info,
+		arg_selected_button):
 	
 	right_side_container.visible = true
 	
+	#x_type_info_panel.x_type_info = arg_x_type_info
+	x_type_info_panel.set_properties(arg_item_list_entry, arg_x_type_info_multi_stats_data)
+	
+	if curr_selected_button != null:
+		curr_selected_button.set_is_selected(false)
+	curr_selected_button = arg_selected_button
+	if curr_selected_button != null:
+		curr_selected_button.set_is_selected(true)
 
 func hide_right_side_container():
 	right_side_container.visible = false
 	
-
-
+	if curr_selected_button != null:
+		curr_selected_button.set_is_selected(false)
+	curr_selected_button = null

@@ -25,6 +25,7 @@ var tower_atlased_images_list : Array
 var tower_descriptions : Array = []
 var tower_simple_descriptions : Array
 
+# if changing these names, change var names in AlmanacManager as well
 var base_damage : float
 var base_damage_type : int
 var base_attk_speed : float
@@ -115,3 +116,7 @@ func get_altasted_image_list_size():
 
 func get_name__for_almanac_use():
 	return tower_name
+
+func get_id__for_almanac_use():
+	return tower_type_id
+

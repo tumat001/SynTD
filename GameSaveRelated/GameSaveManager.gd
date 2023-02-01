@@ -3,6 +3,8 @@ extends Node
 const settings_file_path = "user://game_settings.save"
 const hotkey_controls_file_path = "user://game_hotkey_controls.save"
 const map_selection_default_vals_file_path = "user://map_selection_default_vals.save"
+const stats_file_path = "user://stats.save"
+
 
 const game_controls_action_name_to_ignore_save : Array = [
 	"ui_select",
@@ -53,13 +55,20 @@ func _save_using_arr(arg_arr, arg_file_path, arg_print_err_msg):
 	save_file.close()
 
 
+#
+
+func _ready():
+	var load_success = load_game_hotkey_controls()
+	
+	
+
+
 # GAME SETTINGS RELATED --------------
 
 func save_game_settings__of_settings_manager():
 	var save_dict = GameSettingsManager._get_save_dict_for_game_settings()
 	var err_msg = "Saving error! -- Game settings of settings manager"
 	_save_using_dict(save_dict, settings_file_path, err_msg)
-	
 
 
 func load_game_settings__of_settings_manager():
@@ -82,10 +91,6 @@ func load_game_settings__of_settings_manager():
 
 
 # GAME CONTROLS ---------------------
-
-func _ready():
-	var load_success = load_game_hotkey_controls()
-
 
 func save_game_controls__input_map():
 	var save_dict = _get_game_controls_as_dict()
@@ -174,3 +179,29 @@ func load_map_selection_defaults__of_settings_manager():
 		return false
 	
 
+## STATS ------------------------------------
+
+func save_stats__of_stats_manager():
+	var save_dict = StatsManager._get_save_dict_for_stats()
+	var err_msg = "Saving error! -- Stats of stats manager"
+	_save_using_dict(save_dict, stats_file_path, err_msg)
+
+func load_stats__of_stats_manager():
+	var load_file = File.new()
+	
+	if load_file.file_exists(stats_file_path):
+		var err_stat = load_file.open(stats_file_path, File.READ)
+		
+		if err_stat != OK:
+			print("Loading error! -- Stats of stats manager")
+			return false
+		
+		StatsManager._load_stats(load_file)
+		
+		load_file.close()
+		return true
+		
+	else:
+		
+		StatsManager._initialize_stats_from_scratch()
+		return false

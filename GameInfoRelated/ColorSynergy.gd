@@ -61,6 +61,9 @@ var synergy_difficulty_num : int        #from 1 to 5
 var current_tier : int
 var current_highlighted_index_effects_descriptions : Array = []
 
+var current_synergy_tier_id : String
+
+#
 
 func _init(
 		arg_synergy_id : int,
@@ -112,7 +115,7 @@ func reset_synergy_effects_instances_and_curr_tier():
 	
 	current_tier = 0
 	current_highlighted_index_effects_descriptions.clear()
-
+	construct_current_synergy_tier_id__based_on_properties()
 
 
 
@@ -216,6 +219,7 @@ func _get_tier_applicable(amount_of_color : int) -> int:
 
 func apply_this_synergy_to_towers(tier, towers, game_elements, tower_synergies_only):
 	current_tier = tier
+	construct_current_synergy_tier_id__based_on_properties()
 	
 	if !tower_synergies_only:
 		_update_current_highlighted_index_syn_effects_desc()
@@ -233,6 +237,7 @@ func apply_this_synergy_to_towers(tier, towers, game_elements, tower_synergies_o
 
 func remove_this_synergy_from_towers(tier, towers, game_elements, tower_synergies_only):
 	current_tier = 0
+	construct_current_synergy_tier_id__based_on_properties()
 	
 	if !tower_synergies_only:
 		_update_current_highlighted_index_syn_effects_desc()
@@ -296,3 +301,25 @@ func get_tower_count_to_use__from_syn_tier(arg_tier):
 	if index == -1:
 		return 0
 	return number_of_towers_in_tier[index]
+
+##
+
+func construct_current_synergy_tier_id__based_on_properties():
+	#current_synergy_tier_id = "%s-%s" % [synergy_id, current_tier]
+	current_synergy_tier_id = construct_current_synergy_tier_id(synergy_id, current_tier)
+
+static func construct_current_synergy_tier_id(synergy_id, current_tier):
+	return "%s-%s" % [synergy_id, current_tier]
+
+static func decompose_current_synergy_id_and_tier(arg_syn_id_tier : String):
+	return arg_syn_id_tier.split("-")
+
+func construct_all_possible_synergy_tier_ids():
+	var bucket = []
+	
+	for tier_minus_1 in number_of_towers_in_tier.size():
+		bucket.append(construct_current_synergy_tier_id(synergy_id, tier_minus_1 + 1))
+	
+	return bucket
+
+

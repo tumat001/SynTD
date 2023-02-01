@@ -1194,11 +1194,12 @@ func _calculate_multiplier_from_total_armor(armor_pierce : float, percent_self_a
 		reduc_from_percent = 0
 	
 	var total_armor = _last_calculated_final_armor - reduc_from_percent
-	total_armor = total_armor - armor_pierce
-	if total_armor >= 0:
-		return 10 / (10 + total_armor)
-	else:
-		return 2 - (15 / (15 - total_armor))
+	return calculate_multiplier_from_total_armor_or_tou(total_armor)
+#	total_armor = total_armor - armor_pierce
+#	if total_armor >= 0:
+#		return 10 / (10 + total_armor)
+#	else:
+#		return 2 - (15 / (15 - total_armor))
 
 func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percent_self_toughness_pierce : float):
 	var reduc_from_percent = (percent_self_toughness_pierce * _last_calculated_final_toughness / 100)
@@ -1206,11 +1207,12 @@ func _calculate_multiplier_from_total_toughness(toughness_pierce : float, percen
 		reduc_from_percent = 0
 	
 	var total_toughness = _last_calculated_final_toughness - reduc_from_percent
-	total_toughness = total_toughness - toughness_pierce
-	if total_toughness >= 0:
-		return 10 / (10 + total_toughness)
-	else:
-		return 2 - (15 / (15 - total_toughness))
+	return calculate_multiplier_from_total_armor_or_tou(total_toughness)
+#	total_toughness = total_toughness - toughness_pierce
+#	if total_toughness >= 0:
+#		return 10 / (10 + total_toughness)
+#	else:
+#		return 2 - (15 / (15 - total_toughness))
 
 func _calculate_multiplier_from_total_resistance(resistance_pierce : float, percent_self_resistance_pierce : float):
 	var reduc_from_percent = (percent_self_resistance_pierce * _last_calculated_final_resistance / 100)
@@ -1220,10 +1222,11 @@ func _calculate_multiplier_from_total_resistance(resistance_pierce : float, perc
 	var total_resistance = _last_calculated_final_resistance - reduc_from_percent
 	total_resistance = total_resistance - resistance_pierce
 	
-	var multiplier = (100 - total_resistance) / 100
-	if multiplier < 0:
-		multiplier = 0
-	return multiplier
+	return calculate_multiplier_from_total_res(total_resistance)
+#	var multiplier = (100 - total_resistance) / 100
+#	if multiplier < 0:
+#		multiplier = 0
+#	return multiplier
 
 func _subtract_but_result_above_negative(num : float, subtractor : float):
 	var value = num - subtractor
@@ -1231,6 +1234,20 @@ func _subtract_but_result_above_negative(num : float, subtractor : float):
 		value = 0
 	
 	return value
+
+##
+
+static func calculate_multiplier_from_total_armor_or_tou(arg_total):
+	if arg_total >= 0:
+		return 10 / (10 + arg_total)
+	else:
+		return 2 - (15 / (15 - arg_total))
+
+static func calculate_multiplier_from_total_res(arg_total):
+	var multiplier = (100 - arg_total) / 100
+	if multiplier < 0:
+		multiplier = 0
+	return multiplier
 
 
 # calc final values prt2

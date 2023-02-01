@@ -45,6 +45,8 @@ signal before_game_start()
 signal unhandled_input(arg_input, any_action_taken_by_game_elements)
 signal unhandled_key_input(arg_input, any_action_taken_by_game_elements)
 
+signal before_game_quit()
+
 
 var panel_buy_sell_level_roll : BuySellLevelRollPanel
 var synergy_manager
@@ -395,6 +397,7 @@ func _ready():
 	round_status_panel.set_game_result_manager(game_result_manager)
 	round_damage_stats_panel.multiple_tower_damage_stats_container.set_game_result_manager(game_result_manager)
 	
+	# game stats manager
 	game_stats_manager.stage_round_manager = stage_round_manager
 	game_stats_manager.tower_manager = tower_manager
 	game_stats_manager.combination_manager = combination_manager
@@ -403,6 +406,13 @@ func _ready():
 	game_stats_manager.synergy_manager = synergy_manager
 	game_stats_manager.whole_screen_gui = whole_screen_gui
 	game_stats_manager.set_multiple_tower_damage_stats_container(right_side_panel.round_damage_stats_panel.multiple_tower_damage_stats_container)
+	
+	# StatsManager related
+	
+	StatsManager.connect_signals_with_game_elements(self)
+	StatsManager.connect_signals_with_stage_round_manager(stage_round_manager)
+	StatsManager.connect_signals_with_enemy_manager(enemy_manager)
+	StatsManager.connect_signals_with_tower_manager(tower_manager)
 	
 	###
 	gold_manager.increase_gold_by(3, GoldManager.IncreaseGoldSource.START_OF_GAME)
@@ -946,4 +956,13 @@ func _get_highest_from_angle(arg_curr_highest : float, arg_candidate_angle : flo
 		return arg_curr_highest
 	else:
 		return arg_candidate_angle
+
+###########
+
+# called by HubPausePanel
+func quit_game():
+	emit_signal("before_game_quit")
+	
+	pause_manager.unpause_game__accessed_for_scene_change()
+	CommsForBetweenScenes.goto_starting_screen(self)
 

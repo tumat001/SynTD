@@ -71,8 +71,7 @@ func _on_MainMenuButton_on_button_released_with_button_left():
 
 func _on_quit_game_dialog__ok_chosen():
 	_is_a_dialog_visible = false
-	pause_manager.unpause_game__accessed_for_scene_change()
-	CommsForBetweenScenes.goto_starting_screen(game_elements)
+	game_elements.quit_game()
 
 func _on_quit_game_dialog__cancel_chosen():
 	_is_a_dialog_visible = false

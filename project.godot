@@ -71,6 +71,7 @@ StoreOfGameModifiers="*res://GameplayRelated/GameModifiersRelated/StoreOfGameMod
 GameSettingsManager="*res://GameElementsRelated/GameSettingsManager.gd"
 GameSaveManager="*res://GameSaveRelated/GameSaveManager.gd"
 AlmanacManager="*res://GeneralGUIRelated/AlmanacGUI/Subs/Singletons/AlmanacManager.gd"
+StatsManager="*res://GameSaveRelated/StatsManager.gd"
 
 [debug]
 

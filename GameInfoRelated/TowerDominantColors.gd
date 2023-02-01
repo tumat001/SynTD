@@ -56,6 +56,7 @@ const synergy_id_to_syn_name_dictionary := {
 	SynergyId.VIOLET : "Violet",
 }
 
+var all_syn_id_tier_compos : Array
 
 var synergies : Dictionary
 
@@ -326,7 +327,14 @@ func _init():
 	
 	synergy_id_to_syn_name_dictionary[SynergyId.BLACK] : black_syn,
 	
-}
+	}
+	
+	########
+	
+	for syn in synergies.values():
+		for syn_id_tier_compo in syn.construct_all_possible_synergy_tier_ids():
+			all_syn_id_tier_compos.append(syn_id_tier_compo)
+
 
 
 func reset_synergies_instances_and_curr_tier():

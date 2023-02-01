@@ -28,6 +28,7 @@ signal on_enemy_spawned_and_finished_ready_prep(enemy)
 signal enemy_escaped(enemy)
 signal first_enemy_escaped(enemy, first_damage)
 signal enemy_escaped_dealing_x_damage(enemy, damage)
+signal enemy_killed_by_damage_and_no_more_revives(dmg_instance_report, enemy)
 
 signal round_time_passed(delta, current_timepos)
 
@@ -403,6 +404,7 @@ func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _get_path_based
 	
 	
 	enemy_instance.connect("on_finished_ready_prep", self, "_on_enemy_finished_ready_prep", [enemy_instance], CONNECT_ONESHOT)
+	enemy_instance.connect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_by_damage_with_no_more_revives")
 	
 	emit_signal("before_enemy_spawned", enemy_instance)
 	emit_signal("before_enemy_is_added_to_path", enemy_instance, path)
@@ -415,6 +417,11 @@ func spawn_enemy_instance(enemy_instance, arg_path : EnemyPath = _get_path_based
 func _on_enemy_finished_ready_prep(arg_enemy):
 	emit_signal("on_enemy_spawned_and_finished_ready_prep", arg_enemy)
 
+func _on_enemy_killed_by_damage_with_no_more_revives(arg_dmg_instance_report, enemy):
+	emit_signal("enemy_killed_by_damage_and_no_more_revives", arg_dmg_instance_report, enemy)
+
+
+#
 
 func _get_path_based_on_current_index() -> EnemyPath:
 	if custom_path_pattern_source_obj != null:

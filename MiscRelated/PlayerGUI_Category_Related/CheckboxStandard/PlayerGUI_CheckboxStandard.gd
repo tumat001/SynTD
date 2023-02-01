@@ -13,7 +13,7 @@ const enabled_modulate : Color = Color(1, 1, 1, 1)
 const disabled_modulate : Color = Color(0.3, 0.3, 0.3, 1)
 
 export(bool) var is_button_enabled : bool = true setget set_is_button_enabled
-export(bool) var is_checked : bool = true
+export(bool) var is_checked : bool = true setget set_is_checked
 
 onready var border_left = $HBoxContainer/ButtonContainer/LeftHBox/LeftBorder_Colored
 onready var border_right = $HBoxContainer/ButtonContainer/RightHBox/RightBorder_Colored
@@ -76,14 +76,18 @@ func _on_advanced_button_released_mouse_event(arg_event : InputEventMouseButton)
 
 
 func set_is_checked(arg_val):
+	set_is_checked__do_not_emit_signal(arg_val)
+	
+	emit_signal("on_checkbox_val_changed", arg_val)
+
+func set_is_checked__do_not_emit_signal(arg_val):
 	is_checked = arg_val
 	
 	x_texture_rect.visible = !is_checked
 	check_texture_rect.visible = is_checked
-	
-	emit_signal("on_checkbox_val_changed", arg_val)
 
 
+#
 
 func _on_advanced_button_tooltip_requested():
 	emit_signal("on_button_tooltip_requested")

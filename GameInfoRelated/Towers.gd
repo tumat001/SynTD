@@ -431,7 +431,6 @@ const tier_ap_map : Dictionary = {
 const tower_id_info_type_singleton_map : Dictionary = {}
 const tower_color_to_tower_id_map : Dictionary = {}
 
-
 #
 
 func _init():

@@ -202,3 +202,5 @@ text = "Sample text 001"
 [node name="CheckBoxButton" parent="." instance=ExtResource( 7 )]
 margin_right = 175.0
 margin_bottom = 30.0
+about_button_index_trigger = 2
+define_tooltip_construction_in_button = true

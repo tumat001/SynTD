@@ -135,17 +135,18 @@ static func _get_atlas_region(tower_sprite, center_offset = Vector2(0, 0)) -> Re
 static func _get_default_center_for_atlas(tower_sprite, center_offset = Vector2(0, 0)) -> Vector2:
 	var highlight_sprite_size = tower_sprite.get_size()
 	
-	return Vector2(highlight_sprite_size.x / 4, 0) + center_offset
+	return Vector2(0, 0) + center_offset
+	#return Vector2(highlight_sprite_size.x / 4, 0) + center_offset
 
 static func _get_default_region_size_for_atlas(tower_sprite) -> Vector2:
 	var max_width = tower_sprite.get_size().x
 	var max_height = tower_sprite.get_size().y
 	
-	var width_to_use = 27
+	var width_to_use = 40
 	if width_to_use > max_width:
 		width_to_use = max_width
 	
-	var length_to_use = 27
+	var length_to_use = 40
 	if length_to_use > max_height:
 		length_to_use = max_height
 	
@@ -378,13 +379,13 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Expert/Grandmaster/Grandmaster_E.png"))
 			info.descriptions = [
 				["Gains a burst of temporary |0| and a 75% max health |1| for 2 seconds upon reaching 75% and 25% health.", [plain_fragment__speed, plain_fragment__shield]],
-				["Becomes invisible for 2 seconds upon reaching 50% health.", [plain_fragment__invisible]],
-				"",
+				["Becomes |0| for 2 seconds upon reaching 50% health.", [plain_fragment__invisible]],
+				"",	
 				"\"Mastery of techniques.\""
 			]
 			info.simple_descriptions = [
 				["Gains a burst of temporary |0| and a 75% max health |1| for 2 seconds upon reaching 75% and 25% health.", [plain_fragment__speed, plain_fragment__shield]],
-				["Becomes invisible for 2 seconds upon reaching 50% health.", [plain_fragment__invisible]],
+				["Becomes |0| for 2 seconds upon reaching 50% health.", [plain_fragment__invisible]],
 			]
 		
 	################################# FAITHFUL FACTION
@@ -460,7 +461,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			var interpreter_for_stun_duration = TextFragmentInterpreter.new()
 			interpreter_for_stun_duration.enemy_info_to_use_for_enemy_stat_fragments = info
 			interpreter_for_stun_duration.display_body = true
-			interpreter_for_stun_duration.display_header = "seconds"
+			interpreter_for_stun_duration.header_description = "seconds"
 			var ins_for_stun_duration = []
 			ins_for_stun_duration.append(NumericalTextFragment.new(2.5, false, -1))
 			ins_for_stun_duration.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
@@ -471,7 +472,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			var interpreter_for_taunt_duration = TextFragmentInterpreter.new()
 			interpreter_for_taunt_duration.enemy_info_to_use_for_enemy_stat_fragments = info
 			interpreter_for_taunt_duration.display_body = true
-			interpreter_for_taunt_duration.display_header = "seconds"
+			interpreter_for_taunt_duration.header_description = "seconds"
 			var ins_for_taunt_duration = []
 			ins_for_taunt_duration.append(NumericalTextFragment.new(8.0, false, -1))
 			ins_for_taunt_duration.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
@@ -482,7 +483,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			var interpreter_for_revive_count = TextFragmentInterpreter.new()
 			interpreter_for_revive_count.enemy_info_to_use_for_enemy_stat_fragments = info
 			interpreter_for_revive_count.display_body = true
-			interpreter_for_revive_count.display_header = "Faithfuls"
+			interpreter_for_revive_count.header_description = "Faithfuls"
 			interpreter_for_revive_count.estimate_method_for_final_num_val = interpreter_for_revive_count.ESTIMATE_METHOD.FLOOR
 			var ins_for_revive_count = []
 			ins_for_revive_count.append(NumericalTextFragment.new(15, false, -1))
@@ -504,6 +505,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			
 			var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
 			
+			var plain_fragment__abilities = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "abilities")
 			
 			info.enemy_name = "Deity"
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Faithful/Deity/Deity_E.png"))
@@ -528,7 +530,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 				"",
 				["Deity becomes more powerful the more |0| there are.", [plain_fragment__Faithfuls]],
 				"",
-				["Deity casts |0|, some affecting |1| while others affect |2|.", [plain_fragment__ability, plain_fragment__towers, plain_fragment__Faithfuls]],
+				["Deity casts |0|, some affecting |1| while others affect |2|.", [plain_fragment__abilities, plain_fragment__towers, plain_fragment__Faithfuls]],
 				"",
 				["When |0| for 3 seconds (slowly resets when not stunned), clear all stun effects and become immune to tower effects for 5 seconds.", [plain_fragment__stunned]]
 			]
@@ -639,7 +641,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Faithful/Providence/Providence_E.png"))
 			info.descriptions = [
 				"Upon being hit by an attack from a tower, Providence places a debuff on that tower.",
-				["The tower loses |0| and |1|.", [plain_fragment__attk_speed_reduc]]
+				["The tower loses |0| and |1|.", [plain_fragment__attk_speed_reduc, plain_fragment__base_dmg_reduc]]
 			]
 		
 	########################### SKIRMISHER
@@ -686,10 +688,13 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			ins_for_invis_duration.append(EnemyStatTextFragment.new(null, info, EnemyStatTextFragment.STAT_TYPE.ENEMY_STAT__ABILITY_POTENCY, EnemyStatTextFragment.STAT_BASIS.TOTAL, 1.0))
 			interpreter_for_invis_duration.array_of_instructions = ins_for_invis_duration
 			
+			var plain_fragment__invisible = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INVISIBLE, "invisible")
+			
+			
 			info.enemy_name = "Smoke"
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Smoke/Smoke_E.png"))
 			info.descriptions = [
-				["Upon reaching 50% health, Smoke makes itself and all enemies within 60 range to become invisible for |0|.", [interpreter_for_invis_duration]]
+				["Upon reaching 50% health, Smoke makes itself and all enemies within 60 range become |0| for |1|.", [plain_fragment__invisible, interpreter_for_invis_duration]]
 			]
 		
 	elif enemy_id == Enemies.RALLIER:
@@ -766,7 +771,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			info.enemy_name = "Blesser"
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Blesser/Blesser_E.png"))
 			info.descriptions = [
-				["Upon reaching 80% health, Blesser heals the most injured enemy within 60 range for |0|", [interpreter_for_heal_normal]],
+				["Upon reaching 80% health, Blesser heals the most injured enemy, but not itself, within 60 range for |0| every 0.25 seconds.", [interpreter_for_heal_normal]],
 				["The healing increases to |0| for 1.3 seconds when Blesser's heal target reaches 25% health. This can only happen once", [interpreter_for_heal_emp]]
 			]
 		
@@ -793,7 +798,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			interpreter_for_toughness_gain.enemy_info_to_use_for_enemy_stat_fragments = info
 			interpreter_for_toughness_gain.display_body = true
 			var ins_for_toughness_gain = []
-			ins_for_toughness_gain.append(OutcomeTextFragment.new(EnemyStatTextFragment.STAT_TYPE.ARMOR, -1, "armor"))
+			ins_for_toughness_gain.append(OutcomeTextFragment.new(EnemyStatTextFragment.STAT_TYPE.TOUGHNESS, -1, "armor"))
 			ins_for_toughness_gain.append(NumericalTextFragment.new(5.0, false, -1))
 			ins_for_toughness_gain.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 			ins_for_toughness_gain.append(EnemyStatTextFragment.new(null, info, EnemyStatTextFragment.STAT_TYPE.ENEMY_STAT__ABILITY_POTENCY, EnemyStatTextFragment.STAT_BASIS.TOTAL, 1.0))
@@ -802,6 +807,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			var interpreter_for_max_health_gain = TextFragmentInterpreter.new()
 			interpreter_for_max_health_gain.enemy_info_to_use_for_enemy_stat_fragments = info
 			interpreter_for_max_health_gain.display_body = true
+			interpreter_for_max_health_gain.header_description = "max health"
 			var ins_for_max_health_gain = []
 			ins_for_max_health_gain.append(OutcomeTextFragment.new(EnemyStatTextFragment.STAT_TYPE.HEALTH, -1, "max health"))
 			ins_for_max_health_gain.append(NumericalTextFragment.new(120, true, -1))
@@ -809,14 +815,14 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			ins_for_max_health_gain.append(EnemyStatTextFragment.new(null, info, EnemyStatTextFragment.STAT_TYPE.ENEMY_STAT__ABILITY_POTENCY, EnemyStatTextFragment.STAT_BASIS.TOTAL, 1.0))
 			interpreter_for_max_health_gain.array_of_instructions = ins_for_max_health_gain
 			
-			var plain_fragment__mov_speed = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.MOV_SPEED, "mov speed")
+			var plain_fragment__mov_speed = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.MOV_SPEED, "15 mov speed")
 			
 			
 			info.enemy_name = "Ascender"
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Blues/Ascender/Ascender_BeforeAscend_E.png"))
 			info.descriptions = [
 				"Upon reaching 50% health, or traversing 50% of its path, Ascender Ascends.",
-				["Ascend: Gain |0|, |1| and |2|, but loses |3|", [interpreter_for_armor_gain, interpreter_for_toughness_gain, interpreter_for_max_health_gain, plain_fragment__mov_speed]]
+				["Ascend: Gain |0|, |1| and |2|, but loses |3|.", [interpreter_for_armor_gain, interpreter_for_toughness_gain, interpreter_for_max_health_gain, plain_fragment__mov_speed]]
 			]
 		
 	elif enemy_id == Enemies.BLASTER:
@@ -851,13 +857,13 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			var dmg : float = 3.5
 			var stun_duration : float = 2.0
 			
-			var plain_fragment__stunned = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stunned")
+			var plain_fragment__stuns = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stuns")
 			
 			
 			info.enemy_name = "Artillery"
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Artillery/Artillery_E.png"))
 			info.descriptions = [
-				["Every 18 seconds, Artillery fires a shell at 1 of the 4 centermost |0|. The shell deals %s damage and |1| for %s seconds" % [dmg, stun_duration], [plain_fragment__towers, plain_fragment__stunned]],
+				["Every 18 seconds, Artillery fires a shell at 1 of the 4 centermost |0|. The shell deals %s damage and |1| for %s seconds" % [dmg, stun_duration], [plain_fragment__towers, plain_fragment__stuns]],
 				"Most towers have 10 health."
 			]
 		
@@ -984,6 +990,9 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 		if arg_include_non_combat_info:
 			info.enemy_name = "Ruffian"
+			info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Blue_E.png")))
+			info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Red_E.png")))
+			
 			info.descriptions = [
 				"Standard issue Skirmisher."
 			]
@@ -1000,6 +1009,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 		if arg_include_non_combat_info:
 			info.enemy_name = "OGV Soul"
+			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_OGV/Assets/EnemySoul/Soul_E.png"))
 			info.descriptions = [
 				"The enemy's soul. Kill this to deal damage to the enemy player and end the game early!"
 			]
@@ -1015,6 +1025,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 		if arg_include_non_combat_info:
 			info.enemy_name = "Oracle Eye Shadow"
+			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Others/DomSyn_Red_Pact_OraclesEye_Shadow/DomSyn_Red_Pact_OraclesEye_Shadow_E.png"))
 			info.descriptions = [
 				"Visions of darkness. Destroy these to gain more range."
 			]
@@ -1029,6 +1040,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 		if arg_include_non_combat_info:
 			info.enemy_name = "Anti Magik"
+			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Others/MapEnchant_AntiMagik/MapEnchant_AntiMagik_E.png"))
 			info.descriptions = [
 				"Sucks the magic out of the Altar from the Map: Enchant."
 			]

@@ -3,8 +3,12 @@ extends Reference
 signal button_associated_pressed(me, type_info_classification)
 signal update_display_requested(me)
 
-var is_hidden : bool
-var is_obscured : bool
+signal page_to_go_to_changed(me)
+signal is_obscured_changed(me)
+
+
+#var is_hidden : bool
+var is_obscured : bool setget set_is_obscured
 
 var footer_text : String
 
@@ -20,6 +24,11 @@ var background_texture : Texture
 
 #
 
+#var is_obscured_state_determiner_func_name
+#var is_obscured_state_determiner_source
+
+#
+
 enum TypeInfoClassification {
 	PAGE = 1,  # transfer to next page
 	
@@ -31,6 +40,8 @@ var _x_type_info_classification : int
 
 var _x_type_info  #tower_type_info, or enemy_type_info. Depends on TypeInfoClassification
 var page_id_to_go_to : int setget set_page_id_to_go_to
+
+var button_associated
 
 ##
 
@@ -54,6 +65,14 @@ func get_modulate_to_use_based_on_properties():
 	else:
 		return Color(0.1, 0.1, 0.1)
 
+#
+
+#func update_is_obscured_state_based_on_properties():
+#	if is_obscured_state_determiner_source != null:
+#		is_obscured = is_obscured_state_determiner_source.call(is_obscured_state_determiner_func_name, self)
+#	else:
+#		is_obscured = true
+
 ##
 
 func set_x_type_info(arg_info, arg_info_classification : int):
@@ -72,16 +91,26 @@ func set_x_type_info_classification(arg_info_classification : int):
 func get_x_type_info_classification():
 	return _x_type_info_classification
 
+func get_x_type_info():
+	return _x_type_info
 
 func set_page_id_to_go_to(arg_id):
 	page_id_to_go_to = arg_id
+	
+	emit_signal("page_to_go_to_changed", self)
 
 
 ##
 
-func button_associated_pressed__called_by_button():
-	emit_signal("button_associated_pressed", self, _x_type_info_classification)
+func button_associated_pressed__called_by_button(arg_button):
+	emit_signal("button_associated_pressed", arg_button, _x_type_info_classification)
 
 func update_display_requested():
 	emit_signal("update_display_requested", self)
 
+##
+
+func set_is_obscured(arg_val):
+	is_obscured = arg_val
+	
+	emit_signal("is_obscured_changed", self)

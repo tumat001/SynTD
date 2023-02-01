@@ -60,6 +60,9 @@ enum STAT_TYPE {
 	INVULNERABLE = 1038
 	AOE_RESISTANCE = 1039
 	
+	PHYSICAL_DAMAGE = 1040
+	ELEMENTAL_DAMAGE = 1041
+	
 	#
 	COLOR_VIOLET = 1100
 	COLOR_BLUE = 1101
@@ -142,6 +145,9 @@ const type_to_for_light_color_map : Dictionary = {
 	STAT_TYPE.INVULNERABLE : "#513D01",
 	STAT_TYPE.AOE_RESISTANCE : "#5C2E00",
 	
+	STAT_TYPE.PHYSICAL_DAMAGE : "#F72302",
+	STAT_TYPE.ELEMENTAL_DAMAGE : "#A602C0",
+	
 	STAT_TYPE.COLOR_VIOLET : "#4F0051",
 	STAT_TYPE.COLOR_BLUE : "#011F74",
 	STAT_TYPE.COLOR_GREEN : "#0B5600",
@@ -210,6 +216,9 @@ const type_to_for_dark_color_map : Dictionary = {
 	STAT_TYPE.INVULNERABLE : "#F0FE8B",
 	STAT_TYPE.AOE_RESISTANCE : "#FFBF81",
 	
+	STAT_TYPE.PHYSICAL_DAMAGE : "#FEAC7C",
+	STAT_TYPE.ELEMENTAL_DAMAGE : "#FF9DFF",
+	
 	STAT_TYPE.COLOR_VIOLET : "#F09AFE",
 	STAT_TYPE.COLOR_BLUE : "#9AB4FE",
 	STAT_TYPE.COLOR_GREEN : "#8CFE7C",
@@ -276,6 +285,9 @@ const type_to_name_map : Dictionary = {
 	STAT_TYPE.INVULNERABLE : "invulnerable",
 	STAT_TYPE.AOE_RESISTANCE : "aoe resistance",
 	
+	STAT_TYPE.PHYSICAL_DAMAGE : "physical damage",
+	STAT_TYPE.ELEMENTAL_DAMAGE : "elemental damage",
+	
 	STAT_TYPE.COLOR_VIOLET : "violet",
 	STAT_TYPE.COLOR_BLUE : "blue",
 	STAT_TYPE.COLOR_GREEN : "green",
@@ -330,7 +342,7 @@ const type_to_img_map : Dictionary = {
 	STAT_TYPE.RELIC : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Relic.png",
 	STAT_TYPE.ENEMY : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Enemy.png",
 	
-	STAT_TYPE.HEALTH : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Health.png",
+	STAT_TYPE.HEALTH : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Heal.png",
 	STAT_TYPE.SHIELD : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Shield.png",
 	STAT_TYPE.ARMOR : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Armor.png",
 	STAT_TYPE.TOUGHNESS : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Toughness.png",
@@ -341,6 +353,9 @@ const type_to_img_map : Dictionary = {
 	STAT_TYPE.EFFECT_VUL : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_EffectVulnerability.png",
 	STAT_TYPE.INVULNERABLE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Invulnerable.png",
 	STAT_TYPE.AOE_RESISTANCE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_AOEResistance.png",
+	
+	STAT_TYPE.PHYSICAL_DAMAGE : "res://GameInfoRelated/TowerStatsIcons/StatIcon_DamageType_Physical.png",
+	STAT_TYPE.ELEMENTAL_DAMAGE : "res://GameInfoRelated/TowerStatsIcons/StatIcon_DamageType_Elemental.png",
 	
 	STAT_TYPE.COLOR_VIOLET : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Violet.png",
 	STAT_TYPE.COLOR_BLUE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Blue.png",
