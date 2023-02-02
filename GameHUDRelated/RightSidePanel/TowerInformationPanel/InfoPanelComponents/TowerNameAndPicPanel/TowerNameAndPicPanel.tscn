@@ -138,4 +138,5 @@ margin_right = 15.0
 margin_bottom = 36.0
 size_flags_horizontal = 10
 texture = ExtResource( 6 )
+
 [connection signal="pressed" from="VBoxContainer/PicMarginer/TowerExtraInfoButton/TextureButton" to="." method="_on_TextureButton_pressed"]

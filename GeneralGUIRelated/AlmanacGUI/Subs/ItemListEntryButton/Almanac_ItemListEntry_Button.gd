@@ -61,13 +61,22 @@ func set_almanac_item_list_entry_data(arg_data):
 		icon_texture_rect.texture = almanac_item_list_entry_data.get_texture_to_use_based_on_properties()
 		update_border_texture_based_on_properties()
 		
+		#
 		icon_texture_rect.modulate = almanac_item_list_entry_data.get_modulate_to_use_based_on_properties()
+		var border_modulate = almanac_item_list_entry_data.get_border_modulate_to_use_based_on_properties()
+		for border in _all_inner_borders:
+			border.modulate = border_modulate
 		
+		#
 		almanac_item_list_entry_data.connect("is_obscured_changed", self, "_on_data_is_obscured_changed")
 
 
 func _on_data_is_obscured_changed(_arg_data : Almanac_ItemListEntry_Data):
 	icon_texture_rect.modulate = almanac_item_list_entry_data.get_modulate_to_use_based_on_properties()
+	
+	var border_modulate = almanac_item_list_entry_data.get_border_modulate_to_use_based_on_properties()
+	for border in _all_inner_borders:
+		border.modulate = border_modulate
 
 #
 

@@ -65,7 +65,7 @@ func update_display():
 		for desc in GameSettingsManager.get_descriptions_to_use_based_on_color_synergy(synergy, game_settings_manager):
 			final_descs.append(desc)
 		
-		for desc in _construct_tooltips_descs_for_curr_effects(synergy):
+		for desc in _construct_tooltips_descs_for_curr_effects(synergy, tooltip_body, result):
 			final_descs.append(desc)
 		
 		tooltip_body.descriptions = final_descs
@@ -133,7 +133,7 @@ func _convert_number_to_roman_numeral(number : int) -> String:
 	return return_val
 
 
-func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy) -> Array:
+static func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy, tooltip_body, result) -> Array:
 	var descs : Array = []
 	
 	for desc_i in synergy.synergy_effects_descriptions.size():
@@ -172,3 +172,6 @@ func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy) -> Array
 		descs.append(text_desc)
 	
 	return descs
+
+
+

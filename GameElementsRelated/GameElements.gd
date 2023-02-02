@@ -413,6 +413,7 @@ func _ready():
 	StatsManager.connect_signals_with_stage_round_manager(stage_round_manager)
 	StatsManager.connect_signals_with_enemy_manager(enemy_manager)
 	StatsManager.connect_signals_with_tower_manager(tower_manager)
+	StatsManager.connect_signals_with_synergy_manager(synergy_manager)
 	
 	###
 	gold_manager.increase_gold_by(3, GoldManager.IncreaseGoldSource.START_OF_GAME)

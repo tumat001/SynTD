@@ -82,6 +82,22 @@ const synergy_id_to_syn_name_dictionary := {
 	SynergyId.RedOV : "RedOV",
 }
 
+var synergy_id_to_pic_map__big : Dictionary = {
+	SynergyId.BlueVG : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_BlueVG_30x30.png"),
+	SynergyId.GreenBY : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_GreenBY_30x30.png"),
+	SynergyId.OrangeBlue : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_OrangeBlue_30x30.png"),
+	SynergyId.OGV : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_OrangeGreenViolet_30x30.png"),
+	SynergyId.OrangeYR : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_OrangeYR_30x30.png"),
+	SynergyId.RedGreen : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_RedGreen_30x30.png"),
+	SynergyId.RedOV : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_RedOV_30x30.png"),
+	SynergyId.RYB : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_RedYellowBlue_30x30.png"),
+	SynergyId.VioletRB : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_VioletRB_30x30.png"),
+	SynergyId.YellowGO : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_YellowGO_30x30.png"),
+	SynergyId.YellowViolet : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_YelVio_30x30.png"),
+	
+}
+
+
 # ex: "1-3" signifies RedGreen tier 3
 var all_syn_id_tier_compos : Array = []
 
@@ -134,7 +150,7 @@ func _init():
 	
 	var red_green_syn = ColorSynergy.new(SynergyId.RedGreen, synergy_id_to_syn_name_dictionary[SynergyId.RedGreen], [TowerColors.RED, TowerColors.GREEN], [5, 4, 3],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
-	syn_compo_compli_redgreen,
+	syn_compo_compli_redgreen, synergy_id_to_pic_map__big[SynergyId.RedGreen],
 	[
 		"Main attacks apply a stack of \"Red\" or \"Green\" based on the tower's color. Normal enemies receive 2 stacks instead. Breaking the color streak triggers effects.",
 		"",
@@ -206,7 +222,7 @@ func _init():
 	
 	var orange_blue_syn = ColorSynergy.new(SynergyId.OrangeBlue, synergy_id_to_syn_name_dictionary[SynergyId.OrangeBlue], [TowerColors.ORANGE, TowerColors.BLUE], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_compli_orangeblue,
+	syn_compo_compli_orangeblue, synergy_id_to_pic_map__big[SynergyId.OrangeBlue],
 	[
 		"Main attacks on hit cause an explosion every few seconds.",
 		["Explosions deal |0| to 3 enemies.", [interpreter_for_orangeblue_explosion_dmg]],
@@ -258,7 +274,7 @@ func _init():
 	
 	var orange_yr_syn = ColorSynergy.new(SynergyId.OrangeYR, synergy_id_to_syn_name_dictionary[SynergyId.OrangeYR], [TowerColors.ORANGE, TowerColors.YELLOW, TowerColors.RED], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_ana_orangeYR,
+	syn_compo_ana_orangeYR, synergy_id_to_pic_map__big[SynergyId.OrangeYR],
 	[
 		"Main attacks cause towers to gain attack speed, up to a limit.",
 		"15 seconds worth of attacks are required to reach the limit.",
@@ -365,7 +381,7 @@ func _init():
 	
 	var yellow_go_syn = ColorSynergy.new(SynergyId.YellowGO, synergy_id_to_syn_name_dictionary[SynergyId.YellowGO], [TowerColors.YELLOW, TowerColors.GREEN, TowerColors.ORANGE], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_ana_yellowGO,
+	syn_compo_ana_yellowGO, synergy_id_to_pic_map__big[SynergyId.YellowGO],
 	[
 		"Fluctuation: buff a tower for 3 seconds before buffing another tower.",
 		"Cycle: Fluctuation goes to the first tower that attacks. Afterwards, Fluctuation loops to the highest base damage tower, then to the highest attack speed tower, then to the tower that has dealt the most damage in the round.",
@@ -437,7 +453,7 @@ func _init():
 	
 	var green_by_syn = ColorSynergy.new(SynergyId.GreenBY, synergy_id_to_syn_name_dictionary[SynergyId.GreenBY], [TowerColors.GREEN, TowerColors.BLUE, TowerColors.YELLOW], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_ana_greenBY,
+	syn_compo_ana_greenBY, synergy_id_to_pic_map__big[SynergyId.GreenBY],
 	[
 		"Main attacks grant towers stacking bonus elemental damage on hit, up to a limit. The bonus can be granted only once per second.",
 		""
@@ -500,7 +516,7 @@ func _init():
 	
 	var blue_vg_syn = ColorSynergy.new(SynergyId.BlueVG, synergy_id_to_syn_name_dictionary[SynergyId.BlueVG], [TowerColors.BLUE, TowerColors.VIOLET, TowerColors.GREEN], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_ana_blueVG,
+	syn_compo_ana_blueVG, synergy_id_to_pic_map__big[SynergyId.BlueVG],
 	[
 		"All abilities's cooldowns are reduced.",
 		"",
@@ -567,7 +583,7 @@ func _init():
 	
 	var violet_rb_syn = ColorSynergy.new(SynergyId.VioletRB, synergy_id_to_syn_name_dictionary[SynergyId.VioletRB], [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_ana_violetRB,
+	syn_compo_ana_violetRB, synergy_id_to_pic_map__big[SynergyId.VioletRB],
 	[
 		"Main attacks cause towers to lose 4% of their max health.",
 		"Upon dying, towers split a percent of their total base damage and total ability potency equally to all other towers.",
@@ -607,7 +623,7 @@ func _init():
 	
 	var ogv_syn = ColorSynergy.new(SynergyId.OGV, synergy_id_to_syn_name_dictionary[SynergyId.OGV], [TowerColors.ORANGE, TowerColors.GREEN, TowerColors.VIOLET], [3, 2, 1], #[4, 3, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_tria_OGV,
+	syn_compo_tria_OGV, synergy_id_to_pic_map__big[SynergyId.OGV],
 	[
 		"Exposes the enemy player's soul every middle of the round, allowing towers to deal damage to it.",
 		"Killing the soul damages the enemy player. The damage amount is influenced by the synergy's tier, and how far the soul has travelled.",
@@ -693,7 +709,7 @@ func _init():
 	
 	synergy_id_to_syn_name_dictionary[SynergyId.YellowViolet] : ColorSynergy.new(SynergyId.YellowViolet, synergy_id_to_syn_name_dictionary[SynergyId.YellowViolet], [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
-	syn_compo_compli_yellowviolet,
+	syn_compo_compli_yellowviolet, synergy_id_to_pic_map__big[SynergyId.YellowViolet],
 	[
 		"Summon Rift Axis that controls the division between the Yellow and Violet rifts. Towers receive effects based on their rift location.",
 		"",
@@ -722,7 +738,7 @@ func _init():
 	# Ana
 	synergy_id_to_syn_name_dictionary[SynergyId.RedOV] : ColorSynergy.new(SynergyId.RedOV, synergy_id_to_syn_name_dictionary[SynergyId.RedOV], [TowerColors.RED, TowerColors.ORANGE, TowerColors.VIOLET], [3, 2, 1],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_ana_redOV,
+	syn_compo_ana_redOV, synergy_id_to_pic_map__big[SynergyId.RedOV],
 	[
 		"After 8 main attacks, towers rally all other towers in range, buffing them to gain bonus damage for 6 seconds.",
 		"A tower triggering rally for the 4th time or more allows it to give an additional bonus damage buff per rally.",
@@ -775,7 +791,7 @@ func _init():
 	#Tria
 	synergy_id_to_syn_name_dictionary[SynergyId.RYB] : ColorSynergy.new(SynergyId.RYB, synergy_id_to_syn_name_dictionary[SynergyId.RYB], [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
-	syn_compo_tria_RYB,
+	syn_compo_tria_RYB, synergy_id_to_pic_map__big[SynergyId.RYB],
 	[
 		"Every round: the first few enemies that reach the end of the track for the first time are instead brought back to the start of the track, preventing life loss.",
 		"Enemies brought back heal for 60% of their missing health and receive damage resistance. The damage resistance cannot be removed by any means.",

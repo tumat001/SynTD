@@ -37,6 +37,7 @@ var synergy_name : String
 var synergy_descriptions : Array = []
 var synergy_simple_descriptions : Array = []
 var synergy_picture : Texture
+var synergy_big_picture : Texture
 
 var synergy_effects : Array
 var synergy_effects_gd_script : Array
@@ -72,6 +73,7 @@ func _init(
 		arg_number_of_towers_in_tier : Array,
 		arg_tier_pic_per_tier : Array,
 		arg_synergy_picture,
+		arg_synergy_big_picture,
 		arg_synergy_descriptions : Array,
 		arg_synergy_effects_gd_script = [],
 		arg_synergy_effects_descriptions = [],
@@ -86,6 +88,7 @@ func _init(
 	number_of_towers_in_tier = arg_number_of_towers_in_tier
 	synergy_name = arg_synergy_name
 	synergy_picture = arg_synergy_picture
+	synergy_big_picture = arg_synergy_big_picture
 	tier_pic_per_tier = arg_tier_pic_per_tier
 	synergy_descriptions = arg_synergy_descriptions
 	
@@ -321,5 +324,27 @@ func construct_all_possible_synergy_tier_ids():
 		bucket.append(construct_current_synergy_tier_id(synergy_id, tier_minus_1 + 1))
 	
 	return bucket
+
+###################
+
+
+func get_description__for_almanac_use():
+	return synergy_descriptions
+
+func get_simple_description__for_almanac_use():
+	return synergy_simple_descriptions
+
+
+func get_atlased_image_as_list__for_almanac_use():
+	return [synergy_big_picture]
+
+func get_altasted_image_list_size():
+	return 0
+
+func get_name__for_almanac_use():
+	return synergy_name
+
+func get_id__for_almanac_use():
+	return synergy_id
 
 

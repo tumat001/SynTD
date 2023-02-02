@@ -6,6 +6,7 @@
 [ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Subs/Almanac_XTypeInfoPanel/Shared/Almanac_XTypeInfo_XName/Almanac_XTypeInfo_XName.gd" type="Script" id=4]
 
 [sub_resource type="DynamicFont" id=1]
+outline_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 font_data = ExtResource( 3 )
 
 [node name="Almanac_XTypeInfo_XName" type="MarginContainer"]
@@ -66,6 +67,7 @@ margin_left = 10.0
 margin_top = 8.0
 margin_right = 100.0
 margin_bottom = 25.0
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
 custom_fonts/font = SubResource( 1 )
 text = "XName"
 align = 1

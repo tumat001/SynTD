@@ -18,8 +18,6 @@ var almanac_item_list_page_data : Almanac_ItemListPage_Data setget set_almanac_i
 
 var is_ready = false
 
-var enemy_info_panel_for_right_side
-
 var curr_selected_button
 
 #
@@ -32,11 +30,15 @@ onready var page_category_container = $MarginContainer/HBoxContainer/MarginConta
 onready var scrl_container_for_metadata = $MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer/ScrlContainerForSideData
 
 onready var right_side_container = $MarginContainer/HBoxContainer/RightSideContainer
-onready var x_type_info_panel = $MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer/ScrlContainerForSideData/Almanac_XTypeInfoPanel
 
 onready var tooltip_container = $TooltipContainer
 
 onready var descriptive_mode_checkbox = $MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer/ToggleDescriptiveMode
+
+#
+
+onready var x_type_info_panel = $MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer/ScrlContainerForSideData/Almanac_XTypeInfoPanel
+
 
 #
 
@@ -60,7 +62,7 @@ func _on_visibility_changed():
 	
 	if visible:
 		if AlmanacManager != null:
-			AlmanacManager._update_is_obscured_state_of__all_options()
+			AlmanacManager.update_is_obscured_state_of__all_options()
 
 #
 
@@ -95,7 +97,6 @@ func set_almanac_item_list_page_data(arg_data : Almanac_ItemListPage_Data):
 		if item_list_entries_count > i:
 			var cat_type = cat_id_to_cat_type_datas.values()[i]
 			page_cat.set_category_data__and_item_list_entries(cat_type, cat_id_to_item_list_entry_datas[cat_type.cat_type_id])
-	
 
 func _construct_page_category():
 	var page_category = Almanac_Page_Category_Scene.instance()
@@ -151,6 +152,7 @@ func configure_almanac_x_type_info_panel(arg_item_list_entry : Almanac_ItemListE
 	right_side_container.visible = true
 	
 	#x_type_info_panel.x_type_info = arg_x_type_info
+	x_type_info_panel.visible = true
 	x_type_info_panel.set_properties(arg_item_list_entry, arg_x_type_info_multi_stats_data)
 	
 	if curr_selected_button != null:
@@ -160,8 +162,19 @@ func configure_almanac_x_type_info_panel(arg_item_list_entry : Almanac_ItemListE
 		curr_selected_button.set_is_selected(true)
 
 func hide_right_side_container():
+	
+	x_type_info_panel.visible = false
 	right_side_container.visible = false
 	
 	if curr_selected_button != null:
 		curr_selected_button.set_is_selected(false)
 	curr_selected_button = null
+
+
+func configure_almanac_synergy_info_panel(arg_item_list_entry : Almanac_ItemListEntry_Data,
+		arg_x_type_info_multi_stats_data,
+		arg_x_type_info,
+		arg_selected_button):
+	
+	
+	pass

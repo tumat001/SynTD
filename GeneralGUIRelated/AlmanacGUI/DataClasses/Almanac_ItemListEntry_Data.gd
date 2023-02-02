@@ -1,5 +1,13 @@
 extends Reference
 
+const TowerTypeInfo_RightSide_Background = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/XTypeInfo_RightSide/XTypeInfo_RightSide_Background.png")
+const TowerTypeInfo_RightSide_Border = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/XTypeInfo_RightSide/XTypeInfo_RightSide_Border_6x6.png")
+const EnemyTypeInfo_RightSide_Background = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/XTypeInfo_RightSide/EnemyTypeInfo_RightSide_Background.png")
+const EnemyTypeInfo_RightSide_Border = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/XTypeInfo_RightSide/EnemyTypeInfo_RightSide_Border_6x6.png")
+const SynergyTypeInfo_RightSide_Background = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/SynergyPage_RightSide/SynergyTypeInfo_RightSide_Background.png")
+const SynergyTypeInfo_RightSide_Border = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/SynergyPage_RightSide/SynergyTypeInfo_RightSide_Border_6x6.png")
+
+
 signal button_associated_pressed(me, type_info_classification)
 signal update_display_requested(me)
 
@@ -34,13 +42,21 @@ enum TypeInfoClassification {
 	
 	TOWER = 10,
 	ENEMY = 11,
+	SYNERGY = 12,
 }
 var _x_type_info_classification : int
 
 
-var _x_type_info  #tower_type_info, or enemy_type_info. Depends on TypeInfoClassification
+var _x_type_info  #tower_type_info, enemy_type_info or color_synergy. Depends on TypeInfoClassification
 var page_id_to_go_to : int setget set_page_id_to_go_to
 
+#
+
+
+var right_side_panel__border_texture : Texture
+var right_side_panel__background_texture : Texture
+
+#
 var button_associated
 
 ##
@@ -65,6 +81,13 @@ func get_modulate_to_use_based_on_properties():
 	else:
 		return Color(0.1, 0.1, 0.1)
 
+func get_border_modulate_to_use_based_on_properties():
+	if !is_obscured:
+		return Color(1, 1, 1)
+	else:
+		return Color(0.3, 0.3, 0.3)
+
+
 #
 
 #func update_is_obscured_state_based_on_properties():
@@ -87,6 +110,20 @@ func set_x_type_info(arg_info, arg_info_classification : int):
 
 func set_x_type_info_classification(arg_info_classification : int):
 	_x_type_info_classification = arg_info_classification
+	
+	if _x_type_info_classification == TypeInfoClassification.TOWER:
+		right_side_panel__border_texture = TowerTypeInfo_RightSide_Border
+		right_side_panel__background_texture = TowerTypeInfo_RightSide_Background
+		
+	elif _x_type_info_classification == TypeInfoClassification.ENEMY:
+		right_side_panel__border_texture = EnemyTypeInfo_RightSide_Border
+		right_side_panel__background_texture = EnemyTypeInfo_RightSide_Background
+		
+	elif _x_type_info_classification == TypeInfoClassification.SYNERGY:
+		right_side_panel__border_texture = SynergyTypeInfo_RightSide_Border
+		right_side_panel__background_texture = SynergyTypeInfo_RightSide_Background
+		
+
 
 func get_x_type_info_classification():
 	return _x_type_info_classification

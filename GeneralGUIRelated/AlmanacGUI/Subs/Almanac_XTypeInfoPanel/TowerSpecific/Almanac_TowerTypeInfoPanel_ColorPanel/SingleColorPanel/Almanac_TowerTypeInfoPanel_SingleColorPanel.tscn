@@ -1,0 +1,33 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
+[ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Subs/Almanac_XTypeInfoPanel/TowerSpecific/Almanac_TowerTypeInfoPanel_ColorPanel/SingleColorPanel/Almanac_TowerTypeInfoPanel_SingleColorPanel.gd" type="Script" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+size = 14
+font_data = ExtResource( 1 )
+
+[node name="Almanac_TowerTypeInfoPanel_SingleColorPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 2 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 44.0
+margin_bottom = 40.0
+
+[node name="ColorIcon" type="TextureRect" parent="HBoxContainer"]
+margin_bottom = 40.0
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 4.0
+margin_right = 44.0
+margin_bottom = 40.0
+
+[node name="ColorName" type="Label" parent="HBoxContainer/MarginContainer"]
+margin_top = 12.0
+margin_right = 40.0
+margin_bottom = 27.0
+custom_colors/font_color = Color( 0.0666667, 0.0666667, 0.0666667, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Color"

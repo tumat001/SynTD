@@ -1,0 +1,76 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/IngredientIconPanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/Almanac_DarkGrayBorder_ForDescriptions_4x4.png" type="Texture" id=2]
+[ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Subs/Almanac_XTypeInfoPanel/TowerSpecific/Almanac_TowerTypeInfoPanel_TierAndIngPanel/Almanac_TowerTypeInfoPanel_TierAndIngPanel.gd" type="Script" id=3]
+
+[node name="Almanac_TowerTypeInfoPanel_TierAndIngPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 3 )
+
+[node name="LeftBorder" type="TextureRect" parent="."]
+margin_right = 4.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="RightBorder" type="TextureRect" parent="."]
+margin_left = 36.0
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_horizontal = 10
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="TopBorder" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 4.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="BottomBorder" type="TextureRect" parent="."]
+margin_top = 36.0
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+custom_constants/margin_right = 8
+custom_constants/margin_top = 8
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 8.0
+margin_top = 11.0
+margin_right = 32.0
+margin_bottom = 29.0
+mouse_filter = 2
+size_flags_vertical = 6
+
+[node name="TierIcon" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+margin_right = 24.0
+mouse_filter = 2
+
+[node name="IngredientIconPanel" parent="MarginContainer/VBoxContainer" instance=ExtResource( 1 )]
+margin_top = 4.0
+margin_right = 24.0
+margin_bottom = 18.0
+mouse_filter = 0
+
+[connection signal="visibility_changed" from="." to="." method="_on_Almanac_TowerTypeInfoPanel_TierAndIngPanel_visibility_changed"]
+[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/IngredientIconPanel" to="." method="_on_IngredientIconPanel_mouse_entered"]
+[connection signal="mouse_exited" from="MarginContainer/VBoxContainer/IngredientIconPanel" to="." method="_on_IngredientIconPanel_mouse_exited"]

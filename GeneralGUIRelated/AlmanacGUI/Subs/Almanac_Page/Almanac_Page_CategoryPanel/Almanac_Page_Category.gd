@@ -57,7 +57,7 @@ func _set_properties_based_on_category():
 	
 	for border in _all_borders:
 		border.texture = _category_data.border_texture
-
+		border.modulate = _category_data.border_modulate
 
 func _set_properties_based_on_almanac_item_list_entries():
 	var count = _almanac_item_list_entries.size()

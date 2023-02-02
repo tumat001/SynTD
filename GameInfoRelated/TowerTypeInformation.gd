@@ -33,6 +33,7 @@ var base_range : float
 var base_ability_potency : float = 1
 var base_pierce : float
 var on_hit_multiplier : float = 1
+var base_on_hit_damage : float = 0  # unused by tower. only shown for almanac purposes
 
 var base_percent_cdr : float = 0
 
@@ -44,7 +45,6 @@ func _init(arg_tower_name : String, arg_tower_type_id : int):
 	tower_name = arg_tower_name
 	tower_type_id = arg_tower_type_id
 	tower_cost = 0
-
 
 ###
 
@@ -110,6 +110,7 @@ func get_atlased_image_as_list__for_almanac_use():
 		return [tower_atlased_image]
 	else:
 		return tower_atlased_images_list
+		#return tower_image_in_buy_card
 
 func get_altasted_image_list_size():
 	return tower_atlased_images_list.size()

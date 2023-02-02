@@ -10,3 +10,6 @@ var cat_description : Array
 var cat_type_id : int
 
 var border_texture : Texture = default_border_texture
+
+var border_modulate : Color = Color(1, 1, 1, 1)
+

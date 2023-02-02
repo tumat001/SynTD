@@ -224,11 +224,13 @@ func _on_round_started(arg_stageround):
 	#_current_stageround_id = arg_stageround.id
 	
 	_on_round_started__for_tower_purposes(arg_stageround)
+	_on_round_started__for_syn_purposes(arg_stageround)
 
 func _on_round_ended(arg_stageround):
 	_current_stageround_id = arg_stageround.id
 	
 	_on_round_ended__for_tower_purposes(arg_stageround)
+	_on_round_ended__for_syn_purposes(arg_stageround)
 
 # TOWER RELATED
 
@@ -259,6 +261,11 @@ func _on_tower_added(arg_tower):
 func _add_tower_id_to_current_tower_ids_if_none(arg_tower):
 	if !_current_tower_ids_at_round_start.has(arg_tower.tower_id):
 		_current_tower_ids_at_round_start.append(arg_tower.tower_id)
+
+
+func if_tower_played_count_per_round_is_at_least_x(arg_id, arg_count):
+	return tower_id_to_play_per_round_count_map[arg_id] >= arg_count
+
 
 ########
 
@@ -294,10 +301,12 @@ func if_synergy_id_has_at_least_x_play_count(arg_syn_id, arg_count):
 	var total : int = 0
 	
 	for id_tier_compo in synergy_compo_id_tier_to_play_per_round_count.keys():
-		if arg_syn_id in id_tier_compo:
+		var separated = id_tier_compo.split("-")
+		
+		if separated[0] == str(arg_syn_id):
 			total += synergy_compo_id_tier_to_play_per_round_count[id_tier_compo]
 			
-			if total <= arg_count:
+			if total >= arg_count:
 				return true
 	
 	return false

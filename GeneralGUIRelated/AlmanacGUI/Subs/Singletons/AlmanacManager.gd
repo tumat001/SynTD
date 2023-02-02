@@ -11,7 +11,9 @@ const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
 
+const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")
+const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 
 const EnemyTypeInformation = preload("res://EnemyRelated/EnemyTypeInformation.gd")
 const TowerTypeInformation = preload("res://GameInfoRelated/TowerTypeInformation.gd")
@@ -35,6 +37,8 @@ signal requested_exit_almanac()
 #
 
 const enemy_count_min_for_unobscure : int = 1
+const tower_count_min_for_unobscure : int = 1
+const syn_count_min_for_unobscure : int = 1
 
 #
 
@@ -47,6 +51,11 @@ var enemy_faction_page__expert : Almanac_ItemListPage_Data
 var enemy_faction_page__faithful : Almanac_ItemListPage_Data
 var enemy_faction_page__skirmisher : Almanac_ItemListPage_Data
 
+
+var tower_page : Almanac_ItemListPage_Data
+
+var synergy_page : Almanac_ItemListPage_Data
+
 #
 
 var tower_multi_stats_data : Almanac_MultiStatsData
@@ -56,6 +65,7 @@ var enemy_multi_stats_data : Almanac_MultiStatsData
 
 var _all_enemy_item_entry_data_options : Array
 var _all_tower_item_entry_data_options : Array
+var _all_synergy_item_entry_data_options : Array
 
 #
 
@@ -77,7 +87,6 @@ enum PageIds {
 	#
 	TOWER_PAGE = 200,
 	
-	
 	#
 	SYNERGY_PAGE = 300,
 	
@@ -93,6 +102,23 @@ enum CategoryIds {
 	ENEMY_SKIRM_RED = 21
 	ENEMY_SKIRM_BOTH = 22
 	
+	#
+	
+	TOWER_COLOR__RED = 110
+	TOWER_COLOR__ORANGE = 111
+	TOWER_COLOR__YELLOW = 112
+	TOWER_COLOR__GREEN = 113
+	TOWER_COLOR__BLUE = 114
+	TOWER_COLOR__VIOLET = 115
+	TOWER_COLOR__GRAY = 116
+	TOWER_COLOR__BLACK = 117
+	TOWER_COLOR__OTHERS = 118
+	
+	#
+	
+	SYNERGY_DOMINANT = 200,
+	SYNERGY_COMPOSITE = 201,
+	
 #	ENEMY_TYPE__NORMAL = 20
 #	ENEMY_TYPE__ELITE = 21
 #	ENEMY_TYPE__BOSS = 22
@@ -107,16 +133,37 @@ var enemy_type_to_border_texture_map__normal : Dictionary = {
 	EnemyConstants.EnemyTypeInformation.EnemyType.ELITE : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/Line_InnerBorder_EnemyType/Line_EnemyTypeElite_6x6_Normal.png"),
 	EnemyConstants.EnemyTypeInformation.EnemyType.BOSS : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/Line_InnerBorder_EnemyType/Line_EnemyTypeBoss_6x6_Normal.png"),
 }
-
 var enemy_type_to_border_texture_map__highlight : Dictionary = {
 	EnemyConstants.EnemyTypeInformation.EnemyType.NORMAL : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/Line_InnerBorder_EnemyType/Line_EnemyTypeNormal_6x6_Highlighted.png"),
 	EnemyConstants.EnemyTypeInformation.EnemyType.ELITE : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/Line_InnerBorder_EnemyType/Line_EnemyTypeElite_6x6_Highlighted.png"),
 	EnemyConstants.EnemyTypeInformation.EnemyType.BOSS : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/Shared/Line_InnerBorder_EnemyType/Line_EnemyTypeBoss_6x6_Highlighted.png"),
 }
 
+
+var tower_tier_to_border_texture_map__normal : Dictionary = {
+	1 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier01OptionPage_6x6_Normal.png"),
+	2 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier02OptionPage_6x6_Normal.png"),
+	3 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier03OptionPage_6x6_Normal.png"),
+	4 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier04OptionPage_6x6_Normal.png"),
+	5 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier05OptionPage_6x6_Normal.png"),
+	6 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier06OptionPage_6x6_Normal.png"),
+}
+var tower_tier_to_border_texture_map__highlight : Dictionary = {
+	1 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier01OptionPage_6x6_Highlighted.png"),
+	2 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier02OptionPage_6x6_Highlighted.png"),
+	3 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier03OptionPage_6x6_Highlighted.png"),
+	4 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier04OptionPage_6x6_Highlighted.png"),
+	5 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier05OptionPage_6x6_Highlighted.png"),
+	6 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage/Line_Tier06OptionPage_6x6_Highlighted.png"),
+}
+
+
 #
 
 var any_page_category_empty : Almanac_Category_Data
+
+var _color_id_to_tower_page_category_map : Dictionary
+var others_color_page_category : Almanac_Category_Data
 
 #var enemy_type__normal_category : Almanac_Category_Data
 #var enemy_type__elite_category : Almanac_Category_Data
@@ -140,12 +187,20 @@ func _deferred_ready():
 	_construct_main_page()
 	
 	_construct_enemy_factions_page()
-	
+	#
 	_construct_enemy_faction_basic_page()
 	_construct_enemy_faction_expert_page()
 	_construct_enemy_faction_faithful_page()
 	_construct_enemy_faction_skirmisher_page()
-
+	
+	#########
+	
+	_construct_tower_page()
+	
+	#########
+	
+	_construct_synergy_page()
+	
 
 #
 
@@ -204,13 +259,25 @@ func _on_option_pressed__display_enemy_info(button, type_info, arg_option):
 
 ##
 
-##todo
-#func _is_button_obscured__for_enemy(arg_item_list_entry_data):
-#	var x_id = arg_item_list_entry_data.get_x_type_info().get_id__for_almanac_use()
-#	return StatsManager
-#
-#func _configure_item_list_entry_data_to_obscure_determiner__for_enemy(arg_data):
-#	pass
+
+func update_is_obscured_state_of__all_options():
+	_update_is_obscured_state_of__enemy_option()
+	_update_is_obscured_state_of__tower_option()
+	_update_is_obscured_state_of__synergy_option()
+
+func _update_is_obscured_state_of__enemy_option():
+	for item_entry_data in _all_enemy_item_entry_data_options:
+		item_entry_data.is_obscured = !StatsManager.if_enemy_killed_by_damage_count_is_at_least_x(item_entry_data.get_x_type_info().get_id__for_almanac_use(), enemy_count_min_for_unobscure)
+
+func _update_is_obscured_state_of__tower_option():
+	for item_entry_data in _all_tower_item_entry_data_options:
+		item_entry_data.is_obscured = !StatsManager.if_tower_played_count_per_round_is_at_least_x(item_entry_data.get_x_type_info().get_id__for_almanac_use(), tower_count_min_for_unobscure)
+
+func _update_is_obscured_state_of__synergy_option():
+	for item_entry_data in _all_synergy_item_entry_data_options:
+		item_entry_data.is_obscured = !StatsManager.if_synergy_id_has_at_least_x_play_count(item_entry_data.get_x_type_info().get_id__for_almanac_use(), syn_count_min_for_unobscure)
+
+
 
 ## Shared stuffs ## 
 
@@ -218,6 +285,72 @@ func _construct_shared_categories():
 	any_page_category_empty = Almanac_Category_Data.new()
 	any_page_category_empty.border_texture = CategoryBorder_Default
 	any_page_category_empty.cat_type_id = CategoryIds.EMPTY
+	
+	#
+	
+	var red_page_category = Almanac_Category_Data.new()
+	red_page_category.border_texture = CategoryBorder_Default
+	red_page_category.cat_type_id = CategoryIds.TOWER_COLOR__RED
+	red_page_category.border_modulate = Color(218/255.0, 2/255.0, 5/255.0)
+	red_page_category.cat_text = "Red Towers"
+	_color_id_to_tower_page_category_map[TowerColors.RED] = red_page_category
+	
+	var orange_page_category = Almanac_Category_Data.new()
+	orange_page_category.border_texture = CategoryBorder_Default
+	orange_page_category.cat_type_id = CategoryIds.TOWER_COLOR__ORANGE
+	orange_page_category.border_modulate = Color(255/255.0, 128/255.0, 0/255.0)
+	orange_page_category.cat_text = "Orange Towers"
+	_color_id_to_tower_page_category_map[TowerColors.ORANGE] = orange_page_category
+	
+	var yellow_page_category = Almanac_Category_Data.new()
+	yellow_page_category.border_texture = CategoryBorder_Default
+	yellow_page_category.cat_type_id = CategoryIds.TOWER_COLOR__YELLOW
+	yellow_page_category.border_modulate = Color(232/255.0, 253/255.0, 0/255.0)
+	yellow_page_category.cat_text = "Yellow Towers"
+	_color_id_to_tower_page_category_map[TowerColors.YELLOW] = yellow_page_category
+	
+	var green_page_category = Almanac_Category_Data.new()
+	green_page_category.border_texture = CategoryBorder_Default
+	green_page_category.cat_type_id = CategoryIds.TOWER_COLOR__GREEN
+	green_page_category.border_modulate = Color(30/255.0, 218/255.0, 2/255.0)
+	green_page_category.cat_text = "Green Towers"
+	_color_id_to_tower_page_category_map[TowerColors.GREEN] = green_page_category
+	
+	var blue_page_category = Almanac_Category_Data.new()
+	blue_page_category.border_texture = CategoryBorder_Default
+	blue_page_category.cat_type_id = CategoryIds.TOWER_COLOR__BLUE
+	blue_page_category.border_modulate = Color(2/255.0, 58/255.0, 218/255.0)
+	blue_page_category.cat_text = "Blue Towers"
+	_color_id_to_tower_page_category_map[TowerColors.BLUE] = blue_page_category
+	
+	var violet_page_category = Almanac_Category_Data.new()
+	violet_page_category.border_texture = CategoryBorder_Default
+	violet_page_category.cat_type_id = CategoryIds.TOWER_COLOR__VIOLET
+	violet_page_category.border_modulate = Color(163/255.0, 77/255.0, 253/255.0)
+	violet_page_category.cat_text = "Violet Towers"
+	_color_id_to_tower_page_category_map[TowerColors.VIOLET] = violet_page_category
+	
+	var gray_page_category = Almanac_Category_Data.new()
+	gray_page_category.border_texture = CategoryBorder_Default
+	gray_page_category.cat_type_id = CategoryIds.TOWER_COLOR__GRAY
+	gray_page_category.border_modulate = Color(133/255.0, 133/255.0, 133/255.0)
+	gray_page_category.cat_text = "Gray Towers"
+	_color_id_to_tower_page_category_map[TowerColors.GRAY] = gray_page_category
+	
+	var black_page_category = Almanac_Category_Data.new()
+	black_page_category.border_texture = CategoryBorder_Default
+	black_page_category.cat_type_id = CategoryIds.TOWER_COLOR__BLACK
+	black_page_category.border_modulate = Color(20/255.0, 20/255.0, 20/255.0)
+	black_page_category.cat_text = "Black Towers"
+	_color_id_to_tower_page_category_map[TowerColors.BLACK] = black_page_category
+	
+	
+	others_color_page_category = Almanac_Category_Data.new()
+	others_color_page_category.border_texture = CategoryBorder_Default
+	others_color_page_category.cat_type_id = CategoryIds.TOWER_COLOR__OTHERS
+	others_color_page_category.cat_text = "Other Towers"
+	others_color_page_category.border_modulate = Color(222/255.0, 222/255.0, 222/255.0)
+	
 	
 #	enemy_type__normal_category = Almanac_Category_Data.new()
 #	enemy_type__normal_category.border_texture = CategoryBorder_Default
@@ -237,6 +370,7 @@ func _construct_tower_type_info_multi_stats_data():
 	var interpreter_for_main_attk = TextFragmentInterpreter.new()
 	interpreter_for_main_attk.tower_info_to_use_for_tower_stat_fragments = null
 	interpreter_for_main_attk.display_body = true
+	interpreter_for_main_attk.display_header = false
 	
 	var ins = []
 	ins.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1, -1))
@@ -245,18 +379,75 @@ func _construct_tower_type_info_multi_stats_data():
 	
 	interpreter_for_main_attk.array_of_instructions = ins
 	
+	#var plain_fragment__abilities = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "abilities")
+	
+	#
 	
 	var name__base_dmg = "Base Damage"
 	var icon__base_dmg = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage_RightSide/TowerPageRightSideIcon_BaseDmg.png")
 	var var_name__base_dmg = "base_damage"
 	var descriptions__base_dmg = [
-		"Contributes to the total damage from a main attack.",
+		"Represents the strength of the tower's attacks. Contributes to the total damage from a main attack.",
 		"",
 		["Main attacks usually deal |0|.", [interpreter_for_main_attk]]
 	]
 	
 	tower_multi_stats_data.add_x_type_info_data(name__base_dmg, icon__base_dmg, var_name__base_dmg, descriptions__base_dmg)
+	
+	#
+	
+	var name__dmg_type = "Damage Type"
+	var icon__dmg_type = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage_RightSide/TowerPageRightSideIcon_DmgType.png")
+	var var_name__dmg_type = "base_damage_type"
+	var descriptions__dmg_type = [
+		"The damage type of the tower's main attack.",
+	]
+	var var_value_converter_method_name__dmg_type = "_convert_dmg_type_to_proper_val"
+	
+	tower_multi_stats_data.add_x_type_info_data(name__dmg_type, icon__dmg_type, var_name__dmg_type, descriptions__dmg_type, var_value_converter_method_name__dmg_type, self)
+	
+	#
+	
+	var name__attk_speed = "Attack Speed"
+	var icon__attk_speed = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage_RightSide/TowerPageRightSideIcon_AttkSpeed.png")
+	var var_name__attk_speed = "base_attk_speed"
+	var descriptions__attk_speed = [
+		"The number of main attacks fired per second.",
+	]
+	
+	tower_multi_stats_data.add_x_type_info_data(name__attk_speed, icon__attk_speed, var_name__attk_speed, descriptions__attk_speed)
+	
+	#
+	
+	var name__range = "Range"
+	var icon__range = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage_RightSide/TowerPageRightSideIcon_Range.png")
+	var var_name__range = "base_range"
+	var descriptions__range = [
+		"The radius for detecting enemies. Larger range leads to a larger detection area.",
+	]
+	
+	tower_multi_stats_data.add_x_type_info_data(name__range, icon__range, var_name__range, descriptions__range)
+	
+	#
+	
+	var name__on_hit_dmg = "On Hit Damage"
+	var icon__on_hit_dmg = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TowerPage_RightSide/TowerPageRightSideIcon_OnHitDmg.png")
+	var var_name__on_hit_dmg = "base_on_hit_damage"
+	var descriptions__on_hit_dmg = [
+		"The amount of extra damage added on top of main attacks. All towers have no base on hit damage, but can get bonuses from other sources.",
+		"On hit damages have their own damage type.",
+		"",
+		["Main attacks usually deal |0|.", [interpreter_for_main_attk]]
+	]
+	
+	tower_multi_stats_data.add_x_type_info_data(name__on_hit_dmg, icon__on_hit_dmg, var_name__on_hit_dmg, descriptions__on_hit_dmg)
+	
+	
 
+func _convert_dmg_type_to_proper_val(arg_val, x_type_info):
+	return DamageType.get_name_of_damage_type(arg_val)
+
+#
 
 func _construct_enemy_type_info_multi_stats_data():
 	enemy_multi_stats_data = Almanac_MultiStatsData.new()
@@ -269,9 +460,10 @@ func _construct_enemy_type_info_multi_stats_data():
 		"The amount of damage the enemy can take before going down.",
 		"Health scales based on the stage and round."
 	]
-	var var_value_converter_method_name__health = "_convert_health_to_proper_val"
+	var var_value_converter_method_name__health = "_convert_enemy_val_to_proper_val"
 	
 	enemy_multi_stats_data.add_x_type_info_data(name__health, icon__health, var_name__health, descriptions__health, var_value_converter_method_name__health, self)
+	
 	
 	var name__mov_speed = "Mov Speed"
 	var icon__mov_speed = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/EnemyPage_RightSide/EnemyPageRightSideIcon_MovSpeed.png")
@@ -302,9 +494,20 @@ func _construct_enemy_type_info_multi_stats_data():
 	var desc_func_name__resistance = "_get_desc_for_base_resistance"
 	enemy_multi_stats_data.add_x_type_info_data(name__resistance, icon__resistance, var_name__resistance, null, null, null, desc_func_name__resistance, self)
 	
+	
+	var name__player_dmg = "Player Damage"
+	var icon__player_dmg = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/EnemyPage_RightSide/EnemyPageRightSideIcon_PlayerDamage.png")
+	var var_name__player_dmg = "base_player_damage"
+	var descriptions__player_dmg = [
+		"The baseline amount of damage the enemy deals to the player health when escaping."
+	]
+	var var_value_converter_method_name__player_dmg = "_convert_enemy_val_to_proper_val"
+	
+	enemy_multi_stats_data.add_x_type_info_data(name__player_dmg, icon__player_dmg, var_name__player_dmg, descriptions__player_dmg, var_value_converter_method_name__player_dmg, self)
+	
 
 
-func _convert_health_to_proper_val(arg_val, x_type_info):
+func _convert_enemy_val_to_proper_val(arg_val, x_type_info):
 	var val = arg_val
 	
 	if val == EnemyTypeInformation.VALUE_DETERMINED_BY_OTHER_FACTORS:
@@ -394,7 +597,6 @@ func _construct_main_page():
 #### ENEMY FACTION PAGE ########
 
 func _construct_enemy_factions_page():
-	
 	var enemy_fac_first_half_category_empty = Almanac_Category_Data.new()
 	enemy_fac_first_half_category_empty.border_texture = CategoryBorder_Default
 	enemy_fac_first_half_category_empty.cat_type_id = CategoryIds.ENEMY_FACTION__FIRST_HALF
@@ -573,25 +775,150 @@ func _construct_and_add_enemy_option_for_enemy(arg_enemy_id, arg_page_to_add_to,
 	
 	if StatsManager.is_stats_loaded:
 		enemy_option.is_obscured = !StatsManager.if_enemy_killed_by_damage_count_is_at_least_x(arg_enemy_id, enemy_count_min_for_unobscure)
-		
 	else:
-		StatsManager.connect("stats_loaded", self, "_on_stats_manager_stats_loaded", [], CONNECT_ONESHOT)
+		if !StatsManager.is_connected("stats_loaded", self, "_on_stats_manager_stats_loaded"):
+			StatsManager.connect("stats_loaded", self, "_on_stats_manager_stats_loaded", [], CONNECT_ONESHOT)
 	
 	_all_enemy_item_entry_data_options.append(enemy_option)
 	
 	arg_page_to_add_to.add_almanac_item_list_entry_data_to_category(enemy_option, arg_category_to_use)
 
+
 func _on_stats_manager_stats_loaded():
-	_update_is_obscured_state_of__all_options()
-
-
-
-func _update_is_obscured_state_of__all_options():
-	_update_is_obscured_state_of__enemy_option()
-
-func _update_is_obscured_state_of__enemy_option():
-	for item_entry_data in _all_enemy_item_entry_data_options:
-		item_entry_data.is_obscured = !StatsManager.if_enemy_killed_by_damage_count_is_at_least_x(item_entry_data.get_x_type_info().get_id__for_almanac_use(), enemy_count_min_for_unobscure)
+	update_is_obscured_state_of__all_options()
 
 ######
+
+func _construct_tower_page():
+	tower_page = Almanac_ItemListPage_Data.new()
+	tower_page.page_id_to_return_to = PageIds.MAIN_PAGE
+	tower_page.connect("requested_return_to_assigned_page_id", self, "_on_page__requested_return_to_assigned_page_id", [], CONNECT_PERSIST)
+	
+	page_id_to_page_data[PageIds.TOWER_PAGE] = tower_page
+	
+	##
+	
+	_construct_tower_category_with_towers__with_color(TowerColors.RED, tower_page)
+	_construct_tower_category_with_towers__with_color(TowerColors.ORANGE, tower_page)
+	_construct_tower_category_with_towers__with_color(TowerColors.YELLOW, tower_page)
+	_construct_tower_category_with_towers__with_color(TowerColors.GREEN, tower_page)
+	_construct_tower_category_with_towers__with_color(TowerColors.BLUE, tower_page)
+	_construct_tower_category_with_towers__with_color(TowerColors.VIOLET, tower_page)
+	_construct_tower_category_with_towers__with_color(TowerColors.BLACK, tower_page)
+	_construct_tower_category_with_towers__with_color(TowerColors.GRAY, tower_page)
+	
+
+func _construct_tower_category_with_towers__with_color(arg_color : int, arg_page_to_add_to):
+	var tower_type_info_list : Array = []
+	for tower_id in Towers.tower_color_to_tower_id_map[arg_color]:
+		var tower_type_info = Towers.tower_id_info_type_singleton_map[tower_id]
+		tower_type_info_list.append(tower_type_info)
+		#_construct_tower_option_for_tower(tower_id, )
+	
+	tower_type_info_list.sort_custom(self, "_sort_tower_type_info_list")
+	
+	
+	for tower_type_info in tower_type_info_list:
+		
+		if tower_type_info.colors.size() > 0:
+			var cat = _get_color_category_based_on_tower_color_id(arg_color)
+			_construct_tower_option_for_tower(tower_type_info, cat, arg_page_to_add_to)
+		else:
+			_construct_tower_option_for_tower(tower_type_info, others_color_page_category, arg_page_to_add_to)
+
+static func _sort_tower_type_info_list(tower_type_a, tower_type_b):
+	if tower_type_a.tower_tier != tower_type_b.tower_tier:
+		return tower_type_a.tower_tier < tower_type_b.tower_tier
+	else:
+		return tower_type_a.tower_name < tower_type_b.tower_name
+
+
+
+func _get_color_category_based_on_tower_color_id(arg_id):
+	if _color_id_to_tower_page_category_map.has(arg_id):
+		return _color_id_to_tower_page_category_map[arg_id]
+	else:
+		return others_color_page_category
+
+func _construct_tower_option_for_tower(type_info, arg_category_to_use, arg_page_to_add_to):
+	var tower_option = Almanac_ItemListEntry_Data.new()
+	tower_option.border_texture__normal = tower_tier_to_border_texture_map__normal[type_info.tower_tier]
+	tower_option.border_texture__highlighted = tower_tier_to_border_texture_map__highlight[type_info.tower_tier]
+	tower_option.set_x_type_info(type_info, Almanac_ItemListEntry_Data.TypeInfoClassification.TOWER)
+	tower_option.connect("button_associated_pressed", self, "_on_option_pressed__display_tower_info", [tower_option], CONNECT_PERSIST)
+	
+	if StatsManager.is_stats_loaded:
+		tower_option.is_obscured = !StatsManager.if_tower_played_count_per_round_is_at_least_x(type_info.get_id__for_almanac_use(), tower_count_min_for_unobscure)
+	else:
+		if !StatsManager.is_connected("stats_loaded", self, "_on_stats_manager_stats_loaded"):
+			StatsManager.connect("stats_loaded", self, "_on_stats_manager_stats_loaded", [], CONNECT_ONESHOT)
+	
+	_all_tower_item_entry_data_options.append(tower_option)
+	
+	arg_page_to_add_to.add_almanac_item_list_entry_data_to_category(tower_option, arg_category_to_use)
+	
+
+func _on_option_pressed__display_tower_info(button, type_info, arg_option):
+	if !arg_option.is_obscured:
+		almanac_page_gui.configure_almanac_x_type_info_panel(arg_option, tower_multi_stats_data, arg_option.get_x_type_info(), button)
+	
+
+##############
+
+func _construct_synergy_page():
+	synergy_page = Almanac_ItemListPage_Data.new()
+	synergy_page.page_id_to_return_to = PageIds.MAIN_PAGE
+	synergy_page.connect("requested_return_to_assigned_page_id", self, "_on_page__requested_return_to_assigned_page_id", [], CONNECT_PERSIST)
+	
+	page_id_to_page_data[PageIds.SYNERGY_PAGE] = synergy_page
+	
+	##
+	
+	var dom_syn_page_category = Almanac_Category_Data.new()
+	dom_syn_page_category.border_texture = CategoryBorder_Default
+	dom_syn_page_category.cat_type_id = CategoryIds.SYNERGY_DOMINANT
+	dom_syn_page_category.cat_text = "Dominant Synergy"
+	dom_syn_page_category.cat_description = [
+		"Color synergies with only one color."
+	]
+	
+	var compo_syn_page_category = Almanac_Category_Data.new()
+	compo_syn_page_category.border_texture = CategoryBorder_Default
+	compo_syn_page_category.cat_type_id = CategoryIds.SYNERGY_COMPOSITE
+	compo_syn_page_category.cat_text = "Composite Synergy"
+	compo_syn_page_category.cat_description = [
+		"Color synergies with more than one color."
+	]
+	
+	#
+	
+	for syn_id in TowerDominantColors.SynergyId.values():
+		_construct_synergy_option__with_category(TowerDominantColors.get_synergy_with_id(syn_id), dom_syn_page_category, synergy_page)
+	for syn_id in TowerCompositionColors.SynergyId.values():
+		_construct_synergy_option__with_category(TowerCompositionColors.get_synergy_with_id(syn_id), compo_syn_page_category, synergy_page)
+	
+
+func _construct_synergy_option__with_category(arg_syn, arg_category_to_use, arg_page_to_add_to):
+	var syn_option = Almanac_ItemListEntry_Data.new()
+	syn_option.border_texture__normal = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/SynergyPage_RightSide/Line_SynergyOptionBorder_6x6_Normal.png")
+	syn_option.border_texture__highlighted = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/SynergyPage_RightSide/Line_SynergyOptionBorder_6x6_Highlighted.png")
+	syn_option.set_x_type_info(arg_syn, Almanac_ItemListEntry_Data.TypeInfoClassification.SYNERGY)
+	syn_option.connect("button_associated_pressed", self, "_on_option_pressed__display_tower_info", [syn_option], CONNECT_PERSIST)
+	
+	if StatsManager.is_stats_loaded:
+		syn_option.is_obscured = !StatsManager.if_synergy_id_has_at_least_x_play_count(arg_syn.get_id__for_almanac_use(), syn_count_min_for_unobscure)
+	else:
+		if !StatsManager.is_connected("stats_loaded", self, "_on_stats_manager_stats_loaded"):
+			StatsManager.connect("stats_loaded", self, "_on_stats_manager_stats_loaded", [], CONNECT_ONESHOT)
+	
+	_all_synergy_item_entry_data_options.append(syn_option)
+	
+	arg_page_to_add_to.add_almanac_item_list_entry_data_to_category(syn_option, arg_category_to_use)
+	
+
+func _on_option_pressed__display_syn_info(button, type_info, arg_option):
+	if !arg_option.is_obscured:
+		almanac_page_gui.configure_almanac_x_type_info_panel(arg_option, tower_multi_stats_data, arg_option.get_x_type_info(), button)
+	
+
 
