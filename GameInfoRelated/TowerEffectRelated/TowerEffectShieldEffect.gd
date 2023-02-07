@@ -16,6 +16,8 @@ func _init(arg_effect_uuid : int,
 	is_countbound = count > 0
 
 
+func _shallow_duplicate():
+	return _get_copy_scaled_by(1)
 
 func _get_copy_scaled_by(scale : float):
 	var copy = get_script().new(effect_uuid, time_in_seconds * scale, count * int(scale + 0.5))

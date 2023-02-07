@@ -3,6 +3,8 @@ extends MarginContainer
 const Almanac_ItemListEntry_Data = preload("res://GeneralGUIRelated/AlmanacGUI/DataClasses/Almanac_ItemListEntry_Data.gd")
 const Almanac_XTypeInfo_MultiStatsData = preload("res://GeneralGUIRelated/AlmanacGUI/DataClasses/Almanac_XTypeInfo_MultiStatsData.gd")
 
+const SynergyTooltip = preload("res://GameHUDRelated/Tooltips/SynergyTooltipRelated/SynergyTooltip.gd")
+
 #
 
 var _almanac_item_list_entry_data
@@ -82,6 +84,8 @@ func set_properties(arg_item_list_entry : Almanac_ItemListEntry_Data,
 	elif x_type_info_classification == arg_item_list_entry.TypeInfoClassification.SYNERGY:
 		_configure_self_on_type_info__synergy(arg_item_list_entry)
 		
+	elif x_type_info_classification == arg_item_list_entry.TypeInfoClassification.TEXT_TIDBIT:
+		_configure_self_on_type_info__tidbit(arg_item_list_entry)
 
 func update_descriptions_panel():
 	x_descriptions.descriptions = GameSettingsManager.get_descriptions_to_use_based_on_x_type_info(_x_info_type, GameSettingsManager)
@@ -125,6 +129,12 @@ func _configure_self_on_type_info__synergy(arg_item_list_entry):
 	x_descriptions.visible = true
 	
 	syn_type__tier_descriptions.visible = true
-	syn_type__tier_descriptions.descriptions = _x_info_type.synergy_effects_descriptions
+	syn_type__tier_descriptions.descriptions = SynergyTooltip.construct_tooltips_descs_for_curr_effects(_x_info_type, syn_type__tier_descriptions.desc_panel, true)#_x_info_type.synergy_effects_descriptions
 	syn_type__tier_descriptions.update_display()
+
+func _configure_self_on_type_info__tidbit(arg_item_list_entry):
+	x_image.visible = true
+	x_name.visible = true
+	x_descriptions.visible = true
+	
 

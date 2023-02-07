@@ -136,6 +136,7 @@ const ping_image = preload("res://TowerRelated/Color_Violet/Ping/PingWholeBody.p
 const prominence_image = preload("res://TowerRelated/Color_Violet/Prominence/Prominence_OmniWholeBody.png")
 const shackled_image = preload("res://TowerRelated/Color_Violet/Shackled/Shackled_Omni_Stage02.png")
 const variance_image = preload("res://TowerRelated/Color_Violet/Variance/Variance_WholeBodyImageForCard.png")
+const bounded_image = preload("res://TowerRelated/Color_Violet/Bounded/Bounded_Omni.png")
 
 # OTHERS
 const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
@@ -248,6 +249,8 @@ enum {
 	SHACKLED = 706,
 	VARIANCE = 707,
 	
+	BOUNDED = 708,
+	
 	# OTHERS (900)
 	HERO = 900, # WHITE
 	AMALGAMATOR = 901, # BLACK
@@ -323,6 +326,7 @@ const TowerTiersMap : Dictionary = {
 	LES_SEMIS : 3,
 	ENERVATE : 3,
 	FULGURANT : 3,
+	BOUNDED : 3,
 	
 	#RE : 4,
 	PING : 4,
@@ -2882,7 +2886,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		# INS END
 		
 		info.tower_descriptions = [
-			"Auto casts Seed Bomb when hitting an enemy with its main attack.",
+			"Main attacks on hit trigger Seed Bomb.",
 			["|0|: Seed Bomb: Seeder implants a seed bomb to an enemy. Seeder's pea attacks causes the seed to gain a stack of Fragile.", [plain_fragment__ability]],
 			"After 6 seconds or reaching 4 stacks of Fragile, the seed bomb explodes, hitting up to 5 enemies.",
 			["Cooldown: |0|", [interpreter_for_cooldown]],
@@ -6587,6 +6591,86 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"Definitely Boccher."
 		]
 		
+	elif tower_id == BOUNDED:
+		info = TowerTypeInformation.new("Bounded", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.VIOLET)
+		info.base_tower_image = bounded_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
+		
+		info.base_damage = 2.72
+		info.base_attk_speed = 0.612
+		info.base_pierce = 1
+		info.base_range = 142
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		
+		var plain_fragment__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Ability")
+		var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Unbound")
+		
+		var plain_fragment__clone = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "clone")
+		var plain_fragment__ingredient_effets = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredients")
+		
+		
+		var interpreter_for_clone_create_range = TextFragmentInterpreter.new()
+		interpreter_for_clone_create_range.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_clone_create_range.display_body = true
+		
+		var ins_for_clone_create_range = []
+		ins_for_clone_create_range.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE, -1))
+		ins_for_clone_create_range.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.RANGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1, -1))
+		
+		interpreter_for_clone_create_range.array_of_instructions = ins_for_clone_create_range
+		
+		
+		var interpreter_for_clone_duration = TextFragmentInterpreter.new()
+		interpreter_for_clone_duration.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_clone_duration.display_body = true
+		interpreter_for_clone_duration.header_description = "s"
+		interpreter_for_clone_duration.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.ROUND
+		
+		var ins_for_clone_duration = []
+		ins_for_clone_duration.append(NumericalTextFragment.new(12, false, -1))
+		ins_for_clone_duration.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_clone_duration.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_clone_duration.array_of_instructions = ins_for_clone_duration
+		
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(18, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		
+		info.tower_descriptions = [
+			"Main attacks on hit trigger Unbound.",
+			["|0|: Unbound. Creates a |1| of itself on the nearest unoccupied tower placable to the target enemy within |2|.", [plain_fragment__ability, plain_fragment__clone, interpreter_for_clone_create_range]],
+			["The clone copies all |0| the creator has on the time of creation. The clone lasts for |1|", [plain_fragment__ingredient_effets, interpreter_for_clone_duration]],
+			"",
+			["Cooldown: |0|. Cooldown starts on clone's end.", [interpreter_for_cooldown]],
+			"",
+			"The clone cannot be sold. The clone acts like a different, separate tower. Benefits from color synergies, but does not contribute to them.",
+			"The clone can absorb ingredient effects, and when it expires, the gold will be refunded under standard selling rules."
+		]
+		
+		info.tower_simple_descriptions = [
+			"Main attacks on hit trigger Unbound.",
+			["|0|: Unbound. Creates a |1| of itself on the nearest tower placable to the target enemy.", [plain_fragment__ability, plain_fragment__clone]],
+			["The clone copies all |0| the creator has. The clone lasts for |1|", [plain_fragment__ingredient_effets, interpreter_for_clone_duration]],
+			"",
+			["Cooldown: |0|. Cooldown starts on clone's end.", [interpreter_for_cooldown]]
+		]
+		
 	
 	return info
 
@@ -6764,10 +6848,14 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Red/Outreach/Outreach.tscn")
 	elif tower_id == BLAST:
 		return load("res://TowerRelated/Color_Red/Blast/Blast.tscn")
-	elif tower_id == DUNED:
+	elif tower_id == DUNED: #87
 		return load("res://TowerRelated/Color__Others/Duned/Duned.tscn")
 	elif tower_id == MAP_PASSAGE__FIRE_PATH:
 		return load("res://TowerRelated/Color__Others/MapPassage_FirePath/MapPassage_PathFire.tscn")
 	elif tower_id == MAP_ENCHANT__ATTACKS:
 		return load("res://TowerRelated/Color__Others/MapEnchant_Attacks/MapEnchant_Attacks.tscn")
-
+	elif tower_id == BOUNDED:
+		return load("res://TowerRelated/Color_Violet/Bounded/Bounded.tscn")
+	
+	
+	

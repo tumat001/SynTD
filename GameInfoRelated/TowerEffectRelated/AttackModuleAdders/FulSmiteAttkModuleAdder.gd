@@ -80,16 +80,17 @@ func _update_description():
 #
 
 func _make_modifications_to_tower(tower):
-	_attached_tower = tower
-	y_shift_of_launch_particle = _attached_tower.get_current_anim_size().y
-	
-	_construct_smite_explosion_attk_module()
-	_construct_attk_sprite_pool_components()
-	_construct_smite_timer()
-	
-	tower.add_attack_module(smite_explosion_attk_module)
-	
-	smite_timer.start(smite_cooldown)
+	if !is_instance_valid(smite_explosion_attk_module):
+		_attached_tower = tower
+		y_shift_of_launch_particle = _attached_tower.get_current_anim_size().y
+		
+		_construct_smite_explosion_attk_module()
+		_construct_attk_sprite_pool_components()
+		_construct_smite_timer()
+		
+		tower.add_attack_module(smite_explosion_attk_module)
+		
+		smite_timer.start(smite_cooldown)
 	
 
 func _construct_smite_explosion_attk_module():
@@ -249,6 +250,13 @@ func _on_smite_lightning_animation_ended(arg_lightning):
 		
 		smite_explosion_attk_module.set_up_aoe__add_child_and_emit_signals(explosion)
 
+#
+
+func _shallow_duplicate():
+	var copy = get_script().new()
+	_configure_copy_to_match_self(copy)
+	
+	return copy
 
 #
 

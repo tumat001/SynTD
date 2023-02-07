@@ -69,8 +69,14 @@ func _init(arg_effect_type : int,
 	effect_uuid = arg_effect_uuid
 
 
+#func _shallow_duplicate():
+#	pass
+
 func _shallow_duplicate():
-	pass
+	var copy = get_script().new()
+	_configure_copy_to_match_self(copy)
+	
+	return copy
 
 
 func _configure_copy_to_match_self(copy):

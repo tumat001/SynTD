@@ -155,6 +155,16 @@ func _undo_modifications_to_tower(tower):
 		lava_jet_beam_am.queue_free()
 
 
+#
+
+func _shallow_duplicate():
+	var copy = get_script().new()
+	_configure_copy_to_match_self(copy)
+	
+	return copy
+
+#
+
 # SCALING related. Used by YelVio only.
 func add_additive_scaling_by_amount(arg_amount):
 	.add_additive_scaling_by_amount(arg_amount)

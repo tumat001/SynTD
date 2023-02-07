@@ -841,6 +841,16 @@ func get_all_active_towers_except_in_queue_free() -> Array:
 	
 	return bucket
 
+func get_all_active_towers_except_summonables_and_in_queue_free() -> Array:
+	var bucket : Array = []
+	
+	for color in _color_groups:
+		for tower in get_all_active_towers_with_color(color):
+			if !bucket.has(tower) and !tower.is_queued_for_deletion() and !tower.is_a_summoned_tower:
+				bucket.append(tower)
+	
+	return bucket
+
 func get_all_active_and_alive_towers_except_in_queue_free() -> Array:
 	var bucket : Array = []
 	
@@ -988,6 +998,16 @@ func get_all_in_map_towers_to_benefit_from_syn_with_color(color):
 	
 	return bucket
 
+func get_all_in_map_towers_to_benefit_from_syn_with_color_except_summonables_and_in_queue_free(color):
+	if color is int:
+		color = str(color)
+	
+	var bucket : Array = []
+	for child in get_children():
+		if child.is_in_group(color) and child.is_benefit_from_syn_having_or_as_if_having_color(int(color)) and !child.is_queued_for_deletion() and !child.is_a_summoned_tower:
+			bucket.append(child)
+	
+	return bucket
 
 #########
 

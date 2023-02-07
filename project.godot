@@ -72,6 +72,7 @@ GameSettingsManager="*res://GameElementsRelated/GameSettingsManager.gd"
 GameSaveManager="*res://GameSaveRelated/GameSaveManager.gd"
 AlmanacManager="*res://GeneralGUIRelated/AlmanacGUI/Subs/Singletons/AlmanacManager.gd"
 StatsManager="*res://GameSaveRelated/StatsManager.gd"
+StoreOfTextTidbit="*res://GeneralInfoRelated/TextTidbitRelated/StoreOfTextTidbit.gd"
 
 [debug]
 

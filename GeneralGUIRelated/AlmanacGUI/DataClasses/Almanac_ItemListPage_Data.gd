@@ -66,7 +66,7 @@ func get_first_almanac_item_list_entry_data():
 func get_first_unobscured_almanac_item_list_entry_data():
 	var datas = _category_type_id_to_almanac_item_list_entries_data.values()[0]
 	for data in datas:
-		if !data.is_obscured:
+		if !data.is_obscured and !data.is_hidden:
 			return data
 	
 	return null

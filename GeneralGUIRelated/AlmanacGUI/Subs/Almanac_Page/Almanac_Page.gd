@@ -62,7 +62,8 @@ func _on_visibility_changed():
 	
 	if visible:
 		if AlmanacManager != null:
-			AlmanacManager.update_is_obscured_state_of__all_options()
+			AlmanacManager.update_state_of__all_options()
+
 
 #
 
@@ -171,10 +172,13 @@ func hide_right_side_container():
 	curr_selected_button = null
 
 
-func configure_almanac_synergy_info_panel(arg_item_list_entry : Almanac_ItemListEntry_Data,
-		arg_x_type_info_multi_stats_data,
-		arg_x_type_info,
-		arg_selected_button):
-	
-	
-	pass
+#func configure_almanac_synergy_info_panel(arg_item_list_entry : Almanac_ItemListEntry_Data,
+#		arg_x_type_info_multi_stats_data,
+#		arg_x_type_info,
+#		arg_selected_button):
+#
+#
+#	pass
+
+
+

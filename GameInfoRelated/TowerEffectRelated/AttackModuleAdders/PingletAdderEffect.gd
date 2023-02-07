@@ -130,14 +130,23 @@ func _construct_pinglet():
 
 
 func _make_modifications_to_tower(tower):
-	_construct_pinglet()
-	tower.add_attack_module(shot_attack_module)
+	if !is_instance_valid(shot_attack_module):
+		_construct_pinglet()
+		tower.add_attack_module(shot_attack_module)
 
 
 func _undo_modifications_to_tower(tower):
 	if is_instance_valid(shot_attack_module):
 		tower.remove_attack_module(shot_attack_module)
 		shot_attack_module.queue_free()
+
+#
+
+func _shallow_duplicate():
+	var copy = get_script().new()
+	_configure_copy_to_match_self(copy)
+	
+	return copy
 
 #
 

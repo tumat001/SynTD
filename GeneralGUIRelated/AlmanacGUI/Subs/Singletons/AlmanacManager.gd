@@ -39,10 +39,12 @@ signal requested_exit_almanac()
 const enemy_count_min_for_unobscure : int = 1
 const tower_count_min_for_unobscure : int = 1
 const syn_count_min_for_unobscure : int = 1
+const tidbit_val_min_for_unobscure : int = 1
 
 #
 
 var main_page : Almanac_ItemListPage_Data
+var tidbit_option__in_main_page : Almanac_ItemListEntry_Data
 
 var enemy_factions_page : Almanac_ItemListPage_Data
 
@@ -56,6 +58,8 @@ var tower_page : Almanac_ItemListPage_Data
 
 var synergy_page : Almanac_ItemListPage_Data
 
+var tidbit_page : Almanac_ItemListPage_Data
+
 #
 
 var tower_multi_stats_data : Almanac_MultiStatsData
@@ -66,6 +70,7 @@ var enemy_multi_stats_data : Almanac_MultiStatsData
 var _all_enemy_item_entry_data_options : Array
 var _all_tower_item_entry_data_options : Array
 var _all_synergy_item_entry_data_options : Array
+var _all_tidbit_item_entry_data_options : Array
 
 #
 
@@ -89,6 +94,9 @@ enum PageIds {
 	
 	#
 	SYNERGY_PAGE = 300,
+	
+	#
+	TIDBIT_PAGE = 400,
 	
 }
 
@@ -158,6 +166,24 @@ var tower_tier_to_border_texture_map__highlight : Dictionary = {
 }
 
 
+var tidbit_tier_to_border_texture_map__normal : Dictionary = {
+	1 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier01OptionPage_6x6_Normal.png"),
+	2 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier02OptionPage_6x6_Normal.png"),
+	#TODO
+	#3 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier03OptionPage_6x6_Normal.png"),
+	4 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier04OptionPage_6x6_Normal.png"),
+	5 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier05OptionPage_6x6_Normal.png"),
+	6 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier06OptionPage_6x6_Normal.png"),
+}
+var tidbit_tier_to_border_texture_map__highlight : Dictionary = {
+	1 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier01OptionPage_6x6_Highlighted.png"),
+	2 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier02OptionPage_6x6_Highlighted.png"),
+	3 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier03OptionPage_6x6_Highlighted.png"),
+	4 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier04OptionPage_6x6_Highlighted.png"),
+	5 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier05OptionPage_6x6_Highlighted.png"),
+	6 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier06OptionPage_6x6_Highlighted.png"),
+}
+
 #
 
 var any_page_category_empty : Almanac_Category_Data
@@ -200,6 +226,10 @@ func _deferred_ready():
 	#########
 	
 	_construct_synergy_page()
+	
+	#########
+	
+	_construct_tidbit_page()
 	
 
 #
@@ -260,23 +290,35 @@ func _on_option_pressed__display_enemy_info(button, type_info, arg_option):
 ##
 
 
-func update_is_obscured_state_of__all_options():
-	_update_is_obscured_state_of__enemy_option()
-	_update_is_obscured_state_of__tower_option()
-	_update_is_obscured_state_of__synergy_option()
+func update_state_of__all_options():
+	_update_state_of__enemy_option()
+	_update_state_of__tower_option()
+	_update_state_of__synergy_option()
+	_update_state_of__tidbit_option()
+	
+	##
+	
+	_update_tidbit_option_in_main_page_visibility()
 
-func _update_is_obscured_state_of__enemy_option():
+func _update_state_of__enemy_option():
 	for item_entry_data in _all_enemy_item_entry_data_options:
 		item_entry_data.is_obscured = !StatsManager.if_enemy_killed_by_damage_count_is_at_least_x(item_entry_data.get_x_type_info().get_id__for_almanac_use(), enemy_count_min_for_unobscure)
+		item_entry_data.is_hidden = item_entry_data.calculate_is_hidden__from_source_only()
 
-func _update_is_obscured_state_of__tower_option():
+func _update_state_of__tower_option():
 	for item_entry_data in _all_tower_item_entry_data_options:
 		item_entry_data.is_obscured = !StatsManager.if_tower_played_count_per_round_is_at_least_x(item_entry_data.get_x_type_info().get_id__for_almanac_use(), tower_count_min_for_unobscure)
+		item_entry_data.is_hidden = item_entry_data.calculate_is_hidden__from_source_only()
 
-func _update_is_obscured_state_of__synergy_option():
+func _update_state_of__synergy_option():
 	for item_entry_data in _all_synergy_item_entry_data_options:
 		item_entry_data.is_obscured = !StatsManager.if_synergy_id_has_at_least_x_play_count(item_entry_data.get_x_type_info().get_id__for_almanac_use(), syn_count_min_for_unobscure)
+		item_entry_data.is_hidden = item_entry_data.calculate_is_hidden__from_source_only()
 
+func _update_state_of__tidbit_option():
+	for item_entry_data in _all_tidbit_item_entry_data_options:
+		item_entry_data.is_obscured = !StatsManager.if_tidbit_id_has_at_least_x_val(item_entry_data.get_x_type_info().get_id__for_almanac_use(), tidbit_val_min_for_unobscure)
+		item_entry_data.is_hidden = item_entry_data.calculate_is_hidden__from_source_only()
 
 
 ## Shared stuffs ## 
@@ -583,16 +625,37 @@ func _construct_main_page():
 	synergy_option.connect("button_associated_pressed", self, "_on_option_pressed__go_to_page_id_to_go_to", [synergy_option], CONNECT_PERSIST)
 	
 	
+	tidbit_option__in_main_page = Almanac_ItemListEntry_Data.new()
+	tidbit_option__in_main_page.border_texture__normal = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/MainMenu/Line_TidbitOptionPage_6x6_Normal.png")
+	tidbit_option__in_main_page.border_texture__highlighted = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/MainMenu/Line_TidbitOptionPage_6x6_Highlighted.png")
+	tidbit_option__in_main_page.add_texture_to_texture_list(preload("res://GeneralGUIRelated/AlmanacGUI/Assets/MainMenu/TidbitOption_MainMenu_Icon_40x40.png"))
+	tidbit_option__in_main_page.set_x_type_info_classification(Almanac_ItemListEntry_Data.TypeInfoClassification.PAGE)
+	tidbit_option__in_main_page.footer_text = "Tidbits"
+	tidbit_option__in_main_page.page_id_to_go_to = PageIds.TIDBIT_PAGE
+	tidbit_option__in_main_page.connect("button_associated_pressed", self, "_on_option_pressed__go_to_page_id_to_go_to", [tidbit_option__in_main_page], CONNECT_PERSIST)
+	
+	if StatsManager.is_stats_loaded:
+		_update_tidbit_option_in_main_page_visibility()
+	else:
+		if !StatsManager.is_connected("stats_loaded", self, "_on_stats_manager_stats_loaded__for_pages_not_options"):
+			StatsManager.connect("stats_loaded", self, "_on_stats_manager_stats_loaded__for_pages_not_options", [], CONNECT_ONESHOT)
+	
+	
 	#
 	main_page = Almanac_ItemListPage_Data.new()
 	main_page.add_almanac_item_list_entry_data_to_category(tower_option, any_page_category_empty)
 	main_page.add_almanac_item_list_entry_data_to_category(enemy_option, any_page_category_empty)
 	main_page.add_almanac_item_list_entry_data_to_category(synergy_option, any_page_category_empty)
+	main_page.add_almanac_item_list_entry_data_to_category(tidbit_option__in_main_page, any_page_category_empty)
 	main_page.page_id_to_return_to = PageIds.EXIT_ALMANAC
 	main_page.connect("requested_return_to_assigned_page_id", self, "_on_page__requested_return_to_assigned_page_id", [], CONNECT_PERSIST)
 	
 	page_id_to_page_data[PageIds.MAIN_PAGE] = main_page
-	
+
+func _update_tidbit_option_in_main_page_visibility():
+	tidbit_option__in_main_page.is_hidden = !StatsManager.if_tidbit_map_has_at_least_one_tidbit_with_non_zero_val()
+
+
 
 #### ENEMY FACTION PAGE ########
 
@@ -721,7 +784,7 @@ func _construct_enemy_faction_skirmisher_page():
 	var skirm_blue_page_category = Almanac_Category_Data.new()
 	skirm_blue_page_category.border_texture = CategoryBorder_Default
 	skirm_blue_page_category.cat_type_id = CategoryIds.ENEMY_SKIRM_BLUE
-	skirm_blue_page_category.cat_text = "Blue Side"
+	skirm_blue_page_category.cat_text = "Blue Sided"
 	skirm_blue_page_category.cat_description = [
 		"Blue Skirmishers appear and traverse in the standard path normally."
 	]
@@ -729,7 +792,7 @@ func _construct_enemy_faction_skirmisher_page():
 	var skirm_red_page_category = Almanac_Category_Data.new()
 	skirm_red_page_category.border_texture = CategoryBorder_Default
 	skirm_red_page_category.cat_type_id = CategoryIds.ENEMY_SKIRM_RED
-	skirm_red_page_category.cat_text = "Red Side"
+	skirm_red_page_category.cat_text = "Red Sided"
 	skirm_red_page_category.cat_description = [
 		"Red Skirmishers appear and traverse in the standard path but reversed (Enters at Blue side exit, exits at Blue side entrance)."
 	]
@@ -737,7 +800,7 @@ func _construct_enemy_faction_skirmisher_page():
 	var skirm_both_page_category = Almanac_Category_Data.new()
 	skirm_both_page_category.border_texture = CategoryBorder_Default
 	skirm_both_page_category.cat_type_id = CategoryIds.ENEMY_SKIRM_BOTH
-	skirm_both_page_category.cat_text = "Both Side"
+	skirm_both_page_category.cat_text = "Dual Sided"
 	skirm_both_page_category.cat_description = [
 		"These Skirmishers can appear as Blue and Red."
 	]
@@ -785,7 +848,11 @@ func _construct_and_add_enemy_option_for_enemy(arg_enemy_id, arg_page_to_add_to,
 
 
 func _on_stats_manager_stats_loaded():
-	update_is_obscured_state_of__all_options()
+	update_state_of__all_options()
+
+func _on_stats_manager_stats_loaded__for_pages_not_options():
+	_update_tidbit_option_in_main_page_visibility()
+
 
 ######
 
@@ -903,7 +970,7 @@ func _construct_synergy_option__with_category(arg_syn, arg_category_to_use, arg_
 	syn_option.border_texture__normal = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/SynergyPage_RightSide/Line_SynergyOptionBorder_6x6_Normal.png")
 	syn_option.border_texture__highlighted = preload("res://GeneralGUIRelated/AlmanacGUI/Assets/SynergyPage_RightSide/Line_SynergyOptionBorder_6x6_Highlighted.png")
 	syn_option.set_x_type_info(arg_syn, Almanac_ItemListEntry_Data.TypeInfoClassification.SYNERGY)
-	syn_option.connect("button_associated_pressed", self, "_on_option_pressed__display_tower_info", [syn_option], CONNECT_PERSIST)
+	syn_option.connect("button_associated_pressed", self, "_on_option_pressed__display_syn_info", [syn_option], CONNECT_PERSIST)
 	
 	if StatsManager.is_stats_loaded:
 		syn_option.is_obscured = !StatsManager.if_synergy_id_has_at_least_x_play_count(arg_syn.get_id__for_almanac_use(), syn_count_min_for_unobscure)
@@ -921,4 +988,46 @@ func _on_option_pressed__display_syn_info(button, type_info, arg_option):
 		almanac_page_gui.configure_almanac_x_type_info_panel(arg_option, tower_multi_stats_data, arg_option.get_x_type_info(), button)
 	
 
+##########
+
+func _construct_tidbit_page():
+	tidbit_page = Almanac_ItemListPage_Data.new()
+	tidbit_page.page_id_to_return_to = PageIds.MAIN_PAGE
+	tidbit_page.connect("requested_return_to_assigned_page_id", self, "_on_page__requested_return_to_assigned_page_id", [], CONNECT_PERSIST)
+	
+	page_id_to_page_data[PageIds.TIDBIT_PAGE] = tidbit_page
+	
+	#########
+	
+	for id in StoreOfTextTidbit.TidbitId.values():
+		var tidbit = StoreOfTextTidbit.tidbit_id_to_info_singleton_map[id]
+		
+		_construct_option_for_tidbit(tidbit, any_page_category_empty, tidbit_page)
+
+
+
+func _construct_option_for_tidbit(arg_tidbit, arg_category_to_use, arg_page_to_add_to):
+	var tidbit_option = Almanac_ItemListEntry_Data.new()
+	tidbit_option.border_texture__normal = tidbit_tier_to_border_texture_map__normal[arg_tidbit.tidbit_tier] #preload("res://GeneralGUIRelated/AlmanacGUI/Assets/SynergyPage_RightSide/Line_SynergyOptionBorder_6x6_Normal.png")
+	tidbit_option.border_texture__highlighted = tidbit_tier_to_border_texture_map__highlight[arg_tidbit.tidbit_tier]
+	tidbit_option.set_x_type_info(arg_tidbit, Almanac_ItemListEntry_Data.TypeInfoClassification.TEXT_TIDBIT)
+	tidbit_option.connect("button_associated_pressed", self, "_on_option_pressed__display_tidbit_info", [tidbit_option], CONNECT_PERSIST)
+	
+	if StatsManager.is_stats_loaded:
+		_update_tidbit_option_status(tidbit_option, arg_tidbit)
+	else:
+		if !StatsManager.is_connected("stats_loaded", self, "_on_stats_manager_stats_loaded"):
+			StatsManager.connect("stats_loaded", self, "_on_stats_manager_stats_loaded", [], CONNECT_ONESHOT)
+	
+	_all_tidbit_item_entry_data_options.append(tidbit_option)
+	
+	arg_page_to_add_to.add_almanac_item_list_entry_data_to_category(tidbit_option, arg_category_to_use)
+
+func _update_tidbit_option_status(tidbit_option, arg_tidbit):
+	tidbit_option.is_obscured = !StatsManager.if_tidbit_id_has_at_least_x_val(arg_tidbit.get_id__for_almanac_use(), tidbit_val_min_for_unobscure)
+
+func _on_option_pressed__display_tidbit_info(button, type_info, arg_option):
+	if !arg_option.is_obscured:
+		almanac_page_gui.configure_almanac_x_type_info_panel(arg_option, tower_multi_stats_data, arg_option.get_x_type_info(), button)
+	
 

@@ -408,6 +408,13 @@ func _tower_added_attack_module(module):
 func _tower_removed_attack_module(module):
 	_attempt_set_attack_module_to_commandable_by_tower(module)
 
+#
+
+func _shallow_duplicate():
+	var copy = get_script().new()
+	_configure_copy_to_match_self(copy)
+	
+	return copy
 
 #
 

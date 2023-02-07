@@ -65,7 +65,7 @@ func update_display():
 		for desc in GameSettingsManager.get_descriptions_to_use_based_on_color_synergy(synergy, game_settings_manager):
 			final_descs.append(desc)
 		
-		for desc in _construct_tooltips_descs_for_curr_effects(synergy, tooltip_body, result):
+		for desc in construct_tooltips_descs_for_curr_effects(synergy, tooltip_body, false):
 			final_descs.append(desc)
 		
 		tooltip_body.descriptions = final_descs
@@ -133,7 +133,8 @@ func _convert_number_to_roman_numeral(number : int) -> String:
 	return return_val
 
 
-static func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy, tooltip_body, result) -> Array:
+# ALSO USED by almanac manager in displaying syn effects.
+static func construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy, tooltip_body, always_use_highlighted_modulate : bool) -> Array:
 	var descs : Array = []
 	
 	for desc_i in synergy.synergy_effects_descriptions.size():
@@ -153,10 +154,10 @@ static func _construct_tooltips_descs_for_curr_effects(synergy : ColorSynergy, t
 		
 		#text_desc.indicator = _convert_number_to_roman_numeral(desc_i + 1) + ")"
 		#text_desc.indicator = str(result.synergy.number_of_towers_in_tier[desc_i]) + ")"
-		text_desc.indicator = str(result.synergy.number_of_towers_in_tier[(result.synergy.number_of_towers_in_tier.size() - 1) - desc_i]) + ")"
+		text_desc.indicator = str(synergy.number_of_towers_in_tier[(synergy.number_of_towers_in_tier.size() - 1) - desc_i]) + ")"
 		
 		text_desc.color = text_color
-		if synergy.current_highlighted_index_effects_descriptions.has(desc_i):
+		if synergy.current_highlighted_index_effects_descriptions.has(desc_i) or always_use_highlighted_modulate:
 			text_desc.modulate = highlighted_modulate
 			
 			var highlighted_texturerect = TextureRect.new()

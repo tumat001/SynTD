@@ -104,8 +104,9 @@ func _construct_burst_module():
 
 
 func _make_modifications_to_tower(tower):
-	_construct_burst_module()
-	tower.add_attack_module(burst_attack_module)
+	if !is_instance_valid(burst_attack_module):
+		_construct_burst_module()
+		tower.add_attack_module(burst_attack_module)
 	
 	for module in tower.all_attack_modules:
 		if module.module_id == StoreOfAttackModuleID.MAIN:
@@ -174,6 +175,14 @@ func _on_tower_attack_module_removed(module):
 	if module.module_id == StoreOfAttackModuleID.MAIN:
 		if module.is_connected("on_enemy_hit", self, "_bullet_burst"):
 			module.disconnect("on_enemy_hit", self, "_bullet_burst")
+
+#
+
+func _shallow_duplicate():
+	var copy = get_script().new()
+	_configure_copy_to_match_self(copy)
+	
+	return copy
 
 #
 

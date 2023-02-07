@@ -50,6 +50,7 @@ func _ready():
 func set_almanac_item_list_entry_data(arg_data):
 	if almanac_item_list_entry_data != null:
 		almanac_item_list_entry_data.disconnect("is_obscured_changed", self, "_on_data_is_obscured_changed")
+		almanac_item_list_entry_data.disconnect("is_hidden_changed", self, "_on_data_is_hidden_changed")
 	
 	almanac_item_list_entry_data = arg_data
 	
@@ -67,9 +68,11 @@ func set_almanac_item_list_entry_data(arg_data):
 		for border in _all_inner_borders:
 			border.modulate = border_modulate
 		
+		visible = !almanac_item_list_entry_data.is_hidden
+		
 		#
 		almanac_item_list_entry_data.connect("is_obscured_changed", self, "_on_data_is_obscured_changed")
-
+		almanac_item_list_entry_data.connect("is_hidden_changed", self, "_on_data_is_hidden_changed")
 
 func _on_data_is_obscured_changed(_arg_data : Almanac_ItemListEntry_Data):
 	icon_texture_rect.modulate = almanac_item_list_entry_data.get_modulate_to_use_based_on_properties()
@@ -77,6 +80,10 @@ func _on_data_is_obscured_changed(_arg_data : Almanac_ItemListEntry_Data):
 	var border_modulate = almanac_item_list_entry_data.get_border_modulate_to_use_based_on_properties()
 	for border in _all_inner_borders:
 		border.modulate = border_modulate
+
+func _on_data_is_hidden_changed(_arg_data : Almanac_ItemListEntry_Data):
+	visible = !almanac_item_list_entry_data.is_hidden
+
 
 #
 

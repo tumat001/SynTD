@@ -19,7 +19,7 @@ var bonus_damage_new_scale : float = 1.20
 var bonus_damage_new_scale_against_normal_typed : float = 1.30
 
 
-func _init().(StoreOfTowerEffectsUUID.ING_SPIKE):
+func _init().(StoreOfTowerEffectsUUID.ING_IMPALE):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Impale.png")
 	
 	_update_description()
@@ -74,6 +74,13 @@ func _undo_modifications_to_tower(tower):
 		tower.disconnect("on_any_attack_module_enemy_hit", self, "_on_enemy_hit_s")
 
 #
+
+func _shallow_duplicate():
+	var copy = get_script().new()
+	_configure_copy_to_match_self(copy)
+	
+	return copy
+
 
 # SCALING related. Used by YelVio only.
 func add_additive_scaling_by_amount(arg_amount):

@@ -13,7 +13,9 @@ func _undo_modifications_to_tower(tower):
 
 
 func _shallow_duplicate():
-	var copy = get_script().new(effect_uuid)
+	#var copy = get_script().new(effect_uuid)
+	
+	var copy = get_script().new()
 	_configure_copy_to_match_self(copy)
 	
 	return copy

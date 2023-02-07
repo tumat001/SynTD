@@ -1,7 +1,9 @@
 extends Node
 
 signal enemy_id_killed_by_dmg_count_changed(arg_enemy_id, arg_count)
-signal enemy_id_escaped_count_chaned(arg_enemy_id, arg_count)
+signal enemy_id_escaped_count_changed(arg_enemy_id, arg_count)
+signal tidbit_id_val_changed(arg_tidbit_id, arg_val)
+
 
 signal stats_loaded()
 
@@ -12,12 +14,19 @@ const stat_name__enemy_id__escape_count := "stat_name__enemy_id__escape_count"
 const stat_name__tower_id__play_per_round_count := "stat_name__tower_id__play_per_round_count"
 const stat_name__synergy_id_and_tier__play_per_round_count := "stat_name__synergy_id_and_tier__play_per_round_count"
 
+const stat_name__text_tidbit_id__value := "stat_name__text_tidbit_id__value"
+
 
 var enemy_id_to_killed_by_dmg_count_map : Dictionary
 var enemy_id_to_escape_count_map : Dictionary
 
 var tower_id_to_play_per_round_count_map : Dictionary
 var synergy_compo_id_tier_to_play_per_round_count : Dictionary
+
+var text_tidbit_id_to_int_val_map : Dictionary
+
+
+#
 
 var is_stats_loaded : bool
 
@@ -47,12 +56,14 @@ func _ready():
 
 func _get_save_dict_for_stats():
 	var save_dict = {
-		stat_name__enemy_id__killed_by_dmg_count : enemy_id_to_killed_by_dmg_count_map.duplicate(true),
-		stat_name__enemy_id__escape_count : enemy_id_to_escape_count_map.duplicate(true),
+		stat_name__enemy_id__killed_by_dmg_count : enemy_id_to_killed_by_dmg_count_map,
+		stat_name__enemy_id__escape_count : enemy_id_to_escape_count_map,
 		
-		stat_name__tower_id__play_per_round_count : tower_id_to_play_per_round_count_map.duplicate(true),
+		stat_name__tower_id__play_per_round_count : tower_id_to_play_per_round_count_map,
 		
-		stat_name__synergy_id_and_tier__play_per_round_count : synergy_compo_id_tier_to_play_per_round_count.duplicate(true)
+		stat_name__synergy_id_and_tier__play_per_round_count : synergy_compo_id_tier_to_play_per_round_count,
+		
+		stat_name__text_tidbit_id__value : text_tidbit_id_to_int_val_map,
 	}
 	
 	return save_dict
@@ -71,7 +82,8 @@ func _initialize_stats_with_save_dict(arg_save_dict : Dictionary):
 	
 	_initialize_tower_id_to_play_per_round_count_map(arg_save_dict)
 	_initialize_synergy_id_and_tier_to_play_per_round_count_map(arg_save_dict)
-
+	_initialize_tidbit_id_to_int_value_map(arg_save_dict)
+	
 
 # called by GameSaveManager
 func _initialize_stats_from_scratch():
@@ -121,6 +133,14 @@ func _initialize_synergy_id_and_tier_to_play_per_round_count_map(arg_save_dict :
 	
 	_fill_in_missing_syn_compo_id_in_map_with_default_val(synergy_compo_id_tier_to_play_per_round_count, 0)
 
+func _initialize_tidbit_id_to_int_value_map(arg_save_dict : Dictionary):
+	if arg_save_dict.has(stat_name__text_tidbit_id__value):
+		text_tidbit_id_to_int_val_map = _convert_dict_to_types__to_int_key_and_int_val(arg_save_dict[stat_name__text_tidbit_id__value])
+		
+	else:
+		text_tidbit_id_to_int_val_map = {}
+	
+	_fill_in_missing_tidbit_id_in_map_with_default_val(text_tidbit_id_to_int_val_map, 0)
 
 # initialize save dict helpers
 
@@ -169,7 +189,12 @@ func _fill_in_missing_syn_compo_id_in_map_with_default_val(arg_specific_save_dic
 	for id_tier_compo in TowerCompositionColors.all_syn_id_tier_compos:
 		if !arg_specific_save_dict.has(id_tier_compo):
 			arg_specific_save_dict[id_tier_compo] = arg_default_val
-	
+
+func _fill_in_missing_tidbit_id_in_map_with_default_val(arg_specific_save_dict : Dictionary, arg_default_val):
+	for id in StoreOfTextTidbit.TidbitId.values():
+		if !arg_specific_save_dict.has(id):
+			arg_specific_save_dict[id] = arg_default_val
+
 
 ##############
 
@@ -205,7 +230,7 @@ func _on_enemy_killed_by_damage_and_no_more_revives(arg_dmg_instance_report, arg
 func _on_enemy_escaped(arg_enemy):
 	enemy_id_to_escape_count_map[arg_enemy.enemy_id] += 1
 	
-	emit_signal("enemy_id_escaped_count_chaned", arg_enemy.enemy_id, enemy_id_to_escape_count_map[arg_enemy.enemy_id])
+	emit_signal("enemy_id_escaped_count_changed", arg_enemy.enemy_id, enemy_id_to_escape_count_map[arg_enemy.enemy_id])
 
 
 func if_enemy_killed_by_damage_count_is_at_least_x(arg_enemy_id, arg_count):
@@ -281,7 +306,8 @@ func _on_round_started__for_syn_purposes(arg_stageround):
 
 func _on_round_ended__for_syn_purposes(arg_stageround):
 	for id_tier_compo in _current_syn_compo_id_tier_at_round_start:
-		synergy_compo_id_tier_to_play_per_round_count[id_tier_compo] += 1
+		if synergy_compo_id_tier_to_play_per_round_count.has(id_tier_compo):
+			synergy_compo_id_tier_to_play_per_round_count[id_tier_compo] += 1
 	
 	_current_syn_compo_id_tier_at_round_start.clear()
 
@@ -294,7 +320,8 @@ func _on_synergies_updated():
 	if stage_round_manager.round_started:
 		for syn_res in synergy_manager.active_synergies_res:
 			_add_syn_id_to_current_syn_ids_if_none(syn_res.synergy.current_synergy_tier_id)
-
+	
+	_updated_synergies__for_orange_12_purposes()
 
 
 func if_synergy_id_has_at_least_x_play_count(arg_syn_id, arg_count):
@@ -312,6 +339,32 @@ func if_synergy_id_has_at_least_x_play_count(arg_syn_id, arg_count):
 	return false
 
 #######
+
+func set_val_of_tidbit_val_map(arg_tidbit_id, arg_val):
+	text_tidbit_id_to_int_val_map[arg_tidbit_id] = arg_val
+	
+	emit_signal("tidbit_id_val_changed", arg_tidbit_id, arg_val)
+
+
+func if_tidbit_map_has_at_least_one_tidbit_with_non_zero_val():
+	for id in text_tidbit_id_to_int_val_map:
+		if text_tidbit_id_to_int_val_map[id] != 0:
+			return true
+	
+	return false
+
+func if_tidbit_id_has_at_least_x_val(arg_tidbit_id, arg_min_val):
+	return text_tidbit_id_to_int_val_map[arg_tidbit_id] >= arg_min_val
+
+
+## TIDBIT SPECIFIC CONDITIONS related
+
+func _updated_synergies__for_orange_12_purposes():
+	if text_tidbit_id_to_int_val_map[StoreOfTextTidbit.TidbitId.ORANGE_12] == 0:
+		if synergy_manager.is_color_synergy_id_active__with_tier_being_equal_to(TowerDominantColors.SynergyId.ORANGE, 1):
+			set_val_of_tidbit_val_map(StoreOfTextTidbit.TidbitId.ORANGE_12, 1)
+	
+
 
 
 

@@ -48,12 +48,6 @@ func _init(arg_tower_name : String, arg_tower_type_id : int):
 
 ###
 
-func has_simple_description() -> bool:
-	return tower_simple_descriptions != null and tower_simple_descriptions.size() != 0
-
-
-###
-
 func set_base_tower_image(arg_image):
 	base_tower_image = arg_image
 	
@@ -98,6 +92,10 @@ static func _get_default_region_size_for_atlas(tower_sprite) -> Vector2:
 
 #
 
+func has_simple_description() -> bool:
+	return tower_simple_descriptions != null and tower_simple_descriptions.size() != 0
+
+
 func get_description__for_almanac_use():
 	return tower_descriptions
 
@@ -107,7 +105,7 @@ func get_simple_description__for_almanac_use():
 
 func get_atlased_image_as_list__for_almanac_use():
 	if tower_atlased_images_list.size() == 0:
-		return [tower_atlased_image]
+		return [tower_image_in_buy_card]
 	else:
 		return tower_atlased_images_list
 		#return tower_image_in_buy_card

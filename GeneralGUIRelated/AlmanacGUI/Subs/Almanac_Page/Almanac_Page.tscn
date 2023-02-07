@@ -111,8 +111,8 @@ rect_min_size = Vector2( 300, 440 )
 theme = SubResource( 6 )
 
 [node name="Almanac_XTypeInfoPanel" parent="MarginContainer/HBoxContainer/RightSideContainer/HBoxContainer/VBoxContainer/ScrlContainerForSideData" instance=ExtResource( 5 )]
-margin_right = 300.0
-margin_bottom = 440.0
+margin_right = 134.0
+margin_bottom = 451.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 

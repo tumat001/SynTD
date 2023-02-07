@@ -250,6 +250,8 @@ enum ContributingToSynergyClauses {
 	IN_QUEUE_FREE = 2,
 	GENERIC_DOES_NOT_CONTRIBUTE = 3,
 	
+	BOUNDED_CLONE = 10,
+	
 	DOM_SYN__RED__DOMINANCE_SUPPLEMENT = 1000,
 	DOM_SYN__RED__COMPLEMENTARY_SUPPLEMENT = 1001,
 }
@@ -369,6 +371,7 @@ enum CanBeSoldClauses {
 	IS_NOT_SELLABLE_GENERIC_TAG = 0, # used for anything that does not need to be checked for.
 	
 	DOM_SYN_RED__PACT_HOLOGRAPHIC_TOWERS = 1,
+	VIO_TOWER__BOUNDED_CLONE = 2,
 	
 	END_OF_GAME = 100,
 	
@@ -444,6 +447,7 @@ var all_combinations_id_to_effect_id_map : Dictionary = {}
 
 enum TowerModulateIds {
 	TOWER_DETECTING_RANGE_MODULE = 10
+	BOUNDED_CLONE = 11
 	
 	PROPEL_INVIS = 100
 }
@@ -2058,7 +2062,7 @@ func _remove_all_timebound_and_countbound_and_roundbound_effects():
 
 # Ingredient Related
 
-func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_base_cost : int):
+func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_base_cost : int, show_ing_particle_effects : bool = true):
 	if ingredient_effect != null:
 		if ingredient_effect.tower_base_effect._can_be_scaled_by_yel_vio:
 			ingredient_effect.tower_base_effect._consume_current_additive_scaling_for_actual_scaling_in_stats()
@@ -2072,7 +2076,9 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 		
 		emit_signal("on_ingredient_absorbed", ingredient_effect)
 		#_display_absorbed_ingredient_effects(Towers.get_tower_tier_from_tower_id(ingredient_effect.tower_id))
-		tower_manager.display_absorbed_ingredient_effects(Towers.get_tower_tier_from_tower_id(ingredient_effect.tower_id), global_position)
+		
+		if show_ing_particle_effects:
+			tower_manager.display_absorbed_ingredient_effects(Towers.get_tower_tier_from_tower_id(ingredient_effect.tower_id), global_position)
 
 
 
@@ -3072,6 +3078,9 @@ func sell_tower():
 		call_deferred("emit_signal", "tower_being_sold", last_calculated_sellback_value)
 		queue_free()
 
+func force_sell_tower():
+	call_deferred("emit_signal", "tower_being_sold", last_calculated_sellback_value)
+	queue_free()
 
 
 func set_base_gold_cost(arg_val):

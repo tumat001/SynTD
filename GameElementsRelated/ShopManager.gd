@@ -61,6 +61,9 @@ const blacklisted_towers_to_inventory : Array = [
 	#temporarily. enable it where it is fitting.
 	Towers.HERO,
 	
+	# violet towers # todo add all violet towers soon
+	Towers.BOUNDED,
+	
 	#red towers
 	Towers.OUTREACH, #6
 	Towers.SOPHIST, #5
@@ -106,6 +109,9 @@ const towers_not_initially_in_inventory : Array = [
 	
 	#temporarily.
 	Towers.HERO,
+	
+	# violet towers # todo add all violet towers soon
+	Towers.BOUNDED,
 	
 	# red towers
 	Towers.OUTREACH, #6

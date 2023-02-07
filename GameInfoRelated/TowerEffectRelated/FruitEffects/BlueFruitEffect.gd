@@ -131,4 +131,10 @@ func _undo_modifications_to_tower(tower):
 		explosion_attack_module.queue_free()
 		tower.disconnect("on_main_attack_module_enemy_hit", self, "_on_tower_main_attack_module_enemy_hit")
 
+#####
 
+func _shallow_duplicate():
+	var copy = get_script().new()
+	_configure_copy_to_match_self(copy)
+	
+	return copy

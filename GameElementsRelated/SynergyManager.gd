@@ -438,6 +438,12 @@ func is_color_synergy_name_active__with_tier_being_equal_to(arg_syn_name : Strin
 	
 	return false
 
+func is_color_synergy_id_active__with_tier_being_equal_to(arg_syn_id : int, arg_tier : int):
+	for res in active_synergies_res:
+		if res.synergy.synergy_id == arg_syn_id and res.synergy_tier == arg_tier:
+			return true
+	
+	return false
 
 #############
 
