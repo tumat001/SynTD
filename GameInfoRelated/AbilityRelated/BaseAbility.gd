@@ -191,6 +191,9 @@ func start_time_cooldown(arg_cooldown : float, ignore_self_cd : bool = false):
 
 
 func _get_cd_to_use(cd_of_source : float) -> float:
+	if cd_of_source == ON_ABILITY_CAST_NO_COOLDOWN:
+		return ON_ABILITY_CAST_NO_COOLDOWN
+	
 	var final_cd : float = cd_of_source
 	
 	final_cd *= (100 - last_calculated_final_percent_ability_cdr) / 100

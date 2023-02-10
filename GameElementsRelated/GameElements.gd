@@ -455,17 +455,17 @@ func _on_BuySellLevelRollPanel_reroll():
 			Towers.BOUNDED,
 			Towers.PING,
 			Towers.ADEPT,
-			Towers.FRUIT_TREE_FRUIT,
-			Towers.LAVA_JET,
+			Towers.OUTREACH,
+			Towers.CELESTIAL,
 			Towers.SEEDER,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.PESTILENCE,
-			Towers.CHARGE,
-			Towers.NUCLEUS,
-			Towers.IOTA,
-			Towers.PING,
+			Towers.ACCUMULAE,
+			Towers.WAVE,
+			Towers.BIOMORPH,
+			Towers.TESLA,
 			Towers.SPIKE
 		])
 	even = !even

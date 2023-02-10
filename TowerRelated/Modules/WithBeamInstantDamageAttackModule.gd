@@ -60,7 +60,10 @@ func force_update_beam_state():
 				else:
 					beam.visible = false
 
-
+func hide_all_beams():  # should only be used if for sure you have no more enemies to target left (ex: disabling can be commanded clause)
+	for beam in beam_to_enemy_map:
+		beam.visible = false
+		beam_to_enemy_map[beam] = null
 
 # Showing beam at windup or not
 

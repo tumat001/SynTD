@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Crowned_TowerBase_Omni_NoHealth.png-6680bcacb2e08a2679205908d0f92ea9.stex"
+path="res://.import/Biomorph_NormalProj_Unboosted.png-2dc9fdbdc6bc6ac40ac6144986d1d458.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TowerRelated/Color_Violet/Crowned/Crowned_TowerBase_Omni_NoHealth.png"
-dest_files=[ "res://.import/Crowned_TowerBase_Omni_NoHealth.png-6680bcacb2e08a2679205908d0f92ea9.stex" ]
+source_file="res://TowerRelated/Color_Violet/BioMorph/Assets/Biomorph_NormalProj_Unboosted.png"
+dest_files=[ "res://.import/Biomorph_NormalProj_Unboosted.png-2dc9fdbdc6bc6ac40ac6144986d1d458.stex" ]
 
 [params]
 

@@ -63,6 +63,8 @@ const blacklisted_towers_to_inventory : Array = [
 	
 	# violet towers # todo add all violet towers soon
 	Towers.BOUNDED,
+	Towers.CELESTIAL,
+	Towers.BIOMORPH,
 	
 	#red towers
 	Towers.OUTREACH, #6
@@ -112,6 +114,8 @@ const towers_not_initially_in_inventory : Array = [
 	
 	# violet towers # todo add all violet towers soon
 	Towers.BOUNDED,
+	Towers.CELESTIAL,
+	Towers.BIOMORPH,
 	
 	# red towers
 	Towers.OUTREACH, #6

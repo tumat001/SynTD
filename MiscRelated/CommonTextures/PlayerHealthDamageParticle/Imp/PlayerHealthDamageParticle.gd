@@ -60,6 +60,8 @@ var _target_total_angle_turn_amount : float
 var _dmg_amount : float
 var dmg_source_id : int
 
+var cause_damage_at_destination_reach : bool
+
 #
 
 func _ready():

@@ -15,6 +15,8 @@ const Scatter_Fragment04 = preload("res://TowerRelated/Color_Orange/Scatter/Scat
 
 var scatter_attack_module : BulletAttackModule
 
+var rng : RandomNumberGenerator
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.SCATTER)
@@ -66,12 +68,16 @@ func _ready():
 	
 	add_attack_module(attack_module)
 	
+	#
+	
+	rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
+	
+	#
 	
 	_post_inherit_ready()
 
 
 func _modify_bullet(bullet : BaseBullet):
-	var rng := StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
 	var rand_num = rng.randi_range(1, 4)
 	
 	if rand_num == 1:

@@ -485,6 +485,7 @@ var all_tower_abiltiies : Array
 # tracker
 
 var old_global_position : Vector2
+var _first_time_recording_global_position : bool = true
 
 var info_bar_layer_base_position : Vector2
 
@@ -3266,9 +3267,10 @@ func queue_free():
 
 
 func _physics_process(delta):
-	if global_position != old_global_position:
+	if global_position != old_global_position and !_first_time_recording_global_position:
 		emit_signal("global_position_changed", old_global_position, global_position)
 	
+	_first_time_recording_global_position = false
 	old_global_position = global_position
 	
 	_phy_knock_up_process(delta)

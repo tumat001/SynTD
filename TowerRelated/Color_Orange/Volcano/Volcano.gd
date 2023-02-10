@@ -41,7 +41,6 @@ var explosion_attack_module : AOEAttackModule
 var crater_attack_module : AOEAttackModule
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.VOLCANO)
 	

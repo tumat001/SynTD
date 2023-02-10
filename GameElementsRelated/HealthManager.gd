@@ -172,6 +172,8 @@ func _configure_center_based_particle_angle_based_on_map_pos(arg_particle : Cent
 func create_player_health_damage_particle(arg_source_pos : Vector2, arg_dmg_amount : float, arg_decrease_source : int):
 	var particle : PlayerHealthDamageParticle = player_health_dmg_particle_pool_component.get_or_create_attack_sprite_from_pool()
 	
+	particle.cause_damage_at_destination_reach = true
+	
 	particle.global_position = arg_source_pos
 	particle.center_pos_of_basis = arg_source_pos
 	particle.secondary_center = _player_health_dmg_particle_destination_pos
@@ -199,11 +201,14 @@ func set_any_particle_random_modulate(particle):
 #
 
 func _on_player_health_dmg_particle_reached_final_destination(arg_particle):
-	decrease_health_by(arg_particle.get_dmg_amount(), arg_particle.dmg_source_id)
+	if arg_particle.cause_damage_at_destination_reach:
+		decrease_health_by(arg_particle.get_dmg_amount(), arg_particle.dmg_source_id)
+	
 	_dec_player_health_dmg_particles_in_flight()
 	
-	#create_player_heart_hit_particles(arg_particle.get_dmg_amount())
-	call_deferred("create_player_heart_hit_particles", arg_particle.get_dmg_amount())
+	if arg_particle.cause_damage_at_destination_reach:
+		#create_player_heart_hit_particles(arg_particle.get_dmg_amount())
+		call_deferred("create_player_heart_hit_particles", arg_particle.get_dmg_amount())
 
 func _inc_player_health_dmg_particles_in_flight():
 	_player_health_dmg_particles_in_flight += 1
@@ -293,4 +298,32 @@ func create_player_heart_hit_particles(arg_dmg_amount : float):
 		particle.modulate.a = 0.6
 	
 
+#####
 
+# to create a "sucking" effect. Used by Biomorph (Vio Tower)
+# immediately damages the player.
+func create_player_health_damage_particle__with_diff_dest_pos(arg_dest_pos : Vector2, arg_dmg_amount : float, arg_decrease_source : int):
+	var particle : PlayerHealthDamageParticle = player_health_dmg_particle_pool_component.get_or_create_attack_sprite_from_pool()
+	
+	particle.cause_damage_at_destination_reach = false
+	
+	particle.global_position = _player_health_dmg_particle_destination_pos
+	particle.center_pos_of_basis = _player_health_dmg_particle_destination_pos
+	particle.secondary_center = arg_dest_pos
+	
+	particle.reset_for_another_use()
+	particle.set_properties_to_use_based_on_dmg_amount(arg_dmg_amount)
+	
+	particle.dmg_source_id = arg_decrease_source
+	
+	particle.visible = true
+	
+	set_any_particle_random_modulate(particle)
+	
+	_inc_player_health_dmg_particles_in_flight()
+	
+	##
+	
+	decrease_health_by(arg_dmg_amount, arg_decrease_source)
+
+################

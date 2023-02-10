@@ -63,6 +63,9 @@ enum STAT_TYPE {
 	PHYSICAL_DAMAGE = 1040
 	ELEMENTAL_DAMAGE = 1041
 	
+	
+	PLAYER_HEALTH = 1050
+	
 	#
 	COLOR_VIOLET = 1100
 	COLOR_BLUE = 1101
@@ -148,6 +151,8 @@ const type_to_for_light_color_map : Dictionary = {
 	STAT_TYPE.PHYSICAL_DAMAGE : "#F72302",
 	STAT_TYPE.ELEMENTAL_DAMAGE : "#A602C0",
 	
+	STAT_TYPE.PLAYER_HEALTH : "#510102",
+	
 	STAT_TYPE.COLOR_VIOLET : "#4F0051",
 	STAT_TYPE.COLOR_BLUE : "#011F74",
 	STAT_TYPE.COLOR_GREEN : "#0B5600",
@@ -219,6 +224,8 @@ const type_to_for_dark_color_map : Dictionary = {
 	STAT_TYPE.PHYSICAL_DAMAGE : "#FEAC7C",
 	STAT_TYPE.ELEMENTAL_DAMAGE : "#FF9DFF",
 	
+	STAT_TYPE.PLAYER_HEALTH : "#FE9092",
+	
 	STAT_TYPE.COLOR_VIOLET : "#F09AFE",
 	STAT_TYPE.COLOR_BLUE : "#9AB4FE",
 	STAT_TYPE.COLOR_GREEN : "#8CFE7C",
@@ -288,6 +295,8 @@ const type_to_name_map : Dictionary = {
 	STAT_TYPE.PHYSICAL_DAMAGE : "physical damage",
 	STAT_TYPE.ELEMENTAL_DAMAGE : "elemental damage",
 	
+	STAT_TYPE.PLAYER_HEALTH : "player health",
+	
 	STAT_TYPE.COLOR_VIOLET : "violet",
 	STAT_TYPE.COLOR_BLUE : "blue",
 	STAT_TYPE.COLOR_GREEN : "green",
@@ -356,6 +365,8 @@ const type_to_img_map : Dictionary = {
 	
 	STAT_TYPE.PHYSICAL_DAMAGE : "res://GameInfoRelated/TowerStatsIcons/StatIcon_DamageType_Physical.png",
 	STAT_TYPE.ELEMENTAL_DAMAGE : "res://GameInfoRelated/TowerStatsIcons/StatIcon_DamageType_Elemental.png",
+	
+	STAT_TYPE.PLAYER_HEALTH : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_PlayerHealth.png",
 	
 	STAT_TYPE.COLOR_VIOLET : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Violet.png",
 	STAT_TYPE.COLOR_BLUE : "res://MiscRelated/TextInterpreterRelated/OtherFragmentIcons/FragmentIcon_Color_Blue.png",

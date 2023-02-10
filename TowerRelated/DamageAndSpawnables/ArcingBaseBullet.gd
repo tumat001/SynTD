@@ -2,6 +2,7 @@ extends "res://TowerRelated/DamageAndSpawnables/BaseBullet.gd"
 
 
 signal on_final_location_reached(arg_final_location, me)
+signal current_life_dist_changed(arg_current_life_dist, arg_ratio)  # ratio from 1 to 0, 0 being done and complete
 
 var original_location : Vector2
 var final_location : Vector2
@@ -71,6 +72,7 @@ func _calculate_scale():
 
 func _move(delta):
 	current_life_distance -= delta
+	emit_signal("current_life_dist_changed", current_life_distance, current_life_distance / speed)
 	
 	if current_life_distance <= 0:
 		if !_reached_final_location:

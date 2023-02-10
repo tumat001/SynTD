@@ -20,6 +20,7 @@ const LeaderTargetingTowerEffect = preload("res://GameInfoRelated/TowerEffectRel
 const TimeMachineEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TimeMachineEffect.gd")
 const Ing_ProminenceEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/Prominence_IngEffect.gd")
 const BleackAttkModAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/BleachExplAttkModuleAdderEffect.gd")
+const BoundedSameTowersTowerEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/BoundedSameTowersTowerEffect.gd")
 
 const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
@@ -137,6 +138,8 @@ const prominence_image = preload("res://TowerRelated/Color_Violet/Prominence/Pro
 const shackled_image = preload("res://TowerRelated/Color_Violet/Shackled/Shackled_Omni_Stage02.png")
 const variance_image = preload("res://TowerRelated/Color_Violet/Variance/Variance_WholeBodyImageForCard.png")
 const bounded_image = preload("res://TowerRelated/Color_Violet/Bounded/Bounded_Omni.png")
+const celestial_image = preload("res://TowerRelated/Color_Violet/Celestial/Celestial_TowerBase_Omni.png")
+const biomorph_image = preload("res://TowerRelated/Color_Violet/BioMorph/Biomorph_Omni.png")
 
 # OTHERS
 const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
@@ -250,6 +253,8 @@ enum {
 	VARIANCE = 707,
 	
 	BOUNDED = 708,
+	CELESTIAL = 709,
+	BIOMORPH = 710,
 	
 	# OTHERS (900)
 	HERO = 900, # WHITE
@@ -306,6 +311,8 @@ const TowerTiersMap : Dictionary = {
 	VACUUM : 2,
 	SOLITAR : 2,
 	BLAST : 2,
+	CELESTIAL : 2,
+	BIOMORPH : 2,
 	
 	#SIMPLE_OBELISK : 3,
 	BEACON_DISH : 3,
@@ -6655,21 +6662,209 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Main attacks on hit trigger Unbound.",
 			["|0|: Unbound. Creates a |1| of itself on the nearest unoccupied tower placable to the target enemy within |2|.", [plain_fragment__ability, plain_fragment__clone, interpreter_for_clone_create_range]],
-			["The clone copies all |0| the creator has on the time of creation. The clone lasts for |1|", [plain_fragment__ingredient_effets, interpreter_for_clone_duration]],
+			["The clone copies all |0| the creator has on the time of creation. The clone lasts for |1|.", [plain_fragment__ingredient_effets, interpreter_for_clone_duration]],
 			"",
 			["Cooldown: |0|. Cooldown starts on clone's end.", [interpreter_for_cooldown]],
 			"",
-			"The clone cannot be sold. The clone acts like a different, separate tower. Benefits from color synergies, but does not contribute to them.",
+			"The clone cannot cast Unbound. The clone acts like a different, separate tower. Benefits from color synergies, but does not contribute to them.",
 			"The clone can absorb ingredient effects, and when it expires, the gold will be refunded under standard selling rules."
 		]
 		
 		info.tower_simple_descriptions = [
 			"Main attacks on hit trigger Unbound.",
 			["|0|: Unbound. Creates a |1| of itself on the nearest tower placable to the target enemy.", [plain_fragment__ability, plain_fragment__clone]],
-			["The clone copies all |0| the creator has. The clone lasts for |1|", [plain_fragment__ingredient_effets, interpreter_for_clone_duration]],
+			["The clone copies all |0| the creator has. The clone lasts for |1|.", [plain_fragment__ingredient_effets, interpreter_for_clone_duration]],
 			"",
-			["Cooldown: |0|. Cooldown starts on clone's end.", [interpreter_for_cooldown]]
+			["Cooldown: |0|. Cooldown starts on clone's end.", [interpreter_for_cooldown]],
+			"",
+			"The clone cannot cast Unbound."
 		]
+		
+		
+		var tower_base_effect := BoundedSameTowersTowerEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_base_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "same tower buff"
+		
+		
+	elif tower_id == CELESTIAL:
+		info = TowerTypeInformation.new("Celestial", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.VIOLET)
+		info.base_tower_image = celestial_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
+		
+		info.base_damage = 0
+		info.base_attk_speed = 0.11
+		info.base_pierce = 1
+		info.base_range = 175
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		
+		var plain_fragment__Ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Ability")
+		var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Asteroid")
+		var plain_fragment__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "ability")
+		
+		
+		var interpreter = TextFragmentInterpreter.new()
+		interpreter.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter.display_body = true
+		
+		var ins = []
+		ins.append(NumericalTextFragment.new(6.0, false, DamageType.PHYSICAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 3, DamageType.PHYSICAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 3))
+		
+		interpreter.array_of_instructions = ins
+		
+		
+		
+		var interpreter_for_dmg_scale_of_meteor_explosion = TextFragmentInterpreter.new()
+		interpreter_for_dmg_scale_of_meteor_explosion.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_dmg_scale_of_meteor_explosion.display_body = false
+		
+		var ins_for_dmg_scale_of_meteor_explosion = []
+		ins_for_dmg_scale_of_meteor_explosion.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 100, true))
+		
+		interpreter_for_dmg_scale_of_meteor_explosion.array_of_instructions = ins_for_dmg_scale_of_meteor_explosion
+		
+		
+		var interpreter_for_dmg_scale_of_large_aoe = TextFragmentInterpreter.new()
+		interpreter_for_dmg_scale_of_large_aoe.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_dmg_scale_of_large_aoe.display_body = false
+		
+		var ins_for_dmg_scale_of_large_aoe = []
+		ins_for_dmg_scale_of_large_aoe.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "of that damage", 75, true))
+		
+		interpreter_for_dmg_scale_of_large_aoe.array_of_instructions = ins_for_dmg_scale_of_large_aoe
+		
+		
+		var interpreter_for_large_aoe_radius = TextFragmentInterpreter.new()
+		interpreter_for_large_aoe_radius.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_large_aoe_radius.display_body = true
+		interpreter_for_large_aoe_radius.header_description = "radius"
+		
+		var ins_for_large_aoe_radius = []
+		ins_for_large_aoe_radius.append(NumericalTextFragment.new(150, false, -1))
+		ins_for_large_aoe_radius.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_large_aoe_radius.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_large_aoe_radius.array_of_instructions = ins_for_large_aoe_radius
+		
+		
+#		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+#		interpreter_for_attk_speed.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_attk_speed.display_body = true
+#		interpreter_for_attk_speed.header_description = "attack speed"
+#
+#		var ins_for_attk_speed = []
+#		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1))
+#
+#		ins_for_attk_speed.append(NumericalTextFragment.new(50, true))
+#		ins_for_attk_speed.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+#		ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+#
+#		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+		
+		
+		info.tower_descriptions = [
+			["Fires meteoroids which explode to deal |0|.", [interpreter]],
+			"Auto casts Asteroid before the fourth meteorioid.",
+			["Ability: |0|. The next meteoroid deals |1|, and is accompanied by another larger explosion that deals |2|. The large explosion has |3|.", [plain_fragment__ability_name, interpreter_for_dmg_scale_of_meteor_explosion, interpreter_for_dmg_scale_of_large_aoe, interpreter_for_large_aoe_radius]],
+			#"",
+			#"Coronal starts off with a Crown.",
+			#["When a Crowned tower casts an |0| or completes 20 main attacks, the Crown Glimmers.", [plain_fragment__ability]],
+			#["Glimmer: For the next 8 seconds, grant |0| to the crowned tower. Afterwards, it transfers to another tower in range, prioritising those with abilities. The Crown returns to Crowned if no valid target are found.", [interpreter_for_attk_speed]],
+			
+		]
+		
+		info.tower_simple_descriptions = [
+			["Fires meteoroids which explode to deal |0|.", [interpreter]],
+			"Auto casts Asteroid before the fourth meteorioid.",
+			["Ability: |0|. The next meteorioid deals |1|, and is accompanied by another larger explosion. The large explosion has |2|", [plain_fragment__ability_name, interpreter_for_dmg_scale_of_meteor_explosion, interpreter_for_large_aoe_radius]],
+			#"",
+			#"Coronal starts off with a Crown.",
+			#["When a Crowned tower casts an |0| or completes 20 main attacks, the Crown Glimmers.", [plain_fragment__ability]],
+			#["Glimmer: For the next 8 seconds, grant |0| to the crowned tower. Afterwards, it transfers to another tower.", [interpreter_for_attk_speed]],
+			
+		]
+		
+		
+	elif tower_id == BIOMORPH:
+		info = TowerTypeInformation.new("BioMorph", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.VIOLET)
+		info.base_tower_image = biomorph_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
+		
+		info.base_damage = 2.5
+		info.base_attk_speed = 0.735
+		info.base_pierce = 1
+		info.base_range = 120
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		var plain_fragment__on_round_start = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_START, "On round start")
+		var plain_fragment__player_health = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PLAYER_HEALTH, "player health")
+		
+		
+		var interpreter_for_flat_on_hit = TextFragmentInterpreter.new()
+		interpreter_for_flat_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_flat_on_hit.display_body = false
+		
+		var ins_for_flat_on_hit = []
+		ins_for_flat_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "on hit damage", 2))
+		
+		interpreter_for_flat_on_hit.array_of_instructions = ins_for_flat_on_hit
+		
+		
+		var plain_fragment__Ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Ability")
+		var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Drain")
+		
+		
+		var interpreter = TextFragmentInterpreter.new()
+		interpreter.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter.display_body = true
+		
+		var outer_ins = []
+		var ins = []
+		ins.append(NumericalTextFragment.new(0.35, false, DamageType.ELEMENTAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.25, DamageType.ELEMENTAL))
+		
+		outer_ins.append(ins)
+		
+		outer_ins.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		outer_ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter.array_of_instructions = outer_ins
+		
+		
+		
+		var ability_desc = [
+			["|0|. Drain 3 |1| to activate a laser that deals |2| every 0.25 seconds. The laser lasts for 30 seconds.", [plain_fragment__ability_name, plain_fragment__player_health, interpreter]]
+		]
+		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION] = ability_desc
+		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_SIMPLE_DESCRIPTION] = ability_desc
+		
+		info.tower_descriptions = [
+			["|0|: Reduces 3 |1| if not lethal. In exchange, Biomorph gains |2|.", [plain_fragment__on_round_start, plain_fragment__player_health, interpreter_for_flat_on_hit]],
+			"",
+			["|0|: Drain. Drain 3 |1| to activate a laser that deals |2| every 0.25 seconds. The laser lasts for 30 seconds.", [plain_fragment__Ability, plain_fragment__player_health, interpreter]]
+		]
+		
+		info.tower_simple_descriptions = [
+			["|0|: Reduces 3 |1| if not lethal. In exchange, Biomorph gains |2|.", [plain_fragment__on_round_start, plain_fragment__player_health, interpreter_for_flat_on_hit]],
+			"",
+			ability_desc[0]
+		]
+		
 		
 	
 	return info
@@ -6856,6 +7051,9 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color__Others/MapEnchant_Attacks/MapEnchant_Attacks.tscn")
 	elif tower_id == BOUNDED:
 		return load("res://TowerRelated/Color_Violet/Bounded/Bounded.tscn")
-	
+	elif tower_id == CELESTIAL:
+		return load("res://TowerRelated/Color_Violet/Celestial/Celestial.tscn")
+	elif tower_id == BIOMORPH:
+		return load("res://TowerRelated/Color_Violet/BioMorph/Biomorph.tscn")
 	
 	

@@ -74,6 +74,7 @@ signal tower_to_remove_from_synergy_buff(tower)
 signal tower_changed_colors(tower)
 
 signal tower_added(tower)
+signal tower_added_in_map(tower)
 signal tower_in_queue_free(tower)
 signal tower_being_sold(sellback_gold, tower)
 signal tower_being_absorbed_as_ingredient(tower)
@@ -86,6 +87,7 @@ signal tower_dropped_from_dragged(tower)
 signal tower_transfered_to_placable(tower, arg_placable)
 signal tower_transfered_in_map_from_bench(tower_self, arg_map_placable, arg_bench_placable)
 signal tower_transfered_on_bench_from_in_map(tower_self, arg_bench_placable, arg_map_placable)
+signal tower_transfered_to_different_type_of_placable(tower, arg_placable_from, arg_placable_to)
 
 signal tower_absorbed_ingredients_changed(tower)
 
@@ -492,6 +494,9 @@ func add_tower(tower_instance : AbstractTower):
 	
 	emit_signal("tower_added", tower_instance)
 	
+	if tower_instance.is_current_placable_in_map():
+		emit_signal("tower_added_in_map", tower_instance)
+	
 	call_deferred("_on_after_tower_added", tower_instance)
 
 func _on_after_tower_added(tower_instance : AbstractTower):
@@ -570,10 +575,11 @@ func _tower_transfered_to_placable(arg_tower, arg_placable):
 
 func _on_tower_transfered_in_map_from_bench(arg_tower, arg_map_pla, arg_bench_pla):
 	emit_signal("tower_transfered_in_map_from_bench", arg_tower, arg_map_pla, arg_bench_pla)
+	emit_signal("tower_transfered_to_different_type_of_placable", arg_tower, arg_bench_pla, arg_map_pla)
 
 func _on_tower_transfered_on_bench_from_in_map(arg_tower, arg_bench_pla, arg_map_pla):
 	emit_signal("tower_transfered_on_bench_from_in_map", arg_tower, arg_bench_pla, arg_map_pla)
-
+	emit_signal("tower_transfered_to_different_type_of_placable", arg_tower, arg_map_pla, arg_bench_pla)
 
 func can_place_tower_based_on_limit_and_curr_placement(tower : AbstractTower) -> bool:
 	return (tower.is_current_placable_in_map() or !is_beyond_limit_after_placing_tower(tower))

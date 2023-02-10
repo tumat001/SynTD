@@ -10,6 +10,7 @@ var toughness_pierce_effect : TowerAttributesEffect
 
 var armor_and_toughness_pierce_amount : float = 4.0
 
+var _effects_applied : bool
 
 func _init().(StoreOfTowerEffectsUUID.ING_LEADER):
 	effect_icon = preload("res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_Leader.png")
@@ -22,18 +23,21 @@ func _update_description():
 
 
 func _make_modifications_to_tower(tower):
-	if is_instance_valid(tower.main_attack_module) and is_instance_valid(tower.main_attack_module.range_module):
-		affected_range_module = tower.main_attack_module.range_module 
-		_add_targetings(affected_range_module)
-	
-	tower.connect("attack_module_added", self, "_tower_attack_module_added", [], CONNECT_PERSIST)
-	tower.connect("attack_module_removed", self, "_tower_attack_module_removed", [], CONNECT_PERSIST)
-	
-	if armor_pierce_effect == null:
-		_construct_pierce_effects()
-	
-	tower.add_tower_effect(armor_pierce_effect)
-	tower.add_tower_effect(toughness_pierce_effect)
+	if !_effects_applied:
+		if is_instance_valid(tower.main_attack_module) and is_instance_valid(tower.main_attack_module.range_module):
+			affected_range_module = tower.main_attack_module.range_module 
+			_add_targetings(affected_range_module)
+		
+		tower.connect("attack_module_added", self, "_tower_attack_module_added", [], CONNECT_PERSIST)
+		tower.connect("attack_module_removed", self, "_tower_attack_module_removed", [], CONNECT_PERSIST)
+		
+		if armor_pierce_effect == null:
+			_construct_pierce_effects()
+		
+		tower.add_tower_effect(armor_pierce_effect)
+		tower.add_tower_effect(toughness_pierce_effect)
+		
+		_effects_applied = true
 
 
 func _add_targetings(range_module):
@@ -68,14 +72,17 @@ func _construct_pierce_effects():
 #
 
 func _undo_modifications_to_tower(tower):
-	if is_instance_valid(affected_range_module):
-		_remove_targetings(affected_range_module)
-	
-	tower.disconnect("attack_module_added", self, "_tower_attack_module_added")
-	tower.disconnect("attack_module_removed", self, "_tower_attack_module_removed")
-	
-	tower.remove_tower_effect(armor_pierce_effect)
-	tower.remove_tower_effect(toughness_pierce_effect)
+	if _effects_applied:
+		if is_instance_valid(affected_range_module):
+			_remove_targetings(affected_range_module)
+		
+		tower.disconnect("attack_module_added", self, "_tower_attack_module_added")
+		tower.disconnect("attack_module_removed", self, "_tower_attack_module_removed")
+		
+		tower.remove_tower_effect(armor_pierce_effect)
+		tower.remove_tower_effect(toughness_pierce_effect)
+		
+		_effects_applied = false
 
 #
 

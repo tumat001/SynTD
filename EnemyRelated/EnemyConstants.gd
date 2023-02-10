@@ -161,8 +161,8 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 	############################### BASIC FACTION
 	if enemy_id == Enemies.BASIC:
 		info = EnemyTypeInformation.new(Enemies.BASIC, EnemyFactions.BASIC)
-		info.base_health = 800 #16 #todo
-		info.base_movement_speed = 30 #60 #todo
+		info.base_health = 16
+		info.base_movement_speed = 60
 		
 		if arg_include_non_combat_info:
 			info.enemy_name = "Basic"

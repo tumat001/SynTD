@@ -17,7 +17,7 @@ var base_damage_multiplier : float = 1
 var on_hit_damage_multiplier : float = 1
 var on_hit_effect_multiplier : float = 1
 
-var final_damage_multiplier : float = 1 # used only by wyvern for now.
+var final_damage_multiplier : float = 1 # used only by Wyvern and Coronal for now.
 
 #
 

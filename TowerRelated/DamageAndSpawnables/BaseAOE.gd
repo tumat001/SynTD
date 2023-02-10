@@ -44,6 +44,9 @@ var attack_module_source
 var coll_source_layer : int = CollidableSourceAndDest.Source.FROM_TOWER
 var coll_destination_mask : int = CollidableSourceAndDest.Destination.TO_ENEMY
 
+#
+
+var coll_shape_circle_inc_per_sec : float = 0
 
 # internal stuffs
 
@@ -130,6 +133,9 @@ func _process(delta):
 		else:
 			_current_pierce_refresh_delay -= delta
 		
+		if coll_shape_circle_inc_per_sec != 0:
+			#collision_shape.shape.radius += coll_shape_circle_inc_per_sec
+			collision_shape.shape.set_deferred("radius", collision_shape.shape.radius + (coll_shape_circle_inc_per_sec * delta))
 		
 		if _current_damage_delay > 0:
 			_current_damage_delay -= delta

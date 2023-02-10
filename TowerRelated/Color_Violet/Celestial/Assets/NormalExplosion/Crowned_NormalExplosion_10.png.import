@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Crowned_TowerBase_Omni.png-cf8fa308680b6c5a3d2528a2af24c588.stex"
+path="res://.import/Crowned_NormalExplosion_10.png-bc7e2f6c30bdbf2e3b4187e6012c3aef.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://TowerRelated/Color_Violet/Crowned/Crowned_TowerBase_Omni.png"
-dest_files=[ "res://.import/Crowned_TowerBase_Omni.png-cf8fa308680b6c5a3d2528a2af24c588.stex" ]
+source_file="res://TowerRelated/Color_Violet/Celestial/Assets/NormalExplosion/Crowned_NormalExplosion_10.png"
+dest_files=[ "res://.import/Crowned_NormalExplosion_10.png-bc7e2f6c30bdbf2e3b4187e6012c3aef.stex" ]
 
 [params]
 

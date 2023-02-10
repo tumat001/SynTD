@@ -12,5 +12,6 @@ collision_mask = 96
 [node name="Shape" type="CollisionShape2D" parent="AOEArea"]
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="AOEArea"]
+
 [connection signal="area_shape_entered" from="AOEArea" to="." method="_on_AOEArea_area_shape_entered"]
 [connection signal="area_shape_exited" from="AOEArea" to="." method="_on_AOEArea_area_shape_exited"]
