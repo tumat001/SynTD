@@ -74,10 +74,21 @@ var all_syn_id_tier_compos : Array
 
 var synergies : Dictionary
 
+#
+
+# Can be used as the official list of synergies
+# Can be modified, but not during a game play of GameElements
+var available_synergy_ids : Array = []
+
 
 ####
 
 func _init():
+	for syn_id in SynergyId.values():
+		available_synergy_ids.append(syn_id)
+	
+	####
+	
 	#
 	var plain_fragment__violet_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_VIOLET, "Violet towers")
 	var plain_fragment__orange_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_ORANGE, "Orange towers")

@@ -146,7 +146,7 @@ func _ready():
 	calculate_final_dominant_synergy_limit()
 	
 	# NOTE: dont change the for loop looper val into x_this_game
-	for syn_id in TowerDominantColors.SynergyId.values():
+	for syn_id in TowerDominantColors.available_synergy_ids:
 		var tier_to_first_time_act_map : Dictionary = {}
 		for i in TowerDominantColors.get_synergy_with_id(syn_id).number_of_towers_in_tier.size():
 			tier_to_first_time_act_map[i + 1] = true
@@ -155,7 +155,7 @@ func _ready():
 		
 	
 	# NOTE: dont change the for loop looper val into x_this_game
-	for syn_id in TowerCompositionColors.SynergyId.values():
+	for syn_id in TowerCompositionColors.available_synergy_ids:
 		var tier_to_first_time_act_map : Dictionary = {}
 		for i in TowerCompositionColors.get_synergy_with_id(syn_id).number_of_towers_in_tier.size():
 			tier_to_first_time_act_map[i + 1] = true
@@ -818,14 +818,14 @@ func add_composite_synergy_id_banned_this_game(arg_syn_id, if_calc_and_update : 
 				
 
 func _update_dominant_available_synergies_this_game():
-	for syn_id in TowerDominantColors.SynergyId.values():
+	for syn_id in TowerDominantColors.available_synergy_ids:
 		if !_dominant_synergy_ids_banned_this_game.has(syn_id):
 			var syn = TowerDominantColors.get_synergy_with_id(syn_id)
 			
 			_dominant_synergy_id_to_syn_available_this_game_map[syn_id] = syn
 
 func _update_composite_available_synergies_this_game():
-	for syn_id in TowerDominantColors.SynergyId.values():
+	for syn_id in TowerDominantColors.available_synergy_ids:
 		if !_composite_synergy_ids_banned_this_game.has(syn_id):
 			var syn = TowerCompositionColors.get_synergy_with_id(syn_id)
 			

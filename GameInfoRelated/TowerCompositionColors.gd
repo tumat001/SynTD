@@ -97,12 +97,26 @@ var synergy_id_to_pic_map__big : Dictionary = {
 	
 }
 
-
 # ex: "1-3" signifies RedGreen tier 3
 var all_syn_id_tier_compos : Array = []
 
+var synergies : Dictionary
+
+#
+
+# Can be used as the official list of synergies.
+# Can be modified, but not during a game play of GameElements
+var available_synergy_ids : Array = []
+
+#
 
 func _init():
+	for syn_id in SynergyId.values():
+		available_synergy_ids.append(syn_id)
+	
+	############
+	
+	
 	#inst_complesyn_yelvio_energymodule = CompleSyn_YelVio_EnergyModule.new(TowerDominantColors.inst_domsyn_yellow_energybattery)
 	
 	# 
@@ -845,9 +859,6 @@ func _init():
 	for syn in synergies.values():
 		for syn_id_tier_compo in syn.construct_all_possible_synergy_tier_ids():
 			all_syn_id_tier_compos.append(syn_id_tier_compo)
-
-
-var synergies : Dictionary
 
 #
 

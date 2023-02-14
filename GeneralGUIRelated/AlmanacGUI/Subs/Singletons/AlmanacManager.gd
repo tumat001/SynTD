@@ -959,9 +959,9 @@ func _construct_synergy_page():
 	
 	#
 	
-	for syn_id in TowerDominantColors.SynergyId.values():
+	for syn_id in TowerDominantColors.available_synergy_ids:
 		_construct_synergy_option__with_category(TowerDominantColors.get_synergy_with_id(syn_id), dom_syn_page_category, synergy_page)
-	for syn_id in TowerCompositionColors.SynergyId.values():
+	for syn_id in TowerCompositionColors.available_synergy_ids:
 		_construct_synergy_option__with_category(TowerCompositionColors.get_synergy_with_id(syn_id), compo_syn_page_category, synergy_page)
 	
 
