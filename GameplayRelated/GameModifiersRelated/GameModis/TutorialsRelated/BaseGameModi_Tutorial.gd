@@ -265,7 +265,6 @@ func create_tower_at_placable(arg_tower_id, arg_placable):
 	var tower = game_elements.tower_inventory_bench.create_tower_and_add_to_scene(arg_tower_id, arg_placable)
 	return tower
 
-
 ##
 
 # expects a method that accepts a tower instance

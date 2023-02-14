@@ -82,10 +82,16 @@ func get_visible_character_count():
 	return label.visible_characters
 
 func set_visible_character_count(arg_count):
+	var total_char = get_total_char_count()
+	if total_char < arg_count:
+		arg_count = total_char
+	
 	label.visible_characters = arg_count
 
 func get_percent_visible_character_count():
 	return label.percent_visible
 
 func get_total_char_count():
-	return label.bbcode_text.length()
+	return label.get_total_character_count()
+
+

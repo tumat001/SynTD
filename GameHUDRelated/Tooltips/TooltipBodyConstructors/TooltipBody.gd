@@ -138,9 +138,12 @@ func set_visible_character_count(arg_count):
 		curr_arg_count -= ch_count
 		if curr_arg_count < 0:
 			curr_arg_count = -1
+	
+	
 
 func get_percent_visible_character_count():
 	var percent_total : float = 0
+	
 	for ch in row_container.get_children():
 		percent_total += ch.get_percent_visible_character_count()
 	

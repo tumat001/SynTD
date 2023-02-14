@@ -71,6 +71,13 @@ func _create_bar_foreground(arg_texture : Texture) -> TextureRect:
 	return rect
 
 
+
+func set_bar_foreground_texture(arg_id : int, arg_texture : Texture):
+	if _id_to_bar_foreground_map.has(arg_id):
+		var rect = _id_to_bar_foreground_map[arg_id]
+		
+		rect.texture = arg_texture
+
 func set_bar_foreground_current_value(arg_id : int, arg_val : float, arg_adjust_pos_of_others : bool = true):
 	if _id_to_bar_foreground_map.has(arg_id):
 		var rect = _id_to_bar_foreground_map[arg_id]

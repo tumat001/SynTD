@@ -32,7 +32,7 @@ var _instant_val_transition : bool  # if _time_to_reach is 0
 #
 
 var quad_preserve_current_accel : bool = false
-var quad_val_increment_mode : int = QuadraticValueIncMode.START_FROM_0
+#var quad_val_increment_mode : int = QuadraticValueIncMode.START_FROM_0
 
 var initial_accel : float
 var _current_val_accel : float
@@ -136,6 +136,9 @@ func _reach_target_val():
 	
 	emit_signal("target_val_reached")
 
+
+func instantly_finish_transition():
+	_reach_target_val()
 
 ###
 

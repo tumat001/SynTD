@@ -157,8 +157,16 @@ func _ready():
 	
 	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
 	
+	####### MODIFIER LIST START
 	# TEMPORARY HERE. MAKE IT BE EDITABLE IN MAP SELECTION
 	game_modi_ids.append(StoreOfGameModifiers.GameModiIds.RED_TOWER_RANDOMIZER)
+	
+	game_modi_ids.append(StoreOfGameModifiers.GameModiIds.CYDE__EXAMPLE_STAGE)
+	
+	
+	# TODO
+	
+	####### MODIFIER LIST END
 	
 	TowerCompositionColors.reset_synergies_instances_and_curr_tier()
 	TowerDominantColors.reset_synergies_instances_and_curr_tier()
@@ -421,6 +429,7 @@ func _ready():
 	health_manager.set_health(150)
 	
 	map_manager.make_base_map_apply_changes_to_game_elements(self)
+	synergy_manager.before_game_start__synergies_this_game_initialize()
 	
 	emit_signal("before_game_start")
 	
@@ -433,8 +442,8 @@ func _ready():
 	# FOR TESTING ------------------------------------
 	
 	#todo
-	gold_manager.increase_gold_by(400, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_7
+	gold_manager.increase_gold_by(1000, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	level_manager.current_level = LevelManager.LEVEL_2
 	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
@@ -447,28 +456,28 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
-	#todo
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.BOUNDED,
-			Towers.PING,
-			Towers.ADEPT,
-			Towers.OUTREACH,
-			Towers.CELESTIAL,
-			Towers.SEEDER,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.PESTILENCE,
-			Towers.ACCUMULAE,
-			Towers.WAVE,
-			Towers.BIOMORPH,
-			Towers.TESLA,
-			Towers.SPIKE
-		])
-	even = !even
+#	#todo
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.BOUNDED,
+#			Towers.PING,
+#			Towers.ACCUMULAE,
+#			Towers.OUTREACH,
+#			Towers.CELESTIAL,
+#			Towers.SEEDER,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.PESTILENCE,
+#			Towers.ACCUMULAE,
+#			Towers.WAVE,
+#			Towers.BIOMORPH,
+#			Towers.TESLA,
+#			Towers.SPIKE
+#		])
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
@@ -968,4 +977,12 @@ func quit_game():
 	
 	pause_manager.unpause_game__accessed_for_scene_change()
 	CommsForBetweenScenes.goto_starting_screen(self)
+
+####
+
+# used by dialog whole screen panel
+func add_child_to_below_below_screen_effects_manager(arg_node):
+	add_child(arg_node)
+	move_child(arg_node, screen_effect_manager.get_position_in_parent() - 1)
+
 

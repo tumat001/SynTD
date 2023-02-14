@@ -79,6 +79,10 @@ func has_only_clause_or_no_clause(clause):
 func _update_is_passed():
 	is_passed = is_passed_clauses()
 
+
+func get_all_clause_ids__of_non_composite__non_copy():
+	return _clauses
+
 #
 
 func _compo_clause_clause_inserted(val_inserted):
