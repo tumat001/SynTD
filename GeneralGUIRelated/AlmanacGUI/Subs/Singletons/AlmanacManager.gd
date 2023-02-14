@@ -201,7 +201,8 @@ var almanac_page_gui : Almanac_Page setget set_almanac_page_gui
 
 ##
 
-func _ready():
+#func _ready():
+func _on_singleton_initialize():
 	call_deferred("_deferred_ready")
 
 func _deferred_ready():
@@ -1030,4 +1031,9 @@ func _on_option_pressed__display_tidbit_info(button, type_info, arg_option):
 	if !arg_option.is_obscured:
 		almanac_page_gui.configure_almanac_x_type_info_panel(arg_option, tower_multi_stats_data, arg_option.get_x_type_info(), button)
 	
+
+##########################
+
+
+
 

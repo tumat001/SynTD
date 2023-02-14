@@ -26,12 +26,12 @@ var row_index_to_map_row_dict : Dictionary = {
 }
 
 
-const NO_MAP_SELECTED : int = -1
+const NO_MAP_SELECTED = null
 
 var all_map_cards : Array = [] # does not change
 
 var current_map_ids_displayed : Array = []
-var current_map_id_selected : int = NO_MAP_SELECTED
+var current_map_id_selected = NO_MAP_SELECTED
 
 var button_group_for_map_cards : ButtonGroup_Custom
 
@@ -44,7 +44,7 @@ func add_map_ids_to_list(arg_ids : Array):
 	_update_current_page_count_and_leftright_buttons()
 	_update_map_card_selection_display()
 
-func add_map_id_to_list(arg_id : int, arg_update_states : bool = true):
+func add_map_id_to_list(arg_id, arg_update_states : bool = true):
 	if !_map_id_list.has(arg_id):
 		_map_id_list.append(arg_id)
 	

@@ -232,5 +232,5 @@ func _apply_game_modifier_to_elements(arg_elements : GameElements):
 	
 	_construct_dialog_segments()
 	play_dialog_segment_or_advance_or_finish_elements(dia_seg_intro_01)
-
+	
 

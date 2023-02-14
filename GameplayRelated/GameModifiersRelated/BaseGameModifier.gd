@@ -7,7 +7,7 @@ enum BreakpointActivation {
 	BEFORE_MAIN_INIT = 1,
 }
 
-var modifier_id : int
+var modifier_id
 var modifier_name : String
 var modifier_icon : Texture
 
@@ -17,7 +17,7 @@ var breakpoint_activation : int
 var game_elements : GameElements
 
 
-func _init(arg_id : int, arg_breakpoint_activation : int, 
+func _init(arg_id, arg_breakpoint_activation : int, 
 		arg_modi_name : String):
 	modifier_id = arg_id
 	breakpoint_activation = arg_breakpoint_activation

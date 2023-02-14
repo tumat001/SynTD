@@ -26,7 +26,7 @@ var _railgun
 var _sprinkler
 
 #
-func _init().(StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_02, 
+func _init().(StoreOfGameModifiers.GameModiIds__ModiTutorialPhase_02, 
 		BreakpointActivation.BEFORE_MAIN_INIT, "Chapter 2: Tower Tiers and Synergies"):
 	
 	pass

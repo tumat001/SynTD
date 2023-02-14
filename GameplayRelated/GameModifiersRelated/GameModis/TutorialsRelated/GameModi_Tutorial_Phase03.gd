@@ -15,7 +15,7 @@ var _striker
 var _all_towers : Array
 
 #
-func _init().(StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_03, 
+func _init().(StoreOfGameModifiers.GameModiIds__ModiTutorialPhase_01, 
 		BreakpointActivation.BEFORE_MAIN_INIT, "Chapter 3: Ingredient Effects"):
 	
 	pass

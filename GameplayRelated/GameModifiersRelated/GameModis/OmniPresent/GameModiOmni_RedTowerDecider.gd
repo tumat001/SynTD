@@ -71,7 +71,7 @@ var shop_manager : ShopManager
 
 #
 
-func _init().(StoreOfGameModifiers.GameModiIds.RED_TOWER_RANDOMIZER, 
+func _init().(StoreOfGameModifiers.GameModiIds__RedTowerRandomizer, 
 		BreakpointActivation.BEFORE_GAME_START, 
 		"Red Tower Randomizer"):
 	

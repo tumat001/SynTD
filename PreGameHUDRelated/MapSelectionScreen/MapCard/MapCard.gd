@@ -47,7 +47,7 @@ var is_toggle_mode_on : bool = false setget set_is_toggle_mode_on, get_is_toggle
 var current_button_group
 var map_name : String setget set_map_name
 var map_image : Texture setget set_map_image
-var map_id : int setget set_map_id
+var map_id setget set_map_id
 
 var map_tier : int setget set_map_tier
 var map_tier_border_normal : Texture

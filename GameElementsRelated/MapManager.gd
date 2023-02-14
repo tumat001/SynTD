@@ -32,7 +32,7 @@ enum RangeState {
 
 #
 
-var chosen_map_id : int setget set_chosen_map_id
+var chosen_map_id setget set_chosen_map_id
 
 var base_map : BaseMap
 

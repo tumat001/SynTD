@@ -32,7 +32,7 @@ const default_game_mode : int = Mode.STANDARD_BEGINNER
 #
 
 ###### 01
-static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
+func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 	var info = GameModeTypeInformation.new()
 	info.mode_id = arg_id
 	
@@ -42,7 +42,7 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 		info.mode_descriptions = [
 			"Enemies have %s%% less health." % [str((1 - GameModi_EasyDifficulty.enemy_health_multiplier) * 100)]
 		]
-		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.EASY_DIFFICULTY]
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds__EasyDifficulty]
 		
 		info.game_mode_button_normal_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeEasy/ModeEasy_ButtonPic_Normal.png")
 		info.game_mode_button_highlighted_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeEasy/ModeEasy_ButtonPic_Highlighted.png")
@@ -58,7 +58,7 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 			"Enemies have %s%% less health." % [str((1 - GameModi_BeginnerDifficulty.enemy_health_multiplier) * 100)],
 			"Gain %s additional gold per end of round." % [str(GameModi_BeginnerDifficulty.bonus_gold_at_round_end)]
 		]
-		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.BEGINNER_DIFFICULTY]
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds__BeginnerDifficulty]
 		
 		info.game_mode_button_normal_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeBeginner/ModeBeginner_ButtonPic_Normal.png")
 		info.game_mode_button_highlighted_texture = preload("res://GameplayRelated/GameModeRelated/ModeButtonAssets/ModeBeginner/ModeBeginner_ButtonPic_Highlighted.png")
@@ -84,14 +84,14 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 	elif arg_id == Mode.TUTORIAL_CHAPTER_01:
 		
 		info.mode_name = "Tutorial Chapter 1"
-		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_01]
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds__ModiTutorialPhase_01]
 		
 		return info
 		
 	elif arg_id == Mode.TUTORIAL_CHAPTER_01_01:
 		
 		info.mode_name = "Tutorial Chapter 1.5"
-		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_01_01]
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds__ModiTutorialPhase_01_01]
 		
 		return info
 		
@@ -99,20 +99,20 @@ static func get_mode_type_info_from_id(arg_id) -> GameModeTypeInformation:
 	elif arg_id == Mode.TUTORIAL_CHAPTER_02:
 		
 		info.mode_name = "Tutorial Chapter 2"
-		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_02]
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds__ModiTutorialPhase_02]
 		
 		return info
 		
 	elif arg_id == Mode.TUTORIAL_CHAPTER_03:
 		
 		info.mode_name = "Tutorial Chapter 3"
-		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_03]
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds__ModiTutorialPhase_03]
 		
 		return info
 		
 	elif arg_id == Mode.TUTORIAL_CHAPTER_04:
 		info.mode_name = "Tutorial Chapter 4"
-		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_04]
+		info.game_modi_ids = [StoreOfGameModifiers.GameModiIds__ModiTutorialPhase_04]
 		
 		return info
 	

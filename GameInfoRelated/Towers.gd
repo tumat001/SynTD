@@ -272,7 +272,11 @@ enum {
 	DUNED = 2005,
 	MAP_PASSAGE__FIRE_PATH = 2006
 	MAP_ENCHANT__ATTACKS = 2007
+	
+	
 }
+
+
 
 # Can be used as official list of all towers
 const TowerTiersMap : Dictionary = {
@@ -442,9 +446,16 @@ const tier_ap_map : Dictionary = {
 const tower_id_info_type_singleton_map : Dictionary = {}
 const tower_color_to_tower_id_map : Dictionary = {}
 
+
+
+var _singleton_initialize_ran = false
+
 #
 
 func _init():
+	pass
+
+func _on_singleton_initialize():
 	for color in TowerColors.get_all_colors():
 		tower_color_to_tower_id_map[color] = []
 	
@@ -454,7 +465,8 @@ func _init():
 		
 		for color in tower_info.colors:
 			tower_color_to_tower_id_map[color].append(tower_id)
-
+	
+	_singleton_initialize_ran = true
 
 #
 

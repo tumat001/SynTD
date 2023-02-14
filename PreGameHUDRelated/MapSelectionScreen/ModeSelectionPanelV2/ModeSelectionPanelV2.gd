@@ -33,7 +33,7 @@ onready var mode_selection_button = $ModeSelectionButton
 
 var mode_id_to_button_map : Dictionary
 var current_selected_mode : int = -1
-var current_map_id : int = -1
+var current_map_id = -1
 
 var game_mode_selection_list : SelectionListStandard
 var node_to_add_selection_list_to : Node setget set_node_to_add_selection_list_to

@@ -44,7 +44,7 @@ var _towers_placed_in_bench_for_multiple_listen : Array = []
 
 #
 
-func _init(arg_modi_id : int, arg_breakpoint_id : int, arg_name : String).(arg_modi_id, arg_breakpoint_id, arg_name):
+func _init(arg_modi_id, arg_breakpoint_id : int, arg_name : String).(arg_modi_id, arg_breakpoint_id, arg_name):
 	pass
 
 func _get_transcript(): # implemented by classes

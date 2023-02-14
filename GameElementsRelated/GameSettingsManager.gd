@@ -105,13 +105,14 @@ var show_synergy_difficulty_mode : int setget set_show_synergy_difficulty_mode
 
 # MAP SELECTION DEFAULT VALUES
 var map_id_to_last_chosen_mode_id_map : Dictionary
-var last_chosen_map_id : int = -1
+var last_chosen_map_id = null
 
 #
 
 
 # SETS LOCATED HERE
-func _ready():
+#func _ready():
+func _on_singleton_initialize():
 	_initialize_settings__called_from_ready()
 	_initialize_map_selection_default_vals__called_from_ready()
 
@@ -214,8 +215,8 @@ func _initialize_map_selection_default_vals__called_from_ready():
 
 func _generate_and_set_map_selection_default_vals():
 	map_id_to_last_chosen_mode_id_map = {}
-	for map_id in StoreOfMaps.MapsIds.values():
-		var last_chosen_mode_id_for_map : int = -1
+	for map_id in StoreOfMaps.map_id_to_map_name_dict.keys():
+		var last_chosen_mode_id_for_map = null
 		var map_type_info : MapTypeInformation = StoreOfMaps.get_map_type_information_from_id(map_id)
 		var mode_ids_accessible_from_menu : Array = map_type_info.game_mode_ids_accessible_from_menu
 		
@@ -224,7 +225,7 @@ func _generate_and_set_map_selection_default_vals():
 		
 		map_id_to_last_chosen_mode_id_map[map_id] = last_chosen_mode_id_for_map
 		
-		if last_chosen_map_id == -1:
+		if last_chosen_map_id == null:
 			last_chosen_map_id = map_id
 
 
@@ -233,12 +234,23 @@ func _generate_and_set_map_selection_default_vals():
 func _load_map_selection_defaults(arg_file : File):
 	# First line: map id to mode id map
 	var map_name_to_last_chosen_mode_id_map__string_key : Dictionary = parse_json(arg_file.get_line())
-	for map_name in map_name_to_last_chosen_mode_id_map__string_key.keys():
-		var id = StoreOfMaps.MapsIds[map_name]
-		map_id_to_last_chosen_mode_id_map[id] = map_name_to_last_chosen_mode_id_map__string_key[map_name]
+	#for map_name in map_name_to_last_chosen_mode_id_map__string_key.keys():
+	#	#if StoreOfMaps.map_name_to_map_id_dict.has(map_name):
+	#	var id = StoreOfMaps.map_name_to_map_id_dict[map_name]
+	#	map_id_to_last_chosen_mode_id_map[id] = map_name_to_last_chosen_mode_id_map__string_key[map_name]
+	
+	for map_name in StoreOfMaps.map_name_to_map_id_dict.keys():
+		var id = StoreOfMaps.map_name_to_map_id_dict[map_name]
+		
+		if map_name_to_last_chosen_mode_id_map__string_key.has(map_name):
+			map_id_to_last_chosen_mode_id_map[id] = map_name_to_last_chosen_mode_id_map__string_key[map_name]
+		else:
+			map_id_to_last_chosen_mode_id_map[id] = StoreOfGameMode.Mode.STANDARD_BEGINNER
 	
 	# next line, last chosen map id
 	last_chosen_map_id = parse_json(arg_file.get_line())
+	if !StoreOfMaps.map_id_to_map_name_dict.keys().has(last_chosen_map_id):
+		last_chosen_map_id = StoreOfMaps.default_map_id_for_empty
 
 
 # called by game save manager
@@ -246,12 +258,12 @@ func _get_save_arr_with_inner_info_for_map_selection_default_values():
 	# NOTE: The order of identifiers/values matters. If that is changed, change the order in the load method.
 	var save_arr = []
 	var map_name_to_mode_save_dict = {}
-	for map_name in StoreOfMaps.MapsIds.keys():
-		var map_id = StoreOfMaps.MapsIds[map_name]
+	for map_name in StoreOfMaps.map_name_to_map_id_dict.keys():
+		var map_id = StoreOfMaps.map_name_to_map_id_dict[map_name]
 		if map_id_to_last_chosen_mode_id_map.has(map_id):
 			map_name_to_mode_save_dict[map_name] = map_id_to_last_chosen_mode_id_map[map_id]
 	
-	var last_chosen_map_id_to_save : int = last_chosen_map_id
+	var last_chosen_map_id_to_save = last_chosen_map_id
 	
 	#
 	save_arr.append(map_name_to_mode_save_dict)

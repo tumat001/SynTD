@@ -330,7 +330,7 @@ func set_val_of_tidbit_val_map(arg_tidbit_id, arg_val):
 
 func _updated_synergies__for_orange_12_purposes():
 	if text_tidbit_id_to_int_val_map[StoreOfTextTidbit.TidbitId.ORANGE_12] == 0:
-		if synergy_manager.is_color_synergy_id_active__with_tier_being_equal_to(TowerDominantColors.SynergyId.ORANGE, 1):
+		if synergy_manager.is_color_synergy_id_active__with_tier_being_equal_to(TowerDominantColors.SynergyID__Orange, 1):
 			set_val_of_tidbit_val_map(StoreOfTextTidbit.TidbitId.ORANGE_12, 1)
 	
 

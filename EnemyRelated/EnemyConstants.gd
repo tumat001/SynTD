@@ -112,7 +112,7 @@ func _init():
 	
 	for enemy_id in Enemies.values():
 		enemy_id_info_type_singleton_map[enemy_id] = get_enemy_info(enemy_id, true)
-
+	
 
 #
 
@@ -436,7 +436,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			interpreter_for_health_per_sec.display_body = true
 			var ins_for_health_per_sec = []
 			ins_for_health_per_sec.append(OutcomeTextFragment.new(EnemyStatTextFragment.STAT_TYPE.HEALTH, -1, "health per second"))
-			ins_for_health_per_sec.append(NumericalTextFragment.new(1, false, -1))
+			ins_for_health_per_sec.append(NumericalTextFragment.new(3, false, -1))
 			ins_for_health_per_sec.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 			ins_for_health_per_sec.append(EnemyStatTextFragment.new(null, info, EnemyStatTextFragment.STAT_TYPE.ENEMY_STAT__ABILITY_POTENCY, EnemyStatTextFragment.STAT_BASIS.TOTAL, 1.0))
 			interpreter_for_health_per_sec.array_of_instructions = ins_for_health_per_sec

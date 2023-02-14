@@ -22,7 +22,7 @@ var _spike_tower
 var _arrows
 
 #
-func _init().(StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_01, 
+func _init().(StoreOfGameModifiers.GameModiIds__ModiTutorialPhase_01, 
 		BreakpointActivation.BEFORE_MAIN_INIT, "Chapter 1: Game Basics"):
 	
 	pass

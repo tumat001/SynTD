@@ -130,12 +130,14 @@ var non_essential_rng : RandomNumberGenerator
 
 var game_mode_id : int
 var game_mode_type_info
-var map_id : int
+var map_id
 var game_modi_ids : Array
 
 #
 
 func _ready():
+	CommsForBetweenScenes._game_elements_created__before_anything()
+	
 	#
 	
 	_calculate_middle_coordinates_of_playable_map()
@@ -159,12 +161,9 @@ func _ready():
 	
 	####### MODIFIER LIST START
 	# TEMPORARY HERE. MAKE IT BE EDITABLE IN MAP SELECTION
-	game_modi_ids.append(StoreOfGameModifiers.GameModiIds.RED_TOWER_RANDOMIZER)
-	
-	game_modi_ids.append(StoreOfGameModifiers.GameModiIds.CYDE__EXAMPLE_STAGE)
+	game_modi_ids.append(StoreOfGameModifiers.GameModiIds__RedTowerRandomizer)
 	
 	
-	# TODO
 	
 	####### MODIFIER LIST END
 	

@@ -14,7 +14,7 @@ var transcript_to_progress_mode : Dictionary
 var _same_towers_needed_for_combi : int
 
 #
-func _init().(StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_04, 
+func _init().(StoreOfGameModifiers.GameModiIds__ModiTutorialPhase_01, 
 		BreakpointActivation.BEFORE_MAIN_INIT, "Chapter 4: Combination"):
 	
 	pass

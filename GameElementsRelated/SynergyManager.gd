@@ -145,7 +145,6 @@ func _ready():
 	calculate_final_composite_synergy_limit()
 	calculate_final_dominant_synergy_limit()
 	
-	# NOTE: dont change the for loop looper val into x_this_game
 	for syn_id in TowerDominantColors.available_synergy_ids:
 		var tier_to_first_time_act_map : Dictionary = {}
 		for i in TowerDominantColors.get_synergy_with_id(syn_id).number_of_towers_in_tier.size():
@@ -154,7 +153,6 @@ func _ready():
 		_syn_id_to__syn_tier_to_first_time_activated_map[syn_id] = tier_to_first_time_act_map
 		
 	
-	# NOTE: dont change the for loop looper val into x_this_game
 	for syn_id in TowerCompositionColors.available_synergy_ids:
 		var tier_to_first_time_act_map : Dictionary = {}
 		for i in TowerCompositionColors.get_synergy_with_id(syn_id).number_of_towers_in_tier.size():
@@ -216,7 +214,7 @@ func update_synergies(towers : Array):
 	_dominant_synergy_id_to_syn_available_this_game_map.values(), active_colors)
 	
 	var results_of_compo : Array = ColorSynergyChecker.get_all_results(
-	_composite_synergy_id_to_syn_available_this_game.values(),active_colors)
+	_composite_synergy_id_to_syn_available_this_game.values(), active_colors)
 	
 	#Remove doms with raw_total of 0
 	var to_remove : Array = []
@@ -455,7 +453,7 @@ func is_color_synergy_name_active__with_tier_being_equal_to(arg_syn_name : Strin
 	
 	return false
 
-func is_color_synergy_id_active__with_tier_being_equal_to(arg_syn_id : int, arg_tier : int):
+func is_color_synergy_id_active__with_tier_being_equal_to(arg_syn_id, arg_tier : int):
 	for res in active_synergies_res:
 		if res.synergy.synergy_id == arg_syn_id and res.synergy_tier == arg_tier:
 			return true
@@ -569,7 +567,7 @@ func _start_color_aesthetic_display():
 			_syn_id_to__syn_tier_to_first_time_activated_map[id][res.synergy_tier] = false
 
 
-func _start_play_color_fill_circle_for_syn(arg_color_ids : Array, arg_syn_id : int, arg_syn_tier : int):
+func _start_play_color_fill_circle_for_syn(arg_color_ids : Array, arg_syn_id, arg_syn_tier : int):
 	var active_towers_with_color : Array = game_elements.tower_manager.get_all_active_towers_with_colors(arg_color_ids)
 	var data = _convert_towers_to_poses_and_ripple_and_color_arr(active_towers_with_color, arg_color_ids)
 	
@@ -705,7 +703,7 @@ func _get_randomized_weight_color__full_a(arg_color) -> Color:
 
 ###########
 
-func _start_play_color_splatter_for_syn(arg_color_ids : Array, arg_syn_id : int, arg_syn_tier : int):
+func _start_play_color_splatter_for_syn(arg_color_ids : Array, arg_syn_id, arg_syn_tier : int):
 	var active_towers_with_color : Array = game_elements.tower_manager.get_all_active_towers_with_colors(arg_color_ids)
 	var data = _convert_towers_to_poses_and_color_arr(active_towers_with_color, arg_color_ids)
 	
@@ -791,6 +789,7 @@ func _create_and_configure_color_splatter_drawer(arg_color_to_use : Color, arg_p
 
 func before_game_start__synergies_this_game_initialize():
 	_before_game_started_initialize_ran = true
+	
 	_update_dominant_available_synergies_this_game()
 	_update_composite_available_synergies_this_game()
 
@@ -825,7 +824,7 @@ func _update_dominant_available_synergies_this_game():
 			_dominant_synergy_id_to_syn_available_this_game_map[syn_id] = syn
 
 func _update_composite_available_synergies_this_game():
-	for syn_id in TowerDominantColors.available_synergy_ids:
+	for syn_id in TowerCompositionColors.available_synergy_ids:
 		if !_composite_synergy_ids_banned_this_game.has(syn_id):
 			var syn = TowerCompositionColors.get_synergy_with_id(syn_id)
 			

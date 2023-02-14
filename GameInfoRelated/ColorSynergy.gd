@@ -32,7 +32,7 @@ var colors_required : Array = []
 var number_of_towers_in_tier : Array = []
 # IMPORTANT: Highest to Lowest
 var tier_pic_per_tier : Array = []
-var synergy_id : int
+var synergy_id : String
 var synergy_name : String
 var synergy_descriptions : Array = []
 var synergy_simple_descriptions : Array = []
@@ -67,7 +67,7 @@ var current_synergy_tier_id : String
 #
 
 func _init(
-		arg_synergy_id : int,
+		arg_synergy_id,
 		arg_synergy_name : String,
 		arg_colors_required : Array,
 		arg_number_of_towers_in_tier : Array,

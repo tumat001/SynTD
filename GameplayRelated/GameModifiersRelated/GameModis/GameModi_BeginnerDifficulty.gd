@@ -4,7 +4,7 @@ extends "res://GameplayRelated/GameModifiersRelated/BaseGameModifier.gd"
 const enemy_health_multiplier : float = 0.70
 const bonus_gold_at_round_end : int = 1
 
-func _init().(StoreOfGameModifiers.GameModiIds.BEGINNER_DIFFICULTY, 
+func _init().(StoreOfGameModifiers.GameModiIds__BeginnerDifficulty, 
 		BreakpointActivation.BEFORE_GAME_START, "Beginner Difficulty Modifiers"):
 	
 	pass

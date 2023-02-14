@@ -15,7 +15,7 @@ var _prominence
 var _striker
 
 #
-func _init().(StoreOfGameModifiers.GameModiIds.MODI_TUTORIAL_PHASE_01, 
+func _init().(StoreOfGameModifiers.GameModiIds__ModiTutorialPhase_01_01, 
 		BreakpointActivation.BEFORE_MAIN_INIT, "Chapter 1.5: Game Basics Part 2"):
 	
 	pass

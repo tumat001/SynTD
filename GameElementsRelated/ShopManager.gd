@@ -500,7 +500,10 @@ func _get_tower_id_inventory_count_map(arg_tower_ids : Array) -> Dictionary:
 	var bucket : Dictionary = {}
 	
 	for tower_id in arg_tower_ids:
-		bucket[tower_id] = current_tower_stock_inventory[tower_id]
+		if current_tower_stock_inventory.has(tower_id):
+			bucket[tower_id] = current_tower_stock_inventory[tower_id]
+		else:
+			bucket[tower_id] = 0
 	
 	return bucket
 

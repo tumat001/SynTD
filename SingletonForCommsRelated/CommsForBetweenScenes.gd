@@ -7,7 +7,11 @@ const game_elements_path : String = "res://GameElementsRelated/GameElements.tscn
 
 #
 
-var map_id : int
+signal game_elements_created(arg_game_elements)
+
+#
+
+var map_id
 var game_mode_id : int
 
 #
@@ -125,6 +129,11 @@ func goto_starting_screen(arg_scene_to_remove : Node):
 
 
 ## GAME ELEMENTS related
+
+# called by GE
+func _game_elements_created__before_anything():
+	emit_signal("game_elements_created", current_game_elements)
+
 
 func ge_add_child_to_other_node_hoster(arg_node):
 	current_game_elements__other_node_hoster.add_child(arg_node)

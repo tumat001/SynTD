@@ -54,7 +54,8 @@ func _update_display():
 	var max_limit = tower_manager.last_calculated_tower_limit
 	var curr_slots_taken = tower_manager.current_tower_limit_taken
 	
-	if max_limit == curr_slots_taken or synergy_manager.is_dom_color_synergy_active(TowerDominantColors.synergies[violet_syn_name]):
+	#if max_limit == curr_slots_taken or synergy_manager.is_dom_color_synergy_active(TowerDominantColors.synergies[violet_syn_name]):
+	if max_limit == curr_slots_taken or synergy_manager.is_dom_color_synergy_active(TowerDominantColors.SynergyID__Violet):
 		visible = false
 	else:
 		visible = true

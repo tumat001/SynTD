@@ -45,6 +45,7 @@ config/windows_native_icon="res://game_icon.ico"
 
 [autoload]
 
+PreGameManager="*res://PreGameRelated/PreGameManager.gd"
 TowerDominantColors="*res://GameInfoRelated/TowerDominantColors.gd"
 TowerCompositionColors="*res://GameInfoRelated/TowerCompositionColors.gd"
 ZIndexStore="*res://GameInfoRelated/ZIndexStore.gd"

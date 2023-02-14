@@ -1,7 +1,7 @@
 extends Reference
 
 
-var map_id : int
+var map_id
 var map_name : String
 var map_display_texture : Texture  # Size: 166 x 97
 
