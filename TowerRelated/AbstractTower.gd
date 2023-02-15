@@ -3772,6 +3772,3 @@ func _emit_heat_module_overheat():
 func _emit_heat_module_overheat_cooldown():
 	emit_signal("on_heat_module_overheat_cooldown")
 
-
-############
-
