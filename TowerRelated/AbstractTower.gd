@@ -514,6 +514,7 @@ var _knock_up_current_acceleration_deceleration : float
 # makes use of the tower's (global) position
 var _current_forced_placable_mov_effect : TowerForcedPlacableMovementEffect
 
+
 # managers
 
 var tower_manager
@@ -3679,6 +3680,14 @@ func _calculate_and_emit_last_calc_layer_on_terrain():
 	last_calculated_layer_on_terrain = base_val
 	emit_signal("layer_on_terrain_changed", old_layer, last_calculated_layer_on_terrain)
 
+#### SPRITE and Sizes related
+
+func get_base_sprite_size():
+	return get_current_anim_size()
+
+func get_total_knock_up_layer_size():
+	pass
+
 
 # SYNERGIES RELATED -----------------------------------------
 # YELLOW - energy module related
@@ -3762,3 +3771,7 @@ func _emit_heat_module_overheat():
 
 func _emit_heat_module_overheat_cooldown():
 	emit_signal("on_heat_module_overheat_cooldown")
+
+
+############
+

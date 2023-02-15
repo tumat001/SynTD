@@ -128,10 +128,10 @@ var non_essential_rng : RandomNumberGenerator
 
 # Vars to be set by outside of game elements
 
-var game_mode_id : int
+var game_mode_id
 var game_mode_type_info
 var map_id
-var game_modi_ids : Array
+var game_modi_ids : Array = []
 
 #
 
@@ -155,7 +155,7 @@ func _ready():
 	#
 	
 	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
-	game_modi_ids = game_mode_type_info.game_modi_ids.duplicate()
+	game_modi_ids.append_array(game_mode_type_info.game_modi_ids.duplicate())
 	
 	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
 	
@@ -440,10 +440,9 @@ func _ready():
 	
 	# FOR TESTING ------------------------------------
 	
-	#todo
-	gold_manager.increase_gold_by(1000, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_2
-	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+#	gold_manager.increase_gold_by(1000, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+#	level_manager.current_level = LevelManager.LEVEL_2
+#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -457,7 +456,6 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	shop_manager.roll_towers_in_shop_with_cost()
 	
-#	#todo
 #	if !even:
 #		panel_buy_sell_level_roll.update_new_rolled_towers([
 #			Towers.BOUNDED,

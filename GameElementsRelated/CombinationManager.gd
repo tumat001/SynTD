@@ -54,7 +54,7 @@ enum AmountForCombinationModifiers {
 }
 
 const base_combination_amount : int = 6 # amount of copies needed for combination
-const minimum_combination_amount : int = 4
+const minimum_combination_amount : int = 4 
 var _flat_combination_amount_modifier_map : Dictionary = {}
 var last_calculated_combination_amount : int
 

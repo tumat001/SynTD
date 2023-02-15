@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/TestPortraitPic_150x225.png-9047e1fac604d1d1ff7187e40528304f.stex"
+path="res://.import/Ing_BiomorphBeam.png-1bd1eff22d810fbd32598600b99a84f7.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://CYDE_SPECIFIC_ONLY/DialogRelated/Assets/TestPortraitPic_150x225.png"
-dest_files=[ "res://.import/TestPortraitPic_150x225.png-9047e1fac604d1d1ff7187e40528304f.stex" ]
+source_file="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_BiomorphBeam.png"
+dest_files=[ "res://.import/Ing_BiomorphBeam.png-1bd1eff22d810fbd32598600b99a84f7.stex" ]
 
 [params]
 

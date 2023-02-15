@@ -2,7 +2,6 @@ extends Node
 
 const BasePreGameModifier = preload("res://PreGameRelated/PreGameModifiers/BasePreGameModifier.gd")
 
-const Cyde_CommonPreGameModis = preload("res://CYDE_SPECIFIC_ONLY/DialogRelated/PreGameModifiers/Cyde_CommonPreGameModis.gd")
 
 
 var _all_pre_game_modifiers__before_S_initialize : Array
@@ -18,11 +17,8 @@ func _add_pre_game_modifier(arg_modifier : BasePreGameModifier):
 
 func _ready():
 	#Note: add pre game modifiers to apply here
-	# TODO. Remove this then Cyde is over...
-	var modi = Cyde_CommonPreGameModis.new()
-	_add_pre_game_modifier(modi)
 	
-	#
+	###
 	
 	call_deferred("_deferred_ready")
 	
