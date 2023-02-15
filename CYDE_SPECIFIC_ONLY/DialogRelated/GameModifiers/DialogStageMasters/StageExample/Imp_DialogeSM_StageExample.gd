@@ -13,7 +13,11 @@ var dia_seg_intro_03 : DialogSegment
 
 var persistence_id_for_portrait_test : int = 1
 
-func _init().(StoreOfGameModifiers.GameModiIds.CYDE__EXAMPLE_STAGE,
+
+var show_change_questions : bool = true
+var remove_question_count : int = 1
+
+func _init().(StoreOfGameModifiers.GameModiIds__CYDE_ExampleStage,
 		BreakpointActivation.BEFORE_GAME_START, 
 		"Cyde_StageExample_Modi"):
 	
@@ -121,6 +125,7 @@ func _construct_and_configure_choices_for_intro_02_questions():
 	choice_01.choice_type = DialogChoicesPanel.ChoiceButtonInfo.ChoiceType.STANDARD
 	choice_01.func_source_on_click = self
 	choice_01.func_name_on_click = "_on_intro_02_choice_1_clicked"
+	choice_01.choice_result_type = choice_01.ChoiceResultType.CORRECT
 	
 	var choice_02 = DialogChoicesPanel.ChoiceButtonInfo.new()
 	choice_02.id = 2
@@ -128,6 +133,7 @@ func _construct_and_configure_choices_for_intro_02_questions():
 	choice_02.choice_type = DialogChoicesPanel.ChoiceButtonInfo.ChoiceType.STANDARD
 	choice_02.func_source_on_click = self
 	choice_02.func_name_on_click = "_on_intro_02_choice_2_clicked"
+	choice_02.choice_result_type = choice_02.ChoiceResultType.WRONG
 	
 	var choice_03 = DialogChoicesPanel.ChoiceButtonInfo.new()
 	choice_03.id = 3
@@ -135,8 +141,36 @@ func _construct_and_configure_choices_for_intro_02_questions():
 	choice_03.choice_type = DialogChoicesPanel.ChoiceButtonInfo.ChoiceType.STANDARD
 	choice_03.func_source_on_click = self
 	choice_03.func_name_on_click = "_on_intro_02_choice_3_clicked"
+	choice_03.choice_result_type = choice_03.ChoiceResultType.WRONG
 	
-	_configure_dia_seg_to_default_templated_dialog_choices_panel(dia_seg_intro_02, [choice_01, choice_02, choice_03])
+	_configure_dia_seg_to_default_templated_dialog_choices_panel(dia_seg_intro_02, [choice_01, choice_02, choice_03], self, "_show_dialog_choices_modi_panel", "_build_dialog_choices_modi_panel_config")
+
+
+func _show_dialog_choices_modi_panel():
+	return true
+
+func _build_dialog_choices_modi_panel_config():
+	var config = DialogChoicesModiPanel.ModiPanelConfig.new()
+	
+	config.remove_false_answer_count = remove_question_count  
+	config.show_change_question = show_change_questions
+	
+	config.func_source_for_actions = self
+	config.func_name_for__change_question = "_on_dialog_choices_modi_panel__change_question"
+	config.func_name_for__remove_false_answer = "_on_dialog_choices_modi_panel__removed_choices"
+	
+	return config
+
+
+func _on_dialog_choices_modi_panel__removed_choices():
+	remove_question_count = 0
+	
+
+
+func _on_dialog_choices_modi_panel__change_question():
+	show_change_questions = false
+	
+
 
 ##
 
@@ -195,7 +229,15 @@ func _on_intro_02_timeout(arg_params):
 
 	
 
+#
 
+
+
+
+
+
+
+#
 
 func _on_end_of_dia_seg_intro_03(arg_seg, arg_params):
 	listen_for_round_end_into_stage_round_id_and_call_func("02", self, "_on_end_of_stageround_xx__after_end_of_dia_seg_intro_03")

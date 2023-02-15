@@ -83,17 +83,17 @@ const SynergyId__OGV = "%s%s" % [SynTD_HeaderIDName, "OGV"]
 const SynergyId__RedOV = "%s%s" % [SynTD_HeaderIDName, "RedOV"]
 
 const all_compo_synergy_ids_from_Syn_TD_base_game : Array = [
-	SynergyId__RedGreen,
-	SynergyId__OrangeBlue,
-	SynergyId__YellowViolet,
-	SynergyId__OrangeYR,
-	SynergyId__YellowGO,
-	SynergyId__GreenBY,
-	SynergyId__BlueVG,
-	SynergyId__VioletRB,
-	SynergyId__RYB,
-	SynergyId__OGV,
-	SynergyId__RedOV,
+#	SynergyId__RedGreen,
+#	SynergyId__OrangeBlue,
+#	SynergyId__YellowViolet,
+#	SynergyId__OrangeYR,
+#	SynergyId__YellowGO,
+#	SynergyId__GreenBY,
+#	SynergyId__BlueVG,
+#	SynergyId__VioletRB,
+#	SynergyId__RYB,
+#	SynergyId__OGV,
+#	SynergyId__RedOV,
 ]
 
 

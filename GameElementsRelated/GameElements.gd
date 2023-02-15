@@ -131,7 +131,7 @@ var non_essential_rng : RandomNumberGenerator
 var game_mode_id : int
 var game_mode_type_info
 var map_id
-var game_modi_ids : Array
+var game_modi_ids : Array = []
 
 #
 
@@ -155,15 +155,17 @@ func _ready():
 	#
 	
 	game_mode_type_info = StoreOfGameMode.get_mode_type_info_from_id(game_mode_id)
-	game_modi_ids = game_mode_type_info.game_modi_ids.duplicate()
+	game_modi_ids.append_array(game_mode_type_info.game_modi_ids.duplicate())
 	
 	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
 	
 	####### MODIFIER LIST START
 	# TEMPORARY HERE. MAKE IT BE EDITABLE IN MAP SELECTION
-	game_modi_ids.append(StoreOfGameModifiers.GameModiIds__RedTowerRandomizer)
+	#game_modi_ids.append(StoreOfGameModifiers.GameModiIds__RedTowerRandomizer)
 	
+	game_modi_ids.append(StoreOfGameModifiers.GameModiIds__CYDE_Common_Modifiers)
 	
+	game_modi_ids.append(StoreOfGameModifiers.GameModiIds__CYDE_ExampleStage)
 	
 	####### MODIFIER LIST END
 	

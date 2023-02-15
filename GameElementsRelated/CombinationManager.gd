@@ -53,8 +53,8 @@ enum AmountForCombinationModifiers {
 	RELIC_DECREASE_AMOUNT_NEEDED_FOR_COMBI = 2
 }
 
-const base_combination_amount : int = 6 # amount of copies needed for combination
-const minimum_combination_amount : int = 4
+const base_combination_amount : int = 3 # amount of copies needed for combination
+var minimum_combination_amount : int = 3
 var _flat_combination_amount_modifier_map : Dictionary = {}
 var last_calculated_combination_amount : int
 
@@ -367,38 +367,43 @@ func _if_previous_candidates_are_equal_to_new_candidates(prev_candidates : Array
 
 #
 
-func _get_towers_with_tower_combination_requirements_met(arg_combination_amount : int = last_calculated_combination_amount, give_only_one_type_of_tower : bool = true) -> Array:
+func _get_towers_with_tower_combination_requirements_met(arg_combination_amount : int = last_calculated_combination_amount, give_only_one_type_of_tower : bool = true, arg_only_one_star : bool = false) -> Array:
 	var all_towers : Array = tower_manager.get_all_towers_except_in_queue_free()
 	
 	#var all_tower_ids : Array = tower_manager.get_all_ids_of_towers()
 	
-	var tower_id_map : Dictionary = {}
+	var tower_id__to_star_level_and_count_map : Dictionary = {}
 	var to_combine_towers : Array = []
 	
 	
 	for tower in all_towers:
 		if tower.originally_has_ingredient and !tower.is_queued_for_deletion() and !blacklisted_tower_ids_from_combining.has(tower.tower_id) and !all_combination_id_to_effect_map.keys().has(tower.tower_id) and _is_tower_combinable_based_on_is_tier_combinable_clauses(tower):
-			if (tower_id_map.has(tower.tower_id)):
-				tower_id_map[tower.tower_id] += 1
-				
-				if tower_id_map[tower.tower_id] >= arg_combination_amount:
+			var tower_star_level = tower.get_cyde_current_star_level()
+			
+			if !arg_only_one_star or (arg_only_one_star and tower_star_level == 1):
+				if (tower_id__to_star_level_and_count_map.has(tower.tower_id)):
 					
-					var i_counter : int = 0
-					for i_tower in all_towers:
-						if (i_tower.tower_id == tower.tower_id and !i_tower.is_queued_for_deletion()):
-							i_counter += 1
-							to_combine_towers.append(i_tower)
-							
-						if (i_counter >= arg_combination_amount):
+					tower_id__to_star_level_and_count_map[tower.tower_id][tower_star_level] += 1
+					
+					if tower_id__to_star_level_and_count_map[tower.tower_id][tower_star_level] >= arg_combination_amount:
+						
+						var i_counter : int = 0
+						for i_tower in all_towers:
+							if (i_tower.tower_id == tower.tower_id and !i_tower.is_queued_for_deletion() and i_tower.get_cyde_current_star_level() == tower_star_level):
+								i_counter += 1
+								to_combine_towers.append(i_tower)
+								
+							if (i_counter >= arg_combination_amount):
+								break
+						
+						if give_only_one_type_of_tower:
 							break
 					
-					if give_only_one_type_of_tower:
-						break
-				
-				
-			else:
-				tower_id_map[tower.tower_id] = 1
-	
+					
+				else:
+					#tower_id_map[tower.tower_id] = 1
+					tower_id__to_star_level_and_count_map[tower.tower_id] = {1 : 0, 2 : 0, 3 : 0}
+					tower_id__to_star_level_and_count_map[tower.tower_id][tower_star_level] += 1
 	
 	return to_combine_towers
 
@@ -443,7 +448,7 @@ func _get_towers_towards_progress(arg_tower_id_arr_from_cards) -> Array:
 func _get_towers_immediately_ready_to_combine(arg_tower_id_arr_from_cards : Array) -> Array:
 	var tower_ids_ready_to_combine : Array = []
 	
-	var towers_one_off_from_combining = _get_towers_with_tower_combination_requirements_met(last_calculated_combination_amount - 1, false)
+	var towers_one_off_from_combining = _get_towers_with_tower_combination_requirements_met(last_calculated_combination_amount - 1, false, true)
 	
 	for tower_id_card in arg_tower_id_arr_from_cards:
 		#var is_one_off : bool = false
@@ -484,26 +489,28 @@ func on_combination_activated():
 	if current_combination_candidates.size() > 0 and last_calculated_can_do_combination:
 		_is_doing_combination = true
 		
-		var combi_effect : CombinationEffect = _construct_combination_effect_from_tower(current_combination_candidates[0].tower_id)
-		all_combination_id_to_effect_map[combi_effect.combination_id] = combi_effect
+		#
 		
-#		var tower_type_info_of_tower = Towers.get_tower_info(current_combination_candidates[0].tower_id)
-#		combi_effect.tower_type_info = tower_type_info_of_tower
-#		combi_effect.ingredient_effect = tower_type_info_of_tower.ingredient_effect
-#		combi_effect.tier_of_source_tower = tower_type_info_of_tower.tower_tier
+		var curr_candidates = current_combination_candidates
+		var curr_placable_to_put_new_tower = curr_candidates[0]
+		for candidate in curr_candidates:
+			if candidate.is_current_placable_in_map():
+				curr_placable_to_put_new_tower = candidate.current_placable
+				break
 		
-		_destroy_current_candidates(combi_effect.tower_type_info.tower_tier)
-		_apply_combination_effect_to_appropriate_towers(combi_effect)
+		_destroy_current_candidates(curr_candidates[0].tower_tier, curr_placable_to_put_new_tower.global_position)
+		curr_candidates[0].connect("tower_in_queue_free", self, "_on_candidate_tower_queue_free__create_higher_star_tower", [curr_candidates[0].tower_id, curr_placable_to_put_new_tower, curr_candidates[0].get_cyde_current_star_level() + 1], CONNECT_DEFERRED)
 		
-		_put_combination_in_hud_display(combi_effect)
-		
-		emit_signal("on_combination_effect_added", combi_effect.combination_id)
 		
 		_is_doing_combination = false
 		
 		
 		#
 		_request_update_applicable_combinations_on_towers()
+
+func _on_candidate_tower_queue_free__create_higher_star_tower(arg_tower_id, arg_tower_placable, arg_star_level):
+	pass
+	
 
 
 
@@ -517,11 +524,11 @@ func _construct_combination_effect_from_tower(arg_tower_id : int) -> Combination
 	return combi_effect
 
 
-func _destroy_current_candidates(arg_tower_tier):
+func _destroy_current_candidates(arg_tower_tier, arg_secondary_pos):
 	for tower in current_combination_candidates:
 		if is_instance_valid(tower):
 			#_display_on_combi_effects_on_tower_pos(tower.global_position, arg_tower_tier)
-			_start_display_of_combi_effects_on_tower(tower, tower.global_position, arg_tower_tier)
+			_start_display_of_combi_effects_on_tower(tower, tower.global_position, arg_tower_tier, arg_secondary_pos)
 			tower.queue_free()
 	
 	current_combination_candidates.clear()
@@ -651,7 +658,7 @@ func _create_on_combi_particle():
 	particle.time_before_center_change_and_other_relateds = 0.7
 	particle.time_of_arrival_to_center = 0.75
 	
-	particle.second_center_global_pos = game_elements.get_middle_coordinates_of_playable_map()
+	#particle.second_center_global_pos = game_elements.get_middle_coordinates_of_playable_map()
 	
 	return particle
 
@@ -660,11 +667,12 @@ func _set_on_combi_particle_properties_when_get_from_pool_after_add_child(arg_pa
 
 #
 
-func _start_display_of_combi_effects_on_tower(arg_tower, arg_tower_pos : Vector2, arg_tower_tier : int):
+func _start_display_of_combi_effects_on_tower(arg_tower, arg_tower_pos : Vector2, arg_tower_tier : int, arg_secondary_pos : Vector2):
 	var combi_det_class := CombiParticlesDetClass.new()
 	combi_det_class.tower_pos = arg_tower_pos
 	combi_det_class.tower_tier = arg_tower_tier
 	combi_det_class.curr_amount_of_repeats = combi_tier_to_amount_of_particles_map[arg_tower_tier]
+	combi_det_class.secondary_pos = arg_secondary_pos
 	
 	_add_to_combi_det_class_arr(combi_det_class)
 
@@ -684,12 +692,12 @@ func _remove_from_combi_det_class_arr(arg_combi_det_class):
 
 func _on_on_combi_particle_timer_timeout():
 	for particle_det_class in combi_det_class_arr:
-		_display_on_combi_effects_on_tower_pos(particle_det_class.tower_pos, particle_det_class.tower_tier)
+		_display_on_combi_effects_on_tower_pos(particle_det_class.tower_pos, particle_det_class.tower_tier, particle_det_class.secondary_pos)
 		particle_det_class.curr_amount_of_repeats -= 1
 		if particle_det_class.curr_amount_of_repeats <= 0:
 			combi_det_class_arr.erase(particle_det_class)
 
-func _display_on_combi_effects_on_tower_pos(arg_tower_pos : Vector2, arg_tower_tier : int):
+func _display_on_combi_effects_on_tower_pos(arg_tower_pos : Vector2, arg_tower_tier : int, arg_secondary_pos : Vector2):
 	var max_i : int = 4
 	for i in max_i:
 		var particle = on_combi_particle_pool_component.get_or_create_attack_sprite_from_pool()
@@ -703,6 +711,8 @@ func _display_on_combi_effects_on_tower_pos(arg_tower_pos : Vector2, arg_tower_t
 		particle.speed_accel_towards_center = 450
 		particle.initial_speed_towards_center = -100
 		
+		particle.second_center_global_pos = arg_secondary_pos
+		
 		particle.reset_for_another_use__combi_ing_specific()
 		particle.reset_for_another_use()
 
@@ -711,7 +721,7 @@ class CombiParticlesDetClass extends Reference:
 	var tower_pos : Vector2
 	var tower_tier : int
 	var curr_amount_of_repeats : int
-	
+	var secondary_pos : Vector2
 
 
 ###### -- IS TIER LEVEL COMBINABLE --
@@ -730,7 +740,7 @@ func _construct_is_tier_level_combinable_clauses():
 	
 	#
 	is_tier_3_combinable_clauses = ConditionalClauses.new()
-	is_tier_3_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+	#is_tier_3_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
 	
 	is_tier_3_combinable_clauses.connect("clause_inserted", self, "_on_is_tier_3_combinable_clauses_updated", [], CONNECT_PERSIST)
 	is_tier_3_combinable_clauses.connect("clause_removed", self, "_on_is_tier_3_combinable_clauses_updated", [], CONNECT_PERSIST)
@@ -738,7 +748,7 @@ func _construct_is_tier_level_combinable_clauses():
 	
 	#
 	is_tier_4_combinable_clauses = ConditionalClauses.new()
-	is_tier_4_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+	#is_tier_4_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
 	
 	is_tier_4_combinable_clauses.connect("clause_inserted", self, "_on_is_tier_4_combinable_clauses_updated", [], CONNECT_PERSIST)
 	is_tier_4_combinable_clauses.connect("clause_removed", self, "_on_is_tier_4_combinable_clauses_updated", [], CONNECT_PERSIST)
@@ -746,7 +756,7 @@ func _construct_is_tier_level_combinable_clauses():
 	
 	#
 	is_tier_5_combinable_clauses = ConditionalClauses.new()
-	is_tier_5_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+	#is_tier_5_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
 	
 	is_tier_5_combinable_clauses.connect("clause_inserted", self, "_on_is_tier_5_combinable_clauses_updated", [], CONNECT_PERSIST)
 	is_tier_5_combinable_clauses.connect("clause_removed", self, "_on_is_tier_5_combinable_clauses_updated", [], CONNECT_PERSIST)
@@ -754,7 +764,7 @@ func _construct_is_tier_level_combinable_clauses():
 	
 	#
 	is_tier_6_combinable_clauses = ConditionalClauses.new()
-	is_tier_6_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
+	#is_tier_6_combinable_clauses.attempt_insert_clause(IsTierLevelNotCombinableClauses.RELIC_OR_NATURAL__NOT_COMBINABLE)
 	
 	is_tier_6_combinable_clauses.connect("clause_inserted", self, "_on_is_tier_6_combinable_clauses_updated", [], CONNECT_PERSIST)
 	is_tier_6_combinable_clauses.connect("clause_removed", self, "_on_is_tier_6_combinable_clauses_updated", [], CONNECT_PERSIST)

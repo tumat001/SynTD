@@ -535,6 +535,16 @@ var _anim_face__custom_initial_dir_hierarchy
 
 #var layer_on_terrain : int setget set_layer_on_terrain
 
+#
+
+enum CYDE_METADATA {
+	STAR_LEVEL = 0,
+	
+}
+var cyde_metadata_map : Dictionary = {}
+
+
+#
 
 enum LayerOnTerrainModiIds {
 	PLACABLE_LAYER = 0
@@ -632,7 +642,9 @@ func _init():
 	##
 	
 	anim_face_dir_component = AnimFaceDirComponent.new()
-
+	
+	
+	_on_init__cyde_related()
 
 func _ready():
 	$IngredientDeclinePic.visible = false
@@ -653,6 +665,7 @@ func _ready():
 		child.use_parent_material = true
 	tower_base.material = ShaderMaterial.new()
 	
+	_on_ready__cyde_related()
 
 func _post_inherit_ready():
 	_update_ingredient_compatible_colors()
@@ -3762,3 +3775,69 @@ func _emit_heat_module_overheat():
 
 func _emit_heat_module_overheat_cooldown():
 	emit_signal("on_heat_module_overheat_cooldown")
+
+
+####################
+
+func _on_init__cyde_related():
+	if !cyde_metadata_map.has(CYDE_METADATA.STAR_LEVEL):
+		set_cyde_current_star_level(1)
+
+func _on_ready__cyde_related():
+	_update_effects_based_on_cyde_current_star_level()
+
+
+#
+
+func set_cyde_current_star_level(arg_val):
+	if arg_val > 3:
+		arg_val = 3
+	
+	cyde_metadata_map[CYDE_METADATA] = arg_val
+	
+	if is_inside_tree():
+		_update_effects_based_on_cyde_current_star_level()
+
+func _update_effects_based_on_cyde_current_star_level():
+	var star_level = get_cyde_current_star_level()
+	
+	if star_level == 1:
+		pass
+		
+	elif star_level == 2:
+		_construct_and_add_cyde_2_star_effects()
+		
+	elif star_level == 3:
+		_construct_and_add_cyde_3_star_effects()
+		
+
+
+func get_cyde_current_star_level():
+	return cyde_metadata_map[CYDE_METADATA]
+
+##
+
+func _construct_and_add_cyde_2_star_effects():
+	var base_dmg_effect = _construct_base_dmg_effect_for_star_effect(30, StoreOfTowerEffectsUUID.CYDE_STAR_2_EFFECTS_01)
+	add_tower_effect(base_dmg_effect)
+
+func _construct_and_add_cyde_3_star_effects():
+	var base_dmg_effect = _construct_base_dmg_effect_for_star_effect(120, StoreOfTowerEffectsUUID.CYDE_STAR_2_EFFECTS_01)
+	add_tower_effect(base_dmg_effect)
+
+
+
+func _construct_base_dmg_effect_for_star_effect(arg_percent_amount : float, arg_effect_id : int):
+	var total_base_damage_modi : PercentModifier = PercentModifier.new(arg_effect_id)
+	total_base_damage_modi.percent_amount = arg_percent_amount
+	total_base_damage_modi.ignore_flat_limits = true
+	
+	var total_base_damage_effect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_DAMAGE_BONUS, total_base_damage_modi, arg_effect_id)
+	total_base_damage_effect.is_timebound = false
+	
+	return total_base_damage_effect
+
+
+##
+
+

@@ -3,7 +3,7 @@ extends "res://MiscRelated/DialogRelated/Controls/DialogElementControls/BaseDial
 
 const PlayerGUI_ButtonStandard = preload("res://MiscRelated/PlayerGUI_Category_Related/ButtonStandard/PlayerGUI_ButtonStandard.gd")
 const PlayerGUI_ButtonStandard_Scene = preload("res://MiscRelated/PlayerGUI_Category_Related/ButtonStandard/PlayerGUI_ButtonStandard.tscn")
-
+const DialogChoicesModiPanel = preload("res://MiscRelated/DialogRelated/Controls/DialogElementControls/DialogChoicesModiPanel/DialogChoicesModiPanel.gd")
 
 signal choice_buttons_changed()
 
@@ -35,6 +35,13 @@ var _current_choice_button_info_changes : ChoiceButtonChanges
 
 var grid_columns_count : int = 1
 
+
+var func_source_for__properties
+var func_name_for__is_display_dialog_choices_modi
+var func_name_for__modi_panel_config
+
+var _already_initialized_choices_modi_panel : bool = false
+
 #
 
 class ChoiceButtonInfo:
@@ -60,6 +67,15 @@ class ChoiceButtonInfo:
 	
 	#
 	
+	enum ChoiceResultType {
+		NONE = 0,
+		CORRECT = 1,
+		WRONG = 2,
+	}
+	var choice_result_type : int
+	
+	#
+	
 	var associated_button
 	
 	#
@@ -77,7 +93,8 @@ var val_transition_for_button_mod_a : ValTransition
 
 #
 
-onready var grid_container = $GridContainer
+onready var grid_container = $VBoxContainer/GridContainer
+onready var dialog_choice_modi_panel = $VBoxContainer/DialogChoicesModiPanel
 
 #
 
@@ -90,7 +107,7 @@ func _init():
 func _ready():
 	grid_container.columns = grid_columns_count
 	
-	
+	dialog_choice_modi_panel.connect("remove_false_answer_requested", self, "_on_dialog_choice_modi_panel_remove_false_answer_requested")
 
 func _construct_and_configure_buttons_based_on_properties__on_start():
 	for button_info in _all_choice_button_info:
@@ -98,6 +115,7 @@ func _construct_and_configure_buttons_based_on_properties__on_start():
 			_construct_and_add_button_choice_type_standard(button_info, 1, -1, false)
 			
 	
+	_initialize_choices_modi_panel()
 
 func _construct_and_add_button_choice_type_standard(arg_choice_button_info : ChoiceButtonInfo, arg_modulate_a : float, arg_index : int, arg_should_always_be_disabled : bool):
 	var button = PlayerGUI_ButtonStandard_Scene.instance()
@@ -150,7 +168,7 @@ func replace_choice_button_info_at_index(arg_index, arg_replacement_info : Choic
 	
 	if is_inside_tree():
 		var button_changes_rem := ChoiceButtonChanges.new()
-		button_changes_rem.change_type = ChoiceButtonChanges.QUEUE_STAT_REMOVE
+		button_changes_rem.change_type = ChoiceButtonChanges.QUEUE_STAT__REMOVE
 		button_changes_rem.index = arg_index
 		button_changes_rem.choice_button_info = info
 		_add_to_queue_of_choice_button_changes(button_changes_rem)
@@ -172,13 +190,17 @@ func remove_choice_button_info(arg_index):
 	
 	if is_inside_tree():
 		var button_changes_rem := ChoiceButtonChanges.new()
-		button_changes_rem.change_type = ChoiceButtonChanges.QUEUE_STAT_REMOVE
+		button_changes_rem.change_type = ChoiceButtonChanges.QUEUE_STAT__REMOVE
 		button_changes_rem.index = arg_index
 		button_changes_rem.choice_button_info = info
 		_add_to_queue_of_choice_button_changes(button_changes_rem)
 		
 	
 	emit_signal("choice_buttons_changed")
+
+
+#func immediate_remove_choice_button_info(arg_index):
+#	pass
 
 #
 
@@ -200,10 +222,20 @@ func _process_next_choice_button_changes_in_queue(arg_instant_show : bool):
 			_start_fade_in_of_button__make_initial_mod_a_zero(button, arg_instant_show, latest.choice_button_info)
 		elif latest.change_type == latest.QUEUE_STAT__REMOVE:
 			_start_fade_out_of_button(latest.choice_button_info.associated_button, arg_instant_show, latest.choice_button_info)
-		
 	else:
+		
+		_initialize_choices_modi_panel()
+
+
+func _initialize_choices_modi_panel():
+	if !_already_initialized_choices_modi_panel:
 		is_fully_finished_conditional_clauses.remove_clause(IsFullyFinishedClauseIds.CHOICES_PANEL__CHOICES_SHOWING)
 		
+		if func_source_for__properties.call(func_name_for__is_display_dialog_choices_modi):
+			dialog_choice_modi_panel.modi_panel_config = func_source_for__properties.call(func_name_for__modi_panel_config)
+			
+			dialog_choice_modi_panel._initialize()
+			dialog_choice_modi_panel.visible = true
 
 #
 
@@ -217,19 +249,19 @@ func _start_fade_out_of_button(arg_button, arg_instant_show : bool, arg_button_i
 	
 	var reached_a = val_transition_for_mod_a.configure_self(arg_button.modulate.a, arg_button.modulate.a, 0, final_time, ValTransition.VALUE_UNSET, ValTransition.ValueIncrementMode.LINEAR)
 	if !reached_a:
-		val_transition_for_mod_a.connect("target_val_reached", self, "_on_target_val_reached__button_mod_a", [arg_button, arg_button_info], CONNECT_ONESHOT)
+		val_transition_for_mod_a.connect("target_val_reached", self, "_on_target_val_reached__button_mod_a", [arg_button, arg_button_info, arg_instant_show], CONNECT_ONESHOT)
 		_is_making_button_mod_a_changes = true
 	else:
 		#call(arg_func_name_to_call)
 		_process_next_choice_button_changes_in_queue(arg_instant_show)
 
-func _on_target_val_reached__button_mod_a(arg_button, arg_button_info):
+func _on_target_val_reached__button_mod_a(arg_button, arg_button_info, arg_instant_show):
 	_is_making_button_mod_a_changes = false
 	
 	if arg_button.modulate.a == 1:
 		arg_button.is_button_enabled = arg_button_info.is_button_enabled
 	
-	_process_next_choice_button_changes_in_queue(arg_button)
+	_process_next_choice_button_changes_in_queue(arg_instant_show)
 	#if has_method(arg_func_name_to_call):
 	#	call(arg_func_name_to_call)
 
@@ -244,7 +276,7 @@ func _start_fade_in_of_button__make_initial_mod_a_zero(arg_button, arg_instant_s
 	
 	var reached_a = val_transition_for_mod_a.configure_self(arg_button.modulate.a, arg_button.modulate.a, 1, final_time, ValTransition.VALUE_UNSET, ValTransition.ValueIncrementMode.LINEAR)
 	if !reached_a:
-		val_transition_for_mod_a.connect("target_val_reached", self, "_on_target_val_reached__button_mod_a", [arg_button, arg_button_info], CONNECT_ONESHOT)
+		val_transition_for_mod_a.connect("target_val_reached", self, "_on_target_val_reached__button_mod_a", [arg_button, arg_button_info, arg_instant_show], CONNECT_ONESHOT)
 		_is_making_button_mod_a_changes = true
 	else:
 		#call(arg_func_name_to_call)
@@ -256,7 +288,6 @@ func _process(delta):
 	if _is_making_button_mod_a_changes:
 		val_transition_for_mod_a.delta_pass(delta)
 		_current_button_for_mod_a_changes.modulate.a = val_transition_for_button_mod_a.get_current_val()
-
 
 ##
 
@@ -271,6 +302,7 @@ func _start_display():
 	._start_display()
 	
 	_construct_and_configure_buttons_based_on_properties__on_start()
+	
 
 func _force_finish_display():
 	._force_finish_display()
@@ -278,5 +310,26 @@ func _force_finish_display():
 	_process_next_choice_button_changes_in_queue(true)
 
 ##
+
+
+func _on_dialog_choice_modi_panel_remove_false_answer_requested(arg_count):
+	remove_wrong_choices_count(arg_count)
+
+func remove_wrong_choices_count(arg_count : int):
+	var all_wrong_choices : Array = []
+	for info in _all_choice_button_info:
+		if info.choice_result_type == info.ChoiceResultType.WRONG:
+			all_wrong_choices.append(info)
+	
+	if arg_count >= all_wrong_choices.size():
+		arg_count = all_wrong_choices.size() - 1
+	
+	var rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
+	
+	for i in arg_count:
+		var choice = StoreOfRNG.randomly_select_one_element(all_wrong_choices, rng)
+		#remove_choice_button_info(_all_choice_button_info.find(choice))
+		var button = choice.associated_button
+		button.is_button_enabled = false
 
 

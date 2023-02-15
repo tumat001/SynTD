@@ -1,6 +1,6 @@
 extends Node
 
-const GameModi_EasyDifficulty = preload("res://GameplayRelated/GameModifiersRelated/GameModis/GameModi_EasyDifficulty.gd")
+#const GameModi_EasyDifficulty = preload("res://GameplayRelated/GameModifiersRelated/GameModis/GameModi_EasyDifficulty.gd")
 
 
 const SynTD_HeaderIDName = "SynTD_"
@@ -16,6 +16,11 @@ const GameModiIds__ModiTutorialPhase_02 = "%s%s" % [SynTD_HeaderIDName, "ModiTut
 const GameModiIds__ModiTutorialPhase_03 = "%s%s" % [SynTD_HeaderIDName, "ModiTutorialPhase_03"]
 const GameModiIds__ModiTutorialPhase_04 = "%s%s" % [SynTD_HeaderIDName, "ModiTutorialPhase_04"]
 
+
+const CYDE_HeaderIdName = "Cyde_"
+
+const GameModiIds__CYDE_Common_Modifiers = "%s%s" % [CYDE_HeaderIdName, "CommonModifiers"]
+const GameModiIds__CYDE_ExampleStage = "%s%s" % [CYDE_HeaderIdName, "ExampleStage"]
 
 #enum GameModiIds {
 #
@@ -58,6 +63,8 @@ const game_modifier_id_to_script_name_map : Dictionary = {
 	GameModiIds__ModiTutorialPhase_04 : "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/GameModi_Tutorial_Phase04.gd",
 	
 	
+	GameModiIds__CYDE_Common_Modifiers : "res://CYDE_SPECIFIC_ONLY/DialogRelated/GameModifiers/CommonModifiers/Cyde_CommonModifiers.gd",
+	GameModiIds__CYDE_ExampleStage : "res://CYDE_SPECIFIC_ONLY/DialogRelated/GameModifiers/DialogStageMasters/StageExample/Imp_DialogeSM_StageExample.gd"
 	#GameModiIds.CYDE__EXAMPLE_STAGE : "res://CYDE_SPECIFIC_ONLY/DialogRelated/GameModifiers/DialogStageMasters/StageExample/Imp_DialogeSM_StageExample.gd"
 }
 

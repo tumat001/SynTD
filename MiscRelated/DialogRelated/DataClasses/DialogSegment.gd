@@ -33,6 +33,8 @@ class DialogElementsConstructionIns:
 	var func_name_for_construction
 	var func_params
 	
+	var element_id  # used for determining when something is constructed
+	
 	func build_element():
 		return func_source.call(func_name_for_construction, func_params)
 

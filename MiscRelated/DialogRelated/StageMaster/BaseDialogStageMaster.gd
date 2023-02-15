@@ -9,6 +9,7 @@ const DialogChoicesPanel = preload("res://MiscRelated/DialogRelated/Controls/Dia
 const DialogChoicesPanel_Scene = preload("res://MiscRelated/DialogRelated/Controls/DialogElementControls/DialogChoicesPanel/DialogChoicesPanel.tscn")
 const DialogTimeBarPanel = preload("res://MiscRelated/DialogRelated/Controls/DialogElementControls/DialogTimeBarPanel/DialogTimeBarPanel.gd")
 const DialogTimeBarPanel_Scene = preload("res://MiscRelated/DialogRelated/Controls/DialogElementControls/DialogTimeBarPanel/DialogTimeBarPanel.tscn")
+const DialogChoicesModiPanel = preload("res://MiscRelated/DialogRelated/Controls/DialogElementControls/DialogChoicesModiPanel/DialogChoicesModiPanel.gd")
 
 const BackDialogImagePanel = preload("res://MiscRelated/DialogRelated/Controls/DialogBackgroundElementsControls/BackDialogImagePanel/BackDialogImagePanel.gd")
 const BackDialogImagePanel_Scene = preload("res://MiscRelated/DialogRelated/Controls/DialogBackgroundElementsControls/BackDialogImagePanel/BackDialogImagePanel.tscn")
@@ -212,22 +213,34 @@ func _construct_default_templated_text_input_for_dia_seg(arg_params : Array):
 	
 	return panel
 
+
 ## CHOICES PANEL
-func _configure_dia_seg_to_default_templated_dialog_choices_panel(arg_seg : DialogSegment, arg_button_choices_info : Array):#, arg_pos : Vector2, arg_size : Vector2):
+func _configure_dia_seg_to_default_templated_dialog_choices_panel(arg_seg : DialogSegment, arg_button_choices_info : Array, 
+		func_source_for_properties, func_name_for_is_show_dia_modi_panel, func_name_for_dia_choices_modi):#, arg_pos : Vector2, arg_size : Vector2):
 	var diag_construction_ins := DialogSegment.DialogElementsConstructionIns.new()
 	diag_construction_ins.func_source = self
 	diag_construction_ins.func_name_for_construction = "_construct_default_templated_choices_panel_for_dia_seg"
-	diag_construction_ins.func_params = [arg_seg, arg_button_choices_info]
+	diag_construction_ins.func_params = [arg_seg, arg_button_choices_info, func_source_for_properties, func_name_for_is_show_dia_modi_panel, func_name_for_dia_choices_modi]
 	
 	arg_seg.add_dialog_element_construction_ins(diag_construction_ins)
+	
+	return diag_construction_ins
 
 func _construct_default_templated_choices_panel_for_dia_seg(arg_params : Array):
 	var dia_seg : DialogSegment = arg_params[0]
 	var choices : Array = arg_params[1]
+	var func_source_for_properties = arg_params[2]
+	var func_name_for_show_dia_modi_panel = arg_params[3]
+	var func_name_for_dia_modi_config = arg_params[4]
+	
 	
 	var panel = DialogChoicesPanel_Scene.instance()
 	for choice in choices:
 		panel.add_choice_button_info(choice)
+	
+	panel.func_source_for__properties = func_source_for_properties
+	panel.func_name_for__is_display_dialog_choices_modi = func_name_for_show_dia_modi_panel
+	panel.func_name_for__modi_panel_config = func_name_for_dia_modi_config
 	
 	dia_seg.block_advance_conditional_clauses.attempt_insert_clause(DialogSegment.BlockAdvanceClauseIds.BUTTON_CHOICES_WAIT)
 	

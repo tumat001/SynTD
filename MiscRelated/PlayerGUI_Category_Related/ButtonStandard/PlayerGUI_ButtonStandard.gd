@@ -71,7 +71,8 @@ func _on_advanced_button_tooltip_requested():
 #
 
 func _on_advanced_button_mouse_entered():
-	_set_highlighted_disp_properties()
+	if is_button_enabled:
+		_set_highlighted_disp_properties()
 
 func _on_advanced_button_mouse_exited():
 	_set_normal_disp_properties()
@@ -130,13 +131,16 @@ func set_is_button_enabled(arg_val):
 	
 	if is_inside_tree():
 		advanced_button_with_tooltip.disabled = !is_button_enabled
-		visible = is_button_enabled
+		#visible = is_button_enabled
 		
 		if is_button_enabled:
 			advanced_button_with_tooltip.modulate = enabled_modulate
+			modulate = enabled_modulate
 		else:
 			advanced_button_with_tooltip.modulate = disabled_modulate
-
+			modulate = disabled_modulate
+		
+		_set_normal_disp_properties()
 #
 
 func set_custom_font(arg_font):
