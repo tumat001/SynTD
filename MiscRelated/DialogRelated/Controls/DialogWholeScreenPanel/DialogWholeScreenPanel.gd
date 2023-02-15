@@ -5,7 +5,7 @@ const BaseDialogElementControl = preload("res://MiscRelated/DialogRelated/Contro
 const BaseDialogBackgroundElementControl = preload("res://MiscRelated/DialogRelated/Controls/DialogBackgroundElementsControls/BaseDialogBackgroundElement.gd")
 
 signal resolve_block_advanced_requested_status(arg_status)
-
+signal dialog_element_control_constructed(arg_element, arg_ins, arg_id)
 
 #
 
@@ -74,6 +74,9 @@ func _start_show_dia_main_panel_element_using_construction_ins__and_increment_in
 	_latest_base_dialog_ele_control = cons_ins.build_element()
 	dialog_main_panel.add_dialog_element_to_content_panel(_latest_base_dialog_ele_control)
 	dialog_main_panel._latest_base_dialog_ele_control = _latest_base_dialog_ele_control
+	
+	emit_signal("dialog_element_control_constructed", _latest_base_dialog_ele_control, cons_ins, cons_ins.element_id)
+	
 	
 	_latest_base_dialog_ele_control.set_mod_a_to_zero()
 	

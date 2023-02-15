@@ -18,8 +18,6 @@ margin_right = 120.0
 margin_bottom = 440.0
 
 [node name="RoundStatusPanel" parent="." instance=ExtResource( 3 )]
-margin_right = 120.0
-margin_bottom = 440.0
 
 [node name="TowerInfoPanel" parent="." instance=ExtResource( 1 )]
 margin_right = 120.0

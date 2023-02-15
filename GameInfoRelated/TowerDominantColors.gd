@@ -50,11 +50,11 @@ const all_dom_synergy_ids_from_Syn_TD_base_game : Array = [
 	SynergyID__Blue,
 	SynergyID__Black,
 	SynergyID__Red,
-	SynergyID__Orange,
-	SynergyID__Yellow,
+	#SynergyID__Orange,
+	#SynergyID__Yellow,
 	SynergyID__Green,
-	SynergyID__White,
-	SynergyID__Violet,
+	#SynergyID__White,
+	#SynergyID__Violet,
 ]
 
 #enum SynergyId {

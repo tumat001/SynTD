@@ -63,7 +63,7 @@ theme = SubResource( 6 )
 scroll_horizontal_enabled = false
 
 [node name="ActiveAndNonActiveSynergyDisplayer" parent="VBoxContainer/ScrollContainer" instance=ExtResource( 2 )]
-margin_top = 363.0
+margin_top = 354.0
 margin_right = 91.0
 margin_bottom = 440.0
 grow_vertical = 0

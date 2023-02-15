@@ -161,9 +161,11 @@ func _ready():
 	
 	####### MODIFIER LIST START
 	# TEMPORARY HERE. MAKE IT BE EDITABLE IN MAP SELECTION
-	game_modi_ids.append(StoreOfGameModifiers.GameModiIds__RedTowerRandomizer)
+	#game_modi_ids.append(StoreOfGameModifiers.GameModiIds__RedTowerRandomizer)
 	
+	game_modi_ids.append(StoreOfGameModifiers.GameModiIds__CYDE_Common_Modifiers)
 	
+	game_modi_ids.append(StoreOfGameModifiers.GameModiIds__CYDE_ExampleStage)
 	
 	####### MODIFIER LIST END
 	
