@@ -74,7 +74,8 @@ func _update_description():
 	
 	
 	description = ["After every |0| or %s main attack, fire a beam that explodes at the current target, dealing |1| to %s enemies.%s" % [str(main_attack_trigger_count) + "th", str(explosion_pierce), _generate_desc_for_persisting_total_additive_scaling(true)], [plain_fragment__ability_cast, interpreter_for_sword_dmg]]
-
+	
+	emit_signal("description_updated")
 
 func _make_modifications_to_tower(tower):
 	_attached_tower = tower

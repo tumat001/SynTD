@@ -534,9 +534,6 @@ var _anim_face__custom_initial_dir_hierarchy
 
 # terrain related
 
-#var layer_on_terrain : int setget set_layer_on_terrain
-
-
 enum LayerOnTerrainModiIds {
 	PLACABLE_LAYER = 0
 	
@@ -546,6 +543,12 @@ enum LayerOnTerrainModiIds {
 var _layer_on_terrain_modi_to_val_map : Dictionary = {}
 var last_calculated_layer_on_terrain : int
 
+# properties
+
+#todo
+var last_calc_total_size_of_visibles_in_knockup_layer : Vector2
+var last_calc_center_for_total_size_of_visibles : Vector2
+var last_calc_vec_shift_from_pos_zero_to_top_left : Vector2
 
 # SYN RELATED ---------------------------- #
 # Yellow
@@ -702,7 +705,9 @@ func _post_inherit_ready():
 		anim_face_dir_component.set_animated_sprite_animation_to_default(tower_base_sprites)
 		connect("on_main_attack_module_commanded_to_attack_enemies_or_poses", self, "_on_attk_module__commanded_to_attack_enemies_or_poses", [], CONNECT_PERSIST)
 		
-
+	
+	
+	update_total_knock_up_layer_size__center_pos__and_relateds()
 
 func set_range_module(arg_module):
 	range_module = arg_module
@@ -3685,9 +3690,47 @@ func _calculate_and_emit_last_calc_layer_on_terrain():
 func get_base_sprite_size():
 	return get_current_anim_size()
 
-func get_total_knock_up_layer_size():
-	pass
-
+func update_total_knock_up_layer_size__center_pos__and_relateds():
+	var highest_x : float = 0
+	var highest_y : float = 0
+	
+	var lowest_x : float = 0
+	var lowest_y : float = 0
+	
+	for node in knock_up_layer.get_children():
+		var is_setted = false
+		var size
+		var pos_modi
+		
+		if node is AnimatedSprite:
+			is_setted = true
+			size = node.frames.get_frame(node.animation, node.frame).get_size()
+			pos_modi = node.position + tower_base.position
+			
+		elif node is Sprite:
+			is_setted = true
+			size = node.texture.get_size()
+			pos_modi = node.position + tower_base.position
+		
+		if is_setted:
+			var final_vector : Vector2 = (size / 2) + pos_modi
+			if highest_x < final_vector.x:
+				highest_x = final_vector.x
+			if highest_y < final_vector.y:
+				highest_y = final_vector.y
+			
+			var final_lowest_vec : Vector2 = pos_modi - (size / 2)
+			if lowest_x > final_lowest_vec.x:
+				lowest_x = final_lowest_vec.x
+			if lowest_y > final_lowest_vec.y:
+				lowest_y = final_lowest_vec.y
+	
+	last_calc_total_size_of_visibles_in_knockup_layer = Vector2(highest_x + abs(lowest_x), highest_y + abs(lowest_y))
+	last_calc_center_for_total_size_of_visibles = last_calc_total_size_of_visibles_in_knockup_layer / 2
+	
+	var ave_y = last_calc_center_for_total_size_of_visibles.y
+	var dist_from_zero_to_ave_y = 0 - ave_y
+	last_calc_vec_shift_from_pos_zero_to_top_left = Vector2(last_calc_total_size_of_visibles_in_knockup_layer.x / 2, ave_y - dist_from_zero_to_ave_y)
 
 # SYNERGIES RELATED -----------------------------------------
 # YELLOW - energy module related

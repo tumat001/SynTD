@@ -70,8 +70,8 @@ func _update_description():
 	
 	
 	description = ["Pinglet: Summons a Pinglet beside your tower that attacks on its own. Has |0|. Its shots deal |1|. Applies on hit effects. Benefits from bonus attack speed.%s" % _generate_desc_for_persisting_total_additive_scaling(true), [interpreter_for_range, interpreter_for_dmg]]
-
-
+	
+	emit_signal("description_updated")
 
 
 func _construct_pinglet():

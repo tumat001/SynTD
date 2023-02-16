@@ -70,7 +70,6 @@ margin_bottom = 205.0
 custom_constants/margin_top = 8
 
 [node name="ActiveIngredientsPanel" parent="VBoxContainer" instance=ExtResource( 2 )]
-visible = false
 margin_left = 10.0
 margin_top = 205.0
 margin_right = 110.0
@@ -81,16 +80,16 @@ custom_constants/margin_top = 10
 custom_constants/margin_bottom = 8
 
 [node name="HeatModuleExtraSlot" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 205.0
+margin_top = 424.0
 margin_right = 120.0
-margin_bottom = 213.0
+margin_bottom = 432.0
 custom_constants/margin_bottom = 8
 script = ExtResource( 6 )
 
 [node name="EnergyModuleExtraSlot" type="MarginContainer" parent="VBoxContainer"]
-margin_top = 213.0
+margin_top = 432.0
 margin_right = 120.0
-margin_bottom = 221.0
+margin_bottom = 440.0
 mouse_filter = 2
 custom_constants/margin_bottom = 8
 script = ExtResource( 6 )

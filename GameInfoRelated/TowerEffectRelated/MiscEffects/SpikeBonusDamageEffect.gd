@@ -34,7 +34,8 @@ func _update_description():
 	
 	
 	description = ["All of the tower's attacks deal |0| to enemies below 50%% health.%s" % [_generate_desc_for_persisting_total_additive_scaling(true)], [interpreter_for_flat_on_hit]]
-
+	
+	emit_signal("description_updated")
 
 
 

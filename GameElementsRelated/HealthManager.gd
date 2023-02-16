@@ -27,6 +27,9 @@ enum DecreaseHealthSource {
 
 signal starting_health_changed(arg_val)
 signal current_health_changed(current_health)
+
+signal health_decreased_by(arg_val)
+
 signal zero_health_reached()
 
 
@@ -103,6 +106,7 @@ func decrease_health_by(decrease : float, decrease_source : int):
 	current_health -= decrease
 	
 	_health_changed()
+	emit_signal("health_decreased_by", decrease)
 	_check_if_no_health_remaining()
 
 

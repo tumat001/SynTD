@@ -20,12 +20,12 @@ func _ready():
 	
 	###
 	
-	call_deferred("_deferred_ready")
-	
+	#call_deferred("_apply_modifiers_and_initialize_singletons")
+	_apply_modifiers_and_initialize_singletons()
 	
 
 
-func _deferred_ready():
+func _apply_modifiers_and_initialize_singletons():
 	
 	for modi in _all_pre_game_modifiers__before_S_initialize:
 		modi._apply_pre_game_modifier()

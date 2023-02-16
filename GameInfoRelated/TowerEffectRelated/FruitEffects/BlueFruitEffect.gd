@@ -45,7 +45,8 @@ func _init().(StoreOfTowerEffectsUUID.ING_BLUE_FRUIT):
 	# ins
 	
 	description = ["Tower's main attacks create an icy explosion that deals |0| and |1| 4 enemies by 25% for 2 seconds.", [interpreter_for_flat_on_hit, plain_fragment__slows]]
-
+	
+	emit_signal("description_updated")
 
 # make mod
 

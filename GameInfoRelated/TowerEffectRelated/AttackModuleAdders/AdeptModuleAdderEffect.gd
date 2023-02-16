@@ -54,7 +54,8 @@ func _update_description():
 	# INS END
 	
 	description = ["Adeptling: Summons an adeptling beside your tower. Main attacks cause Adeptling to attack a different target, with a cooldown of 0.1 seconds. Its shots deal |0| and apply on hit effects.%s" % [_generate_desc_for_persisting_total_additive_scaling()], [interpreter]]
-
+	
+	emit_signal("description_updated")
 
 
 func _make_modifications_to_tower(tower):

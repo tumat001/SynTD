@@ -1,5 +1,8 @@
 
 
+signal description_updated()  # called when desc is updated by effect, not by setting description
+
+
 enum EffectType {
 	
 	ATTRIBUTES,

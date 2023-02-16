@@ -21,6 +21,7 @@ const TimeMachineEffect = preload("res://GameInfoRelated/TowerEffectRelated/Misc
 const Ing_ProminenceEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/Prominence_IngEffect.gd")
 const BleackAttkModAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/BleachExplAttkModuleAdderEffect.gd")
 const BoundedSameTowersTowerEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/BoundedSameTowersTowerEffect.gd")
+const CelestialIngEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/CelestialIngEffect.gd")
 
 const PingletAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/PingletAdderEffect.gd")
 const TowerChaosTakeoverEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerChaosTakeoverEffect.gd")
@@ -28,6 +29,7 @@ const LavaJetModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelat
 const FlameBurstModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/FlameBurstModuleAdderEffect.gd")
 const AdeptModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/AdeptModuleAdderEffect.gd")
 const FulSmiteAttackModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/FulSmiteAttkModuleAdder.gd")
+const BiomorphAttkModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/BiomorphAttkModuleAdderEffect.gd")
 
 const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
@@ -6806,6 +6808,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			
 		]
 		
+		var tower_base_effect := CelestialIngEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_base_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ ap"
+		
+		
+		
 		
 	elif tower_id == BIOMORPH:
 		info = TowerTypeInformation.new("BioMorph", tower_id)
@@ -6876,6 +6886,13 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			ability_desc[0]
 		]
+		
+		
+		var tower_base_effect := BiomorphAttkModuleAdderEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_base_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "biomorph"
 		
 		
 	

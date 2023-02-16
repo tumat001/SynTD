@@ -20,7 +20,8 @@ func _init().(StoreOfTowerEffectsUUID.ING_LEADER):
 
 func _update_description():
 	description = "Tower gains all targeting options, and receives %s armor and toughness pierce.%s" % [str(armor_and_toughness_pierce_amount * _current_additive_scale), _generate_desc_for_persisting_total_additive_scaling(true)]
-
+	
+	emit_signal("description_updated")
 
 func _make_modifications_to_tower(tower):
 	if !_effects_applied:

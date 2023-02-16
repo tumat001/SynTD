@@ -63,7 +63,8 @@ func _update_description():
 	#
 	
 	description = ["On the 5th main attack, shoot a lava beam at the current enemy. The beam deals |0|, up to %s.%s" % [str(percent_dmg_max_limit * _current_additive_scale), str(_generate_desc_for_persisting_total_additive_scaling(true))], [interpreter_for_perc_on_hit]]
-
+	
+	emit_signal("description_updated")
 
 
 func _make_modifications_to_tower(tower):

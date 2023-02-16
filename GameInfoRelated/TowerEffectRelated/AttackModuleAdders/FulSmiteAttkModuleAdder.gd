@@ -76,6 +76,8 @@ func _update_description():
 	#
 	
 	description = ["Smite a random enemy out of range every %s s, dealing |0| to %s enemies and |1| for %s s." % [str(smite_cooldown), str(smite_explosion_pierce), str(smite_stun_duration)], [interpreter_for_smite_dmg, plain_fragment__stunning]]
+	
+	emit_signal("description_updated")
 
 #
 

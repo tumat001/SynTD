@@ -60,7 +60,8 @@ func _update_description():
 	# ins
 	
 	description = ["This tower's main attacks on hit causes 3 flamelets to be spewed from enemies hit. Each flamelet deals |0|. Benefits from bonus pierce.%s" % [_generate_desc_for_persisting_total_additive_scaling(true)], [interpreter_for_flat_on_hit]]
-
+	
+	emit_signal("description_updated")
 
 func _construct_burst_module():
 	burst_attack_module = BulletAttackModule_Scene.instance()

@@ -161,11 +161,8 @@ func _ready():
 	
 	####### MODIFIER LIST START
 	# TEMPORARY HERE. MAKE IT BE EDITABLE IN MAP SELECTION
-	#game_modi_ids.append(StoreOfGameModifiers.GameModiIds__RedTowerRandomizer)
+	game_modi_ids.append(StoreOfGameModifiers.GameModiIds__RedTowerRandomizer)
 	
-	game_modi_ids.append(StoreOfGameModifiers.GameModiIds__CYDE_Common_Modifiers)
-	
-	game_modi_ids.append(StoreOfGameModifiers.GameModiIds__CYDE_ExampleStage)
 	
 	####### MODIFIER LIST END
 	
@@ -442,9 +439,9 @@ func _ready():
 	
 	# FOR TESTING ------------------------------------
 	
-#	gold_manager.increase_gold_by(1000, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-#	level_manager.current_level = LevelManager.LEVEL_2
-#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+	gold_manager.increase_gold_by(1000, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	level_manager.current_level = LevelManager.LEVEL_2
+	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -456,27 +453,27 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	shop_manager.roll_towers_in_shop_with_cost()
+	#shop_manager.roll_towers_in_shop_with_cost()
 	
-#	if !even:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.BOUNDED,
-#			Towers.PING,
-#			Towers.ACCUMULAE,
-#			Towers.OUTREACH,
-#			Towers.CELESTIAL,
-#			Towers.SEEDER,
-#		])
-#	else:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.PESTILENCE,
-#			Towers.ACCUMULAE,
-#			Towers.WAVE,
-#			Towers.BIOMORPH,
-#			Towers.TESLA,
-#			Towers.SPIKE
-#		])
-#	even = !even
+	if !even:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.BOUNDED,
+			Towers.PING,
+			Towers.ACCUMULAE,
+			Towers.OUTREACH,
+			Towers.CELESTIAL,
+			Towers.SEEDER,
+		])
+	else:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.PESTILENCE,
+			Towers.ACCUMULAE,
+			Towers.WAVE,
+			Towers.BIOMORPH,
+			Towers.TESLA,
+			Towers.SPIKE
+		])
+	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):

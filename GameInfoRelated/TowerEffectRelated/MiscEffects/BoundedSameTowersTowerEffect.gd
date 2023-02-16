@@ -58,6 +58,8 @@ func _update_description():
 		interpreter_array.append(interpreter_for_bonus_dmg_total)
 	
 	description = ["Gain |0| per same type of this tower found in the map (including itself).%s%s" % [current_bonus_desc, _generate_desc_for_persisting_total_additive_scaling(true)], interpreter_array]
+	
+	emit_signal("description_updated")
 
 func _make_modifications_to_tower(tower):
 	_tower = tower
