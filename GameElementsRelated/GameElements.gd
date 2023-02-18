@@ -135,6 +135,10 @@ var game_modi_ids : Array = []
 
 #
 
+var _is_game_quitting = false
+
+#
+
 func _ready():
 	CommsForBetweenScenes._game_elements_created__before_anything()
 	
@@ -969,10 +973,16 @@ func _get_highest_from_angle(arg_curr_highest : float, arg_candidate_angle : flo
 
 # called by HubPausePanel
 func quit_game():
+	_is_game_quitting = true
 	emit_signal("before_game_quit")
 	
 	pause_manager.unpause_game__accessed_for_scene_change()
 	CommsForBetweenScenes.goto_starting_screen(self)
+
+func _exit_tree():
+	if !_is_game_quitting:
+		_is_game_quitting = true
+		emit_signal("before_game_quit")
 
 ####
 
