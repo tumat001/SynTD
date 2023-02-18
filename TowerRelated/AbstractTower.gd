@@ -2458,6 +2458,13 @@ func recalculate_final_base_damage():
 		if module == main_attack_module:
 			_emit_final_base_damage_changed()
 
+func recalculate_final_attack_speed():
+	for module in all_attack_modules:
+		module.calculate_all_speed_related_attributes()
+		
+		if module == main_attack_module:
+			_emit_final_attack_speed_changed()
+
 func recalculate_range():
 	var updated_range_modules : Array = []
 	

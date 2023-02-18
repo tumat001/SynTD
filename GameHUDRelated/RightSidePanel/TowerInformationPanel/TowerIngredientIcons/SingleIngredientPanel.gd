@@ -159,7 +159,8 @@ func set_collapsed(val : bool):
 func _on_SingleIngredientPanel_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == BUTTON_LEFT:
-			set_collapsed(!collapsed)
+			pass
+			#set_collapsed(!collapsed)
 
 
 ######

@@ -458,7 +458,7 @@ func _on_BuySellLevelRollPanel_reroll():
 	if !even:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.BOUNDED,
-			Towers.PING,
+			Towers.CYNOSURE,
 			Towers.ACCUMULAE,
 			Towers.OUTREACH,
 			Towers.CELESTIAL,

@@ -142,6 +142,8 @@ const variance_image = preload("res://TowerRelated/Color_Violet/Variance/Varianc
 const bounded_image = preload("res://TowerRelated/Color_Violet/Bounded/Bounded_Omni.png")
 const celestial_image = preload("res://TowerRelated/Color_Violet/Celestial/Celestial_TowerBase_Omni.png")
 const biomorph_image = preload("res://TowerRelated/Color_Violet/BioMorph/Biomorph_Omni.png")
+const cynosure_image = preload("res://TowerRelated/Color_Violet/Cynosure/Cynosure_Omni.png")
+const lifeline_image = preload("res://TowerRelated/Color_Violet/Lifeline/Lifeline_Omni.png")
 
 # OTHERS
 const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
@@ -257,6 +259,8 @@ enum {
 	BOUNDED = 708,
 	CELESTIAL = 709,
 	BIOMORPH = 710,
+	CYNOSURE = 711,
+	LIFELINE = 712,
 	
 	# OTHERS (900)
 	HERO = 900, # WHITE
@@ -300,6 +304,7 @@ const TowerTiersMap : Dictionary = {
 	STRIKER : 1,
 	PINECONE : 1,
 	TRAPPER : 1,
+	CYNOSURE : 1,
 	
 	RAILGUN : 2,
 	SCATTER : 2,
@@ -340,6 +345,7 @@ const TowerTiersMap : Dictionary = {
 	ENERVATE : 3,
 	FULGURANT : 3,
 	BOUNDED : 3,
+	LIFELINE : 3,
 	
 	#RE : 4,
 	PING : 4,
@@ -6895,6 +6901,138 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.ingredient_effect_simple_description = "biomorph"
 		
 		
+		
+	elif tower_id == CYNOSURE:
+		info = TowerTypeInformation.new("Cynosure", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.VIOLET)
+		info.base_tower_image = cynosure_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0.589
+		info.base_pierce = 1
+		info.base_range = 155
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		
+		var interpreter_for_stack_perc_reduc = TextFragmentInterpreter.new()
+		interpreter_for_stack_perc_reduc.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_stack_perc_reduc.display_body = true
+		interpreter_for_stack_perc_reduc.header_description = "of the stacks"
+		
+		var ins_for_stack_perc_reduc = []
+		ins_for_stack_perc_reduc.append(NumericalTextFragment.new(75, true, -1))
+		ins_for_stack_perc_reduc.append(TextFragmentInterpreter.STAT_OPERATION.DIVIDE)
+		ins_for_stack_perc_reduc.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+		
+		interpreter_for_stack_perc_reduc.array_of_instructions = ins_for_stack_perc_reduc
+		
+		
+		
+		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
+		interpreter_for_attk_speed.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_attk_speed.display_body = true
+		interpreter_for_attk_speed.header_description = "stacking attack speed"
+		
+		var ins_for_attk_speed = []
+		ins_for_attk_speed.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ATTACK_SPEED, -1))
+		
+		ins_for_attk_speed.append(NumericalTextFragment.new(5, true))
+		#ins_for_attk_speed.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		#ins_for_attk_speed.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_attk_speed.array_of_instructions = ins_for_attk_speed
+		
+		
+		var interpreter_for_range = TextFragmentInterpreter.new()
+		interpreter_for_range.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_range.display_body = false
+		
+		var ins_for_range = []
+		ins_for_range.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.RANGE, -1, "range", 100, false))
+		
+		interpreter_for_range.array_of_instructions = ins_for_range
+		
+		
+		info.tower_descriptions = [
+			["Attacks against the same target grant 1 stack. Switching targets causes |0| to be lost.", [interpreter_for_stack_perc_reduc]],
+			["1 stack grants |0|.", [interpreter_for_attk_speed]],
+			"",
+			["Cynosure gains |0| while having at least 15 stacks.", [interpreter_for_range]]
+		]
+		
+		
+		# Ingredient related
+		var attk_speed_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_CYNOSURE)
+		attk_speed_attr_mod.percent_amount = tier_attk_speed_map[info.tower_tier]
+		attk_speed_attr_mod.percent_based_on = PercentType.BASE
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_BASE_ATTACK_SPEED, attk_speed_attr_mod, StoreOfTowerEffectsUUID.ING_CYNOSURE)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ attk spd"
+		
+		
+	elif tower_id == LIFELINE:
+		info = TowerTypeInformation.new("Lifeline", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.VIOLET)
+		info.base_tower_image = lifeline_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
+		
+		info.base_damage = 2
+		info.base_attk_speed = 0
+		info.base_pierce = 1
+		info.base_range = 100
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		
+		var interpreter_for_buff_min = TextFragmentInterpreter.new()
+		interpreter_for_buff_min.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_buff_min.display_body = true
+		interpreter_for_buff_min.header_description = ""
+		
+		var ins_for_buff_min = []
+		ins_for_buff_min.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE))
+		ins_for_buff_min.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 0.25))
+		ins_for_buff_min.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_buff_min.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_buff_min.array_of_instructions = ins_for_buff_min
+		
+		
+		var interpreter_for_buff_max = TextFragmentInterpreter.new()
+		interpreter_for_buff_max.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_buff_max.display_body = true
+		interpreter_for_buff_max.header_description = "bonus base damage"
+		
+		var ins_for_buff_max = []
+		ins_for_buff_max.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE))
+		ins_for_buff_max.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0))
+		ins_for_buff_max.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		ins_for_buff_max.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_buff_max.array_of_instructions = ins_for_buff_max
+		
+		
+		var plain_fragment__player_heal = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PLAYER_HEALTH, "2 Player health")
+		
+		
+		info.tower_descriptions = [
+			["All towers within Lifeline's range gain |0| up to |1| based on Lifeline's missing health. The max value is reached on 80% missing health.", []],
+			"The buffs persist even on Lifeline's death.",
+			["Heal for |0| when Lifeline receives lethal damage from enemies.", [plain_fragment__player_heal]],
+		]
+		
+		
+		
+		
 	
 	return info
 
@@ -7084,5 +7222,9 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Celestial/Celestial.tscn")
 	elif tower_id == BIOMORPH:
 		return load("res://TowerRelated/Color_Violet/BioMorph/Biomorph.tscn")
+	elif tower_id == CYNOSURE:
+		return load("res://TowerRelated/Color_Violet/Cynosure/Cynosure.tscn")
+	elif tower_id == LIFELINE:
+		return load("res://TowerRelated/Color_Violet/Lifeline/Lifeline.tscn")
 	
 	

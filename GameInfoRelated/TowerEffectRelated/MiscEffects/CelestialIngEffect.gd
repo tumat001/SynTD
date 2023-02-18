@@ -10,7 +10,7 @@ const TowerAttributesEffect = preload("res://GameInfoRelated/TowerEffectRelated/
 const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 
 const ability_cast_amount_for_empower : int = 3  # note: change description if changing this
-const base_ap_amount : float = 1.0
+const base_ap_amount : float = 1.5
 
 const ap_buff_duration : float = 4.0
 

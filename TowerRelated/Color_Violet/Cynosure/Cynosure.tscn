@@ -1,0 +1,61 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://TowerRelated/AbstractTower.tscn" type="PackedScene" id=1]
+[ext_resource path="res://TowerRelated/Color_Violet/Cynosure/Cynosure.gd" type="Script" id=2]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=3]
+[ext_resource path="res://TowerRelated/Color_Violet/Cynosure/Cynosure_Omni.png" type="Texture" id=4]
+[ext_resource path="res://TowerRelated/Color_Violet/Cynosure/Cynosure_Omni_NoHealth.png" type="Texture" id=5]
+[ext_resource path="res://TowerRelated/Color_Violet/Cynosure/Cynosure_CosmeticAfterBreakpoint.png" type="Texture" id=6]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 4 ) ],
+"loop": true,
+"name": "Omni",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "Omni_NoHealth",
+"speed": 5.0
+} ]
+
+[sub_resource type="DynamicFont" id=2]
+size = 8
+font_data = ExtResource( 3 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 10.0339, 16.2773 )
+
+[node name="Cynosure" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+
+[node name="TowerBase" parent="." index="0"]
+position = Vector2( 0.5, -8 )
+
+[node name="BaseSprites" parent="TowerBase/KnockUpLayer" index="0"]
+frames = SubResource( 1 )
+animation = "Omni"
+
+[node name="CosmeticOnStacks" type="Sprite" parent="TowerBase/KnockUpLayer" index="1"]
+position = Vector2( 0, 4 )
+texture = ExtResource( 6 )
+
+[node name="StackLabel" type="Label" parent="TowerBase/KnockUpLayer" index="2"]
+margin_left = -4.5
+margin_top = 2.5
+margin_right = 31.5
+margin_bottom = 16.5
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+custom_fonts/font = SubResource( 2 )
+text = "10"
+
+[node name="CollisionShape" parent="." index="1"]
+position = Vector2( 0.595848, -7.42649 )
+shape = SubResource( 3 )
+
+[node name="IngredientDeclinePic" parent="." index="4"]
+visible = false
+
+[node name="DoesNotApplyPic" parent="." index="5"]
+visible = false

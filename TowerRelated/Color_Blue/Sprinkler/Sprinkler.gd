@@ -9,7 +9,6 @@ const BaseBullet_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseBul
 const SprinklerBullet_pic = preload("res://TowerRelated/Color_Blue/Sprinkler/Attks/Sprinkler_Proj.png")
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.SPRINKLER)
 	
