@@ -20,6 +20,8 @@ var pierce : int = -1
 var rotation_deg_per_sec : float = 0
 var enemy_hit_count : int = 0
 
+var duration_decrease_based_on_amount_of_enmeies_collided : bool = false   # used by Impede's stone aoe
+
 
 var enemies_to_ignore : Array = []
 
@@ -59,6 +61,8 @@ var _current_collision_duration : float
 var _enemies_inside_damage_cd_map : Dictionary = {}
 var _pierce_available : int
 
+var _enemies_inside_count : int
+
 onready var aoe_area : Area2D = $AOEArea
 onready var anim_sprite : AnimatedSprite = $AOEArea/AnimatedSprite
 onready var collision_shape : CollisionShape2D = $AOEArea/Shape
@@ -72,6 +76,7 @@ func _on_AOEArea_area_shape_entered(area_id, area, area_shape, self_shape):
 		if parent is AbstractEnemy:
 			if !enemies_to_ignore.has(parent):
 				_enemies_inside_damage_cd_map[parent] = 0
+				_enemies_inside_count += 1
 				emit_signal("enemy_entered", parent)
 
 func _on_AOEArea_area_shape_exited(area_id, area, area_shape, self_shape):
@@ -80,6 +85,7 @@ func _on_AOEArea_area_shape_exited(area_id, area, area_shape, self_shape):
 		
 		if parent is AbstractEnemy:
 			_enemies_inside_damage_cd_map.erase(parent)
+			_enemies_inside_count -= 1
 			emit_signal("enemy_exited", parent)
 
 #
@@ -126,6 +132,10 @@ func _process(delta):
 		if decrease_duration:
 			_current_duration += delta
 			_current_collision_duration += delta
+			
+			if duration_decrease_based_on_amount_of_enmeies_collided and _enemies_inside_count > 0:
+				_current_duration += delta * (_enemies_inside_count - 1)
+				_current_collision_duration += delta * (_enemies_inside_count - 1)
 		
 		if _current_pierce_refresh_delay <= 0:
 			_pierce_available = pierce
@@ -258,6 +268,7 @@ func _attempt_damage_entities_inside(delta):
 	
 	while _enemies_inside_damage_cd_map.keys().has(null):
 		_enemies_inside_damage_cd_map.erase(null)
+		_enemies_inside_count -= 1
 
 
 func _attempt_damage_entity(entity):
@@ -299,6 +310,7 @@ func get_coll_circle_radius_with_scale():
 func get_num_of_enemies_inside():
 	while _enemies_inside_damage_cd_map.keys().has(null):
 		_enemies_inside_damage_cd_map.erase(null)
+		_enemies_inside_count -= 1
 	
 	return _enemies_inside_damage_cd_map.size()
 

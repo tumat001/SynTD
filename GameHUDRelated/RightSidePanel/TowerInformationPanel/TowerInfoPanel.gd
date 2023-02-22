@@ -40,6 +40,8 @@ const RiftAxis_InfoPanel = preload("res://GameInfoRelated/ColorSynergyRelated/Co
 const RiftAxis_InfoPanel_Scene = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/YelVio_RiftAxis/GUI/RiftAxis_InfoPanel.tscn")
 const Amalgamator_InfoPanel = preload("res://TowerRelated/Color_Black/Amalgamator/InfoPanel/Amalgamator_InfoPanel.gd")
 const Amalgamator_InfoPanel_Scene = preload("res://TowerRelated/Color_Black/Amalgamator/InfoPanel/Amalgamator_InfoPanel.tscn")
+const Lifeline_InfoPanel = preload("res://TowerRelated/Color_Violet/Lifeline/Panel/Lifeline_InfoPanel.gd")
+const Lifeline_InfoPanel_Scene = preload("res://TowerRelated/Color_Violet/Lifeline/Panel/Lifeline_InfoPanel.tscn")
 
 signal on_extra_info_panel_shown(arg_info_panel, arg_tower)
 signal on_tower_panel_ability_01_activate()
@@ -81,6 +83,7 @@ var tesla_info_panel : Tesla_InfoPanel
 var variance_info_panel : Variance_InfoPanel
 var rift_axis_info_panel : RiftAxis_InfoPanel
 var amalgamator_info_panel : Amalgamator_InfoPanel
+var lifeline_info_panel : Lifeline_InfoPanel
 
 var current_active_info_panel
 
@@ -445,6 +448,19 @@ func _update_tower_specific_info_panel():
 			amalgamator_info_panel.visible = false
 			amalgamator_info_panel.set_amalgamator(null)
 	
+	# Lifeline
+	if Lifeline_InfoPanel.should_display_self_for(tower):
+		if !is_instance_valid(lifeline_info_panel):
+			lifeline_info_panel = Lifeline_InfoPanel_Scene.instance()
+			tower_specific_slot.add_child(lifeline_info_panel)
+		
+		lifeline_info_panel.visible = true
+		lifeline_info_panel.set_lifeline(tower)
+		current_active_info_panel = lifeline_info_panel
+	else:
+		if is_instance_valid(lifeline_info_panel):
+			lifeline_info_panel.visible = false
+			lifeline_info_panel.set_lifeline(null)
 	
 	
 	# KEEP THIS AT THE BOTTOM

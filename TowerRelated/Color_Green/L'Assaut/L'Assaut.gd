@@ -128,7 +128,7 @@ func _ready():
 	range_module = RangeModule_Scene.instance()
 	range_module.base_range_radius = info.base_range
 	range_module.set_terrain_scan_shape(CircleShape2D.new())
-	range_module.position.y += 10
+	range_module.position.y += 17
 	
 	#
 	

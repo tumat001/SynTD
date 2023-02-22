@@ -2154,6 +2154,8 @@ func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected
 		if !tower_selected.last_calculated_can_be_used_as_ingredient:
 			return false
 		
+		if !ingredient_effect.can_be_absorbed_as_an_ingredient_by_tower(self):
+			return false
 		
 		if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.ignore_ingredient_limit:
 			return false

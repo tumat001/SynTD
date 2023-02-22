@@ -65,6 +65,10 @@ const blacklisted_towers_to_inventory : Array = [
 	Towers.BOUNDED,
 	Towers.CELESTIAL,
 	Towers.BIOMORPH,
+	Towers.CYNOSURE,
+	Towers.LIFELINE,
+	Towers.IMPEDE,
+	Towers.REALMD,
 	
 	#red towers
 	Towers.OUTREACH, #6
@@ -116,6 +120,10 @@ const towers_not_initially_in_inventory : Array = [
 	Towers.BOUNDED,
 	Towers.CELESTIAL,
 	Towers.BIOMORPH,
+	Towers.CYNOSURE,
+	Towers.LIFELINE,
+	Towers.IMPEDE,
+	Towers.REALMD,
 	
 	# red towers
 	Towers.OUTREACH, #6

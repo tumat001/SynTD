@@ -112,6 +112,10 @@ enum NoMovementClauses {
 	
 	CUSTOM_CLAUSE_01 = 200,
 	CUSTOM_CLAUSE_02 = 201,
+	
+	####
+	
+	IMPEDE_STONE_STOP_MOV = 1000,
 }
 
 enum NoActionClauses {
@@ -2471,6 +2475,10 @@ func copy_enemy_location_and_offset(arg_enemy):
 func set_properties_to_spawned_from_entity():
 	respect_stage_round_health_scale = false
 
+#
+
+func get_current_texture_of_anim():
+	return anim_sprite.frames.get_frame(anim_sprite.animation, anim_sprite.frame)
 
 #
 

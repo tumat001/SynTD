@@ -463,18 +463,18 @@ func _on_BuySellLevelRollPanel_reroll():
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.BOUNDED,
 			Towers.CYNOSURE,
-			Towers.ACCUMULAE,
-			Towers.OUTREACH,
+			Towers.TIME_MACHINE,
+			Towers.IMPEDE,
 			Towers.CELESTIAL,
-			Towers.SEEDER,
+			Towers.LIFELINE,
 		])
 	else:
 		panel_buy_sell_level_roll.update_new_rolled_towers([
 			Towers.PESTILENCE,
-			Towers.ACCUMULAE,
-			Towers.WAVE,
+			Towers.BEACON_DISH,
 			Towers.BIOMORPH,
-			Towers.TESLA,
+			Towers.ADEPT,
+			Towers.L_ASSAUT,
 			Towers.SPIKE
 		])
 	even = !even
@@ -990,5 +990,3 @@ func _exit_tree():
 func add_child_to_below_below_screen_effects_manager(arg_node):
 	add_child(arg_node)
 	move_child(arg_node, screen_effect_manager.get_position_in_parent() - 1)
-
-

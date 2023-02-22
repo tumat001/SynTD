@@ -18,6 +18,11 @@ func _init(arg_tower_id : int,
 
 #
 
+func can_be_absorbed_as_an_ingredient_by_tower(arg_tower):
+	return tower_base_effect._can_be_absorbed_as_an_ingredient_by_tower(arg_tower)
+
+#
+
 func get_copy__deep_or_shallow():
 	var effect_copy
 	

@@ -6,6 +6,7 @@ const BeamAestheric_Scene = preload("res://MiscRelated/BeamRelated/BeamAesthetic
 signal beam_connected_to_enemy(beam, enemy)
 signal kill_all_spawned_beams()
 signal global_position_changed(old_pos, new_pos)
+signal beam_constructed_and_added(beam)
 
 # Used for allocation, as to avoid deleting
 # and creating many of them...
@@ -22,13 +23,17 @@ var show_beam_regardless_of_state : bool = false
 
 var old_global_position : Vector2
 
+var always_update_beam_state_at_process : bool = false
+
 # internals
 
 var _should_update_beams : bool = true
 var _terminate_update_on_next : bool = false
 
+#
+
 func _process(delta):
-	if !beam_is_timebound:
+	if !beam_is_timebound or always_update_beam_state_at_process:
 		update_beams_state()
 
 func update_beams_state():
@@ -106,6 +111,11 @@ func _connect_beam_to_enemy(enemy : AbstractEnemy):
 		for l_enemy_key in beam_to_enemy_map.keys():
 			if beam_to_enemy_map[l_enemy_key] == enemy:
 				l_enemy_key.visible = true  # the beam
+				
+				#l_enemy_key.frame = 0
+				#l_enemy_key.position = global_position
+				#l_enemy_key.update_destination_position(enemy.position)
+				
 				return
 	
 	var beam = _get_available_beam_instance()
@@ -114,6 +124,8 @@ func _connect_beam_to_enemy(enemy : AbstractEnemy):
 	beam.position = global_position
 	beam.update_destination_position(enemy.position)
 	beam_to_enemy_map[beam] = enemy
+	
+	#beam.play("default")
 	
 	emit_signal("beam_connected_to_enemy", beam, enemy)
 
@@ -141,6 +153,8 @@ func _get_available_beam_instance() -> BeamAesthetic:
 	available_beam_instance.is_blockable = (base_attack_wind_up != 0)
 	
 	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(available_beam_instance)
+	
+	emit_signal("beam_constructed_and_added", available_beam_instance)
 	
 	connect("kill_all_spawned_beams", available_beam_instance, "queue_free", [], CONNECT_ONESHOT)
 	

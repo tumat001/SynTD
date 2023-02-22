@@ -361,7 +361,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.GRANDMASTER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 67 
+		info.base_health = 66
 		info.base_movement_speed = 60
 		info.base_effect_vulnerability = 0.2
 		#info.base_resistance = 25

@@ -134,3 +134,9 @@ func _generate_desc_for_persisting_total_additive_scaling(arg_with_front_spacing
 			return " (+%s%%)" % str((_persisting_total_additive_scale - 1) * 100)
 	else:
 		return ""
+
+##########
+
+func _can_be_absorbed_as_an_ingredient_by_tower(arg_tower):
+	return true
+

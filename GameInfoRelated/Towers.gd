@@ -30,6 +30,8 @@ const FlameBurstModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRe
 const AdeptModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/AdeptModuleAdderEffect.gd")
 const FulSmiteAttackModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/FulSmiteAttkModuleAdder.gd")
 const BiomorphAttkModuleAdderEffect = preload("res://GameInfoRelated/TowerEffectRelated/AttackModuleAdders/BiomorphAttkModuleAdderEffect.gd")
+const LifelineIngEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/LifelineIngEffect.gd")
+const ImpedeIngEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/ImpedeIngEffect.gd")
 
 const StoreOfEnemyEffectsUUID = preload("res://GameInfoRelated/EnemyEffectRelated/StoreOfEnemyEffectsUUID.gd")
 const EnemyAttributesEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyAttributesEffect.gd")
@@ -144,6 +146,7 @@ const celestial_image = preload("res://TowerRelated/Color_Violet/Celestial/Celes
 const biomorph_image = preload("res://TowerRelated/Color_Violet/BioMorph/Biomorph_Omni.png")
 const cynosure_image = preload("res://TowerRelated/Color_Violet/Cynosure/Cynosure_Omni.png")
 const lifeline_image = preload("res://TowerRelated/Color_Violet/Lifeline/Lifeline_Omni.png")
+const impede_image = preload("res://TowerRelated/Color_Violet/Impede/Impede_Omni.png")
 
 # OTHERS
 const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
@@ -261,6 +264,8 @@ enum {
 	BIOMORPH = 710,
 	CYNOSURE = 711,
 	LIFELINE = 712,
+	IMPEDE = 713,
+	REALMD = 714,
 	
 	# OTHERS (900)
 	HERO = 900, # WHITE
@@ -324,6 +329,7 @@ const TowerTiersMap : Dictionary = {
 	BLAST : 2,
 	CELESTIAL : 2,
 	BIOMORPH : 2,
+	IMPEDE : 2,
 	
 	#SIMPLE_OBELISK : 3,
 	BEACON_DISH : 3,
@@ -376,6 +382,7 @@ const TowerTiersMap : Dictionary = {
 	ASHEND : 5,
 	IOTA : 5,
 	SOPHIST : 5,
+	REALMD : 5,
 	
 	TESLA : 6,
 	CHAOS : 6,
@@ -6686,8 +6693,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			["Cooldown: |0|. Cooldown starts on clone's end.", [interpreter_for_cooldown]],
 			"",
-			"The clone cannot cast Unbound. The clone acts like a different, separate tower. Benefits from color synergies, but does not contribute to them.",
-			"The clone can absorb ingredient effects, and when it expires, the gold will be refunded under standard selling rules."
+			"Clones cannot cast Unbound. Clones acts like a different, separate tower. Clones benefit from color synergies, but does not contribute to them.",
+			"The clone can absorb ingredient effects, and the gold will be refunded under standard selling rules when it expires."
 		]
 		
 		info.tower_simple_descriptions = [
@@ -7023,14 +7030,185 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var plain_fragment__player_heal = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PLAYER_HEALTH, "2 Player health")
 		
-		
 		info.tower_descriptions = [
-			["All towers within Lifeline's range gain |0| up to |1| based on Lifeline's missing health. The max value is reached on 80% missing health.", []],
+			["All towers within Lifeline's range gain |0| up to |1| based on Lifeline's missing health. The max value is reached on 80% missing health.", [interpreter_for_buff_min, interpreter_for_buff_max]],
 			"The buffs persist even on Lifeline's death.",
 			["Heal for |0| when Lifeline receives lethal damage from enemies.", [plain_fragment__player_heal]],
 		]
 		
+		#
 		
+		var tower_base_effect := LifelineIngEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_base_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ base dmg"
+		
+		
+		
+	elif tower_id == IMPEDE:
+		info = TowerTypeInformation.new("Impede", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.VIOLET)
+		info.base_tower_image = impede_image
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
+		
+		info.base_damage = 6
+		info.base_attk_speed = 0.45
+		info.base_pierce = 1
+		info.base_range = 100
+		info.base_damage_type = DamageType.PHYSICAL
+		info.on_hit_multiplier = 1
+		
+		
+		var interpreter_for_stop_mov_duration = TextFragmentInterpreter.new()
+		interpreter_for_stop_mov_duration.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_stop_mov_duration.display_body = true
+		interpreter_for_stop_mov_duration.header_description = "seconds"
+		interpreter_for_stop_mov_duration.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.ROUND
+		
+		var ins_for_stop_mov_duration = []
+		ins_for_stop_mov_duration.append(NumericalTextFragment.new(2.5, false, -1))
+		ins_for_stop_mov_duration.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_stop_mov_duration.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.BONUS, 1.0, -1))
+		
+		interpreter_for_stop_mov_duration.array_of_instructions = ins_for_stop_mov_duration
+		
+		
+		var plain_fragment__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Ability")
+		
+		
+		info.tower_descriptions = [
+			"Impede casts Stoned upon killing an enemy.",
+			["|0|: Stoned. Impede turns their victim into Stone for |1|. Stones stop enemies from moving.", [plain_fragment__ability, interpreter_for_stop_mov_duration]],
+			"Stone's lifetime is reduced faster the more enemies that are stopped."
+		]
+		
+		
+		var plain_fragment__turns = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "turns")
+		
+		info.tower_simple_descriptions = [
+			["Upon killing an enemy, Impede |0| their victim into Stone for |1|. Stones stop enemies from moving.", [plain_fragment__turns, interpreter_for_stop_mov_duration]],
+			"Stone's lifetime is reduced faster the more enemies that are stopped."
+		]
+		
+		
+		var tower_base_effect := ImpedeIngEffect.new()
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_base_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "stun effect"
+		
+		
+		
+	elif tower_id == REALMD:
+		info = TowerTypeInformation.new("Realmd", tower_id)
+		info.tower_tier = TowerTiersMap[tower_id]
+		info.tower_cost = info.tower_tier
+		info.colors.append(TowerColors.VIOLET)
+		info.colors.append(TowerColors.BLUE)
+		info.base_tower_image = impede_image #todo
+		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
+		
+		info.base_damage = 2.5
+		info.base_attk_speed = 1.1
+		info.base_pierce = 1
+		info.base_range = 80
+		info.base_damage_type = DamageType.ELEMENTAL
+		info.on_hit_multiplier = 1
+		
+		
+		var plain_fragment__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Ability")
+		
+		
+		var interpreter_for_domain_explosion = TextFragmentInterpreter.new()
+		interpreter_for_domain_explosion.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_domain_explosion.display_body = true
+		
+		var outer_ins = []
+		var ins = []
+		ins.append(NumericalTextFragment.new(5, false, DamageType.ELEMENTAL))
+		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.5))
+		
+		outer_ins.append(ins)
+		
+		outer_ins.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+		outer_ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_domain_explosion.array_of_instructions = outer_ins
+		
+		#
+		
+		var interpreter_for_cooldown = TextFragmentInterpreter.new()
+		interpreter_for_cooldown.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_cooldown.display_body = true
+		interpreter_for_cooldown.header_description = "s"
+		
+		var ins_for_cooldown = []
+		ins_for_cooldown.append(NumericalTextFragment.new(25, false))
+		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
+		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
+		
+		interpreter_for_cooldown.array_of_instructions = ins_for_cooldown
+		
+		#
+		
+		var interpreter_for_domain_radius = TextFragmentInterpreter.new()
+		interpreter_for_domain_radius.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_domain_radius.display_body = true
+		
+		var ins_for_domain_radius = []
+		ins_for_domain_radius.append(NumericalTextFragment.new(50, false, -1))
+		ins_for_domain_radius.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_domain_radius.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.RANGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.5)) # stat basis does not matter here
+		
+		interpreter_for_domain_radius.array_of_instructions = ins_for_domain_radius
+		
+		#
+		
+		var interpreter_for_domain_dot = TextFragmentInterpreter.new()
+		interpreter_for_domain_dot.tower_info_to_use_for_tower_stat_fragments = info
+		interpreter_for_domain_dot.display_body = true
+		
+		var ins_for_domain_dot = []
+		ins_for_domain_dot.append(NumericalTextFragment.new(1, false, DamageType.ELEMENTAL))
+		ins_for_domain_dot.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
+		ins_for_domain_dot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.2, DamageType.ELEMENTAL)) # stat basis does not matter here
+		
+		interpreter_for_domain_dot.array_of_instructions = ins_for_domain_dot
+		
+		
+		info.tower_descriptions = [
+			"Auto casts Realm if there is at least 1 enemy in the map.",
+			["|0|: Realm. Fire a globule at a random enemy's position. The globule expands into a Domain.", [plain_fragment__ability]],
+			["After a brief delay, Realmd creates explosions within all Domains, dealing |0|.", [interpreter_for_domain_explosion]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+			"",
+			["Domains last for 35 seconds, and have |0|.", [interpreter_for_domain_radius]],
+			["Enemies in a Domain are dealt |0| per second. This applies on hit effects.", [interpreter_for_domain_dot]],
+			"Enemies in a Domain are treated to be within Realmd's range."
+		]
+		
+		info.tower_simple_descriptions = [
+			"Auto casts Realm if there is at least 1 enemy.",
+			["|0|: Realm. Fire a globule at a random enemy's position. The globule expands into a Domain.", [plain_fragment__ability]],
+			["After a brief delay, Realmd creates explosions within all Domains, dealing |0|.", [interpreter_for_domain_explosion]],
+			["Cooldown: |0|", [interpreter_for_cooldown]],
+			"",
+			["Enemies in a Domain are dealt |0| per second.", [interpreter_for_domain_dot]],
+		]
+		
+		
+		var range_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_REALMD)
+		range_attr_mod.flat_modifier = tier_flat_range_map[info.tower_tier]
+		
+		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_REALMD)
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		
+		info.ingredient_effect = ing_effect
+		info.ingredient_effect_simple_description = "+ range"
 		
 		
 	
@@ -7226,5 +7404,9 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Cynosure/Cynosure.tscn")
 	elif tower_id == LIFELINE:
 		return load("res://TowerRelated/Color_Violet/Lifeline/Lifeline.tscn")
+	elif tower_id == IMPEDE:
+		return load("res://TowerRelated/Color_Violet/Impede/Impede.tscn")
+	elif tower_id == REALMD:
+		return load("res://TowerRelated/Color_Violet/Realmd/Realmd.tscn")
 	
 	

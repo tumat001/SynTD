@@ -30,6 +30,8 @@ var is_a_clone : bool
 var clone_basis  # the creator
 var current_clone_duration : float
 
+var clone_created 
+
 #
 
 var is_unbounded : bool setget set_is_unbounded
@@ -141,6 +143,7 @@ func _ready():
 		beam_draw_layer.width = 5
 		
 		connect("global_position_changed", self, "_on_global_position_changed_b", [], CONNECT_PERSIST)
+		connect("tree_exiting", self, "_on_tree_exiting_b", [], CONNECT_PERSIST)
 		
 	else:
 		
@@ -283,6 +286,8 @@ func _create_clone_at_placable(arg_placable, arg_cd):
 	clone.connect("lifetime_as_clone_end__by_any_means", self, "_on_clone_lifetime_as_clone_end__by_any_means", [clone, arg_cd], CONNECT_ONESHOT)
 	clone.connect("global_position_changed", self, "_on_clone_global_position_changed_b", [], CONNECT_PERSIST)
 	
+	clone_created = clone
+	
 	#tower_inventory_bench.add_tower_to_scene(clone, false)
 	tower_inventory_bench.call_deferred("add_tower_to_scene", clone, false)
 
@@ -355,4 +360,9 @@ func _break_showing_beam():
 	
 	is_drawing_beam = false
 
+####
+
+func _on_tree_exiting_b():
+	if is_instance_valid(clone_created) and !clone_created.is_queued_for_deletion():
+		clone_created.queue_free()
 
