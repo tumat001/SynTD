@@ -322,8 +322,8 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.MAGUS:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 21
-		info.base_movement_speed = 43
+		info.base_health = 22
+		info.base_movement_speed = 44
 		
 		if arg_include_non_combat_info:
 			var plain_fragment__tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "tower")

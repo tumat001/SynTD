@@ -1104,6 +1104,11 @@ func on_round_end():
 		range_module.clear_all_target_effects()
 
 
+func on_round_start():
+	pass
+
+
+
 # Damage report related
 
 func on_post_mitigation_damage_dealt(damage_instance_report, killed_enemy : bool, enemy, damage_register_id : int):

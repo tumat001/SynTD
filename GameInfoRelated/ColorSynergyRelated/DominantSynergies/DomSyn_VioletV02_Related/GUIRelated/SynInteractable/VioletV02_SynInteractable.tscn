@@ -1,0 +1,141 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_VioletV02_Related/GUIRelated/SynInteractable/DomSynVio02_SynInteractable_Background.png" type="Texture" id=1]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_VioletV02_Related/GUIRelated/SynInteractable/DomSynVio02_SynInteractable_Icon_Gold.png" type="Texture" id=2]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_VioletV02_Related/GUIRelated/SynInteractable/VioletV02_SynInteractable.gd" type="Script" id=3]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_VioletV02_Related/GUIRelated/VioV02_GenericTextPanel/VioletV02_GenericTextPanel.tscn" type="PackedScene" id=4]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_VioletV02_Related/GUIRelated/SynInteractable/DomSynVio02_SynInteractable_Icon_BonusIngSlots.png" type="Texture" id=5]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_VioletV02_Related/GUIRelated/SynInteractable/DomSynVio02_SynInteractable_Icon_OmniColor.png" type="Texture" id=6]
+[ext_resource path="res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_VioletV02_Related/GUIRelated/SynInteractable/DomSynVio02_SynInteractable_Background_Border.png" type="Texture" id=7]
+
+[node name="VioletV02_SynInteractable" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 3 )
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 71.0
+margin_bottom = 50.0
+mouse_filter = 2
+texture = ExtResource( 1 )
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_right = 71.0
+margin_bottom = 50.0
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_right = 71.0
+margin_bottom = 50.0
+mouse_filter = 2
+custom_constants/separation = 0
+
+[node name="GoldContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+margin_right = 71.0
+margin_bottom = 23.0
+custom_constants/margin_right = 4
+custom_constants/margin_top = 4
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 1
+
+[node name="GoldHContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/GoldContainer"]
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 67.0
+margin_bottom = 22.0
+mouse_filter = 2
+
+[node name="GoldTextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/GoldContainer/GoldHContainer"]
+margin_top = 2.0
+margin_right = 13.0
+margin_bottom = 15.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 2 )
+
+[node name="GoldTextPanel" parent="MarginContainer/VBoxContainer/GoldContainer/GoldHContainer" instance=ExtResource( 4 )]
+margin_left = 17.0
+margin_right = 63.0
+margin_bottom = 18.0
+size_flags_horizontal = 3
+size_flags_vertical = 6
+
+[node name="Sepa01" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+margin_top = 23.0
+margin_right = 71.0
+margin_bottom = 25.0
+mouse_filter = 2
+texture = ExtResource( 7 )
+stretch_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 25.0
+margin_right = 71.0
+margin_bottom = 50.0
+mouse_filter = 2
+size_flags_vertical = 3
+custom_constants/separation = 0
+
+[node name="IngContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_right = 46.0
+margin_bottom = 25.0
+size_flags_horizontal = 3
+custom_constants/margin_right = 2
+custom_constants/margin_top = 2
+custom_constants/margin_left = 4
+custom_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/IngContainer"]
+margin_left = 4.0
+margin_top = 2.0
+margin_right = 44.0
+margin_bottom = 21.0
+mouse_filter = 2
+
+[node name="IngTextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/IngContainer/HBoxContainer"]
+margin_top = 3.0
+margin_right = 13.0
+margin_bottom = 16.0
+mouse_filter = 2
+size_flags_vertical = 6
+texture = ExtResource( 5 )
+
+[node name="IngTextPanel" parent="MarginContainer/VBoxContainer/HBoxContainer/IngContainer/HBoxContainer" instance=ExtResource( 4 )]
+margin_left = 17.0
+margin_bottom = 19.0
+
+[node name="Sepa" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 46.0
+margin_right = 48.0
+margin_bottom = 25.0
+mouse_filter = 2
+size_flags_vertical = 3
+texture = ExtResource( 7 )
+stretch_mode = 2
+
+[node name="OmniColorContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 48.0
+margin_right = 71.0
+margin_bottom = 25.0
+size_flags_horizontal = 3
+custom_constants/margin_right = 2
+custom_constants/margin_top = 2
+custom_constants/margin_bottom = 4
+
+[node name="OnmiColorTextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/OmniColorContainer"]
+margin_left = 4.0
+margin_top = 5.0
+margin_right = 17.0
+margin_bottom = 18.0
+mouse_filter = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+texture = ExtResource( 6 )
+
+[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/GoldContainer" to="." method="_on_GoldContainer_mouse_entered"]
+[connection signal="mouse_exited" from="MarginContainer/VBoxContainer/GoldContainer" to="." method="_on_GoldContainer_mouse_exited"]
+[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/IngContainer" to="." method="_on_IngContainer_mouse_entered"]
+[connection signal="mouse_exited" from="MarginContainer/VBoxContainer/HBoxContainer/IngContainer" to="." method="_on_IngContainer_mouse_exited"]
+[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/HBoxContainer/OmniColorContainer" to="." method="_on_OmniColorContainer_mouse_entered"]
+[connection signal="mouse_exited" from="MarginContainer/VBoxContainer/HBoxContainer/OmniColorContainer" to="." method="_on_OmniColorContainer_mouse_exited"]

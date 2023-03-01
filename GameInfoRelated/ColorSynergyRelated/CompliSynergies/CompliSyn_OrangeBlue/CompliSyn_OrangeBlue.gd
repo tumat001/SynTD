@@ -14,7 +14,7 @@ const FlatModifier = preload("res://GameInfoRelated/FlatModifier.gd")
 #var tower_ap_modi : FlatModifier
 
 const explosion_damage : float = 3.8
-const explosion_on_hit_damage_scale : float = 0.5#0.22
+const explosion_on_hit_damage_scale : float = 0.8#0.22
 
 
 const expl_scale_tier_1 : float = 2.0

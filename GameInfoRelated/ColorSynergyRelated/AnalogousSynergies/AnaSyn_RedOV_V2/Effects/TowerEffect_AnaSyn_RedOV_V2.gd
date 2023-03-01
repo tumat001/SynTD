@@ -82,7 +82,7 @@ func _construct_red_buff_beam_aesthetic_pool():
 	red_buff_beam_sprite_frames.add_frame("default", RedOV_BuffBeam09)
 	
 	red_buff_beam_aesthetic_pool = BeamAestheticPool.new()
-	red_buff_beam_aesthetic_pool.node_to_parent = attached_tower.get_tree().get_root()
+	red_buff_beam_aesthetic_pool.node_to_parent = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	red_buff_beam_aesthetic_pool.node_to_listen_for_queue_free = attached_tower
 	red_buff_beam_aesthetic_pool.source_of_create_resource = self
 	red_buff_beam_aesthetic_pool.func_name_for_create_resource = "_create_buff_beam"
@@ -169,7 +169,8 @@ func _empower_curr_dmg_buff_effect_amount():
 	if !is_instance_valid(empower_particle_effect):
 		empower_particle_effect = RedOV_EmpoweredParticle_Scene.instance()
 		empower_particle_effect.tower = attached_tower
-		attached_tower.get_tree().get_root().add_child(empower_particle_effect)
+		#attached_tower.get_tree().get_root().add_child(empower_particle_effect)
+		CommsForBetweenScenes.ge_add_child_to_other_node_hoster(empower_particle_effect)
 
 #
 
@@ -185,6 +186,7 @@ func _create_buff_beam():
 	beam.play_only_once(true)
 	beam.set_frame_rate_based_on_lifetime()
 	
-	attached_tower.get_tree().get_root().add_child(beam)
+	#attached_tower.get_tree().get_root().add_child(beam)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(beam)
 	
 	return beam

@@ -184,6 +184,8 @@ signal displayable_in_damage_stats_panel_changed(arg_val)
 signal on_last_calculated_disabled_from_attacking_changed(arg_new_val)
 signal last_calculated_untargetability_changed(arg_val)
 
+signal last_calculated_ignore_ing_limit__for_applying_changed(arg_val)
+
 # Terrain related
 
 signal layer_on_terrain_changed(arg_old_layer, arg_new_layer)
@@ -314,6 +316,7 @@ var last_calculated_can_be_placed_in_bench : bool
 # Ingredient related
 
 var ingredients_absorbed : Dictionary = {} # Map of tower_id (ingredient source) to ingredient_effect
+var ingredient_id_absorbed_to_is_applied_map : Dictionary
 var ingredient_of_self : IngredientEffect setget set_self_ingredient_effect
 var originally_has_ingredient : bool # used by combination manager
 var ingredient_compatible_colors : Array = []
@@ -340,6 +343,21 @@ enum CanBeUsedAsIngredientClauses {
 }
 var can_be_used_as_ingredient_conditonal_clauses : ConditionalClauses
 var last_calculated_can_be_used_as_ingredient : bool
+
+
+# allows absorbing of ing beyond limits
+enum IgnoreIngredientLimitClauses_ForAbsorbing {
+	DOM_SYN_VIOLET_V02 = 0
+}
+var ignore_ing_limit__for_absorbing_clauses : ConditionalClauses
+var last_calculated_ignore_ing_limit__for_absorbing : bool
+
+# allows applying of ing beyond limits
+enum IgnoreIngredientLimitClauses_ForApplying {
+	DOM_SYN_VIOLET_V02 = 0
+}
+var ignore_ing_limit__for_applying_clauses : ConditionalClauses
+var last_calculated_ignore_ing_limit__for_applying : bool
 
 
 # Color related
@@ -545,7 +563,6 @@ var last_calculated_layer_on_terrain : int
 
 # properties
 
-#todo
 var last_calc_total_size_of_visibles_in_knockup_layer : Vector2
 var last_calc_center_for_total_size_of_visibles : Vector2
 var last_calc_vec_shift_from_pos_zero_to_top_left : Vector2
@@ -623,6 +640,15 @@ func _init():
 	tower_is_draggable_clauses.connect("clause_inserted", self, "_on_tower_is_draggable_clause_ins_or_rem", [], CONNECT_PERSIST)
 	tower_is_draggable_clauses.connect("clause_removed", self, "_on_tower_is_draggable_clause_ins_or_rem", [], CONNECT_PERSIST)
 	
+	ignore_ing_limit__for_absorbing_clauses = ConditionalClauses.new()
+	ignore_ing_limit__for_absorbing_clauses.connect("clause_inserted", self, "_on_ignore_ing_limit__for_absorbing_clause_ins_or_rem", [], CONNECT_PERSIST)
+	ignore_ing_limit__for_absorbing_clauses.connect("clause_removed", self, "_on_ignore_ing_limit__for_absorbing_clause_ins_or_rem", [], CONNECT_PERSIST)
+	
+	ignore_ing_limit__for_applying_clauses = ConditionalClauses.new()
+	ignore_ing_limit__for_applying_clauses.connect("clause_inserted", self, "_on_ignore_ing_limit__for_applying_clause_ins_or_rem", [], CONNECT_PERSIST)
+	ignore_ing_limit__for_applying_clauses.connect("clause_removed", self, "_on_ignore_ing_limit__for_applying_clause_ins_or_rem", [], CONNECT_PERSIST)
+	
+	
 	_update_last_calculated_contributing_to_synergy()
 	_update_last_calculated_disabled_from_attacking()
 	_update_untargetability_state()
@@ -632,6 +658,8 @@ func _init():
 	_update_last_calculated_can_be_placed_in_map()
 	_update_last_calculated_can_be_placed_in_bench()
 	_update_last_calculate_tower_is_draggable()
+	_update_last_calculated_ignore_ing_limit__for_absorbing()
+	_update_last_calculated_ignore_ing_limit__for_applying()
 	
 	##
 	
@@ -1108,6 +1136,10 @@ func _on_round_start():
 	
 	for module in all_attack_modules:
 		module.reset_damage_track_in_round()
+		
+		module.on_round_start()
+		
+	
 	
 	emit_signal("on_per_round_total_damage_changed", in_round_total_damage_dealt)
 	
@@ -2069,6 +2101,7 @@ func _remove_all_timebound_and_countbound_and_roundbound_effects():
 
 # Ingredient Related
 
+# if changing method params, change params in ORB as well
 func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_base_cost : int, show_ing_particle_effects : bool = true):
 	if ingredient_effect != null:
 		if ingredient_effect.tower_base_effect._can_be_scaled_by_yel_vio:
@@ -2076,7 +2109,12 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 		
 		ingredients_absorbed[ingredient_effect.tower_id] = ingredient_effect
 		_ingredients_tower_id_base_gold_costs_map[ingredient_effect.tower_id] = ingredient_gold_base_cost
-		add_tower_effect(ingredient_effect.tower_base_effect, all_attack_modules, true, true, ingredient_effect)
+		
+		if ingredients_absorbed.size() <= last_calculated_ingredient_limit or last_calculated_ignore_ing_limit__for_applying:
+			ingredient_id_absorbed_to_is_applied_map[ingredient_effect.tower_id] = true
+			add_tower_effect(ingredient_effect.tower_base_effect, all_attack_modules, true, true, ingredient_effect)
+		else:
+			ingredient_id_absorbed_to_is_applied_map[ingredient_effect.tower_id] = false
 		
 		_emit_ingredients_absorbed_changed()
 		_calculate_sellback_value()
@@ -2093,18 +2131,24 @@ func remove_ingredient(ingredient_effect : IngredientEffect, refund_gold : bool 
 	if ingredient_effect != null:
 		remove_tower_effect(ingredients_absorbed[ingredient_effect.tower_id].tower_base_effect)
 		
+		
+		var gold_cost = _ingredients_tower_id_base_gold_costs_map[ingredient_effect.tower_id]
+		var orignal_gold_cost_without_reduc = gold_cost
+		if gold_cost > 1:
+			gold_cost -= 1
+		
 		if refund_gold:
-			var gold_cost = _ingredients_tower_id_base_gold_costs_map[ingredient_effect.tower_id]
-			if gold_cost > 1:
-				gold_cost -= 1
-			
 			emit_signal("tower_give_gold", gold_cost, GoldManager.IncreaseGoldSource.TOWER_EFFECT_RESET)
 		
 		_ingredients_tower_id_base_gold_costs_map.erase(ingredient_effect.tower_id)
 		ingredients_absorbed.erase(ingredient_effect.tower_id)
+		ingredient_id_absorbed_to_is_applied_map.erase(ingredient_effect.tower_id)
 		
 		_emit_ingredients_absorbed_changed()
 		_calculate_sellback_value()
+		
+		
+		return [gold_cost, orignal_gold_cost_without_reduc]  # return val used in VioletV02_SynergyEffects
 
 
 func clear_ingredients():
@@ -2112,6 +2156,7 @@ func clear_ingredients():
 		remove_tower_effect(ingredients_absorbed[ingredient_tower_id].tower_base_effect)
 	
 	ingredients_absorbed.clear()
+	ingredient_id_absorbed_to_is_applied_map.clear()
 	_emit_ingredients_absorbed_changed()
 	_ingredients_tower_id_base_gold_costs_map.clear()
 	
@@ -2122,6 +2167,7 @@ func _clear_ingredients_by_effect_reset():
 		remove_tower_effect(ingredients_absorbed[ingredient_tower_id].tower_base_effect)
 	
 	ingredients_absorbed.clear()
+	ingredient_id_absorbed_to_is_applied_map.clear()
 	emit_signal("tower_give_gold", _calculate_sellback_of_ingredients(), GoldManager.IncreaseGoldSource.TOWER_EFFECT_RESET)
 	_ingredients_tower_id_base_gold_costs_map.clear()
 	
@@ -2135,6 +2181,21 @@ func _remove_latest_ingredient_by_effect():
 		
 		_calculate_sellback_value()
 
+
+func get_ingredient_ids_beyond_ing_limit() -> Array:
+	var bucket = []
+	var i = 1
+	
+	for ing_id in ingredients_absorbed.keys():
+		if i <= last_calculated_ingredient_limit:
+			i += 1
+			continue
+			
+		else:
+			bucket.append(ing_id)
+			i += 1
+	
+	return bucket
 
 
 # can absorb ing
@@ -2157,7 +2218,7 @@ func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected
 		if !ingredient_effect.can_be_absorbed_as_an_ingredient_by_tower(self):
 			return false
 		
-		if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.ignore_ingredient_limit:
+		if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.ignore_ingredient_limit and !last_calculated_ignore_ing_limit__for_absorbing:
 			return false
 		
 		if all_combinations_id_to_effect_id_map.has(ingredient_effect.tower_id):
@@ -2271,22 +2332,42 @@ func _set_active_ingredient_limit(new_limit : int):
 		
 		if old_ing_limit > new_limit:
 			
-			var ing_effects = ingredients_absorbed.values()
-			for i in range(new_limit, ingredients_absorbed.size()):
-				remove_tower_effect(ing_effects[i].tower_base_effect)
-			
+			_attempt_remove_effects_of_ing_effects_beyond_limit()
 			
 		elif old_ing_limit < new_limit:
 			
 			var ing_effects = ingredients_absorbed.values()
 			for i in range(old_ing_limit, new_limit):
 				if ing_effects.size() > i:
-					add_tower_effect(ing_effects[i].tower_base_effect)
+					var ing_effect = ing_effects[i]
+					add_tower_effect(ing_effect.tower_base_effect)
+					ingredient_id_absorbed_to_is_applied_map[ing_effect.tower_id] = true
 				else:
 					break
+			
 		
 		#last_calculated_ingredient_limit = new_limit
 		emit_signal("ingredients_limit_changed", new_limit)
+
+
+func _attempt_remove_effects_of_ing_effects_beyond_limit():
+	if !last_calculated_ignore_ing_limit__for_applying:
+		var ing_effects = ingredients_absorbed.values()
+		for i in range(last_calculated_ingredient_limit, ingredients_absorbed.size()):
+			var ing_effect = ing_effects[i]
+			remove_tower_effect(ing_effect.tower_base_effect)
+			ingredient_id_absorbed_to_is_applied_map[ing_effect.tower_id] = false
+
+
+func _attempt_add_effects_of_ing_effects_beyond_limit():
+	if last_calculated_ignore_ing_limit__for_applying:
+		for ing_id in ingredient_id_absorbed_to_is_applied_map.keys():
+			var is_applied = ingredient_id_absorbed_to_is_applied_map[ing_id]
+			
+			if !is_applied:
+				var ing_effect = ingredients_absorbed[ing_id]
+				add_tower_effect(ing_effect.tower_base_effect)
+				ingredient_id_absorbed_to_is_applied_map[ing_effect.tower_id] = true
 
 
 # ing compatible color related
@@ -3062,7 +3143,29 @@ func _on_tower_is_draggable_clause_ins_or_rem(arg_clause_id):
 func _update_last_calculate_tower_is_draggable():
 	last_calculated_tower_is_draggable = tower_is_draggable_clauses.is_passed
 
+#
 
+func _on_ignore_ing_limit__for_absorbing_clause_ins_or_rem(arg_clause_id):
+	_update_last_calculated_ignore_ing_limit__for_absorbing()
+
+func _update_last_calculated_ignore_ing_limit__for_absorbing():
+	last_calculated_ignore_ing_limit__for_absorbing = !ignore_ing_limit__for_absorbing_clauses.is_passed
+
+
+func _on_ignore_ing_limit__for_applying_clause_ins_or_rem(arg_clause_id):
+	_update_last_calculated_ignore_ing_limit__for_applying()
+
+func _update_last_calculated_ignore_ing_limit__for_applying():
+	var old_val = last_calculated_ignore_ing_limit__for_applying
+	
+	last_calculated_ignore_ing_limit__for_applying = !ignore_ing_limit__for_applying_clauses.is_passed
+	
+	if old_val != last_calculated_ignore_ing_limit__for_applying:
+		
+		_attempt_remove_effects_of_ing_effects_beyond_limit()
+		_attempt_add_effects_of_ing_effects_beyond_limit()
+		
+		emit_signal("last_calculated_ignore_ing_limit__for_applying_changed", last_calculated_ignore_ing_limit__for_applying)
 
 # Ingredient drag and drop related
 

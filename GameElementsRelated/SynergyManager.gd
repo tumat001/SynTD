@@ -790,6 +790,9 @@ func _create_and_configure_color_splatter_drawer(arg_color_to_use : Color, arg_p
 func before_game_start__synergies_this_game_initialize():
 	_before_game_started_initialize_ran = true
 	
+	#todo TEMP
+	add_dominant_synergy_id_banned_this_game(TowerDominantColors.SynergyID__Violet)
+	
 	_update_dominant_available_synergies_this_game()
 	_update_composite_available_synergies_this_game()
 
@@ -802,7 +805,7 @@ func add_dominant_synergy_id_banned_this_game(arg_syn_id, if_calc_and_update : b
 			_update_dominant_available_synergies_this_game()
 			
 			if _before_game_started_initialize_ran:
-				call_deferred("update_synergies")
+				tower_manager.call_deferred("update_active_synergy__called_from_syn_manager")
 				
 
 func add_composite_synergy_id_banned_this_game(arg_syn_id, if_calc_and_update : bool = true):
@@ -813,7 +816,7 @@ func add_composite_synergy_id_banned_this_game(arg_syn_id, if_calc_and_update : 
 			_update_composite_available_synergies_this_game()
 			
 			if _before_game_started_initialize_ran:
-				call_deferred("update_synergies")
+				tower_manager.call_deferred("update_active_synergy__called_from_syn_manager")
 				
 
 func _update_dominant_available_synergies_this_game():

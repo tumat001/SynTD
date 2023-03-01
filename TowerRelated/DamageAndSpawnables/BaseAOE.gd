@@ -9,6 +9,9 @@ signal before_enemy_hit_aoe(enemy)
 signal enemy_entered(enemy)
 signal enemy_exited(enemy)
 
+signal coll_shape_properties_changed(arg_coll_shape, arg_shape)
+signal coll_shape_reached_max_val()
+
 var damage_instance : DamageInstance
 var damage_register_id : int
 
@@ -49,6 +52,9 @@ var coll_destination_mask : int = CollidableSourceAndDest.Destination.TO_ENEMY
 #
 
 var coll_shape_circle_inc_per_sec : float = 0
+var coll_shape_circle_inc_inc_per_sec : float = 0
+var coll_shape_circle_min_inc_per_sec : float = 0
+var coll_shape_circle_max_val : float = 100000.0
 
 # internal stuffs
 
@@ -145,7 +151,13 @@ func _process(delta):
 		
 		if coll_shape_circle_inc_per_sec != 0:
 			#collision_shape.shape.radius += coll_shape_circle_inc_per_sec
-			collision_shape.shape.set_deferred("radius", collision_shape.shape.radius + (coll_shape_circle_inc_per_sec * delta))
+			#collision_shape.shape.set_deferred("radius", collision_shape.shape.radius + (coll_shape_circle_inc_per_sec * delta))
+			call_deferred("_set_coll_shape_radius_deferred", collision_shape.shape.radius + (coll_shape_circle_inc_per_sec * delta))
+			
+			coll_shape_circle_inc_per_sec += (coll_shape_circle_inc_inc_per_sec * delta)
+			if coll_shape_circle_inc_per_sec < coll_shape_circle_min_inc_per_sec:
+				coll_shape_circle_inc_per_sec = coll_shape_circle_min_inc_per_sec
+			
 		
 		if _current_damage_delay > 0:
 			_current_damage_delay -= delta
@@ -158,6 +170,15 @@ func _process(delta):
 		
 	else:
 		queue_free()
+
+func _set_coll_shape_radius_deferred(arg_radius):
+	if arg_radius > coll_shape_circle_max_val:
+		arg_radius = coll_shape_circle_max_val
+		emit_signal("coll_shape_reached_max_val")
+	
+	collision_shape.shape.radius = arg_radius
+	
+	emit_signal("coll_shape_properties_changed", collision_shape, collision_shape.shape)
 
 
 
@@ -305,6 +326,9 @@ func get_coll_circle_radius():
 func get_coll_circle_radius_with_scale():
 	return get_coll_circle_radius() * scale
 
+func get_coll_shape_shape():
+	return collision_shape.shape
+
 #
 
 func get_num_of_enemies_inside():
@@ -313,4 +337,13 @@ func get_num_of_enemies_inside():
 		_enemies_inside_count -= 1
 	
 	return _enemies_inside_damage_cd_map.size()
+
+#######
+
+func set_decrease_duration_to_false__from_aoe_attk_module():
+	decrease_duration = false
+	
+
+func set_decrease_duration_to_true__from_aoe_attk_module():
+	decrease_duration = true
 

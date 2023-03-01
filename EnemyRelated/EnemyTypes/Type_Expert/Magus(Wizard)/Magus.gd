@@ -32,7 +32,7 @@ var explosion_ability : BaseAbility
 
 
 func _init():
-	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.WIZARD))
+	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.MAGUS))
 
 
 func _ready():

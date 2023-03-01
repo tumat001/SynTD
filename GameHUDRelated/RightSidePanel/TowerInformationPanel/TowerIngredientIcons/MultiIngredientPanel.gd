@@ -42,14 +42,17 @@ func _allocate_single_ingredient_panels():
 
 func _set_ingredient_of_single_panels():
 	for i in ingredient_effects.size():
-		_single_ingredient_panels[i].ingredient_effect = ingredient_effects[i]
+		var ing_effect = ingredient_effects[i]
+		_single_ingredient_panels[i].ingredient_effect = ing_effect
 		
-		if i >= ingredient_effect_limit:
-			var panel : SingleIngredientPanel = _single_ingredient_panels[i]
+		var panel : SingleIngredientPanel = _single_ingredient_panels[i]
+		
+		if i >= ingredient_effect_limit and !tower_to_use_for_interpreter.last_calculated_ignore_ing_limit__for_applying:
+			
 			panel.modulate = Color(0.4, 0.4, 0.4, 1)
 			
 		else:
-			var panel : SingleIngredientPanel = _single_ingredient_panels[i]
+			
 			panel.modulate = Color(1, 1, 1, 1)
 		
 		_single_ingredient_panels[i].tower_to_use_for_interpreter = tower_to_use_for_interpreter

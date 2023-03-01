@@ -69,7 +69,7 @@ var non_essential_rng : RandomNumberGenerator
 #
 
 const line_draw_color__main_shot := Color(217/255.0, 164/255.0, 2/255.0, 0.75)
-const line_draw_color__meteor_side_main_shot := Color(217/255.0, 164/255.0, 2/255.0, 0.4)
+#const line_draw_color__meteor_side_main_shot := Color(217/255.0, 164/255.0, 2/255.0, 0.4)
 
 const line_draw_color__meteor_sides_falling_shot := Color(127/255.0, 1/255.0, 146/255.0, 0.75)
 

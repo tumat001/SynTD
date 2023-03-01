@@ -35,7 +35,7 @@ func _update_description():
 	var plain_fragment__stuns = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stuns")
 	var plain_fragment__enemy = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ENEMY, "enemy")
 	
-	description = ["After killing an |0|, the next damage instance |1| for %s second(s).%s" % [(base_stun_duration * _current_scale * _current_additive_scale), _generate_desc_for_persisting_total_additive_scaling(true)], [plain_fragment__enemy, plain_fragment__stuns]]
+	description = ["On |0| kill: the next damage instance |1| for %s second(s).%s" % [(base_stun_duration * _current_scale * _current_additive_scale), _generate_desc_for_persisting_total_additive_scaling(true)], [plain_fragment__enemy, plain_fragment__stuns]]
 	
 	emit_signal("description_updated")
 

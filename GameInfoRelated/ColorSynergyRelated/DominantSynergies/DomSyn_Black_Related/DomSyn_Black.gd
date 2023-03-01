@@ -114,7 +114,7 @@ const disarray_fireball_bonus_on_hit_dmg_scale : float = 0.4
 
 const disarray_fireball_black_beam_count_for_summon : int = 10
 
-const disarray_descriptions_tier_1_simple : Array = []
+var disarray_descriptions_tier_1_simple : Array = []
 #const disarray_descriptions_tier_1_simple : Array = [
 #	"Black beams now apply on hit effects.",
 #	"Every %sth black beam is replaced by a fireball, dealing %s damage to %s enemies. Benefits from base damage and on hit damage buffs." % [str(disarray_fireball_black_beam_count_for_summon), str(disarray_fireball_base_damage), str(disarray_fireball_pierce)]
@@ -153,7 +153,7 @@ var _capacitor_nova_created_in_round : bool
 var _capacitor_current_cast_count_in_round : int
 
 const capacitor_name : String = "Capacitor"
-const capacitor_descriptions_tier_2_simple : Array = []
+var capacitor_descriptions_tier_2_simple : Array = []
 #const capacitor_descriptions_tier_2_simple : Array = [
 #	"After %s abilities are casted, summon a nova that explodes after %s seconds, stunning all enemies for %s seconds, and preventing new enemies from spawning for %s seconds. All tower abilities's ongoing cooldowns are reduced by %s%%" % [str(capacitor_ability_cast_count_requirement), str(capacitor_nova_ramp_up_time), str(capacitor_nova_stun_time), str(capacitor_nova_stop_enemy_spawn_time), str(capacitor_ongoing_cooldown_percent_reduction_tier_2 * 100)],
 #	"For the next %s seconds, towers gain %s ability potency and %s%% cooldown reduction." % [str(capacitor_buff_duration_tier_2), str(capacitor_ap_buff_amount_tier_2), str(capacitor_cdr_buff_amount_tier_2)]
@@ -194,7 +194,7 @@ var _capacitor_delay_for_next_lightning : float
 
 var _capacitor_lightning_explosion_attack_module : AOEAttackModule
 
-const capacitor_descriptions_tier_1_simple : Array = []
+var capacitor_descriptions_tier_1_simple : Array = []
 
 
 var capacitor_path : BaseBlackPath
@@ -217,7 +217,7 @@ const overflow_overkill_can_summon_overkill_explosion_tier_2 : bool = false
 const overflow_overkill_can_summon_overkill_explosion_tier_1 : bool = true
 
 const overflow_name : String = "Overflow"
-const overflow_descriptions_tier_2_simple : Array = []
+var overflow_descriptions_tier_2_simple : Array = []
 
 #const overflow_descriptions_tier_2_simple : Array = [
 #	"After %s seconds of not dealing damage, the next damage instance deals +%s%% more damage, increasing by %s%% every second, up to %s%%." % [str(overflow_idle_time_for_scale_to_start), str(overflow_damage_scale_base_amount * 100), str(overflow_damage_scale_per_second * 100), str(overflow_total_max_damage_scale * 100)],
@@ -225,7 +225,7 @@ const overflow_descriptions_tier_2_simple : Array = []
 #	"The overkill explosion does not trigger from an overkill explosion."
 #]
 
-const overflow_descriptions_tier_1_simple : Array = [
+var overflow_descriptions_tier_1_simple : Array = [
 	"Overkill explosions now instead deal %s%% of the overkill damage" % [str(overflow_overkill_damage_ratio_tier_1 * 100)],
 	"Overkill explosions can now trigger from an overkill explosion."
 ]

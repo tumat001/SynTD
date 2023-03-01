@@ -1,6 +1,9 @@
 extends Timer
 
 
+signal timer_stopped()
+
+
 var _current_tower
 
 var stop_on_round_end_instead_of_pause : bool = true
@@ -45,4 +48,6 @@ func _on_last_calculated_disabled_from_attacking_changed(arg_val):
 
 func stop():
 	.stop()
+	
+	emit_signal("timer_stopped")
 

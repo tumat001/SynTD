@@ -24,7 +24,7 @@ export(float) var transparency_per_sec : float = 0
 
 export(bool) var stop_process_at_invisible : bool = false
 
-var texture_to_use : Texture
+var texture_to_use : Texture setget set_texture_to_use
 
 var node_to_follow_to__override_disp_per_sec : Node2D
 var node_to_follow_to__override_disp_per_sec__offset : Vector2 setget set_node_to_follow_to__override_disp_per_sec__offset
@@ -64,6 +64,17 @@ func _ready():
 	
 	connect("visibility_changed", self, "_on_visiblity_changed")
 
+func set_texture_to_use(arg_texture):
+	texture_to_use = arg_texture
+	
+	if is_inside_tree():
+		if texture_to_use != null and frames == null:
+			frames = SpriteFrames.new()
+			frames.add_frame("default", texture_to_use)
+		elif texture_to_use != null and frames != null:
+			frames.set_frame("default", 0, texture_to_use)
+
+
 
 func set_anim_speed_based_on_lifetime():
 	for anim_name in frames.get_animation_names():
@@ -89,6 +100,7 @@ func _process(delta):
 	
 	if _configured_from_set_go_to_dest_pos_based_on_properties:
 		_time_to_reach_pos -= delta
+		
 		if _time_to_reach_pos <= 0:
 			global_position = _dest_pos
 			_configured_from_set_go_to_dest_pos_based_on_properties = false
@@ -118,8 +130,12 @@ func _turn_invisible_from_lifetime_end():
 	visible = false
 	emit_signal("turned_invisible_from_lifetime_end")
 
+# used by Realmd to make particles invisible "as if lifetime ended"
+func turn_invisible_from_simulated_lifetime_end():
+	_turn_invisible_from_lifetime_end()
 
 
+#
 
 func set_lifetime(arg_val):
 	lifetime = arg_val
@@ -172,8 +188,10 @@ func set_go_to_dest_pos_based_on_properties(arg_source_pos : Vector2, arg_dest_p
 	inc_in_y_displacement_per_sec = dir_with_inc_mag.y
 	
 	var dist = arg_source_pos.distance_to(arg_dest_pos)
-	_time_to_reach_pos = ((-arg_speed) + sqrt(square(arg_speed) - (4 * 1/2 * dist))) / (2 * 1/2)
 	
+	#_time_to_reach_pos = ((-arg_speed) + ((sqrt(square(arg_speed) - (4 * 1/2 * dist))) / (2 * 1/2)))
+	_time_to_reach_pos = ((-arg_speed) + (sqrt(square(arg_speed) - (4 * 1/2 * arg_speed_per_sec * -dist)))) / (2 * 1/2 * arg_speed_per_sec)
+	#print("AttackSprite -- time to reach: %s" % _time_to_reach_pos)
 
 static func square(arg_val):
 	return arg_val * arg_val

@@ -1,5 +1,6 @@
 extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd"
 
+
 const TowerIngredientColorAcceptabilityEffect = preload("res://GameInfoRelated/TowerEffectRelated/TowerIngredientColorAcceptabilityEffect.gd")
 const TowerEffect_DomSyn_VioletCMRoundCounter = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_DomSyn_VioletCMRoundCounter.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")

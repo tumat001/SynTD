@@ -45,6 +45,8 @@ var current_base_dmg_ratio : float
 
 var given_health_in_round : bool
 
+var _is_lifeline_in_map : bool
+
 #
 
 var sample_base_dmg_effect_for_info_panel : TowerBaseEffect
@@ -184,6 +186,10 @@ func _on_tower_transfered_in_map_from_bench_l(arg_self, arg_map_placable, arg_be
 	
 	for tower in all_towers:
 		_add_affected_tower_and_apply_buffs(tower)
+	
+	##
+	
+	_is_lifeline_in_map = true
 
 func _on_tower_transfered_on_bench_from_in_map_l(arg_self, arg_bench, arg_map):
 	for tower in _all_affected_towers_to_effect_map.keys():
@@ -191,16 +197,21 @@ func _on_tower_transfered_on_bench_from_in_map_l(arg_self, arg_bench, arg_map):
 		
 	
 	_all_affected_towers_to_effect_map.clear()
-
+	
+	##
+	
+	_is_lifeline_in_map = false
 
 #
 
 func _on_tower_entered_range_while_in_map_or_entered_map_while_in_range_l(arg_tower):
-	_add_affected_tower_and_apply_buffs(arg_tower)
+	if _is_lifeline_in_map:
+		_add_affected_tower_and_apply_buffs(arg_tower)
 	
 
 func _on_tower_exited_range_or_exited_map_while_in_range_l(arg_tower):
-	_remove_affected_tower_and_remove_buffs(arg_tower)
+	if _is_lifeline_in_map:
+		_remove_affected_tower_and_remove_buffs(arg_tower)
 	
 
 

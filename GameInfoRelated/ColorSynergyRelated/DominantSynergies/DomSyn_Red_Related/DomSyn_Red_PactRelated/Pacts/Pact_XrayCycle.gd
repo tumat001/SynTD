@@ -23,9 +23,9 @@ const base_bonus_effect_cooldown : float = 15.0
 
 
 var stun_duration_after_buff_per_map : Dictionary = {
-	StoreOfMaps.MapsIds.RIDGED : 0.85,
-	StoreOfMaps.MapsIds.MESA : 1.5,
-	StoreOfMaps.MapsIds.ENCHANT : 0.85,
+	StoreOfMaps.MapsId_Ridged : 0.85,
+	StoreOfMaps.MapsId_Mesa : 1.5,
+	StoreOfMaps.MapsId_Enchant : 0.85,
 }
 
 

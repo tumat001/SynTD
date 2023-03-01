@@ -75,7 +75,7 @@ func _construct_attk_module():
 	explosion_attack_module.on_hit_damage_scale = explosion_on_hit_damage_scale
 	
 	explosion_attack_module.benefits_from_bonus_explosion_scale = true
-	explosion_attack_module.benefits_from_bonus_base_damage = true
+	explosion_attack_module.benefits_from_bonus_base_damage = false
 	explosion_attack_module.benefits_from_bonus_attack_speed = false
 	explosion_attack_module.benefits_from_bonus_on_hit_damage = true
 	explosion_attack_module.benefits_from_bonus_on_hit_effect = false

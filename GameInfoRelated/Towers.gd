@@ -147,6 +147,7 @@ const biomorph_image = preload("res://TowerRelated/Color_Violet/BioMorph/Biomorp
 const cynosure_image = preload("res://TowerRelated/Color_Violet/Cynosure/Cynosure_Omni.png")
 const lifeline_image = preload("res://TowerRelated/Color_Violet/Lifeline/Lifeline_Omni.png")
 const impede_image = preload("res://TowerRelated/Color_Violet/Impede/Impede_Omni.png")
+const realmd_image = preload("res://TowerRelated/Color_Violet/Realmd/Realmd_WholeImage.png")
 
 # OTHERS
 const hero_image = preload("res://TowerRelated/Color_White/Hero/Hero_Omni.png")
@@ -454,6 +455,16 @@ const tier_ap_map : Dictionary = {
 	5 : 0.75,
 	6 : 1,
 }
+
+const tier_cdr_map : Dictionary = {
+	1 : 10,
+	2 : 15,
+	3 : 20,
+	4 : 30,
+	5 : 40,
+	6 : 40,
+}
+
 
 
 # Do not use this when instancing new tower class. Only use
@@ -3019,7 +3030,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var interpreter_for_dmg_per_sec = TextFragmentInterpreter.new()
 		interpreter_for_dmg_per_sec.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_dmg_per_sec.display_body = true
+		interpreter_for_dmg_per_sec.display_body = false
+		#interpreter_for_dmg_per_sec.display_header = true
 		
 		var ins_for_dmg_per_sec = []
 		ins_for_dmg_per_sec.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.ELEMENTAL, "damage", 2))
@@ -4392,7 +4404,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var cooldown_modi : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_BREWD)
-		cooldown_modi.percent_amount = 20.0
+		cooldown_modi.percent_amount = tier_cdr_map[info.tower_tier]
 		cooldown_modi.percent_based_on = PercentType.BASE
 		
 		var effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_ABILITY_CDR, cooldown_modi, StoreOfTowerEffectsUUID.ING_BREWD)
@@ -7108,7 +7120,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_cost = info.tower_tier
 		info.colors.append(TowerColors.VIOLET)
 		info.colors.append(TowerColors.BLUE)
-		info.base_tower_image = impede_image #todo
+		info.base_tower_image = realmd_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
 		
 		info.base_damage = 2.5
@@ -7147,7 +7159,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_cooldown.header_description = "s"
 		
 		var ins_for_cooldown = []
-		ins_for_cooldown.append(NumericalTextFragment.new(25, false))
+		ins_for_cooldown.append(NumericalTextFragment.new(15, false))
 		ins_for_cooldown.append(TextFragmentInterpreter.STAT_OPERATION.PERCENT_SUBTRACT)
 		ins_for_cooldown.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
@@ -7158,6 +7170,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var interpreter_for_domain_radius = TextFragmentInterpreter.new()
 		interpreter_for_domain_radius.tower_info_to_use_for_tower_stat_fragments = info
 		interpreter_for_domain_radius.display_body = true
+		interpreter_for_domain_radius.header_description = "range"
 		
 		var ins_for_domain_radius = []
 		ins_for_domain_radius.append(NumericalTextFragment.new(50, false, -1))
@@ -7178,6 +7191,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		ins_for_domain_dot.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.2, DamageType.ELEMENTAL)) # stat basis does not matter here
 		
 		interpreter_for_domain_dot.array_of_instructions = ins_for_domain_dot
+		
 		
 		
 		info.tower_descriptions = [
@@ -7201,15 +7215,26 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		
-		var range_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_REALMD)
-		range_attr_mod.flat_modifier = tier_flat_range_map[info.tower_tier]
+		var cooldown_modi : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_REALMD)
+		cooldown_modi.percent_amount = tier_cdr_map[info.tower_tier]
+		cooldown_modi.percent_based_on = PercentType.BASE
 		
-		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_REALMD)
-		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+		var effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.PERCENT_ABILITY_CDR, cooldown_modi, StoreOfTowerEffectsUUID.ING_REALMD)
+		
+		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, effect)
 		
 		info.ingredient_effect = ing_effect
-		info.ingredient_effect_simple_description = "+ range"
+		info.ingredient_effect_simple_description = "+ cdr"
 		
+#		var range_attr_mod : FlatModifier = FlatModifier.new(StoreOfTowerEffectsUUID.ING_REALMD)
+#		range_attr_mod.flat_modifier = tier_flat_range_map[info.tower_tier]
+#
+#		var attr_effect : TowerAttributesEffect = TowerAttributesEffect.new(TowerAttributesEffect.FLAT_RANGE, range_attr_mod, StoreOfTowerEffectsUUID.ING_REALMD)
+#		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, attr_effect)
+#
+#		info.ingredient_effect = ing_effect
+#		info.ingredient_effect_simple_description = "+ range"
+#
 		
 	
 	return info

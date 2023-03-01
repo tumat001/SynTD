@@ -447,14 +447,14 @@ func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected
 	return ._can_accept_ingredient(ingredient_effect, tower_selected)
 
 
-func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_base_cost : int):
+func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_base_cost : int, show_ing_particle_effects : bool = true):
 	if ingredient_effect != null:
 		if ingredient_effect.tower_id == Towers.ORB:
 			_gain_bonus_from_orb_absorbed()
 			_base_gold_cost += _original_gold_cost
 			return
 	
-	.absorb_ingredient(ingredient_effect, ingredient_gold_base_cost)
+	.absorb_ingredient(ingredient_effect, ingredient_gold_base_cost, show_ing_particle_effects)
 
 func _gain_bonus_from_orb_absorbed():
 	ap_from_orbs_effect.attribute_as_modifier.flat_modifier += ap_amount_per_orb_absorbed

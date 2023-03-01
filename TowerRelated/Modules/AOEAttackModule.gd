@@ -16,6 +16,10 @@ enum SpawnLocationAndChange {
 signal before_aoe_is_added_as_child(aoe)
 signal kill_all_spawned_aoe()
 
+signal set_decrease_duration_of_all_aoe__to_false()
+signal set_decrease_duration_of_all_aoe__to_true()
+
+
 var spawn_location_and_change : int = SpawnLocationAndChange.NO_CHANGE
 
 var base_aoe_scene : PackedScene
@@ -43,6 +47,9 @@ var shift_x : bool = false
 var absolute_z_index_of_aoe : int = ZIndexStore.PARTICLE_EFFECTS
 
 var kill_all_created_aoe_at_round_end : bool = true
+
+var pause_decrease_duration_of_aoe_at_round_end : bool = false
+var unpause_decrease_duration_of_aoe_at_round_start : bool = false
 
 # constants
 
@@ -93,6 +100,8 @@ func construct_aoe(arg_origin_pos : Vector2, arg_enemy_pos : Vector2) -> BaseAOE
 	
 	
 	connect("kill_all_spawned_aoe", base_aoe, "queue_free", [], CONNECT_ONESHOT)
+	connect("set_decrease_duration_of_all_aoe__to_false", base_aoe, "set_decrease_duration_to_false__from_aoe_attk_module")
+	connect("set_decrease_duration_of_all_aoe__to_true", base_aoe, "set_decrease_duration_to_true__from_aoe_attk_module")
 	
 	return base_aoe
 
@@ -223,6 +232,8 @@ func on_round_end():
 	
 	if kill_all_created_aoe_at_round_end:
 		kill_all_created_aoe()
+	elif pause_decrease_duration_of_aoe_at_round_end:
+		emit_signal("set_decrease_duration_of_all_aoe__to_false")
 
 func kill_all_created_aoe():
 	emit_signal("kill_all_spawned_aoe")
@@ -231,6 +242,14 @@ func queue_free():
 	kill_all_created_aoe()
 	
 	.queue_free()
+
+
+
+func on_round_start():
+	.on_round_start()
+	
+	if unpause_decrease_duration_of_aoe_at_round_start:
+		emit_signal("set_decrease_duration_of_all_aoe__to_true")
 
 #
 

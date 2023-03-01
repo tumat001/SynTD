@@ -643,7 +643,7 @@ func set_energy_module(module):
 	if module != null:
 		module.module_effect_descriptions = [
 			#"Crashing stars can now hit its target up to %s times." % str(star_pierce_count_on_energy)
-			"%s main attacks are needed to summon a star instead of %s" % [str(original_main_attacks_for_star_summon), str(energy_module_main_attacks_for_star_summon)]
+			"%s main attacks are needed to summon a star instead of %s" % [str(energy_module_main_attacks_for_star_summon), str(original_main_attacks_for_star_summon)]
 		]
 
 

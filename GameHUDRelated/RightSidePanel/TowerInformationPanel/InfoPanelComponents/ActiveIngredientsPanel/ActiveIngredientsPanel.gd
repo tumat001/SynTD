@@ -6,7 +6,7 @@ const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 const color_over_limit = Color("#ffe21A00")
 const color_normal = Color(1, 1, 1, 1)
 
-var tower : AbstractTower
+var tower : AbstractTower setget set_tower
 
 onready var count_label = $VBoxContainer/HeaderWholeMarginer/TowerCountMarginer/Marginer/CountLabel
 onready var multi_ingredient_panel = $VBoxContainer/MultiIngredientPanel
@@ -32,6 +32,7 @@ func update_display():
 			count_label.set("custom_colors/font_color", color_over_limit)
 		else:
 			count_label.set("custom_colors/font_color", color_normal)
+		
 	else:
 		count_label.set("custom_colors/font_color", color_normal)
 	
@@ -49,3 +50,19 @@ func update_limit_count_label_only():
 		count_display = str(tower.ingredients_absorbed.size()) + "/" + str(tower.last_calculated_ingredient_limit)
 	
 	count_label.text = count_display
+
+#######
+
+func set_tower(arg_tower):
+	if is_instance_valid(tower):
+		tower.disconnect("last_calculated_ignore_ing_limit__for_applying_changed", self, "_on_tower_last_calculated_ignore_ing_limit__for_applying_changed")
+	
+	tower = arg_tower
+	
+	if is_instance_valid(tower):
+		tower.connect("last_calculated_ignore_ing_limit__for_applying_changed", self, "_on_tower_last_calculated_ignore_ing_limit__for_applying_changed", [], CONNECT_PERSIST)
+
+func _on_tower_last_calculated_ignore_ing_limit__for_applying_changed(arg_val):
+	update_display()
+
+

@@ -209,11 +209,27 @@ func set_is_unbounded(arg_val):
 	
 
 func _configure_self_to_match_clone_basis_relevant_properties():
+	
+	var i = 1
 	for ing_effect in clone_basis.ingredients_absorbed.values():
 		var ing_effect_copy = ing_effect.get_copy__deep_or_shallow()
 		
 		if ing_effect_copy != null:
 			absorb_ingredient(ing_effect_copy, 0, false)
+		
+		i += 1
+		if i > clone_basis.last_calculated_ingredient_limit:
+			break
+	
+#	for ing_id in clone_basis.ingredient_id_absorbed_to_is_applied_map.keys():
+#		if clone_basis.ingredient_id_absorbed_to_is_applied_map[ing_id]:
+#
+#			var ing_effect = clone_basis.ingredients_absorbed[ing_id]
+#
+#			var ing_effect_copy = ing_effect.get_copy__deep_or_shallow()
+#
+#			if ing_effect_copy != null:
+#				absorb_ingredient(ing_effect_copy, 0, false)
 
 
 ################

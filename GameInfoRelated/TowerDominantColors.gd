@@ -21,9 +21,10 @@ const syn_dom_orange = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPa
 const syn_dom_yellow = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Yellow.png")
 const syn_dom_green = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Green.png")
 const syn_dom_blue = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Blue.png")
-const syn_dom_violet = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Violet.png")
 const syn_dom_white = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_White.png")
 const syn_dom_black = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Black.png")
+const syn_dom_violet = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Violet.png")
+const syn_dom_violet_v02 = preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/Pics/Syn_Dom_Violet.png")
 
 const DomSyn_Violet = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Violet_Related/DomSyn_Violet.gd")
 const DomSyn_Yellow_GoldIncome = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Yellow_Related/DomSyn_Yellow_GoldIncome.gd")
@@ -33,7 +34,7 @@ const DomSyn_Blue = preload("res://GameInfoRelated/ColorSynergyRelated/DominantS
 const DomSyn_Red = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red.gd")
 const DomSyn_Black = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Black_Related/DomSyn_Black.gd")
 const DomSyn_Green = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Green_Related/DomSyn_Green.gd")
-
+const DomSyn_Violet_V02 = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_VioletV02_Related/DomSyn_Violet_V02.gd")
 
 const SynTD_HeaderIDName = "SynTD_"
 
@@ -45,6 +46,8 @@ const SynergyID__Yellow = "%s%s" % [SynTD_HeaderIDName, "Yellow"]
 const SynergyID__Green = "%s%s" % [SynTD_HeaderIDName, "Green"]
 const SynergyID__White = "%s%s" % [SynTD_HeaderIDName, "White"]
 const SynergyID__Violet = "%s%s" % [SynTD_HeaderIDName, "Violet"]
+const SynergyID__Violet_V02 = "%s%s" % [SynTD_HeaderIDName, "Violet_V02"]
+
 
 const all_dom_synergy_ids_from_Syn_TD_base_game : Array = [
 	SynergyID__Blue,
@@ -55,6 +58,8 @@ const all_dom_synergy_ids_from_Syn_TD_base_game : Array = [
 	SynergyID__Green,
 	SynergyID__White,
 	SynergyID__Violet,
+	
+	SynergyID__Violet_V02,
 ]
 
 #enum SynergyId {
@@ -76,7 +81,8 @@ const synergy_id_to_syn_name_dictionary := {
 	SynergyID__Yellow : "Yellow",
 	SynergyID__Green : "Green",
 	SynergyID__White : "White",
-	SynergyID__Violet : "Violet",
+	SynergyID__Violet : "Violet V1",
+	SynergyID__Violet_V02 : "Violet V2",
 }
 
 var synergy_id_to_pic_map__big : Dictionary = {
@@ -85,10 +91,11 @@ var synergy_id_to_pic_map__big : Dictionary = {
 	SynergyID__Yellow : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Dom_Yellow_30x30.png"),
 	SynergyID__Green : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Dom_Green_30x30.png"),
 	SynergyID__Blue : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Dom_Blue_30x30.png"),
-	SynergyID__Violet : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Dom_Violet_30x30.png"),
 	SynergyID__White : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Dom_White_30x30.png"),
 	SynergyID__Black : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Dom_Black_30x30.png"),
 	
+	SynergyID__Violet : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Dom_Violet_30x30.png"),
+	SynergyID__Violet_V02 : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Dom_VioletV02_30x30.png"),
 }
 
 ##
@@ -106,11 +113,14 @@ var synergies : Dictionary
 # Can be modified during PreGameModifiers (BreakpointActivation.BEFORE_SINGLETONS_INIT).
 var available_synergy_ids : Array = []
 
+#
 
 
 var _banned_syn_ids : Array = [
 	SynergyID__White
 ]
+
+#################
 
 ####
 
@@ -208,14 +218,74 @@ func _on_singleton_initialize():
 	ColorSynergy.Difficulty.COMPLEX
 	)
 	
-	
 	#
+	
+	
+	var plain_fragment__ingredients = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredients")
+	var plain_fragment__total_tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "total tower")
+	var plain_fragment__violet_tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_VIOLET, "violet tower")
+	var plain_fragment__ingredient = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredient")
+	
+	var vio_syn__standard = ColorSynergy.new(SynergyID__Violet, synergy_id_to_syn_name_dictionary[SynergyID__Violet], [TowerColors.VIOLET], [5, 4, 3, 2],
+	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
+	syn_dom_violet, synergy_id_to_pic_map__big[SynergyID__Violet],
+	[
+		["|0| can absorb more |1|.", [plain_fragment__violet_towers, plain_fragment__ingredients]],
+		["|0| can absorb ingredients regardless of color after being in the map for 1 round.", [plain_fragment__violet_towers]],
+		"",
+		"These effects apply only when the limit of total and Violet towers in the map is satisfied.",
+		""
+	],
+	[DomSyn_Violet],
+	[
+		["+50 |0|. 3 |1| limit, 2 |2| limit.", [plain_fragment__ingredients, plain_fragment__total_tower, plain_fragment__violet_tower]],
+		["+5 |0|. 6 |1| limit, 3 |2| limit.", [plain_fragment__ingredients, plain_fragment__total_tower, plain_fragment__violet_tower]],
+		["+2 |0|. 9 |1| limit, 4 |2| limit.", [plain_fragment__ingredients, plain_fragment__total_tower, plain_fragment__violet_tower]],
+		["+1 |0|. 14 |1| limit, 6 |2| limit.", [plain_fragment__ingredient, plain_fragment__total_tower, plain_fragment__violet_tower]],
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.CHALLENGING
+	)
+	
+	
+	var plain_fragment__x_ingredients = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "1 ingredient")
+	var plain_fragment__cost = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "cost in gold")
+	var plain_fragment__x_gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "10 salvaged gold")
+	var plain_fragment__x_additional_ingredient_slot = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "1 additional ingredient slot")
+	
+	var plain_fragment__x_gold__for_omni_color = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "50 salvaged gold")
+	
+	var vio_syn__var_02 = ColorSynergy.new(SynergyID__Violet_V02, synergy_id_to_syn_name_dictionary[SynergyID__Violet_V02], [TowerColors.VIOLET], [7, 2], #[7, 4], todo
+	[tier_gold_pic, tier_silver_pic],
+	syn_dom_violet_v02, synergy_id_to_pic_map__big[SynergyID__Violet_V02],
+	[
+		["|0| can absorb |1| above their limit, but doing so makes it Unstable.", [plain_fragment__violet_towers, plain_fragment__x_ingredients]],
+		["Unstable: after a few rounds, all |0| above the limit are removed, salvaging their |1|.", [plain_fragment__ingredients, plain_fragment__cost]],
+		["All |0| gain |1| every |2|.", [plain_fragment__violet_towers, plain_fragment__x_additional_ingredient_slot, plain_fragment__x_gold]],
+		"",
+		["At |0|, all |1| can absorb ingredients regardless of color.", [plain_fragment__x_gold__for_omni_color, plain_fragment__violet_towers]],
+		""
+	],
+	[DomSyn_Violet_V02],
+	[
+		"3 Unstable rounds.",
+		"2 Unstable rounds.",
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.CHALLENGING
+	)
+	
+	
+	#####
 	
 	var plain_fragment__red_on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
 	var plain_fragment__orange_abilities = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "abilities")
 	var plain_fragment__yellow_on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
 	var plain_fragment__yellow_gold_gain = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "gain 1 gold")
-	var plain_fragment__violet_ingredients = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredients")
 	
 	
 	# ------------------------------------------------------
@@ -344,30 +414,14 @@ func _on_singleton_initialize():
 	ColorSynergy.Difficulty.EASY
 	),
 	
+	
 	synergy_id_to_syn_name_dictionary[SynergyID__Blue] : blue_syn,
 	
-	synergy_id_to_syn_name_dictionary[SynergyID__Violet] : ColorSynergy.new(SynergyID__Violet, synergy_id_to_syn_name_dictionary[SynergyID__Violet], [TowerColors.VIOLET], [5, 4, 3, 2],
-	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
-	syn_dom_violet, synergy_id_to_pic_map__big[SynergyID__Violet],
-	[
-		["|0| can absorb more |1|.", [plain_fragment__violet_towers, plain_fragment__violet_ingredients]],
-		["|0| can absorb ingredients regardless of color after being in the map for 1 round.", [plain_fragment__violet_towers]],
-		"",
-		"These effects apply only when the limit of total and Violet towers in the map is satisfied.",
-		""
-	],
-	[DomSyn_Violet],
-	[
-		"+50 ingredients. 3 total tower limit, 2 violet tower limit.",
-		"+5 ingredients. 6 total tower limit, 3 violet tower limit.",
-		"+2 ingredients. 9 total tower limit, 4 violet tower limit.",
-		"+1 ingredient. 14 total tower limit, 6 violet tower limit.",
-	],
-	ColorSynergy.HighlightDeterminer.SINGLE,
-	{},
-	[],
-	ColorSynergy.Difficulty.CHALLENGING
-	),
+	
+	synergy_id_to_syn_name_dictionary[SynergyID__Violet] : vio_syn__standard,
+	
+	synergy_id_to_syn_name_dictionary[SynergyID__Violet_V02] : vio_syn__var_02,
+	
 	
 	synergy_id_to_syn_name_dictionary[SynergyID__White] : ColorSynergy.new(SynergyID__White, synergy_id_to_syn_name_dictionary[SynergyID__White], [TowerColors.WHITE], [1],
 	[tier_dia_pic],
@@ -439,4 +493,7 @@ func set_color_synergy_is_available(arg_synergy_id : String, arg_is_available : 
 # must be done ON PreGameModifiers (BreakpointActivation.BEFORE_SINGLETONS_INIT). Not at any other time
 func set_color_synergy_banned_status(arg_synergy_id : String, arg_is_banned):
 	_banned_syn_ids.append(arg_synergy_id)
+
+#############
+
 

@@ -61,6 +61,10 @@ func _create_resource() -> Object:
 	
 	emit_signal("resource_created", res)
 	
+	if res is Node:
+		if is_instance_valid(node_to_parent) and !is_instance_valid(res.get_parent()):
+			node_to_parent.add_child(res)
+	
 	return res
 
 #
