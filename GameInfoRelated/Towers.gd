@@ -6646,7 +6646,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
 		
 		info.base_damage = 2.72
-		info.base_attk_speed = 0.612
+		info.base_attk_speed = 0.722
 		info.base_pierce = 1
 		info.base_range = 142
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -6736,7 +6736,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.11
+		info.base_attk_speed = 0.12
 		info.base_pierce = 1
 		info.base_range = 175
 		info.base_damage_type = DamageType.PHYSICAL
@@ -6953,7 +6953,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var interpreter_for_attk_speed = TextFragmentInterpreter.new()
 		interpreter_for_attk_speed.tower_info_to_use_for_tower_stat_fragments = info
-		interpreter_for_attk_speed.display_body = true
+		interpreter_for_attk_speed.display_body = false
 		interpreter_for_attk_speed.header_description = "stacking attack speed"
 		
 		var ins_for_attk_speed = []
@@ -7078,12 +7078,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_stop_mov_duration.tower_info_to_use_for_tower_stat_fragments = info
 		interpreter_for_stop_mov_duration.display_body = true
 		interpreter_for_stop_mov_duration.header_description = "seconds"
-		interpreter_for_stop_mov_duration.estimate_method_for_final_num_val = TextFragmentInterpreter.ESTIMATE_METHOD.ROUND
 		
 		var ins_for_stop_mov_duration = []
-		ins_for_stop_mov_duration.append(NumericalTextFragment.new(2.5, false, -1))
+		ins_for_stop_mov_duration.append(NumericalTextFragment.new(4.0, false, -1))
 		ins_for_stop_mov_duration.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
-		ins_for_stop_mov_duration.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.BONUS, 1.0, -1))
+		ins_for_stop_mov_duration.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.BONUS, 3.0, -1))
 		
 		interpreter_for_stop_mov_duration.array_of_instructions = ins_for_stop_mov_duration
 		

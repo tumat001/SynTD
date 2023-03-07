@@ -340,8 +340,9 @@ func _set_blue_and_red_paths():
 		
 		blue_path.marker_id_to_value_map[EnemyPath.MarkerIds.SKIRMISHER_BASE_PATH_ALREADY_CLONED] = red_path #storing pair path
 		
-		var emit_signal_on_add_path : bool = blue_path_array.get_spawn_paths__not_copy().size() <= (i + 1) #paths_for_blues.size() <= (i + 1)
-		map_manager.base_map.add_enemy_path(red_path, emit_signal_on_add_path)
+		#var emit_signal_on_add_path : bool = blue_path_array.get_spawn_paths__not_copy().size() <= (i + 1) #paths_for_blues.size() <= (i + 1)
+		#map_manager.base_map.add_enemy_path(red_path, emit_signal_on_add_path)
+		map_manager.base_map.add_enemy_path(red_path)
 		
 		# signals related
 		blue_path.connect("curve_changed", self, "_on_curve_of_original_path_changed", [blue_path, red_path], CONNECT_PERSIST)
@@ -1736,11 +1737,11 @@ func _show_flags_if_curr_stageround_is_appropriate(arg_stageround):
 	_is_showing_spawn_loc_flags = true
 	
 	
-#	if arg_stageround.is_stageround_id_equal_than_second_param("01", arg_stageround.id):
-#		#temp
-#		_show_blue_flags__emp()
-#		#_show_red_flags__emp()
-#
+	if arg_stageround.is_stageround_id_equal_than_second_param("01", arg_stageround.id):
+		#temp
+		_show_blue_flags__emp()
+		_show_red_flags__emp()
+
 #	elif arg_stageround.is_stageround_id_equal_than_second_param("02", arg_stageround.id):
 #		#temp
 #		#_show_blue_flags__normal()

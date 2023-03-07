@@ -273,6 +273,7 @@ func add_spawn_path(path):
 		if !path.is_connected("on_enemy_death", self, "_on_enemy_death"):
 			path.connect("on_enemy_death", self, "_on_enemy_death", [], CONNECT_PERSIST)
 			path.connect("on_enemy_reached_end", self, "_enemy_reached_end", [], CONNECT_PERSIST)
+		
 
 #	if !spawn_paths.has(path):
 #		if !path.is_connected("on_enemy_death", self, "_on_enemy_death"):
@@ -691,6 +692,7 @@ func _on_round_end(stage_round, is_game_start):
 
 func _on_base_map_path_added(new_path):
 	add_spawn_path(new_path)
+
 
 func _on_base_map_path_removed(removed_path):
 	remove_spawn_path(removed_path)

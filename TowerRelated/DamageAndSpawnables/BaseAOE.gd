@@ -33,7 +33,7 @@ var aoe_sprite_frames : SpriteFrames setget set_aoe_sprite_frames
 var sprite_frames_play_only_once : bool = true setget set_sprite_frames_play_only_once
 
 var aoe_shape_to_set_on_ready
-
+var aoe_polygon_to_set_on_ready
 
 var aoe_default_coll_shape : int = BaseAOEDefaultShapes.CIRCLE
 var shift_x : bool = false
@@ -56,6 +56,8 @@ var coll_shape_circle_inc_inc_per_sec : float = 0
 var coll_shape_circle_min_inc_per_sec : float = 0
 var coll_shape_circle_max_val : float = 100000.0
 
+var coll_shape_triangle_x_and_y_size : Vector2
+
 # internal stuffs
 
 var _delay_in_between_repeats : float
@@ -69,9 +71,14 @@ var _pierce_available : int
 
 var _enemies_inside_count : int
 
+
+
+#
+
 onready var aoe_area : Area2D = $AOEArea
 onready var anim_sprite : AnimatedSprite = $AOEArea/AnimatedSprite
 onready var collision_shape : CollisionShape2D = $AOEArea/Shape
+var collision_polygon : CollisionPolygon2D
 
 #
 
@@ -127,11 +134,55 @@ func _ready():
 			_set_default_rectangle_shape()
 		
 	
+	
+	if aoe_polygon_to_set_on_ready != null:
+		_construct_and_add_coll_polygon()
+		collision_polygon.polygon = aoe_polygon_to_set_on_ready
+	elif aoe_default_coll_shape == BaseAOEDefaultShapes.TRIANGLE:
+		_construct_and_add_coll_polygon()
+		var polygon = _construct_triangle_polygon()
+		
+		collision_polygon.polygon = polygon
+	
+	
 	if shift_x:
 		position.x += _get_first_anim_size().x
 	
 	
 	scale *= aoe_scale_of_initial_scale
+
+func _construct_and_add_coll_polygon():
+	collision_polygon = CollisionPolygon2D.new()
+	
+	aoe_area.add_child(collision_polygon)
+
+func _construct_triangle_polygon() -> PoolVector2Array:  # base facing right, tip facing left.
+	var tria_polygon = []
+	
+	#tria_polygon.append(Vector2(0, coll_shape_triangle_x_and_y_size.y / 2))
+	#tria_polygon.append(Vector2(coll_shape_triangle_x_and_y_size.x, 0))
+	#tria_polygon.append(Vector2(coll_shape_triangle_x_and_y_size.x, coll_shape_triangle_x_and_y_size.y))
+	
+	tria_polygon.append(Vector2(-coll_shape_triangle_x_and_y_size.x / 2, 0))
+	tria_polygon.append(Vector2(coll_shape_triangle_x_and_y_size.x / 2, -coll_shape_triangle_x_and_y_size.y / 2))
+	tria_polygon.append(Vector2(coll_shape_triangle_x_and_y_size.x / 2, coll_shape_triangle_x_and_y_size.y / 2))
+	
+	
+	return PoolVector2Array(tria_polygon)
+
+func center_left_tipped_triangle_tip_pos__in_pos(arg_pos, arg_angle_in_rad):
+	arg_angle_in_rad += PI
+	#
+	rotation = arg_angle_in_rad
+	
+	var pos =  arg_pos + Vector2(coll_shape_triangle_x_and_y_size.x / 2, 0).rotated(arg_angle_in_rad)
+	if !is_inside_tree():
+		position = pos
+	else:
+		global_position = pos
+	
+
+#
 
 func _process(delta):
 	if _current_duration < duration:
@@ -157,7 +208,6 @@ func _process(delta):
 			coll_shape_circle_inc_per_sec += (coll_shape_circle_inc_inc_per_sec * delta)
 			if coll_shape_circle_inc_per_sec < coll_shape_circle_min_inc_per_sec:
 				coll_shape_circle_inc_per_sec = coll_shape_circle_min_inc_per_sec
-			
 		
 		if _current_damage_delay > 0:
 			_current_damage_delay -= delta

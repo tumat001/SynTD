@@ -32,8 +32,8 @@ const Shader_Grayscale = preload("res://MiscRelated/ShadersRelated/Shader_Graysc
 
 ####
 
-const stone_base_duration : float = 2.5
-const stone_bonus_duration_per_1_ap : float = 1.0
+const stone_base_duration : float = 4.0
+const stone_bonus_duration_per_1_ap : float = 3.0
 
 var stone_aoe_attack_module : AOEAttackModule
 
@@ -167,6 +167,11 @@ func _construct_and_add_stone_aoe_attk_module():
 	stone_aoe_attack_module.can_be_commanded_by_tower = false
 	
 	stone_aoe_attack_module.is_displayed_in_tracker = false
+	
+	stone_aoe_attack_module.kill_all_created_aoe_at_round_end = false
+	stone_aoe_attack_module.pause_decrease_duration_of_aoe_at_round_end = true
+	stone_aoe_attack_module.unpause_decrease_duration_of_aoe_at_round_start = true
+	
 	
 	add_attack_module(stone_aoe_attack_module)
 

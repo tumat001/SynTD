@@ -232,8 +232,7 @@ func _ready():
 	connect("on_round_start", self, "_on_round_start_v", [], CONNECT_PERSIST)
 	
 	_set_variance_state(VarianceState.INITIAL)
-	
-	#_set_variance_state(VarianceState.BLUE) #For testing
+	#_set_variance_state(VarianceState.YELLOW) #For testing
 	
 	variance_frame_sprites.use_parent_material = false
 	

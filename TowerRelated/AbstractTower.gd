@@ -2110,9 +2110,10 @@ func absorb_ingredient(ingredient_effect : IngredientEffect, ingredient_gold_bas
 		ingredients_absorbed[ingredient_effect.tower_id] = ingredient_effect
 		_ingredients_tower_id_base_gold_costs_map[ingredient_effect.tower_id] = ingredient_gold_base_cost
 		
-		if ingredients_absorbed.size() <= last_calculated_ingredient_limit or last_calculated_ignore_ing_limit__for_applying:
+		if ingredients_absorbed.size() <= last_calculated_ingredient_limit or last_calculated_ignore_ing_limit__for_applying or  ingredient_effect.ignore_ingredient_limit or ingredient_effect.tower_base_effect.ignore_ing_limit_of_tower:
 			ingredient_id_absorbed_to_is_applied_map[ingredient_effect.tower_id] = true
 			add_tower_effect(ingredient_effect.tower_base_effect, all_attack_modules, true, true, ingredient_effect)
+			
 		else:
 			ingredient_id_absorbed_to_is_applied_map[ingredient_effect.tower_id] = false
 		
@@ -2218,7 +2219,7 @@ func _can_accept_ingredient(ingredient_effect : IngredientEffect, tower_selected
 		if !ingredient_effect.can_be_absorbed_as_an_ingredient_by_tower(self):
 			return false
 		
-		if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.ignore_ingredient_limit and !last_calculated_ignore_ing_limit__for_absorbing:
+		if ingredients_absorbed.size() >= last_calculated_ingredient_limit and !ingredient_effect.ignore_ingredient_limit and !ingredient_effect.tower_base_effect.ignore_ing_limit_of_tower and !last_calculated_ignore_ing_limit__for_absorbing:
 			return false
 		
 		if all_combinations_id_to_effect_id_map.has(ingredient_effect.tower_id):
@@ -2462,6 +2463,10 @@ func get_all_tower_colors(arg_copy : bool = true):
 		return _tower_colors.duplicate()
 	else:
 		return _tower_colors
+
+func has_tower_color(arg_color):
+	return _tower_colors.has(arg_color)
+
 
 # Synergy related
 
@@ -3374,9 +3379,13 @@ func queue_free():
 		current_placable.tower_occupying = null
 	
 	# ORDER CHANGED FROM bottom to top (see commented code)
+	
+	clear_ingredients()
+	
 	.queue_free()
 	for module in all_attack_modules:
-		module.queue_free()
+		if !module.is_queued_for_deletion():
+			module.queue_free()
 	
 	emit_signal("tower_in_queue_free", self) # synergy updated from tower manager
 	

@@ -18,13 +18,45 @@ class DrawParams:
 	
 	#
 	
+	var game_elements
+	
+	var _is_configure_self_to_pause_and_unpause_based_on_stage_status : bool
+	var _is_paused__due_to_stage_status : bool
+	
+	#
+	
 	var _outline_transparency_per_sec : float
 	var _fill_transparency_per_sec : float
+	
+	#
 	
 	func configure_properties():
 		_outline_transparency_per_sec = outline_color.a / (lifetime_of_draw - lifetime_to_start_transparency)
 		_fill_transparency_per_sec = fill_color.a / (lifetime_of_draw - lifetime_to_start_transparency)
 		_current_lifetime = 0
+	
+	
+	func configure_self_to_pause_and_unpause_based_on_stage_status(arg_game_elements):
+		game_elements = arg_game_elements
+		_is_configure_self_to_pause_and_unpause_based_on_stage_status = true
+		
+		game_elements.stage_round_manager.connect("round_ended", self, "_on_round_ended")
+		game_elements.stage_round_manager.connect("round_started", self, "_on_round_started")
+	
+	func unconfigure_self_from_all():
+		if _is_configure_self_to_pause_and_unpause_based_on_stage_status:
+			_is_paused__due_to_stage_status = false
+			game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_ended")
+			game_elements.stage_round_manager.disconnect("round_started", self, "_on_round_started")
+	
+	func _on_round_ended(arg_stageround):
+		_is_paused__due_to_stage_status = true
+	
+	func _on_round_started(arg_stageround):
+		_is_paused__due_to_stage_status = false
+	
+	
+
 
 var _all_draw_params : Array
 
@@ -47,6 +79,8 @@ func add_draw_param(arg_draw_param : DrawParams):
 
 func remove_draw_param(arg_draw_param : DrawParams):
 	_all_draw_params.erase(arg_draw_param)
+	
+	arg_draw_param.unconfigure_self_from_all()
 	
 	if _all_draw_params.size() == 0:
 		set_process(false)

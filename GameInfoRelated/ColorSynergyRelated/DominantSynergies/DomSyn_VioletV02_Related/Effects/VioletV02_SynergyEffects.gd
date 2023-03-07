@@ -15,6 +15,7 @@ var non_essential_rng
 
 var initial_unstable_round_count : int
 
+var extra_temporary_ing_count : int
 
 #
 
@@ -49,7 +50,7 @@ func _make_modifications_to_tower(tower):
 	if !_effects_applied:
 		_effects_applied = true
 		
-		_tower.ignore_ing_limit__for_absorbing_clauses.attempt_insert_clause(_tower.IgnoreIngredientLimitClauses_ForAbsorbing.DOM_SYN_VIOLET_V02)
+		_update_tower_ignore_ing_limit_absorb_properties_based_on_properties()
 		_tower.ignore_ing_limit__for_applying_clauses.attempt_insert_clause(_tower.IgnoreIngredientLimitClauses_ForApplying.DOM_SYN_VIOLET_V02)
 		
 		_tower.connect("on_ingredient_absorbed", self, "_on_ingredient_absorbed", [], CONNECT_PERSIST)
@@ -65,6 +66,16 @@ func _make_modifications_to_tower(tower):
 		
 		#
 		emit_signal("request_configure_self_to_dom_syn")
+
+
+func _update_tower_ignore_ing_limit_absorb_properties_based_on_properties():
+	var ing_absorbed_count_is_at_limit_plus_excess = (_tower.get_ingredient_ids_beyond_ing_limit().size() >= extra_temporary_ing_count)
+	
+	if !ing_absorbed_count_is_at_limit_plus_excess:
+		_tower.ignore_ing_limit__for_absorbing_clauses.attempt_insert_clause(_tower.IgnoreIngredientLimitClauses_ForAbsorbing.DOM_SYN_VIOLET_V02)
+	else:
+		_tower.ignore_ing_limit__for_absorbing_clauses.remove_clause(_tower.IgnoreIngredientLimitClauses_ForAbsorbing.DOM_SYN_VIOLET_V02)
+	
 
 #
 
@@ -151,10 +162,12 @@ func unmake_modification_to_tower__with_dom_syn():
 func _on_ingredient_absorbed(arg_ingredient):
 	_check__if_tower_has_at_least_one_ing_above_limit()
 	
+	_update_tower_ignore_ing_limit_absorb_properties_based_on_properties()
 
 func _on_ingredients_limit_changed(arg_limit):
 	_check__if_tower_has_at_least_one_ing_above_limit()
 	
+	_update_tower_ignore_ing_limit_absorb_properties_based_on_properties()
 
 #
 

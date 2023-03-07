@@ -199,9 +199,10 @@ func set_num_of_laser_count(arg_val):
 	_current_laser_count = arg_val
 	
 	if is_diff:
-		laser_attack_module.number_of_unique_targets = arg_val
-		
-		_update_description()
+		if is_instance_valid(laser_attack_module):
+			laser_attack_module.number_of_unique_targets = arg_val
+			
+			_update_description()
 
 #
 

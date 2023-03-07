@@ -78,3 +78,8 @@ func get_total_effective_damages_by_type_excluding(blacklisted : Array) -> Dicti
 				damages[on_hit_rep.damage_type] = on_hit_rep.damage
 	
 	return damages
+
+#
+
+func get_dmg_instance():
+	return dmg_instance_ref.get_ref()

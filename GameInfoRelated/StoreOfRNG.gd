@@ -30,6 +30,7 @@ var enemy_strength_value_rng := RandomNumberGenerator.new()
 var skirmisher_general_purpose_rng := RandomNumberGenerator.new()
 var skirmisher_random_cd_rng := RandomNumberGenerator.new()
 var map_enchant_gen_purpose_rng := RandomNumberGenerator.new()
+var violet_variation_randomizer_rng := RandomNumberGenerator.new()
 
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
@@ -64,6 +65,7 @@ enum RNGSource {
 	TIER = 2001,
 	RANDOM_TOWER_DECIDER = 2002, # ex: gain 2 tier 5 towers.
 	RED_TOWER_RANDOMIZER = 2003,
+	VIOLET_VARIATION_RANDOMIZER = 2004,
 	
 	BLACK_BUFF = 3000,
 	BLACK_CAPACITOR_NOVA_LIGHTNING_TOWER_OR_ENEMY_RNG = 3001,
@@ -112,7 +114,7 @@ func _init():
 		RNGSource.SKIRMISHER_GEN_PURPOSE : skirmisher_general_purpose_rng,
 		RNGSource.SKIRMISHER_RANDOM_CD : skirmisher_random_cd_rng,
 		RNGSource.MAP_ENCHANT_GEN_PURPOSE : map_enchant_gen_purpose_rng,
-		
+		RNGSource.VIOLET_VARIATION_RANDOMIZER : violet_variation_randomizer_rng
 		
 		
 	}

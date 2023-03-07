@@ -234,6 +234,7 @@ func _ready():
 	connect("changed_anim_from_alive_to_dead", self, "_on_changed_anim_from_alive_to_dead", [], CONNECT_PERSIST)
 	connect("changed_anim_from_dead_to_alive", self, "_on_changed_anim_from_dead_to_alive", [], CONNECT_PERSIST)
 	
+	connect("tree_exiting", self, "_on_tree_exiting_p", [], CONNECT_PERSIST)
 	
 	_post_inherit_ready()
 
@@ -292,11 +293,13 @@ func _on_round_end():
 	_enemies_marked.clear()
 	ping_eye_sprite.texture = PingEye_sleep_pic
 	
+	_kill_all_markers()
+
+func _kill_all_markers():
 	for mark in _markers:
 		if is_instance_valid(mark) and !mark.is_queued_for_deletion():
 			mark.queue_free()
 	_markers.clear()
-
 
 func _process(delta):
 	
@@ -359,6 +362,10 @@ func _on_changed_anim_from_alive_to_dead():
 func _on_changed_anim_from_dead_to_alive():
 	top_half_sprite.texture = Ping_TopHalf_Normal_Pic
 
+#
+
+func _on_tree_exiting_p():
+	_kill_all_markers()
 
 # energy module related
 

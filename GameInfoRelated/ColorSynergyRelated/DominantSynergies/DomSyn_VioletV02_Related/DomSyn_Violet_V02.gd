@@ -45,11 +45,11 @@ const gold_salvage_particle_variation_list = [
 #
 
 
-const initial_unstable_round_count__tier_2 = 3
-const initial_unstable_round_count__tier_1 = 2
+const initial_unstable_round_count__tier_2 = 2
+const initial_unstable_round_count__tier_1 = 1
 
 # NOTE: var names are used by syninteractable
-const salvage_gold_per_bonus_ing_slot : int = 10
+const salvage_gold_per_bonus_ing_slot : int = 8
 const salvage_gold_breakpoint_for_omni_color : int = 50
 
 var current_salvaged_gold : int = 0
@@ -135,6 +135,7 @@ func _attempt_add_effect_to_tower(tower : AbstractTower):
 			
 			vio_syn_effect.unstable_particle_pool_component = unstable_particle_pool_component
 			vio_syn_effect.non_essential_rng = non_essential_rng
+			vio_syn_effect.extra_temporary_ing_count = extra_temporary_ing_count
 			
 			if current_tier == 2:
 				vio_syn_effect.initial_unstable_round_count = initial_unstable_round_count__tier_2

@@ -103,7 +103,10 @@ func _emit_enemy_reached_end(enemy):
 #
 
 func get_copy_of_path(reversed : bool):
-	var copy = self.duplicate()
+	
+	var copy = duplicate(DUPLICATE_SCRIPTS | DUPLICATE_USE_INSTANCING)
+	#var copy = self.duplicate()
+	#var copy = load("res://EnemyRelated/EnemyPath.tscn").instance()
 	
 	copy.curve = get_copy_of_curve(reversed)
 	

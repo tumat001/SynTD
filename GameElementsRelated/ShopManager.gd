@@ -61,7 +61,14 @@ const blacklisted_towers_to_inventory : Array = [
 	#temporarily. enable it where it is fitting.
 	Towers.HERO,
 	
-	# violet towers # todo add all violet towers soon
+	# violet towers
+	Towers.SHACKLED,
+	Towers.PING,
+	Towers.VARIANCE,
+	Towers.CHAOS,
+	Towers.PROMINENCE,
+	Towers.TESLA,
+	
 	Towers.BOUNDED,
 	Towers.CELESTIAL,
 	Towers.BIOMORPH,
@@ -116,7 +123,14 @@ const towers_not_initially_in_inventory : Array = [
 	#temporarily.
 	Towers.HERO,
 	
-	# violet towers # todo add all violet towers soon
+	# violet towers
+	Towers.SHACKLED,
+	Towers.PING,
+	Towers.VARIANCE,
+	Towers.CHAOS,
+	Towers.PROMINENCE,
+	Towers.TESLA,
+	
 	Towers.BOUNDED,
 	Towers.CELESTIAL,
 	Towers.BIOMORPH,

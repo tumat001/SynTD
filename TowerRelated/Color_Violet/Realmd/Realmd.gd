@@ -453,6 +453,8 @@ func _create_domain_at_pos(arg_pos):
 	draw_params.lifetime_of_draw = domain_base_duration + 0.2
 	draw_params.lifetime_to_start_transparency = domain_base_duration - 0.3
 	
+	draw_params.configure_self_to_pause_and_unpause_based_on_stage_status(game_elements)
+	
 	circle_draw_node.add_draw_param(draw_params)
 	
 	

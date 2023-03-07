@@ -119,7 +119,7 @@ func _create_attk_module_rdsp(arg_attk_module : AbstractAttackModule):
 		rdsp.set_attack_module(arg_attk_module)
 		
 		return rdsp
-
+	
 
 
 

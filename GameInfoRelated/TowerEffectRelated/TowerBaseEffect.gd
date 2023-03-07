@@ -58,6 +58,7 @@ var ignore_effect_shield_effect : bool = true
 
 var is_from_enemy : bool = false
 
+var ignore_ing_limit_of_tower : bool = false
 
 var _current_additive_scale : float = 1.0
 var _persisting_total_additive_scale : float = 1.0 #used for descs

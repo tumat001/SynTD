@@ -79,6 +79,7 @@ func get_instructions_for_stageround(uuid : String):
 	pass
 
 
+
 #func _get_instructions_for_0_1():
 #	return [
 #		#MultipleEnemySpawnInstruction.new(0, 4, 0.5, EnemyConstants.Enemies.BASIC, spawn_at_red_metadata),
@@ -87,15 +88,15 @@ func get_instructions_for_stageround(uuid : String):
 #		#MultipleEnemySpawnInstruction.new(0, 1, 1, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 #		#MultipleEnemySpawnInstruction.new(0, 1, 1, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 #
-#		MultipleEnemySpawnInstruction.new(0, 5, 2, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
+#		MultipleEnemySpawnInstruction.new(0, 10, 2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 #		#MultipleEnemySpawnInstruction.new(0, 1, 1, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 #	]
 #
-#
-#
+##
+##
 #func _get_instructions_for_0_2():
 #	return [
-#		MultipleEnemySpawnInstruction.new(0, 3, 2, EnemyConstants.Enemies.ARTILLERY, spawn_at_red_metadata),
+#		MultipleEnemySpawnInstruction.new(0, 10, 2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 #		#MultipleEnemySpawnInstruction.new(0, 1, 2, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 #		#MultipleEnemySpawnInstruction.new(0, 1, 2, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 #	]

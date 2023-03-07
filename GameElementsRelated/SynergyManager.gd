@@ -790,9 +790,6 @@ func _create_and_configure_color_splatter_drawer(arg_color_to_use : Color, arg_p
 func before_game_start__synergies_this_game_initialize():
 	_before_game_started_initialize_ran = true
 	
-	#todo TEMP
-	add_dominant_synergy_id_banned_this_game(TowerDominantColors.SynergyID__Violet)
-	
 	_update_dominant_available_synergies_this_game()
 	_update_composite_available_synergies_this_game()
 

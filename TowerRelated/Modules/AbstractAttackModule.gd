@@ -877,8 +877,8 @@ func _attack_enemies(enemies : Array):
 					enemy.add_child(attack_sprite)
 				else:
 					attack_sprite.position = enemy.position
-					get_tree().get_root().add_child(attack_sprite)
-
+					#get_tree().get_root().add_child(attack_sprite)
+					CommsForBetweenScenes.ge_add_child_to_other_node_hoster(attack_sprite)
 
 #func _attack_at_position(_pos : Vector2):
 #	pass
@@ -914,8 +914,8 @@ func _during_windup_multiple(enemies_or_poses : Array = []):
 					enemy.add_child(attack_sprite)
 				else:
 					attack_sprite.position = enemy.position
-					get_tree().get_root().add_child(attack_sprite)
-	
+					#get_tree().get_root().add_child(attack_sprite)
+					CommsForBetweenScenes.ge_add_child_to_other_node_hoster(attack_sprite)
 	
 	emit_signal("in_attack_windup", _last_calculated_attack_wind_up, enemies_or_poses)
 

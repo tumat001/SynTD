@@ -17,7 +17,7 @@ var base_damage_multiplier : float = 1
 var on_hit_damage_multiplier : float = 1
 var on_hit_effect_multiplier : float = 1
 
-var final_damage_multiplier : float = 1 # used only by Wyvern and Coronal for now.
+var final_damage_multiplier : float = 1 # used only by Wyvern, Coronal and VioletRB_V2_V02 attk module for now.
 
 #
 
@@ -54,6 +54,8 @@ func get_copy_scaled_by(scale : float):
 	
 	copy.current_on_hit_damage_reapply_count = current_on_hit_damage_reapply_count
 	copy.current_on_hit_effect_reapply_count = current_on_hit_effect_reapply_count
+	
+	copy.final_damage_multiplier = final_damage_multiplier
 	
 	return copy
 
@@ -110,5 +112,4 @@ func scale_only_on_hit_effect_by(scale : float):
 	on_hit_effect_multiplier = on_hit_effect_multiplier + (scale - 1)
 
 #
-
 

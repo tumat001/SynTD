@@ -40,6 +40,8 @@ const syn_compo_special_ROYGBV = preload("res://GameHUDRelated/LeftSidePanel/Syn
 const CompleSyn_OrangeBlue = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_OrangeBlue/CompliSyn_OrangeBlue.gd")
 const CompliSyn_RedGreen = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_RedGreen/CompliSyn_RedGreen.gd")
 const CompliSyn_YellowViolet = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2/CompliSyn_YelVio_V2.gd")
+const CompliSyn_YellowViolet_V02 = preload("res://GameInfoRelated/ColorSynergyRelated/CompliSynergies/CompliSyn_YelVio_V2_Var02/CompliSyn_YelVio_V2_V02.gd")
+
 
 const AnaSyn_BlueVG = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_BlueVG/AnaSyn_BlueVG.gd")
 const AnaSyn_VioletRB = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2/AnaSyn_VioletRB_V2.gd")
@@ -48,6 +50,7 @@ const AnaSyn_OrangeYR = preload("res://GameInfoRelated/ColorSynergyRelated/Analo
 const AnaSyn_RedOV = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_RedOV_V2/AnaSyn_RedOV_V2.gd")
 const AnaSyn_YellowGO = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_YellowGO/AnaSyn_YellowGO.gd")
 const AnaSyn_GreenBY = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_GreenBY/AnaSyn_GreenBY.gd")
+const AnaSyn_VioletRB_V02 = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2_V02/AnaSyn_VioletRB_V2_V02.gd")
 
 const TriaSyn_RYB = preload("res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_RYB/TriaSyn_RYB.gd")
 const TriaSyn_OGV = preload("res://GameInfoRelated/ColorSynergyRelated/TriaSynergies/TriaSyn_OGV/TriaSyn_OGV.gd")
@@ -73,11 +76,13 @@ const SynTD_HeaderIDName = "SynTD_"
 const SynergyId__RedGreen = "%s%s" % [SynTD_HeaderIDName, "RedGreen"]
 const SynergyId__OrangeBlue = "%s%s" % [SynTD_HeaderIDName, "OrangeBlue"]
 const SynergyId__YellowViolet = "%s%s" % [SynTD_HeaderIDName, "YellowViolet"]
+const SynergyId__YellowViolet_V02 = "%s%s" % [SynTD_HeaderIDName, "YellowViolet_V02"]
 const SynergyId__OrangeYR = "%s%s" % [SynTD_HeaderIDName, "OrangeYR"]
 const SynergyId__YellowGO = "%s%s" % [SynTD_HeaderIDName, "YellowGO"]
 const SynergyId__GreenBY = "%s%s" % [SynTD_HeaderIDName, "GreenBY"]
 const SynergyId__BlueVG = "%s%s" % [SynTD_HeaderIDName, "BlueVG"]
 const SynergyId__VioletRB = "%s%s" % [SynTD_HeaderIDName, "VioletRB"]
+const SynergyId__VioletRB_V02 = "%s%s" % [SynTD_HeaderIDName, "VioletRB_V02"]
 const SynergyId__RYB = "%s%s" % [SynTD_HeaderIDName, "RYB"]
 const SynergyId__OGV = "%s%s" % [SynTD_HeaderIDName, "OGV"]
 const SynergyId__RedOV = "%s%s" % [SynTD_HeaderIDName, "RedOV"]
@@ -86,11 +91,13 @@ const all_compo_synergy_ids_from_Syn_TD_base_game : Array = [
 	SynergyId__RedGreen,
 	SynergyId__OrangeBlue,
 	SynergyId__YellowViolet,
+	SynergyId__YellowViolet_V02,
 	SynergyId__OrangeYR,
 	SynergyId__YellowGO,
 	SynergyId__GreenBY,
 	SynergyId__BlueVG,
 	SynergyId__VioletRB,
+	SynergyId__VioletRB_V02,
 	SynergyId__RYB,
 	SynergyId__OGV,
 	SynergyId__RedOV,
@@ -100,12 +107,14 @@ const all_compo_synergy_ids_from_Syn_TD_base_game : Array = [
 const synergy_id_to_syn_name_dictionary := {
 	SynergyId__RedGreen : "RedGreen",
 	SynergyId__OrangeBlue : "OrangeBlue",
-	SynergyId__YellowViolet : "YellowViolet",
+	SynergyId__YellowViolet : "YelVio V1",
+	SynergyId__YellowViolet_V02 : "YelVio V2",
 	SynergyId__OrangeYR : "OrangeYR",
 	SynergyId__YellowGO : "YellowGO",
 	SynergyId__GreenBY : "GreenBY",
 	SynergyId__BlueVG : "BlueVG",
-	SynergyId__VioletRB : "VioletRB",
+	SynergyId__VioletRB : "VioletRB V1",
+	SynergyId__VioletRB_V02 : "VioletRB V2",
 	SynergyId__RYB : "RYB",
 	SynergyId__OGV : "OGV",
 	SynergyId__RedOV : "RedOV",
@@ -121,8 +130,10 @@ var synergy_id_to_pic_map__big : Dictionary = {
 	SynergyId__RedOV : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_RedOV_30x30.png"),
 	SynergyId__RYB : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_RedYellowBlue_30x30.png"),
 	SynergyId__VioletRB : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_VioletRB_30x30.png"),
+	SynergyId__VioletRB_V02 : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_VioletRBV02_30x30.png"),
 	SynergyId__YellowGO : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_YellowGO_30x30.png"),
 	SynergyId__YellowViolet : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_YelVio_30x30.png"),
+	SynergyId__YellowViolet_V02 : preload("res://GameHUDRelated/LeftSidePanel/SynergyInfoPanel/SynergyIcons_Big/SynIcon_Compo_YelVioV02_30x30.png"),
 	
 }
 
@@ -156,6 +167,9 @@ func _on_singleton_initialize():
 	
 	
 	#inst_complesyn_yelvio_energymodule = CompleSyn_YelVio_EnergyModule.new(TowerDominantColors.inst_domsyn_yellow_energybattery)
+	
+	var plain_fragment__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "ability")
+	
 	
 	# 
 	
@@ -261,7 +275,7 @@ func _on_singleton_initialize():
 	
 	var interpreter_for_orangeblue_explosion_dmg_increase = TextFragmentInterpreter.new()
 	interpreter_for_orangeblue_explosion_dmg_increase.display_body = false
-	interpreter_for_orangeblue_explosion_dmg.display_header = false
+	#interpreter_for_orangeblue_explosion_dmg.display_header = false
 	
 	var ins_for_orangeblue_explosion_dmg_increase = []
 	ins_for_orangeblue_explosion_dmg_increase.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "increased damage", 25, true))
@@ -632,7 +646,6 @@ func _on_singleton_initialize():
 	
 	
 	
-	
 	var violet_rb_syn = ColorSynergy.new(SynergyId__VioletRB, synergy_id_to_syn_name_dictionary[SynergyId__VioletRB], [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_ana_violetRB, synergy_id_to_pic_map__big[SynergyId__VioletRB],
@@ -657,6 +670,66 @@ func _on_singleton_initialize():
 	
 	#
 	
+	var plain_fragment__stacking_attk_speed__vrb = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ATTACK_SPEED, "30% stacking total attack speed")
+	var plain_fragment__stacking_base_dmg__vrb = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.BASE_DAMAGE, "varying stacking total percent base damage")
+	
+	var interpreter_for_dmg_scale__vrb = TextFragmentInterpreter.new()
+	interpreter_for_dmg_scale__vrb.display_body = true
+	interpreter_for_dmg_scale__vrb.header_description = ""
+	interpreter_for_dmg_scale__vrb.display_header = false
+	
+	var ins_for_dmg_scale__vrb = []
+	#ins_for_dmg_scale__vrb.append(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "of the attack's damage", 200, true)
+	ins_for_dmg_scale__vrb.append(NumericalTextFragment.new(200, true, -1))
+	ins_for_dmg_scale__vrb.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+	ins_for_dmg_scale__vrb.append(TowerStatTextFragment.new(null, null, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1.0, -1))
+	
+	interpreter_for_dmg_scale__vrb.array_of_instructions = ins_for_dmg_scale__vrb
+	
+	
+	#var plain_fragment__vrbV02_cd = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, "50 s")
+	
+	
+	var plain_fragment__stk_BD__vrb__tier_1 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.BASE_DAMAGE, "40% stacking base dmg")
+	var plain_fragment__stk_BD__vrb__tier_2 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.BASE_DAMAGE, "28% stacking base dmg")
+	var plain_fragment__stk_BD__vrb__tier_3 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.BASE_DAMAGE, "16% stacking base dmg")
+	var plain_fragment__stk_BD__vrb__tier_4 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.BASE_DAMAGE, "8% stacking base dmg")
+	
+	var plain_fragment__vrbV02_cd__tier_1 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, "Cooldown: 30 s")
+	var plain_fragment__vrbV02_cd__tier_2 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, "Cooldown: 35 s")
+	var plain_fragment__vrbV02_cd__tier_3 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, "Cooldown: 40 s")
+	var plain_fragment__vrbV02_cd__tier_4 = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PERCENT_COOLDOWN_REDUCTION, "Cooldown: 45 s")
+	
+	
+	var violet_rb_syn_v02 = ColorSynergy.new(SynergyId__VioletRB_V02, synergy_id_to_syn_name_dictionary[SynergyId__VioletRB_V02], [TowerColors.VIOLET, TowerColors.RED, TowerColors.BLUE], [4, 3, 2, 1],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic],
+	syn_compo_ana_violetRB, synergy_id_to_pic_map__big[SynergyId__VioletRB_V02],
+	# IF CHANGING DESC, CHANGE DESC IN AnaSyn_VioletRB_V02 as well
+	[
+		["Gain |0|: Barrage.", [plain_fragment__ability]],
+		["Barrage: All towers gain |0| and |1| on the next 7 main attacks.", [plain_fragment__stacking_attk_speed__vrb, plain_fragment__stacking_base_dmg__vrb]],
+		["The last attack on hit also explodes in a cone behind the first enemy hit, dealing |0| of the attack's damage to 4 enemies.", [interpreter_for_dmg_scale__vrb]],
+		"The last attack also consumes all the stacking buffs.",
+		#["Cooldown: |0|.", [plain_fragment__vrbV02_cd]],
+		"Cooldown: Varies with tier.",
+		""
+	],
+	[AnaSyn_VioletRB_V02],
+	[
+		["|0|. |1|.", [plain_fragment__stk_BD__vrb__tier_4, plain_fragment__vrbV02_cd__tier_4]],
+		["|0|. |1|.", [plain_fragment__stk_BD__vrb__tier_3, plain_fragment__vrbV02_cd__tier_3]],
+		["|0|. |1|.", [plain_fragment__stk_BD__vrb__tier_2, plain_fragment__vrbV02_cd__tier_2]],
+		["|0|. |1|.", [plain_fragment__stk_BD__vrb__tier_1, plain_fragment__vrbV02_cd__tier_1]],
+		
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.EASY
+	)
+	
+	#
+	
 	var interpreter_for_ogv_attk_speed_tier_1 = TextFragmentInterpreter.new()
 	interpreter_for_ogv_attk_speed_tier_1.display_body = false
 	
@@ -673,6 +746,11 @@ func _on_singleton_initialize():
 	interpreter_for_ogv_attk_speed_tier_3.array_of_instructions[0].num_val = 30
 	
 	
+	
+	var plain_fragment__x_gold__ovg = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "3 gold")
+	var plain_fragment__bonus_attk_speed__ovg = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ATTACK_SPEED, "bonus attack speed")
+	
+	
 	var ogv_syn = ColorSynergy.new(SynergyId__OGV, synergy_id_to_syn_name_dictionary[SynergyId__OGV], [TowerColors.ORANGE, TowerColors.GREEN, TowerColors.VIOLET], [3, 2, 1], #[4, 3, 2],
 	[tier_gold_pic, tier_silver_pic, tier_bronze_pic],
 	syn_compo_tria_OGV, synergy_id_to_pic_map__big[SynergyId__OGV],
@@ -683,8 +761,8 @@ func _on_singleton_initialize():
 		"",
 		"You instantly win the game once the enemy player reaches 0 hp.",
 		"",
-		"Gain ability: Power Fund.",
-		"Power Fund: Spend 3 gold to give all towers bonus attack speed for 8 attacks for 5 seconds.",
+		["Gain |0|: Power Fund.", [plain_fragment__ability]],
+		["Power Fund: Spend |0| to give all towers |1| for 8 attacks for 5 seconds.", [plain_fragment__x_gold__ovg, plain_fragment__bonus_attk_speed__ovg]],
 		"Cooldown: 1 round.",
 		""
 	],
@@ -752,14 +830,7 @@ func _on_singleton_initialize():
 	var plain_fragment__yelvio_on_round_end = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ON_ROUND_END, "On round end")
 	var plain_fragment__yelvio_self_ing_effect = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "self ingredient effect")
 	
-	# ------------------------------------------------------
-	
-	synergies = {
-	# Comple
-	synergy_id_to_syn_name_dictionary[SynergyId__RedGreen] : red_green_syn,
-	
-	
-	synergy_id_to_syn_name_dictionary[SynergyId__YellowViolet] : ColorSynergy.new(SynergyId__YellowViolet, synergy_id_to_syn_name_dictionary[SynergyId__YellowViolet], [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
+	var yelvio_syn = ColorSynergy.new(SynergyId__YellowViolet, synergy_id_to_syn_name_dictionary[SynergyId__YellowViolet], [TowerColors.YELLOW, TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
 	syn_compo_compli_yellowviolet, synergy_id_to_pic_map__big[SynergyId__YellowViolet],
 	[
@@ -781,8 +852,43 @@ func _on_singleton_initialize():
 	{},
 	[],
 	ColorSynergy.Difficulty.DIFFICULT
-	),
-	 
+	)
+	
+	
+	var yelvio_syn_v2 = ColorSynergy.new(SynergyId__YellowViolet_V02, synergy_id_to_syn_name_dictionary[SynergyId__YellowViolet_V02], [TowerColors.YELLOW, TowerColors.VIOLET], [6, 5, 4, 3],
+	[tier_dia_pic, tier_gold_pic, tier_silver_pic, tier_bronze_pic], 
+	syn_compo_compli_yellowviolet, synergy_id_to_pic_map__big[SynergyId__YellowViolet_V02],
+	[
+		"Summon Rift Axis that controls the division between the Yellow and Violet rifts. Towers receive effects based on their rift location.",
+		"",
+		["Violet rift: |0|: towers have their |1| upgraded by an amount.", [plain_fragment__yelvio_on_round_end, plain_fragment__yelvio_self_ing_effect]],
+		"",
+		"Yellow rift: Every 15 seconds, towers fire a shell at the first enemy, exploding to deal damage to 3 enemies. Towers fire again if 1 or 0 enemies are hit.",
+		"",
+	],
+	[CompliSyn_YellowViolet_V02],
+	[
+		["+20% ingredient upgrade. |0| per yellow shell.", [interpreter_for_yelvio_yellow_shell_dmg_tier_4]],
+		["+30% ingredient upgrade. |0| per yellow shell.", [interpreter_for_yelvio_yellow_shell_dmg_tier_3]],
+		["+50% ingredient upgrade. |0| per yellow shell.", [interpreter_for_yelvio_yellow_shell_dmg_tier_2]],
+		["+75% ingredient upgrade. |0| per yellow shell.", [interpreter_for_yelvio_yellow_shell_dmg_tier_1]],
+	],
+	ColorSynergy.HighlightDeterminer.SINGLE,
+	{},
+	[],
+	ColorSynergy.Difficulty.DIFFICULT
+	)
+	
+	# ------------------------------------------------------
+	
+	synergies = {
+	# Comple
+	synergy_id_to_syn_name_dictionary[SynergyId__RedGreen] : red_green_syn,
+	
+	
+	synergy_id_to_syn_name_dictionary[SynergyId__YellowViolet] : yelvio_syn,
+	synergy_id_to_syn_name_dictionary[SynergyId__YellowViolet_V02] : yelvio_syn_v2,
+	
 	
 	synergy_id_to_syn_name_dictionary[SynergyId__OrangeBlue] : orange_blue_syn,
 	
@@ -839,6 +945,8 @@ func _on_singleton_initialize():
 #	),
 	
 	synergy_id_to_syn_name_dictionary[SynergyId__VioletRB] : violet_rb_syn,
+	
+	synergy_id_to_syn_name_dictionary[SynergyId__VioletRB_V02] : violet_rb_syn_v02,
 	
 	#Tria
 	synergy_id_to_syn_name_dictionary[SynergyId__RYB] : ColorSynergy.new(SynergyId__RYB, synergy_id_to_syn_name_dictionary[SynergyId__RYB], [TowerColors.RED, TowerColors.YELLOW, TowerColors.BLUE], [4, 3, 2],

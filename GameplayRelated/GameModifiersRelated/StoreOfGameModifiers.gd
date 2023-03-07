@@ -9,6 +9,7 @@ const GameModiIds__EasyDifficulty = "%s%s" % [SynTD_HeaderIDName, "EasyDifficult
 const GameModiIds__BeginnerDifficulty = "%s%s" % [SynTD_HeaderIDName, "BeginnerDifficulty"]
 
 const GameModiIds__RedTowerRandomizer = "%s%s" % [SynTD_HeaderIDName, "RedTowerRandomizer"]
+const GameModiIds__VioletVariationDecider = "%s%s" % [SynTD_HeaderIDName, "VioletVariationDecider"]
 
 const GameModiIds__ModiTutorialPhase_01 = "%s%s" % [SynTD_HeaderIDName, "ModiTutorialPhase_01"]
 const GameModiIds__ModiTutorialPhase_01_01 = "%s%s" % [SynTD_HeaderIDName, "ModiTutorialPhase_01_01"]
@@ -17,10 +18,6 @@ const GameModiIds__ModiTutorialPhase_03 = "%s%s" % [SynTD_HeaderIDName, "ModiTut
 const GameModiIds__ModiTutorialPhase_04 = "%s%s" % [SynTD_HeaderIDName, "ModiTutorialPhase_04"]
 
 
-const CYDE_HeaderIdName = "Cyde_"
-
-const GameModiIds__CYDE_Common_Modifiers = "%s%s" % [CYDE_HeaderIdName, "CommonModifiers"]
-const GameModiIds__CYDE_ExampleStage = "%s%s" % [CYDE_HeaderIdName, "ExampleStage"]
 
 #enum GameModiIds {
 #
@@ -55,6 +52,7 @@ const game_modifier_id_to_script_name_map : Dictionary = {
 	GameModiIds__BeginnerDifficulty : "res://GameplayRelated/GameModifiersRelated/GameModis/GameModi_BeginnerDifficulty.gd",
 	
 	GameModiIds__RedTowerRandomizer : "res://GameplayRelated/GameModifiersRelated/GameModis/OmniPresent/GameModiOmni_RedTowerDecider.gd",
+	GameModiIds__VioletVariationDecider : "res://GameplayRelated/GameModifiersRelated/GameModis/OmniPresent/GameModiOmni_VioletVariationDecider.gd",
 	
 	GameModiIds__ModiTutorialPhase_01 : "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/GameModi_Tutorial_Phase01.gd",
 	GameModiIds__ModiTutorialPhase_01_01 : "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/GameModi_Tutorial_Phase01_01.gd",
@@ -62,10 +60,6 @@ const game_modifier_id_to_script_name_map : Dictionary = {
 	GameModiIds__ModiTutorialPhase_03 : "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/GameModi_Tutorial_Phase03.gd",
 	GameModiIds__ModiTutorialPhase_04 : "res://GameplayRelated/GameModifiersRelated/GameModis/TutorialsRelated/GameModi_Tutorial_Phase04.gd",
 	
-	
-	GameModiIds__CYDE_Common_Modifiers : "res://CYDE_SPECIFIC_ONLY/DialogRelated/GameModifiers/CommonModifiers/Cyde_CommonModifiers.gd",
-	GameModiIds__CYDE_ExampleStage : "res://CYDE_SPECIFIC_ONLY/DialogRelated/GameModifiers/DialogStageMasters/StageExample/Imp_DialogeSM_StageExample.gd"
-	#GameModiIds.CYDE__EXAMPLE_STAGE : "res://CYDE_SPECIFIC_ONLY/DialogRelated/GameModifiers/DialogStageMasters/StageExample/Imp_DialogeSM_StageExample.gd"
 }
 
 
