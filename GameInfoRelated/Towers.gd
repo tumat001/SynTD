@@ -5152,7 +5152,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 2
-		info.base_attk_speed = 0.9
+		info.base_attk_speed = 1.8 #0.9
 		info.base_pierce = 1
 		info.base_range = 135
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -5186,6 +5186,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var plain_fragment__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Ability")
 		var plain_fragment__ability_name = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Efflux")
 		
+		var plain_fragment__bonus_attack_speed = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ATTACK_SPEED, "bonus attack speed")
+		
+		
 		#
 		
 		info.tower_descriptions = [
@@ -5193,7 +5196,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 			"",
 			"Cast Efflux after 16 main attacks.",
 			["|0|: Efflux. Ashen'd fires a firery wave to the largest line of enemies, applying on hit effects (and Smolder). The firery wave's life distance is equal to trice this tower's range.", [plain_fragment__ability]],
-			["Towers that are hit by Efflux become empowered for 15 seconds; their main attacks that hit Smoldered enemies explode, dealing |0| as an explosion hitting up to 3 enemies.", [interpreter_for_ratio_dmg]]
+			["Towers that are hit by Efflux become empowered for 15 seconds; their main attacks that hit Smoldered enemies explode, dealing |0| as an explosion hitting up to 3 enemies.", [interpreter_for_ratio_dmg]],
+			"",
+			["Does NOT benefit from |0|.", [plain_fragment__bonus_attack_speed]]
 		]
 		
 		info.tower_simple_descriptions = [
@@ -6582,7 +6587,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.45
+		info.base_attk_speed = 0.475
 		info.base_pierce = 1
 		info.base_range = 155
 		info.base_damage_type = DamageType.PHYSICAL
@@ -7067,10 +7072,10 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
 		
 		info.base_damage = 6
-		info.base_attk_speed = 0.45
+		info.base_attk_speed = 0.42 #0.45
 		info.base_pierce = 1
 		info.base_range = 100
-		info.base_damage_type = DamageType.PHYSICAL
+		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
 		
@@ -7093,7 +7098,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			"Impede casts Stoned upon killing an enemy.",
 			["|0|: Stoned. Impede turns their victim into Stone for |1|. Stones stop enemies from moving.", [plain_fragment__ability, interpreter_for_stop_mov_duration]],
-			"Stone's lifetime is reduced faster the more enemies that are stopped."
+			"Stone's lifetime is reduced faster the more enemies that are stopped. Only 5 stones can be active at a time."
 		]
 		
 		
@@ -7430,7 +7435,7 @@ static func get_tower_scene(tower_id : int):
 		return load("res://TowerRelated/Color_Violet/Lifeline/Lifeline.tscn")
 	elif tower_id == IMPEDE:
 		return load("res://TowerRelated/Color_Violet/Impede/Impede.tscn")
-	elif tower_id == REALMD:
+	elif tower_id == REALMD:  #96
 		return load("res://TowerRelated/Color_Violet/Realmd/Realmd.tscn")
 	
 	

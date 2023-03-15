@@ -131,7 +131,7 @@ const tosser_bomb_detonation_delay_on_landing : float = 1.5
 const tosser_angle_deviation : float = PI / 10    # dev of 90 covers 180 deg (semicircle)
 const tosser_distance_for_finding_placables : float = 150.0
 
-const homerunner_blue_active_ap_bonus : float = 1.5
+const homerunner_blue_active_ap_bonus : float = 1.2 #1.5
 const homerunner_blue_shield_health_ratio_for_no_ap_used : float = 20.0
 
 const homerunner_red_active_revive_delay : float = 3.0

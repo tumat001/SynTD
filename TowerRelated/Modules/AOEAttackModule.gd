@@ -51,6 +51,13 @@ var kill_all_created_aoe_at_round_end : bool = true
 var pause_decrease_duration_of_aoe_at_round_end : bool = false
 var unpause_decrease_duration_of_aoe_at_round_start : bool = false
 
+
+#
+const AOE_COUNT_NO_LIMIT = -1
+
+var aoe_count_limit : int = AOE_COUNT_NO_LIMIT setget set_aoe_count_limit
+var all_active_created_aoe : Array  # used only if aoe_count_limit is not NO_LIMIT
+
 # constants
 
 const aoe_group_tag : String = "AOEGroupTag"
@@ -59,6 +66,8 @@ const aoe_group_tag : String = "AOEGroupTag"
 
 func _ready():
 	calculate_final_explosion_scale()
+	
+	set_aoe_count_limit(aoe_count_limit)
 
 
 # Construction of AOE
@@ -99,9 +108,16 @@ func construct_aoe(arg_origin_pos : Vector2, arg_enemy_pos : Vector2) -> BaseAOE
 	_modify_center_pos_and_sizeshape_of_aoe(arg_origin_pos, arg_enemy_pos, base_aoe)
 	
 	
+	#if is_round_ended and pause_decrease_duration_of_aoe_at_round_end:
+	#	base_aoe.set_decrease_duration_to_false__from_aoe_attk_module()
+	#elif !is_round_ended and unpause_decrease_duration_of_aoe_at_round_start:
+	#	base_aoe.set_decrease_duration_to_true__from_aoe_attk_module()
+	
 	connect("kill_all_spawned_aoe", base_aoe, "queue_free", [], CONNECT_ONESHOT)
 	connect("set_decrease_duration_of_all_aoe__to_false", base_aoe, "set_decrease_duration_to_false__from_aoe_attk_module")
 	connect("set_decrease_duration_of_all_aoe__to_true", base_aoe, "set_decrease_duration_to_true__from_aoe_attk_module")
+	
+	_attempt_add_aoe_to_all_aoes(base_aoe)
 	
 	return base_aoe
 
@@ -232,7 +248,8 @@ func on_round_end():
 	
 	if kill_all_created_aoe_at_round_end:
 		kill_all_created_aoe()
-	elif pause_decrease_duration_of_aoe_at_round_end:
+	
+	if pause_decrease_duration_of_aoe_at_round_end:
 		emit_signal("set_decrease_duration_of_all_aoe__to_false")
 
 func kill_all_created_aoe():
@@ -259,4 +276,28 @@ func set_up_aoe__add_child_and_emit_signals(aoe) -> BaseAOE:
 	
 	return aoe
 
+##########
+
+
+func set_aoe_count_limit(arg_val):
+	aoe_count_limit = arg_val
+	
+
+
+func _attempt_add_aoe_to_all_aoes(arg_aoe):
+	if aoe_count_limit != AOE_COUNT_NO_LIMIT:
+		all_active_created_aoe.append(arg_aoe)
+		
+		arg_aoe.connect("tree_exiting", self, "_on_aoe_tree_exiting", [arg_aoe], CONNECT_ONESHOT)
+		
+		##
+		
+		if all_active_created_aoe.size() > aoe_count_limit:
+			var last_created_aoe = all_active_created_aoe.pop_front()
+			last_created_aoe.queue_free()
+
+func _on_aoe_tree_exiting(arg_aoe):
+	if all_active_created_aoe.has(arg_aoe):
+		all_active_created_aoe.erase(arg_aoe)
+	
 

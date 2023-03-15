@@ -829,5 +829,13 @@ func _update_composite_available_synergies_this_game():
 			var syn = TowerCompositionColors.get_synergy_with_id(syn_id)
 			
 			_composite_synergy_id_to_syn_available_this_game[syn_id] = syn
-	
+
+
+##
+
+func update_dominant_available_synergies_this_game__from_outside():
+	_update_dominant_available_synergies_this_game()
+
+func update_composite_available_synergies_this_game__from_outside():
+	_update_composite_available_synergies_this_game()
 

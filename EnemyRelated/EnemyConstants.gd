@@ -340,7 +340,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.ASSASSIN:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.EXPERT)
-		info.base_health = 23
+		info.base_health = 21 #23
 		info.base_movement_speed = 60
 		info.base_player_damage = 2
 		

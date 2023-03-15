@@ -1,6 +1,8 @@
 extends "res://GameplayRelated/GameModifiersRelated/BaseGameModifier.gd"
 
 
+const NO_SYNERGY = "GameModi_VioVar_NO_SYNERGY"
+
 enum VioletVariation {
 	V01 = 0,
 	V02 = 1
@@ -72,6 +74,11 @@ var violet_variation_to__compo_syn_violetrb_synergy_id_map : Dictionary = {
 	VioletVariation.V02 : TowerCompositionColors.SynergyId__VioletRB_V02,
 }
 
+var violet_variation_to__compo_syn_OGV_synergy_id_map : Dictionary = {
+	VioletVariation.V01 : TowerCompositionColors.SynergyId__OGV,
+	VioletVariation.V02 : NO_SYNERGY,
+}
+
 
 #
 
@@ -123,24 +130,40 @@ func _apply_synergies(arg_variation):
 	var dom_syn_vio_to_apply = violet_variation_to__dom_syn_violet_synergy_id_map[arg_variation]
 	for syn_id in violet_variation_to__dom_syn_violet_synergy_id_map.values():
 		if syn_id != dom_syn_vio_to_apply:
-			synergy_manager.add_dominant_synergy_id_banned_this_game(syn_id)
-			_banned_dom_syn_ids.append(syn_id)
+			if syn_id != NO_SYNERGY:
+				synergy_manager.add_dominant_synergy_id_banned_this_game(syn_id, false)
+				_banned_dom_syn_ids.append(syn_id)
 	
 	# COMPO SYN --> YEL VIO
 	var compo_syn_yelvio_to_apply = violet_variation_to__compo_syn_yelvio_synergy_id_map[arg_variation]
 	for syn_id in violet_variation_to__compo_syn_yelvio_synergy_id_map.values():
 		if syn_id != compo_syn_yelvio_to_apply:
-			synergy_manager.add_composite_synergy_id_banned_this_game(syn_id, false)
-			_banned_compo_syn_ids.append(syn_id)
+			if syn_id != NO_SYNERGY:
+				synergy_manager.add_composite_synergy_id_banned_this_game(syn_id, false)
+				_banned_compo_syn_ids.append(syn_id)
 	
 	# ANA SYN --> VIOLET RB
 	var ana_syn_violet_rb_to_apply = violet_variation_to__compo_syn_violetrb_synergy_id_map[arg_variation]
 	for syn_id in violet_variation_to__compo_syn_violetrb_synergy_id_map.values():
 		if syn_id != ana_syn_violet_rb_to_apply:
-			synergy_manager.add_composite_synergy_id_banned_this_game(syn_id)
-			_banned_compo_syn_ids.append(syn_id)
+			if syn_id != NO_SYNERGY:
+				synergy_manager.add_composite_synergy_id_banned_this_game(syn_id, false)
+				_banned_compo_syn_ids.append(syn_id)
+	
+	# TRIA SYN --> OGV
+	var tria_syn_ogv_to_apply = violet_variation_to__compo_syn_OGV_synergy_id_map[arg_variation]
+	for syn_id in violet_variation_to__compo_syn_OGV_synergy_id_map.values():
+		if syn_id != tria_syn_ogv_to_apply:
+			if syn_id != NO_SYNERGY:
+				synergy_manager.add_composite_synergy_id_banned_this_game(syn_id, false)
+				_banned_compo_syn_ids.append(syn_id)
 	
 	
+	
+	### KEEP AT BOTTOM
+	
+	synergy_manager.update_dominant_available_synergies_this_game__from_outside()
+	synergy_manager.update_composite_available_synergies_this_game__from_outside()
 	
 
 

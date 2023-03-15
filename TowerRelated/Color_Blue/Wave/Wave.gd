@@ -169,7 +169,7 @@ func _ready():
 	explosion_attack_module.aoe_sprite_frames = sprite_frames
 	explosion_attack_module.sprite_frames_only_play_once = true
 	explosion_attack_module.pierce = 2
-	explosion_attack_module.duration = 0.4#0.3
+	explosion_attack_module.duration = 0.45#0.3
 	explosion_attack_module.damage_repeat_count = 1
 	
 	explosion_attack_module.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE

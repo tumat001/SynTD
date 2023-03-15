@@ -11,16 +11,16 @@ const Duned_ProjPic = preload("res://TowerRelated/Color__Others/Duned/Attks/Dune
 
 
 const stage_to_bonus_base_damage_map : Dictionary = {
-	0 : 1.5,
-	1 : 2.0,
-	2 : 2.5,
-	3 : 3.0,
-	4 : 3.5,
-	5 : 4.0,
-	6 : 4.5,
-	7 : 5.0,
-	8 : 5.5,
-	9 : 6.0,
+	0 : 3.0,
+	1 : 3.5,
+	2 : 4.0,
+	3 : 4.5,
+	4 : 5.5,
+	5 : 6.5,
+	6 : 7.5,
+	7 : 8.5,
+	8 : 9.5,
+	9 : 10.5,
 }
 
 var base_dmg_effect : TowerAttributesEffect
@@ -55,7 +55,7 @@ func _ready():
 	attack_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
 	attack_module.is_main_attack = true
 	attack_module.base_pierce = info.base_pierce
-	attack_module.base_proj_speed = 725
+	attack_module.base_proj_speed = 800 #725
 	attack_module.base_proj_life_distance = info.base_range
 	attack_module.module_id = StoreOfAttackModuleID.MAIN
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier

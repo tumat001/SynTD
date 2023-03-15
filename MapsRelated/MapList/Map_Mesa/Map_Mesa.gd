@@ -41,19 +41,19 @@ var mesa_whole_screen_choices : Mesa_WholeScreenChoices
 
 #
 
-const sandstorm_damage : float = 0.75
+const sandstorm_damage : float = 1.0
 const sandstorm_base_cooldown : float = 40.0
-const sandstorm_slow_amount : float = -35.0
-const sandstorm_slow_duration : float = 5.0
+const sandstorm_slow_amount : float = -55.0
+const sandstorm_slow_duration : float = 7.0
 
 var sandstorm_ability : BaseAbility
 
 #
 
-const treasure_relic_amount : int = 1
-const treasure_gold_amount : int = 12
+const treasure_relic_amount : int = 2
+const treasure_gold_amount : int = 34
 
-const treasure_stageround_id_given : String = "61"
+const treasure_stageround_id_given : String = "72"
 
 var _treasure_given : bool
 
@@ -134,7 +134,7 @@ func _initialize_mesa_choice_details():
 	choice_details__treasure.on_chosen_method_name = "_on_treasure_choice_selected"
 	
 	
-	var plain_fragment__x_relic = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.RELIC, "%s relic" % treasure_relic_amount)
+	var plain_fragment__x_relic = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.RELIC, "%s relic(s)" % treasure_relic_amount)
 	var plain_fragment__x_gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "%s gold" % treasure_gold_amount)
 	
 	var stage_and_round_with_dash = StageRound.convert_stageround_id_to_stage_and_round_string_with_dash(treasure_stageround_id_given)
@@ -287,6 +287,8 @@ func _apply_sandstorm_slow_to_enemy(arg_enemy, arg_dmg_instance):
 func _listen_for_stage_round_changes_for_treasure():
 	game_elements.stage_round_manager.connect("round_ended", self, "_on_round_end__monitor_for_treasure", [], CONNECT_PERSIST)
 	
+	game_elements.stage_round_manager.stagerounds.get_stageround_with_id(treasure_stageround_id_given).round_icon = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/RoundIndicator_RoundIcon_MesaChest.png")
+
 
 func _on_round_end__monitor_for_treasure(arg_stageround : StageRound):
 	if !_treasure_given and StageRound.is_stageround_id_higher_or_equal_than_second_param(arg_stageround.id, treasure_stageround_id_given):
@@ -296,5 +298,4 @@ func _on_round_end__monitor_for_treasure(arg_stageround : StageRound):
 		game_elements.relic_manager.increase_relic_count_by(treasure_relic_amount, game_elements.relic_manager.IncreaseRelicSource.MAP_SPECIFIC_BEHAVIOR)
 		
 		game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end__monitor_for_treasure")
-
-
+		

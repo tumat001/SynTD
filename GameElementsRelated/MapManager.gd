@@ -64,6 +64,7 @@ func set_chosen_map_id(arg_id):
 
 func _assign_map_from_store_of_maps():
 	var chosen_map = StoreOfMaps.get_map_from_map_id(chosen_map_id).instance()
+	chosen_map.map_id = chosen_map_id
 	
 	add_child(chosen_map)
 	base_map = chosen_map

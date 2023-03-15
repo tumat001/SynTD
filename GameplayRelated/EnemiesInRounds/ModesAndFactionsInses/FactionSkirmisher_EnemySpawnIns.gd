@@ -328,24 +328,24 @@ func _get_instructions_for_4_4():
 func _get_instructions_for_4_4__sv_1():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 9, 3.1, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(3, 3, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(8, 3, 3, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(3, 2, 4, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(8, 3, 4, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]
 
 func _get_instructions_for_4_4__sv_2():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 10, 3, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(3, 3, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(7, 4, 3, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(3, 3, 4, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(7, 3, 4, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]
 
 func _get_instructions_for_4_4__sv_3():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 12, 2.8, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(3, 3, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(6, 4, 3, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(3, 3, 4, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(6, 3, 4, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(9, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]
@@ -353,8 +353,8 @@ func _get_instructions_for_4_4__sv_3():
 func _get_instructions_for_4_4__sv_4():
 	return [
 		MultipleEnemySpawnInstruction.new(0, 13, 2.7, EnemyConstants.Enemies.RUFFIAN, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(3, 4, 3, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
-		MultipleEnemySpawnInstruction.new(6, 4, 3, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(3, 4, 4, EnemyConstants.Enemies.BLESSER, spawn_at_blue_metadata),
+		MultipleEnemySpawnInstruction.new(6, 3, 4, EnemyConstants.Enemies.PROXIMITY, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(9, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.SMOKE, spawn_at_blue_metadata),
 	]

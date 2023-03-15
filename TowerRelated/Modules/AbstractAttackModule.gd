@@ -215,8 +215,17 @@ const image_size := Vector2(18, 18) # size of texture is 18x18
 
 #
 
+var is_round_ended : bool
+
+#
+
+#
+
 func set_parent_tower(arg_parent_tower):
 	parent_tower = arg_parent_tower
+	
+	if is_instance_valid(parent_tower):
+		is_round_ended = !parent_tower.is_round_started
 
 
 func _init():
@@ -1087,6 +1096,8 @@ func construct_damage_instance() -> DamageInstance:
 # On round end
 
 func on_round_end():
+	is_round_ended = true
+	
 	call_deferred("emit_signal", "on_round_end")
 	
 	_all_countbound_effects.clear()
@@ -1105,7 +1116,7 @@ func on_round_end():
 
 
 func on_round_start():
-	pass
+	is_round_ended = false
 
 
 

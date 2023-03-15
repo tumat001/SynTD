@@ -64,6 +64,7 @@ var tidbit_page : Almanac_ItemListPage_Data
 
 var tower_multi_stats_data : Almanac_MultiStatsData
 var enemy_multi_stats_data : Almanac_MultiStatsData
+var synergy_multi_stats_data : Almanac_MultiStatsData
 
 #
 
@@ -277,6 +278,9 @@ func _deferred_right_side_init_of_transfer_page(first_unobscured_option):
 			almanac_page_gui.configure_almanac_x_type_info_panel(first_unobscured_option, tower_multi_stats_data, first_unobscured_option.get_x_type_info(), first_unobscured_option.button_associated)
 		elif first_unobscured_option.get_x_type_info_classification() == first_unobscured_option.TypeInfoClassification.ENEMY:
 			almanac_page_gui.configure_almanac_x_type_info_panel(first_unobscured_option, enemy_multi_stats_data, first_unobscured_option.get_x_type_info(), first_unobscured_option.button_associated)
+		elif first_unobscured_option.get_x_type_info_classification() == first_unobscured_option.TypeInfoClassification.SYNERGY:
+			almanac_page_gui.configure_almanac_x_type_info_panel(first_unobscured_option, synergy_multi_stats_data, first_unobscured_option.get_x_type_info(), first_unobscured_option.button_associated)
+		
 
 func _on_option_pressed__display_enemy_info(button, type_info, arg_option):
 	if !arg_option.is_obscured:
@@ -934,6 +938,10 @@ func _on_option_pressed__display_tower_info(button, type_info, arg_option):
 ##############
 
 func _construct_synergy_page():
+	synergy_multi_stats_data = Almanac_MultiStatsData.new()
+	
+	#
+	
 	synergy_page = Almanac_ItemListPage_Data.new()
 	synergy_page.page_id_to_return_to = PageIds.MAIN_PAGE
 	synergy_page.connect("requested_return_to_assigned_page_id", self, "_on_page__requested_return_to_assigned_page_id", [], CONNECT_PERSIST)

@@ -856,7 +856,8 @@ func _cast_specialize_as_blue_state():
 		
 		for i in 6:
 			blue_ap_inc_attk_sprite_pool.get_or_create_attack_sprite_from_pool()
-		_stop_blue_ability()
+		
+		#_stop_blue_ability()
 
 
 func _on_dmg_instance_constructed__by_blue_beam(arg_dmg_instance, arg_module):

@@ -89,7 +89,7 @@ func remove_draw_param(arg_draw_param : DrawParams):
 
 func _process(delta):
 	for param in _all_draw_params:
-		if !pause_lifetime_of_all_draws:
+		if !pause_lifetime_of_all_draws or param._is_paused__due_to_stage_status:
 			param._current_lifetime += delta
 		
 		param.current_radius += param.radius_per_sec * delta

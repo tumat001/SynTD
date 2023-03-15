@@ -79,6 +79,8 @@ func _ready():
 	attack_module.on_hit_damage_scale = info.on_hit_multiplier
 	attack_module.position.y -= y_shift_of_attack_module
 	
+	attack_module.benefits_from_bonus_attack_speed = false
+	
 	var bullet_shape = CircleShape2D.new()
 	bullet_shape.radius = 6
 	

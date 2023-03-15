@@ -170,6 +170,7 @@ func find_visibility_polygon(events, state, origin):
 			
 			#ray intersects line segment L iff L is in state
 			
+			#if intersects:  # FROM ASSERT
 			var event_point = event.point()
 			if event.type == EVENT_TYPE.start_vertex:
 				if intersection != null:
@@ -331,6 +332,10 @@ class Comparisons:
 		var c = y.a
 		var d = y.b
 		
+		# FROM ASSERT
+		#if (compute_orientation(origin, a, b) == ORIENTATION.colinear) or (compute_orientation(origin, c, d) == ORIENTATION.colinear):
+		#	return
+		
 		#sort the endpoints so that if there are common endpoints, they will be a and c
 		if approx_equal_vector(b,c) or approx_equal_vector(b,d):
 			var tmp = a
@@ -340,6 +345,8 @@ class Comparisons:
 			var tmp = c
 			c = d
 			d = tmp
+		
+		
 		
 		#cases with common endpoints
 		if approx_equal_vector(a, c):
@@ -374,7 +381,7 @@ class Comparisons:
 			var ab_intersects_cd = abo != abc
 			return ab_intersects_cd
 			
-				
+	
 	func compare_event(a,b):
 		if approx_equal_vector(a.point(), b.point()):
 			return (a.type == EVENT_TYPE.end_vertex and b.type == EVENT_TYPE.start_vertex)

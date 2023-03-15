@@ -537,8 +537,7 @@ func _on_beam_for_explosion_time_visible_is_over(arg_info):
 	draw_params.lifetime_to_start_transparency = domain_explosion_duration - 0.2
 	
 	circle_draw_node.add_draw_param(draw_params)
-	
-	
+
 
 func _on_domain_beam_for_explosion_barrage_timer_timeout():
 	_fire_beam_toward_coll_shape_info_in_list()
@@ -567,11 +566,13 @@ func _on_domain_explosion_damage_instance_constructed(damage_instance, module):
 ##########
 
 func _on_round_end_r():
-	circle_draw_node.pause_lifetime_of_all_draws = true
+	pass
+	#circle_draw_node.pause_lifetime_of_all_draws = true
 	
 	
 
 func _on_round_start_r():
-	circle_draw_node.pause_lifetime_of_all_draws = false
+	pass
+	#circle_draw_node.pause_lifetime_of_all_draws = false
 	
 

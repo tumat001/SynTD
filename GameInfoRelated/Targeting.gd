@@ -200,13 +200,13 @@ static func enemies_to_target(arg_enemies : Array, targeting : int, num_of_enemi
 		
 	elif targeting == TOWERS_HIGHEST_TOTAL_ATTACK_SPEED:
 		for tower in enemies:
-			if !is_instance_valid(tower.main_attack_module):
+			if !is_instance_valid(tower.main_attack_module) or tower.main_attack_module.is_queued_for_deletion():
 				enemies.erase(tower)
 		enemies.sort_custom(CustomSorter, "sort_towers_by_highest_total_attack_speed")
 		
 	elif targeting == TOWERS_HIGHEST_TOTAL_BASE_DAMAGE:
 		for tower in enemies:
-			if !is_instance_valid(tower.main_attack_module):
+			if !is_instance_valid(tower.main_attack_module) or tower.main_attack_module.is_queued_for_deletion():
 				enemies.erase(tower)
 		enemies.sort_custom(CustomSorter, "sort_towers_by_highest_total_base_damage")
 	

@@ -7,13 +7,16 @@ signal point_on_graph_unhovered(key, val, other_data, sprite_node)
 
 onready var graph = $Graph
 
+const MIN_MAX_VAL = 101
+
+
 func _ready():
 	graph.connect("point_hovered", self, "_on_point_on_graph_hovered", [], CONNECT_PERSIST)
 	graph.connect("point_unhovered", self, "_on_point_on_graph_unhovered", [], CONNECT_PERSIST)
 
 func set_stage_rounds_col_label_to_point_val_map(line_label_to_line_color_map : Dictionary, stage_round_data_point_arr : Array, total_data_points_count : int, max_val : int):
 	graph.limit_x_count = total_data_points_count - 1
-	graph.max_value = max_val
+	graph.max_value = max(max_val, MIN_MAX_VAL)#max_val
 	
 	call_deferred("_set_stage_rounds_coll_deferred", line_label_to_line_color_map, stage_round_data_point_arr)
 

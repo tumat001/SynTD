@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Map_Enchant_NoBorders.png-65941ab9e2510192e38496c8767972c9.stex"
+path="res://.import/RoundIndicator_RoundIcon_MesaChest.png-0ef44c63dbdeb6d0502e70a9458bc68b.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://MapsRelated/MapExampleImages/Map_Enchant_NoBorders.png"
-dest_files=[ "res://.import/Map_Enchant_NoBorders.png-65941ab9e2510192e38496c8767972c9.stex" ]
+source_file="res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/RoundIndicator_RoundIcon_MesaChest.png"
+dest_files=[ "res://.import/RoundIndicator_RoundIcon_MesaChest.png-0ef44c63dbdeb6d0502e70a9458bc68b.stex" ]
 
 [params]
 

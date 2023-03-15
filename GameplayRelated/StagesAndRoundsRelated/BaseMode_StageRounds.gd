@@ -78,3 +78,9 @@ func _get_index_of_stageround_using_id(arg_id : String):
 	return -1
 
 
+
+func get_stageround_with_id(arg_id):
+	return stage_rounds[_get_index_of_stageround_using_id(arg_id)]
+	
+
+

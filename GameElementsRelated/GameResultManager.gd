@@ -56,7 +56,8 @@ func _on_zero_health_reached():
 	_set_game_result(GameResult.DEFEAT)
 
 func _on_end_of_stagerounds():
-	_set_game_result(GameResult.VICTORY)
+	#_set_game_result(GameResult.VICTORY)
+	call_deferred("_set_game_result", GameResult.VICTORY)
 
 func set_game_result__accessed_from_outside(arg_result : int):
 	_set_game_result(arg_result)

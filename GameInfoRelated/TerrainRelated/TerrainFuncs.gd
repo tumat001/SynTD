@@ -28,7 +28,7 @@ static func convert_areas_to_polygons(
 					var points := []
 					for point in child.polygon:
 						
-						points.append(point + area.global_position - arg_global_position)
+						points.append(point + area.global_position + child.position - arg_global_position)
 					
 					polygons.append(PoolVector2Array(points))
 	
@@ -61,18 +61,31 @@ static func get_polygon_resulting_from_vertices__circle(
 		):
 	
 	var circle_vertex_arr = _get_radius_as_point_array(arg_radius)
+	
 	var vertices_array : Array = arg_terrain_vertices_array.duplicate()
+	
+	#todo remove this
+#	var vertices_array = []
+#	for pool_vec in arg_terrain_vertices_array:
+#		var vectors = []
+#		for vec in pool_vec:
+#			vectors.append(vec.limit_length(arg_radius))
+#		vertices_array.append(PoolVector2Array(vectors))
+	#end of todo remove this
+	
 	vertices_array.append(circle_vertex_arr)
-	#vertices_array.insert(0, circle_vertex_arr)
 	
 	
+	#todo remove this
 	#return _slide_points_of_array_to_in_range(arg_fov_node.get_fov_from_polygons(vertices_array, Vector2(0, 0)), arg_radius)
+	
 	var vision_polygon = arg_fov_node.get_fov_from_polygons(vertices_array, Vector2(0, 0))
 	if !Geometry.triangulate_polygon(vision_polygon).empty():
 		return vision_polygon
 	else:
 		print("ERROR TRIANGULATION FAILED -- TerrainFuncs")
 		return circle_vertex_arr
+	
 #	var circle_vertex_arr = _get_radius_as_point_array(arg_radius)
 #	var vertices_array : Array = _slide_points_of_vertices_array_to_in_range(arg_terrain_vertices_array, arg_radius)
 #	vertices_array.append(circle_vertex_arr)
@@ -168,7 +181,7 @@ static func _slide_points_of_array_to_in_range(
 		arg_radius : float
 		):
 	
-	var origin : Vector2 = Vector2.ZERO
+	#var origin : Vector2 = Vector2.ZERO
 	
 	var slid_points_pool_array := []
 	for point in arg_terrain_vertices_array:

@@ -30,10 +30,10 @@ var priority_targets_effects : Dictionary = {}
 
 var displaying_range : bool = false
 var can_display_range : bool = true
-const circle_range_color : Color = Color(0.2, 0.2, 0.2, 0.125)
+var circle_range_color : Color #= Color(0.2, 0.2, 0.2, 0.125)
 
 var can_display_circle_arc : bool = false
-const circle_arc_color : Color = Color(0.15, 0.15, 0.15, 0.3)
+var circle_arc_color : Color = Color(0.15, 0.15, 0.15, 0.3)
 
 
 var enemies_in_range : Array = []
@@ -878,8 +878,10 @@ func _update_range_polgyon():
 		#set_physics_process(false)
 		physics_process_enable_cond_clause.remove_clause(PhysicsProcessEnableClauseIds.UPDATE_RANGE_POLYGON)
 		
-		#_update_polygon__start_thread()
 		call_deferred("_update_polygon__start_thread")
+		
+		# NOTE: use this if you want to avoid using threads to update range -- for Debugging purposes
+		#_update_polygon__called_by_in_thread()
 		
 #		var terrain_polygons = TerrainFuncs.convert_areas_to_polygons(terrain_in_range, global_position, layer_on_terrain)
 #		var vision_polygon = TerrainFuncs.get_polygon_resulting_from_vertices__circle(terrain_polygons, last_calculated_final_range, fov_node)
@@ -907,13 +909,17 @@ func _update_polygon__in_thread(_data):
 	if !_wait_for_finish_called_from_thread:
 		#print("----------")
 		
-		var terrain_polygons = TerrainFuncs.convert_areas_to_polygons(terrain_in_range, global_position, layer_on_terrain)
-		var vision_polygon = TerrainFuncs.get_polygon_resulting_from_vertices__circle(terrain_polygons, last_calculated_final_range, fov_node)
-		
-		range_polygon_poly_points = vision_polygon
-		range_polygon.set_deferred("polygon", vision_polygon)
-		
-		update()
+		_update_polygon__called_by_in_thread()
+
+func _update_polygon__called_by_in_thread():
+	var terrain_polygons = TerrainFuncs.convert_areas_to_polygons(terrain_in_range, global_position, layer_on_terrain)
+	var vision_polygon = TerrainFuncs.get_polygon_resulting_from_vertices__circle(terrain_polygons, last_calculated_final_range, fov_node)
+	
+	range_polygon_poly_points = vision_polygon
+	range_polygon.set_deferred("polygon", vision_polygon)
+	
+	update()
+
 
 ###
 
@@ -967,9 +973,18 @@ func set_parent_tower(arg_tower):
 		if !arg_tower.is_connected("on_tower_transfered_to_placable", self, "_on_tower_transfered_to_placable"):
 			arg_tower.connect("on_tower_transfered_to_placable", self, "_on_tower_transfered_to_placable", [], CONNECT_PERSIST)
 		
+		
+		_update_infos_based_on_map()
+		
 		#layer_on_terrain = arg_tower.layer_on_terrain
 		layer_on_terrain = arg_tower.last_calculated_layer_on_terrain
 		_request_update_range_polgyon()
+
+
+func _update_infos_based_on_map():
+	circle_range_color = StoreOfMaps.get_map_resource_variation_info__range_module_range_color(parent_tower.game_elements.map_manager.chosen_map_id)
+
+
 
 func _on_parent_tower_changed_terrain_layer(arg_old, arg_new):
 	layer_on_terrain = arg_new

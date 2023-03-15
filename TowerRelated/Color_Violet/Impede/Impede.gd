@@ -35,6 +35,9 @@ const Shader_Grayscale = preload("res://MiscRelated/ShadersRelated/Shader_Graysc
 const stone_base_duration : float = 4.0
 const stone_bonus_duration_per_1_ap : float = 3.0
 
+const max_stone_count : int = 5
+
+
 var stone_aoe_attack_module : AOEAttackModule
 
 var stoned_ability : BaseAbility
@@ -172,6 +175,7 @@ func _construct_and_add_stone_aoe_attk_module():
 	stone_aoe_attack_module.pause_decrease_duration_of_aoe_at_round_end = true
 	stone_aoe_attack_module.unpause_decrease_duration_of_aoe_at_round_start = true
 	
+	stone_aoe_attack_module.aoe_count_limit = max_stone_count
 	
 	add_attack_module(stone_aoe_attack_module)
 
@@ -201,7 +205,6 @@ func _create_stone_aoe_based_on_enemy(enemy):
 	aoe.connect("enemy_exited", self, "_on_stone_aoe_enemy_exited")
 	
 	stone_aoe_attack_module.set_up_aoe__add_child_and_emit_signals(aoe)
-
 
 ##
 

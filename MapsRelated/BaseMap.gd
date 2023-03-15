@@ -37,6 +37,8 @@ var flag_to_path_map : Dictionary = {}
 var path_to_flags_map : Dictionary = {}
 
 
+var map_id
+
 onready var _in_map_placables = $InMapPlacables
 onready var _enemy_paths = $EnemyPaths
 onready var _environment = $Environment
@@ -212,7 +214,7 @@ func get_all_placables():
 func get_all_placables__copy():
 	return all_in_map_placables.duplicate(true)
 
-func add_in_map_placable(arg_placable, arg_custom_pos : Vector2, arg_emit_signal : bool = true):
+func add_in_map_placable(arg_placable : InMapAreaPlacable, arg_custom_pos : Vector2, arg_emit_signal : bool = true):
 	if !all_in_map_placables.has(arg_placable):
 		all_in_map_placables.append(arg_placable)
 		
@@ -223,7 +225,11 @@ func add_in_map_placable(arg_placable, arg_custom_pos : Vector2, arg_emit_signal
 		
 		if arg_emit_signal:
 			emit_signal("in_map_placable_added", arg_placable)
-
+		
+		##
+		
+		arg_placable.current_normal_texture = StoreOfMaps.get_map_resource_variation_info__in_map_placable_normal(map_id)
+		arg_placable.current_glowing_texture = StoreOfMaps.get_map_resource_variation_info__in_map_placable_highlighted(map_id)
 
 ################
 

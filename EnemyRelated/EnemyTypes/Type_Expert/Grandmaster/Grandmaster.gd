@@ -27,6 +27,7 @@ var _is_invis : bool
 
 
 const _shield_ratio : float = 75.0
+const _shield_duration : float = 1.5
 var shield_effect : EnemyShieldEffect
 
 
@@ -176,7 +177,7 @@ func _construct_shield_effect():
 	shield_modi.percent_based_on = PercentType.MAX
 	
 	shield_effect = EnemyShieldEffect.new(shield_modi, StoreOfEnemyEffectsUUID.GRANDMASTER_SHIELD_EFFECT)
-	shield_effect.time_in_seconds = 2
+	shield_effect.time_in_seconds = _shield_duration
 	shield_effect.is_timebound = true
 	shield_effect.is_from_enemy = true
 
