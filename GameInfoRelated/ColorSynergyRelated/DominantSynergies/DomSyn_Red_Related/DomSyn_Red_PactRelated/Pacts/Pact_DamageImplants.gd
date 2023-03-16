@@ -8,6 +8,21 @@ signal base_dmg_changed(arg_val)
 const tier_0_gold_cost : int = 1
 const tier_0_tower_count_for_gold_cost : int = 1
 const tier_0_stage_to_damage_map : Dictionary = {
+	0 : 4.4,
+	1 : 4.8,
+	2 : 5.2,
+	3 : 5.6,
+	4 : 6.0,
+	5 : 6.4,
+	6 : 6.8,
+	7 : 7.2,
+	8 : 7.6,
+	9 : 8.0,
+}
+
+const tier_1_gold_cost : int = 1
+const tier_1_tower_count_for_gold_cost : int = 2
+const tier_1_stage_to_damage_map : Dictionary = {
 	0 : 1.6,
 	1 : 1.8,
 	2 : 2.0,
@@ -20,9 +35,9 @@ const tier_0_stage_to_damage_map : Dictionary = {
 	9 : 3.6,
 }
 
-const tier_1_gold_cost : int = 1
-const tier_1_tower_count_for_gold_cost : int = 2
-const tier_1_stage_to_damage_map : Dictionary = {
+const tier_2_gold_cost : int = 1
+const tier_2_tower_count_for_gold_cost : int = 3
+const tier_2_stage_to_damage_map : Dictionary = {
 	0 : 1.20,
 	1 : 1.20,
 	2 : 1.35,
@@ -35,34 +50,19 @@ const tier_1_stage_to_damage_map : Dictionary = {
 	9 : 2.25,
 }
 
-const tier_2_gold_cost : int = 1
-const tier_2_tower_count_for_gold_cost : int = 2
-const tier_2_stage_to_damage_map : Dictionary = {
-	0 : 0.8,
-	1 : 0.8,
-	2 : 0.9,
-	3 : 1.0,
+const tier_3_gold_cost : int = 1
+const tier_3_tower_count_for_gold_cost : int = 3
+const tier_3_stage_to_damage_map : Dictionary = {
+	0 : 0.80,
+	1 : 0.80,
+	2 : 0.90,
+	3 : 1.00,
 	4 : 1.10,
 	5 : 1.20,
 	6 : 1.30,
 	7 : 1.30,
 	8 : 1.40,
 	9 : 1.50,
-}
-
-const tier_3_gold_cost : int = 1
-const tier_3_tower_count_for_gold_cost : int = 2
-const tier_3_stage_to_damage_map : Dictionary = {
-	0 : 0.40,
-	1 : 0.40,
-	2 : 0.45,
-	3 : 0.50,
-	4 : 0.55,
-	5 : 0.60,
-	6 : 0.65,
-	7 : 0.65,
-	8 : 0.70,
-	9 : 0.75,
 }
 
 var _current_damage_map : Dictionary

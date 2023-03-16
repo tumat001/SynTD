@@ -647,7 +647,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 	########################### SKIRMISHER
 	elif enemy_id == Enemies.COSMIC:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 32
+		info.base_health = 29 #32
 		info.base_movement_speed = 35
 		info.enemy_type = info.EnemyType.NORMAL
 		
@@ -699,7 +699,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.RALLIER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 29
+		info.base_health = 30 #29
 		info.base_movement_speed = 55
 		info.enemy_type = info.EnemyType.NORMAL
 		
@@ -723,7 +723,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.PROXIMITY:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 36.5
+		info.base_health = 35.0 #36.5
 		info.base_movement_speed = 45
 		info.base_toughness = 3
 		info.enemy_type = info.EnemyType.NORMAL

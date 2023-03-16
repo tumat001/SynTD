@@ -520,9 +520,8 @@ func _tower_changed_colors(tower : AbstractTower):
 	
 	emit_signal("tower_changed_colors", tower)
 
-func _register_tower_to_color_grouping_tags(tower : AbstractTower, force : bool = false):
-	#if tower.is_contributing_to_synergy or force:
-	if tower.last_calculated_is_contributing_to_synergy or force:
+func _register_tower_to_color_grouping_tags(tower : AbstractTower):#, force : bool = false):
+	if tower.last_calculated_is_contributing_to_synergy: #or force:
 		_remove_tower_from_color_grouping_tags(tower)
 		
 		for color in tower._tower_colors:
@@ -830,40 +829,59 @@ func get_all_ids_of_towers_except_in_queue_free() -> Array:
 func get_all_active_towers() -> Array:
 	var bucket : Array = []
 	
-	for color in _color_groups:
-		for tower in get_all_active_towers_with_color(color):
-			if !bucket.has(tower):
-				bucket.append(tower)
+	#for color in _color_groups:
+	#	for tower in get_all_active_towers_with_color(color):
+	#		if !bucket.has(tower):
+	#			bucket.append(tower)
+	
+	for tower in get_all_towers():
+		if tower.last_calculated_is_contributing_to_synergy:
+			bucket.append(tower)
 	
 	return bucket
 
 func get_all_active_towers_except_in_queue_free() -> Array:
 	var bucket : Array = []
 	
-	for color in _color_groups:
-		for tower in get_all_active_towers_with_color(color):
-			if !bucket.has(tower) and !tower.is_queued_for_deletion():
-				bucket.append(tower)
+	#for color in _color_groups:
+	#	for tower in get_all_active_towers_with_color(color):
+	#		if !bucket.has(tower) and !tower.is_queued_for_deletion():
+	#			bucket.append(tower)
+	
+	for tower in get_all_towers():
+		if tower.last_calculated_is_contributing_to_synergy and !tower.is_queued_for_deletion():
+			bucket.append(tower)
+	
 	
 	return bucket
 
 func get_all_active_towers_except_summonables_and_in_queue_free() -> Array:
 	var bucket : Array = []
 	
-	for color in _color_groups:
-		for tower in get_all_active_towers_with_color(color):
-			if !bucket.has(tower) and !tower.is_queued_for_deletion() and !tower.is_a_summoned_tower:
-				bucket.append(tower)
+	#for color in _color_groups:
+	#	for tower in get_all_active_towers_with_color(color):
+	#		if !bucket.has(tower) and !tower.is_queued_for_deletion() and !tower.is_a_summoned_tower:
+	#			bucket.append(tower)
+	
+	for tower in get_all_towers():
+		if tower.last_calculated_is_contributing_to_synergy and !tower.is_queued_for_deletion() and !tower.is_a_summoned_tower:
+			bucket.append(tower)
+	
 	
 	return bucket
 
 func get_all_active_and_alive_towers_except_in_queue_free() -> Array:
 	var bucket : Array = []
 	
-	for color in _color_groups:
-		for tower in get_all_active_towers_with_color(color):
-			if !bucket.has(tower) and !tower.is_queued_for_deletion() and !tower.is_dead_for_the_round:
-				bucket.append(tower)
+	#for color in _color_groups:
+	#	for tower in get_all_active_towers_with_color(color):
+	#		if !bucket.has(tower) and !tower.is_queued_for_deletion() and !tower.is_dead_for_the_round:
+	#			bucket.append(tower)
+	
+	for tower in get_all_towers():
+		if tower.last_calculated_is_contributing_to_synergy and !tower.is_queued_for_deletion() and !tower.is_dead_for_the_round:
+			bucket.append(tower)
+	
 	
 	return bucket
 

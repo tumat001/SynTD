@@ -271,10 +271,6 @@ var _is_in_select_tower_prompt : bool = false
 
 var is_showing_ranges : bool
 
-# used when tower is in map, disabled by other clauses, etc
-var contributing_to_synergy_clauses : ConditionalClauses
-var last_calculated_is_contributing_to_synergy : bool
-
 
 #####
 
@@ -365,6 +361,10 @@ var last_calculated_ignore_ing_limit__for_applying : bool
 var _tower_colors : Array = []
 
 # Synergy related
+
+# used when tower is in map, disabled by other clauses, etc
+var contributing_to_synergy_clauses : ConditionalClauses
+var last_calculated_is_contributing_to_synergy : bool
 
 var can_contribute_to_synergy_color_count : bool = true setget set_contribute_to_synergy_color_count    # tower can gain benefits of synergy, but does not contribute to syngergy progress (if false)
 

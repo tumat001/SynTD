@@ -11,16 +11,16 @@ const Duned_ProjPic = preload("res://TowerRelated/Color__Others/Duned/Attks/Dune
 
 
 const stage_to_bonus_base_damage_map : Dictionary = {
-	0 : 3.0,
-	1 : 3.5,
-	2 : 4.0,
-	3 : 4.5,
-	4 : 5.5,
-	5 : 6.5,
-	6 : 7.5,
-	7 : 8.5,
-	8 : 9.5,
-	9 : 10.5,
+	0 : 4.0,
+	1 : 4.5,
+	2 : 5.0,
+	3 : 5.5,
+	4 : 6.0,
+	5 : 7.0,
+	6 : 8.0,
+	7 : 9.0,
+	8 : 10.0,
+	9 : 11.0,
 }
 
 var base_dmg_effect : TowerAttributesEffect
@@ -62,7 +62,7 @@ func _ready():
 	attack_module.position.y -= y_shift_of_attack_module
 	
 	var bullet_shape = CircleShape2D.new()
-	bullet_shape.radius = 6
+	bullet_shape.radius = 8
 	
 	attack_module.bullet_shape = bullet_shape
 	attack_module.bullet_scene = BaseBullet_Scene

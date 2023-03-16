@@ -25,6 +25,10 @@ const Sandstorm_AbilityPic = preload("res://MapsRelated/MapList/Map_Mesa/Behavio
 const Mesa_WholeScreenChoices_Scene = preload("res://MapsRelated/MapList/Map_Mesa/BehaviorSpecific/GUI/WholeScreen/Mesa_WholeScreenChoices.tscn")
 const Mesa_WholeScreenChoices = preload("res://MapsRelated/MapList/Map_Mesa/BehaviorSpecific/GUI/WholeScreen/Mesa_WholeScreenChoices.gd")
 
+const MeshScreenTintEffect = preload("res://MiscRelated/ScreenEffectsRelated/SpecialEffects/MeshScreenTintEffect.gd")
+const MeshScreenTintEffect_Scene = preload("res://MiscRelated/ScreenEffectsRelated/SpecialEffects/MeshScreenTintEffect.tscn")
+
+#
 
 var game_elements
 
@@ -53,7 +57,11 @@ var sandstorm_ability : BaseAbility
 const treasure_relic_amount : int = 2
 const treasure_gold_amount : int = 34
 
-const treasure_stageround_id_given : String = "72"
+const treasure_stageround_id_given : String = "73"
+
+const treasure_screen_tint_modulate_transparent := Color(0, 0, 0, 0)
+const treasure_screen_tint_modulate__yellow := Color(233/255.0, 255/255.0, 0/255.0, 0.7)
+
 
 var _treasure_given : bool
 
@@ -299,3 +307,25 @@ func _on_round_end__monitor_for_treasure(arg_stageround : StageRound):
 		
 		game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end__monitor_for_treasure")
 		
+		#####
+		
+		_create_gradient_for_treasure_given()
+
+
+
+func _create_gradient_for_treasure_given():
+	var gradient_texture : GradientTexture2D = game_elements.get_rect_gradient_texture__based_on_play_map()
+	
+	gradient_texture.gradient = game_elements.construct_gradient_two_color(treasure_screen_tint_modulate_transparent, treasure_screen_tint_modulate__yellow)
+	
+	var tint_effect = MeshScreenTintEffect_Scene.instance()
+	tint_effect.main_duration = 1.0
+	tint_effect.fade_in_duration = 0.5
+	tint_effect.fade_out_duration = 0.5
+	tint_effect.ins_uuid = StoreOfScreenEffectsUUID.MAP_MESA__TREASURE
+	tint_effect.custom_z_index = ZIndexStore.SCREEN_EFFECTS
+	tint_effect.initial_modulate_a = 1
+	tint_effect.configure_self_to_gradient_texture_2d(game_elements.get_playable_map_size(), game_elements.get_middle_coordinates_of_playable_map(), gradient_texture)
+	
+	game_elements.screen_effect_manager.add_screen_tint_effect(tint_effect)
+

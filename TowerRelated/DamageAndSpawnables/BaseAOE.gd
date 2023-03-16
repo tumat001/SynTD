@@ -392,7 +392,6 @@ func get_num_of_enemies_inside():
 
 func set_decrease_duration_to_false__from_aoe_attk_module():
 	decrease_duration = false
-	
 
 func set_decrease_duration_to_true__from_aoe_attk_module():
 	decrease_duration = true

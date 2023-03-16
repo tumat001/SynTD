@@ -8,7 +8,7 @@ const TowerEffect_Red_FrostImplants = preload("res://GameInfoRelated/ColorSynerg
 #const tier_3_slow_amount : float = 15.0
 
 
-const tier_0_icicle_count : int = 14
+const tier_0_icicle_count : int = 16
 const tier_1_icicle_count : int = 12
 const tier_2_icicle_count : int = 8
 const tier_3_icicle_count : int = 6
@@ -20,14 +20,14 @@ const tier_3_gold_cost : int = 1
 
 const tier_0_tower_count_for_gold_cost : int = 1
 const tier_1_tower_count_for_gold_cost : int = 2
-const tier_2_tower_count_for_gold_cost : int = 2
-const tier_3_tower_count_for_gold_cost : int = 2
+const tier_2_tower_count_for_gold_cost : int = 3
+const tier_3_tower_count_for_gold_cost : int = 3
 
 
-const tier_0_slow_amount : float = -80.0
-const tier_1_slow_amount : float = -45.0
-const tier_2_slow_amount : float = -35.0
-const tier_3_slow_amount : float = -25.0
+const tier_0_slow_amount : float = -90.0
+const tier_1_slow_amount : float = -70.0
+const tier_2_slow_amount : float = -50.0
+const tier_3_slow_amount : float = -35.0
 
 const frost_icicle_base_dmg : float = 1.0
 const frost_icicle_dmg_type : int = DamageType.ELEMENTAL

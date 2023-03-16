@@ -50,12 +50,19 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	
 	player_execute_ratio = tier_to_player_exec_ratio[tier]
 	
+	
+	
+	var plain_fragment__executes = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.EXECUTE, "executes")
+	
 	good_descriptions = [
-		"The Dragon marks enemies upon spawning. The Dragon executes marked enemies below %s health post-damage." % (str((enemy_execute_ratio * 100)) + "%")
+		["The Dragon marks enemies upon spawning. The Dragon |0| marked enemies below %s health post-damage." % (str((enemy_execute_ratio * 100)) + "%"), [plain_fragment__executes]]
 	]
 	
+	
+	var plain_fragment__x_health = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PLAYER_HEALTH, "%s%% health" % (str(player_execute_ratio * 100)))
+	
 	bad_descriptions = [
-		"The Dragon executes you if you are below %s health" % [(str(player_execute_ratio * 100) + "%")]
+		["The Dragon executes you if you are below |0|.", [plain_fragment__x_health]]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_DragonSoul_Icon.png")
@@ -77,7 +84,7 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 #
 
 func _first_time_initialize():
-	bad_descriptions[0] += " (%s health)" % [str(player_execute_ratio * game_elements.health_manager.starting_health)]
+	bad_descriptions[0][0] += " (%s health)" % [str(player_execute_ratio * game_elements.health_manager.starting_health)]
 
 #
 

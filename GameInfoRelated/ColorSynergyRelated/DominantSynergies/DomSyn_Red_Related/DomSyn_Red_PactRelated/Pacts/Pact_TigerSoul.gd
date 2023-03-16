@@ -38,12 +38,17 @@ func _init(arg_tier : int, arg_tier_for_activation : int).(StoreOfPactUUID.PactU
 	player_damage_per_round = tier_to_player_dmg_per_round_map[tier]
 	
 	
+	
+	var plain_fragment__x_physical_damage = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PHYSICAL_DAMAGE, "%s physical damage" % enemy_bleed_per_second)
+	
 	good_descriptions = [
-		"The Tiger causes bleed to enemies hit by attacks. The bleed deals %s physical damage per second for %s seconds. Does not stack." % [enemy_bleed_per_second, bleed_duration]
+		["The Tiger inflicts bleed to enemies hit by attacks. The bleed deals |0| per second for %s seconds. Does not stack." % [bleed_duration], [plain_fragment__x_physical_damage]]
 	]
 	
+	var plain_fragment__x_health = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.PLAYER_HEALTH, "%s health" % player_damage_per_round)
+	
 	bad_descriptions = [
-		"The Tiger causes you to bleed for %s health per end of round." % player_damage_per_round
+		["The Tiger causes you to bleed for |0| per end of round.", [plain_fragment__x_health]]
 	]
 	
 	pact_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_Icons/Pact_TigerSoul_Icon.png")
