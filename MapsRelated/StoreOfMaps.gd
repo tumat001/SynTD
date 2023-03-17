@@ -30,6 +30,7 @@ const range_module__circle_range_color__standard : Color = Color(0.2, 0.2, 0.2, 
 const range_module__circle_range_color__enchant : Color = Color(0.2, 0.2, 0.2, 0.25)
 const range_module__circle_range_color__passage : Color = Color(0.2, 0.2, 0.2, 0.25)
 const range_module__circle_range_color__mesa : Color = Color(0.2, 0.2, 0.2, 0.25)
+const range_module__circle_range_color__rift : Color = Color(0.2, 0.2, 0.2, 0.25)
 
 const in_map_placable__normal_texture__standard : Texture = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Normal.png")
 const in_map_placable__highlighted_texture__standard : Texture = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Glowing.png")
@@ -45,6 +46,7 @@ const MapsId_Ridged = "%s%s" % [SynTD_HeaderIDName, "Ridged"]
 const MapsId_Mesa = "%s%s" % [SynTD_HeaderIDName, "Mesa"]
 const MapsId_Passage = "%s%s" % [SynTD_HeaderIDName, "Passage"]
 const MapsId_Enchant = "%s%s" % [SynTD_HeaderIDName, "Enchant"]
+const MapsId_Rift = "%s%s" % [SynTD_HeaderIDName, "Rift"]
 
 const all_syn_td_map_ids : Array = [
 	MapsId_Glade,
@@ -53,6 +55,7 @@ const all_syn_td_map_ids : Array = [
 	MapsId_Mesa,
 	MapsId_Passage,
 	MapsId_Enchant,
+	MapsId_Rift,
 ]
 
 #
@@ -76,6 +79,7 @@ const MapIdsAvailableFromMenu : Array = [
 	MapsId_Ridged,
 	
 	MapsId_Enchant,
+	MapsId_Rift,
 	
 	MapsId_Passage,
 	
@@ -177,6 +181,21 @@ func _init():
 			MapIdsAvailableFromMenu.has(enchant_id),
 			res_var_info__enchant)
 	
+	##
+	var res_var_info__rift = MapResourceVariationInfo.new(
+		range_module__circle_range_color__rift,
+		in_map_placable__normal_texture__standard,
+		in_map_placable__highlighted_texture__standard
+	)
+	
+	var rift_id = MapsId_Rift
+	add_map(rift_id, "Rift",
+			"res://MapsRelated/MapList/Map_Rift/Map_Rift.tscn",
+			self,
+			"_construct_map_type_info__map_rift",
+			MapIdsAvailableFromMenu.has(rift_id),
+			res_var_info__rift)
+	
 
 func _on_singleton_initialize():
 	pass
@@ -269,6 +288,14 @@ func _construct_map_type_info__map_enchant(info : MapTypeInformation):
 	info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
 	info.map_tier = 3
 	return info
+
+func _construct_map_type_info__map_rift(info : MapTypeInformation):
+	info.map_name = "Rift"
+	info.map_display_texture = preload("res://MapsRelated/MapList/Map_Enchant/Map_Enchant_PreviewImage.png")  #todo
+	info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
+	info.map_tier = 3
+	return info
+	
 
 ######
 

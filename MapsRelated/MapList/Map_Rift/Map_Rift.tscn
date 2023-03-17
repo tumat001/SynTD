@@ -1,0 +1,217 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://MapsRelated/BaseMap.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Hidden.png" type="Texture" id=2]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Glowing.png" type="Texture" id=3]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Normal.png" type="Texture" id=4]
+[ext_resource path="res://EnemyRelated/EnemyPath.tscn" type="PackedScene" id=5]
+[ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapAreaPlacable.tscn" type="PackedScene" id=6]
+[ext_resource path="res://MapsRelated/MapList/Map_Rift/Map_Rift_WithBorders.png" type="Texture" id=7]
+[ext_resource path="res://GameInfoRelated/TerrainRelated/BaseTerrain.tscn" type="PackedScene" id=8]
+[ext_resource path="res://MapsRelated/MapList/Map_Rift/Map_Rift.gd" type="Script" id=9]
+
+[sub_resource type="Curve2D" id=1]
+_data = {
+"points": PoolVector2Array( 0, 0, 0, 0, 667.15, 35.1824, 0, 0, 0, 0, 641.582, 95.8319, 0, 0, 0, 0, 632.663, 97.0211, 0, 0, 0, 0, 544.067, 87.5075, 0, 0, 0, 0, 383.524, 52.4259, 0, 0, 0, 0, 344.874, 58.9665, 0, 0, 0, 0, 325.847, 72.6424, 0, 0, 0, 0, 322.874, 91.6697, 0, 0, 0, 0, 330.009, 107.724, 0, 0, 0, 0, 346.658, 121.994, 0, 0, 0, 0, 416.227, 151.725, 0, 0, 0, 0, 435.254, 180.86, 0, 0, 0, 0, 429.308, 193.347, 0, 0, 0, 0, 408.497, 217.131, 0, 0, 0, 0, 356.172, 237.942, 0, 0, 0, 0, 313.36, 230.807, 0, 0, 0, 0, 273.522, 207.617, 0, 0, 0, 0, 227.396, 143.426, 0, 0, 0, 0, 193.161, 65.9761, 0, 0, 0, 0, 167.345, 68.7822, 0, 0, 0, 0, 147.702, 81.1293, 0, 0, 0, 0, 132.548, 100.772, 0, 0, 0, 0, 122.446, 147.916, 0, 0, 0, 0, 127.497, 191.131, 0, 0, 0, 0, 130.223, 248.645, 0, 0, 0, 0, 179.09, 334.667, 0, 0, 0, 0, 199.229, 349.373, 0, 0, 0, 0, 297.759, 367.384, 0, 0, 0, 0, 367.684, 356.789, 0, 0, 0, 0, 461.446, 315.47, 0, 0, 0, 0, 518.128, 314.94, 0, 0, 0, 0, 628.312, 338.778, 0, 0, 0, 0, 721.015, 339.838, 0, 0, 0, 0, 778.226, 334.54, 0, 0, 0, 0, 800.474, 312.821, 0, 0, 0, 0, 812.129, 274.151, 0, 0, 0, 0, 818.485, 137.48, 0, 0, 0, 0, 803.621, 109.837, 0, 0, 0, 0, 787.567, 105.675, 0, 0, 0, 0, 740.594, 111.026, 0, 0, 0, 0, 704.323, 124.107, 0, 0, 0, 0, 697.187, 163.351, 0, 0, 0, 0, 681.728, 185.351, 0, 0, 0, 0, 653.781, 196.649, 0, 0, 0, 0, 579.456, 198.433, 0, 0, 0, 0, 539.617, 202, 0, 0, 0, 0, 503.941, 222.811, 0, 0, 0, 0, 499.184, 241.839, 0, 0, 0, 0, 512.266, 255.515, 0, 0, 0, 0, 534.861, 260.271, 0, 0, 0, 0, 667.457, 251.947, 0, 0, 0, 0, 732.269, 231.73 )
+}
+
+[node name="Map_Rift" instance=ExtResource( 1 )]
+script = ExtResource( 9 )
+
+[node name="TextureRect" type="TextureRect" parent="Environment" index="0"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+texture = ExtResource( 7 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="InMapAreaPlacable01" parent="InMapPlacables" index="0" instance=ExtResource( 6 )]
+position = Vector2( 597.498, 61.122 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable02" parent="InMapPlacables" index="1" instance=ExtResource( 6 )]
+position = Vector2( 561.018, 125.664 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable03" parent="InMapPlacables" index="2" instance=ExtResource( 6 )]
+position = Vector2( 369.077, 88.6223 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable04" parent="InMapPlacables" index="3" instance=ExtResource( 6 )]
+position = Vector2( 477.395, 167.756 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable05" parent="InMapPlacables" index="4" instance=ExtResource( 6 )]
+position = Vector2( 354.485, 187.96 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable06" parent="InMapPlacables" index="5" instance=ExtResource( 6 )]
+position = Vector2( 300.607, 143.623 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable07" parent="InMapPlacables" index="6" instance=ExtResource( 6 )]
+position = Vector2( 241.677, 64.4894 )
+layer_on_terrain = 1
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable08" parent="InMapPlacables" index="7" instance=ExtResource( 6 )]
+position = Vector2( 169.279, 138.011 )
+layer_on_terrain = 1
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable09" parent="InMapPlacables" index="8" instance=ExtResource( 6 )]
+position = Vector2( 228.769, 228.369 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable10" parent="InMapPlacables" index="9" instance=ExtResource( 6 )]
+position = Vector2( 204.636, 288.421 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable11" parent="InMapPlacables" index="10" instance=ExtResource( 6 )]
+position = Vector2( 290.505, 328.829 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable12" parent="InMapPlacables" index="11" instance=ExtResource( 6 )]
+position = Vector2( 387.036, 296.839 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable13" parent="InMapPlacables" index="12" instance=ExtResource( 6 )]
+position = Vector2( 453.823, 255.869 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable14" parent="InMapPlacables" index="13" instance=ExtResource( 6 )]
+position = Vector2( 561.579, 292.911 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable15" parent="InMapPlacables" index="14" instance=ExtResource( 6 )]
+position = Vector2( 677.754, 304.135 )
+layer_on_terrain = 1
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable16" parent="InMapPlacables" index="15" instance=ExtResource( 6 )]
+position = Vector2( 756.326, 294.594 )
+layer_on_terrain = 1
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable17" parent="InMapPlacables" index="16" instance=ExtResource( 6 )]
+position = Vector2( 804.592, 360.258 )
+layer_on_terrain = 1
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable18" parent="InMapPlacables" index="17" instance=ExtResource( 6 )]
+position = Vector2( 773.725, 166.072 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable19" parent="InMapPlacables" index="18" instance=ExtResource( 6 )]
+position = Vector2( 564.947, 232.298 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable20" parent="InMapPlacables" index="19" instance=ExtResource( 6 )]
+position = Vector2( 652.499, 224.44 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable21" parent="InMapPlacables" index="20" instance=ExtResource( 6 )]
+position = Vector2( 646.325, 158.776 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="InMapAreaPlacable22" parent="InMapPlacables" index="21" instance=ExtResource( 6 )]
+position = Vector2( 707.499, 63.3671 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
+[node name="EnemyPath" parent="EnemyPaths" index="0" instance=ExtResource( 5 )]
+curve = SubResource( 1 )
+
+[node name="BaseTerrain" parent="Terrain" index="0" instance=ExtResource( 8 )]
+position = Vector2( 312.555, 35.4165 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain" index="0"]
+polygon = PoolVector2Array( 4.28769, -1.07872, -40.1595, 56.8614, -86.591, 94.959, -79.4477, 107.658, -31.8257, 71.148, 15.3995, 0.508686 )
+
+[node name="BaseTerrain2" parent="Terrain" index="1" instance=ExtResource( 8 )]
+position = Vector2( 213.212, 136.07 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain2" index="0"]
+polygon = PoolVector2Array( 1.13634, 0.187912, -72.9095, 112.044, -68.8133, 126.538, -41.0855, 93.7692, 9.01355, 13.4216 )
+
+[node name="BaseTerrain3" parent="Terrain" index="2" instance=ExtResource( 8 )]
+position = Vector2( 127.441, 260.943 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain3" index="0"]
+polygon = PoolVector2Array( -0.371735, 0.404968, -34.0862, 24.9819, -33.1409, 50.8191, -1.94718, 24.3517, 6.24512, 11.433 )
+
+[node name="BaseTerrain4" parent="Terrain" index="3" instance=ExtResource( 8 )]
+position = Vector2( 559.485, 332.832 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain4" index="0"]
+polygon = PoolVector2Array( 0.200928, -1.5336, -37.6097, 12.6454, -72.5846, 19.5773, -134.342, 47.9353, -119.533, 48.2504, 12.4894, 0.987122 )
+
+[node name="BaseTerrain5" parent="Terrain" index="4" instance=ExtResource( 8 )]
+position = Vector2( 803.24, 236.085 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain5" index="0"]
+polygon = PoolVector2Array( 0.896484, 1.14224, -54.855, 21.301, -140.53, 38.3099, -188.092, 60.0435, -220.85, 82.7221, -208.88, 86.8169, 1.52643, 6.18192 )
+
+[node name="BaseTerrain6" parent="Terrain" index="5" instance=ExtResource( 8 )]
+position = Vector2( 840.287, 230.421 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="Terrain/BaseTerrain6" index="0"]
+polygon = PoolVector2Array( -0.0356445, 1.04366, -17.7133, 4.75597, -18.774, 10.4128, 0.49469, 5.10953 )
+
+[editable path="Terrain/BaseTerrain"]
+[editable path="Terrain/BaseTerrain2"]
+[editable path="Terrain/BaseTerrain3"]
+[editable path="Terrain/BaseTerrain4"]
+[editable path="Terrain/BaseTerrain5"]
+[editable path="Terrain/BaseTerrain6"]
