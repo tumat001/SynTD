@@ -250,7 +250,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		listen_for_round_start__then_listen_for_round_end__call_func_for_both(self, "_on_round_start__12", "_on_round_end__12")
 		
 	elif arg_index == 15:
-		var arrows = display_white_arrows_pointed_at_node(get_single_syn_displayer_with_synergy_name__from_left_panel(TowerDominantColors.synergy_id_to_syn_name_dictionary[TowerDominantColors.SynergyId.ORANGE]), 17, true, true)
+		var arrows = display_white_arrows_pointed_at_node(get_single_syn_displayer_with_synergy_name__from_left_panel(TowerDominantColors.synergy_id_to_syn_name_dictionary[TowerDominantColors.SynergyID__Orange]), 17, true, true)
 		arrows[0].x_offset = 180
 		arrows[0].flip_h = true
 		arrows[1].y_offset = -30
@@ -269,7 +269,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		listen_for_towers_with_ids__placed_in_map__then_call_func([Towers.SCATTER], "_on_towers_placed_on_map__on_18", self)
 		
 	elif arg_index == 30:
-		var arrows = display_white_arrows_pointed_at_node(get_single_syn_displayer_with_synergy_name__from_left_panel(TowerCompositionColors.synergy_id_to_syn_name_dictionary[TowerCompositionColors.SynergyId.OrangeYR]), 31, true, true)
+		var arrows = display_white_arrows_pointed_at_node(get_single_syn_displayer_with_synergy_name__from_left_panel(TowerCompositionColors.synergy_id_to_syn_name_dictionary[TowerCompositionColors.SynergyId__OrangeYR]), 31, true, true)
 		arrows[0].x_offset = 180
 		arrows[0].flip_h = true
 		arrows[1].y_offset = -30
@@ -312,7 +312,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 			if is_instance_valid(tower):
 				set_tower_is_draggable(tower, true)
 		set_can_towers_swap_positions_to_another_tower(true)
-		listen_for_synergy_to_be_activated(TowerDominantColors.synergy_id_to_syn_name_dictionary[TowerDominantColors.SynergyId.ORANGE], 3, "_on_orange_syn_met__42", self)
+		listen_for_synergy_to_be_activated(TowerDominantColors.synergy_id_to_syn_name_dictionary[TowerDominantColors.SynergyID__Orange], 3, "_on_orange_syn_met__42", self)
 		
 	elif arg_index == 45:
 		set_can_refresh_shop__panel_based(true)
@@ -325,7 +325,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		for tower in _all_towers:
 			if is_instance_valid(tower):
 				set_tower_is_draggable(tower, true)
-		listen_for_synergy_to_be_activated(TowerCompositionColors.synergy_id_to_syn_name_dictionary[TowerCompositionColors.SynergyId.OrangeYR], 3, "_on_syn_met__47", self)
+		listen_for_synergy_to_be_activated(TowerCompositionColors.synergy_id_to_syn_name_dictionary[TowerCompositionColors.SynergyId__OrangeYR], 3, "_on_syn_met__47", self)
 
 
 #

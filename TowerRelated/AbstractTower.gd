@@ -186,6 +186,11 @@ signal last_calculated_untargetability_changed(arg_val)
 
 signal last_calculated_ignore_ing_limit__for_applying_changed(arg_val)
 
+
+# Combination related
+
+signal last_calculated_benefits_from_combination_effects_changed(arg_val)
+
 # Terrain related
 
 signal layer_on_terrain_changed(arg_old_layer, arg_new_layer)
@@ -461,6 +466,15 @@ var last_calculated_has_effect_shield_against_enemies : bool
 var all_combinations_id_to_effect_id_map : Dictionary = {}
 
 
+# should be set before "tower_added" signal is emitted by tower manager
+enum BlockBenefitFromCombinationClauseIds {
+	GENERIC_BLOCK_TAG = 0,  # use when no need to remove this (or permanent)
+	
+}
+var block_benefit_from_combination_clauses : ConditionalClauses
+var last_calculated_benefits_from_combination_effects : bool
+
+
 # Modulate related
 
 enum TowerModulateIds {
@@ -648,6 +662,10 @@ func _init():
 	ignore_ing_limit__for_applying_clauses.connect("clause_inserted", self, "_on_ignore_ing_limit__for_applying_clause_ins_or_rem", [], CONNECT_PERSIST)
 	ignore_ing_limit__for_applying_clauses.connect("clause_removed", self, "_on_ignore_ing_limit__for_applying_clause_ins_or_rem", [], CONNECT_PERSIST)
 	
+	block_benefit_from_combination_clauses = ConditionalClauses.new()
+	block_benefit_from_combination_clauses.connect("clause_inserted", self, "_on_block_benefit_from_combination_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	block_benefit_from_combination_clauses.connect("clause_removed", self, "_on_block_benefit_from_combination_clauses_ins_or_rem", [], CONNECT_PERSIST)
+	
 	
 	_update_last_calculated_contributing_to_synergy()
 	_update_last_calculated_disabled_from_attacking()
@@ -660,6 +678,7 @@ func _init():
 	_update_last_calculate_tower_is_draggable()
 	_update_last_calculated_ignore_ing_limit__for_absorbing()
 	_update_last_calculated_ignore_ing_limit__for_applying()
+	_update_last_calc_benefits_from_combination_effects()
 	
 	##
 	
@@ -3171,6 +3190,18 @@ func _update_last_calculated_ignore_ing_limit__for_applying():
 		_attempt_add_effects_of_ing_effects_beyond_limit()
 		
 		emit_signal("last_calculated_ignore_ing_limit__for_applying_changed", last_calculated_ignore_ing_limit__for_applying)
+
+
+func _on_block_benefit_from_combination_clauses_ins_or_rem(arg_clause_id):
+	_update_last_calc_benefits_from_combination_effects()
+
+func _update_last_calc_benefits_from_combination_effects():
+	var old_val = last_calculated_benefits_from_combination_effects
+	last_calculated_benefits_from_combination_effects = block_benefit_from_combination_clauses.is_passed
+	
+	if old_val != last_calculated_benefits_from_combination_effects:
+		emit_signal("last_calculated_benefits_from_combination_effects_changed", last_calculated_benefits_from_combination_effects)
+
 
 # Ingredient drag and drop related
 

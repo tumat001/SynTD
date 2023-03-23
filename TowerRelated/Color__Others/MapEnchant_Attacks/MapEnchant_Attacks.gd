@@ -47,6 +47,8 @@ var barrage_timer : TimerForTower
 
 func _init():
 	is_tower_hidden = true
+	
+	block_benefit_from_combination_clauses.attempt_insert_clause(BlockBenefitFromCombinationClauseIds.GENERIC_BLOCK_TAG)
 
 
 func _ready():

@@ -14,6 +14,7 @@ var water_path__aoe_module : AOEAttackModule
 func _init():
 	is_tower_hidden = true
 	
+	block_benefit_from_combination_clauses.attempt_insert_clause(BlockBenefitFromCombinationClauseIds.GENERIC_BLOCK_TAG)
 
 func _ready():
 	var info : TowerTypeInformation = Towers.get_tower_info(Towers.MAP_PASSAGE__FIRE_PATH)

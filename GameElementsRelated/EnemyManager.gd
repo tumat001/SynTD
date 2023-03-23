@@ -37,6 +37,8 @@ signal last_enemy_standing(arg_enemy)
 signal last_enemy_standing_killed_by_damage(damage_instance_report, enemy)
 signal last_enemy_standing_killed_by_damage_no_revives(damage_instance_report, enemy)
 signal last_enemy_standing_current_health_changed(arg_health_val, arg_enemy) # called when last standing, and when health has changed
+signal last_enemy_standing_untargetability_changed(arg_is_untargetable, arg_is_untargetable_only_from_invis, enemy)
+
 signal on_enemy_queue_freed(arg_enemy)
 
 #
@@ -752,6 +754,7 @@ func _emit_last_enemy_standing():
 			last_enemy.connect("on_killed_by_damage", self, "_on_last_enemy_standing_killed_by_damage")
 			last_enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_last_enemy_standing_killed_by_damage_no_revives")
 			last_enemy.connect("on_current_health_changed", self, "_on_last_enemy_standing_current_health_changed", [last_enemy])
+			last_enemy.connect("last_calculated_is_untargetable_changed", self, "_on_last_enemy_standing_last_calculated_is_untargetable_changed", [last_enemy])
 			
 		emit_signal("last_enemy_standing", last_enemy)
 		emit_signal("last_enemy_standing_current_health_changed", last_enemy.current_health, last_enemy)
@@ -764,6 +767,11 @@ func _on_last_enemy_standing_killed_by_damage_no_revives(damage_instance_report,
 
 func _on_last_enemy_standing_current_health_changed(current_health, arg_enemy):
 	emit_signal("last_enemy_standing_current_health_changed", current_health, arg_enemy)
+
+func _on_last_enemy_standing_last_calculated_is_untargetable_changed(arg_val, arg_enemy : AbstractEnemy):
+	var is_untargetable_only_by_invis : bool = arg_enemy.is_untargetable_only_from_invisibility()
+	
+	emit_signal("last_enemy_standing_untargetability_changed", arg_val, is_untargetable_only_by_invis, arg_enemy)
 
 
 

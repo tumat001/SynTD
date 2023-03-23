@@ -471,6 +471,7 @@ func _post_inherit_ready():
 	calculate_flat_shield_receive_modifier_amount()
 	calculate_percent_shield_receive_modifier_amount()
 	
+	
 	#
 	if current_health < 0:
 		current_health = _last_calculated_max_health
@@ -536,7 +537,9 @@ func _post_inherit_ready():
 	
 
 func _on_finished_ready_prep():
-	pass
+	calculate_invisibility_status()
+	
+	
 
 
 
@@ -1177,8 +1180,14 @@ func calculate_invisibility_status() -> bool:
 	#
 	
 	if last_calculated_invisibility_status:
+		var lowest_mod_a : float = 1
+		for invis_effect in invisibility_id_effect_map.values():
+			if invis_effect.modulate_a_for_invis < lowest_mod_a:
+				lowest_mod_a = invis_effect.modulate_a_for_invis
+		
+		
 		#modulate.a = 0.4
-		set_sprite_layer_modulate(EnemyModulateIds.GENERIC_INVIS, Color(1, 1, 1, 0.4))
+		set_sprite_layer_modulate(EnemyModulateIds.GENERIC_INVIS, Color(1, 1, 1, lowest_mod_a))
 		emit_signal("cancel_all_lockons")
 		untargetable_clauses.attempt_insert_clause(UntargetabilityClauses.IS_INVISIBLE)
 	else:

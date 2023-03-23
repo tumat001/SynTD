@@ -458,7 +458,8 @@ func _on_requested__get_next_targetable_enemy__cancelled():
 
 func _update_current_star_target():
 	var all_enemies = game_elements.enemy_manager.get_all_enemies()
-	var include_invis_enemies = true
+	var include_invis_enemies = false
+	
 	var targeting : int = Targeting.FIRST
 	if is_instance_valid(range_module):
 		targeting = range_module.get_current_targeting_option()

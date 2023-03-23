@@ -29,7 +29,7 @@ var adeptling_am : WithBeamInstantDamageAttackModule
 const _beam_cooldown : float = 0.1
 var own_timer : Timer
 
-var adepting_base_dmg : float = 2.5
+var adepting_base_dmg : float = 2.5  #setted by Towers.gd
 
 
 func _init().(StoreOfTowerEffectsUUID.ING_ADEPT):

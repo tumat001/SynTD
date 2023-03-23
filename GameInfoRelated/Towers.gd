@@ -285,7 +285,6 @@ enum {
 	MAP_PASSAGE__FIRE_PATH = 2006
 	MAP_ENCHANT__ATTACKS = 2007
 	
-	
 }
 
 
@@ -3357,6 +3356,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		var tower_base_effect : AdeptModuleAdderEffect = AdeptModuleAdderEffect.new()
+		tower_base_effect.adepting_base_dmg = tier_on_hit_dmg_map[info.tower_tier] + 0.5
 		var ing_effect : IngredientEffect = IngredientEffect.new(tower_id, tower_base_effect)
 		
 		info.ingredient_effect = ing_effect
@@ -7240,6 +7240,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 #		info.ingredient_effect_simple_description = "+ range"
 #
 		
+		
+		
+	
 	
 	return info
 

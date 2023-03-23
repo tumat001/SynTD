@@ -535,7 +535,7 @@ func _apply_combination_effect_to_appropriate_towers(arg_combi_effect : Combinat
 
 
 func _attempt_apply_all_combination_effects_to_tower(arg_tower):
-	if is_instance_valid(arg_tower) and !arg_tower.is_queued_for_deletion():
+	if is_instance_valid(arg_tower) and !arg_tower.is_queued_for_deletion() and arg_tower.last_calculated_benefits_from_combination_effects:
 		var arg_tower_tier : int = arg_tower.tower_type_info.tower_tier
 		
 		for combi_effect in all_combination_id_to_effect_map.values():

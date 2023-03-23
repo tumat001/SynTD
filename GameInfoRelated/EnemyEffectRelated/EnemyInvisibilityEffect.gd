@@ -3,6 +3,9 @@ extends "res://GameInfoRelated/EnemyEffectRelated/EnemyBaseEffect.gd"
 
 var _current_time
 
+var modulate_a_for_invis : float = 0.4
+
+
 func _init(arg_time_in_seconds : float,
 		arg_effect_uuid : int,
 		arg_respect_scale : bool = true).(EffectType.INVISIBILITY, arg_effect_uuid):
@@ -20,6 +23,7 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 		scale = 1
 	
 	var copy = get_script().new(time_in_seconds * scale, effect_uuid, respect_scale)
+	copy.modulate_a_for_invis = modulate_a_for_invis
 	
 	_configure_copy_to_match_self(copy)
 	

@@ -8,7 +8,7 @@ const ButtonGroup_Custom = preload("res://MiscRelated/PlayerGUI_Category_Related
 
 signal on_current_selected_map_id_changed(arg_id)
 
-const map_card_per_row : int = 3
+const map_card_per_row : int = 4
 const row_count : int = 2
 
 var _map_id_list : Array = []
@@ -56,7 +56,7 @@ func add_map_id_to_list(arg_id, arg_update_states : bool = true):
 func _update_current_page_count_and_leftright_buttons():
 	var map_per_page : int = map_card_per_row * row_count
 	
-	current_page_count = 1 + (_map_id_list.size() / map_per_page)
+	current_page_count = ceil((_map_id_list.size() / float(map_per_page)))
 	
 	_update_display_of_leftright_buttons()
 
@@ -83,7 +83,9 @@ func set_current_page_index(arg_val):
 	
 	_update_current_page_count_and_leftright_buttons()
 	_update_map_card_selection_display()
-
+	
+	
+	clear_current_map_id_selected()
 
 
 #
@@ -115,7 +117,7 @@ func _initialize_map_cards():
 		map_card.connect("toggle_mode_changed", self, "_on_map_card_toggle_mode_changed", [map_card])
 		
 		curr_map_card_in_row += 1
-		if curr_map_card_in_row > map_card_per_row:
+		if curr_map_card_in_row >= map_card_per_row:
 			curr_map_card_in_row = 0
 			curr_row += 1
 
@@ -159,7 +161,13 @@ func clear_current_map_id_selected():
 
 func set_current_map_id_selected(arg_id):
 	current_map_id_selected = arg_id
-
+	
+	if current_map_id_selected == NO_MAP_SELECTED:
+		var curr_button_toggled = button_group_for_map_cards.get_toggled_on_button()
+		if is_instance_valid(curr_button_toggled):
+			curr_button_toggled.set_is_toggle_mode_on(false)
+	
+	
 	emit_signal("on_current_selected_map_id_changed", current_map_id_selected)
 
 #

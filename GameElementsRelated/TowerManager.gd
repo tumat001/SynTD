@@ -295,6 +295,13 @@ var _pos_aesthetic_queue_arr : Array = []
 
 var non_essential_rng : RandomNumberGenerator
 
+#
+
+
+var _all_towers_showing_quick_info : Array
+
+#
+
 ################ setters
 
 func set_game_elements(arg_elements):
@@ -1632,6 +1639,26 @@ func _display_tier_aesthetic_with_tier_at_pos(arg_tier, arg_pos):
 #		pass
 
 
+
+##############
+
+func show_all_tower_quick_info(): # only for in maps and not for hidden
+	_all_towers_showing_quick_info = get_all_in_map_towers_except_in_queue_free()
+	
+	for towers in _all_towers_showing_quick_info:
+		pass
+		
+	
+
+
+func hide_all_tower_quick_info():
+	for tower in _all_towers_showing_quick_info:
+		if is_instance_valid(tower):
+			pass
+			
+	
+	_all_towers_showing_quick_info.clear()
+	
 
 
 

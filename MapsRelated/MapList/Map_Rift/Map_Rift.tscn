@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://MapsRelated/BaseMap.tscn" type="PackedScene" id=1]
 [ext_resource path="res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Hidden.png" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://MapsRelated/MapList/Map_Rift/Map_Rift_WithBorders.png" type="Texture" id=7]
 [ext_resource path="res://GameInfoRelated/TerrainRelated/BaseTerrain.tscn" type="PackedScene" id=8]
 [ext_resource path="res://MapsRelated/MapList/Map_Rift/Map_Rift.gd" type="Script" id=9]
+[ext_resource path="res://MiscRelated/DrawRelated/RectDrawNode/RectDrawNode.gd" type="Script" id=10]
 
 [sub_resource type="Curve2D" id=1]
 _data = {
@@ -26,6 +27,9 @@ texture = ExtResource( 7 )
 __meta__ = {
 "_edit_lock_": true
 }
+
+[node name="RectDrawNode" type="Node2D" parent="Environment" index="1"]
+script = ExtResource( 10 )
 
 [node name="InMapAreaPlacable01" parent="InMapPlacables" index="0" instance=ExtResource( 6 )]
 position = Vector2( 597.498, 61.122 )
@@ -64,7 +68,7 @@ current_normal_texture = ExtResource( 4 )
 current_hidden_texture = ExtResource( 2 )
 
 [node name="InMapAreaPlacable07" parent="InMapPlacables" index="6" instance=ExtResource( 6 )]
-position = Vector2( 241.677, 64.4894 )
+position = Vector2( 241.677, 77.4894 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 3 )
 current_normal_texture = ExtResource( 4 )
@@ -164,6 +168,12 @@ current_glowing_texture = ExtResource( 3 )
 current_normal_texture = ExtResource( 4 )
 current_hidden_texture = ExtResource( 2 )
 
+[node name="InMapAreaPlacable23" parent="InMapPlacables" index="22" instance=ExtResource( 6 )]
+position = Vector2( 591.17, 361.587 )
+current_glowing_texture = ExtResource( 3 )
+current_normal_texture = ExtResource( 4 )
+current_hidden_texture = ExtResource( 2 )
+
 [node name="EnemyPath" parent="EnemyPaths" index="0" instance=ExtResource( 5 )]
 curve = SubResource( 1 )
 
@@ -193,7 +203,7 @@ position = Vector2( 559.485, 332.832 )
 terrain_layer = 1
 
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain4" index="0"]
-polygon = PoolVector2Array( 0.200928, -1.5336, -37.6097, 12.6454, -72.5846, 19.5773, -134.342, 47.9353, -119.533, 48.2504, 12.4894, 0.987122 )
+polygon = PoolVector2Array( 0.200928, -1.5336, -37.6097, 12.6454, -57.0528, 20.1475, -19.5377, 48.2419, 12.4894, 0.987122 )
 
 [node name="BaseTerrain5" parent="Terrain" index="4" instance=ExtResource( 8 )]
 position = Vector2( 803.24, 236.085 )

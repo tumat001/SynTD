@@ -219,7 +219,7 @@ func set_map_tier(arg_tier):
 		map_tier_border_selected = MapCard_BorderTier06_Highlighted
 	
 	_update_outer_border_glow_state()
-
+	_make_tier_borders_not_glow()
 
 #
 
