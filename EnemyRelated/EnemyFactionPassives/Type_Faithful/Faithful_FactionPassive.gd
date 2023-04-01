@@ -63,7 +63,7 @@ var _current_cross_enemy_path
 
 #
 
-var game_elements : GameElements
+var game_elements
 var non_essential_rng : RandomNumberGenerator
 
 #
@@ -87,7 +87,7 @@ var heal_particle_from_sacrificers_attk_sprite_pool : AttackSpritePoolComponent
 
 #
 
-func _apply_faction_to_game_elements(arg_game_elements : GameElements):
+func _apply_faction_to_game_elements(arg_game_elements):
 	if game_elements == null:
 		game_elements = arg_game_elements
 		non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
@@ -123,7 +123,7 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 	._apply_faction_to_game_elements(arg_game_elements)
 
 
-func _remove_faction_from_game_elements(arg_game_elements : GameElements):
+func _remove_faction_from_game_elements(arg_game_elements):
 	if game_elements.stage_round_manager.is_connected("round_started", self, "_on_round_start"):
 		game_elements.stage_round_manager.disconnect("round_started", self, "_on_round_start")
 		game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end")

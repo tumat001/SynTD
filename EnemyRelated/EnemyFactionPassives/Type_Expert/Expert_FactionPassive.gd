@@ -9,7 +9,7 @@ const CenterBasedAttackParticle_Scene = preload("res://MiscRelated/AttackSpriteR
 
 #
 
-var game_elements : GameElements
+var game_elements
 var enemy_manager
 
 var non_essential_rng : RandomNumberGenerator
@@ -42,7 +42,7 @@ var enchantress_shield_break_fragment_particle_pool_component : AttackSpritePool
 
 #
 
-func _apply_faction_to_game_elements(arg_game_elements : GameElements):
+func _apply_faction_to_game_elements(arg_game_elements):
 	if game_elements == null:
 		game_elements = arg_game_elements
 		enemy_manager = arg_game_elements.enemy_manager
@@ -59,13 +59,15 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 	if !enemy_manager.is_connected("before_enemy_spawned", self, "_before_enemy_is_spawned"):
 		enemy_manager.connect("before_enemy_spawned", self, "_before_enemy_is_spawned", [], CONNECT_PERSIST)
 	
+	._apply_faction_to_game_elements(arg_game_elements)
 
 #
 
-func _remove_faction_from_game_elements(arg_game_elements : GameElements):
+func _remove_faction_from_game_elements(arg_game_elements):
 	if enemy_manager.is_connected("before_enemy_spawned", self, "_before_enemy_is_spawned"):
 		enemy_manager.disconnect("before_enemy_spawned", self, "_before_enemy_is_spawned")
 	
+	._remove_faction_from_game_elements(arg_game_elements)
 
 #######
 

@@ -466,7 +466,7 @@ func _on_BuySellLevelRollPanel_reroll():
 #			Towers.CYNOSURE,
 #			Towers.ADEPT,
 #			Towers.STRIKER,
-#			Towers.IOTA,
+#			Towers.VARIANCE,
 #			Towers.IMPEDE,
 #			Towers.CANNON,
 #		])

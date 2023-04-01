@@ -31,6 +31,7 @@ enum EnemyFactions {
 	EXPERT = 1,
 	FAITHFUL = 2,
 	SKIRMISHERS = 3,
+	MORPHERS = 4,
 	
 	#BEAST,
 	#LIFE_MEDDLERS,
@@ -87,6 +88,18 @@ enum Enemies {
 	HOMERUNNER = 480
 	RUFFIAN = 481
 	
+	
+	############ MORPHERS (500)
+	
+	BARE = 500,  # very flexible basic unit
+	MENDER = 501,  # heal focused
+	FIGHTER = 502,   # moslty dps against towers
+	CRIPPLER = 503,  # debuff against towers
+	SORCERER = 504,  # utility (buff to enemies)
+	SAVAGE = 505,   # very tanky and not so slow enemy
+	WILDCARD = 506,   # benefits from all Morphs
+	
+	
 	############
 	
 	# OTHERS (10000)
@@ -109,6 +122,8 @@ func _init():
 	second_half_faction_id_pool.append(EnemyFactions.EXPERT)
 	second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
 	second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
+	#second_half_faction_id_pool.append(EnemyFactions.MORPHERS)
+	
 	
 	for enemy_id in Enemies.values():
 		enemy_id_info_type_singleton_map[enemy_id] = get_enemy_info(enemy_id, true)
@@ -997,6 +1012,219 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 				"Standard issue Skirmisher."
 			]
 			
+		
+		
+	############################ MORPHERS
+		
+	elif enemy_id == Enemies.BARE:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.MORPHERS)
+		info.base_health = 40
+		info.base_movement_speed = 60
+		info.enemy_type = info.EnemyType.NORMAL
+		
+		if arg_include_non_combat_info:
+			info.enemy_name = "Bare"
+			#todo
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Blue_E.png")))
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Red_E.png")))
+			
+			info.descriptions = [
+				"The barest of all enemies, ready to take on many roles."
+			]
+			
+		
+		
+	elif enemy_id == Enemies.MENDER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.MORPHERS)
+		info.base_health = 55
+		info.base_movement_speed = 45
+		info.enemy_type = info.EnemyType.NORMAL
+		
+		if arg_include_non_combat_info:
+			info.enemy_name = "Mender"
+			#todo
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Blue_E.png")))
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Red_E.png")))
+			
+			
+			var plain_fragment__heal = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "heal")
+			var plain_fragment__x_enemies = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ENEMY, "2 enemies")
+			
+			var interpreter_for_heal_amount = TextFragmentInterpreter.new()
+			interpreter_for_heal_amount.enemy_info_to_use_for_enemy_stat_fragments = info
+			interpreter_for_heal_amount.display_body = true
+			var ins_for_heal_amount = []
+			ins_for_heal_amount.append(OutcomeTextFragment.new(EnemyStatTextFragment.STAT_TYPE.HEALTH, -1, "health"))
+			ins_for_heal_amount.append(NumericalTextFragment.new(15, false, -1))
+			ins_for_heal_amount.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+			ins_for_heal_amount.append(EnemyStatTextFragment.new(null, info, EnemyStatTextFragment.STAT_TYPE.ENEMY_STAT__ABILITY_POTENCY, EnemyStatTextFragment.STAT_BASIS.TOTAL, 1.0))
+			interpreter_for_heal_amount.array_of_instructions = ins_for_heal_amount
+			
+			
+			info.descriptions = [
+				["Every 12 seconds, |0| |1| for |2|.", [plain_fragment__heal, plain_fragment__x_enemies, interpreter_for_heal_amount]]
+			]
+			
+		
+		
+	elif enemy_id == Enemies.FIGHTER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.MORPHERS)
+		info.base_health = 60
+		info.base_movement_speed = 35
+		info.enemy_type = info.EnemyType.NORMAL
+		
+		if arg_include_non_combat_info:
+			info.enemy_name = "Fighter"
+			#todo
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Blue_E.png")))
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Red_E.png")))
+			
+			
+			var plain_fragment__x_movement_speed = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.MOV_SPEED, "35 bonus mov speed")
+			var plain_fragment__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "ability")
+			
+			var plain_fragment__smash = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Smash")
+			var plain_fragment__tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "tower")
+			
+			
+			var smash_circle_dmg : float = 1.0
+			var smash_line_dmg : float = 2.0
+			var ability_cd : float = 15.0
+			
+			
+			var interpreter_for_smash_dmg = TextFragmentInterpreter.new()
+			interpreter_for_smash_dmg.enemy_info_to_use_for_enemy_stat_fragments = info
+			interpreter_for_smash_dmg.display_body = true
+			interpreter_for_smash_dmg.header_description = "damage"
+			interpreter_for_smash_dmg.display_header = true
+			var ins_for_smash_dmg = []
+			ins_for_smash_dmg.append(NumericalTextFragment.new(smash_line_dmg, false, -1))
+			ins_for_smash_dmg.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+			ins_for_smash_dmg.append(EnemyStatTextFragment.new(null, info, EnemyStatTextFragment.STAT_TYPE.ENEMY_STAT__ABILITY_POTENCY, EnemyStatTextFragment.STAT_BASIS.TOTAL, 1.0))
+			interpreter_for_smash_dmg.array_of_instructions = ins_for_smash_dmg
+			
+			
+			info.descriptions = [
+				["Upon taking damage for the first time, gain |0| for 15 seconds. This bonus is removed on casting an |1|.", [plain_fragment__x_movement_speed, plain_fragment__ability]],
+				"",
+				["Casts |0| every %s seconds." % [ability_cd], [plain_fragment__smash]],
+				["|0|: Fighter smashes the ground around itself, dealing %s damage." % [smash_circle_dmg], [plain_fragment__smash]],
+				["Additionally, a line of explosions is sent to the closest |0|, dealing |1|. A tower can only be affected once.", [plain_fragment__tower, interpreter_for_smash_dmg]]
+			]
+			
+			info.simple_descriptions = [
+				["Casts |0| every 15 seconds.", [plain_fragment__smash]],
+				["|0|: Fighter smashes the ground around itself, dealing %s damage." % [smash_circle_dmg], [plain_fragment__smash]],
+				["Additionally, a line of explosions is sent to the closest |0|, dealing |1|.", [plain_fragment__tower, interpreter_for_smash_dmg]]
+			]
+			
+		
+	elif enemy_id == Enemies.CRIPPLER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.MORPHERS)
+		info.base_health = 35
+		info.base_movement_speed = 55
+		info.enemy_type = info.EnemyType.NORMAL
+		
+		if arg_include_non_combat_info:
+			info.enemy_name = "Crippler"
+			#todo
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Blue_E.png")))
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Red_E.png")))
+			
+			
+			var plain_fragment__tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "tower")
+			var plain_fragment__suck = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Suck")
+			var plain_fragment__tower_s = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "tower's")
+			var plain_fragment__attack_speed = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ATTACK_SPEED, "attack speed")
+			
+			var cripple_amount : float = 40.0
+			
+			var interpreter_for_cripple_amount = TextFragmentInterpreter.new()
+			interpreter_for_cripple_amount.enemy_info_to_use_for_enemy_stat_fragments = info
+			interpreter_for_cripple_amount.display_body = true
+			var ins_for_cripple_amount = []
+			ins_for_cripple_amount.append(NumericalTextFragment.new(cripple_amount, true, -1))
+			ins_for_cripple_amount.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+			ins_for_cripple_amount.append(EnemyStatTextFragment.new(null, info, EnemyStatTextFragment.STAT_TYPE.ENEMY_STAT__ABILITY_POTENCY, EnemyStatTextFragment.STAT_BASIS.TOTAL, 1.0))
+			interpreter_for_cripple_amount.array_of_instructions = ins_for_cripple_amount
+			
+			
+			info.descriptions = [
+				["Upon reaching 60% health, Crippler seeks a |0| to cast |1| on.", [plain_fragment__tower, plain_fragment__suck]],
+				["|0|, reduce the target |1| |2| by |3| (max: 80%).", [plain_fragment__suck, plain_fragment__tower_s, plain_fragment__attack_speed]],
+				
+			]
+			
+			
+		
+		
+	elif enemy_id == Enemies.SORCERER:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.MORPHERS)
+		info.base_health = 65
+		info.base_movement_speed = 40
+		info.enemy_type = info.EnemyType.NORMAL
+		
+		if arg_include_non_combat_info:
+			info.enemy_name = "Sorcerer"
+			#todo
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Blue_E.png")))
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Red_E.png")))
+			
+			
+			var plain_fragment__incant = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Incant")
+			var plain_fragment__x_enemies = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ENEMY, "3 enemies")
+			var plain_fragment__x_ability_potency = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY_POTENCY, "0.5 bonus ability potency")
+			var plain_fragment__x_shield = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHIELD, "15 shield")
+			var plain_fragment__abilities = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "abilities")
+			
+			info.descriptions = [
+				["Casts |0| twice within 3 seconds, every 24 seconds.", [plain_fragment__incant]],
+				["|0|, gives |1| within 100 range |2|, or |3| if they have no |4|.", [plain_fragment__incant, plain_fragment__x_enemies, plain_fragment__x_ability_potency, plain_fragment__x_shield, plain_fragment__abilities]]
+			]
+			
+			
+			
+		
+		
+	elif enemy_id == Enemies.SAVAGE:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.MORPHERS)
+		info.base_health = 500
+		info.base_movement_speed = 30
+		info.enemy_type = info.EnemyType.ELITE
+		
+		if arg_include_non_combat_info:
+			info.enemy_name = "Savage"
+			#todo
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Blue_E.png")))
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Red_E.png")))
+			
+			info.descriptions = [
+				"The largest of the beasts.",
+				
+			]
+			
+		
+		
+	elif enemy_id == Enemies.WILDCARD:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.MORPHERS)
+		info.base_health = 100
+		info.base_movement_speed = 35
+		info.enemy_type = info.EnemyType.ELITE
+		
+		if arg_include_non_combat_info:
+			info.enemy_name = "Wildcard"
+			#todo
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Blue_E.png")))
+			#info.enemy_atlased_images_list.append(_generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Both/Ruffian/Ruffian_Red_E.png")))
+			
+			info.descriptions = [
+				"Benefits from all Morphs.",
+				"Wildcard learns all abilities that the currently active Morphs enhance."
+				
+			]
+			
+		
+		
 		
 	############################# OTHERS
 	elif enemy_id == Enemies.TRIASYN_OGV_SOUL:

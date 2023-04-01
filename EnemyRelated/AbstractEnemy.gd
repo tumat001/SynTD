@@ -761,7 +761,8 @@ func _set_current_health_to(health_amount, from_overheal : bool = false):
 
 func execute_self_by(source_id : int, attack_module_source = null):
 	if is_instance_valid(attack_module_source):
-		connect("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt", [attack_module_source.damage_register_id], CONNECT_ONESHOT)
+		if !is_connected("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt"):
+			connect("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt", [attack_module_source.damage_register_id], CONNECT_ONESHOT)
 	
 	_take_unmitigated_damages([[current_health + current_shield, DamageType.PURE, source_id]], null)
 

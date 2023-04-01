@@ -1,4 +1,4 @@
-const GameElements = preload("res://GameElementsRelated/GameElements.gd")
+#const GameElements = preload("res://GameElementsRelated/GameElements.gd")
 const AbstractTower = preload("res://TowerRelated/AbstractTower.gd")
 const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 const AbstractEnemy = preload("res://EnemyRelated/AbstractEnemy.gd")

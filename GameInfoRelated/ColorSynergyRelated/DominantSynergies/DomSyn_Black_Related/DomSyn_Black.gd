@@ -102,7 +102,7 @@ const disarray_beam_applies_on_hit_effects_tier_2 : bool = false
 const disarray_beam_applies_on_hit_effects_tier_1 : bool = true
 
 const disarray_name : String = "Disarray"
-const disarray_descriptions_tier_2_simple : Array = []
+var disarray_descriptions_tier_2_simple : Array = []
 
 
 const disarray_fireball_base_damage : float = 3.0

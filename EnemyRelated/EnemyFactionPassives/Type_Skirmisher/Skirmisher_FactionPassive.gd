@@ -72,7 +72,7 @@ enum PathType {
 
 var _initialized_at_least_once : bool = false
 
-var game_elements : GameElements
+var game_elements
 var map_manager : MapManager
 var enemy_manager : EnemyManager
 
@@ -232,7 +232,7 @@ const closest_offset_adv_param_metadata_name__entry_offset_pos = "entry_offset_p
 
 ###############
 
-func _apply_faction_to_game_elements(arg_game_elements : GameElements):
+func _apply_faction_to_game_elements(arg_game_elements):
 	if game_elements == null:
 		game_elements = arg_game_elements
 		map_manager = game_elements.map_manager
@@ -294,7 +294,7 @@ func _apply_faction_to_game_elements(arg_game_elements : GameElements):
 	._apply_faction_to_game_elements(arg_game_elements)
 
 
-func _remove_faction_from_game_elements(arg_game_elements : GameElements):
+func _remove_faction_from_game_elements(arg_game_elements):
 	if enemy_manager.is_connected("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path"):
 		enemy_manager.disconnect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path")
 	
