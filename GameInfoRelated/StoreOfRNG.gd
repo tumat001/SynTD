@@ -31,6 +31,7 @@ var skirmisher_general_purpose_rng := RandomNumberGenerator.new()
 var skirmisher_random_cd_rng := RandomNumberGenerator.new()
 var map_enchant_gen_purpose_rng := RandomNumberGenerator.new()
 var violet_variation_randomizer_rng := RandomNumberGenerator.new()
+var morph_general_rng := RandomNumberGenerator.new()
 
 
 # TODO MAKE SOME WAY TO SAVE SEED OF RNGS
@@ -74,7 +75,7 @@ enum RNGSource {
 	FAITHFUL_MOV_SPEED_DELAY = 10000
 	SKIRMISHER_GEN_PURPOSE = 10001
 	SKIRMISHER_RANDOM_CD = 10002
-	
+	MORPHERS_GEN_PURPOSE = 10003
 	
 	#
 	MAP_ENCHANT_GEN_PURPOSE = 20000
@@ -114,8 +115,8 @@ func _init():
 		RNGSource.SKIRMISHER_GEN_PURPOSE : skirmisher_general_purpose_rng,
 		RNGSource.SKIRMISHER_RANDOM_CD : skirmisher_random_cd_rng,
 		RNGSource.MAP_ENCHANT_GEN_PURPOSE : map_enchant_gen_purpose_rng,
-		RNGSource.VIOLET_VARIATION_RANDOMIZER : violet_variation_randomizer_rng
-		
+		RNGSource.VIOLET_VARIATION_RANDOMIZER : violet_variation_randomizer_rng,
+		RNGSource.MORPHERS_GEN_PURPOSE : morph_general_rng,
 		
 	}
 	
@@ -195,5 +196,23 @@ static func randomly_select_one_element(arg_eles : Array, arg_rng : RandomNumber
 	var rand_i = arg_rng.randi_range(0, arg_eles.size() - 1)
 	
 	return arg_eles[rand_i]
+
+
+# REMOVES entries from arg_eles. 
+# Must duplicate array if this is not desired
+static func randomly_select_elements(arg_eles : Array, arg_rng : RandomNumberGenerator, arg_count : int):
+	var bucket = []
+	for i in arg_count:
+		if arg_eles.size() != 0:
+			var rand_i = arg_rng.randi_range(0, arg_eles.size() - 1)
+			
+			var ele = arg_eles[rand_i]
+			bucket.append(ele)
+			arg_eles.remove(rand_i)
+		else:
+			break
+	
+	return bucket
+
 
 

@@ -15,18 +15,26 @@ var game_elements
 
 #
 
+func _init().(StoreOfMorphSkillsets.MorpherSkillsetIds.BARE__PASSED_PLATE):
+	pass
+
+#
+
 #func _can_apply_to_enemy(arg_enemy) -> bool:
 #	return arg_enemy.enemy_id == EnemyConstants.Enemies.BARE or arg_enemy.enemy_id == EnemyConstants.Enemies.WILDCARD
-
 
 #
 
 func _apply_morph_skillset(arg_enemy, arg_game_elements, arg_faction_passive):
+	._apply_morph_skillset(arg_enemy, arg_game_elements, arg_faction_passive)
+	
 	_enemy = arg_enemy
 	game_elements = arg_game_elements
 	_listen_for_death_with_no_revives_left()
 
 func _apply_morph_skillset__to_wildcard(arg_enemy, arg_game_elements, arg_faction_passive):
+	._apply_morph_skillset__to_wildcard(arg_enemy, arg_game_elements, arg_faction_passive)
+	
 	_enemy = arg_enemy
 	game_elements = arg_game_elements
 	

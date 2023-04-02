@@ -2479,6 +2479,13 @@ func copy_enemy_location_and_offset(arg_enemy):
 	distance_to_exit = arg_enemy.distance_to_exit
 	unit_distance_to_exit = arg_enemy.unit_distance_to_exit
 
+#func set_unit_offset_and_configure_related_properties(arg_unit_offset):
+#	unit_offset = arg_unit_offset
+#
+#	distance_to_exit = current_path_length - offset
+#	unit_distance_to_exit = distance_to_exit / current_path_length
+
+
 #
 
 # spawned from something else than spawn instructions

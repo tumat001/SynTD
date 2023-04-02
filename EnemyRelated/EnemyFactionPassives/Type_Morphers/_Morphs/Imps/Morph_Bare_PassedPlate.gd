@@ -19,14 +19,7 @@ func _init().(StoreOfEnemyMorphs.MorphIds.BARE__PASSED_PLATE):
 	descriptions = [
 		["On death, gives a |0| to the nearest |1| within %s range. Shields stack!" % [pass_shield_range], [plain_fragment__x_shield, plain_fragment__enemy]]
 	]
-	
-	morph_skillset_ids = [
-		StoreOfEnemyMorphSkillsets.MorpherSkillsetIds.BARE__PASSED_PLATE,
-	]
-	morph_skillset_ids__for_wildcard = [
-		StoreOfEnemyMorphSkillsets.MorpherSkillsetIds.BARE__PASSED_PLATE,
-	]
-	
+
 
 ######
 

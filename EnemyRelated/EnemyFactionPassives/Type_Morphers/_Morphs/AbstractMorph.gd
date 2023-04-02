@@ -13,7 +13,8 @@ const EnemyStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 
 #
 
-signal description_updated()
+signal description_changed()
+signal icon_changed()
 
 #
 
@@ -31,8 +32,8 @@ var simple_descriptions_for_wildcard
 var min_round_to_be_offerable_inc : String = "41"
 
 
-var morph_skillset_ids : Array
-var morph_skillset_ids__for_wildcard : Array
+#var morph_skillset_ids : Array
+#var morph_skillset_ids__for_wildcard : Array
 
 
 ##
@@ -90,5 +91,6 @@ func _listen_for_enemy_before_enemy_spawned(arg_game_elements, arg_func_name, ar
 
 func _unlisten_for_enemy_before_enemy_spawned(arg_game_elements, arg_func_name):
 	arg_game_elements.enemy_manager.disconnect("before_enemy_spawned", self, arg_func_name)
+
 
 
