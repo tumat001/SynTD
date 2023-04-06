@@ -24,7 +24,12 @@ var _current_bare_promote_count : int
 func _init().(StoreOfEnemyMorphs.MorphIds.BARE__PROMOTION):
 	
 	#todo
-	icon #=
+	enemy_based_icon #=
+	morph_based_icon #=
+	
+	main_enemy_morpher_id = EnemyConstants.Enemies.BARE
+	morph_name = "Promotion"
+	
 	
 	min_round_to_be_offerable_inc = "61"
 	

@@ -15,7 +15,11 @@ const second_breakpoint_speed_percent : float = 30.0
 func _init().(StoreOfEnemyMorphs.MorphIds.BARE__FOOTWORK):
 	
 	#todo
-	icon #=
+	enemy_based_icon #=
+	morph_based_icon #=
+	
+	main_enemy_morpher_id = EnemyConstants.Enemies.BARE
+	morph_name = "Footwork"
 	
 	var plain_fragment__bares = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ENEMY, "Bares")
 	

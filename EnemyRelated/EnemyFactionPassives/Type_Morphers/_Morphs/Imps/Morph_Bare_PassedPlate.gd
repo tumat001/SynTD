@@ -10,8 +10,11 @@ const pass_shield_range : float = 100.0
 func _init().(StoreOfEnemyMorphs.MorphIds.BARE__PASSED_PLATE):
 	
 	#todo
-	icon #=
+	enemy_based_icon #=
+	morph_based_icon #=
 	
+	main_enemy_morpher_id = EnemyConstants.Enemies.BARE
+	morph_name = "Passed Plate"
 	
 	var plain_fragment__x_shield = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHIELD, "%s%% shield based on Bare's max health" % shield_health_ratio)
 	var plain_fragment__enemy = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ENEMY, "enemy")

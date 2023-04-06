@@ -25,7 +25,11 @@ var horde_spawn_timer : Timer
 func _init().(StoreOfEnemyMorphs.MorphIds.BARE__HORDE):
 	
 	#todo
-	icon #=
+	enemy_based_icon #=
+	morph_based_icon #=
+	
+	main_enemy_morpher_id = EnemyConstants.Enemies.BARE
+	morph_name = "Horde"
 	
 	var plain_fragment__bares = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ENEMY, "Bares")
 	var plain_fragment__health = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ENEMY_STAT__HEALTH, "%s%% max health" % [bare_new_max_health_ratio])

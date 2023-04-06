@@ -14,19 +14,22 @@ const EnemyStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/
 #
 
 signal description_changed()
-signal icon_changed()
 
 #
 
 var id
-var icon
+var enemy_based_icon
+var morph_based_icon
 
+var main_enemy_morpher_id
 
-var descriptions
-var simple_descriptions
+var morph_name
 
-var descriptions_for_wildcard
-var simple_descriptions_for_wildcard
+var descriptions : Array
+var simple_descriptions : Array
+
+var descriptions_for_wildcard : Array
+var simple_descriptions_for_wildcard : Array
 
 
 var min_round_to_be_offerable_inc : String = "41"
@@ -61,10 +64,15 @@ func get_descriptions_to_use__based_on_settings():
 
 func get_wildcard_descriptions_to_use__based_on_settings():
 	if GameSettingsManager.descriptions_mode == GameSettingsManager.DescriptionsMode.SIMPLE:
-		return simple_descriptions_for_wildcard
+		if simple_descriptions_for_wildcard.size() != 0:
+			return simple_descriptions_for_wildcard
+		else:
+			return descriptions_for_wildcard
 	else:
 		return descriptions_for_wildcard
-	
+
+func has_wildcard_descriptions():
+	return simple_descriptions_for_wildcard.size() != 0 or descriptions.size() != 0
 
 ##
 

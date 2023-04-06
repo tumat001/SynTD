@@ -272,6 +272,7 @@ func _if_can_be_commanded_by_tower() -> bool:
 	
 	return can_be_commanded_by_tower_other_clauses.is_passed
 
+
 # is disabled clauses
 
 func _is_disabled_clause_inserted(inserted):
