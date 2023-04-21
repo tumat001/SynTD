@@ -227,12 +227,16 @@ func _on_singleton_initialize():
 	var plain_fragment__violet_tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COLOR_VIOLET, "violet tower")
 	var plain_fragment__ingredient = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredient")
 	
+	var plain_fragment__x_health = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.HEALTH, "3 bonus max health")
+	var plain_fragment__absorbed_ingredient = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "absorbed ingredient")
+	
 	var vio_syn__standard = ColorSynergy.new(SynergyID__Violet, synergy_id_to_syn_name_dictionary[SynergyID__Violet], [TowerColors.VIOLET], [5, 4, 3, 2],
 	[tier_bronze_pic, tier_silver_pic, tier_gold_pic, tier_dia_pic],
 	syn_dom_violet, synergy_id_to_pic_map__big[SynergyID__Violet],
 	[
 		["|0| can absorb more |1|.", [plain_fragment__violet_towers, plain_fragment__ingredients]],
 		["|0| can absorb ingredients regardless of color after being in the map for 1 round.", [plain_fragment__violet_towers]],
+		["|0| gain |1| per |2|.", [plain_fragment__violet_towers, plain_fragment__x_health, plain_fragment__absorbed_ingredient]],
 		"",
 		"These effects apply only when the limit of total and Violet towers in the map is satisfied.",
 		""

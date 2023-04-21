@@ -8,6 +8,10 @@ var _current_tower
 
 var stop_on_round_end_instead_of_pause : bool = true
 
+var stop_on_disabled_from_attacking : bool = true
+
+
+
 func set_tower_and_properties(arg_tower):
 	_current_tower = arg_tower
 	
@@ -40,7 +44,8 @@ func _on_round_start():
 		paused = false
 
 func _on_last_calculated_disabled_from_attacking_changed(arg_val):
-	paused = arg_val
+	if stop_on_disabled_from_attacking:
+		paused = arg_val
 #	if arg_val:
 #		stop()
 

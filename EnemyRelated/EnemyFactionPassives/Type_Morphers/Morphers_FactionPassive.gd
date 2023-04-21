@@ -19,6 +19,7 @@ var _current_morpher_skill_set_ids_active : Array = []
 
 #
 
+# var name accessed by MorphersSelectionWholeScreenGUI
 const rounds_to_offer_morph : Array = [
 	"41",
 	"51",

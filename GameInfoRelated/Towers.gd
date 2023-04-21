@@ -671,22 +671,28 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = simplex_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 0.5 #0.4
-		info.base_attk_speed = 4 #4.5
+		info.base_damage = 0.65 #0.5 #0.4
+		info.base_attk_speed = 3.75 #4 #4.5
 		info.base_pierce = 0
 		info.base_range = 95
 		info.base_damage_type = DamageType.PURE
 		info.on_hit_multiplier = 0.25 #0.3
 		
+		# vars to be modified based on tower
+		var max_fire_time : float = 12.0
+		var cd_time : float = 5.0
+		var recharge_tick_time : float = 0.5
+		var fire_time_decay_multiplier_per_delta : float = 2
+		
 		info.tower_descriptions = [
-			"Directs a constant pure energy beam at a single target.",
-			"The energy beam's on hit damages are only %s%% effective." % str(info.on_hit_multiplier * 100),
+			"Directs a constant pure energy beam at a single target. However, continuously firing for %s seconds causes Simplex to cooldown for %s seconds." % [max_fire_time, cd_time],
+			"Not firing for %s seconds brings Simplex %s second(s) further from incurring its cooldown." % [recharge_tick_time, (recharge_tick_time * fire_time_decay_multiplier_per_delta)],
 			"",
-			"\"First Iteration\""
+			"The energy beam's on hit damages are only %s%% effective." % str(info.on_hit_multiplier * 100),
 		]
 		
 		info.tower_simple_descriptions = [
-			"Directs a constant pure energy beam at a single target.",
+			"Directs a constant pure energy beam at a single target. However, continuously firing incurrs a cooldown.",
 		]
 		
 		# Ingredient related

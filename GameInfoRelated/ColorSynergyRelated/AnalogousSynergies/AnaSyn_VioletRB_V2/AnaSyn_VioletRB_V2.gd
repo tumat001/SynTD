@@ -13,12 +13,19 @@ const Invul_StatusBarIcon = preload("res://GameInfoRelated/ColorSynergyRelated/A
 const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
 const PercentType = preload("res://GameInfoRelated/PercentType.gd")
 
-const tier_4_damage_split_percent : float = 0.4 #lowest
-const tier_3_damage_split_percent : float = 0.6
-const tier_2_damage_split_percent : float = 0.8
-const tier_1_damage_split_percent : float = 1.0
+const tier_4_damage_split_percent : float = 0.6 #0.4 #lowest
+const tier_3_damage_split_percent : float = 0.8 #0.6
+const tier_2_damage_split_percent : float = 1.0 #0.8
+const tier_1_damage_split_percent : float = 1.25 #1.0
 
-const ap_ratio_of_percent : float = 0.25
+#const ap_ratio_of_percent : float = 0.25
+
+const tier_4_ap_split_percent : float = 0.10
+const tier_3_ap_split_percent : float = 0.15
+const tier_2_ap_split_percent : float = 0.20
+const tier_1_ap_split_percent : float = 0.25
+
+
 
 const percent_health_damage_per_attack : float = 0.04
 const proj_speed_percent_amount : float = 50.0
@@ -196,7 +203,7 @@ func _remove_last_standing_effects_from_tower(arg_tower):
 
 #
 
-func _get_percent_ratio_applicable_to_tier():
+func _get_damage_percent_ratio_applicable_to_tier():
 	if curr_tier == 4:
 		return tier_4_damage_split_percent
 	elif curr_tier == 3:
@@ -206,14 +213,24 @@ func _get_percent_ratio_applicable_to_tier():
 	elif curr_tier == 1:
 		return tier_1_damage_split_percent
 
+func _get_ability_pot_percent_ratio_applicable_to_tier():
+	if curr_tier == 4:
+		return tier_4_ap_split_percent
+	elif curr_tier == 3:
+		return tier_3_ap_split_percent
+	elif curr_tier == 2:
+		return tier_2_ap_split_percent
+	elif curr_tier == 1:
+		return tier_1_ap_split_percent
+
 
 func _on_tower_lost_all_health(tower : AbstractTower):
 	var percent_of_base_damage = 0
 	if is_instance_valid(tower.main_attack_module):
-		percent_of_base_damage = tower.get_last_calculated_base_damage_of_main_attk_module() * _get_percent_ratio_applicable_to_tier()
+		percent_of_base_damage = tower.get_last_calculated_base_damage_of_main_attk_module() * _get_damage_percent_ratio_applicable_to_tier()
 	
 	var percent_of_ability_potency = 0
-	percent_of_ability_potency = tower.last_calculated_final_ability_potency * _get_percent_ratio_applicable_to_tier() * ap_ratio_of_percent
+	percent_of_ability_potency = tower.last_calculated_final_ability_potency * _get_ability_pot_percent_ratio_applicable_to_tier()
 	
 	
 	#

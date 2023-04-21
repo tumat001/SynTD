@@ -49,6 +49,8 @@ var stacking_base_dmg_percent_type : int = PercentType.MAX
 
 const enhanced_main_attack_count : int = 7
 
+const enhanced_attack_total_duration : float = 14.0
+
 
 var barrage_ability : BaseAbility
 const barrage_ability_base_cd__tier_01 : float = 30.0
@@ -94,7 +96,7 @@ func _apply_syn_to_game_elements(arg_game_elements : GameElements, tier : int):
 		
 		
 		barrage_ability_descs = [
-			["Barrage: All towers gain |0| and |1| on the next %s main attacks main attacks." % [enhanced_main_attack_count], [plain_fragment__stacking_attk_speed__vrb, plain_fragment__stacking_base_dmg__vrb]],
+			["Barrage: All towers gain |0| and |1| on the next %s main attacks main attacks within %s seconds." % [enhanced_main_attack_count, enhanced_attack_total_duration], [plain_fragment__stacking_attk_speed__vrb, plain_fragment__stacking_base_dmg__vrb]],
 			["The last attack on hit also explodes in a cone behind the first enemy hit, dealing |0| of the attack's damage to %s enemies." % [cone_explosion_pierce], [interpreter_for_dmg_scale__vrb]],
 			"The last attack also consumes all the stacking buffs.",
 			"Cooldown: Varies with tier.",
@@ -187,6 +189,10 @@ func _attempt_add_effect_to_tower(tower : AbstractTower):
 		_next_id_for_effect__for_beam_component += 1
 		
 		connect("bararge_ability_activated", effect, "activate_effects_of_barrage", [], CONNECT_PERSIST)
+		
+		effect.is_timebound = true
+		effect.time_in_seconds = enhanced_attack_total_duration
+		
 		
 		tower.add_tower_effect(effect)
 

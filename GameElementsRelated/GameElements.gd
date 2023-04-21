@@ -155,7 +155,7 @@ func _ready():
 	# TEST HERE
 	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
 	
-	#map_id = StoreOfMaps.MapsId_Passage
+	#map_id = StoreOfMaps.MapsId_Rift
 	
 	#
 	
@@ -466,7 +466,7 @@ func _on_BuySellLevelRollPanel_reroll():
 #			Towers.CYNOSURE,
 #			Towers.ADEPT,
 #			Towers.STRIKER,
-#			Towers.VARIANCE,
+#			Towers.SIMPLEX,
 #			Towers.IMPEDE,
 #			Towers.CANNON,
 #		])

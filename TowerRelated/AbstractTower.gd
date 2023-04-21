@@ -237,6 +237,8 @@ enum DisabledFromAttackingSourceClauses {
 	DOM_SYN__RED__HEALING_SYMBOLS = 1004
 	
 	PROPEL_DURING_PLOW = 1005
+	SIMPLEX_RECHARGE = 1006
+	
 }
 
 enum UntargetabilityClauses {

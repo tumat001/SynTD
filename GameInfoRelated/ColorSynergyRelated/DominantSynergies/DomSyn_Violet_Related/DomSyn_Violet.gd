@@ -1,7 +1,9 @@
 extends "res://GameInfoRelated/ColorSynergyRelated/AbstractGameElementsModifyingSynergyEffect.gd"
 
 const TowerEffect_DomSyn_VioletColorMasteryGiver = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_DomSyn_VioletColorMasteryGiver.gd")
+const TowerEffect_DomSyn_VioletColorHealthEffect = preload("res://GameInfoRelated/TowerEffectRelated/MiscEffects/TowerEffect_DomSyn_VioletColorHealthEffect.gd")
 
+###
 
 const rounds_before_color_mastery : int = 1
 
@@ -21,6 +23,10 @@ const tier_1_tower_ing_boost : int = 1
 const tier_1_tower_limit : int = 14
 const tier_1_tower_violet_limit : int = 6
 
+
+const flat_health_bonus_per_ing_absorbed : float = 3.0
+
+##
 
 var game_elements : GameElements
 var current_ing_boost : int
@@ -84,23 +90,35 @@ func _add_towers_to_benefit_from_synergy(towers : Array):
 func _tower_to_benefit_from_synergy(tower : AbstractTower):
 	#if tower._tower_colors.has(TowerColors.VIOLET):
 	if tower.is_benefit_from_syn_having_or_as_if_having_color(TowerColors.VIOLET):
+		#
 		tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.VIOLET_SYNERGY, current_ing_boost)
 		
+		#
 		var giver_effect := TowerEffect_DomSyn_VioletColorMasteryGiver.new(rounds_before_color_mastery)
 		tower.add_tower_effect(giver_effect)
-
+		
+		#
+		var health_effect := TowerEffect_DomSyn_VioletColorHealthEffect.new(flat_health_bonus_per_ing_absorbed)
+		tower.add_tower_effect(health_effect)
 
 func _remove_towers_from_synergy(towers : Array):
 	for tower in towers:
 		_tower_to_remove_from_synergy(tower)
 
 func _tower_to_remove_from_synergy(tower : AbstractTower):
+	#
 	tower.set_ingredient_limit_modifier(StoreOfIngredientLimitModifierID.VIOLET_SYNERGY, 0)
 	
+	#
 	var effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.VIOLET_COLOR_MASTERY_EFFECT_GIVER)
 	if effect != null:
 		tower.remove_tower_effect(effect)
-
+	
+	#
+	var health_effect = tower.get_tower_effect(StoreOfTowerEffectsUUID.VIOLET_COLOR_MASTERY_HEALTH_EFFECT_GIVER)
+	if health_effect != null:
+		tower.remove_tower_effect(health_effect)
+	
 
 func _tower_added_or_removed(tower, removing : bool):
 	_attempt_apply_synergy_to_add_or_remove(current_tier)

@@ -8,6 +8,8 @@ signal re_add_button_pressed()
 
 signal invis_transition_finished()
 
+signal super_highlight_finished()
+
 #
 
 # used by MorphSelectionPanel
@@ -280,6 +282,30 @@ func start_invis_transition():
 
 func _on_invis_modulate_tween_finished():
 	emit_signal("invis_transition_finished")
+	
+
+##
+
+func start_super_highlight_transition(arg_duration):
+	var target_modulate = Color(1.5, 1.5, 1.5, 1)
+	
+	var modulate_tween = create_tween()
+	modulate_tween.connect("finished", self, "_on_super_highlight_transition_modulate_tween_finished")
+	modulate_tween.tween_property(main_body_container, "modulate", target_modulate, arg_duration)
+
+func _on_super_highlight_transition_modulate_tween_finished():
+	emit_signal("super_highlight_finished")
+	
+
+
+###
+
+func set_visibility_of_enemy_and_morph_icon(arg_val):
+	enemy_icon.visible = arg_val
+	morph_icon.visible = arg_val
+
+func get_enemy_and_morph_icon_global_pos():
+	return [enemy_icon.rect_global_position, morph_icon.rect_global_position]
 	
 
 

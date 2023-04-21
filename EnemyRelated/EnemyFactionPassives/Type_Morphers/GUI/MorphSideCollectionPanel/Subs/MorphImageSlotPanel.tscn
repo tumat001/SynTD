@@ -1,0 +1,54 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://EnemyRelated/EnemyFactionPassives/Type_Morphers/GUI/MorphSideCollectionPanel/Assets/MorphSideCollectionPanel_ImageSlot_Border.png" type="Texture" id=1]
+[ext_resource path="res://EnemyRelated/EnemyFactionPassives/Type_Morphers/GUI/MorphSideCollectionPanel/Assets/MorphSideCollectionPanel_ImageSlot_Fill.png" type="Texture" id=2]
+[ext_resource path="res://EnemyRelated/EnemyFactionPassives/Type_Morphers/GUI/MorphSideCollectionPanel/Subs/MorphImageSlotPanel.gd" type="Script" id=3]
+
+[node name="MorphImageSlotPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 3 )
+
+[node name="Background" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="Left" type="TextureRect" parent="."]
+margin_right = 3.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="Right" type="TextureRect" parent="."]
+margin_left = 37.0
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_horizontal = 10
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="Up" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 3.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="Down" type="TextureRect" parent="."]
+margin_top = 37.0
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="ImageRect" type="TextureRect" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0

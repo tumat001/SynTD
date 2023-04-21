@@ -153,6 +153,7 @@ __meta__ = {
 [node name="Enchant_AboutToUpgradeParticle" type="AnimatedSprite" parent="Environment" index="13"]
 position = Vector2( 796, 65 )
 frames = SubResource( 4 )
+frame = 3
 playing = true
 
 [node name="Enchant_WholeScreenInfoButton" parent="Environment" index="14" instance=ExtResource( 25 )]

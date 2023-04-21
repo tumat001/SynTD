@@ -610,19 +610,19 @@ func _on_singleton_initialize():
 	interpreter_for_violetRB_base_dmg_ratio_tier_1.display_body = false
 	
 	var ins_for_violetRB_base_dmg_ratio_tier_1 = []
-	ins_for_violetRB_base_dmg_ratio_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, -1, "of total base damage", 100, true))
+	ins_for_violetRB_base_dmg_ratio_tier_1.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, -1, "of total base damage", 125, true))
 	
 	interpreter_for_violetRB_base_dmg_ratio_tier_1.array_of_instructions = ins_for_violetRB_base_dmg_ratio_tier_1
 	
 	
 	var interpreter_for_violetRB_base_dmg_ratio_tier_2 : TextFragmentInterpreter = interpreter_for_violetRB_base_dmg_ratio_tier_1.get_deep_copy()
-	interpreter_for_violetRB_base_dmg_ratio_tier_2.array_of_instructions[0].num_val = 80
+	interpreter_for_violetRB_base_dmg_ratio_tier_2.array_of_instructions[0].num_val = 100
 	
 	var interpreter_for_violetRB_base_dmg_ratio_tier_3 : TextFragmentInterpreter = interpreter_for_violetRB_base_dmg_ratio_tier_1.get_deep_copy()
-	interpreter_for_violetRB_base_dmg_ratio_tier_3.array_of_instructions[0].num_val = 60
+	interpreter_for_violetRB_base_dmg_ratio_tier_3.array_of_instructions[0].num_val = 80
 	
 	var interpreter_for_violetRB_base_dmg_ratio_tier_4 : TextFragmentInterpreter = interpreter_for_violetRB_base_dmg_ratio_tier_1.get_deep_copy()
-	interpreter_for_violetRB_base_dmg_ratio_tier_4.array_of_instructions[0].num_val = 40
+	interpreter_for_violetRB_base_dmg_ratio_tier_4.array_of_instructions[0].num_val = 60
 	
 	
 	
@@ -707,7 +707,7 @@ func _on_singleton_initialize():
 	# IF CHANGING DESC, CHANGE DESC IN AnaSyn_VioletRB_V02 as well
 	[
 		["Gain |0|: Barrage.", [plain_fragment__ability]],
-		["Barrage: All towers gain |0| and |1| on the next 7 main attacks.", [plain_fragment__stacking_attk_speed__vrb, plain_fragment__stacking_base_dmg__vrb]],
+		["Barrage: All towers gain |0| and |1| on the next 7 main attacks within 14 seconds.", [plain_fragment__stacking_attk_speed__vrb, plain_fragment__stacking_base_dmg__vrb]],
 		["The last attack on hit also explodes in a cone behind the first enemy hit, dealing |0| of the attack's damage to 4 enemies.", [interpreter_for_dmg_scale__vrb]],
 		"The last attack also consumes all the stacking buffs.",
 		#["Cooldown: |0|.", [plain_fragment__vrbV02_cd]],
