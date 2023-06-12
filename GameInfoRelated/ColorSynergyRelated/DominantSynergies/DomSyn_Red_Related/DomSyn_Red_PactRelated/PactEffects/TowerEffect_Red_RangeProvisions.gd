@@ -81,7 +81,7 @@ func _construct_effects():
 	_range_effect.status_bar_icon = preload("res://GameInfoRelated/ColorSynergyRelated/DominantSynergies/DomSyn_Red_Related/DomSyn_Red_Assets/Pact_OtherAssets/RangeProvisions_StatusBarIcon.png")
 
 #
-# TODO make the status bar icon and pact icon
+
 func _undo_modifications_to_tower(tower):
 	if _tower.is_connected("ingredients_absorbed_changed", self, "_on_tower_absorbed_ing_changed"):
 		_tower.disconnect("ingredients_absorbed_changed", self, "_on_tower_absorbed_ing_changed")

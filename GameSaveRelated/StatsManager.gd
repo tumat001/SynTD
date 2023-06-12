@@ -7,6 +7,8 @@ signal tidbit_id_val_changed(arg_tidbit_id, arg_val)
 
 signal stats_loaded()
 
+#################
+
 # killed by dmg with no revives
 const stat_name__enemy_id__killed_by_dmg_count := "stat_name__enemy_id__killed_by_dmg_count"
 const stat_name__enemy_id__escape_count := "stat_name__enemy_id__escape_count"
@@ -17,6 +19,12 @@ const stat_name__synergy_id_and_tier__play_per_round_count := "stat_name__synerg
 const stat_name__text_tidbit_id__value := "stat_name__text_tidbit_id__value"
 
 
+# can be used if its the first time a player has played.
+const stat_name__completed_tutorial_world__value := "stat_name__completed_tutorial_world__value"
+
+
+################
+
 var enemy_id_to_killed_by_dmg_count_map : Dictionary
 var enemy_id_to_escape_count_map : Dictionary
 
@@ -24,6 +32,25 @@ var tower_id_to_play_per_round_count_map : Dictionary
 var synergy_compo_id_tier_to_play_per_round_count : Dictionary
 
 var text_tidbit_id_to_int_val_map : Dictionary
+
+
+var first_tutorial_world = StoreOfMaps.MapsId_TutorialV02_01
+
+enum TutorialWorldCompletionState {
+	
+	TUTORIAL_X__NONE = 1 << 0,
+	TUTORIAL_X__AVAILABLE = 1 << 1,
+	
+	#
+	
+	TUTORIAL_01__FULL_COMPLETE = 1 << 2,
+	
+	#
+	
+	TUTORIAL_02__FULL_COMPLETE = 1 << 2,
+	
+}
+var completed_tutorial_id_to_state_val_map : Dictionary
 
 
 #
@@ -64,6 +91,10 @@ func _get_save_dict_for_stats():
 		stat_name__synergy_id_and_tier__play_per_round_count : synergy_compo_id_tier_to_play_per_round_count,
 		
 		stat_name__text_tidbit_id__value : text_tidbit_id_to_int_val_map,
+		
+		
+		stat_name__completed_tutorial_world__value : completed_tutorial_id_to_state_val_map,
+		
 	}
 	
 	return save_dict
@@ -142,6 +173,18 @@ func _initialize_tidbit_id_to_int_value_map(arg_save_dict : Dictionary):
 	
 	_fill_in_missing_tidbit_id_in_map_with_default_val(text_tidbit_id_to_int_val_map, 0)
 
+func _initialize_completed_tutorial_world_value_map(arg_save_dict : Dictionary):
+	if arg_save_dict.has(stat_name__completed_tutorial_world__value):
+		completed_tutorial_id_to_state_val_map = _convert_dict_to_types__to_int_key_and_int_val(arg_save_dict[stat_name__completed_tutorial_world__value])
+		
+	else:
+		completed_tutorial_id_to_state_val_map = {}
+	
+	_fill_in_missing_completed_tutorial_world_map_with_default_val(completed_tutorial_id_to_state_val_map, TutorialWorldCompletionState.TUTORIAL_X__NONE)
+
+
+
+
 # initialize save dict helpers
 
 func _convert_dict_to_types__to_int_key_and_int_val(dict : Dictionary):
@@ -194,6 +237,14 @@ func _fill_in_missing_tidbit_id_in_map_with_default_val(arg_specific_save_dict :
 	for id in StoreOfTextTidbit.TidbitId.values():
 		if !arg_specific_save_dict.has(id):
 			arg_specific_save_dict[id] = arg_default_val
+
+
+func _fill_in_missing_completed_tutorial_world_map_with_default_val(arg_specific_save_dict : Dictionary, arg_default_val):
+	for id in StoreOfMaps.all_tutorial_map_ids:
+		if !arg_specific_save_dict.has(id):
+			arg_specific_save_dict[id] = arg_default_val
+	
+	arg_specific_save_dict[first_tutorial_world] = TutorialWorldCompletionState.TUTORIAL_X__AVAILABLE
 
 
 ##############
@@ -365,5 +416,41 @@ func if_tidbit_map_has_at_least_one_tidbit_with_non_zero_val():
 	for id in text_tidbit_id_to_int_val_map:
 		if text_tidbit_id_to_int_val_map[id] != 0:
 			return true
-
+	
 	return false
+
+
+# can be used for determining if its the first time a player is playing
+func if_any_tutorial_is_completed():
+	for id in completed_tutorial_id_to_state_val_map.keys():
+		if !flag_is_enabled(completed_tutorial_id_to_state_val_map[id], TutorialWorldCompletionState.TUTORIAL_X__NONE) and !flag_is_enabled(completed_tutorial_id_to_state_val_map[id], TutorialWorldCompletionState.TUTORIAL_X__AVAILABLE):
+			return true
+	
+	return false
+
+func if_tutorial_world_is_available(arg_tutorial_world_id):
+	return flag_is_enabled(completed_tutorial_id_to_state_val_map[arg_tutorial_world_id], TutorialWorldCompletionState.TUTORIAL_X__AVAILABLE)
+
+func set_tutorial_world_to_available(arg_tutorial_world_id):
+	set_tutorial_world_flag(arg_tutorial_world_id, TutorialWorldCompletionState.TUTORIAL_X__AVAILABLE)
+
+
+func set_tutorial_world_flag(arg_tutorial_world_id, arg_flag):
+	completed_tutorial_id_to_state_val_map[arg_tutorial_world_id] = set_flag(completed_tutorial_id_to_state_val_map[arg_tutorial_world_id], arg_flag)
+
+
+##########  FLAG SETTING
+
+static func flag_is_enabled(b : int, flag : int):
+	return b & flag != 0
+
+static func set_flag(b : int, flag : int):
+	b = b|flag
+	return b
+
+static func unset_flag(b : int, flag : int):
+	b = b & ~flag
+	return b
+
+
+

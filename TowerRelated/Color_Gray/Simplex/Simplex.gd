@@ -276,6 +276,7 @@ func set_is_recharging(arg_val):
 func _update_texture_of_fire_bar(arg_is_firing : bool = false):
 	if arg_is_firing:
 		_update_simplex_fire_texture_bar__to_normal()
+		return
 	
 	if _is_during_cd:
 		simplex_fire_bar.fill_foreground_pic = Simplex_Bar_Full_01

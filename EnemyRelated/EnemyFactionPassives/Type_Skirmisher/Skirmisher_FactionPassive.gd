@@ -1769,6 +1769,10 @@ func _show_flags_if_curr_stageround_is_appropriate(arg_stageround):
 		_show_blue_flags__emp()
 		_show_red_flags__emp()
 		
+	elif arg_stageround.is_stageround_id_equal_than_second_param("101", arg_stageround.id):
+		_show_blue_flags__emp()
+		_show_red_flags__emp()
+		
 	else:
 		_is_showing_spawn_loc_flags = false
 

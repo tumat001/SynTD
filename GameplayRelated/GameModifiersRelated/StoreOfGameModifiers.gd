@@ -17,6 +17,8 @@ const GameModiIds__ModiTutorialPhase_02 = "%s%s" % [SynTD_HeaderIDName, "ModiTut
 const GameModiIds__ModiTutorialPhase_03 = "%s%s" % [SynTD_HeaderIDName, "ModiTutorialPhase_03"]
 const GameModiIds__ModiTutorialPhase_04 = "%s%s" % [SynTD_HeaderIDName, "ModiTutorialPhase_04"]
 
+const GameModiIds__ModiTutorialV02_01 = "%s%s" % [SynTD_HeaderIDName, "ModiTutorialV02_01"]
+
 
 
 #enum GameModiIds {

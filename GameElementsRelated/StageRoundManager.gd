@@ -28,6 +28,9 @@ signal before_round_ends(current_stageround) # new incomming round
 signal round_ended_game_start_aware(current_stageround, is_game_start)
 signal round_ended(current_stageround) # new incomming round
 
+signal round_ended__for_streak_panel_glow_purposes(arg_is_win, arg_steak_amount, arg_is_max_reached, arg_is_streak_broken, arg_is_streak_broken_magnitude_max)
+
+
 signal life_lost_from_enemy_first_time_in_round(enemy)
 signal life_lost_from_enemy(enemy)
 
@@ -37,11 +40,14 @@ signal last_calculated_block_start_of_round_changed(arg_val)
 signal last_calculated_block_end_of_round_changed(arg_val)
 
 
+
+
+
 const gold_gain_on_win : int = 1
 
 var round_status_panel : RoundStatusPanel setget _set_round_status_panel
 var game_mode : int
-var stagerounds : BaseMode_StageRound
+var stagerounds : BaseMode_StageRound setget set_stagerounds
 var current_stageround_index : int = -1
 var current_stageround : StageRound
 var spawn_ins_of_faction_mode : BaseMode_EnemySpawnIns
@@ -106,9 +112,22 @@ func set_game_mode(mode : int):
 	game_mode = mode
 	
 	#if mode == StoreOfGameMode.Mode.STANDARD_NORMAL:
-	stagerounds = StoreOfGameMode.get_stage_rounds_of_mode_from_id(mode).new() #ModeNormal_StageRounds.new()
-	_replace_current_spawn_ins_to_second_half(stagerounds.get_first_half_faction())
+	
+	if stagerounds == null:
+		#stagerounds = StoreOfGameMode.get_stage_rounds_of_mode_from_id(mode).new() #ModeNormal_StageRounds.new()
+		set_stagerounds(StoreOfGameMode.get_stage_rounds_of_mode_from_id(mode).new())
+	
+	#_replace_current_spawn_ins_to_second_half(stagerounds.get_first_half_faction())
 		#spawn_ins_of_faction_mode = StoreOfGameMode.get_spawn_ins_of_faction__based_on_mode(stagerounds.get_first_half_faction(), mode)
+	
+	#stageround_total_count = stagerounds.stage_rounds.size()
+	
+	#emit_signal("stage_rounds_set", stagerounds)
+
+func set_stagerounds(arg_stage_rounds):
+	stagerounds = arg_stage_rounds
+	
+	_replace_current_spawn_ins_to_second_half(stagerounds.get_first_half_faction())
 	
 	stageround_total_count = stagerounds.stage_rounds.size()
 	
@@ -168,6 +187,10 @@ func end_round(from_game_start : bool = false):
 		_after_round_end()
 		
 		# streak related
+		var old_win_streak = current_win_streak
+		var old_lose_streak = current_lose_streak
+		var old_can_gain_streak = can_gain_streak
+		
 		if !from_game_start and can_gain_streak:
 			if current_round_lost:
 				current_win_streak = 0
@@ -228,6 +251,10 @@ func end_round(from_game_start : bool = false):
 		
 		emit_signal("round_ended_game_start_aware", current_stageround, from_game_start)
 		emit_signal("round_ended", current_stageround)
+		
+		if old_can_gain_streak:
+			_calc_for_emit_round_ended__for_streak_panel_glow_purposes(old_lose_streak, old_win_streak, !current_round_lost)
+		
 		
 		
 	else: # end of stagerounds. end the game.
@@ -321,3 +348,37 @@ func _update_last_calculated_block_end_round(attempt_end_round : bool):
 	
 	if !last_calculated_block_end_of_round and attempt_end_round:
 		end_round()
+
+
+
+#######
+
+func _calc_for_emit_round_ended__for_streak_panel_glow_purposes(arg_old_lose_streak, arg_old_win_streak, arg_is_win):
+	#arg_is_win, arg_steak_amount, arg_is_max_reached, arg_is_streak_broken, arg_streak_broken_magnitude, arg_is_streak_broken_magnitude_max
+	
+	var streak_amount
+	var is_max_reached : bool
+	var is_streak_broken : bool
+	var streak_broken_magnitude : float = -1
+	var is_streak_broken_magnitude_max : bool = false
+	if arg_is_win:
+		streak_amount = arg_old_win_streak
+		is_max_reached = current_win_streak == GoldManager.highest_win_streak
+		is_streak_broken = (arg_old_lose_streak >= GoldManager.lowest_lose_streak)
+		if is_streak_broken:
+			streak_broken_magnitude = arg_old_lose_streak
+			is_streak_broken_magnitude_max = arg_old_lose_streak == GoldManager.highest_lose_streak
+		
+	else:
+		streak_amount = arg_old_lose_streak
+		is_max_reached = current_lose_streak == GoldManager.highest_lose_streak
+		is_streak_broken = (arg_old_win_streak >= GoldManager.lowest_win_streak)
+		
+		if is_streak_broken:
+			streak_broken_magnitude = arg_old_win_streak
+			is_streak_broken_magnitude_max = arg_old_win_streak == GoldManager.highest_win_streak
+		
+	
+	emit_signal("round_ended__for_streak_panel_glow_purposes", arg_is_win, streak_amount, is_max_reached, is_streak_broken, streak_broken_magnitude, is_streak_broken_magnitude_max)
+
+

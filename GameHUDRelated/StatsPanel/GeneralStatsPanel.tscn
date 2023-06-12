@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://GameHUDRelated/StatsPanel/Assets/GoldIndicatorBackground.png" type="Texture" id=2]
@@ -14,6 +14,9 @@
 [ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButton.tscn" type="PackedScene" id=12]
 [ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/ButtonToRelicGeneralStore_Small_Normal.png" type="Texture" id=13]
 [ext_resource path="res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/Assets/Buttons/ButtonToRelicGeneralStore_Small_Highlighted.png" type="Texture" id=14]
+[ext_resource path="res://GameHUDRelated/StatsPanel/Assets/GoldIndicatorBackground_Glow_LightBlue.png" type="Texture" id=15]
+[ext_resource path="res://GameHUDRelated/StatsPanel/Assets/LevelIndicatorBackground_Glow_LightBlue.png" type="Texture" id=16]
+[ext_resource path="res://MiscRelated/ControlGradientTintRelated/ControlGradientTint.tscn" type="PackedScene" id=17]
 
 [sub_resource type="DynamicFont" id=1]
 size = 10
@@ -32,13 +35,13 @@ size_flags_vertical = 10
 script = ExtResource( 3 )
 
 [node name="HBoxContainer" type="MarginContainer" parent="."]
-margin_right = 270.0
+margin_right = 272.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 size_flags_vertical = 10
 
 [node name="LeftSide" type="HBoxContainer" parent="HBoxContainer"]
-margin_right = 270.0
+margin_right = 272.0
 margin_bottom = 19.0
 size_flags_horizontal = 2
 size_flags_vertical = 10
@@ -53,6 +56,21 @@ margin_right = 76.0
 margin_bottom = 19.0
 mouse_filter = 2
 texture = ExtResource( 4 )
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/LeftSide/LevelPanel"]
+margin_right = 76.0
+margin_bottom = 19.0
+mouse_filter = 2
+custom_constants/margin_top = 2
+custom_constants/margin_left = 2
+
+[node name="LevelUpBackgroundGlowTexture" type="TextureRect" parent="HBoxContainer/LeftSide/LevelPanel/MarginContainer"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 76.0
+margin_bottom = 19.0
+mouse_filter = 2
+texture = ExtResource( 16 )
 
 [node name="MarginContainer3" type="MarginContainer" parent="HBoxContainer/LeftSide/LevelPanel"]
 margin_right = 76.0
@@ -101,14 +119,14 @@ valign = 1
 
 [node name="ShopPercentStatsPanel" parent="HBoxContainer/LeftSide" instance=ExtResource( 5 )]
 margin_left = 80.0
-margin_top = 3.0
-margin_right = 270.0
+margin_top = 4.0
+margin_right = 272.0
 margin_bottom = 19.0
 size_flags_horizontal = 2
 
 [node name="Middle" type="HBoxContainer" parent="HBoxContainer"]
-margin_left = 79.0
-margin_right = 190.0
+margin_left = 81.0
+margin_right = 191.0
 margin_bottom = 19.0
 size_flags_horizontal = 6
 size_flags_vertical = 10
@@ -128,6 +146,24 @@ button_mask = 3
 texture_normal = ExtResource( 2 )
 about_button_index_trigger = -1002
 define_tooltip_construction_in_button = false
+
+[node name="GoldBackgroundGlowTexture" type="TextureRect" parent="HBoxContainer/Middle/GoldPanel"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 68.0
+margin_bottom = 17.0
+mouse_filter = 2
+size_flags_horizontal = 6
+size_flags_vertical = 6
+texture = ExtResource( 15 )
+
+[node name="GoldControlGradientTint" parent="HBoxContainer/Middle/GoldPanel" instance=ExtResource( 17 )]
+margin_left = 35.0
+margin_top = 9.0
+margin_right = 35.0
+margin_bottom = 9.0
+size_flags_horizontal = 6
+size_flags_vertical = 6
 
 [node name="MarginContainer3" type="MarginContainer" parent="HBoxContainer/Middle/GoldPanel"]
 margin_right = 70.0
@@ -198,13 +234,13 @@ texture = ExtResource( 10 )
 
 [node name="StreakPanel" parent="HBoxContainer/Middle" instance=ExtResource( 8 )]
 margin_left = 70.0
-margin_right = 111.0
+margin_right = 110.0
 size_flags_horizontal = 6
 size_flags_vertical = 10
 
 [node name="Right" type="HBoxContainer" parent="HBoxContainer"]
-margin_left = 162.0
-margin_right = 270.0
+margin_left = 164.0
+margin_right = 272.0
 margin_bottom = 19.0
 size_flags_horizontal = 10
 size_flags_vertical = 10

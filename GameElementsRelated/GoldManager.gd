@@ -33,6 +33,7 @@ enum GoldIncomeIds {
 }
 
 # ORDER MATTERS HERE
+# if changing this, change logic for glowing of gold panel border as well (_attempt_emit_gold_breakpoint_changed)
 const total_gold_interest_with_income_intervals : Dictionary = {
 	#70 : 6,
 	50 : 5,
@@ -53,6 +54,7 @@ const win_streak_income_map : Dictionary = {
 }
 # highest win streak in the income map
 const highest_win_streak : int = 6
+const lowest_win_streak : int = 2    # used by StageRoundManager
 
 
 const lose_streak_income_map : Dictionary = {
@@ -65,21 +67,39 @@ const lose_streak_income_map : Dictionary = {
 }
 # highest lose streak in the income map
 const highest_lose_streak : int = 6
+const lowest_lose_streak : int = 2    # used by StageRoundManager
 
 
 signal current_gold_changed(current_gold)
 signal gold_income_changed()
 
+# used for glowing of gold panel (on general_stats_panel)
+signal gold_breakpoint_changed(arg_is_increase, arg_is_decrease, arg_first_time, arg_max_gold_val_for_interest)
+
+
+#
+
+# if chaning this from int to float, change logic in (_attempt_emit_gold_breakpoint_changed) as well
 var current_gold : int = 0 setget set_gold_value
 
 var _gold_income_id_amount_map : Dictionary = {}
 var stage_round_manager
 
+#
+
+# {int -> bool}
+var gold_intervals_val_to_is_first_time_map : Dictionary
 
 #
 
 func _ready():
 	_set_up_interest_income()
+	
+	for interval in total_gold_interest_with_income_intervals.keys():
+		gold_intervals_val_to_is_first_time_map[interval] = true
+
+#
+
 
 
 # direct set
@@ -91,9 +111,14 @@ func decrease_gold_by(decrease : int, decrease_source : int):
 	set_gold_value(current_gold - decrease)
 
 func set_gold_value(val : int):
+	var old_val = current_gold
+	
 	current_gold = val
 	call_deferred("emit_signal", "current_gold_changed", current_gold)
-
+	
+	##
+	
+	_attempt_emit_gold_breakpoint_changed(old_val)
 
 # income related
 
@@ -177,3 +202,69 @@ func get_display_name_of_income_id(income_id : int) -> String:
 		return "Lose Steak"
 	
 	return "Err"
+
+
+#############################
+
+
+# assumes that the breakpoint interval is fixed at 10...
+func _attempt_emit_gold_breakpoint_changed(arg_old_gold_val):
+	
+	var lowest_interval = total_gold_interest_with_income_intervals.keys()[total_gold_interest_with_income_intervals.size() - 1]
+	var highest_interval = total_gold_interest_with_income_intervals.keys()[0]
+	
+	# if lower than lowest interval
+	if lowest_interval > arg_old_gold_val:
+		if current_gold >= lowest_interval:
+			var trimmed_old_gold = (arg_old_gold_val / 10) * 10
+			
+			_update_gold_intervals_val_to_is_first_time_map__and_emit_signals(current_gold, trimmed_old_gold, true)
+		
+	# if higher than highest interval
+	elif highest_interval < arg_old_gold_val:
+		if current_gold < highest_interval:
+			var trimmed_old_gold = (arg_old_gold_val / 10) * 10
+			
+			_update_gold_intervals_val_to_is_first_time_map__and_emit_signals(current_gold, trimmed_old_gold, false)
+		
+		
+	else:
+		#for gold_interval in total_gold_interest_with_income_intervals.keys():
+		var trimmed_current_gold = (current_gold / 10) * 10
+		var trimmed_old_gold = (arg_old_gold_val / 10) * 10
+		
+		if trimmed_current_gold > trimmed_old_gold:
+			_update_gold_intervals_val_to_is_first_time_map__and_emit_signals(trimmed_current_gold, trimmed_old_gold, true)
+		elif trimmed_current_gold < trimmed_old_gold:
+			_update_gold_intervals_val_to_is_first_time_map__and_emit_signals(trimmed_current_gold, trimmed_old_gold, false)
+		
+		
+	
+	
+
+
+func _update_gold_intervals_val_to_is_first_time_map__and_emit_signals(arg_breakpoint_to_set_to_false : int, arg_old_gold_val, arg_utilize_first_time : bool):
+	
+	arg_breakpoint_to_set_to_false = (arg_breakpoint_to_set_to_false / 10) * 10
+	
+	######
+	
+	var first_time_map_has_interval = gold_intervals_val_to_is_first_time_map.has(arg_breakpoint_to_set_to_false)
+	
+	if first_time_map_has_interval or arg_breakpoint_to_set_to_false == 0:
+		var first_time = false
+		if arg_utilize_first_time and first_time_map_has_interval:
+			first_time = gold_intervals_val_to_is_first_time_map[arg_breakpoint_to_set_to_false]
+			
+		
+		for interval in gold_intervals_val_to_is_first_time_map:
+			if interval <= arg_breakpoint_to_set_to_false:
+				gold_intervals_val_to_is_first_time_map[interval] = false
+		
+		
+		var is_increase = arg_breakpoint_to_set_to_false > arg_old_gold_val
+		
+		var is_max = current_gold >= total_gold_interest_with_income_intervals.keys()[0]
+		
+		emit_signal("gold_breakpoint_changed", is_increase, !is_increase, first_time, is_max)
+	

@@ -260,7 +260,7 @@ func _on_singleton_initialize():
 	var plain_fragment__x_gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "8 salvaged gold")
 	var plain_fragment__x_additional_ingredient_slot = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "1 additional ingredient slot")
 	
-	var plain_fragment__x_gold__for_omni_color = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "50 salvaged gold")
+	var plain_fragment__x_gold__for_omni_color = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "40 salvaged gold")
 	
 	var vio_syn__var_02 = ColorSynergy.new(SynergyID__Violet_V02, synergy_id_to_syn_name_dictionary[SynergyID__Violet_V02], [TowerColors.VIOLET], [7, 4],
 	[tier_gold_pic, tier_silver_pic],

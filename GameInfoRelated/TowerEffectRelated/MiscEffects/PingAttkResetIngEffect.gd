@@ -1,6 +1,7 @@
 extends "res://GameInfoRelated/TowerEffectRelated/BaseTowerModifyingEffect.gd"
 
-# TODO NOT DONE YET..
+# NOT DONE YET..
+# TOO OP
 
 const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")

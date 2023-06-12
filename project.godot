@@ -74,6 +74,9 @@ GameSaveManager="*res://GameSaveRelated/GameSaveManager.gd"
 AlmanacManager="*res://GeneralGUIRelated/AlmanacGUI/Subs/Singletons/AlmanacManager.gd"
 StatsManager="*res://GameSaveRelated/StatsManager.gd"
 StoreOfTextTidbit="*res://GeneralInfoRelated/TextTidbitRelated/StoreOfTextTidbit.gd"
+AudioManager="*res://AudioRelated/AudioManager.gd"
+StoreOfAudio="*res://AudioRelated/StoreOfAudio.gd"
+StoreOfTrailPathType="*res://MiscRelated/TrailPathRelated/StoreOfTrailPathType.gd"
 
 [debug]
 
@@ -95,6 +98,10 @@ window/stretch/aspect="keep"
 
 version_control_autoload_on_startup=true
 version_control_plugin_name="GitAPI"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/Todo_Manager/plugin.cfg" )
 
 [gdnative]
 
@@ -246,7 +253,7 @@ limits/message_queue/max_size_kb=2048
 
 [physics]
 
-common/physics_fps=120
+common/physics_fps=180
 
 [rendering]
 

@@ -372,6 +372,7 @@ func _ready():
 	# tower empty slot notif panel
 	tower_empty_slot_notif_panel.tower_manager = tower_manager
 	tower_empty_slot_notif_panel.synergy_manager = synergy_manager
+	tower_empty_slot_notif_panel.game_elements = self
 	tower_empty_slot_notif_panel.all_properties_set()
 	
 	# round damage stats panel
@@ -444,8 +445,7 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
-	
-#	gold_manager.increase_gold_by(1000, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+#	gold_manager.increase_gold_by(46, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 #	level_manager.current_level = LevelManager.LEVEL_2
 #	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
@@ -463,10 +463,10 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 #	if !even:
 #		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.CYNOSURE,
-#			Towers.ADEPT,
-#			Towers.STRIKER,
-#			Towers.SIMPLEX,
+#			Towers.WAVE,
+#			Towers.PING,
+#			Towers.CHAOS,
+#			Towers.TESLA,
 #			Towers.IMPEDE,
 #			Towers.CANNON,
 #		])
@@ -666,6 +666,13 @@ func _calculate_middle_coordinates_of_playable_map():
 func _get_average(arg_x : float, arg_y : float) -> float:
 	return (arg_x + arg_y) / 2
 
+
+func is_mouse_inside_playable_map_area() -> bool:
+	var mouse_pos = get_viewport().get_mouse_position()
+	var top_left_pos = get_top_left_coordinates_of_playable_map()
+	var bot_right_pos = get_bot_right_coordinates_of_playable_map()
+	
+	return (mouse_pos.x > top_left_pos.x and mouse_pos.x < bot_right_pos.x) and (mouse_pos.y > top_left_pos.y and mouse_pos.y < bot_right_pos.y)
 
 #
 

@@ -4,6 +4,7 @@ const settings_file_path = "user://game_settings.save"
 const hotkey_controls_file_path = "user://game_hotkey_controls.save"
 const map_selection_default_vals_file_path = "user://map_selection_default_vals.save"
 const stats_file_path = "user://stats.save"
+const audio_settings_file_path = "user://audio_settings.save"
 
 
 const game_controls_action_name_to_ignore_save : Array = [
@@ -205,3 +206,36 @@ func load_stats__of_stats_manager():
 		
 		StatsManager._initialize_stats_from_scratch()
 		return false
+
+
+
+## AUDIO RELATED --------------------------
+
+func save_settings__of_audio_manager():
+	var save_dict = AudioManager._get_save_dict_for_data()
+	var err_msg = "Saving error! -- AudioManager"
+	_save_using_dict(save_dict, audio_settings_file_path, err_msg)
+	
+	
+
+func load_stats__of_audio_manager():
+	var load_file = File.new()
+	
+	if load_file.file_exists(audio_settings_file_path):
+		var err_stat = load_file.open(audio_settings_file_path, File.READ)
+		
+		if err_stat != OK:
+			print("Loading error! -- AudioManager")
+			return false
+		
+		AudioManager._load_save_data(load_file)
+		
+		load_file.close()
+		return true
+		
+	else:
+		
+		AudioManager._initialize_save_data_from_scratch()
+		return false
+
+

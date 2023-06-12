@@ -64,7 +64,6 @@ static func get_polygon_resulting_from_vertices__circle(
 	
 	var vertices_array : Array = arg_terrain_vertices_array.duplicate()
 	
-	#todo remove this
 #	var vertices_array = []
 #	for pool_vec in arg_terrain_vertices_array:
 #		var vectors = []
@@ -76,7 +75,6 @@ static func get_polygon_resulting_from_vertices__circle(
 	vertices_array.append(circle_vertex_arr)
 	
 	
-	#todo remove this
 	#return _slide_points_of_array_to_in_range(arg_fov_node.get_fov_from_polygons(vertices_array, Vector2(0, 0)), arg_radius)
 	
 	var vision_polygon = arg_fov_node.get_fov_from_polygons(vertices_array, Vector2(0, 0))

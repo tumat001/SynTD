@@ -554,7 +554,7 @@ static func _if_target_is_hit_by_line_with_width__and_get_difference_of_angle_to
 #		diff = abs(diff - 360)
 	
 	var diff = _get_angle_diff(angle_to_enemy_pos, arg_angle)
-	#var diff = 0 # TODO use this for now to check is angle between angle
+	#var diff = 0 # use this for now to check is angle between angle
 	
 	return [within_angle, diff]
 

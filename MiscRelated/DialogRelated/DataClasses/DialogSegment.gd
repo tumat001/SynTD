@@ -1,6 +1,12 @@
 extends Reference
 
 const Border_Pic_Default = preload("res://MiscRelated/DialogRelated/Assets/Shared/Dialog_DarkGrayBorder_ForContent_4x4.png")
+const Background_Pic_Default = preload("res://MiscRelated/DialogRelated/Assets/Shared/Dialog_BrownBackground_ForContent_3x3.png")
+
+const Background_Pic_White = preload("res://MiscRelated/DialogRelated/Assets/Shared/Dialog_WhiteBackground_ForContent_3x3.png")
+
+
+
 const ValTransition = preload("res://MiscRelated/ValTransitionRelated/ValTransition.gd")
 
 const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
@@ -19,7 +25,10 @@ signal dialog_elements_changed(arg_all_dialog_elements)
 signal background_elements_changed(arg_all_background_elements)
 #
 
-signal mouse_filter_changed(arg_filter)
+signal fully_displayed()
+signal setted_into_whole_screen_panel()
+
+#signal mouse_filter_changed(arg_filter)
 
 #
 
@@ -61,14 +70,30 @@ var _all_background_element_construction_inses : Array
 #
 
 var is_previous_executable : bool = false
+
+
+
+var func_source_for__is_skip_exec
+var func_name_for__is_skip_exec
+var func_param_for__is_skip_exec
 var is_skip_executable : bool = false
+var skip_button_text : String
+
+var is_skip_button_in_main_dialog_panel : bool = true
+var skip_button_rect_pos__for_non_main_dialog_panel : Vector2
+enum RectPosOrigin {
+	TOP_LEFT = 0,
+	BOT_RIGHT = 1,
+}
+var skip_button_rect_pos_origin : int = RectPosOrigin.TOP_LEFT
+
 
 var top_border_texture : Texture = Border_Pic_Default
 var left_border_texture : Texture = Border_Pic_Default 
 var right_border_texture : Texture = Border_Pic_Default
 var bottom_border_texture : Texture = Border_Pic_Default
 
-
+var background_texture : Texture = Background_Pic_Default
 
 #enum ValTransitionMode {
 #	LINEAR = 0,
@@ -78,7 +103,7 @@ var bottom_border_texture : Texture = Border_Pic_Default
 #}
 
 var final_dialog_top_left_pos : Vector2 = VECTOR_UNDEFINED  # must be defined
-var final_dialog_top_left_pos_val_trans_mode : int = ValTransition.ValueIncrementMode.QUADRATIC #ValTransitionMode.QUAD
+var final_dialog_top_left_pos_val_trans_mode : int = ValTransition.ValueIncrementMode.LINEAR #ValTransitionMode.QUAD
 
 var final_dialog_custom_size : Vector2 = VECTOR_UNDEFINED  # must be defined
 var final_dialog_custom_size_val_trans_mode : int = ValTransition.ValueIncrementMode.LINEAR #ValTransitionMode.LINEAR
@@ -116,6 +141,19 @@ var resolve_block_advance_func_name
 #var _time_limit : float = FLOAT_UNDEFINED
 #var _time_limit_reached_func_source
 #var _time_limit_reached_func_name
+
+###
+
+var disable_almanac_button : bool
+var disable_almanac_button_clause_id : int
+
+
+var show_dialog_main_panel_borders : bool = true
+var show_dialog_main_panel_background : bool = true
+
+
+var make_main_panel_unintrusive_on_mouse_enter : bool = false
+
 
 #
 
@@ -231,5 +269,17 @@ func immediately_resolve_block_advance():
 		resolve_block_advance_func_source.call(resolve_block_advance_func_name, self)
 	
 
+#
 
+func evaluate_is_skip_exec__from_func_source():
+	if func_source_for__is_skip_exec != null:
+		is_skip_executable = func_source_for__is_skip_exec.call(func_name_for__is_skip_exec, func_param_for__is_skip_exec)
+
+#
+
+func emit_fully_displayed_signal():
+	emit_signal("fully_displayed")
+
+func emit_setted_into_whole_screen_panel():
+	emit_signal("setted_into_whole_screen_panel")
 

@@ -28,6 +28,9 @@ signal on_current_level_changed(new_level)
 
 signal on_can_level_up_changed(can_level_up)
 
+signal level_changed__for_panel_glow(arg_is_increase, arg_is_decrease)
+
+
 enum {
 	LEVEL_1 = 1,
 	LEVEL_2 = 2,
@@ -233,6 +236,8 @@ func level_up_with_spend_currency():
 
 func set_current_level(new_level, arg_play_tint : bool = false):
 	if max_level >= new_level:
+		var old_level = current_level
+		
 		current_level = new_level
 		
 		emit_signal("on_current_level_changed", new_level)
@@ -244,6 +249,9 @@ func set_current_level(new_level, arg_play_tint : bool = false):
 		
 		if arg_play_tint:
 			_on_current_level_changed__for_tint_purposes()
+			
+			_on_current_level_changed__for_stat_panel_glow_purposes(old_level)
+
 
 func _gold_amount_changed(gold_amount):
 	#emit_signal("on_can_level_up_changed", can_level_up())
@@ -348,5 +356,11 @@ func _on_current_level_changed__for_tint_purposes():
 		
 		game_elements.screen_effect_manager.add_screen_tint_effect(tint_effect)
 
+
+func _on_current_level_changed__for_stat_panel_glow_purposes(arg_old_level):
+	if current_level > arg_old_level:
+		emit_signal("level_changed__for_panel_glow", true, false)
+	elif current_level < arg_old_level:
+		emit_signal("level_changed__for_panel_glow", false, true)
 
 

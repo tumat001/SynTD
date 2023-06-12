@@ -62,7 +62,8 @@ const Stunned_StatusBarIcon_Pic = preload("res://MiscRelated/CommonTextures/Comm
 
 signal tower_being_dragged(tower_self)
 signal tower_dropped_from_dragged(tower_self) # use when listening for player input. Note: does not take into account the swapping of towers
-signal on_attempt_drop_tower_on_placable(tower_self, arg_placable, arg_move_success) # 3rd arg is if there is enough tower slots to put the tower
+signal on_attempt_drop_tower_on_placable(tower_self, arg_placable, arg_move_success) # 3rd arg is based on tower_manager (if enough tower slots, etc)
+signal on_attempt_drop_tower_on_placable_from_prev_placable(tower_self, arg_placable, arg_prev_placable, arg_move_success) # 4th arg is based on tower_manager
 signal on_tower_transfered_to_placable(tower_self, arg_placable) # called regardless transfer was due to player input or other means
 signal on_tower_transfered_in_map_from_bench(tower_self, arg_map_placable, arg_bench_placable)
 signal on_tower_transfered_on_bench_from_in_map(tower_self, arg_bench_placable, arg_map_placable)
@@ -190,6 +191,8 @@ signal last_calculated_ignore_ing_limit__for_applying_changed(arg_val)
 # Combination related
 
 signal last_calculated_benefits_from_combination_effects_changed(arg_val)
+signal last_calculated_is_combinable_changed(arg_val)
+
 
 # Terrain related
 
@@ -477,6 +480,16 @@ var block_benefit_from_combination_clauses : ConditionalClauses
 var last_calculated_benefits_from_combination_effects : bool
 
 
+enum BlockIsCombinableClauseIds {
+	GENERIC_BLOCK_TAG = 0,  # use when no need to remove this (or permanent)
+	
+}
+
+var block_is_combinable_clauses : ConditionalClauses
+var last_calculated_is_combinable : bool
+
+
+
 # Modulate related
 
 enum TowerModulateIds {
@@ -668,6 +681,9 @@ func _init():
 	block_benefit_from_combination_clauses.connect("clause_inserted", self, "_on_block_benefit_from_combination_clauses_ins_or_rem", [], CONNECT_PERSIST)
 	block_benefit_from_combination_clauses.connect("clause_removed", self, "_on_block_benefit_from_combination_clauses_ins_or_rem", [], CONNECT_PERSIST)
 	
+	block_is_combinable_clauses = ConditionalClauses.new()
+	block_is_combinable_clauses.connect("clause_inserted", self, "_on_block_is_combinable_clause_changed", [], CONNECT_PERSIST)
+	block_is_combinable_clauses.connect("clause_removed", self, "_on_block_is_combinable_clause_changed", [], CONNECT_PERSIST)
 	
 	_update_last_calculated_contributing_to_synergy()
 	_update_last_calculated_disabled_from_attacking()
@@ -681,6 +697,7 @@ func _init():
 	_update_last_calculated_ignore_ing_limit__for_absorbing()
 	_update_last_calculated_ignore_ing_limit__for_applying()
 	_update_last_calc_benefits_from_combination_effects()
+	_update_last_calc_is_combinable()
 	
 	##
 	
@@ -793,7 +810,8 @@ func _emit_final_attack_speed_changed():
 	call_deferred("emit_signal", "final_attack_speed_changed")
 
 func _emit_ingredients_absorbed_changed():
-	call_deferred("emit_signal", "ingredients_absorbed_changed")
+	#call_deferred("emit_signal", "ingredients_absorbed_changed")
+	emit_signal("ingredients_absorbed_changed")
 
 func _emit_targeting_changed():
 	call_deferred("emit_signal", "targeting_changed")
@@ -1981,6 +1999,17 @@ func _remove_tower_modifying_effect(tower_mod : BaseTowerModifyingEffect):
 
 func _add_flat_base_health_effect(effect : TowerAttributesEffect, with_heal : bool = true):
 	flat_base_health_id_effect_map[effect.effect_uuid] = effect
+	
+	update_current_health__from_adding_health_effect(with_heal)
+
+func _add_percent_base_health_effect(effect : TowerAttributesEffect, with_heal : bool = true):
+	percent_base_health_id_effect_map[effect.effect_uuid] = effect
+	
+	update_current_health__from_adding_health_effect(with_heal)
+
+
+# can be used when changing modifier of health_effect
+func update_current_health__from_adding_health_effect(with_heal : bool = true):
 	var old_max_health = last_calculated_max_health
 	_calculate_max_health()
 	
@@ -1989,15 +2018,6 @@ func _add_flat_base_health_effect(effect : TowerAttributesEffect, with_heal : bo
 		if heal > 0:
 			heal_by_amount(heal)
 
-func _add_percent_base_health_effect(effect : TowerAttributesEffect, with_heal : bool = true):
-	percent_base_health_id_effect_map[effect.effect_uuid] = effect
-	var old_max_health = last_calculated_max_health
-	_calculate_max_health()
-	
-	if with_heal:
-		var heal = last_calculated_max_health - old_max_health
-		if heal > 0:
-			heal_by_amount(heal)
 
 func _remove_flat_base_health_effect_preserve_percent(effect_uuid : int):
 	if flat_base_health_id_effect_map.has(effect_uuid):
@@ -2985,12 +3005,14 @@ func _end_drag(arg_is_from_ready : bool = false):
 		
 		z_index = ZIndexStore.TOWERS
 		if !is_queued_for_deletion():
+			var prev_placable = current_placable
 			var cannot_drop_to_placable = !tower_manager.can_place_tower_based_on_limit_and_curr_placement(self)
 			#var intent_placable = hovering_over_placable
 			var intent_placable = _get_placable_to_use_for_move(arg_is_from_ready)
 			var move_success = transfer_to_placable(intent_placable, false, cannot_drop_to_placable)
 			
 			emit_signal("on_attempt_drop_tower_on_placable", self, intent_placable, move_success)
+			emit_signal("on_attempt_drop_tower_on_placable_from_prev_placable", self, intent_placable, prev_placable, move_success)
 		
 		erase_disabled_from_attacking_clause(DisabledFromAttackingSourceClauses.TOWER_BEING_DRAGGED)
 		emit_signal("tower_dropped_from_dragged", self)
@@ -3203,6 +3225,17 @@ func _update_last_calc_benefits_from_combination_effects():
 	
 	if old_val != last_calculated_benefits_from_combination_effects:
 		emit_signal("last_calculated_benefits_from_combination_effects_changed", last_calculated_benefits_from_combination_effects)
+
+
+func _on_block_is_combinable_clause_changed(arg_clause_id):
+	_update_last_calc_is_combinable()
+
+func _update_last_calc_is_combinable():
+	var old_val = last_calculated_is_combinable
+	last_calculated_is_combinable = block_is_combinable_clauses.is_passed
+	
+	if old_val != last_calculated_is_combinable:
+		emit_signal("last_calculated_is_combinable_changed", last_calculated_is_combinable)
 
 
 # Ingredient drag and drop related
@@ -3479,6 +3512,8 @@ func _calculate_max_health() -> float:
 	last_calculated_max_health = max_health
 	_emit_max_health_changed()
 	if current_health > last_calculated_max_health:
+		
+		#print("abstractower: curr %s, max %s. id:%s" % [current_health, last_calculated_max_health, tower_id])
 		current_health = last_calculated_max_health
 		_emit_current_health_changed()
 	

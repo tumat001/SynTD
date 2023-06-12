@@ -170,8 +170,7 @@ var tower_tier_to_border_texture_map__highlight : Dictionary = {
 var tidbit_tier_to_border_texture_map__normal : Dictionary = {
 	1 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier01OptionPage_6x6_Normal.png"),
 	2 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier02OptionPage_6x6_Normal.png"),
-	#TODO
-	#3 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier03OptionPage_6x6_Normal.png"),
+	3 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier03OptionPage_6x6_Normal.png"),
 	4 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier04OptionPage_6x6_Normal.png"),
 	5 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier05OptionPage_6x6_Normal.png"),
 	6 : preload("res://GeneralGUIRelated/AlmanacGUI/Assets/TidbitPage/Line_Tier06OptionPage_6x6_Normal.png"),

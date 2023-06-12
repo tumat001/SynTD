@@ -671,11 +671,11 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.base_tower_image = simplex_image
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
-		info.base_damage = 0.65 #0.5 #0.4
-		info.base_attk_speed = 3.75 #4 #4.5
+		info.base_damage = 0.90 #0.75 #0.65 #0.5 #0.4
+		info.base_attk_speed = 3.25 #3.5 #3.75 #4 #4.5
 		info.base_pierce = 0
 		info.base_range = 95
-		info.base_damage_type = DamageType.PURE
+		info.base_damage_type = DamageType.ELEMENTAL #DamageType.PURE
 		info.on_hit_multiplier = 0.25 #0.3
 		
 		# vars to be modified based on tower
@@ -685,14 +685,14 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var fire_time_decay_multiplier_per_delta : float = 2
 		
 		info.tower_descriptions = [
-			"Directs a constant pure energy beam at a single target. However, continuously firing for %s seconds causes Simplex to cooldown for %s seconds." % [max_fire_time, cd_time],
+			"Directs a constant energy beam at a single target. However, continuously firing for %s seconds causes Simplex to cooldown for %s seconds." % [max_fire_time, cd_time],
 			"Not firing for %s seconds brings Simplex %s second(s) further from incurring its cooldown." % [recharge_tick_time, (recharge_tick_time * fire_time_decay_multiplier_per_delta)],
 			"",
 			"The energy beam's on hit damages are only %s%% effective." % str(info.on_hit_multiplier * 100),
 		]
 		
 		info.tower_simple_descriptions = [
-			"Directs a constant pure energy beam at a single target. However, continuously firing incurrs a cooldown.",
+			"Directs a constant energy beam at a single target. However, continuously firing incurrs a cooldown.",
 		]
 		
 		# Ingredient related
@@ -3928,7 +3928,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image)
 		
 		info.base_damage = 3
-		info.base_attk_speed = 0.6
+		info.base_attk_speed = 0.35 #0.6
 		info.base_pierce = 1
 		info.base_range = 120
 		info.base_damage_type = DamageType.ELEMENTAL
@@ -6593,7 +6593,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.475
+		info.base_attk_speed = 0.485#0.475
 		info.base_pierce = 1
 		info.base_range = 155
 		info.base_damage_type = DamageType.PHYSICAL
@@ -6747,7 +6747,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
 		
 		info.base_damage = 0
-		info.base_attk_speed = 0.12
+		info.base_attk_speed = 0.11 #0.12
 		info.base_pierce = 1
 		info.base_range = 175
 		info.base_damage_type = DamageType.PHYSICAL
@@ -6779,7 +6779,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_dmg_scale_of_meteor_explosion.display_body = false
 		
 		var ins_for_dmg_scale_of_meteor_explosion = []
-		ins_for_dmg_scale_of_meteor_explosion.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 100, true))
+		ins_for_dmg_scale_of_meteor_explosion.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "more damage", 50, true))
 		
 		interpreter_for_dmg_scale_of_meteor_explosion.array_of_instructions = ins_for_dmg_scale_of_meteor_explosion
 		
@@ -6789,7 +6789,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_dmg_scale_of_large_aoe.display_body = false
 		
 		var ins_for_dmg_scale_of_large_aoe = []
-		ins_for_dmg_scale_of_large_aoe.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "of that damage", 75, true))
+		ins_for_dmg_scale_of_large_aoe.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.DAMAGE_SCALE_AMP, -1, "of that damage", 50, true))
 		
 		interpreter_for_dmg_scale_of_large_aoe.array_of_instructions = ins_for_dmg_scale_of_large_aoe
 		
@@ -6823,8 +6823,8 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		info.tower_descriptions = [
-			["Fires meteoroids which explode to deal |0|.", [interpreter]],
-			"Auto casts Asteroid before the fourth meteorioid.",
+			["Fires meteoroids which explode to deal |0| to 5 enemies.", [interpreter]],
+			"Auto casts Asteroid before the fourth meteoroid.",
 			["Ability: |0|. The next meteoroid deals |1|, and is accompanied by another larger explosion that deals |2|. The large explosion has |3|.", [plain_fragment__ability_name, interpreter_for_dmg_scale_of_meteor_explosion, interpreter_for_dmg_scale_of_large_aoe, interpreter_for_large_aoe_radius]],
 			#"",
 			#"Coronal starts off with a Crown.",
@@ -6834,9 +6834,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			["Fires meteoroids which explode to deal |0|.", [interpreter]],
-			"Auto casts Asteroid before the fourth meteorioid.",
-			["Ability: |0|. The next meteorioid deals |1|, and is accompanied by another larger explosion. The large explosion has |2|", [plain_fragment__ability_name, interpreter_for_dmg_scale_of_meteor_explosion, interpreter_for_large_aoe_radius]],
+			["Fires meteoroids which explode to deal |0| to 5 enemies.", [interpreter]],
+			"Auto casts Asteroid before the fourth meteoroid.",
+			["Ability: |0|. The next meteoroid deals |1|, and is accompanied by another larger explosion. The large explosion has |2|.", [plain_fragment__ability_name, interpreter_for_dmg_scale_of_meteor_explosion, interpreter_for_large_aoe_radius]],
 			#"",
 			#"Coronal starts off with a Crown.",
 			#["When a Crowned tower casts an |0| or completes 20 main attacks, the Crown Glimmers.", [plain_fragment__ability]],

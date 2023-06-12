@@ -1,11 +1,10 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=1]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerNameAndPicPanel/TowerName_Background.png" type="Texture" id=2]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerNameAndPicPanel/TowerNameAndPicPanel.gd" type="Script" id=3]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerNameAndPicPanel/TowerPic_Background.png" type="Texture" id=4]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/ExtraInfoPanelComponents/ExtraInfoButton.png" type="Texture" id=5]
-[ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/Ing_AddNewComponent.png" type="Texture" id=6]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/InfoPanelComponents/TowerNameAndPicPanel/TierIcons/TierIcons_Tier01.png" type="Texture" id=7]
 [ext_resource path="res://GameHUDRelated/RightSidePanel/TowerInformationPanel/TowerIngredientIcons/IngredientIconPanel.tscn" type="PackedScene" id=8]
 
@@ -121,20 +120,10 @@ size_flags_horizontal = 10
 texture = ExtResource( 7 )
 
 [node name="IngIcon" parent="VBoxContainer/PicMarginer/MarginContainer/VBoxContainer" instance=ExtResource( 8 )]
-visible = false
 margin_left = 1.0
 margin_top = 22.0
 margin_right = 15.0
 margin_bottom = 36.0
 size_flags_horizontal = 10
-
-[node name="IngIconOld" type="TextureRect" parent="VBoxContainer/PicMarginer/MarginContainer/VBoxContainer"]
-visible = false
-margin_left = 1.0
-margin_top = 22.0
-margin_right = 15.0
-margin_bottom = 36.0
-size_flags_horizontal = 10
-texture = ExtResource( 6 )
 
 [connection signal="pressed" from="VBoxContainer/PicMarginer/TowerExtraInfoButton/TextureButton" to="." method="_on_TextureButton_pressed"]

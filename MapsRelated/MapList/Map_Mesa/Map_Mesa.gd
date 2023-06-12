@@ -45,10 +45,10 @@ var mesa_whole_screen_choices : Mesa_WholeScreenChoices
 
 #
 
-const sandstorm_damage : float = 1.0
-const sandstorm_base_cooldown : float = 40.0
-const sandstorm_slow_amount : float = -55.0
-const sandstorm_slow_duration : float = 7.0
+const sandstorm_damage : float = 3.0
+const sandstorm_base_cooldown : float = 50.0
+const sandstorm_slow_amount : float = -60.0
+const sandstorm_slow_duration : float = 10.0
 
 var sandstorm_ability : BaseAbility
 
@@ -57,7 +57,7 @@ var sandstorm_ability : BaseAbility
 const treasure_relic_amount : int = 2
 const treasure_gold_amount : int = 34
 
-const treasure_stageround_id_given : String = "73"
+const treasure_stageround_id_given : String = "82"
 
 const treasure_screen_tint_modulate_transparent := Color(0, 0, 0, 0)
 const treasure_screen_tint_modulate__yellow := Color(233/255.0, 255/255.0, 0/255.0, 0.7)

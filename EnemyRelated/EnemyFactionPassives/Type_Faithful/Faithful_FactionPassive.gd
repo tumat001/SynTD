@@ -44,6 +44,10 @@ var _round_deity_stats_map : Dictionary = {
 	"82" : _get_8_2_deity_stats(),
 	"91" : _get_9_1_deity_stats(),
 	"94" : _get_9_4_deity_stats(),
+	
+	"102" : _get_10_2_deity_stats(),
+	"104" : _get_10_4_deity_stats(),
+	
 }
 
 
@@ -509,3 +513,27 @@ func _get_9_4_deity_stats():
 	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_03
 	
 	return info
+
+
+func _get_10_2_deity_stats():
+	var info = _construct_deity_enemy_type_info()
+	
+	info.base_health = 1075
+	info.base_effect_vulnerability = 0.50
+	info.base_player_damage = 36
+	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_03
+	
+	return info
+
+func _get_10_4_deity_stats():
+	var info = _construct_deity_enemy_type_info()
+	
+	info.base_health = 1275
+	info.base_effect_vulnerability = 0.45
+	info.base_player_damage = 36
+	
+	info.type_info_metadata[info.TypeInfoMetadata.DEITY_FORM] = Deity.DeityFormId.FORM_03
+	
+	return info
+

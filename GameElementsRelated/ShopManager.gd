@@ -12,6 +12,9 @@ signal on_cost_per_roll_changed(new_cost)
 signal can_roll_changed(can_roll)
 signal shop_rolled_with_towers(arg_tower_ids)
 
+signal on_effective_shop_odds_level_changed__probability_changes(arg_old_probabilties, arg_current_probabilties, arg_old_level, arg_new_level, arg_first_time_tier_unlock_list, arg_tier_becomes_zero_prob_list, arg_tier_to_inc_or_same_or_dec_val_map)
+
+
 const base_level_tier_roll_probabilities : Dictionary = {
 	LevelManager.LEVEL_1 : [100, 0, 0, 0, 0, 0],
 	LevelManager.LEVEL_2 : [90, 10, 0, 0, 0, 0],
@@ -185,6 +188,11 @@ var tier_has_tower_map : Dictionary = {
 	6 : false,
 }
 
+##
+
+# {int (tier) -> bool}
+var tier_val_to_first_time_unlock_map : Dictionary
+const FIRST_TIME_TIER_VAL_INITIALIZE : int = -999
 
 #
 
@@ -283,7 +291,11 @@ func _ready():
 	can_refresh_shop_at_round_end_clauses.connect("clause_removed", self, "_on_can_refresh_shop_at_round_end_clauses_inserted_or_removed", [], CONNECT_PERSIST)
 	
 	_update_last_calculated_effective_shop_level(true)
+	_calculate_effective_tier_prob_changed_with_first_time_calcs(FIRST_TIME_TIER_VAL_INITIALIZE, false)
+	
 	_update_last_calculated_can_refresh_shop_at_round_end()
+	
+	_initialize_tier_first_time_unlock_map()
 
 
 func finalize_towers_in_shop():
@@ -353,17 +365,18 @@ func add_shop_level_odds_modi(id : int, amount : int):
 	
 	_set_shop_level_odds_modifier(_calculate_shop_level_odds_modifier())
 	
-	_update_last_calculated_effective_shop_level()
+	var old_level = _update_last_calculated_effective_shop_level()
 	emit_signal("on_effective_shop_odds_level_changed", last_calculated_effective_shop_level_odds)
-
+	_calculate_effective_tier_prob_changed_with_first_time_calcs(old_level)
 
 func remove_shop_level_odds_modi_id(id : int):
 	_flat_shop_level_odd_modi_id_to_modi_map.erase(id)
 	
 	_set_shop_level_odds_modifier(_calculate_shop_level_odds_modifier())
 	
-	_update_last_calculated_effective_shop_level()
+	var old_level = _update_last_calculated_effective_shop_level()
 	emit_signal("on_effective_shop_odds_level_changed", last_calculated_effective_shop_level_odds)
+	_calculate_effective_tier_prob_changed_with_first_time_calcs(old_level)
 
 
 func _calculate_shop_level_odds_modifier() -> int:
@@ -380,12 +393,17 @@ func _set_shop_level_odds_modifier(amount : int):
 
 
 func _on_current_player_level_changed(arg_new_level):
-	_update_last_calculated_effective_shop_level(true)
+	var old_shop_level = _update_last_calculated_effective_shop_level(true)
+	_calculate_effective_tier_prob_changed_with_first_time_calcs(old_shop_level)
 
 func _update_last_calculated_effective_shop_level(_emit_change_signal : bool = false):
+	var old_shop_level = last_calculated_effective_shop_level_odds
+	
 	last_calculated_effective_shop_level_odds = _calculate_last_calculated_effective_shop_level()
 	if _emit_change_signal:
 		emit_signal("on_effective_shop_odds_level_changed", last_calculated_effective_shop_level_odds)
+	
+	return old_shop_level
 
 func _calculate_last_calculated_effective_shop_level() -> int:
 	var level = 1
@@ -651,5 +669,71 @@ func add_tower_id_to_towers_not_initially_in_inventory(arg_id):
 
 func remove_tower_id_from_towers_not_initially_in_inventory(arg_id):
 	towers_not_initially_in_inventory.erase(arg_id)
+
+
+###################
+
+func _initialize_tier_first_time_unlock_map():
+	for tier in tier_tower_map.keys():
+		tier_val_to_first_time_unlock_map[tier] = true
+	
+
+func _calculate_effective_tier_prob_changed_with_first_time_calcs(arg_old_level, arg_emit_signal : bool = true):
+	var old_probabilities : Array
+	if base_level_tier_roll_probabilities.has(arg_old_level):
+		old_probabilities = base_level_tier_roll_probabilities[arg_old_level].duplicate(true)
+		
+		
+	else:
+		old_probabilities = base_level_tier_roll_probabilities.values()[0].duplicate(true)
+		for i in old_probabilities.size():
+			old_probabilities[i] = 0
+	
+	#
+	var curr_probabilities : Array = base_level_tier_roll_probabilities[last_calculated_effective_shop_level_odds]
+	
+	#
+	var old_level = arg_old_level
+	var curr_level = last_calculated_effective_shop_level_odds
+	
+	#
+	
+	# ex: [4, 5], where it is the first time that tier 4 and 5 towers are available at the shop
+	var first_time_tiers : Array = []
+	# ex: [1], where tier 1 towers have 0 probability from being offered in the shop
+	var tiers_becoming_zero_prob : Array = []
+	# ex: {1 : 1, 2 : -1, 3: 0, ..., x: y}, where tier 1's probability has increased, 2's has dec, and 3 is same
+	var tier_to_inc_or_same_or_dec_val_map : Dictionary = {}
+	
+	for i in old_probabilities.size():
+		var tier = i + 1
+		
+		var old_prob_of_x = old_probabilities[tier - 1]
+		var new_prob_of_x = curr_probabilities[tier - 1]
+		
+		
+		if new_prob_of_x != 0 and tier_val_to_first_time_unlock_map.has(tier) and tier_val_to_first_time_unlock_map[tier] == true:
+			first_time_tiers.append(tier)
+			tier_val_to_first_time_unlock_map[tier] = false
+		
+		if old_prob_of_x != 0 and new_prob_of_x == 0:
+			tiers_becoming_zero_prob.append(tier)
+		
+		if new_prob_of_x > old_prob_of_x:
+			tier_to_inc_or_same_or_dec_val_map[tier] = 1
+			
+		elif new_prob_of_x == old_prob_of_x:
+			tier_to_inc_or_same_or_dec_val_map[tier] = 0
+			
+		else:
+			tier_to_inc_or_same_or_dec_val_map[tier] = -1
+			
+	
+	
+	############
+	
+	if arg_emit_signal:
+		emit_signal("on_effective_shop_odds_level_changed__probability_changes", old_probabilities, curr_probabilities, old_level, curr_level, first_time_tiers, tiers_becoming_zero_prob, tier_to_inc_or_same_or_dec_val_map)
+
 
 

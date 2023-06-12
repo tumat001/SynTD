@@ -50,7 +50,7 @@ const initial_unstable_round_count__tier_1 = 1
 
 # NOTE: var names are used by syninteractable
 const salvage_gold_per_bonus_ing_slot : int = 8
-const salvage_gold_breakpoint_for_omni_color : int = 50
+const salvage_gold_breakpoint_for_omni_color : int = 40
 
 var current_salvaged_gold : int = 0
 var current_bonus_ingredient_slot_count : int = 0

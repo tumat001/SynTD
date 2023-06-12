@@ -11,7 +11,11 @@ func set_tower(arg_tower):
 	
 	tower.connect("tree_exiting", self, "_on_tower_queue_free")
 	tower.connect("global_position_changed", self, "_on_tower_pos_changed")
-	position = tower.global_position
+	
+	if tower.is_inside_tree():
+		position = tower.global_position
+	else:
+		position = tower.position
 
 
 func _on_tower_queue_free():

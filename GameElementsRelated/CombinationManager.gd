@@ -377,7 +377,7 @@ func _get_towers_with_tower_combination_requirements_met(arg_combination_amount 
 	
 	
 	for tower in all_towers:
-		if tower.originally_has_ingredient and !tower.is_queued_for_deletion() and !blacklisted_tower_ids_from_combining.has(tower.tower_id) and !all_combination_id_to_effect_map.keys().has(tower.tower_id) and _is_tower_combinable_based_on_is_tier_combinable_clauses(tower):
+		if tower.originally_has_ingredient and !tower.is_queued_for_deletion() and !blacklisted_tower_ids_from_combining.has(tower.tower_id) and !all_combination_id_to_effect_map.keys().has(tower.tower_id) and _is_tower_combinable_based_on_is_tier_combinable_clauses(tower) and tower.last_calculated_is_combinable:
 			if (tower_id_map.has(tower.tower_id)):
 				tower_id_map[tower.tower_id] += 1
 				

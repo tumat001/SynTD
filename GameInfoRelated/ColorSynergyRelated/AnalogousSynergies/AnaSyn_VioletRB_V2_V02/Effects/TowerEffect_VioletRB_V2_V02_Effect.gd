@@ -40,7 +40,7 @@ const TowerColors = preload("res://GameInfoRelated/TowerColors.gd")
 
 const DamageType = preload("res://GameInfoRelated/DamageType.gd")
 const MultipleTrailsForNodeComponent = preload("res://MiscRelated/TrailRelated/MultipleTrailsForNodeComponent.gd")
-
+const TimerForTower = preload("res://TowerRelated/CommonBehaviorRelated/TimerForTower.gd")
 
 
 const beam_modulate__violet := Color(109/255.0, 2/255.0, 217/255.0, 0.7)
@@ -88,6 +88,14 @@ var _pre_determined_angle_rad_to_use_for_cone_explosion : float
 var _total_attk_speed_effect : TowerAttributesEffect
 var _total_base_damage_effect : TowerAttributesEffect
 
+
+#
+
+var time_of_buff : float
+var _timer_for_buff : TimerForTower
+
+var status_bar_icon_to_use : Texture
+
 #
 
 var _tower
@@ -116,6 +124,14 @@ func _make_modifications_to_tower(tower):
 		_construct_beam_multiple_trail_component()
 		_configure_beam_multiple_trail_component()
 		_construct_and_add_effects()
+	
+	
+	_timer_for_buff = TimerForTower.new()
+	_timer_for_buff.one_shot = true
+	_timer_for_buff.connect("timeout", self, "_on_timer_for_buff_timeout", [], CONNECT_PERSIST)
+	tower.add_child(_timer_for_buff)
+	_timer_for_buff.set_tower_and_properties(tower)
+	
 
 func _construct_and_add_attk_module():
 	cone_explosion_attack_module = AOEAttackModule_Scene.instance()
@@ -241,7 +257,10 @@ func activate_effects_of_barrage():
 	if is_instance_valid(_tower.main_attack_module) and _tower.main_attack_module is BulletAttackModule:
 		if !_tower.is_connected("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot__for_beam_formation"):
 			_tower.connect("on_main_bullet_attack_module_before_bullet_is_shot", self, "_on_main_bullet_attack_module_before_bullet_is_shot__for_beam_formation")
-		
+	
+	
+	_tower.status_bar.add_status_icon(effect_uuid, status_bar_icon_to_use)
+	_timer_for_buff.start(time_of_buff)
 
 func _on_main_attack(attk_speed_delay, enemies, module):
 	_current_enhanced_main_attack_count -= 1
@@ -344,6 +363,10 @@ func end_effects_of_barrage():
 	
 	_set_stacking_attk_speed_effect_amount(0)
 	_set_stacking_base_dmg_effect_amount(0)
+	
+	_timer_for_buff.stop()
+	_tower.status_bar.remove_status_icon(effect_uuid)
+
 
 #
 
@@ -386,6 +409,11 @@ func _remove_effects():
 	_tower.remove_tower_effect(_total_base_damage_effect)
 
 
+###
+
+func _on_timer_for_buff_timeout():
+	end_effects_of_barrage()
+	
 
 #######
 
@@ -401,3 +429,6 @@ func _undo_modifications_to_tower(tower):
 		_remove_effects()
 		
 		_unconfigure_beam_multiple_trail_component()
+	
+	if is_instance_valid(_timer_for_buff) and !_timer_for_buff.is_queued_for_deletion():
+		_timer_for_buff.queue_free()

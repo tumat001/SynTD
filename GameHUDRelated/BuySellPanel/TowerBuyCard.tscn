@@ -49,9 +49,6 @@ margin_bottom = 75.0
 mouse_filter = 2
 size_flags_horizontal = 2
 texture = ExtResource( 8 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 margin_right = 104.0

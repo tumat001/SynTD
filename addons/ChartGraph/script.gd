@@ -384,7 +384,7 @@ func compute_sprites(points_data, arg_other_point_data):
 		var end_pos = Vector2(max_x, max_y) - Vector2(-min_x, compute_y(value) - min_y)
 		end_point_position=end_pos
 		sprite.mouse_filter = MOUSE_FILTER_STOP
-		#sprite.set_tooltip('%s: %s' % [tr(key), format(value)]) #todo changed this (by me, matu). didn't want the tooltip anyway
+		#sprite.set_tooltip('%s: %s' % [tr(key), format(value)]) #changed this (by me, matu). didn't want the tooltip anyway
 
 		sprite.connect('mouse_entered', self, '_on_mouse_over', [key, value, arg_other_point_data, sprite])
 		sprite.connect('mouse_exited', self, '_on_mouse_out', [key, value, arg_other_point_data, sprite])

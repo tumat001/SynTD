@@ -60,6 +60,15 @@ var _latest_base_dialog_ele_control : BaseDialogElementControl
 
 #
 
+var _make_main_panel_unintrusive_on_mouse_enter : bool
+
+var _is_mouse_inside_during_unintrusive_mode : bool
+var _top_left_pos_during_unintrusive_mode : Vector2
+var _bot_right_pos_during_unintrusive_mode : Vector2
+
+
+#
+
 var _all_borders : Array
 
 onready var background = $Background
@@ -69,6 +78,8 @@ onready var top_border = $TopBorder
 onready var bottom_border = $BottomBorder
 
 onready var content_panel = $Marginer/VBoxContainer/ContentPanel
+
+onready var skip_button = $Marginer/VBoxContainer/SkipButton
 
 #
 
@@ -144,6 +155,26 @@ func set_dialog_segment(arg_segment, arg_set_to_visible : bool = true):
 	
 	dialog_segment = arg_segment
 	
+	#
+	
+	var border_vis_val : bool = dialog_segment.show_dialog_main_panel_borders
+	for border in _all_borders:
+		border.visible = border_vis_val
+	
+	var background_vis_val : bool = dialog_segment.show_dialog_main_panel_background
+	background.visible = background_vis_val
+	
+	#
+	
+	dialog_segment.evaluate_is_skip_exec__from_func_source()
+	skip_button.text_for_label = dialog_segment.skip_button_text
+	if dialog_segment.is_skip_button_in_main_dialog_panel:
+		skip_button.visible = dialog_segment.is_skip_executable
+	else:
+		skip_button.visible = false
+	
+	#
+	
 	var final_time_taken_for_pos_change_transition = time_taken_for_pos_change_transition
 	var final_time_taken_for_size_change_transition = time_taken_for_size_change_transition
 	
@@ -152,16 +183,18 @@ func set_dialog_segment(arg_segment, arg_set_to_visible : bool = true):
 		final_time_taken_for_size_change_transition = 0
 	
 	if final_time_taken_for_pos_change_transition != 0:
-		var reached_x = val_transition__top_left_pos__x.configure_self(rect_position.x, rect_position.x, dialog_segment.final_dialog_top_left_pos.x, final_time_taken_for_pos_change_transition, ValTransition.VALUE_UNSET, dialog_segment.final_dialog_top_left_pos_val_trans_mode)
-		var reached_y = val_transition__top_left_pos__y.configure_self(rect_position.y, rect_position.y, dialog_segment.final_dialog_top_left_pos.y, final_time_taken_for_pos_change_transition, ValTransition.VALUE_UNSET, dialog_segment.final_dialog_top_left_pos_val_trans_mode)
+		pass
+		#var reached_x = val_transition__top_left_pos__x.configure_self(rect_position.x, rect_position.x, dialog_segment.final_dialog_top_left_pos.x, final_time_taken_for_pos_change_transition, ValTransition.VALUE_UNSET, dialog_segment.final_dialog_top_left_pos_val_trans_mode)
+		#var reached_y = val_transition__top_left_pos__y.configure_self(rect_position.y, rect_position.y, dialog_segment.final_dialog_top_left_pos.y, final_time_taken_for_pos_change_transition, ValTransition.VALUE_UNSET, dialog_segment.final_dialog_top_left_pos_val_trans_mode)
 		
-		if !reached_x:
-			is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.POS_X)
-		if !reached_y:
-			is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.POS_Y)
+		#if !reached_x:
+		#	is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.POS_X)
+		#if !reached_y:
+		#	is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.POS_Y)
 		
 	else:
-		rect_position = dialog_segment.final_dialog_top_left_pos
+		pass
+		#rect_position = dialog_segment.final_dialog_top_left_pos
 	
 	if final_time_taken_for_size_change_transition != 0:
 		var reached_x = val_transition__size__x.configure_self(rect_size.x, rect_size.x, dialog_segment.final_dialog_custom_size.x, final_time_taken_for_size_change_transition, ValTransition.VALUE_UNSET, dialog_segment.final_dialog_custom_size_val_trans_mode)
@@ -169,10 +202,19 @@ func set_dialog_segment(arg_segment, arg_set_to_visible : bool = true):
 		
 		if !reached_x:
 			is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.SIZE_X)
+		else:
+			rect_min_size.x =  dialog_segment.final_dialog_custom_size.x
+			rect_size.x =  dialog_segment.final_dialog_custom_size.x
+		
 		if !reached_y:
 			is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.SIZE_Y)
+		else:
+			rect_min_size.y =  dialog_segment.final_dialog_custom_size.y
+			rect_size.y =  dialog_segment.final_dialog_custom_size.y
+		
 	else:
-		#rect_min_size = dialog_segment.final_dialog_custom_size
+		rect_min_size = dialog_segment.final_dialog_custom_size
+		
 		rect_size = dialog_segment.final_dialog_custom_size
 	
 	if dialog_segment.make_dialog_main_panel_visible and (modulate.a != 1 or !visible):
@@ -189,8 +231,12 @@ func set_dialog_segment(arg_segment, arg_set_to_visible : bool = true):
 	left_border.texture = dialog_segment.left_border_texture
 	right_border.texture = dialog_segment.right_border_texture
 	
+	background.texture = dialog_segment.background_texture
+	
 	if arg_set_to_visible:
 		visible = true
+	
+	set_make_main_panel_unintrusive_on_mouse_enter__from_dia_seg(dialog_segment.make_main_panel_unintrusive_on_mouse_enter)
 	
 	#########
 	
@@ -228,26 +274,28 @@ func _process(delta):
 			var val_transition = transitioning_id_to_val_trans_map[TransitioningClauseIds.POS_X]
 			val_transition.delta_pass(delta)
 			
-			rect_position.x = val_transition.get_current_val()
+			#rect_position.x = val_transition.get_current_val()
 		
 		if transitioning_id_to_is_active_map[TransitioningClauseIds.POS_Y]:
 			var val_transition = transitioning_id_to_val_trans_map[TransitioningClauseIds.POS_Y]
 			val_transition.delta_pass(delta)
 			
-			rect_position.y = val_transition.get_current_val()
+			#rect_position.y = val_transition.get_current_val()
 		
 		if transitioning_id_to_is_active_map[TransitioningClauseIds.SIZE_X]:
 			var val_transition = transitioning_id_to_val_trans_map[TransitioningClauseIds.SIZE_X]
 			val_transition.delta_pass(delta)
 			
-			#rect_min_size.x = val_transition.get_current_val()
+			rect_min_size.x = val_transition.get_current_val()
+			
 			rect_size.x = val_transition.get_current_val()
 		
 		if transitioning_id_to_is_active_map[TransitioningClauseIds.SIZE_Y]:
 			var val_transition = transitioning_id_to_val_trans_map[TransitioningClauseIds.SIZE_Y]
 			val_transition.delta_pass(delta)
 			
-			#rect_min_size.y = val_transition.get_current_val()
+			rect_min_size.y = val_transition.get_current_val()
+			
 			rect_size.y = val_transition.get_current_val()
 		
 		if transitioning_id_to_is_active_map[TransitioningClauseIds.MOD_A]:
@@ -263,11 +311,24 @@ func _process(delta):
 #
 #			var val_prop_name = transitioning_id_to_val_trans_map[id]
 #			set()
+	
+	
+	if _is_mouse_inside_during_unintrusive_mode:
+		if !if_mouse_pos_is_inside_main_panel_bounds():
+			end_unintrusive_mode()
+		
+	
+
+func if_mouse_pos_is_inside_main_panel_bounds():
+	var mouse_pos = get_viewport().get_mouse_position()
+	
+	return (mouse_pos.x >= _top_left_pos_during_unintrusive_mode.x and mouse_pos.x <= _bot_right_pos_during_unintrusive_mode) and (mouse_pos.y >= _top_left_pos_during_unintrusive_mode.y and mouse_pos.y <= _bot_right_pos_during_unintrusive_mode)
+
 
 #
 
 func is_block_advance():
-	return last_calculated_is_transitioning or !_latest_base_dialog_ele_control.last_calculated_is_fully_finished #and last_calculated_not_all_BDEs_are_shown
+	return last_calculated_is_transitioning or (is_instance_valid(_latest_base_dialog_ele_control) and !_latest_base_dialog_ele_control.last_calculated_is_fully_finished) #and last_calculated_not_all_BDEs_are_shown
 
 func resolve_block_advance():
 	if last_calculated_is_transitioning:
@@ -275,10 +336,12 @@ func resolve_block_advance():
 			val_transition.instantly_finish_transition()
 			
 			if val_transition == transitioning_id_to_val_trans_map[TransitioningClauseIds.POS_X]:
-				rect_position.x = val_transition.get_current_val()
+				pass
+				#rect_position.x = val_transition.get_current_val()
 				
 			elif val_transition == transitioning_id_to_val_trans_map[TransitioningClauseIds.POS_Y]:
-				rect_position.y = val_transition.get_current_val()
+				pass
+				#rect_position.y = val_transition.get_current_val()
 				
 			elif val_transition == transitioning_id_to_val_trans_map[TransitioningClauseIds.SIZE_X]:
 				rect_size.x = val_transition.get_current_val()
@@ -291,7 +354,7 @@ func resolve_block_advance():
 	
 	#
 	
-	if !_latest_base_dialog_ele_control.last_calculated_is_fully_finished:
+	if is_instance_valid(_latest_base_dialog_ele_control) and !_latest_base_dialog_ele_control.last_calculated_is_fully_finished:
 		_latest_base_dialog_ele_control._force_finish_display()
 	
 	#if last_calculated_not_all_BDEs_are_shown:
@@ -326,5 +389,50 @@ func _emit_resolve_block_advanced_requested_status():
 #	pass # Replace with function body.
 
 
+
+func _on_SkipButton_on_button_released_with_button_left():
+	dialog_segment.skip()
+	
+
+
+#
+
+func set_make_main_panel_unintrusive_on_mouse_enter__from_dia_seg(arg_val):
+	_make_main_panel_unintrusive_on_mouse_enter = arg_val
+	
+	if _make_main_panel_unintrusive_on_mouse_enter:
+		pass
+	else:
+		end_unintrusive_mode()
+
+
+func _on_DialogMainPanel_visibility_changed():
+	end_unintrusive_mode()
+	
+
+func _on_DialogMainPanel_mouse_entered():
+	attempt_begin_unintrusive_mode()
+
+func _on_DialogMainPanel_mouse_exited():
+	pass # Replace with function body.
+	# NEVER CALLED anyways............
+
+
+
+func attempt_begin_unintrusive_mode():
+	if _make_main_panel_unintrusive_on_mouse_enter:
+		modulate = Color(1, 1, 1, 0.1)
+		mouse_filter = MOUSE_FILTER_IGNORE
+		
+		_top_left_pos_during_unintrusive_mode = rect_position
+		_bot_right_pos_during_unintrusive_mode = rect_position + rect_size
+		
+		_is_mouse_inside_during_unintrusive_mode = true
+
+func end_unintrusive_mode():
+	_is_mouse_inside_during_unintrusive_mode = false
+	modulate = Color(1, 1, 1, 1)
+	
+	mouse_filter = MOUSE_FILTER_STOP
 
 

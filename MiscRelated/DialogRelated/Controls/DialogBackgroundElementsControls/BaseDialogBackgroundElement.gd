@@ -13,6 +13,10 @@ enum TransitioningClauseIds {
 	POS_Y = 1,
 	
 	MOD_A = 4,
+	
+	#NEEDS_REQUEST_FOR_ENDING = 5,
+	
+	IMAGE_TRANSITION = 5,
 }
 
 var persistence_id : int
@@ -36,6 +40,29 @@ var last_calculated_is_transitioning : bool
 
 var transitioning_id_to_val_trans_map : Dictionary
 var transitioning_id_to_is_active_map : Dictionary
+
+#
+
+var starting_initial_mod_a : float
+var starting_target_mod_a : float
+var starting_mod_a_duration : float
+
+var ending_initial_mod_a : float
+var ending_target_mod_a : float
+var ending_mod_a_duration : float
+
+var mod_a_tween : SceneTreeTween
+
+#
+
+var wait_for_all_background_elements_to_fade_out : bool = false
+var all_background_elements_in_queue_free : bool  # SETTED by dialogwholescreenpanel
+
+
+var fade_out_on_next_dia_seg : bool = true
+
+
+var ignored_for_wait_for_all_background_elements_to_fade_out : bool = false
 
 ##
 
@@ -75,35 +102,64 @@ func _on_target_val_reached__background_ele_specific(arg_val_transition, arg_tra
 #
 
 func _start_display():
-	._start_display()
 	
-	if initial_top_left_pos != VECTOR_UNDEFINED:
-		rect_position = initial_top_left_pos
-	
-	
-	var final_time_taken_for_pos_change_transition = time_taken_for_pos_change_transition
-	
-	if !visible or modulate.a == 0:
-		final_time_taken_for_pos_change_transition = 0
-	
-	if final_time_taken_for_pos_change_transition != 0:
-		var reached_x = val_transition__top_left_pos__x.configure_self(rect_position.x, rect_position.x, final_top_left_pos.x, final_time_taken_for_pos_change_transition, ValTransition.VALUE_UNSET, final_top_left_pos_val_trans_mode)
-		var reached_y = val_transition__top_left_pos__y.configure_self(rect_position.y, rect_position.y, final_top_left_pos.y, final_time_taken_for_pos_change_transition, ValTransition.VALUE_UNSET, final_top_left_pos_val_trans_mode)
+	if can_start_display():
+		._start_display()
 		
-		if !reached_x:
-			is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.POS_X)
-		if !reached_y:
-			is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.POS_Y)
+		if initial_top_left_pos != VECTOR_UNDEFINED:
+			rect_position = initial_top_left_pos
+		
+		
+		var final_time_taken_for_pos_change_transition = time_taken_for_pos_change_transition
+		
+		if !visible or modulate.a == 0:
+			final_time_taken_for_pos_change_transition = 0
+		
+		if final_time_taken_for_pos_change_transition != 0:
+			var reached_x = val_transition__top_left_pos__x.configure_self(rect_position.x, rect_position.x, final_top_left_pos.x, final_time_taken_for_pos_change_transition, ValTransition.VALUE_UNSET, final_top_left_pos_val_trans_mode)
+			var reached_y = val_transition__top_left_pos__y.configure_self(rect_position.y, rect_position.y, final_top_left_pos.y, final_time_taken_for_pos_change_transition, ValTransition.VALUE_UNSET, final_top_left_pos_val_trans_mode)
+			
+			if !reached_x:
+				is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.POS_X)
+			if !reached_y:
+				is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.POS_Y)
+			
+		else:
+			rect_position = final_top_left_pos
+		
+		##
+		
+		modulate.a = starting_initial_mod_a
+		
+		if starting_initial_mod_a != starting_target_mod_a:
+			is_transitioning_clauses.attempt_insert_clause(TransitioningClauseIds.MOD_A)
+			
+			mod_a_tween = create_tween()
+			mod_a_tween.connect("finished", self, "_on_mod_a_tween_finished", [], CONNECT_ONESHOT)
+			mod_a_tween.tween_property(self, "modulate:a", starting_target_mod_a, starting_mod_a_duration)
+			
 		
 	else:
-		rect_position = final_top_left_pos
+		pass
+		
 
+
+func can_start_display():
+	return !wait_for_all_background_elements_to_fade_out or (wait_for_all_background_elements_to_fade_out and all_background_elements_in_queue_free)
+
+func _on_mod_a_tween_finished():
+	mod_a_tween = null
+	is_transitioning_clauses.remove_clause(TransitioningClauseIds.MOD_A)
+	
 
 
 func _force_finish_display():
 	._force_finish_display()
 	
 	rect_position = final_top_left_pos
+	
+	if mod_a_tween != null:
+		mod_a_tween.custom_step(99999)
 
 
 
@@ -121,6 +177,24 @@ func _process(delta):
 			
 			rect_position.y = val_transition.get_current_val()
 		
+
+#####
+
+func start_fade_out__or_queue_free():
+	if ending_initial_mod_a == ending_target_mod_a or ending_mod_a_duration == 0:
+		_on_fade_out_finished()
+	else:
+		mod_a_tween = create_tween()
+		mod_a_tween.connect("finished", self, "_on_fade_out_finished")
+		mod_a_tween.tween_property(self, "modulate:a", 0.0, 0.3)
+
+func _on_fade_out_finished():
+	visible = false
+	queue_free()
+	
+
+
+######################
 
 #
 #const DialogSegment = preload("res://MiscRelated/DialogRelated/DataClasses/DialogSegment.gd")
@@ -250,4 +324,5 @@ func _process(delta):
 #			modulate.a = val_transition.get_current_val()
 #
 #
-#
+
+

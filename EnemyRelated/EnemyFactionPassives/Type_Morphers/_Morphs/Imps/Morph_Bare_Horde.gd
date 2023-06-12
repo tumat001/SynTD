@@ -122,13 +122,14 @@ func _remove_bare_to_summon_from_queue__and_summon_bare(arg_details : HordeSpawn
 	var enemy_id = arg_details.enemy_id_to_spawn
 	var enemy_to_spawn
 	
-	if enemy_id == EnemyConstants.Enemies.BARE:
-		enemy_to_spawn = game_elements.enemy_manager.spawn_enemy(EnemyConstants.Enemies.BARE)
-		
-	elif enemy_id == EnemyConstants.Enemies.WILDCARD:
-		enemy_to_spawn = game_elements.enemy_manager.spawn_enemy(EnemyConstants.Enemies.WILDCARD)
-		
+#	if enemy_id == EnemyConstants.Enemies.BARE:
+#		enemy_to_spawn = game_elements.enemy_manager.spawn_enemy(EnemyConstants.Enemies.BARE)
+#
+#	elif enemy_id == EnemyConstants.Enemies.WILDCARD:
+#		enemy_to_spawn = game_elements.enemy_manager.spawn_enemy(EnemyConstants.Enemies.WILDCARD)
+#
 	
+	enemy_to_spawn = game_elements.enemy_manager.spawn_enemy(enemy_id)
 	enemy_to_spawn.enemy_type_info_metadata[StoreOfEnemyMetadataIdsFromIns.MORPH_BARE_SPAWNED_FROM_HORDE_MARKER] = true
 	enemy_to_spawn.shift_unit_offset(arg_details.unit_offset)
 

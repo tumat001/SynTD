@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MiscRelated/SplashTextRelated/SplashTextRelated_BBCode/SplashTextContainer_BBCode.gd" type="Script" id=1]
+
+[node name="SplashTextContainer_BBCode" type="Node2D"]
+script = ExtResource( 1 )

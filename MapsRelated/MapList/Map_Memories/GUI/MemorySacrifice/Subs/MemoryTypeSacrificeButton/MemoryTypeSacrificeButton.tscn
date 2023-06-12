@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWithTooltip.tscn" type="PackedScene" id=1]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/Assets/MemoryType_Gold.png" type="Texture" id=2]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/MemorySacrifice/Subs/MemoryTypeSacrificeButton/MemoryTypeSacrificeButton.gd" type="Script" id=3]
+
+[node name="MemoryTypeSacrificeButton" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 3 )
+
+[node name="AdvancedButtonWithTooltip" parent="." instance=ExtResource( 1 )]
+margin_right = 80.0
+margin_bottom = 80.0
+texture_normal = ExtResource( 2 )
+about_button_index_trigger = -1001
+define_tooltip_construction_in_button = false
+
+[connection signal="about_tooltip_construction_requested" from="AdvancedButtonWithTooltip" to="." method="_on_AdvancedButtonWithTooltip_about_tooltip_construction_requested"]

@@ -166,8 +166,9 @@ func _on_round_end(curr_stageround):
 	if is_instance_valid(fluctuated_tower):
 		_clean_up_fluc_modifications()
 		
-		fluctuation_timer.wait_time = 0.1
-		fluctuation_timer.paused = true
+		if fluctuation_timer.is_inside_tree():
+			fluctuation_timer.wait_time = 0.1
+			fluctuation_timer.paused = true
 		
 		fluctuated_tower = null
 		_untrack_for_first_attack()

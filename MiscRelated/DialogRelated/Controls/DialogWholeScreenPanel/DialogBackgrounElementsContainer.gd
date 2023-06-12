@@ -6,9 +6,9 @@ func add_dialog_element_to_container(arg_background_element):
 	if is_instance_valid(arg_background_element):
 		add_child(arg_background_element)
 
-func remove_dialog_element_to_container(arg_background_element):
-	pass
-	
+#func remove_dialog_element_to_container(arg_background_element):
+#	pass
+#
 
 
 func is_block_advance():
@@ -30,4 +30,9 @@ func _force_finish_display():
 	for child in get_children():
 		if !child._is_fully_displayed():
 			child._force_finish_display()
+
+######
+
+
+
 

@@ -9,14 +9,11 @@
 
 [node name="CombinationTopPanel" type="MarginContainer"]
 margin_right = 36.0
-margin_bottom = 30.0
+margin_bottom = 36.0
 mouse_filter = 2
 size_flags_horizontal = 2
 size_flags_vertical = 2
 script = ExtResource( 5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_right = 36.0
@@ -89,8 +86,9 @@ margin_left = 2.0
 margin_top = 2.0
 margin_right = 30.0
 margin_bottom = 34.0
+rect_min_size = Vector2( 0, 32 )
 mouse_filter = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 3
 size_flags_vertical = 6
 
 [node name="CombinationMoreDetailsButton" parent="HBoxContainer/MiddleFill/MainContainer/HBoxContainer" instance=ExtResource( 4 )]
@@ -99,6 +97,8 @@ margin_right = 24.0
 margin_bottom = 28.0
 size_flags_vertical = 6
 texture_normal = ExtResource( 3 )
+about_button_index_trigger = 2
+define_tooltip_construction_in_button = true
 
 [node name="ComboTowerIconsPanel" type="HBoxContainer" parent="HBoxContainer/MiddleFill/MainContainer/HBoxContainer"]
 margin_left = 28.0
@@ -106,6 +106,7 @@ margin_right = 28.0
 margin_bottom = 32.0
 rect_min_size = Vector2( 0, 32 )
 mouse_filter = 2
+size_flags_horizontal = 2
 size_flags_vertical = 4
 
 [node name="RightBorder" type="MarginContainer" parent="HBoxContainer"]
@@ -123,4 +124,5 @@ mouse_filter = 2
 size_flags_vertical = 3
 texture = ExtResource( 1 )
 stretch_mode = 2
+
 [connection signal="pressed_mouse_event" from="HBoxContainer/MiddleFill/MainContainer/HBoxContainer/CombinationMoreDetailsButton" to="." method="_on_CombinationMoreDetailsButton_pressed_mouse_event"]

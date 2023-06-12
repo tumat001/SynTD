@@ -67,6 +67,15 @@ func get_instructions_for_stageround(uuid : String):
 		return _get_instructions_for_9_3()
 	elif uuid == "94":
 		return _get_instructions_for_9_4()
+		
+	elif uuid == "101":
+		return _get_instructions_for_10_1()
+	elif uuid == "102":
+		return _get_instructions_for_10_2()
+	elif uuid == "103":
+		return _get_instructions_for_10_3()
+	elif uuid == "104":
+		return _get_instructions_for_10_4()
 	
 	
 	return null
@@ -1327,6 +1336,7 @@ func _get_instructions_for_9_3__sv_4():
 		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.CROSS_BEARER),
 		
 		LinearEnemySpawnInstruction.new(18, 20, 0.5, 0.030, EnemyConstants.Enemies.BELIEVER, 0.1),
+		
 	]
 
 func _get_instructions_for_9_3__sv_5():
@@ -1412,6 +1422,333 @@ func _get_instructions_for_9_4__sv_5():
 		MultipleEnemySpawnInstruction.new(10, 8, 4, EnemyConstants.Enemies.PROVIDENCE)
 	]
 
+
+
+######## STAGE 10 --- CURRENTLY used by Memories Map
+
+################# 10-1
+func _get_instructions_for_10_1():
+	if enemy_strength_value_to_use == 1:
+		return _get_instructions_for_10_1__sv_1()
+	elif enemy_strength_value_to_use == 2:
+		return _get_instructions_for_10_1__sv_2()
+	elif enemy_strength_value_to_use == 3:
+		return _get_instructions_for_10_1__sv_3()
+	elif enemy_strength_value_to_use == 4:
+		return _get_instructions_for_10_1__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_10_1__sv_5()
+
+
+func _get_instructions_for_10_1__sv_1():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 5, 0.2, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(5, 6, 0.2, EnemyConstants.Enemies.PROVIDENCE),
+		
+		MultipleEnemySpawnInstruction.new(10, 5, 0.2, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(15, 6, 0.2, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(16, 20, 0.1, EnemyConstants.Enemies.SEER),
+		
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.CROSS_BEARER),
+		
+	]
+
+func _get_instructions_for_10_1__sv_2():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 6, 0.2, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(5, 6, 0.2, EnemyConstants.Enemies.PROVIDENCE),
+		
+		MultipleEnemySpawnInstruction.new(10, 6, 0.2, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(15, 6, 0.2, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(16, 20, 0.1, EnemyConstants.Enemies.SEER),
+		
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.CROSS_BEARER),
+		
+	]
+
+func _get_instructions_for_10_1__sv_3():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 6, 0.2, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(5, 7, 0.2, EnemyConstants.Enemies.PROVIDENCE),
+		
+		MultipleEnemySpawnInstruction.new(10, 6, 0.2, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(15, 7, 0.2, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(16, 24, 0.1, EnemyConstants.Enemies.SEER),
+		
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.CROSS_BEARER),
+		
+	]
+
+func _get_instructions_for_10_1__sv_4():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 7, 0.2, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(5, 7, 0.2, EnemyConstants.Enemies.PROVIDENCE),
+		
+		MultipleEnemySpawnInstruction.new(10, 7, 0.2, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(15, 7, 0.2, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(16, 24, 0.1, EnemyConstants.Enemies.SEER),
+		
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.CROSS_BEARER),
+		
+	]
+
+func _get_instructions_for_10_1__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 7, 0.2, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(5, 8, 0.2, EnemyConstants.Enemies.PROVIDENCE),
+		
+		MultipleEnemySpawnInstruction.new(10, 8, 0.2, EnemyConstants.Enemies.DVARAPALA),
+		
+		MultipleEnemySpawnInstruction.new(15, 8, 0.2, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(16, 24, 0.1, EnemyConstants.Enemies.SEER),
+		
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.CROSS_BEARER),
+		
+	]
+
+
+################# 10-2
+func _get_instructions_for_10_2():
+	if enemy_strength_value_to_use == 1:
+		return _get_instructions_for_10_2__sv_1()
+	elif enemy_strength_value_to_use == 2:
+		return _get_instructions_for_10_2__sv_2()
+	elif enemy_strength_value_to_use == 3:
+		return _get_instructions_for_10_2__sv_3()
+	elif enemy_strength_value_to_use == 4:
+		return _get_instructions_for_10_2__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_10_2__sv_5()
+
+
+func _get_instructions_for_10_2__sv_1():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 7, 0.4, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(0.2, 7, 0.4, EnemyConstants.Enemies.PROVIDENCE),
+		
+		MultipleEnemySpawnInstruction.new(6, 25, 0.4, EnemyConstants.Enemies.SEER),
+		
+		MultipleEnemySpawnInstruction.new(14, 6, 5, EnemyConstants.Enemies.PROVIDENCE),
+		
+		
+	]
+
+func _get_instructions_for_10_2__sv_2():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 8, 0.4, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(0.2, 7, 0.4, EnemyConstants.Enemies.PROVIDENCE),
+		
+		MultipleEnemySpawnInstruction.new(6, 25, 0.4, EnemyConstants.Enemies.SEER),
+		
+		MultipleEnemySpawnInstruction.new(14, 7, 5, EnemyConstants.Enemies.PROVIDENCE),
+		
+	]
+
+func _get_instructions_for_10_2__sv_3():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 8, 0.4, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(0.2, 8, 0.4, EnemyConstants.Enemies.PROVIDENCE),
+		
+		MultipleEnemySpawnInstruction.new(6, 27, 0.4, EnemyConstants.Enemies.SEER),
+		
+		MultipleEnemySpawnInstruction.new(14, 7, 5, EnemyConstants.Enemies.PROVIDENCE),
+		
+	]
+
+func _get_instructions_for_10_2__sv_4():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 8, 0.4, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(0.2, 8, 0.4, EnemyConstants.Enemies.PROVIDENCE),
+		
+		MultipleEnemySpawnInstruction.new(9, 2, 3, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(6, 27, 0.4, EnemyConstants.Enemies.SEER),
+		
+		MultipleEnemySpawnInstruction.new(14, 7, 5, EnemyConstants.Enemies.PROVIDENCE),
+		
+	]
+
+func _get_instructions_for_10_2__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 8, 0.4, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(0.2, 8, 0.4, EnemyConstants.Enemies.PROVIDENCE),
+		
+		MultipleEnemySpawnInstruction.new(9, 4, 3, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(6, 27, 0.4, EnemyConstants.Enemies.SEER),
+		
+		MultipleEnemySpawnInstruction.new(14, 7, 5, EnemyConstants.Enemies.PROVIDENCE),
+		
+	]
+
+
+
+################# 10-3
+func _get_instructions_for_10_3():
+	if enemy_strength_value_to_use == 1:
+		return _get_instructions_for_10_3__sv_1()
+	elif enemy_strength_value_to_use == 2:
+		return _get_instructions_for_10_3__sv_2()
+	elif enemy_strength_value_to_use == 3:
+		return _get_instructions_for_10_3__sv_3()
+	elif enemy_strength_value_to_use == 4:
+		return _get_instructions_for_10_3__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_10_3__sv_5()
+
+
+
+func _get_instructions_for_10_3__sv_1():
+	return [
+		LinearEnemySpawnInstruction.new(0, 30, 0.4, 0.040, EnemyConstants.Enemies.PRIEST, 0.075),
+		
+		LinearEnemySpawnInstruction.new(10, 30, 0.4, 0.040, EnemyConstants.Enemies.SACRIFICER, 0.075),
+		
+		LinearEnemySpawnInstruction.new(20, 30, 0.4, 0.040, EnemyConstants.Enemies.BELIEVER, 0.075),
+		
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.CROSS_BEARER),
+		
+		LinearEnemySpawnInstruction.new(30, 30, 0.4, 0.040, EnemyConstants.Enemies.SEER, 0.075),
+		
+	]
+
+func _get_instructions_for_10_3__sv_2():
+	return [
+		LinearEnemySpawnInstruction.new(0, 35, 0.4, 0.040, EnemyConstants.Enemies.PRIEST, 0.075),
+		
+		LinearEnemySpawnInstruction.new(10, 35, 0.4, 0.040, EnemyConstants.Enemies.SACRIFICER, 0.075),
+		
+		LinearEnemySpawnInstruction.new(20, 35, 0.4, 0.040, EnemyConstants.Enemies.BELIEVER, 0.075),
+		
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.CROSS_BEARER),
+		
+		LinearEnemySpawnInstruction.new(30, 35, 0.4, 0.040, EnemyConstants.Enemies.SEER, 0.075),
+		
+	]
+
+func _get_instructions_for_10_3__sv_3():
+	return [
+		LinearEnemySpawnInstruction.new(0, 40, 0.4, 0.040, EnemyConstants.Enemies.PRIEST, 0.075),
+		
+		LinearEnemySpawnInstruction.new(10, 40, 0.4, 0.040, EnemyConstants.Enemies.SACRIFICER, 0.075),
+		
+		LinearEnemySpawnInstruction.new(20, 40, 0.4, 0.040, EnemyConstants.Enemies.BELIEVER, 0.075),
+		
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.CROSS_BEARER),
+		
+		LinearEnemySpawnInstruction.new(30, 40, 0.4, 0.040, EnemyConstants.Enemies.SEER, 0.075),
+		
+	]
+
+func _get_instructions_for_10_3__sv_4():
+	return [
+		LinearEnemySpawnInstruction.new(0, 45, 0.4, 0.040, EnemyConstants.Enemies.PRIEST, 0.075),
+		
+		LinearEnemySpawnInstruction.new(10, 45, 0.4, 0.040, EnemyConstants.Enemies.SACRIFICER, 0.075),
+		
+		LinearEnemySpawnInstruction.new(20, 45, 0.4, 0.040, EnemyConstants.Enemies.BELIEVER, 0.075),
+		
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.CROSS_BEARER),
+		
+		LinearEnemySpawnInstruction.new(30, 45, 0.4, 0.040, EnemyConstants.Enemies.SEER, 0.075),
+		
+	]
+
+func _get_instructions_for_10_3__sv_5():
+	return [
+		LinearEnemySpawnInstruction.new(0, 50, 0.4, 0.040, EnemyConstants.Enemies.PRIEST, 0.075),
+		
+		LinearEnemySpawnInstruction.new(10, 50, 0.4, 0.040, EnemyConstants.Enemies.SACRIFICER, 0.075),
+		
+		LinearEnemySpawnInstruction.new(20, 50, 0.4, 0.040, EnemyConstants.Enemies.BELIEVER, 0.075),
+		
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.CROSS_BEARER),
+		
+		LinearEnemySpawnInstruction.new(30, 50, 0.4, 0.040, EnemyConstants.Enemies.SEER, 0.075),
+		
+	]
+
+
+################# 10-4
+func _get_instructions_for_10_4():
+	if enemy_strength_value_to_use == 1:
+		return _get_instructions_for_10_4__sv_1()
+	elif enemy_strength_value_to_use == 2:
+		return _get_instructions_for_10_4__sv_2()
+	elif enemy_strength_value_to_use == 3:
+		return _get_instructions_for_10_4__sv_3()
+	elif enemy_strength_value_to_use == 4:
+		return _get_instructions_for_10_4__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_10_4__sv_5()
+
+
+func _get_instructions_for_10_4__sv_1():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BELIEVER),
+		
+		
+		MultipleEnemySpawnInstruction.new(11, 54, 1, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(11 + (1 / 3.0), 54, 1, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(11 + (1 / 1.5), 54, 1, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(11 + (1), 27, 2, EnemyConstants.Enemies.SEER),
+		
+	]
+
+func _get_instructions_for_10_4__sv_2():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BELIEVER),
+		
+		
+		MultipleEnemySpawnInstruction.new(11, 64, 1, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(11 + (1 / 3.0), 64, 1, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(11 + (1 / 1.5), 64, 1, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(11 + (1), 32, 2, EnemyConstants.Enemies.SEER),
+		
+	]
+
+func _get_instructions_for_10_4__sv_3():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BELIEVER),
+		
+		
+		MultipleEnemySpawnInstruction.new(11, 70, 1, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(11 + (1 / 3.0), 70, 1, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(11 + (1 / 1.5), 70, 1, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(11 + (1), 35, 2, EnemyConstants.Enemies.SEER),
+		
+	]
+
+func _get_instructions_for_10_4__sv_4():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BELIEVER),
+		
+		
+		MultipleEnemySpawnInstruction.new(11, 76, 1, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(11 + (1 / 3.0), 76, 1, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(11 + (1 / 1.5), 76, 1, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(11 + (1), 38, 2, EnemyConstants.Enemies.SEER),
+		
+	]
+
+func _get_instructions_for_10_4__sv_5():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.BELIEVER),
+		
+		
+		MultipleEnemySpawnInstruction.new(11, 80, 0.9, EnemyConstants.Enemies.PRIEST),
+		MultipleEnemySpawnInstruction.new(11 + (0.9 / 3.0), 80, 0.9, EnemyConstants.Enemies.SACRIFICER),
+		MultipleEnemySpawnInstruction.new(11 + (0.9 / 1.5), 80, 0.9, EnemyConstants.Enemies.BELIEVER),
+		MultipleEnemySpawnInstruction.new(11 + (0.9), 40, 1.8, EnemyConstants.Enemies.SEER),
+		
+	]
 
 #
 

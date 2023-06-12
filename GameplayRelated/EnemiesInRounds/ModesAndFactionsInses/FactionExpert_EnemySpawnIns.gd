@@ -63,6 +63,16 @@ func get_instructions_for_stageround(uuid : String):
 		return _get_instructions_for_9_3()
 	elif uuid == "94":
 		return _get_instructions_for_9_4()
+		
+	elif uuid == "101":
+		return _get_instructions_for_10_1()
+	elif uuid == "102":
+		return _get_instructions_for_10_2()
+	elif uuid == "103":
+		return _get_instructions_for_10_3()
+	elif uuid == "104":
+		return _get_instructions_for_10_4()
+	
 	
 	return null
 
@@ -1638,6 +1648,359 @@ func _get_instructions_for_9_4__sv_5():
 		MultipleEnemySpawnInstruction.new(38, 4, 0.75, EnemyConstants.Enemies.GRANDMASTER),
 		MultipleEnemySpawnInstruction.new(41, 10, 1, EnemyConstants.Enemies.ENCHANTRESS),
 		MultipleEnemySpawnInstruction.new(46, 5, 1, EnemyConstants.Enemies.ASSASSIN),
+	]
+
+
+######## STAGE 10 --- CURRENTLY used by Memories Map
+
+################# 10-1
+func _get_instructions_for_10_1():
+	if enemy_strength_value_to_use == 1:
+		return _get_instructions_for_10_1__sv_1()
+	elif enemy_strength_value_to_use == 2:
+		return _get_instructions_for_10_1__sv_2()
+	elif enemy_strength_value_to_use == 3:
+		return _get_instructions_for_10_1__sv_3()
+	elif enemy_strength_value_to_use == 4:
+		return _get_instructions_for_10_1__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_10_1__sv_5()
+
+
+func _get_instructions_for_10_1__sv_1():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 55, 0.65, EnemyConstants.Enemies.CHARGE),
+		MultipleEnemySpawnInstruction.new(0, 6, 3.25, EnemyConstants.Enemies.BRUTE),
+		
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.MAGUS),
+		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.MAGUS),
+		
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(22, 8, 0.22, EnemyConstants.Enemies.BRUTE),
+		
+	]
+
+func _get_instructions_for_10_1__sv_2():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 55, 0.65, EnemyConstants.Enemies.CHARGE),
+		MultipleEnemySpawnInstruction.new(0, 6, 3.25, EnemyConstants.Enemies.BRUTE),
+		
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.MAGUS),
+		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.MAGUS),
+		
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(22, 9, 0.22, EnemyConstants.Enemies.BRUTE),
+		
+	]
+
+func _get_instructions_for_10_1__sv_3():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 57, 0.625, EnemyConstants.Enemies.CHARGE),
+		MultipleEnemySpawnInstruction.new(0, 7, 3.25, EnemyConstants.Enemies.BRUTE),
+		
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.MAGUS),
+		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.MAGUS),
+		
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(22, 9, 0.22, EnemyConstants.Enemies.BRUTE),
+		
+	]
+
+func _get_instructions_for_10_1__sv_4():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 58, 0.615, EnemyConstants.Enemies.CHARGE),
+		MultipleEnemySpawnInstruction.new(0, 7, 3.25, EnemyConstants.Enemies.BRUTE),
+		
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.MAGUS),
+		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.MAGUS),
+		
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.GRANDMASTER),
+		
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.MAGUS),
+		
+		
+		MultipleEnemySpawnInstruction.new(22, 9, 0.22, EnemyConstants.Enemies.BRUTE),
+		
+	]
+
+func _get_instructions_for_10_1__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 59, 0.605, EnemyConstants.Enemies.CHARGE),
+		MultipleEnemySpawnInstruction.new(0, 7, 3.25, EnemyConstants.Enemies.BRUTE),
+		
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.MAGUS),
+		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.MAGUS),
+		
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.GRANDMASTER),
+		
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.MAGUS),
+		
+		
+		MultipleEnemySpawnInstruction.new(22, 10, 0.22, EnemyConstants.Enemies.BRUTE),
+		
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.MAGUS),
+	]
+
+
+################# 10-2
+func _get_instructions_for_10_2():
+	if enemy_strength_value_to_use == 1:
+		return _get_instructions_for_10_2__sv_1()
+	elif enemy_strength_value_to_use == 2:
+		return _get_instructions_for_10_2__sv_2()
+	elif enemy_strength_value_to_use == 3:
+		return _get_instructions_for_10_2__sv_3()
+	elif enemy_strength_value_to_use == 4:
+		return _get_instructions_for_10_2__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_10_2__sv_5()
+
+
+func _get_instructions_for_10_2__sv_1():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 110, 0.5, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0.25, 110, 0.5, EnemyConstants.Enemies.ENCHANTRESS),
+		
+		LinearEnemySpawnInstruction.new(5, 15, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(15, 15, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(25, 15, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(35, 20, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		
+	]
+
+func _get_instructions_for_10_2__sv_2():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 120, 0.5, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0.25, 120, 0.5, EnemyConstants.Enemies.ENCHANTRESS),
+		
+		LinearEnemySpawnInstruction.new(5, 15, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(15, 17, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(25, 17, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(35, 22, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		
+	]
+
+func _get_instructions_for_10_2__sv_3():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 120, 0.5, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0.25, 120, 0.5, EnemyConstants.Enemies.ENCHANTRESS),
+		
+		LinearEnemySpawnInstruction.new(5, 17, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(15, 22, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(25, 22, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(35, 25, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		
+	]
+
+func _get_instructions_for_10_2__sv_4():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 130, 0.45, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0.225, 130, 0.45, EnemyConstants.Enemies.ENCHANTRESS),
+		
+		LinearEnemySpawnInstruction.new(5, 17, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(15, 22, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(25, 22, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(35, 25, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		
+	]
+
+func _get_instructions_for_10_2__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 135, 0.41, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(0.205, 135, 0.41, EnemyConstants.Enemies.ENCHANTRESS),
+		
+		LinearEnemySpawnInstruction.new(5, 25, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(15, 25, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(25, 25, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		LinearEnemySpawnInstruction.new(35, 25, 0.5, 0.030, EnemyConstants.Enemies.ASSASSIN, 0.15),
+		
+	]
+
+
+
+################# 10-3
+func _get_instructions_for_10_3():
+	if enemy_strength_value_to_use == 1:
+		return _get_instructions_for_10_3__sv_1()
+	elif enemy_strength_value_to_use == 2:
+		return _get_instructions_for_10_3__sv_2()
+	elif enemy_strength_value_to_use == 3:
+		return _get_instructions_for_10_3__sv_3()
+	elif enemy_strength_value_to_use == 4:
+		return _get_instructions_for_10_3__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_10_3__sv_5()
+
+
+
+func _get_instructions_for_10_3__sv_1():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 6, 5, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(7.5, 3, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		MultipleEnemySpawnInstruction.new(17.5, 3, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		
+		#
+		
+		MultipleEnemySpawnInstruction.new(35, 2, 5, EnemyConstants.Enemies.GRANDMASTER),
+		MultipleEnemySpawnInstruction.new(45, 5, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		
+	]
+
+func _get_instructions_for_10_3__sv_2():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 6, 5, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(7.5, 3, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		MultipleEnemySpawnInstruction.new(17.5, 3, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		
+		#
+		
+		MultipleEnemySpawnInstruction.new(35, 2, 5, EnemyConstants.Enemies.GRANDMASTER),
+		MultipleEnemySpawnInstruction.new(45, 6, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		
+	]
+
+func _get_instructions_for_10_3__sv_3():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 6, 5, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(7.5, 3, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		MultipleEnemySpawnInstruction.new(17.5, 4, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		
+		#
+		
+		MultipleEnemySpawnInstruction.new(35, 2, 5, EnemyConstants.Enemies.GRANDMASTER),
+		MultipleEnemySpawnInstruction.new(45, 6, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		
+	]
+
+func _get_instructions_for_10_3__sv_4():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 6, 5, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(7.5, 4, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		MultipleEnemySpawnInstruction.new(17.5, 4, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		
+		#
+		
+		MultipleEnemySpawnInstruction.new(35, 2, 5, EnemyConstants.Enemies.GRANDMASTER),
+		MultipleEnemySpawnInstruction.new(45, 6, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		
+	]
+
+func _get_instructions_for_10_3__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 6, 5, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(7.5, 4, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		MultipleEnemySpawnInstruction.new(17.5, 4, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+		
+		#
+		
+		MultipleEnemySpawnInstruction.new(35, 2, 5, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(43.5, 3, 1, EnemyConstants.Enemies.ENCHANTRESS),
+		MultipleEnemySpawnInstruction.new(45, 7, 0.2, EnemyConstants.Enemies.GRANDMASTER),
+	]
+
+
+################# 10-4
+func _get_instructions_for_10_4():
+	if enemy_strength_value_to_use == 1:
+		return _get_instructions_for_10_4__sv_1()
+	elif enemy_strength_value_to_use == 2:
+		return _get_instructions_for_10_4__sv_2()
+	elif enemy_strength_value_to_use == 3:
+		return _get_instructions_for_10_4__sv_3()
+	elif enemy_strength_value_to_use == 4:
+		return _get_instructions_for_10_4__sv_4()
+	elif enemy_strength_value_to_use == 5:
+		return _get_instructions_for_10_4__sv_5()
+
+
+func _get_instructions_for_10_4__sv_1():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 10, 5, EnemyConstants.Enemies.BRUTE),
+		MultipleEnemySpawnInstruction.new(0, 20, 2.5, EnemyConstants.Enemies.ENCHANTRESS),
+		
+		MultipleEnemySpawnInstruction.new(10, 4, 10, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(18, 5, 6, EnemyConstants.Enemies.MAGUS),
+		
+		##
+		
+		MultipleEnemySpawnInstruction.new(50, 13, 1.5, EnemyConstants.Enemies.CHARGE),
+		MultipleEnemySpawnInstruction.new(50 + (1.5 / 2), 13, 1.5, EnemyConstants.Enemies.EXPERIENCED),
+		
+	]
+
+func _get_instructions_for_10_4__sv_2():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 10, 5, EnemyConstants.Enemies.BRUTE),
+		MultipleEnemySpawnInstruction.new(0, 20, 2.5, EnemyConstants.Enemies.ENCHANTRESS),
+		
+		MultipleEnemySpawnInstruction.new(10, 4, 10, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(18, 6, 5, EnemyConstants.Enemies.MAGUS),
+		
+		##
+		
+		MultipleEnemySpawnInstruction.new(50, 15, 1.5, EnemyConstants.Enemies.CHARGE),
+		MultipleEnemySpawnInstruction.new(50 + (1.5 / 2), 15, 1.5, EnemyConstants.Enemies.EXPERIENCED),
+		
+	]
+
+func _get_instructions_for_10_4__sv_3():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 10, 5, EnemyConstants.Enemies.BRUTE),
+		MultipleEnemySpawnInstruction.new(0, 20, 2.5, EnemyConstants.Enemies.ENCHANTRESS),
+		
+		MultipleEnemySpawnInstruction.new(10, 5, 8, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(18, 6, 5, EnemyConstants.Enemies.MAGUS),
+		
+		##
+		
+		MultipleEnemySpawnInstruction.new(50, 15, 1.5, EnemyConstants.Enemies.CHARGE),
+		MultipleEnemySpawnInstruction.new(50 + (1.5 / 2), 15, 1.5, EnemyConstants.Enemies.EXPERIENCED),
+		
+	]
+
+func _get_instructions_for_10_4__sv_4():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 10, 5, EnemyConstants.Enemies.BRUTE),
+		MultipleEnemySpawnInstruction.new(0, 25, 2, EnemyConstants.Enemies.ENCHANTRESS),
+		
+		MultipleEnemySpawnInstruction.new(10, 5, 8, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(18, 6, 5, EnemyConstants.Enemies.MAGUS),
+		
+		##
+		
+		MultipleEnemySpawnInstruction.new(50, 17, 1.5, EnemyConstants.Enemies.CHARGE),
+		MultipleEnemySpawnInstruction.new(50 + (1.5 / 2), 17, 1.5, EnemyConstants.Enemies.EXPERIENCED),
+		
+	]
+
+func _get_instructions_for_10_4__sv_5():
+	return [
+		MultipleEnemySpawnInstruction.new(0, 10, 5, EnemyConstants.Enemies.BRUTE),
+		MultipleEnemySpawnInstruction.new(0, 25, 2, EnemyConstants.Enemies.ENCHANTRESS),
+		
+		MultipleEnemySpawnInstruction.new(10, 6, 6.67, EnemyConstants.Enemies.GRANDMASTER),
+		
+		MultipleEnemySpawnInstruction.new(18, 6, 5, EnemyConstants.Enemies.MAGUS),
+		
+		##
+		
+		MultipleEnemySpawnInstruction.new(50, 17, 1.5, EnemyConstants.Enemies.CHARGE),
+		MultipleEnemySpawnInstruction.new(50 + (1.5 / 2), 17, 1.5, EnemyConstants.Enemies.EXPERIENCED),
+		MultipleEnemySpawnInstruction.new(50 + 1.5, 1, 1, EnemyConstants.Enemies.GRANDMASTER),
+		
 	]
 
 

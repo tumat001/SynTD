@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://AudioRelated/GUIRelated/AudioSettingsPanel/Subs/AudioBusVolumePanel/AudioBusVolumePanel.gd" type="Script" id=1]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/SliderStandard/SliderStandard.tscn" type="PackedScene" id=2]
+
+[node name="AudioBusVolumePanel" type="MarginContainer"]
+margin_right = 195.0
+margin_bottom = 72.0
+script = ExtResource( 1 )
+
+[node name="SliderStandard" parent="." instance=ExtResource( 2 )]
+margin_right = 195.0

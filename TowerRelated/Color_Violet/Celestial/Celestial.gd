@@ -47,8 +47,10 @@ const Celestial_LineDrawNode = preload("res://TowerRelated/Color_Violet/Celestia
 const normal_explosion_base_dmg : float = 6.0
 const normal_explosion_base_dmg_scale : float = 3.0
 const normal_explosion_on_hit_dmg_scale : float = 3.0
-const meteor_explosion_scale_to_normal_dmg : float = 2.0
-const meteor_larger_explosion_dmg_instance_dmg_multiplier : float = 0.75
+const normal_explosion_pierce : int = 5
+const meteor_explosion_scale_to_normal_dmg : float = 1.5
+const meteor_larger_explosion_dmg_instance_dmg_multiplier : float = 0.5
+
 
 const shot_count_for_meteor : int = 4
 var _current_shot_count_left_for_meteor : int
@@ -187,7 +189,7 @@ func _ready():
 	
 	normal_explosion_attack_module.aoe_sprite_frames = sprite_frames
 	normal_explosion_attack_module.sprite_frames_only_play_once = true
-	normal_explosion_attack_module.pierce = -1
+	normal_explosion_attack_module.pierce = normal_explosion_pierce
 	normal_explosion_attack_module.duration = 0.65
 	normal_explosion_attack_module.damage_repeat_count = 1
 	

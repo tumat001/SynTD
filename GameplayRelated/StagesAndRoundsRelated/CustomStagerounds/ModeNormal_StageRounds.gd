@@ -109,7 +109,7 @@ func set_early_mid_late_breakpoints():
 
 func _get_stageround_0_1():
 	var stageround = StageRound.new(0, 1)
-	stageround.end_of_round_gold = 2
+	stageround.end_of_round_gold = 2   #note: this does nothing
 	stageround.enemy_damage_multiplier = 0.5
 	stageround.enemy_health_multiplier = 0.30
 	stageround.enemy_first_damage = 0

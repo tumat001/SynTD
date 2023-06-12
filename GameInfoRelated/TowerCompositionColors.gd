@@ -707,7 +707,7 @@ func _on_singleton_initialize():
 	# IF CHANGING DESC, CHANGE DESC IN AnaSyn_VioletRB_V02 as well
 	[
 		["Gain |0|: Barrage.", [plain_fragment__ability]],
-		["Barrage: All towers gain |0| and |1| on the next 7 main attacks within 14 seconds.", [plain_fragment__stacking_attk_speed__vrb, plain_fragment__stacking_base_dmg__vrb]],
+		["Barrage: All towers gain |0| and |1| on the next 7 main attacks within 10 seconds.", [plain_fragment__stacking_attk_speed__vrb, plain_fragment__stacking_base_dmg__vrb]],
 		["The last attack on hit also explodes in a cone behind the first enemy hit, dealing |0| of the attack's damage to 4 enemies.", [interpreter_for_dmg_scale__vrb]],
 		"The last attack also consumes all the stacking buffs.",
 		#["Cooldown: |0|.", [plain_fragment__vrbV02_cd]],

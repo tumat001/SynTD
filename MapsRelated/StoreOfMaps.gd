@@ -31,6 +31,7 @@ const range_module__circle_range_color__enchant : Color = Color(0.2, 0.2, 0.2, 0
 const range_module__circle_range_color__passage : Color = Color(0.2, 0.2, 0.2, 0.25)
 const range_module__circle_range_color__mesa : Color = Color(0.2, 0.2, 0.2, 0.25)
 const range_module__circle_range_color__rift : Color = Color(0.2, 0.2, 0.2, 0.30)
+const range_module__circle_range_color__memories : Color = Color(0.2, 0.2, 0.2, 0.30)
 
 const in_map_placable__normal_texture__standard : Texture = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Normal.png")
 const in_map_placable__highlighted_texture__standard : Texture = preload("res://GameElementsRelated/InMapPlacablesRelated/InMapPlacable_Glowing.png")
@@ -47,6 +48,12 @@ const MapsId_Mesa = "%s%s" % [SynTD_HeaderIDName, "Mesa"]
 const MapsId_Passage = "%s%s" % [SynTD_HeaderIDName, "Passage"]
 const MapsId_Enchant = "%s%s" % [SynTD_HeaderIDName, "Enchant"]
 const MapsId_Rift = "%s%s" % [SynTD_HeaderIDName, "Rift"]
+const MapsId_Memories = "%s%s" % [SynTD_HeaderIDName, "Memories"]
+
+const MapsId_TutorialV02_01 = "%s%s" % [SynTD_HeaderIDName, "TutorialV02_01"]
+const MapsId_TutorialV02_02 = "%s%s" % [SynTD_HeaderIDName, "TutorialV02_02"]
+
+
 
 const all_syn_td_map_ids : Array = [
 	MapsId_Glade,
@@ -56,6 +63,15 @@ const all_syn_td_map_ids : Array = [
 	MapsId_Passage,
 	MapsId_Enchant,
 	MapsId_Rift,
+	MapsId_Memories,
+	
+	MapsId_TutorialV02_01,
+]
+
+const all_tutorial_map_ids : Array = [
+	MapsId_TutorialV02_01,
+	MapsId_TutorialV02_02,
+	
 ]
 
 #
@@ -84,6 +100,8 @@ const MapIdsAvailableFromMenu : Array = [
 	MapsId_Passage,
 	
 	MapsId_Mesa,
+	
+	MapsId_Memories,
 ]
 
 # Can be used as the official list of all maps
@@ -196,6 +214,25 @@ func _init():
 			MapIdsAvailableFromMenu.has(rift_id),
 			res_var_info__rift)
 	
+	##
+	var res_var_info__memories = MapResourceVariationInfo.new(
+		range_module__circle_range_color__memories,
+		in_map_placable__normal_texture__standard,
+		in_map_placable__highlighted_texture__standard
+	)
+	
+	var memories_id = MapsId_Memories
+	add_map(memories_id, "Rift",
+			"res://MapsRelated/MapList/Map_Memories/Map_Memories.tscn",
+			self,
+			"_construct_map_type_info__map_memories",
+			MapIdsAvailableFromMenu.has(memories_id),
+			res_var_info__memories)
+	
+	
+	##
+	
+	
 
 func _on_singleton_initialize():
 	pass
@@ -294,6 +331,14 @@ func _construct_map_type_info__map_rift(info : MapTypeInformation):
 	info.map_display_texture = preload("res://MapsRelated/MapList/Map_Rift/Map_Rift_PreviewImage.png")
 	info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
 	info.map_tier = 3
+	return info
+	
+
+func _construct_map_type_info__map_memories(info : MapTypeInformation):
+	info.map_name = "Memories"
+	info.map_display_texture #= todo preload("res://MapsRelated/MapList/Map_Rift/Map_Rift_PreviewImage.png")
+	info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_NORMAL]
+	info.map_tier = 6
 	return info
 	
 

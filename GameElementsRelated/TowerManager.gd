@@ -39,6 +39,9 @@ const FirstTimeTierBuyAesth = preload("res://TowerRelated/CommonTowerParticles/F
 const FTTBA_ShowerParticle = preload("res://TowerRelated/CommonTowerParticles/FirstTimeTierBuyRelated/Particles/FTTBA_ShowerParticle.gd")
 const FTTBA_ShowerParticle_Scene = preload("res://TowerRelated/CommonTowerParticles/FirstTimeTierBuyRelated/Particles/FTTBA_ShowerParticle.tscn")
 
+const MultipleTrailPathsComponent = preload("res://MiscRelated/TrailPathRelated/MultipleTrailPathsComponent.gd")
+
+
 #
 
 enum StoreOfTowerLimitIncId {
@@ -291,7 +294,23 @@ var _attempted_start_tier_aesthetic_display : bool
 var _tier_aesthetic_queue_arr : Array = []
 var _pos_aesthetic_queue_arr : Array = []
 
-#
+
+# trail path related for tower movements
+var color_id_to_trail_path_color_map : Dictionary = {
+	TowerColors.BLACK : Color(0.3, 0.3, 0.3),
+	TowerColors.WHITE : Color(0.9, 0.9, 0.9),
+	TowerColors.BLUE : Color(2/255.0, 57/255.0, 217/255.0),
+	TowerColors.GREEN : Color(30/255.0, 218/255.0, 2/255.0),
+	TowerColors.ORANGE : Color(255/255.0, 128/255.0, 0/255.0),
+	TowerColors.RED : Color(218/255.0, 2/255.0, 5/255.0),
+	TowerColors.VIOLET : Color(163/255.0, 77/255.0, 253/255.0),
+	TowerColors.YELLOW : Color(232/255.0, 253/255.0, 0/255.0),
+	TowerColors.GRAY : Color(0.65, 0.65, 0.65),
+}
+
+var tower_move_trail_paths_component : MultipleTrailPathsComponent
+
+
 
 var non_essential_rng : RandomNumberGenerator
 
@@ -365,9 +384,11 @@ func _ready():
 	for color in TowerColors.get_all_colors():
 		_color_groups.append(str(color))
 	
-	#
+	##
 	
 	_initialize_absorb_ing_particle_pool_components()
+	_initialize_tower_move_trail_path()
+
 
 # Generic things that can branch out to other resp.
 
@@ -447,6 +468,7 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("tower_being_dragged", self, "_tower_being_dragged", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_dropped_from_dragged", self, "_tower_dropped_from_dragged", [], CONNECT_PERSIST)
 	tower_instance.connect("on_attempt_drop_tower_on_placable", self, "_on_attempt_drop_tower_on_placable", [], CONNECT_PERSIST)
+	tower_instance.connect("on_attempt_drop_tower_on_placable_from_prev_placable", self, "_on_attempt_drop_tower_on_placable_from_prev_placable", [], CONNECT_PERSIST)
 	tower_instance.connect("on_tower_transfered_to_placable", self, "_tower_transfered_to_placable", [], CONNECT_PERSIST)
 	tower_instance.connect("on_tower_transfered_in_map_from_bench", self, "_on_tower_transfered_in_map_from_bench", [], CONNECT_PERSIST)
 	tower_instance.connect("on_tower_transfered_on_bench_from_in_map", self, "_on_tower_transfered_on_bench_from_in_map", [], CONNECT_PERSIST)
@@ -1197,6 +1219,7 @@ func if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(arg_tower_to
 
 
 func _on_attempt_drop_tower_on_placable(arg_tower, arg_placable, arg_move_success):
+	# for showing that you need to level up to place more towers
 	if can_show_player_desc_of_level_required:
 		if !game_elements.stage_round_manager.round_started and !is_in_ingredient_mode:
 			if !arg_move_success and is_instance_valid(arg_placable) and arg_placable is InMapAreaPlacable and arg_tower.last_calculated_can_be_placed_in_map and arg_placable.last_calculated_can_be_occupied__ignoring_has_tower_clause:
@@ -1347,8 +1370,7 @@ func _on_tower_limit_shop_offer_selected():
 ######## PARTICLE RELATED
 
 func display_absorbed_ingredient_effects(arg_tier_of_ing : int, arg_pos : Vector2): 
-	if mini_orb_absorb_ing_particle_pool_component == null:
-		_initialize_absorb_ing_particle_pool_components()
+	_initialize_absorb_ing_particle_pool_components()
 	
 	var max_i = 3 #default
 	
@@ -1389,24 +1411,25 @@ func display_absorbed_ingredient_effects(arg_tier_of_ing : int, arg_pos : Vector
 
 
 func _initialize_absorb_ing_particle_pool_components():
-	mini_orb_absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
-	mini_orb_absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
-	mini_orb_absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
-	mini_orb_absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
-	mini_orb_absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_mini_orb_abosrb_ing_particle"
-	mini_orb_absorb_ing_particle_pool_component.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_absorb_ing_particle_properties_when_get_from_pool_after_add_child"
-	
-	central_absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
-	central_absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
-	central_absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
-	central_absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
-	central_absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_central_abosrb_ing_particle"
-	
-	first_time_absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
-	first_time_absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
-	first_time_absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
-	first_time_absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
-	first_time_absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_first_time_ing_particle"
+	if mini_orb_absorb_ing_particle_pool_component == null:
+		mini_orb_absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
+		mini_orb_absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+		mini_orb_absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
+		mini_orb_absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
+		mini_orb_absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_mini_orb_abosrb_ing_particle"
+		mini_orb_absorb_ing_particle_pool_component.func_name_for_setting_attks_sprite_properties_when_get_from_pool_after_add_child = "_set_absorb_ing_particle_properties_when_get_from_pool_after_add_child"
+		
+		central_absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
+		central_absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+		central_absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
+		central_absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
+		central_absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_central_abosrb_ing_particle"
+		
+		first_time_absorb_ing_particle_pool_component = AttackSpritePoolComponent.new()
+		first_time_absorb_ing_particle_pool_component.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+		first_time_absorb_ing_particle_pool_component.node_to_listen_for_queue_free = self
+		first_time_absorb_ing_particle_pool_component.source_for_funcs_for_attk_sprite = self
+		first_time_absorb_ing_particle_pool_component.func_name_for_creating_attack_sprite = "_create_first_time_ing_particle"
 	
 
 func _create_mini_orb_abosrb_ing_particle():
@@ -1638,6 +1661,84 @@ func _display_tier_aesthetic_with_tier_at_pos(arg_tier, arg_pos):
 #	elif arg_tier == 2:
 #		pass
 
+
+##
+
+func _initialize_tower_move_trail_path():
+	tower_move_trail_paths_component = MultipleTrailPathsComponent.new()
+	tower_move_trail_paths_component.trail_type_id = StoreOfTrailPathType.BASIC_TRAIL
+	tower_move_trail_paths_component.node_to_host_trails = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	tower_move_trail_paths_component.connect("on_trail_constructed", self, "_tower_move_trail_constructed", [], CONNECT_PERSIST)
+	tower_move_trail_paths_component.connect("on_trail_before_show", self, "_tower_move_trail_before_show", [], CONNECT_PERSIST)
+	
+	#connect("tower_dropped_from_dragged", self, "_on_tower_dropped_from_dragged__for_trail_path", [], CONNECT_PERSIST)
+
+#func _on_tower_dropped_from_dragged__for_trail_path(arg_tower):
+#	var dest_pos
+#
+
+func _tower_move_trail_constructed(arg_trail):
+	arg_trail.max_trail_length = 14
+	arg_trail.width = 7
+	arg_trail.time_to_reach_final_dest = 0.14
+	arg_trail.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_TOWERS
+	
+
+func _tower_move_trail_before_show(arg_trail, arg_params):
+	arg_trail.trail_color = _get_average_color_of_tower_for_trail_path(arg_params[2])
+	
+	var curr_pos = arg_params[0]
+	var dest_pos = arg_params[1]
+	
+	arg_trail.original_pos = curr_pos
+	arg_trail.final_dest_pos = dest_pos
+	
+
+
+func _on_attempt_drop_tower_on_placable_from_prev_placable(arg_tower, arg_intent_placable, arg_prev_placable, arg_move_success):
+	# for trail path show when moving towers
+	if arg_move_success:
+		var curr_pos = arg_prev_placable.global_position
+		var dest_pos = arg_intent_placable.global_position
+		
+		var trail_path = tower_move_trail_paths_component.create_trail_path([curr_pos, dest_pos, arg_tower])
+		
+
+func _get_average_color_of_tower_for_trail_path(arg_tower) -> Color:
+	var tower_color_ids = arg_tower.get_all_tower_colors(false)
+	
+	var colors : Array
+	
+	if tower_color_ids.size() > 0:
+		for color_id in tower_color_ids:
+			colors.append(color_id_to_trail_path_color_map[color_id])
+		
+	else:
+		colors.append(color_id_to_trail_path_color_map[TowerColors.GRAY])
+	
+	
+	return Color(_get_average_of_mod_r_in_arr(colors), _get_average_of_mod_g_in_arr(colors), _get_average_of_mod_b_in_arr(colors), 0.6)
+
+func _get_average_of_mod_r_in_arr(arg_colors):
+	var total = 0
+	for color in arg_colors:
+		total += color.r
+	
+	return total / arg_colors.size()
+
+func _get_average_of_mod_g_in_arr(arg_colors):
+	var total = 0
+	for color in arg_colors:
+		total += color.g
+	
+	return total / arg_colors.size()
+
+func _get_average_of_mod_b_in_arr(arg_colors):
+	var total = 0
+	for color in arg_colors:
+		total += color.b
+	
+	return total / arg_colors.size()
 
 
 ##############

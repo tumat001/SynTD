@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://GeneralGUIRelated/AlmanacGUI/Subs/Almanac_XTypeInfoPanel/Almanac_XTypeInfoPanel/Almanac_XTypeInfoPanel.tscn" type="PackedScene" id=1]
+[ext_resource path="res://MiscRelated/DialogRelated/Controls/DialogElementControls/Dialog_AlamancXTypeInfoPanel/Dialog_AlmanacXTypeInfoPanel.gd" type="Script" id=2]
+
+[node name="Dialog_AlamancXTypeInfoPanel" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+script = ExtResource( 2 )
+
+[node name="Almanac_XTypeInfoPanel" parent="." instance=ExtResource( 1 )]
+margin_right = 147.0
+margin_bottom = 472.0

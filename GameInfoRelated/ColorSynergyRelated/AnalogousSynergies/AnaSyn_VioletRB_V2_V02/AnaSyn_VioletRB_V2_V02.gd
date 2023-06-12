@@ -49,7 +49,7 @@ var stacking_base_dmg_percent_type : int = PercentType.MAX
 
 const enhanced_main_attack_count : int = 7
 
-const enhanced_attack_total_duration : float = 14.0
+const enhanced_attack_total_duration : float = 10.0
 
 
 var barrage_ability : BaseAbility
@@ -190,8 +190,11 @@ func _attempt_add_effect_to_tower(tower : AbstractTower):
 		
 		connect("bararge_ability_activated", effect, "activate_effects_of_barrage", [], CONNECT_PERSIST)
 		
-		effect.is_timebound = true
-		effect.time_in_seconds = enhanced_attack_total_duration
+		effect.is_timebound = false
+		#effect.time_in_seconds = enhanced_attack_total_duration
+		
+		effect.time_of_buff = enhanced_attack_total_duration
+		effect.status_bar_icon_to_use = preload("res://GameInfoRelated/ColorSynergyRelated/AnalogousSynergies/AnaSyn_VioletRB_V2_V02/Assets/AbilityAssets/VioRB_V02_Barrage_StatusBarIcon.png")
 		
 		
 		tower.add_tower_effect(effect)
