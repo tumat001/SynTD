@@ -21,6 +21,20 @@ var custom_horizontal_size_flags_for_descs : int = SIZE_FILL
 
 #
 
+enum BBCodeAlignMode {
+	LEFT = 0,
+	CENTER = 1,
+	RIGHT = 2,
+}
+var bbcode_align_mode : int
+
+const _bbcode_align_mode_string__left = "%s"
+const _bbcode_align_mode_string__center = "[center]%s[/center]"
+const _bbcode_align_mode_string__right = "[right]%s[/right]"
+
+
+#
+
 onready var row_container = $RowContainer
 
 var tower_for_text_fragment_interpreter
@@ -57,8 +71,18 @@ func update_display():
 #			desc_instance.get_info_from_self_class(desc)
 #		
 		elif desc is Array: # Arr with [<string>, [TextFragmentInterpreters]]
+			var desc_to_use_for_instance = desc[0]
+			if uses_bbcode:
+				if bbcode_align_mode == BBCodeAlignMode.LEFT:
+					desc_to_use_for_instance = _bbcode_align_mode_string__left % desc_to_use_for_instance
+				elif bbcode_align_mode == BBCodeAlignMode.CENTER:
+					desc_to_use_for_instance = _bbcode_align_mode_string__center % desc_to_use_for_instance
+				elif bbcode_align_mode == BBCodeAlignMode.RIGHT:
+					desc_to_use_for_instance = _bbcode_align_mode_string__right % desc_to_use_for_instance
+				
+			
 			desc_instance = TooltipPlainTextDescriptionScene.instance()
-			desc_instance.description = desc[0]
+			desc_instance.description = desc_to_use_for_instance
 			desc_instance._text_fragment_interpreters = desc[1]
 			desc_instance._use_color_for_dark_background = use_color_for_dark_background
 			

@@ -18,3 +18,4 @@ about_button_index_trigger = -1001
 define_tooltip_construction_in_button = false
 
 [connection signal="about_tooltip_construction_requested" from="AdvancedButtonWithTooltip" to="." method="_on_AdvancedButtonWithTooltip_about_tooltip_construction_requested"]
+[connection signal="pressed_mouse_event" from="AdvancedButtonWithTooltip" to="." method="_on_AdvancedButtonWithTooltip_pressed_mouse_event"]

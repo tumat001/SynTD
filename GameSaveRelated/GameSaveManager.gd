@@ -5,7 +5,7 @@ const hotkey_controls_file_path = "user://game_hotkey_controls.save"
 const map_selection_default_vals_file_path = "user://map_selection_default_vals.save"
 const stats_file_path = "user://stats.save"
 const audio_settings_file_path = "user://audio_settings.save"
-
+const map_memories_metadata_file_path = "user://map_memories_metadata.save"
 
 const game_controls_action_name_to_ignore_save : Array = [
 	"ui_select",
@@ -24,7 +24,7 @@ const game_controls_action_name_to_ignore_save : Array = [
 ]
 
 
-# base methods
+#### base methods
 
 func _save_using_dict(arg_dict, arg_file_path, arg_print_err_msg):
 	var save_dict = arg_dict
@@ -237,5 +237,36 @@ func load_stats__of_audio_manager():
 		
 		AudioManager._initialize_save_data_from_scratch()
 		return false
+
+
+####################
+# MAP SPECIFIC THINGS
+####################
+
+func save_map_data__map_memories(arg_save_arr):
+	var err_msg = "Saving error! -- Map memories"
+	_save_using_dict(arg_save_arr, arg_save_arr, err_msg)
+
+
+func load_map_metadata__of_map_memories(arg_map_memories, arg_func_to_call):
+	var load_file = File.new()
+	
+	if load_file.file_exists(map_memories_metadata_file_path):
+		var err_stat = load_file.open(map_memories_metadata_file_path, File.READ)
+		
+		if err_stat != OK:
+			print("Loading error! -- Map memories")
+			return false
+		
+		#GameSettingsManager._load_map_selection_defaults(load_file)
+		arg_map_memories.call(arg_func_to_call, load_file)
+		
+		load_file.close()
+		return true
+		
+	else:
+		return false
+	
+
 
 

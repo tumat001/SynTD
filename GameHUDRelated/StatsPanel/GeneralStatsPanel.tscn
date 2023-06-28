@@ -322,6 +322,12 @@ size_flags_horizontal = 6
 size_flags_vertical = 6
 texture = ExtResource( 11 )
 
+[node name="OtherSmallButtonContainer" type="HBoxContainer" parent="HBoxContainer/Right"]
+margin_left = 70.0
+margin_right = 70.0
+margin_bottom = 19.0
+custom_constants/separation = 0
+
 [node name="RelicGeneralStoreButton" parent="HBoxContainer/Right" instance=ExtResource( 12 )]
 margin_left = 70.0
 margin_right = 89.0

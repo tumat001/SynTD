@@ -21,6 +21,7 @@ enum DecreaseRelicSource {
 	
 	COMBI_TOWER_REDUC_FOR_COMBI,
 	COMBI_TIER_INCLUDE_INC,
+	MAP_SPECIFIC,
 	
 }
 

@@ -22,6 +22,7 @@ enum DecreaseHealthSource {
 	TOWER = 100,
 	ENEMY = 110,
 	SYNERGY = 200,
+	MAP_SPECIFIC = 201,
 	
 }
 

@@ -100,6 +100,8 @@ signal final_ability_potency_changed
 signal final_ability_cd_changed
 signal final_on_hit_damages_changed
 
+signal is_hidden_changed(arg_val)
+
 signal on_ingredient_absorbed(arg_ingredient) # should be used to detect if this tower has absorbed an ing, and not what ings are active
 signal on_sellback_value_changed(new_value)
 
@@ -211,7 +213,7 @@ signal heat_module_should_be_displayed_changed
 #
 
 # needs to be set in _init to work
-var is_tower_hidden : bool = false
+var is_tower_hidden : bool = false setget set_is_tower_hidden
 
 # the sprite shown indicating that the tower will be placed there
 var tower_highlight_sprite : Texture
@@ -2140,6 +2142,9 @@ func _remove_all_timebound_and_countbound_and_roundbound_effects():
 		remove_tower_effect(effect)
 
 
+func remove_all_timebound_and_countbound_and_roundbound_effects__for_outside():
+	_remove_all_timebound_and_countbound_and_roundbound_effects()
+
 # Ingredient Related
 
 # if changing method params, change params in ORB as well
@@ -2927,20 +2932,22 @@ func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 # Tower selection related
 
 func enter_selection_mode(prompter, arg_prompt_tower_checker_predicate_name : String):
-	_is_in_select_tower_prompt = true
-	if prompter.has_method(arg_prompt_tower_checker_predicate_name):
-		var passed_predicate = prompter.call(arg_prompt_tower_checker_predicate_name, self)
-		
-		if !passed_predicate:
-			cannot_apply_pic.visible = true
-		else:
-			cannot_apply_pic.visible = false
+	if !is_tower_hidden:
+		_is_in_select_tower_prompt = true
+		if prompter.has_method(arg_prompt_tower_checker_predicate_name):
+			var passed_predicate = prompter.call(arg_prompt_tower_checker_predicate_name, self)
+			
+			if !passed_predicate:
+				cannot_apply_pic.visible = true
+			else:
+				cannot_apply_pic.visible = false
 
 func exit_selection_mode():
-	_is_in_select_tower_prompt = false
-	
-	if is_instance_valid(cannot_apply_pic):
-		cannot_apply_pic.visible = false
+	if !is_tower_hidden:
+		_is_in_select_tower_prompt = false
+		
+		if is_instance_valid(cannot_apply_pic):
+			cannot_apply_pic.visible = false
 
 
 func _self_is_selected_in_selection_mode():
@@ -3920,6 +3927,14 @@ func update_total_knock_up_layer_size__center_pos__and_relateds():
 	var ave_y = last_calc_center_for_total_size_of_visibles.y
 	var dist_from_zero_to_ave_y = 0 - ave_y
 	last_calc_vec_shift_from_pos_zero_to_top_left = Vector2(last_calc_total_size_of_visibles_in_knockup_layer.x / 2, ave_y - dist_from_zero_to_ave_y)
+
+##
+
+func set_is_tower_hidden(arg_val):
+	is_tower_hidden = arg_val
+	
+	emit_signal("is_hidden_changed", arg_val)
+
 
 # SYNERGIES RELATED -----------------------------------------
 # YELLOW - energy module related

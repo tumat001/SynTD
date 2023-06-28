@@ -74,6 +74,8 @@ var current_lose_streak : int
 enum BlockStartRoundClauseIds {
 	MAP_MANAGER__ENEMY_PATH_CURVE_DEFER = 1   # when the enemy path curve is prevented from chaning (due to other operations that must be completed first).
 	
+	
+	MAP_MEMORIES__IS_IN_SAC_OR_RECALL = 10,
 }
 
 var block_start_round_conditional_clauses : ConditionalClauses

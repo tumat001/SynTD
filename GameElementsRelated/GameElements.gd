@@ -155,7 +155,8 @@ func _ready():
 	# TEST HERE
 	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
 	
-	#map_id = StoreOfMaps.MapsId_Rift
+	#todo
+	#map_id = StoreOfMaps.MapsId_Memories
 	
 	#
 	
@@ -445,6 +446,7 @@ func _ready():
 	stage_round_manager.end_round(true)
 	
 	# FOR TESTING ------------------------------------
+	#todo 
 #	gold_manager.increase_gold_by(46, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
 #	level_manager.current_level = LevelManager.LEVEL_2
 #	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
@@ -461,12 +463,13 @@ func _on_BuySellLevelRollPanel_reroll():
 	
 	shop_manager.roll_towers_in_shop_with_cost()
 	
+	#TODO
 #	if !even:
 #		panel_buy_sell_level_roll.update_new_rolled_towers([
 #			Towers.WAVE,
 #			Towers.PING,
-#			Towers.CHAOS,
-#			Towers.TESLA,
+#			Towers.LEADER,
+#			Towers.BLOSSOM,
 #			Towers.IMPEDE,
 #			Towers.CANNON,
 #		])
@@ -595,6 +598,10 @@ func _unhandled_key_input(event):
 				if right_side_panel.panel_showing == right_side_panel.Panels.TOWER_INFO:
 					tower_info_panel._on_TowerNameAndPicPanel_show_extra_tower_info()
 					any_action_taken = true
+				
+			elif event.is_action("ui_accept"):
+				if input_prompt_manager.can_lock_in_and_end_multiple_tower_selection_via_enter():
+					input_prompt_manager.lock_in_and_end_multiple_tower_selection__from_game_elements()
 			
 			
 		else: # if there is wholescreen gui

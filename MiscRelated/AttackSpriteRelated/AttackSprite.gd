@@ -131,6 +131,7 @@ func _turn_invisible_from_lifetime_end():
 	emit_signal("turned_invisible_from_lifetime_end")
 
 # used by Realmd to make particles invisible "as if lifetime ended"
+# also used in Map_Memories
 func turn_invisible_from_simulated_lifetime_end():
 	_turn_invisible_from_lifetime_end()
 

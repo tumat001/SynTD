@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://MiscRelated/GUI_Category_Related/AdvancedButton/AdvancedButtonWithTooltip.tscn" type="PackedScene" id=1]
+[ext_resource path="res://GameHUDRelated/StatsPanel/SmallButtonRelated/GenStats_SmallButton.gd" type="Script" id=2]
+
+[node name="GenStats_SmallButton" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 2 )
+
+[node name="AdvancedButtonWithTooltip" parent="." instance=ExtResource( 1 )]
+about_button_index_trigger = -1001
+define_tooltip_construction_in_button = true
+
+[connection signal="pressed_mouse_event" from="AdvancedButtonWithTooltip" to="." method="_on_AdvancedButtonWithTooltip_pressed_mouse_event"]

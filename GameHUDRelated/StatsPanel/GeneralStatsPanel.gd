@@ -10,7 +10,11 @@ const GoldBackgroundGlow_Dec_Pic = preload("res://GameHUDRelated/StatsPanel/Asse
 const LevelUpBackgroundGlow_Inc_Pic = preload("res://GameHUDRelated/StatsPanel/Assets/LevelIndicatorBackground_Glow_LightBlue.png")
 const LevelUpBackgroundGlow_Dec_Pic = preload("res://GameHUDRelated/StatsPanel/Assets/LevelIndicatorBackground_Glow_Red.png")
 
+const GenStats_SmallButton = preload("res://GameHUDRelated/StatsPanel/SmallButtonRelated/GenStats_SmallButton.gd")
+const GenStats_SmallButton_Scene = preload("res://GameHUDRelated/StatsPanel/SmallButtonRelated/GenStats_SmallButton.tscn")
 
+
+##
 
 const background_glow_pic_max_mod_a : float = 0.3
 
@@ -80,6 +84,9 @@ onready var round_damage_stats_button = $HBoxContainer/Right/RoundDamageStatsBut
 
 onready var relic_general_store_button = $HBoxContainer/Right/RelicGeneralStoreButton
 
+#
+
+onready var other_small_button_container = $HBoxContainer/Right/OtherSmallButtonContainer
 
 #
 
@@ -282,5 +289,19 @@ func _end_gold_gradient_tint_show():
 	tweener.tween_property(gold_gradient_control_tint, "modulate:a", 0.0, gold_gradient_fade_duration_on_end)
 	
 	_is_showing_gold_gradient = false
+
+
+############
+
+
+func construct_small_button_using_cons_params(arg_params : GenStats_SmallButton.ConstructorParams):
+	var button = GenStats_SmallButton_Scene.instance()
+	
+	other_small_button_container.add_child(button)
+	
+	button.set_prop_based_on_constructor(arg_params)
+	
+	return button
+
 
 

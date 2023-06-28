@@ -22,6 +22,7 @@ enum DecreaseGoldSource {
 	LEVEL_UP,
 	SHOP_ROLL,
 	SYNERGY,
+	MAP_SPECIFIC,
 	
 }
 

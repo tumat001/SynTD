@@ -27,10 +27,16 @@ class ConstructorParams:
 	
 	var on_click_func_source
 	var on_click_func_name
+	var on_click_func_params
 	
 	
 	var condition_func_source
 	var condition_func_name
+	var condition_func_param
+	
+	
+	var condition_changed_signal_source
+	var condition_changed_signal_name
 	
 	var row_index : int = ROW_NORMAL
 
@@ -42,16 +48,21 @@ var descriptions_func_name
 
 var header_left_text : String
 
-var image_normal : Texture
-var image_hovered : Texture
+var image_normal : Texture setget set_image_normal
+var image_hovered : Texture setget set_image_hovered
 
 
 var on_click_func_source
 var on_click_func_name
+var on_click_func_params
 
 
 var _condition_func_source
 var _condition_func_name
+var _condition_func_param
+
+var _condition_changed_signal_source
+var _condition_changed_signal_name
 
 #
 
@@ -72,8 +83,10 @@ func set_prop_based_on_constructor(arg_constructor : ConstructorParams):
 	
 	on_click_func_source = arg_constructor.on_click_func_source
 	on_click_func_name = arg_constructor.on_click_func_name
+	on_click_func_params = arg_constructor.on_click_func_params
 	
-	set_condition_func_source_and_name(arg_constructor.condition_func_source, arg_constructor.condition_func_name)
+	set_condition_func_source_and_name_and_param(arg_constructor.condition_func_source, arg_constructor.condition_func_name, arg_constructor.condition_func_param)
+	set_condition_changed_signal__for_update(arg_constructor.condition_changed_signal_source, arg_constructor.condition_changed_signal_name)
 
 ######
 
@@ -99,9 +112,10 @@ func set_image_hovered(arg_val):
 
 ###
 
-func set_condition_func_source_and_name(arg_func_source, arg_func_name):
+func set_condition_func_source_and_name_and_param(arg_func_source, arg_func_name, arg_condition_func_param):
 	_condition_func_source = arg_func_source
 	_condition_func_name = arg_func_name
+	_condition_func_param = arg_condition_func_param
 	
 	update_is_enabled_based_on_conditions()
 
@@ -109,7 +123,7 @@ func update_is_enabled_based_on_conditions():
 	var is_passed = true
 	
 	if _condition_func_source != null:
-		is_passed = _condition_func_source.call(_condition_func_name)
+		is_passed = _condition_func_source.call(_condition_func_name, _condition_func_param)
 	
 	####
 	
@@ -118,6 +132,20 @@ func update_is_enabled_based_on_conditions():
 		modulate = modulate_enabled
 	else:
 		modulate = modulate_disabled
+
+
+#
+
+func set_condition_changed_signal__for_update(arg_source, arg_signal_name):
+	if _condition_changed_signal_source != null:
+		_condition_changed_signal_source.disconnect(_condition_changed_signal_name, self, "update_is_enabled_based_on_conditions")
+	
+	_condition_changed_signal_source = arg_source
+	_condition_changed_signal_name = arg_signal_name
+	
+	if _condition_changed_signal_source != null and _condition_changed_signal_name.length() != 0:
+		_condition_changed_signal_source.connect(_condition_changed_signal_name, self, "update_is_enabled_based_on_conditions", [], CONNECT_PERSIST)
+
 
 ######
 
@@ -132,4 +160,11 @@ func _on_AdvancedButtonWithTooltip_about_tooltip_construction_requested():
 	a_tooltip.header_left_text = header_left_text
 	
 	button.display_requested_about_tooltip(a_tooltip)
+
+
+
+func _on_AdvancedButtonWithTooltip_pressed_mouse_event(event):
+	if on_click_func_source != null and !button.disabled:
+		on_click_func_source.call(on_click_func_name, on_click_func_params)
+
 

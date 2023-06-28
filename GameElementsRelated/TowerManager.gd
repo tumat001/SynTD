@@ -106,6 +106,8 @@ signal tower_info_panel_shown(arg_tower_associated)
 
 signal tower_last_calculated_untargetability_changed(arg_val, arg_tower)
 
+signal tower_is_hidden_changed(arg_tower, arg_val)
+
 #
 
 const base_ing_limit_of_tower : int = 1
@@ -444,8 +446,6 @@ func _tower_can_contribute_to_synergy_color_count_changed(arg_val, arg_tower):
 	
 
 
-
-
 # Adding tower as child of this to monitor it
 func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("register_ability", self, "_register_ability_from_tower", [], CONNECT_PERSIST)
@@ -495,6 +495,8 @@ func add_tower(tower_instance : AbstractTower):
 	tower_instance.connect("ingredients_absorbed_changed", self, "_emit_tower_ingredients_absorbed_changed", [tower_instance], CONNECT_PERSIST)
 	
 	tower_instance.connect("last_calculated_untargetability_changed", self, "_emit_last_calculated_untargetability_changed", [tower_instance], CONNECT_PERSIST)
+	
+	tower_instance.connect("is_hidden_changed", self, "_on_tower_is_hidden_changed", [tower_instance], CONNECT_PERSIST)
 	
 	connect("ingredient_mode_turned_into", tower_instance, "_set_is_in_ingredient_mode", [], CONNECT_PERSIST)
 	connect("show_ingredient_acceptability", tower_instance, "show_acceptability_with_ingredient", [], CONNECT_PERSIST)
@@ -1293,6 +1295,9 @@ func _emit_tower_ingredients_absorbed_changed(arg_tower):
 func _emit_last_calculated_untargetability_changed(arg_val, arg_tower):
 	emit_signal("tower_last_calculated_untargetability_changed", arg_val, arg_tower)
 
+
+func _on_tower_is_hidden_changed(arg_val, arg_tower):
+	emit_signal("tower_is_hidden_changed", arg_tower, arg_val)
 
 #
 

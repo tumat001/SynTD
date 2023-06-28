@@ -178,4 +178,3 @@ func set_custom_button_icon(arg_icon):
 		if is_inside_tree():
 			button_icon.visible = false
 
-
