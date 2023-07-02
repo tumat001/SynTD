@@ -12,7 +12,6 @@ const BaseTowerSpecificTooltip_Scene = preload("res://MiscRelated/GUI_Category_R
 
 const ESCAPABLE_BY_ESC : bool = false
 
-#todo MAKE tooltip when hovering select later ("Use this if you want to view the battlefield, buy towers, etc.)
 #todo then make a mini dialog near the GSSB (small button) to indicate the need to do sacrifice action
 #todo hide/disable round start (and its button), and possibly add the ability to replace the start button to the "sacrifice"/"recall" buttons
 

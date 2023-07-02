@@ -1,0 +1,153 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/MemoryRecall/MemoryRecallGUI.gd" type="Script" id=1]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=2]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/MemoryRecall/Subs/MemoryTypeRecallPanel/MemoryTypeRecallPanel.tscn" type="PackedScene" id=3]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/Assets/FillsAndBorders/DarkRed_Highlighted_ButtonFill_4x4.png" type="Texture" id=4]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/Assets/FillsAndBorders/DarkRed_ButtonFill_4x4.png" type="Texture" id=5]
+[ext_resource path="res://MiscRelated/PlayerGUI_Category_Related/ButtonStandard/PlayerGUI_ButtonStandard.tscn" type="PackedScene" id=6]
+
+[sub_resource type="DynamicFont" id=1]
+size = 26
+font_data = ExtResource( 2 )
+
+[sub_resource type="DynamicFont" id=2]
+font_data = ExtResource( 2 )
+
+[node name="MemoryRecallGUI" type="Control"]
+margin_right = 960.0
+margin_bottom = 540.0
+mouse_filter = 2
+script = ExtResource( 1 )
+
+[node name="ParticlesContainer" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+mouse_filter = 2
+
+[node name="MainContainer" type="MarginContainer" parent="."]
+margin_right = 960.0
+margin_bottom = 540.0
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer"]
+margin_right = 960.0
+margin_bottom = 540.0
+mouse_filter = 2
+custom_constants/separation = 45
+
+[node name="HeaderContainer" type="MarginContainer" parent="MainContainer/VBoxContainer"]
+margin_right = 960.0
+margin_bottom = 48.0
+mouse_filter = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/VBoxContainer/HeaderContainer"]
+margin_right = 960.0
+margin_bottom = 48.0
+mouse_filter = 2
+
+[node name="Header" type="Label" parent="MainContainer/VBoxContainer/HeaderContainer/VBoxContainer"]
+margin_right = 960.0
+margin_bottom = 27.0
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Recall"
+align = 1
+
+[node name="Header2" type="Label" parent="MainContainer/VBoxContainer/HeaderContainer/VBoxContainer"]
+margin_top = 31.0
+margin_right = 960.0
+margin_bottom = 48.0
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+custom_fonts/font = SubResource( 2 )
+text = "You have sacrificed for your future self."
+align = 1
+
+[node name="MainContainer" type="MarginContainer" parent="MainContainer/VBoxContainer"]
+margin_top = 93.0
+margin_right = 960.0
+margin_bottom = 350.0
+mouse_filter = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+custom_constants/margin_top = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/VBoxContainer/MainContainer"]
+margin_left = 393.0
+margin_right = 566.0
+margin_bottom = 257.0
+mouse_filter = 2
+size_flags_horizontal = 6
+
+[node name="MemoryRecallPanel" parent="MainContainer/VBoxContainer/MainContainer/HBoxContainer" instance=ExtResource( 3 )]
+margin_right = 173.0
+margin_bottom = 257.0
+
+[node name="DecisionContainer" type="MarginContainer" parent="MainContainer/VBoxContainer"]
+margin_top = 395.0
+margin_right = 960.0
+margin_bottom = 540.0
+mouse_filter = 2
+size_flags_vertical = 10
+custom_constants/margin_bottom = 30
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/VBoxContainer/DecisionContainer"]
+margin_right = 960.0
+margin_bottom = 115.0
+mouse_filter = 2
+custom_constants/separation = 15
+
+[node name="Header2" type="Label" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer"]
+margin_right = 960.0
+margin_bottom = 17.0
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+custom_fonts/font = SubResource( 2 )
+text = "Do you:"
+align = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer"]
+margin_left = 410.0
+margin_top = 32.0
+margin_right = 550.0
+margin_bottom = 63.0
+mouse_filter = 2
+size_flags_horizontal = 6
+custom_constants/separation = 40
+
+[node name="AcceptContainer" type="MarginContainer" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer"]
+margin_right = 50.0
+margin_bottom = 31.0
+mouse_filter = 2
+size_flags_horizontal = 3
+
+[node name="AcceptButton" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer/AcceptContainer" instance=ExtResource( 6 )]
+margin_bottom = 31.0
+mouse_filter = 0
+text_for_label = "Accept"
+
+[node name="DeclineContainer" type="MarginContainer" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer"]
+margin_left = 90.0
+margin_right = 140.0
+margin_bottom = 31.0
+mouse_filter = 2
+size_flags_horizontal = 3
+
+[node name="DeclineButton" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer/DeclineContainer" instance=ExtResource( 6 )]
+margin_bottom = 31.0
+mouse_filter = 0
+text_for_label = "Decline"
+background_texture_normal = ExtResource( 5 )
+background_texture_highlighted = ExtResource( 4 )
+
+[node name="SacrificedAlreadyLabel" type="Label" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer"]
+margin_top = 78.0
+margin_right = 960.0
+margin_bottom = 115.0
+custom_colors/font_color = Color( 0.741176, 0.741176, 0.741176, 1 )
+custom_fonts/font = SubResource( 2 )
+text = "Since you already made a sacrifice for this round,
+this sacrifice will be overriden in the next playthrough."
+align = 1
+
+[connection signal="on_button_released_with_button_left" from="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer/AcceptContainer/AcceptButton" to="." method="_on_AcceptButton_on_button_released_with_button_left"]
+[connection signal="on_button_released_with_button_left" from="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer/DeclineContainer/DeclineButton" to="." method="_on_DeclineButton_on_button_released_with_button_left"]

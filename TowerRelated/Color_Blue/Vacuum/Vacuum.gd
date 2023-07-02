@@ -182,7 +182,7 @@ func _construct_and_register_ability():
 
 func _initialize_particle_attk_sprite_pool():
 	suck_particle_attk_sprite_pool = AttackSpritePoolComponent.new()
-	suck_particle_attk_sprite_pool.node_to_parent_attack_sprites = get_tree().get_root()
+	suck_particle_attk_sprite_pool.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
 	suck_particle_attk_sprite_pool.node_to_listen_for_queue_free = self
 	suck_particle_attk_sprite_pool.source_for_funcs_for_attk_sprite = self
 	suck_particle_attk_sprite_pool.func_name_for_creating_attack_sprite = "_create_suck_particle"
@@ -278,7 +278,8 @@ func _end_suck():
 func _knock_all_enemies_in_range():
 	var particle = VacuumStunCircleParticle_Scene.instance()
 	particle.global_position = global_position
-	get_tree().get_root().add_child(particle)
+	#get_tree().get_root().add_child(particle)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(particle)
 	
 	var enemies_in_range = range_module.get_enemies_in_range__not_affecting_curr_enemies_in_range()
 	for enemy in enemies_in_range:

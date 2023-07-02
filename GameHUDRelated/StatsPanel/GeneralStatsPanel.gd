@@ -70,16 +70,17 @@ onready var gold_amount_label = $HBoxContainer/Middle/GoldPanel/MarginContainer3
 onready var gold_button = $HBoxContainer/Middle/GoldPanel/GoldButton
 onready var gold_background_glow_texture_rect = $HBoxContainer/Middle/GoldPanel/GoldBackgroundGlowTexture
 onready var gold_gradient_control_tint = $HBoxContainer/Middle/GoldPanel/GoldControlGradientTint
+onready var gold_panel = $HBoxContainer/Middle/GoldPanel
 
 onready var streak_panel = $HBoxContainer/Middle/StreakPanel
 
 onready var level_label = $HBoxContainer/LeftSide/LevelPanel/MarginContainer3/MarginContainer2/LevelLabel
 onready var level_background_glow_texture_rect = $HBoxContainer/LeftSide/LevelPanel/MarginContainer/LevelUpBackgroundGlowTexture
 
+onready var relic_panel = $HBoxContainer/Right/RelicPanel
 onready var relic_label = $HBoxContainer/Right/RelicPanel/MarginContainer3/HBoxContainer/MarginContainer2/RelicAmountLabel
 onready var shop_percentage_stat_panel = $HBoxContainer/LeftSide/ShopPercentStatsPanel
 
-onready var relic_panel = $HBoxContainer/Right/RelicPanel
 onready var round_damage_stats_button = $HBoxContainer/Right/RoundDamageStatsButton
 
 onready var relic_general_store_button = $HBoxContainer/Right/RelicGeneralStoreButton

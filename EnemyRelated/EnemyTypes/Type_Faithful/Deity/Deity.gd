@@ -417,11 +417,11 @@ func _on_enemy_entered_range_d(enemy):
 		grant_revive_ability_activation_clauses.remove_clause(no_enemy_in_range_clause_id)
 		taunt_ability_activation_clauses.remove_clause(no_enemy_in_range_clause_id)
 		
-		if !enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_faithful_killed_with_no_more_revives"):
-			enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_faithful_killed_with_no_more_revives", [])
+		if !enemy.is_connected("tree_exiting", self, "_on_faithful_killed_with_no_more_revives"):
+			enemy.connect("tree_exiting", self, "_on_faithful_killed_with_no_more_revives", [enemy])
 
 
-func _on_faithful_killed_with_no_more_revives(damage_instance_report, arg_enemy):
+func _on_faithful_killed_with_no_more_revives(arg_enemy):#damage_instance_report, arg_enemy):
 	_on_enemy_left_range_d(arg_enemy)
 
 func _on_enemy_left_range_d(enemy):
@@ -442,8 +442,8 @@ func _on_enemy_left_range_d(enemy):
 			grant_revive_ability_activation_clauses.attempt_insert_clause(no_enemy_in_range_clause_id)
 			taunt_ability_activation_clauses.attempt_insert_clause(no_enemy_in_range_clause_id)
 		
-		if enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_faithful_killed_with_no_more_revives"):
-			enemy.disconnect("on_killed_by_damage_with_no_more_revives", self, "_on_faithful_killed_with_no_more_revives")
+		if enemy.is_connected("tree_exiting", self, "_on_faithful_killed_with_no_more_revives"):
+			enemy.disconnect("tree_exiting", self, "_on_faithful_killed_with_no_more_revives")
 
 
 #

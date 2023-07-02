@@ -460,10 +460,10 @@ func add_tower(tower_instance : AbstractTower):
 	
 	add_child(tower_instance)
 	
-	if input_prompt_manager.is_in_tower_selection_mode():
-		tower_instance.enter_selection_mode(input_prompt_manager._current_prompter, input_prompt_manager._current_prompt_tower_checker_predicate_name)
-	else:
-		tower_instance.exit_selection_mode()
+#	if input_prompt_manager.is_in_tower_selection_mode():
+#		tower_instance.enter_selection_mode(input_prompt_manager._current_prompter, input_prompt_manager._current_prompt_tower_checker_predicate_name)
+#	else:
+#		tower_instance.exit_selection_mode()
 	
 	tower_instance.connect("tower_being_dragged", self, "_tower_being_dragged", [], CONNECT_PERSIST)
 	tower_instance.connect("tower_dropped_from_dragged", self, "_tower_dropped_from_dragged", [], CONNECT_PERSIST)
@@ -539,7 +539,12 @@ func _on_after_tower_added(tower_instance : AbstractTower):
 			_first_time_tower_tier_acquired_status[tower_tier] = false
 			
 			_add_to_tier_aesth_queue__and_attempt_start_display(tower_tier, tower_instance.global_position)
-
+		
+		
+		if input_prompt_manager.is_in_tower_selection_mode():
+			tower_instance.enter_selection_mode(input_prompt_manager._current_prompter, input_prompt_manager._current_prompt_tower_checker_predicate_name)
+		else:
+			tower_instance.exit_selection_mode()
 
 # Color and grouping related
 

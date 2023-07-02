@@ -156,7 +156,7 @@ func _ready():
 	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
 	
 	#todo
-	#map_id = StoreOfMaps.MapsId_Memories
+	map_id = StoreOfMaps.MapsId_Memories
 	
 	#
 	
@@ -259,7 +259,6 @@ func _ready():
 	tower_manager.level_manager = level_manager
 	tower_manager.left_panel = left_panel
 	tower_manager.relic_manager = relic_manager
-	
 	
 	# syn manager
 	synergy_manager.tower_manager = tower_manager
@@ -447,9 +446,9 @@ func _ready():
 	
 	# FOR TESTING ------------------------------------
 	#todo 
-#	gold_manager.increase_gold_by(46, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-#	level_manager.current_level = LevelManager.LEVEL_2
-#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+	gold_manager.increase_gold_by(46, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+	level_manager.current_level = LevelManager.LEVEL_2
+	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -461,33 +460,33 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	shop_manager.roll_towers_in_shop_with_cost()
+	#shop_manager.roll_towers_in_shop_with_cost()
 	
 	#TODO
-#	if !even:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.WAVE,
-#			Towers.PING,
-#			Towers.LEADER,
-#			Towers.BLOSSOM,
-#			Towers.IMPEDE,
-#			Towers.CANNON,
-#		])
-#	else:
-#		panel_buy_sell_level_roll.update_new_rolled_towers([
-#			Towers.PESTILENCE,
-#			Towers.PING,
-#			Towers.WYVERN,
-#			Towers.OUTREACH,
-#			Towers.SPRINKLER,
-#			Towers.SPIKE
-#		])
-#	even = !even
+	if !even:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.WAVE,
+			Towers.PING,
+			Towers.LEADER,
+			Towers.BLOSSOM,
+			Towers.IMPEDE,
+			Towers.CANNON,
+		])
+	else:
+		panel_buy_sell_level_roll.update_new_rolled_towers([
+			Towers.PESTILENCE,
+			Towers.PING,
+			Towers.WYVERN,
+			Towers.OUTREACH,
+			Towers.SPRINKLER,
+			Towers.SPIKE
+		])
+	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):
 	if !tower_inventory_bench.is_bench_full():
-		tower_inventory_bench.insert_tower(tower_id, tower_inventory_bench._find_empty_slot(), true)
+		tower_inventory_bench.insert_tower(tower_id, tower_inventory_bench.find_empty_slot__for_outside(), true)
 
 
 # Inputs related

@@ -1,0 +1,195 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/Assets/FillsAndBorders/BrownBackground_4x4.png" type="Texture" id=1]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/Assets/FillsAndBorders/DarkRedBackground_4x4.png" type="Texture" id=2]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/Assets/FillsAndBorders/DarkGrayLine_4x4.png" type="Texture" id=3]
+[ext_resource path="res://Fonts/consolas/CONSOLA.TTF" type="DynamicFontData" id=4]
+[ext_resource path="res://GameHUDRelated/Tooltips/TooltipBodyConstructors/TooltipBody.tscn" type="PackedScene" id=5]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/Shared/MemoryTypeRecallDetailsPanel/MemoryTypeRecallDetailsPanel.gd" type="Script" id=6]
+[ext_resource path="res://GameHUDRelated/TowerIconCollectionPanel/TowerIconCollectionPanel.tscn" type="PackedScene" id=7]
+
+[sub_resource type="DynamicFont" id=1]
+outline_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+font_data = ExtResource( 4 )
+
+[node name="MemoryTypeRecallDetailsPanel" type="MarginContainer"]
+margin_right = 300.0
+margin_bottom = 74.0
+mouse_filter = 2
+script = ExtResource( 6 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_right = 300.0
+margin_bottom = 78.0
+
+[node name="MainInfoPanel" type="MarginContainer" parent="VBoxContainer"]
+margin_right = 300.0
+margin_bottom = 39.0
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="VBoxContainer/MainInfoPanel"]
+margin_right = 300.0
+margin_bottom = 39.0
+mouse_filter = 2
+texture = ExtResource( 1 )
+stretch_mode = 2
+
+[node name="Left" type="TextureRect" parent="VBoxContainer/MainInfoPanel"]
+margin_right = 4.0
+margin_bottom = 39.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="Right" type="TextureRect" parent="VBoxContainer/MainInfoPanel"]
+margin_left = 296.0
+margin_right = 300.0
+margin_bottom = 39.0
+mouse_filter = 2
+size_flags_horizontal = 10
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="Up" type="TextureRect" parent="VBoxContainer/MainInfoPanel"]
+margin_right = 300.0
+margin_bottom = 4.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="Down" type="TextureRect" parent="VBoxContainer/MainInfoPanel"]
+margin_top = 35.0
+margin_right = 300.0
+margin_bottom = 39.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/MainInfoPanel"]
+margin_right = 300.0
+margin_bottom = 39.0
+mouse_filter = 2
+custom_constants/margin_right = 7
+custom_constants/margin_top = 7
+custom_constants/margin_left = 7
+custom_constants/margin_bottom = 7
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MainInfoPanel/MarginContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 293.0
+margin_bottom = 32.0
+mouse_filter = 2
+
+[node name="NameLabel" type="Label" parent="VBoxContainer/MainInfoPanel/MarginContainer/VBoxContainer"]
+margin_left = 84.0
+margin_right = 201.0
+margin_bottom = 17.0
+size_flags_horizontal = 6
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "<Sample Name>"
+
+[node name="MainTooltipBody" parent="VBoxContainer/MainInfoPanel/MarginContainer/VBoxContainer" instance=ExtResource( 5 )]
+margin_top = 21.0
+margin_right = 286.0
+margin_bottom = 21.0
+size_flags_horizontal = 5
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+default_font_size = 14
+
+[node name="TowerIconMarginer" type="MarginContainer" parent="VBoxContainer/MainInfoPanel/MarginContainer/VBoxContainer"]
+margin_top = 25.0
+margin_right = 286.0
+margin_bottom = 25.0
+
+[node name="TowerIconCollectionPanel" parent="VBoxContainer/MainInfoPanel/MarginContainer/VBoxContainer/TowerIconMarginer" instance=ExtResource( 7 )]
+margin_right = 286.0
+margin_bottom = 0.0
+
+[node name="WarningInfoPanel" type="MarginContainer" parent="VBoxContainer"]
+margin_top = 43.0
+margin_right = 300.0
+margin_bottom = 78.0
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="VBoxContainer/WarningInfoPanel"]
+margin_right = 300.0
+margin_bottom = 35.0
+mouse_filter = 2
+texture = ExtResource( 2 )
+stretch_mode = 2
+
+[node name="Left" type="TextureRect" parent="VBoxContainer/WarningInfoPanel"]
+margin_right = 4.0
+margin_bottom = 35.0
+mouse_filter = 2
+size_flags_horizontal = 2
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="Right" type="TextureRect" parent="VBoxContainer/WarningInfoPanel"]
+margin_left = 296.0
+margin_right = 300.0
+margin_bottom = 35.0
+mouse_filter = 2
+size_flags_horizontal = 10
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="Up" type="TextureRect" parent="VBoxContainer/WarningInfoPanel"]
+margin_right = 300.0
+margin_bottom = 4.0
+mouse_filter = 2
+size_flags_vertical = 2
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="Down" type="TextureRect" parent="VBoxContainer/WarningInfoPanel"]
+margin_top = 31.0
+margin_right = 300.0
+margin_bottom = 35.0
+mouse_filter = 2
+size_flags_vertical = 10
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/WarningInfoPanel"]
+margin_right = 300.0
+margin_bottom = 35.0
+mouse_filter = 2
+custom_constants/margin_right = 7
+custom_constants/margin_top = 7
+custom_constants/margin_left = 7
+custom_constants/margin_bottom = 7
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/WarningInfoPanel/MarginContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 293.0
+margin_bottom = 28.0
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/WarningInfoPanel/MarginContainer/VBoxContainer"]
+margin_right = 286.0
+margin_bottom = 17.0
+
+[node name="WarningHeaderLabel" type="Label" parent="VBoxContainer/WarningInfoPanel/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_left = 120.0
+margin_right = 165.0
+margin_bottom = 17.0
+size_flags_horizontal = 6
+custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+custom_fonts/font = SubResource( 1 )
+text = "Note:"
+
+[node name="WarningTooltipBody" parent="VBoxContainer/WarningInfoPanel/MarginContainer/VBoxContainer" instance=ExtResource( 5 )]
+margin_top = 21.0
+margin_right = 286.0
+margin_bottom = 21.0
+size_flags_horizontal = 5
+default_font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
+default_font_size = 14

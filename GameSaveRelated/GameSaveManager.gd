@@ -245,7 +245,7 @@ func load_stats__of_audio_manager():
 
 func save_map_data__map_memories(arg_save_arr):
 	var err_msg = "Saving error! -- Map memories"
-	_save_using_dict(arg_save_arr, arg_save_arr, err_msg)
+	_save_using_dict(arg_save_arr, map_memories_metadata_file_path, err_msg)
 
 
 func load_map_metadata__of_map_memories(arg_map_memories, arg_func_to_call):

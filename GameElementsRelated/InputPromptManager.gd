@@ -254,8 +254,9 @@ func _remove_tower_from_multiple_selection_list(tower):
 	if _tower_to_IM_particle_map.has(tower):
 		var particle = _tower_to_IM_particle_map[tower]
 		
-		_tower_to_IM_particle_map.erase(particle)
-		particle.turn_invisible_from_simulated_lifetime_end()
+		_tower_to_IM_particle_map.erase(tower)
+		if is_instance_valid(particle):
+			particle.turn_invisible_from_simulated_lifetime_end()
 	
 	_update_properties_and_actions_based_on_selected_tower_count()
 
@@ -335,7 +336,10 @@ func clean_up_selection():
 		emit_signal("tower_selection_ended")
 		
 		_hide_selection_notif_panel()
-
+		
+		for particle in _tower_to_IM_particle_map.values():
+			particle.turn_invisible_from_simulated_lifetime_end()
+		_tower_to_IM_particle_map.clear()
 
 func is_current_promter_arg(arg) -> bool:
 	return _current_prompter == arg
@@ -384,17 +388,25 @@ func _update_selection_notif_panel__for_multiple_tower_seleciton():
 
 func _set_count_msg_line__for_multiple_tower_selection(arg_original_msg : Array, arg_index_to_insert : int = -1):
 	var index = arg_index_to_insert
+	var is_insert : bool = false
 	if arg_index_to_insert == -1:
 		index = arg_original_msg.size()
+		is_insert = true
 	
 	if _max_select_count > 0:
 		var msg_line = ["Selected: %s / %s" % [_current_towers_selected_from_multiple_select.size(), _max_select_count], []]
-		arg_original_msg.insert(index, msg_line)
+		if is_insert:
+			arg_original_msg.insert(index, msg_line)
+		else:
+			arg_original_msg[index] = msg_line
 		_min_max_selection_notif_panel_desc_index = index
 		
 	elif _min_select_count > 0:
 		var msg_line = ["Selected: %s. Minimum of %s." % [_current_towers_selected_from_multiple_select.size(), _min_select_count], []]
-		arg_original_msg.insert(index, msg_line)
+		if is_insert:
+			arg_original_msg.insert(index, msg_line)
+		else:
+			arg_original_msg[index] = msg_line
 		_min_max_selection_notif_panel_desc_index = index
 		
 	
@@ -404,7 +416,7 @@ func _set_count_msg_line__for_multiple_tower_selection(arg_original_msg : Array,
 # 
 
 func is_in_tower_selection_mode() -> bool:
-	return current_selection_mode == SelectionMode.TOWER
+	return current_selection_mode == SelectionMode.TOWER or current_selection_mode == SelectionMode.MULTIPLE_TOWERS 
 
 
 func is_in_selection_mode() -> bool:

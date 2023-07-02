@@ -200,6 +200,12 @@ signal last_calculated_is_combinable_changed(arg_val)
 
 signal layer_on_terrain_changed(arg_old_layer, arg_new_layer)
 
+
+# Selectable related
+
+signal last_calculated_is_selectable_changed(arg_val)
+
+
 # syn signals
 
 signal energy_module_attached
@@ -283,6 +289,18 @@ var _is_in_select_tower_prompt : bool = false
 
 var is_showing_ranges : bool
 
+
+
+enum IsSelectableClauseIds {
+	HIDDEN = 1,
+	IN_QUEUE_FREE = 2,
+	
+	MAP_MEMORIES__IN_SAC = 10,
+	
+}
+
+var is_selectable_conditional_clauses : ConditionalClauses
+var last_calculated_is_selectable : bool
 
 #####
 
@@ -402,6 +420,8 @@ enum CanBeSoldClauses {
 	
 	DOM_SYN_RED__PACT_HOLOGRAPHIC_TOWERS = 1,
 	VIO_TOWER__BOUNDED_CLONE = 2,
+	
+	MAP_MEMORIES__IN_SAC = 3,
 	
 	END_OF_GAME = 100,
 	
@@ -687,6 +707,13 @@ func _init():
 	block_is_combinable_clauses.connect("clause_inserted", self, "_on_block_is_combinable_clause_changed", [], CONNECT_PERSIST)
 	block_is_combinable_clauses.connect("clause_removed", self, "_on_block_is_combinable_clause_changed", [], CONNECT_PERSIST)
 	
+	is_selectable_conditional_clauses = ConditionalClauses.new()
+	is_selectable_conditional_clauses.connect("clause_inserted", self, "_on_is_selectable_conditional_clauses_changed", [], CONNECT_PERSIST)
+	is_selectable_conditional_clauses.connect("clause_removed", self, "_on_is_selectable_conditional_clauses_changed", [], CONNECT_PERSIST)
+	if is_tower_hidden:
+		is_selectable_conditional_clauses.attempt_insert_clause(IsSelectableClauseIds.HIDDEN)
+	
+	
 	_update_last_calculated_contributing_to_synergy()
 	_update_last_calculated_disabled_from_attacking()
 	_update_untargetability_state()
@@ -700,6 +727,7 @@ func _init():
 	_update_last_calculated_ignore_ing_limit__for_applying()
 	_update_last_calc_benefits_from_combination_effects()
 	_update_last_calc_is_combinable()
+	_update_last_calc_is_selectable()
 	
 	##
 	
@@ -2932,7 +2960,7 @@ func _on_ClickableArea_input_event(_viewport, event, _shape_idx):
 # Tower selection related
 
 func enter_selection_mode(prompter, arg_prompt_tower_checker_predicate_name : String):
-	if !is_tower_hidden:
+	if last_calculated_is_selectable:
 		_is_in_select_tower_prompt = true
 		if prompter.has_method(arg_prompt_tower_checker_predicate_name):
 			var passed_predicate = prompter.call(arg_prompt_tower_checker_predicate_name, self)
@@ -2943,7 +2971,7 @@ func enter_selection_mode(prompter, arg_prompt_tower_checker_predicate_name : St
 				cannot_apply_pic.visible = false
 
 func exit_selection_mode():
-	if !is_tower_hidden:
+	if last_calculated_is_selectable:
 		_is_in_select_tower_prompt = false
 		
 		if is_instance_valid(cannot_apply_pic):
@@ -3245,6 +3273,17 @@ func _update_last_calc_is_combinable():
 		emit_signal("last_calculated_is_combinable_changed", last_calculated_is_combinable)
 
 
+func _on_is_selectable_conditional_clauses_changed(_arg_clause_id):
+	_update_last_calc_is_selectable()
+
+func _update_last_calc_is_selectable():
+	var old_val = last_calculated_is_selectable
+	last_calculated_is_selectable = is_selectable_conditional_clauses.is_passed
+	
+	if old_val != last_calculated_is_selectable:
+		emit_signal("last_calculated_is_selectable_changed", last_calculated_is_selectable)
+
+
 # Ingredient drag and drop related
 
 func _set_is_in_ingredient_mode(mode : bool):
@@ -3447,6 +3486,7 @@ func _on_ClickableArea_mouse_exited():
 func queue_free():
 	#is_contributing_to_synergy = false
 	contributing_to_synergy_clauses.attempt_insert_clause(ContributingToSynergyClauses.IN_QUEUE_FREE)
+	is_selectable_conditional_clauses.attempt_insert_clause(IsSelectableClauseIds.IN_QUEUE_FREE)
 	
 	if is_instance_valid(current_placable):
 		current_placable.tower_occupying = null

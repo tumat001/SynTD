@@ -466,8 +466,8 @@ const tier_cdr_map : Dictionary = {
 
 
 
-# Do not use this when instancing new tower class. Only use
-# for getting details about tower.
+# Do not use this when instancing new tower class. 
+# Only use for getting details about tower.
 const tower_id_info_type_singleton_map : Dictionary = {}
 const tower_color_to_tower_id_map : Dictionary = {}
 

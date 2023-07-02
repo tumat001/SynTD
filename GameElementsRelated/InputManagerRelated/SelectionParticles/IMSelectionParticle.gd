@@ -58,7 +58,8 @@ func set_pos_to_node(arg_node):
 
 func follow_and_config_to_tower(arg_tower):
 	if is_instance_valid(_current_following_tower):
-		arg_tower.disconnect("global_position_changed", self, "_on_following_tower_global_pos_changed")
+		if arg_tower.is_connected("global_position_changed", self, "_on_following_tower_global_pos_changed"):
+			arg_tower.disconnect("global_position_changed", self, "_on_following_tower_global_pos_changed")
 	
 	if is_instance_valid(arg_tower):
 		_current_following_tower = arg_tower
