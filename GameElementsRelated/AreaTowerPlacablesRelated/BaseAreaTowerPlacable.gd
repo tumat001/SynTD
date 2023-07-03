@@ -27,12 +27,14 @@ enum CanBeOccupiedClauseIds {
 var can_be_occupied_clauses : ConditionalClauses
 var last_calculated_can_be_occupied : bool
 var last_calculated_can_be_occupied__ignoring_has_tower_clause : bool
+var last_calculated_can_be_occupied__ignoring_has_tower__and_transfer_atomic__clauses : bool
 
 #
 
-# does not block towers from occupying this, 
-# but takes this into account when queried with "if_slot_can_be_placed_with_tower",
+# used for queries with "if_slot_can_be_placed_with_tower",
 enum OccupancyReservedClauseIds {
+	TOWER_TRANSFER_TO_THIS_PLACABLE__ATOMIC = 0
+	
 	MAP_MEMORIES__IN_RECALL_BEAM_IN_FLIGHT = 1
 	
 }
@@ -68,11 +70,12 @@ func _init():
 	_on_visibility_changed_base()
 	_update_is_tower_occupying_clause()
 	_on_can_be_occupied_clause_added_or_removed(0)
-	
+	_update_last_calc_occupancy_reserved()
 
 func _on_can_be_occupied_clause_added_or_removed(arg_clause_id):
 	last_calculated_can_be_occupied = can_be_occupied_clauses.is_passed
 	last_calculated_can_be_occupied__ignoring_has_tower_clause = can_be_occupied_clauses.has_only_clause_or_no_clause(CanBeOccupiedClauseIds.HAS_TOWER)
+	last_calculated_can_be_occupied__ignoring_has_tower__and_transfer_atomic__clauses = can_be_occupied_clauses.has_only_clause_or_no_clause(CanBeOccupiedClauseIds.HAS_TOWER) and occupancy_reserved_clauses.has_only_clause_or_no_clause(OccupancyReservedClauseIds.TOWER_TRANSFER_TO_THIS_PLACABLE__ATOMIC)
 	
 	emit_signal("last_calculated_can_be_occupied_changed", last_calculated_can_be_occupied)
 
@@ -84,6 +87,9 @@ func _on_visibility_changed_base():
 
 
 func _on_occupancy_reserved_clauses_added_or_removed(_arg_clause_id):
+	_update_last_calc_occupancy_reserved()
+
+func _update_last_calc_occupancy_reserved():
 	last_calculated_occupancy_is_reserved = !occupancy_reserved_clauses.is_passed
 	
 	if last_calculated_occupancy_is_reserved:
@@ -96,7 +102,11 @@ func _on_occupancy_reserved_clauses_added_or_removed(_arg_clause_id):
 	emit_signal("last_calculated_occupancy_reserved_changed", last_calculated_occupancy_is_reserved)
 
 
+
 #
+
+func add_reservation__tower_occupying_swap__atomic():
+	occupancy_reserved_clauses.attempt_insert_clause(OccupancyReservedClauseIds.TOWER_TRANSFER_TO_THIS_PLACABLE__ATOMIC)
 
 func flush_all_occupancy_reservation():
 	if occupancy_reserved_clauses.has_any_clause():
@@ -106,18 +116,18 @@ func flush_all_occupancy_reservation():
 #
 
 func set_tower_occupying(arg_tower):
-	if is_instance_valid(tower_occupying):
+	if is_instance_valid(tower_occupying) and tower_occupying != arg_tower:
 		emit_signal("on_tower_left_placement", tower_occupying)
 	
 	tower_occupying = arg_tower
+	
+	_update_is_tower_occupying_clause()
 	
 	if is_instance_valid(tower_occupying):
 		#tower_occupying.layer_on_terrain = layer_on_terrain
 		tower_occupying.set_placable_layer_on_terrain_modi(layer_on_terrain)
 		flush_all_occupancy_reservation()
 	
-	
-	_update_is_tower_occupying_clause()
 	emit_signal("on_occupancy_changed", tower_occupying)
 
 

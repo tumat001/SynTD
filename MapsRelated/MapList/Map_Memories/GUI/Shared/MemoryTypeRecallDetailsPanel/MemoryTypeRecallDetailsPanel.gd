@@ -103,6 +103,9 @@ func set_prop_based_on_constructor(arg_constructor : ConstructorParams):
 #
 
 func _ready():
+	main_tooltip_body.bbcode_align_mode = main_tooltip_body.BBCodeAlignMode.CENTER
+	warning_tooltip_body.bbcode_align_mode = warning_tooltip_body.BBCodeAlignMode.CENTER
+	
 	update_display()
 
 

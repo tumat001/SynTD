@@ -15,6 +15,7 @@ signal before_tower_is_added__is_tower_bought_aware(tower, is_tower_bought)
 signal tower_entered_bench_slot(tower, bench_slot)
 signal tower_removed_from_bench_slot(tower, bench_slot)
 
+# use this to take into account reservations
 signal bench_occupancy_changed(towers, is_full)
 
 #
@@ -132,6 +133,15 @@ func _find_empty_slot_from_last(arg_ignore_occupancy_reserved : bool) -> TowerBe
 	
 	return null
 
+
+func get_empty_slot_count(arg_ignore_occupancy_reserved : bool = false) -> int:
+	var empty_slot_count : int = 0
+	for bench_slot in all_bench_slots:
+		if _if_bench_slot_can_be_placed_with_tower(bench_slot, arg_ignore_occupancy_reserved):
+			empty_slot_count += 1
+	
+	return empty_slot_count
+
 #
 
 func find_empty_slot__for_outside(arg_ignore_occupancy_reserved : bool = false) -> TowerBenchSlot:
@@ -140,6 +150,7 @@ func find_empty_slot__for_outside(arg_ignore_occupancy_reserved : bool = false) 
 
 func find_empty_slot_from_last__for_outside(arg_ignore_occupancy_reserved : bool = false) -> TowerBenchSlot:
 	return _find_empty_slot_from_last(arg_ignore_occupancy_reserved)
+
 
 #
 
@@ -175,8 +186,12 @@ func _on_occupancy_in_bench_slot_changed(tower, bench_slot):
 	
 	
 	#
+	call_deferred("_deferred_emit_signal__bench_occupancy_changed")
+
+func _deferred_emit_signal__bench_occupancy_changed():
 	var towers = get_all_towers_on_bench()
 	emit_signal("bench_occupancy_changed", towers, is_bench_full())
+
 
 
 func get_all_towers_on_bench() -> Array:

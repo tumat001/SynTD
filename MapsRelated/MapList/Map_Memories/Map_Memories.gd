@@ -65,7 +65,8 @@ signal warning_update__available_tower_slot_at_bench_changed()
 
 #######
 
-const CAN_WRITE_SAVE_FILE : bool = true  # change this when testing/exiting from testing
+const CAN_WRITE_SAVE_FILE : bool = true  # correct val: true. change this when testing/exiting from testing
+const CAN_ERASE_MEMORY_ON_ACCEPT : bool = false  # correct val: true
 
 #
 
@@ -190,7 +191,7 @@ class RecallMemory:
 var _past__stageround_id_to_recall_memories_map : Dictionary
 var _future__stageround_id_to_recall_memories_map : Dictionary
 
-
+var _erase_future_recall_memory_in_curr_stage_round_id_after_recall_accept : bool
 
 ### PARTICLES
 
@@ -351,7 +352,7 @@ func _initialize_memory_infos():
 	var mem_sac_info__test = RoundMemorySacrificeInfo.new()
 	mem_sac_info__test.stage_round_id = "02"
 	mem_sac_info__test.sacrifice_type_ids_available_to_param_map = {
-		MemoryTypeId.TOWERS : [4],
+		MemoryTypeId.TOWERS : [5],
 		MemoryTypeId.GOLD : [4],
 		MemoryTypeId.HEALTH : [8],
 	}
@@ -1196,6 +1197,7 @@ func create_circle_conceal_seq_data(arg_type : int, arg_mem_action_state : int, 
 		seq_data.func_to_call_on_circle_phase_end = "_on_circle_conceal_seq__circle_phase_ended"
 		seq_data.func_to_call_for_end = "_on_circle_conceal_seq_ended__sac"
 		seq_data.func_to_call_for_line_draw_node_exec = "_on_circle_conceal_exec_line_draw_node"
+		seq_data.func_to_call_on_beam_phase_end = ""
 		
 		seq_data.starting_state = CircleConcealSequenceData.CIRCLE_STATE
 		seq_data.ending_state = CircleConcealSequenceData.BEAM_STATE
@@ -1206,9 +1208,10 @@ func create_circle_conceal_seq_data(arg_type : int, arg_mem_action_state : int, 
 		seq_data.func_to_call_on_circle_phase_end = "_on_circle_conceal_seq__circle_phase_ended"
 		seq_data.func_to_call_for_end = "_on_circle_conceal_seq_ended__recall"
 		seq_data.func_to_call_for_line_draw_node_exec = "_on_circle_conceal_exec_line_draw_node"
+		seq_data.func_to_call_on_beam_phase_end = "_on_circle_conceal_seq__beam_phase_ended__recall"
 		
-		seq_data.starting_state = CircleConcealSequenceData.CIRCLE_STATE
-		seq_data.ending_state = CircleConcealSequenceData.BEAM_STATE
+		seq_data.starting_state = CircleConcealSequenceData.BEAM_STATE
+		seq_data.ending_state = CircleConcealSequenceData.CIRCLE_STATE
 		
 	
 	seq_data.configure_data(non_essential_rng)
@@ -1240,11 +1243,8 @@ func _process(delta):
 		delay_for_next_tower_id_recall -= delta
 		
 		if delay_for_next_tower_id_recall <= 0:
-			var success = _attempt_summon_tower_id_from_recall(tower_ids_queued_for_recall.front())
-			if success:
-				delay_for_next_tower_id_recall += DELAY_PER_NEXT_TOWER_ID_RECALL
-			else:
-				delay_for_next_tower_id_recall = 0
+			_attempt_summon_tower_id_from_recall(tower_ids_queued_for_recall.pop_front())
+			
 
 func _create_circle_conceal_particle__using_seq_data__sac(arg_data : CircleConcealSequenceData):
 	var particle = circle_conceal_particle_pool_compo.get_or_create_attack_sprite_from_pool()
@@ -1255,11 +1255,6 @@ func _create_circle_conceal_particle__using_seq_data__recall(arg_data : CircleCo
 	var particle = circle_conceal_particle_pool_compo.get_or_create_attack_sprite_from_pool()
 	
 	_configure_circle_conceal_particle_using_data(particle, arg_data)
-	
-	#
-	var tower_id = arg_data.metadata[CircleConcealSequenceData.METADATA_KEY__TOWER_ID_TO_CREATE]
-	var bench_slot = arg_data.metadata[CircleConcealSequenceData.METADATA_KEY__BENCH_PLACABLE_TO_PUT_TOWER]
-	game_elements.tower_inventory_bench.insert_tower(tower_id)
 	
 
 
@@ -1361,7 +1356,13 @@ func _on_circle_conceal_seq_ended__recall(arg_seq):
 	
 	if _circle_conceal_seq_data_list.size() == 0:
 		enable_process_conditional_clauses.remove_clause(EnableProcessClauseIds.CIRCLE_CONCEAL_SEQUENCE)
+	
 
+func _on_circle_conceal_seq__beam_phase_ended__recall(arg_seq):
+	var tower_id = arg_seq.metadata[CircleConcealSequenceData.METADATA_KEY__TOWER_ID_TO_CREATE]
+	var bench_slot = arg_seq.metadata[CircleConcealSequenceData.METADATA_KEY__BENCH_PLACABLE_TO_PUT_TOWER]
+	game_elements.tower_inventory_bench.create_tower_and_add_to_scene(tower_id, bench_slot)
+	
 
 
 func _on_circle_conceal_exec_line_draw_node(arg_seq : CircleConcealSequenceData):
@@ -1384,7 +1385,7 @@ func _on_circle_conceal_exec_line_draw_node(arg_seq : CircleConcealSequenceData)
 		
 		line_draw_param.source_pos = Vector2(pos.x, game_elements.get_top_left_coordinates_of_playable_map().y)
 		line_draw_param.dest_pos = pos
-		line_draw_param.total_line_length = pos.distance_to(line_draw_param.dest_pos)
+		line_draw_param.total_line_length = pos.distance_to(line_draw_param.source_pos)
 		
 		line_draw_param.line_length_per_sec = 1200
 		line_draw_param.color = arg_seq._beam_mod
@@ -1507,6 +1508,8 @@ class CircleConcealSequenceData:
 		_delta_left_for_circle_phase = delta_for_circle_phase
 		_delta_left_for_beam_phase = delta_for_beam_phase
 		
+		_set_beam_mod_rgb__randomized(rng_to_use)
+		
 		reset()
 		
 		if starting_state == CIRCLE_STATE:
@@ -1516,7 +1519,6 @@ class CircleConcealSequenceData:
 	
 	func configure_circle_particle_based_on_self(arg_particle):
 		_set_circle_mod_rgb__randomized(rng_to_use)
-		_set_beam_mod_rgb__randomized(rng_to_use)
 		
 		arg_particle.modulate = _circle_mod
 		
@@ -1638,12 +1640,30 @@ func _is_current_round_has_past_recall_memory():
 	return _past__stageround_id_to_recall_memories_map.has(_current_stageround_id)
 
 func _show_memory_recall_gui():
+	# placed here to prevent loss of memory on crash/exit during recall phase
+	var preserved = _preserve_past_recall_memory_into_future()
+	if preserved:
+		_erase_future_recall_memory_in_curr_stage_round_id_after_recall_accept = true
+	else:
+		_erase_future_recall_memory_in_curr_stage_round_id_after_recall_accept = false
+	
+	#
 	var past_recall_memory : RecallMemory = _past__stageround_id_to_recall_memories_map[_current_stageround_id]
 	
 	var params = _generate_mem_recall_gui_constructor_param(past_recall_memory.memory_type_id, past_recall_memory.param)
 	
 	_memory_recall_gui.set_prop_based_on_constructor(params)
 	_memory_recall_gui.show_gui()
+
+func _preserve_past_recall_memory_into_future():
+	if !_future__stageround_id_to_recall_memories_map.has(_current_stageround_id) and _past__stageround_id_to_recall_memories_map.has(_current_stageround_id):
+		_future__stageround_id_to_recall_memories_map[_current_stageround_id] = _past__stageround_id_to_recall_memories_map[_current_stageround_id]
+		
+		return true
+	
+	
+	return false
+
 
 
 ######
@@ -1681,14 +1701,15 @@ func _generate_recall_description_for_mem_type_with_params__relic_and_gold(arg_p
 
 
 func _generate_recall_description_for_mem_type_with_params__towers(arg_params):
-	var plain_fragment__x_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "%s tower(s)" % [arg_params[0]])
+	var plain_fragment__x_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "%s tower(s)" % [arg_params.size()])
 	
 	return [
 		["Gain |0|.", [plain_fragment__x_towers]]
 	]
 
 func _generate_recall_description_for_mem_type_with_params__towers_with_ings(arg_params):
-	var plain_fragment__x_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "%s tower(s)" % [arg_params[0]])
+	#todo broken
+	var plain_fragment__x_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "%s tower(s)" % [arg_params.size()])
 	var plain_fragment__x_ingredients = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "%s ingredient(s)" % [arg_params[1]])
 	
 	return [
@@ -1755,6 +1776,8 @@ func _generate_mem_recall_details_panel_constructor_param(arg_type, arg_params):
 	constructor_param.warning_desc_func_param = warning_desc_func_params
 	constructor_param.warning_desc_func_name = warning_desc_func_name
 	
+	constructor_param.set_tower_type_infos_to_show__with_tower_ids(tower_ids)
+	
 	if warning_update_signal_name.length() != 0:
 		constructor_param.warning_update_signal_source = self
 		constructor_param.warning_update_signal_name = warning_update_signal_name
@@ -1779,12 +1802,19 @@ func _on_tower_inventory_bench_occupancy_changed(arg_towers, arg_is_full):
 #
 
 func _generate_recall_desc__warning__not_enough_available_tower_slots(arg_params):
-	var plain_fragment__x_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "%s tower(s)" % [arg_params[0]])
+	var tower_ids = arg_params[1]
+	var free_space = game_elements.tower_inventory_bench.get_empty_slot_count()
 	
-	return [
-		["There is not enough bench space for |0|.", [plain_fragment__x_towers]],
-		["The other towers will be received when bench slots are freed.", []]
-	]
+	if tower_ids.size() > free_space:
+		var plain_fragment__x_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "%s tower(s)" % [tower_ids.size()])
+		
+		return [
+			["There is not enough bench space for |0|.", [plain_fragment__x_towers]],
+			["The other towers will be received when bench slots are freed.", []]
+		]
+		
+	else:
+		return []
 	
 
 #####
@@ -1831,7 +1861,7 @@ func _generate_mem_recall_type_panel_constructor_param(arg_type, arg_params):
 func _generate_mem_recall_gui_constructor_param(arg_type, arg_params):
 	var constructor_param = MemoryRecallGUI.ConstructorParams.new()
 	
-	var is_sac_made_prev_in_curr_round = _current_round_memory_sacrifice_info != null
+	var is_sac_made_prev_in_curr_round = _is_sacrifice_made_in_curr_round()
 	
 	var on_accept_func_name
 	var on_accept_func_param
@@ -1874,6 +1904,9 @@ func _generate_mem_recall_gui_constructor_param(arg_type, arg_params):
 	
 	return constructor_param
 
+func _is_sacrifice_made_in_curr_round():
+	return _current_sacrifice_id_and_param != null and _current_sacrifice_id_and_param.size() != 0 and _current_sacrifice_id_and_param[0] != MemoryTypeId.NONE
+
 
 func _on_mem_recall_accept__gold(arg_params):
 	_wrap_up_mem_recall()
@@ -1883,6 +1916,7 @@ func _on_mem_recall_accept__gold(arg_params):
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.RECALL, gold_panel_pos, gold_panel_pos)
 	start_circle_conceal_particle_fx_sequence(seq_data)
 	
+	erase_future_recall_memory_in_curr_stage_round_id__if_applicable()
 
 func _on_mem_recall_accept__health(arg_params):
 	_wrap_up_mem_recall()
@@ -1892,6 +1926,7 @@ func _on_mem_recall_accept__health(arg_params):
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.SACRIFICE, panel_pos, panel_pos)
 	start_circle_conceal_particle_fx_sequence(seq_data)
 	
+	erase_future_recall_memory_in_curr_stage_round_id__if_applicable()
 
 func _on_mem_recall_accept__relic_and_gold(arg_params):
 	_wrap_up_mem_recall()
@@ -1906,6 +1941,7 @@ func _on_mem_recall_accept__relic_and_gold(arg_params):
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.RECALL, relic_panel_pos, relic_panel_pos)
 	start_circle_conceal_particle_fx_sequence(seq_data)
 	
+	erase_future_recall_memory_in_curr_stage_round_id__if_applicable()
 
 func _on_mem_recall_accept__towers(arg_params):
 	_wrap_up_mem_recall()
@@ -1913,20 +1949,32 @@ func _on_mem_recall_accept__towers(arg_params):
 	#
 	_start_give_towers_via_recall(arg_params)
 	
+	erase_future_recall_memory_in_curr_stage_round_id__if_applicable()
 
 func _on_mem_recall_accept__towers_with_ings(arg_params):
 	_wrap_up_mem_recall()
 	
 	print("Towers with ings not supported -- Recall")
-
+	
+	erase_future_recall_memory_in_curr_stage_round_id__if_applicable()
 
 func _on_mem_recall_decline(arg_type_and_params):
+	_preserve_past_recall_memory_into_future()
+	
 	_wrap_up_mem_recall()
 	
 
 func _wrap_up_mem_recall():
 	_memory_recall_gui.hide_gui()
 	
+	set_current_mem_action_state__to_none()
+
+
+
+func erase_future_recall_memory_in_curr_stage_round_id__if_applicable():
+	if _erase_future_recall_memory_in_curr_stage_round_id_after_recall_accept:
+		if CAN_ERASE_MEMORY_ON_ACCEPT:
+			_future__stageround_id_to_recall_memories_map.erase(_current_stageround_id)
 
 #
 
@@ -1941,9 +1989,14 @@ func _start_give_towers_via_recall(arg_tower_ids):
 func _attempt_summon_tower_id_from_recall(arg_tower_id) -> bool:
 	if !game_elements.tower_inventory_bench.is_bench_full():
 		_summon_tower_id_from_recall(arg_tower_id)
+		delay_for_next_tower_id_recall += DELAY_PER_NEXT_TOWER_ID_RECALL
+		
 		return true
+		
+		
 	else:
 		_listen_for_freed_bench_slot__for_tower_recall(arg_tower_id)
+		
 		return false
 
 func _listen_for_freed_bench_slot__for_tower_recall(arg_tower_id):
@@ -1960,7 +2013,7 @@ func _on_bench_occupancy_changed__for_tower_recall_queue(arg_towers, arg_is_full
 		
 		delay_for_next_tower_id_recall = DELAY_PER_NEXT_TOWER_ID_RECALL
 		pause_tower_ids_queue_for_recall = false
-	
+
 
 func _stop_listen_for_freed_bench_slot__for_tower_recall():
 	if game_elements.tower_inventory_bench.is_connected("bench_occupancy_changed", self, "_on_bench_occupancy_changed__for_tower_recall_queue"):
@@ -1970,8 +2023,7 @@ func _stop_listen_for_freed_bench_slot__for_tower_recall():
 #
 
 func _summon_tower_id_from_recall(arg_tower_id):
-	tower_ids_queued_for_recall.erase(arg_tower_id)
-	
+	#tower_ids_queued_for_recall.erase(arg_tower_id)
 	if tower_ids_queued_for_recall.size() == 0:
 		has_tower_ids_queued_for_recall = false
 	
@@ -1985,6 +2037,7 @@ func _summon_tower_id_from_recall(arg_tower_id):
 	
 	seq_data.metadata[seq_data.METADATA_KEY__TOWER_ID_TO_CREATE] = arg_tower_id
 	seq_data.metadata[seq_data.METADATA_KEY__BENCH_PLACABLE_TO_PUT_TOWER] = placable
+	seq_data.metadata[seq_data.METADATA_KEY__TOWER_GLOB_POSITION] = placable.global_position
 	
 	start_circle_conceal_particle_fx_sequence(seq_data)
 	

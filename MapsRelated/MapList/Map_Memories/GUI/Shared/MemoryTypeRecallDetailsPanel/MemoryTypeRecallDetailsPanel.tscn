@@ -107,8 +107,10 @@ margin_right = 286.0
 margin_bottom = 25.0
 
 [node name="TowerIconCollectionPanel" parent="VBoxContainer/MainInfoPanel/MarginContainer/VBoxContainer/TowerIconMarginer" instance=ExtResource( 7 )]
-margin_right = 286.0
+margin_left = 143.0
+margin_right = 143.0
 margin_bottom = 0.0
+size_flags_horizontal = 6
 
 [node name="WarningInfoPanel" type="MarginContainer" parent="VBoxContainer"]
 margin_top = 43.0

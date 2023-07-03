@@ -69,7 +69,7 @@ func remove_clause(clause, clause_emit_signal : bool = true):
 		emit_signal("clause_removed", clause)
 
 
-func remove_all_clauses():
+func remove_all_clauses(arg_emit_signal : bool = true):
 	var removed_clauses = []
 	for clause in _clauses:
 		removed_clauses.append(clause)
@@ -77,7 +77,8 @@ func remove_all_clauses():
 	
 	_update_is_passed()
 	
-	emit_signal("clause_removed", removed_clauses)
+	if arg_emit_signal:
+		emit_signal("clause_removed", removed_clauses)
 
 
 
@@ -86,6 +87,17 @@ func has_clause(clause):
 
 func has_only_clause_or_no_clause(clause):
 	return (_clauses.has(clause) and _clauses.size() == 1) or is_passed_clauses()
+
+func has_only_clauses_or_no_clause(clauses : Array):
+	if is_passed_clauses():
+		return true
+	else:
+		for clause in clauses:
+			if !has_clause(clause):
+				return false
+		
+		return true
+
 
 func has_any_clause():
 	return _clauses.size() != 0

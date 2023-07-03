@@ -46,7 +46,7 @@ var game_elements
 
 onready var memory_recall_type_panel = $MainContainer/VBoxContainer/MainContainer/HBoxContainer/MemoryRecallPanel
 onready var sacrificed_already_label = $MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/SacrificedAlreadyLabel
-
+onready var no_sac_in_round_label = $MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/NoSacInRoundLabel
 
 ###
 
@@ -105,7 +105,7 @@ func update_display_and_configs():
 		memory_recall_type_panel.set_prop_based_on_constructor(memory_type_recall_panel_constr_params)
 	
 	sacrificed_already_label.visible = is_sac_made_prev_in_curr_round
-
+	no_sac_in_round_label.visible = !is_sac_made_prev_in_curr_round
 
 #######
 

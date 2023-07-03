@@ -3088,7 +3088,7 @@ func transfer_to_placable(
 		if !is_in_ingredient_mode or ignore_ing_mode:
 			new_area_placable = null
 	
-	if is_instance_valid(new_area_placable) and !new_area_placable.last_calculated_can_be_occupied__ignoring_has_tower_clause:
+	if is_instance_valid(new_area_placable) and !new_area_placable.last_calculated_can_be_occupied__ignoring_has_tower__and_transfer_atomic__clauses:
 		new_area_placable = null
 	
 	var should_update_active_synergy : bool
@@ -3100,7 +3100,7 @@ func transfer_to_placable(
 	
 	# The "old" one
 	if is_instance_valid(current_placable):
-		if current_placable.tower_occupying == self:
+		if current_placable.tower_occupying == self: #and current_placable != new_area_placable:
 			current_placable.tower_occupying = null
 	
 	var transferred_tower : bool = false
@@ -3109,6 +3109,9 @@ func transfer_to_placable(
 		if !is_in_ingredient_mode or ignore_ing_mode:
 			# swapping related
 			if (!(is_round_started and new_area_placable is InMapAreaPlacable) or ignore_is_round_started) and tower_manager.if_towers_can_swap_based_on_tower_slot_limit_and_map_placement(self, new_area_placable.tower_occupying):
+				
+				new_area_placable.add_reservation__tower_occupying_swap__atomic()
+				#current_placable.add_reservation__tower_occupying_swap__atomic()
 				
 				new_area_placable.tower_occupying.transfer_to_placable(current_placable, true, false, true, ignore_ing_mode)
 				transferred_tower = true

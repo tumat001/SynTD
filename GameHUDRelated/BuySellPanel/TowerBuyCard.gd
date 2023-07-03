@@ -224,15 +224,20 @@ func _can_afford() -> bool:
 func set_tower_inventory_bench(arg_bench):
 	tower_inventory_bench = arg_bench
 	
-	tower_inventory_bench.connect("tower_entered_bench_slot", self, "_tower_added_in_bench_slot", [], CONNECT_PERSIST | CONNECT_DEFERRED)
-	tower_inventory_bench.connect("tower_removed_from_bench_slot", self, "_tower_removed_from_bench_slot", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+	#tower_inventory_bench.connect("tower_entered_bench_slot", self, "_tower_added_in_bench_slot", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+	#tower_inventory_bench.connect("tower_removed_from_bench_slot", self, "_tower_removed_from_bench_slot", [], CONNECT_PERSIST | CONNECT_DEFERRED)
+	
+	tower_inventory_bench.connect("bench_occupancy_changed", self, "_on_bench_occupancy_changed", [], CONNECT_PERSIST)
 
-func _tower_added_in_bench_slot(tower, bench_slot):
+#func _tower_added_in_bench_slot(tower, bench_slot):
+#	_update_can_buy_card()
+#
+#func _tower_removed_from_bench_slot(tower, bench_slot):
+#	_update_can_buy_card()
+
+
+func _on_bench_occupancy_changed(arg_towers, arg_is_full):
 	_update_can_buy_card()
-
-func _tower_removed_from_bench_slot(tower, bench_slot):
-	_update_can_buy_card()
-
 
 # Can buy tower
 
