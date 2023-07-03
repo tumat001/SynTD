@@ -15,6 +15,8 @@ enum IncreaseHealthSource {
 	TOWER = 100,
 	SYNERGY = 200,
 	
+	MAP_SPECIFIC = 201,
+	
 }
 
 enum DecreaseHealthSource {

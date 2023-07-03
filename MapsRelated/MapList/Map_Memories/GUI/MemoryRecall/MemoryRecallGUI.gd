@@ -45,8 +45,8 @@ var game_elements
 ###
 
 onready var memory_recall_type_panel = $MainContainer/VBoxContainer/MainContainer/HBoxContainer/MemoryRecallPanel
-onready var sacrificed_already_label = $MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/SacrificedAlreadyLabel
-onready var no_sac_in_round_label = $MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/NoSacInRoundLabel
+onready var sacrificed_already_label = $MainContainer/DecisionContainer/VBoxContainer/SacrificedAlreadyLabel
+onready var no_sac_in_round_label = $MainContainer/DecisionContainer/VBoxContainer/NoSacInRoundLabel
 
 ###
 

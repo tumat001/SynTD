@@ -69,7 +69,7 @@ func remove_combination_effect(arg_combi_effect : CombinationEffect):
 func remove_tower_type_info(arg_id : int):
 	#if tower_type_info_id_to_tower_icon_scene_map.has(arg_combi_effect):
 	
-	var index = tower_type_info_id_list.bsearch(arg_id)
+	var index = tower_type_info_id_list.find(arg_id)
 	#var icon_scene = tower_type_info_id_to_tower_icon_scene_map[arg_combi_effect]
 	var icon_scene = tower_icon_scene_list[index]
 	
@@ -130,26 +130,30 @@ func set_combination_effect_array(arg_combi_array : Array):
 	
 
 func set_tower_icon_array__using_tower_type_infos(arg_tower_type_arr : Array):
+	remove_all_combination_effects()
+	
+	###############
+	
 	var tower_type_ids : Array = []
 	
 	for tower_type_info in arg_tower_type_arr:
 		tower_type_ids.append(tower_type_info.tower_type_id)
 		add_tower_icon(tower_type_info)
 	
-	#
-	var tower_type_ids_to_remove : Array = []
-	
-	var i = 0
-	for id in tower_type_info_id_list:
-		if !tower_type_ids.has(id):
-			#remove_tower_type_info(id)
-			tower_type_ids_to_remove.append(id)   # to account for multiple instance of ids
-			tower_type_ids.erase(id)
-		
-		i += 1
-	
-	for id in tower_type_ids_to_remove:
-		remove_tower_type_info(id)
+#	#
+#	var tower_type_ids_to_remove : Array = []
+#
+#	var i = 0
+#	for id in tower_type_info_id_list:
+#		if !tower_type_ids.has(id):
+#			#remove_tower_type_info(id)
+#			tower_type_ids_to_remove.append(id)   # to account for multiple instance of ids
+#			tower_type_ids.erase(id)
+#
+#		i += 1
+#
+#	for id in tower_type_ids_to_remove:
+#		remove_tower_type_info(id)
 	
 
 

@@ -34,7 +34,7 @@ custom_constants/margin_top = 10
 [node name="VBoxContainer" type="VBoxContainer" parent="MainContainer"]
 margin_top = 10.0
 margin_right = 960.0
-margin_bottom = 614.0
+margin_bottom = 540.0
 mouse_filter = 2
 custom_constants/separation = 45
 
@@ -68,39 +68,38 @@ align = 1
 [node name="MainContainer" type="MarginContainer" parent="MainContainer/VBoxContainer"]
 margin_top = 93.0
 margin_right = 960.0
-margin_bottom = 353.0
+margin_bottom = 297.0
 mouse_filter = 2
-size_flags_vertical = 3
 size_flags_stretch_ratio = 3.0
 custom_constants/margin_top = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/VBoxContainer/MainContainer"]
 margin_left = 230.0
 margin_right = 730.0
-margin_bottom = 260.0
+margin_bottom = 204.0
 mouse_filter = 2
 size_flags_horizontal = 6
 
 [node name="MemoryRecallPanel" parent="MainContainer/VBoxContainer/MainContainer/HBoxContainer" instance=ExtResource( 3 )]
 margin_right = 500.0
-margin_bottom = 260.0
-rect_min_size = Vector2( 500, 260 )
+margin_bottom = 204.0
+rect_min_size = Vector2( 500, 0 )
 
-[node name="DecisionContainer" type="MarginContainer" parent="MainContainer/VBoxContainer"]
-margin_top = 398.0
+[node name="DecisionContainer" type="MarginContainer" parent="MainContainer"]
+margin_top = 334.0
 margin_right = 960.0
-margin_bottom = 604.0
+margin_bottom = 540.0
 mouse_filter = 2
 size_flags_vertical = 10
 custom_constants/margin_bottom = 30
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/VBoxContainer/DecisionContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainContainer/DecisionContainer"]
 margin_right = 960.0
 margin_bottom = 176.0
 mouse_filter = 2
 custom_constants/separation = 15
 
-[node name="Header2" type="Label" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer"]
+[node name="Header2" type="Label" parent="MainContainer/DecisionContainer/VBoxContainer"]
 margin_right = 960.0
 margin_bottom = 17.0
 custom_colors/font_color = Color( 0.866667, 0.866667, 0.866667, 1 )
@@ -108,7 +107,7 @@ custom_fonts/font = SubResource( 2 )
 text = "Do you:"
 align = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MainContainer/DecisionContainer/VBoxContainer"]
 margin_left = 380.0
 margin_top = 32.0
 margin_right = 580.0
@@ -117,27 +116,27 @@ mouse_filter = 2
 size_flags_horizontal = 6
 custom_constants/separation = 40
 
-[node name="AcceptContainer" type="MarginContainer" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer"]
+[node name="AcceptContainer" type="MarginContainer" parent="MainContainer/DecisionContainer/VBoxContainer/HBoxContainer"]
 margin_right = 80.0
 margin_bottom = 40.0
 mouse_filter = 2
 size_flags_horizontal = 3
 
-[node name="AcceptButton" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer/AcceptContainer" instance=ExtResource( 6 )]
+[node name="AcceptButton" parent="MainContainer/DecisionContainer/VBoxContainer/HBoxContainer/AcceptContainer" instance=ExtResource( 6 )]
 margin_right = 80.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 80, 40 )
 mouse_filter = 0
 text_for_label = "Accept"
 
-[node name="DeclineContainer" type="MarginContainer" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer"]
+[node name="DeclineContainer" type="MarginContainer" parent="MainContainer/DecisionContainer/VBoxContainer/HBoxContainer"]
 margin_left = 120.0
 margin_right = 200.0
 margin_bottom = 40.0
 mouse_filter = 2
 size_flags_horizontal = 3
 
-[node name="DeclineButton" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer/DeclineContainer" instance=ExtResource( 6 )]
+[node name="DeclineButton" parent="MainContainer/DecisionContainer/VBoxContainer/HBoxContainer/DeclineContainer" instance=ExtResource( 6 )]
 margin_right = 80.0
 margin_bottom = 40.0
 rect_min_size = Vector2( 80, 40 )
@@ -146,7 +145,7 @@ text_for_label = "Decline"
 background_texture_normal = ExtResource( 5 )
 background_texture_highlighted = ExtResource( 4 )
 
-[node name="SacrificedAlreadyLabel" type="Label" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer"]
+[node name="SacrificedAlreadyLabel" type="Label" parent="MainContainer/DecisionContainer/VBoxContainer"]
 margin_top = 87.0
 margin_right = 960.0
 margin_bottom = 124.0
@@ -156,7 +155,7 @@ text = "Since you already made a sacrifice for this round,
 this sacrifice will be overriden in the next playthrough."
 align = 1
 
-[node name="NoSacInRoundLabel" type="Label" parent="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer"]
+[node name="NoSacInRoundLabel" type="Label" parent="MainContainer/DecisionContainer/VBoxContainer"]
 margin_top = 139.0
 margin_right = 960.0
 margin_bottom = 176.0
@@ -166,5 +165,5 @@ text = "Since you made no sacrifice for this round,
 declining this sacrifice will preserve it for your next playthrough."
 align = 1
 
-[connection signal="on_button_released_with_button_left" from="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer/AcceptContainer/AcceptButton" to="." method="_on_AcceptButton_on_button_released_with_button_left"]
-[connection signal="on_button_released_with_button_left" from="MainContainer/VBoxContainer/DecisionContainer/VBoxContainer/HBoxContainer/DeclineContainer/DeclineButton" to="." method="_on_DeclineButton_on_button_released_with_button_left"]
+[connection signal="on_button_released_with_button_left" from="MainContainer/DecisionContainer/VBoxContainer/HBoxContainer/AcceptContainer/AcceptButton" to="." method="_on_AcceptButton_on_button_released_with_button_left"]
+[connection signal="on_button_released_with_button_left" from="MainContainer/DecisionContainer/VBoxContainer/HBoxContainer/DeclineContainer/DeclineButton" to="." method="_on_DeclineButton_on_button_released_with_button_left"]

@@ -66,7 +66,7 @@ signal warning_update__available_tower_slot_at_bench_changed()
 #######
 
 const CAN_WRITE_SAVE_FILE : bool = true  # correct val: true. change this when testing/exiting from testing
-const CAN_ERASE_MEMORY_ON_ACCEPT : bool = false  # correct val: true
+const CAN_ERASE_MEMORY_ON_ACCEPT : bool = true  # correct val: true
 
 #
 
@@ -355,6 +355,7 @@ func _initialize_memory_infos():
 		MemoryTypeId.TOWERS : [5],
 		MemoryTypeId.GOLD : [4],
 		MemoryTypeId.HEALTH : [8],
+		MemoryTypeId.RELIC_AND_GOLD : [1, 10],
 	}
 	_add_memory_info(mem_sac_info__test)
 	
@@ -834,26 +835,32 @@ func _on_execute_memory_sacrifice_type__gold(arg_params):
 	_wrap_up_memory_sacrifice_phase()
 	
 	#
-	game_elements.gold_manager.decrease_gold_by(game_elements.gold_manager.DecreaseGoldSource.MAP_SPECIFIC, arg_params[0])
+	game_elements.gold_manager.decrease_gold_by(arg_params[0], game_elements.gold_manager.DecreaseGoldSource.MAP_SPECIFIC)
 	_store_to_future_recall_mem_dict__mem_sac__gold(_current_stageround_id, arg_params[0])
 	
 	#
-	var gold_panel_pos = game_elements.general_stats_panel.gold_panel.rect_global_position
+	var gold_panel_pos = _get_center_of_control(game_elements.general_stats_panel.gold_panel)#game_elements.general_stats_panel.gold_panel.rect_global_position
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.SACRIFICE, gold_panel_pos, gold_panel_pos)
+	seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = gold_panel_pos
 	start_circle_conceal_particle_fx_sequence(seq_data)
-	
+
+func _get_center_of_control(arg_control) -> Vector2:
+	return arg_control.rect_global_position + (arg_control.rect_size / 2)
+
+
 
 func _on_execute_memory_sacrifice_type__health(arg_params):
 	_current_sacrifice_id_and_param = [MemoryTypeId.HEALTH, arg_params]
 	_wrap_up_memory_sacrifice_phase()
 	
 	#
-	game_elements.health_manager.decrease_health_by(game_elements.health_manager.DecreaseHealthSource.MAP_SPECIFIC, arg_params[0])
+	game_elements.health_manager.decrease_health_by(arg_params[0], game_elements.health_manager.DecreaseHealthSource.MAP_SPECIFIC)
 	_store_to_future_recall_mem_dict__mem_sac__health(_current_stageround_id, arg_params[0])
 	
 	#
-	var panel_pos = game_elements.right_side_panel.round_status_panel.get_heart_icon_global_pos()
+	var panel_pos = game_elements.right_side_panel.round_status_panel.get_heart_icon_global_pos() #game_elements.right_side_panel.round_status_panel.get_heart_icon_global_pos()
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.SACRIFICE, panel_pos, panel_pos)
+	seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = panel_pos
 	start_circle_conceal_particle_fx_sequence(seq_data)
 	
 
@@ -862,17 +869,19 @@ func _on_execute_memory_sacrifice_type__relic_and_gold(arg_params):
 	_wrap_up_memory_sacrifice_phase()
 	
 	#
-	game_elements.gold_manager.decrease_gold_by(game_elements.gold_manager.DecreaseGoldSource.MAP_SPECIFIC, arg_params[0])
-	game_elements.relic_manager.decrease_relic_count_by(game_elements.relic_manager.DecreaseRelicSource.MAP_SPECIFIC, arg_params[1])
+	game_elements.relic_manager.decrease_relic_count_by(arg_params[0], game_elements.relic_manager.DecreaseRelicSource.MAP_SPECIFIC)
+	game_elements.gold_manager.decrease_gold_by(arg_params[1], game_elements.gold_manager.DecreaseGoldSource.MAP_SPECIFIC)
 	_store_to_future_recall_mem_dict__mem_sac__relic_and_gold(_current_stageround_id, arg_params[0], arg_params[1])
 	
 	if arg_params[1] != 0:
-		var gold_panel_pos = game_elements.general_stats_panel.gold_panel.rect_global_position
+		var gold_panel_pos = _get_center_of_control(game_elements.general_stats_panel.gold_panel) #game_elements.general_stats_panel.gold_panel.rect_global_position
 		var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.SACRIFICE, gold_panel_pos, gold_panel_pos)
+		seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = gold_panel_pos
 		start_circle_conceal_particle_fx_sequence(seq_data)
 	
-	var relic_panel_pos = game_elements.general_stats_panel.relic_panel.rect_global_position
+	var relic_panel_pos = _get_center_of_control(game_elements.general_stats_panel.relic_panel) #game_elements.general_stats_panel.relic_panel.rect_global_position
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.SACRIFICE, relic_panel_pos, relic_panel_pos)
+	seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = relic_panel_pos
 	start_circle_conceal_particle_fx_sequence(seq_data)
 	
 
@@ -896,16 +905,16 @@ func _on_execute_memory_sacrifice_type__none(arg_params):
 	_current_sacrifice_id_and_param = [MemoryTypeId.NONE, arg_params]
 	_wrap_up_memory_sacrifice_phase()
 	
+	_attempt_show_memory_recall_gui__or_end_if_not_appropriate()
+	
 
 func _sacrifice__on_select_later_clicked():
 	_memory_sacrifice_gui.hide_gui()
 	
 
-
 func _wrap_up_memory_sacrifice_phase():
-	set_current_mem_action_state(MemoryActionStates.RECALLING)
-	
-	_attempt_show_memory_recall_gui__or_end_if_not_appropriate()
+	_memory_sacrifice_gui.hide_gui()
+
 
 ##
 
@@ -951,7 +960,7 @@ func _finished_tower_selected_from_multiple_select(arg_towers):
 		tower.is_selectable_conditional_clauses.attempt_insert_clause(tower.IsSelectableClauseIds.MAP_MEMORIES__IN_SAC)
 		
 		seq_data.metadata[seq_data.METADATA_KEY__TOWER] = tower
-		seq_data.metadata[seq_data.METADATA_KEY__TOWER_GLOB_POSITION] = tower.global_position
+		seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = tower.global_position
 
 
 ###
@@ -979,8 +988,8 @@ func _store_to_future_recall_mem_dict__mem_sac__gold(arg_stage_round, arg_amount
 	_add_recall_memory_to_future_memories_map(recall_mem)
 
 func _store_to_future_recall_mem_dict__mem_sac__health(arg_stage_round, arg_amount):
-	var recall_mem = _construct_recall_memory(arg_stage_round, MemoryTypeId.GOLD, arg_amount)
-	recall_mem.version_num = _current_recall_memory_version__gold
+	var recall_mem = _construct_recall_memory(arg_stage_round, MemoryTypeId.HEALTH, arg_amount)
+	recall_mem.version_num = _current_recall_memory_version__health
 	
 	_add_recall_memory_to_future_memories_map(recall_mem)
 	
@@ -1275,8 +1284,11 @@ func _configure_circle_conceal_particle_using_data(particle : CenterBasedAttackS
 		
 	elif arg_data.seq_particle_type == CircleParticleType.HUD:
 		var starting_angle_and_center_dist_mag = arg_data.generate_random_starting_angle_and_center_dist_modi_from_center(arg_data.source_pos, circle_conceal_center_modification_mag__generic_hud)
-		arg_data.angle_min = starting_angle_and_center_dist_mag[0]
-		arg_data.angle_max = starting_angle_and_center_dist_mag[0]
+		#arg_data.angle_min = starting_angle_and_center_dist_mag[0]
+		#arg_data.angle_max = starting_angle_and_center_dist_mag[0]
+		arg_data.angle_min = 1
+		arg_data.angle_max = 359
+		
 		
 		arg_data.starting_dist_min = circle_conceal_starting_dist_min__generic_hud
 		arg_data.starting_dist_max = circle_conceal_starting_dist_max__generic_hud
@@ -1358,10 +1370,37 @@ func _on_circle_conceal_seq_ended__recall(arg_seq):
 		enable_process_conditional_clauses.remove_clause(EnableProcessClauseIds.CIRCLE_CONCEAL_SEQUENCE)
 	
 
-func _on_circle_conceal_seq__beam_phase_ended__recall(arg_seq):
-	var tower_id = arg_seq.metadata[CircleConcealSequenceData.METADATA_KEY__TOWER_ID_TO_CREATE]
-	var bench_slot = arg_seq.metadata[CircleConcealSequenceData.METADATA_KEY__BENCH_PLACABLE_TO_PUT_TOWER]
-	game_elements.tower_inventory_bench.create_tower_and_add_to_scene(tower_id, bench_slot)
+func _on_circle_conceal_seq__beam_phase_ended__recall(arg_seq : CircleConcealSequenceData):
+	if arg_seq.metadata.has(arg_seq.METADATA_KEY__MEM_TYPE_ID):
+		var mem_type = arg_seq.metadata[arg_seq.METADATA_KEY__MEM_TYPE_ID]
+		
+		var params
+		if arg_seq.metadata.has(arg_seq.METADATA_KEY__MEM_PARAM):
+			params = arg_seq.metadata[arg_seq.METADATA_KEY__MEM_PARAM]
+		
+		
+		if mem_type == MemoryTypeId.GOLD:
+			var amount = params
+			game_elements.gold_manager.increase_gold_by(amount, game_elements.gold_manager.IncreaseGoldSource.MAP_SPECIFIC_BEHAVIOR)
+			
+		elif mem_type == MemoryTypeId.HEALTH:
+			var amount = params
+			game_elements.health_manager.increase_health_by(amount, game_elements.health_manager.IncreaseHealthSource.MAP_SPECIFIC_BEHAVIOR)
+			
+			
+		elif mem_type == MemoryTypeId.RELIC_AND_GOLD:
+			var relic_amount = params[0]
+			game_elements.relic_manager.increase_relic_count_by(relic_amount, game_elements.relic_manager.IncreaseRelicSource.MAP_SPECIFIC_BEHAVIOR)
+			
+			var gold_amount = params[1]
+			game_elements.gold_manager.increase_gold_by(gold_amount, game_elements.gold_manager.IncreaseGoldSource.MAP_SPECIFIC_BEHAVIOR)
+			
+			
+		elif mem_type == MemoryTypeId.TOWERS:
+			var tower_id = arg_seq.metadata[CircleConcealSequenceData.METADATA_KEY__TOWER_ID_TO_CREATE]
+			var bench_slot = arg_seq.metadata[CircleConcealSequenceData.METADATA_KEY__BENCH_PLACABLE_TO_PUT_TOWER]
+			game_elements.tower_inventory_bench.create_tower_and_add_to_scene(tower_id, bench_slot)
+		
 	
 
 
@@ -1370,7 +1409,7 @@ func _on_circle_conceal_exec_line_draw_node(arg_seq : CircleConcealSequenceData)
 	
 	if arg_seq.mem_action_state == MemoryActionState__Particles.SACRIFICE:
 		
-		line_draw_param.source_pos = arg_seq.metadata[arg_seq.METADATA_KEY__TOWER_GLOB_POSITION] 
+		line_draw_param.source_pos = arg_seq.metadata[arg_seq.METADATA_KEY__GLOB_POSITION] 
 		line_draw_param.dest_pos = Vector2(line_draw_param.source_pos.x, game_elements.get_top_left_coordinates_of_playable_map().y)
 		line_draw_param.total_line_length = line_draw_param.source_pos.distance_to(line_draw_param.dest_pos)
 		
@@ -1381,7 +1420,7 @@ func _on_circle_conceal_exec_line_draw_node(arg_seq : CircleConcealSequenceData)
 		
 		
 	elif arg_seq.mem_action_state == MemoryActionState__Particles.RECALL:
-		var pos = arg_seq.metadata[arg_seq.METADATA_KEY__TOWER_GLOB_POSITION] 
+		var pos = arg_seq.metadata[arg_seq.METADATA_KEY__GLOB_POSITION] 
 		
 		line_draw_param.source_pos = Vector2(pos.x, game_elements.get_top_left_coordinates_of_playable_map().y)
 		line_draw_param.dest_pos = pos
@@ -1402,9 +1441,13 @@ func _on_circle_conceal_exec_line_draw_node(arg_seq : CircleConcealSequenceData)
 class CircleConcealSequenceData:
 	
 	const METADATA_KEY__TOWER : String = "Metadata_Tower"
-	const METADATA_KEY__TOWER_GLOB_POSITION : String = "Metadata_TowerGlobPosition"
+	const METADATA_KEY__GLOB_POSITION : String = "Metadata_TowerGlobPosition"
 	const METADATA_KEY__TOWER_ID_TO_CREATE : String = "Metadata_TowerIdToCreate"
 	const METADATA_KEY__BENCH_PLACABLE_TO_PUT_TOWER : String = "Metadata_BenchPlacableToPutTower"
+	
+	const METADATA_KEY__MEM_TYPE_ID : String = "Metadata_MemTypeId"
+	const METADATA_KEY__MEM_PARAM : String = "Metadata_MemParam"
+	
 	
 	#
 	
@@ -1628,18 +1671,22 @@ func _on_sacrifice_animations_ended():
 	_attempt_show_memory_recall_gui__or_end_if_not_appropriate()
 
 func _attempt_show_memory_recall_gui__or_end_if_not_appropriate():
-	_memory_sacrifice_gui.hide_gui()
-	
-	if _is_current_round_has_past_recall_memory():
-		_show_memory_recall_gui()
-	else:
-		set_current_mem_action_state__to_none()
+	if _current_mem_action_state == MemoryActionStates.SACRIFICING:  # needed, as sometimes Recalling with Health causes to repeat itself
+		_memory_sacrifice_gui.hide_gui()
+		
+		if _is_current_round_has_past_recall_memory():
+			_show_memory_recall_gui()
+		else:
+			set_current_mem_action_state__to_none()
 
 
 func _is_current_round_has_past_recall_memory():
 	return _past__stageround_id_to_recall_memories_map.has(_current_stageround_id)
 
 func _show_memory_recall_gui():
+	set_current_mem_action_state(MemoryActionStates.RECALLING)
+	
+	
 	# placed here to prevent loss of memory on crash/exit during recall phase
 	var preserved = _preserve_past_recall_memory_into_future()
 	if preserved:
@@ -1669,14 +1716,14 @@ func _preserve_past_recall_memory_into_future():
 ######
 
 func _generate_recall_description_for_mem_type_with_params__gold(arg_params):
-	var plain_fragment__x_gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "%s gold" % [arg_params[0]])
+	var plain_fragment__x_gold = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.GOLD, "%s gold" % [arg_params])
 	
 	return [
 		["Gain |0|.", [plain_fragment__x_gold]]
 	]
 
 func _generate_recall_description_for_mem_type_with_params__health(arg_params):
-	var plain_fragment__x_health = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.HEALTH, "%s health" % [arg_params[0]])
+	var plain_fragment__x_health = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.HEALTH, "%s health" % [arg_params])
 	
 	return [
 		["Gain |0|.", [plain_fragment__x_health]]
@@ -1708,7 +1755,7 @@ func _generate_recall_description_for_mem_type_with_params__towers(arg_params):
 	]
 
 func _generate_recall_description_for_mem_type_with_params__towers_with_ings(arg_params):
-	#todo broken
+	# not correct. no params for ings, since this aint supported
 	var plain_fragment__x_towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "%s tower(s)" % [arg_params.size()])
 	var plain_fragment__x_ingredients = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "%s ingredient(s)" % [arg_params[1]])
 	
@@ -1912,8 +1959,12 @@ func _on_mem_recall_accept__gold(arg_params):
 	_wrap_up_mem_recall()
 	
 	#
-	var gold_panel_pos = game_elements.general_stats_panel.gold_panel.rect_global_position
+	var gold_panel_pos = _get_center_of_control(game_elements.general_stats_panel.gold_panel) #game_elements.general_stats_panel.gold_panel.rect_global_position
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.RECALL, gold_panel_pos, gold_panel_pos)
+	seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = gold_panel_pos
+	seq_data.metadata[seq_data.METADATA_KEY__MEM_TYPE_ID] = MemoryTypeId.GOLD
+	seq_data.metadata[seq_data.METADATA_KEY__MEM_PARAM] = arg_params
+	
 	start_circle_conceal_particle_fx_sequence(seq_data)
 	
 	erase_future_recall_memory_in_curr_stage_round_id__if_applicable()
@@ -1924,6 +1975,9 @@ func _on_mem_recall_accept__health(arg_params):
 	#
 	var panel_pos = game_elements.right_side_panel.round_status_panel.get_heart_icon_global_pos()
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.SACRIFICE, panel_pos, panel_pos)
+	seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = panel_pos
+	seq_data.metadata[seq_data.METADATA_KEY__MEM_TYPE_ID] = MemoryTypeId.HEALTH
+	seq_data.metadata[seq_data.METADATA_KEY__MEM_PARAM] = arg_params
 	start_circle_conceal_particle_fx_sequence(seq_data)
 	
 	erase_future_recall_memory_in_curr_stage_round_id__if_applicable()
@@ -1933,12 +1987,18 @@ func _on_mem_recall_accept__relic_and_gold(arg_params):
 	
 	#
 	if arg_params[1] != 0:
-		var gold_panel_pos = game_elements.general_stats_panel.gold_panel.rect_global_position
+		var gold_panel_pos = _get_center_of_control(game_elements.general_stats_panel.gold_panel) #game_elements.general_stats_panel.gold_panel.rect_global_position
 		var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.RECALL, gold_panel_pos, gold_panel_pos)
+		seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = gold_panel_pos
+		#seq_data.metadata[seq_data.METADATA_KEY__MEM_TYPE_ID] = MemoryTypeId.RELIC_AND_GOLD
+		#seq_data.metadata[seq_data.METADATA_KEY__MEM_PARAM] = [0, 0]
 		start_circle_conceal_particle_fx_sequence(seq_data)
 	
-	var relic_panel_pos = game_elements.general_stats_panel.relic_panel.rect_global_position
+	var relic_panel_pos = _get_center_of_control(game_elements.general_stats_panel.relic_panel) #game_elements.general_stats_panel.relic_panel.rect_global_position
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.RECALL, relic_panel_pos, relic_panel_pos)
+	seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = relic_panel_pos
+	seq_data.metadata[seq_data.METADATA_KEY__MEM_TYPE_ID] = MemoryTypeId.RELIC_AND_GOLD
+	seq_data.metadata[seq_data.METADATA_KEY__MEM_PARAM] = arg_params
 	start_circle_conceal_particle_fx_sequence(seq_data)
 	
 	erase_future_recall_memory_in_curr_stage_round_id__if_applicable()
@@ -2037,7 +2097,9 @@ func _summon_tower_id_from_recall(arg_tower_id):
 	
 	seq_data.metadata[seq_data.METADATA_KEY__TOWER_ID_TO_CREATE] = arg_tower_id
 	seq_data.metadata[seq_data.METADATA_KEY__BENCH_PLACABLE_TO_PUT_TOWER] = placable
-	seq_data.metadata[seq_data.METADATA_KEY__TOWER_GLOB_POSITION] = placable.global_position
+	seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = placable.global_position
+	seq_data.metadata[seq_data.METADATA_KEY__MEM_TYPE_ID] = MemoryTypeId.TOWERS
+	#seq_data.metadata[seq_data.METADATA_KEY__MEM_PARAM] = arg_params
 	
 	start_circle_conceal_particle_fx_sequence(seq_data)
 	

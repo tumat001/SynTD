@@ -148,7 +148,7 @@ func set_warning_func_source_and_name_and_param(arg_constructor : ConstructorPar
 func update_warning_tooltip_body_display():
 	var desc : Array = []
 	
-	if warning_desc_func_source != null:
+	if warning_desc_func_source != null and warning_desc_func_name != null:
 		desc = warning_desc_func_source.call(warning_desc_func_name, warning_desc_func_param)
 		
 	
