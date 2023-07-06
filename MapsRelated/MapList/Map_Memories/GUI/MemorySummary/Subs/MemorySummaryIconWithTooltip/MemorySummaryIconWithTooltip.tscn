@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/Assets/MemoryType_Gold.png" type="Texture" id=1]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/MemorySummary/Subs/MemorySummaryIconWithTooltip/MemorySummaryIconWithTooltip.gd" type="Script" id=2]
+
+[node name="MemorySummaryIconWithTooltip" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 2 )
+
+[node name="IconTextureRect" type="TextureRect" parent="."]
+margin_right = 80.0
+margin_bottom = 80.0
+mouse_filter = 2
+texture = ExtResource( 1 )
+
+[connection signal="mouse_entered" from="." to="." method="_on_MemorySummaryIconWithTooltip_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_MemorySummaryIconWithTooltip_mouse_exited"]
+[connection signal="visibility_changed" from="." to="." method="_on_MemorySummaryIconWithTooltip_visibility_changed"]

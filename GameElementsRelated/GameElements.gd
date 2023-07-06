@@ -41,6 +41,7 @@ const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated
 
 signal before_main_init()
 signal before_game_start()
+signal after_all_game_init_finished()
 
 signal unhandled_input(arg_input, any_action_taken_by_game_elements)
 signal unhandled_key_input(arg_input, any_action_taken_by_game_elements)
@@ -443,6 +444,9 @@ func _ready():
 	
 	stage_round_manager.set_game_mode(game_mode_id)
 	stage_round_manager.end_round(true)
+	
+	
+	emit_signal("after_all_game_init_finished")
 	
 	# FOR TESTING ------------------------------------
 	#todo 

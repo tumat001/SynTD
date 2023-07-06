@@ -28,6 +28,9 @@ class ConstructorParams:
 	var warning_update_signal_source
 	var warning_update_signal_name
 	
+	
+	#var can_show_warning : bool = true
+	
 	#
 	
 	var tower_type_infos_to_show : Array
@@ -61,6 +64,8 @@ var warning_desc_func_param
 var warning_update_signal_source
 var warning_update_signal_name
 
+var can_show_warning : bool = true
+
 
 var tower_type_infos_to_show : Array
 
@@ -88,6 +93,8 @@ func set_prop_based_on_constructor(arg_constructor : ConstructorParams):
 	header_text = arg_constructor.header_text
 	
 	warning_header_text = arg_constructor.warning_header_text
+	
+	#can_show_warning = arg_constructor.can_show_warning
 	
 	set_warning_func_source_and_name_and_param(arg_constructor)
 	
@@ -146,20 +153,24 @@ func set_warning_func_source_and_name_and_param(arg_constructor : ConstructorPar
 
 
 func update_warning_tooltip_body_display():
-	var desc : Array = []
 	
-	if warning_desc_func_source != null and warning_desc_func_name != null:
-		desc = warning_desc_func_source.call(warning_desc_func_name, warning_desc_func_param)
+	if can_show_warning:
+		var desc : Array = []
 		
-	
-	if desc.size() != 0:
-		warning_tooltip_body.descriptions = desc
-		warning_tooltip_body.update_display()
-		warning_info_panel.visible = true
+		if warning_desc_func_source != null and warning_desc_func_name != null:
+			desc = warning_desc_func_source.call(warning_desc_func_name, warning_desc_func_param)
+			
+		
+		if desc.size() != 0:
+			warning_tooltip_body.descriptions = desc
+			warning_tooltip_body.update_display()
+			warning_info_panel.visible = true
+			
+		else:
+			warning_info_panel.visible = false
 		
 	else:
 		warning_info_panel.visible = false
-	
 
 
 #

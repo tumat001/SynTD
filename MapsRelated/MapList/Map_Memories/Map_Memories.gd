@@ -12,6 +12,8 @@ const MemoryType_TowersWithIngs_Normal = preload("res://MapsRelated/MapList/Map_
 const MemoryType_TowersWithIngs_Highlighted = preload("res://MapsRelated/MapList/Map_Memories/GUI/Assets/MemoryType_TowersWithIngs_Highlighted.png")
 const MemoryType_None_Normal = preload("res://MapsRelated/MapList/Map_Memories/GUI/Assets/MemoryType_None.png")
 const MemoryType_None_Highlighted = preload("res://MapsRelated/MapList/Map_Memories/GUI/Assets/MemoryType_None_Highlighted.png")
+const MemoryType_Empty_Normal = preload("res://MapsRelated/MapList/Map_Memories/GUI/Assets/MemoryType_Empty.png")
+
 
 const GSSB_Memory_Recall_Normal = preload("res://MapsRelated/MapList/Map_Memories/GUI/Assets/GSSMs/GSSM_MemoryActionState_Button_Recall_Normal.png")
 const GSSB_Memory_Recall_Highlighted = preload("res://MapsRelated/MapList/Map_Memories/GUI/Assets/GSSMs/GSSM_MemoryActionState_Button_Recall_Highlighted.png")
@@ -40,12 +42,16 @@ const MemoryRecallGUI_Scene = preload("res://MapsRelated/MapList/Map_Memories/GU
 const MemoryRecallGUI = preload("res://MapsRelated/MapList/Map_Memories/GUI/MemoryRecall/MemoryRecallGUI.gd")
 const MemoryTypeRecallDetailsPanel = preload("res://MapsRelated/MapList/Map_Memories/GUI/Shared/MemoryTypeRecallDetailsPanel/MemoryTypeRecallDetailsPanel.gd")
 const MemoryTypeRecallPanel = preload("res://MapsRelated/MapList/Map_Memories/GUI/MemoryRecall/Subs/MemoryTypeRecallPanel/MemoryTypeRecallPanel.gd")
+const MemorySummaryGUI = preload("res://MapsRelated/MapList/Map_Memories/GUI/MemorySummary/MemorySummaryGUI.gd")
+const MemorySummaryGUI_Scene = preload("res://MapsRelated/MapList/Map_Memories/GUI/MemorySummary/MemorySummaryGUI.tscn")
+
 
 const TextFragmentInterpreter = preload("res://MiscRelated/TextInterpreterRelated/TextFragmentInterpreter.gd")
 const NumericalTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/NumericalTextFragment.gd")
 const TowerStatTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/TowerStatTextFragment.gd")
 const OutcomeTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/OutcomeTextFragment.gd")
 const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/TextFragments/PlainTextFragment.gd")
+
 
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")
 const CenterBasedAttackSprite = preload("res://MiscRelated/AttackSpriteRelated/CenterBasedAttackSprite.gd")
@@ -54,6 +60,8 @@ const CenterBasedAttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRel
 const Memories_CircleConcealParticle_Pic = preload("res://MapsRelated/MapList/Map_Memories/Particles/Memories_CircleConcealParticle.png")
 
 
+
+#
 
 signal conditions_changed__towers()
 signal conditions_changed__towers_with_ings()
@@ -71,7 +79,8 @@ const CAN_ERASE_MEMORY_ON_ACCEPT : bool = true  # correct val: true
 #
 
 enum MemoryTypeId {
-	NONE = 0,
+	EMPTY = -1,  # UNDECIDED (used for filling info in Summary)
+	NONE = 0,  # DECIDED
 	
 	TOWERS = 1,
 	TOWERS_WITH_INGS = 2,   # NOT yet supported as saving ings is troublesome
@@ -102,7 +111,7 @@ class RoundMemorySacrificeInfo:
 	var stage_round_id : String
 	
 
-const stage_round_trigger_to_round_memory_info_map : Dictionary = {}
+var stage_round_trigger_to_round_memory_info_map : Dictionary = {}
 
 
 ###
@@ -122,9 +131,10 @@ var _current_mem_action_state : int
 
 var GSSB__show_memory_sacrifice : GenStats_SmallButton
 var GSSB__show_memory_recall : GenStats_SmallButton
-var GSSB__show_memory_overview : GenStats_SmallButton
+var GSSB__show_memory_summary : GenStats_SmallButton
 
 var _all_GSSB : Array
+var _all_GSSB__to_highlight_with_mod_fluc : Array
 
 var _at_least_one_GSSB_is_visible : bool
 
@@ -140,6 +150,7 @@ var _mem_type_sac_construction_param__none
 
 var _memory_sacrifice_gui : MemorySacrificeGUI
 var _memory_recall_gui : MemoryRecallGUI
+var _memory_summary_gui : MemorySummaryGUI
 
 #
 
@@ -318,14 +329,13 @@ func _apply_map_specific_changes_to_game_elements(arg_game_elements):
 	_initialize_custom_stagerounds()
 	_initialize_memory_sacrifice_gui()
 	_initialize_memory_recall_gui()
+	_initialize_memory_summary_gui()
 	
 	stage_round_manager.connect("round_ended", self, "_on_round_ended", [], CONNECT_PERSIST)
 	
 	_initialize_all_GSSB()
 	_connect_to_relateds__for_sac__conditions_changed__all()
 	_connect_to_relateds__for_recall__warning_update__all()
-	
-	_initialize_current_mem_action_state__at_game_beginning()
 	
 	#
 	
@@ -340,6 +350,11 @@ func _deferred_init():
 	
 	_initialize_enable_process_conditional_clauses()
 	_initialize_line_draw_node()
+	
+	call_deferred("_deferred_set_prop_of_memory_summary_gui")
+	
+	_initialize_current_mem_action_state__at_game_beginning()
+	
 
 func _initialize_custom_stagerounds():
 	var stage_rounds = ModeNormal_Memories_StageRounds.new()
@@ -348,33 +363,33 @@ func _initialize_custom_stagerounds():
 
 
 func _initialize_memory_infos():
-	#todo TESTING
-	var mem_sac_info__test = RoundMemorySacrificeInfo.new()
-	mem_sac_info__test.stage_round_id = "02"
-	mem_sac_info__test.sacrifice_type_ids_available_to_param_map = {
-		MemoryTypeId.TOWERS : [5],
-		MemoryTypeId.GOLD : [4],
-		MemoryTypeId.HEALTH : [8],
-		MemoryTypeId.RELIC_AND_GOLD : [1, 10],
-	}
-	_add_memory_info(mem_sac_info__test)
-	
-	var mem_sac_info__test1 = RoundMemorySacrificeInfo.new()
-	mem_sac_info__test1.stage_round_id = "11"
-	mem_sac_info__test1.sacrifice_type_ids_available_to_param_map = {
-		MemoryTypeId.TOWERS : [3],
-		MemoryTypeId.GOLD : [6],
-		MemoryTypeId.HEALTH : [10],
-	}
-	_add_memory_info(mem_sac_info__test1)
-	#todo END OF TEST
+	#TESTING
+#	var mem_sac_info__test = RoundMemorySacrificeInfo.new()
+#	mem_sac_info__test.stage_round_id = "02"
+#	mem_sac_info__test.sacrifice_type_ids_available_to_param_map = {
+#		MemoryTypeId.TOWERS : [5],
+#		MemoryTypeId.GOLD : [100],
+#		MemoryTypeId.HEALTH : [10],
+#		MemoryTypeId.RELIC_AND_GOLD : [2, 10],
+#	}
+#	_add_memory_info(mem_sac_info__test)
+#
+#	var mem_sac_info__test1 = RoundMemorySacrificeInfo.new()
+#	mem_sac_info__test1.stage_round_id = "11"
+#	mem_sac_info__test1.sacrifice_type_ids_available_to_param_map = {
+#		MemoryTypeId.TOWERS : [3],
+#		MemoryTypeId.GOLD : [6],
+#		MemoryTypeId.HEALTH : [10],
+#	}
+#	_add_memory_info(mem_sac_info__test1)
+	#END OF TEST
 	
 	var mem_sac_info__3 = RoundMemorySacrificeInfo.new()
 	mem_sac_info__3.stage_round_id = "33"
 	mem_sac_info__3.sacrifice_type_ids_available_to_param_map = {
-		MemoryTypeId.TOWERS : [1],
-		MemoryTypeId.GOLD : [4],
-		MemoryTypeId.HEALTH : [8],
+		MemoryTypeId.TOWERS : [2],
+		MemoryTypeId.GOLD : [6],
+		MemoryTypeId.HEALTH : [15],
 	}
 	_add_memory_info(mem_sac_info__3)
 	
@@ -382,9 +397,9 @@ func _initialize_memory_infos():
 	mem_sac_info__5.stage_round_id = "53"
 	mem_sac_info__5.sacrifice_type_ids_available_to_param_map = {
 		#MemoryTypeId.TOWERS_WITH_INGS : [1, TOWERS_WITH_INGS_MAX_ING_COUNT],
-		MemoryTypeId.TOWERS : [2],
-		MemoryTypeId.GOLD : [8],
-		MemoryTypeId.HEALTH : [14],
+		MemoryTypeId.TOWERS : [3],
+		MemoryTypeId.GOLD : [10],
+		MemoryTypeId.HEALTH : [20],
 	}
 	_add_memory_info(mem_sac_info__5)
 	
@@ -393,8 +408,8 @@ func _initialize_memory_infos():
 	mem_sac_info__7.sacrifice_type_ids_available_to_param_map = {
 		#MemoryTypeId.TOWERS_WITH_INGS : [2, TOWERS_WITH_INGS_MAX_ING_COUNT],
 		MemoryTypeId.TOWERS : [4],
-		MemoryTypeId.GOLD : [18],
-		MemoryTypeId.HEALTH : [28],
+		MemoryTypeId.GOLD : [20],
+		MemoryTypeId.HEALTH : [35],
 		MemoryTypeId.RELIC_AND_GOLD : [1, 2],
 	}
 	_add_memory_info(mem_sac_info__7)
@@ -404,7 +419,7 @@ func _initialize_memory_infos():
 	mem_sac_info__9.sacrifice_type_ids_available_to_param_map = {
 		#MemoryTypeId.TOWERS_WITH_INGS : [3, TOWERS_WITH_INGS_MAX_ING_COUNT],
 		MemoryTypeId.TOWERS : [5],
-		MemoryTypeId.GOLD : [40],
+		MemoryTypeId.GOLD : [30],
 		MemoryTypeId.HEALTH : [40],
 		MemoryTypeId.RELIC_AND_GOLD : [1, 5],
 	}
@@ -444,6 +459,7 @@ func _on_enable_process_clause_ins_or_rem(_arg_clause):
 func _initialize_all_GSSB():
 	_initialize_GSSB__sacrifice()
 	_initialize_GSSB__recall()
+	_initialize_GSSB__summary()
 	
 
 func _initialize_GSSB__sacrifice():
@@ -463,6 +479,7 @@ func _initialize_GSSB__sacrifice():
 	
 	GSSB__show_memory_sacrifice = game_elements.general_stats_panel.construct_small_button_using_cons_params(constr_params)
 	_all_GSSB.append(GSSB__show_memory_sacrifice)
+	_all_GSSB__to_highlight_with_mod_fluc.append(GSSB__show_memory_sacrifice)
 	
 
 func _on_click__show_memory_sacrifice_gui():
@@ -485,14 +502,39 @@ func _initialize_GSSB__recall():
 	constr_params.on_click__func_source = self
 	constr_params.on_click__func_name = "_on_click__show_memory_recall_gui"
 	
-	GSSB__show_memory_sacrifice = game_elements.general_stats_panel.construct_small_button_using_cons_params(constr_params)
-	_all_GSSB.append(GSSB__show_memory_sacrifice)
+	GSSB__show_memory_recall = game_elements.general_stats_panel.construct_small_button_using_cons_params(constr_params)
+	_all_GSSB.append(GSSB__show_memory_recall)
+	_all_GSSB__to_highlight_with_mod_fluc.append(GSSB__show_memory_recall)
 	
 
 func _on_click__show_memory_recall_gui():
 	_memory_recall_gui.show_gui()
 	
 
+
+
+func _initialize_GSSB__summary():
+	var constr_params = GenStats_SmallButton.ConstructorParams.new()
+	
+	constr_params.show_descs = false
+	
+	constr_params.image_normal = GSSB_Memory_Summary_Normal
+	constr_params.image_hovered = GSSB_Memory_Summary_Highlighted
+	
+	constr_params.condition_visible__func_source = self
+	constr_params.condition_visible__func_name = "_update_GSSB_visibility__mem_summary"
+	#constr_params.condition_visible__func_param
+	
+	constr_params.on_click__func_source = self
+	constr_params.on_click__func_name = "_on_click__show_memory_summary_gui"
+	
+	GSSB__show_memory_summary = game_elements.general_stats_panel.construct_small_button_using_cons_params(constr_params)
+	_all_GSSB.append(GSSB__show_memory_summary)
+	
+
+func _on_click__show_memory_summary_gui():
+	_memory_summary_gui.show_gui()
+	
 
 #func _initialize_GSSB_modulate_rgb_tweener():
 #	pass
@@ -516,7 +558,7 @@ func _end_GSSB_modulate_rgb_tweener():
 func set_current_modulate_rgb_for_GSSB(arg_val):
 	_current_modulate_rgb_for_GSSB = arg_val
 	
-	for button in _all_GSSB:
+	for button in _all_GSSB__to_highlight_with_mod_fluc:
 		if button.visible:
 			button.modulate.r = _current_modulate_rgb_for_GSSB
 			button.modulate.g = _current_modulate_rgb_for_GSSB
@@ -562,6 +604,9 @@ func _update_GSSB_visibility__mem_sacrifice(arg_params):
 
 func _update_GSSB_visibility__mem_recall(arg_params):
 	return _current_mem_action_state == MemoryActionStates.RECALLING
+
+func _update_GSSB_visibility__mem_summary(arg_params):
+	return _current_mem_action_state == MemoryActionStates.NONE__WITH_SACRIFICES
 
 
 func _update_round_is_startable():
@@ -839,7 +884,7 @@ func _on_execute_memory_sacrifice_type__gold(arg_params):
 	_store_to_future_recall_mem_dict__mem_sac__gold(_current_stageround_id, arg_params[0])
 	
 	#
-	var gold_panel_pos = _get_center_of_control(game_elements.general_stats_panel.gold_panel)#game_elements.general_stats_panel.gold_panel.rect_global_position
+	var gold_panel_pos = _get_center_of_control(game_elements.general_stats_panel.gold_panel)
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.SACRIFICE, gold_panel_pos, gold_panel_pos)
 	seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = gold_panel_pos
 	start_circle_conceal_particle_fx_sequence(seq_data)
@@ -858,7 +903,7 @@ func _on_execute_memory_sacrifice_type__health(arg_params):
 	_store_to_future_recall_mem_dict__mem_sac__health(_current_stageround_id, arg_params[0])
 	
 	#
-	var panel_pos = game_elements.right_side_panel.round_status_panel.get_heart_icon_global_pos() #game_elements.right_side_panel.round_status_panel.get_heart_icon_global_pos()
+	var panel_pos = game_elements.right_side_panel.round_status_panel.get_heart_icon_global_pos()
 	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.SACRIFICE, panel_pos, panel_pos)
 	seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = panel_pos
 	start_circle_conceal_particle_fx_sequence(seq_data)
@@ -975,9 +1020,17 @@ func _construct_recall_memory(arg_stageround_id, arg_mem_type : int,
 	
 	return recall_mem
 
-func _add_recall_memory_to_future_memories_map(arg_recall_memory : RecallMemory):
-	_future__stageround_id_to_recall_memories_map[arg_recall_memory.stage_round_id] = arg_recall_memory
+func _set_recall_memory_to_future_memories_map(arg_recall_memory : RecallMemory, arg_custom_stageround_id = null):
+	var stageround_id_to_use = arg_custom_stageround_id
+	if arg_custom_stageround_id == null:
+		stageround_id_to_use = arg_recall_memory.stage_round_id
+	else:
+		arg_recall_memory.stage_round_id = arg_custom_stageround_id
 	
+	_future__stageround_id_to_recall_memories_map[stageround_id_to_use] = arg_recall_memory
+	
+	_update_memory_summary_panel__changed_future_recall_mem_map(arg_recall_memory)
+
 
 #
 
@@ -985,20 +1038,20 @@ func _store_to_future_recall_mem_dict__mem_sac__gold(arg_stage_round, arg_amount
 	var recall_mem = _construct_recall_memory(arg_stage_round, MemoryTypeId.GOLD, arg_amount)
 	recall_mem.version_num = _current_recall_memory_version__gold
 	
-	_add_recall_memory_to_future_memories_map(recall_mem)
+	_set_recall_memory_to_future_memories_map(recall_mem)
 
 func _store_to_future_recall_mem_dict__mem_sac__health(arg_stage_round, arg_amount):
 	var recall_mem = _construct_recall_memory(arg_stage_round, MemoryTypeId.HEALTH, arg_amount)
 	recall_mem.version_num = _current_recall_memory_version__health
 	
-	_add_recall_memory_to_future_memories_map(recall_mem)
+	_set_recall_memory_to_future_memories_map(recall_mem)
 	
 
 func _store_to_future_recall_mem_dict__mem_sac__relic_and_gold(arg_stage_round, arg_relic_amount, arg_gold_amount):
 	var recall_mem = _construct_recall_memory(arg_stage_round, MemoryTypeId.RELIC_AND_GOLD, [arg_relic_amount, arg_gold_amount])
 	recall_mem.version_num = _current_recall_memory_version__relic_and_gold
 	
-	_add_recall_memory_to_future_memories_map(recall_mem)
+	_set_recall_memory_to_future_memories_map(recall_mem)
 
 func _store_to_future_recall_mem_dict__mem_sac__towers(arg_stage_round, arg_towers):
 	var tower_ids = []
@@ -1010,7 +1063,7 @@ func _store_to_future_recall_mem_dict__mem_sac__towers(arg_stage_round, arg_towe
 	var recall_mem = _construct_recall_memory(arg_stage_round, MemoryTypeId.TOWERS, tower_ids)
 	recall_mem.version_num = _current_recall_memory_version__towers
 	
-	_add_recall_memory_to_future_memories_map(recall_mem)
+	_set_recall_memory_to_future_memories_map(recall_mem)
 
 
 func _store_to_future_recall_mem_dict__mem_sac__towers_with_ings(arg_stage_round, arg_towers):
@@ -1110,8 +1163,20 @@ func _construct_recall_memory_from_dict(arg_dict):
 ##################
 
 func _on_before_game_quit():
+	_transfer_untraversed_past_recall_mem_into_future()
+	
 	_write_savables_to_save_file()
 	
+
+
+func _transfer_untraversed_past_recall_mem_into_future():
+	for stageround_id in stage_round_trigger_to_round_memory_info_map:
+		if _past__stageround_id_to_recall_memories_map.has(stageround_id):
+			if !_future__stageround_id_to_recall_memories_map.has(stageround_id):
+				_future__stageround_id_to_recall_memories_map[stageround_id] = _past__stageround_id_to_recall_memories_map[stageround_id]
+				
+	
+
 
 func _write_savables_to_save_file():
 	if CAN_WRITE_SAVE_FILE:
@@ -1385,8 +1450,7 @@ func _on_circle_conceal_seq__beam_phase_ended__recall(arg_seq : CircleConcealSeq
 			
 		elif mem_type == MemoryTypeId.HEALTH:
 			var amount = params
-			game_elements.health_manager.increase_health_by(amount, game_elements.health_manager.IncreaseHealthSource.MAP_SPECIFIC_BEHAVIOR)
-			
+			game_elements.health_manager.increase_health_by(amount, game_elements.health_manager.IncreaseHealthSource.MAP_SPECIFIC)
 			
 		elif mem_type == MemoryTypeId.RELIC_AND_GOLD:
 			var relic_amount = params[0]
@@ -1704,7 +1768,8 @@ func _show_memory_recall_gui():
 
 func _preserve_past_recall_memory_into_future():
 	if !_future__stageround_id_to_recall_memories_map.has(_current_stageround_id) and _past__stageround_id_to_recall_memories_map.has(_current_stageround_id):
-		_future__stageround_id_to_recall_memories_map[_current_stageround_id] = _past__stageround_id_to_recall_memories_map[_current_stageround_id]
+		#_future__stageround_id_to_recall_memories_map[_current_stageround_id] = _past__stageround_id_to_recall_memories_map[_current_stageround_id]
+		_set_recall_memory_to_future_memories_map(_past__stageround_id_to_recall_memories_map[_current_stageround_id])
 		
 		return true
 	
@@ -1763,6 +1828,16 @@ func _generate_recall_description_for_mem_type_with_params__towers_with_ings(arg
 		["Gain |0|. Including their |1|.", [plain_fragment__x_towers, plain_fragment__x_ingredients]]
 	]
 
+func _generate_recall_description_for_mem_type_with_params__none(arg_params):
+	return [
+		["Gain nothing", []]
+	]
+
+func _generate_recall_description_for_mem_type_with_params__empty(arg_params):
+	return [
+		["None sacrificed yet for this round.", []],
+		["Sacrificing nothing this round preserves the previous sacrifice.", []]
+	]
 
 
 
@@ -1811,6 +1886,17 @@ func _generate_mem_recall_details_panel_constructor_param(arg_type, arg_params):
 		warning_desc_func_name = "_generate_recall_desc__warning__not_enough_available_tower_slots"
 		
 		tower_ids = arg_params
+		
+		
+	elif arg_type == MemoryTypeId.NONE:
+		descs = _generate_recall_description_for_mem_type_with_params__none(arg_params)
+		header_text = "No Sacrifice"
+		
+		
+	elif arg_type == MemoryTypeId.EMPTY:
+		descs = _generate_recall_description_for_mem_type_with_params__empty(arg_params)
+		header_text = ""
+		
 	
 	#
 	
@@ -1892,12 +1978,20 @@ func _generate_mem_recall_type_panel_constructor_param(arg_type, arg_params):
 		image_normal = MemoryType_TowersWithIngs_Normal
 		image_hovered = MemoryType_TowersWithIngs_Highlighted
 		
+	elif arg_type == MemoryTypeId.NONE:
+		image_normal = MemoryType_None_Normal
+		image_hovered = MemoryType_None_Highlighted
+		
+	elif arg_type == MemoryTypeId.EMPTY:
+		image_normal = MemoryType_Empty_Normal
+		image_hovered = MemoryType_Empty_Normal
 	
 	var constr_param__mem_rec_details_panel = _generate_mem_recall_details_panel_constructor_param(arg_type, arg_params)
 	
 	#
 	
 	constructor_param.memory_icon_normal = image_normal
+	constructor_param.memory_icon_hovered = image_hovered
 	constructor_param.recall_details_constr_params = constr_param__mem_rec_details_panel
 	
 	return constructor_param
@@ -1974,7 +2068,7 @@ func _on_mem_recall_accept__health(arg_params):
 	
 	#
 	var panel_pos = game_elements.right_side_panel.round_status_panel.get_heart_icon_global_pos()
-	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.SACRIFICE, panel_pos, panel_pos)
+	var seq_data = create_circle_conceal_seq_data(CircleParticleType.HUD, MemoryActionState__Particles.RECALL, panel_pos, panel_pos)
 	seq_data.metadata[seq_data.METADATA_KEY__GLOB_POSITION] = panel_pos
 	seq_data.metadata[seq_data.METADATA_KEY__MEM_TYPE_ID] = MemoryTypeId.HEALTH
 	seq_data.metadata[seq_data.METADATA_KEY__MEM_PARAM] = arg_params
@@ -2035,6 +2129,12 @@ func erase_future_recall_memory_in_curr_stage_round_id__if_applicable():
 	if _erase_future_recall_memory_in_curr_stage_round_id_after_recall_accept:
 		if CAN_ERASE_MEMORY_ON_ACCEPT:
 			_future__stageround_id_to_recall_memories_map.erase(_current_stageround_id)
+			
+			_set_recall_memory_to_future_memories_map(_construct_recall_memory__nothing(_current_stageround_id))
+
+func _construct_recall_memory__nothing(arg_stageround_id):
+	return _construct_recall_memory(arg_stageround_id, MemoryTypeId.NONE, null)
+
 
 #
 
@@ -2105,5 +2205,44 @@ func _summon_tower_id_from_recall(arg_tower_id):
 	
 
 
-#
+####
+
+func _initialize_memory_summary_gui():
+	_memory_summary_gui = MemorySummaryGUI_Scene.instance()
+	
+	_memory_summary_gui.initialize_gui(game_elements)
+	
+	game_elements.whole_screen_gui.add_control_but_dont_show(_memory_summary_gui)
+	
+
+func _deferred_set_prop_of_memory_summary_gui():
+	var constr_params = MemorySummaryGUI.ConstructorParams.new()
+	constr_params.all_stageround_ids_with_action = stage_round_trigger_to_round_memory_info_map.keys()
+	constr_params.past__stageround_id_to_recall_memories_map = _past__stageround_id_to_recall_memories_map
+	constr_params.future__stageround_id_to_recall_memories_map = _future__stageround_id_to_recall_memories_map
+	constr_params.func_source_for__empty_recall_type_panel_constr_param = self
+	constr_params.func_name_for__empty_recall_type_panel_constr_param = "_convert_null_to_recall_type_panel_constr_param"
+	constr_params.func_source_for__convert_recall_memory_into_type_panel_constr_param = self
+	constr_params.func_name_for__convert_recall_memory_into_type_panel_constr_param = "_convert_recall_mem_to_recall_type_panel_constr_param"
+	
+	_memory_summary_gui.set_prop_based_on_constructor(constr_params)
+	
+
+
+func _update_memory_summary_panel__changed_future_recall_mem_map(arg_recall_mem : RecallMemory):
+	_memory_summary_gui.set_future_recall_memory__in_stage_round(arg_recall_mem, arg_recall_mem.stage_round_id)
+	
+
+
+
+func _convert_null_to_recall_type_panel_constr_param(is_past : bool):
+	if is_past:
+		return _generate_mem_recall_type_panel_constructor_param(MemoryTypeId.NONE, null)
+	else:
+		return _generate_mem_recall_type_panel_constructor_param(MemoryTypeId.EMPTY, null)
+
+func _convert_recall_mem_to_recall_type_panel_constr_param(arg_recall_mem : RecallMemory) -> MemoryTypeRecallPanel.ConstructorParams:
+	return _generate_mem_recall_type_panel_constructor_param(arg_recall_mem.memory_type_id, arg_recall_mem.param)
+	
+
 

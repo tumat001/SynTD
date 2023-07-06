@@ -1,0 +1,92 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/MemorySummary/Subs/MemorySummaryIconWithTooltip/MemorySummaryIconWithTooltip.tscn" type="PackedScene" id=1]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/MemorySummary/Subs/MemorySummaryStageRoundColumn/MemorySummaryStageRoundColumn.gd" type="Script" id=2]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/Assets/FillsAndBorders/LightOrangeYellow_Background_2x2.png" type="Texture" id=3]
+[ext_resource path="res://MapsRelated/MapList/Map_Memories/GUI/Assets/FillsAndBorders/WhiteLine_6x6.png" type="Texture" id=4]
+
+[node name="MemorySummaryStageRoundColumn" type="MarginContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 2 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_right = 128.0
+margin_bottom = 290.0
+custom_constants/separation = 10
+
+[node name="LeftBorderContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_right = 6.0
+margin_bottom = 290.0
+
+[node name="LeftBorder" type="TextureRect" parent="HBoxContainer/LeftBorderContainer"]
+margin_right = 6.0
+margin_bottom = 290.0
+texture = ExtResource( 4 )
+stretch_mode = 2
+
+[node name="MainContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 16.0
+margin_right = 112.0
+margin_bottom = 290.0
+
+[node name="Background" type="TextureRect" parent="HBoxContainer/MainContainer"]
+margin_right = 96.0
+margin_bottom = 290.0
+texture = ExtResource( 3 )
+stretch_mode = 2
+
+[node name="ContentMarginer" type="MarginContainer" parent="HBoxContainer/MainContainer"]
+margin_right = 96.0
+margin_bottom = 290.0
+custom_constants/margin_right = 8
+custom_constants/margin_top = 8
+custom_constants/margin_left = 8
+custom_constants/margin_bottom = 8
+
+[node name="MainVContainer" type="VBoxContainer" parent="HBoxContainer/MainContainer/ContentMarginer"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 88.0
+margin_bottom = 282.0
+custom_constants/separation = 50
+
+[node name="HeaderContainer" type="MarginContainer" parent="HBoxContainer/MainContainer/ContentMarginer/MainVContainer"]
+margin_right = 80.0
+margin_bottom = 14.0
+
+[node name="StageroundLabel" type="Label" parent="HBoxContainer/MainContainer/ContentMarginer/MainVContainer/HeaderContainer"]
+margin_left = 29.0
+margin_right = 50.0
+margin_bottom = 14.0
+size_flags_horizontal = 6
+text = "2-3"
+
+[node name="PastContainer" type="HBoxContainer" parent="HBoxContainer/MainContainer/ContentMarginer/MainVContainer"]
+margin_top = 64.0
+margin_right = 80.0
+margin_bottom = 144.0
+
+[node name="PastMemorySummaryIconWithTooltip" parent="HBoxContainer/MainContainer/ContentMarginer/MainVContainer/PastContainer" instance=ExtResource( 1 )]
+margin_right = 80.0
+margin_bottom = 80.0
+
+[node name="FutureContainer" type="HBoxContainer" parent="HBoxContainer/MainContainer/ContentMarginer/MainVContainer"]
+margin_top = 194.0
+margin_right = 80.0
+margin_bottom = 274.0
+
+[node name="FutureMemorySummaryIconWithTooltip" parent="HBoxContainer/MainContainer/ContentMarginer/MainVContainer/FutureContainer" instance=ExtResource( 1 )]
+margin_right = 80.0
+margin_bottom = 80.0
+
+[node name="RightBorderContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 122.0
+margin_right = 128.0
+margin_bottom = 290.0
+
+[node name="RightBorder" type="TextureRect" parent="HBoxContainer/RightBorderContainer"]
+margin_right = 6.0
+margin_bottom = 290.0
+texture = ExtResource( 4 )
+stretch_mode = 2

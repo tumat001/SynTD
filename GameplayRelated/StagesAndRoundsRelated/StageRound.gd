@@ -90,3 +90,26 @@ static func is_stageround_id_equal_than_second_param(a_stageround_id, b_stagerou
 	
 	#return is_stage_round_equal_than_second_param(converted_a[0], converted_a[1], converted_b[0], converted_b[1])
 
+
+#
+
+# 0 = equal, 1 = higher, -1 = lower
+static func compare_stage_and_round__param_to_second_param(a_stage_num, a_round_num, b_stage_num, b_round_num):
+	if a_stage_num > b_stage_num:
+		return 1
+	elif a_stage_num == b_stage_num:
+		if a_round_num > b_round_num:
+			return 1
+		elif a_round_num == b_round_num:
+			return 0
+		else:
+			return -1
+	else:
+		return -1
+
+static func compare_stage_round__param_to_second_param(a_stageround_id, b_stageround_id):
+	var converted_a = convert_stageround_id_to_stage_and_round_num(a_stageround_id)
+	var converted_b = convert_stageround_id_to_stage_and_round_num(b_stageround_id)
+	
+	return compare_stage_and_round__param_to_second_param(converted_a[0], converted_a[1], converted_b[0], converted_b[1])
+

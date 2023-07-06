@@ -8,6 +8,7 @@ class ConstructorParams:
 	#
 	
 	var memory_icon_normal
+	var memory_icon_hovered
 	
 	#
 	
@@ -16,7 +17,7 @@ class ConstructorParams:
 var recall_details_constr_params
 
 var memory_icon_normal
-
+var memory_icon_hovered
 
 #
 
@@ -29,6 +30,7 @@ func set_prop_based_on_constructor(arg_constructor : ConstructorParams):
 	recall_details_constr_params = arg_constructor.recall_details_constr_params
 	
 	memory_icon_normal = arg_constructor.memory_icon_normal
+	memory_icon_hovered = arg_constructor.memory_icon_hovered
 	
 	if is_inside_tree():
 		update_display()

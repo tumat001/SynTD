@@ -137,7 +137,7 @@ func update_is_enabled_based_on_conditions():
 #
 
 func set_condition_changed_signal__for_update(arg_source, arg_signal_name):
-	if _condition_changed_signal_source != null:
+	if _condition_changed_signal_source != null and _condition_changed_signal_name.length() != 0:
 		_condition_changed_signal_source.disconnect(_condition_changed_signal_name, self, "update_is_enabled_based_on_conditions")
 	
 	_condition_changed_signal_source = arg_source
