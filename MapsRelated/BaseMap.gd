@@ -343,10 +343,13 @@ func attempt_make_flag_visible_following_conditions(arg_flag):
 ##
 
 func _on_round_started(arg_stageround):
+	make_all_flags_invis()
+
+
+func make_all_flags_invis():
 	for flag in flag_to_path_map.keys():
 		flag.visible = false
 		
-
 
 #############
 

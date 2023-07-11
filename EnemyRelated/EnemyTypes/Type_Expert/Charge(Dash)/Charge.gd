@@ -59,7 +59,7 @@ func _on_health_threshold_02_reached(curr_health):
 
 
 func _perform_dash():
-	if !_is_dashing:
+	if !_is_dashing and dash_ability.is_ready_for_activation():
 		dash_ability.on_ability_before_cast_start(dash_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 		
 		connect("effect_added", self, "_speed_effect_added")

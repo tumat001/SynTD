@@ -116,6 +116,7 @@ enum NoMovementClauses {
 	####
 	
 	IMPEDE_STONE_STOP_MOV = 1000,
+	
 }
 
 enum NoActionClauses {
@@ -224,8 +225,16 @@ var percent_shield_receive_modifier_id_effect_map : Dictionary = {}
 var last_calculated_percent_shield_receive_modifier_amount : float
 
 
+
+const DEFAULT_INVIS_BREAK_AT_OFFSET_REMAINING : float = 50.0
+
 var invisibility_id_effect_map : Dictionary = {}
 var last_calculated_invisibility_status : bool = false
+var last_calculated_has_invis_effect_with_break_invis_on_x_offset_remaining : bool = false
+
+var offset_for_break_invis : float = DEFAULT_INVIS_BREAK_AT_OFFSET_REMAINING
+var is_break_invis_at_x_offset_remaining : bool = true setget set_is_break_invis_at_x_offset_remaining
+
 
 var invulnerability_id_effect_map : Dictionary = {}
 var last_calculated_is_invulnerable : bool = false
@@ -425,6 +434,8 @@ func _exits_when_at_map_end_clauses_updated(_arg_clause_id): # arg does not matt
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	set_is_break_invis_at_x_offset_remaining(is_break_invis_at_x_offset_remaining)
+	
 	anim_face_dir_component = AnimFaceDirComponent.new()
 	
 	_self_size = get_current_anim_size()
@@ -571,6 +582,12 @@ func _process(delta):
 		ability.time_decreased(delta)
 	
 	_decrease_time_of_current_revive_effect(delta)
+	
+	#
+	
+	if is_break_invis_at_x_offset_remaining and offset_for_break_invis >= distance_to_exit and last_calculated_has_invis_effect_with_break_invis_on_x_offset_remaining:
+		if last_calculated_invisibility_status:
+			remove_all_invis_effects__break_invis_on_x_offset_remaining()
 	
 	
 	## All below used to be in phy process. Reverse if needed
@@ -1182,10 +1199,16 @@ func calculate_invisibility_status() -> bool:
 	
 	if last_calculated_invisibility_status:
 		var lowest_mod_a : float = 1
+		var has_breakables : bool = false
+		
 		for invis_effect in invisibility_id_effect_map.values():
 			if invis_effect.modulate_a_for_invis < lowest_mod_a:
 				lowest_mod_a = invis_effect.modulate_a_for_invis
+				
+				if invis_effect.break_invis_on_x_offset_remaining:
+					has_breakables = true
 		
+		last_calculated_has_invis_effect_with_break_invis_on_x_offset_remaining = has_breakables
 		
 		#modulate.a = 0.4
 		set_sprite_layer_modulate(EnemyModulateIds.GENERIC_INVIS, Color(1, 1, 1, lowest_mod_a))
@@ -1198,6 +1221,13 @@ func calculate_invisibility_status() -> bool:
 	
 	emit_signal("on_invisibility_status_changed", last_calculated_invisibility_status)
 	return last_calculated_invisibility_status
+
+
+func remove_all_invis_effects__break_invis_on_x_offset_remaining():
+	var effects = invisibility_id_effect_map.values()
+	for effect in effects:
+		if effect.break_invis_on_x_offset_remaining:
+			_remove_effect(effect)
 
 
 # damage multiplier
@@ -1669,8 +1699,9 @@ func _add_effect(base_effect : EnemyBaseEffect, multiplier : float = 1, ignore_m
 		add_shield_effect(to_use_effect)
 		
 	elif to_use_effect is EnemyInvisibilityEffect:
-		invisibility_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
-		calculate_invisibility_status()
+		if (offset_for_break_invis < distance_to_exit) or (offset_for_break_invis >= distance_to_exit and !to_use_effect.break_invis_on_x_offset_remaining):
+			invisibility_id_effect_map[to_use_effect.effect_uuid] = to_use_effect
+			calculate_invisibility_status()
 		
 		
 	elif to_use_effect is EnemyReviveEffect:
@@ -2537,4 +2568,12 @@ func get_last_calculated_max_health():
 	return _last_calculated_max_health
 
 
+
+##########
+
+func set_is_break_invis_at_x_offset_remaining(arg_val):
+	if arg_val != is_break_invis_at_x_offset_remaining:
+		
+		is_break_invis_at_x_offset_remaining = arg_val
+		
 

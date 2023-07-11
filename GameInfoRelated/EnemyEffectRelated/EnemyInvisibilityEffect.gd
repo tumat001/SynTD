@@ -5,6 +5,8 @@ var _current_time
 
 var modulate_a_for_invis : float = 0.4
 
+var break_invis_on_x_offset_remaining : bool = true
+
 
 func _init(arg_time_in_seconds : float,
 		arg_effect_uuid : int,
@@ -24,6 +26,7 @@ func _get_copy_scaled_by(scale : float, force_apply_scale : bool = false):
 	
 	var copy = get_script().new(time_in_seconds * scale, effect_uuid, respect_scale)
 	copy.modulate_a_for_invis = modulate_a_for_invis
+	copy.break_invis_on_x_offset_remaining = break_invis_on_x_offset_remaining
 	
 	_configure_copy_to_match_self(copy)
 	

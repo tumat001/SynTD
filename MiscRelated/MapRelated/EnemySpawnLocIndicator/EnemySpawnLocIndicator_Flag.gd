@@ -5,13 +5,15 @@ const Flag_Orange_Pic = preload("res://MiscRelated/MapRelated/EnemySpawnLocIndic
 const Flag_Blue_Pic = preload("res://MiscRelated/MapRelated/EnemySpawnLocIndicator/Assets/EnemySpawnLoc_Flag_Blue.png")
 const Flag_Red_Pic = preload("res://MiscRelated/MapRelated/EnemySpawnLocIndicator/Assets/EnemySpawnLoc_Flag_Red.png")
 const Flag_Pink_Pic__MapEnchant = preload("res://MiscRelated/MapRelated/EnemySpawnLocIndicator/Assets/EnemySpawnLoc_Flag_Pink__MapEnchant.png")
-
+const Flag_Memories_Pic = preload("res://MiscRelated/MapRelated/EnemySpawnLocIndicator/Assets/EnemySpawnLoc_Flag_Memories.png")
 
 enum FlagTextureIds {
 	ORANGE,
 	BLUE,
 	RED,
 	PINK__MAP_ENCHANT,
+	
+	MAP_MEMORIES,
 }
 
 
@@ -32,6 +34,8 @@ func set_flag_texture_id(arg_id):
 		texture = Flag_Red_Pic
 	elif arg_id == FlagTextureIds.PINK__MAP_ENCHANT:
 		texture = Flag_Pink_Pic__MapEnchant
+	elif arg_id == FlagTextureIds.MAP_MEMORIES:
+		texture = Flag_Memories_Pic
 
 #
 

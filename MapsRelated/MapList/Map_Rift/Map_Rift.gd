@@ -286,6 +286,7 @@ func _construct_rift_invis_effect__based_on_current_properties():
 	invis_effect.is_from_enemy = true
 	invis_effect.is_timebound = false
 	invis_effect.modulate_a_for_invis = 0.2
+	invis_effect.break_invis_on_x_offset_remaining = false
 	
 	return invis_effect
 

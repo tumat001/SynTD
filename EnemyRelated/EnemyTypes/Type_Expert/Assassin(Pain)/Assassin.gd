@@ -42,18 +42,19 @@ func _on_health_threshold_reached(curr_health):
 
 
 func _become_invisible():
-	invis_ability.on_ability_before_cast_start(invis_ability.ON_ABILITY_CAST_NO_COOLDOWN)
-	
-	connect("effect_removed", self, "_on_invis_effect_removed")
-	
-	var effect = _add_effect(invis_effect._get_copy_scaled_by(invis_ability.get_potency_to_use(last_calculated_final_ability_potency)))
-	
-	if effect != null:
-		_is_invis = true
-	else:
-		disconnect("effect_removed", self, "_on_invis_effect_removed")
-	
-	invis_ability.on_ability_after_cast_ended(invis_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+	if invis_ability.is_ready_for_activation():
+		invis_ability.on_ability_before_cast_start(invis_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+		
+		connect("effect_removed", self, "_on_invis_effect_removed")
+		
+		var effect = _add_effect(invis_effect._get_copy_scaled_by(invis_ability.get_potency_to_use(last_calculated_final_ability_potency)))
+		
+		if effect != null:
+			_is_invis = true
+		else:
+			disconnect("effect_removed", self, "_on_invis_effect_removed")
+		
+		invis_ability.on_ability_after_cast_ended(invis_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 
 
 func _on_invis_effect_removed(effect_removed, me):
@@ -64,6 +65,8 @@ func _on_invis_effect_removed(effect_removed, me):
 
 #
 
-func _physics_process(delta):
-	if _is_invis and distance_to_exit <= 50:
-		_remove_effect(invis_effect)
+#func _physics_process(delta):
+#	if _is_invis and distance_to_exit <= 50:
+#		_remove_effect(invis_effect)
+
+

@@ -186,13 +186,18 @@ func center_left_tipped_triangle_tip_pos__in_pos(arg_pos, arg_angle_in_rad):
 
 func _process(delta):
 	if _current_duration < duration:
+		var is_duration_decreased_based_on_amount_of_enemies__and_more_than_one_enemy =  duration_decrease_based_on_amount_of_enmeies_collided and _enemies_inside_count > 0
+		
 		if decrease_duration:
 			_current_duration += delta
 			_current_collision_duration += delta
 			
-			if duration_decrease_based_on_amount_of_enmeies_collided and _enemies_inside_count > 0:
+			if is_duration_decreased_based_on_amount_of_enemies__and_more_than_one_enemy:
 				_current_duration += delta * (_enemies_inside_count - 1)
 				_current_collision_duration += delta * (_enemies_inside_count - 1)
+				
+		
+		#
 		
 		if _current_pierce_refresh_delay <= 0:
 			_pierce_available = pierce

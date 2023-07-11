@@ -76,6 +76,7 @@ enum BlockStartRoundClauseIds {
 	
 	
 	MAP_MEMORIES__IS_IN_SAC_OR_RECALL = 10,
+	MAP_MEMORIES__REMOVING_ENEMY_DREAMER_DRAW_PARAMS = 11,
 }
 
 var block_start_round_conditional_clauses : ConditionalClauses

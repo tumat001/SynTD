@@ -1,3 +1,6 @@
+# NOTE:
+# Towers with Ings is not yet supported/made
+
 extends "res://MapsRelated/BaseMap.gd"
 
 const MemoryType_Gold_Normal = preload("res://MapsRelated/MapList/Map_Memories/GUI/Assets/MemoryType_Gold.png")
@@ -26,8 +29,6 @@ const GSSB_Memory_Summary_Highlighted = preload("res://MapsRelated/MapList/Map_M
 
 const GenStats_SmallButton = preload("res://GameHUDRelated/StatsPanel/SmallButtonRelated/GenStats_SmallButton.gd")
 #const GenStats_SmallButton_Scene = preload("res://GameHUDRelated/StatsPanel/SmallButtonRelated/GenStats_SmallButton.tscn")
-
-#
 
 const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
 
@@ -59,6 +60,28 @@ const CenterBasedAttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRel
 
 const Memories_CircleConcealParticle_Pic = preload("res://MapsRelated/MapList/Map_Memories/Particles/Memories_CircleConcealParticle.png")
 
+
+const AOEAttackModule_Scene = preload("res://TowerRelated/Modules/AOEAttackModule.tscn")
+const AOEAttackModule = preload("res://TowerRelated/Modules/AOEAttackModule.gd")
+const BaseAOE_Scene = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.tscn")
+const BaseAOEDefaultShapes = preload("res://TowerRelated/DamageAndSpawnables/BaseAOEDefaultShapes.gd")
+
+const CircleDrawNode = preload("res://MiscRelated/DrawRelated/CircleDrawNode/CircleDrawNode.gd")
+
+const AttackSprite = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.gd")
+const AttackSprite_Scene = preload("res://MiscRelated/AttackSpriteRelated/AttackSprite.tscn")
+const NullErasingArray = preload("res://MiscRelated/DataCollectionRelated/NullErasingArray.gd")
+const EnemyHealEffect = preload("res://GameInfoRelated/EnemyEffectRelated/EnemyHealEffect.gd")
+
+const BaseAOE = preload("res://TowerRelated/DamageAndSpawnables/BaseAOE.gd")
+const PercentModifier = preload("res://GameInfoRelated/PercentModifier.gd")
+const PercentType = preload("res://GameInfoRelated/PercentType.gd")
+
+const SingleEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/SingleEnemySpawnInstruction.gd")
+const AbstractSpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/AbstractSpawnInstruction.gd")
+const ChainSpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/ChainSpawnInstruction.gd")
+const MultipleEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/MultipleEnemySpawnInstruction.gd")
+const LinearEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/LinearEnemySpawnInstruction.gd")
 
 
 #
@@ -293,6 +316,114 @@ const SAVE_FILE__DICT__VERSION = "1"
 const SAVE_FILE__DICT_KEY__VERSION = "SaveKey_Version"
 const SAVE_FILE__DICT_KEY__SACRIFICE = "SaveKey_Sacrifice"
 
+
+# Path related
+
+enum SpecialPathId {
+	PATH_01,
+	PATH_02,
+	PATH_03,
+	PATH_04,
+}
+
+var special_path_to_spawn_loc_flag_map : Dictionary
+
+const _special_enemy_common_spawn_metadata : Dictionary = {
+	StoreOfEnemyMetadataIdsFromIns.NOT_SPAWNED_FROM_INS : true
+}
+
+var _special_enemy_spawn_metadata_for__path_01 : Dictionary
+var _special_enemy_spawn_metadata_for__path_02 : Dictionary
+var _special_enemy_spawn_metadata_for__path_03 : Dictionary
+var _special_enemy_spawn_metadata_for__path_04 : Dictionary
+
+
+# Mem Enemies Spawn related
+
+var _rounds_before_next_special_round_id : int = 0
+var _next_special_round_id
+
+var _path_ids_used_this_round : Array
+
+var _path_id_to_spawn_metadata_map : Dictionary = {}
+
+# entries here get erased as they are traversed
+var special_rounds_to_ins_method_map : Dictionary = {
+	"104" : "get_spawn_ins_for_special_round__104",
+	"103" : "get_spawn_ins_for_special_round__103",
+	"102" : "get_spawn_ins_for_special_round__102",
+	"101" : "get_spawn_ins_for_special_round__101",
+	
+	"94" : "get_spawn_ins_for_special_round__94",
+	"93" : "get_spawn_ins_for_special_round__93",
+	"92" : "get_spawn_ins_for_special_round__92",
+	"91" : "get_spawn_ins_for_special_round__91",
+	
+	"84" : "get_spawn_ins_for_special_round__84",
+	"82" : "get_spawn_ins_for_special_round__82",
+	
+	"74" : "get_spawn_ins_for_special_round__74",
+	"72" : "get_spawn_ins_for_special_round__72",
+	
+	"64" : "get_spawn_ins_for_special_round__64",
+	"62" : "get_spawn_ins_for_special_round__62",
+	
+	"54" : "get_spawn_ins_for_special_round__54",
+	"52" : "get_spawn_ins_for_special_round__52",
+	
+	"44" : "get_spawn_ins_for_special_round__44",
+	"42" : "get_spawn_ins_for_special_round__42",
+	
+	"34" : "get_spawn_ins_for_special_round__34",
+	"32" : "get_spawn_ins_for_special_round__32",
+	
+	"24" : "get_spawn_ins_for_special_round__24",
+	"22" : "get_spawn_ins_for_special_round__22",
+	
+	
+	# temp for testing
+	"01" : "get_spawn_ins_for_special_round__01", #todo
+}
+
+########## Enemy Memory specific
+
+const ENEMY_DREAM__HEALTH_PERCENT__DREAM_TRIGGER = 0.5
+const ENEMY_DREAM__UNIT_OFFSET__DREAM_TRIGGER = 0.5
+const ENEMY_DREAM__DELAY_BEFORE_DREAM_TRIGGER = 1.5
+const ENEMY_DREAM__HEAL_AURA__RADIUS = 85.0
+const ENEMY_DREAM__HEAL_AURA__DELTA_TO_REACH_MAX_RADIUS = 0.65
+const ENEMY_DREAM__HEAL_AURA__DELTA_PER_TRIGGER = 0.5
+const ENEMY_DREAM__HEAL_AURA__HEAL_PERCENT = 4.0
+const ENEMY_DREAM__HEAL_AURA__FLAT_HEAL_MAX = 8.0
+
+
+onready var dream_heal_aura_circle_draw_node = $DreamHealAuraCircleDrawNode
+onready var dream_line_draw_node = $DreamLineDrawNode
+var _dream_heal_aura_aoe_attk_module : AOEAttackModule
+
+const ENEMY_DREAM_HEAL_AURA__FILL_COLOR := Color(112/255.0, 217/255.0, 2/255.0, 0.3)
+const ENEMY_DREAM_HEAL_AURA__EDGE_COLOR := Color(84/255.0, 162/255.0, 2/255.0, 0.3)
+
+const ENEMY_DREAM__DREAM_BEAM_COLOR := Color(112/255.0, 217/255.0, 2/255.0)
+
+var enemy_dreamer_heal_modi : PercentModifier
+
+var _all_active_dream_heal_markers : Array = []
+
+var _dream_marker_attack_sprite_pool_compo : AttackSpritePoolComponent
+
+
+const ENEMY_DREAM__MARK_CONSUME_INITIAL_DELAY = 7.0
+const ENEMY_DREAM__MARK_CONSUME_DELAY_PER_MARK = 0.5
+var _dream_marker_initial_delay_timer : Timer
+var _dream_marker_per_mark_delay_timer : Timer
+
+#
+
+const ENEMY_MEMORIA__DMG_INSTANCE_COUNT_BEFORE_INVIS : int = 20
+const ENEMY_MEMORIA__INVIS_DURATION : float = 4.0
+
+
 ######################
 
 var game_elements setget set_game_elements
@@ -304,8 +435,24 @@ var input_prompt_manager
 
 onready var line_draw_node = $LineDrawNode
 
+#
+
+onready var main_enemy_path = $EnemyPaths/MainEnemyPath
+onready var special_enemy_path_01 = $EnemyPaths/SpecialEnemyPath01
+onready var special_enemy_path_02 = $EnemyPaths/SpecialEnemyPath02
+onready var special_enemy_path_03 = $EnemyPaths/SpecialEnemyPath03
+onready var special_enemy_path_04 = $EnemyPaths/SpecialEnemyPath04
+
+var all_special_paths : Array
+var special_path_id_to_path_map : Dictionary
+
 ######################
 
+
+func _ready():
+	_initialize_special_paths()
+
+#
 
 func set_game_elements(arg_ele):
 	game_elements = arg_ele
@@ -318,6 +465,10 @@ func set_game_elements(arg_ele):
 
 func _apply_map_specific_changes_to_game_elements(arg_game_elements):
 	._apply_map_specific_changes_to_game_elements(arg_game_elements)
+	
+	
+	_initialize_special_path_var_relateds()
+	
 	
 	set_game_elements(arg_game_elements)
 	stage_round_manager = game_elements.stage_round_manager
@@ -332,6 +483,7 @@ func _apply_map_specific_changes_to_game_elements(arg_game_elements):
 	_initialize_memory_summary_gui()
 	
 	stage_round_manager.connect("round_ended", self, "_on_round_ended", [], CONNECT_PERSIST)
+	stage_round_manager.connect("round_ended_game_start_aware", self, "_on_round_end__map_memories__for_special_round_tracking", [], CONNECT_PERSIST)
 	
 	_initialize_all_GSSB()
 	_connect_to_relateds__for_sac__conditions_changed__all()
@@ -355,6 +507,9 @@ func _deferred_init():
 	
 	_initialize_current_mem_action_state__at_game_beginning()
 	
+	######
+	
+	_initialize_all_enemy_dream_relateds()
 
 func _initialize_custom_stagerounds():
 	var stage_rounds = ModeNormal_Memories_StageRounds.new()
@@ -398,7 +553,7 @@ func _initialize_memory_infos():
 	mem_sac_info__5.sacrifice_type_ids_available_to_param_map = {
 		#MemoryTypeId.TOWERS_WITH_INGS : [1, TOWERS_WITH_INGS_MAX_ING_COUNT],
 		MemoryTypeId.TOWERS : [3],
-		MemoryTypeId.GOLD : [10],
+		MemoryTypeId.GOLD : [12],
 		MemoryTypeId.HEALTH : [20],
 	}
 	_add_memory_info(mem_sac_info__5)
@@ -407,8 +562,8 @@ func _initialize_memory_infos():
 	mem_sac_info__7.stage_round_id = "73"
 	mem_sac_info__7.sacrifice_type_ids_available_to_param_map = {
 		#MemoryTypeId.TOWERS_WITH_INGS : [2, TOWERS_WITH_INGS_MAX_ING_COUNT],
-		MemoryTypeId.TOWERS : [4],
-		MemoryTypeId.GOLD : [20],
+		MemoryTypeId.TOWERS : [5],
+		MemoryTypeId.GOLD : [22],
 		MemoryTypeId.HEALTH : [35],
 		MemoryTypeId.RELIC_AND_GOLD : [1, 2],
 	}
@@ -418,8 +573,8 @@ func _initialize_memory_infos():
 	mem_sac_info__9.stage_round_id = "93"
 	mem_sac_info__9.sacrifice_type_ids_available_to_param_map = {
 		#MemoryTypeId.TOWERS_WITH_INGS : [3, TOWERS_WITH_INGS_MAX_ING_COUNT],
-		MemoryTypeId.TOWERS : [5],
-		MemoryTypeId.GOLD : [30],
+		MemoryTypeId.TOWERS : [6],
+		MemoryTypeId.GOLD : [34],
 		MemoryTypeId.HEALTH : [40],
 		MemoryTypeId.RELIC_AND_GOLD : [1, 5],
 	}
@@ -629,6 +784,14 @@ func _update_GSSB_modulate_rgb_tweener_state(arg_old_at_least_one_GSSB_is_visibl
 
 #######
 
+func _on_round_started(arg_stageround):
+	dream_heal_aura_circle_draw_node.pause_lifetime_of_all_draws = true
+	
+	make_all_flags_invis()
+	
+	_on_round_start__for_consume_dream_markers()
+
+
 func _on_round_ended(arg_stageround):
 	var id = arg_stageround.id
 	if stage_round_trigger_to_round_memory_info_map.has(id):
@@ -641,6 +804,19 @@ func _on_round_ended(arg_stageround):
 	else:
 		_current_round_memory_sacrifice_info = null
 		
+	
+	if dream_heal_aura_circle_draw_node.has_draw_param():
+		dream_heal_aura_circle_draw_node.pause_lifetime_of_all_draws = false
+		game_elements.stage_round_manager.block_start_round_conditional_clauses.attempt_insert_clause(game_elements.stage_round_manager.BlockStartRoundClauseIds.MAP_MEMORIES__REMOVING_ENEMY_DREAMER_DRAW_PARAMS)
+		
+		dream_heal_aura_circle_draw_node.connect("all_draw_params_finished", self, "_on_all_draw_params_finished__enemy_dream", [], CONNECT_PERSIST)
+
+func _on_all_draw_params_finished__enemy_dream():
+	game_elements.stage_round_manager.block_start_round_conditional_clauses.remove_clause(game_elements.stage_round_manager.BlockStartRoundClauseIds.MAP_MEMORIES__REMOVING_ENEMY_DREAMER_DRAW_PARAMS)
+	
+
+
+##
 
 func _show_memory_sacrifice_gui():
 	var constructor_params : Array
@@ -1070,7 +1246,7 @@ func _store_to_future_recall_mem_dict__mem_sac__towers_with_ings(arg_stage_round
 	var tower_id_to_serialized_ings_map : Dictionary = {}
 	for tower in arg_towers:
 		pass
-		#todo DELEGATED to future when saving ings is possible
+		#DELEGATED to future when saving ings is possible
 	
 	print("MEMORIES -> Towers With Ings not supported yet")
 
@@ -2244,5 +2420,436 @@ func _convert_null_to_recall_type_panel_constr_param(is_past : bool):
 func _convert_recall_mem_to_recall_type_panel_constr_param(arg_recall_mem : RecallMemory) -> MemoryTypeRecallPanel.ConstructorParams:
 	return _generate_mem_recall_type_panel_constructor_param(arg_recall_mem.memory_type_id, arg_recall_mem.param)
 	
+
+
+#######################
+
+func _initialize_special_paths():
+	all_special_paths.append(special_enemy_path_01)
+	all_special_paths.append(special_enemy_path_02)
+	all_special_paths.append(special_enemy_path_03)
+	all_special_paths.append(special_enemy_path_04)
+	
+	
+	var curve_of_main = main_enemy_path.get_copy_of_curve(false)
+	var points_of_main = curve_of_main.get_baked_points()
+	for path in all_special_paths:
+		_configure_curve_of_special_path(path, curve_of_main, points_of_main)
+		_configure_special_path(path)
+	
+	for i in all_special_paths.size():
+		special_path_id_to_path_map[SpecialPathId.values()[i]] = all_special_paths[i]
+
+
+func _configure_curve_of_special_path(arg_path : EnemyPath, arg_curve_of_main_path : Curve2D, arg_points_of_main : PoolVector2Array):
+	## FIRST STEP:
+	# FIND the point closest to the special path's end.
+	var global_pos_of_last_point : Vector2 = arg_path.curve.get_point_position(arg_path.curve.get_point_count() - 1) + arg_path.global_position
+	
+	var pos_relative_to_curve_main = global_pos_of_last_point - main_enemy_path.global_position
+	var point_pos_nearest_to_curve_of_main = main_enemy_path.curve.get_closest_point(pos_relative_to_curve_main) + main_enemy_path.global_position
+	
+	
+	## 2nd STEP:
+	# Make a point arr starting with the special curve's points + main arr points (starting with point nearest to end of special path)
+	var past_the_point_index_nearest_to_curve_of_main : bool = false
+	var points_for_special_curve : Array = []
+	
+	
+	for point in arg_path.curve.get_baked_points():
+		points_for_special_curve.append(point)
+	
+	for point in main_enemy_path.curve.get_baked_points():
+		if _is_vectors_close_to_equal(point + arg_path.global_position, point_pos_nearest_to_curve_of_main):
+			past_the_point_index_nearest_to_curve_of_main = true
+		
+		if past_the_point_index_nearest_to_curve_of_main:
+			points_for_special_curve.append(point)
+			
+		
+	
+	
+	# if no nearest point found: error:
+	if !past_the_point_index_nearest_to_curve_of_main:
+		print("MAP - MEMORIES: no nearest point found for creation of special path. ERROR - should never happen")
+		return
+	
+	
+	## 3rd STEP:
+	# MAKE a new curve, starting with the special path's curve
+	arg_path.set_curve_and_id__using_vector_points(points_for_special_curve, EnemyPath.default_curve_id)
+	
+
+func _is_vectors_close_to_equal(arg_vec_a : Vector2, arg_vec_b : Vector2):
+	return (arg_vec_a - arg_vec_b).length() < 10
+
+
+
+func _configure_special_path(arg_path : EnemyPath):
+	arg_path.is_used_for_natural_spawning = false
+	
+	arg_path.is_used_and_active = false
+
+
+###########
+
+
+func _on_round_end__map_memories__for_special_round_tracking(_arg_stageround, is_game_start):
+	if !is_game_start:
+		_rounds_before_next_special_round_id -= 1
+	else:
+		_configure_last_special_round_in_list()
+	
+	if _rounds_before_next_special_round_id == 0:
+		var path_ids_used = _append_instructions_to_EM_interpreter__based_on_curr_round__and_get_path_ids_used()
+		_start_monitor_for_special_enemy_spawn(path_ids_used)
+		
+	elif _rounds_before_next_special_round_id == -1:  # when special round is done
+		_end_monitor_for_special_enemy_spawn()
+		
+		if special_rounds_to_ins_method_map.size() > 0:
+			_configure_last_special_round_in_list()
+		else:
+			# no more special rounds
+			game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end__map_enchant__for_special_round_tracking")
+			
+			_next_special_round_id = ""
+			_rounds_before_next_special_round_id = -1
+			
+
+
+
+func _configure_last_special_round_in_list():
+	_next_special_round_id = special_rounds_to_ins_method_map.keys()[special_rounds_to_ins_method_map.size() - 1]
+	
+
+func _remove_current_next_special_round_id():
+	special_rounds_to_ins_method_map.erase(_next_special_round_id)
+	
+
+#func get_next_special_round_id():
+#	return _next_special_round_id
+
+
+#
+
+func _append_instructions_to_EM_interpreter__based_on_curr_round__and_get_path_ids_used():
+	var ins : Array = call(special_rounds_to_ins_method_map[_next_special_round_id])
+	_remove_current_next_special_round_id()
+	
+	game_elements.enemy_manager.append_instructions_to_interpreter(ins)
+	
+	#
+	var path_ids_used : Array = _get_path_ids_used_from_ins(ins)
+	
+	return path_ids_used
+
+func _get_path_ids_used_from_ins(arg_ins):
+	var path_ids = []
+	for ins in arg_ins:
+		if ins.enemy_metadata_map.has(StoreOfEnemyMetadataIdsFromIns.MAP_MEMORIES__SPECIAL_PATH):
+			var path_id = ins.enemy_metadata_map[StoreOfEnemyMetadataIdsFromIns.MAP_MEMORIES__SPECIAL_PATH]
+			if !path_ids.has(path_id):
+				path_ids.append(path_id)
+	
+	return path_ids
+
+
+func _start_monitor_for_special_enemy_spawn(arg_path_ids_used : Array):
+	_path_ids_used_this_round = arg_path_ids_used
+	
+	if !game_elements.enemy_manager.is_connected("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path"):
+		game_elements.enemy_manager.connect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path", [], CONNECT_PERSIST)
+	
+	for path_id in _path_ids_used_this_round:
+		var path = special_path_id_to_path_map[path_id]
+		
+		path.is_used_and_active = true
+		
+		var spawn_loc_flag
+		if special_path_to_spawn_loc_flag_map.has(path):
+			spawn_loc_flag = special_path_to_spawn_loc_flag_map[path]
+		
+		if !is_instance_valid(spawn_loc_flag):
+			spawn_loc_flag = create_spawn_loc_flag_at_path(path, default_flag_offset_from_path, EnemySpawnLocIndicator_Flag.FlagTextureIds.MAP_MEMORIES, false)
+			special_path_to_spawn_loc_flag_map[path] = spawn_loc_flag
+		else:
+			spawn_loc_flag.visible = true
+
+
+func _end_monitor_for_special_enemy_spawn():
+	if game_elements.enemy_manager.is_connected("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path"):
+		game_elements.enemy_manager.disconnect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path")
+	
+	for path_id in _path_ids_used_this_round:
+		var path = special_path_id_to_path_map[path_id]
+		
+		path.is_used_and_active = false
+		
+		var spawn_loc_flag = special_path_to_spawn_loc_flag_map[path]
+		spawn_loc_flag.visible = false
+	
+	
+	_path_ids_used_this_round.clear()
+
+func _before_enemy_is_added_to_path(enemy, path):
+	if enemy.enemy_spawn_metadata_from_ins != null:
+		if enemy.enemy_spawn_metadata_from_ins.has(StoreOfEnemyMetadataIdsFromIns.MAP_MEMORIES__SPECIAL_PATH):
+			var path_id = enemy.enemy_spawn_metadata_from_ins[StoreOfEnemyMetadataIdsFromIns.MAP_MEMORIES__SPECIAL_PATH]
+			
+			var special_path = special_path_id_to_path_map[path_id]
+			special_path.add_child(enemy)
+			
+	
+	if enemy.enemy_id == EnemyConstants.Enemies.MAP_MEMORIES__DREAM:
+		_configure_enemy_dream(enemy)
+	if enemy.enemy_id == EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA:
+		_configure_enemy_memoria(enemy)
+	
+
+
+#######################
+# ENEMIES RELATED
+########################
+
+######## DREAMER
+
+func _configure_enemy_dream(arg_enemy_dream):
+	arg_enemy_dream.configure_dream_release_properties(ENEMY_DREAM__UNIT_OFFSET__DREAM_TRIGGER, ENEMY_DREAM__DELAY_BEFORE_DREAM_TRIGGER, ENEMY_DREAM__HEALTH_PERCENT__DREAM_TRIGGER)
+	arg_enemy_dream.connect("dream_released", self, "_on_dream_released__by_enemy_dream")
+
+
+
+func _initialize_all_enemy_dream_relateds():
+	_dream_marker_attack_sprite_pool_compo = AttackSpritePoolComponent.new()
+	_dream_marker_attack_sprite_pool_compo.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	_dream_marker_attack_sprite_pool_compo.node_to_listen_for_queue_free = self
+	_dream_marker_attack_sprite_pool_compo.source_for_funcs_for_attk_sprite = self
+	_dream_marker_attack_sprite_pool_compo.func_name_for_creating_attack_sprite = "_create_dreamer_mark_particle__for_pool_compo"
+	
+	
+	##############
+	
+	_dream_heal_aura_aoe_attk_module = AOEAttackModule_Scene.instance()
+	_dream_heal_aura_aoe_attk_module.base_damage_scale = 0
+	_dream_heal_aura_aoe_attk_module.base_damage = 0
+	_dream_heal_aura_aoe_attk_module.base_damage_type = 0
+	_dream_heal_aura_aoe_attk_module.base_attack_speed = 0
+	_dream_heal_aura_aoe_attk_module.base_attack_wind_up = 0
+	_dream_heal_aura_aoe_attk_module.base_on_hit_damage_internal_id = StoreOfTowerEffectsUUID.TOWER_MAIN_DAMAGE
+	_dream_heal_aura_aoe_attk_module.is_main_attack = false
+	_dream_heal_aura_aoe_attk_module.module_id = StoreOfAttackModuleID.PART_OF_SELF
+	
+	_dream_heal_aura_aoe_attk_module.benefits_from_bonus_explosion_scale = false
+	_dream_heal_aura_aoe_attk_module.benefits_from_bonus_base_damage = false
+	_dream_heal_aura_aoe_attk_module.benefits_from_bonus_attack_speed = false
+	_dream_heal_aura_aoe_attk_module.benefits_from_bonus_on_hit_damage = false
+	_dream_heal_aura_aoe_attk_module.benefits_from_bonus_on_hit_effect = false
+	_dream_heal_aura_aoe_attk_module.benefits_from_ingredient_effect = false
+	
+	_dream_heal_aura_aoe_attk_module.sprite_frames_only_play_once = false
+	_dream_heal_aura_aoe_attk_module.pierce = -1
+	_dream_heal_aura_aoe_attk_module.duration = 1
+	#_dream_heal_aura_aoe_attk_module.damage_repeat_count = domain_base_duration * domain_DOT_dmg_apply_rate_per_sec
+	_dream_heal_aura_aoe_attk_module.is_decrease_duration = false
+	
+	_dream_heal_aura_aoe_attk_module.aoe_default_coll_shape = BaseAOEDefaultShapes.CIRCLE
+	_dream_heal_aura_aoe_attk_module.base_aoe_scene = BaseAOE_Scene
+	_dream_heal_aura_aoe_attk_module.spawn_location_and_change = AOEAttackModule.SpawnLocationAndChange.CENTERED_TO_ENEMY
+	
+	_dream_heal_aura_aoe_attk_module.kill_all_created_aoe_at_round_end = true
+	_dream_heal_aura_aoe_attk_module.pause_decrease_duration_of_aoe_at_round_end = true
+	_dream_heal_aura_aoe_attk_module.unpause_decrease_duration_of_aoe_at_round_start = true
+	
+	_dream_heal_aura_aoe_attk_module.absolute_z_index_of_aoe = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
+	
+	_dream_heal_aura_aoe_attk_module.can_be_commanded_by_tower = false
+	
+	
+	#add_attack_module(_dream_heal_aura_aoe_attk_module)
+	CommsForBetweenScenes.ge_add_child_to_other_node_hoster(_dream_heal_aura_aoe_attk_module)
+	
+	####################
+	
+	enemy_dreamer_heal_modi = PercentModifier.new(StoreOfEnemyEffectsUUID.MAP_MEMORIES__ENEMY_DREAM__HEAL_EFFECT)
+	enemy_dreamer_heal_modi.percent_amount = ENEMY_DREAM__HEAL_AURA__HEAL_PERCENT
+	enemy_dreamer_heal_modi.percent_based_on = PercentType.MAX
+	enemy_dreamer_heal_modi.ignore_flat_limits = false
+	enemy_dreamer_heal_modi.flat_minimum = 0
+	enemy_dreamer_heal_modi.flat_maximum = ENEMY_DREAM__HEAL_AURA__FLAT_HEAL_MAX
+	
+	########################
+	
+	dream_heal_aura_circle_draw_node.z_as_relative = false
+	dream_heal_aura_circle_draw_node.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
+	
+	dream_line_draw_node.z_as_relative = false
+	dream_line_draw_node.z_index = ZIndexStore.PARTICLE_EFFECTS
+	
+	#########################
+	
+	_dream_marker_initial_delay_timer = Timer.new()
+	_dream_marker_initial_delay_timer.one_shot = true
+	_dream_marker_initial_delay_timer.connect("timeout", self, "_on_dream_marker_initial_delay_timer_timeout", [], CONNECT_PERSIST)
+	add_child(_dream_marker_initial_delay_timer)
+	
+	_dream_marker_per_mark_delay_timer = Timer.new()
+	_dream_marker_per_mark_delay_timer.one_shot = false
+	_dream_marker_per_mark_delay_timer.connect("timeout", self, "_on_dream_marker_per_mark_delay_timer_timeout", [], CONNECT_PERSIST)
+	add_child(_dream_marker_per_mark_delay_timer)
+	
+
+func _create_dreamer_mark_particle__for_pool_compo():
+	var particle = AttackSprite_Scene.instance()
+	particle.modulate.a = 0.75
+	
+	particle.lifetime = 1
+	particle.has_lifetime = false
+	
+	particle.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
+	particle.texture_to_use = preload("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Dream/Dream_Marker.png")
+	
+	return particle
+
+
+func _place_active_dreamer_marker_at_pos(arg_pos):
+	var dreamer_marker = _dream_marker_attack_sprite_pool_compo.get_or_create_attack_sprite_from_pool()
+	
+	_all_active_dream_heal_markers.append(dreamer_marker)
+	
+	dreamer_marker.global_position = arg_pos
+
+#####
+
+func _on_round_start__for_consume_dream_markers():
+	if _all_active_dream_heal_markers.size() > 0:
+		_dream_marker_initial_delay_timer.start(ENEMY_DREAM__MARK_CONSUME_INITIAL_DELAY)
+		
+	
+
+
+
+func _on_dream_marker_initial_delay_timer_timeout():
+	_consume_active_dreamer_marker__and_summon_heal_aoe()
+	
+	if _all_active_dream_heal_markers.size() > 0:
+		_dream_marker_per_mark_delay_timer.start(ENEMY_DREAM__MARK_CONSUME_DELAY_PER_MARK)
+
+func _on_dream_marker_per_mark_delay_timer_timeout():
+	_consume_active_dreamer_marker__and_summon_heal_aoe()
+	
+	if _all_active_dream_heal_markers.size() == 0:
+		_dream_marker_per_mark_delay_timer.stop()
+
+
+
+func _consume_active_dreamer_marker__and_summon_heal_aoe(arg_marker : AttackSprite = _all_active_dream_heal_markers[_all_active_dream_heal_markers.size() - 1]):
+	var pos = arg_marker.global_position
+	
+	_all_active_dream_heal_markers.erase(arg_marker)
+	
+	arg_marker.turn_invisible_from_simulated_lifetime_end()
+	
+	_summon_heal_aoe_at_pos(pos)
+
+
+func _summon_heal_aoe_at_pos(arg_pos : Vector2):
+	var aoe : BaseAOE = _dream_heal_aura_aoe_attk_module.construct_aoe(arg_pos, arg_pos)
+	
+	aoe.collision_duration = ENEMY_DREAM__HEAL_AURA__DELTA_PER_TRIGGER
+	aoe.connect("before_enemy_hit_aoe", self, "_on_before_enemy_hit_aoe__dream_heal")
+	
+	
+	var shape = CircleShape2D.new()
+	shape.radius = 1
+	aoe.aoe_shape_to_set_on_ready = shape
+	
+	var final_radius = ENEMY_DREAM__HEAL_AURA__RADIUS
+	aoe.coll_shape_circle_inc_per_sec = final_radius / ENEMY_DREAM__HEAL_AURA__DELTA_TO_REACH_MAX_RADIUS
+	aoe.coll_shape_circle_max_val = final_radius
+	
+	_dream_heal_aura_aoe_attk_module.set_up_aoe__add_child_and_emit_signals(aoe)
+	
+	###
+	
+	var draw_params = dream_heal_aura_circle_draw_node.DrawParams.new()
+	draw_params.center_pos = arg_pos
+	draw_params.current_radius = shape.radius
+	draw_params.max_radius = final_radius
+	draw_params.radius_per_sec = aoe.coll_shape_circle_inc_per_sec
+	draw_params.fill_color = ENEMY_DREAM_HEAL_AURA__FILL_COLOR
+	
+	draw_params.outline_color = ENEMY_DREAM_HEAL_AURA__EDGE_COLOR
+	draw_params.outline_width = 2
+	
+	draw_params.lifetime_of_draw = 0.5
+	draw_params.lifetime_to_start_transparency = 0.1
+	
+	draw_params.configure_self_to_pause_and_unpause_based_on_stage_status(game_elements)
+	
+	dream_heal_aura_circle_draw_node.add_draw_param(draw_params)
+	
+
+
+func _on_before_enemy_hit_aoe__dream_heal(arg_enemy):
+	arg_enemy.percent_heal_without_overhealing(enemy_dreamer_heal_modi)
+
+
+func _on_dream_released__by_enemy_dream(arg_pos, arg_inner_circle_pos):
+	_place_active_dreamer_marker_at_pos(arg_pos)
+	
+	#
+	
+	var line_draw_param = dream_line_draw_node.LineDrawParams.new()
+	
+	line_draw_param.source_pos = arg_inner_circle_pos
+	line_draw_param.dest_pos = Vector2(line_draw_param.source_pos.x, game_elements.get_top_left_coordinates_of_playable_map().y)
+	line_draw_param.total_line_length = line_draw_param.source_pos.distance_to(line_draw_param.dest_pos)
+	
+	line_draw_param.line_length_per_sec = 1200
+	line_draw_param.color = ENEMY_DREAM__DREAM_BEAM_COLOR
+	line_draw_param.width = 4
+	
+	dream_line_draw_node.add_line_draw_param(line_draw_param)
+	
+
+# MEMORIA
+
+func _configure_enemy_memoria(arg_enemy):
+	arg_enemy.configure_memoria_properties(ENEMY_MEMORIA__DMG_INSTANCE_COUNT_BEFORE_INVIS, ENEMY_MEMORIA__INVIS_DURATION)
+	
+
+
+
+####################
+# ENEMIES IN ROUNDS
+####################
+
+func _initialize_special_path_var_relateds():
+	for path_id in SpecialPathId.values():
+		_path_id_to_spawn_metadata_map[path_id] = _generate_spawn_metadata_for_path(path_id)
+
+func _generate_spawn_metadata_for_path(arg_path_id : int):
+	var spawn_metadata = {}
+	for mdata in _special_enemy_common_spawn_metadata.keys():
+		spawn_metadata[mdata] = _special_enemy_common_spawn_metadata[mdata]
+	
+	#
+	
+	spawn_metadata[StoreOfEnemyMetadataIdsFromIns.MAP_MEMORIES__SPECIAL_PATH] = arg_path_id
+	
+	return spawn_metadata
+
+func _retrieve_spawn_metadata_for_path(arg_path_id : int):
+	return _path_id_to_spawn_metadata_map[arg_path_id]
+
+
+
+func get_spawn_ins_for_special_round__01():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+	]
+
 
 

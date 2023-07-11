@@ -326,7 +326,7 @@ const enemy__anti_magik__upgrade_suck_per_detla : float = 1.0
 var _is_current_upgrade_val_depleted_by_enemies = false 
 
 # special rounds. ORDER MATTERS. From "greatest" to "least"
-const special_rounds : Array = [
+var special_rounds : Array = [
 	"53",
 	"43",
 	"33",
@@ -334,7 +334,7 @@ const special_rounds : Array = [
 	#"11",
 	#"02",
 ]
-const special_rounds_to_ins_method_map : Dictionary = {
+var special_rounds_to_ins_method_map : Dictionary = {
 	"53" : "get_spawn_ins_for_special_round__53",
 	"43" : "get_spawn_ins_for_special_round__43",
 	"33" : "get_spawn_ins_for_special_round__33",
@@ -1537,6 +1537,8 @@ func _start_monitor_for_special_enemy_spawn():
 	
 	special_enemy_path_texture_rect.visible = true
 	
+	special_enemy_path.is_used_and_active = true
+	
 	if !is_instance_valid(_pink_spawn_loc_flag__for_special_path):
 		_pink_spawn_loc_flag__for_special_path = create_spawn_loc_flag_at_path(special_enemy_path, default_flag_offset_from_path, EnemySpawnLocIndicator_Flag.FlagTextureIds.PINK__MAP_ENCHANT, false)
 	else:
@@ -1547,6 +1549,8 @@ func _end_monitor_for_special_enemy_spawn():
 		game_elements.enemy_manager.disconnect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path")
 	
 	special_enemy_path_texture_rect.visible = false
+	
+	special_enemy_path.is_used_and_active = false
 	
 	_pink_spawn_loc_flag__for_special_path.visible = false
 

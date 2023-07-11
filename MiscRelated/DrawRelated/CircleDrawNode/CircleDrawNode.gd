@@ -1,5 +1,8 @@
 extends Node2D
 
+signal all_draw_params_finished()
+
+
 class DrawParams:
 	
 	var center_pos : Vector2
@@ -13,6 +16,7 @@ class DrawParams:
 	var _current_lifetime : float = 0
 	var lifetime_of_draw : float
 	var lifetime_to_start_transparency : float
+	var has_lifetime : bool = true
 	
 	var max_radius : float = 10000
 	
@@ -31,8 +35,13 @@ class DrawParams:
 	#
 	
 	func configure_properties():
-		_outline_transparency_per_sec = outline_color.a / (lifetime_of_draw - lifetime_to_start_transparency)
-		_fill_transparency_per_sec = fill_color.a / (lifetime_of_draw - lifetime_to_start_transparency)
+		if (lifetime_of_draw - lifetime_to_start_transparency) != 0:
+			_outline_transparency_per_sec = outline_color.a / (lifetime_of_draw - lifetime_to_start_transparency)
+			_fill_transparency_per_sec = fill_color.a / (lifetime_of_draw - lifetime_to_start_transparency)
+		else:
+			_outline_transparency_per_sec = outline_color.a / lifetime_of_draw
+			_fill_transparency_per_sec = fill_color.a / lifetime_of_draw
+		
 		_current_lifetime = 0
 	
 	
@@ -84,12 +93,20 @@ func remove_draw_param(arg_draw_param : DrawParams):
 	
 	if _all_draw_params.size() == 0:
 		set_process(false)
+		
+		emit_signal("all_draw_params_finished")
+
+
+func has_draw_param():
+	return _all_draw_params.size() > 0
+	
+
 
 #
 
 func _process(delta):
 	for param in _all_draw_params:
-		if !pause_lifetime_of_all_draws or param._is_paused__due_to_stage_status:
+		if (!pause_lifetime_of_all_draws or param._is_paused__due_to_stage_status) and param.has_lifetime:
 			param._current_lifetime += delta
 		
 		param.current_radius += param.radius_per_sec * delta
@@ -99,6 +116,7 @@ func _process(delta):
 		if param.lifetime_to_start_transparency <= param._current_lifetime:
 			param.fill_color.a -= param._fill_transparency_per_sec * delta
 			param.outline_color.a -= param._outline_transparency_per_sec * delta
+			
 		
 		if param.lifetime_of_draw <= param._current_lifetime:
 			remove_draw_param(param)

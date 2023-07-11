@@ -12,11 +12,15 @@ enum {
 	
 	MORPH_BARE_SPAWNED_FROM_HORDE_MARKER = 1002
 	
+	MAP_MEMORIES__SPECIAL_PATH = 2000,
+	
 }
 
 # used if you want to use a different path from normal
 const metadata_path_reserving : Array = [
 	MAP_ENCHANT__SPECIAL_ENEMY_MARKER,
+	
+	MAP_MEMORIES__SPECIAL_PATH,
 	
 ]
 

@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://EnemyRelated/AbstractEnemy.tscn" type="PackedScene" id=1]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Memoria/Memoria_W.png" type="Texture" id=2]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Memoria/Memoria_E.png" type="Texture" id=3]
+[ext_resource path="res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Memoria/MapMemories_Memoria.gd" type="Script" id=4]
+
+[sub_resource type="SpriteFrames" id=1]
+animations = [ {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "E",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 2 ) ],
+"loop": true,
+"name": "W",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 12.5811, 16.2892 )
+
+[node name="MapMemories_Memoria" instance=ExtResource( 1 )]
+script = ExtResource( 4 )
+
+[node name="AnimatedSprite" parent="SpriteLayer/KnockUpLayer" index="0"]
+frames = SubResource( 1 )
+animation = "E"
+
+[node name="CollisionShape2D" parent="CollisionArea" index="0"]
+position = Vector2( -0.190262, 0.184496 )
+shape = SubResource( 2 )

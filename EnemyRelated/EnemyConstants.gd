@@ -107,6 +107,11 @@ enum Enemies {
 	DOMSYN_RED_ORACLES_EYE_SHADOW = 10001,
 	MAP_ENCHANT_ANTI_MAGIK = 10002,
 	
+	MAP_MEMORIES__MEMORIA = 10003,
+	MAP_MEMORIES__DREAM = 10004,
+	MAP_MEMORIES__NIGHTMARE = 10005,
+	
+	
 }
 
 
@@ -360,18 +365,32 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		info.base_player_damage = 2
 		
 		if arg_include_non_combat_info:
-			var plain_fragment__invisible = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INVISIBLE, "invisible")
+			var plain_fragment__invisible = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INVISIBLE, "invisibility")
+			
+			var plain_fragment__gain__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Gain")
+			
+#			var interpreter_for_invis = TextFragmentInterpreter.new()
+#			interpreter_for_invis.enemy_info_to_use_for_enemy_stat_fragments = info
+#			interpreter_for_invis.display_body = false
+#			interpreter_for_invis.display_header = false
+#			var ins_for_invis = []
+#			ins_for_invis.append(OutcomeTextFragment.new(EnemyStatTextFragment.STAT_TYPE.INVISIBLE, -1, "seconds of invisibility"))
+#			ins_for_invis.append(NumericalTextFragment.new(8, false, -1))
+#			ins_for_invis.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+#			ins_for_invis.append(EnemyStatTextFragment.new(null, info, EnemyStatTextFragment.STAT_TYPE.ENEMY_STAT__ABILITY_POTENCY, EnemyStatTextFragment.STAT_BASIS.TOTAL, 1.0))
+#			interpreter_for_invis.array_of_instructions = ins_for_invis
+#
 			
 			info.enemy_name = "Assassin"
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Expert/Assassin(Pain)/Assassin_E.png"))
 			info.descriptions = [
 				"Deals more player damage.",
-				["Becomes |0| for 8 seconds upon reaching 50% health.", [plain_fragment__invisible]],
+				["|0| 8 seconds of |1| upon reaching 50% health.", [plain_fragment__gain__ability, plain_fragment__invisible]],
 				"Invisibility is removed upon being too close to the exit."
 			]
 			info.simple_descriptions = [
 				"Deals more player damage.",
-				["Becomes |0| for 8 seconds upon reaching 50% health.", [plain_fragment__invisible]],
+				["|0| 8 seconds of |1| upon reaching 50% health.", [plain_fragment__gain__ability, plain_fragment__invisible]],
 			]
 		
 	elif enemy_id == Enemies.GRANDMASTER:
@@ -389,18 +408,20 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			var plain_fragment__shield = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.SHIELD, "shield")
 			var plain_fragment__invisible = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INVISIBLE, "invisible")
 			
+			var plain_fragment__gains__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "Gains")
+			
 			
 			info.enemy_name = "Grandmaster"
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Expert/Grandmaster/Grandmaster_E.png"))
 			info.descriptions = [
-				["Gains a burst of temporary |0| and a 75% max health |1| for 2 seconds upon reaching 75% and 25% health.", [plain_fragment__speed, plain_fragment__shield]],
-				["Becomes |0| for 2 seconds upon reaching 50% health.", [plain_fragment__invisible]],
+				["|0| a burst of temporary |1| and a 75% max health |2| for 2 seconds upon reaching 75% and 25% health.", [plain_fragment__gains__ability, plain_fragment__speed, plain_fragment__shield]],
+				["|0| |1| for 2 seconds upon reaching 50% health.", [plain_fragment__gains__ability, plain_fragment__invisible]],
 				"",	
 				"\"Mastery of techniques.\""
 			]
 			info.simple_descriptions = [
-				["Gains a burst of temporary |0| and a 75% max health |1| for 2 seconds upon reaching 75% and 25% health.", [plain_fragment__speed, plain_fragment__shield]],
-				["Becomes |0| for 2 seconds upon reaching 50% health.", [plain_fragment__invisible]],
+				["|0| a burst of temporary |1| and a 75% max health |2| for 2 seconds upon reaching 75% and 25% health.", [plain_fragment__gains__ability, plain_fragment__speed, plain_fragment__shield]],
+				["|0| |1| for 2 seconds upon reaching 50% health.", [plain_fragment__invisible, plain_fragment__gains__ability]],
 			]
 		
 	################################# FAITHFUL FACTION
@@ -1272,6 +1293,57 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			info.descriptions = [
 				"Sucks the magic out of the Altar from the Map: Enchant."
 			]
+		
+		
+		
+	elif enemy_id == Enemies.MAP_MEMORIES__DREAM:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
+		info.base_health = 50
+		info.base_movement_speed = 65
+		info.base_armor = 5
+		info.base_toughness = 5
+		info.enemy_type = info.EnemyType.NORMAL
+		
+		if arg_include_non_combat_info:
+			info.enemy_name = "Dream"
+			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Dream/Dream_E.png"))
+			
+			var plain_fragment__enemies = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ENEMY, "Enemies")
+			var plain_fragment__heal_xxx = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.HEALTH, "heal for 4% of their max health, up to 8")
+			
+			info.descriptions = [
+				"Map Memories Exclusive.",
+				"Upon reaching 50% of its path, or 50% of its health, Dream releases a healing aura that triggers for the next round.",
+				["|0| inside the area |1| every 0.5 seconds.", [plain_fragment__enemies, plain_fragment__heal_xxx]]
+			]
+			
+			
+		
+		
+	elif enemy_id == Enemies.MAP_MEMORIES__MEMORIA:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
+		info.base_health = 700#70 #todo
+		info.base_movement_speed = 30
+		info.base_armor = 5
+		info.base_toughness = 5
+		info.enemy_type = info.EnemyType.NORMAL
+		
+		if arg_include_non_combat_info:
+			info.enemy_name = "Memoria"
+			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Memoria/Memoria_E.png"))
+			
+			var plain_fragment__invisible = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INVISIBLE, "invisible")
+			var plain_fragment__become__ability = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ABILITY, "become")
+			
+			
+			info.descriptions = [
+				"Map Memories Exclusive.",
+				["Taking 20 instances of damage causes Memoria to |0| |1| for 4 seconds.", [plain_fragment__become__ability, plain_fragment__invisible]]
+				
+			]
+			
+			
+		
 	
 	
 	return info
@@ -1363,4 +1435,10 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Others/DomSyn_Red_Pact_OraclesEye_Shadow/DomSyn_Red_Pact_OraclesEye_Shadow.tscn")
 	elif enemy_id == Enemies.MAP_ENCHANT_ANTI_MAGIK:
 		return load("res://EnemyRelated/EnemyTypes/Type_Others/MapEnchant_AntiMagik/MapEnchant_AntiMagik.tscn")
+		
+	elif enemy_id == Enemies.MAP_MEMORIES__DREAM:
+		return load("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Dream/MapMemories_Dream.tscn")
+	elif enemy_id == Enemies.MAP_MEMORIES__MEMORIA:
+		return load("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Memoria/MapMemories_Memoria.tscn")
+		
 	

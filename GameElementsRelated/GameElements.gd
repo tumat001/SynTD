@@ -158,6 +158,7 @@ func _ready():
 	
 	#todo
 	map_id = StoreOfMaps.MapsId_Memories
+	#map_id = StoreOfMaps.MapsId_Rift
 	
 	#
 	
