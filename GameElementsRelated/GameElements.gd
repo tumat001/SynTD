@@ -450,10 +450,9 @@ func _ready():
 	emit_signal("after_all_game_init_finished")
 	
 	# FOR TESTING ------------------------------------
-	#todo 
-	gold_manager.increase_gold_by(46, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
-	level_manager.current_level = LevelManager.LEVEL_2
-	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
+#	gold_manager.increase_gold_by(46, GoldManager.IncreaseGoldSource.ENEMY_KILLED)
+#	level_manager.current_level = LevelManager.LEVEL_2
+#	relic_manager.increase_relic_count_by(3, RelicManager.IncreaseRelicSource.ROUND)
 
 
 
@@ -465,28 +464,27 @@ func _on_BuySellLevelRollPanel_level_up():
 var even : bool = false
 func _on_BuySellLevelRollPanel_reroll():
 	
-	#shop_manager.roll_towers_in_shop_with_cost()
+	shop_manager.roll_towers_in_shop_with_cost()
 	
-	#TODO
-	if !even:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.WAVE,
-			Towers.PING,
-			Towers.LEADER,
-			Towers.BLOSSOM,
-			Towers.IMPEDE,
-			Towers.CANNON,
-		])
-	else:
-		panel_buy_sell_level_roll.update_new_rolled_towers([
-			Towers.PESTILENCE,
-			Towers.PING,
-			Towers.WYVERN,
-			Towers.OUTREACH,
-			Towers.SPRINKLER,
-			Towers.SPIKE
-		])
-	even = !even
+#	if !even:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.WAVE,
+#			Towers.SIMPLEX,
+#			Towers.FRUIT_TREE,
+#			Towers.BLOSSOM,
+#			Towers.IMPEDE,
+#			Towers.CANNON,
+#		])
+#	else:
+#		panel_buy_sell_level_roll.update_new_rolled_towers([
+#			Towers.PESTILENCE,
+#			Towers.PING,
+#			Towers.WYVERN,
+#			Towers.OUTREACH,
+#			Towers.SPRINKLER,
+#			Towers.SPIKE
+#		])
+#	even = !even
 
 
 func _on_BuySellLevelRollPanel_tower_bought(tower_id):

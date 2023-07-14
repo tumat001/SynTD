@@ -303,6 +303,7 @@ func _shoot_star_towards_enemy(arg_enemy):
 	
 	if !bullet_homing_component.is_connected("on_target_tree_exiting", self, "_on_enemy_targeted_by_homing_non_crashing_star_tree_exiting"):
 		bullet_homing_component.connect("on_target_tree_exiting", self, "_on_enemy_targeted_by_homing_non_crashing_star_tree_exiting", [star, bullet_homing_component])
+	if !bullet_homing_component.is_connected("on_bullet_tree_exiting", self, "_on_star_tree_exiting"):
 		bullet_homing_component.connect("on_bullet_tree_exiting", self, "_on_star_tree_exiting", [bullet_homing_component])
 	
 	star.connect("on_star_state_changed", self, "_on_star_state_changed__for_beam_count_track")

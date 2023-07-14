@@ -16,7 +16,7 @@ var heal_ability : BaseAbility
 var heal_activation_clause : ConditionalClauses
 var heal_effect : EnemyHealEffect
 
-var range_module : RangeModule
+#var range_module : RangeModule
 var targeting_option : int = Targeting.PERCENT_EXECUTE
 
 
@@ -25,20 +25,20 @@ func _init():
 
 
 func _ready():
-	range_module = RangeModule_Scene.instance()
-	range_module.can_display_range = false
-	range_module.base_range_radius = _heal_range
-	range_module.set_range_shape(CircleShape2D.new())
-	
-	range_module.clear_all_targeting()
-	range_module.add_targeting_option(targeting_option)
-	range_module.set_current_targeting(targeting_option)
-	
-	range_module.connect("enemy_entered_range", self, "_enemy_entered_range_h")
-	range_module.connect("enemy_left_range", self, "_enemy_exited_range_h")
-	
-	add_child(range_module)
-	range_module.update_range()
+#	range_module = RangeModule_Scene.instance()
+#	range_module.can_display_range = false
+#	range_module.base_range_radius = _heal_range
+#	range_module.set_range_shape(CircleShape2D.new())
+#
+#	range_module.clear_all_targeting()
+#	range_module.add_targeting_option(targeting_option)
+#	range_module.set_current_targeting(targeting_option)
+#
+#	range_module.connect("enemy_entered_range", self, "_enemy_entered_range_h")
+#	range_module.connect("enemy_left_range", self, "_enemy_exited_range_h")
+#
+#	add_child(range_module)
+#	range_module.update_range()
 	
 	_construct_and_connect_ability()
 	_construct_heal_effect()
@@ -46,12 +46,12 @@ func _ready():
 
 #
 
-func _enemy_entered_range_h(enemy):
-	heal_activation_clause.remove_clause(no_enemies_in_range_clause)
-
-func _enemy_exited_range_h(enemy):
-	if range_module.enemies_in_range.size() == 0:
-		heal_activation_clause.attempt_insert_clause(no_enemies_in_range_clause)
+#func _enemy_entered_range_h(enemy):
+#	heal_activation_clause.remove_clause(no_enemies_in_range_clause)
+#
+#func _enemy_exited_range_h(enemy):
+#	if range_module.enemies_in_range.size() == 0:
+#		heal_activation_clause.attempt_insert_clause(no_enemies_in_range_clause)
 
 #
 
@@ -63,7 +63,7 @@ func _construct_and_connect_ability():
 	heal_ability.connect("updated_is_ready_for_activation", self, "_heal_ready_for_activation_updated")
 	
 	heal_activation_clause = heal_ability.activation_conditional_clauses
-	heal_activation_clause.attempt_insert_clause(no_enemies_in_range_clause)
+	#heal_activation_clause.attempt_insert_clause(no_enemies_in_range_clause)
 	
 	register_ability(heal_ability)
 
@@ -81,7 +81,9 @@ func _heal_ready_for_activation_updated(is_ready):
 
 
 func _heal_ability_activated():
-	var targets = range_module.get_targets(1, targeting_option, true)
+	#var targets = range_module.get_targets(1, targeting_option, true)
+	var targets = game_elements.enemy_manager.get_enemies_within_distance_of_position__with_count_and_targeting(global_position, _heal_range, 1, targeting_option, true)
+	
 	
 	if targets.size() > 0:
 		heal_ability.on_ability_before_cast_start(_heal_cooldown)
@@ -94,7 +96,10 @@ func _heal_ability_activated():
 			no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.CUSTOM_CLAUSE_01)
 		
 		heal_ability.on_ability_after_cast_ended(_heal_cooldown)
-
+		
+	else:
+		heal_ability.start_time_cooldown(2)
+	
 
 func _construct_and_add_heal_particle(pos):
 	var attk_sprite : AttackSprite = HealParticle_Scene.instance()

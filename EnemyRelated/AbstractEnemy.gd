@@ -110,6 +110,8 @@ enum NoMovementClauses {
 	
 	IS_IN_FORCED_POSITIONAL_MOVEMENT = 101,
 	
+	IS_FADING__USING_TWEEN = 102,
+	
 	CUSTOM_CLAUSE_01 = 200,
 	CUSTOM_CLAUSE_02 = 201,
 	
@@ -117,12 +119,15 @@ enum NoMovementClauses {
 	
 	IMPEDE_STONE_STOP_MOV = 1000,
 	
+	
 }
 
 enum NoActionClauses {
 	IS_REVIVING = 100,
 	IS_STUNNED = 101,
 	IS_SILENCED = 102,
+	
+	IS_FADING__USING_TWEEN = 103,
 }
 
 enum UntargetabilityClauses {
@@ -130,6 +135,8 @@ enum UntargetabilityClauses {
 	
 	IS_REVIVING = 100,
 	IS_INVISIBLE = 101,
+	
+	IS_FADING__USING_TWEEN = 102,
 }
 
 # ready prep related
@@ -225,6 +232,7 @@ var percent_shield_receive_modifier_id_effect_map : Dictionary = {}
 var last_calculated_percent_shield_receive_modifier_amount : float
 
 
+#
 
 const DEFAULT_INVIS_BREAK_AT_OFFSET_REMAINING : float = 50.0
 
@@ -235,6 +243,11 @@ var last_calculated_has_invis_effect_with_break_invis_on_x_offset_remaining : bo
 var offset_for_break_invis : float = DEFAULT_INVIS_BREAK_AT_OFFSET_REMAINING
 var is_break_invis_at_x_offset_remaining : bool = true setget set_is_break_invis_at_x_offset_remaining
 
+#
+
+var _is_fading_to_invisible : bool
+
+#
 
 var invulnerability_id_effect_map : Dictionary = {}
 var last_calculated_is_invulnerable : bool = false
@@ -284,6 +297,8 @@ var blocks_from_round_ending : bool = true
 
 enum ExitsWhenAtEndClauseIds {
 	MAP_ENCHANT__SPECIAL_ENEMIES = 0
+	MAP_MEMORIES__NIGHTMARE = 1
+	
 }
 var exits_when_at_map_end_clauses : ConditionalClauses
 var last_calculated_exits_when_at_map_end : bool
@@ -776,22 +791,23 @@ func _set_current_health_to(health_amount, from_overheal : bool = false):
 	emit_signal("on_current_health_changed", current_health)
 
 
-func execute_self_by(source_id : int, attack_module_source = null):
+func execute_self_by(source_id : int, attack_module_source = null, arg_ignore_invul : bool = false):
 	if is_instance_valid(attack_module_source):
 		if !is_connected("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt"):
 			connect("on_post_mitigated_damage_taken", attack_module_source, "on_post_mitigation_damage_dealt", [attack_module_source.damage_register_id], CONNECT_ONESHOT)
 	
-	_take_unmitigated_damages([[current_health + current_shield, DamageType.PURE, source_id]], null)
+	_take_unmitigated_damages([[current_health + current_shield, DamageType.PURE, source_id]], null, arg_ignore_invul)
 
 # The only function that should handle taking
 # damage and health deduction. Also where
 # death is handled
-func _take_unmitigated_damages(damages_and_types : Array, dmg_instance):
+func _take_unmitigated_damages(damages_and_types : Array, dmg_instance, ignore_invul : bool = false):
 	if is_ready_prepping:
 		return
 	
-	var was_invul : bool = last_calculated_is_invulnerable
-	if last_calculated_is_invulnerable:
+	var was_invul : bool = last_calculated_is_invulnerable and !ignore_invul
+	#if last_calculated_is_invulnerable and !ignore_invul:
+	if was_invul:
 		for damage_and_type in damages_and_types:
 			if damage_and_type[0] > 0:
 				_remove_count_from_single_invulnerability_effect()
@@ -2088,6 +2104,19 @@ func shift_unit_offset(unit_shift : float):
 		distance_to_exit = current_path_length
 		unit_distance_to_exit = 1
 
+func set_offset__and_configure_other_properties(arg_offset : float):
+	offset = arg_offset
+	distance_to_exit = current_path_length - offset
+	unit_distance_to_exit = distance_to_exit / current_path_length
+	
+	if distance_to_exit > current_path_length:
+		distance_to_exit = current_path_length
+		unit_distance_to_exit = 1
+	
+	
+
+
+
 # Coll
 
 func _on_CollisionArea_body_entered(body):
@@ -2114,8 +2143,13 @@ func remove_sprite_layer_modulate(arg_id : int):
 func _update_sprite_layer_current_modulate():
 	_calculate_sprite_layer_modulate()
 	
+	#if !_is_fading_to_invisible:
+	_set_modulate_of_relevant_nodes_to_updated()
+
+func _set_modulate_of_relevant_nodes_to_updated():
 	sprite_layer.modulate = last_calculated_sprite_layer_modulate
 	layer_infobar.modulate.a = last_calculated_sprite_layer_modulate.a
+
 
 func _calculate_sprite_layer_modulate():
 	var lowest_mod_a : float = 1.0
@@ -2437,7 +2471,7 @@ func configure_path_move_offset_to_mov_self_backward_on_track(arg_effect : Enemy
 		arg_effect.reverse_movements()
 
 
-###### ANIMATION RELATED
+###### 
 
 
 
@@ -2576,4 +2610,61 @@ func set_is_break_invis_at_x_offset_remaining(arg_val):
 		
 		is_break_invis_at_x_offset_remaining = arg_val
 		
+
+##########
+
+
+func start_fade_to_invisible__using_tween(arg_duration : float,
+		arg_func_source__on_invis : Object, arg_func_name__on_invis : String, arg_func_params__on_invis : Array,
+		arg_make_self_untargetable : bool, arg_make_self_invul : bool, arg_make_self_no_action : bool, arg_make_self_no_movement : bool):
+	
+	if !_is_fading_to_invisible:
+		_is_fading_to_invisible = true
+		
+		var tweener = create_tween()
+		tweener.tween_property(self, "modulate:a", 0.0, arg_duration)
+		tweener.tween_callback(arg_func_source__on_invis, arg_func_name__on_invis, [arg_func_params__on_invis])
+		
+		if arg_make_self_untargetable:
+			untargetable_clauses.attempt_insert_clause(UntargetabilityClauses.IS_FADING__USING_TWEEN)
+			
+		if arg_make_self_invul:
+			var invul_effect = EnemyInvulnerabilityEffect.new(StoreOfEnemyEffectsUUID.ABSTRACT_ENEMY__IS_FADING_USING_TWEEN__INVUL_EFFECT, 9999)
+			invul_effect.is_timebound = false
+			invul_effect.is_from_enemy = true
+			
+			_add_effect(invul_effect)
+			
+		if arg_make_self_no_action:
+			no_action_from_self_clauses.attempt_insert_clause(NoActionClauses.IS_FADING__USING_TWEEN)
+			
+		if arg_make_self_no_movement:
+			no_movement_from_self_clauses.attempt_insert_clause(NoMovementClauses.IS_FADING__USING_TWEEN)
+
+func start_unfade_into_visibility__using_tween(arg_duration : float,
+		arg_func_source__on_vis : Object, arg_func_name__on_vis : String, arg_func_params__on_vis : Array):
+	
+	if _is_fading_to_invisible:
+		var tweener = create_tween()
+		tweener.tween_property(self, "modulate:a", 1.0, arg_duration)
+		tweener.tween_callback(self, "_on_unfaded_into_visiblity")
+		tweener.tween_callback(arg_func_source__on_vis, arg_func_name__on_vis, [arg_func_params__on_vis])
+		
+
+
+func _on_unfaded_into_visiblity():
+	_is_fading_to_invisible = false
+	
+	if untargetable_clauses.has_clause(UntargetabilityClauses.IS_FADING__USING_TWEEN):
+		untargetable_clauses.remove_clause(UntargetabilityClauses.IS_FADING__USING_TWEEN)
+	
+	var invul_effect = get_effect_with_uuid(StoreOfEnemyEffectsUUID.ABSTRACT_ENEMY__IS_FADING_USING_TWEEN__INVUL_EFFECT)
+	if invul_effect != null:
+		_remove_effect(invul_effect)
+	if no_action_from_self_clauses.has_clause(NoActionClauses.IS_FADING__USING_TWEEN):
+		no_action_from_self_clauses.remove_clause(NoActionClauses.IS_FADING__USING_TWEEN)
+	if no_movement_from_self_clauses.has_clause(NoMovementClauses.IS_FADING__USING_TWEEN):
+		no_movement_from_self_clauses.remove_clause(NoMovementClauses.IS_FADING__USING_TWEEN)
+
+
 

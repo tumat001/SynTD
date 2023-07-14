@@ -83,6 +83,8 @@ const ChainSpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/S
 const MultipleEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/MultipleEnemySpawnInstruction.gd")
 const LinearEnemySpawnInstruction = preload("res://GameplayRelated/EnemySpawnRelated/SpawnInstructionsRelated/LinearEnemySpawnInstruction.gd")
 
+const StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/StageRound.gd")
+
 
 #
 
@@ -382,7 +384,7 @@ var special_rounds_to_ins_method_map : Dictionary = {
 	
 	
 	# temp for testing
-	"01" : "get_spawn_ins_for_special_round__01", #todo
+	#"01" : "get_spawn_ins_for_special_round__01",
 }
 
 ########## Enemy Memory specific
@@ -390,19 +392,19 @@ var special_rounds_to_ins_method_map : Dictionary = {
 const ENEMY_DREAM__HEALTH_PERCENT__DREAM_TRIGGER = 0.5
 const ENEMY_DREAM__UNIT_OFFSET__DREAM_TRIGGER = 0.5
 const ENEMY_DREAM__DELAY_BEFORE_DREAM_TRIGGER = 1.5
-const ENEMY_DREAM__HEAL_AURA__RADIUS = 85.0
+const ENEMY_DREAM__HEAL_AURA__RADIUS = 110.0
 const ENEMY_DREAM__HEAL_AURA__DELTA_TO_REACH_MAX_RADIUS = 0.65
 const ENEMY_DREAM__HEAL_AURA__DELTA_PER_TRIGGER = 0.5
-const ENEMY_DREAM__HEAL_AURA__HEAL_PERCENT = 4.0
-const ENEMY_DREAM__HEAL_AURA__FLAT_HEAL_MAX = 8.0
+const ENEMY_DREAM__HEAL_AURA__HEAL_PERCENT = 3.0
+const ENEMY_DREAM__HEAL_AURA__FLAT_HEAL_MAX = 6.0
 
 
 onready var dream_heal_aura_circle_draw_node = $DreamHealAuraCircleDrawNode
 onready var dream_line_draw_node = $DreamLineDrawNode
 var _dream_heal_aura_aoe_attk_module : AOEAttackModule
 
-const ENEMY_DREAM_HEAL_AURA__FILL_COLOR := Color(112/255.0, 217/255.0, 2/255.0, 0.3)
-const ENEMY_DREAM_HEAL_AURA__EDGE_COLOR := Color(84/255.0, 162/255.0, 2/255.0, 0.3)
+const ENEMY_DREAM_HEAL_AURA__FILL_COLOR := Color(112/255.0, 217/255.0, 2/255.0, 0.2)
+const ENEMY_DREAM_HEAL_AURA__EDGE_COLOR := Color(84/255.0, 162/255.0, 2/255.0, 0.2)
 
 const ENEMY_DREAM__DREAM_BEAM_COLOR := Color(112/255.0, 217/255.0, 2/255.0)
 
@@ -420,9 +422,28 @@ var _dream_marker_per_mark_delay_timer : Timer
 
 #
 
-const ENEMY_MEMORIA__DMG_INSTANCE_COUNT_BEFORE_INVIS : int = 20
-const ENEMY_MEMORIA__INVIS_DURATION : float = 4.0
+const ENEMY_MEMORIA__DMG_INSTANCE_COUNT_BEFORE_INVIS : int = 15
+const ENEMY_MEMORIA__INVIS_DURATION : float = 5.0
 
+
+const ENEMY_NIGHTMARE__OFFSET_TO_TRIGGER_BACK_TO_START : float = 20.0
+
+
+const NIGHTMARE_MARKER_DATA_KEY__PATH_ID = "NightmareMarker__PathID"
+const NIGHTMARE_MARKER_DATA_KEY__OFFSET = "NightmareMarker__Offset"
+var _all_active_nightmare_spawn_marker_to_data_map : Dictionary = {}
+
+
+var _nightmare_marker_attack_sprite_pool_compo : AttackSpritePoolComponent
+
+const ENEMY_NIGHTMARE__MARK_CONSUME_INITIAL_DELAY = 7.0
+const ENEMY_NIGHTMARE__MARK_CONSUME_DELAY_PER_MARK = 1.5
+var _nightmare_marker_initial_delay_timer : Timer
+var _nightmare_marker_per_mark_delay_timer : Timer
+
+
+
+var _nightmare_smoke_attack_sprite_pool_compo : AttackSpritePoolComponent
 
 ######################
 
@@ -451,6 +472,7 @@ var special_path_id_to_path_map : Dictionary
 
 func _ready():
 	_initialize_special_paths()
+	
 
 #
 
@@ -473,6 +495,10 @@ func _apply_map_specific_changes_to_game_elements(arg_game_elements):
 	set_game_elements(arg_game_elements)
 	stage_round_manager = game_elements.stage_round_manager
 	non_essential_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.NON_ESSENTIAL)
+	
+	
+	if !game_elements.enemy_manager.is_connected("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path"):
+		game_elements.enemy_manager.connect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path", [], CONNECT_PERSIST)
 	
 	#
 	
@@ -510,6 +536,7 @@ func _deferred_init():
 	######
 	
 	_initialize_all_enemy_dream_relateds()
+	_initialize_all_enemy_nightmare_relateds()
 
 func _initialize_custom_stagerounds():
 	var stage_rounds = ModeNormal_Memories_StageRounds.new()
@@ -790,7 +817,7 @@ func _on_round_started(arg_stageround):
 	make_all_flags_invis()
 	
 	_on_round_start__for_consume_dream_markers()
-
+	_on_round_start__consume_all_nightmare_marks()
 
 func _on_round_ended(arg_stageround):
 	var id = arg_stageround.id
@@ -809,7 +836,23 @@ func _on_round_ended(arg_stageround):
 		dream_heal_aura_circle_draw_node.pause_lifetime_of_all_draws = false
 		game_elements.stage_round_manager.block_start_round_conditional_clauses.attempt_insert_clause(game_elements.stage_round_manager.BlockStartRoundClauseIds.MAP_MEMORIES__REMOVING_ENEMY_DREAMER_DRAW_PARAMS)
 		
-		dream_heal_aura_circle_draw_node.connect("all_draw_params_finished", self, "_on_all_draw_params_finished__enemy_dream", [], CONNECT_PERSIST)
+		if !dream_heal_aura_circle_draw_node.is_connected("all_draw_params_finished", self, "_on_all_draw_params_finished__enemy_dream"):
+			dream_heal_aura_circle_draw_node.connect("all_draw_params_finished", self, "_on_all_draw_params_finished__enemy_dream", [], CONNECT_PERSIST)
+	
+	#
+	_on_round_end__stop_all_enemy_related_timers()
+	
+	if is_instance_valid(_dream_heal_aura_aoe_attk_module):
+		_dream_heal_aura_aoe_attk_module.kill_all_created_aoe()
+
+
+func _on_round_end__stop_all_enemy_related_timers():
+	if is_instance_valid(_dream_marker_initial_delay_timer):
+		_dream_marker_initial_delay_timer.stop()
+		_dream_marker_per_mark_delay_timer.stop()
+		
+		_nightmare_marker_initial_delay_timer.stop()
+		_nightmare_marker_per_mark_delay_timer.stop()
 
 func _on_all_draw_params_finished__enemy_dream():
 	game_elements.stage_round_manager.block_start_round_conditional_clauses.remove_clause(game_elements.stage_round_manager.BlockStartRoundClauseIds.MAP_MEMORIES__REMOVING_ENEMY_DREAMER_DRAW_PARAMS)
@@ -1921,7 +1964,19 @@ func _attempt_show_memory_recall_gui__or_end_if_not_appropriate():
 
 
 func _is_current_round_has_past_recall_memory():
-	return _past__stageround_id_to_recall_memories_map.has(_current_stageround_id)
+	if _past__stageround_id_to_recall_memories_map.has(_current_stageround_id):
+		var recall_mem : RecallMemory = _past__stageround_id_to_recall_memories_map[_current_stageround_id]
+		if recall_mem != null:
+			if recall_mem.memory_type_id != MemoryTypeId.EMPTY and recall_mem.memory_type_id != MemoryTypeId.NONE:
+				return true
+			else:
+				return false
+			
+		else:
+			return false
+		
+	else:
+		return false
 
 func _show_memory_recall_gui():
 	set_current_mem_action_state(MemoryActionStates.RECALLING)
@@ -2012,7 +2067,7 @@ func _generate_recall_description_for_mem_type_with_params__none(arg_params):
 func _generate_recall_description_for_mem_type_with_params__empty(arg_params):
 	return [
 		["None sacrificed yet for this round.", []],
-		["Sacrificing nothing this round preserves the previous sacrifice.", []]
+		["Sacrificing nothing this round preserves the previous sacrifice (if sacrifice is declined).", []]
 	]
 
 
@@ -2521,7 +2576,7 @@ func _on_round_end__map_memories__for_special_round_tracking(_arg_stageround, is
 
 func _configure_last_special_round_in_list():
 	_next_special_round_id = special_rounds_to_ins_method_map.keys()[special_rounds_to_ins_method_map.size() - 1]
-	
+	_rounds_before_next_special_round_id = game_elements.stage_round_manager.get_number_of_rounds_before_stageround_id_reached(_next_special_round_id)
 
 func _remove_current_next_special_round_id():
 	special_rounds_to_ins_method_map.erase(_next_special_round_id)
@@ -2558,9 +2613,6 @@ func _get_path_ids_used_from_ins(arg_ins):
 func _start_monitor_for_special_enemy_spawn(arg_path_ids_used : Array):
 	_path_ids_used_this_round = arg_path_ids_used
 	
-	if !game_elements.enemy_manager.is_connected("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path"):
-		game_elements.enemy_manager.connect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path", [], CONNECT_PERSIST)
-	
 	for path_id in _path_ids_used_this_round:
 		var path = special_path_id_to_path_map[path_id]
 		
@@ -2578,8 +2630,8 @@ func _start_monitor_for_special_enemy_spawn(arg_path_ids_used : Array):
 
 
 func _end_monitor_for_special_enemy_spawn():
-	if game_elements.enemy_manager.is_connected("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path"):
-		game_elements.enemy_manager.disconnect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path")
+	#if game_elements.enemy_manager.is_connected("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path"):
+	#	game_elements.enemy_manager.disconnect("before_enemy_is_added_to_path", self, "_before_enemy_is_added_to_path")
 	
 	for path_id in _path_ids_used_this_round:
 		var path = special_path_id_to_path_map[path_id]
@@ -2603,8 +2655,10 @@ func _before_enemy_is_added_to_path(enemy, path):
 	
 	if enemy.enemy_id == EnemyConstants.Enemies.MAP_MEMORIES__DREAM:
 		_configure_enemy_dream(enemy)
-	if enemy.enemy_id == EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA:
+	elif enemy.enemy_id == EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA:
 		_configure_enemy_memoria(enemy)
+	elif enemy.enemy_id == EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE:
+		_configure_enemy_nightmare(enemy)
 	
 
 
@@ -2820,6 +2874,236 @@ func _configure_enemy_memoria(arg_enemy):
 	
 
 
+# NIGHTMARE
+
+func _initialize_all_enemy_nightmare_relateds():
+	_nightmare_marker_attack_sprite_pool_compo = AttackSpritePoolComponent.new()
+	_nightmare_marker_attack_sprite_pool_compo.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	_nightmare_marker_attack_sprite_pool_compo.node_to_listen_for_queue_free = self
+	_nightmare_marker_attack_sprite_pool_compo.source_for_funcs_for_attk_sprite = self
+	_nightmare_marker_attack_sprite_pool_compo.func_name_for_creating_attack_sprite = "_create_nightmare_mark_particle__for_pool_compo"
+	
+	##
+	
+	_nightmare_marker_initial_delay_timer = Timer.new()
+	_nightmare_marker_initial_delay_timer.one_shot = true
+	_nightmare_marker_initial_delay_timer.connect("timeout", self, "_on_nightmare_marker_initial_delay_timer_timeout", [], CONNECT_PERSIST)
+	add_child(_nightmare_marker_initial_delay_timer)
+	
+	_nightmare_marker_per_mark_delay_timer = Timer.new()
+	_nightmare_marker_per_mark_delay_timer.one_shot = false
+	_nightmare_marker_per_mark_delay_timer.connect("timeout", self, "_on_nightmare_marker_per_mark_delay_timer_timeout", [], CONNECT_PERSIST)
+	add_child(_nightmare_marker_per_mark_delay_timer)
+	
+	##
+	
+	_nightmare_smoke_attack_sprite_pool_compo = AttackSpritePoolComponent.new()
+	_nightmare_smoke_attack_sprite_pool_compo.node_to_parent_attack_sprites = CommsForBetweenScenes.current_game_elements__other_node_hoster
+	_nightmare_smoke_attack_sprite_pool_compo.node_to_listen_for_queue_free = self
+	_nightmare_smoke_attack_sprite_pool_compo.source_for_funcs_for_attk_sprite = self
+	_nightmare_smoke_attack_sprite_pool_compo.func_name_for_creating_attack_sprite = "_create_nightmare_smoke_particle__for_pool_compo"
+	
+
+func _create_nightmare_mark_particle__for_pool_compo():
+	var particle = AttackSprite_Scene.instance()
+	particle.modulate.a = 0.85
+	
+	particle.lifetime = 1
+	particle.has_lifetime = false
+	
+	particle.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
+	particle.texture_to_use = preload("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Nightmare/Nightmare_Marker.png")
+	
+	return particle
+
+func _create_nightmare_smoke_particle__for_pool_compo():
+	var particle = CenterBasedAttackSprite_Scene.instance()
+	particle.modulate.a = 1
+	
+	#particle.lifetime = 1
+	particle.has_lifetime = true
+	
+	particle.z_index = ZIndexStore.PARTICLE_EFFECTS_BELOW_ENEMIES
+	particle.texture_to_use = preload("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Nightmare/Particles/Nightmare_Smoke_6x6.png")
+	
+	return particle
+
+func _generate_single_nightmare_smoke_particle__static(arg_pos,
+		arg_min_starting_distance, arg_max_starting_distance):
+	var particle : CenterBasedAttackSprite = _nightmare_smoke_attack_sprite_pool_compo.get_or_create_attack_sprite_from_pool()
+	
+	particle.center_pos_of_basis = arg_pos
+	
+	particle.initial_speed_towards_center = 0 #non_essential_rng.randi_range(circle_conceal_initial_speed_to_center_min__sac, circle_conceal_initial_speed_to_center_max__sac)
+	particle.speed_accel_towards_center = 0 #non_essential_rng.randi_range(circle_conceal_speed_accel_to_center_min__sac, circle_conceal_speed_accel_to_center_max__sac)
+	
+	particle.min_starting_distance_from_center = arg_min_starting_distance #arg_data.starting_dist_min
+	particle.max_starting_distance_from_center = arg_max_starting_distance #arg_data.starting_dist_max
+	
+	particle.min_speed_towards_center = -999999
+	particle.max_speed_towards_center = 9999999
+	
+	
+	particle.min_starting_angle = 0
+	particle.max_starting_angle = 359
+	
+	particle.lifetime = non_essential_rng.randf_range(0.8, 1.5)
+	particle.lifetime_to_start_transparency = particle.lifetime - 0.5
+	
+	particle.reset_for_another_use()
+	
+	
+	
+	particle.modulate.a = non_essential_rng.randf_range(0.8, 1)
+	
+	var finishing_mod_a_limit = 0
+	particle.transparency_per_sec = -(finishing_mod_a_limit - particle.modulate.a) / (particle.lifetime - particle.lifetime_to_start_transparency)
+	
+	particle.visible = true
+
+
+
+func _generate_single_nightmare_smoke_particle__moving(arg_pos,
+		arg_min_starting_distance, arg_max_starting_distance):
+	var particle : CenterBasedAttackSprite = _nightmare_smoke_attack_sprite_pool_compo.get_or_create_attack_sprite_from_pool()
+	
+	
+	#var rand_center_modi_x = non_essential_rng.randf_range(0, 20)
+	#var rand_center_modi_y = non_essential_rng.randf_range(0, 20)
+	particle.center_pos_of_basis = arg_pos #+ Vector2(rand_center_modi_x, rand_center_modi_y)
+	
+	particle.initial_speed_towards_center = non_essential_rng.randi_range(10, 40)
+	particle.speed_accel_towards_center = 40 - particle.initial_speed_towards_center
+	
+	particle.min_starting_distance_from_center = arg_min_starting_distance #arg_data.starting_dist_min
+	particle.max_starting_distance_from_center = arg_max_starting_distance #arg_data.starting_dist_max
+	
+	particle.min_speed_towards_center = -999999
+	particle.max_speed_towards_center = 9999999
+	
+	
+	particle.min_starting_angle = 0
+	particle.max_starting_angle = 359
+	
+	particle.lifetime = non_essential_rng.randf_range(0.8, 1.5)
+	particle.lifetime_to_start_transparency = particle.lifetime - 0.5
+	
+	particle.reset_for_another_use()
+	
+	
+	
+	particle.modulate.a = non_essential_rng.randf_range(0.8, 1)
+	
+	var finishing_mod_a_limit = 0
+	particle.transparency_per_sec = -(finishing_mod_a_limit - particle.modulate.a) / (particle.lifetime - particle.lifetime_to_start_transparency)
+	
+	particle.visible = true
+
+
+#
+
+func _configure_enemy_nightmare(arg_enemy):
+	arg_enemy.configure_nightmare_properties(ENEMY_NIGHTMARE__OFFSET_TO_TRIGGER_BACK_TO_START)
+	
+	arg_enemy.connect("reached_near_end_or_at_end", self, "_on_reached_near_end_or_at_end__enemy_nightmare")
+	arg_enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_killed_by_damage_with_no_more_revives__enemy_nightmare", [], CONNECT_ONESHOT)
+
+
+func _on_killed_by_damage_with_no_more_revives__enemy_nightmare(damage_instance_report, arg_enemy):
+	_place_active_nightmare_marker__using_nightmare(arg_enemy, arg_enemy.global_position, arg_enemy.offset)
+	_create_black_particle_smoke__when_nightmare_dies(arg_enemy.get_position_added_pos_and_offset_modifiers(arg_enemy.global_position))
+
+
+func _place_active_nightmare_marker__using_nightmare(arg_enemy, arg_pos : Vector2, arg_offset : float):
+	var nightmare_marker = _nightmare_marker_attack_sprite_pool_compo.get_or_create_attack_sprite_from_pool()
+	
+	var path_id = arg_enemy.enemy_spawn_metadata_from_ins[StoreOfEnemyMetadataIdsFromIns.MAP_MEMORIES__SPECIAL_PATH]
+	_all_active_nightmare_spawn_marker_to_data_map[nightmare_marker] = {
+		NIGHTMARE_MARKER_DATA_KEY__PATH_ID : path_id,
+		NIGHTMARE_MARKER_DATA_KEY__OFFSET : arg_offset
+	}
+	
+	nightmare_marker.global_position = arg_pos
+
+func _create_black_particle_smoke__when_nightmare_dies(arg_pos):
+	for i in 12:
+		_generate_single_nightmare_smoke_particle__static(arg_pos, 4, 22)
+
+
+
+func _on_round_start__consume_all_nightmare_marks():
+	if _all_active_nightmare_spawn_marker_to_data_map.size() > 0:
+		_nightmare_marker_initial_delay_timer.start(ENEMY_NIGHTMARE__MARK_CONSUME_INITIAL_DELAY)
+
+
+func _on_nightmare_marker_initial_delay_timer_timeout():
+	_consume_latest_active_nightmare_marker__and_summon_nightmare()
+	
+	if _all_active_nightmare_spawn_marker_to_data_map.size() > 0:
+		_nightmare_marker_per_mark_delay_timer.start(ENEMY_NIGHTMARE__MARK_CONSUME_DELAY_PER_MARK)
+
+
+func _on_nightmare_marker_per_mark_delay_timer_timeout():
+	_consume_latest_active_nightmare_marker__and_summon_nightmare()
+	
+	if _all_active_nightmare_spawn_marker_to_data_map.size() == 0:
+		_nightmare_marker_per_mark_delay_timer.stop()
+
+
+
+func _consume_latest_active_nightmare_marker__and_summon_nightmare():
+	var marker = _all_active_nightmare_spawn_marker_to_data_map.keys()[_all_active_nightmare_spawn_marker_to_data_map.size() - 1]
+	var data_map = _all_active_nightmare_spawn_marker_to_data_map[marker]
+	var path_id = data_map[NIGHTMARE_MARKER_DATA_KEY__PATH_ID]
+	var offset = data_map[NIGHTMARE_MARKER_DATA_KEY__OFFSET]
+	
+	_all_active_nightmare_spawn_marker_to_data_map.erase(marker)
+	
+	marker.turn_invisible_from_simulated_lifetime_end()
+	
+	_summon_nightmare_at_pos_and_path_id(marker.global_position, path_id, offset)
+
+func _summon_nightmare_at_pos_and_path_id(arg_pos, arg_path_id, arg_offset):
+	_create_black_particle_smoke__when_nightmare_summoned_from_marker(arg_pos)
+	
+	var path = special_path_id_to_path_map[arg_path_id]
+	var nightmare_enemy = game_elements.enemy_manager.spawn_enemy(EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, path, false, _retrieve_spawn_metadata_for_path(arg_path_id))
+	nightmare_enemy.set_offset__and_configure_other_properties(arg_offset)
+
+func _create_black_particle_smoke__when_nightmare_summoned_from_marker(arg_pos):
+	for i in 12:
+		_generate_single_nightmare_smoke_particle__moving(arg_pos, 4, 22)
+
+#
+
+func _on_reached_near_end_or_at_end__enemy_nightmare(arg_enemy):
+	#arg_enemy.set_offset__and_configure_other_properties(0)
+	arg_enemy.start_fade_to_invisible__using_tween(0.5, self, "_on_nightmare_reached_fully_invis__from_fade_with_tweener", [arg_enemy], true, true, true, true)
+	
+
+func _on_nightmare_reached_fully_invis__from_fade_with_tweener(arg_params):
+	var enemy = arg_params[0]
+	
+	if is_instance_valid(enemy):
+		if !enemy.already_reached_end_once:
+			enemy.already_reached_end_once = true
+			enemy.set_offset__and_configure_other_properties(0)
+			enemy.start_unfade_into_visibility__using_tween(0.5, self, "_on_nightmare_reached_full_vis__from_unfade_with_tweener", [enemy])
+			
+		else:
+			
+			if is_instance_valid(enemy.current_path):
+				_place_active_nightmare_marker__using_nightmare(enemy, enemy.current_path.get_global_pos_of_offset(0), 0)
+			
+			if enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_killed_by_damage_with_no_more_revives__enemy_nightmare"):
+				enemy.disconnect("on_killed_by_damage_with_no_more_revives", self, "_on_killed_by_damage_with_no_more_revives__enemy_nightmare")
+			
+			enemy.execute_self_by(0, null, true)
+
+
+func _on_nightmare_reached_full_vis__from_unfade_with_tweener(arg_params):
+	pass
+
 
 ####################
 # ENEMIES IN ROUNDS
@@ -2844,12 +3128,299 @@ func _retrieve_spawn_metadata_for_path(arg_path_id : int):
 	return _path_id_to_spawn_metadata_map[arg_path_id]
 
 
+#######################
 
 func get_spawn_ins_for_special_round__01():
 	return [
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
 		
 	]
 
 
+func get_spawn_ins_for_special_round__22():
+	return [
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+	]
+
+func get_spawn_ins_for_special_round__24():
+	return [
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+	]
+
+
+func get_spawn_ins_for_special_round__32():
+	return [
+		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+	]
+
+func get_spawn_ins_for_special_round__34():
+	return [
+		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+	]
+
+
+func get_spawn_ins_for_special_round__42():
+	return [
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+	]
+
+func get_spawn_ins_for_special_round__44():
+	return [
+		SingleEnemySpawnInstruction.new(7, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(13, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+	]
+
+
+
+func get_spawn_ins_for_special_round__52():
+	return [
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(2, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(16, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		
+	]
+
+func get_spawn_ins_for_special_round__54():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		
+	]
+
+
+
+func get_spawn_ins_for_special_round__62():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(2, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		SingleEnemySpawnInstruction.new(5, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(6, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(8, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		
+	]
+
+func get_spawn_ins_for_special_round__64():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(2, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(11, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		SingleEnemySpawnInstruction.new(21, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		
+		
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(31, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(32, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		
+	]
+
+
+func get_spawn_ins_for_special_round__72():
+	return [
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(17, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(18, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(18.5, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(18.75, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(35, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		
+	]
+
+func get_spawn_ins_for_special_round__74():
+	return [
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+		#
+		
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+		#
+		
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(30, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+	]
+
+
+
+func get_spawn_ins_for_special_round__82():
+	return [
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		
+		MultipleEnemySpawnInstruction.new(10, 5, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		MultipleEnemySpawnInstruction.new(20, 5, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		
+	]
+
+func get_spawn_ins_for_special_round__84():
+	return [
+		
+		MultipleEnemySpawnInstruction.new(20, 3, 6, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		LinearEnemySpawnInstruction.new(30, 8, 0.5, 0.060, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, 0.15, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+	]
+
+
+
+func get_spawn_ins_for_special_round__91():
+	return [
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		
+		MultipleEnemySpawnInstruction.new(25, 2, 3, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		MultipleEnemySpawnInstruction.new(30, 2, 3, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		MultipleEnemySpawnInstruction.new(35, 2, 3, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		
+		
+	]
+
+func get_spawn_ins_for_special_round__92():
+	return [
+		
+		MultipleEnemySpawnInstruction.new(0, 2, 3, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		MultipleEnemySpawnInstruction.new(10, 4, 1, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+		MultipleEnemySpawnInstruction.new(25, 2, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		MultipleEnemySpawnInstruction.new(25, 2, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+	]
+
+func get_spawn_ins_for_special_round__93():
+	return [
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+		MultipleEnemySpawnInstruction.new(15, 2, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		MultipleEnemySpawnInstruction.new(15, 2, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		MultipleEnemySpawnInstruction.new(20, 3, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		MultipleEnemySpawnInstruction.new(20, 3, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+	]
+
+func get_spawn_ins_for_special_round__94():
+	return [
+		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(2, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(3, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		SingleEnemySpawnInstruction.new(4, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+		SingleEnemySpawnInstruction.new(11, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(13, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		SingleEnemySpawnInstruction.new(14, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+		SingleEnemySpawnInstruction.new(21, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(23, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		SingleEnemySpawnInstruction.new(24, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+		SingleEnemySpawnInstruction.new(31, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(32, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(33, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		SingleEnemySpawnInstruction.new(34, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+		
+	]
+
+
+
+func get_spawn_ins_for_special_round__101():
+	return [
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		LinearEnemySpawnInstruction.new(0, 12, 2, 0.060, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, 0.25, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+		LinearEnemySpawnInstruction.new(0, 5, 0.5, 0.10, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, 0.25, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+	]
+
+func get_spawn_ins_for_special_round__102():
+	return [
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		SingleEnemySpawnInstruction.new(10, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+		MultipleEnemySpawnInstruction.new(30, 5, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+	]
+
+func get_spawn_ins_for_special_round__103():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		
+		MultipleEnemySpawnInstruction.new(30, 8, 0.75, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		MultipleEnemySpawnInstruction.new(30, 8, 0.75, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		
+	]
+
+func get_spawn_ins_for_special_round__104():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		
+		####
+		
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(21, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(22, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(23, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(24, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(25, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		
+	]
 

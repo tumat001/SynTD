@@ -11,13 +11,15 @@ const delta_per_bullet_in_barrage : float = 0.22
 
 var targeting_for_barrage : int = Targeting.CLOSE
 
-var tower_detecting_range_module : TowerDetectingRangeModule
+#var tower_detecting_range_module : TowerDetectingRangeModule
 
 
 var barrage_ability : BaseAbility
 const _barrage_cooldown : float = 9.0
 const no_valid_targets_in_range_clause : int = -10
 const in_barrage_clause : int = -11
+
+var skirmisher_gen_rng : RandomNumberGenerator
 
 #
 
@@ -34,13 +36,13 @@ func _init():
 func _ready():
 	_construct_and_connect_ability()
 	
-	tower_detecting_range_module = TowerDetectingRangeModule_Scene.instance()
-	tower_detecting_range_module.can_display_range = false
-	tower_detecting_range_module.detection_range = skirmisher_faction_passive.blaster_range
-	add_child(tower_detecting_range_module)
-	
-	tower_detecting_range_module.connect("on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health", self, "_on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health")
-	tower_detecting_range_module.connect("on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health", self, "_on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health")
+#	tower_detecting_range_module = TowerDetectingRangeModule_Scene.instance()
+#	tower_detecting_range_module.can_display_range = false
+#	tower_detecting_range_module.detection_range = skirmisher_faction_passive.blaster_range
+#	add_child(tower_detecting_range_module)
+#
+#	tower_detecting_range_module.connect("on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health", self, "_on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health")
+#	tower_detecting_range_module.connect("on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health", self, "_on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health")
 	
 	#
 	
@@ -51,17 +53,22 @@ func _ready():
 	_barrage_timer.set_enemy(self)
 	
 	add_child(_barrage_timer)
-
-
-func _on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health(arg_tower):
-	barrage_ability.activation_conditional_clauses.remove_clause(no_valid_targets_in_range_clause)
-
-func _on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health(arg_tower):
-	if tower_detecting_range_module.all_towers_in_range__in_map__with_non_zero_health.size() == 0:
-		barrage_ability.activation_conditional_clauses.attempt_insert_clause(no_valid_targets_in_range_clause)
 	
-	if is_instance_valid(_current_barrage_target) and _current_barrage_target == arg_tower:
-		_current_barrage_target_exited_range_or_lost_all_health()
+	#
+	
+	skirmisher_gen_rng = StoreOfRNG.get_rng(StoreOfRNG.RNGSource.SKIRMISHER_GEN_PURPOSE)
+	
+
+
+#func _on_tower_entered_range_while_in_map_or_entered_map_while_in_range__with_non_zero_health(arg_tower):
+#	barrage_ability.activation_conditional_clauses.remove_clause(no_valid_targets_in_range_clause)
+#
+#func _on_tower_exited_range_or_exited_map_while_in_range_or_lost_all_health(arg_tower):
+#	if tower_detecting_range_module.all_towers_in_range__in_map__with_non_zero_health.size() == 0:
+#		barrage_ability.activation_conditional_clauses.attempt_insert_clause(no_valid_targets_in_range_clause)
+#
+#	if is_instance_valid(_current_barrage_target) and _current_barrage_target == arg_tower:
+#		_current_barrage_target_exited_range_or_lost_all_health()
 
 #
 
@@ -72,6 +79,8 @@ func _construct_and_connect_ability():
 	barrage_ability._time_current_cooldown = get_random_cd(0, _barrage_cooldown / 8.0)
 	barrage_ability.connect("updated_is_ready_for_activation", self, "_barrage_ready_for_activation_updated")
 	
+	barrage_ability.start_time_cooldown(_barrage_cooldown / 2.0)
+	
 	register_ability(barrage_ability)
 
 func _barrage_ready_for_activation_updated(arg_val):
@@ -79,12 +88,18 @@ func _barrage_ready_for_activation_updated(arg_val):
 		_cast_barrage()
 
 func _cast_barrage():
-	var targets = tower_detecting_range_module.get_targets_based_on_params(tower_detecting_range_module.all_towers_in_range__in_map__with_non_zero_health, targeting_for_barrage, 1, global_position, false)
+	#var targets = tower_detecting_range_module.get_targets_based_on_params(tower_detecting_range_module.all_towers_in_range__in_map__with_non_zero_health, targeting_for_barrage, 1, global_position, false)
+	var towers = game_elements.tower_manager.get_all_in_map_and_alive_towers_except_in_queue_free()
+	var targets = game_elements.tower_manager.get_towers_in_range_of_pos__with_count_and_targeting(towers, global_position, skirmisher_faction_passive.blaster_range, false, 1, targeting_for_barrage)
 	
 	if targets.size() > 0:
 		var target = targets[0]
 		if is_instance_valid(target):
 			_start_barrage_against_target(target)
+		
+	else:
+		var cd = skirmisher_gen_rng.randf_range(1, 3)
+		barrage_ability.start_time_cooldown(cd)  # try again in 2 sec
 
 
 func _start_barrage_against_target(arg_target):

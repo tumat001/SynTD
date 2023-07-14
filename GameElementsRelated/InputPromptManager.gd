@@ -96,7 +96,7 @@ func _init():
 func _initialize_notif_panel_messeges():
 	var plain_fragment__tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Tower")
 	notif_message_select_single_tower = [
-		["Select a |0|", [plain_fragment__tower]] #todo
+		["Select a |0|", [plain_fragment__tower]]
 	]
 	
 	var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "Towers")

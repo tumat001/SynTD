@@ -124,9 +124,11 @@ const enemy_id_info_type_singleton_map : Dictionary = {}
 func _init():
 	first_half_faction_id_pool.append(EnemyFactions.BASIC)
 	
+	
 	second_half_faction_id_pool.append(EnemyFactions.EXPERT)
 	second_half_faction_id_pool.append(EnemyFactions.FAITHFUL)
 	second_half_faction_id_pool.append(EnemyFactions.SKIRMISHERS)
+	
 	#second_half_faction_id_pool.append(EnemyFactions.MORPHERS)
 	
 	
@@ -863,7 +865,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.BLASTER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 35
+		info.base_health = 40 #35
 		info.base_movement_speed = 50
 		info.enemy_type = info.EnemyType.NORMAL
 		
@@ -871,7 +873,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			var plain_fragment__tower = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "tower")
 			
 			var num_of_bullets : int = 3
-			var dmg : float = 0.65
+			var dmg : float = 0.5 #0.65
 			
 			info.enemy_name = "Blaster"
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Blaster/Blaster_E.png"))
@@ -883,15 +885,15 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.ARTILLERY:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 26
+		info.base_health = 28 #26
 		info.base_movement_speed = 40
 		info.enemy_type = info.EnemyType.NORMAL
 		
 		if arg_include_non_combat_info:
 			var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
 			
-			var dmg : float = 3.5
-			var stun_duration : float = 2.0
+			var dmg : float = 2.0 #3.5
+			var stun_duration : float = 3.0 #2.0
 			
 			var plain_fragment__stuns = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.STUN, "stuns")
 			
@@ -906,7 +908,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.DANSEUR:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 28
+		info.base_health = 30 #28
 		info.base_movement_speed = 52
 		info.enemy_type = info.EnemyType.NORMAL
 		
@@ -914,7 +916,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
 			
 			var bullet_count : int = 8
-			var dmg : float = 0.5
+			var dmg : float = 0.35 #0.5
 			var tower_detection_fire_range : float = 130.0
 			
 			var total_dmg = dmg * bullet_count
@@ -937,7 +939,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.FINISHER:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.SKIRMISHERS)
-		info.base_health = 35
+		info.base_health = 45 #35
 		info.base_movement_speed = 60
 		info.enemy_type = info.EnemyType.ELITE
 		
@@ -945,7 +947,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
 			var plain_fragment__executes = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.EXECUTE, "executes")
 			
-			var dmg = 2.0
+			var dmg = 1.0 #2.0
 			var percent_execute_health_threshold : float = 35.0
 			
 			info.enemy_name = "Finisher"
@@ -977,7 +979,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			var plain_fragment__knocked_back = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.KNOCK_BACK, "knocked back")
 			
 			var knock_back_duration : float = 1.25
-			var knock_up_stun_duration : float = 2.5
+			var knock_up_stun_duration : float = 3.5
 			
 			info.enemy_name = "Tosser"
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Skirmisher/Reds/Tosser/Tosser_E.png"))
@@ -1298,10 +1300,10 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.MAP_MEMORIES__DREAM:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
-		info.base_health = 50
+		info.base_health = 55
 		info.base_movement_speed = 65
-		info.base_armor = 5
-		info.base_toughness = 5
+		#info.base_armor = 5
+		#info.base_toughness = 5
 		info.enemy_type = info.EnemyType.NORMAL
 		
 		if arg_include_non_combat_info:
@@ -1309,7 +1311,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Dream/Dream_E.png"))
 			
 			var plain_fragment__enemies = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.ENEMY, "Enemies")
-			var plain_fragment__heal_xxx = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.HEALTH, "heal for 4% of their max health, up to 8")
+			var plain_fragment__heal_xxx = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.HEALTH, "heal for 3% of their max health, up to 6")
 			
 			info.descriptions = [
 				"Map Memories Exclusive.",
@@ -1322,10 +1324,8 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.MAP_MEMORIES__MEMORIA:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
-		info.base_health = 700#70 #todo
-		info.base_movement_speed = 30
-		info.base_armor = 5
-		info.base_toughness = 5
+		info.base_health = 90
+		info.base_movement_speed = 35
 		info.enemy_type = info.EnemyType.NORMAL
 		
 		if arg_include_non_combat_info:
@@ -1338,12 +1338,31 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			
 			info.descriptions = [
 				"Map Memories Exclusive.",
-				["Taking 20 instances of damage causes Memoria to |0| |1| for 4 seconds.", [plain_fragment__become__ability, plain_fragment__invisible]]
+				["Taking 15 instances of damage causes Memoria to |0| |1| for 5 seconds.", [plain_fragment__become__ability, plain_fragment__invisible]]
 				
 			]
 			
 			
+	elif enemy_id == Enemies.MAP_MEMORIES__NIGHTMARE:
+		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
+		info.base_health = 240
+		info.base_movement_speed = 26
+		info.base_armor = 24
+		info.base_toughness = 24
+		info.enemy_type = info.EnemyType.ELITE
+		info.base_effect_vulnerability = 0.8
 		
+		if arg_include_non_combat_info:
+			info.enemy_name = "Nightmare"
+			info.enemy_atlased_image = _generate_enemy_image_icon_atlas_texture(preload("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Nightmare/Nightmare_E.png"))
+			
+			info.descriptions = [
+				"Map Memories Exclusive.",
+				"Nightmares never truly die.",
+				"Nightmares cannot harm you.",
+			]
+			
+			
 	
 	
 	return info
@@ -1440,5 +1459,7 @@ static func get_enemy_scene(enemy_id : int):
 		return load("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Dream/MapMemories_Dream.tscn")
 	elif enemy_id == Enemies.MAP_MEMORIES__MEMORIA:
 		return load("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Memoria/MapMemories_Memoria.tscn")
+	elif enemy_id == Enemies.MAP_MEMORIES__NIGHTMARE:
+		return load("res://EnemyRelated/EnemyTypes/Type_Others/Map_Memories_Relateds/MapMemories_Nightmare/MapMemories_Nightmare.tscn")
 		
 	

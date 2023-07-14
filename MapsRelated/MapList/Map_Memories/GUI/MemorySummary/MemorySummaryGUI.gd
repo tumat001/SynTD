@@ -190,8 +190,14 @@ func _deferred_set_current_future_label_poses_based_on_leftmost_column():
 	var adjusted_future_pos__y = _get_y_pos__adjusted_to_center_label(future_icon_pos.y, label__future, icon_size)
 	
 	
-	label__curent.rect_global_position = Vector2(X_POS_OFFSET_FOR_LABEL, adjusted_past_pos__y)
-	label__future.rect_global_position = Vector2(X_POS_OFFSET_FOR_LABEL, adjusted_future_pos__y)
+	#label__curent.rect_global_position = Vector2(X_POS_OFFSET_FOR_LABEL, adjusted_past_pos__y)
+	#label__future.rect_global_position = Vector2(X_POS_OFFSET_FOR_LABEL, adjusted_future_pos__y)
+	
+	label__curent.rect_position.x = X_POS_OFFSET_FOR_LABEL
+	label__future.rect_position.x = X_POS_OFFSET_FOR_LABEL
+	
+	label__curent.rect_global_position.y = adjusted_past_pos__y
+	label__future.rect_global_position.y = adjusted_future_pos__y
 	
 
 func _get_y_pos__adjusted_to_center_label(arg_y_pos : float, arg_label : Label, arg_icon_size : Vector2) -> float:

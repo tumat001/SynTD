@@ -317,3 +317,9 @@ func _draw():
 	if last_calculated_is_showing_curve:
 		#draw_multiline(curve.get_baked_points(), showing_curve_color, 8, false)
 		draw_polyline(curve.get_baked_points(), showing_curve_color, 6)
+
+##
+
+func get_global_pos_of_offset(arg_offset):
+	return curve.interpolate_baked(arg_offset) + global_position
+

@@ -550,6 +550,12 @@ func get_enemies_within_distance_of_position__with_count(arg_pos, arg_radius, ar
 	return Targeting.get_targets__based_on_range_from_center_as_circle(enemies, Targeting.CLOSE, arg_count, arg_pos, arg_radius, Targeting.TargetingRangeState.IN_RANGE, arg_include_invis)
 
 
+func get_enemies_within_distance_of_position__with_count_and_targeting(arg_pos, arg_radius, arg_count : int, arg_targeting : int, arg_include_invis : bool = true):
+	var enemies = get_all_targetable_enemies(arg_include_invis)
+	
+	return Targeting.get_targets__based_on_range_from_center_as_circle(enemies, arg_targeting, arg_count, arg_pos, arg_radius, Targeting.TargetingRangeState.IN_RANGE, arg_include_invis)
+
+
 
 # enemy count related
 

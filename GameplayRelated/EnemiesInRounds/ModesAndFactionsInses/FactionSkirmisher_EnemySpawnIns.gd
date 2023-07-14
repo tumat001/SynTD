@@ -97,7 +97,7 @@ func get_instructions_for_stageround(uuid : String):
 #		#MultipleEnemySpawnInstruction.new(0, 1, 1, EnemyConstants.Enemies.HOMERUNNER, spawn_at_red_metadata),
 #		#MultipleEnemySpawnInstruction.new(0, 1, 1, EnemyConstants.Enemies.HOMERUNNER, spawn_at_blue_metadata),
 #
-#		MultipleEnemySpawnInstruction.new(0, 10, 2, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
+#		MultipleEnemySpawnInstruction.new(0, 6, 2, EnemyConstants.Enemies.BLASTER, spawn_at_red_metadata),
 #		#MultipleEnemySpawnInstruction.new(0, 1, 1, EnemyConstants.Enemies.FINISHER, spawn_at_red_metadata),
 #	]
 #

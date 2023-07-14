@@ -195,8 +195,9 @@ func _on_enemies_exited_range_module(enemy, module, arg_range_module):
 		if range_module.get_enemy_in_range_count() == 0:
 			shockwave_ability.activation_conditional_clauses.attempt_insert_clause(no_enemies_in_range_clause)
 		
-		if enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives"):
-			enemy.disconnect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives")
+		if is_instance_valid(enemy):
+			if enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives"):
+				enemy.disconnect("on_killed_by_damage_with_no_more_revives", self, "_on_enemy_killed_with_no_more_revives")
 
 
 

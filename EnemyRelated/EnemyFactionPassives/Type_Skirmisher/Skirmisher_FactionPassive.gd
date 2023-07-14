@@ -112,17 +112,17 @@ const tosser_bomb_normal_animation_name : String = "default"
 const tosser_bomb_empowered_animation_name : String = "empowered"
 
 
-const blaster_range : float = 120.0
-const blaster_damage_per_bullet : float = 0.65
+const blaster_range : float = 120.0   # var is accessed by Blaster
+const blaster_damage_per_bullet : float = 0.5 #0.65
 
-const artillery_damage_per_shot : float = 3.5
-const artillery_stun_duration_on_shot_hit : float = 2.0
+const artillery_damage_per_shot : float = 2.0 #3.5
+const artillery_stun_duration_on_shot_hit : float = 3.0 #2.0
 
 const danseur_proj_and_detection_range : float = 130.0
-const danseur_damage_per_proj : float = 0.5 #0.3
+const danseur_damage_per_proj : float = 0.35 #0.5 #0.3
 
-const finisher_execute_damage_per_bullet : float = 2.0
-const finisher_normal_damage_per_bullet : float = 2.0
+const finisher_execute_damage_per_bullet : float = 1.0 #2.0
+const finisher_normal_damage_per_bullet : float = 1.0 #2.0
 
 
 const tosser_flight_duration : float = 1.125
@@ -175,7 +175,7 @@ var tosser__plain_knock_up_effect : TowerKnockUpEffect
 var tosser__forced_mov_knock_up_effect : TowerKnockUpEffect
 
 const tosser_plain_knock_up_duration : float = 1.1
-const tosser_plain_knock_up_stun_duration : float = 2.5
+const tosser_plain_knock_up_stun_duration : float = 3.5
 const tosser_plain_knock_up_y_accel_amount : float = 200.0
 
 const tosser_forced_mov_knock_up_duration : float = 1.25

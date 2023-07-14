@@ -192,19 +192,20 @@ func _on_any_post_mitigation_damage_dealt_i(damage_instance_report, killed, enem
 
 
 func _create_stone_aoe_based_on_enemy(enemy):
-	var enemy_curr_texture = enemy.get_current_texture_of_anim()
-	var pos = enemy.global_position + enemy.get_offset_modifiers()
-	
-	var aoe = stone_aoe_attack_module.construct_aoe(pos, pos)
-	aoe.aoe_texture = enemy_curr_texture
-	aoe.material = shader_material_of_aoe
-	aoe.duration = stone_base_duration + (stone_bonus_duration_per_1_ap * stoned_ability.get_potency_to_use(get_bonus_ability_potency()))
-	aoe.duration_decrease_based_on_amount_of_enmeies_collided = true
-	
-	aoe.connect("enemy_entered", self, "_on_stone_aoe_enemy_entered", [enemy.distance_to_exit])
-	aoe.connect("enemy_exited", self, "_on_stone_aoe_enemy_exited")
-	
-	stone_aoe_attack_module.set_up_aoe__add_child_and_emit_signals(aoe)
+	if !is_queued_for_deletion():
+		var enemy_curr_texture = enemy.get_current_texture_of_anim()
+		var pos = enemy.global_position + enemy.get_offset_modifiers()
+		
+		var aoe = stone_aoe_attack_module.construct_aoe(pos, pos)
+		aoe.aoe_texture = enemy_curr_texture
+		aoe.material = shader_material_of_aoe
+		aoe.duration = stone_base_duration + (stone_bonus_duration_per_1_ap * stoned_ability.get_potency_to_use(get_bonus_ability_potency()))
+		aoe.duration_decrease_based_on_amount_of_enmeies_collided = true
+		
+		aoe.connect("enemy_entered", self, "_on_stone_aoe_enemy_entered", [enemy.distance_to_exit])
+		aoe.connect("enemy_exited", self, "_on_stone_aoe_enemy_exited")
+		
+		stone_aoe_attack_module.set_up_aoe__add_child_and_emit_signals(aoe)
 
 ##
 

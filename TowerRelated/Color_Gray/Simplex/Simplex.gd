@@ -119,6 +119,8 @@ func _ready():
 	connect("on_tower_transfered_in_map_from_bench", self, "_on_placed_in_map_s", [], CONNECT_PERSIST)
 	connect("on_tower_transfered_on_bench_from_in_map", self, "_on_placed_in_bench_s", [], CONNECT_PERSIST)
 	
+	#connect("on_tower_healed_from_no_health", self, "_on_tower_healed_from_no_health_s", [], CONNECT_PERSIST)
+	
 	##
 	
 	set_current_fire_time(0)
@@ -148,7 +150,8 @@ func _construct_timers():
 	_fire_cd_timer.one_shot = true
 	_fire_cd_timer.connect("timeout", self, "_on_fire_cd_timer_timeout", [], CONNECT_PERSIST)
 	_fire_cd_timer.stop_on_round_end_instead_of_pause = false
-	_fire_cd_timer.stop_on_disabled_from_attacking = false
+	_fire_cd_timer.pause_on_disabled_from_attacking = false
+	_fire_cd_timer.stop_on_no_health_instead_of_pause = false
 	_fire_cd_timer.set_tower_and_properties(self)
 	add_child(_fire_cd_timer)
 	
@@ -158,7 +161,8 @@ func _construct_timers():
 	_recharge_cd_timer.one_shot = false
 	_recharge_cd_timer.connect("timeout", self, "_on_recharge_cd_timer_timeout", [], CONNECT_PERSIST)
 	_recharge_cd_timer.stop_on_round_end_instead_of_pause = false
-	_recharge_cd_timer.stop_on_disabled_from_attacking = false
+	_recharge_cd_timer.pause_on_disabled_from_attacking = false
+	_recharge_cd_timer.stop_on_no_health_instead_of_pause = false
 	_recharge_cd_timer.set_tower_and_properties(self)
 	add_child(_recharge_cd_timer)
 	
@@ -168,7 +172,8 @@ func _construct_timers():
 	_fire_cd_timer__for_bar_aesth.one_shot = false
 	_fire_cd_timer__for_bar_aesth.connect("timeout", self, "_on_fire_cd_timer__for_bar_aesth_timeout", [], CONNECT_PERSIST)
 	_fire_cd_timer__for_bar_aesth.stop_on_round_end_instead_of_pause = false
-	_fire_cd_timer__for_bar_aesth.stop_on_disabled_from_attacking = false
+	_fire_cd_timer__for_bar_aesth.pause_on_disabled_from_attacking = false
+	_fire_cd_timer__for_bar_aesth.stop_on_no_health_instead_of_pause = false
 	_fire_cd_timer__for_bar_aesth.set_tower_and_properties(self)
 	add_child(_fire_cd_timer__for_bar_aesth)
 	
@@ -307,6 +312,14 @@ func _on_placed_in_map_s(tower_self, arg_map_placable, arg_bench_placable):
 	
 
 
+#
+
+#func _on_tower_healed_from_no_health_s():
+#	if _is_recharging:
+#		_start_recharge_timer_wait()
+#
+#	if _is_during_cd:
+#
 
 
 

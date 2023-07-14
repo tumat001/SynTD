@@ -69,3 +69,12 @@ func _on_EnemySpawnLocIndicator_Flat_visibility_changed():
 		_is_mouse_inside_flag = false
 		modulate = Color(1, 1, 1)
 
+#
+
+func _ready():
+	pass
+	#z_as_relative = false
+	#z_index = ZIndexStore.MAP_ENVIRONMENT
+
+
+
