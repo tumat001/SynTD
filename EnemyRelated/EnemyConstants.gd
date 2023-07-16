@@ -1351,6 +1351,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		info.base_toughness = 24
 		info.enemy_type = info.EnemyType.ELITE
 		info.base_effect_vulnerability = 0.8
+		info.base_player_damage = 0
 		
 		if arg_include_non_combat_info:
 			info.enemy_name = "Nightmare"

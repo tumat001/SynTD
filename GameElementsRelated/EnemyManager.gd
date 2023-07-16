@@ -52,6 +52,8 @@ signal path_to_spawn_pattern_changed(arg_new_val)
 
 signal enemy_effect_apply_on_spawn_cleared()
 
+signal interpreter_done_spawning__no_ins_left()
+
 # special query requests
 # DO NOT CONNECT TO THESE manually. Use special methods
 signal requested__get_next_targetable_enemy(arg_enemy)
@@ -439,6 +441,7 @@ func _get_path_based_on_current_index() -> EnemyPath:
 
 func _interpreter_done_spawning():
 	_is_interpreter_done_spawning = true
+	emit_signal("interpreter_done_spawning__no_ins_left")
 	
 	_check_if_no_enemies_left()
 
@@ -457,19 +460,25 @@ func _check_if_no_enemies_left():
 # Enemy leaving / health related
 
 func _enemy_reached_end(enemy : AbstractEnemy):
-	var total_damage = enemy.calculate_final_player_damage()
-	
-	if !_enemy_first_damage_applied:
-		_enemy_first_damage_applied = true
-		total_damage += enemy_first_damage
+	var total_damage = 0
+	if enemy.can_cause_player_damage:
+		total_damage = enemy.calculate_final_player_damage()
 		
-		emit_signal("first_enemy_escaped", enemy, enemy_first_damage)
+		if !_enemy_first_damage_applied:
+			_enemy_first_damage_applied = true
+			total_damage += enemy_first_damage
+			
+		
+		#health_manager.decrease_health_by(total_damage, HealthManager.DecreaseHealthSource.ENEMY, enemy.current_path.path_end_global_pos)
+		health_manager.decrease_health_by__using_player_dmg_particle(total_damage, HealthManager.DecreaseHealthSource.ENEMY, enemy.global_position)#enemy.current_path.path_end_global_pos)
 	
-	#health_manager.decrease_health_by(total_damage, HealthManager.DecreaseHealthSource.ENEMY, enemy.current_path.path_end_global_pos)
-	health_manager.decrease_health_by__using_player_dmg_particle(total_damage, HealthManager.DecreaseHealthSource.ENEMY, enemy.current_path.path_end_global_pos)
+	
+	emit_signal("first_enemy_escaped", enemy, enemy_first_damage)
 	
 	emit_signal("enemy_escaped", enemy)
 	emit_signal("enemy_escaped_dealing_x_damage", enemy, total_damage)
+	
+	
 	enemy.queue_free()
 
 
@@ -797,6 +806,15 @@ func get_last_standing_enemy():
 		return null
 	
 	return _last_standing_enemy 
+
+
+#
+
+func surrender_round__make_all_enemies_escape():
+	for enemy in get_all_enemies():
+		enemy.reached_end_of_path__from_surrender()
+	
+
 
 
 ############# SV VALUES RELATED ############

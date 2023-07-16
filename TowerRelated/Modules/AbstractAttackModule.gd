@@ -339,8 +339,9 @@ func _set_range_module(new_module):
 #	add_child(arg_module)
 #
 
-# Time passed
 
+
+# Time passed
 
 func time_passed(delta):
 	if !_last_calculated_is_disabled:

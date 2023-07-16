@@ -6862,9 +6862,9 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_atlased_image = _generate_tower_image_icon_atlas_texture(info.base_tower_image, Vector2(0, 0))
 		
 		info.base_damage = 2.5
-		info.base_attk_speed = 0.735
+		info.base_attk_speed = 0.888
 		info.base_pierce = 1
-		info.base_range = 120
+		info.base_range = 125
 		info.base_damage_type = DamageType.ELEMENTAL
 		info.on_hit_multiplier = 1
 		
@@ -6892,7 +6892,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		var outer_ins = []
 		var ins = []
-		ins.append(NumericalTextFragment.new(0.35, false, DamageType.ELEMENTAL))
+		ins.append(NumericalTextFragment.new(0.5, false, DamageType.ELEMENTAL))
 		ins.append(TextFragmentInterpreter.STAT_OPERATION.ADDITION)
 		ins.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.BASE_DAMAGE, TowerStatTextFragment.STAT_BASIS.BONUS, 0.25, DamageType.ELEMENTAL))
 		
@@ -6906,7 +6906,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		
 		var ability_desc = [
-			["|0|. Drain 3 |1| to activate a laser that deals |2| every 0.25 seconds. The laser lasts for 30 seconds.", [plain_fragment__ability_name, plain_fragment__player_health, interpreter]]
+			["|0|. Drain 3 |1| to activate a laser that deals |2| every 0.25 seconds. The laser lasts for 40 seconds.", [plain_fragment__ability_name, plain_fragment__player_health, interpreter]]
 		]
 		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_DESCRIPTION] = ability_desc
 		info.metadata_id_to_data_map[TowerTypeInformation.Metadata.ABILITY_SIMPLE_DESCRIPTION] = ability_desc
@@ -6914,7 +6914,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		info.tower_descriptions = [
 			["|0|: Reduces 3 |1| if not lethal. In exchange, Biomorph gains |2|.", [plain_fragment__on_round_start, plain_fragment__player_health, interpreter_for_flat_on_hit]],
 			"",
-			["|0|: Drain. Drain 3 |1| to activate a laser that deals |2| every 0.25 seconds. The laser lasts for 30 seconds.", [plain_fragment__Ability, plain_fragment__player_health, interpreter]]
+			["|0|: Drain. Drain 3 |1| to activate a laser that deals |2| every 0.25 seconds. The laser lasts for 40 seconds.", [plain_fragment__Ability, plain_fragment__player_health, interpreter]]
 		]
 		
 		info.tower_simple_descriptions = [

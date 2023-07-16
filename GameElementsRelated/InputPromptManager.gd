@@ -16,6 +16,13 @@ const PlainTextFragment = preload("res://MiscRelated/TextInterpreterRelated/Text
 const IMSelectionParticle = preload("res://GameElementsRelated/InputManagerRelated/SelectionParticles/IMSelectionParticle.gd")
 const IMSelectionParticle_Scene = preload("res://GameElementsRelated/InputManagerRelated/SelectionParticles/IMSelectionParticle.tscn")
 
+const YesNoDialogWholeScreenPanel = preload("res://GameHUDRelated/InputManagerRelated/YesNoDialogWholeScreenPanel/YesNoDialogWholeScreenPanel.gd")
+const YesNoDialogWholeScreenPanel_Scene = preload("res://GameHUDRelated/InputManagerRelated/YesNoDialogWholeScreenPanel/YesNoDialogWholeScreenPanel.tscn")
+const AdvancedQueue = preload("res://MiscRelated/QueueRelated/AdvancedQueue.gd")
+
+
+#
+
 signal prompted_for_tower_selection(prompter, prompt_predicate_method)
 
 signal cancelled_tower_selection()
@@ -47,12 +54,13 @@ enum SelectionMode {
 	TOWER = 1,
 	MULTIPLE_TOWERS = 2,
 	
+	YES_NO = 3
 }
 
 var current_selection_mode : int = SelectionMode.NONE
 var selection_notif_panel : SelectionNotifPanel
 
-var _current_prompter
+var _current_prompter : Object
 var _current_prompt_tower_checker_predicate_name : String
 
 var _prompt_successful_method_handler : String
@@ -86,6 +94,28 @@ class MultipleTowerSelectionAdvParam:
 
 var _IM_selection_particle_component_pool : AttackSpritePoolComponent
 
+
+#
+
+var reservation_for_whole_screen_gui
+var yes_no_dialog_whole_screen_panel : YesNoDialogWholeScreenPanel
+
+
+#
+
+var game_elements setget set_game_elements
+
+#
+
+func set_game_elements(arg_game_elements):
+	game_elements = arg_game_elements
+	
+	game_elements.connect("before_game_start", self, "_on_before_game_start")
+
+
+func _on_before_game_start():
+	_initialize_yes_no_whole_screen_panel()
+	
 
 #
 
@@ -154,15 +184,19 @@ func prompt_select_tower(prompter, arg_prompt_successful_method_handler : String
 		_current_prompter = prompter
 		_current_prompt_tower_checker_predicate_name = arg_prompt_tower_checker_predicate_name
 		
-		if is_instance_valid(_current_prompter) and _current_prompter != null:
-			_current_prompter.connect("tree_exiting", self, "cancel_selection")
-			
-			if _current_prompter is AbstractTower:
-				_current_prompter.connect("tower_not_in_active_map", self, "cancel_selection")
-		
+		_establish_signals_for_discontinue_prompt_if_current_prompter_is_exiting__or_other_conditions()
 		
 		emit_signal("prompted_for_tower_selection", prompter, arg_prompt_tower_checker_predicate_name)
 		_show_selection_notif_panel__for_single_tower_selection()
+
+func _establish_signals_for_discontinue_prompt_if_current_prompter_is_exiting__or_other_conditions():
+	if is_instance_valid(_current_prompter) and _current_prompter != null:
+		_current_prompter.connect("tree_exiting", self, "cancel_selection")
+		
+		if _current_prompter is AbstractTower:
+			_current_prompter.connect("tower_not_in_active_map", self, "cancel_selection")
+	
+
 
 
 func tower_selected_from_prompt(tower):
@@ -199,12 +233,7 @@ func prompt_select_multiple_towers(arg_adv_param : MultipleTowerSelectionAdvPara
 		_max_select_count = arg_adv_param.max_select_count
 		_min_select_count = arg_adv_param.min_select_count
 		
-		if is_instance_valid(_current_prompter) and _current_prompter != null:
-			_current_prompter.connect("tree_exiting", self, "cancel_selection")
-			
-			if _current_prompter is AbstractTower:
-				_current_prompter.connect("tower_not_in_active_map", self, "cancel_selection")
-		
+		_establish_signals_for_discontinue_prompt_if_current_prompter_is_exiting__or_other_conditions()
 		
 		emit_signal("prompted_for_tower_selection", prompter, arg_prompt_tower_checker_predicate_name)
 		#_show_selection_notif_panel__for_single_tower_selection()
@@ -299,6 +328,7 @@ func _lock_in_and_end_multiple_tower_selection():
 	
 	clean_up_selection()
 
+
 # General stuffs
 
 func cancel_selection(emit_cancel_selection : bool = true):
@@ -307,13 +337,24 @@ func cancel_selection(emit_cancel_selection : bool = true):
 		if current_selection_mode == SelectionMode.TOWER:
 			emit_signal("cancelled_tower_selection")
 		elif current_selection_mode == SelectionMode.MULTIPLE_TOWERS:
-			_multiple_tower_selection__can_end_selection_via_enter = false
 			var selected_towers = _current_towers_selected_from_multiple_select.duplicate()
-			_current_towers_selected_from_multiple_select.clear()
-			
 			emit_signal("cancelled_multiple_tower_selection", selected_towers)
+		elif current_selection_mode == SelectionMode.YES_NO:
+			pass
+			
+		
 	
-	_current_prompter.call_deferred(_prompt_cancelled_method_handler)
+	if  current_selection_mode == SelectionMode.TOWER:
+		pass
+	elif current_selection_mode == SelectionMode.MULTIPLE_TOWERS:
+		_multiple_tower_selection__can_end_selection_via_enter = false
+		_current_towers_selected_from_multiple_select.clear()
+	elif current_selection_mode == SelectionMode.YES_NO:
+		pass
+		
+	
+	if _current_prompter != null and _current_prompter.has_method(_prompt_cancelled_method_handler):
+		_current_prompter.call_deferred(_prompt_cancelled_method_handler)
 	
 	clean_up_selection()
 
@@ -322,11 +363,7 @@ func clean_up_selection():
 	if current_selection_mode == SelectionMode.TOWER or current_selection_mode == SelectionMode.MULTIPLE_TOWERS:
 		current_selection_mode = SelectionMode.NONE
 		
-		if is_instance_valid(_current_prompter) and _current_prompter != null:
-			_current_prompter.disconnect("tree_exiting", self, "cancel_selection")
-			
-			if _current_prompter is AbstractTower:
-				_current_prompter.disconnect("tower_not_in_active_map", self, "cancel_selection")
+		_disconnect_established_signals_for_discontinue_prompt_if_current_prompter_is_exiting__or_other_conditions()
 		
 		_current_prompter = null
 		_prompt_cancelled_method_handler = ""
@@ -340,6 +377,26 @@ func clean_up_selection():
 		for particle in _tower_to_IM_particle_map.values():
 			particle.turn_invisible_from_simulated_lifetime_end()
 		_tower_to_IM_particle_map.clear()
+		
+	elif current_selection_mode == SelectionMode.YES_NO:
+		current_selection_mode = SelectionMode.NONE
+		
+		_disconnect_established_signals_for_discontinue_prompt_if_current_prompter_is_exiting__or_other_conditions()
+		
+		_current_prompter = null
+		_prompt_cancelled_method_handler = ""
+		
+		if game_elements.whole_screen_gui.is_currently_showing_control_equal_to(yes_no_dialog_whole_screen_panel):
+			game_elements.whole_screen_gui.hide_control(yes_no_dialog_whole_screen_panel)
+
+func _disconnect_established_signals_for_discontinue_prompt_if_current_prompter_is_exiting__or_other_conditions():
+	if is_instance_valid(_current_prompter) and _current_prompter != null:
+		_current_prompter.disconnect("tree_exiting", self, "cancel_selection")
+		
+		if _current_prompter is AbstractTower:
+			_current_prompter.disconnect("tower_not_in_active_map", self, "cancel_selection")
+
+
 
 func is_current_promter_arg(arg) -> bool:
 	return _current_prompter == arg
@@ -411,9 +468,54 @@ func _set_count_msg_line__for_multiple_tower_selection(arg_original_msg : Array,
 		
 	
 
+##################
+
+func _initialize_yes_no_whole_screen_panel():
+	reservation_for_whole_screen_gui = AdvancedQueue.Reservation.new(self)
+	reservation_for_whole_screen_gui.on_entertained_method = "_on_queue_reservation_entertained"
+	
+	##
+	
+	yes_no_dialog_whole_screen_panel = YesNoDialogWholeScreenPanel_Scene.instance()
+	yes_no_dialog_whole_screen_panel.visible = false
+	game_elements.whole_screen_gui.add_control_but_dont_show(yes_no_dialog_whole_screen_panel)
+	
+	yes_no_dialog_whole_screen_panel.connect("option_chosen", self, "_on_yes_no_dialog__option_chosen", [], CONNECT_PERSIST)
+	yes_no_dialog_whole_screen_panel.connect("escaped_via_ESC", self, "_on_yes_no_dialog__escaped_via_esc", [], CONNECT_PERSIST)
+#	yes_no_dialog_whole_screen_panel.connect("visibility_set_to_false", self, "_on_yes_no_dialog__visibility_set_to_false", [], CONNECT_PERSIST)
+
+func prompt_yes_no_dialog(arg_prompter, arg_prompt_cancelled_method_handler, 
+		desc_to_use : Array, func_source_on_select : Object,
+		func_name_for_selection_yes : String, func_name_for_selection_no : String,
+		arg_is_escapable):
+	
+	if can_prompt():
+		current_selection_mode = SelectionMode.YES_NO
+		_current_prompter = arg_prompter
+		_prompt_cancelled_method_handler = arg_prompt_cancelled_method_handler
+		
+		yes_no_dialog_whole_screen_panel.set_descriptions_to_use(desc_to_use)
+		yes_no_dialog_whole_screen_panel.func_source__on_select_option = func_source_on_select
+		yes_no_dialog_whole_screen_panel.func_name__on_select_yes = func_name_for_selection_yes
+		yes_no_dialog_whole_screen_panel.func_name__on_select_no = func_name_for_selection_no
+		
+		game_elements.whole_screen_gui.queue_control(yes_no_dialog_whole_screen_panel, reservation_for_whole_screen_gui, true, arg_is_escapable)
+		
+		_establish_signals_for_discontinue_prompt_if_current_prompter_is_exiting__or_other_conditions()
+		
 
 
-# 
+func _on_yes_no_dialog__option_chosen(arg_option : int):
+	clean_up_selection()
+
+func _on_yes_no_dialog__escaped_via_esc():
+	clean_up_selection()
+
+#func _on_yes_no_dialog__visibility_set_to_false():
+#	clean_up_selection()
+
+
+#######################
 
 func is_in_tower_selection_mode() -> bool:
 	return current_selection_mode == SelectionMode.TOWER or current_selection_mode == SelectionMode.MULTIPLE_TOWERS 

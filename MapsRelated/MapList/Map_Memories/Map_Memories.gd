@@ -384,7 +384,8 @@ var special_rounds_to_ins_method_map : Dictionary = {
 	
 	
 	# temp for testing
-	#"01" : "get_spawn_ins_for_special_round__01",
+#	"03" : "get_spawn_ins_for_special_round__03",
+#	"01" : "get_spawn_ins_for_special_round__01",
 }
 
 ########## Enemy Memory specific
@@ -467,11 +468,23 @@ onready var special_enemy_path_04 = $EnemyPaths/SpecialEnemyPath04
 var all_special_paths : Array
 var special_path_id_to_path_map : Dictionary
 
+#
+
+onready var crater_glow__bottom = $Environment/CraterGlow_Bottom
+onready var crater_glow__left = $Environment/CraterGlow_Left
+onready var crater_glow__right = $Environment/CraterGlow_Right
+onready var crater_glow__top = $Environment/CraterGlow_Top
+
+var special_path_id_to_all_crater_glows_map : Dictionary
+var _all_crater_glows_to_affect_for_tweener : Array
+
+
 ######################
 
 
 func _ready():
 	_initialize_special_paths()
+	_initialize_crater_glows()
 	
 
 #
@@ -2477,7 +2490,57 @@ func _convert_recall_mem_to_recall_type_panel_constr_param(arg_recall_mem : Reca
 	
 
 
-#######################
+####################### CRATER GLOWS
+
+func _initialize_crater_glows():
+#	all_crater_glows.append(crater_glow__bottom)
+#	all_crater_glows.append(crater_glow__left)
+#	all_crater_glows.append(crater_glow__right)
+#	all_crater_glows.append(crater_glow__top)
+	
+	special_path_id_to_all_crater_glows_map[SpecialPathId.PATH_01] = crater_glow__bottom
+	special_path_id_to_all_crater_glows_map[SpecialPathId.PATH_02] = crater_glow__left
+	special_path_id_to_all_crater_glows_map[SpecialPathId.PATH_03] = crater_glow__top
+	special_path_id_to_all_crater_glows_map[SpecialPathId.PATH_04] = crater_glow__right
+	
+	for crater in special_path_id_to_all_crater_glows_map.values():
+		crater.visible = false
+
+
+func _update_visibility_of_crater_glows(arg_path_ids_used):
+	_all_crater_glows_to_affect_for_tweener.clear()
+	
+	for path_id in SpecialPathId.values():
+		if arg_path_ids_used.has(path_id):
+			_all_crater_glows_to_affect_for_tweener.append(special_path_id_to_all_crater_glows_map[path_id])
+			
+	
+	for crater in special_path_id_to_all_crater_glows_map.values():
+		if _all_crater_glows_to_affect_for_tweener.has(crater):
+			_make_crater_visible__via_tweener(crater)
+			
+		else:
+			_make_crater_invisible__via_tweener(crater)
+		
+	
+
+func _make_crater_visible__via_tweener(crater):
+	crater.visible = true
+	
+	var tweener = create_tween()
+	tweener.tween_property(crater, "modulate:a", 1.0, 0.85)
+
+
+func _make_crater_invisible__via_tweener(crater):
+	var tweener = create_tween()
+	tweener.tween_property(crater, "modulate:a", 0.0, 0.85)
+	tweener.tween_property(crater, "visible", true, 0)
+	
+
+
+
+
+##
 
 func _initialize_special_paths():
 	all_special_paths.append(special_enemy_path_01)
@@ -2559,6 +2622,8 @@ func _on_round_end__map_memories__for_special_round_tracking(_arg_stageround, is
 		var path_ids_used = _append_instructions_to_EM_interpreter__based_on_curr_round__and_get_path_ids_used()
 		_start_monitor_for_special_enemy_spawn(path_ids_used)
 		
+		_update_visibility_of_crater_glows(path_ids_used)
+		
 	elif _rounds_before_next_special_round_id == -1:  # when special round is done
 		_end_monitor_for_special_enemy_spawn()
 		
@@ -2571,7 +2636,8 @@ func _on_round_end__map_memories__for_special_round_tracking(_arg_stageround, is
 			_next_special_round_id = ""
 			_rounds_before_next_special_round_id = -1
 			
-
+		
+		_update_visibility_of_crater_glows([])
 
 
 func _configure_last_special_round_in_list():
@@ -3006,12 +3072,36 @@ func _configure_enemy_nightmare(arg_enemy):
 	arg_enemy.configure_nightmare_properties(ENEMY_NIGHTMARE__OFFSET_TO_TRIGGER_BACK_TO_START)
 	
 	arg_enemy.connect("reached_near_end_or_at_end", self, "_on_reached_near_end_or_at_end__enemy_nightmare")
-	arg_enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_killed_by_damage_with_no_more_revives__enemy_nightmare", [], CONNECT_ONESHOT)
+	#arg_enemy.connect("on_killed_by_damage_with_no_more_revives", self, "_on_killed_by_damage_with_no_more_revives__enemy_nightmare", [], CONNECT_ONESHOT)
+	arg_enemy.connect("tree_exiting", self, "_on_queue_free__enemy_nightmare", [arg_enemy])
+	arg_enemy.connect("reached_end_of_path__from_surrender", self, "_on_nightmare_reached_end_of_path__from_surrender", [])
 
+#func _on_killed_by_damage_with_no_more_revives__enemy_nightmare(damage_instance_report, arg_enemy):
+#	_place_active_nightmare_marker__using_nightmare(arg_enemy, arg_enemy.global_position, arg_enemy.offset)
+#	_create_black_particle_smoke__when_nightmare_dies(arg_enemy.get_position_added_pos_and_offset_modifiers(arg_enemy.global_position))
 
-func _on_killed_by_damage_with_no_more_revives__enemy_nightmare(damage_instance_report, arg_enemy):
+func _on_queue_free__enemy_nightmare(arg_enemy):
 	_place_active_nightmare_marker__using_nightmare(arg_enemy, arg_enemy.global_position, arg_enemy.offset)
 	_create_black_particle_smoke__when_nightmare_dies(arg_enemy.get_position_added_pos_and_offset_modifiers(arg_enemy.global_position))
+	
+	_disconnect_nightmare_marker_spawning_signals(arg_enemy)
+
+func _on_nightmare_reached_end_of_path__from_surrender(arg_enemy):
+	var offset = 0
+	var pos = arg_enemy.current_path.get_global_pos_of_offset(offset)
+	
+	
+	_place_active_nightmare_marker__using_nightmare(arg_enemy, pos, offset)
+	_create_black_particle_smoke__when_nightmare_dies(arg_enemy.get_position_added_pos_and_offset_modifiers(arg_enemy.global_position))
+	
+	_disconnect_nightmare_marker_spawning_signals(arg_enemy)
+
+
+func _disconnect_nightmare_marker_spawning_signals(enemy):
+	if enemy.is_connected("tree_exiting", self, "_on_queue_free__enemy_nightmare"):
+		enemy.disconnect("tree_exiting", self, "_on_queue_free__enemy_nightmare")
+	if enemy.is_connected("reached_end_of_path__from_surrender", self, "_on_nightmare_reached_end_of_path__from_surrender"):
+		enemy.disconnect("reached_end_of_path__from_surrender", self, "_on_nightmare_reached_end_of_path__from_surrender")
 
 
 func _place_active_nightmare_marker__using_nightmare(arg_enemy, arg_pos : Vector2, arg_offset : float):
@@ -3095,10 +3185,14 @@ func _on_nightmare_reached_fully_invis__from_fade_with_tweener(arg_params):
 			if is_instance_valid(enemy.current_path):
 				_place_active_nightmare_marker__using_nightmare(enemy, enemy.current_path.get_global_pos_of_offset(0), 0)
 			
-			if enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_killed_by_damage_with_no_more_revives__enemy_nightmare"):
-				enemy.disconnect("on_killed_by_damage_with_no_more_revives", self, "_on_killed_by_damage_with_no_more_revives__enemy_nightmare")
+			#if enemy.is_connected("on_killed_by_damage_with_no_more_revives", self, "_on_killed_by_damage_with_no_more_revives__enemy_nightmare"):
+			#	enemy.disconnect("on_killed_by_damage_with_no_more_revives", self, "_on_killed_by_damage_with_no_more_revives__enemy_nightmare")
+			
+			_disconnect_nightmare_marker_spawning_signals(enemy)
 			
 			enemy.execute_self_by(0, null, true)
+
+
 
 
 func _on_nightmare_reached_full_vis__from_unfade_with_tweener(arg_params):
@@ -3132,9 +3226,18 @@ func _retrieve_spawn_metadata_for_path(arg_path_id : int):
 
 func get_spawn_ins_for_special_round__01():
 	return [
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		SingleEnemySpawnInstruction.new(12, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
 		
 	]
+
+func get_spawn_ins_for_special_round__03():
+	return [
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
+		
+	]
+
+
 
 
 func get_spawn_ins_for_special_round__22():

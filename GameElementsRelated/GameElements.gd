@@ -282,6 +282,7 @@ func _ready():
 	#stage_round_manager.connect("round_ended", round_info_panel, "set_stageround")
 	stage_round_manager.enemy_manager = enemy_manager
 	stage_round_manager.gold_manager = gold_manager
+	stage_round_manager.game_elements = self
 	
 	map_manager.stage_round_manager = stage_round_manager
 	
@@ -303,6 +304,7 @@ func _ready():
 	
 	# Input Prompt manager
 	input_prompt_manager.selection_notif_panel = selection_notif_panel
+	input_prompt_manager.game_elements = self
 	
 	# Selection Notif panel
 	selection_notif_panel.visible = false

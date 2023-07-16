@@ -17,6 +17,9 @@ onready var auto_show_ETI__selection_panel = $VBoxContainer/ContentMargin/Scroll
 onready var show_syn_diff_mode__description_panel = $VBoxContainer/ContentMargin/ScrollContainer/VBoxContainer/HBoxContainer4/ShowSynDiffDescriptionPanel
 onready var show_syn_diff_mode__selection_panel = $VBoxContainer/ContentMargin/ScrollContainer/VBoxContainer/HBoxContainer4/ShowSynDiffModeSelectionPanel
 
+onready var surrender_prompt_mode__description_panel = $VBoxContainer/ContentMargin/ScrollContainer/VBoxContainer/HBoxContainer5/SurrenderOptionDescriptionPanel
+onready var surrender_prompt_mode__selection_panel = $VBoxContainer/ContentMargin/ScrollContainer/VBoxContainer/HBoxContainer5/SurrenderOptionModeSelectionPanel
+
 
 func _ready():
 	game_settings_manager = GameSettingsManager
@@ -33,6 +36,8 @@ func _ready():
 	# SHOW SYN DIFF
 	_initialize_show_syn_difficulty_mode__selection_panel()
 	
+	# SURRENDER PROMPT
+	_initialize_surrender_prompt_mode__selection_panel()
 	
 	# keep at bottom for consistency/programmer visibility
 	set_process_unhandled_key_input(false)
@@ -198,6 +203,46 @@ func _on_ShowSynDiffModeSelectionPanel_on_current_index_changed(arg_index):
 	game_settings_manager.show_synergy_difficulty_mode = mode_in_index
 
 
+############## SURRENDER PROMPT
+
+func _initialize_surrender_prompt_mode__selection_panel():
+	for mode_id in GameSettingsManager.surrender_prompt_option_mode_to_name.keys():
+		surrender_prompt_mode__selection_panel.set_or_add_entry(mode_id, GameSettingsManager.surrender_prompt_option_mode_to_name[mode_id])
+
+
+func _on_surrender_prompt_mode_changed(arg_new_val):
+	_update_surrender_prompt_mode_panels()
+
+func _update_surrender_prompt_mode_panels():
+	var curr_mode = GameSettingsManager.surrender_prompt_option_mode
+	
+	var descs = _get_surrender_prompt_descriptions(curr_mode)
+	surrender_prompt_mode__description_panel.descriptions = descs
+	surrender_prompt_mode__description_panel.update_display()
+	
+	surrender_prompt_mode__selection_panel.set_current_index_based_on_id(curr_mode, false)
+
+
+func _get_surrender_prompt_descriptions(arg_curr_mode):
+	var expl = GameSettingsManager.surrender_prompt_option_mode_to_explanation[arg_curr_mode]
+	
+	var base_desc = [
+		"%s:" % GameSettingsManager.surrender_prompt_option_mode_name_identifier,
+		"",
+	]
+	
+	for desc in expl:
+		base_desc.append(desc)
+	
+	return base_desc
+
+
+
+func _on_SurrenderOptionModeSelectionPanel_on_current_index_changed(arg_index):
+	var mode_in_index = surrender_prompt_mode__selection_panel.get_id_at_current_index()
+	GameSettingsManager.surrender_prompt_option_mode = mode_in_index
+
+
 #############
 
 #
@@ -211,11 +256,13 @@ func _on_visibility_changed():
 			game_settings_manager.connect("on_tower_drag_mode_changed", self, "_on_tower_drag_mode_changed", [], CONNECT_PERSIST)
 			game_settings_manager.connect("on_auto_show_extra_tower_info_mode_changed", self, "_on_auto_show_ETI_mode_changed", [], CONNECT_PERSIST)
 			game_settings_manager.connect("on_show_synergy_difficulty_mode_changed", self, "_on_show_syn_difficulty_mode_changed", [], CONNECT_PERSIST)
+			game_settings_manager.connect("on_surrender_prompt_option_mode_changed", self, "_on_surrender_prompt_mode_changed", [], CONNECT_PERSIST)
 		
 		_update_desc_mode_panels()
 		_update_tower_drag_mode_panels()
 		_update_auto_show_ETI_mode_panels()
 		_update_show_syn_difficulty_mode_panels()
+		_update_surrender_prompt_mode_panels()
 		
 	else:
 		if game_settings_manager.is_connected("on_descriptions_mode_changed", self, "_on_desc_mode_changed"):
@@ -223,6 +270,7 @@ func _on_visibility_changed():
 			game_settings_manager.disconnect("on_tower_drag_mode_changed", self, "_on_tower_drag_mode_changed")
 			game_settings_manager.disconnect("on_auto_show_extra_tower_info_mode_changed", self, "_on_auto_show_ETI_mode_changed")
 			game_settings_manager.disconnect("on_show_synergy_difficulty_mode_changed", self, "_on_show_syn_difficulty_mode_changed")
+			game_settings_manager.disconnect("on_surrender_prompt_option_mode_changed", self, "_on_surrender_prompt_mode_changed")
 
 func _unhandled_key_input(event : InputEventKey):
 	if !event.echo and event.pressed:
@@ -241,3 +289,5 @@ func _on_exit_panel():
 
 func _is_a_dialog_visible__for_main():
 	return false
+
+

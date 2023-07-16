@@ -54,6 +54,7 @@ signal on_killed_by_damage_with_no_more_revives(damage_instance_report, me)
 signal before_damage_instance_is_processed(damage_instance, me)
 
 signal reached_end_of_path(me)
+signal reached_end_of_path__from_surrender(me)
 signal on_current_health_changed(current_health)
 signal on_current_shield_changed(current_shield)
 signal on_max_health_changed(max_health)
@@ -284,6 +285,9 @@ var untargetable_clauses : ConditionalClauses
 var last_calculated_is_untargetable : bool = false
 
 
+var can_cause_player_damage : bool = true
+
+
 var all_abilities : Array = []
 
 
@@ -317,6 +321,8 @@ var _knock_up_current_acceleration_deceleration : float
 var _current_forced_offset_movement_effect : EnemyForcedPathOffsetMovementEffect 
 var _current_forced_positional_movement_effect : EnemyForcedPositionalMovementEffect
 
+
+var _is_reached_end_of_path : bool = false
 
 # anim related
 
@@ -636,7 +642,7 @@ func _process(delta):
 				_remove_effect(effect)
 			
 			if !exit_prevented:
-				call_deferred("emit_signal", "reached_end_of_path", self)
+				reached_end_of_path()
 		else:
 			if !_attempted_exit_when_prevented_by_clause_at_prev_frame:
 				_attempted_exit_when_prevented_by_clause_at_prev_frame = true
@@ -658,6 +664,20 @@ func _process(delta):
 		emit_signal("moved__from_process", has_moved_by_natural_means, _rad_angle_at_previous_frame, current_rad_angle_of_movement)
 	
 	#
+
+func reached_end_of_path():
+	if !_is_reached_end_of_path:
+		_is_reached_end_of_path = true
+		call_deferred("emit_signal", "reached_end_of_path", self)
+
+func reached_end_of_path__from_surrender():
+	if !_is_reached_end_of_path:
+		_is_reached_end_of_path = true
+		emit_signal("reached_end_of_path__from_surrender", self)
+		
+		call_deferred("emit_signal", "reached_end_of_path", self)
+
+
 
 ##
 

@@ -9,6 +9,7 @@ signal on_tower_drag_mode_changed(arg_new_val)
 signal on_tower_drag_mode_search_radius_changed(arg_new_val)
 signal on_auto_show_extra_tower_info_mode_changed(arg_new_val)
 signal on_show_synergy_difficulty_mode_changed(arg_new_val)
+signal on_surrender_prompt_option_mode_changed(arg_new_val)
 
 # DESCRIPTIONS MODE
 enum DescriptionsMode {
@@ -106,6 +107,30 @@ var show_synergy_difficulty_mode : int setget set_show_synergy_difficulty_mode
 # MAP SELECTION DEFAULT VALUES
 var map_id_to_last_chosen_mode_id_map : Dictionary
 var last_chosen_map_id = null
+
+#
+
+enum SurrenderPromptOption {
+	PROMPT = 0,
+	NO_PROMPT = 1,
+}
+const surrender_prompt_option_mode_name_identifier := "Surrender Prompt Mode"
+const surrender_prompt_option_mode_to_explanation : Dictionary = {
+	SurrenderPromptOption.PROMPT : [
+		"Prompt with a Yes or No when surrendering."
+	],
+	SurrenderPromptOption.NO_PROMPT : [
+		"No prompt when surrendering."
+	],
+}
+const surrender_prompt_option_mode_to_name : Dictionary = {
+	SurrenderPromptOption.PROMPT : "Prompt",
+	SurrenderPromptOption.NO_PROMPT : "No Prompt"
+}
+const default_surrender_prompt_option_mode : int = SurrenderPromptOption.PROMPT
+var surrender_prompt_option_mode : int setget set_surrender_prompt_option_mode
+
+
 
 #
 
@@ -288,6 +313,13 @@ func set_show_synergy_difficulty_mode(arg_mode):
 	emit_signal("on_show_synergy_difficulty_mode_changed", show_synergy_difficulty_mode)
 
 
+########### SURRENDER RELATED
+
+func set_surrender_prompt_option_mode(arg_mode):
+	surrender_prompt_option_mode = arg_mode
+	
+	emit_signal("on_surrender_prompt_option_mode_changed", arg_mode)
+
 
 #### SAVE RELATED for Settings & Controls #### 
 #### KEEP AT BOTTOM #####################
@@ -299,6 +331,7 @@ func _initialize_settings__called_from_ready():
 		set_tower_drag_mode(default_tower_drag_mode)
 		set_auto_show_extra_tower_info_mode(default_auto_show_extra_tower_info_mode)
 		set_show_synergy_difficulty_mode(default_show_synergy_difficulty_mode)
+		set_surrender_prompt_option_mode(default_surrender_prompt_option_mode)
 
 # called by game save manager
 func _get_save_dict_for_game_settings():
@@ -307,7 +340,9 @@ func _get_save_dict_for_game_settings():
 		description_mode_name_identifier : descriptions_mode,
 		tower_drag_mode_name_identifier : tower_drag_mode,
 		auto_show_extra_tower_info_mode_name_identifier : auto_show_extra_tower_info_mode,
-		show_synergy_difficulty_mode_name_identifier : show_synergy_difficulty_mode
+		show_synergy_difficulty_mode_name_identifier : show_synergy_difficulty_mode,
+		surrender_prompt_option_mode_name_identifier : surrender_prompt_option_mode,
+		
 	}
 	
 	return save_dict
@@ -340,3 +375,11 @@ func _load_game_settings(arg_file : File):
 			set_show_synergy_difficulty_mode(data[show_synergy_difficulty_mode_name_identifier])
 		else:
 			set_show_synergy_difficulty_mode(default_show_synergy_difficulty_mode)
+		
+		# SURRENDER PROMPT
+		if data.has(surrender_prompt_option_mode_name_identifier):
+			set_surrender_prompt_option_mode(data[surrender_prompt_option_mode_name_identifier])
+		else:
+			set_surrender_prompt_option_mode(default_surrender_prompt_option_mode)
+
+

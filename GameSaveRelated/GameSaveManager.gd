@@ -21,6 +21,8 @@ const game_controls_action_name_to_ignore_save : Array = [
 	"ui_page_down",
 	"ui_home",
 	"ui_end",
+	
+	"custom_ui_decline",
 ]
 
 

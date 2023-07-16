@@ -173,6 +173,9 @@ func hide_control(control : Control, update_vis : bool = true, can_advance_queue
 		
 		#visible = false
 		
+		if control.has_method("control_set_to_hide_by_whole_screen_gui"):
+			control.call("control_set_to_hide_by_whole_screen_gui")
+		
 		if current_control_is_to_hide and can_advance_queue_reservation_line:
 			advanced_queue.complete_reservation_status_of_current()
 			#advanced_queue.entertain_next_reservation_in_line()
@@ -219,6 +222,11 @@ func get_control_with_script(script : Reference) -> Control:
 			return child
 	
 	return null
+
+
+
+func is_currently_showing_control_equal_to(arg_control):
+	return current_showing_control == arg_control
 
 #
 

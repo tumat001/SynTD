@@ -16,6 +16,8 @@ const EnemyManager = preload("res://GameElementsRelated/EnemyManager.gd")
 
 const EnemyConstants = preload("res://EnemyRelated/EnemyConstants.gd")
 
+const GenStats_SmallButton = preload("res://GameHUDRelated/StatsPanel/SmallButtonRelated/GenStats_SmallButton.gd")
+
 
 
 signal stage_rounds_set(arg_stagerounds)
@@ -59,6 +61,7 @@ var round_started : bool
 
 var enemy_manager : EnemyManager setget _set_enemy_manager
 var gold_manager : GoldManager
+var game_elements setget set_game_elements
 
 # 
 
@@ -92,19 +95,46 @@ var _block_end_round_conditional_clauses : ConditionalClauses
 var last_calculated_block_end_of_round : bool
 
 
+
+enum BlockSurrenderableRoundClauseIds {
+	GAME_NOT_STARTED = 0,
+	ROUND_NOT_STARTED = 1,
+	ENEMIES_NOT_DONE_SPAWNING = 2,
+	NO_ENEMIES_LEFT = 3,
+	
+	GAME_ENDED = 4,
+}
+var block_surrenderable_round_conditional_clauses : ConditionalClauses
+var last_calculated_is_round_surrenderable : bool
+
+var GSSB__surrender : GenStats_SmallButton
+
+
+var _is_in_prompt_for_surrender : bool
+
+const SURRENDER_PROMPT_DESCRIPTION = [
+	["Do you want to surrender this round?", []],
+]
+
 #
 
 func _init():
 	block_start_round_conditional_clauses = ConditionalClauses.new()
 	block_start_round_conditional_clauses.connect("clause_inserted", self, "_on_block_start_round_conditional_clauses_updated", [], CONNECT_PERSIST)
 	block_start_round_conditional_clauses.connect("clause_removed", self, "_on_block_start_round_conditional_clauses_updated", [], CONNECT_PERSIST)
-	
 	_update_last_calculated_block_start_round()
 	
-	
+	#
 	_block_end_round_conditional_clauses = ConditionalClauses.new()
-	
 	_update_last_calculated_block_end_round(false)
+	
+	#
+	block_surrenderable_round_conditional_clauses = ConditionalClauses.new()
+	block_surrenderable_round_conditional_clauses.connect("clause_inserted", self, "_on_block_surrenderable_round_conditional_clauses_updated", [], CONNECT_PERSIST)
+	block_surrenderable_round_conditional_clauses.connect("clause_removed", self, "_on_block_surrenderable_round_conditional_clauses_updated", [], CONNECT_PERSIST)
+	#_update_is_round_surrenderable()
+	block_surrenderable_round_conditional_clauses.attempt_insert_clause(BlockSurrenderableRoundClauseIds.GAME_NOT_STARTED)
+	
 
 #
 
@@ -151,6 +181,16 @@ func _set_enemy_manager(manager : EnemyManager):
 	enemy_manager.connect("no_enemies_left", self, "_on_no_enemies_left", [], CONNECT_DEFERRED | CONNECT_PERSIST)
 	enemy_manager.connect("enemy_escaped", self, "_life_lost_from_enemy", [], CONNECT_PERSIST)
 
+func set_game_elements(arg_elements):
+	game_elements = arg_elements
+	
+	game_elements.connect("before_game_start", self, "_on_game_ele_before_game_start", [], CONNECT_ONESHOT)
+
+
+func _on_game_ele_before_game_start():
+	_initialize_surrenderable_configs_and_props()
+
+
 
 # Round start related
 
@@ -183,6 +223,8 @@ func _after_round_start():
 
 func end_round(from_game_start : bool = false):
 	round_started = false
+	
+	cancel_surrender_prompt__if_currently_in_prompt()
 	
 	var is_end_of_stageround = _before_round_end(from_game_start)
 	if !is_end_of_stageround:
@@ -352,6 +394,99 @@ func _update_last_calculated_block_end_round(attempt_end_round : bool):
 	if !last_calculated_block_end_of_round and attempt_end_round:
 		end_round()
 
+
+#
+
+func _on_block_surrenderable_round_conditional_clauses_updated(_arg_val):
+	_update_is_round_surrenderable()
+
+func _update_is_round_surrenderable():
+	var old_val = last_calculated_is_round_surrenderable
+	last_calculated_is_round_surrenderable = block_surrenderable_round_conditional_clauses.is_passed
+	
+	if is_instance_valid(GSSB__surrender) and (old_val != last_calculated_is_round_surrenderable):
+		GSSB__surrender.update_is_visible_based_on_conditions()
+
+
+func _initialize_surrenderable_configs_and_props():
+	var surrender_button_constr_param := GenStats_SmallButton.ConstructorParams.new()
+	surrender_button_constr_param.show_descs = false
+	
+	surrender_button_constr_param.image_normal = preload("res://GameHUDRelated/StatsPanel/Assets/GSSB_SmallButtonAssets/SurrenderButton_Normal.png")
+	surrender_button_constr_param.image_hovered = preload("res://GameHUDRelated/StatsPanel/Assets/GSSB_SmallButtonAssets/SurrenderButton_Highlighted.png")
+	
+	surrender_button_constr_param.condition_visible__func_source = self
+	surrender_button_constr_param.condition_visible__func_name = "_is_GSSB_visibile__surrender_button"
+	#surrender_button_constr_param.condition_visible__func_param
+	
+	surrender_button_constr_param.on_click__func_source = self
+	surrender_button_constr_param.on_click__func_name = "_on_click__surrender_button"
+	
+	GSSB__surrender = game_elements.general_stats_panel.construct_small_button_using_cons_params(surrender_button_constr_param)
+	
+	#
+	
+	game_elements.connect("after_all_game_init_finished", self, "_on_GE_after_all_game_init_finished", [], CONNECT_ONESHOT)
+	connect("round_ended_game_start_aware", self, "_on_round_ended__visiblity_of_surrender_button__game_start_aware", [], CONNECT_PERSIST)
+	connect("round_started", self, "_on_round_started__visibility_of_surrender_button", [], CONNECT_PERSIST)
+	connect("end_of_stagerounds", self, "_on_end_of_stageround__for_vis_of_surrender_button", [], CONNECT_PERSIST)
+	game_elements.enemy_manager.connect("interpreter_done_spawning__no_ins_left", self, "_on_enemy_manager_interpreter_done_spawning__no_ins_left", [], CONNECT_PERSIST)
+	game_elements.enemy_manager.connect("no_enemies_left", self, "_on_enemy_manager__no_enemies_left", [], CONNECT_PERSIST)
+
+func _is_GSSB_visibile__surrender_button(arg_params):
+	return last_calculated_is_round_surrenderable
+
+
+
+func _on_GE_after_all_game_init_finished():
+	block_surrenderable_round_conditional_clauses.remove_clause(BlockSurrenderableRoundClauseIds.GAME_NOT_STARTED)
+
+func _on_round_ended__visiblity_of_surrender_button__game_start_aware(current_stageround, is_game_start):
+	block_surrenderable_round_conditional_clauses.attempt_insert_clause(BlockSurrenderableRoundClauseIds.ROUND_NOT_STARTED)
+
+func _on_round_started__visibility_of_surrender_button(arg_stageround):
+	block_surrenderable_round_conditional_clauses.attempt_insert_clause(BlockSurrenderableRoundClauseIds.ENEMIES_NOT_DONE_SPAWNING)
+	block_surrenderable_round_conditional_clauses.remove_clause(BlockSurrenderableRoundClauseIds.ROUND_NOT_STARTED)
+	block_surrenderable_round_conditional_clauses.remove_clause(BlockSurrenderableRoundClauseIds.NO_ENEMIES_LEFT)
+
+func _on_enemy_manager_interpreter_done_spawning__no_ins_left():
+	block_surrenderable_round_conditional_clauses.remove_clause(BlockSurrenderableRoundClauseIds.ENEMIES_NOT_DONE_SPAWNING)
+	
+
+func _on_end_of_stageround__for_vis_of_surrender_button():
+	block_surrenderable_round_conditional_clauses.attempt_insert_clause(BlockSurrenderableRoundClauseIds.GAME_ENDED)
+	
+
+func _on_enemy_manager__no_enemies_left():
+	block_surrenderable_round_conditional_clauses.attempt_insert_clause(BlockSurrenderableRoundClauseIds.NO_ENEMIES_LEFT)
+	
+	cancel_surrender_prompt__if_currently_in_prompt()
+
+
+
+func _on_click__surrender_button():
+	if GameSettingsManager.surrender_prompt_option_mode == GameSettingsManager.SurrenderPromptOption.PROMPT:
+		_is_in_prompt_for_surrender = true
+		game_elements.input_prompt_manager.prompt_yes_no_dialog(self, "_on_surrender_prompt__yes_no_dialog_prompt_canceled", SURRENDER_PROMPT_DESCRIPTION, self, "_on_surrender_prompt__yes_selected", "_on_surrender_prompt__no_selected", true)
+	else:
+		enemy_manager.surrender_round__make_all_enemies_escape()
+	
+
+
+func _on_surrender_prompt__yes_no_dialog_prompt_canceled():
+	_is_in_prompt_for_surrender = false
+
+func _on_surrender_prompt__yes_selected():
+	enemy_manager.surrender_round__make_all_enemies_escape()
+	_is_in_prompt_for_surrender = false
+
+func _on_surrender_prompt__no_selected():
+	_is_in_prompt_for_surrender = false
+
+
+func cancel_surrender_prompt__if_currently_in_prompt():
+	if _is_in_prompt_for_surrender:
+		game_elements.input_prompt_manager.cancel_selection()
 
 
 #######

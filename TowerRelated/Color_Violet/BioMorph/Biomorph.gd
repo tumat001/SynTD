@@ -50,10 +50,10 @@ var drain_ability_activation_clause : ConditionalClauses
 
 #
 
-const laser_base_dmg_amount : float = 0.35
+const laser_base_dmg_amount : float = 0.5
 const laser_base_dmg_scale : float = 0.25
 
-var laser_duration : float = 30.0
+var laser_duration : float = 40.0
 var laser_timer : TimerForTower
 
 const laser_deactivated_can_be_commanded_clause : int = -10
