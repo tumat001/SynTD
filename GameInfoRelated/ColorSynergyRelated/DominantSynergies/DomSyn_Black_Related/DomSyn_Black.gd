@@ -130,23 +130,23 @@ enum EntityType {
 	ENEMY = 2,
 }
 
-const capacitor_ability_cast_count_requirement : int = 25
+const capacitor_ability_cast_count_requirement : int = 22
 const capacitor_buff_duration_tier_2 : float = 90.0
 const capacitor_buff_duration_tier_1 : float = 90.0 # no desc is made. if this should be different, then change descs
 
-const capacitor_ap_buff_amount_tier_2 : float = 0.75
-const capacitor_ap_buff_amount_tier_1 : float = 0.75
+const capacitor_ap_buff_amount_tier_2 : float = 1.25
+const capacitor_ap_buff_amount_tier_1 : float = 1.25
 
-const capacitor_cdr_buff_amount_tier_2 : float = 25.0
-const capacitor_cdr_buff_amount_tier_1 : float = 25.0
+const capacitor_cdr_buff_amount_tier_2 : float = 50.0
+const capacitor_cdr_buff_amount_tier_1 : float = 50.0
 
 const capacitor_nova_ongoing_cooldown_percent_type : int = PercentType.CURRENT
-const capacitor_ongoing_cooldown_percent_reduction_tier_2 : float = 0.25
-const capacitor_ongoing_cooldown_percent_reduction_tier_1 : float = 0.25
+const capacitor_ongoing_cooldown_percent_reduction_tier_2 : float = 0.80
+const capacitor_ongoing_cooldown_percent_reduction_tier_1 : float = 0.80
 
 
 const capacitor_nova_ramp_up_time : float = 3.0
-const capacitor_nova_stun_time : float = 3.0
+const capacitor_nova_stun_time : float = 5.0
 const capacitor_nova_stop_enemy_spawn_time : float = capacitor_nova_stun_time
 
 var _capacitor_nova_created_in_round : bool
@@ -170,10 +170,10 @@ const capacitor_nova_small_particle_spawn_duration : float = capacitor_nova_ramp
 
 const capacitor_lightning_delay_after_nova : float = capacitor_nova_stun_time
 
-const capacitor_lightning_count_tier_1 : int = 8
+const capacitor_lightning_count_tier_1 : int = 10
 const capacitor_lightning_delay_per_strke : float = 1.0
 
-const capacitor_lightning_tower_ap_amount : float = 0.75
+const capacitor_lightning_tower_ap_amount : float = 1.25
 const capacitor_lightning_ongoing_cooldown_percent_type : int = PercentType.CURRENT
 const capacitor_lightning_ongoing_cd_reduction : float = 1.0
 

@@ -222,7 +222,7 @@ func _init():
 	)
 	
 	var memories_id = MapsId_Memories
-	add_map(memories_id, "Rift",
+	add_map(memories_id, "Memories",
 			"res://MapsRelated/MapList/Map_Memories/Map_Memories.tscn",
 			self,
 			"_construct_map_type_info__map_memories",
@@ -332,13 +332,12 @@ func _construct_map_type_info__map_rift(info : MapTypeInformation):
 	info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
 	info.map_tier = 3
 	return info
-	
 
 func _construct_map_type_info__map_memories(info : MapTypeInformation):
 	info.map_name = "Memories"
-	info.map_display_texture #= todo preload("res://MapsRelated/MapList/Map_Rift/Map_Rift_PreviewImage.png")
-	info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_NORMAL]
-	info.map_tier = 6
+	info.map_display_texture = preload("res://MapsRelated/MapList/Map_Memories/Map_Memories_ImagePreview.png")
+	info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
+	info.map_tier = 5
 	return info
 	
 

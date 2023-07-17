@@ -33,6 +33,8 @@ func _apply_game_modifier_to_elements(arg_elements : GameElements):
 	
 	game_elements.connect("before_game_start", self, "_on_game_elements_before_game_start", [], CONNECT_ONESHOT)
 	connect("on_current_transcript_index_changed", self, "_on_current_transcript_index_changed")
+	
+	
 
 func _unapply_game_modifier_from_elements(arg_elements : GameElements):
 	._unapply_game_modifier_from_elements(arg_elements)
@@ -41,6 +43,11 @@ func _unapply_game_modifier_from_elements(arg_elements : GameElements):
 #
 
 func _on_game_elements_before_game_start():
+	
+	game_elements.tower_empty_slot_notif_panel.block_show_self_conditional_clauses.attempt_insert_clause(game_elements.tower_empty_slot_notif_panel.BlockShowSelfClauseIds.TUTORIAL)
+	
+	#
+	
 	var tier_2_odds_at_level_3 = get_tower_tier_odds_at_player_level(2, 3)
 	var tier_1_odds_at_level_3 = get_tower_tier_odds_at_player_level(1, 3)
 	

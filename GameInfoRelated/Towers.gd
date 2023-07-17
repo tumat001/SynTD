@@ -692,7 +692,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		]
 		
 		info.tower_simple_descriptions = [
-			"Directs a constant energy beam at a single target. However, continuously firing incurrs a cooldown.",
+			"Directs a constant energy beam at a single target. However, continuously firing incurs a cooldown.",
 		]
 		
 		# Ingredient related

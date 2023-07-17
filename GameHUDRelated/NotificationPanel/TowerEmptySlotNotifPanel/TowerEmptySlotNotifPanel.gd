@@ -1,6 +1,9 @@
 extends MarginContainer
 
 const TowerManager = preload("res://GameElementsRelated/TowerManager.gd")
+const ConditionalClauses = preload("res://MiscRelated/ClauseRelated/ConditionalClauses.gd")
+
+
 
 const tower_being_dragged_mod : Color = Color(1, 1, 1, 0.0)
 const mouse_inside_playable_area_mod_a : float = 0.5
@@ -15,6 +18,19 @@ var game_elements
 
 onready var tower_limit_label = $NotifContainer/VBoxContainer/ContentPanel/LabelMarginer/VBoxContainer/TowerLimitLabel
 
+
+#
+
+enum BlockShowSelfClauseIds {
+	TUTORIAL = 0
+}
+var block_show_self_conditional_clauses : ConditionalClauses
+var last_calculated_block_show_self : bool
+
+
+var _attempted_start_show : bool
+var _attempted_start_show_params
+
 #
 
 var _mod_tween : SceneTreeTween
@@ -24,6 +40,26 @@ var _is_tower_dragging : bool
 
 #
 
+func _init():
+	block_show_self_conditional_clauses = ConditionalClauses.new()
+	block_show_self_conditional_clauses.connect("clause_inserted", self, "_on_block_show_self_conditional_clauses_updated", [], CONNECT_PERSIST)
+	block_show_self_conditional_clauses.connect("clause_removed", self, "_on_block_show_self_conditional_clauses_updated", [], CONNECT_PERSIST)
+	_update_last_calculated_block_show_self()
+
+func _on_block_show_self_conditional_clauses_updated(arg_clause_id):
+	_update_last_calculated_block_show_self()
+
+func _update_last_calculated_block_show_self():
+	last_calculated_block_show_self = !block_show_self_conditional_clauses.is_passed
+	
+	if _attempted_start_show:
+		if !last_calculated_block_show_self:
+			_start_show(_attempted_start_show_params[0], _attempted_start_show_params[1])
+		
+	elif visible and last_calculated_block_show_self:
+		_end_show()
+
+#
 
 func _ready():
 	modulate = normal_vis_mod
@@ -97,16 +133,22 @@ func _tower_released(tower):
 ##############
 
 func _start_show(curr_slots_taken, max_limit):
-	visible = true
-	tower_limit_label.text = _get_display_string(curr_slots_taken, max_limit)
-	
-	set_process(true)
+	if !last_calculated_block_show_self:
+		visible = true
+		tower_limit_label.text = _get_display_string(curr_slots_taken, max_limit)
+		
+		set_process(true)
+	else:
+		_attempted_start_show = true
+		_attempted_start_show_params = [curr_slots_taken, max_limit]
+
 
 func _end_show():
 	visible = false
 	
 	set_process(false)
-
+	
+	_attempted_start_show = false
 
 
 func _process(delta):

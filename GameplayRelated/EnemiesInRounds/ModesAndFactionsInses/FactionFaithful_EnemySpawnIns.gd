@@ -1535,9 +1535,10 @@ func _get_instructions_for_10_2__sv_1():
 		MultipleEnemySpawnInstruction.new(0, 7, 0.4, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(0.2, 7, 0.4, EnemyConstants.Enemies.PROVIDENCE),
 		
+		MultipleEnemySpawnInstruction.new(9, 3, 3, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(6, 25, 0.4, EnemyConstants.Enemies.SEER),
 		
-		MultipleEnemySpawnInstruction.new(14, 6, 5, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(14, 8, 4, EnemyConstants.Enemies.PROVIDENCE),
 		
 		
 	]
@@ -1547,9 +1548,10 @@ func _get_instructions_for_10_2__sv_2():
 		MultipleEnemySpawnInstruction.new(0, 8, 0.4, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(0.2, 7, 0.4, EnemyConstants.Enemies.PROVIDENCE),
 		
+		MultipleEnemySpawnInstruction.new(9, 3, 3, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(6, 25, 0.4, EnemyConstants.Enemies.SEER),
 		
-		MultipleEnemySpawnInstruction.new(14, 7, 5, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(14, 9, 4, EnemyConstants.Enemies.PROVIDENCE),
 		
 	]
 
@@ -1558,9 +1560,10 @@ func _get_instructions_for_10_2__sv_3():
 		MultipleEnemySpawnInstruction.new(0, 8, 0.4, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(0.2, 8, 0.4, EnemyConstants.Enemies.PROVIDENCE),
 		
+		MultipleEnemySpawnInstruction.new(9, 3, 3, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(6, 27, 0.4, EnemyConstants.Enemies.SEER),
 		
-		MultipleEnemySpawnInstruction.new(14, 7, 5, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(14, 9, 4, EnemyConstants.Enemies.PROVIDENCE),
 		
 	]
 
@@ -1569,10 +1572,10 @@ func _get_instructions_for_10_2__sv_4():
 		MultipleEnemySpawnInstruction.new(0, 8, 0.4, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(0.2, 8, 0.4, EnemyConstants.Enemies.PROVIDENCE),
 		
-		MultipleEnemySpawnInstruction.new(9, 2, 3, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(9, 5, 3, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(6, 27, 0.4, EnemyConstants.Enemies.SEER),
 		
-		MultipleEnemySpawnInstruction.new(14, 7, 5, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(14, 9, 4, EnemyConstants.Enemies.PROVIDENCE),
 		
 	]
 
@@ -1581,10 +1584,10 @@ func _get_instructions_for_10_2__sv_5():
 		MultipleEnemySpawnInstruction.new(0, 8, 0.4, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(0.2, 8, 0.4, EnemyConstants.Enemies.PROVIDENCE),
 		
-		MultipleEnemySpawnInstruction.new(9, 4, 3, EnemyConstants.Enemies.DVARAPALA),
+		MultipleEnemySpawnInstruction.new(9, 8, 3, EnemyConstants.Enemies.DVARAPALA),
 		MultipleEnemySpawnInstruction.new(6, 27, 0.4, EnemyConstants.Enemies.SEER),
 		
-		MultipleEnemySpawnInstruction.new(14, 7, 5, EnemyConstants.Enemies.PROVIDENCE),
+		MultipleEnemySpawnInstruction.new(14, 9, 4, EnemyConstants.Enemies.PROVIDENCE),
 		
 	]
 

@@ -42,6 +42,9 @@ func _unapply_game_modifier_from_elements(arg_elements : GameElements):
 #
 
 func _on_game_elements_before_game_start():
+	game_elements.tower_empty_slot_notif_panel.block_show_self_conditional_clauses.attempt_insert_clause(game_elements.tower_empty_slot_notif_panel.BlockShowSelfClauseIds.TUTORIAL)
+	
+	
 	var plain_fragment__Ingredient_Effect = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "Ingredient Effect")
 	var plain_fragment__Ingredient_Effects = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "Ingredient Effects")
 	var plain_fragment__ingredient_effects = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredient effects")
@@ -208,6 +211,7 @@ func _on_current_transcript_index_changed(arg_index, arg_msg):
 		listen_for_tower_with_id__bought__then_call_func(Towers.REBOUND, "_on_rebound_bought__29", self)
 		
 	elif arg_index == 35:
+		
 		_on_end_of_transcript()
 
 #
@@ -283,8 +287,9 @@ func _on_rebound_bought__29(arg_tower):
 
 func _on_end_of_transcript():
 	#hide_current_transcript_message()
+	game_elements.tower_empty_slot_notif_panel.block_show_self_conditional_clauses.remove_clause(game_elements.tower_empty_slot_notif_panel.BlockShowSelfClauseIds.TUTORIAL)
 	
-	add_gold_amount(30)
+	add_gold_amount(80)
 	set_can_refresh_shop__panel_based(true)
 	for tower in _all_towers:
 		if is_instance_valid(tower):

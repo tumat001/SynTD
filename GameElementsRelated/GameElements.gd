@@ -156,9 +156,8 @@ func _ready():
 	# TEST HERE
 	#game_mode_id = StoreOfGameMode.Mode.STANDARD_EASY
 	
-	#todo
-	map_id = StoreOfMaps.MapsId_Memories
-	#map_id = StoreOfMaps.MapsId_Rift
+	
+	#map_id = StoreOfMaps.MapsId_Memories
 	
 	#
 	

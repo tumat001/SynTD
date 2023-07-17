@@ -22,10 +22,12 @@ const bonus_effect_duration : float = 6.0
 const base_bonus_effect_cooldown : float = 15.0
 
 
+# if you want to make this pact offerable in a map, then add it here,
 var stun_duration_after_buff_per_map : Dictionary = {
 	StoreOfMaps.MapsId_Ridged : 0.85,
 	StoreOfMaps.MapsId_Mesa : 1.5,
 	StoreOfMaps.MapsId_Enchant : 0.85,
+	StoreOfMaps.MapsId_Memories : 0.7,
 }
 
 
@@ -78,7 +80,7 @@ func _first_time_initialize():
 	
 	
 	bad_descriptions = [
-		["After Sighted's buff expires, towers are |0| for %s seconds." % [_current_stun_duration_after_buff], [plain_fragment__stunned]]
+		["After Sighted's buff expires, towers are |0| for %s seconds (duration varies per map)." % [_current_stun_duration_after_buff], [plain_fragment__stunned]]
 	]
 	
 	emit_signal("on_description_changed")

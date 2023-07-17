@@ -18,7 +18,7 @@
 
 [sub_resource type="Curve2D" id=6]
 _data = {
-"points": PoolVector2Array( 0, 0, 0, 0, 480.334, 385.939, 0, 0, 0, 0, 516.657, 369.699, 0, 0, 0, 0, 529.338, 355.683, 0, 0, 0, 0, 523.999, 328.319, 0, 0, 0, 0, 487.958, 310.298, 0, 0, 0, 0, 461.894, 310.496, 0, 0, 0, 0, 428.558, 316.973, 0, 0, 0, 0, 376.349, 345.115, 0, 0, 0, 0, 338.05, 339.483, 0, 0, 0, 0, 315.764, 321.645, 0, 0, 0, 0, 303.75, 288.274, 0, 0, 0, 0, 304.806, 257.847, 0, 0, 0, 0, 319.101, 233.545, 0, 0, 0, 0, 359.464, 225.893, 0, 0, 0, 0, 367.873, 213.7, 0, 0, 0, 0, 355.26, 194.359, 0, 0, 0, 0, 306.067, 180.905, 0, 0, 0, 0, 245.102, 189.734, 0, 0, 0, 0, 211.467, 222.95, 0, 0, 0, 0, 191.285, 272.983, 0, 0, 0, 0, 173.626, 328.482, 0, 0, 0, 0, 155.967, 350.345, 0, 0, 0, 0, 142.934, 352.448, 0, 0, 0, 0, 131.161, 349.925, 0, 0, 0, 0, 119.809, 335.209, 0, 0, 0, 0, 115.184, 291.903, 0, 0, 0, 0, 129.479, 209.495, 0, 0, 0, 0, 121.491, 156.939, 0, 0, 0, 0, 111.82, 93.4514, 0, 0, 0, 0, 116.445, 69.4859, 0, 0, 0, 0, 123.172, 60.236, 0, 0, 0, 0, 137.047, 54.3498, 0, 0, 0, 0, 162.274, 53.0884, 0, 0, 0, 0, 221.978, 62.7587, 0, 0, 0, 0, 315.738, 78.3153, 0, 0, 0, 0, 407.816, 110.69, 0, 0, 0, 0, 500.735, 138.019, 0, 0, 0, 0, 509.564, 138.439, 0, 0, 0, 0, 556.654, 134.655, 0, 0, 0, 0, 590.711, 120.36, 0, 0, 0, 0, 616.779, 95.9741, 0, 0, 0, 0, 644.528, 81.2584, 0, 0, 0, 0, 660.926, 60.6565, 0, 0, 0, 0, 689.516, 53.5089, 0, 0, 0, 0, 701.709, 63.1792, 0, 0, 0, 0, 704.232, 91.3492, 0, 0, 0, 0, 683.209, 148.11, 0, 0, 0, 0, 660.926, 173.337, 0, 0, 0, 0, 655.88, 194.779, 0, 0, 0, 0, 671.016, 228.836, 0, 0, 0, 0, 665.551, 267.097, 0, 0, 0, 0, 644.108, 291.062, 0, 0, 0, 0, 632.756, 319.232, 0, 0, 0, 0, 641.585, 333.527, 0, 0, 0, 0, 665.13, 346.982, 0, 0, 0, 0, 722.311, 361.277, 0, 0, 0, 0, 778.651, 358.754, 0, 0, 0, 0, 814.389, 347.823, 0, 0, 0, 0, 824.725, 318.375, 0, 0, 0, 0, 828.505, 270.498, 0, 0, 0, 0, 810.833, 234, 0, 0, 0, 0, 775.333, 198, 0, 0, 0, 0, 761.729, 167.185, 0, 0, 0, 0, 765.333, 130, 0, 0, 0, 0, 778.108, 94.1091, 0, 0, 0, 0, 829.765, 63.871, 0, 0, 0, 0, 846.275, 60.2999 )
+"points": PoolVector2Array( 0, 0, 0, 0, 480.334, 385.939, 0, 0, 0, 0, 516.657, 369.699, 0, 0, 0, 0, 529.338, 355.683, 0, 0, 0, 0, 523.999, 328.319, 0, 0, 0, 0, 487.958, 310.298, 0, 0, 0, 0, 461.894, 310.496, 0, 0, 0, 0, 428.558, 316.973, 0, 0, 0, 0, 376.349, 345.115, 0, 0, 0, 0, 338.05, 339.483, 0, 0, 0, 0, 315.764, 321.645, 0, 0, 0, 0, 303.75, 288.274, 0, 0, 0, 0, 304.806, 257.847, 0, 0, 0, 0, 319.101, 233.545, 0, 0, 0, 0, 359.464, 225.893, 0, 0, 0, 0, 367.873, 213.7, 0, 0, 0, 0, 355.26, 194.359, 0, 0, 0, 0, 306.067, 180.905, 0, 0, 0, 0, 245.102, 189.734, 0, 0, 0, 0, 211.467, 222.95, 0, 0, 0, 0, 186.392, 309.772, 0, 0, 0, 0, 173.626, 328.482, 0, 0, 0, 0, 155.967, 350.345, 0, 0, 0, 0, 142.934, 352.448, 0, 0, 0, 0, 131.161, 349.925, 0, 0, 0, 0, 119.809, 335.209, 0, 0, 0, 0, 115.184, 291.903, 0, 0, 0, 0, 119.287, 247.762, 0, 0, 0, 0, 129.479, 209.495, 0, 0, 0, 0, 121.491, 156.939, 0, 0, 0, 0, 111.82, 93.4514, 0, 0, 0, 0, 116.445, 69.4859, 0, 0, 0, 0, 123.172, 60.236, 0, 0, 0, 0, 137.047, 54.3498, 0, 0, 0, 0, 162.274, 53.0884, 0, 0, 0, 0, 221.978, 62.7587, 0, 0, 0, 0, 315.738, 78.3153, 0, 0, 0, 0, 407.816, 110.69, 0, 0, 0, 0, 500.735, 138.019, 0, 0, 0, 0, 509.564, 138.439, 0, 0, 0, 0, 556.654, 134.655, 0, 0, 0, 0, 590.711, 120.36, 0, 0, 0, 0, 616.779, 95.9741, 0, 0, 0, 0, 644.528, 81.2584, 0, 0, 0, 0, 660.926, 60.6565, 0, 0, 0, 0, 689.516, 53.5089, 0, 0, 0, 0, 701.709, 63.1792, 0, 0, 0, 0, 704.232, 91.3492, 0, 0, 0, 0, 683.209, 148.11, 0, 0, 0, 0, 660.926, 173.337, 0, 0, 0, 0, 655.88, 194.779, 0, 0, 0, 0, 671.016, 228.836, 0, 0, 0, 0, 665.551, 267.097, 0, 0, 0, 0, 644.108, 291.062, 0, 0, 0, 0, 632.756, 319.232, 0, 0, 0, 0, 641.585, 333.527, 0, 0, 0, 0, 665.13, 346.982, 0, 0, 0, 0, 722.311, 361.277, 0, 0, 0, 0, 778.651, 358.754, 0, 0, 0, 0, 814.389, 347.823, 0, 0, 0, 0, 824.725, 318.375, 0, 0, 0, 0, 828.505, 270.498, 0, 0, 0, 0, 810.833, 234, 0, 0, 0, 0, 775.333, 198, 0, 0, 0, 0, 761.729, 167.185, 0, 0, 0, 0, 765.333, 130, 0, 0, 0, 0, 778.108, 94.1091, 0, 0, 0, 0, 829.765, 63.871, 0, 0, 0, 0, 846.275, 60.2999 )
 }
 
 [sub_resource type="Curve2D" id=2]
@@ -107,7 +107,7 @@ current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
 [node name="InMapAreaPlacable05" parent="InMapPlacables" index="4" instance=ExtResource( 7 )]
-position = Vector2( 219.713, 333.67 )
+position = Vector2( 220.713, 333.67 )
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
@@ -118,130 +118,124 @@ current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable07" parent="InMapPlacables" index="6" instance=ExtResource( 7 )]
-position = Vector2( 174.656, 182.164 )
+[node name="InMapAreaPlacable08" parent="InMapPlacables" index="6" instance=ExtResource( 7 )]
+position = Vector2( 169.932, 96.491 )
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable08" parent="InMapPlacables" index="7" instance=ExtResource( 7 )]
-position = Vector2( 163.391, 97.6802 )
+[node name="InMapAreaPlacable09" parent="InMapPlacables" index="7" instance=ExtResource( 7 )]
+position = Vector2( 243.526, 101.498 )
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable09" parent="InMapPlacables" index="8" instance=ExtResource( 7 )]
-position = Vector2( 240.553, 103.876 )
+[node name="InMapAreaPlacable10" parent="InMapPlacables" index="8" instance=ExtResource( 7 )]
+position = Vector2( 244.307, 151.124 )
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable10" parent="InMapPlacables" index="9" instance=ExtResource( 7 )]
-position = Vector2( 247.875, 152.313 )
-current_glowing_texture = ExtResource( 5 )
-current_normal_texture = ExtResource( 3 )
-current_hidden_texture = ExtResource( 4 )
-
-[node name="InMapAreaPlacable11" parent="InMapPlacables" index="10" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable11" parent="InMapPlacables" index="9" instance=ExtResource( 7 )]
 position = Vector2( 318.277, 116.83 )
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable12" parent="InMapPlacables" index="11" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable12" parent="InMapPlacables" index="10" instance=ExtResource( 7 )]
 position = Vector2( 363.898, 159.071 )
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable13" parent="InMapPlacables" index="12" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable13" parent="InMapPlacables" index="11" instance=ExtResource( 7 )]
 position = Vector2( 358.266, 282.417 )
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable14" parent="InMapPlacables" index="13" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable14" parent="InMapPlacables" index="12" instance=ExtResource( 7 )]
 position = Vector2( 378.542, 56.565 )
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable15" parent="InMapPlacables" index="14" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable15" parent="InMapPlacables" index="13" instance=ExtResource( 7 )]
 position = Vector2( 454.014, 79.0939 )
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable16" parent="InMapPlacables" index="15" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable16" parent="InMapPlacables" index="14" instance=ExtResource( 7 )]
 position = Vector2( 523.29, 99.3699 )
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable17" parent="InMapPlacables" index="16" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable17" parent="InMapPlacables" index="15" instance=ExtResource( 7 )]
 position = Vector2( 608.9, 57.1282 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable18" parent="InMapPlacables" index="17" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable18" parent="InMapPlacables" index="16" instance=ExtResource( 7 )]
 position = Vector2( 656.211, 115.703 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable19" parent="InMapPlacables" index="18" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable19" parent="InMapPlacables" index="17" instance=ExtResource( 7 )]
 position = Vector2( 621.854, 247.497 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable20" parent="InMapPlacables" index="19" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable20" parent="InMapPlacables" index="18" instance=ExtResource( 7 )]
 position = Vector2( 692.82, 308.326 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable21" parent="InMapPlacables" index="20" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable21" parent="InMapPlacables" index="19" instance=ExtResource( 7 )]
 position = Vector2( 776.21, 297.623 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable22" parent="InMapPlacables" index="21" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable22" parent="InMapPlacables" index="20" instance=ExtResource( 7 )]
 position = Vector2( 602.933, 298.866 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable23" parent="InMapPlacables" index="22" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable23" parent="InMapPlacables" index="21" instance=ExtResource( 7 )]
 position = Vector2( 726.614, 239.049 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable24" parent="InMapPlacables" index="23" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable24" parent="InMapPlacables" index="22" instance=ExtResource( 7 )]
 position = Vector2( 809.971, 169.773 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable25" parent="InMapPlacables" index="24" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable25" parent="InMapPlacables" index="23" instance=ExtResource( 7 )]
 position = Vector2( 811.66, 120.772 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 5 )
 current_normal_texture = ExtResource( 3 )
 current_hidden_texture = ExtResource( 4 )
 
-[node name="InMapAreaPlacable26" parent="InMapPlacables" index="25" instance=ExtResource( 7 )]
+[node name="InMapAreaPlacable26" parent="InMapPlacables" index="24" instance=ExtResource( 7 )]
 position = Vector2( 751.395, 62.1972 )
 layer_on_terrain = 1
 current_glowing_texture = ExtResource( 5 )
@@ -306,13 +300,20 @@ terrain_layer = 2
 [node name="CollisionPolygon2D" parent="Terrain/BaseTerrain6" index="0"]
 polygon = PoolVector2Array( -0.286499, 0.99263, -5.71375, 16.3306, -13.5007, 53.3777, -24.5912, 80.0421, -17.9841, 95.852, 8.91632, 95.1441, 17.6472, 83.1097, 16.7032, 38.9836, 29.9175, 0.756653, 25.9827, -7.4272, 13.3997, -10.0979 )
 
-[node name="LineDrawNode" type="Node2D" parent="." index="4"]
+[node name="BaseTerrain7" parent="." index="4" instance=ExtResource( 11 )]
+position = Vector2( 139.056, 127.45 )
+terrain_layer = 1
+
+[node name="CollisionPolygon2D" parent="BaseTerrain7" index="0"]
+polygon = PoolVector2Array( 0.283035, 0.884415, -3.02052, 23.0655, 7.83403, 50.9098, 5.47435, 65.5398, 11.1376, 80.6418, 28.5993, 83.4734, 43.2293, 78.2821, 47.0048, 65.5398, 48.8926, 39.5833, 65.979, 8.39001, 56.9155, -7.61045, 18.2167, -5.7227 )
+
+[node name="LineDrawNode" type="Node2D" parent="." index="5"]
 script = ExtResource( 8 )
 
-[node name="DreamHealAuraCircleDrawNode" type="Node2D" parent="." index="5"]
+[node name="DreamHealAuraCircleDrawNode" type="Node2D" parent="." index="6"]
 script = ExtResource( 10 )
 
-[node name="DreamLineDrawNode" type="Node2D" parent="." index="6"]
+[node name="DreamLineDrawNode" type="Node2D" parent="." index="7"]
 script = ExtResource( 8 )
 
 [editable path="Terrain/BaseTerrain"]
@@ -321,3 +322,4 @@ script = ExtResource( 8 )
 [editable path="Terrain/BaseTerrain4"]
 [editable path="Terrain/BaseTerrain5"]
 [editable path="Terrain/BaseTerrain6"]
+[editable path="BaseTerrain7"]

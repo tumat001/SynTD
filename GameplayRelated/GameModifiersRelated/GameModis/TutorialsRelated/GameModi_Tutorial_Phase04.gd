@@ -41,6 +41,9 @@ func _unapply_game_modifier_from_elements(arg_elements : GameElements):
 #
 
 func _on_game_elements_before_game_start():
+	game_elements.tower_empty_slot_notif_panel.block_show_self_conditional_clauses.attempt_insert_clause(game_elements.tower_empty_slot_notif_panel.BlockShowSelfClauseIds.TUTORIAL)
+	
+	
 	_same_towers_needed_for_combi = game_elements.combination_manager.base_combination_amount
 	
 	var plain_fragment__ingredient_effects = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.INGREDIENT, "ingredient effects")

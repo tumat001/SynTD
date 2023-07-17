@@ -382,6 +382,7 @@ var special_rounds_to_ins_method_map : Dictionary = {
 	"24" : "get_spawn_ins_for_special_round__24",
 	"22" : "get_spawn_ins_for_special_round__22",
 	
+	"14" : "get_spawn_ins_for_special_round__14",
 	
 	# temp for testing
 #	"03" : "get_spawn_ins_for_special_round__03",
@@ -493,10 +494,16 @@ func set_game_elements(arg_ele):
 	game_elements = arg_ele
 	
 	game_elements.connect("before_game_quit", self, "_on_before_game_quit", [], CONNECT_PERSIST)
+	game_elements.connect("before_game_start", self, "_on_before_game_start", [], CONNECT_PERSIST)
 	
 	input_prompt_manager = game_elements.input_prompt_manager
 
 #####
+
+func _on_before_game_start():
+	for stageround_id in stage_round_trigger_to_round_memory_info_map.keys(): 
+		game_elements.stage_round_manager.stagerounds.get_stageround_with_id(stageround_id).round_icon = preload("res://GameHUDRelated/RightSidePanel/RoundStartPanel/RoundInfoPanel_V2/RoundIndicatorPanel/Assets/RoundIndicator_RoundIcon_MapMemories_SacRecRound.png")
+
 
 func _apply_map_specific_changes_to_game_elements(arg_game_elements):
 	._apply_map_specific_changes_to_game_elements(arg_game_elements)
@@ -550,6 +557,12 @@ func _deferred_init():
 	
 	_initialize_all_enemy_dream_relateds()
 	_initialize_all_enemy_nightmare_relateds()
+	
+	
+#	for stageround_id in stage_round_trigger_to_round_memory_info_map.keys():
+#		var result = _preserve_past_recall_memory_into_future(stageround_id)
+#		print("result: %s" % result)
+
 
 func _initialize_custom_stagerounds():
 	var stage_rounds = ModeNormal_Memories_StageRounds.new()
@@ -559,25 +572,48 @@ func _initialize_custom_stagerounds():
 
 func _initialize_memory_infos():
 	#TESTING
-#	var mem_sac_info__test = RoundMemorySacrificeInfo.new()
-#	mem_sac_info__test.stage_round_id = "02"
-#	mem_sac_info__test.sacrifice_type_ids_available_to_param_map = {
-#		MemoryTypeId.TOWERS : [5],
-#		MemoryTypeId.GOLD : [100],
-#		MemoryTypeId.HEALTH : [10],
-#		MemoryTypeId.RELIC_AND_GOLD : [2, 10],
-#	}
-#	_add_memory_info(mem_sac_info__test)
-#
-#	var mem_sac_info__test1 = RoundMemorySacrificeInfo.new()
-#	mem_sac_info__test1.stage_round_id = "11"
-#	mem_sac_info__test1.sacrifice_type_ids_available_to_param_map = {
-#		MemoryTypeId.TOWERS : [3],
+#	var mem_sac_info__3 = RoundMemorySacrificeInfo.new()
+#	mem_sac_info__3.stage_round_id = "02"
+#	mem_sac_info__3.sacrifice_type_ids_available_to_param_map = {
+#		MemoryTypeId.TOWERS : [2],
 #		MemoryTypeId.GOLD : [6],
-#		MemoryTypeId.HEALTH : [10],
+#		MemoryTypeId.HEALTH : [15],
 #	}
-#	_add_memory_info(mem_sac_info__test1)
+#	_add_memory_info(mem_sac_info__3)
+#
+#	var mem_sac_info__5 = RoundMemorySacrificeInfo.new()
+#	mem_sac_info__5.stage_round_id = "03"
+#	mem_sac_info__5.sacrifice_type_ids_available_to_param_map = {
+#		#MemoryTypeId.TOWERS_WITH_INGS : [1, TOWERS_WITH_INGS_MAX_ING_COUNT],
+#		MemoryTypeId.TOWERS : [3],
+#		MemoryTypeId.GOLD : [12],
+#		MemoryTypeId.HEALTH : [20],
+#	}
+#	_add_memory_info(mem_sac_info__5)
+#
+#	var mem_sac_info__7 = RoundMemorySacrificeInfo.new()
+#	mem_sac_info__7.stage_round_id = "11"
+#	mem_sac_info__7.sacrifice_type_ids_available_to_param_map = {
+#		#MemoryTypeId.TOWERS_WITH_INGS : [2, TOWERS_WITH_INGS_MAX_ING_COUNT],
+#		MemoryTypeId.TOWERS : [5],
+#		MemoryTypeId.GOLD : [22],
+#		MemoryTypeId.HEALTH : [35],
+#		MemoryTypeId.RELIC_AND_GOLD : [1, 2],
+#	}
+#	_add_memory_info(mem_sac_info__7)
+#
+#	var mem_sac_info__9 = RoundMemorySacrificeInfo.new()
+#	mem_sac_info__9.stage_round_id = "12"
+#	mem_sac_info__9.sacrifice_type_ids_available_to_param_map = {
+#		#MemoryTypeId.TOWERS_WITH_INGS : [3, TOWERS_WITH_INGS_MAX_ING_COUNT],
+#		MemoryTypeId.TOWERS : [6],
+#		MemoryTypeId.GOLD : [34],
+#		MemoryTypeId.HEALTH : [40],
+#		MemoryTypeId.RELIC_AND_GOLD : [1, 5],
+#	}
+#	_add_memory_info(mem_sac_info__9)
 	#END OF TEST
+	
 	
 	var mem_sac_info__3 = RoundMemorySacrificeInfo.new()
 	mem_sac_info__3.stage_round_id = "33"
@@ -587,7 +623,7 @@ func _initialize_memory_infos():
 		MemoryTypeId.HEALTH : [15],
 	}
 	_add_memory_info(mem_sac_info__3)
-	
+
 	var mem_sac_info__5 = RoundMemorySacrificeInfo.new()
 	mem_sac_info__5.stage_round_id = "53"
 	mem_sac_info__5.sacrifice_type_ids_available_to_param_map = {
@@ -597,18 +633,18 @@ func _initialize_memory_infos():
 		MemoryTypeId.HEALTH : [20],
 	}
 	_add_memory_info(mem_sac_info__5)
-	
+
 	var mem_sac_info__7 = RoundMemorySacrificeInfo.new()
 	mem_sac_info__7.stage_round_id = "73"
 	mem_sac_info__7.sacrifice_type_ids_available_to_param_map = {
 		#MemoryTypeId.TOWERS_WITH_INGS : [2, TOWERS_WITH_INGS_MAX_ING_COUNT],
 		MemoryTypeId.TOWERS : [5],
 		MemoryTypeId.GOLD : [22],
-		MemoryTypeId.HEALTH : [35],
-		MemoryTypeId.RELIC_AND_GOLD : [1, 2],
+		MemoryTypeId.HEALTH : [30],
+		#MemoryTypeId.RELIC_AND_GOLD : [1, 2],
 	}
 	_add_memory_info(mem_sac_info__7)
-	
+
 	var mem_sac_info__9 = RoundMemorySacrificeInfo.new()
 	mem_sac_info__9.stage_round_id = "93"
 	mem_sac_info__9.sacrifice_type_ids_available_to_param_map = {
@@ -1995,12 +2031,16 @@ func _show_memory_recall_gui():
 	set_current_mem_action_state(MemoryActionStates.RECALLING)
 	
 	
-	# placed here to prevent loss of memory on crash/exit during recall phase
+	# placed here to prevent loss of "memory" on crash/exit during recall phase
 	var preserved = _preserve_past_recall_memory_into_future()
 	if preserved:
 		_erase_future_recall_memory_in_curr_stage_round_id_after_recall_accept = true
 	else:
 		_erase_future_recall_memory_in_curr_stage_round_id_after_recall_accept = false
+	
+#	print("SHOW MEMORY RECALL __ AFTER PRESERVED")
+#	print("stageround: %s" % _current_stageround_id)
+#	print("preserved: %s" % preserved)
 	
 	#
 	var past_recall_memory : RecallMemory = _past__stageround_id_to_recall_memories_map[_current_stageround_id]
@@ -2010,10 +2050,16 @@ func _show_memory_recall_gui():
 	_memory_recall_gui.set_prop_based_on_constructor(params)
 	_memory_recall_gui.show_gui()
 
-func _preserve_past_recall_memory_into_future():
-	if !_future__stageround_id_to_recall_memories_map.has(_current_stageround_id) and _past__stageround_id_to_recall_memories_map.has(_current_stageround_id):
+
+
+func _preserve_past_recall_memory_into_future(arg_stageround_id = _current_stageround_id):
+#	print("PRESERVING PAST")
+#	print("!_future__stageround_id_to_recall_memories_map.has(arg_stageround_id) : %s" % [!_future__stageround_id_to_recall_memories_map.has(arg_stageround_id)])
+#	print("_past__stageround_id_to_recall_memories_map.has(arg_stageround_id) : %s" % [_past__stageround_id_to_recall_memories_map.has(arg_stageround_id)])
+	
+	if !_future__stageround_id_to_recall_memories_map.has(arg_stageround_id) and _past__stageround_id_to_recall_memories_map.has(arg_stageround_id):
 		#_future__stageround_id_to_recall_memories_map[_current_stageround_id] = _past__stageround_id_to_recall_memories_map[_current_stageround_id]
-		_set_recall_memory_to_future_memories_map(_past__stageround_id_to_recall_memories_map[_current_stageround_id])
+		_set_recall_memory_to_future_memories_map(_past__stageround_id_to_recall_memories_map[arg_stageround_id])
 		
 		return true
 	
@@ -2370,6 +2416,10 @@ func _wrap_up_mem_recall():
 
 
 func erase_future_recall_memory_in_curr_stage_round_id__if_applicable():
+#	print("ERASE Future recall mem")
+#	print("stageround: %s" % [_current_stageround_id])
+#	print("_erase_future_recall_memory_in_curr_stage_round_id_after_recall_accept: %s" % _erase_future_recall_memory_in_curr_stage_round_id_after_recall_accept)
+	
 	if _erase_future_recall_memory_in_curr_stage_round_id_after_recall_accept:
 		if CAN_ERASE_MEMORY_ON_ACCEPT:
 			_future__stageround_id_to_recall_memories_map.erase(_current_stageround_id)
@@ -3238,6 +3288,13 @@ func get_spawn_ins_for_special_round__03():
 	]
 
 
+
+
+func get_spawn_ins_for_special_round__14():
+	return [
+		SingleEnemySpawnInstruction.new(15, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		
+	]
 
 
 func get_spawn_ins_for_special_round__22():

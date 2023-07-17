@@ -53,7 +53,7 @@ enum AmountForCombinationModifiers {
 	RELIC_DECREASE_AMOUNT_NEEDED_FOR_COMBI = 2
 }
 
-const base_combination_amount : int = 6 # amount of copies needed for combination
+const base_combination_amount : int = 5 # amount of copies needed for combination
 const minimum_combination_amount : int = 3
 var _flat_combination_amount_modifier_map : Dictionary = {}
 var last_calculated_combination_amount : int
@@ -827,11 +827,15 @@ func _create_relic_store_offer_options():
 	var plain_fragment__towers = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.TOWER, "towers")
 	var plain_fragment__combinations = PlainTextFragment.new(PlainTextFragment.STAT_TYPE.COMBINATION, "combinations")
 	
+	var can_only_be_bought_twice_text_line = "Can only be bought twice."
+	
 	var towers_dec_for_combi_desc = [
 		["Decrease the number of |0| needed to trigger |1| by %s." % str(tower_needed_for_combination_reduc_per_relic_offer_buy), [plain_fragment__towers, plain_fragment__combinations]],
-		"Can only be bought twice.",
+		can_only_be_bought_twice_text_line,
 		"Towers needed for combinations cannot go lower than: %s." % minimum_combination_amount
 	]
+	if base_combination_amount - minimum_combination_amount < 2:
+		towers_dec_for_combi_desc.erase(can_only_be_bought_twice_text_line)
 	
 	var tower_dec_for_combi_shop_offer := RelicStoreOfferOption.new(self, "_on_tower_reduc_for_combi_shop_offer_selected", Combination_DecreaseTowersNeeded_Normal_Pic, Combination_DecreaseTowersNeeded_Highlighted_Pic)
 	tower_dec_for_combi_shop_offer.descriptions = towers_dec_for_combi_desc

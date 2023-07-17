@@ -459,7 +459,7 @@ func _on_syn_met__47():
 func _on_end_of_transcript():
 	#hide_current_transcript_message()
 	
-	add_gold_amount(20)
+	add_gold_amount(80)
 	set_can_refresh_shop__panel_based(true)
 	for tower in _all_towers:
 		if is_instance_valid(tower):
@@ -471,5 +471,6 @@ func _on_end_of_transcript():
 	add_shop_per_refresh_modifier(0)
 	set_can_towers_swap_positions_to_another_tower(true)
 	
+	set_can_level_up(true)
 
 

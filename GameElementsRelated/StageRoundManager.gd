@@ -103,6 +103,7 @@ enum BlockSurrenderableRoundClauseIds {
 	NO_ENEMIES_LEFT = 3,
 	
 	GAME_ENDED = 4,
+	GAME_RESULT_DECIDED = 5,
 }
 var block_surrenderable_round_conditional_clauses : ConditionalClauses
 var last_calculated_is_round_surrenderable : bool
@@ -432,6 +433,7 @@ func _initialize_surrenderable_configs_and_props():
 	connect("end_of_stagerounds", self, "_on_end_of_stageround__for_vis_of_surrender_button", [], CONNECT_PERSIST)
 	game_elements.enemy_manager.connect("interpreter_done_spawning__no_ins_left", self, "_on_enemy_manager_interpreter_done_spawning__no_ins_left", [], CONNECT_PERSIST)
 	game_elements.enemy_manager.connect("no_enemies_left", self, "_on_enemy_manager__no_enemies_left", [], CONNECT_PERSIST)
+	game_elements.game_result_manager.connect("game_result_decided", self, "_on_game_result_decided__for_vis_of_surrender_button")
 
 func _is_GSSB_visibile__surrender_button(arg_params):
 	return last_calculated_is_round_surrenderable
@@ -455,7 +457,10 @@ func _on_enemy_manager_interpreter_done_spawning__no_ins_left():
 
 func _on_end_of_stageround__for_vis_of_surrender_button():
 	block_surrenderable_round_conditional_clauses.attempt_insert_clause(BlockSurrenderableRoundClauseIds.GAME_ENDED)
-	
+
+func _on_game_result_decided__for_vis_of_surrender_button():
+	block_surrenderable_round_conditional_clauses.attempt_insert_clause(BlockSurrenderableRoundClauseIds.GAME_RESULT_DECIDED)
+
 
 func _on_enemy_manager__no_enemies_left():
 	block_surrenderable_round_conditional_clauses.attempt_insert_clause(BlockSurrenderableRoundClauseIds.NO_ENEMIES_LEFT)
