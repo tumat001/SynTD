@@ -286,6 +286,7 @@ var last_calculated_is_untargetable : bool = false
 
 
 var can_cause_player_damage : bool = true
+var can_cause_round_lose : bool = true
 
 
 var all_abilities : Array = []

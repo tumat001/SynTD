@@ -20,6 +20,7 @@ onready var stem_life_sprite = $SpriteLayer/KnockUpLayer/StemLife
 
 func _init():
 	can_cause_player_damage = false
+	can_cause_round_lose = false
 	
 	_stats_initialize(EnemyConstants.get_enemy_info(EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE))
 

@@ -337,7 +337,7 @@ func _construct_map_type_info__map_memories(info : MapTypeInformation):
 	info.map_name = "Memories"
 	info.map_display_texture = preload("res://MapsRelated/MapList/Map_Memories/Map_Memories_ImagePreview.png")
 	info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
-	info.map_tier = 5
+	info.map_tier = 4
 	return info
 	
 

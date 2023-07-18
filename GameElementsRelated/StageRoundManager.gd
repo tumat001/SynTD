@@ -338,7 +338,9 @@ func _life_lost_from_enemy(enemy):
 		emit_signal("life_lost_from_enemy_first_time_in_round", enemy)
 		life_lost_to_enemy_in_round = true
 	
-	current_round_lost = true
+	
+	if enemy.can_cause_round_lose:
+		current_round_lost = true
 
 func set_current_round_to_lost():
 	current_round_lost = true

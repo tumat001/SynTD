@@ -3489,6 +3489,7 @@ func get_spawn_ins_for_special_round__91():
 
 func get_spawn_ins_for_special_round__92():
 	return [
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
 		
 		MultipleEnemySpawnInstruction.new(0, 2, 3, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
 		MultipleEnemySpawnInstruction.new(10, 4, 1, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
@@ -3500,7 +3501,7 @@ func get_spawn_ins_for_special_round__92():
 
 func get_spawn_ins_for_special_round__93():
 	return [
-		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
 		
 		MultipleEnemySpawnInstruction.new(15, 2, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
 		MultipleEnemySpawnInstruction.new(15, 2, 1, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
@@ -3511,6 +3512,9 @@ func get_spawn_ins_for_special_round__93():
 
 func get_spawn_ins_for_special_round__94():
 	return [
+		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		
+		
 		SingleEnemySpawnInstruction.new(1, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
 		SingleEnemySpawnInstruction.new(2, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
 		SingleEnemySpawnInstruction.new(3, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
@@ -3538,7 +3542,7 @@ func get_spawn_ins_for_special_round__94():
 
 func get_spawn_ins_for_special_round__101():
 	return [
-		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
 		
 		LinearEnemySpawnInstruction.new(0, 12, 2, 0.060, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, 0.25, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
 		
@@ -3548,7 +3552,7 @@ func get_spawn_ins_for_special_round__101():
 
 func get_spawn_ins_for_special_round__102():
 	return [
-		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
+		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
 		
 		
 		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
@@ -3561,7 +3565,6 @@ func get_spawn_ins_for_special_round__102():
 
 func get_spawn_ins_for_special_round__103():
 	return [
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
 		
 		MultipleEnemySpawnInstruction.new(30, 8, 0.75, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_02)),
 		MultipleEnemySpawnInstruction.new(30, 8, 0.75, EnemyConstants.Enemies.MAP_MEMORIES__DREAM, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_03)),
@@ -3570,9 +3573,6 @@ func get_spawn_ins_for_special_round__103():
 
 func get_spawn_ins_for_special_round__104():
 	return [
-		SingleEnemySpawnInstruction.new(0, EnemyConstants.Enemies.MAP_MEMORIES__NIGHTMARE, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_04)),
-		
-		####
 		
 		SingleEnemySpawnInstruction.new(20, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),
 		SingleEnemySpawnInstruction.new(21, EnemyConstants.Enemies.MAP_MEMORIES__MEMORIA, _retrieve_spawn_metadata_for_path(SpecialPathId.PATH_01)),

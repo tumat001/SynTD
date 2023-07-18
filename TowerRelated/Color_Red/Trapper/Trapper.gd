@@ -139,7 +139,7 @@ func _generate_pos_for_trap_firing():
 	
 	var candidate_pos = global_position + Vector2(dist, 0).rotated(angle)
 	var map = game_elements.map_manager.base_map
-	var path = map.get_random_enemy_path__with_params()
+	var path = map.get_random_enemy_path__with_params(map.EnemyPathState.USED_AND_ACTIVE)
 	
 	candidate_pos = path.curve.get_closest_point(candidate_pos)
 	

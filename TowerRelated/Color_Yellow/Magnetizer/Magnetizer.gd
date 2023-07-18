@@ -259,7 +259,7 @@ func _attempt_form_beam():
 	#
 	
 	if _can_form_beam():
-		magnetize_ability.on_ability_before_cast_start(magnetize_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+		#magnetize_ability.on_ability_before_cast_start(magnetize_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 		
 		for blue_magnet in activated_blue_magnets:
 			if is_instance_valid(blue_magnet):
@@ -273,7 +273,7 @@ func _attempt_form_beam():
 				blue_magnet.used_in_beam_formation()
 			#activated_blue_magnets.erase(blue_magnet)
 		
-		magnetize_ability.on_ability_after_cast_ended(magnetize_ability.ON_ABILITY_CAST_NO_COOLDOWN)
+		#magnetize_ability.on_ability_after_cast_ended(magnetize_ability.ON_ABILITY_CAST_NO_COOLDOWN)
 		#activated_blue_magnets.clear()
 		#activated_red_magnets.clear()
 
@@ -287,7 +287,7 @@ func _form_beam_between_points(origin_pos : Vector2, destination_pos : Vector2):
 	var aoe = beam_attack_module.construct_aoe(shifted_origin_pos, shifted_dest_pos)
 	
 	aoe.modulate = Color(1, 1, 1, 0.7)
-	aoe.damage_instance.scale_only_damage_by(last_calculated_final_ability_potency)
+	aoe.damage_instance.scale_only_damage_by(magnetize_ability.get_potency_to_use(last_calculated_final_ability_potency))
 	aoe.scale.y *= 1.4
 	aoe.scale.x *= 1.25
 	

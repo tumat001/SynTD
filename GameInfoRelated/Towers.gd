@@ -1285,7 +1285,7 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		interpreter_for_flat_on_hit.display_body = true
 		
 		var ins_for_flat_on_hit = []
-		ins_for_flat_on_hit.append(NumericalTextFragment.new(35, false, DamageType.PHYSICAL))
+		ins_for_flat_on_hit.append(NumericalTextFragment.new(40, false, DamageType.PHYSICAL))
 		ins_for_flat_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
 		ins_for_flat_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1))
 		
@@ -1297,15 +1297,24 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
 		interpreter_for_perc_on_hit.tower_info_to_use_for_tower_stat_fragments = info
 		interpreter_for_perc_on_hit.display_body = true
-		
+
 		var ins_for_perc_on_hit = []
-		#ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", 25, true))
 		ins_for_perc_on_hit.append(NumericalTextFragment.new(20, true, DamageType.PHYSICAL))
-		ins_for_perc_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
-		ins_for_perc_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1, -1, true))
-		
-		
 		interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
+		
+		# WITH ap
+#		var interpreter_for_perc_on_hit = TextFragmentInterpreter.new()
+#		interpreter_for_perc_on_hit.tower_info_to_use_for_tower_stat_fragments = info
+#		interpreter_for_perc_on_hit.display_body = true
+#
+#		var ins_for_perc_on_hit = []
+#		#ins_for_perc_on_hit.append(OutcomeTextFragment.new(TowerStatTextFragment.STAT_TYPE.ON_HIT_DAMAGE, DamageType.PHYSICAL, "", 25, true))
+#		ins_for_perc_on_hit.append(NumericalTextFragment.new(20, true, DamageType.PHYSICAL))
+#		ins_for_perc_on_hit.append(TextFragmentInterpreter.STAT_OPERATION.MULTIPLICATION)
+#		ins_for_perc_on_hit.append(TowerStatTextFragment.new(null, info, TowerStatTextFragment.STAT_TYPE.ABILITY_POTENCY, TowerStatTextFragment.STAT_BASIS.TOTAL, 1, -1, true))
+#
+#
+#		interpreter_for_perc_on_hit.array_of_instructions = ins_for_perc_on_hit
 		
 		
 		# INS END
@@ -1379,22 +1388,39 @@ static func get_tower_info(tower_id : int) -> TowerTypeInformation :
 		
 		# ins end
 		
+		# old desc (magnetizer with ability casts)
+#		info.tower_descriptions = [
+#			"When shooting, Magnetizer alternates between blue magnet and red magnet. Magnetizer switches to the next targeting option after shooting a magnet.",
+#			"Magnets stick to the first enemy they hit. When the enemy they are stuck to dies, they drop on the ground.",
+#			"When there is at least one blue and one red magnet that has hit an enemy or is on the ground, Magnetizer casts Magnetize.",
+#			"",
+#			["|0|: Magnetize: Calls upon all of this tower's non traveling magnets to form a beam between their opposite types, consuming them in the process.", [plain_fragment__ability]],
+#			#"The beam deals 9 elemental damage. The beam benefits from base damage buffs, on hit damages and effects. Damage scales with ability potency.",
+#			["The beam deals |0|. Applies on hit effects", [interpreter]],
+#
+#		]
+#
+#		info.tower_simple_descriptions = [
+#			"When shooting, Magnetizer alternates between blue magnet and red magnet. Magnetizer switches to the next targeting option after shooting a magnet.",
+#			["Beams |0| between blue and red magnets, consuming them in the process.", [plain_fragment__ability_form]],
+#			["Beams deal |0|.", [interpreter]],
+#		]
+		
 		info.tower_descriptions = [
 			"When shooting, Magnetizer alternates between blue magnet and red magnet. Magnetizer switches to the next targeting option after shooting a magnet.",
 			"Magnets stick to the first enemy they hit. When the enemy they are stuck to dies, they drop on the ground.",
-			"When there is at least one blue and one red magnet that has hit an enemy or is on the ground, Magnetizer casts Magnetize.",
-			"",
-			["|0|: Magnetize: Calls upon all of this tower's non traveling magnets to form a beam between their opposite types, consuming them in the process.", [plain_fragment__ability]],
-			#"The beam deals 9 elemental damage. The beam benefits from base damage buffs, on hit damages and effects. Damage scales with ability potency.",
+			["Beams form between stationary blue and red magnets, consuming them in the process.", []],
+			
 			["The beam deals |0|. Applies on hit effects", [interpreter]],
 			
 		]
 		
 		info.tower_simple_descriptions = [
-			"When shooting, Magnetizer alterates between blue magnet and red magnet. Magnetizer switches to the next targeting option after shooting a magnet.",
-			["Beams |0| between blue and red magnets, consuming them in the process.", [plain_fragment__ability_form]],
+			"When shooting, Magnetizer alternates between blue magnet and red magnet, and switches its targeting.",
+			["Beams form between stationary blue and red magnets, consuming them in the process.", []],
 			["Beams deal |0|.", [interpreter]],
 		]
+		
 		
 		
 		var expl_attr_mod : PercentModifier = PercentModifier.new(StoreOfTowerEffectsUUID.ING_MAGNETIZER)
