@@ -95,13 +95,13 @@ const MapIdsAvailableFromMenu : Array = [
 	MapsId_Ridged,
 	
 	MapsId_Enchant,
-	MapsId_Rift,
+	MapsId_Memories,
 	
 	MapsId_Passage,
+	MapsId_Rift,
 	
 	MapsId_Mesa,
 	
-	MapsId_Memories,
 ]
 
 # Can be used as the official list of all maps
@@ -330,14 +330,14 @@ func _construct_map_type_info__map_rift(info : MapTypeInformation):
 	info.map_name = "Rift"
 	info.map_display_texture = preload("res://MapsRelated/MapList/Map_Rift/Map_Rift_PreviewImage.png")
 	info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
-	info.map_tier = 3
+	info.map_tier = 4
 	return info
 
 func _construct_map_type_info__map_memories(info : MapTypeInformation):
 	info.map_name = "Memories"
 	info.map_display_texture = preload("res://MapsRelated/MapList/Map_Memories/Map_Memories_ImagePreview.png")
 	info.game_mode_ids_accessible_from_menu = [StoreOfGameMode.Mode.STANDARD_BEGINNER, StoreOfGameMode.Mode.STANDARD_EASY, StoreOfGameMode.Mode.STANDARD_NORMAL]
-	info.map_tier = 4
+	info.map_tier = 3
 	return info
 	
 

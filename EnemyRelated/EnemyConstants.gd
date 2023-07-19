@@ -1300,7 +1300,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.MAP_MEMORIES__DREAM:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
-		info.base_health = 55
+		info.base_health = 60
 		info.base_movement_speed = 65
 		#info.base_armor = 5
 		#info.base_toughness = 5
@@ -1324,7 +1324,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 		
 	elif enemy_id == Enemies.MAP_MEMORIES__MEMORIA:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
-		info.base_health = 90
+		info.base_health = 95
 		info.base_movement_speed = 35
 		info.enemy_type = info.EnemyType.NORMAL
 		
@@ -1345,7 +1345,7 @@ static func get_enemy_info(enemy_id : int, arg_include_non_combat_info : bool = 
 			
 	elif enemy_id == Enemies.MAP_MEMORIES__NIGHTMARE:
 		info = EnemyTypeInformation.new(enemy_id, EnemyFactions.OTHERS)
-		info.base_health = 240
+		info.base_health = 250
 		info.base_movement_speed = 26
 		info.base_armor = 24
 		info.base_toughness = 24
