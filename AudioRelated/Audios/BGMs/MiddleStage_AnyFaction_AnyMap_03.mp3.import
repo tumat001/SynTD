@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/MiddleStage_AnyFaction_AnyMap_03.mp3-6ac59c5faa2c22982258282116dde545.mp3str"
+
+[deps]
+
+source_file="res://AudioRelated/Audios/BGMs/MiddleStage_AnyFaction_AnyMap_03.mp3"
+dest_files=[ "res://.import/MiddleStage_AnyFaction_AnyMap_03.mp3-6ac59c5faa2c22982258282116dde545.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

@@ -76,6 +76,7 @@ onready var game_stats_manager = $GameStatsManager
 
 onready var other_node_hoster : Node = $OtherNodeHoster
 onready var proj_hoster : Node = $OtherNodeHoster
+onready var in_game_audio_manager : Node = $InGameAudioManager
 
 var round_status_panel : RoundStatusPanel
 #var round_info_panel : RoundInfoPanel
@@ -429,11 +430,19 @@ func _ready():
 	StatsManager.connect_signals_with_tower_manager(tower_manager)
 	StatsManager.connect_signals_with_synergy_manager(synergy_manager)
 	
+	# In Game Audio related
+	
+	in_game_audio_manager.stage_round_manager = stage_round_manager
+	in_game_audio_manager.game_elements = self
+	in_game_audio_manager.game_result_manager = game_result_manager
+	in_game_audio_manager.round_status_panel = round_status_panel
+	
 	###
 	gold_manager.increase_gold_by(3, GoldManager.IncreaseGoldSource.START_OF_GAME)
 	health_manager.starting_health = 150
 	health_manager.set_health(150)
 	
+	in_game_audio_manager.reset_bgm_playlists()
 	map_manager.make_base_map_apply_changes_to_game_elements(self)
 	
 	emit_signal("before_game_start")

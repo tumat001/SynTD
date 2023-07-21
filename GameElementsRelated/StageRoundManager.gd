@@ -32,6 +32,8 @@ signal round_ended(current_stageround) # new incomming round
 
 signal round_ended__for_streak_panel_glow_purposes(arg_is_win, arg_steak_amount, arg_is_max_reached, arg_is_streak_broken, arg_is_streak_broken_magnitude_max)
 
+# If "early" game, mid, late, etc
+signal stageround_state_changed(current_stageround, arg_state)
 
 signal life_lost_from_enemy_first_time_in_round(enemy)
 signal life_lost_from_enemy(enemy)
@@ -58,6 +60,9 @@ var stageround_total_count : int
 
 var round_started : bool
 #var round_fast_forwarded : bool
+
+var current_stageround_state
+
 
 var enemy_manager : EnemyManager setget _set_enemy_manager
 var gold_manager : GoldManager
@@ -232,6 +237,10 @@ func end_round(from_game_start : bool = false):
 		_at_round_end()
 		_after_round_end()
 		
+		#
+		
+		current_stageround_state = stagerounds.get_stageround_state_of_id(current_stageround.id)
+		
 		# streak related
 		var old_win_streak = current_win_streak
 		var old_lose_streak = current_lose_streak
@@ -297,14 +306,15 @@ func end_round(from_game_start : bool = false):
 		
 		emit_signal("round_ended_game_start_aware", current_stageround, from_game_start)
 		emit_signal("round_ended", current_stageround)
+		emit_signal("stageround_state_changed", current_stageround, current_stageround_state)
 		
 		if old_can_gain_streak:
 			_calc_for_emit_round_ended__for_streak_panel_glow_purposes(old_lose_streak, old_win_streak, !current_round_lost)
 		
 		
-		
 	else: # end of stagerounds. end the game.
 		emit_signal("end_of_stagerounds")
+		
 
 
 func _before_round_end(arg_from_game_start):

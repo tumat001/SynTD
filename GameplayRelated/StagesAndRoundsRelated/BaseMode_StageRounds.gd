@@ -2,17 +2,27 @@
 const StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/StageRound.gd")
 
 
+
+enum StageRoundState {
+	STARTING = 0,
+	EARLY = 1,
+	MID = 2,
+	LATE = 3,
+	FINALE = 4,  #"last round"
+}
+
+
 var stage_rounds : Array
 var stage_rounds_with_relic : Array
 var last_stage_round : StageRound
 
 var early_game_stageround_id_start_exclusive #= "03"
-var early_game_stageround_id_exclusive #= "51"
-var mid_game_stageround_id_exclusive #= "91"
+var early_game_stageround_id_exclusive #= "41"
+var mid_game_stageround_id_exclusive #= "81"
 var last_round_end_game_stageround_id_exclusive #= "94"
 var first_round_of_game_stageround_id_exclusive #= "01"
 
-
+##
 
 func get_second_half_faction() -> int:
 	return -1
@@ -83,4 +93,22 @@ func get_stageround_with_id(arg_id):
 	return stage_rounds[_get_index_of_stageround_using_id(arg_id)]
 	
 
+
+func get_stageround_state_of_id(arg_id):
+	if StageRound.compare_stage_round__param_to_second_param(arg_id, early_game_stageround_id_start_exclusive) == -1:
+		return StageRoundState.STARTING
+		
+	elif StageRound.compare_stage_round__param_to_second_param(arg_id, early_game_stageround_id_exclusive) == -1:
+		return StageRoundState.EARLY
+		
+	elif StageRound.compare_stage_round__param_to_second_param(arg_id, mid_game_stageround_id_exclusive) == -1:
+		return StageRoundState.MID
+		
+	elif StageRound.compare_stage_round__param_to_second_param(arg_id, last_round_end_game_stageround_id_exclusive) == -1:
+		return StageRoundState.LATE
+		
+	else:
+		return StageRoundState.FINALE
+	
+	
 

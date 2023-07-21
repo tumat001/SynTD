@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/MiddleStage_SkirmisherFaction_AnyMap_01.mp3-a56927dbe6c29384c9d9f2f34b62d917.mp3str"
+
+[deps]
+
+source_file="res://AudioRelated/Audios/BGMs/MiddleStage_SkirmisherFaction_AnyMap_01.mp3"
+dest_files=[ "res://.import/MiddleStage_SkirmisherFaction_AnyMap_01.mp3-a56927dbe6c29384c9d9f2f34b62d917.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

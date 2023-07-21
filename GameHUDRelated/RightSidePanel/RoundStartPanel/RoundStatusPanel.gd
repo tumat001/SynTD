@@ -3,6 +3,7 @@ extends MarginContainer
 const AbilityPanel = preload("res://GameHUDRelated/AbilityPanel/AbilityPanel.gd")
 
 signal round_start_pressed()
+signal audio_button_pressed()
 #signal round_fast_forward_pressed
 #signal round_normal_speed_pressed
 
@@ -121,3 +122,11 @@ func _on_MainMenuButton_released_mouse_event(event : InputEventMouseButton):
 
 func get_heart_icon_global_pos():
 	return round_info_panel_v2.get_heart_icon_global_pos()
+
+
+##
+
+func _on_AudioButton_released_mouse_event(event):
+	emit_signal("audio_button_pressed")
+	
+

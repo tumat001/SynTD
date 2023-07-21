@@ -41,10 +41,10 @@ func _on_effect_curr_dmg_scale_changed(curr_dmg_scale : float, max_dmg_scale : f
 	
 	if is_equal_approx(curr_dmg_scale, max_dmg_scale):
 		dmg_scale_bar.fill_foreground_pic = Bar_Full
-		print("is full: " + str(curr_dmg_scale))
+		#print("is full: " + str(curr_dmg_scale))
 	else:
 		dmg_scale_bar.fill_foreground_pic = Bar_NotFull
-		print("is not full: " + str(curr_dmg_scale))
+		#print("is not full: " + str(curr_dmg_scale))
 	
 #	siphon_bar.current_value = tower.current_siphon_stacks
 #	#print(str(ap_bar.current_value) + " --- " + str(ap_bar.max_value))

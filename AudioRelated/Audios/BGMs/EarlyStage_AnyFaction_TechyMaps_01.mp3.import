@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/EarlyStage_AnyFaction_TechyMaps_01.mp3-d70e0d3663acae16ce56dad0d8fb1e7f.mp3str"
+
+[deps]
+
+source_file="res://AudioRelated/Audios/BGMs/EarlyStage_AnyFaction_TechyMaps_01.mp3"
+dest_files=[ "res://.import/EarlyStage_AnyFaction_TechyMaps_01.mp3-d70e0d3663acae16ce56dad0d8fb1e7f.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

@@ -128,7 +128,7 @@ func _on_main_attack_module_enemy_hit_r(enemy, damage_register_id, damage_instan
 func _punch_hole_at_enemy(enemy):
 	if is_instance_valid(enemy):
 		enemy.pierce_consumed_per_hit /= 2
-		print(enemy.pierce_consumed_per_hit)
+		
 
 #
 

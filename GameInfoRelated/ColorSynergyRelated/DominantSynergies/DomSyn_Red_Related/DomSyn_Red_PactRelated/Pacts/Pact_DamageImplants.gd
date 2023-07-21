@@ -18,6 +18,7 @@ const tier_0_stage_to_damage_map : Dictionary = {
 	7 : 7.2,
 	8 : 7.6,
 	9 : 8.0,
+	10: 8.4,
 }
 
 const tier_1_gold_cost : int = 1
@@ -33,6 +34,7 @@ const tier_1_stage_to_damage_map : Dictionary = {
 	7 : 3.2,
 	8 : 3.4,
 	9 : 3.6,
+	10: 4.0,
 }
 
 const tier_2_gold_cost : int = 1
@@ -48,6 +50,7 @@ const tier_2_stage_to_damage_map : Dictionary = {
 	7 : 1.95,
 	8 : 2.10,
 	9 : 2.25,
+	10: 2.40,
 }
 
 const tier_3_gold_cost : int = 1
@@ -63,6 +66,7 @@ const tier_3_stage_to_damage_map : Dictionary = {
 	7 : 1.30,
 	8 : 1.40,
 	9 : 1.50,
+	10: 1.60,
 }
 
 var _current_damage_map : Dictionary

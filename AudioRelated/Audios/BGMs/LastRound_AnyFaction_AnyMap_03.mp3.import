@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/LastRound_AnyFaction_AnyMap_03.mp3-8b3312ba9821ffb5b17b49388b2cb9b8.mp3str"
+
+[deps]
+
+source_file="res://AudioRelated/Audios/BGMs/LastRound_AnyFaction_AnyMap_03.mp3"
+dest_files=[ "res://.import/LastRound_AnyFaction_AnyMap_03.mp3-8b3312ba9821ffb5b17b49388b2cb9b8.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

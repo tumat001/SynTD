@@ -1,9 +1,11 @@
 extends Node
 
-
-const AudioStreamPlayerComponentPool = preload("res://MiscRelated/PoolRelated/Implementations/AudioStreamPlayerComponentPool.gd")
+#const AudioStreamPlayerComponentPool = preload("res://MiscRelated/PoolRelated/Implementations/AudioStreamPlayerComponentPool.gd")
 const ValTransition = preload("res://MiscRelated/ValTransitionRelated/ValTransition.gd")
 
+#
+
+signal steam_player_stopped_and_marked_as_inactive(arg_path_name, arg_stream_player)
 
 # save related
 
@@ -23,12 +25,24 @@ const DECIBEL_VAL__STANDARD : float = 0.0
 
 enum MaskLevel {
 	
-	MASK_02 = 2
-	MASK_01 = 1
+	#MASK_02 = 2
+	#MASK_01 = 1
+	
+	BGM = 0,
+	
+	Major_SoundFX = 1,
+	Minor_SoundFX = 2,
 	
 }
 
-var total_active_stream_player_count_per_mask_level : int = 80
+#var total_active_stream_player_count_per_mask_level : int = 80
+var mask_level_to_max_active_count_available_map : Dictionary = {
+	MaskLevel.BGM : 100,
+	
+	MaskLevel.Major_SoundFX : 40,
+	MaskLevel.Minor_SoundFX : 40,
+}
+
 
 var sound_path_name_to__stream_player_node_to_is_active_map : Dictionary
 var stream_player_node_to_mask_level_map : Dictionary
@@ -88,6 +102,14 @@ signal bus__background_music_mute_changed(arg_val)
 
 #
 
+var container__pause_inherit : Node
+var container__pause_process : Node
+var container__pause_stop : Node
+
+var node_pause_mode_to_container_map : Dictionary
+
+#
+
 var game_elements
 
 #####
@@ -105,6 +127,7 @@ class PlayAdvParams:
 	var id_source
 	
 	var play_sound_type : int
+	var node_pause_mode : int = Node.PAUSE_MODE_INHERIT 
 	
 	#
 	
@@ -136,8 +159,27 @@ func _ready():
 	
 	_update_can_do_process()
 	
-	#######
+	##
 	
+	_construct_containers()
+
+
+func _construct_containers():
+	container__pause_process = Node.new()
+	container__pause_process.pause_mode = Node.PAUSE_MODE_PROCESS
+	add_child(container__pause_process)
+	
+	container__pause_inherit = Node.new()
+	container__pause_inherit.pause_mode = Node.PAUSE_MODE_INHERIT
+	add_child(container__pause_inherit)
+	
+	container__pause_stop = Node.new()
+	container__pause_stop.pause_mode = Node.PAUSE_MODE_STOP
+	add_child(container__pause_stop)
+	
+	node_pause_mode_to_container_map[Node.PAUSE_MODE_PROCESS] = container__pause_process
+	node_pause_mode_to_container_map[Node.PAUSE_MODE_INHERIT] = container__pause_inherit
+	node_pause_mode_to_container_map[Node.PAUSE_MODE_STOP] = container__pause_stop 
 
 ####
 
@@ -150,20 +192,23 @@ func construct_play_adv_params() -> PlayAdvParams:
 #############
 
 
-func play_sound(arg_audio_path_name : String, 
+func play_sound(arg_audio_id, 
 		arg_mask_level : int, arg_construction_type : int = PlayerConstructionType.PLAIN,
 		play_adv_params : PlayAdvParams = null):
 	
-	var stream_player = get_available_or_construct_new_audio_stream_player(arg_audio_path_name, arg_construction_type)
+	var stream_player = get_available_or_construct_new_audio_stream_player(arg_audio_id, arg_construction_type, play_adv_params.node_pause_mode)
 	
-	return play_sound__with_provided_stream_player(arg_audio_path_name, stream_player, arg_mask_level)
+	return play_sound__with_provided_stream_player(arg_audio_id, stream_player, arg_mask_level)
 
 
 # returns bool, whether the sound is played or not based on sound count limit
-func play_sound__with_provided_stream_player(arg_audio_path_name : String, arg_stream_player, 
+func play_sound__with_provided_stream_player(arg_audio_id, arg_stream_player, 
 		arg_mask_level : int, play_adv_params : PlayAdvParams = null):
 	
-	if mask_level_to_active_count_map[arg_mask_level] <= total_active_stream_player_count_per_mask_level:
+	var arg_audio_path_name = StoreOfAudio.get_audio_file_path_of_id(arg_audio_id)
+	
+	#if mask_level_to_active_count_map[arg_mask_level] <= total_active_stream_player_count_per_mask_level:
+	if mask_level_to_active_count_map[arg_mask_level] <= mask_level_to_max_active_count_available_map[arg_mask_level]:
 		if !sound_path_name_to__stream_player_node_to_is_active_map.has(arg_audio_path_name):
 			sound_path_name_to__stream_player_node_to_is_active_map[arg_audio_path_name] = {}
 		sound_path_name_to__stream_player_node_to_is_active_map[arg_audio_path_name][arg_stream_player] = true
@@ -206,8 +251,10 @@ func play_sound__with_provided_stream_player(arg_audio_path_name : String, arg_s
 
 
 # to be used by outside sources, and the node be fed to "play_sound__using_path_name"
-func get_available_or_construct_new_audio_stream_player(arg_path_name : String, player_construction_type : int):
+func get_available_or_construct_new_audio_stream_player(arg_audio_id, player_construction_type : int, arg_pause_mode : int):
 	var player
+	
+	var arg_path_name = StoreOfAudio.get_audio_file_path_of_id(arg_audio_id)
 	
 	if sound_path_name_to__stream_player_node_to_is_active_map.has(arg_path_name):
 		var stream_player_node_to_is_active_map = sound_path_name_to__stream_player_node_to_is_active_map[arg_path_name]
@@ -217,40 +264,44 @@ func get_available_or_construct_new_audio_stream_player(arg_path_name : String, 
 				break
 		
 		if player == null:
-			player = _construct_new_audio_stream_player__based_on_cons_type(player_construction_type)
+			player = _construct_new_audio_stream_player__based_on_cons_type(player_construction_type, arg_pause_mode)
 		
 	else:
-		player = _construct_new_audio_stream_player__based_on_cons_type(player_construction_type)
+		player = _construct_new_audio_stream_player__based_on_cons_type(player_construction_type, arg_pause_mode)
 	
 	
-	player.stream = load(arg_path_name)
+	var file = load(arg_path_name)
+	file.loop = false
+	
+	player.stream = file
+	player.volume_db = StoreOfAudio.get_audio_id_custom_standard_db(arg_audio_id)
 	
 	_connect_signals_of_stream_player(player, arg_path_name)
 	
 	return player
 
 
-func _construct_new_audio_stream_player__based_on_cons_type(arg_cons_type : int):
+func _construct_new_audio_stream_player__based_on_cons_type(arg_cons_type : int, arg_pause_mode):
 	if arg_cons_type == PlayerConstructionType.PLAIN:
-		return _construct_new_audio_stream_player()
+		return _construct_new_audio_stream_player(arg_pause_mode)
 	elif arg_cons_type == PlayerConstructionType.TWO_D:
-		return _construct_new_audio_stream_player_2D()
+		return _construct_new_audio_stream_player_2D(arg_pause_mode)
 
-func _construct_new_audio_stream_player():
+func _construct_new_audio_stream_player(arg_pause_mode):
 	var player = AudioStreamPlayer.new()
 	
 	player.connect("tree_exiting", self, "_on_stream_player_queue_free", [player])
 	
-	add_child(player)
+	node_pause_mode_to_container_map[arg_pause_mode].add_child(player)
 	
 	return player
 
-func _construct_new_audio_stream_player_2D():
+func _construct_new_audio_stream_player_2D(arg_pause_mode):
 	var player = AudioStreamPlayer2D.new()
 	
 	player.connect("tree_exiting", self, "_on_stream_player_queue_free", [player])
 	
-	add_child(player)
+	node_pause_mode_to_container_map[arg_pause_mode].add_child(player)
 	
 	return player
 
@@ -295,9 +346,12 @@ func stop_stream_player_and_mark_as_inactive(arg_stream_player):
 	arg_stream_player.stop()
 	
 	sound_path_name_to__stream_player_node_to_is_active_map[arg_path_name][arg_stream_player] = false
-	var mask_level = stream_player_node_to_mask_level_map[arg_stream_player]
-	mask_level_to_active_count_map[mask_level] -= 1
-
+	
+	if stream_player_node_to_mask_level_map.has(arg_stream_player):
+		var mask_level = stream_player_node_to_mask_level_map[arg_stream_player]
+		mask_level_to_active_count_map[mask_level] -= 1
+	
+	emit_signal("steam_player_stopped_and_marked_as_inactive", arg_path_name, arg_stream_player)
 
 
 func _on_stream_player_queue_free(arg_stream_player):
@@ -345,14 +399,18 @@ class LinearSetAudioParams:
 	var pause_at_target_db : bool
 	var stop_at_target_db : bool
 	
-	var target_db : float
+	var target_db : float #setget set_target_db, get_target_db
 	
 	var time_to_reach_target_db : float = ValTransition.VALUE_UNSET
 	var db_mag_inc_or_dec_per_sec : float = ValTransition.VALUE_UNSET
 	
 	# set by AudioManager
 	var _db_val_transition : ValTransition
-
+	
+	
+	func set_target_db_to_custom_standard_of_audio_id(arg_id):
+		target_db = StoreOfAudio.get_audio_id_custom_standard_db(arg_id)
+	
 
 
 func linear_set_audio_player_volume_using_params(arg_player, arg_linear_set_params : LinearSetAudioParams):
@@ -525,30 +583,29 @@ func _initialize_sound_fx_relateds(arg_save_dict : Dictionary):
 		pass
 
 
+
 func _on_singleton_initialize():
-	#todo enable this when done with part with save manager
-	#GameSaveManager.load_stats__of_audio_manager()
-	pass
+	GameSaveManager.load_stats__of_audio_manager()
 
 
-#func _init():
-#	CommsForBetweenScenes.connect("game_elements_created", self, "connect_signals_with_game_elements")
-#
-#
-#func connect_signals_with_game_elements(arg_game_elements):
-#	game_elements = arg_game_elements
-#
-#	game_elements.connect("before_game_quit", self, "_on_before_game_quit", [], CONNECT_PERSIST)
-#
-#func disconnect_signals_with_game_elements():
-#	game_elements.disconnect("before_game_quit", self, "_on_before_game_quit")
-#
-#	game_elements = null
-#
-#func _on_before_game_quit():
-#	disconnect_signals_with_game_elements()
-#
-#	GameSaveManager.save_settings__of_audio_manager()
+func _init():
+	CommsForBetweenScenes.connect("game_elements_created", self, "connect_signals_with_game_elements")
+
+
+func connect_signals_with_game_elements(arg_game_elements):
+	game_elements = arg_game_elements
+	
+	game_elements.connect("before_game_quit", self, "_on_before_game_quit", [], CONNECT_PERSIST)
+
+func disconnect_signals_with_game_elements():
+	game_elements.disconnect("before_game_quit", self, "_on_before_game_quit")
+	
+	game_elements = null
+
+func _on_before_game_quit():
+	disconnect_signals_with_game_elements()
+	
+	GameSaveManager.save_settings__of_audio_manager()
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:

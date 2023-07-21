@@ -595,10 +595,6 @@ func _update_combination_effects_of_towers_based_on_current():
 			else:
 				_remove_combination_effect_id_from_tower(combi_effect.combination_id, tower)
 			
-			if tower.tower_type_info.tower_type_id == Towers.TRANSPORTER:
-				print(tiers_affected_per_combo_tier)
-				print(str(_if_combination_effect_can_apply_to_tier(combi_effect, tower.tower_type_info.tower_tier)))
-
 
 func _remove_combination_effect_id_from_tower(combi_id : int, arg_tower):
 	arg_tower.remove_combination_effect_id(combi_id)

@@ -15,7 +15,8 @@ const tier_0_stage_to_damage_map : Dictionary = {
 	6 : 5.5,
 	7 : 5.75,
 	8 : 6,
-	9 : 6.25
+	9 : 6.25,
+	10: 6.5,
 }
 
 const tier_1_stage_to_damage_map : Dictionary = {
@@ -28,7 +29,8 @@ const tier_1_stage_to_damage_map : Dictionary = {
 	6 : 4.5,
 	7 : 4.75,
 	8 : 5,
-	9 : 5.25
+	9 : 5.25,
+	10: 5.5,
 }
 
 const tier_2_stage_to_damage_map : Dictionary = {
@@ -41,7 +43,8 @@ const tier_2_stage_to_damage_map : Dictionary = {
 	6 : 2.5,
 	7 : 2.75,
 	8 : 3,
-	9 : 3.25
+	9 : 3.25,
+	10: 3.5,
 }
 
 const tier_3_stage_to_damage_map : Dictionary = {
@@ -54,7 +57,8 @@ const tier_3_stage_to_damage_map : Dictionary = {
 	6 : 1.5,
 	7 : 1.75,
 	8 : 2,
-	9 : 2.25
+	9 : 2.25,
+	10: 2.5,
 }
 
 
