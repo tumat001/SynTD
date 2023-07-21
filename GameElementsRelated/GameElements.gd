@@ -34,6 +34,8 @@ const GameResultManager = preload("res://GameElementsRelated/GameResultManager.g
 const WholeScreenRelicGeneralStorePanel = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/WholeScreenRelicGeneralStorePanel.gd")
 const WholeScreenRelicGeneralStorePanel_Scene = preload("res://GameHUDRelated/WholeScreenRelicGeneralStorePanel/WholeScreenRelicGeneralStorePanel.tscn")
 
+const StageRound = preload("res://GameplayRelated/StagesAndRoundsRelated/StageRound.gd")
+
 
 const CommonTexture_GoldCoin = preload("res://MiscRelated/CommonTextures/CommonTexture_GoldCoin/CommonTexture_GoldCoin.gd")
 const AttackSpritePoolComponent = preload("res://MiscRelated/AttackSpriteRelated/GenerateRelated/AttackSpritePoolComponent.gd")

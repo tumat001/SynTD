@@ -105,17 +105,18 @@ func linearly_set_current_player_db_to_audiable():
 func linearly_set_current_player_db_to_inaudiable(arg_pause_at_end : bool = false, arg_stop_at_end : bool = true,
 		arg_autoplay_to_next : bool = false):
 	
-	var params = AudioManager.LinearSetAudioParams.new()
-	params.pause_at_target_db = arg_pause_at_end
-	params.stop_at_target_db = arg_stop_at_end
-	params.target_db = AudioManager.DECIBEL_VAL__INAUDIABLE
-	
-	params.time_to_reach_target_db = 1
-	
-	AudioManager.linear_set_audio_player_volume_using_params(_current_audio_player, params)
-	AudioManager.connect("steam_player_stopped_and_marked_as_inactive", self, "_on_steam_player_stopped_and_marked_as_inactive", [arg_autoplay_to_next])
-	
-	_is_stopped = true
+	if !_is_stopped:
+		var params = AudioManager.LinearSetAudioParams.new()
+		params.pause_at_target_db = arg_pause_at_end
+		params.stop_at_target_db = arg_stop_at_end
+		params.target_db = AudioManager.DECIBEL_VAL__INAUDIABLE
+		
+		params.time_to_reach_target_db = 1
+		
+		AudioManager.linear_set_audio_player_volume_using_params(_current_audio_player, params)
+		AudioManager.connect("steam_player_stopped_and_marked_as_inactive", self, "_on_steam_player_stopped_and_marked_as_inactive", [arg_autoplay_to_next])
+		
+		_is_stopped = true
 
 func _on_steam_player_stopped_and_marked_as_inactive(arg_path_name, arg_stream_player, arg_autoplay_to_next):
 	if arg_stream_player == _current_audio_player:
@@ -225,6 +226,8 @@ func start_play_next_random_audio_in_playlist():
 	var audio_id_to_play = get_random_unplayed_audio_id()
 	
 	_play_sound(audio_id_to_play)
+	
+	return audio_id_to_play
 
 func get_random_unplayed_audio_id():
 	var candidates = []

@@ -118,8 +118,7 @@ func set_early_mid_late_breakpoints():
 	mid_game_stageround_id_exclusive = "91"  # standard is 81, but in memories, its this
 	last_round_end_game_stageround_id_exclusive = stage_rounds[stage_rounds.size() - 1].id
 	first_round_of_game_stageround_id_exclusive = stage_rounds[0].id
-
-
+	
 
 # stagerounds
 

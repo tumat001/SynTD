@@ -56,10 +56,13 @@ func start_play_audio_play_list(arg_playlist_id : int, arg_audio_id = -1):
 			
 			#
 			
+			var audio_id_played = arg_audio_id
 			if arg_audio_id == -1:
-				playlist.start_play_next_random_audio_in_playlist()
+				audio_id_played = playlist.start_play_next_random_audio_in_playlist()
 			else:
 				playlist.start_play_audio_id(arg_audio_id)
+			
+			#print("playlist played: %s. audio id played: %s" % [playlist.playlist_name, audio_id_played])
 			
 		else: # if start play audio requests to play the same current playlist
 			pass

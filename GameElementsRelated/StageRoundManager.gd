@@ -240,6 +240,8 @@ func end_round(from_game_start : bool = false):
 		#
 		
 		current_stageround_state = stagerounds.get_stageround_state_of_id(current_stageround.id)
+		#print("SRM: stageround: %s. state: %s" % [current_stageround.id, current_stageround_state])
+		
 		
 		# streak related
 		var old_win_streak = current_win_streak

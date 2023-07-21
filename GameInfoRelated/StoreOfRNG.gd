@@ -34,7 +34,6 @@ var violet_variation_randomizer_rng := RandomNumberGenerator.new()
 var morph_general_rng := RandomNumberGenerator.new()
 
 
-# TODO MAKE SOME WAY TO SAVE SEED OF RNGS
 
 var _rng_id_to_rng_map : Dictionary
 

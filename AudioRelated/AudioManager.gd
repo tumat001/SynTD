@@ -553,7 +553,8 @@ func _initialize_stats_with_save_dict(arg_save_dict : Dictionary):
 
 func _initialize_background_music_relateds(arg_save_dict : Dictionary):
 	if arg_save_dict.has(data_name__background_music_volume_name):
-		set_bus__background_music_volume(int(arg_save_dict[data_name__background_music_volume_name]))
+		var volume = int(arg_save_dict[data_name__background_music_volume_name])
+		set_bus__background_music_volume(volume)
 		
 	else:
 		#player_name = ""
@@ -569,7 +570,8 @@ func _initialize_background_music_relateds(arg_save_dict : Dictionary):
 
 func _initialize_sound_fx_relateds(arg_save_dict : Dictionary):
 	if arg_save_dict.has(data_name__sound_fx_volume_name):
-		set_bus__sound_fx_volume(int(arg_save_dict[data_name__sound_fx_volume_name]))
+		var volume = int(arg_save_dict[data_name__sound_fx_volume_name])
+		set_bus__sound_fx_volume(volume)
 		
 	else:
 		#player_name = ""

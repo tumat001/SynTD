@@ -13,6 +13,7 @@ const stage_num_to_bare_promote_count_map : Dictionary = {
 	7 : 1,
 	8 : 2,
 	9 : 2,
+	10 : 3,
 }
 
 var _current_bare_promote_count_per_round : int

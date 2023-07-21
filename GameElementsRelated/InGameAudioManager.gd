@@ -91,8 +91,8 @@ func _on_before_game_quit():
 	
 
 func _on_game_result_decided():
-	pass
-	
+	if game_result_manager.game_result != game_result_manager.GameResult.VICTORY:
+		StoreOfAudio.BGM_playlist_catalog.stop_play()
 	
 
 

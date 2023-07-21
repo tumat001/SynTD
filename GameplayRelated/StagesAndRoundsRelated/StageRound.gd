@@ -43,12 +43,12 @@ static func convert_stageround_id_to_stage_and_round_num(arg_text_id : String) -
 		var first = arg_text_id.substr(0, 1)
 		var second = arg_text_id.substr(1, 1)
 		
-		return [first, second]
+		return [int(first), int(second)]
 	else:  #if arg_text_id.length() == 3:
 		var first = arg_text_id.substr(0, 2)
 		var second = arg_text_id.substr(2, 2)
 		
-		return [first, second]
+		return [int(first), int(second)]
 
 static func convert_stageround_id_to_stage_and_round_string_with_dash(arg_text_id : String) -> String:
 	var nums = convert_stageround_id_to_stage_and_round_num(arg_text_id)

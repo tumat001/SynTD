@@ -355,33 +355,33 @@ var special_rounds_to_ins_method_map : Dictionary = {
 	"103" : "get_spawn_ins_for_special_round__103",
 	"102" : "get_spawn_ins_for_special_round__102",
 	"101" : "get_spawn_ins_for_special_round__101",
-	
+
 	"94" : "get_spawn_ins_for_special_round__94",
 	"93" : "get_spawn_ins_for_special_round__93",
 	"92" : "get_spawn_ins_for_special_round__92",
 	"91" : "get_spawn_ins_for_special_round__91",
-	
+
 	"84" : "get_spawn_ins_for_special_round__84",
 	"82" : "get_spawn_ins_for_special_round__82",
-	
+
 	"74" : "get_spawn_ins_for_special_round__74",
 	"72" : "get_spawn_ins_for_special_round__72",
-	
+
 	"64" : "get_spawn_ins_for_special_round__64",
 	"62" : "get_spawn_ins_for_special_round__62",
-	
+
 	"54" : "get_spawn_ins_for_special_round__54",
 	"52" : "get_spawn_ins_for_special_round__52",
-	
+
 	"44" : "get_spawn_ins_for_special_round__44",
 	"42" : "get_spawn_ins_for_special_round__42",
-	
+
 	"34" : "get_spawn_ins_for_special_round__34",
 	"32" : "get_spawn_ins_for_special_round__32",
-	
+
 	"24" : "get_spawn_ins_for_special_round__24",
 	"22" : "get_spawn_ins_for_special_round__22",
-	
+
 	"14" : "get_spawn_ins_for_special_round__14",
 	
 	# temp for testing
@@ -2681,7 +2681,8 @@ func _on_round_end__map_memories__for_special_round_tracking(_arg_stageround, is
 			_configure_last_special_round_in_list()
 		else:
 			# no more special rounds
-			game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end__map_enchant__for_special_round_tracking")
+			if game_elements.stage_round_manager.is_connected("round_ended", self, "_on_round_end__map_enchant__for_special_round_tracking"):
+				game_elements.stage_round_manager.disconnect("round_ended", self, "_on_round_end__map_enchant__for_special_round_tracking")
 			
 			_next_special_round_id = ""
 			_rounds_before_next_special_round_id = -1

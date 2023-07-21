@@ -145,6 +145,12 @@ func _initialize_bgm_stages_playlist():
 	BGM_late_stages_playlist = AudioPlayList.new()
 	BGM_finale_stages_playlist = AudioPlayList.new()
 	
+	BGM_early_stages_playlist.playlist_name = "Early Stages Playlist"
+	BGM_mid_stages_playlist.playlist_name = "Middle Stages Playlist"
+	BGM_late_stages_playlist.playlist_name = "Late Stages Playlist"
+	BGM_finale_stages_playlist.playlist_name = "Finale Playlist"
+	
+	
 	_all_BGM_x_stages_playlist.append(BGM_early_stages_playlist)
 	_all_BGM_x_stages_playlist.append(BGM_mid_stages_playlist)
 	_all_BGM_x_stages_playlist.append(BGM_late_stages_playlist)
