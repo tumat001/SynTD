@@ -420,6 +420,9 @@ func if_tidbit_map_has_at_least_one_tidbit_with_non_zero_val():
 	return false
 
 
+##################################
+
+
 # can be used for determining if its the first time a player is playing
 func if_any_tutorial_is_completed():
 	for id in completed_tutorial_id_to_state_val_map.keys():

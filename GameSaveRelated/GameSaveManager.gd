@@ -7,6 +7,7 @@ const stats_file_path = "user://stats.save"
 const audio_settings_file_path = "user://audio_settings.save"
 const map_memories_metadata_file_path = "user://map_memories_metadata.save"
 
+
 const game_controls_action_name_to_ignore_save : Array = [
 	"ui_select",
 	"ui_accept",
@@ -269,6 +270,9 @@ func load_map_metadata__of_map_memories(arg_map_memories, arg_func_to_call):
 	else:
 		return false
 	
+
+
+###################################
 
 
 

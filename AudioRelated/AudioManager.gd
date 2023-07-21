@@ -589,26 +589,6 @@ func _initialize_sound_fx_relateds(arg_save_dict : Dictionary):
 func _on_singleton_initialize():
 	GameSaveManager.load_stats__of_audio_manager()
 
-
-func _init():
-	CommsForBetweenScenes.connect("game_elements_created", self, "connect_signals_with_game_elements")
-
-
-func connect_signals_with_game_elements(arg_game_elements):
-	game_elements = arg_game_elements
-	
-	game_elements.connect("before_game_quit", self, "_on_before_game_quit", [], CONNECT_PERSIST)
-
-func disconnect_signals_with_game_elements():
-	game_elements.disconnect("before_game_quit", self, "_on_before_game_quit")
-	
-	game_elements = null
-
-func _on_before_game_quit():
-	disconnect_signals_with_game_elements()
-	
-	GameSaveManager.save_settings__of_audio_manager()
-
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		GameSaveManager.save_settings__of_audio_manager()

@@ -8,7 +8,7 @@ var all_active_morph_skillset_id_to_skillset : Dictionary
 ##
 
 
-# USED merely for tracking.
+# USED merely for tracking. for now.
 func apply_skillset(arg_skillset):
 	all_active_morph_skillset_id_to_skillset[arg_skillset.id] = arg_skillset
 

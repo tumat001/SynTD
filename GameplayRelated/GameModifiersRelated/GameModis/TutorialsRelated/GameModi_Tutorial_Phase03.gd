@@ -42,6 +42,9 @@ func _unapply_game_modifier_from_elements(arg_elements : GameElements):
 #
 
 func _on_game_elements_before_game_start():
+	StoreOfAudio.BGM_playlist_catalog.start_play_audio_play_list(StoreOfAudio.BGM_EARLY_STAGES_PLAYLIST_ID)
+	game_elements.in_game_audio_manager.can_change_audio_playlist_conditional_clauses.attempt_insert_clause(game_elements.in_game_audio_manager.BlockChangeAudioPlaylistClauseIds.TUTORIAL)
+	
 	game_elements.tower_empty_slot_notif_panel.block_show_self_conditional_clauses.attempt_insert_clause(game_elements.tower_empty_slot_notif_panel.BlockShowSelfClauseIds.TUTORIAL)
 	
 	
